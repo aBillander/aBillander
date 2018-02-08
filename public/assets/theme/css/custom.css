@@ -1,0 +1,64 @@
+/*!
+ * This file is part of Lara Billander
+ */
+
+body {
+   background-color: white;
+}
+
+ul.dropdown-menu li a:first-letter {
+   text-transform: uppercase;
+}
+
+.well {
+   margin: 5px;
+}
+
+.alert {
+   margin: 5px;
+}
+
+.alert a {
+   color: white;
+   text-decoration: underline;
+}
+
+.modal-header .close {
+   color: #222222;
+}
+
+.modal-footer {
+   margin: 0px;
+}
+
+
+/*!
+ * Lara Billander Custom
+ */
+
+.navbar-default .navbar-brand {
+    color: #09a;
+}
+.navbar-default .navbar-brand {
+    color: #ffffff;
+}
+.navbar-brand {
+    float: left;
+    font-size: 18px;
+    height: 50px;
+    line-height: 20px;
+    padding: 15px;
+}
+.footer-logo, .navbar-brand {
+    color: #09a !important;
+}
+.footer-logo span, .navbar-brand span {
+    color: tomato;
+}
+
+footer {
+    background: none repeat scroll 0 0 #333;
+    color: #eee;
+    margin: 40px 0 0;
+    padding: 20px 0;
+}

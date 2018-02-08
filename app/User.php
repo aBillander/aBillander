@@ -4,10 +4,20 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +25,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'firstname', 'lastname', 
+        'home_page', 'is_admin', 'active', 'language_id'
     ];
 
     /**
@@ -26,4 +37,41 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Validation rules
+     * 
+     */
+    public static $rules = array(
+        'email'       => array('required', 'email'),
+        'password'    => array('required', 'min:2', 'max:32'),
+        'language_id' => 'exists:languages,id',
+    );
+
+
+    /**
+     * Handy methods
+     * 
+     */
+    public function getFullName()
+    {
+        return $this->firstname.' '.$this->lastname;
+    }
+
+    public function isAdmin()
+    {
+        return $this->is_admin;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+    public function language()
+    {
+        return $this->belongsTo('App\Language');
+    }
 }

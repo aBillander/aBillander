@@ -65,7 +65,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+//     'timezone' => 'UTC',
+    'timezone' => 'Europe/Madrid',
 
     /*
     |--------------------------------------------------------------------------
@@ -78,7 +79,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'es',
 
     /*
     |--------------------------------------------------------------------------
@@ -167,6 +168,9 @@ return [
         /*
          * Package Service Providers...
          */
+        Collective\Html\HtmlServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -176,6 +180,18 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        /*
+         * aBillander Service Providers...
+         */
+        App\Providers\BillanderServiceProvider::class,
+        App\Providers\HelperServiceProvider::class,
+        App\Providers\ViewComposerServiceProvider::class,
+
+        /*
+         * aBillander Package Service Providers...
+         */
+//        aBillander\WooConnect\WooConnectServiceProvider::class,
 
     ],
 
@@ -225,6 +241,11 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        'Form'   => Collective\Html\FormFacade::class,
+        'HTML'   => Collective\Html\HtmlFacade::class,
+        'iImage' => Intervention\Image\Facades\Image::class,
+        'PDF'    => Barryvdh\DomPDF\Facade::class,
 
     ],
 

@@ -19,6 +19,23 @@ Route::get('/', function () {
 
 Auth::routes();
 
+// Disable Registration Routes...
+// See:
+// https://stackoverflow.com/questions/29183348/how-to-disable-registration-new-user-in-laravel-5
+// https://stackoverflow.com/questions/42695917/laravel-5-4-disable-register-route/42700000
+if ( !env('ALLOW_USER_REGISTRATION', false) )
+{
+    Route::get('register', function()
+        {
+            return view('errors.404');
+        })->name('register');
+
+    Route::post('register', function()
+        {
+            return view('errors.404');
+        });
+}
+
 Route::get('/', 'WelcomeController@index')->name('home');
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -66,6 +83,26 @@ Route::group(['middleware' =>  ['auth']], function()
                                                                 'as' => 'currencies.exchange' ) );  
         Route::post('currencies/ajax/rate_lookup', array('uses' => 'CurrenciesController@ajaxCurrencyRateSearch', 
                                                         'as' => 'currencies.ajax.rateLookup'));
+
+        Route::resource('measureunits', 'MeasureUnitsController');
+
+        Route::resource('workcenters', 'WorkCentersController');
+
+        Route::resource('products', 'ProductsController');
+        Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
+//        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
+
+        Route::resource('ingredients', 'IngredientsController');
+
+        Route::resource('productboms', 'ProductBOMsController');
+        Route::get('productboms/{id}/getlines', 'ProductBOMsController@getBOMlines')->name('productbom.getlines');
+        Route::get('productboms/{id}/getproducts', 'ProductBOMsController@getBOMproducts')->name('productbom.getproducts');
+        Route::post('productboms/{id}/storeline', 'ProductBOMsController@storeBOMline')->name('productbom.storeline');
+        Route::get('productboms/{id}/getline/{lid}', 'ProductBOMsController@getBOMline')->name('productbom.getline');
+        Route::post('productboms/updateline/{lid}', 'ProductBOMsController@updateBOMline')->name('productbom.updateline');
+        Route::post('productboms/deleteline/{lid}', 'ProductBOMsController@deleteBOMline')->name('productbom.deleteline');
+        Route::get('productboms/line/searchproduct', 'ProductBOMsController@searchProduct')->name('productbom.searchproduct');
+        Route::get('productboms/{id}/duplicate', 'ProductBOMsController@duplicateBOM')->name('productbom.duplicate');
 
 });
 

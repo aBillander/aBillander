@@ -92,6 +92,22 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
+	| La ExtraNatural :: layout
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Finished Products'     => 'Elaborados',
+	'Ingredients'     => 'Ingredientes',
+	'Recipes'     => 'Recetas',
+	'Measure Units'     => 'Unidades de Madida',
+	'Work Centers'     => 'Centros de Trabajo',
+
+
+	/*
+	|--------------------------------------------------------------------------
 	| Common Language Lines :: forms & buttons
 	|--------------------------------------------------------------------------
 	|

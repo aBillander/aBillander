@@ -26,7 +26,8 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.delete-item').click(function (evnt) {
+        $('body').on('click', '.delete-item', function(evnt) { 
+ //       $('.delete-item').click(function (evnt) {
             var href = $(this).attr('href');
             var message = $(this).attr('data-content');
             var title = $(this).attr('data-title');

@@ -25,126 +25,45 @@
             <ul class="nav navbar-nav navbar-right">
 
                 @if( Auth::check() )
-                <!-- li><a href="{{ URL::to('clients') }}"><i class="fa fa-dashboard"></i> Sistema</a></li -->
+
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> {{l('Basic Data', [], 'layouts')}} <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> {{l('System', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                         <li>
-                            <a href="{{ URL::to('currencies') }}">
-                                 {{l('Currencies', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('paymentmethods') }}">
-                                 {{l('Payment Methods', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('taxes') }}">
-                                 {{l('Taxes', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <!-- li>
-                            <a href="{{ URL::to('account') }}">
-                                 Bancos
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('account') }}">
-                                 Cuentas Remesas
-                            </a>
-                        </li -->
-                        <li class="divider"></li>
-                         <li>
-                            <a href="{{ URL::to('categories') }}">
-                                 {{l('Product Categories', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('customergroups') }}">
-                                 {{l('Customer Groups', [], 'layouts')}}
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                         <!-- li>
-                            <a href="{{ URL::to('account') }}">
-                                 Países
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('account') }}">
-                                 Provincias
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('account') }}">
-                                 Zonas
-                            </a>
-                        </li -->
-                        <li class="divider"></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-dashboard"></i> {{l('System', [], 'layouts')}} <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <!-- li class="disabled">
-                            <a href="" onClick="return false;">
-                                 Tablas Generales
-                            </a>
-                        </li>
-                        <li class="divider"></li -->
-                         <li>
-                            <a href="{{ URL::to('customers') }}">
-                                 {{l('Customers', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('salesreps') }}">
-                                 {{l('Sales Representatives', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <!-- li>
-                            <a href="{{ URL::to('account') }}">
-                                 Proveedores
-                            </a>
-                        </li -->
-                         <li>
-                            <a href="{{ URL::to('carriers') }}">
-                                 Transportistas
-                            </a>
-                        </li>
-                         <!-- li>
-                            <a href="{{ URL::to('manufacturers') }}">
-                                 Fabricantes
-                            </a>
-                        </li -->
-                        <li class="divider"></li>
-                         <li>
-                            <a href="{{ URL::to('warehouses') }}">
-                                 {{l('Warehouses', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('pricelists') }}">
-                                 Tarifas
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('optiongroups') }}">
-                                 {{l('Product Options', [], 'layouts')}}
-                            </a>
-                        </li>
                          <li>
                             <a href="{{ URL::to('products') }}">
-                                 {{l('Products', [], 'layouts')}}
+                                 {{l('Finished Products', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('ingredients') }}">
+                                 {{l('Ingredients', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('productboms') }}">
+                                 {{l('Recipes', [], 'layouts')}}
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
+                         <li>
+                            <a href="{{ URL::to('measureunits') }}">
+                                 {{l('Measure Units', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('workcenters') }}">
+                                 {{l('Work Centers', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>
                     </ul>
                 </li>
-                <!-- li><a href="{{ URL::to('clients') }}"><i class="fa fa-shopping-cart"></i> Almacén</a></li -->
 
 
+
+@if (config('app.url') =='http://localhost/enatural')
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -200,21 +119,17 @@
                         <li class="divider"></li>
                     </ul>
                 </li>
+@endif
 
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ Auth::user()->getFullName() }} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                         <li>
-                            <a href="https://abillander.gitbooks.io/abillander-tutorial-spanish/content/" target="_blank">
-                                 {{l('Documentation', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
+                         <!-- li>
                             <a data-target="#contactForm" data-toggle="modal" onclick="return false;" href="">
                                  {{l('Support & feed-back', [], 'layouts')}}
                             </a>
-                        </li>
+                        </li -->
                          <li>
                             <a data-target="#aboutLaraBillander" data-toggle="modal" onclick="return false;" href="">
                                  {{l('About ...', [], 'layouts')}}
@@ -233,23 +148,13 @@
                             </a>
                         </li -->
                          <li>
-                            <a href="http://fontawesome.io/icons/" target="_blank">
+                            <a href="https://fontawesome.com/v4.7.0/icons/" target="_blank">
                                  Font-Awesome
                             </a>
                         </li>
 @endif
                         @if ( Auth::user()->isAdmin() )
                         <li class="divider"></li>
-                         <li>
-                            <a href="{{ URL::to('companies') }}">
-                                 {{l('Company', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <!-- li>
-                            <a href="{{ URL::to('configurations') }}">
-                                 {{l('Configuration - All keys', [], 'layouts')}}
-                            </a>
-                        </li -->
                          <li>
                             <a href="{{ URL::to('configurations') }}">
                                  {{l('Configuration', [], 'layouts')}}
@@ -261,13 +166,13 @@
                             </a>
                         </li>
                          <li>
-                            <a href="{{ URL::to('translations') }}">
-                                 {{l('Translations', [], 'layouts')}}
+                            <a href="{{ URL::to('currencies') }}">
+                                 {{l('Currencies', [], 'layouts')}}
                             </a>
                         </li>
                          <li>
-                            <a href="{{ URL::to('countries') }}">
-                                 {{l('Countries', [], 'layouts')}}
+                            <a href="{{ URL::to('translations') }}">
+                                 {{l('Translations', [], 'layouts')}}
                             </a>
                         </li>
                          <li>

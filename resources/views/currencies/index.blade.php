@@ -48,7 +48,7 @@
 
 			<td class="text-right">
                 @if (  is_null($currency->deleted_at))
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('currencies/' . $currency->id . '/exchange') }}" title="{{l('Show Conversion Rate history')}}"><i class="fa fa-bank"></i></a>               
+                <!-- a class="btn btn-sm btn-blue" href="{{ URL::to('currencies/' . $currency->id . '/exchange') }}" title="{{l('Show Conversion Rate history')}}"><i class="fa fa-bank"></i></a -->               
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('currencies/' . $currency->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('currencies/' . $currency->id ) }}" 

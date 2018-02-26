@@ -40,6 +40,9 @@ class SetContextMiddleware {
 		else
 			$user = NULL;
 //			$user = new \stdClass();
+
+		// Set Language
+		App::setLocale('es');
 		
 		$language = Language::where('iso_code', '=', Config::get('app.locale'))->first();
 		

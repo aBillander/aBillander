@@ -24,6 +24,43 @@ class ViewComposerServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		//
+
+		// Measure Unit types
+		view()->composer(array('measure_units._form'), function($view) {
+
+		    $list = \App\MeasureUnit::getTypeList();
+
+		    $view->with('measureunit_typeList', $list);
+		    
+		});
+
+		// Document Types
+		view()->composer(array('sequences.index', 'sequences.create', 'sequences.edit'), function($view) {
+		    
+		    $view->with('document_typeList', \App\Sequence::documentList());
+		    
+		});
+
+		// Languages
+		view()->composer(array('users.create', 'users.edit'), function($view) {
+		    
+		    $view->with('languageList', \App\Language::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Measure Units
+		view()->composer(array('products.index', 'products.create', 'products._panel_main_data', 'product_boms._panel_create_bom', 'product_boms._panel_bom', 'ingredients.index', 'ingredients.create', 'ingredients._panel_main_data' ), function($view) {
+		    
+		    $view->with('measure_unitList', \App\MeasureUnit::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Work Centers
+		view()->composer(array('products._panel_manufacturing'), function($view) {
+		    
+		    $view->with('work_centerList', \App\WorkCenter::pluck('name', 'id')->toArray());
+		    
+		});
 	}
 
 	public function boot_legacy()

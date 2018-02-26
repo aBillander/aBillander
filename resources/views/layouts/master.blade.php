@@ -14,7 +14,7 @@
         <link rel="shortcut icon" href="{{ asset('xtracon.png') }}" type="image/x-icon">
 
         <link href="{{ asset('assets/theme/css/bootstrap-united.min.css') }}" rel="stylesheet" type="text/css"/>
-        <!-- link href="{{ asset('assets/theme/css/extra-buttons.css') }}" rel="stylesheet" type="text/css"/ -->
+        <link href="{{ asset('assets/theme/css/extra-buttons.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset('assets/theme/css/custom.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset('assets/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css"/>
         @yield('styles')
@@ -25,6 +25,7 @@
             <div class="container-fluid" style="margin: 10px 0px 10px 0px;"> 
                 @include('layouts/notifications')
                 @yield('content')
+                @include('layouts/modal_about')
                 @yield('modals')
            </div>
             @include('layouts/footer')
@@ -32,7 +33,7 @@
 
         <!-- Scripts -->
         <script src="{{ asset('assets/plugins/jQuery/jquery.min.js' ) }}" type="text/javascript"></script>
-          <!-- script src="https://code.jquery.com/jquery-1.12.4.js"></script -->
+        <!-- script src="https://code.jquery.com/jquery-1.12.4.js"></script -->
         <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
 
         <script src="{{ asset('js/common.js') }}" type="text/javascript"></script>

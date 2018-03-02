@@ -1,9 +1,9 @@
 
-{!! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
-<input type="hidden" value="" name="tab_name" id="main_data">
+{!! Form::model($product, array('route' => array('ingredients.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
+<input type="hidden" value="main_data" name="tab_name" id="tab_name">
 
                 {!! Form::hidden('product_type',     'simple',      array('id' => 'product_type')) !!}
-                {!! Form::hidden('procurement_type', 'manufacture', array('id' => 'procurement_type')) !!}
+                {!! Form::hidden('procurement_type', 'purchase', array('id' => 'procurement_type')) !!}
 
 
 <div class="panel panel-primary" id="panel_main_data">

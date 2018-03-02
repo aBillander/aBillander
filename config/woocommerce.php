@@ -6,21 +6,21 @@ return [
     | Home URL to the store you want to connect to here
     |--------------------------------------------------------------------------
     */
-    'store_url' => env('WC_STORE_URL', 'http://example.org/'),
+    'store_url' => env('WC_STORE_URL', 'https://www.laextranatural.com/'),
 
     /*
     |--------------------------------------------------------------------------
     | Consumer Key
     |--------------------------------------------------------------------------
     */
-    'consumer_key' => env('WC_CONSUMER_KEY', 'ck_your_consumer_key'),
+    'consumer_key' => env('WC_CONSUMER_KEY', 'ck_e54ae40181480256f90a672fb9ba11d6d6adc505'),
 
     /*
     |--------------------------------------------------------------------------
     | Consumer Secret
     |--------------------------------------------------------------------------
     */
-    'consumer_secret' => env('WC_CONSUMER_SECRET', 'cs_your_consumer_secret'),
+    'consumer_secret' => env('WC_CONSUMER_SECRET', 'cs_a47a3ed1e6ac27bc96ff7a02824c28f996e87937'),
 
     /*
     |--------------------------------------------------------------------------

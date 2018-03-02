@@ -7,7 +7,7 @@
               {!! $errors->first('alias', '<span class="help-block">:message</span>') !!}
             </div>
 
-            <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('address.name_commercial') ? 'has-error' : '' }}">
+            <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('name') ? 'has-error' : '' }}">
               {{ l('Name') }}
               {!! Form::text('name', null, array('class' => 'form-control', 'id' => 'name')) !!}
               {!! $errors->first('name', '<span class="help-block">:message</span>') !!}

@@ -192,7 +192,7 @@ return [
         /*
          * aBillander Package Service Providers...
          */
-//        aBillander\WooConnect\WooConnectServiceProvider::class,
+        aBillander\WooConnect\WooConnectServiceProvider::class,
 
     ],
 

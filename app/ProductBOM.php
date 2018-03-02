@@ -58,7 +58,7 @@ class ProductBOM extends Model
     
     public function bomitems()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
-        return $this->hasMany('App\BOMitem', 'product_bom_id');
+        return $this->hasMany('App\BOMItem', 'product_bom_id');
     }
     
     public function products()

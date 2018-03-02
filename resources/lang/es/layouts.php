@@ -102,8 +102,17 @@ return [
 	'Finished Products'     => 'Elaborados',
 	'Ingredients'     => 'Ingredientes',
 	'Recipes'     => 'Recetas',
-	'Measure Units'     => 'Unidades de Madida',
+	'Measure Units'     => 'Unidades de Medida',
 	'Work Centers'     => 'Centros de Trabajo',
+
+	'Sales Orders'     => 'Pedidos de Venta',
+	'Online Shop'     => 'Tienda Online',
+	'Production Sheets'     => 'Hojas de producción',
+	'Production Orders'     => 'Ordenes de Fabricación',
+	'Manufacturing'     => 'Fabricación',
+	''     => '',
+	''     => '',
+	
 
 
 	/*

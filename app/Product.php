@@ -54,7 +54,8 @@ class Product extends Model {
 
  //                           'manufacturing_batch_size' => 'required|min:1',
 
-                            'reference'       => 'required|min:2|max:32|unique:products,reference', 
+                            'reference'       => 'required|min:2|max:32|unique:products,reference,{$id},id,deleted_at,NULL', 
+                            // See: https://wisdmlabs.com/blog/laravel-soft-delete-unique-validations/
                             'measure_unit_id' => 'exists:measure_units,id',
  //                           'category_id'  => 'exists:categories,id',
                     ),

@@ -27,6 +27,38 @@
                 @if( Auth::check() )
 
                 <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Sales Orders', [], 'layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li>
+                            <a href="{{ URL::to('wooc/worders') }}">
+                                 {{l('Online Shop', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cubes"></i> {{l('Manufacturing', [], 'layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li>
+                            <a href="{{ URL::to('productionsheets') }}">
+                                 {{l('Production Sheets', [], 'layouts')}}
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
+                         <li>
+                            <a href="{{ URL::to('productionorders') }}">
+                                 {{l('Production Orders', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> {{l('System', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
@@ -63,7 +95,7 @@
 
 
 
-@if (config('app.url') =='http://localhost/enatural')
+@if (config('app.url') =='http://localhost/enatural' AND 0)
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -170,6 +202,8 @@
                                  {{l('Currencies', [], 'layouts')}}
                             </a>
                         </li>
+                        
+@if (config('app.url') =='http://localhost/enatural')
                          <li>
                             <a href="{{ URL::to('translations') }}">
                                  {{l('Translations', [], 'layouts')}}
@@ -185,6 +219,7 @@
                                  {{l('Document templates', [], 'layouts')}}
                             </a>
                         </li>
+@endif
                          <li>
                             <a href="{{ URL::to('users') }}">
                                  {{l('Users', [], 'layouts')}}

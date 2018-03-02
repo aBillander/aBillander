@@ -34,7 +34,7 @@ class IngredientsController extends Controller {
 
         // abi_r($products, true);
 
-        $products->setPath('products');     // Customize the URI used by the paginator
+        $products->setPath('ingredients');     // Customize the URI used by the paginator
 
         return view('ingredients.index', compact('products'));
         
@@ -67,10 +67,10 @@ class IngredientsController extends Controller {
 
 
         if ($action == 'completeProductData')
-        return redirect('products/'.$product->id.'/edit')
+        return redirect('ingredients/'.$product->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $request->input('name'));
         else
-        return redirect('products')
+        return redirect('ingredients')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $request->input('name'));
     }
 
@@ -141,13 +141,13 @@ class IngredientsController extends Controller {
 
         $vrules = Product::$rules[ $rules_tab ];
 
-        if ( $product->reference == $request->input('reference')) unset($vrules['reference']);
+//        if ( $product->reference == $request->input('reference')) unset($vrules['reference']);
 
         $this->validate($request, $vrules);
 
         $product->update($request->all());
 
-        return redirect('products/'.$id.'/edit'.'#'.$request->input('tab_name'))
+        return redirect('ingredients/'.$id.'/edit'.'#'.$request->input('tab_name'))
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
     }
 
@@ -169,7 +169,7 @@ class IngredientsController extends Controller {
 
         $this->product->findOrFail($id)->delete();
 
-        return redirect('products')
+        return redirect('ingredients')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 

@@ -28,7 +28,8 @@
             "database/factories"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "aBillander\\WooConnect\\": "packages/aBillander/WooConnect/src"
         }
     },
     "autoload-dev": {

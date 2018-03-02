@@ -104,6 +104,11 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('productboms/line/searchproduct', 'ProductBOMsController@searchProduct')->name('productbom.searchproduct');
         Route::get('productboms/{id}/duplicate', 'ProductBOMsController@duplicateBOM')->name('productbom.duplicate');
 
+        Route::resource('productionorders', 'ProductionOrdersController');
+        Route::resource('customerorders', 'CustomerOrdersController');
+        Route::resource('productionsheets', 'ProductionSheetsController');
+        Route::post('productionsheets/{id}/addorders', 'ProductionSheetsController@addOrders')->name('productionsheet.addorders');
+        Route::get('productionsheets/{id}/calculate', 'ProductionSheetsController@calculate')->name('productionsheet.calculate');
 });
 
 /* ********************************************************** */

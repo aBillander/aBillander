@@ -11,7 +11,7 @@ class WorkCenter extends Model {
 
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['alias', 'notes', 'active'];
+    protected $fillable = ['alias', 'name', 'notes', 'active'];
 
     // Add your validation rules here
     public static $rules = array(

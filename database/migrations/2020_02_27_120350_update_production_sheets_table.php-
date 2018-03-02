@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateProductionSheetsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('production_sheets', function (Blueprint $table) {
+
+
+            $table->tinyInteger('is_dirty')->default(0);
+            // 0 -> NO; 1 -> Yes (Production Sheet needs calculations after a Customer / Production Oreder is added / removed).
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('production_sheets', function($table) {
+            $table->dropColumn('is_dirty');
+        });
+    }
+}

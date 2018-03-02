@@ -50,7 +50,7 @@
 					<td><strong>{{ $configuration->name }}</strong><br />{{ $configuration->description }}</td>
 					<td>{{ $configuration->value }}</td>
 					<td>{{ $configuration->updated_at }}</td>
-					<td>
+					<td  style="width:1px; white-space: nowrap;">
 						<a class="btn btn-sm btn-warning" href="{{ URL::to('configurations/' . $configuration->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 		<a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
 		                		href="{{ URL::to('configurations/' . $configuration->id ) }}" 

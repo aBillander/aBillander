@@ -56,9 +56,18 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Work Centers
-		view()->composer(array('products._panel_manufacturing'), function($view) {
+		view()->composer(array('products._panel_manufacturing', 'production_sheets._modal_production_order_form', 'production_sheets._modal_production_order_edit'), function($view) {
 		    
 		    $view->with('work_centerList', \App\WorkCenter::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Available Production Sheets
+		view()->composer(array('woo_connect::woo_orders.index',  'production_sheets._modal_customer_order_move'), function($view) {
+		    
+		    $availableProductionSheets = \App\ProductionSheet::isOpen()->orderBy('due_date', 'asc')->pluck('due_date', 'id')->toArray();
+
+		    $view->with('availableProductionSheetList', $availableProductionSheets);
 		    
 		});
 	}

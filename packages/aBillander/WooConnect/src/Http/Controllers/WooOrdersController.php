@@ -89,7 +89,29 @@ class WooOrdersController extends Controller {
 
 		// abi_r($params, true);
 
-		$results = WooCommerce::get('orders', $params);
+        try {
+
+			$results = WooCommerce::get('orders', $params);
+
+		}
+
+			catch(WooHttpClientException $e) {
+
+//			$e->getMessage(); // Error message.
+
+//			$e->getRequest(); // Last request data.
+
+//			$e->getResponse(); // Last response data.
+//			abi_r($e->getResponse);
+
+			$err = '<ul><li><strong>'.$e->getMessage().'</strong></li></ul>';
+
+			return redirect('404')
+				->with('error', l('La Tienda Online ha rechazado la conexión, y ha dicho: ') . $err);
+
+		}
+		
+		// So far so good, then
 		$total = WooCommerce::totalResults();
 
 		$orders = collect($results);
@@ -123,10 +145,17 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 			if ($needle) {
 				$order["imported_at"] = $needle->created_at->toDateString();
 				$order["production_at"] = $needle->productionsheet->due_date;
+				$order["production_sheet_id"] = $needle->productionsheet->id;
 			} else {
 				$order["imported_at"] = '';
 				$order["production_at"] = '';
+				$order["production_sheet_id"] = '';
 			}
+
+            $state = \App\State::findByIsoCode( (strpos($order['shipping']['state'], '-') ? '' : $order['shipping']['country'].'-').$order['shipping']['state'] );
+            $state_name = $state ? $state->name : $order['shipping']['state'];
+            $order['shipping']['state_name'] = $state_name;
+
 			return $order;
 });
 //		abi_r($orders, true);
@@ -136,9 +165,9 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 
 		// $orders = collect($results);
 
-		$availableProductionSheets = \App\ProductionSheet::isOpen()->pluck('due_date', 'id')->toArray();
+//		$availableProductionSheets = \App\ProductionSheet::isOpen()->orderBy('due_date', 'asc')->pluck('due_date', 'id')->toArray();
 
-        return view('woo_connect::woo_orders.index', compact('orders', 'availableProductionSheets', 'query'));
+        return view('woo_connect::woo_orders.index', compact('orders', 'query'));
 	}
 
 	/**

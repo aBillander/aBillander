@@ -234,4 +234,18 @@ class ProductionSheetsController extends Controller
         return redirect()->route('worders.index')
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts'));
     }
+
+
+    /**
+     * AJAX Stuff.
+     *
+     * 
+     */
+
+    public function getCustomerOrdersSummary($id)
+    {
+        $sheet = \App\ProductionSheet::findOrFail($id);
+
+        return view('production_sheets.ajax._panel_customer_order_summary', compact('sheet'));
+    }
 }

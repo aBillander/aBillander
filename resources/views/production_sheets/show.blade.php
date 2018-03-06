@@ -17,7 +17,7 @@
     </div>
     <h2>
         <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">/</span> {{ $sheet->due_date }}
-        @if ($sheet->is_dirty)
+        @if ($sheet->is_dirty AND 0)
               <button type="button" class="btn btn-sm btn-danger" title="{{l('Need Update')}}">
                   <i class="fa fa-hand-stop-o"></i>
               </button>
@@ -50,6 +50,30 @@
             </div>
       </div>
    </div>
+ 
+@if ($sheet->productsNotScheduled()->count())     
+
+   <div class="row">
+      <div class="col-lg-1 col-md-1 col-sm-1">
+         <div class="list-group">
+            <!-- a id="b_generales" href="" class="list-group-item active info" onClick="return false;">
+               <i class="fa fa-user"></i>
+               &nbsp; {{ l('Customer Orders') }}
+            </a -->
+         </div>
+      </div>
+
+      <div class="col-lg-10 col-md-10 col-sm-10">
+            <div class="panel panel-danger" id="panel_not_scheduled_products">
+               <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa fa-hand-stop-o"></i> &nbsp; {{ l('Finished Product Requirements not in Production') }}</h3>
+               </div>
+                    @include('production_sheets._panel_not_scheduled_products')
+            </div>
+      </div>
+   </div>
+   
+@endif
 
    <div class="row">
       <div class="col-lg-1 col-md-1 col-sm-1">
@@ -94,11 +118,8 @@
 </div>
 
 
-<?php
+@include('production_sheets._modal_production_order_form')
 
- // abi_r($sheet->Grouped());
-
-?>
 
 @endsection
 

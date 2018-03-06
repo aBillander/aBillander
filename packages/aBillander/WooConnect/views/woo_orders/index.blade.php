@@ -76,7 +76,7 @@
       <td>{{ $order["id"] }}</td>
 			<td>{{ $order["billing"]["first_name"].' '.$order["billing"]["last_name"] }}<br />
           {{ $order["shipping"]["address_1"] }}<br />
-          {{ $order["shipping"]["city"] }} - <a href="#" class="btn btn-grey btn-xs disabled">{{ $order["billing"]["phone"] }}</a></td>
+          {{ $order["shipping"]["city"] }} - {{ $order["shipping"]["state_name"] }} <a href="#" class="btn btn-grey btn-xs disabled">{{ $order["billing"]["phone"] }}</a></td>
 			<!-- td>{{ $order["billing"]["phone"] }}</td -->
       <td>{{ $order["date_created_date"] }}<br />
           {{ $order["date_created_time"] }}</td>
@@ -88,7 +88,12 @@
           {{ $order["payment_method_title"] }}</td>
       @endif
       <td>{{ $order["imported_at"] }}</td>
-      <td>{{ $order["production_at"] }}</td>
+      <td>{{ $order["production_at"] }}
+      
+@if ($order["production_sheet_id"])
+                <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $order["production_sheet_id"]) }}" title="{{l('Go to Production Sheet')}}"><i class="fa fa-external-link"></i></a>
+@endif
+      </td>
       <td>{{ \aBillander\WooConnect\WooConnector::getOrderStatusName($order["status"]) }}</td>
       <td>{{ $order['total'] }}</td>
 
@@ -145,7 +150,7 @@
 </div -->
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('production_sheet_id', l('Production Sheet')) !!} {{-- \Carbon\Carbon::now() --}}
-    {!! Form::select('production_sheet_id', $availableProductionSheets, null, array('class' => 'form-control', 'id' => 'production_sheet_id')) !!}
+    {!! Form::select('production_sheet_id', $availableProductionSheetList, null, array('class' => 'form-control', 'id' => 'production_sheet_id')) !!}
 </div>
 
 <div class="form-group col-lg-6 col-md-6 col-sm-6" style="padding-top: 22px">
@@ -188,7 +193,7 @@
 <div class="row">
 
          <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('notes') ? 'has-error' : '' }}">
-            {{ l('Notes') }}
+            {{ l('Notes', [], 'layouts') }}
             {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}
             {{ $errors->first('notes', '<span class="help-block">:message</span>') }}
          </div>

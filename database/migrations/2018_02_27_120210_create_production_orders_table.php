@@ -24,7 +24,7 @@ class CreateProductionOrdersTable extends Migration
             $table->string('reference')->nullable();                            // Project reference, etc.
 
             $table->string('created_via', 32)->default('manual')->nullable();   
-                    // 'manual', 'Production Order Explosion (manufacturing)', 'Sales Order (sales)', 'Web Shopr (webshop)', 'Sales Forecast (forecast)', 'Reorder Point (reorder)' 
+                    // 'manual', 'Production Order Explosion (manufacturing)', 'Sales Order (sales)', 'Web Shop' (webshop)', 'Sales Forecast (forecast)', 'Reorder Point (reorder)'
 
             $table->string('status', 32)->default('released')->nullable(false);      // 'Planned', 'Firm Planned', 'Released', 'Finished'
 
@@ -38,6 +38,7 @@ class CreateProductionOrdersTable extends Migration
             $table->integer('product_bom_id')->unsigned()->nullable();
 
             $table->date('due_date');
+            $table->text('notes')->nullable();
 
             $table->integer('work_center_id')->unsigned()->nullable();
             $table->integer('warehouse_id')->unsigned()->nullable();

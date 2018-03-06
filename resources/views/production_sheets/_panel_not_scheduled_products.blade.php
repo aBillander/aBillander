@@ -1,9 +1,9 @@
 
-<div class="panel-body" id="div_material_requirements">
+<div class="panel-body" id="div_not_scheduled_products">
    <div class="table-responsive">
 
 
-@if ($sheet->productionorderlinesGrouped()->count())
+@if ($sheet->productsNotScheduled()->count())
 <table id="sheets" class="table table-hover">
     <thead>
         <tr>
@@ -11,29 +11,23 @@
       <th>{{l('Product ID')}}</th>
       <th>{{l('Product Reference')}}</th>
       <th>{{l('Product Name')}}</th>
-      <th>{{l('Quantity')}}</th>
+      <th>{{l('Falta')}}</th>
+      <th>{{l('Sobra')}}</th>
       <th class="text-right"> </th>
     </tr>
   </thead>
   <tbody>
-  @foreach ($sheet->productionorderlinesGrouped() as $order)
+  @foreach ($sheet->productsNotScheduled() as $order)
     <tr>
       <td>{{ $order['product_id'] }}</td>
       <td>{{ $order['reference'] }}</td>
       <td>{{ $order['name'] }}</td>
-      <td>{{ $order['quantity'] }}</td>
-
+@if ($order['quantity']>0)
+      <td>{{ $order['quantity'] }}</td><td></td>
+@else
+      <td></td><td>{{ -$order['quantity'] }}</td>
+@endif
            <td class="text-right" style="width:1px; white-space: nowrap;">
-
-                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('productionsheets/' . $sheet->id . '/show') }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-folder-open-o"></i></a>
-
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('sheets/' . $sheet->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                    href="{{ URL::to('sheets/' . $sheet->id ) }}" 
-                    data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Production Sheets') }} :: ({{$sheet->id}}) {{{ $sheet->name }}}" 
-                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a -->
 
             </td>
     </tr>

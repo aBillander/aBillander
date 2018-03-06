@@ -29,7 +29,7 @@ return [
 	'Status'     => 'Estado',
 	'Customer'     => 'Cliente',
 
-	'Transaction ID'     => 'Transacción ID',
+	'Transaction ID'     => 'ID Transacción',
 	''     => '',
 	''     => '',
 

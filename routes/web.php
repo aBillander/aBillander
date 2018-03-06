@@ -105,10 +105,22 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('productboms/{id}/duplicate', 'ProductBOMsController@duplicateBOM')->name('productbom.duplicate');
 
         Route::resource('productionorders', 'ProductionOrdersController');
+        Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');
+        Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
+
+        Route::get('productionorders/{id}/getorder', 'ProductionOrdersController@getOrder')->name('productionorder.getorder');
+        Route::post('productionorders/{id}/productionsheetedit', 'ProductionOrdersController@productionsheetEdit')->name('productionorder.productionsheet.edit');
+        Route::post('productionorders/{id}/productionsheetdelete', 'ProductionOrdersController@productionsheetDelete')->name('productionorder.productionsheet.delete');
+
         Route::resource('customerorders', 'CustomerOrdersController');
+        Route::get('customerorders/{id}/getlines', 'CustomerOrdersController@getOrderLines')->name('customerorder.getlines');
+        Route::post('customerorders/{id}/move', 'CustomerOrdersController@move')->name('customerorder.move');
+        Route::post('customerorders/{id}/unlink', 'CustomerOrdersController@unlink')->name('customerorder.unlink');
+
         Route::resource('productionsheets', 'ProductionSheetsController');
         Route::post('productionsheets/{id}/addorders', 'ProductionSheetsController@addOrders')->name('productionsheet.addorders');
         Route::get('productionsheets/{id}/calculate', 'ProductionSheetsController@calculate')->name('productionsheet.calculate');
+        Route::get('productionsheets/{id}/customerorderssummary', 'ProductionSheetsController@getCustomerOrdersSummary')->name('productionsheet.getCustomerOrdersSummary');
 });
 
 /* ********************************************************** */

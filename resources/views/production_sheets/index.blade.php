@@ -26,7 +26,9 @@
 			<th>{{l('ID', [], 'layouts')}}</th>
 			<th>{{ l('Due Date') }}</th>
 			<th>{{ l('Name') }}</th>
-      <th class="text-center">{{l('Status', [], 'layouts')}}</th>
+      <!-- th class="text-center">{{l('Status', [], 'layouts')}}</th -->
+      <th>{{ l('Customer Orders') }}</th>
+      <th>{{ l('Production Orders') }}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th class="text-right"> </th>
 		</tr>
@@ -37,7 +39,7 @@
 			<td>{{ $sheet->id }}</td>
       <td>{{ $sheet->due_date }}</td>
       <td>{{ $sheet->name }}</td>
-      <td class="text-center">
+      <!-- td class="text-center">
           @if ($sheet->is_dirty)
               <button type="button" class="btn btn-xs btn-danger" title="{{l('Need Update')}}">
                   <i class="fa fa-hand-stop-o"></i>
@@ -46,7 +48,9 @@
               <button type="button" class="btn btn-xs btn-success" title="{{l('OK')}}">
                   <i class="fa fa-thumbs-o-up"></i>
               </button>
-          @endif</td>
+          @endif</td -->
+      <td>{{ $sheet->nbr_customerorders() }}</td>
+      <td>{{ $sheet->nbr_productionorders() }}</td>
       <td class="text-center">
           @if ($sheet->notes)
            <a href="javascript:void(0);">

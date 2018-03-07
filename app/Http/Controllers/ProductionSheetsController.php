@@ -82,6 +82,8 @@ class ProductionSheetsController extends Controller
     public function edit($id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
+
+        $sheet->due_date = abi_date_form_short($sheet->due_date);
         
         return view('production_sheets.edit', compact('sheet'));
     }
@@ -96,6 +98,8 @@ class ProductionSheetsController extends Controller
     public function update(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
+
+        $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
 
         $this->validate($request, ProductionSheet::$rules);
 
@@ -133,26 +137,36 @@ class ProductionSheetsController extends Controller
             $order->delete();
         }
 
+        $errors = [];
+
         // Do the Mambo!
         foreach ($sheet->customerorderlinesGrouped() as $pid => $line) {
             // Create Production Order
-            $order = \App\ProductionOrder::Create([
+            $order = \App\ProductionOrder::createWithLines([
                 'created_via' => 'webshop',
-                'status' => 'released',
+//                'status' => 'released',
                 'product_id' => $pid,
-                'product_reference' => $line['reference'],
-                'product_name' => $line['name'],
+//                'product_reference' => $line['reference'],
+//                'product_name' => $line['name'],
                 'planned_quantity' => $line['quantity'],
-                'product_bom_id' => 1,
+//                'product_bom_id' => 1,
                 'due_date' => $sheet->due_date,
-                'work_center_id' => 2,
+                'notes' => '',
+//                
+//                'work_center_id' => 2,
 //                'warehouse_id' => 0,
+                'production_sheet_id' => $sheet->id,
             ]);
 
-            $sheet->productionorders()->save($order);
+            if (!$order) $errors[] = '<li>['.$line['reference'].'] '.$line['name'].'</li>';
         }
 
-        return redirect('productionsheets/'.$id)
+        if (count($errors)) 
+            return redirect('productionsheets/'.$id)
+                ->with('error', l('No se ha podido crear una Orden de Fabricación para los siguientes Productos, porque no se ha encontrado una Lista de Materiales:') . '<ul>' . implode('', $errors) . '</ul>');
+        
+        else 
+            return redirect('productionsheets/'.$id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -167,12 +181,18 @@ class ProductionSheetsController extends Controller
             $sheet = $this->productionSheet->create($request->all() + ['is_dirty' => 0]);
         } else {
 
-            if ( $i = intval($request->input('production_sheet_id', '')) > 0 )
+            $i = intval($request->input('production_sheet_id', ''));
+
+            if ( $i > 0 )
                 $sheet = $this->productionSheet->findOrFail($i);
             else
                 $sheet = $this->productionSheet->findOrFail($id);
         }
 
+
+        $errors = [];
+
+        // Do the Mambo!
         foreach ( $request->input('worders') as $oID ) {
             // Retrieve order
             $params = [
@@ -214,6 +234,8 @@ class ProductionSheetsController extends Controller
                         'measure_unit_id' => \App\Configuration::get('DEF_MEASURE_UNIT_4_PRODUCTS'),
 
                     ]);
+
+                    $errors[] = '<li>['.$item['sku'].'] '.$item['name'].'</li>';
                 }
 
                 $abi_order_line = \App\CustomerOrderLine::create([
@@ -231,8 +253,16 @@ class ProductionSheetsController extends Controller
             }
         }
 
+        $extra='';
+        $msg='success';
+
+        if (count($errors)) {
+            $extra='Se han creado los siguientes Productos, porque no se han encontrado:' . '<ul>' . implode('', $errors) . '</ul>';
+            $msg='warning';
+        }
+
         return redirect()->route('worders.index')
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts'));
+                ->with($msg, l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts').$extra);
     }
 
 

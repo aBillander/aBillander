@@ -128,6 +128,16 @@ class ProductsController extends Controller {
 
         $rules_tab = $request->input('tab_name', 'main_data');
 
+        if (  $rules_tab == 'detach_bom' ) {
+            //
+            $bomItem = $product->bomitem(); 
+
+            $bomItem->delete();
+
+            return redirect('products/'.$id.'/edit'.'#'.'manufacturing')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
+        }
+
         if (  $rules_tab == 'bom_selector' ) {
             //
 //            abi_r($request->all(), true);

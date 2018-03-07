@@ -20,6 +20,24 @@ class ProductionSheet extends Model
 
     /*
     |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+    
+    public function xgetDueDateAttribute($value)
+    {
+        return abi_date_short($value);
+    }
+    
+    public function xsetDueDateAttribute($value)
+    {
+        return $value ? \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $value ) 
+                        : null;
+    }
+    
+
+    /*
+    |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
     */

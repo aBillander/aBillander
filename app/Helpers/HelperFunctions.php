@@ -57,6 +57,35 @@ function abi_date_short(\Carbon\Carbon $date = null, $format = '')
         return $date->format($format);
     }
 
+function abi_date_form_short($str_date = '', $format = '')
+    {
+        if (!$str_date) return null;
+
+        $date = \Carbon\Carbon::createFromFormat('Y-m-d', $str_date);
+
+        // http://laravel.io/forum/03-11-2014-date-format
+        // https://laracasts.com/forum/?p=764-saving-carbon-dates-from-user-input/0
+
+        // if ($format == '') $format = \App\Configuration::get('DATE_FORMAT_SHORT');     
+        if ($format == '') $format = \App\Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
+        if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
+        // echo ($format); die();
+        // $date = \Carbon\Carbon::createFromFormat($format, $date);    
+        // http://laravel.io/forum/03-12-2014-class-carbon-not-found?page=1
+
+        // echo $date.' - '.Configuration::get('DATE_FORMAT_SHORT').' - '.$date->format($format); die();
+
+        return $date->format($format);
+    }
+
+function abi_form_date_short($date_form = null)
+    {
+    	$date = $date_form ? \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $date_form )
+    					: null;
+
+        return $date->toDateString();
+    }
+
 
 /**
  * PHP Multi Dimensional Array Combinations.

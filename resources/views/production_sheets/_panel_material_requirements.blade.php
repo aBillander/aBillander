@@ -12,6 +12,7 @@
       <th>{{l('Product Reference')}}</th>
       <th>{{l('Product Name')}}</th>
       <th>{{l('Quantity')}}</th>
+      <th>{{l('Measure Unit')}}</th>
       <th class="text-right"> </th>
     </tr>
   </thead>
@@ -22,6 +23,7 @@
       <td>{{ $order['reference'] }}</td>
       <td>{{ $order['name'] }}</td>
       <td>{{ $order['quantity'] }}</td>
+      <td>{{ \App\Product::find( $order['product_id'] )->measureunit->name }}</td>
 
            <td class="text-right" style="width:1px; white-space: nowrap;">
 

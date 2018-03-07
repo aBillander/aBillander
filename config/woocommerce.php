@@ -13,14 +13,14 @@ return [
     | Consumer Key
     |--------------------------------------------------------------------------
     */
-    'consumer_key' => env('WC_CONSUMER_KEY', 'ck_19873d3a8e74f7d612f56b247a40b34068d1fad5'),
+    'consumer_key' => env('WC_CONSUMER_KEY', 'ck_64d2e72e8d9120a9f985c1cb4073ff6bfa3b62da'),
 
     /*
     |--------------------------------------------------------------------------
     | Consumer Secret
     |--------------------------------------------------------------------------
     */
-    'consumer_secret' => env('WC_CONSUMER_SECRET', 'cs_fea76b836d5c402f989af1cb297b000d3ab4c551'),
+    'consumer_secret' => env('WC_CONSUMER_SECRET', 'cs_ed1170ce21aef204e5db9cdc603f7918734aca7f'),
 
     /*
     |--------------------------------------------------------------------------

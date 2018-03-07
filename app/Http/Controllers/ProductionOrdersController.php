@@ -117,7 +117,9 @@ class ProductionOrdersController extends Controller
     {
         $order = \App\ProductionOrder::findOrFail($id);
 
-        $need_update = ( $order->planned_quantity == $request->input('planned_quantity') );
+        $need_update = !( $order->planned_quantity == $request->input('planned_quantity') );
+
+//        abi_r($order->planned_quantity. '==' .$request->input('planned_quantity'), true);
 
         $order->update( $request->all() );
 
@@ -136,6 +138,8 @@ class ProductionOrdersController extends Controller
     {
         $order = \App\ProductionOrder::findOrFail($id);
 
+        $order->deleteWithLines();
+/*
         // Destroy Order Lines
         if ($order->productionorderlines()->count())
             foreach( $order->productionorderlines as $line ) {
@@ -144,7 +148,7 @@ class ProductionOrdersController extends Controller
 
         // Destroy Order
         $order->delete();
-
+*/
         $sheet_id = $request->input('current_production_sheet_id');
 
         return redirect('productionsheets/'.$sheet_id)
@@ -206,59 +210,27 @@ class ProductionOrdersController extends Controller
         $data = $request->all();  // return response()->json(['mensaje' => $data]);
 
 
-        $product = \App\Product::with('bomitems')->with('boms')->findOrFail( $data['product_id'] );
-        $bomitem = $product->bomitem();
-        $bom     = $product->bom();
-        // Adjust Manufacturing baych size
-        $nbt = ceil($data['planned_quantity'] / $product->manufacturing_batch_size);
-        $order_quantity = $nbt * $product->manufacturing_batch_size;
 
-        $order = \App\ProductionOrder::create([
-            'created_via' => 'manual',
-            'status' => 'released',
+        $sheet = \App\ProductionSheet::with('productionorders')->findOrFail( $data['production_sheet_id'] );
+        $pID = $data['product_id'];
 
-            'product_id' => $product->id,
-            'product_reference' => $product->reference,
-            'product_name' => $product->name,
+        $needle = $sheet->productionorders->first(function($item) use ($pID) {
+            return $item->product_id == $pID;
+        });
+        
 
-            'planned_quantity' => $order_quantity,
-            'product_bom_id' => $bom->id,
+        if ($needle) return ['status' => 'ERROR', 'message' => 'No se puede crear una Orden de Fabricación para este Producto porque ya existe una.'];
 
-            'due_date' => $data['due_date'],
-            'notes' => $data['notes'],
+        // So far, so good:
+        $order = \App\ProductionOrder::createWithLines( $data );
 
-            'work_center_id' => $data['work_center_id'],
-//            'warehouse_id' => '',
-            'production_sheet_id' => $data['production_sheet_id'],
-        ]);
+        if ($order) return ['status' => 'OK'];
 
+        // No BOM, so delete
+//        $order->deleteWithLines();
 
-        // Order lines
-        // BOM quantities
-        $line_qty = $order_quantity * $bomitem->quantity / $bom->quantity;
+        return ['status' => 'ERROR', 'message' => 'No se puede crear una Orden de Fabricación para este Producto porque no se ha encontrado una Receta Asociada.'];
 
-        foreach( $bom->BOMlines as $line ) {
-            
-             $line_product = \App\Product::with('measureunit')->findOrFail( $line->product_id );
-
-             $order_line = \App\ProductionOrderLine::create([
-                'type' => 'product',
-                'product_id' => $line_product->id,
-                'reference' => $line_product->reference,
-                'name' => $line_product->name, 
-
-//                'base_quantity', 
-                'required_quantity' => $line_qty * $line->quantity * (1.0 + $line->scrap/100.0), 
-                // Assume 1 product == 1 measure unit O_O
-                'measure_unit_id' => $line_product->measure_unit_id,
-//                'warehouse_id'
-            ]);
-
-            $order->productionorderlines()->save($order_line);
-        }
-
-
-        return ['OK'];
 /*
         return redirect()->back()
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $order->id], 'layouts') . $request->input('due_date'));

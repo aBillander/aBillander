@@ -39,11 +39,11 @@
                     </button>
                  </a>
                 @endif</td>
-           <td class="text-right">
+           <td class="text-right" style="width:1px; white-space: nowrap;">
 
                 <a class="btn btn-success" href="{{ route( 'productboms.edit', [$bom->id] ) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
 
-                <a class="btn btn-danger" href="{{ URL::to('products/200/edit' ) }}" title="{{l('Unlink')}}"><i class="fa fa-unlink"></i></a>
+                <a class="btn btn-danger detach-bom-item" title="{{l('Unlink')}}" onClick="return false;"><i class="fa fa-unlink"></i></a>
 
             </td>
         </tr>
@@ -132,6 +132,9 @@
    </div>
 
 </div>
+
+
+@include('products._modal_bom_detach')
 
 
 @else

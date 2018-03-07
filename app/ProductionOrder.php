@@ -27,17 +27,131 @@ class ProductionOrder extends Model
     |--------------------------------------------------------------------------
     */
     
-    public static function createWithLines()
+    public static function createWithLines($data = [])
     {
-        //
+        $fields = [ 'created_via', 'status',
+                    'product_id', 'planned_quantity', 'due_date', 
+                    'work_center_id', 'warehouse_id', 'production_sheet_id', 'notes'];
 
-//        return $order;
+        $product = \App\Product::with('bomitems')->with('boms')->findOrFail( $data['product_id'] );
+        $bomitem = $product->bomitem();
+        $bom     = $product->bom();
+
+        if (!$bom) return NULL;
+
+        // Adjust Manufacturing batch size
+        $nbt = ceil($data['planned_quantity'] / $product->manufacturing_batch_size);
+        $order_quantity = $nbt * $product->manufacturing_batch_size;
+
+        $order = \App\ProductionOrder::create([
+            'created_via' => $data['created_via'] ?? 'manual',
+            'status'      => $data['status']      ?? 'released',
+
+            'product_id' => $product->id,
+            'product_reference' => $product->reference,
+            'product_name' => $product->name,
+
+            'planned_quantity' => $order_quantity,
+            'product_bom_id' => $bom->id ?? 0,
+
+            'due_date' => $data['due_date'],
+            'notes' => $data['notes'],
+
+            'work_center_id' => $data['work_center_id'] ?? $product->work_center_id,
+//            'warehouse_id' => '',
+            'production_sheet_id' => $data['production_sheet_id'],
+        ]);
+
+
+        // Order lines
+        // BOM quantities
+        $line_qty = $order_quantity * $bomitem->quantity / $bom->quantity;
+
+        foreach( $bom->BOMlines as $line ) {
+            
+             $line_product = \App\Product::with('measureunit')->findOrFail( $line->product_id );
+
+             $order_line = \App\ProductionOrderLine::create([
+                'type' => 'product',
+                'product_id' => $line_product->id,
+                'reference' => $line_product->reference,
+                'name' => $line_product->name, 
+
+//                'base_quantity', 
+                'required_quantity' => $line_qty * $line->quantity * (1.0 + $line->scrap/100.0), 
+                // Assume 1 product == 1 measure unit O_O
+                'measure_unit_id' => $line_product->measure_unit_id,
+//                'warehouse_id'
+            ]);
+
+            $order->productionorderlines()->save($order_line);
+        }
+
+        return $order;
     }
     
-    // Update Order ines when Order Product quantity changes
+    // Update Order Lines when Order Product quantity changes
     public function updateLines()
     {
-        //
+
+        $product = \App\Product::with('bomitems')->with('boms')->findOrFail( $this->product_id );
+        $bomitem = $product->bomitem();
+        $bom     = $product->bom();
+
+        if (!$bom) return $this;
+
+        // Adjust Manufacturing batch size
+        $nbt = ceil($this->planned_quantity / $product->manufacturing_batch_size);
+        $order_quantity = $nbt * $product->manufacturing_batch_size;
+        $this->update(['planned_quantity' => $order_quantity]);
+
+        $order = $this;
+
+
+        // Order lines
+
+        // Destroy Order Lines
+        if ($this->productionorderlines()->count())
+            foreach( $this->productionorderlines as $line ) {
+                $line->delete();
+            }
+
+        // BOM quantities
+        $line_qty = $order_quantity * $bomitem->quantity / $bom->quantity;
+
+        foreach( $bom->BOMlines as $line ) {
+            
+             $line_product = \App\Product::with('measureunit')->findOrFail( $line->product_id );
+
+             $order_line = \App\ProductionOrderLine::create([
+                'type' => 'product',
+                'product_id' => $line_product->id,
+                'reference' => $line_product->reference,
+                'name' => $line_product->name, 
+
+//                'base_quantity', 
+                'required_quantity' => $line_qty * $line->quantity * (1.0 + $line->scrap/100.0), 
+                // Assume 1 product == 1 measure unit O_O
+                'measure_unit_id' => $line_product->measure_unit_id,
+//                'warehouse_id'
+            ]);
+
+            $order->productionorderlines()->save($order_line);
+        }
+
+        return $order;
+    }
+
+    public function deleteWithLines()
+    {
+        // Destroy Order Lines
+        if ($this->productionorderlines()->count())
+            foreach( $this->productionorderlines as $line ) {
+                $line->delete();
+            }
+
+        // Destroy Order
+        $this->delete();
     }
 
 

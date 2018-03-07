@@ -15,6 +15,11 @@
 
            <div class="modal-body">
 
+<div id="msg-error" class="alert alert-danger alert-block" style="display:none;">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong><span id="msg-error-text"></span></strong>
+</div>
+
                <!-- p>Some text in the modal.</p -->
                 {{-- csrf_field() --}}
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

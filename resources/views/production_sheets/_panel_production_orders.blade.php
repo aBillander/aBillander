@@ -113,6 +113,9 @@ $(document).ready(function() {
 
           $("#order_autoproduct_name").val('');
 
+          $("#msg-error").hide();
+          $("#msg-error-text").text('');
+
         $('#modalProductionOrder').modal({show: true});
         return false;
     });
@@ -141,14 +144,17 @@ $(document).ready(function() {
                 dataType : 'json',
                 data : payload,
 
-                success: function(){
-                    location.reload();
+                success: function($data){
+                    if ($data.status == 'OK') location.reload();
+
+                    $("#msg-error-text").text($data.message);
+                    $("#msg-error").fadeIn();
 
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
-                    $('#modalProductionOrder').modal('toggle');
-                    $("#msg-success").fadeIn();
+ //                   $('#modalProductionOrder').modal('toggle');
+ //                   $("#msg-success").fadeIn();
                 }
             });
         });

@@ -78,17 +78,17 @@
           {{ $order["shipping"]["address_1"] }}<br />
           {{ $order["shipping"]["city"] }} - {{ $order["shipping"]["state_name"] }} <a href="#" class="btn btn-grey btn-xs disabled">{{ $order["billing"]["phone"] }}</a></td>
 			<!-- td>{{ $order["billing"]["phone"] }}</td -->
-      <td>{{ $order["date_created_date"] }}<br />
+      <td>{{ abi_date_form_short($order["date_created_date"]) }}<br />
           {{ $order["date_created_time"] }}</td>
       @if ($order["date_paid"]) 
-      <td>{{ $order["date_paid"] }}<br />
+      <td>{{ abi_date_form_short($order["date_paid"]) }}<br />
           {{ $order["payment_method_title"] }}</td>
       @else
       <td class="danger"> <br />
           {{ $order["payment_method_title"] }}</td>
       @endif
-      <td>{{ $order["imported_at"] }}</td>
-      <td>{{ $order["production_at"] }}
+      <td>{{ abi_date_form_short($order["imported_at"]) }}</td>
+      <td>{{ abi_date_form_short($order["production_at"]) }}
       
 @if ($order["production_sheet_id"])
                 <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $order["production_sheet_id"]) }}" title="{{l('Go to Production Sheet')}}"><i class="fa fa-external-link"></i></a>
@@ -377,3 +377,43 @@ $("#order_lines").on("change", function () {
 </script>
 
 @endsection
+
+
+{{-- *************************************** --}}
+
+
+@section('scripts') @parent 
+
+{{-- Date Picker --}}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script>
+
+  $(function() {
+    $( "#due_date" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+  
+</script>
+
+@stop
+
+
+
+
+@section('styles') @parent
+
+{{-- Date Picker --}}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+    .ui-datepicker { z-index: 10000 !important; }
+</style>
+
+@stop

@@ -26,7 +26,7 @@ return [
 	'Ingredients - Create' => 'Ingredientes - Crear',
 	'Back to Ingredients'     => 'Volver a Ingredientes',
 	'New Ingredient'     => 'Nuevo Ingrediente',
-
+    'Product Name'     => 'Nombre del Ingrediente',
 	'Ingredient Name'     => 'Nombre del Ingrediente',
 	'Ingredient type'     => 'Tipo',
 	'Reference'     => 'Referencia',

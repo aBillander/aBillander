@@ -14,6 +14,12 @@ return [
 	'Options' => 'Opciones',
 	'Back to Option Groups'     => 'Volver a Grupos de Opciones',
 	'Option Groups' => 'Grupos de Opciones',
+	'BOM Name' => 'BOM Nombre',
+	'Quantity' => 'Cantidad',
+	'Measure Unit' => 'Unidad de Medida',
+	'Ingredients' => 'Ingredientes',
+	
+
 
 	/*
 	|--------------------------------------------------------------------------
@@ -43,12 +49,13 @@ return [
 
 	'Options - Edit'     => 'Opciones - Modificar',
 	'Edit Option'     => 'Modificar Opción',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-
+	'Name'     => 'Nombre',
+	'Product'     => 'Ingrediente',
+	'Scrap (%)'     => 'Merma (%)',
+	'Products'     => 'Productos',
+	'Copy BOM'     => 'Copiar Receta',
+	'Back to BOMs'     => 'Volver a Recetas',
+	'Add new item to BOM'     => 'Añadir ingrediente a Receta',
+	'Product name'     => 'Nombre de Ingrediente',
+	'Products for this BOM'     => 'Productos con esta Receta',
 ];

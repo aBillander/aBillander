@@ -52,6 +52,8 @@ class ProductionSheetsController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
+
         $this->validate($request, ProductionSheet::$rules);
 
         $sheet = $this->productionSheet->create($request->all() + ['is_dirty' => 0]);
@@ -173,10 +175,16 @@ class ProductionSheetsController extends Controller
 
     public function addOrders(Request $request, $id)
     {
+        if ( count($request->input('worders', [])) == 0 ) 
+            return redirect()->route('worders.index')
+                ->with('warning', l('No se ha seleccionado ningún Pedido, y no se ha realizado ninguna acción.'));
+
 //        if ( intval($id) <= 0 ) $id = $request->input('production_sheet_id', 0);
 
         // Need to create Production Sheet?
         if ( $request->input('production_sheet_mode', '') == 'new' ) {
+
+            $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
 
             $sheet = $this->productionSheet->create($request->all() + ['is_dirty' => 0]);
         } else {
@@ -193,7 +201,7 @@ class ProductionSheetsController extends Controller
         $errors = [];
 
         // Do the Mambo!
-        foreach ( $request->input('worders') as $oID ) {
+        foreach ( $request->input('worders', []) as $oID ) {
             // Retrieve order
             $params = [
 //                'dp'   => $wc_currency->decimalPlaces,

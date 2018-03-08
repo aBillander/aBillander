@@ -166,7 +166,7 @@ class ProductsController extends Controller {
 
         $vrules = Product::$rules[ $rules_tab ];
 
-//        if ( $product->reference == $request->input('reference')) unset($vrules['reference']);
+        if ( $product->reference == $request->input('reference')) unset($vrules['reference']);
 
         $this->validate($request, $vrules);
 

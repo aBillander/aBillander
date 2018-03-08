@@ -37,7 +37,7 @@
 	@foreach ($sheets as $sheet)
 		<tr>
 			<td>{{ $sheet->id }}</td>
-      <td>{{ $sheet->due_date }}</td>
+      <td>{{ abi_date_form_short($sheet->due_date) }}</td>
       <td>{{ $sheet->name }}</td>
       <!-- td class="text-center">
           @if ($sheet->is_dirty)

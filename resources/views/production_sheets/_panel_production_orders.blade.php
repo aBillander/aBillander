@@ -20,12 +20,15 @@
   </thead>
   <tbody>
   @foreach ($sheet->productionorders as $order)
+  @php
+    $product = \App\Product::find( $order->product_id );
+  @endphp
     <tr>
       <td>{{ $order->id }}</td>
       <!-- td>{{ $order->product_id }}</td -->
       <td>{{ $order->product_reference }}</td>
       <td>{{ $order->product_name }}</td>
-      <td>{{ $order->planned_quantity }}</td>
+      <td>{{ $product->as_quantityable($order->planned_quantity) }}</td>
       <td>{{ $order->workcenter->name ?? '' }}</td>
       <td>{{ $order->created_via }}</td>
       <td class="text-center">

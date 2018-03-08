@@ -16,7 +16,7 @@
         <a href="{{ URL::to('productionsheets') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Production Sheets') }}</a>
     </div>
     <h2>
-        <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">/</span> {{ $sheet->due_date }}
+        <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">::</span> {{ abi_date_form_short($sheet->due_date) }}
         @if ($sheet->is_dirty AND 0)
               <button type="button" class="btn btn-sm btn-danger" title="{{l('Need Update')}}">
                   <i class="fa fa-hand-stop-o"></i>

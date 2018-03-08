@@ -113,7 +113,13 @@ return [
 	'Options'     => 'Opciones',
 	'Stock'     => 'Stock',
 	'Warehouses - qty'     => 'Almacenes - ud.',
-	''     => '',
+	'Bill of Materials'     => 'BOM :: Lista de Ingredientes',
+	'BOM Quantity'     => 'BOM Cantidad',
+	'BOM Name'     => 'BOM Nombre de Ingrediente',
+	'Ingredients'     => 'Ingredientes',
+	'Manufacturing Route'     => 'Ruta de Fabricación',
+	'Work Center'     => 'Centro de Trabajo',
+	'Product'     => 'Producto',
 
 	'Default?'     => '¿Principal?',
 

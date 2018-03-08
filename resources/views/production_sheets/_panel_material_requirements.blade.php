@@ -18,12 +18,15 @@
   </thead>
   <tbody>
   @foreach ($sheet->productionorderlinesGrouped() as $order)
+  @php
+    $product = \App\Product::with('measureunit')->find( $order['product_id'] );
+  @endphp
     <tr>
       <td>{{ $order['product_id'] }}</td>
       <td>{{ $order['reference'] }}</td>
       <td>{{ $order['name'] }}</td>
-      <td>{{ $order['quantity'] }}</td>
-      <td>{{ \App\Product::find( $order['product_id'] )->measureunit->name }}</td>
+      <td>{{ $product->as_quantityable($order['quantity']) }}</td>
+      <td>{{ $product->measureunit->name }}</td>
 
            <td class="text-right" style="width:1px; white-space: nowrap;">
 

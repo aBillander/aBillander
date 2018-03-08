@@ -29,7 +29,7 @@
                     </button>
                  </a>
       </td>
-      <td>{{ $order->date_created }}</td>
+      <td>{{ abi_date_form_full($order->date_created) }}</td>
       <td>{{ $order->total }}</td>
             <td class="text-center">
                 @if ($order->customer_note)

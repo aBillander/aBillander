@@ -67,6 +67,8 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		    $availableProductionSheets = \App\ProductionSheet::isOpen()->orderBy('due_date', 'asc')->pluck('due_date', 'id')->toArray();
 
+		    array_walk( $availableProductionSheets, function (&$v, $k) { $v = abi_date_form_short($v); } );
+
 		    $view->with('availableProductionSheetList', $availableProductionSheets);
 		    
 		});

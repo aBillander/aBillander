@@ -38,6 +38,18 @@ class CustomerOrder extends Model
         return $card;
     }
     
+    public function customerCardFull()
+    {
+        $customer = unserialize( $this->customer );
+
+        $card = ($customer["company"] ? $customer["company"] .'<br />' : '').
+                ($customer["first_name"] ? $customer["first_name"].' '.$customer["last_name"] .'<br />' : '').
+                $customer["address_1"] . ($customer["address_2"] ? ' - ' : '') . $customer["address_2"] .'<br />'.
+                $customer["city"].' - '.($customer["state_name"] ?? '').' <a href="#" class="btn btn-grey btn-xs disabled">'. $customer["phone"] .'</a>';
+
+        return $card;
+    }
+    
     public function customerCardMini()
     {
         $customer = unserialize( $this->customer );

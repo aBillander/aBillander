@@ -79,6 +79,7 @@ return [
 	'Weight'     => 'Peso',
 	'Warranty period'     => 'Período Garantía',
 	'Measure Unit'     => 'Unidad de Medida',
+	'Scrap (%)'     => 'Merma (%)',
 
 	'Lead Time'     => 'Plazo de entrega',
 	'Supplier Reference'     => 'Referencia del Proveedor',

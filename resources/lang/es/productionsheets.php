@@ -15,5 +15,10 @@ return [
     'Finished Product Requirements not in Production'     => 'Elaborados sin Orden de Fabricación',
     'Production Orders' => 'Ordenes de Fabricación',
     'Material Requirements'     => 'Requerimientos de Ingredientes',
+	'Production Sheets'     => 'Hojas de Producción',
+	'Due Date'     => 'Fecha de Vencimiento',
+	'Name'     => 'Nombre',
+	''     => '',
+	
 
 ];

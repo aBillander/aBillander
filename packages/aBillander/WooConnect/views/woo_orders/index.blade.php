@@ -139,6 +139,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to Production Sheet') }}</h3></div>
             <div class="panel-body">
 
+@if ( count( $availableProductionSheetList ) )
 <div class="row">
 <!-- div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('after', l('Date from')) !!}
@@ -158,6 +159,15 @@
 </div>
 
 </div>
+
+@else
+
+<div class="alert alert-warning alert-block">
+    <i class="fa fa-warning"></i>
+    {{l('No se han encontrado Hojas de Producción activas.')}}
+</div>
+
+@endif
 
             </div>
         </div>

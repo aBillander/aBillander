@@ -29,6 +29,7 @@ return [
 	'Symbol'     => 'Símbolo',
 	'Decimal places'     => 'Decimales',
 	'Type'     => 'Categoría',
+
 	''     => '',
 
 

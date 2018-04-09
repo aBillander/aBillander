@@ -185,4 +185,22 @@ return array(
 	'portrait' => 'Vertical',
 	'landscape' => 'Horizontal',
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Measure Unit Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'Quantity'     => 'Cantidad',
+	'Length'     => 'Longitud',
+	'Area'     => 'Superficie',
+	'Liquid Volume'     => 'Volumen (líquidos)',
+	'Dry Volume'     => 'Volumen (sólidos)',
+	'Mass'     => 'Masa',
+	'Time'     => 'Tiempo',
+
 );

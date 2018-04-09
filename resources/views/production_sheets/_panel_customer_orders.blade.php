@@ -21,7 +21,7 @@
     <tr>
       <td>{{ $order->id }}</td>
       <td>{{ $order->reference }}</td>
-      <td>{!! $order->customerCardMini() !!}
+      <td>{!! $order->customerCardFull() !!}
                  <a href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
                             data-content="{{ $order->customerCard() }}">

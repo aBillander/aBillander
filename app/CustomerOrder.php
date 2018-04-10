@@ -59,6 +59,18 @@ class CustomerOrder extends Model
         return $card;
     }
     
+    public function customerInfo()
+    {
+        $customer = unserialize( $this->customer );
+
+        $name = (( $customer["first_name"] || $customer["last_name"] ) ? $customer["first_name"].' '.$customer["last_name"]  : '');
+
+        if ( !$name ) 
+            $name = ($customer["company"] ? $customer["company"] : '');
+
+        return $name;
+    }
+    
 
     /*
     |--------------------------------------------------------------------------

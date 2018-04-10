@@ -66,7 +66,7 @@
       <div class="col-lg-10 col-md-10 col-sm-10">
             <div class="panel panel-danger" id="panel_not_scheduled_products">
                <div class="panel-heading">
-                  <h3 class="panel-title"><i class="fa fa-hand-stop-o"></i> &nbsp; {{ l('Finished Product Requirements not in Production') }}</h3>
+                  <h3 class="panel-title"><i class="fa fa-hand-stop-o"></i> &nbsp; {{ l('Finished Product Requirements') }}</h3>
                </div>
                     @include('production_sheets._panel_not_scheduled_products')
             </div>

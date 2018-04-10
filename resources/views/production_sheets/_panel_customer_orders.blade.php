@@ -21,10 +21,10 @@
     <tr>
       <td>{{ $order->id }}</td>
       <td>{{ $order->reference }}</td>
-      <td>{!! $order->customerCardFull() !!}
+      <td>{!! $order->customerInfo() !!}
                  <a href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
-                            data-content="{{ $order->customerCard() }}">
+                            data-content="{{ $order->customerCardFull() }}">
                         <i class="fa fa-address-card-o"></i>
                     </button>
                  </a>

@@ -103,6 +103,7 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::post('productboms/deleteline/{lid}', 'ProductBOMsController@deleteBOMline')->name('productbom.deleteline');
         Route::get('productboms/line/searchproduct', 'ProductBOMsController@searchProduct')->name('productbom.searchproduct');
         Route::get('productboms/{id}/duplicate', 'ProductBOMsController@duplicateBOM')->name('productbom.duplicate');
+        Route::post('productboms/sortlines', 'ProductBOMsController@sortLines')->name('productbom.sortlines');
 
         Route::resource('productionorders', 'ProductionOrdersController');
         Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');

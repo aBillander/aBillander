@@ -125,6 +125,7 @@
                     $('#line_scrap').val(0.0);
                     $('#line_notes').val('');
 
+                $('#product-search-autocomplete').show();
                 $("#line_autoproduct_name").val('');
                 $('#line_product_id').val('');
 
@@ -160,9 +161,10 @@
 
           loadBOMlines();
 
-          
 
-        });
+
+        });     // ENDS      $(document).ready(function() {
+
 
         function loadBOMlines() {
            
@@ -174,9 +176,54 @@
            $.get(url, {}, function(result){
                  panel.html(result);
                  panel.removeClass('loading');
+
                  $("[data-toggle=popover]").popover();
+                 sortableBOMlines();
            }, 'html');
 
+        }
+
+        function sortableBOMlines() {
+
+          // Sortable :: http://codingpassiveincome.com/jquery-ui-sortable-tutorial-save-positions-with-ajax-php-mysql
+          // See: https://stackoverflow.com/questions/24858549/jquery-sortable-not-functioning-when-ajax-loaded
+          $('.sortable').sortable({
+              cursor: "move",
+              update:function( event, ui )
+              {
+                  $(this).children().each(function(index) {
+                      if ( $(this).attr('data-sort-order') != ((index+1)*10) ) {
+                          $(this).attr('data-sort-order', (index+1)*10).addClass('updated');
+                      }
+                  });
+
+                  saveNewPositions();
+              }
+          });
+
+        }
+
+        function saveNewPositions() {
+            var positions = [];
+            var token = "{{ csrf_token() }}";
+
+            $('.updated').each(function() {
+                positions.push([$(this).attr('data-id'), $(this).attr('data-sort-order')]);
+                $(this).removeClass('updated');
+            });
+
+            $.ajax({
+                url: "{{ route('productbom.sortlines') }}",
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    positions: positions
+                },
+                success: function (response) {
+                    console.log(response);
+                }
+            });
         }
 
         $("#modalBOMlineSubmit").click(function() {

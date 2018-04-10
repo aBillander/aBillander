@@ -37,7 +37,7 @@
         </div>
 
         <div class="row">
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('line_sort_order') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('line_sort_order') ? 'has-error' : '' }}" style="display: none;">
                      {{ l('Position') }}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                       data-content="{{ l('Use multiples of 10. Use other values to interpolate.') }}">
@@ -45,6 +45,9 @@
                            </a>
                      {!! Form::text('BOMline[line_sort_order]', null, array('class' => 'form-control', 'id' => 'line_sort_order')) !!}
                      {!! $errors->first('line_sort_order', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
                   </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('quantity') ? 'has-error' : '' }}">

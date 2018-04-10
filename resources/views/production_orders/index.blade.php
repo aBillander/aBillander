@@ -79,7 +79,7 @@
         <tr>
 			<th>{{l('ID', [], 'layouts')}}</th>
             <th>{{l('Due Date')}}</th>
-            <th>{{l('Product Reference')}}</th>
+            <th>{{l('Reference')}}</th>
             <th>{{l('Product Name')}}</th>
             <th>{{l('Quantity')}}</th>
             <th>{{l('Work Center')}}</th>

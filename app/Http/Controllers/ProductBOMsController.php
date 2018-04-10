@@ -262,4 +262,17 @@ class ProductBOMsController extends Controller
 
         return view('product_boms._panel_products', compact('bom'));
     }
+
+    public function sortLines(Request $request)
+    {
+        $positions = $request->input('positions', []);
+
+        \DB::transaction(function () use ($positions) {
+            foreach ($positions as $position) {
+                ProductBOMLine::where('id', '=', $position[0])->update(['line_sort_order' => $position[1]]);
+            }
+        });
+
+        return response()->json($positions);
+    }
 }

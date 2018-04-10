@@ -83,14 +83,36 @@ class ProductionSheet extends Model
                       ]);
                     }, collect());
 
-        return $num;
+        // Sort order
+        return $num->sortBy('reference');
     }
 
     /* Production Orders */
     
     public function productionorders()
     {
-        return $this->hasMany('App\ProductionOrder')->with('workcenter')->orderBy('work_center_id', 'asc');
+        return $this->hasMany('App\ProductionOrder')->orderBy('work_center_id', 'asc')->orderBy('product_reference', 'asc');
+    }
+    
+    public function productionordersGrouped()
+    {
+        $mystuff = $this->productionorders;
+
+//        $num = $mystuff->groupBy('product_id')->map(function ($row) {
+//            return $row->sum('planned_quantity');
+//        });
+
+
+        $num = $mystuff->groupBy('product_id')->reduce(function ($result, $group) {
+                      return $result->put($group->first()->product_id, collect([
+                        'product_id' => $group->first()->product_id,
+                        'planned_quantity' => $group->sum('planned_quantity'),
+                      ]));
+                    }, collect());
+
+//        abi_r($num, true);
+
+        return $num;
     }
     
     public function nbr_productionorders()
@@ -127,7 +149,14 @@ class ProductionSheet extends Model
                       ]));
                     }, collect());
 
-        return $num;
+/*
+        $sorted = $num->sortBy(function ($product, $key) {
+            abi_r($key);
+            abi_r($product);
+            return $product['reference'];
+        });
+*/
+        return $num->sortBy('reference');
     }
 
     /* Products not Scheduled */
@@ -137,13 +166,14 @@ class ProductionSheet extends Model
         $list = [];
 
         $required  = $this->customerorderlinesGrouped();
-        $scheduled = $this->productionorders;
+        $scheduled = $this->productionordersGrouped();
 
 //        abi_r($required, true);
 
         if (!$scheduled->count()) return $required;
 
 //        abi_r($scheduled->first(), true);
+//         abi_r($scheduled);
 
         foreach ($required as $pid => $line) {
 
@@ -151,13 +181,14 @@ class ProductionSheet extends Model
 
             $pid = $line['product_id'] ;
             $sch = $scheduled->first(function($item) use ($pid) {
-                return $item->product_id == $pid;
+//                abi_r($item, true);
+                return $item['product_id'] == $pid;
             });
 
 //                abi_r($sch);
 
             if ( $sch ) {
-                $qty = $line['quantity'] - $sch->planned_quantity;
+                $qty = $line['quantity'] - $sch['planned_quantity'];
 
                 if ($qty) {
                     $line['quantity'] = $qty;
@@ -168,8 +199,8 @@ class ProductionSheet extends Model
                 $list[] = $line;
             }
         }
-// die();
-        return collect($list);
+
+        return collect($list)->sortBy('reference');
     }
 
 

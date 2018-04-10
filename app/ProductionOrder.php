@@ -209,6 +209,11 @@ class ProductionOrder extends Model
         return $this->belongsTo('App\WorkCenter', 'work_center_id');
     }
     
+    public function product()
+    {
+        return $this->belongsTo('App\Product', 'product_id');
+    }
+    
     public function productionorderlines()
     {
         return $this->hasMany('App\ProductionOrderLine', 'production_order_id');

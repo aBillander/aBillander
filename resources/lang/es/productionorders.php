@@ -19,6 +19,7 @@ return [
     'Quantity' => 'Cantidad',
 	'Work Center' => 'Centro de Trabajo',
 	'Provenience' => 'Procedencia',
+	'Reference' => 'Referencia',
 	'' => '',
 	'' => '',
 ];

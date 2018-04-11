@@ -24,7 +24,7 @@
                 <td class="text-right">
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadBOMlines();"><i class="fa fa-pencil"></i></a -->
                     
-                    <a class="btn btn-sm btn-success" href="{{ route( 'products.edit', [$line->id] ) }}" title="{{l('show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
+                    <a class="btn btn-sm btn-success" href="{{ route( 'products.edit', [$line->id] ) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
 
                 </td>
             </tr>

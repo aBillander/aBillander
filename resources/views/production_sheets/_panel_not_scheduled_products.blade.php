@@ -11,8 +11,8 @@
       <th>{{l('Product ID')}}</th>
       <th>{{l('Product Reference')}}</th>
       <th>{{l('Product Name')}}</th>
-      <th>{{l('Falta')}}</th>
-      <th>{{l('Sobra')}}</th>
+      <th>{{l('Lack')}}</th>
+      <th>{{l('Excess')}}</th>
       <th class="text-right"> </th>
     </tr>
   </thead>

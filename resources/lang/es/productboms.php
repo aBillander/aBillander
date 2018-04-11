@@ -58,4 +58,5 @@ return [
 	'Add new item to BOM'     => 'Añadir ingrediente a Receta',
 	'Product name'     => 'Nombre de Ingrediente',
 	'Products for this BOM'     => 'Productos con esta Receta',
+	
 ];

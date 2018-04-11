@@ -107,7 +107,7 @@ return [
 
 	'Sales Orders'     => 'Pedidos de Venta',
 	'Online Shop'     => 'Tienda Online',
-	'Production Sheets'     => 'Hojas de producción',
+	'Production Sheets'     => 'Hojas de Producción',
 	'Production Orders'     => 'Ordenes de Fabricación',
 	'Manufacturing'     => 'Fabricación',
 	''     => '',

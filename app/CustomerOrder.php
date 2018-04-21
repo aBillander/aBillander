@@ -4,21 +4,110 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Auth;
+
+use App\Traits\ViewFormatterTrait;
+
 class CustomerOrder extends Model
 {
 
-//    protected $dates = ['due_date'];
-	
-    protected $fillable = [ 'sequence_id', 'customer_id', 'reference', 'created_via', 
-    						'date_created', 'date_paid', 'delivery_date', 'total', 
-    						'customer', 'customer_note', 
-    						'status', 
-    						'production_at', 'production_sheet_id'
+    use ViewFormatterTrait;
+
+    public static $statuses = array(
+            'draft',
+            'confirmed',
+            'closed',       // with status Shipping/Delivered or Billed. El Pedido se cierra porque se pasa a Albarán o se pasa a Factura. El Albarán puede estar en Shipment (shipment in process) or Delivered. En ambos estados se puede hacer la factura, sin llegar a cerrarlo.
+            'canceled',
+        );
+
+    protected $dates = [
+                        'document_date',
+                        'payment_date',
+                        'validation_date',
+                        'delivery_date',
+                        'delivery_date_real',
+                        'close_date',
+                       ];
+
+//                        'document_date', 
+//                        'payment_date', 
+//                      'valid_until_date', 
+//                        'delivery_date', 
+//                      'delivery_date_real', 
+//                       'next_due_date', 
+//                       'customer_viewed_at',
+//                      'edocument_sent_at', 
+//                      'posted_at'
+
+//    protected $guarded = ['id', 'document_prefix', 'document_id', 'secure_key' ];
+                       
+
+    protected $fillable = [ 'sequence_id', 'customer_id', 'reference', 'reference_customer', 'reference_external', 
+                            'created_via', 'document_prefix', 'document_id', 'document_reference',
+                            'document_date', 'payment_date', 'validation_date', 'delivery_date',
+
+                            'document_discount_percent', 'document_discount_amount', 'shipping_conditions',
+
+                            'currency_conversion_rate', 'down_payment', 
+
+/*
+            $table->decimal('total_discounts_tax_incl', 20, 6)->default(0.0);   // Order/Document discount
+            $table->decimal('total_discounts_tax_excl', 20, 6)->default(0.0);
+            $table->decimal('total_products_tax_incl', 20, 6)->default(0.0);    // Product netto (product discount included!)
+            $table->decimal('total_products_tax_excl', 20, 6)->default(0.0);
+            $table->decimal('total_shipping_tax_incl', 20, 6)->default(0.0);
+            $table->decimal('total_shipping_tax_excl', 20, 6)->default(0.0);
+            $table->decimal('total_other_tax_incl', 20, 6)->default(0.0);
+            $table->decimal('total_other_tax_excl', 20, 6)->default(0.0);
+            
+            $table->decimal('total_tax_incl', 20, 6)->default(0.0);
+            $table->decimal('total_tax_excl', 20, 6)->default(0.0);
+
+            $table->decimal('commission_amount', 20, 6)->default(0.0);          // Sales Representative commission amount
+*/
+            
+                            'notes_from_customer', 'notes', 'notes_to_customer',
+                            'status', 'locked',
+                            'invoicing_address_id', 'shipping_address_id', 
+                            'warehouse_id', 'carrier_id', 'sales_rep_id', 'currency_id', 'payment_method_id', 'template_id',
+
+                            'production_sheet_id',
                           ];
 
-    public static $rules = array(
-//    	'id'    => 'required|unique',
-    	);
+
+    public static $rules = [
+                            'document_date' => 'date',
+//                            'payment_date'  => 'date',
+                            'delivery_date' => 'nullable|date',
+                            'customer_id' => 'exists:customers,id',
+                            'invoicing_address_id' => '',
+                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
+                            'sequence_id' => 'exists:sequences,id',
+//                            'warehouse_id' => 'exists:warehouses,id',
+//                            'carrier_id'   => 'exists:carriers,id',
+                            'currency_id' => 'exists:currencies,id',
+                            'payment_method_id' => 'exists:payment_methods,id',
+               ];
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function($corder)
+        {
+            $corder->secure_key = md5(uniqid(rand(), true));
+        });
+/*
+        static::deleting(function ($corder)    // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
+        {
+            // before delete() method call this
+            foreach($corder->customerOrderLines as $line) {
+                $line->delete();
+            }
+        });
+*/
+    }
     
 
     /*
@@ -26,6 +115,35 @@ class CustomerOrder extends Model
     | Methodss
     |--------------------------------------------------------------------------
     */
+
+    public static function getStatusList()
+    {
+            $list = [];
+            foreach (self::$statuses as $status) {
+                $list[$status] = l('customerOrder.'.$status, [], 'appmultilang');
+            }
+
+            return $list;
+    }
+
+    public static function getStatusName( $status )
+    {
+            return l('customerOrder.'.$status, [], 'appmultilang');;
+    }
+
+    public function getEditableAttribute()
+    {
+        return $this->status != 'closed';
+    }
+
+    public function getNumberAttribute()
+    {
+        // WTF???
+        return    $this->document_id > 0
+                ? $this->document_reference
+                : l('draft', [], 'appmultilang') ;
+    }
+    
     
     public function customerCard()
     {
@@ -83,9 +201,90 @@ class CustomerOrder extends Model
         return $this->belongsTo('App\ProductionSheet', 'production_sheet_id');
     }
     
-    public function customerorderlines()
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo('App\Customer');
+    }
+
+    public function paymentmethod()
+    {
+        return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo('App\Currency');
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo('App\Warehouse');
+    }
+
+    public function carrier()
+    {
+        return $this->belongsTo('App\Carrier');
+    }
+
+    public function salesrep()
+    {
+        return $this->belongsTo('App\SalesRep', 'sales_rep_id');
+    }
+
+    public function template()
+    {
+        return $this->belongsTo('App\Template');
+    }
+
+    public function invoicingaddress()
+    {
+        return $this->belongsTo('App\Address', 'invoicing_address_id')->withTrashed();
+    }
+
+    public function shippingaddress()
+    {
+        return $this->belongsTo('App\Address', 'shipping_address_id')->withTrashed();
+    }
+
+    
+    public function customerorderlines()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
         return $this->hasMany('App\CustomerOrderLine', 'customer_order_id');
+    }
+    
+    public function customerorderlinetaxes()      // http://advancedlaravel.com/eloquent-relationships-examples
+    {
+        return $this->hasManyThrough('App\CustomerOrderLineTax', 'App\CustomerOrderLine');
+    }
+
+    public function customerordertaxes()
+    {
+        $taxes = [];
+        $tax_lines = $this->customerorderlinetaxes;
+
+
+        foreach ($tax_lines as $line) {
+
+            if ( isset($taxes[$line->tax_rule_id]) ) {
+                $taxes[$line->tax_rule_id]->taxable_base   += $line->taxable_base;
+                $taxes[$line->tax_rule_id]->total_line_tax += $line->total_line_tax;
+            } else {
+                $tax = new \App\CustomerOrderLineTax();
+                $tax->percent        = $line->percent;
+                $tax->taxable_base   = $line->taxable_base; 
+                $tax->total_line_tax = $line->total_line_tax;
+
+                $taxes[$line->tax_rule_id] = $tax;
+            }
+        }
+
+        return collect($taxes)->sortByDesc('percent')->values()->all();
     }
 
 
@@ -95,8 +294,31 @@ class CustomerOrder extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOfCustomer($query)
+    {
+//        return $query->where('customer_id', Auth::user()->customer_id);
+
+        if ( isset(Auth::user()->customer_id) && ( Auth::user()->customer_id != NULL ) )
+            return $query->where('customer_id', Auth::user()->customer_id)->where('status', '!=', 'draft');
+
+        return $query;
+    }
+
+    public function scopeFindByToken($query, $token)
+    {
+        return $query->where('secure_key', $token);
+    }
+
     public function scopeIsOpen($query)
     {
+        // WTF???
         return $query->where( 'due_date', '>=', \Carbon\Carbon::now()->toDateString() );
     }
+
 }

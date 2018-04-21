@@ -105,6 +105,7 @@ return [
 	'Measure Units'     => 'Unidades de Medida',
 	'Work Centers'     => 'Centros de Trabajo',
 
+	'Sales'     => 'Ventas',
 	'Sales Orders'     => 'Pedidos de Venta',
 	'Online Shop'     => 'Tienda Online',
 	'Production Sheets'     => 'Hojas de Producción',

@@ -29,7 +29,8 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "aBillander\\WooConnect\\": "packages/aBillander/WooConnect/src"
+            "aBillander\\WooConnect\\": "packages/aBillander/WooConnect/src",
+            "Queridiam\\FSxConnector\\": "packages/Queridiam/FSxConnector/src"
         }
     },
     "autoload-dev": {

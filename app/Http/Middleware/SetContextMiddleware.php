@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 
 use App\Configuration as Configuration;
+use App\Company as Company;
 use App\Currency as Currency;
 use App\Context as Context;
 use App\Language as Language;
@@ -36,15 +37,18 @@ class SetContextMiddleware {
 		*/
 
 		if( Auth::check() )
-			$user = User::find( Auth::id() );		// $email = Auth::user()->email;
+			$user = User::with('language')->find( Auth::id() );		// $email = Auth::user()->email;
 		else
-			$user = NULL;
+			$user = User::with('language')->find( 1 );		// Gorrino sensible default
 //			$user = new \stdClass();
 
 		// Set Language
-		App::setLocale('es');
-		
-		$language = Language::where('iso_code', '=', Config::get('app.locale'))->first();
+//		App::setLocale('es');
+//		$language = Language::where('iso_code', '=', Config::get('app.locale'))->first();
+		$language = $user->language;
+
+		// Better use defautt language
+		$language = Language::find( intval(Configuration::get('DEF_LANGUAGE')) );
 		
 		if ( !$language )
 			$language = Language::find( intval(Configuration::get('DEF_LANGUAGE')) );
@@ -56,21 +60,53 @@ class SetContextMiddleware {
 			$language = new \stdClass();
 			$language->iso_code = Config::get('app.fallback_locale');
 		}
-		
 
+		// Set Company
+		try {
+			$company = Company::with('currency')->findOrFail( intval(Configuration::get('DEF_COMPANY')) );
+		} catch (ModelNotFoundException $ex) {
+			// If Company does not found. Not any good here...
+			$company = new \stdClass();
+			$company->currency = NULL;	// Or fallback to Configuration::get('DEF_CURRENCY')
+
+			// Maybe:
+			// abort(404);
+			// Or redirect to installer
+			// if (\Route::currentRouteName() != 'installer') {
+    		//	return redirect()->route('installer');
+		}
+
+/*
 		$currency = Currency::find( intval(Configuration::get('DEF_CURRENCY')) );
 
 		$company = new \stdClass();
 		$company->name_commercial = Configuration::get('XTR_COMPAMY_NAME');
 		$company->identification = '';
 		$company->currency = $currency;	// Or fallback to Configuration::get('DEF_CURRENCY')
-
+*/
 
 		Context::getContext()->user       = $user;
 		Context::getContext()->language   = $language;
 
+		Cookie::queue('user_language', $language->id, 30*24*60);
+
 		Context::getContext()->company    = $company;
 		Context::getContext()->currency   = $company->currency;
+
+
+/*
+
+abi_r(Context::getContext()->user );
+abi_r('********************************************************');
+abi_r(Context::getContext()->language);
+abi_r('********************************************************');
+abi_r(Context::getContext()->company);
+abi_r('********************************************************');
+abi_r(Context::getContext()->currency, true);
+abi_r('********************************************************');
+
+*/
+
 
 		// Not really "the controller", but enough to retrieve translation files
 		Context::getContext()->controller = $request->segment(1);
@@ -83,13 +119,13 @@ class SetContextMiddleware {
 // abi_r(Context::getContext()->language);
 // abi_r(Context::getContext()->company);
 // abi_r(Context::getContext()->currency, true);
-
+// die();
 
 		// Changing Timezone At Runtime. But this change does not seem to be taken by Carbon... Why?
 		// Config::set('app.timezone', Configuration::get('TIMEZONE'));
 
 		// Changing The Default Language At Runtime
-		// App::setLocale(Context::getContext()->language->iso_code); 
+		App::setLocale(Context::getContext()->language->iso_code); 
 
 /*
 		// Changing The Default Theme At Runtime

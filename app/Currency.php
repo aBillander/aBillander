@@ -109,7 +109,7 @@ class Currency extends Model {
      * @param Currency $currency_from if null we used the default currency
      * @param Currency $currency_to if null we used the default currency
      */
-    public static function convertPrice($amount, Currency $currency_from = null, Currency $currency_to = null)
+    public static function convertAmount($amount, Currency $currency_from = null, Currency $currency_to = null)
     {
         $currency_default = Currency::find( intval(Configuration::get('DEF_CURRENCY')) );
 
@@ -154,12 +154,12 @@ class Currency extends Model {
     }
 
     /**
-     * Alias function
+     * Alias function (discourage usage, since name is missleading!!!)
      */
     
-    public static function convertAmount($amount, Currency $currency_from = null, Currency $currency_to = null)
+    public static function convertPrice($amount, Currency $currency_from = null, Currency $currency_to = null)
     {
-        return self::convertPrice($amount, $currency_from, $currency_to);
+        return self::convertAmount($amount, $currency_from, $currency_to);
     }
     
 
@@ -169,13 +169,18 @@ class Currency extends Model {
     |--------------------------------------------------------------------------
     */
     
-    public function customerinvoices()
-    {
-        return $this->hasMany('App\Customerinvoice');
-    }
-    
     public function currencyconversionrates()
     {
         return $this->hasMany('App\CurrencyConversionRate');
+    }
+    
+    public function customerinvoices()
+    {
+        return $this->hasMany('App\CustomerInvoice');
+    }
+    
+    public function customerorders()
+    {
+        return $this->hasMany('App\CustomerOrder');
     }
 }

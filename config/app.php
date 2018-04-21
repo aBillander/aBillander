@@ -193,6 +193,7 @@ return [
          * aBillander Package Service Providers...
          */
         aBillander\WooConnect\WooConnectServiceProvider::class,
+        Queridiam\FSxConnector\FSxConnectorServiceProvider::class,
 
     ],
 

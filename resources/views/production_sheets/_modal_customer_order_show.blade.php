@@ -47,7 +47,7 @@
         function loadCustomerOrderProducts( id ) {
            
            var panel = $("#panel_customer_order_products");
-           var url_raw = "{{ route('customerorder.getlines', 'dummy') }}";
+           var url_raw = "{{ route('productionsheet.getCustomerOrderLines', 'dummy') }}";
            var url = url_raw.replace('dummy', id);
 
            panel.addClass('loading');

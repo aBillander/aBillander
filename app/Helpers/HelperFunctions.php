@@ -12,6 +12,11 @@
 
 function l($string = NULL, $data = [], $langfile = NULL)
 	{
+        if ( is_string($data) && ($langfile == NULL) ) {
+            $langfile = $data;
+            $data = [];
+        }
+
         if ($langfile == NULL) $langfile = \App\Context::getContext()->controller;
 
         if (Lang::has($langfile.'.'.$string))
@@ -57,11 +62,48 @@ function abi_date_short(\Carbon\Carbon $date = null, $format = '')
         return $date->format($format);
     }
 
+function abi_toLocale_date_short(\Carbon\Carbon $date = null, $format = '')
+    {
+        if (!$date) return null;
+
+        if ($format == '') $format = \App\Context::getContext()->language->date_format_lite;
+
+        if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
+
+        return $date->format($format);
+    }
+
+function abi_fromLocale_date_short($date_form = null, $format = '')
+    {
+        if (!$date_form) return null;
+
+        if ($format == '') $format = \App\Context::getContext()->language->date_format_lite;
+
+        try {
+            $date = \Carbon\Carbon::createFromFormat( $format, $date_form );
+        }
+        catch ( Exception $e ){
+            return null;
+        }
+
+        return $date->toDateString();
+    }
+
 function abi_date_form_short($str_date = '', $format = '')
     {
         if (!$str_date) return null;
 
-        $date = \Carbon\Carbon::createFromFormat('Y-m-d', $str_date);
+        if ($str_date == 'now') 
+            $date = \Carbon\Carbon::now();
+        else {
+            try {
+                    $date = \Carbon\Carbon::createFromFormat('Y-m-d', $str_date);
+            }
+            catch ( Exception $e ){   
+                echo $e->getMessage();
+                return null;
+            }
+        }
 
         // http://laravel.io/forum/03-11-2014-date-format
         // https://laracasts.com/forum/?p=764-saving-carbon-dates-from-user-input/0
@@ -80,8 +122,9 @@ function abi_date_form_short($str_date = '', $format = '')
 
 function abi_form_date_short($date_form = null)
     {
-    	$date = $date_form ? \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $date_form )
-    					: null;
+        if (!$date_form) return null;
+
+        $date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $date_form );
 
         return $date->toDateString();
     }

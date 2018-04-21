@@ -62,6 +62,81 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		// Payment Methods
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
+		    
+		    $view->with('payment_methodList', \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Currencies
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create'), function($view) {
+		    
+		    $view->with('currencyList', \App\Currency::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Sales Representatives
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
+		    
+		    $view->with('salesrepList', \App\SalesRep::select(DB::raw('alias as name, id'))->pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Warehouses
+		view()->composer(array('products.create', 'stock_movements.create', 'stock_counts.create', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
+		    
+		    $whList = \App\Warehouse::with('address')->get();
+
+		    $list = [];
+		    foreach ($whList as $wh) {
+		    	$list[$wh->id] = $wh->address->alias;
+		    }
+
+		    $view->with('warehouseList', $list);
+		    // $view->with('warehouseList', \App\Warehouse::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Carriers
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
+		    
+		    $view->with('carrierList', \App\Carrier::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Customer Groups
+		view()->composer(array('customers.edit'), function($view) {
+		    
+		    $view->with('customer_groupList', \App\CustomerGroup::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Countries
+		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'tax_rules._form'), function($view) {
+		    
+		    $view->with('countryList', \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Months
+		view()->composer(array('customers._panel_commercial'), function($view) {
+		    
+		    $a=l('monthNames', [], 'layouts');
+
+			$monthList = [];
+			for($m=1; $m<=12; ++$m){
+				$monthList[$m] = $a[$m-1];
+			}
+
+			$view->with('monthList', $monthList);
+		    
+		});
+
+
+/* ******************************************************************************************************** */		
+
+
 		// Available Production Sheets
 		view()->composer(array('woo_connect::woo_orders.index',  'production_sheets._modal_customer_order_move'), function($view) {
 		    
@@ -76,26 +151,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 
 	public function boot_legacy()
 	{
-		// Currencies
-		view()->composer(array('customers.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create'), function($view) {
-		    
-		    $view->with('currencyList', \App\Currency::pluck('name', 'id')->toArray());
-		    
-		});
 
-		// Customer Groups
-		view()->composer(array('customers.edit'), function($view) {
-		    
-		    $view->with('customer_groupList', \App\CustomerGroup::pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Payment Methods
-		view()->composer(array('customers.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
-		    
-		    $view->with('payment_methodList', \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray());
-		    
-		});
 
 /*		// Sequences
 		view()->composer(array('customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
@@ -103,27 +159,6 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    $view->with('sequenceList', \App\Sequence::pluck('name', 'id')->toArray());
 		    
 		}); */
-
-		// Invoice Template
-		view()->composer(array('customers.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
-		    
-		    $view->with('customerinvoicetemplateList', \App\Template::where('model_name', '=', '\App\CustomerInvoice')->pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Carriers
-		view()->composer(array('customers.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
-		    
-		    $view->with('carrierList', \App\Carrier::pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Sales Representatives
-		view()->composer(array('customers.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
-		    
-		    $view->with('salesrepList', \App\SalesRep::select(DB::raw('alias as name, id'))->pluck('name', 'id')->toArray());
-		    
-		});
 
 		// Price Lists
 		view()->composer(array('customers.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
@@ -140,25 +175,10 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    $view->with('price_list_typeList', $list);
 		});
 
-		// Warehouses
-		view()->composer(array('products.create', 'stock_movements.create', 'stock_counts.create', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
+		// Invoice Template
+		view()->composer(array('customers.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
 		    
-		    $whList = \App\Warehouse::with('address')->get();
-
-		    $list = [];
-		    foreach ($whList as $wh) {
-		    	$list[$wh->id] = $wh->address->alias;
-		    }
-
-		    $view->with('warehouseList', $list);
-		    // $view->with('warehouseList', \App\Warehouse::pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Countries
-		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'tax_rules._form'), function($view) {
-		    
-		    $view->with('countryList', \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
+		    $view->with('customerinvoicetemplateList', \App\Template::where('model_name', '=', '\App\CustomerInvoice')->pluck('name', 'id')->toArray());
 		    
 		});
 
@@ -252,20 +272,6 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		view()->composer(array('sequences.index', 'sequences.create', 'sequences.edit'), function($view) {
 		    
 		    $view->with('document_typeList', \App\Sequence::documentList());
-		    
-		});
-
-		// Months
-		view()->composer(array('customers._panel_commercial'), function($view) {
-		    
-		    $a=l('monthNames', [], 'layouts');
-
-			$monthList = [];
-			for($m=1; $m<=12; ++$m){
-				$monthList[$m] = $a[$m-1];
-			}
-
-			$view->with('monthList', $monthList);
 		    
 		});
 	}

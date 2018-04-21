@@ -286,4 +286,13 @@ class ProductionSheetsController extends Controller
 
         return view('production_sheets.ajax._panel_customer_order_summary', compact('sheet'));
     }
+    
+    public function getCustomerOrderOrderLines($id)
+    {
+        $order = \App\CustomerOrder::with('CustomerOrderLines')
+                        ->with('CustomerOrderLines.product')
+                        ->findOrFail($id);
+
+        return view('production_sheets.ajax._panel_customer_order_lines', compact('order'));
+    }
 }

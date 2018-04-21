@@ -62,3 +62,19 @@ footer {
     margin: 40px 0 0;
     padding: 20px 0;
 }
+
+
+/*!
+ * FactuSOL icon
+ */
+
+.xfa-foursquare:before {
+    content:"" !important;
+    background-image:url("http://localhost/enatural/public/assets/theme/images/icons/FACTUSOL.png");
+    width:  12px;
+    height: 12px;
+
+    display: inline-block;
+    background-position:center;
+    background-size:cover;
+}

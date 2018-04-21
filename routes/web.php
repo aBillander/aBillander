@@ -72,6 +72,13 @@ Route::group(['middleware' =>  ['auth']], function()
         
         Route::resource('configurations',    'ConfigurationsController');
 
+        Route::resource('companies', 'CompaniesController');
+
+        Route::resource('countries',        'CountriesController');
+        Route::resource('countries.states', 'StatesController');
+        Route::get('countries/{countryId}/getstates',   array('uses'=>'CountriesController@getStates', 
+                                                                'as' => 'countries.getstates' ) );
+
         Route::resource('languages', 'LanguagesController');
 
         Route::resource('sequences', 'SequencesController');
@@ -114,14 +121,46 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::post('productionorders/{id}/productionsheetdelete', 'ProductionOrdersController@productionsheetDelete')->name('productionorder.productionsheet.delete');
 
         Route::resource('customerorders', 'CustomerOrdersController');
-        Route::get('customerorders/{id}/getlines', 'CustomerOrdersController@getOrderLines')->name('customerorder.getlines');
         Route::post('customerorders/{id}/move', 'CustomerOrdersController@move')->name('customerorder.move');
         Route::post('customerorders/{id}/unlink', 'CustomerOrdersController@unlink')->name('customerorder.unlink');
 
         Route::resource('productionsheets', 'ProductionSheetsController');
         Route::post('productionsheets/{id}/addorders', 'ProductionSheetsController@addOrders')->name('productionsheet.addorders');
         Route::get('productionsheets/{id}/calculate', 'ProductionSheetsController@calculate')->name('productionsheet.calculate');
+        Route::get('productionsheets/{id}/getlines', 'ProductionSheetsController@getCustomerOrderOrderLines')->name('productionsheet.getCustomerOrderLines');
         Route::get('productionsheets/{id}/customerorderssummary', 'ProductionSheetsController@getCustomerOrdersSummary')->name('productionsheet.getCustomerOrdersSummary');
+
+
+
+        Route::resource('customers', 'CustomersController');
+        Route::get('customers/{customer}/createorder', 'CustomerOrdersController@createWithCustomer')->name('customer.createorder');
+        Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup')); 
+
+//        Route::resource('addresses', 'AddressesController');
+        Route::resource('customers.addresses', 'CustomerAddressesController');
+
+//        Route::post('mail', 'MailController@store');
+
+        Route::resource('paymentmethods', 'PaymentMethodsController');
+
+        Route::resource('customergroups', 'CustomerGroupsController');
+
+        Route::resource('taxes',    'TaxesController');
+        Route::resource('taxrules', 'TaxRulesController');
+
+        Route::resource('warehouses', 'WarehousesController');
+        
+        Route::resource('salesreps', 'SalesRepsController');
+
+        Route::resource('carriers', 'CarriersController');
+
+
+        Route::resource('customerorders'      , 'CustomerOrdersController');
+        Route::get('customerorders/ajax/customer_lookup', array('uses' => 'CustomerOrdersController@ajaxCustomerSearch', 'as' => 'customerorders.ajax.customerLookup'));
+        Route::get('customerorders/ajax/customer/{id}/adressbook_lookup', array('uses' => 'CustomerOrdersController@customerAdressBookLookup', 'as' => 'customerorders.ajax.customer.AdressBookLookup'));
+
+        Route::get('customerorders/{id}/getlines', 'CustomerOrdersController@getOrderLines')->name('customerorder.getlines');
+
 });
 
 /* ********************************************************** */

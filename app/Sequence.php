@@ -12,15 +12,17 @@ class Sequence extends Model {
     public static $types = array(
             'Product', 
             'Customer', 
+            'CustomerOrder',
             'CustomerInvoice',
             'StockCount',
         );
 
     // Move this to config folder? Maybe yes...
     public static $models = array(
-            \App\Product::class         => 'Product', 
-            \App\Customer::class        => 'Customer', 
-            \App\CustomerInvoice::class => 'CustomerInvoice',
+            Product::class         => 'Product', 
+            Customer::class        => 'Customer', 
+            CustomerOrder::class   => 'CustomerOrder',
+            CustomerInvoice::class => 'CustomerInvoice',
         );
 
     protected $dates = ['deleted_at', 'last_date_used'];
@@ -37,8 +39,17 @@ class Sequence extends Model {
     	);
 
     
-    public static function listFor( $model = '' )
+    public static function listFor( $model_class = '' )
     {
+//        abi_r( $model_class);
+//        abi_r( self::$models);
+
+        if ( !$model_class ) return [];
+
+        $model = self::$models[$model_class] ?? '';
+
+//        abi_r($model, true);
+
         if ( !$model ) return [];
 
         $list = \App\Sequence::where('model_name', '=', $model)->pluck('name', 'id')->toArray();

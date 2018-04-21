@@ -41,6 +41,7 @@ return array(
 
     'Product' => 'Producto', 
     'Customer' => 'Cliente', 
+	'CustomerOrder' => 'Pedido de Cliente',
 	'CustomerInvoice' => 'Factura de Cliente',
     'StockCount' => 'Inventario de Almacén',
 	
@@ -92,6 +93,22 @@ return array(
     'discount' => 'Descuento',
     'comment' => 'Comentario', 
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customer Document Line Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'customerDocumentLine.product' => 'Producto', 
+    'customerDocumentLine.service' => 'Servicio', 
+	'customerDocumentLine.shipping' => 'Envío',
+    'customerDocumentLine.discount' => 'Descuento',
+    'customerDocumentLine.comment' => 'Comentario', 
+
 	/*
 	|--------------------------------------------------------------------------
 	| Margin calculation methods
@@ -128,6 +145,20 @@ return array(
 	'price' => 'Precio fijo',
 	'discount' => 'Porcentaje de descuento',
 	'margin' => 'Porcentaje de margen',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customer Order Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'customerOrder.draft' => 'Borrador',
+	'customerOrder.confirmed'    => 'Confirmado',
+	'customerOrder.closed'    => 'Cerrado',
+    'customerOrder.canceled' => 'Cancelado',
 
 	/*
 	|--------------------------------------------------------------------------

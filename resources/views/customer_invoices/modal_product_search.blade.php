@@ -1,32 +1,22 @@
 
-@section('modals')    @parent
-
-<div class="modal" id="modal_order_line" tabindex="-1" role="dialog">
-   <div class="modal-dialog modal-lg" xstyle="width: 99%; max-width: 1000px;">
+<div class="modal" id="modal_product_search">
+   <div class="modal-dialog" style="width: 99%; max-width: 1000px;">
       <div class="modal-content">
-
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="modal_order_line_Label">{{ l('Add Line to Order') }}</h4>
+            <h4 class="modal-title">{{ l('Search Products') }}</h4>
          </div>
 
          <div class="modal-body">
-
-            <ul class="nav nav-tabs" id="nav_new_order_line">
-               <li id="li_new_product"  ><a href="javascript:void(0);" id="b_new_product" >{{ l('Coded Product') }}</a></li>
-               <li id="li_new_service"  ><a href="javascript:void(0);" id="b_new_service" >{{ l('Service (not coded)') }}</a></li>
-               <li id="li_new_discount" ><a href="javascript:void(0);" id="b_new_discount">{{ l('Discount') }}</a></li>
+            <ul class="nav nav-tabs" id="nav_product_search">
+               <li id="li_product_search"><a href="javascript:void(0);" id="b_product_search">{{ l('Coded Product') }}</a></li>
+               <li id="li_new_service"   ><a href="javascript:void(0);" id="b_new_service"   >{{ l('Service (not coded)') }}</a></li>
+               <li id="li_new_discount"  ><a href="javascript:void(0);" id="b_new_discount"  >{{ l('Discount') }}</a></li>
                <!-- li id="li_new_text_line" ><a href="javascript:void(0);" id="b_new_text_line" >{{ l('Text Line') }}</a></li -->
             </ul>
-
-                {{-- csrf_field() --}}
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" id="line_id">
-                <input type="hidden" id="line_product_id">
-
          </div>
 
-         <div id="new_product" class="modal-body">
+         <div id="product_search" class="modal-body">
             <form id="f_product_search" name="f_product_search" action="" method="post" class="form">
                
                <div class="container-fluid" style="xpadding-top: 20px;">
@@ -79,7 +69,6 @@
                   </div>
                </div>
             </form>
-         </div>
 
          <div id="search_results" style="padding-top: 20px;"></div>
 
@@ -125,7 +114,7 @@
                  </div>
                  <div class="form-group col-lg-3 col-md-3 col-sm-3">
                     {{ l('Tax') }}
-                    { ! ! Form::select('tax_id', $taxList, \App\Configuration::get('DEF_TAX'), array('class' => 'form-control', 'id' => 'tax_id', 'onchange' => 'calculate_service_price( )')) ! ! }
+                    {!! Form::select('tax_id', $taxList, \App\Configuration::get('DEF_TAX'), array('class' => 'form-control', 'id' => 'tax_id', 'onchange' => 'calculate_service_price( )')) !!}
                  </div>
                  <div class="form-group col-lg-3 col-md-3 col-sm-3">
                     {{ l('With Tax') }}
@@ -160,7 +149,7 @@
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
                      {{ l('Tax') }}
-                     { ! ! Form::select('discount_tax_id', $taxList, \App\Configuration::get('DEF_TAX'), array('class' => 'form-control', 'id' => 'discount_tax_id', 'onchange' => 'calculate_discount_price( )')) ! ! }
+                     {!! Form::select('discount_tax_id', $taxList, \App\Configuration::get('DEF_TAX'), array('class' => 'form-control', 'id' => 'discount_tax_id', 'onchange' => 'calculate_discount_price( )')) !!}
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
                      {{ l('With Tax') }}
@@ -200,56 +189,3 @@
       </div>
    </div>
 </div>
-
-
-@section('scripts')    @parent
-
-{{-- Tabbed menu --}}
-
-<script type="text/javascript">
-
-$(document).ready(function() {
-   
-   $("#b_new_product").click(function(event) {
-      event.preventDefault();
-      modal_search_tab_hide_all()
-      $("#li_new_product").addClass('active');
-      $("#new_product").show();
-      document.f_product_search.query.focus();
-   });
-   
-   $("#b_new_service").click(function(event) {
-      event.preventDefault();
-      modal_search_tab_hide_all()
-      $("#li_new_service").addClass('active');
-      $("#new_service").show();
-      document.f_new_service.name.select();
-   });
-   
-   $("#b_new_discount").click(function(event) {
-      event.preventDefault();
-      modal_search_tab_hide_all()
-      $("#li_new_discount").addClass('active');
-      $("#new_discount").show();
-      document.f_new_discount.discount_name.select();
-   });
-
-      // To get focus properly:
-      $("#b_new_product").trigger("click");
-
-});
-
-function modal_search_tab_hide_all() {
-
-  $("#nav_new_order_line li").each(function() {
-     $(this).removeClass("active");
-  });
-
-     $("#new_product").hide();
-     $("#new_service").hide();
-     $("#new_discount").hide();
-}
-
-</script>
-
-@endsection

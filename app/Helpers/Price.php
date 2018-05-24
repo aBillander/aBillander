@@ -128,6 +128,15 @@ class Price {
         $this->tax_percent = $percent;
     }
 
+    public function applyTaxPercentToPrice( $percent = null )
+    {
+        if ( $percent === null ) $percent = 0.0;
+
+        $this->price_is_tax_inc = 0;
+
+        $this->applyTaxPercent($percent);
+    }
+
     public function applyDiscountPercent( $percent = null )
     {
         if ( $percent === null ) $percent = 0.0;
@@ -179,7 +188,10 @@ class Price {
 
         if ( \App\Configuration::get('ROUND_PRICES_WITH_TAX') ) {
             $gross = (float) $this->as_priceable( $gross, $this->currency );
-            $tax   = (float) $this->as_priceable( $gross/(1.0+1.0/($tax_percent/100.0)), $this->currency );
+            if ($tax_percent != 0.0) 
+                $tax = (float) $this->as_priceable( $gross/(1.0+1.0/($tax_percent/100.0)), $this->currency );
+            else
+                $tax = 0.0;
             $net   = $gross - $tax;
         } else {
             $net   = (float) $this->as_priceable( $net, $this->currency );

@@ -85,6 +85,7 @@ return [
 	'Accepts eInvoice'     => 'Acepta Factura Electrónica',
 	'Does NOT accept eInvoice'     => 'NO acepta Factura Electrónica',
 	'Equalization Tax'     => 'Recargo Equivalencia',
+	'Shipping Cost'     => 'Coste de Envío',
 
 	'Go to Product'     => 'Ir al Producto',
 	'Combinations'     => 'Combinaciones',
@@ -92,7 +93,7 @@ return [
 //	'Reference'     => 'Referencia',
 	'Name'     => 'Nombre',
 //	'Price'     => 'PVP',
-	'With Tax'     => 'PVP+IVA',
+	'With Tax'     => 'Con IVA',
 	'Stock'     => 'Stock',
 	'On Order'     => 'Pendiente',
 	'Allocated'     => 'Reservado',

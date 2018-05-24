@@ -77,8 +77,10 @@
 <div class="row">
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('conversion_rate', l('Exchange rate')) !!} 
+             <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Monetary units per :name', ['name' => \App\Context::getContext()->currency->name]) }}" -->
              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                        data-content="{{ l('Monetary units per :name', ['name' => \App\Context::getContext()->currency->name]) }}">
+                        data-content="{{ l('This rate is to be defined according to your Company\'s default currency. For example, if the default currency is the Euro, and this currency is Dollar, type "1.31", since 1€ usually is worth $1.31 (at the time of this writing). Use the converter here for help: http://www.xe.com/ucc/.') }}">
                     <i class="fa fa-question-circle abi-help"></i>
              </a>
     {!! Form::text('conversion_rate', null, array('class' => 'form-control')) !!}

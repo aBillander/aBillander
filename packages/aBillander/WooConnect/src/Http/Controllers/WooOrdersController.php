@@ -236,9 +236,11 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 
 		$order = WooCommerce::get('orders/'.$id, $params);	// Array
 
+		$order = WooOrder::fetch( $id );
+
 		// I am thirsty. Let's get hydrated!
-//		$customer = \App\Customer::where('webshop_id', $order['customer_id'])->first();
-		$customer = null;
+		$customer = \App\Customer::where('webshop_id', $order['customer_id'])->first();
+//		$customer = null;
 
 		$vatNumber = WooOrder::getVatNumber( $order );
 		$order['billing']['vat_number'] = $vatNumber;
@@ -252,12 +254,20 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		}
 		$order["date_downloaded"] = $date_downloaded;
 
+
+		// Billing
+		$country = \App\Country::findByIsoCode( $order['billing']['country'] );
+		$order['billing']['country_name'] = $country ? $country->name : $order['billing']['country'];
+
+		$state = \App\State::findByIsoCode( (strpos($order['billing']['state'], '-') ? '' : $order['billing']['country'].'-').$order['billing']['state'] );
+		$order['billing']['state_name'] = $state ? $state->name : $order['billing']['state'];
+
+
+		// Shipping
 		$country = \App\Country::findByIsoCode( $order['shipping']['country'] );
-//		$order['billing']['country_name'] = $country ? $country->name : $order['billing']['country'];
 		$order['shipping']['country_name'] = $country ? $country->name : $order['shipping']['country'];
 
 		$state = \App\State::findByIsoCode( (strpos($order['shipping']['state'], '-') ? '' : $order['shipping']['country'].'-').$order['shipping']['state'] );
-//		$order['billing']['state_name'] = $state ? $state->name : $order['billing']['state'];
 		$order['shipping']['state_name'] = $state ? $state->name : $order['shipping']['state'];
 
 		return view('woo_connect::woo_orders.show', compact('order', 'customer'));
@@ -333,6 +343,13 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 			
 			return redirect()->route('worders.show', $id)
 				->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . $importer->error);
+	}
+
+	public function fetch($id)
+	{
+		$order = WooOrder::fetch( $id );
+
+		abi_r($order, true);
 	}
 
 	public function invoice($id)

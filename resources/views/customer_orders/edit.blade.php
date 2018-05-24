@@ -28,7 +28,12 @@
                             ">
                         <i class="fa fa-info-circle"></i>
                     </button>
-                 </a></span> &nbsp; {{ $order->document_reference }}
+                 </a>
+                 @if($customer->sales_equalization)
+                  <span id="sales_equalization_badge" class="badge" title="{{l('Equalization Tax')}}"> RE </span>
+                 @endif
+                 </span> &nbsp; {{ $order->document_reference }} &nbsp; <span class="badge" style="background-color: #3a87ad;">{{ $order->currency->iso_code }}</span>
+                 {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
              </h2>
 
         </div>

@@ -48,6 +48,16 @@
                                  {{l('Customers', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ URL::to('pricelists') }}">
+                                 {{l('Price Lists', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('carriers') }}">
+                                 {{l('Carriers', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ route('fsxconfigurations') }}">
@@ -110,6 +120,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('categories') }}">
+                                 {{l('Product Categories', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('customergroups') }}">
                                  {{l('Customer Groups', [], 'layouts')}}
                             </a>
@@ -123,6 +138,12 @@
                          <li>
                             <a href="{{ URL::to('taxes') }}">
                                  {{l('Taxes', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('fsx/fsxlog') }}">
+                                 {{l('aBillander LOG', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>
@@ -236,6 +257,16 @@
                          <li>
                             <a href="{{ URL::to('currencies') }}">
                                  {{l('Currencies', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('warehouses') }}">
+                                 {{l('Warehouses', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('salesreps') }}">
+                                 {{l('Sales Representatives', [], 'layouts')}}
                             </a>
                         </li>
                         

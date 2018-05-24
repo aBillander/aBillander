@@ -14,10 +14,10 @@ class WooConnectServiceProvider extends ServiceProvider
     public function boot()
     {
         // Loading routes file
-        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
 
         // Load Views
-        $this->loadViewsFrom(__DIR__ . '/../views', 'woo_connect');
+        $this->loadViewsFrom(__DIR__ . '/../../views', 'woo_connect');
 
         // Migrations
 /*

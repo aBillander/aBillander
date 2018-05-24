@@ -18,6 +18,10 @@ class CreateCustomersTable extends Migration {
 		Schema::create('customers', function(Blueprint $table)
 		{
 			$table->increments('id');
+//			$table->string('customer_type', 32)->nullable(false)->default('simple');
+			// 'individual', 'company'
+			// maybe use "const __default" of the model 
+            
             $table->integer('company_id')->unsigned()->default(0);              // For multi-Company setup
             $table->integer('user_id')->unsigned()->default(0);            // Maybe creator user, modifier user
 
@@ -27,7 +31,7 @@ class CreateCustomersTable extends Migration {
 			$table->string('website', 128)->nullable();
 			
 			$table->string('identification', 64)->nullable();					// VAT ID or the like (only companies & pro's?)
-			// EU VAT Id
+			// EU VAT Id, Tax number, etc.
 
 			$table->string('webshop_id', 16)->nullable();
 //            $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
@@ -50,7 +54,8 @@ class CreateCustomersTable extends Migration {
 			$table->tinyInteger('blocked')->default(0);							// Sales not allowed
 			$table->tinyInteger('active')->default(1);
 			
-			$table->integer('sales_rep_id')->unsigned()->nullable();             // Sales representative
+			$table->integer('sales_rep_id')->unsigned()->nullable();             // Sales representative. Maybe "Sales Agent"
+//			$table->integer('primary_contact_id')->unsigned()->nullable();		// Some user here
 			$table->integer('currency_id')->unsigned()->nullable(false);
 			$table->integer('language_id')->unsigned()->nullable(false);
 			$table->integer('customer_group_id')->unsigned()->nullable();

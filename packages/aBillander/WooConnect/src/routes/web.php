@@ -43,8 +43,15 @@ Route::group([
 	Route::post('wooconnect/configuration/paymentgateways', 'WooConnectController@configurationPaymentGatewaysUpdate')
 			->name('wooconnect.configuration.paymentgateways.update');
 
+	Route::get( 'wooconnect/configuration/shippingmethods', 'WooConnectController@configurationShippingMethodsEdit')
+			->name('wooconnect.configuration.shippingmethods');
+	Route::post('wooconnect/configuration/shippingmethods', 'WooConnectController@configurationShippingMethodsUpdate')
+			->name('wooconnect.configuration.shippingmethods.update');
+
     Route::get('worders/{id}/import' , array('uses' => 'WooOrdersController@import', 
                                                         'as'   => 'worders.import' ));
+    Route::get('worders/{id}/fetch' , array('uses' => 'WooOrdersController@fetch', 
+                                                        'as'   => 'worders.fetch' ));
     Route::get('worders/{id}/invoice', array('uses' => 'WooOrdersController@invoice', 
                                                         'as'   => 'worders.invoice' ));
     Route::get('worders/imported', array('uses' => 'WooOrdersController@importedIndex', 

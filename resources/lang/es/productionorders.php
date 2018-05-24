@@ -11,9 +11,9 @@ return [
 	|
 	*/
 
-	'Production Orders' => 'Ordenes de Fabricaci�n',
+	'Production Orders' => 'Ordenes de Fabricación',
 	'Materials' => 'Ingredientes',
-	'Due Date' => 'Fecha de Vencimiento',
+	'Due Date' => 'Fecha de Fabricación',
 	'Product Reference' => 'Ingredientes',
 	'Product Name' => 'Nombre del Producto',
     'Quantity' => 'Cantidad',

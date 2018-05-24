@@ -9,6 +9,7 @@
                                     data-content="{{ l('Seach by Name or Identification (VAT Number).') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
+            <span id="sales_equalization" class="label label-info" style="display: none;"> {{l('Equalization Tax')}} </span>
             {!! Form::text('order_autocustomer_name', old('order_autocustomer_name'), array('class' => 'form-control', 'id' => 'order_autocustomer_name')) !!}
 
             {!! Form::hidden('customer_id', old('customer_id'), array('id' => 'customer_id')) !!}
@@ -287,6 +288,11 @@ function get_currency_rate(currency_id)
 
                 $("#order_autocustomer_name").val(str);
                 $('#customer_id').val(value.item.id);
+                if (value.item.sales_equalization > 0) {
+                    $('#sales_equalization').show();
+                } else {
+                    $('#sales_equalization').hide();
+                }
 
 //                $('#sequence_id').val(value.item.work_center_id);
                 $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');

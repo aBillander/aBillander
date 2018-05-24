@@ -50,13 +50,14 @@ class CreateCustomerOrdersTable extends Migration
 */
 
             $table->decimal('document_discount_percent', 20, 6)->default(0.0);  // Order/Document discount Percent
-            $table->decimal('document_discount_amount', 20, 6)->default(0.0);   // Order/Document discount Amount
+            $table->decimal('document_discount_amount_tax_incl', 20, 6)->default(0.0);   // Order/Document discount Amount
+            $table->decimal('document_discount_amount_tax_excl', 20, 6)->default(0.0);
             $table->text('shipping_conditions')->nullable();                    // For Shipping Slip!
 
             $table->decimal('currency_conversion_rate', 20, 6)->default(1.0);
             $table->decimal('down_payment', 20, 6)->default(0.0);               // Payment before issue invoice
 
-            $table->decimal('total_discounts_tax_incl', 20, 6)->default(0.0);   // Order/Document discount
+            $table->decimal('total_discounts_tax_incl', 20, 6)->default(0.0);   // Order/Document discount lines
             $table->decimal('total_discounts_tax_excl', 20, 6)->default(0.0);
             $table->decimal('total_products_tax_incl', 20, 6)->default(0.0);    // Product netto (product discount included!)
             $table->decimal('total_products_tax_excl', 20, 6)->default(0.0);
@@ -66,6 +67,9 @@ class CreateCustomerOrdersTable extends Migration
             $table->decimal('total_other_tax_excl', 20, 6)->default(0.0);
             
 //            $table->string('total');                        // Grand total. WooCommerces serve it as string
+            
+            $table->decimal('total_lines_tax_incl', 20, 6)->default(0.0);       // total = total_lines - document_discount
+            $table->decimal('total_lines_tax_excl', 20, 6)->default(0.0);
             
             $table->decimal('total_tax_incl', 20, 6)->default(0.0);
             $table->decimal('total_tax_excl', 20, 6)->default(0.0);

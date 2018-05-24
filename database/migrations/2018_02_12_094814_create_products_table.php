@@ -43,7 +43,6 @@ class CreateProductsTable extends Migration {
 			$table->tinyInteger('quantity_decimal_places')->unsigned()->default(0);
 			$table->tinyInteger('manufacturing_batch_size')->unsigned()->default(1);
 
-/*
 			$table->decimal('quantity_onhand', 20, 6)->default(0);			// In Stock; on hand
 			$table->decimal('quantity_onorder', 20, 6)->default(0);			// On order; Quantity on Purchase Orders (pendiente de recibir)
 			$table->decimal('quantity_allocated', 20, 6)->default(0);		// Allocated; Quantity on Sale Orders (reservado)
@@ -63,7 +62,6 @@ class CreateProductsTable extends Migration {
 
 			$table->string('supplier_reference', 32)->nullable();
 			$table->integer('supply_lead_time')->unsigned()->default(0);
-*/
 
 			$table->string('location', 64)->nullable();
 			$table->decimal('width', 20, 6)->nullable()->default(0.0);   // cm
@@ -76,19 +74,18 @@ class CreateProductsTable extends Migration {
 
 			// ToDo: barcode / barcode type, supplier(s) data (currency, price, supplier reference, lead-time)
 			
-			$table->text('notes')->nullable();
-			$table->tinyInteger('stock_control')->default(1);
-			$table->tinyInteger('publish_to_web')->default(0);
 */
 
 			$table->text('notes')->nullable();
+			$table->tinyInteger('stock_control')->default(1);
+			$table->tinyInteger('publish_to_web')->default(0);	
 			$table->tinyInteger('blocked')->default(0);							// Sales not allowed
 			$table->tinyInteger('active')->default(1);
 			
-//			$table->integer('tax_id')->unsigned()->nullable(false);
+			$table->integer('tax_id')->unsigned()->nullable(false);
 			$table->integer('measure_unit_id')->unsigned()->nullable(false);
 			$table->integer('category_id')->unsigned()->nullable();
-//			$table->integer('main_supplier_id')->unsigned()->nullable();
+			$table->integer('main_supplier_id')->unsigned()->nullable();
 
 			// Route stuff
 			$table->integer('work_center_id')->unsigned()->nullable();

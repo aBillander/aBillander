@@ -12,6 +12,8 @@ class TaxRule extends Model {
     use ViewFormatterTrait;
     use SoftDeletes;
 
+    protected $appends = ['fullName'];
+
     public static $types = array(
             'sales', 
             'sales_equalization',
@@ -36,6 +38,20 @@ class TaxRule extends Model {
             }
 
             return $list;
+    }
+    
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    public function getFullNameAttribute()
+    {
+        $value = $this->tax->name . ' | ' . $this->name;
+
+        return $value;
     }
 
     

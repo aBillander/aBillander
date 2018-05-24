@@ -13,6 +13,7 @@ class CreateSalesRepsTable extends Migration {
 	 */
 	public function up()
 	{
+		// Maybe Sales Agent
 		Schema::create('sales_reps', function(Blueprint $table)
 		{
 			$table->increments('id');

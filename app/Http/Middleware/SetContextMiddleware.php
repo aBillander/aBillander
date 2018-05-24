@@ -131,17 +131,31 @@ abi_r('********************************************************');
 		// Changing The Default Theme At Runtime
 		// https://laracasts.com/discuss/channels/laravel/overriding-laravels-view-with-views-from-custom-package
 		$paths = \Config::get('view.paths');
-		array_unshift($paths, realpath(base_path('resources/views')).'/../theme');
+		array_unshift($paths, realpath(base_path('resources/views')).'/../theme');	// /var/www/html/enatural/resources/views/../theme
 		\Config::set('view.paths', $paths);
 
+
 //		print_r(\Config::get('view.paths')); die();
+
+// https://github.com/igaster/laravel-theme
+// https://hackernoon.com/data-interceptor-for-your-views-laravel-5-5-c973a96bb45a
+// https://www.addwebsolution.com/blog/voyager-missing-laravel-admin
+// https://laracasts.com/discuss/channels/laravel/overriding-laravels-view-with-views-from-custom-package
+
+*/
 
 		// https://stackoverflow.com/questions/27458439/how-to-set-view-file-path-in-laravel
 		// Apparently setting the config won't change anything because it is loaded when the application bootstraps and ignored afterwards.
 		// To change the path at runtime you have to create a new instance of the FileViewFinder. Here's how that looks like:
-		$finder = new \Illuminate\View\FileViewFinder(app()['files'], $paths);
-		\View::setFinder($finder);
-*/
+		if ( Configuration::get('USE_CUSTOM_THEME') ) 		// ToDo: Move this to a ServiceProvider
+		{
+			$paths = \Config::get('view.paths');
+			array_unshift($paths, realpath(base_path('resources/views')).'/../theme');
+			$finder = new \Illuminate\View\FileViewFinder(app()['files'], $paths);
+	//		abi_r($finder, true);
+			\View::setFinder($finder);
+		}
+
 
 		return $next($request);
 	}

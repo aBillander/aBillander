@@ -12,6 +12,8 @@ class Customer extends Model {
     use ViewFormatterTrait;
     use SoftDeletes;
 
+    protected $dates = ['deleted_at'];
+
 //    protected $guarded = ['id', 'outstanding_amount', 'unresolved_amount', 'secure_key'
 //                ];
 
@@ -309,6 +311,7 @@ class Customer extends Model {
         if (!$currency)
             $currency = \App\Context::getContext()->currency;
 
+/*
         // ToDo: Set special prices priorities
         // First: Product has special price for this Customer?
 
@@ -337,6 +340,7 @@ class Customer extends Model {
 
             if ( $best_price == null ) $best_price = $price;
         }
+*/
 
         // Otherwise, use product price (initial or base price)
         $price = $product->getPrice();
@@ -353,17 +357,18 @@ class Customer extends Model {
         return $price;
     }
 
-    public function getTaxRules( \App\Product $product )
+    public function getTaxRules( \App\Product $product, $address = null )
     {
         $rules = collect([]);
 
         // Sales Equalization
-        if ( $this->sales_equalization ) {
+        if ( $this->sales_equalization && ($product->sales_equalization ?? 1) ) {
 
             $tax = $product->tax;
 
 
-            $address = $this->invoicing_address;
+            if ( $address == null ) 
+                $address = $this->invoicing_address();
 
             $country_id = $address->country_id;
             $state_id   = $address->state_id;

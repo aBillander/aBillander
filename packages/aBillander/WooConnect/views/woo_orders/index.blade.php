@@ -6,10 +6,10 @@
 @section('content')
 
 <div class="page-header">
-    <!-- div class="pull-right" style="padding-top: 4px;">
+    <div class="pull-right" style="padding-top: 4px;">
 
-    <a href="{{ URL::route('worders.imported') }}" class="btn btn-grey" 
-        title="{{l('Orders')}}"><i class="fa fa-shopping-cart"></i> {{l('Orders')}}</a>
+    <!-- a href="{{ URL::route('worders.imported') }}" class="btn btn-grey" 
+        title="{{l('Orders')}}"><i class="fa fa-shopping-cart"></i> {{l('Orders')}}</a -->
 
     <div class="btn-group" style="margin-right: 152px">
         <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Configuration', [], 'layouts')}}"><i class="fa fa-cog"></i> {{l('Configuration', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
@@ -18,12 +18,13 @@
           <li><a href="{{ URL::route('wooconnect.configuration') }}">{{l('WooConnect Configuration')}}</a></li>
           <li><a href="{{ URL::route('wooconnect.configuration.taxes') }}">{{l('Taxes Dictionary')}}</a></li>
           <li><a href="{{ URL::route('wooconnect.configuration.paymentgateways') }}">{{l('Payment Gateways Dictionary')}}</a></li>
+          <li><a href="{{ URL::route('wooconnect.configuration.shippingmethods') }}">{{l('Shipping Methods Dictionary')}}</a></li>
           <li class="divider"></li>
-          < ! - - li><a href="#">Separated link</a></li - - >
+          <li><a href="#">Separated link</a></li>
         </ul>
     </div>
 
-    </div -->
+    </div>
 
     <h2>
         {{ l('Online Shop Orders') }}
@@ -113,9 +114,9 @@
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to('wooc/worders/' . $order["id"]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
 
-                <!-- a class="btn btn-sm btn-grey" href="{{ URL::route('worders.import', [$order["id"]] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
+                <a class="btn btn-sm btn-grey" href="{{ URL::route('worders.import', [$order["id"]] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
 
-                <a class="btn btn-sm btn-info" href="{{ URL::route('worders.invoice', [$order["id"]] ) }}" title="{{l('Invoice', [], 'layouts')}}"><i class="fa fa-file-text"></i></a -->
+                <!-- a class="btn btn-sm btn-info" href="{{ URL::route('worders.invoice', [$order["id"]] ) }}" title="{{l('Invoice', [], 'layouts')}}"><i class="fa fa-file-text"></i></a -->
 
                 <!-- a class='open-deleteDialog btn btn-danger' data-target='#myModal1' data-id="{{ $order["id"] }}" data-toggle='modal'>{{l('Delete', [], 'layouts')}}</a -->
 

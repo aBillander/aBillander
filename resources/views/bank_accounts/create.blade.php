@@ -1,0 +1,1 @@
+/opt/lampp/htdocs/aBillander/app/views/bank_accounts/create.blade.php

@@ -1,0 +1,1 @@
+/opt/lampp/htdocs/aBillander/app/views/price_lists/show.blade.php

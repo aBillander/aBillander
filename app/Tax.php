@@ -5,10 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\ViewFormatterTrait;
+
 use App\TaxRule as TaxRule;
 
 class Tax extends Model {
 
+    use ViewFormatterTrait;
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
@@ -54,6 +57,16 @@ class Tax extends Model {
     public function getFirstRule()
     {
         return TaxRule::where('tax_id', '=', $this->id)->orderBy('position', 'asc')->first();
+    }
+
+    public function getTaxPercent( \App\Address $address = null, $with_sales_equalization = 0)
+    {
+        $percent = $this->taxrules()->where('rule_type', '=', 'sales')->sum('percent');
+
+        if ($with_sales_equalization)
+            $percent += $this->taxrules()->where('rule_type', '=', 'sales_equalization')->sum('percent');
+
+        return $percent;
     }
 	
     

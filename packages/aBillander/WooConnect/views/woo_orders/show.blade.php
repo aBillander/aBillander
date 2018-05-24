@@ -54,12 +54,12 @@
         
         <div class="form-group col-sm-6">
             {{l('Created at')}}
-            <div class="form-control">{{ \Carbon\Carbon::parse($order['date_created_gmt']) }}</div>
+            <div class="form-control">{{ \Carbon\Carbon::parse($order['date_created']) }}</div>
         </div>
         
         <div class="form-group col-sm-6">
             {{l('Paid at')}}
-            <div class="form-control">{{ \Carbon\Carbon::parse($order['date_paid_gmt']) }}</div>
+            <div class="form-control">{{ \Carbon\Carbon::parse($order['date_paid']) }}</div>
         </div>
         
         <!-- div class="form-group col-sm-6">
@@ -83,9 +83,9 @@
                     </a>
                 </span>
 @else               
-                <!-- span class="input-group-addon" title="{{ l('This Customer has not been imported') }}">
+                <span class="input-group-addon" title="{{ l('This Customer has not been imported') }}">
                     <span class="fa fa-eye-slash"></span>
-                </span -->
+                </span>
 @endif                
             </div>
         </div>

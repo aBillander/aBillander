@@ -53,6 +53,8 @@ return [
 
 	'System'     => 'Sistema',
 	'Customers'     => 'Clientes',
+	'Carriers'     => 'Transportistas',
+	'Price Lists'     => 'Tarifas',
 	'Sales Representatives'     => 'Agentes',
 	'Warehouses'     => 'Almacenes',
 	'Product Options'     => 'Opciones de Productos',
@@ -146,6 +148,7 @@ return [
 	'View'     => 'Ver',
 	'View more'     => 'Ver más',
 	'Edit'     => 'Modificar',
+	'Apply'     => 'Aplicar',
 	'Show'     => 'Mostrar',
 	'Save'     => 'Guardar',
 	'Save & Complete'     => 'Guardar y Completar',

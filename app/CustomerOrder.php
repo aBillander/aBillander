@@ -59,14 +59,15 @@ class CustomerOrder extends Model
             $table->decimal('total_shipping_tax_excl', 20, 6)->default(0.0);
             $table->decimal('total_other_tax_incl', 20, 6)->default(0.0);
             $table->decimal('total_other_tax_excl', 20, 6)->default(0.0);
-            
+*           
             $table->decimal('total_tax_incl', 20, 6)->default(0.0);
             $table->decimal('total_tax_excl', 20, 6)->default(0.0);
 
             $table->decimal('commission_amount', 20, 6)->default(0.0);          // Sales Representative commission amount
 */
             
-                            'notes_from_customer', 'notes', 'notes_to_customer',
+                            'total_lines_tax_incl', 'total_lines_tax_excl', 'total_tax_incl', 'total_tax_excl',
+                            'customer_note', 'notes', 'notes_to_customer',
                             'status', 'locked',
                             'invoicing_address_id', 'shipping_address_id', 
                             'warehouse_id', 'carrier_id', 'sales_rep_id', 'currency_id', 'payment_method_id', 'template_id',
@@ -112,7 +113,7 @@ class CustomerOrder extends Model
 
     /*
     |--------------------------------------------------------------------------
-    | Methodss
+    | Methods
     |--------------------------------------------------------------------------
     */
 
@@ -192,6 +193,125 @@ class CustomerOrder extends Model
 
     /*
     |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+    
+    public function makeTotals( $document_discount_percent = 0.0 )
+    {
+        if ( $document_discount_percent >= 0.0 )
+            $this->document_discount_percent = $document_discount_percent;
+
+        $lines = $this->customerorderlines;
+        
+/*
+        'total_discounts_tax_incl', 
+        'total_discounts_tax_excl', 
+        'total_products_tax_incl', 
+        'total_products_tax_excl', 
+        'total_shipping_tax_incl', 
+        'total_shipping_tax_excl', 
+        'total_other_tax_incl', 
+        'total_other_tax_excl', 
+*/
+
+        // These are already rounded!
+        $this->total_lines_tax_incl = $lines->sum('total_tax_incl');
+        $this->total_lines_tax_excl = $lines->sum('total_tax_excl');
+
+        $total_tax_incl = $this->total_lines_tax_incl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_incl;
+        $total_tax_excl = $this->total_lines_tax_excl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_excl;
+
+        // Make a Price object for rounding
+        $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $this->currency, $this->currency_conversion_rate);
+
+        $p->applyRounding( );
+
+        $this->total_tax_incl = $p->getPriceWithTax();
+        $this->total_tax_excl = $p->getPrice();
+
+        $this->save();
+
+        return true;
+    }
+    
+    public function getTotalTaxIncl()
+    {
+        $lines = $this->customerorderlines;
+        
+/*
+        'total_discounts_tax_incl', 
+        'total_discounts_tax_excl', 
+        'total_products_tax_incl', 
+        'total_products_tax_excl', 
+        'total_shipping_tax_incl', 
+        'total_shipping_tax_excl', 
+        'total_other_tax_incl', 
+        'total_other_tax_excl', 
+*/
+
+        // These are already rounded!
+        $this->total_lines_tax_incl = $lines->sum('total_tax_incl');
+        $this->total_lines_tax_excl = $lines->sum('total_tax_excl');
+
+        $total_tax_incl = $this->total_lines_tax_incl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_incl;
+        $total_tax_excl = $this->total_lines_tax_excl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_excl;
+
+        // Make a Price object for rounding
+        $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $this->currency, $this->currency_conversion_rate);
+
+        $p->applyRounding( );
+
+        $this->total_tax_incl = $p->getPriceWithTax();
+        $this->total_tax_excl = $p->getPrice();
+
+        return $this->total_tax_incl;
+    }
+    
+    public function getTotalTaxExcl()
+    {
+        $lines = $this->customerorderlines;
+        
+/*
+        'total_discounts_tax_incl', 
+        'total_discounts_tax_excl', 
+        'total_products_tax_incl', 
+        'total_products_tax_excl', 
+        'total_shipping_tax_incl', 
+        'total_shipping_tax_excl', 
+        'total_other_tax_incl', 
+        'total_other_tax_excl', 
+*/
+
+        // These are already rounded!
+        $this->total_lines_tax_incl = $lines->sum('total_tax_incl');
+        $this->total_lines_tax_excl = $lines->sum('total_tax_excl');
+
+        $total_tax_incl = $this->total_lines_tax_incl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_incl;
+        $total_tax_excl = $this->total_lines_tax_excl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_excl;
+
+        // Make a Price object for rounding
+        $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $this->currency, $this->currency_conversion_rate);
+
+        $p->applyRounding( );
+
+        $this->total_tax_incl = $p->getPriceWithTax();
+        $this->total_tax_excl = $p->getPrice();
+
+        return $this->total_tax_excl;
+    }
+    
+    public function getMaxLineSortOrder()
+    {
+        if ( $this->customerorderlines->count() )
+            return $this->customerorderlines->max('line_sort_order');
+
+        return 0;           // Or: return intval( $this->customerorderlines->max('line_sort_order') );
+    }
+    
+
+    /*
+    |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
     */
@@ -252,10 +372,17 @@ class CustomerOrder extends Model
         return $this->belongsTo('App\Address', 'shipping_address_id')->withTrashed();
     }
 
+    public function taxingaddress()
+    {
+        return \App\Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') ? 
+            $this->shippingaddress()  : 
+            $this->invoicingaddress() ;
+    }
+
     
     public function customerorderlines()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
-        return $this->hasMany('App\CustomerOrderLine', 'customer_order_id');
+        return $this->hasMany('App\CustomerOrderLine', 'customer_order_id')->orderBy('line_sort_order', 'ASC');
     }
     
     public function customerorderlinetaxes()      // http://advancedlaravel.com/eloquent-relationships-examples

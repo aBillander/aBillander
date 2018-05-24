@@ -16,6 +16,9 @@ class Product extends Model {
 //    use AutoSkuTrait;
     use SoftDeletes;
 
+
+    public $sales_equalization = 1;         // Handy property not stored. Takes its value after Customer Order Line sales_equalization flag
+
     public static $types = array(
             'simple', 
             'virtual', 
@@ -32,18 +35,22 @@ class Product extends Model {
 
     protected $dates = ['deleted_at'];
 
-//    protected $appends = ['quantity_available'];
+    protected $appends = ['quantity_available'];
     
     protected $fillable = [ 'product_type', 'procurement_type', 
                             'name', 'reference', 'ean13', 'description', 'description_short', 
-                            'quantity_decimal_places', 'manufacturing_batch_size', 
+                            'quantity_decimal_places', 'manufacturing_batch_size',
+
+                            'reorder_point', 'maximum_stock', 'price', 'price_tax_inc', 'cost_price', 
+                            'supplier_reference', 'supply_lead_time',  
 
                             'location', 'width', 'height', 'depth', 'weight', 
 
-                            'notes', 'blocked', 'active', 
-                            'measure_unit_id', 'category_id', 
+                            'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 
 
-                            'work_center_id', 'route_notes',
+                            'tax_id', 'measure_unit_id', 'category_id', 'main_supplier_id', 
+
+                            'measure_unit_id', 'work_center_id', 'route_notes',
                           ];
 
     public static $rules = array(
@@ -57,13 +64,22 @@ class Product extends Model {
                             'reference'       => 'required|min:2|max:32|unique:products,reference,{$id},id,deleted_at,NULL', 
                             // See: https://wisdmlabs.com/blog/laravel-soft-delete-unique-validations/
                             'measure_unit_id' => 'exists:measure_units,id',
- //                           'category_id'  => 'exists:categories,id',
+                            'price'         => 'required|numeric|min:0',
+                            'price_tax_inc' => 'required|numeric|min:0',
+                            'cost_price'    => 'required|numeric|min:0',
+                            'tax_id'       => 'exists:taxes,id',
+                            'category_id'  => 'exists:categories,id',
+                            'quantity_onhand' => 'nullable|numeric|min:0',
+                            'warehouse_id' => 'required_with:quantity_onhand',
                     ),
         'main_data' => array(
                             'name'        => 'required|min:2|max:128',
                             'reference'   => 'sometimes|required|min:2|max:32|unique:products,reference,',     // https://laracasts.com/discuss/channels/requests/laravel-5-validation-request-how-to-handle-validation-on-update
                             'tax_id'      => 'exists:taxes,id',
                             'category_id' => 'exists:categories,id',
+                    ),
+        'purchases' => array(
+                            
                     ),
         'manufacturing' => array(
                             
@@ -75,13 +91,25 @@ class Product extends Model {
         'inventory' => array(
                             
                     ),
-        'manufacturing' => array(
-                            
-                    ),
         'internet' => array(
                             
                     ),
         );
+    
+
+/*
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function($product)
+        {
+            if ( \App\Configuration::get('SKU_AUTOGENERATE') )
+                if ( !$product->reference )
+                    $product->autoSKU();
+        });
+    }
+*/
 
     
     /*
@@ -92,7 +120,13 @@ class Product extends Model {
 
     public function getQuantityAvailableAttribute()
     {
-        //
+        $value =      $this->quantity_onhand  
+                    + $this->quantity_onorder 
+                    - $this->quantity_allocated 
+                    + $this->quantity_onorder_mfg 
+                    - $this->quantity_allocated_mfg;
+
+        return $value;
     }
 
 
@@ -141,10 +175,31 @@ class Product extends Model {
     }
     
 
+    public function getStockByWarehouse( $warehouse )
+    { 
+        $wh_id = is_numeric($warehouse)
+                    ? $warehouse
+                    : $warehouse->id ;
+
+    //    $product = \App\Product::find($this->id);
+
+        $whs = $this->warehouses;
+        if ($whs->contains($wh_id)) {
+            $wh = $this->warehouses()->get();
+            $wh = $wh->find($wh_id);
+            $quantity = $wh->pivot->quantity;
+        } else {
+            $quantity = 0;
+        }
+
+        return $quantity;
+    }
+    
+
     public function getFeaturedImage()
     { 
         // If no featured image, return one, anyway
-  //      return $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
+        return $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
     }
 
     public static function getTypeList()
@@ -203,13 +258,50 @@ class Product extends Model {
 
     public function images()
     {
-        // return $this->morphMany('App\Image', 'imageable');
+        return $this->morphMany('App\Image', 'imageable');
+    }
+
+    public function tax()
+    {
+        return $this->belongsTo('App\Tax');
     }
 		
     public function category()
     {
-//        return $this->belongsTo('App\Category');
+        return $this->belongsTo('App\Category');
 	}
+    
+    public function combinations()
+    {
+        return $this->hasMany('App\Combination');
+    }
+    
+    public function stockmovements()
+    {
+        return $this->hasMany('App\StockMovement');
+    }
+    
+    public function warehouses()
+    {
+        return $this->belongsToMany('App\Warehouse')->withPivot('quantity')->withTimestamps();
+    }
+/*    
+    public function pricelists()
+    {
+        return $this->belongsToMany('App\PriceList', 'price_list_product', 'product_id', 'price_list_id')->withPivot('price')->withTimestamps();
+    }
+    
+    public function pricelist( $list_id = null )
+    {
+        if ( $list_id > 0 )
+            return $this->belongsToMany('App\PriceList')->where('price_list_id', '=', $list_id)->withPivot('price')->withTimestamps();
+    } 
+    
+    public function prices()
+    {
+        return $this->hasMany('App\Price');
+    }
+*/
 
 
     /*
@@ -267,6 +359,68 @@ class Product extends Model {
     }
 */	
 
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Price calculations
+    |--------------------------------------------------------------------------
+    */
+
+    public function getPrice()
+    {
+        $price = [ $this->price, $this->price_tax_inc ];        // These prices are in Company Currency
+
+        $priceObject = \App\Price::create( $price, \App\Context::getContext()->company->currency );
+
+        return $priceObject;
+    }
+
+    public function getPriceByList( \App\PriceList $list )
+    {
+        // Return \App\Price Object
+        return $list->getPrice( $this );
+    }
+
+    public function getPriceByCustomer( \App\Customer $customer, \App\Currency $currency = null )
+    {
+        // Return \App\Price Object
+        return $customer->getPrice( $this, $currency );
+    }
+    
+
+    public function getTaxRulesByAddress( \App\Address $address = null )
+    {
+        // Taxes depending on location
+        // If no address, use default Company address
+        if ( $address == null ) $address = \App\Context::getContext()->company->address;
+
+        return $address->getTaxRules( $this->tax );
+    }
+
+    public function getTaxRulesByCustomer( \App\Customer $customer = null )
+    {
+        // Taxes depending on Customer, no matter of location
+        if ( $customer == null ) return collect([]);
+
+        return $customer->getTaxRules( $this );
+    }
+
+    public function getTaxRulesByProduct()
+    {
+        // Taxes depending on Product itself, such as recycle tax
+        return collect([]);
+    }
+
+    public function getTaxRules( \App\Address $address = null, \App\Customer $customer = null )
+    {
+        $rules =         $this->getTaxRulesByAddress(  $address )
+                ->merge( $this->getTaxRulesByCustomer( $customer ) )
+                ->merge( $this->getTaxRulesByProduct() );
+
+        return $rules;
+    }
+    
 
     /*
     |--------------------------------------------------------------------------

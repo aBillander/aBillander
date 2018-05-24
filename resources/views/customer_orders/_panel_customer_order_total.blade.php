@@ -1,19 +1,19 @@
 
     <div class="page-header">
         <h3>
-            <span style="color: #dd4814;">{{ l('Totals') }} include getSubtotals functions in billable trait</span> <!-- span style="color: #cccccc;">/</span> {{ $order->name }} -->
+            <span style="color: #dd4814;">{{ l('Totals') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $order->name }} -->
+             {{-- include getSubtotals functions in billable trait --}}
         </h3>        
     </div>
 
-    <div id="div_customer_order_lines">
+    <div id="div_customer_order_total">
        <div class="table-responsive">
 
-    <table id="order_lines" class="table table-hover">
+    <table id="order_total" class="table table-hover">
         <thead>
             <tr>
                <th class="text-left">{{l('Total Lines')}}</th> {{-- Con tax o no depende de la configuración de meter precios con impuesto incluido --}}
-               <th class="text-left">{{l('Discount')}}</th>
-               <th> </th>
+               <th class="text-left" style="width:1px; white-space: nowrap;">{{l('Discount')}}</th>
 
                <th class="text-left">{{l('Taxable Base')}}</th>
                <th class="text-left">{{l('Taxes')}}</th>
@@ -22,20 +22,39 @@
             </tr>
         </thead>
 
+@php
+  // $order->total_tax_excl = 10.005;
+@endphp
+
         <tbody>
             <tr>
-                <td>{{ $order->total_tax_excl }}</td>
-                <td>{{ $order->document_discount_percent }} %</td>
+                <td>{{ $order->as_price('total_lines_tax_excl') }}</td>
                 <td style="width:1px; white-space: nowrap;">
-                   
-                  <button class="btn btn-sm btn-lightblue" type="button" title="{{l('Edit', [], 'layouts')}}" onclick="get_currency_rate($('#currency_id').val());">
-                      <span class="fa fa-calculator"></span>
-                  </button>
+
+                    <div class="form-group">
+                      @if ($order->locked || $order->status == 'closed' || $order->status == 'canceled')
+                        {{ $order->as_percent('document_discount_percent') }}
+                      @else
+                      <div class="input-group">
+
+                        <span class="input-group-addon input-sm"><strong>%</strong></span>
+
+                        <input name="document_discount_percent" id="document_discount_percent" class="form-control input-sm col-xs-2" type="text" size="5" maxlength="10" style="width: auto;" value="{{ $order->as_percent('document_discount_percent') }}" onclick="this.select()" xonchange="add_discount_to_order($('#order_id').val());">
+
+                        <span class="input-group-btn">
+                          <button class="update-order-total btn btn-sm btn-lightblue" type="button" title="{{l('Apply', [], 'layouts')}}" xonclick="add_discount_to_order($('#order_id').val());">
+                              <span class="fa fa-calculator"></span>
+                          </button>
+                        </span>
+
+                      </div>
+                      @endif
+                    </div>
 
                 </td>
-                <td>{{ $order->total_tax_excl }}</td>
-                <td>{{ $order->total_tax_incl - $order->total_tax_excl }}</td>
-                <td class="text-right lead"><strong>{{ $order->total_tax_incl }}</strong></td>
+                <td>{{ $order->as_price('total_tax_excl', $order->currency) }}</td>
+                <td>{{ $order->as_priceable($order->total_tax_incl - $order->total_tax_excl) }}</td>
+                <td class="text-right lead"><strong>{{ $order->as_price('total_tax_incl') }}</strong></td>
             </tr>
         </tbody>
     </table>

@@ -2,17 +2,100 @@
 
 namespace aBillander\WooConnect;
 
-use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Database\Eloquent\Model;
 
-class WooOrder extends Model
+use WooCommerce;
+use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
+
+class WooOrder // extends Model
 {
-    protected $dates = ['deleted_at', 'date_created', 'date_paid', 'date_abi_exported', 'date_invoiced'];
+//    protected $dates = ['deleted_at', 'date_created', 'date_paid', 'date_abi_exported', 'date_invoiced'];
 	
 //    protected $fillable = [ ];
 
-    protected $guarded = [];
+//    protected $guarded = [];
 
-    protected $order_data = [];
+    protected $data = [];
+    protected $run_status = true;       // So far, so good. Can continue export
+    protected $error = null;
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Constructor
+    |--------------------------------------------------------------------------
+    */
+    
+    // See: https://github.com/laravel-enso/DataImport
+
+    public function __construct ($order_id = null)
+    {
+        // Get logger
+        // $this->log = $rwsConnectorLog;
+
+        $this->run_status = true;
+
+        // Get order data (if order exists!)
+        $oID = intval($order_id);
+
+        if ( $oID > 0 ) {
+            // 
+/*
+            // Too much work. Currency does not change often.
+            try {
+                $wc_currency = \App\Currency::findOrFail( intval(\App\Configuration::get('WOOC_DEF_CURRENCY')) );
+            } catch (ModelNotFoundException $ex) {
+                // If Currency does not found. Not any good here...
+                $wc_currency = \App\Context::getContext()->currency;    // Or fallback to Configuration::get('DEF_CURRENCY')
+            }
+*/
+
+            // Do the Mambo!!!
+            $params = [
+    //          'dp'   => 6,        // WooCommerce serve store some values rounded. 
+                                    // Not useful this option. Use WooCommerce API default instead: 2 decimal places
+                'dp'   => \App\Configuration::get('WOOC_DECIMAL_PLACES'),
+ //               'dp'   => $wc_currency->decimalPlaces,
+            ];
+
+            // Get Order fromm WooCommerce Shop
+            try {
+
+                $this->data = WooCommerce::get('orders/'.$oID, $params); // Array
+            }
+
+            catch( WooHttpClientException $e ) {
+
+                /*
+                $e->getMessage(); // Error message.
+
+                $e->getRequest(); // Last request data.
+
+                $e->getResponse(); // Last response data.
+                */
+
+                $this->data = [];
+                // So far, we do not know if order_id does not exist, or connection fails. 
+                // does it matter? -> Anyway, no order is issued
+
+            }
+
+            if (!$this->data) {
+                $this->error[] = 'Se ha intentado recuperar el Pedido número <b>"'.$order_id.'"</b> y no existe.';
+                $this->run_status = false;
+            }
+
+        }
+
+    }
+
+    public static function fetch( $order_id = null )
+    {
+        $order = new static($order_id);
+        // if (!$order->tell_run_status()) 
+        return $order->data;
+    }
+
 
 
     /*
@@ -50,11 +133,9 @@ class WooOrder extends Model
     |--------------------------------------------------------------------------
     */
     
-    public static function import( $woo_order = [] )
+    public function getRawData( )
     {
-        //
-
-        return $woo_order;
+        return $order->data;
     }
     
     

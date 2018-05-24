@@ -30,6 +30,12 @@ Route::group([
 	                 'as'   => 'fsxorders.index'] );
 
 
+	Route::get('fsxlog', ['uses' => 'FsxLoggersController@index', 
+	                 'as'   => 'fsxlog.index'] );
+	Route::get('fsxlog/empty', ['uses' => 'FsxLoggersController@empty', 
+	                 'as'   => 'fsxlog.empty'] );
+
+
 	Route::get('dummy', function () {
 
 		return 'Hello world!';

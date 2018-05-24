@@ -14,22 +14,24 @@ class FSxConnectorServiceProvider extends ServiceProvider
     public function boot()
     {
         // Loading routes file
-        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
 
         // Load Views
-        $this->loadViewsFrom(__DIR__ . '/../views', 'fsx_connector');
+        $this->loadViewsFrom(__DIR__ . '/../../views', 'fsx_connector');
 
         // Migrations
-        $this->loadMigrationsFrom(__DIR__ . '/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../migrations');
 
         // Register helpers. Maybe in register method?
         // Load files
-        foreach (glob(__DIR__ . '/Helpers/*.php') as $filename){
+        foreach (glob(__DIR__ . '/../Helpers/*.php') as $filename){
             require_once($filename);
         }
 
         // Translations
         // protected function loadTranslationsFrom($path, $namespace)
+        // $this->loadTranslationsFrom(__DIR__.'/path/to/translations', 'courier');
+        // See https://laravel.com/docs/5.5/packages
 
         // composer dump-autoload [-o] (optimize)
 

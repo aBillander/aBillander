@@ -4,7 +4,7 @@
 <div class="panel panel-primary" id="panel_update_order">
 
    <div class="panel-heading">
-      <h3 class="panel-title collapsed" data-toggle="collapse" data-target="#header_data">{{ l('Header Data') }} :: <span class="label label-warning" title="{{ l('Order Date') }}">{{ $order->document_date_form }}</span> - <span class="label label-info" title="{{ l('Delivery Date') }}">{{ $order->delivery_date_form ?? '----------'}}</span></h3>
+      <h3 class="panel-title collapsed" data-toggle="collapse" data-target="#header_data">{{ l('Header Data') }} :: <span class="label label-warning" title="{{ l('Order Date') }}">{{ $order->document_date_form }}</span> - <span class="label label-info" title="{{ l('Delivery Date') }}">{{ $order->delivery_date_form ?? ' -- / -- / -- '}}</span></h3>
    </div>
    <div id="header_data" class="panel-collapse collapse">
     {!! Form::model($order, array('method' => 'PATCH', 'route' => array('customerorders.update', $order->id), 'id' => 'update_customer_order', 'name' => 'update_customer_order', 'class' => 'form')) !!}
@@ -12,8 +12,11 @@
 
 <!-- Order header -->
 
+{!! Form::hidden('order_id', $order->id, array('id' => 'order_id')) !!}
 {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+{!! Form::hidden('sales_equalization', $customer->sales_equalization, array('id' => 'sales_equalization')) !!}
 {!! Form::hidden('invoicing_address_id', null, array('id' => 'invoicing_address_id')) !!}
+{!! Form::hidden('taxing_address_id', $order->taxingaddress->id, array('id' => 'taxing_address_id')) !!}
 
                <div class="panel-body">
 
@@ -93,7 +96,7 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
             {{ l('Shipping Address') }}
-            {!! Form::select('shipping_address_id', [], null, array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
+            {!! Form::select('shipping_address_id', $customer->getAddressList(), null, array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
             {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
          </div>
          
@@ -147,13 +150,15 @@
     {!! Form::close() !!}
    </div>
 
+              <div class="panel-footer text-right">       </div>
+
 </div>
 
 <!-- Order Lines -->
 
 <div id="msg-success" class="alert alert-success alert-block" style="display:none;">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong>{{  l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') }}</strong>
+  <strong>{!!  l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
 </div>
 
 <div id="panel_customer_order_lines" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
@@ -181,6 +186,8 @@
 
     <script type="text/javascript">
 
+        var PRICE_DECIMAL_PLACES;
+
         $(document).ready(function() {
 
 //          loadBOMlines();
@@ -192,20 +199,30 @@
               var next = $('#next_line_sort_order').val();
               var label = '';
 
-                    label = "{{ l('Add new item to BOM') }}";
-                    $('#modalBOMlineLabel').text(label);
+                    label = "{{ l('Add Line to Order') }}";
+                    $('#modal_order_line_Label').text(label);
+                    modal_search_tab_hide_all();
+                    $("#li_new_product").addClass('active');
 
                     $('#line_id').val('');
+//                    $('#line_type').val('');
                     $('#line_sort_order').val(next);
                     $('#line_quantity').val(1);
-                    $('#line_measure_unit_id').val('');
-                    $('#line_scrap').val(0.0);
+                    $('#line_price').val(0.0);
+                    $('#line_discount_percent').val(0.0);
+
+                    calculate_line_product();
+
                     $('#line_notes').val('');
 
                 $("#line_autoproduct_name").val('');
                 $('#line_product_id').val('');
+                $('#line_combination_id').val('');
+
+              $("#new_product").show();
 
               $('#modal_order_line').modal({show: true});
+              $("#line_autoproduct_name").focus();
               return false;
           });
 
@@ -216,7 +233,7 @@
 
                $.get(url, function(result){
                     label = '['+result.product.reference+'] '+result.product.name;
-                    $('#modalBOMlineLabel').text(label);
+                    $('#modal_order_line_Label').text(label);
 
                     $('#line_id').val(result.id);
                     $('#line_sort_order').val(result.line_sort_order);
@@ -231,11 +248,19 @@
 
               $('#product-search-autocomplete').hide();
               $("#line_autoproduct_name").val('');
-              $('#modalBOMline').modal({show: true});
+              $('#modal_order_line').modal({show: true});
               return false;
           });
 
           loadCustomerOrderlines();
+
+
+          $(document).on('click', '.update-order-total', function(evnt) {
+
+              updateCustomerOrderTotal();
+              return false;
+
+          });
 
           
 
@@ -252,7 +277,34 @@
                  panel.html(result);
                  panel.removeClass('loading');
                  $("[data-toggle=popover]").popover();
+                 sortableOrderlines();
            }, 'html');
+
+        }
+
+        function updateCustomerOrderTotal() {
+           
+           var panel = $("#panel_customer_order_total");
+           var url = "{{ route('customerorder.updatetotal', $order->id) }}";
+           var token = "{{ csrf_token() }}";
+
+           panel.addClass('loading');
+
+            $.ajax({
+                url: url,
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'POST',
+                dataType: 'html',
+                data: {
+                    document_discount_percent: $("#document_discount_percent").val()
+                },
+                success: function (response) {
+
+                   panel.html(response);
+                   panel.removeClass('loading');
+                   $("[data-toggle=popover]").popover();
+                }
+            });
 
         }
 
@@ -286,7 +338,7 @@
             });
 
             $.ajax({
-                url: "{{ route('productbom.sortlines') }}",
+                url: "{{ route('customerorder.sortlines') }}",
                 headers : {'X-CSRF-TOKEN' : token},
                 method: 'POST',
                 dataType: 'json',
@@ -299,29 +351,49 @@
             });
         }
 
-        $("#modalBOMlineSubmit").click(function() {
+        $("#modal_order_line_productSubmit").click(function() {
 
  //         alert('etgwer');
 
             var id = $('#line_id').val();
-            var url = "{ { route('productbom.updateline', ['']) }}/"+id;
+            var url = "{{ route('customerorder.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
             if ( id == '' )
-                url = "{ { route('productbom.storeline', [$bom->id]) }}";
+                url = "{{ route('customerorder.storeline', [$order->id]) }}";
             else
-                url = "{ { route('productbom.updateline', ['']) }}/"+id;
+                url = "{{ route('customerorder.updateline', ['']) }}/"+id;
 
   //        alert(url);
 
             var payload = { 
+                              order_id : {{ $order->id }},
                               line_sort_order : $('#line_sort_order').val(),
+                              line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),
+                              combination_id : $('#line_combination_id').val(),
                               quantity : $('#line_quantity').val(),
-                              measure_unit_id : $('#line_measure_unit_id').val(),
-                              scrap : $('#line_scrap').val(),
+                              cost_price : $('#line_cost_price').val(),
+                              unit_price : $('#line_unit_price').val(),
+                              unit_customer_price : $('#line_unit_customer_price').val(),
+                              unit_customer_final_price : $('#line_price').val(),
+                              prices_entered_with_tax : PRICES_ENTERED_WITH_TAX,
+                              tax_percent : $('#line_tax_percent').val(),
+                              sales_equalization : $("input[name='line_is_sales_equalization']:checked").val(),
+                              currency_id : $("#currency_id").val(),
+                              conversion_rate: $("#currency_conversion_rate").val(),
+                              discount_percent : $('#line_discount_percent').val(),
+                              discount_amount_tax_incl : $('#line_discount_amount_tax_incl').val(),
+                              discount_amount_tax_excl : $('#line_discount_amount_tax_excl').val(),
+                              sales_rep_id : $('#line_sales_rep_id').val(),
                               notes : $('#line_notes').val()
                           };
+
+
+
+//    pload = pload + "&customer_id="+$("#customer_id").val();
+//    pload = pload + "&currency_id="+$("#currency_id").val()+"&conversion_rate="+$("#currency_conversion_rate").val();
+//    pload = pload + "&_token="+$('[name="_token"]').val();
 
   //          alert(payload);
 
@@ -333,11 +405,11 @@
                 data : payload,
 
                 success: function(){
-                    loadBOMlines();
+                    loadCustomerOrderlines();
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
-                    $('#modalBOMline').modal('toggle');
+                    $('#modal_order_line').modal('toggle');
                     $("#msg-success").fadeIn();
                 }
             });
@@ -350,29 +422,140 @@
 */
         });
 
-{{--
         $("#line_autoproduct_name").autocomplete({
-            source : "{ { route('productbom.searchproduct') }}",
+            source : "{{ route('customerorderline.searchproduct') }}",
             minLength : 1,
-            appendTo : "#modalBOMline",
+            appendTo : "#modal_order_line",
 
             select : function(key, value) {
                 var str = '[' + value.item.reference+'] ' + value.item.name;
 
                 $("#line_autoproduct_name").val(str);
                 $('#line_product_id').val(value.item.id);
-//                $('#pid').val(value.item.id);
-                $('#line_measure_unit_id').val(value.item.measure_unit_id);
+                $('#line_combination_id').val(0)
+
+                getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
 
                 return false;
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
-                .append( '<div>[' + item.reference+'] ' + item.name + "</div>" )
+                .append( '<div>[' + item.id + '] [' + item.reference + '] ' + item.name + "</div>" )
                 .appendTo( ul );
             };
 
---}}
+
+        function getProductData( product_id, combination_id ) {
+            var price;
+            var token = "{{ csrf_token() }}";
+            // https://stackoverflow.com/questions/28417781/jquery-add-csrf-token-to-all-post-requests-data/28418032#28418032
+
+            $.ajax({
+                url: "{{ route('customerorderline.getproduct') }}",
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    product_id: product_id,
+                    combination_id: combination_id,
+                    customer_id: $("#customer_id").val(),
+                    currency_id: $("#currency_id").val(),
+                    conversion_rate: $("#currency_conversion_rate").val(),
+                    taxing_address_id: $("#taxing_address_id").val()
+                },
+                success: function (response) {
+                    PRICE_DECIMAL_PLACES = response.currency.decimalPlaces;
+                    $('#line_cost_price').val(response.cost_price);
+                    $('#line_unit_price').val(response.unit_price.display);
+                    $('#line_tax_label').html(response.tax_label);
+                    $('#line_tax_id').val(response.tax_id);
+                    $('#line_tax_percent').val(response.tax_percent);
+
+                    if( $("#sales_equalization").val() )
+                        $('input:radio[name=line_is_sales_equalization][value=1]').prop('checked', true);
+                    else
+                        $('input:radio[name=line_is_sales_equalization][value=0]').prop('checked', true);
+                    
+                    $('#line_discount_percent').val(0);
+//                    price = parseFloat(response.unit_customer_price.display);
+                    price = response.unit_customer_price.display;
+                    $("#line_unit_customer_price").val( price );
+                    $("#line_price").val( price.round( PRICE_DECIMAL_PLACES ) );
+
+                    calculate_line_product();
+
+                    console.log(response);
+                }
+            });
+        }
+
+
+        $("#modal_order_line_serviceSubmit").click(function() {
+
+ //         alert('etgwer');
+
+            var id = $('#line_id').val();
+            var url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+            var token = "{{ csrf_token() }}";
+
+            if ( id == '' )
+                url = "{{ route('customerorder.storeline', [$order->id]) }}";
+            else
+                url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+
+  //        alert(url);
+
+            var payload = { 
+                              order_id : {{ $order->id }},
+                              line_sort_order : $('#line_sort_order').val(),
+                              line_type : $('#line_type').val(),
+                              name : $('#name').val(),
+                              quantity : 1,
+                              is_shipping : $("input[name='is_shipping']:checked").val(),
+                              cost_price : $('#cost_price').val(),
+                              price : $('#price').val(),
+                              price_tax_inc : $('#price_tax_inc').val(),
+                              prices_entered_with_tax : PRICES_ENTERED_WITH_TAX,
+                              tax_id : $('#tax_id').val(),
+                              tax_percent : $('#line_tax_percent').val(),
+                              currency_id : $("#currency_id").val(),
+                              conversion_rate: $("#currency_conversion_rate").val(),
+//                              sales_rep_id : $('#line_sales_rep_id').val(),
+                              notes : $('#service_notes').val()
+                          };
+
+
+
+//    pload = pload + "&customer_id="+$("#customer_id").val();
+//    pload = pload + "&currency_id="+$("#currency_id").val()+"&conversion_rate="+$("#currency_conversion_rate").val();
+//    pload = pload + "&_token="+$('[name="_token"]').val();
+
+  //          alert(payload);
+
+            $.ajax({
+                url : url,
+                headers : {'X-CSRF-TOKEN' : token},
+                type : 'POST',
+                dataType : 'json',
+                data : payload,
+
+                success: function(){
+                    loadCustomerOrderlines();
+                    $(function () {  $('[data-toggle="tooltip"]').tooltip()});
+//                    $("[data-toggle=popover]").popover();
+
+                    $('#modal_order_line').modal('toggle');
+                    $("#msg-success").fadeIn();
+                }
+            });
+
+/*            $(function () {  $('[data-toggle="tooltip"]').tooltip()});
+            $("[data-toggle=popover]").popover();
+            $(function () {
+  $('[data-toggle="popover"]').popover()
+})
+*/
+        });
 
     </script>
 

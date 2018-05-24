@@ -11,6 +11,6 @@ return [
 	|
 	*/
 
-	'' => '',
+	'aBillander LOG' => 'aBillander LOG',
 
 ];

@@ -1,0 +1,1 @@
+/opt/lampp/htdocs/aBillander/app/views/stock_movements/show.blade.php

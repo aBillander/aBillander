@@ -119,6 +119,40 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		// Taxes
+		view()->composer(array('customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'products.create', 'products.edit'), function($view) {
+		    
+		    $view->with('taxList', \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray());
+		    
+		});
+
+		view()->composer(array('products.create', 'products.edit', 'price_list_lines.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
+
+		    // https://laracasts.com/discuss/channels/eloquent/eloquent-model-lists-id-and-a-custom-accessor-field
+		    $view->with('taxpercentList', Arr::pluck(\App\Tax::all(), 'percent', 'id'));
+		    
+		});
+
+		view()->composer(array('customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
+/*
+		    $list = \App\Tax::select(
+//		        \DB::raw("(percent + extra_percent) AS percent, id")
+		        \DB::raw("(percent) AS percent, id")
+		    )->pluck('percent', 'id');
+
+		    $view->with('taxeqpercentList', $list);
+*/		    
+		    $view->with('taxpercentList', Arr::pluck(\App\Tax::all(), 'percent', 'id'));
+		});
+
+		// Tax Rule types
+		view()->composer(array('tax_rules._form', 'tax_rules.index'), function($view) {
+
+		    $list = \App\TaxRule::getTypeList();
+
+		    $view->with('tax_rule_typeList', $list);
+		});
+
 		// Months
 		view()->composer(array('customers._panel_commercial'), function($view) {
 		    
@@ -180,40 +214,6 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		    $view->with('customerinvoicetemplateList', \App\Template::where('model_name', '=', '\App\CustomerInvoice')->pluck('name', 'id')->toArray());
 		    
-		});
-
-		// Taxes
-		view()->composer(array('customer_invoices.create', 'customer_invoices.edit', 'products.create', 'products.edit'), function($view) {
-		    
-		    $view->with('taxList', \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray());
-		    
-		});
-
-		view()->composer(array('products.create', 'products.edit', 'price_list_lines.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
-
-		    // https://laracasts.com/discuss/channels/eloquent/eloquent-model-lists-id-and-a-custom-accessor-field
-		    $view->with('taxpercentList', Arr::pluck(\App\Tax::all(), 'percent', 'id'));
-		    
-		});
-
-		view()->composer(array('customer_invoices.create', 'customer_invoices.edit'), function($view) {
-/*
-		    $list = \App\Tax::select(
-//		        \DB::raw("(percent + extra_percent) AS percent, id")
-		        \DB::raw("(percent) AS percent, id")
-		    )->pluck('percent', 'id');
-
-		    $view->with('taxeqpercentList', $list);
-*/		    
-		    $view->with('taxpercentList', Arr::pluck(\App\Tax::all(), 'percent', 'id'));
-		});
-
-		// Tax Rule types
-		view()->composer(array('tax_rules._form', 'tax_rules.index'), function($view) {
-
-		    $list = \App\TaxRule::getTypeList();
-
-		    $view->with('tax_rule_typeList', $list);
 		});
 
 		// Languages

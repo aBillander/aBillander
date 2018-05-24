@@ -96,6 +96,7 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('workcenters', 'WorkCentersController');
 
         Route::resource('products', 'ProductsController');
+        Route::resource('products.images', 'ProductImagesController');
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
 //        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
 
@@ -115,6 +116,11 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('productionorders', 'ProductionOrdersController');
         Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');
         Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
+
+        Route::resource('categories', 'CategoriesController');
+        Route::resource('categories.subcategories', 'CategoriesController');
+        Route::post('categories/{id}/publish', array('uses' => 'CategoriesController@publish', 
+                                                        'as'   => 'categories.publish' ));
 
         Route::get('productionorders/{id}/getorder', 'ProductionOrdersController@getOrder')->name('productionorder.getorder');
         Route::post('productionorders/{id}/productionsheetedit', 'ProductionOrdersController@productionsheetEdit')->name('productionorder.productionsheet.edit');
@@ -145,8 +151,8 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('customergroups', 'CustomerGroupsController');
 
-        Route::resource('taxes',    'TaxesController');
-        Route::resource('taxrules', 'TaxRulesController');
+        Route::resource('taxes',          'TaxesController');
+        Route::resource('taxes.taxrules', 'TaxRulesController');
 
         Route::resource('warehouses', 'WarehousesController');
         
@@ -155,11 +161,28 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('carriers', 'CarriersController');
 
 
-        Route::resource('customerorders'      , 'CustomerOrdersController');
+//        Route::resource('customerorders'      , 'CustomerOrdersController');
         Route::get('customerorders/ajax/customer_lookup', array('uses' => 'CustomerOrdersController@ajaxCustomerSearch', 'as' => 'customerorders.ajax.customerLookup'));
         Route::get('customerorders/ajax/customer/{id}/adressbook_lookup', array('uses' => 'CustomerOrdersController@customerAdressBookLookup', 'as' => 'customerorders.ajax.customer.AdressBookLookup'));
 
-        Route::get('customerorders/{id}/getlines', 'CustomerOrdersController@getOrderLines')->name('customerorder.getlines');
+        Route::get('customerorders/{id}/getlines',      'CustomerOrdersController@getOrderLines')->name('customerorder.getlines');
+        Route::get('customerorders/line/searchproduct', 'CustomerOrdersController@searchProduct')->name('customerorderline.searchproduct');
+        Route::get('customerorders/line/getproduct',    'CustomerOrdersController@getProduct'   )->name('customerorderline.getproduct');
+
+        Route::post('customerorders/{id}/storeline',    'CustomerOrdersController@storeOrderLine'   )->name('customerorder.storeline'  );
+        Route::post('customerorders/{id}/updatetotal',  'CustomerOrdersController@updateOrderTotal' )->name('customerorder.updatetotal');
+        Route::get('customerorders/{id}/getline/{lid}', 'CustomerOrdersController@getOrderLine'     )->name('customerorder.getline'    );
+        Route::post('customerorders/updateline/{lid}',  'CustomerOrdersController@updateOrderLine'  )->name('customerorder.updateline' );
+        Route::post('customerorders/deleteline/{lid}',  'CustomerOrdersController@deleteOrderLine'  )->name('customerorder.deleteline' );
+
+        Route::post('customerorders/sortlines', 'CustomerOrdersController@sortLines')->name('customerorder.sortlines');
+
+        
+
+        Route::resource('pricelists',     'PriceListsController');
+        Route::resource('pricelistlines', 'PriceListLinesController');
+
+        Route::resource('images', 'ImagesController');
 
 });
 

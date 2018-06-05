@@ -11,6 +11,7 @@
             </div>
             <div class="modal-body">
                 <img id="image" src="" class="img-responsive" style="display: block; margin-left: auto; margin-right: auto; border: 1px solid #dddddd;">
+                <h5 class="text-center" id="imageCaption"></h5>
             </div>
             <!-- div class="modal-footer">
                 <button type="button" class="btn btn-link" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
@@ -28,7 +29,9 @@
             var href = $(this).attr('href');
 //            var message = $(this).attr('data-content');
             var title = $(this).attr('data-title');
+            var caption = $(this).attr('data-caption');
             $('#myModalViewImage').text(title);
+            $('#imageCaption').text(caption);
 //            $('#imageViewModal .modal-body').text(message);
             $('.modal-body #image').attr('src', href);
             $('#imageViewModal').modal({show: true});

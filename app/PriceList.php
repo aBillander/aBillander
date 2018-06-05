@@ -118,6 +118,8 @@ class PriceList extends Model {
     {
         $line = $this->getLine( $product );
 
+        if ( !$line ) return null;
+
         $price = new \App\Price( $line->price, $this->price_is_tax_inc, $this->currency);
 
         $price->price_list_id = $this->id;
@@ -145,11 +147,45 @@ class PriceList extends Model {
         return $line;
     }
 
+    public function prepareLine( \App\Product $product, $price = null )
+    {
+        if ($price === null) $price = $this->calculatePrice( $product );
+
+        // Not persist, please:
+        $line = new \App\PriceListLine( [ 'price_list_id' => $this->id, 'product_id' => $product->id , 'price' => $price ] );
+
+        return $line;
+    }
+
     public function getLine( \App\Product $product )
     {
         $line = $this->pricelistlines()->where('product_id', '=', $product->id)->first();
 
-        if ( !$line ) $line = $this->addLine( $product );
+        if ( !$line ) 
+            switch ( \App\Configuration::get('PRODUCT_NOT_IN_PRICELIST') ) {
+                case 'pricelist':
+                    # calculate price according to Price list type
+                    return $this->prepareLine( $product );
+                    break;
+                
+                case 'product':
+                    # take price from Product data
+                    $currency = \App\Context::getContext()->company->currency;
+                    if ( $currency->id !== $this->currency_id ) return false;
+
+                    $price = $this->price_is_tax_inc
+                         ? $product->price_tax_inc
+                         : $product->price;
+                    return $this->prepareLine( $product, $price );
+                    break;
+                
+                case 'block':
+                    # disallow sales
+                
+                default:
+                    return false;
+                    break;
+            }
 
         return $line;
     }

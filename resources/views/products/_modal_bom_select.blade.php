@@ -33,7 +33,7 @@
                   </div>
 
                   <div class="form-group col-lg-9 col-md-9 col-sm-9">
-                     {{ l('BOM name') }}
+                     {{ l('BOM Name') }}
                      {!! Form::text('line_autobom_name', null, array('class' => 'form-control', 'id' => 'line_autobom_name')) !!}
                   </div>
 

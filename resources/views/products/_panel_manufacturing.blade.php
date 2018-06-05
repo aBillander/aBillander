@@ -14,7 +14,7 @@
         <tr>
             <th style="background-color: #d9edf7;">{{l('BOM Quantity')}}</th>
             <th style="border-bottom: 0px solid;"> &nbsp; </th>
-            <th>{{ l('BOM Alias') }}</th>
+            <th>{{ l('Alias') }}</th>
             <th>{{ l('BOM Name') }}</th>
             <th>{{ l('Quantity') }}</th>
             <th>{{ l('Measure Unit') }}</th>
@@ -43,7 +43,7 @@
 
                 <a class="btn btn-success" href="{{ route( 'productboms.edit', [$bom->id] ) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
 
-                <a class="btn btn-danger detach-bom-item" title="{{l('Unlink')}}" onClick="return false;"><i class="fa fa-unlink"></i></a>
+                <a class="btn btn-danger detach-bom-item" title="{{l('Detach')}}" onClick="return false;"><i class="fa fa-unlink"></i></a>
 
             </td>
         </tr>

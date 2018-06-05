@@ -97,11 +97,9 @@
                      {!! $errors->first('customer_group_id', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('price_list_id') ? 'has-error' : '' }}">
-                     <!--
                      {{ l('Price List') }}
-                     { ! ! Form::select('price_list_id', array('0' => l('-- Please, select --', [], 'layouts')) + $price_listList, null, array('class' => 'form-control')) ! ! }
+                     {!! Form::select('price_list_id', array('0' => l('-- Please, select --', [], 'layouts')) + $price_listList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('price_list_id', '<span class="help-block">:message</span>') !!}
-                     -->
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('sales_rep_id') ? 'has-error' : '' }}">
                      {{ l('Sales Representative') }}

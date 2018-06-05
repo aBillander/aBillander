@@ -24,7 +24,7 @@
                <i class="fa fa-asterisk"></i>
                &nbsp; {{ l('Main Data') }}
             </a>
-            <!-- a id="b_purchases" href="#purchases" class="list-group-item">
+            <a id="b_purchases" href="#purchases" class="list-group-item">
                <i class="fa fa-shopping-cart"></i>
                &nbsp; {{ l('Purchases') }}
             </a>
@@ -35,7 +35,7 @@
             <a id="b_inventory" href="#inventory" class="list-group-item">
                <i class="fa fa-th"></i>
                &nbsp; {{ l('Stocks') }}
-            </a -->
+            </a>
             <a id="b_manufacturing" href="#manufacturing" class="list-group-item">
                <i class="fa fa-cubes"></i>
                &nbsp; {{ l('Manufacturing') }}
@@ -43,21 +43,29 @@
 
 @if ( ($product->product_type == 'simple') || ($product->product_type == 'combinable') )
 
-            <!-- a id="b_combinations" href="#combinations" class="list-group-item">
+            <a id="b_combinations" href="#combinations" class="list-group-item">
                <i class="fa fa-tags"></i>
                &nbsp; {{ l('Combinations') }}
-            </a -->
+            </a>
 
 @endif
 
-            <!-- a id="b_images" href="#images" class="list-group-item">
+            <a id="b_images" href="#images" class="list-group-item">
                <i class="fa fa-picture-o"></i>
                &nbsp; {{ l('Images') }}
             </a>
             <a id="b_internet" href="#internet" class="list-group-item">
                <i class="fa fa-cloud"></i>
                &nbsp; {{ l('Internet') }}
-            </a -->
+            </a>
+         </div>
+
+         <div class="list-group"><?php $img = $product->getFeaturedImage() ?>
+@if ( $img )
+            <img src="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() .  $img->id . '-medium_default' . '.' .  $img->extension ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+@else
+            <img src="{{ URL::to( \App\Image::$products_path . '/default-medium_default.png' ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+@endif
          </div>
 
       </div>
@@ -67,26 +75,23 @@
           @include('products._panel_main_data')
 
           @include('products._panel_manufacturing')
-<!--
-          @ include('products._panel_purchases')
 
-          @ include('products._panel_sales')
+          @include('products._panel_purchases')
 
-          @ include('products._panel_inventory')
+          @include('products._panel_sales')
 
-          @ include('products._panel_internet')
--->
+          @include('products._panel_inventory')
 
-@if ( 0 && ($product->product_type == 'simple') || ($product->product_type == 'combinable') )
+          @include('products._panel_internet')
+
+
+@if ( ($product->product_type == 'simple') || ($product->product_type == 'combinable') )
 
           @include('products._panel_combinations')
 
 @endif
-@if ( 0 )
 
           @include('products._panel_images')
-
-@endif
 
       </div>
 
@@ -174,19 +179,19 @@
     CKEDITOR.replace( 'route_notes' );
 </script>
 
-<!-- script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>
 <script type="text/javascript">
 // Select2 Plugin // https://select2.github.io
 // Todo: ajax retrieve (all) groups
   $('#groups').select2({
     placeholder: "{{ l('-- Click to Select --', [], 'layouts') }}",
   });
-</script -->
+</script>
 
 @endsection
 
 @section('styles') 
 
-<!-- link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" type="text/css" rel="stylesheet" / -->
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" type="text/css" rel="stylesheet" />
 
 @endsection

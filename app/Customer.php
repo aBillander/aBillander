@@ -187,7 +187,7 @@ class Customer extends Model {
 
     public function address()
     {
-        return $this->hasOne('App\Address', 'addressable_id')
+        return $this->hasOne('App\Address', 'id', 'invoicing_address_id')
                    ->where('addressable_type', Customer::class);
 
 
@@ -236,7 +236,7 @@ class Customer extends Model {
 
     public function customergroup()
     {
-        return $this->belongsTo('App\CustomerGroup');
+        return $this->belongsTo('App\CustomerGroup', 'customer_group_id');
     }
 
     
@@ -302,8 +302,8 @@ class Customer extends Model {
 
     public function getPrice( \App\Product $product, \App\Currency $currency = null )
     {
-        // Best price (if Price for $currency is not set)
-        $best_price = null;
+        // Fall back price (use it if Price for $currency is not set)
+        $fallback = null;
 
         if (!$currency && $this->currency_id)
             $currency = $this->currency;
@@ -317,16 +317,26 @@ class Customer extends Model {
 
         // Second: Product has special price for this Customer's Customer Group?
 
+*/
         // Third: Customer has pricelist?
         if ($this->pricelist) {
 
             $price = $this->pricelist->getPrice( $product );
 
-            if ($currency->id == $this->pricelist->currency_id) {
-                return $price;
-            }
+//            abi_r('$this->pricelist');abi_r($price);
 
-            if ( $best_price == null ) $best_price = $price;
+            if ( $price ) {
+                if ($currency->id == $this->pricelist->currency_id) {
+                    return $price;
+                }
+
+                if ( $fallback == null ) $fallback = $price;
+
+            } else {
+                if ( \App\Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' ) {
+                    return null;
+                }
+            }
         } 
 
         // Fourth: Customer Group has pricelist?
@@ -334,25 +344,35 @@ class Customer extends Model {
 
             $price = $this->customergroup->pricelist->getPrice( $product );
 
-            if ($currency->id == $this->customergroup->pricelist->currency_id) {
-                return $price;
-            }
+//            abi_r('$this->customergroup->pricelist');abi_r($price);
 
-            if ( $best_price == null ) $best_price = $price;
+            if ( $price ) {
+                if ($currency->id == $this->customergroup->pricelist->currency_id) {
+                    return $price;
+                }
+
+                if ( $fallback == null ) $fallback = $price;
+
+            } else {
+                if ( \App\Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' ) {
+                    return null;
+                }
+            }
         }
-*/
 
         // Otherwise, use product price (initial or base price)
         $price = $product->getPrice();
+
+//            abi_r('$product');abi_r($price);
 
         if ($currency->id == $price->currency->id) {
             return $price;
         }
 
-        if ( $best_price == null ) $best_price = $price;
+        if ( $fallback == null ) $fallback = $price;
 
         // If you get here, no matching currency found. So, convert best price recorded
-        $price = $best_price->convert( $currency );
+        $price = $fallback->convert( $currency );
 
         return $price;
     }

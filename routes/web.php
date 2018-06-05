@@ -160,6 +160,12 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('carriers', 'CarriersController');
 
+//        Route::resource('activityloggers', 'ActivityLoggersController');
+        Route::get('activityloggers', ['uses' => 'ActivityLoggersController@index', 
+                         'as'   => 'activityloggers.index'] );
+        Route::get('activityloggers/empty', ['uses' => 'ActivityLoggersController@empty', 
+                         'as'   => 'activityloggers.empty'] );
+
 
 //        Route::resource('customerorders'      , 'CustomerOrdersController');
         Route::get('customerorders/ajax/customer_lookup', array('uses' => 'CustomerOrdersController@ajaxCustomerSearch', 'as' => 'customerorders.ajax.customerLookup'));

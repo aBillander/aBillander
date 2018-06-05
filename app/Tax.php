@@ -61,10 +61,14 @@ class Tax extends Model {
 
     public function getTaxPercent( \App\Address $address = null, $with_sales_equalization = 0)
     {
-        $percent = $this->taxrules()->where('rule_type', '=', 'sales')->sum('percent');
+        if ( !$address ) $address = \App\Context::getContext()->company->address;
+
+        $rules = $address->getTaxRules( $this );
+
+        $percent = $rules->where('rule_type', '=', 'sales')->sum('percent');
 
         if ($with_sales_equalization)
-            $percent += $this->taxrules()->where('rule_type', '=', 'sales_equalization')->sum('percent');
+            $percent += $rules->where('rule_type', '=', 'sales_equalization')->sum('percent');
 
         return $percent;
     }

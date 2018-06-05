@@ -45,7 +45,9 @@
 <input type="hidden" id="addAction" name="addAction" value="" />
 
 {!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! Form::submit(l('Save & Update', [], 'layouts'), array('class' => 'btn btn-info', 'onclick' => "this.disabled=true;$('#addAction').val('updateProducts');this.form.submit();")) !!}
+<!-- 
+{!! Form::submit(l('Save & Complete', [], 'layouts'), array('class' => 'btn btn-info', 'onclick' => "this.disabled=true;$('#addAction').val('updateProducts');this.form.submit();")) !!}
+-->
 {!! link_to_route('pricelists.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 
 

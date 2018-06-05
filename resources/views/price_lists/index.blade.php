@@ -41,11 +41,9 @@
             
             <td class="text-right">
                 @if (  is_null($pricelist->deleted_at))
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('pricelists/' . $pricelist->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
                 <div class="btn-group">
-                  <a href="#" class="btn btn-sm btn-info"><i class="fa fa-plus"></i> {{l('Actions', [], 'layouts')}}</a>
-                  <a href="#" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+                  <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> {{l('Actions', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu" xstyle="color: #333333; background-color: #ffffff;">
                     <li><a href="#" xstyle="color: #333333; background-color: #ffffff;"><i class="fa fa-chevron-circle-up"></i> {{l('Export', [], 'layouts')}}</a></li>
                     <li><a href="#"><i class="fa fa-chevron-circle-down"></i> {{l('Import', [], 'layouts')}}</a></li>
@@ -55,6 +53,7 @@
                   </ul>
                 </div>
 
+                <a class="btn btn-sm btn-warning" href="{{ URL::to('pricelists/' . $pricelist->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('pricelists/' . $pricelist->id ) }}" 
                 		data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
@@ -79,6 +78,26 @@
    </div>
 </div>
 
-@stop
+@endsection
+
+
+@section('styles')    @parent
+
+{{-- 
+ - Fix drop down button menu scroll
+ - https://stackoverflow.com/questions/26018756/bootstrap-button-drop-down-inside-responsive-table-not-visible-because-of-scroll
+--}}
+
+<style>
+    .table-responsive {
+      overflow-x: visible !important;
+      overflow-y: visible !important;
+    }
+</style>
+
+@endsection
+
+
+
 
 @include('layouts/modal_delete')

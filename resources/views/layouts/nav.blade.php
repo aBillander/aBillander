@@ -142,7 +142,8 @@
                         </li>
                         <li class="divider"></li>
                          <li>
-                            <a href="{{ URL::to('fsx/fsxlog') }}">
+                            <a href="{{ URL::to('activityloggers') }}">
+                                 <i class="fa fa-list-alt text-success"></i>
                                  {{l('aBillander LOG', [], 'layouts')}}
                             </a>
                         </li>

@@ -13,6 +13,8 @@ class CreateProductsTable extends Migration {
 	 */
 	public function up()
 	{
+		Schema::dropIfExists('products');
+
 		Schema::create('products', function(Blueprint $table)
 		{
 			$table->increments('id');
@@ -26,13 +28,20 @@ class CreateProductsTable extends Migration {
 			// 'grouped'    => a collection of related products that can be purchased individually and only 
 							// consist of simple products. 
 
+			$table->string('procurement_type', 32)->nullable(false)->default('simple');
+			// 'purchase'    => Via Purchase Order.
+			// 'manufacture' => Via Manufacturing Order.
+			// 'none'        => One that doesn’t require shipping or stock management (Services, downloads...).
+			// 'assembly'    => Intermediate Product.
+
 			$table->string('name', 128)->nullable(false);
 			$table->string('reference', 32)->nullable();
 			$table->string('ean13', 13)->nullable();
 			$table->text('description')->nullable();
 			$table->text('description_short')->nullable();
-			$table->string('measure_unit', 32)->nullable();
+//			$table->string('measure_unit', 32)->nullable();
 			$table->tinyInteger('quantity_decimal_places')->unsigned()->default(0);
+			$table->tinyInteger('manufacturing_batch_size')->unsigned()->default(1);
 
 			$table->decimal('quantity_onhand', 20, 6)->default(0);			// In Stock; on hand
 			$table->decimal('quantity_onorder', 20, 6)->default(0);			// On order; Quantity on Purchase Orders (pendiente de recibir)
@@ -60,19 +69,34 @@ class CreateProductsTable extends Migration {
 			$table->decimal('depth', 20, 6)->nullable()->default(0.0);
 			$table->decimal('weight', 20, 6)->nullable()->default(0.0);  // kg
 
+/*
 			$table->integer('warranty_period')->unsigned()->default(0);  // days
 
 			// ToDo: barcode / barcode type, supplier(s) data (currency, price, supplier reference, lead-time)
 			
+*/
+
 			$table->text('notes')->nullable();
+			
 			$table->tinyInteger('stock_control')->default(1);
+			$table->tinyInteger('phantom_assembly')->default(0);
+/* 
+			Phantom Assemblies: - A phantom assembly is a logical (rather than functional) grouping of materials.
+			
+			Dependent requirements for the superior assembly are passed directly down to the components of the phantom assembly, skipping the phantom assembly. Planned orders and purchase requisitions are also produced only for the components of the phantom assembly.
+*/
 			$table->tinyInteger('publish_to_web')->default(0);
 			$table->tinyInteger('blocked')->default(0);							// Sales not allowed
 			$table->tinyInteger('active')->default(1);
 			
 			$table->integer('tax_id')->unsigned()->nullable(false);
+			$table->integer('measure_unit_id')->unsigned()->nullable(false);
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->integer('main_supplier_id')->unsigned()->nullable();
+
+			// Route stuff
+			$table->integer('work_center_id')->unsigned()->nullable();
+			$table->text('route_notes')->nullable();
 			
 			$table->timestamps();
 			$table->softDeletes();
@@ -86,7 +110,7 @@ class CreateProductsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('products');
+		Schema::dropIfExists('products');
 	}
 
 }

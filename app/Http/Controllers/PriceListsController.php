@@ -53,14 +53,18 @@ class PriceListsController extends Controller {
 
 		$pricelist = $this->pricelist->create($request->all());
 
-		// Calculate prices for this Price List
-		$products = \App\Product::get();
+		if ( \App\Configuration::get('NEW_PRODUCT_TO_ALL_PRICELISTS') ) {
 
-        foreach ($products as $product) {
-
-            $pricelist->addLine( $product );
-
-        }
+			// Calculate prices for this Price List
+			// ToDo: make chunck by chunck
+			$products = \App\Product::get();
+	
+	        foreach ($products as $product) {
+	
+	            $pricelist->addLine( $product );
+	
+	        }
+		}
 
 		return redirect('pricelists')
 				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $pricelist->id], 'layouts') . $request->input('name'));

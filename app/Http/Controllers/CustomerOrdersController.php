@@ -66,7 +66,7 @@ class CustomerOrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function createWithCustomer(Customer $customer)
+    public function createWithCustomer($customer_id)
     {
         /*  
                 Crear Pedido desde la ficha del Cliente  =>  ya conozco el customer_id
@@ -78,8 +78,14 @@ class CustomerOrdersController extends Controller
 
                 y vuelve a /customerorders
         */
+        // Some checks to start with:
 
-        return 'customer.createorder';
+        $sequenceList = Sequence::listFor( CustomerOrder::class );
+        if ( !count($sequenceList) )
+            return redirect('customerorders')
+                ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
+        
+        return view('customer_orders.create', compact('sequenceList', 'customer_id'));
     }
 
     /**
@@ -256,6 +262,23 @@ class CustomerOrdersController extends Controller
 
 //        if ( $query )
 
+        if ($request->has('customer_id'))
+        {
+            $search = $request->customer_id;
+
+            $customers = \App\Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'carrier_id', 'sales_rep_id')
+                                    ->with('currency')
+                                    ->with('addresses')
+                                    ->find( $search );
+
+//            return $customers;
+//            return Product::searchByNameAutocomplete($query, $onhand_only);
+//            return Product::searchByNameAutocomplete($request->input('query'), $onhand_only);
+//            response( $customers );
+//            return json_encode( $customers );
+            return response()->json( $customers );
+        }
+
         if ($request->has('term'))
         {
             $search = $request->term;
@@ -274,10 +297,11 @@ class CustomerOrdersController extends Controller
 //            response( $customers );
 //            return json_encode( $customers );
             return response()->json( $customers );
-        } else {
-            // die silently
-            return json_encode( [ 'query' => '', 'suggestions' => [] ] );
         }
+
+        // Otherwise, die silently
+        return json_encode( [ 'query' => '', 'suggestions' => [] ] );
+        
     }
 
     public function customerAdressBookLookup($id)
@@ -322,20 +346,14 @@ class CustomerOrdersController extends Controller
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->isManufactured()
+                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
 //                                ->with('measureunit')
+//                                ->toSql();
                                 ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
-/*
-        $data = [];
 
-        foreach ($products as $product) {
-            $data[] = [
-                    'id' => $product->id,
-                    'value' => '['.$product->reference.'] '.$product->name,
-                    'reference'       => $product->reference,
-                    'measure_unit_id' => $product->measure_unit_id,
-            ];
-        }
-*/
+
+//                                dd($products);
+
         return response( $products );
     }
 
@@ -372,7 +390,7 @@ class CustomerOrdersController extends Controller
         // Tax
         $tax = $product->tax;
         $taxing_address = \App\Address::findOrFail($request->input('taxing_address_id'));
-        $tax_percent = $tax->getTaxPercent( $taxing_address, $customer->sales_equalization );
+        $tax_percent = $tax->getTaxPercent( $taxing_address );
 
         $price = $product->getPrice();
         if ( $price->currency->id != $currency->id ) {
@@ -384,40 +402,44 @@ class CustomerOrdersController extends Controller
 //        $tax_percent = $tax->percent;               // Accessor: $tax->getPercentAttribute()
 //        $price->applyTaxPercent( $tax_percent );
 
-        $customer_price->applyTaxPercentToPrice($tax_percent);        
-
-        $data = [
-            'product_id' => $product->id,
-            'combination_id' => $combination_id,
-            'reference' => $product->reference,
-            'name' => $product->name,
-            'cost_price' => $product->cost_price,
-            'unit_price' => [ 
-                        'tax_exc' => $price->getPrice(), 
-                        'tax_inc' => $price->getPriceWithTax(),
-                        'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                    $price->getPriceWithTax() : $price->getPrice() ],
-
-            'unit_customer_price' => [ 
-                        'tax_exc' => $customer_price->getPrice(), 
-                        'tax_inc' => $customer_price->getPriceWithTax(),
-                        'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                    $customer_price->getPriceWithTax() : $customer_price->getPrice() ],
-
-            'tax_percent' => $tax_percent,
-            'tax_id' => $product->tax_id,
-            'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
-            'customer_id' => $customer_id,
-            'currency' => $currency,
-
-
-            'reorder_point'      => $product->reorder_point, 
-            'quantity_onhand'    => $product->quantity_onhand, 
-            'quantity_onorder'   => $product->quantity_onorder, 
-            'quantity_allocated' => $product->quantity_allocated, 
-            'blocked' => $product->blocked, 
-            'active'  => $product->active, 
-        ];
+        if ($customer_price) 
+        {
+            $customer_price->applyTaxPercentToPrice($tax_percent);        
+    
+            $data = [
+                'product_id' => $product->id,
+                'combination_id' => $combination_id,
+                'reference' => $product->reference,
+                'name' => $product->name,
+                'cost_price' => $product->cost_price,
+                'unit_price' => [ 
+                            'tax_exc' => $price->getPrice(), 
+                            'tax_inc' => $price->getPriceWithTax(),
+                            'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
+                                        $price->getPriceWithTax() : $price->getPrice() ],
+    
+                'unit_customer_price' => [ 
+                            'tax_exc' => $customer_price->getPrice(), 
+                            'tax_inc' => $customer_price->getPriceWithTax(),
+                            'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
+                                        $customer_price->getPriceWithTax() : $customer_price->getPrice() ],
+    
+                'tax_percent' => $tax_percent,
+                'tax_id' => $product->tax_id,
+                'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
+                'customer_id' => $customer_id,
+                'currency' => $currency,
+    
+    
+                'reorder_point'      => $product->reorder_point, 
+                'quantity_onhand'    => $product->quantity_onhand, 
+                'quantity_onorder'   => $product->quantity_onorder, 
+                'quantity_allocated' => $product->quantity_allocated, 
+                'blocked' => $product->blocked, 
+                'active'  => $product->active, 
+            ];
+        } else
+            $data = [];
 
         return response()->json( $data );
     }

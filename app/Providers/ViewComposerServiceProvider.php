@@ -25,6 +25,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 	{
 		//
 
+		// Languages
+		view()->composer(array('users.create', 'users.edit'), function($view) {
+		    
+		    $view->with('languageList', \App\Language::pluck('name', 'id')->toArray());
+		    
+		});
+
 		// Measure Unit types
 		view()->composer(array('measure_units._form'), function($view) {
 
@@ -85,7 +92,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 
 		// Warehouses
 		view()->composer(array('products.create', 'stock_movements.create', 'stock_counts.create', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
-		    
+/*		    
 		    $whList = \App\Warehouse::with('address')->get();
 
 		    $list = [];
@@ -94,7 +101,11 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    }
 
 		    $view->with('warehouseList', $list);
+*/
 		    // $view->with('warehouseList', \App\Warehouse::pluck('name', 'id')->toArray());
+//		    $whList = \App\Warehouse::select('id', DB::raw("concat('[', alias, '] ', notes) as full_name"))->pluck('full_name', 'id')->toArray();
+		    $whList = \App\Warehouse::select('id', DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
+		    $view->with('warehouseList', $whList);
 		    
 		});
 
@@ -153,6 +164,69 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    $view->with('tax_rule_typeList', $list);
 		});
 
+		// Price Lists
+		view()->composer(array('customers.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
+		    
+		    $view->with('price_listList', \App\PriceList::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Price List types
+		view()->composer(array('price_lists._form', 'price_lists.index'), function($view) {
+
+		    $list = \App\PriceList::getTypeList();
+
+		    $view->with('price_list_typeList', $list);
+		});
+
+		// Product types
+		view()->composer(array('products._form_create'), function($view) {
+/*		    
+		    $list = [];
+		    foreach (\App\Product::$types as $type) {
+		    	$list[$type] = l($type, [], 'appmultilang');;
+		    }
+*/
+		    $list = \App\Product::getTypeList();
+
+		    $view->with('product_typeList', $list);
+		    // $view->with('warehouseList', \App\Warehouse::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Product procurement types
+		view()->composer(array('products._form_create', 'products._panel_main_data'), function($view) {
+
+		    $list1 = \App\Product::getProcurementTypeList();
+
+		    $view->with('product_procurementtypeList', $list1);
+		    
+		});
+
+		// Categories
+		view()->composer(array('products.index', 'products.create', 'products._panel_main_data'), function($view) {
+		    
+		    if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
+		    	$tree = [];
+		    	$categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+		    	
+		    	foreach($categories as $category) {
+		    		$tree[$category->name] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+		    		// foreach($category->children as $child) {
+		    			// $tree[$category->name][$child->id] = $child->name;
+		    		// }
+		    	}
+		    	// abi_r($tree, true);
+		    	$view->with('categoryList', $tree);
+
+		    } else {
+		    	// abi_r(\App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
+		    	$view->with('categoryList', \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray());
+		    }
+		    
+		});
+		
+
 		// Months
 		view()->composer(array('customers._panel_commercial'), function($view) {
 		    
@@ -194,70 +268,10 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		}); */
 
-		// Price Lists
-		view()->composer(array('customers.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
-		    
-		    $view->with('price_listList', \App\PriceList::pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Price List types
-		view()->composer(array('price_lists._form', 'price_lists.index'), function($view) {
-
-		    $list = \App\PriceList::getTypeList();
-
-		    $view->with('price_list_typeList', $list);
-		});
-
 		// Invoice Template
 		view()->composer(array('customers.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
 		    
 		    $view->with('customerinvoicetemplateList', \App\Template::where('model_name', '=', '\App\CustomerInvoice')->pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Languages
-		view()->composer(array('users.create', 'users.edit'), function($view) {
-		    
-		    $view->with('languageList', \App\Language::pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Categories
-		view()->composer(array('products.index', 'products.create', 'products._panel_main_data'), function($view) {
-		    
-		    if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
-		    	$tree = [];
-		    	$categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
-		    	
-		    	foreach($categories as $category) {
-		    		$tree[$category->name] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
-		    		// foreach($category->children as $child) {
-		    			// $tree[$category->name][$child->id] = $child->name;
-		    		// }
-		    	}
-		    	// abi_r($tree, true);
-		    	$view->with('categoryList', $tree);
-
-		    } else {
-		    	// abi_r(\App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
-		    	$view->with('categoryList', \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray());
-		    }
-		    
-		});
-
-		// Product types
-		view()->composer(array('products._form_create'), function($view) {
-/*		    
-		    $list = [];
-		    foreach (\App\Product::$types as $type) {
-		    	$list[$type] = l($type, [], 'appmultilang');;
-		    }
-*/
-		    $list = \App\Product::getTypeList();
-
-		    $view->with('product_typeList', $list);
-		    // $view->with('warehouseList', \App\Warehouse::pluck('name', 'id')->toArray());
 		    
 		});
 

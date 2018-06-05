@@ -19,6 +19,21 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Product Procurement Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'purchase'    => 'Compras',				// Via Purchase Order.
+	'manufacture' => 'Fabricación',			// Via Manufacturing Order.
+	'none'        => 'Ninguno',				// One that doesn’t require shipping or stock management (Services, downloads...).
+	'assembly'    => 'Semi-Elaborado',		// Intermediate Product.
+
+
+	/*
+	|--------------------------------------------------------------------------
 	| Tax Rule Types
 	|--------------------------------------------------------------------------
 	|

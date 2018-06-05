@@ -17,6 +17,7 @@ class CreateWarehousesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('alias', 32)->nullable(false);
+			$table->string('name', 64)->nullable();
 
 			$table->text('notes')->nullable();
 

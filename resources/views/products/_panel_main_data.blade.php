@@ -34,6 +34,39 @@
                     {!! Form::select('measure_unit_id', array('0' => l('-- Please, select --', [], 'layouts')) + $measure_unitList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                     {{ l('Product type') }}
+                     {!! Form::text('product_type_name', l($product->product_type, [], 'appmultilang'), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
+                  </div>
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('procurement_type') ? 'has-error' : '' }}"">
+                      {{ l('Procurement type') }}
+                      {!! Form::select('procurement_type', $product_procurementtypeList, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('procurement_type', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+                   <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-phantom_assembly">
+                     {!! Form::label('phantom_assembly', l('Phantom Assembly?'), ['class' => 'control-label']) !!}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('A phantom assembly is a logical (rather than functional) grouping of materials.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('phantom_assembly', '1', false, ['id' => 'phantom_assembly_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('phantom_assembly', '0', true, ['id' => 'phantom_assembly_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
         </div>
 
         <div class="row">
@@ -47,6 +80,11 @@
                      {!! Form::textarea('description', null, array('class' => 'form-control', 'id' => 'description', 'rows' => '3')) !!}
                      {!! $errors->first('description', '<span class="help-block">:message</span>') !!}
                   </div>
+                 <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
+                    {{ l('Category') }}
+                    {!! Form::select('category_id', array('0' => l('-- Please, select --', [], 'layouts')) + $categoryList, null, array('class' => 'form-control')) !!}
+                    {!! $errors->first('category_id', '<span class="help-block">:message</span>') !!}
+                 </div>
         </div>
 
         <div class="row">
@@ -78,11 +116,17 @@
         </div>
 
         <div class="row">
-
+{{--        
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('warranty_period') ? 'has-error' : '' }}">
+                     {{ l('Warranty period') }}
+                     {!! Form::text('warranty_period', null, array('class' => 'form-control', 'id' => 'warranty_period')) !!}
+                     {!! $errors->first('warranty_period', '<span class="help-block">:message</span>') !!}
+                  </div>
+--}}
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('quantity_decimal_places') ? 'has-error' : '' }}">
                       {{ l('Quantity decimals') }}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                      data-content="{{ l('La cantidad del producto se expresa con estos decimales') }}">
+                                      data-content="{{ l('La cantidad del producto se expresa con estos decimales.') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
                            </a>
                       {!! Form::select('quantity_decimal_places', array('0' => '0', '1' => '1', '2' => '2', '3' => '3' ), null, array('class' => 'form-control')) !!}

@@ -61,9 +61,66 @@ class ProductsController extends Controller {
 
         $action = $request->input('nextAction', '');
 
-        $this->validate( $request, Product::$rules['create'] );
+        $rules = Product::$rules['create'];
 
+        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+            unset($rules['price']);
+        else 
+            unset($rules['price_tax_inc']);
+
+        $this->validate($request, $rules);
+
+        $tax = \App\Tax::find( $request->input('tax_id') );
+        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ){
+            $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
+            $request->merge( ['price' => $price] );
+        } else {
+            $price_tax_inc = $request->input('price')*(1.0+($tax->percent/100.0));
+            $request->merge( ['price_tax_inc' => $price_tax_inc] );
+        }
+
+
+        // Create Product
         $product = $this->product->create($request->all());
+
+
+        // Stock Movement
+        if ($request->input('quantity_onhand')>0) 
+        {
+            // Create stock movement (Initial Stock)
+            $data = [   'date' =>  \Carbon\Carbon::now(), 
+                        'document_reference' => '', 
+                        'price' => $request->input('price'), 
+    //                    'price_tax_inc' => $request->input('price_tax_inc'), 
+                        'quantity' => $request->input('quantity_onhand'),  
+                        'notes' => '',
+                        'product_id' => $product->id, 
+                        'currency_id' => \App\Context::getContext()->currency->id, 
+                        'conversion_rate' => \App\Context::getContext()->currency->conversion_rate, 
+                        'warehouse_id' => $request->input('warehouse_id'), 
+                        'movement_type_id' => 10,
+                        'model_name' => '', 'document_id' => 0, 'document_line_id' => 0, 'combination_id' => 0, 'user_id' => \Auth::id()
+            ];
+    
+            // Initial Stock
+            $stockmovement = \App\StockMovement::create( $data );
+    
+            // Stock movement fulfillment (perform stock movements)
+            $stockmovement->process();
+        }
+
+
+        // Prices according to Ptice Lists
+        $plists = \App\PriceList::get();
+
+        foreach ($plists as $list) {
+
+            $price = $list->calculatePrice( $product );
+            // $product->pricelists()->attach($list->id, array('price' => $price));
+            $line = \App\PriceListLine::create( [ 'product_id' => $product->id, 'price' => $price ] );
+
+            $list->pricelistlines()->save($line);
+        }
 
 
         if ($action == 'completeProductData')
@@ -94,13 +151,42 @@ class ProductsController extends Controller {
     public function edit($id)
     {
         $product = $this->product
+                        ->with('tax')
+                        ->with('warehouses')
+                        ->with('combinations')
+                        ->with('combinations.options')
+                        ->with('combinations.options.optiongroup')
                         ->isManufactured()
                         ->with('measureunit')
+                        ->with('pricelists')
                         ->findOrFail($id);
 
+        
+        // BOMs
         $bom = $product->bom();
 
-        return view('products.edit', compact('product', 'bom'));
+        
+        // Gather Attributte Groups
+        $groups = array();
+
+        if ( $product->combinations->count() )
+        {
+            foreach ($product->combinations as $combination) {
+                foreach ($combination->options as $option) {
+                    $groups[$option->optiongroup->id]['name'] = $option->optiongroup->name;
+                    $groups[$option->optiongroup->id]['values'][$option->optiongroup->id.'_'.$option->id] = $option->name;
+                }
+            }
+        } else {
+            $groups = \App\OptionGroup::has('options')->orderby('position', 'asc')->pluck('name', 'id');
+        }
+
+        
+        // Price Lists
+        // See: https://stackoverflow.com/questions/44029961/laravel-search-relation-including-null-in-wherehas
+        $pricelists = $product->pricelists; //  \App\PriceList::with('currency')->orderBy('id', 'ASC')->get();
+
+        return view('products.edit', compact('product', 'bom', 'groups', 'pricelists'));
     }
 
     /**

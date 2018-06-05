@@ -65,6 +65,9 @@ class ProductImagesController extends Controller {
 		
         $product->images()->save($image);
 
+        if ( $request->input('is_featured') || ($product->images()->count() == 1) )
+        	$product->setFeaturedImage( $image );
+
         return redirect('products/'.$productId.'/edit'.'#'.$request->input('tab_name'))
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $image->id], 'layouts') . $image->caption);
 	}
@@ -103,12 +106,16 @@ class ProductImagesController extends Controller {
 	public function update($productId, $id, Request $request)
 	{
 		// Combinations may own one or more images -> Many to many relation ahead! <- Pero sólo de las imágenes que pertenecen al Product padre!!!
+        $product = $this->product->findOrFail($productId);
 
 		$image = Image::findOrFail($id);
 
 		$this->validate($request, Image::$rules);
 
 		$image->update($request->all());
+
+        if ( $request->input('is_featured') || ($product->images()->count() == 1) )
+        	$product->setFeaturedImage( $image );
 
         return redirect('products/'.$productId.'/edit'.'#images')
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $image->id], 'layouts') . $image->caption);

@@ -28,9 +28,11 @@ return [
 	'Price List Type'     => 'Tipo de Tarifa',
 	'Amount'     => 'Cantidad',
 
-	'Price is Tax Included?'     => 'El Precio es con Impuestos incluidos?',
-	'Tax Included'      => 'Impuestos incluidos',
+	'Price is Tax Included?'     => 'El Precio es con IVA incluido?',
+	'Tax Included'      => 'IVA incluido',
 	'Currency'     => 'Divisa',
+	
+	''     => '',
 
 
 	/*

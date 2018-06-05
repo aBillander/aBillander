@@ -54,6 +54,8 @@ class WarehousesController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+		$request->merge( ['alias' => $request->input('address.alias'), 'name' => $request->input('address.name_commercial')] );
+
 		$this->validate($request, $this->warehouse::$rules);
 		$this->validate($request, $this->address::related_rules());
 
@@ -111,6 +113,8 @@ class WarehousesController extends Controller {
 	 */
 	public function update($id, Request $request)
 	{
+		$request->merge( ['alias' => $request->input('address.alias'), 'name' => $request->input('address.name_commercial')] );
+		
 		$this->validate($request, $this->warehouse::$rules);
 		$this->validate($request, $this->address::related_rules());
 

@@ -29,8 +29,8 @@ class Product extends Model {
     public static $procurement_types = array(
             'purchase', 
             'manufacture', 
-            'none', 
             'assembly',
+            'none', 
         );
 
     protected $dates = ['deleted_at'];
@@ -40,6 +40,7 @@ class Product extends Model {
     protected $fillable = [ 'product_type', 'procurement_type', 
                             'name', 'reference', 'ean13', 'description', 'description_short', 
                             'quantity_decimal_places', 'manufacturing_batch_size',
+//                            'warranty_period', 
 
                             'reorder_point', 'maximum_stock', 'price', 'price_tax_inc', 'cost_price', 
                             'supplier_reference', 'supply_lead_time',  
@@ -48,7 +49,7 @@ class Product extends Model {
 
                             'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 
 
-                            'tax_id', 'measure_unit_id', 'category_id', 'main_supplier_id', 
+                            'tax_id', 'category_id', 'main_supplier_id', 
 
                             'measure_unit_id', 'work_center_id', 'route_notes',
                           ];
@@ -70,7 +71,7 @@ class Product extends Model {
                             'tax_id'       => 'exists:taxes,id',
                             'category_id'  => 'exists:categories,id',
                             'quantity_onhand' => 'nullable|numeric|min:0',
-                            'warehouse_id' => 'required_with:quantity_onhand',
+                            'warehouse_id' => 'required_with:quantity_onhand|exists:warehouses,id',
                     ),
         'main_data' => array(
                             'name'        => 'required|min:2|max:128',
@@ -202,6 +203,33 @@ class Product extends Model {
         return $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
     }
 
+    public function setFeaturedImage( \App\Image $image )
+    { 
+        $featured = $image->id;
+
+        $images = $this->images;
+
+        $images->map(function ($item, $key) use ($featured) {
+            if ($item->id == $featured) {
+                if (!$item->is_featured) {
+                    $item->is_featured = 1;
+                    $item->save();
+                }
+            } else {
+                if ($item->is_featured) {
+                    $item->is_featured = 0;
+                    $item->save();
+                }
+
+            }
+
+            return $item;
+        });
+
+
+        return true;
+    }
+
     public static function getTypeList()
     {
             $list = [];
@@ -285,12 +313,20 @@ class Product extends Model {
     {
         return $this->belongsToMany('App\Warehouse')->withPivot('quantity')->withTimestamps();
     }
-/*    
+
+    public function pricelistlines()
+    {
+        return $this->hasMany('App\PriceListLine');
+    }
+
     public function pricelists()
     {
-        return $this->belongsToMany('App\PriceList', 'price_list_product', 'product_id', 'price_list_id')->withPivot('price')->withTimestamps();
+        return $this->belongsToMany('App\PriceList', 'price_list_lines', 'product_id', 'price_list_id')->as('pricelistline')->withPivot('price')->withTimestamps();
+
+//        return $this->belongsToMany('App\PriceList', 'price_list_product', 'product_id', 'price_list_id')->withPivot('price')->withTimestamps();
     }
     
+/*    
     public function pricelist( $list_id = null )
     {
         if ( $list_id > 0 )
@@ -301,7 +337,7 @@ class Product extends Model {
     {
         return $this->hasMany('App\Price');
     }
-*/
+
 
 
     /*
@@ -442,5 +478,40 @@ class Product extends Model {
     public function scopeIsPurchased($query)
     {
         return $query->where('procurement_type', 'purchase');
+    }
+
+    public function scopeQualifyForCustomer($query, $customer_id, $currency_id) 
+    {
+        // Filter Products by Customer
+        if ( \App\Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' ) 
+        {
+            $customer = \App\Customer::with('customergroup')->findorfail($customer_id);
+
+            if ( !($currency_id) ) 
+                $currency_id = \App\Context::getContext()->currency->id;
+
+            if ($customer->price_list_id)
+            {
+                $price_list_id = $customer->price_list_id;
+
+                return $query->whereHas('pricelists', function($query) use ($price_list_id, $currency_id) {
+                    $query->where('price_lists.id', $price_list_id)->where('price_lists.currency_id', $currency_id);
+                });
+
+//                return $query->with('pricelists')->where('price_lists.id', $customer->price_list_id);
+            }
+
+            if ($customer->customergroup && $customer->customergroup->price_list_id)
+            {
+                $price_list_id = $customer->customergroup->price_list_id;
+
+                return $query->whereHas('pricelists', function($query) use ($price_list_id, $currency_id) {
+                    $query->where('price_lists.id', $price_list_id)->where('price_lists.currency_id', $currency_id);
+                });
+            }
+
+        }
+
+        return $query;
     }
 }

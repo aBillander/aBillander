@@ -239,7 +239,7 @@ class ProductionSheetsController extends Controller
                         'reference' => $item['sku'],
                         'quantity_decimal_places' => \App\Configuration::get('DEF_QUANTITY_DECIMALS'),
                         'manufacturing_batch_size' => 1,
-                        'measure_unit_id' => \App\Configuration::get('DEF_MEASURE_UNIT_4_PRODUCTS'),
+                        'measure_unit_id' => \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
 
                     ]);
 

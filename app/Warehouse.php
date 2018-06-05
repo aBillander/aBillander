@@ -11,11 +11,12 @@ class Warehouse extends Model {
 
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['alias', 'notes', 'active'];
+    protected $fillable = ['alias', 'name', 'notes', 'active'];
 
     // Add your validation rules here
     public static $rules = array(
         'alias' => 'required|min:2|max:32',
+        'name' => 'required',
     	);
 
 
@@ -30,9 +31,10 @@ class Warehouse extends Model {
         // See: https://stackoverflow.com/questions/22012877/laravel-eloquent-polymorphic-one-to-one
         // https://laracasts.com/discuss/channels/general-discussion/one-to-one-polymorphic-inverse-relationship-with-existing-database
         return $this->hasOne('App\Address', 'addressable_id','id')
-                   ->where('addressable_type', 'App\Warehouse');
+                   ->where('addressable_type', Warehouse::class);
     }
-    
+
+    // Needed to store related address
     public function addresses()
     {
         return $this->morphMany('App\Address', 'addressable');

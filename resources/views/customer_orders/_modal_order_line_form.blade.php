@@ -47,12 +47,12 @@
 
         <div class="row" id="product-search-autocomplete">
 
-                  <div class="form-group col-lg-8 col-md-8 col-sm-8">
+                  <div class="form-group col-lg-7 col-md-7 col-sm-7">
                      {{ l('Product name') }}
                      {!! Form::text('line_autoproduct_name', null, array('class' => 'form-control', 'id' => 'line_autoproduct_name', 'onclick' => 'this.select()')) !!}
                   </div>
 
-                 <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                 <div class="form-group col-lg-3 col-md-3 col-sm-3">
                     {{ l('Tax') }}
                     <div id="line_tax_label" class="form-control"></div>
                     {{ Form::hidden('line_tax_percent', null, array('id' => 'line_tax_percent')) }}

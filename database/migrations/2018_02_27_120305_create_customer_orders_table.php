@@ -47,12 +47,20 @@ class CreateCustomerOrdersTable extends Migration
             $table->dateTime('date_delivered')->nullable();
             $table->dateTime('date_invoiced')->nullable();
             $table->dateTime('date_closed')->nullable();
+
+            $table->date('printed_at')->nullable();                             // Printed at
+            $table->date('edocument_sent_at')->nullable();                      // Electronic document sent at
+            $table->date('customer_viewed_at')->nullable();                     // Customer retrieved document / (invoice) from online customer center
+            $table->date('posted_at')->nullable();                              // Recorded (in account, General Ledger) at
 */
 
             $table->decimal('document_discount_percent', 20, 6)->default(0.0);  // Order/Document discount Percent
             $table->decimal('document_discount_amount_tax_incl', 20, 6)->default(0.0);   // Order/Document discount Amount
             $table->decimal('document_discount_amount_tax_excl', 20, 6)->default(0.0);
+
+            $table->smallInteger('number_of_packages')->unsigned()->default(1);
             $table->text('shipping_conditions')->nullable();                    // For Shipping Slip!
+            $table->string('tracking_number')->nullable();                      // For Shipping Slip!
 
             $table->decimal('currency_conversion_rate', 20, 6)->default(1.0);
             $table->decimal('down_payment', 20, 6)->default(0.0);               // Payment before issue invoice
@@ -75,14 +83,10 @@ class CreateCustomerOrdersTable extends Migration
             $table->decimal('total_tax_excl', 20, 6)->default(0.0);
 
             $table->decimal('commission_amount', 20, 6)->default(0.0);          // Sales Representative commission amount
-            
-//            $table->text('customer')->nullable();      // Customer data: name, address, phone
 
-            $table->text('customer_note')->nullable();          // Notes FROM the Customer
+            $table->text('notes_from_customer')->nullable();          // Notes FROM the Customer
             $table->text('notes')->nullable();                  // Private notes ( notes to self ;) )
             $table->text('notes_to_customer')->nullable();      // Notes for the Customer
-
-//            $table->string('status', 32)->nullable();
 
 //          $table->enum('status', array('draft', 'confirmed', 'closed', 'canceled'))->default('draft');
             $table->string('status', 32)->nullable(false)->default('draft');
@@ -97,6 +101,8 @@ class CreateCustomerOrdersTable extends Migration
             $table->integer('currency_id')->unsigned()->nullable(false);
             $table->integer('payment_method_id')->unsigned()->nullable(false);
             $table->integer('template_id')->nullable();
+
+            $table->integer('parent_document_id')->unsigned()->nullable();      // Parent of Order is Quotation
 
 //            $table->dateTime('production_at')->nullable();                      // Scheduled to Production
             $table->integer('production_sheet_id')->unsigned()->nullable();

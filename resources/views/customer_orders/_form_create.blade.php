@@ -284,50 +284,8 @@ function get_currency_rate(currency_id)
 //            appendTo : "#modalProductionOrder",
 
             select : function(key, value) {
-                var str = '[' + value.item.identification+'] ' + value.item.name_fiscal;
 
-                $("#order_autocustomer_name").val(str);
-                $('#customer_id').val(value.item.id);
-                if (value.item.sales_equalization > 0) {
-                    $('#sales_equalization').show();
-                } else {
-                    $('#sales_equalization').hide();
-                }
-
-//                $('#sequence_id').val(value.item.work_center_id);
-                $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
-                $('#delivery_date_form').val('');
-
-                if ( value.item.payment_method_id > 0 ) {
-                  $('#payment_method_id').val(value.item.payment_method_id);
-                } else {
-                  $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
-                }
-
-                $('#currency_id').val(value.item.currency_id);
-                $('#currency_conversion_rate').val(value.item.currency.conversion_rate);
-                $('#down_payment').val('0.0');
-
-                $('#invoicing_address_id').val(value.item.invoicing_address_id);
-
-                // https://www.youtube.com/watch?v=FHQh-IGT7KQ
-                $('#shipping_address_id').empty();
-
-//                $('#shipping_address_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
-
-                $.each(value.item.addresses, function(index, element){
-                  $('#shipping_address_id').append('<option value="'+ element.id +'">'+ element.alias +'</option>');
-                });
-
-                if ( value.item.shipping_address_id > 0 ) {
-                  $('#shipping_address_id').val(value.item.shipping_address_id);
-                } else {
-                  $('#shipping_address_id').val(value.item.invoicing_address_id);
-                }
-
-                $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
-                $('#carrier_id').val(value.item.carrier_id);
-                $('#sales_rep_id').val(value.item.sales_rep_id);
+                getCustomerData( value.item.id );
 
                 return false;
             }
@@ -336,6 +294,74 @@ function get_currency_rate(currency_id)
                 .append( '<div>[' + item.identification+'] ' + item.name_fiscal + "</div>" )
                 .appendTo( ul );
             };
+
+
+        function getCustomerData( customer_id )
+        {
+            var token = "{{ csrf_token() }}";
+
+            $.ajax({
+                url: "{{ route('customerorders.ajax.customerLookup') }}",
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    customer_id: customer_id
+                },
+                success: function (response) {
+                    var str = '[' + response.identification+'] ' + response.name_fiscal;
+
+                    $("#order_autocustomer_name").val(str);
+                    $('#customer_id').val(response.id);
+                    if (response.sales_equalization > 0) {
+                        $('#sales_equalization').show();
+                    } else {
+                        $('#sales_equalization').hide();
+                    }
+
+    //                $('#sequence_id').val(response.work_center_id);
+                    $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
+                    $('#delivery_date_form').val('');
+
+                    if ( response.payment_method_id > 0 ) {
+                      $('#payment_method_id').val(response.payment_method_id);
+                    } else {
+                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
+                    }
+
+                    $('#currency_id').val(response.currency_id);
+                    $('#currency_conversion_rate').val(response.currency.conversion_rate);
+                    $('#down_payment').val('0.0');
+
+                    $('#invoicing_address_id').val(response.invoicing_address_id);
+
+                    // https://www.youtube.com/watch?v=FHQh-IGT7KQ
+                    $('#shipping_address_id').empty();
+
+    //                $('#shipping_address_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
+
+                    $.each(response.addresses, function(index, element){
+                      $('#shipping_address_id').append('<option value="'+ element.id +'">'+ element.alias +'</option>');
+                    });
+
+                    if ( response.shipping_address_id > 0 ) {
+                      $('#shipping_address_id').val(response.shipping_address_id);
+                    } else {
+                      $('#shipping_address_id').val(response.invoicing_address_id);
+                    }
+
+                    $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
+                    $('#carrier_id').val(response.carrier_id);
+                    $('#sales_rep_id').val(response.sales_rep_id);
+
+                    console.log(response);
+                }
+            });
+        }
+
+        @if ($customer_id ?? 0)
+            getCustomerData( {{ $customer_id }} );
+        @endif
 
     });
 

@@ -96,7 +96,7 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
             {{ l('Shipping Address') }}
-            {!! Form::select('shipping_address_id', $customer->getAddressList(), null, array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
+            {!! Form::select('shipping_address_id', $customer->getAddressList(), null, array('class' => 'form-control', 'id' => 'shipping_address_id', 'onchange' => 'set_invoicing_address($(this).val())')) !!}
             {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
          </div>
          
@@ -423,7 +423,7 @@
         });
 
         $("#line_autoproduct_name").autocomplete({
-            source : "{{ route('customerorderline.searchproduct') }}",
+            source : "{{ route('customerorderline.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id"+$('#currency_id').val(),
             minLength : 1,
             appendTo : "#modal_order_line",
 
@@ -464,6 +464,9 @@
                     taxing_address_id: $("#taxing_address_id").val()
                 },
                 success: function (response) {
+                    
+                    if ($.isEmptyObject(response)) alert('Producto vacío!!!');
+
                     PRICE_DECIMAL_PLACES = response.currency.decimalPlaces;
                     $('#line_cost_price').val(response.cost_price);
                     $('#line_unit_price').val(response.unit_price.display);
@@ -558,6 +561,49 @@
         });
 
     </script>
+
+
+
+
+
+<script>
+
+
+function set_invoicing_address()
+{
+  @if ( \App\Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') )
+
+    var theValue = $('#shipping_address_id').val();
+
+    $("#taxing_address_id").val(theValue);
+
+  @endif
+}
+
+
+function get_currency_rate(currency_id)
+{
+    var pload = '';
+
+    pload = pload + "currency_id="+currency_id;
+    pload = pload + "&_token="+$('[name="_token"]').val();
+
+   $.ajax({
+      type: 'POST',
+      url: '{{ route('currencies.ajax.rateLookup') }}',
+      dataType: 'html',
+      data: pload,
+      success: function(data) {
+         var theHTML = data;
+         if ( theHTML == '' ) {
+              theHTML = '<div class="alert alert-warning alert-block"><i class="fa fa-warning"></i> {{l('No records found', [], 'layouts')}}</div>';
+         }
+         $("#currency_conversion_rate").val(theHTML);
+      }
+   });
+}
+
+</script>
 
 
 

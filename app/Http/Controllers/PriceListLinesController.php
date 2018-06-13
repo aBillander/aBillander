@@ -28,9 +28,21 @@ class PriceListLinesController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
-	{
-		// 
+	public function index($pricelistId)
+    {
+        $list  = $this->pricelist->findOrFail($pricelistId);
+        $lines = $this->pricelistline
+                    	->select('price_list_lines.*')
+        				->with('product')
+        				->where('price_list_id', $pricelistId)
+        				->join('products', 'products.id', '=', 'price_list_lines.product_id')		// Get field to order by
+        				->orderBy('products.name', 'asc');
+
+        $lines = $lines->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        $lines->setPath('pricelistlines');
+
+        return view('price_list_lines.index', compact('list', 'lines'));
 	}
 
 	/**
@@ -41,7 +53,9 @@ class PriceListLinesController extends Controller {
 	 */
 	public function create($pricelistId)
 	{
-		// 
+        $list  = $this->pricelist->findOrFail($pricelistId);
+
+        return view('price_list_lines.create', compact('list'));
 	}
 
 	/**
@@ -52,7 +66,16 @@ class PriceListLinesController extends Controller {
 	 */
 	public function store($pricelistId, Request $request)
 	{
-		//
+		$list = $this->pricelist->findOrFail($pricelistId);
+
+		$this->validate($request, PriceListLine::$rules);
+
+		$line = $this->pricelistline->create($request->all());
+
+		$list->pricelistlines()->save($line);
+
+		return redirect(route('pricelists.pricelistlines.index',$pricelistId))
+				->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $line->id], 'layouts'));
 
 	}
 
@@ -63,9 +86,9 @@ class PriceListLinesController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show($pricelistId, $id)
 	{
-        //
+        return $this->edit($pricelistId, $id);
 	}
 
 	/**
@@ -75,20 +98,12 @@ class PriceListLinesController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id, Request $request)
+	public function edit($pricelistId, $id)
 	{
-		$price = $this->pricelistline
-                      ->with('pricelist')
-                      ->with('product')
-                      ->with('product.tax')
-                      ->find($id);
+        $list = $this->pricelist->findOrFail($pricelistId);
+        $line = $this->pricelistline->with('product')->findOrFail($id);
 
-		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
-
-		if ( ($price->pricelist->type == 'price') AND $price->pricelist->price_is_tax_inc )
-			$price->price = $price->price / (1.0+($price->product->tax->percent/100.0));
-
-		return view('price_list_lines.edit', compact('price', 'back_route'));
+        return view('price_list_lines.edit', compact('list', 'line'));
 	}
 
 	/**
@@ -98,24 +113,21 @@ class PriceListLinesController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id, Request $request)
+	public function update($pricelistId, $id, Request $request)
 	{
-		$price = $this->pricelistline
-                      ->with('pricelist')
-                      ->findOrFail($id);
+		$line = $this->pricelistline->findOrFail($id);
 
-		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '404' ;
+		if ($line->price_list_id != $pricelistId)
+			return redirect()->back()
+				->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 
-        // $this->validate($request, Price::related_rules());
-		$price->price = ( ($price->pricelist->type == 'price') AND $price->pricelist->price_is_tax_inc ) 
-						? $request->input('price_tax_inc')
-						: $request->input('price') ;
 
-		$price->save();
+		$this->validate($request, PriceListLine::$rules);
 
-        return redirect($back_route)
-            ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $price->id], 'layouts') );
+		$line->update(['price' => $request->input('price')]);
 
+		return redirect(route('pricelists.pricelistlines.index',$pricelistId))
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 
 	/**
@@ -125,9 +137,38 @@ class PriceListLinesController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy($pricelistId, $id)
     {
-        // 
+        $this->pricelistline->findOrFail($id)->delete();
+
+        return redirect(route('pricelists.pricelistlines.index',$pricelistId))
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+    public function searchProduct($id, Request $request)
+    {
+        $search = $request->term;
+
+        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+                                ->where(   'name',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
+                                ->isManufactured()
+                                ->qualifyForPriceList( $id )
+//                                ->with('measureunit')
+//                                ->toSql();
+                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+
+
+//                                dd($products);
+
+        return response( $products );
+    }
 
 }

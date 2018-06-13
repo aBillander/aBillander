@@ -11,8 +11,7 @@ return [
 	|
 	*/
 
-	'Options' => 'Opciones',
-	'Back to Option Groups'     => 'Volver a Grupos de Opciones',
+	'Bill of Materials'     => 'Lista de Materiales',
 	'Option Groups' => 'Grupos de Opciones',
 	'BOM Name' => 'BOM Nombre',
 	'Quantity' => 'Cantidad',
@@ -30,7 +29,7 @@ return [
 	|
 	*/
 
-	'Options - Create' => 'Opciones - Crear',
+	'Bill of Materials - Create' => 'BOM - Crear',
 	'New Option'     => 'Nueva Opción',
 	'Option Name'     => 'Nombre de la Opción',
 	'Position'     => 'Posición',
@@ -47,7 +46,7 @@ return [
 	|
 	*/
 
-	'Options - Edit'     => 'Opciones - Modificar',
+	'Bill of Materials - Edit'     => 'BOM - Modificar',
 	'Edit Option'     => 'Modificar Opción',
 	'Name'     => 'Nombre',
 	'Product'     => 'Ingrediente',

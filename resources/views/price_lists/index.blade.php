@@ -42,6 +42,8 @@
             <td class="text-right">
                 @if (  is_null($pricelist->deleted_at))
 
+                <a class="btn btn-sm btn-blue" href="{{ URL::to('pricelists/' . $pricelist->id . '/pricelistlines') }}" title="{{l('Show Price List Lines')}}"><i class="fa fa-folder-open-o"></i></a>
+                
                 <div class="btn-group">
                   <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> {{l('Actions', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu" xstyle="color: #333333; background-color: #ffffff;">

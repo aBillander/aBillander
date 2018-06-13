@@ -18,7 +18,7 @@ class CreateCustomerOrderLinesTable extends Migration
         Schema::create('customer_order_lines', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('line_sort_order')->nullable();         // To sort lines 
-            $table->string('line_type', 32)->nullable(false);       // product, service, exotaxes, shipping, discount, comment
+            $table->string('line_type', 32)->nullable(false);       // product, service, ecotaxes, shipping, discount, comment
 /*
             $table->integer('product_id')->unsigned()->nullable(false);
             $table->integer('woo_product_id')->unsigned()->nullable();
@@ -33,7 +33,9 @@ class CreateCustomerOrderLinesTable extends Migration
             $table->integer('combination_id')->unsigned()->nullable();
             $table->string('reference', 32)->nullable();
             $table->string('name', 128)->nullable(false);
+            
             $table->decimal('quantity', 20, 6);
+            $table->integer('measure_unit_id')->unsigned()->nullable(false);
 
             $table->decimal('cost_price', 20, 6)->default(0.0);
             $table->decimal('unit_price', 20, 6)->default(0.0);                 // From Product data (initial price)

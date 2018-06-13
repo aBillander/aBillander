@@ -85,6 +85,8 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('users', 'UsersController');
 
+        Route::resource('templates', 'TemplatesController');
+
         Route::resource('currencies', 'CurrenciesController');
         Route::get('currencies/{id}/exchange',   array('uses'=>'CurrenciesController@exchange', 
                                                                 'as' => 'currencies.exchange' ) );  
@@ -185,10 +187,19 @@ Route::group(['middleware' =>  ['auth']], function()
 
         
 
-        Route::resource('pricelists',     'PriceListsController');
-        Route::resource('pricelistlines', 'PriceListLinesController');
+        Route::resource('pricelists',                'PriceListsController');
+        Route::resource('pricelists.pricelistlines', 'PriceListLinesController');
+        Route::get('pricelists/{id}/pricelistline/searchproduct', 'PriceListLinesController@searchProduct')->name('pricelistline.searchproduct');
+        // Edit Price list Line in Product Controller
+        Route::resource('pricelistlines', 'PriceListLineController');
 
         Route::resource('images', 'ImagesController');
+
+
+        // Import to Database
+        Route::get('import/pricelists/{id}', 'Import\ImportPriceListsController@import')->name('pricelist.import');
+        Route::get('import/products', 'Import\ImportProductsController@import')->name('products.import');
+        Route::post('import/products', 'Import\ImportProductsController@process')->name('products.import.process');
 
 });
 

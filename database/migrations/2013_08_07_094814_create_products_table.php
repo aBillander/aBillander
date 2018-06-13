@@ -20,13 +20,13 @@ class CreateProductsTable extends Migration {
 			$table->increments('id');
 //			$table->enum('product_type', \App\Product::$types)->default('simple');
 			$table->string('product_type', 32)->nullable(false)->default('simple');
-			// 'simple'     => a collection of related products that can be purchased individually and only 
-							// consist of simple products. Simple products are shipped and have no combitions.
+			// 'simple'     => A simple product is a unique, stand-alone, physical product that you may have 
+							// to ship to the customer. Simple products are shipped and have no combitions.
 			// 'virtual'    => one that doesn’t require shipping or stock management (Services, downloads...).
-			// 'combinable' => a product with combitions, each of which may have a different SKU, price, stock 
-							// option, etc.
-			// 'grouped'    => a collection of related products that can be purchased individually and only 
-							// consist of simple products. 
+			// 'combinable' => a product that has combitions, each of which may have a different SKU, price, stock 
+							// option, etc. Eg: A shirt or t-shirt with different sizes and different colors.
+			// 'grouped'    => a collection of related products clubbed together to form a single entity.  
+							// Consist of simple products that can be purchased individually. 
 
 			$table->string('procurement_type', 32)->nullable(false)->default('simple');
 			// 'purchase'    => Via Purchase Order.

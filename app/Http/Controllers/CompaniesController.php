@@ -47,7 +47,7 @@ class CompaniesController extends Controller {
 	 */
 	public function create()
 	{
-        return View::make('companies.create');
+ //       return View::make('companies.create');
 
         if ( Configuration::get('DEF_COMPANY') > 0 ) {
         	// Company already created
@@ -143,9 +143,10 @@ class CompaniesController extends Controller {
 	            unlink( $old_file );
       		}
 
+      		$request->merge([ 'company_logo' => $filename ]);
 		}
 
-		$request->merge(['company_logo' => $filename, 'notes' => $request->input('address.notes'), 'name_commercial' => $request->input('address.name_commercial')]);
+		$request->merge(['notes' => $request->input('address.notes'), 'name_commercial' => $request->input('address.name_commercial')]);
 		
 		$company->update(  $request->all()  );
 

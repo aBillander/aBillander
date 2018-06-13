@@ -42,8 +42,15 @@
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {{-- !! Form::label('category_id', l('Category')) !! }
-        { !! Form::select('category_id', array('0' => l('All', [], 'layouts')) + $categoryList, null, array('class' => 'form-control')) !! --}}
+    {!! Form::label('stock', l('Stock')) !!}
+    {!! Form::select('stock', array('-1' => l('All', [], 'layouts'),
+                                          '0'  => l('No' , [], 'layouts'),
+                                          '1'  => l('Yes', [], 'layouts'),
+                                          ), null, array('class' => 'form-control')) !!}
+</div>
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('category_id', l('Category')) !!}
+    {!! Form::select('category_id', array('0' => l('All', [], 'layouts')) + $categoryList, null, array('class' => 'form-control')) !!}
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
@@ -80,10 +87,21 @@
 			<th>{{ l('Reference') }}</th>
 			<th>{{ l('Product Name') }}</th>
 			<th>{{ l('Measure Unit') }}</th>
+            <th>{{ l('Stock') }}</th>
+            <th>{{ l('Cost Price') }}</th>
+            <th>{{ l('Customer Price') }}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                        data-content="{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                                    l('Prices are entered inclusive of tax', [], 'appmultilang') :
+                                    l('Prices are entered exclusive of tax', [], 'appmultilang') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
+            <th>{{ l('Tax') }}</th>
+            <!-- th>{{ l('Tax') }} (%)</th -->
+            <th>{{ l('Category') }}</th>
             <th>{{ l('Quantity decimals') }}</th>
             <th>{{ l('Manufacturing Batch Size') }}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
-            <!-- th>{{ l('Category') }}</th -->
 			<th class="text-center">{{l('Active', [], 'layouts')}}</th>
 			<th class="text-right"> </th>
 		</tr>
@@ -92,11 +110,17 @@
 	@foreach ($products as $product)
 		<tr>
 			<td>{{ $product->id }}</td>
-			<td>@if ($product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
+			<td title="{{ $product->id }}">@if ($product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
                 @else {{ $product->reference }}
                 @endif</td>
 			<td>{{ $product->name }}</td>
 			<td>{{ $product->measureunit->name }}</td>
+            <td>{{ $product->as_quantity('quantity_onhand') }}</td>
+            <td>{{ $product->as_price('cost_price') }}</td>
+            <td>{{ $product->displayPrice }}</td>
+            <td>{{ $product->tax->name }}</td>
+            <!-- td>{{ $product->as_percentable($product->tax->percent) }}</td -->
+            <td>@if (isset($product->category)) {{ $product->category->name }} @else - @endif</td>
             <td>{{ $product->quantity_decimal_places }}</td>
             <td>{{ $product->manufacturing_batch_size }}</td>
             <td class="text-center">
@@ -108,9 +132,8 @@
                     </button>
                  </a>
                 @endif</td>
-            <!-- td>@ if (isset($product->category->name)) { { $product->category->name } } @ endif</td -->
 			<td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
-           <td class="text-right">
+           <td class="text-right button-pad">
                 @if (  is_null($product->deleted_at))
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 

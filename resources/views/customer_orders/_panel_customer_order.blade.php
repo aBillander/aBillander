@@ -1,7 +1,7 @@
 
 <div id="panel_customer_order"> 
 
-<div class="panel panel-primary" id="panel_update_order">
+<div class="panel panel-info" id="panel_update_order">
 
    <div class="panel-heading">
       <h3 class="panel-title collapsed" data-toggle="collapse" data-target="#header_data">{{ l('Header Data') }} :: <span class="label label-warning" title="{{ l('Order Date') }}">{{ $order->document_date_form }}</span> - <span class="label label-info" title="{{ l('Delivery Date') }}">{{ $order->delivery_date_form ?? ' -- / -- / -- '}}</span></h3>
@@ -67,6 +67,8 @@
             {{ l('Currency') }}
             {!! Form::select('currency_id', $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id', 'onchange' => 'get_currency_rate($("#currency_id").val())')) !!}
             {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
+
+            {!! Form::hidden('currency_decimalPlaces', $order->currency->decimalPlaces, array('id' => 'currency_decimalPlaces')) !!}
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
@@ -170,6 +172,8 @@
 
 @include('customer_orders._modal_order_line_form')
 
+@include('customer_orders._modal_product_order_line_form')
+
 @include('customer_orders._modal_order_line_delete')
 
 <!-- Order Lines ENDS -->
@@ -226,30 +230,93 @@
               return false;
           });
 
-          $(document).on('click', '.edit-bom-line', function(evnt) {
+          $(document).on('click', '.edit-order-line', function(evnt) {
               var id = $(this).attr('data-id');
-              var url = "{ { route('productbom.getline', [$bom->id, '']) } }/"+id;
+              var line_type = $(this).attr('data-type');
+              var url = "{{ route('customerorder.getline', [$order->id, '']) }}/"+id;
               var label = '';
 
-               $.get(url, function(result){
-                    label = '['+result.product.reference+'] '+result.product.name;
-                    $('#modal_order_line_Label').text(label);
+              PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
 
-                    $('#line_id').val(result.id);
-                    $('#line_sort_order').val(result.line_sort_order);
-                    $('#line_product_id').val(result.product_id);
-                    $('#line_quantity').val(result.quantity);
-                    $('#line_measure_unit_id').val(result.measure_unit_id);
-                    $('#line_scrap').val(result.scrap);
-                    $('#line_notes').val(result.notes);
+              if ( line_type == 'product' )
+              {
+                  $.get(url, function(result){
+                        var label = '['+result.product.reference+'] '+result.product.name+' ('+result.measureunit.name+')';
+                        var QUANTITY_DECIMAL_PLACES = result.product.quantity_decimal_places;
 
-//                    console.log(result);
-               });
+                        $('#modal_product_order_line_Label').text(label);
+    
+                        $('#product_line_id').val(result.id);
+                        $('#product_line_sort_order').val(result.line_sort_order);
+                        $('#product_line_product_id').val(result.product_id);
+                        $('#product_line_combination_id').val(result.combination_id);
+                        $('#product_line_type').val(result.line_type);
 
-              $('#product-search-autocomplete').hide();
-              $("#line_autoproduct_name").val('');
-              $('#modal_order_line').modal({show: true});
-              return false;
+                        $('#product_line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
+                        $('#product_line_quantity').val(result.quantity.round( QUANTITY_DECIMAL_PLACES ));
+                        $('#product_line_measure_unit_id').val(result.measure_unit_id);
+
+                        $('#product_line_cost_price').val(result.cost_price);
+                        $('#product_line_unit_price').val(result.unit_price);
+                        $('#product_line_unit_customer_price').val(result.unit_customer_price);
+
+                        $('#product_discount_amount_tax_incl').val(result.discount_amount_tax_incl);
+                        $('#product_discount_amount_tax_excl').val(result.discount_amount_tax_excl);
+
+                        $('#product_line_name').val(result.name);
+                        $('#product_line_measure_unit_id').val(result.measure_unit_id);
+
+                        $('#product_line_tax_label').html(result.tax_label);
+                        $('#product_line_tax_id').val(result.tax_id);
+                        $('#product_line_tax_percent').val(result.tax_percent);
+
+                        if( $("#sales_equalization").val() )
+                            $('input:radio[name=product_line_is_sales_equalization][value=1]').prop('checked', true);
+                        else
+                            $('input:radio[name=product_line_is_sales_equalization][value=0]').prop('checked', true);
+                        
+                        $("#product_line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
+                        $('#product_line_discount_percent').val(result.discount_percent);
+
+                        calculate_line_product( "product_" );
+                        
+                        $('#product_line_notes').val(result.notes);
+    
+                        console.log(result);
+                  });
+
+                  $('#product_line_sales_rep_id').val( $('#sales_rep_id').val() );
+
+                  $('#modal_product_order_line').modal({show: true});
+                  $("#product_line_quantity").focus();
+
+                  return false;
+              }
+
+
+              if ( line_type == 'service' )
+              {
+                  $.get(url, function(result){
+                        label = '['+result.product.reference+'] '+result.product.name;
+                        $('#modal_order_line_Label').text(label);
+    
+                        $('#line_id').val(result.id);
+                        $('#line_sort_order').val(result.line_sort_order);
+                        $('#line_product_id').val(result.product_id);
+                        $('#line_quantity').val(result.quantity);
+                        $('#line_measure_unit_id').val(result.measure_unit_id);
+                        $('#line_scrap').val(result.scrap);
+                        $('#line_notes').val(result.notes);
+    
+                        console.log(result);
+                  });
+
+                  $('#modal_service_order_line').modal({show: true});
+                  $("#edit_line_quantity").focus();
+
+                  return false;
+              }
+
           });
 
           loadCustomerOrderlines();
@@ -414,12 +481,66 @@
                 }
             });
 
-/*            $(function () {  $('[data-toggle="tooltip"]').tooltip()});
-            $("[data-toggle=popover]").popover();
-            $(function () {
-  $('[data-toggle="popover"]').popover()
-})
-*/
+        });
+
+        $("#modal_product_order_line_productSubmit").click(function() {
+
+            var id = $('#product_line_id').val();
+            var url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+            var token = "{{ csrf_token() }}";
+
+            if ( id == '' )
+                url = "{{ route('customerorder.storeline', [$order->id]) }}";
+            else
+                url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+
+  //        alert(url);
+
+            var payload = { 
+                              order_id : {{ $order->id }},
+                              line_id : id,
+                              line_sort_order : $('#product_line_sort_order').val(),
+                              line_type : $('#product_line_type').val(),
+                              product_id : $('#product_line_product_id').val(),
+                              combination_id : $('#product_line_combination_id').val(),
+                              name : $('#product_line_name').val(),
+                              quantity : $('#product_line_quantity').val(),
+                              measure_unit_id : $('#product_line_measure_unit_id').val(),
+                              cost_price : $('#product_line_cost_price').val(),
+                              unit_price : $('#product_line_unit_price').val(),
+                              unit_customer_price : $('#product_line_unit_customer_price').val(),
+                              unit_customer_final_price : $('#product_line_price').val(),
+                              prices_entered_with_tax : PRICES_ENTERED_WITH_TAX,
+                              tax_percent : $('#product_line_tax_percent').val(),
+                              sales_equalization : $("input[name='product_line_is_sales_equalization']:checked").val(),
+                              currency_id : $("#currency_id").val(),
+                              conversion_rate: $("#currency_conversion_rate").val(),
+                              discount_percent : $('#product_line_discount_percent').val(),
+                              discount_amount_tax_incl : $('#product_line_discount_amount_tax_incl').val(),
+                              discount_amount_tax_excl : $('#product_line_discount_amount_tax_excl').val(),
+                              sales_rep_id : $('#product_line_sales_rep_id').val(),
+                              notes : $('#product_line_notes').val()
+                          };
+
+            $.ajax({
+                url : url,
+                headers : {'X-CSRF-TOKEN' : token},
+                type : 'POST',
+                dataType : 'json',
+                data : payload,
+
+                success: function(response){
+                    loadCustomerOrderlines();
+                    $(function () {  $('[data-toggle="tooltip"]').tooltip()});
+//                    $("[data-toggle=popover]").popover();
+
+                    $('#modal_product_order_line').modal('toggle');
+                    $("#msg-success").fadeIn();
+
+                    console.log(response);
+                }
+            });
+
         });
 
         $("#line_autoproduct_name").autocomplete({

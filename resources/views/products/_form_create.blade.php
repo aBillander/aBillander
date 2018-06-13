@@ -23,7 +23,7 @@
 
                    <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-phantom_assembly">
                      {!! Form::label('phantom_assembly', l('Phantom Assembly?'), ['class' => 'control-label']) !!}
-                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                                       data-content="{{ l('A phantom assembly is a logical (rather than functional) grouping of materials.') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
                            </a>

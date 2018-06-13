@@ -126,11 +126,12 @@ return [
 	'Reference'     => 'Referencia',
 	'Description'     => 'Descripción',
 	'Quantity'     => 'Cantidad',
-	'Price'     => 'Precio',
+//	'Price'     => 'Precio',
 	'Disc. %'     => 'Dto. %',
 	'Net'     => 'Neto',
 	'Tax'     => 'Impuesto',
 	'Total'     => 'Total',
+	'Total with Tax'     => 'Total con IVA',
 	'New line...'     => 'Nueva línea...',
 	'Order Discount (%)'     => 'Descuento Especial (%)',
 
@@ -149,10 +150,12 @@ return [
 	'Description'     => 'Descripción',
 	'Cost Price'     => 'Precio de Coste',
 	'Price'     => 'Precio',
+	'Price with Tax'     => 'Precio con IVA',
+	'Final Price'     => 'Precio Final',
+	'Final Price with Tax'     => 'Precio Final con IVA',
 	'Tax'     => 'Impuesto',
 	'Is Shipping Cost?'     => '¿Es Coste de Envío?',
 	'Text Line'     => 'Línea de texto',
-	''     => '',
 	''     => '',
 	
 	// create_profit_blade

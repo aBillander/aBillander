@@ -18,7 +18,7 @@ class CreateCustomerUsersTable extends Migration
         Schema::create('customer_users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email', 128)->unique();
             $table->string('password');
 
 //            $table->string('home_page', 128)->nullable();       // Redirect after login to route_home

@@ -165,6 +165,7 @@ return [
 	'PDF Export'     => 'Exportar PDF',
 	'Print'     => 'Imprimir',
 	'Publish'     => 'Publicar',
+	'Upload File'     => 'Subir Fichero',
 	'Browse'     => 'Seleccionar',
 
 	'Add New Item'     => 'Añadir Nuevo',

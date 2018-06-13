@@ -24,7 +24,7 @@
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
 			<th>{{l('Template name')}}</th>
-			<th>{{l('Apply to Model')}}</th>
+			<th>{{l('Document type')}}</th>
 			<th>{{l('Folder')}}</th>
 			<th>{{l('File name')}}</th>
 			<th>{{l('Paper')}}</th>
@@ -38,7 +38,7 @@
 		<tr>
 			<td>{{ $template->id }}</td>
 			<td>{{ $template->name }}</td>
-			<td>{{ $template->model_name }}</td>
+			<td>{{ \App\Template::getTypeName($template->model_name) }}</td>
 			<td>{{ $template->folder }}</td>
 			<td>{{ $template->file_name }}</td>
 			<td>{{ $template->paper }}</td>

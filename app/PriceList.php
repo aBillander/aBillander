@@ -26,6 +26,12 @@ class PriceList extends Model {
                                     'name' => 'required',
                                     'currency_id' => 'exists:currencies,id'
                                 );
+    /**
+     * The relations to eager load on every query.
+     *
+     * @var array
+     */
+    protected $with = ['currency'];
 
     public static function getTypeList()
     {
@@ -103,13 +109,14 @@ class PriceList extends Model {
         }
 
         // Convert to Price List Currency
-        $currency = \App\Currency::find( $this->currency_id );
+        // $currency = \App\Currency::find( $this->currency_id );
+        $currency = $this->currency;    // Currency is eager loaded with model
 
         if ( !$currency ) // Convention: No currency is defaut currency
             // $currency = \App\Currency::find( intval(Configuration::get('DEF_CURRENCY')) );
             ;
         else
-            $price = $price * $currency->conversion_rate;
+            $price = $price * $currency->conversion_rate / \App\Context::getContext()->currency->conversion_rate;
 
         return $price;
     }
@@ -170,12 +177,15 @@ class PriceList extends Model {
                 
                 case 'product':
                     # take price from Product data
-                    $currency = \App\Context::getContext()->company->currency;
-                    if ( $currency->id !== $this->currency_id ) return false;
-
                     $price = $this->price_is_tax_inc
                          ? $product->price_tax_inc
                          : $product->price;
+
+                    // Convert to Price List Currency
+                    $currency = $this->currency;    // Currency is eager loaded with model
+
+                    $price = $price * $currency->conversion_rate / \App\Context::getContext()->currency->conversion_rate;
+
                     return $this->prepareLine( $product, $price );
                     break;
                 
@@ -183,7 +193,7 @@ class PriceList extends Model {
                     # disallow sales
                 
                 default:
-                    return false;
+                    return null;
                     break;
             }
 

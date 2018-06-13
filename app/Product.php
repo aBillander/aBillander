@@ -17,7 +17,7 @@ class Product extends Model {
     use SoftDeletes;
 
 
-    public $sales_equalization = 1;         // Handy property not stored. Takes its value after Customer Order Line sales_equalization flag
+    public $sales_equalization = 0;         // Handy property not stored. Takes its value after Customer Order Line sales_equalization flag
 
     public static $types = array(
             'simple', 
@@ -128,6 +128,15 @@ class Product extends Model {
                     - $this->quantity_allocated_mfg;
 
         return $value;
+    }
+
+    public function getDisplayPriceAttribute()
+    {
+        $value = \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                 $this->price_tax_inc :
+                 $this->price ;
+
+        return $this->as_priceable($value);
     }
 
 
@@ -513,5 +522,13 @@ class Product extends Model {
         }
 
         return $query;
+    }
+
+    public function scopeQualifyForPriceList($query, $price_list_id) 
+    {
+        // Filter Products by Customer
+        return $query->whereDoesntHave('pricelists', function($query) use ($price_list_id) {
+                $query->where('price_lists.id', '=', $price_list_id);
+        });
     }
 }

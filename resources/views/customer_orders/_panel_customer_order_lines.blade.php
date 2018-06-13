@@ -74,7 +74,7 @@
                 <td class="text-right">
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerorderlines();"><i class="fa fa-pencil"></i></a -->
                     
-                    <a class="btn btn-sm btn-warning edit-order-line" data-id="{{$line->id}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
+                    <a class="btn btn-sm btn-warning edit-order-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
                     
                     <a class="btn btn-sm btn-danger delete-order-line" data-id="{{$line->id}}" title="{{l('Delete', [], 'layouts')}}" 
                         data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 

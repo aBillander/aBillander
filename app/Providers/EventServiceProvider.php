@@ -13,10 +13,12 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        'App\Events\ProductCreated' => [
+            'App\Listeners\InitializeStock',
+            'App\Listeners\AssignToPriceLists',
         ],
     ];
+    // php artisan event:generate
 
     /**
      * Register any events for your application.

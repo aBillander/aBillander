@@ -78,3 +78,13 @@ footer {
     background-position:center;
     background-size:cover;
 }
+
+
+/*!
+ * FactuSOL icon
+ */
+
+.button-pad {
+    width:1px;
+    white-space: nowrap;
+}

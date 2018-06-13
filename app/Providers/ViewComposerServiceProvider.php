@@ -48,6 +48,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		//Templateable Document Types
+		view()->composer(array('templates.index', 'templates.create', 'templates.edit'), function($view) {
+		    
+		    $view->with('templateable_document_typeList', \App\Template::documentList());
+		    
+		});
+
 		// Languages
 		view()->composer(array('users.create', 'users.edit'), function($view) {
 		    

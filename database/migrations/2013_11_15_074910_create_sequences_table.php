@@ -17,7 +17,7 @@ class CreateSequencesTable extends Migration {
 			$table->increments('id');
 			$table->string('name', 128);
 			$table->string('model_name', 64)->nullable(false);    	// This sequence applies to this Model
-			$table->string('sequenceable_type');					// Full qualified clss name, please ;)
+//			$table->string('sequenceable_type');					// Full qualified clss name, please ;)
 			
 			$table->string('prefix', 8)->index();
 			$table->tinyInteger('length')->unsigned();				// Document id will be left padded with 0'es to this length

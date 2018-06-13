@@ -25,6 +25,7 @@ return [
 	'Templates - Create' => 'Plantillas - Crear',
 	'New Template'     => 'Nueva Plantilla',
 	'Template name'     => 'Nombre de la Plantilla',
+	'Document type'     => 'Tipo de documento',
 	'Apply to Model'     => 'Aplica al Modelo',
 	'Folder'     => 'Carpeta',
 	'File name'     => 'Nombre del Fichero',

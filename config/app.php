@@ -172,6 +172,7 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Unisharp\Ckeditor\ServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -248,6 +249,7 @@ return [
         'HTML'   => Collective\Html\HtmlFacade::class,
         'iImage' => Intervention\Image\Facades\Image::class,
         'PDF'    => Barryvdh\DomPDF\Facade::class,
+        'Excel'  => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 

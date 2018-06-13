@@ -36,7 +36,9 @@ class Tax extends Model {
     {
         // Address / Company models need fixing to retrieve country ISO code
         // $country = Context::getContext()->company->address()->country_ISO;
+        
         $country_id = \App\Configuration::get('DEF_COUNTRY');
+        // $country_id = \App\Context::getContext()->company->address()->country_id;
 
 //        $value = $this->taxrules()->where('country_id', '=', '0')->orWhere('country_id', '=', $country_id)->orderBy('position', 'asc')->first()->percent;
         $value = $this->taxrules()->where(function ($query) use ($country_id) {

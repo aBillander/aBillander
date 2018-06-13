@@ -12,7 +12,7 @@
 
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url('/') }}">
-                <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ asset('assets/theme/images/xtralogo.png') }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
+                <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ asset('assets/theme/images/company_logo.png') }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
             </a>
         </div>
         <div class="collapse navbar-collapse" role="navigation">
@@ -266,6 +266,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('sequences') }}">
+                                 {{l('Document sequences', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('salesreps') }}">
                                  {{l('Sales Representatives', [], 'layouts')}}
                             </a>
@@ -278,16 +283,16 @@
                             </a>
                         </li>
                          <li>
-                            <a href="{{ URL::to('sequences') }}">
-                                 {{l('Document sequences', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
                             <a href="{{ URL::to('templates') }}">
                                  {{l('Document templates', [], 'layouts')}}
                             </a>
                         </li>
 @endif
+                         <li>
+                            <a href="{{ URL::to('companies') }}">
+                                 {{l('Company', [], 'layouts')}}
+                            </a>
+                        </li>
                          <li>
                             <a href="{{ URL::to('users') }}">
                                  {{l('Users', [], 'layouts')}}

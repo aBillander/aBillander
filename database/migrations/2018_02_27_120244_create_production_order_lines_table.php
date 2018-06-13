@@ -20,9 +20,10 @@ class CreateProductionOrderLinesTable extends Migration
             $table->string('type', 32)->nullable(false)->default('product');
             // 'product'   => Regular product.
             // 'assembly'  => Assembly.
-            // 'phantom'   => Fhantom product.
+            // 'phantom'   => Fhantom product. <= Not possible!
             // '......'    => ?????. 
             $table->integer('product_id')->unsigned()->nullable(false);
+            $table->integer('combination_id')->unsigned()->nullable();
             $table->string('reference', 32)->nullable();
             $table->string('name', 128)->nullable(false);
 

@@ -2,7 +2,7 @@
 @section('modals')    @parent
 
 <div class="modal" id="modal_order_line" tabindex="-1" role="dialog">
-   <div class="modal-dialog modal-lg" xstyle="width: 99%; max-width: 1000px;">
+   <div class="modal-dialog xmodal-lg" style="width: 99%; max-width: 1000px;">
       <div class="modal-content">
 
          <div class="modal-header">
@@ -64,13 +64,19 @@
                      {!! Form::text('pid', null, array('class' => 'form-control', 'id' => 'pid')) !!}
                   </div -->
 
-                  @if( $customer->sales_equalization )
+@if( $customer->sales_equalization )
+
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                          {{ l('¿Aplica RE?') }}
+                          {{ l('Apply Sales Equalization?') }}
+
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('El Recargo de Equivalencia sólo aplica en la compra de los bienes objeto del comercio minorista; no aplica a elementos de inmovilizado o en servicios contratados, etc.') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </a>
                      <div>
                        <div class="radio-inline">
                          <label>
-                           {!! Form::radio('line_is_sales_equalization', '1', true, ['id' => 'line_is_sales_equalization_on', 'onclick' => 'alert("peo")']) !!}
+                           {!! Form::radio('line_is_sales_equalization', '1', true, ['id' => 'line_is_sales_equalization_on', 'xonclick' => 'alert("peo")']) !!}
                            {!! l('Yes', [], 'layouts') !!}
                          </label>
                        </div>
@@ -82,9 +88,11 @@
                        </div>
                      </div>
                    </div>
-                   @else
-                           {!! Form::radio('line_is_sales_equalization', '0', true, ['id' => 'line_is_sales_equalization_off', 'style' => 'display:none']) !!}
-                   @endif
+@else
+
+       {!! Form::radio('line_is_sales_equalization', '0', true, ['id' => 'line_is_sales_equalization_off', 'style' => 'display:none']) !!}
+
+@endif
                    
         </div>
 
@@ -172,39 +180,7 @@
                   </div>
         </div>
 
-
-<!--
-@if ($customer->sales_equalization)
-                     <div class="col-lg-4 col-md-4 col-sm-4">
-                        {{ l('Apply Sales Equalization?') }} 
-
-              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                        data-content="{{ l('El Recargo de Equivalencia sólo aplica en la compra de los bienes objeto del comercio minorista; no aplica a elementos de inmovilizado o en servicios contratados, etc.') }}">
-                    <i class="fa fa-question-circle abi-help"></i>
-              </a>
-                        <div>
-                          <div class="radio-inline">
-                            <label>
-                              {!! Form::radio('sales_equalization', '1', true, ['id' => 'sales_equalization_on']) !!}
-                              {!! l('Yes', [], 'layouts') !!}
-                            </label>
-                          </div>
-                          <div class="radio-inline">
-                            <label>
-                              {!! Form::radio('sales_equalization', '0', false, ['id' => 'sales_equalization_off']) !!}
-                              {!! l('No', [], 'layouts') !!}
-                            </label>
-                          </div>
-                        </div>
-                     </div>
-@else
-            <input type="hidden" name="sales_equalization" value="1"/>
-@endif
--->
-
-         <!-- div id="search_results" style="padding-top: 20px;"></div -->
-
-         </div>
+         </div><!-- div class="modal-body" ENDS -->
 
            <div class="modal-footer">
 
@@ -246,9 +222,15 @@
                      </div>
                    </div>
 
-                  @if( $customer->sales_equalization )
+@if( $customer->sales_equalization )
+
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                          {{ l('¿Aplica RE?') }}
+                          {{ l('Apply Sales Equalization?') }}
+
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                        data-content="{{ l('sales_equalization', 'apphelp') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </a>
                      <div>
                        <div class="radio-inline">
                          <label>
@@ -264,9 +246,11 @@
                        </div>
                      </div>
                    </div>
-                   @else
-                           {!! Form::radio('is_sales_equalization', '0', true, ['id' => 'is_sales_equalization_off', 'style' => 'display:none']) !!}
-                   @endif
+@else
+
+       {!! Form::radio('is_sales_equalization', '0', true, ['id' => 'is_sales_equalization_off', 'style' => 'display:none']) !!}
+
+@endif
                    
                </div>
                <div class="row">
@@ -464,8 +448,9 @@ function modal_search_tab_hide_all() {
      $("#new_discount").hide();
 }
 
-function calculate_line_product() {
+function calculate_line_product( prefix = '' ) {
 
+   var QUANTITY_DECIMAL_PLACES = $('#product_line_quantity_decimal_places').val();
    var tax_percent;
 
     // parseFloat
@@ -473,16 +458,20 @@ function calculate_line_product() {
     var total;
     var total_tax_exc;
     var total_tax_inc;
-//    var tax_percent = $('#line_tax_percent').val();
+//    var tax_percent = $('#"+prefix+"line_tax_percent').val();
 
-    if ($("#line_tax_id").val()>0) { 
+    if ($("#"+prefix+"line_tax_id").val()>0) { 
       tax_percent = parseFloat( 
-        get_tax_percent_by_id( $("#line_tax_id").val(), $("input[name='line_is_sales_equalization']:checked").val() ) 
+        get_tax_percent_by_id( $("#"+prefix+"line_tax_id").val(), $("input[name='line_is_sales_equalization']:checked").val() ) 
       ); 
     }
     else { return false; }
 
-    total = $("#line_quantity").val() * $("#line_price").val() * ( 1.0 - $("#line_discount_percent").val() / 100.0 );
+    if ( nbr_decimals( $("#"+prefix+"line_quantity").val() ) > QUANTITY_DECIMAL_PLACES )
+        $("#"+prefix+"line_quantity").val( $("#"+prefix+"line_quantity").val().round( QUANTITY_DECIMAL_PLACES ) );
+
+    final_price = $("#"+prefix+"line_price").val() * ( 1.0 - $("#"+prefix+"line_discount_percent").val() / 100.0 );
+    total       = $("#"+prefix+"line_quantity").val() * final_price;
 
     if ( PRICES_ENTERED_WITH_TAX ) {
         total_tax_inc = total;
@@ -492,8 +481,9 @@ function calculate_line_product() {
         total_tax_exc = total;
     }
 
-    $("#line_total_tax_exc").html( total_tax_exc.round( PRICE_DECIMAL_PLACES ) );
-    $("#line_total_tax_inc").html( total_tax_inc.round( PRICE_DECIMAL_PLACES ) );
+    $("#"+prefix+"line_final_price").html( final_price.round( PRICE_DECIMAL_PLACES ) );
+    $("#"+prefix+"line_total_tax_exc").html( total_tax_exc.round( PRICE_DECIMAL_PLACES ) );
+    $("#"+prefix+"line_total_tax_inc").html( total_tax_inc.round( PRICE_DECIMAL_PLACES ) );
 }
 
 
@@ -538,6 +528,9 @@ function get_tax_percent_by_id(tax_id, se = 0)
    var taxes   = {!! json_encode( $order->taxingaddress->getTaxPercentList() ) !!} ;
    var retaxes = {!! json_encode( $order->taxingaddress->getTaxWithREPercentList() ) !!} ;
 
+   // Skip sales equalization
+   se = 0;
+
    if (typeof taxes[tax_id] == "undefined")   // or if (taxes[tax_id] === undefined) {
    {
         // variable is undefined
@@ -550,6 +543,20 @@ function get_tax_percent_by_id(tax_id, se = 0)
         return parseFloat(retaxes[tax_id]);
    else
         return parseFloat(taxes[tax_id]);
+}
+
+
+function nbr_decimals(number)
+{
+    // See: https://stackoverflow.com/questions/10454518/javascript-how-to-retrieve-the-number-of-decimals-of-a-string-number
+    if($.type(number) !== "string") 
+        value = number.toString();
+    else 
+        value = number;
+
+    if ( value.indexOf('.') >= 0 ) return value.split('.')[1].length;
+
+    return 0;
 }
 
 </script>

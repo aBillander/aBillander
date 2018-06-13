@@ -1,4 +1,8 @@
+@php
 
+  $editable = isset($template->model_name) ? ['onfocus'=>'this.blur();'] : [] ;
+
+@endphp
 <div class="row">
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('name', l('Template name')) !!}
@@ -6,7 +10,7 @@
 </div>
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('model_name', l('Apply to Model')) !!}
-    {!! Form::text('model_name', null, array('class' => 'form-control')) !!}
+    {!! Form::select('model_name', array('0' => l('-- Please, select --', [], 'layouts')) + $templateable_document_typeList, null, array('class' => 'form-control')+$editable) !!}
 </div>
 </div>
 

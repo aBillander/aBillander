@@ -19,8 +19,11 @@ function l($string = NULL, $data = [], $langfile = NULL)
 
         if ($langfile == NULL) $langfile = \App\Context::getContext()->controller;
 
+        if (Lang::has('localized/'.$langfile.'.'.$string))
+            return Lang::get('localized/'.$langfile.'.'.$string, $data);
+
         if (Lang::has($langfile.'.'.$string))
-			return Lang::get($langfile.'.'.$string, $data);
+            return Lang::get($langfile.'.'.$string, $data);
 	//	elseif (Lang::has('_allcontrollers.'.$string))
 	//		return Lang::get('_allcontrollers.'.$string);
 		else 

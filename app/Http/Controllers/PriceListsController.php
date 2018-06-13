@@ -53,7 +53,7 @@ class PriceListsController extends Controller {
 
 		$pricelist = $this->pricelist->create($request->all());
 
-		if ( \App\Configuration::get('NEW_PRODUCT_TO_ALL_PRICELISTS') ) {
+		if ( \App\Configuration::get('NEW_PRICE_LIST_POPULATE') ) {
 
 			// Calculate prices for this Price List
 			// ToDo: make chunck by chunck
@@ -64,6 +64,7 @@ class PriceListsController extends Controller {
 	            $pricelist->addLine( $product );
 	
 	        }
+
 		}
 
 		return redirect('pricelists')
@@ -120,7 +121,14 @@ class PriceListsController extends Controller {
 	 */
 	public function destroy($id)
 	{
-        $this->pricelist->findOrFail($id)->delete();
+        $pricelist = $this->pricelist->findOrFail($id);
+
+        // See: https://laracasts.com/discuss/channels/eloquent/laravel-delete-model-with-all-relations
+        $pricelist->pricelistlines()->each(function($line) {
+			        $line->delete();
+			    });
+
+        $pricelist->delete();
 
         return redirect('pricelists')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

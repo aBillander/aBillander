@@ -319,45 +319,19 @@ class Customer extends Model {
 
 */
         // Third: Customer has pricelist?
-        if ($this->pricelist) {
+        if ( $this->pricelist && ($currency->id == $this->pricelist->currency_id) ) {
 
             $price = $this->pricelist->getPrice( $product );
 
-//            abi_r('$this->pricelist');abi_r($price);
-
-            if ( $price ) {
-                if ($currency->id == $this->pricelist->currency_id) {
-                    return $price;
-                }
-
-                if ( $fallback == null ) $fallback = $price;
-
-            } else {
-                if ( \App\Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' ) {
-                    return null;
-                }
-            }
+            return $price;
         } 
 
         // Fourth: Customer Group has pricelist?
-        if ($this->customergroup && $this->customergroup->pricelist) {
+        if ( $this->customergroup && $this->customergroup->pricelist && ($currency->id == $this->customergroup->pricelist->currency_id) ) {
 
             $price = $this->customergroup->pricelist->getPrice( $product );
 
-//            abi_r('$this->customergroup->pricelist');abi_r($price);
-
-            if ( $price ) {
-                if ($currency->id == $this->customergroup->pricelist->currency_id) {
-                    return $price;
-                }
-
-                if ( $fallback == null ) $fallback = $price;
-
-            } else {
-                if ( \App\Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' ) {
-                    return null;
-                }
-            }
+            return $price;
         }
 
         // Otherwise, use product price (initial or base price)
@@ -369,10 +343,8 @@ class Customer extends Model {
             return $price;
         }
 
-        if ( $fallback == null ) $fallback = $price;
-
-        // If you get here, no matching currency found. So, convert best price recorded
-        $price = $fallback->convert( $currency );
+        // Convert price
+        $price = $price->convert( $currency );
 
         return $price;
     }

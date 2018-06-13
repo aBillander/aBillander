@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php 
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -65,11 +67,16 @@ class Sequence extends Model {
         $types = self::$types;
 
         foreach($types as $type)
-            $list[$type]    = Lang::get('appmultilang.'.$type);
+            $list[$type]    = l($type, [], 'appmultilang');
 
         ksort($list);
 
         return $list;
+    }
+
+    public static function getTypeName( $types )
+    {
+            return l($types, [], 'appmultilang');;
     }
 
     public function getFormatAttribute()

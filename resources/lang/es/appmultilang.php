@@ -59,6 +59,21 @@ return array(
 	'CustomerOrder' => 'Pedido de Cliente',
 	'CustomerInvoice' => 'Factura de Cliente',
     'StockCount' => 'Inventario de Almacén',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Templateable Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'template.CustomerOrderPdf'   => 'Pedido de Cliente (Pdf)',
+	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',
+    'template.Pdf' => 'Plantilla Pdf',
+    'template.Mail' => 'Plantilla Mail',
 	
 
 	/*
@@ -145,8 +160,8 @@ return array(
 	|
 	*/
 
-	'Prices are entered inclusive of tax' => 'Los Precios se introducen con el Impuesto incluido',	//  I will enter prices inclusive of tax
-	'Prices are entered exclusive of tax' => 'Los Precios se introducen con el Impuesto excluido',	//  I will enter prices exclusive of tax
+	'Prices are entered inclusive of tax' => 'Los Precios se introducen con el IVA incluido',	//  I will enter prices inclusive of tax
+	'Prices are entered exclusive of tax' => 'Los Precios se introducen con el IVA excluido',	//  I will enter prices exclusive of tax
 
 	/*
 	|--------------------------------------------------------------------------

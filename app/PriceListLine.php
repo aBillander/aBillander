@@ -17,8 +17,8 @@ class PriceListLine extends Model {
     protected $fillable = [ 'price_list_id', 'product_id', 'price' ];
 
     public static $rules = array(
-    	'product_id' => array('required|exists:products,id'),
-        'price'      => array('numeric'), 
+    	'product_id' => 'required|exists:products,id',
+        'price'      => 'required|numeric|min:0', 
     	);
 
     

@@ -11,7 +11,7 @@
         <title>@section('title'):: {{ config('app.name', 'Laravel') }} @show </title>
 
         <!-- Styles -->
-        <link rel="shortcut icon" href="{{ asset('xtracon.png') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('company_icon.png') }}" type="image/x-icon">
 
         <link href="{{ asset('assets/theme/css/bootstrap-united.min.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset('assets/theme/css/extra-buttons.css') }}" rel="stylesheet" type="text/css"/>

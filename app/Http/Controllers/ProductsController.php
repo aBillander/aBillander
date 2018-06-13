@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use App\Product as Product;
 use Form, DB;
 
+use App\Events\ProductCreated;
+
 class ProductsController extends Controller {
 
 
@@ -26,8 +28,21 @@ class ProductsController extends Controller {
      */
     public function index(Request $request)
     {
-        $products = $this->product->isManufactured()->filter( $request->all() )
-                                  ->with('measureunit');
+        $products = $this->product->isManufactured()
+                                  ->filter( $request->all() )
+                                  ->with('measureunit')
+                                  ->with('combinations')                                  
+                                  ->with('category')
+                                  ->with('tax');
+                                  
+
+        if ( $request->input('reference', '') !== '' )
+            $products = $products->orWhereHas('combinations', function($q) use ($request)
+                                                {
+                                                    // http://stackoverflow.com/questions/20801859/laravel-eloquent-filter-by-column-of-relationship
+                                                    $q->where('reference', 'LIKE', '%' . trim($request->input('reference')) . '%');
+                                                }
+                                              );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
 
 
         $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
@@ -79,12 +94,20 @@ class ProductsController extends Controller {
             $request->merge( ['price_tax_inc' => $price_tax_inc] );
         }
 
+        // If sequences are used:
+        //
+        // $product_sequences = \App\Sequence::listFor(\App\Product::class);
 
         // Create Product
         $product = $this->product->create($request->all());
 
 
+        // Event
+        // event( new ProductCreated(), $data );
+
+/*
         // Stock Movement
+        if (0)
         if ($request->input('quantity_onhand')>0) 
         {
             // Create stock movement (Initial Stock)
@@ -110,7 +133,8 @@ class ProductsController extends Controller {
         }
 
 
-        // Prices according to Ptice Lists
+        // Prices according to Price Lists
+        if (0) {
         $plists = \App\PriceList::get();
 
         foreach ($plists as $list) {
@@ -121,7 +145,8 @@ class ProductsController extends Controller {
 
             $list->pricelistlines()->save($line);
         }
-
+        }
+*/
 
         if ($action == 'completeProductData')
         return redirect('products/'.$product->id.'/edit')
@@ -253,10 +278,42 @@ class ProductsController extends Controller {
         $vrules = Product::$rules[ $rules_tab ];
 
         if ( $product->reference == $request->input('reference')) unset($vrules['reference']);
+//        if ( isset($vrules['reference']) ) $vrules['reference'] .= $product->id;
+
+        if ($request->input('tab_name') == 'sales') {
+            if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                unset($vrules['price']);
+            else 
+                unset($vrules['price_tax_inc']);
+        }
+
+        if ($product->product_type == 'combinable') 
+        {
+            // Remove reference field
+            $request->merge(array('reference' => ''));
+            $request->merge(array('ean13' => ''));
+            unset( $vrules['reference'] );
+            unset( $vrules['ean13'] );
+            if ( isset($vrules['reference']) ) 
+                unset( $vrules['reference'] );
+        }
 
         $this->validate($request, $vrules);
 
+        if ($request->input('tab_name') == 'sales') {
+            $tax = \App\Tax::find( $product->tax_id );
+            if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ){
+                $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
+                $request->merge( ['price' => $price] );
+            } else {
+                $price_tax_inc = $request->input('price')*(1.0+($tax->percent/100.0));
+                $request->merge( ['price_tax_inc' => $price_tax_inc] );
+            }
+        }
+
         $product->update($request->all());
+
+        // ToDo: update combination fields, such as measure_unit, quantity_decimal_places, etc.
 
         return redirect('products/'.$id.'/edit'.'#'.$request->input('tab_name'))
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
@@ -282,6 +339,83 @@ class ProductsController extends Controller {
 
         return redirect('products')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
+
+/* ********************************************************************************************* */    
+
+
+
+    /**
+     * Make Combinations for specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function combine($id, Request $request)
+    {
+        $groups = $request->input('groups');
+
+        // Validate: $groups ahold not be empty, and values should match options table
+        // http://laravel.io/forum/11-12-2014-how-to-validate-array-input
+        // https://www.google.es/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8&client=ubuntu#q=laravel%20validate%20array%20input
+
+        $product = $this->product->findOrFail($id);
+
+        // Start Combinator machime!
+
+        $data = array();
+
+        foreach ( $groups as $group ) 
+        {
+            $data[] = \App\Option::where('option_group_id', '=', $group)->orderby('position', 'asc')->pluck('id');
+        }
+
+        $combos = combos($data);
+
+        $i=0;
+        foreach ( $combos as $combo ) 
+        {
+            $i++;
+
+            $combination = \App\Combination::create(
+                array(
+//                    'reference'        => $product->reference.'-'.$i,
+                    'reference'        => '',
+                    'reorder_point'    => $product->reorder_point,
+                    'maximum_stock'    => $product->maximum_stock,
+                    'supply_lead_time' => $product->supply_lead_time,
+
+                    'measure_unit'            => $product->measure_unit,
+                    'quantity_decimal_places' => $product->quantity_decimal_places,
+
+                    'is_default'     => $i == 1 ? 1 : 0,
+                    'active'         => $product->active,
+                    'blocked'        => $product->blocked,
+                    'publish_to_web' => $product->publish_to_web,
+
+                    'product_id'     => $product->id,               // Needed by autoSKU()
+                )
+            );
+            $product->combinations()->save($combination);
+
+            $combination->options()->attach($combo);;
+        }
+
+        // Combinations are created with stock = 0. 
+        // Create combinations only alollowed if product->quantity_onhand = 0 
+
+        $product->reference = '';
+        $product->ean13 = '';
+        $product->supplier_reference = '';
+        $product->product_type = 'combinable';
+        $product->save();
+
+
+
+        return redirect('products/'.$combination->product_id.'/edit#combinations')
+                ->with('success', l('This record has been successfully combined &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
     }
 
 
@@ -319,6 +453,90 @@ class ProductsController extends Controller {
 /* ********************************************************************************************* */    
 
 
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function ajaxProductOptionsSearch(Request $request)
+    {
+        $product = $this->product
+                        ->with('tax')
+                        ->with('combinations')
+                        ->with('combinations.options')
+                        ->with('combinations.options.optiongroup')
+                        ->findOrFail($request->input('product_id'));
+
+        // Gather Attributte Groups
+        $groups = array();
+
+        if ( $product->combinations->count() )
+        {
+            foreach ($product->combinations as $combination) {
+                foreach ($combination->options as $option) {
+                    $groups[$option->optiongroup->id]['name'] = $option->optiongroup->name;
+                    // $groups[$option->optiongroup->id]['values'][$option->optiongroup->id.'_'.$option->id] = $option->name;
+                    $groups[$option->optiongroup->id]['values'][$option->id] = $option->name;
+                }
+            }
+        }
+
+        $str = '';
+
+        foreach ($groups as $i => $group) {
+        
+            $str .= Form::label('group['.$i.']', $group['name']) . 
+                    '<div class="option_list">' . 
+                    Form::select('group['.$i.']', array('0' => l('-- Please, select --', [], 'layouts')) + $group['values'], null, array('class' => 'form-control option_select')) . 
+                    '</div>';
+        
+        }
+        return '<div id="options">' . $str . '</div>';
+
+        // sleep(5);
+        // return '<select class="form-control" id="warehouse_id" name="warehouse_id"><option value="0">-- Seleccione --</option><option value="1">Main Address</option><option value="8">CALIMA 25</option></select><select class="form-control" id="warehouse_id" name="warehouse_id"><option value="0">-- Seleccione --</option><option value="1">Main Address</option><option value="8">CALIMA 25</option></select><select class="form-control" id="warehouse_id" name="warehouse_id"><option value="0">-- Seleccione --</option><option value="1">Main Address</option><option value="8">CALIMA 25</option></select>';
+        // return 'Hello World! '.$request->input('product_id');
+
+        /*
+
+SELECT combination_id, COUNT(combination_id) tot FROM `combinations` as c
+left join combination_option as co
+on co.combination_id = c.id
+WHERE c.product_id = 15
+AND (co.option_id = 4) or (co.option_id = 10) or 1
+GROUP BY combination_id ORDER BY tot DESC
+LIMIT 1
+
+SELECT page, COUNT(page ) totpages
+FROM visitas
+GROUP BY page ORDER BY totpages DESC
+LIMIT 1
+
+        */
+    }
+
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function ajaxProductCombinationSearch(Request $request)
+    {
+        if ($request->has('group')) {
+            $combination_id = \App\Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
+
+            // ToDo: what happens if $combination_id=0 -> Failed to load resource: the server responded with a status of 500 (Internal Server Error)  http://localhost/aBillander5/public/products/ajax/combination_lookup
+            $combination = \App\Combination::select('id', 'product_id', 'reference')
+                            ->where('id', '=', $combination_id)
+                            ->Where('product_id', '=', $request->input('product_id'))
+                            ->take(1)->get();
+            return json_encode( $combination[0] );
+
+        } else {
+            $combination_id = 0;
+
+        }
+    }
 
 
 /* ********************************************************************************************* */    
@@ -348,4 +566,62 @@ class ProductsController extends Controller {
         }
     }
 
+
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function ajaxProductPriceSearch(Request $request)
+    {
+        // Request data
+        $product_id      = $request->input('product_id');
+        $customer_id     = $request->input('customer_id');
+        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+//        $conversion_rate = $request->input('conversion_rate');
+//        $product_string  = $request->input('product_string');   // <- Esto es la salida de ajaxProductSearch
+
+    //    $product = \App\Product::find();
+
+        $product = $this->product
+                        ->with('tax')
+                        ->with('combinations')
+                        ->with('combinations.options')
+                        ->with('combinations.options.optiongroup')
+                        ->find(intval($product_id));
+
+        $customer = \App\Customer::find(intval($customer_id));
+        
+        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
+                    \App\Context::getContext()->currency :
+                    \App\Currency::find(intval($currency_id));
+
+        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
+
+        if ( !$product || !$customer || !$currency ) {
+            // Die silently
+            return '';
+        }
+
+        $tax = $product->tax;
+
+        // Calculate price per $customer_id now!
+        $product->customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $tax_percent = $tax->percent;
+        $product->customer_price->applyTaxPercent( $tax_percent );
+//        if ($customer->sales_equalization) $tax_percent += $tax->extra_percent;
+//        $product->price_customer_with_tax = $product->price_customer*(1.0+$tax_percent/100.0);
+
+        // Add customer_price
+/*
+        $p = json_decode( $product_string, true);
+        $p = array_merge($p, ['price_customer' => $product->price_customer]);
+        $product_string = json_encode($p);
+*/
+//        $product_string = json_encode($product);
+
+//        return view('products.ajax.show_price', compact('product', 'tax', 'customer', 'currency', 'product_string'));
+        return view('products.ajax.show_price', compact( 'product', 'customer', 'currency' ) );
+    }
+    
 }

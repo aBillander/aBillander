@@ -9,13 +9,13 @@
                      {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
                   </div>
 
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('product_type') ? 'has-error' : '' }}"">
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('product_type') ? 'has-error' : '' }}">
                       {{ l('Product type') }}
                       {!! Form::select('product_type', $product_typeList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('product_type', '<span class="help-block">:message</span>') !!}
                   </div>
 
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('procurement_type') ? 'has-error' : '' }}"">
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('procurement_type') ? 'has-error' : '' }}">
                       {{ l('Procurement type') }}
                       {!! Form::select('procurement_type', $product_procurementtypeList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('procurement_type', '<span class="help-block">:message</span>') !!}
@@ -148,6 +148,10 @@
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('margin') ? 'has-error' : '' }}">
                      {{ l('Margin') }} (%)
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                                      data-content="{{ l('Dado un Precio de Coste, cambiando el Margen se recalcula el Precio de Venta. Cambiando el Precio de Venta se recalcula el Margen. El valor del Margen no se guardará, ya que se calcula a partir del Precio de Venta y del Precio de Coste.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
                      {!! Form::text('margin', null, array('class' => 'form-control', 'id' => 'margin', 'autocomplete' => 'off', 
                                       'onclick' => 'this.select()', 'onkeyup' => 'new_margin()', 'onchange' => 'new_margin()')) !!}
                      {!! $errors->first('margin', '<span class="help-block">:message</span>') !!}

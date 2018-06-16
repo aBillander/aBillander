@@ -134,9 +134,9 @@
         	var def_countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
 
         	$('select[name="address[country_id]"]').val(def_countryID);
-
-        	$('select[name="address[country_id]"]').change();
         }
+
+        $('select[name="address[country_id]"]').change();
 
     </script>
 

@@ -59,6 +59,7 @@ return [
 	'Warehouses'     => 'Almacenes',
 	'Product Options'     => 'Opciones de Productos',
 	'Products'     => 'Productos',
+	'Bills of Materials' => 'Listas de Materiales',
 
 	'Warehouse'     => 'Almacén',
 	'Purchase Orders'     => 'Pedidos de Compra',
@@ -101,9 +102,9 @@ return [
 	|
 	*/
 
-	'Finished Products'     => 'Elaborados',
-	'Ingredients'     => 'Ingredientes',
-	'Recipes'     => 'Recetas',
+//	'Finished Products'     => 'Elaborados',
+//	'Ingredients'     => 'Ingredientes',
+//	'Recipes'     => 'Recetas',
 	'Measure Units'     => 'Unidades de Medida',
 	'Work Centers'     => 'Centros de Trabajo',
 
@@ -174,6 +175,11 @@ return [
 
 	''     => '',
 	'Document'     => 'Documento',
+	'Quotation'     => 'Presupuesto',
+	'Order'     => 'Pedido',
+	'Shipping Slip'     => 'Albarán',
+	'Invoice'     => 'Factura',
+	'Voucher'     => 'Recibo',
 	'Add Document'     => 'Añadir Documento',
 
 	''     => '',

@@ -22,7 +22,9 @@ class ImportProductsController extends Controller
         $this->customerOrderLine = $customerOrderLine;
    }
 */
-    public static $column_mask;		// Column fields
+    public static $table = 'products';
+
+    public static $column_mask;		// Column fields (?)
 
 //    public $entities = array();	// This controller is for ONE entity
 
@@ -74,8 +76,8 @@ class ImportProductsController extends Controller
         ];
 
         $rules = [
-                'data_file' => 'required | max:8000', // all working except for ods
-                'extension' => 'in:csv,xlsx,xls,ods',
+                'data_file' => 'required | max:8000',
+                'extension' => 'in:csv,xlsx,xls,ods', // all working except for ods
         ];
 
         $this->validate($request->merge( $extra_data ), $rules);
@@ -106,6 +108,13 @@ class ImportProductsController extends Controller
         )->passOrDie();
 */
 
+        // Avaiable fields
+        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
+        $columns = \DB::getSchemaBuilder()->getColumnListing( self::$table );
+
+        abi_r($columns);
+
+
 
         // See: https://www.youtube.com/watch?v=rWjj9Slg1og
         Excel::filter('chunk')->load($request->file('data_file'))->chunk(250, function ($reader)
@@ -128,6 +137,7 @@ class ImportProductsController extends Controller
         // https://laracasts.com/discuss/channels/laravel/serialization-of-illuminatehttpuploadedfile-is-not-allowed-on-queue
 
         // See: https://github.com/LaravelDaily/Laravel-Import-CSV-Demo/blob/master/app/Http/Controllers/ImportController.php
+        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
 /*
         Excel::filter('chunk')->load('file.csv')->chunk(250, function($results)
         {

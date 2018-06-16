@@ -361,6 +361,9 @@ function get_currency_rate(currency_id)
 
         @if ($customer_id ?? 0)
             getCustomerData( {{ $customer_id }} );
+            
+            // To get focus;
+            $("#sequence_id").focus();
         @endif
 
     });

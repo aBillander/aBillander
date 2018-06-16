@@ -150,11 +150,13 @@ abi_r('********************************************************');
 		// To change the path at runtime you have to create a new instance of the FileViewFinder. Here's how that looks like:
 		if ( Configuration::get('USE_CUSTOM_THEME') ) 		// ToDo: Move this to a ServiceProvider
 		{
-			$paths = \Config::get('view.paths');
+/*			$paths = \Config::get('view.paths');
 			array_unshift($paths, realpath(base_path('resources/views')).'/../theme');
 			$finder = new \Illuminate\View\FileViewFinder(app()['files'], $paths);
 	//		abi_r($finder, true);
 			\View::setFinder($finder);
+*/
+			\View::getFinder()->prependLocation( realpath(base_path('resources/views')).'/../theme' );
 		}
 
 

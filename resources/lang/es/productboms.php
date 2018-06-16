@@ -4,7 +4,7 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Options Language Lines :: index
+	| ProductBOMs Language Lines :: index
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -16,13 +16,13 @@ return [
 	'BOM Name' => 'BOM Nombre',
 	'Quantity' => 'Cantidad',
 	'Measure Unit' => 'Unidad de Medida',
-	'Ingredients' => 'Ingredientes',
+	'Materials' => 'Materiales',
 	
 
 
 	/*
 	|--------------------------------------------------------------------------
-	| Options Language Lines :: create
+	| ProductBOMs Language Lines :: create
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -39,7 +39,7 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Options Language Lines :: edit
+	| ProductBOMs Language Lines :: edit
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -49,13 +49,13 @@ return [
 	'Bill of Materials - Edit'     => 'BOM - Modificar',
 	'Edit Option'     => 'Modificar Opción',
 	'Name'     => 'Nombre',
-	'Product'     => 'Ingrediente',
+	'Product'     => 'Producto',
 	'Scrap (%)'     => 'Merma (%)',
 	'Products'     => 'Productos',
-	'Copy BOM'     => 'Copiar Receta',
-	'Back to BOMs'     => 'Volver a Recetas',
-	'Add new item to BOM'     => 'Añadir ingrediente a Receta',
-	'Product name'     => 'Nombre de Ingrediente',
-	'Products for this BOM'     => 'Productos con esta Receta',
+	'Copy BOM'     => 'Copiar Lista de Materiales',
+	'Back to BOMs'     => 'Volver a Listas de Materiales',
+	'Add new Item to BOM'     => 'Añadir Producto a la Lista de Materiales',
+	'Product name'     => 'Nombre del Producto',
+	'Products for this BOM'     => 'Productos con esta Lista de Materiales',
 	
 ];

@@ -30,6 +30,13 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Sales', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
+                            <a href="{{ URL::to('wooc/worders') }}">
+                                 <i class="fa fa-cloud-download btn-xs btn-warning"></i> 
+                                 {{l('Sale Orders', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
                             <a href="{{ URL::to('customerorders') }}">
                                  <i class="fa fa-keyboard-o btn-xs btn-success"></i> 
                                  {{l('Sale Orders', [], 'layouts')}}
@@ -52,6 +59,12 @@
                             </a>
                         </li>
                         <li class="divider"></li>
+                         <li>
+                            <a href="{{ route('fsxconfigurations') }}">
+                                 <i class="fa fa-foursquare btn-xs btn-danger"></i> 
+                                 {{l('Enlace FactuSOL', 'layouts')}}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -96,11 +109,6 @@
                          <li>
                             <a href="{{ URL::to('productboms') }}">
                                  {{l('Bills of Materials', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('optiongroups') }}">
-                                 {{l('Product Options', [], 'layouts')}}
                             </a>
                         </li>
 

@@ -1,0 +1,23 @@
+<?php
+
+return [
+
+	/*
+	|--------------------------------------------------------------------------
+	| Common Language Lines :: localized
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Finished Products'     => 'Elaborados',
+	'Manufactured Products'     => 'Elaborados',
+	'Ingredients'     => 'Ingredientes',
+	'Bills of Materials'     => 'Recetas',
+	''     => '',
+	''     => '',
+	''     => '',
+
+
+];

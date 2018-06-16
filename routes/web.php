@@ -141,13 +141,13 @@ Route::group(['middleware' =>  ['auth']], function()
 
 
         Route::resource('customers', 'CustomersController');
-        Route::get('customers/{customer}/createorder', 'CustomerOrdersController@createWithCustomer')->name('customer.createorder');
+        Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customer.createorder');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup')); 
 
 //        Route::resource('addresses', 'AddressesController');
         Route::resource('customers.addresses', 'CustomerAddressesController');
 
-//        Route::post('mail', 'MailController@store');
+        Route::post('mail', 'MailController@store');
 
         Route::resource('paymentmethods', 'PaymentMethodsController');
 
@@ -192,6 +192,11 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('pricelists/{id}/pricelistline/searchproduct', 'PriceListLinesController@searchProduct')->name('pricelistline.searchproduct');
         // Edit Price list Line in Product Controller
         Route::resource('pricelistlines', 'PriceListLineController');
+
+        Route::resource('optiongroups',         'OptionGroupsController');
+        Route::resource('optiongroups.options', 'OptionsController');
+
+        Route::resource('combinations', 'CombinationsController');
 
         Route::resource('images', 'ImagesController');
 

@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Validator;
 
 use View, Mail;
 
@@ -40,22 +41,28 @@ class MailController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		// Poor Man validation
-		// $this->validate($request, ContactMessage::$rules);
-		// if ($validation->fails())
-		$body = $request->input('message');
-		if ( !$body )
-		{
-			$return = '';
-			// foreach ($validation->errors()->all() as $err) {
-			$return .= '<li class="error">' . l('The Comments field is required.', [], 'layouts') . '</li>';
-			// }
-			return $return;
-		}
+		
+		// See: https://itsolutionstuff.com/post/laravel-5-ajax-request-validation-exampleexample.html
+    	$validator = Validator::make($request->all(), [
 
-		// return 1;
+			'to_name' => 'required',
+            'to_email' => 'required|email',
+            'subject' => 'required',
+            'message' => 'required',
+
+        ]);
+
+
+        if ( !$validator->passes() ) {
+
+			return response()->json(['error'=>$validator->errors()->all()]);
+
+        }
+
 
 		// ToDo: validate if send to and send from fields are defined
+
+		$body = $request->input('message');
 
 		if ( !stripos( $body, '<br' ) ) $body = nl2br($body);
 
@@ -73,11 +80,13 @@ class MailController extends Controller {
 		        $message->to(      $request->input('to_email'  ), $request->input('to_name')   )->subject( $request->input('subject') );
 		    });
 		}
-		catch(Exception $e){
-		    	return 'ERROR';
-		}
+		catch(\Exception $e){
 
-		return 'OK';
+		    	return response()->json(['error'=>[l('There was an error. Your message could not be sent.', [], 'layouts')]]);
+		}
+		
+
+		return response()->json(['success'=>'Email sent.']);
 	}
 
 	/**

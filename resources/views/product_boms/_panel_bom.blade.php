@@ -115,7 +115,7 @@
               var next = $('#next_line_sort_order').val();
               var label = '';
 
-                    label = "{{ l('Add new item to BOM') }}";
+                    label = "{{ l('Add new Item to BOM') }}";
                     $('#modalBOMlineLabel').text(label);
 
                     $('#line_id').val('');

@@ -71,6 +71,7 @@ return [
 
 	'Customer Orders'     => 'Pedidos de Clientes',
 	'Back to Customer Orders'     => 'Volver a Pedidos de Clientes',
+	'Back to Customers'     => 'Volver a Clientes',
 	'Invoicing Address'     => 'Datos de Facturación',
 	'VAT ID'     => 'NIF',
 	'View Customer'     => 'Ir a la Ficha del Cliente',

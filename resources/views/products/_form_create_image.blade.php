@@ -6,7 +6,7 @@
 
             <div class="input-group">
                 <label class="input-group-btn">
-                    <span class="btn btn-primary">
+                    <span class="btn btn-blue">
                         {{ l('Browse', [], 'layouts') }}&hellip; <input type="file" name="image" id="image" style="display: none;" multiple>
                     </span>
                 </label>

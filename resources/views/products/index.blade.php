@@ -13,6 +13,8 @@
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
+        <a href="{{ route('products.import') }}" class="btn btn-sm btn-warning" 
+                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a>
     </div>
     <h2>
         {{ l('Products') }}
@@ -54,6 +56,11 @@
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('procurement_type', l('Procurement type'), ['class' => 'control-label']) !!}
+    {!! Form::select('procurement_type', ['' => l('All', [], 'layouts')] + $product_procurementtypeList, null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2" style="display: none">
     {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}
     {!! Form::select('active', array('-1' => l('All', [], 'layouts'),
                                           '0'  => l('No' , [], 'layouts'),
@@ -84,7 +91,8 @@
     <thead>
         <tr>
 			<th>{{l('ID', [], 'layouts')}}</th>
-			<th>{{ l('Reference') }}</th>
+      <th>{{ l('Reference') }}</th>
+      <th>{{ l('Procurement type') }}</th>
 			<th>{{ l('Product Name') }}</th>
 			<th>{{ l('Measure Unit') }}</th>
             <th>{{ l('Stock') }}</th>
@@ -113,7 +121,8 @@
 			<td title="{{ $product->id }}">@if ($product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
                 @else {{ $product->reference }}
                 @endif</td>
-			<td>{{ $product->name }}</td>
+      <td>{{ $product->procurement_type }}</td>
+      <td>{{ $product->name }}</td>
 			<td>{{ $product->measureunit->name }}</td>
             <td>{{ $product->as_quantity('quantity_onhand') }}</td>
             <td>{{ $product->as_price('cost_price') }}</td>

@@ -20,7 +20,7 @@
 
       <div class="col-lg-2 col-md-2 col-sm-3">
          <div class="list-group">
-            <a id="b_main_data" href="#" class="list-group-item active">
+            <!-- a id="b_main_data" href="#" class="list-group-item active">
                <i class="fa fa-asterisk"></i>
                &nbsp; {{ l('Main Data') }}
             </a>
@@ -48,6 +48,10 @@
             <a id="b_internet" href="#internet" class="list-group-item">
                <i class="fa fa-cloud"></i>
                &nbsp; {{ l('Internet') }}
+            </a -->
+            <a id="b_" href="#" class="list-group-item">
+               <i class="fa fa-cloud"></i>
+               &nbsp; 
             </a>
          </div>
 

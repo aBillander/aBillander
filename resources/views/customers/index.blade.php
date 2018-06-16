@@ -44,7 +44,8 @@
             <td class="text-center">@if ($customer->blocked) <i class="fa fa-lock" style="color: #df382c;"></i> @else <i class="fa fa-unlock" style="color: #38b44a;"></i> @endif</td>
             <td class="text-right">
                 @if (  is_null($customer->deleted_at))
-<!--                <a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
+                
+                <a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
                         xhref="{{ URL::to('customers/' . $customer->id) . '/mail' }}" 
                         href="{{ URL::to('mail') }}" 
                         data-to_name = "{{ $customer->address->firstname }} {{ $customer->address->lastname }}" 
@@ -52,12 +53,11 @@
                         data-from_name = "{{ \App\Context::getContext()->user->getFullName() }}" 
                         data-from_email = "{{ \App\Context::getContext()->user->email }}" 
                         onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
--->
                 
                 <div class="btn-group">
                     <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="{{ URL::to('customers/' . $customer->id . '/createorder') }}">{{l('Order')}}</a></li>
+                      <li><a href="{{ route('customer.createorder', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>

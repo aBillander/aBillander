@@ -14,7 +14,10 @@
 <input type="hidden" name="feedback_info" value="{system_info()}"/>
 <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
             <div class="modal-body" id="modal-body-mail">
-               <div id="error-mail"></div>
+
+                <div class="alert alert-danger print-error-msg" style="display:none">
+                    <ul></ul>
+                </div>
 
       <div class="row">
          <div class="col-md-6">
@@ -99,10 +102,13 @@
             $('#from_name').val(from_name);
             $('#f_sendEmail').attr('action', href);
 
+            $(".print-error-msg").find("ul").html('');
+            $(".print-error-msg").hide();
+
             $("#subject").removeClass('loading');
+//            $("#submit_mail").attr('disabled','disabled');
+            $("#submit_mail").removeAttr('disabled');
             
-            $("#error-mail").removeClass("alert alert-danger");
-            $("#error-mail").html('');
             $("#modal-body-mail_success").hide();
             $("#modal-footer-mail_success").hide();
             $("#modal-body-mail").show();
@@ -122,18 +128,39 @@
               $("#subject").addClass('loading');
               $.post("{{ URL::to('mail') }}", $(this).serialize(), function(data){
                  $("#subject").removeClass('loading');
-                 if (data == 'ERROR') {
-                    $("#error-mail").addClass("alert alert-danger");
-                    $("#error-mail").html('<a class="close" data-dismiss="alert" href="#">×</a><li class="error">{{ l('There was an error. Your message could not be sent.', [], 'layouts') }}</li>');
-                 } else {
+
+                  if($.isEmptyObject(data.error)){
+
+                    console.log(data.success);
+
                      $("#modal-body-mail").hide();
                      $("#modal-footer-mail").hide();
                      $("#modal-body-mail_success").show();
                      $("#modal-footer-mail_success").show();
-                 }
-                 $("#submit_mail").prop('disabled', false);
+
+                  } else {
+
+                     printErrorMsg(data.error);
+
+                  }
+
+                 $("#submit_mail").removeAttr('disabled');
               });
            });
+
+                  function printErrorMsg (msg) {
+
+                        $(".print-error-msg").find("ul").html('');
+
+                        $(".print-error-msg").css('display','block');
+
+                        $.each( msg, function( key, value ) {
+
+                          $(".print-error-msg").find("ul").append('<li>'+value+'</li>');
+
+                        });
+
+                }
         });
 </script>
 

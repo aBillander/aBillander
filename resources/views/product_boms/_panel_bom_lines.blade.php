@@ -1,7 +1,7 @@
 
     <div class="page-header">
         <h3>
-            <span style="color: #dd4814;">{{ l('Ingredients') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $bom->name }} -->
+            <span style="color: #dd4814;">{{ l('Materials') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $bom->name }} -->
         </h3>        
     </div>
 

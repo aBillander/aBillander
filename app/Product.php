@@ -75,8 +75,8 @@ class Product extends Model {
                     ),
         'main_data' => array(
                             'name'        => 'required|min:2|max:128',
-                            'reference'   => 'sometimes|required|min:2|max:32|unique:products,reference,',     // https://laracasts.com/discuss/channels/requests/laravel-5-validation-request-how-to-handle-validation-on-update
-                            'tax_id'      => 'exists:taxes,id',
+//                            'reference'   => 'sometimes|required|min:2|max:32|unique:products,reference,',     // https://laracasts.com/discuss/channels/requests/laravel-5-validation-request-how-to-handle-validation-on-update
+                            'measure_unit_id' => 'exists:measure_units,id',
                             'category_id' => 'exists:categories,id',
                     ),
         'purchases' => array(
@@ -153,6 +153,15 @@ class Product extends Model {
         {
             $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
             // $query->orWhere('combinations.reference', 'LIKE', '%' . trim($params['reference'] . '%'));
+
+            // Moved from controller
+            $reference = $params['reference'];
+            $query->orWhereHas('combinations', function($q) use ($reference)
+                                {
+                                    // http://stackoverflow.com/questions/20801859/laravel-eloquent-filter-by-column-of-relationship
+                                    $q->where('reference', 'LIKE', '%' . $reference . '%');
+                                }
+            );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
         }
 
         if ( isset($params['name']) && trim($params['name']) !== '' )
@@ -171,6 +180,11 @@ class Product extends Model {
         if ( isset($params['category_id']) && $params['category_id'] > 0 )
         {
             $query->where('category_id', '=', $params['category_id']);
+        }
+
+        if ( isset($params['procurement_type']) && $params['procurement_type'] != '' )
+        {
+            $query->where('procurement_type', '=', $params['procurement_type']);
         }
 
         if ( isset($params['active']) )

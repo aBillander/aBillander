@@ -202,7 +202,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Product procurement types
-		view()->composer(array('products._form_create', 'products._panel_main_data'), function($view) {
+		view()->composer(array('products.index', 'products._form_create', 'products._panel_main_data'), function($view) {
 
 		    $list1 = \App\Product::getProcurementTypeList();
 

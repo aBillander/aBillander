@@ -27,7 +27,7 @@
             <th>{{ l('BOM Name') }}</th>
             <th>{{ l('Quantity') }}</th>
             <th>{{ l('Measure Unit') }}</th>
-            <th>{{ l('Ingredients') }}</th>
+            <th>{{ l('Materials') }}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
             <th class="text-right"> </th>
 		</tr>

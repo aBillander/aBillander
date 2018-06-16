@@ -16,7 +16,7 @@
                 <div class="btn-group">
                     <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="{{ URL::to('customerinvoices') . '/create?customer_id=' . $customer->id }}">{{l('Invoice')}}</a></li>
+                      <li><a href="{{ route('customer.createorder', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>

@@ -21,6 +21,23 @@ class ProductsController extends Controller {
    {
         $this->product = $product;
    }
+   
+    /**
+     * Display a listing of the resource.
+     *
+     */
+
+    public function indexQueryRaw(Request $request)
+    {
+        return $this->product
+                              ->filter( $request->all() )
+                              ->with('measureunit')
+                              ->with('combinations')                                  
+                              ->with('category')
+                              ->with('tax')
+                              ->orderBy('reference', 'asc');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,22 +45,11 @@ class ProductsController extends Controller {
      */
     public function index(Request $request)
     {
-        $products = $this->product->isManufactured()
-                                  ->filter( $request->all() )
-                                  ->with('measureunit')
-                                  ->with('combinations')                                  
-                                  ->with('category')
-                                  ->with('tax');
-                                  
+        $products = $this->indexQueryRaw( $request )
+//                         ->isManufactured()
+                        ;
 
-        if ( $request->input('reference', '') !== '' )
-            $products = $products->orWhereHas('combinations', function($q) use ($request)
-                                                {
-                                                    // http://stackoverflow.com/questions/20801859/laravel-eloquent-filter-by-column-of-relationship
-                                                    $q->where('reference', 'LIKE', '%' . trim($request->input('reference')) . '%');
-                                                }
-                                              );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
-
+//        abi_r($products->toSql(), true);
 
         $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
 
@@ -164,7 +170,24 @@ class ProductsController extends Controller {
      */
     public function show($id)
     {
-        // 
+        return $this->edit($id);
+    }
+   
+    /**
+     * Display a listing of the resource.
+     *
+     */
+
+    public function editQueryRaw()
+    {
+        return $this->product
+                        ->with('tax')
+                        ->with('warehouses')
+                        ->with('combinations')
+                        ->with('combinations.options')
+                        ->with('combinations.options.optiongroup')
+                        ->with('measureunit')
+                        ->with('pricelists');
     }
 
     /**
@@ -175,15 +198,8 @@ class ProductsController extends Controller {
      */
     public function edit($id)
     {
-        $product = $this->product
-                        ->with('tax')
-                        ->with('warehouses')
-                        ->with('combinations')
-                        ->with('combinations.options')
-                        ->with('combinations.options.optiongroup')
-                        ->isManufactured()
-                        ->with('measureunit')
-                        ->with('pricelists')
+        $product = $this->editQueryRaw()
+//                        ->isManufactured()
                         ->findOrFail($id);
 
         
@@ -273,7 +289,7 @@ class ProductsController extends Controller {
                     ->with('success', l('Complete la Lista de Materiales para el Producto &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $product->name);
         }
 
-        if ( $rules_tab == 'main_data' ) $rules_tab = 'create';
+//        if ( $rules_tab == 'main_data' ) $rules_tab = 'create';
 
         $vrules = Product::$rules[ $rules_tab ];
 

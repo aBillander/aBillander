@@ -12,16 +12,7 @@
     <table id="order_total" class="table table-hover">
         <thead>
             <tr>
-               <th class="text-left">
-
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-                    {{ l('Total Lines with Tax') }}
-                    @else
-                    {{ l('Total Lines') }}
-                    @endif
-
-               </th>
-
+               <th class="text-left">{{l('Total Lines')}}</th> {{-- Con tax o no depende de la configuración de meter precios con impuesto incluido --}}
                <th class="text-left" style="width:1px; white-space: nowrap;">{{l('Discount')}}</th>
 
                <th class="text-left">{{l('Taxable Base')}}</th>
@@ -31,17 +22,13 @@
             </tr>
         </thead>
 
+@php
+  // $order->total_tax_excl = 10.005;
+@endphp
+
         <tbody>
             <tr>
-                <td>
-
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-                    {{ $order->as_price('total_lines_tax_incl') }}
-                    @else
-                    {{ $order->as_price('total_lines_tax_excl') }}
-                    @endif
-
-                </td>
+                <td>{{ $order->as_price('total_lines_tax_excl') }}</td>
                 <td style="width:1px; white-space: nowrap;">
 
                     <div class="form-group">

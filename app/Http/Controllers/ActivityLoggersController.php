@@ -112,7 +112,10 @@ class ActivityLoggersController extends Controller
 
     public function empty()
     {
-        $this->logger->empty();
+        // $this->logger->empty();
+
+        // Preserve aBillander_messenger
+        $this->logger->where('log_name', '!=', 'aBillander_messenger')->delete();
 
         return redirect('activityloggers')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => ''], 'layouts'));

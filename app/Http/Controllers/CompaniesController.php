@@ -139,7 +139,7 @@ class CompaniesController extends Controller {
 
 			// Delete old image
 			$old_file = public_path() . \App\Company::$company_path . \App\Context::getContext()->company->company_logo;
-	        if ( file_exists( $old_file ) ) {
+	        if ( \App\Context::getContext()->company->company_logo && file_exists( $old_file ) ) {
 	            unlink( $old_file );
       		}
 

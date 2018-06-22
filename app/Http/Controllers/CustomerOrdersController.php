@@ -338,6 +338,35 @@ class CustomerOrdersController extends Controller
         return view('customer_orders._panel_customer_order_total', compact('order'));
     }
 
+
+
+    public function FormForProduct( $action )
+    {
+
+        switch ( $action ) {
+            case 'edit':
+                # code...
+                return view('customer_orders._form_for_product_edit');
+                break;
+            
+            case 'create':
+                # code...
+                return view('customer_orders._form_for_product_create');
+                break;
+            
+            default:
+                # code...
+                // Form for action not supported
+                return response()->json( [
+                            'msg' => 'ERROR',
+                            'data' => $action
+                    ] );
+                break;
+        }
+        
+    }
+
+
     public function searchProduct(Request $request)
     {
         $search = $request->term;
@@ -594,8 +623,8 @@ class CustomerOrdersController extends Controller
             'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
             'sales_equalization' => $sales_equalization,
             'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => $request->input('discount_amount_tax_incl', 0.0),
-            'discount_amount_tax_excl' => $request->input('discount_amount_tax_excl', 0.0),
+            'discount_amount_tax_incl' => floatval( $request->input('discount_amount_tax_incl', 0.0) ),
+            'discount_amount_tax_excl' => floatval( $request->input('discount_amount_tax_excl', 0.0) ),
 
             'total_tax_incl' => $total_tax_incl,
             'total_tax_excl' => $total_tax_excl,
@@ -764,8 +793,8 @@ class CustomerOrdersController extends Controller
             'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
             'sales_equalization' => $sales_equalization,
             'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => $request->input('discount_amount_tax_incl', 0.0),
-            'discount_amount_tax_excl' => $request->input('discount_amount_tax_excl', 0.0),
+            'discount_amount_tax_incl' => floatval( $request->input('discount_amount_tax_incl', 0.0) ),
+            'discount_amount_tax_excl' => floatval( $request->input('discount_amount_tax_excl', 0.0) ),
 
             'total_tax_incl' => $total_tax_incl,
             'total_tax_excl' => $total_tax_excl,
@@ -1031,14 +1060,21 @@ class CustomerOrdersController extends Controller
 
     public function deleteOrderLine($line_id)
     {
+
         $order_line = $this->customerOrderLine
                         ->findOrFail($line_id);
 
+        $order = $this->customerOrder
+                        ->findOrFail($order_line->customer_order_id);
+
         $order_line->delete();
+
+        // Now, update Order Totals
+        $order->makeTotals();
 
         return response()->json( [
                 'msg' => 'OK',
-                'data' => ''
+                'data' => $line_id
         ] );
     }
 

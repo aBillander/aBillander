@@ -13,6 +13,7 @@ return [
 	'Edit Translation' => 'Modificar Traducción',
 	'Key' => 'Cadena',
 	'Translation' => 'Traducción',
+//	'Is null?' => '¿Nulo?',
 	'View files' => 'Ficheros View',
 	'Source file' => 'Fichero fuente',
 	'Translations' => 'Traducciones',

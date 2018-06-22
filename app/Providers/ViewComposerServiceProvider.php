@@ -56,14 +56,14 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Languages
-		view()->composer(array('users.create', 'users.edit'), function($view) {
+		view()->composer(array('users.create', 'users.edit', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('languageList', \App\Language::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Measure Units
-		view()->composer(array('products.index', 'products.create', 'products._panel_main_data', 'product_boms._panel_create_bom', 'product_boms._panel_bom', 'ingredients.index', 'ingredients.create', 'ingredients._panel_main_data' ), function($view) {
+		view()->composer(array('products.index', 'products.create', 'products._panel_main_data', 'product_boms._panel_create_bom', 'product_boms._panel_bom', 'ingredients.index', 'ingredients.create', 'ingredients._panel_main_data', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('measure_unitList', \App\MeasureUnit::pluck('name', 'id')->toArray());
 		    
@@ -77,14 +77,14 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Payment Methods
-		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('payment_methodList', \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Currencies
-		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create'), function($view) {
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('currencyList', \App\Currency::pluck('name', 'id')->toArray());
 		    
@@ -117,9 +117,16 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Carriers
-		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('carrierList', \App\Carrier::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Companiers
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('companyList', \App\Company::pluck('name_fiscal', 'id')->toArray());
 		    
 		});
 
@@ -131,14 +138,14 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Countries
-		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'tax_rules._form'), function($view) {
+		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'tax_rules._form', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('countryList', \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Taxes
-		view()->composer(array('customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'products.create', 'products.edit'), function($view) {
+		view()->composer(array('customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'products.create', 'products.edit', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('taxList', \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    

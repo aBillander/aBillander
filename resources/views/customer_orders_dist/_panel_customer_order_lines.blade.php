@@ -33,26 +33,7 @@
                <th class="text-left" style="width:1px; white-space: nowrap;"></th>
                <th class="text-left" xwidth="115">{{l('Notes', 'layouts')}}</th>
                 <th class="text-right"> 
-
-                  <!-- a class="btn btn-sm btn-success create-order-line" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a -->
-
-
-<div class="btn-group" xstyle="width:98%">
-  <a href="#" class="btn btn-sm btn-success create-order-product"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
-  <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
-  <ul class="dropdown-menu  pull-right">
-    <li><a class="create-order-product"       href="#">{{l('Product')}}</a></li>
-    <li><a class="create-order-service"       href="#">{{l('Service')}}</a></li>
-    <li><a class="create-order-discount-line" href="#">{{l('Discount Line')}}</a></li>
-    <li><a class="create-order-text-line"     href="#">{{l('Text Line')}}</a></li>
-
-    <!-- li class="divider"></li>
-    <li><a href="#">Separated link</a></li -->
-  </ul>
-</div>
-
-
-                </th>
+                  <a class="btn btn-sm btn-success create-order-line" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a></th>
             </tr>
         </thead>
         <tbody class="sortable">
@@ -97,7 +78,7 @@
                     
                     <a class="btn btn-sm btn-danger delete-order-line" data-id="{{$line->id}}" title="{{l('Delete', [], 'layouts')}}" 
                         data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                        data-title="{{ '('.$line->id.') ['.$line->reference.'] '.$line->name }}" 
+                        data-title="{{ '['.$line->reference.'] '.$line->name }}" 
                         onClick="return false;"><i class="fa fa-trash-o"></i></a>
 
                 </td>

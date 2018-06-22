@@ -82,7 +82,10 @@ class MailController extends Controller {
 		}
 		catch(\Exception $e){
 
-		    	return response()->json(['error'=>[l('There was an error. Your message could not be sent.', [], 'layouts')]]);
+		    	return response()->json(['error'=>[
+		    			l('There was an error. Your message could not be sent.', [], 'layouts'),
+		    			$e->getMessage()
+		    	]]);
 		}
 		
 

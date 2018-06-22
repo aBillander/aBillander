@@ -15,30 +15,73 @@ class ConfigurationKeysController extends Controller {
    public function __construct()
    {
 
-        $this->conf_keys = array(
-                    1 => array(
-                                'MARGIN_METHOD'   => Configuration::get('MARGIN_METHOD'),
-                                'ALLOW_SALES_WITHOUT_STOCK' => Configuration::get('ALLOW_SALES_WITHOUT_STOCK'),
-                                'ALLOW_SALES_RISK_EXCEEDED' => Configuration::get('ALLOW_SALES_RISK_EXCEEDED'),
-                                'SUPPORT_CENTER_EMAIL'   => Configuration::get('SUPPORT_CENTER_EMAIL'),
-                                'SUPPORT_CENTER_NAME'   => Configuration::get('SUPPORT_CENTER_NAME'),
-                        ),
-                    2 => array(
-                                'DEF_COUNTRY_NAME'       => Configuration::get('DEF_COUNTRY_NAME'),
-                                'DEF_ITEMS_PERPAGE'      => Configuration::get('DEF_ITEMS_PERPAGE'),
-                                'DEF_ITEMS_PERAJAX'      => Configuration::get('DEF_ITEMS_PERAJAX'),
-                                'DEF_LANGUAGE'           => Configuration::get('DEF_LANGUAGE'),
-                                'DEF_CURRENCY'           => Configuration::get('DEF_CURRENCY'),
-                                'DEF_PERCENT_DECIMALS'   => Configuration::get('DEF_PERCENT_DECIMALS'),
-                                'DEF_OUTSTANDING_AMOUNT' => Configuration::get('DEF_OUTSTANDING_AMOUNT'),
-                                'DEF_WAREHOUSE'          => Configuration::get('DEF_WAREHOUSE'),
-                                'DEF_CARRIER'            => Configuration::get('DEF_CARRIER'),
-                                'DEF_CUSTOMER_INVOICE_SEQUENCE' => Configuration::get('DEF_CUSTOMER_INVOICE_SEQUENCE'),
-                                'DEF_CUSTOMER_INVOICE_TEMPLATE' => Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE'),
-                                'DEF_CUSTOMER_PAYMENT_METHOD'   => Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'),
-                                'DEF_CUSTOMER_PAYMENT_DAY'   => Configuration::get('DEF_CUSTOMER_PAYMENT_DAY'),
-                        ),
-        );
+        $this->conf_keys = [
+
+                1 => [
+
+                        'ALLOW_PRODUCT_SUBCATEGORIES',
+                        'ALLOW_SALES_RISK_EXCEEDED',
+                        'ALLOW_SALES_WITHOUT_STOCK',
+                        'CUSTOMER_ORDERS_NEED_VALIDATION',
+                        'ENABLE_COMBINATIONS',
+                        'ENABLE_WEBSHOP_CONNECTOR',
+                        'MARGIN_METHOD',
+                        'NEW_PRICE_LIST_POPULATE',
+                        'NEW_PRODUCT_TO_ALL_PRICELISTS',
+                        'PRICES_ENTERED_WITH_TAX',
+                        'PRODUCT_NOT_IN_PRICELIST',
+                        'QUOTES_EXPIRE_AFTER',
+                        'ROUND_PRICES_WITH_TAX',
+                        'SKU_AUTOGENERATE',
+                        'TAX_BASED_ON_SHIPPING_ADDRESS',
+
+                    ],
+
+                2 => [
+
+                        'DEF_CARRIER',
+                        'DEF_COMPANY',
+                        'DEF_COUNTRY',
+                        'DEF_CURRENCY',
+                        'DEF_CUSTOMER_INVOICE_SEQUENCE',
+                        'DEF_CUSTOMER_INVOICE_TEMPLATE',
+                        'DEF_CUSTOMER_PAYMENT_METHOD',
+                        'DEF_LANGUAGE',
+                        'DEF_MEASURE_UNIT_FOR_BOMS',
+                        'DEF_MEASURE_UNIT_FOR_PRODUCTS',
+                        'DEF_OUTSTANDING_AMOUNT',
+                        'DEF_TAX',
+                        'DEF_WAREHOUSE',
+
+                    ],
+
+                3 => [
+
+                        'DEF_ITEMS_PERAJAX',
+                        'DEF_ITEMS_PERPAGE',
+                        'DEF_PERCENT_DECIMALS',
+                        'DEF_QUANTITY_DECIMALS',
+//                        'DEF_DIMENSION_UNIT',
+//                        'DEF_DISTANCE_UNIT',
+//                        'DEF_VOLUME_UNIT',
+//                        'DEF_WEIGHT_UNIT',
+//                        'HEADER_TITLE',
+//                        'SUPPORT_CENTER_EMAIL',
+//                        'SUPPORT_CENTER_NAME',
+                        'TIMEZONE',
+                        'USE_CUSTOM_THEME',
+
+                    ],
+
+                4 => [
+
+                        'SKU_PREFIX_LENGTH',
+                        'SKU_PREFIX_OFFSET',
+                        'SKU_SEPARATOR',
+                        'SKU_SUFFIX_LENGTH',
+
+                    ],
+        ];
 
    }
     /**
@@ -56,11 +99,16 @@ class ConfigurationKeysController extends Controller {
         // Check tab_index
         $tab_view = 'configuration_keys.'.'key_group_'.intval($tab_index);
         if (!View::exists($tab_view)) 
-            return Redirect::to('404')->with('error', 'No se ha encontrado el Grupo de Claves de Configuración solicitado ('.intval($tab_index).')');
+            return \Redirect::to('404');
 
-        $key_group = $this->conf_keys[$tab_index];
+        $key_group = [];
+
+        foreach ($this->conf_keys[$tab_index] as $key)
+            $key_group[$key]= Configuration::get($key);
 
         return view( $tab_view, compact('tab_index', 'key_group') );
+
+        // https://bootsnipp.com/snippets/M27e3
     }
 	
 	
@@ -94,15 +142,23 @@ class ConfigurationKeysController extends Controller {
 
         // Check tab_index
         if (!$key_group) 
-            return redirect('404')->with('error', 'No se ha encontrado el Grupo de Claves de Configuración solicitado ('.intval($tab_index).')');
+            return redirect('404');
 
-        foreach ($key_group as $key => $value) 
+        foreach ($key_group as $key) 
         {
-            if ($request->has($key)) \App\Configuration::updateValue($key, $request->input($key), $html);
+            if ($request->has($key)) {
+
+                abi_r($key);
+                abi_r($request->input($key));
+
+                \App\Configuration::updateValue($key, $request->input($key));
+            }
         }
 
+        // die();
+
         return redirect('configurationkeys?tab_index='.$tab_index)
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => 0], 'layouts') );
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $tab_index], 'layouts') );
     }
 
     /**

@@ -54,12 +54,18 @@ class WarehousesController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+        // Prepare address data
+        // $address = $request->input('address');
+
 		$request->merge( ['alias' => $request->input('address.alias'), 'name' => $request->input('address.name_commercial')] );
 
 		$this->validate($request, $this->warehouse::$rules);
 		$this->validate($request, $this->address::related_rules());
 
-		$warehouse = $this->warehouse->create(['notes' => $request->input('address.notes'), 'alias' => $request->input('address.alias'), 'active' => $request->input('active')]);
+		$warehouse = $this->warehouse->create( $request->all() );
+
+		// First record
+		if ( Warehouse::count() == 1 ) \App\Configuration::updateValue('DEF_WAREHOUSE', $warehouse->id);
 
 		$data = $request->input('address');
 //		$data['notes'] = '';
@@ -142,7 +148,37 @@ class WarehousesController extends Controller {
 	 */
 	public function destroy($id)
 	{
-        $this->warehouse->findOrFail($id)->delete();
+        $ws = $this->warehouse->findOrFail($id);
+
+        // check if warehouse is in use (short test)
+        $in_use= false;
+
+        // Products
+        $hasProducts = $ws->whereHas('products', function ($q) {
+				        $q->where('product_warehouse.quantity', '!=', 0);
+				    })
+				    ->exists();
+        
+        if ( $hasProducts ) {
+
+        	$in_use = true;
+        } else 
+
+        // Default Warehouse
+        if ( \App\Configuration::get('DEF_WAREHOUSE') == $id ) {
+
+        	$in_use = true;
+        }
+
+        if ( $in_use )
+	        return redirect('warehouses')
+					->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        
+
+        // So far, so good
+        $ws->address->delete();
+
+        $ws->delete();
 
         return redirect('warehouses')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Validation\Rule;
 
 use App\Traits\ViewFormatterTrait;
-// use App\Traits\AutoSkuTrait;
+use App\Traits\AutoSkuTrait;
 
 class Product extends Model {
 
     use ViewFormatterTrait;
-//    use AutoSkuTrait;
+    use AutoSkuTrait;
     use SoftDeletes;
 
 
@@ -98,7 +98,6 @@ class Product extends Model {
         );
     
 
-/*
     public static function boot()
     {
         parent::boot();
@@ -110,7 +109,6 @@ class Product extends Model {
                     $product->autoSKU();
         });
     }
-*/
 
     
     /*

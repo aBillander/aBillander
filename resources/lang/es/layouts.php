@@ -23,6 +23,7 @@ return [
 	'This record has been successfully created &#58&#58 (:id) '  =>  'El registro se ha creado correctamente &#58&#58 (:id) ',
 	'This record has been successfully updated &#58&#58 (:id) '  =>  'El registro se ha actualizado correctamente &#58&#58 (:id) ',
 	'This record has been successfully deleted &#58&#58 (:id) '  =>  'El registro se ha eliminado correctamente &#58&#58 (:id) ',
+	'This record cannot be deleted because it is in use &#58&#58 (:id) '  =>  'El registro no puede ser eliminado porque está en uso &#58&#58 (:id) ',
 	'Unable to update this record &#58&#58 (:id) '               =>  'No se ha podido actualizar el registro solicitado &#58&#58 (:id) ',
 	'Unable to delete this record &#58&#58 (:id) '               =>  'No se ha podido borrar el registro solicitado &#58&#58 (:id) ',
 	'The record with id=:id does not exist'                      =>  'El registro con id=:id no existe',

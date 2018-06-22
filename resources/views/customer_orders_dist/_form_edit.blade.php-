@@ -1,0 +1,321 @@
+
+
+{!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+{!! Form::hidden('invoicing_address_id', null, array('id' => 'invoicing_address_id')) !!}
+
+               <div class="panel-body">
+
+      <div class="row">
+
+         <div class="form-group col-lg-8 col-md-8 col-sm-8">
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference') ? 'has-error' : '' }}">
+            {{ l('Reference / Project') }}
+            {!! Form::text('reference', null, array('class' => 'form-control', 'id' => 'reference')) !!}
+            {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sales_rep_id') ? 'has-error' : '' }}">
+            {{ l('Sales Representative') }}
+            {!! Form::select('sales_rep_id', array('0' => l('-- Please, select --', [], 'layouts')) + $salesrepList, null, array('class' => 'form-control', 'id' => 'sales_rep_id')) !!}
+            {!! $errors->first('sales_rep_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+      </div>
+      <div class="row">
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('document_date') ? 'has-error' : '' }}">
+               {{ l('Order Date') }}
+               {!! Form::text('document_date_form', null, array('class' => 'form-control', 'id' => 'document_date_form', 'autocomplete' => 'off')) !!}
+               {!! $errors->first('document_date', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="col-lg-2 col-md-2 col-sm-2 {{ $errors->has('delivery_date') ? 'has-error' : '' }}">
+            <div class="form-group">
+               {{ l('Delivery Date') }}
+               {!! Form::text('delivery_date_form', null, array('class' => 'form-control', 'id' => 'delivery_date_form', 'autocomplete' => 'off')) !!}
+               {!! $errors->first('delivery_date', '<span class="help-block">:message</span>') !!}
+            </div>
+         </div>
+
+      <!-- /div>
+      <div class="row" -->
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('payment_method_id') ? 'has-error' : '' }}">
+            {{ l('Payment Method') }}
+            {!! Form::select('payment_method_id', array('0' => l('-- Please, select --', [], 'layouts')) + $payment_methodList, null, array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
+            {!! $errors->first('payment_method_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
+            {{ l('Currency') }}
+            {!! Form::select('currency_id', $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id', 'onchange' => 'get_currency_rate($("#currency_id").val())')) !!}
+            {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
+
+            {{ l('Conversion Rate') }}
+            <div  class="input-group">
+              {!! Form::text('currency_conversion_rate', null, array('class' => 'form-control', 'id' => 'currency_conversion_rate')) !!}
+              {!! $errors->first('currency_conversion_rate', '<span class="help-block">:message</span>') !!}
+
+              <span class="input-group-btn" title="{{ l('Update Conversion Rate') }}">
+              <button class="btn btn-md btn-lightblue" type="button" onclick="get_currency_rate($('#currency_id').val());">
+                  <span class="fa fa-money"></span>
+              </button>
+              </span>
+            </div>
+
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('down_payment') ? 'has-error' : '' }}">
+            {{ l('Down Payment') }}
+            {!! Form::text('down_payment', null, array('class' => 'form-control', 'id' => 'down_payment')) !!}
+            {!! $errors->first('down_payment', '<span class="help-block">:message</span>') !!}
+         </div>
+
+      </div>
+      <div class="row">
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
+            {{ l('Shipping Address') }}
+            {!! Form::select('shipping_address_id', [], null, array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
+            {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
+         </div>
+         
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
+            {{ l('Warehouse') }}
+            {!! Form::select('warehouse_id', $warehouseList, null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
+            {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
+         </div>
+         
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
+            {{ l('Carrier') }}
+            {!! Form::select('carrier_id', array('0' => l('-- Please, select --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control', 'id' => 'carrier_id')) !!}
+            {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shipping_conditions') ? 'has-error' : '' }}">
+            {{ l('Shipping Conditions') }}
+            {!! Form::textarea('shipping_conditions', null, array('class' => 'form-control', 'id' => 'shipping_conditions', 'rows' => '1')) !!}
+            {!! $errors->first('shipping_conditions', '<span class="help-block">:message</span>') !!}
+         </div>
+
+      </div>
+      <div class="row">
+
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('notes') ? 'has-error' : '' }}" xstyle="margin-top: 20px;">
+            {{ l('Notes', [], 'layouts') }}
+            {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}
+            {{ $errors->first('notes', '<span class="help-block">:message</span>') }}
+         </div>
+
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('notes_to_customer') ? 'has-error' : '' }}">
+            {{ l('Notes to Customer') }}
+            {!! Form::textarea('notes_to_customer', null, array('class' => 'form-control', 'id' => 'notes_to_customer', 'rows' => '2')) !!}
+            {{ $errors->first('notes_to_customer', '<span class="help-block">:message</span>') }}
+         </div>
+
+      </div>
+
+               </div><!-- div class="panel-body" -->
+
+               <div class="panel-footer text-right">
+                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
+                     <i class="fa fa-hdd-o"></i>
+                     &nbsp; {{l('Save', [], 'layouts')}}
+                  </button>
+               </div>
+
+
+@section('styles')    @parent
+
+{{-- Auto Complete --}}
+
+  {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script -->
+
+<style>
+
+  .ui-autocomplete-loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+  }
+  .loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
+  }
+
+
+/* See: http://fellowtuts.com/twitter-bootstrap/bootstrap-popover-and-tooltip-not-working-with-ajax-content/ 
+.modal .popover, .modal .tooltip {
+    z-index:100000000;
+}
+ */
+</style>
+
+
+{{-- Date Picker --}}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+    .ui-datepicker { z-index: 10000 !important; }
+</style>
+
+@endsection
+
+
+@section('scripts')    @parent
+
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        var id = $('#customer_id').val();
+        var url = "{{ route('customerorders.ajax.customer.AdressBookLookup', [$order->customer_id]) }}";
+        
+         $.get(url, function(result){
+              $('#shipping_address_id').empty();
+
+              $.each(result, function(index, element){
+                $('#shipping_address_id').append('<option value="'+ index +'">'+ element +'</option>');
+              });
+
+              $('#shipping_address_id').val( {{ $order->shipping_address_id }} );
+
+//                    $("[data-toggle=popover]").popover();
+         });
+
+
+    });
+
+
+
+function get_currency_rate(currency_id)
+{
+    var pload = '';
+
+    pload = pload + "currency_id="+currency_id;
+    pload = pload + "&_token="+$('[name="_token"]').val();
+
+   $.ajax({
+      type: 'POST',
+      url: '{{ route('currencies.ajax.rateLookup') }}',
+      dataType: 'html',
+      data: pload,
+      success: function(data) {
+         var theHTML = data;
+         if ( theHTML == '' ) {
+              theHTML = '<div class="alert alert-warning alert-block"><i class="fa fa-warning"></i> {{l('No records found', [], 'layouts')}}</div>';
+         }
+         $("#currency_conversion_rate").val(theHTML);
+      }
+   });
+}
+
+</script> 
+
+
+
+{{-- Date Picker --}}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script>
+
+  $(function() {
+    $( "#document_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+  $(function() {
+    $( "#delivery_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+  
+</script>
+
+@endsection
+
+
+
+{{--
+
+
+   @include('customer_invoices.modal_product_search')
+
+
+ 
+
+@if ( isset($invoice->id) && ($invoice->id>0) )
+  {!! Form::model($invoice, array('method' => 'PATCH', 'route' => array('customerinvoices.update', $invoice->id), 'id' => 'f_new_order', 'name' => 'f_new_order', 'class' => 'form')) !!}
+@else
+  {!! Form::model($invoice, array('method' => 'POST', 'route' => array('customerinvoices.store'), 'id' => 'f_new_order', 'name' => 'f_new_order', 'class' => 'form')) !!}
+@endif
+
+   <input type="hidden" id="nbrlines" name="nbrlines" value="{{ count($invoice->customerInvoiceLines) }}"/>
+   <input type="hidden" id="customer_id" name="customer_id" value="{{$customer->id}}"/>
+   <input type="hidden" id="status" name="status" value="{{$invoice->status}}"/>
+   <input type="hidden" id="invoicing_address_id" name="invoicing_address_id" value="{{$customer->invoicing_address_id}}"/>
+
+   <input type="hidden" name="prices_entered_with_tax" value="{{$invoice->prices_entered_with_tax}}"/>
+   <input type="hidden" name="round_prices_with_tax"   value="{{$invoice->round_prices_with_tax}}"/>
+
+<!-- id="div_header" -->  
+   <div class="container-fluid">
+      <div class="row" id="div_header" style="padding-top: 20px;">
+
+      @include('customer_invoices._invoice_header')
+
+      </div>
+
+   </div>
+
+
+<!-- id="div_lines" -->
+   <div class="table-responsive" id="div_lines" style="padding-top: 20px;">
+
+   @include('customer_invoices._invoice_body')
+
+   </div>
+
+
+<!-- div id="div_footer" -->
+  <div id="div_footer">
+
+  @include('customer_invoices._invoice_footer')
+
+  </div>
+
+{!! Form::close() !!}
+
+
+<!-- id="div_profit" -->
+   <div class="table-responsive" id="div_profit" style="padding-top: 20px;">
+
+      @include('customer_invoices._tab_profit')
+
+   </div>
+
+
+<!-- id="div_payments" -->
+   <div class="table-responsive" id="div_payments" style="padding-top: 20px;">
+
+      @include('customer_invoices._tab_payments')
+
+   </div>
+
+@include('customer_invoices.modal_save_invoice')
+
+
+--}}

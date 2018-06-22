@@ -113,13 +113,13 @@ class ActivityLogger extends Model
 
     public function addLog($level = 0, $message = '', $context = [])
     {
-        if ( !$message && !$type ) $message="Unknown error";
+        if ( !$message && !$level ) $message="Unknown error";
 
         if (!empty($message)) {
             $message = $this->interpolate($message, $context);
         }
 
-        $level_name = $this->getLevelName($level);
+        $level_name = is_string( $level ) ? $level : $this->getLevelName($level);
 
         $temp = explode(" ", microtime());
         $date_added = date('Y-m-d H:i:s', $temp[1]);
@@ -192,7 +192,7 @@ class ActivityLogger extends Model
 
     public function log($level = '', $message = '', $context = [])
     {
-        $this->addLog($this->toLoggerLevel($level), $message, $context);
+        $this->addLog($level, $message, $context);
     }
 
     /**

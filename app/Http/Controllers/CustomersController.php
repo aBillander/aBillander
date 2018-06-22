@@ -59,16 +59,25 @@ class CustomersController extends Controller {
     {
         $action = $request->input('nextAction', '');
 
+        // Prepare address data
+        $address = $request->input('address');
+
         $request->merge( ['outstanding_amount_allowed' => \App\Configuration::get('DEF_OUTSTANDING_AMOUNT')] );
+
         if ( !$request->input('address.name_commercial') ) {
-            $request->merge( ['address.name_commercial' => $request->input('name_fiscal'),
-                                'name_commercial' => $request->input('name_fiscal')] );
+
+            $request->merge( ['name_commercial' => $request->input('name_fiscal')] );
+            $address['name_commercial'] = $request->input('name_fiscal');
         } else {
+
             $request->merge( ['name_commercial' => $request->input('address.name_commercial')] );
         }
+
         $this->validate($request, Customer::$rules);
 
-        $request->merge( ['address.alias' => l('Main Address', [],'addresses')] );
+        $address['alias'] = l('Main Address', [],'addresses');
+
+        $request->merge( ['address' => $address] );
 
         $this->validate($request, Address::related_rules());
 

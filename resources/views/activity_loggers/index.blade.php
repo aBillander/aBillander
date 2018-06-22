@@ -76,7 +76,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 
 @section('styles')    @parent

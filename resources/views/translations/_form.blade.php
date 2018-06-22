@@ -4,6 +4,7 @@
     <tr>
       <th width="35%">{{l('Key')}}</th>
       <th width="35%">{{l('Translation')}}</th>
+      <!-- th xwidth="35%">{{l('Is null?')}}</th -->
       <th width="20%">{{l('View files')}}</th>
       <th width="15%">{{l('Source file')}}</th>
     </tr>
@@ -20,9 +21,12 @@
       <td class="{{ (!$is_translated && !$is_forcefile) ? 'danger' : '' }}">
 
           @if ($is_forcefile && ($v_key['forcefile'] != $id) )
+            <!-- /td><td -->
           @else
             {!! Form::text('val['.md5($k).']', ( $is_translated ? $v_key['local'] : '' ), array('class' => 'form-control')) !!} 
             <input type="hidden" name="key[{{md5($k)}}]" value="{{ $k }}">
+            <!-- /td><td -->
+            {{-- Form::checkbox('nul['.md5($k).']', 1, true) --}}
           @endif</td>
       <td class="{{ !$is_infile ? 'danger' : '' }}">
           {{ isset($v_key['infile']) ? $v_key['infile'] : '' }} </td>

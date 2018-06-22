@@ -14,7 +14,7 @@
         {{ l('Currencies') }}
     </h2>        
 </div>
-
+{{-- l('culo_1') }} {{ l('culo_2', 'layouts') }} {{ l('culo_3', [], 'layouts') }} {{ l('culo_4', []) --}}
 <div id="div_currencies">
    <div class="table-responsive">
 

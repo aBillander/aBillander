@@ -141,7 +141,13 @@ return [
 	'Customer Name'     => 'Nombre del Cliente',
 	'Seach by Name or Identification (VAT Number).'     => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
 	
+	'Product'     => 'Producto',
+	'Service'     => 'Servicio',
+	'Discount Line'     => 'Línea de Descuento',
+	'Text Line'     => 'Línea de Texto',
+
 	// modal_product_search
+	'Add Product to Order'     => 'Nuevo Producto',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -156,8 +162,10 @@ return [
 	'Final Price with Tax'     => 'Precio Final con IVA',
 	'Tax'     => 'Impuesto',
 	'Is Shipping Cost?'     => '¿Es Coste de Envío?',
-	'Text Line'     => 'Línea de texto',
 	''     => '',
+
+	// Modal edit line
+	'Edit Order Line' => 'Modificar Línea',
 	
 	// create_profit_blade
 	'Profitability Analysis'     => 'Rentabilidad de la Venta',
@@ -197,6 +205,7 @@ return [
 
 	'Totals'     => 'Totales',
 	'Total Lines'     => 'Total Líneas',
+	'Total Lines with Tax'     => 'Total Líneas con Impuestos',
 	'Taxable Base'     => 'Base Imponible',
 	'Taxes'     => 'Impuestos',
 	''     => '',

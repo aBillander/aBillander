@@ -163,11 +163,6 @@
   <strong>{!!  l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
 </div>
 
-<div id="msg-success-delete" class="alert alert-success alert-block" style="display:none;">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong>{!!  l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
-</div>
-
 <div id="panel_customer_order_lines" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
 <!--  @ include('customer_orders._panel_order_lines') -->
@@ -176,6 +171,8 @@
 
 
 @include('customer_orders._modal_order_line_form')
+
+@include('customer_orders._modal_product_order_line_form')
 
 @include('customer_orders._modal_order_line_delete')
 
@@ -201,28 +198,15 @@
 
   //            alert('id');
 
-          $(document).on('click', '.create-order-product', function(evnt) {
+          $(document).on('click', '.create-order-line', function(evnt) {
+//              var url = "{ { route('productbom.storeline', [$order->id]) } }";
+              var next = $('#next_line_sort_order').val();
+              var label = '';
 
-           
-               var panel = $("#order_line_form");
-               var url = "{{ route('customerorderline.productform', ['create']) }}";
-
-               panel.addClass('loading');
-
-               $.get(url, {}, function(result){
-                     panel.html(result);
-                     panel.removeClass('loading');
-
-                     $("[data-toggle=popover]").popover();
-                     // sortableCustomerOrderLines();
-               }, 'html').done( function() { 
-
-                    var selector = "#line_autoproduct_name";
-                    var next = $('#next_line_sort_order').val();
-
-                    $('#line_type').val('product');
-
-                    auto_product_line( selector );
+                    label = "{{ l('Add Line to Order') }}";
+                    $('#modal_order_line_Label').text(label);
+                    modal_search_tab_hide_all();
+                    $("#li_new_product").addClass('active');
 
                     $('#line_id').val('');
 //                    $('#line_type').val('');
@@ -230,53 +214,23 @@
                     $('#line_quantity').val(1);
                     $('#line_price').val(0.0);
                     $('#line_discount_percent').val(0.0);
-                    $('#line_discount_amount_tax_incl').val(0.0);
-                    $('#line_discount_amount_tax_excl').val(0.0);
-
-                    if ($('#sales_equalization').val()>0) {
-                        $('input:radio[name=line_is_sales_equalization]').val([1]);
-                        $('#line_sales_equalization').show();
-                    }
 
                     calculate_line_product();
 
-                    $('#line_sales_rep_id').val( $('#sales_rep_id').val() );
-
                     $('#line_notes').val('');
 
-                    $("#line_autoproduct_name").val('');
-                    $('#line_product_id').val('');
-                    $('#line_combination_id').val('');
+                $("#line_autoproduct_name").val('');
+                $('#line_product_id').val('');
+                $('#line_combination_id').val('');
 
+              $("#new_product").show();
 
-                    $('#modal_order_line').modal({show: true});
-                    $("#line_autoproduct_name").focus();
-
-                });
-
+              $('#modal_order_line').modal({show: true});
+              $("#line_autoproduct_name").focus();
               return false;
           });
 
           $(document).on('click', '.edit-order-line', function(evnt) {
-
-            // Load form first
-               var panel = $("#order_line_form");
-               var url = "{{ route('customerorderline.productform', ['edit']) }}";
-
-               panel.html('');
-               panel.addClass('loading');
-
-               $.get(url, {async:false}, function(result){
-                     panel.html(result);
-                     panel.removeClass('loading');
-
-                     $("[data-toggle=popover]").popover();
-                     // sortableCustomerOrderLines();
-               }, 'html');
-
-
-            // Populate form
-
               var id = $(this).attr('data-id');
               var line_type = $(this).attr('data-type');
               var url = "{{ route('customerorder.getline', [$order->id, '']) }}/"+id;
@@ -292,48 +246,49 @@
 
                         $('#modal_product_order_line_Label').text(label);
     
-                        $('#line_id').val(result.id);
-                        $('#line_sort_order').val(result.line_sort_order);
-                        $('#line_product_id').val(result.product_id);
-                        $('#line_combination_id').val(result.combination_id);
-                        $('#line_type').val(result.line_type);
+                        $('#product_line_id').val(result.id);
+                        $('#product_line_sort_order').val(result.line_sort_order);
+                        $('#product_line_product_id').val(result.product_id);
+                        $('#product_line_combination_id').val(result.combination_id);
+                        $('#product_line_type').val(result.line_type);
 
-                        $('#line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
-                        $('#line_quantity').val(result.quantity.round( QUANTITY_DECIMAL_PLACES ));
-                        $('#line_measure_unit_id').val(result.measure_unit_id);
+                        $('#product_line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
+                        $('#product_line_quantity').val(result.quantity.round( QUANTITY_DECIMAL_PLACES ));
+                        $('#product_line_measure_unit_id').val(result.measure_unit_id);
 
-                        $('#line_cost_price').val(result.cost_price);
-                        $('#line_unit_price').val(result.unit_price);
-                        $('#line_unit_customer_price').val(result.unit_customer_price);
+                        $('#product_line_cost_price').val(result.cost_price);
+                        $('#product_line_unit_price').val(result.unit_price);
+                        $('#product_line_unit_customer_price').val(result.unit_customer_price);
 
-                        $('#discount_amount_tax_incl').val(result.discount_amount_tax_incl);
-                        $('#discount_amount_tax_excl').val(result.discount_amount_tax_excl);
+                        $('#product_discount_amount_tax_incl').val(result.discount_amount_tax_incl);
+                        $('#product_discount_amount_tax_excl').val(result.discount_amount_tax_excl);
 
-                        $('#line_name').val(result.name);
+                        $('#product_line_name').val(result.name);
+                        $('#product_line_measure_unit_id').val(result.measure_unit_id);
 
-                        $('#line_tax_label').html(result.tax_label);
-                        $('#line_tax_id').val(result.tax_id);
-                        $('#line_tax_percent').val(result.tax_percent);
+                        $('#product_line_tax_label').html(result.tax_label);
+                        $('#product_line_tax_id').val(result.tax_id);
+                        $('#product_line_tax_percent').val(result.tax_percent);
 
-                        if ($('#sales_equalization').val()>0) {
-                            $('input:radio[name=line_is_sales_equalization]').val([1]);
-                            $('#line_sales_equalization').show();
-                        }
+                        if( $("#sales_equalization").val() )
+                            $('input:radio[name=product_line_is_sales_equalization][value=1]').prop('checked', true);
+                        else
+                            $('input:radio[name=product_line_is_sales_equalization][value=0]').prop('checked', true);
                         
-                        $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
-                        $('#line_discount_percent').val(result.discount_percent);
+                        $("#product_line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
+                        $('#product_line_discount_percent').val(result.discount_percent);
 
-                        calculate_line_product( );
-
-                        $('#line_sales_rep_id').val( $('#sales_rep_id').val() );
+                        calculate_line_product( "product_" );
                         
-                        $('#line_notes').val(result.notes);
+                        $('#product_line_notes').val(result.notes);
     
                         console.log(result);
                   });
 
-                  $('#modal_order_line').modal({show: true});
-                  $("#line_quantity").focus();
+                  $('#product_line_sales_rep_id').val( $('#sales_rep_id').val() );
+
+                  $('#modal_product_order_line').modal({show: true});
+                  $("#product_line_quantity").focus();
 
                   return false;
               }
@@ -463,7 +418,7 @@
             });
         }
 
-        $("body").on('click', "#modal_order_line_productSubmit", function() {
+        $("#modal_order_line_productSubmit").click(function() {
 
  //         alert('etgwer');
 
@@ -476,7 +431,7 @@
             else
                 url = "{{ route('customerorder.updateline', ['']) }}/"+id;
 
-//          alert($("input[name='line_is_sales_equalization']:checked").val());
+  //        alert(url);
 
             var payload = { 
                               order_id : {{ $order->id }},
@@ -588,30 +543,27 @@
 
         });
 
-        function auto_product_line( selector = "#line_autoproduct_name" ) {
+        $("#line_autoproduct_name").autocomplete({
+            source : "{{ route('customerorderline.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id"+$('#currency_id').val(),
+            minLength : 1,
+            appendTo : "#modal_order_line",
 
-            $( selector ).autocomplete({
-                source : "{{ route('customerorderline.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id"+$('#currency_id').val(),
-                minLength : 1,
-                appendTo : "#modal_order_line",
+            select : function(key, value) {
+                var str = '[' + value.item.reference+'] ' + value.item.name;
 
-                select : function(key, value) {
-                    var str = '[' + value.item.reference+'] ' + value.item.name;
+                $("#line_autoproduct_name").val(str);
+                $('#line_product_id').val(value.item.id);
+                $('#line_combination_id').val(0)
 
-                    $("#line_autoproduct_name").val(str);
-                    $('#line_product_id').val(value.item.id);
-                    $('#line_combination_id').val(0)
+                getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
 
-                    getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
-
-                    return false;
-                }
-            }).data('ui-autocomplete')._renderItem = function( ul, item ) {
-                  return $( "<li></li>" )
-                    .append( '<div>[' + item.id + '] [' + item.reference + '] ' + item.name + "</div>" )
-                    .appendTo( ul );
-                };
-        }
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.id + '] [' + item.reference + '] ' + item.name + "</div>" )
+                .appendTo( ul );
+            };
 
 
         function getProductData( product_id, combination_id ) {
@@ -643,7 +595,7 @@
                     $('#line_tax_id').val(response.tax_id);
                     $('#line_tax_percent').val(response.tax_percent);
 
-                    if( $("#sales_equalization").val()>0 )
+                    if( $("#sales_equalization").val() )
                         $('input:radio[name=line_is_sales_equalization][value=1]').prop('checked', true);
                     else
                         $('input:radio[name=line_is_sales_equalization][value=0]').prop('checked', true);

@@ -115,6 +115,8 @@ class TranslationsController extends Controller {
 			preg_match_all("/[^A-Za-z0-9_]+l\((.*?)(\]|')\)/", $fileContents, $matches);
 			// preg_match_all("/[^A-Za-z0-9_]+l\(\'(.*?)\'(.*?)\)/", $fileContents, $matches);
 
+			// abi_r($matches[1]);
+
 			foreach ($matches[1] as $k){
 
 				if ($k) {
@@ -142,7 +144,11 @@ class TranslationsController extends Controller {
 					if ( isset($v_keys[$values[0]]) ) 
 						$v_keys[$values[0]]['infile'] .= ', '.$vfile;
 					else {
-						$v_keys[$values[0]] = ['infile' => $vfile, 'forcefile' => $values[2]];
+						$forcefile = $values[2];
+
+						if ( is_string($values[1]) && !empty($values[1]) ) $forcefile = $values[1];
+
+						$v_keys[$values[0]] = ['infile' => $vfile, 'forcefile' => $forcefile];
 					}
 					/* */
 				}
@@ -237,7 +243,7 @@ return [
 ';
 
 		foreach($t_keys as $k => $v){
-			if ( $v ) $theContent .= 
+			if ( $v || 1) $theContent .= 
 "	'$k' => '$v',"."\n";
 		}
 

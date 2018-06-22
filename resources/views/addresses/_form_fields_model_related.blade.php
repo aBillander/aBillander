@@ -60,8 +60,10 @@
 	          </div>
 	          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('address.state_id') ? 'has-error' : '' }}">
 	            {{ l('State', [],'addresses') }}
-	            {!! Form::select('address[state_id]', array('0' => l('-- Please, select --', [], 'layouts')) + ( isset($stateList) ? $stateList : [] ), null, array('class' => 'form-control', 'id' => 'state_id')) !!}
+	            {!! Form::select('state_selector', ['0' => l('-- Please, select --', [], 'layouts')], null, array('class' => 'form-control', 'id' => 'state_selector')) !!}
 	            {!! $errors->first('address.state_id', '<span class="help-block">:message</span>') !!}
+
+	            {!! Form::hidden('address[state_id]', null, array('id' => 'state_id')) !!}
 	          </div>
 	</div>
 
@@ -107,37 +109,59 @@
 
 @section('scripts')  @parent 
 
-    <script type="text/javascript">
-        $('select[name="address[country_id]"]').change(function () {
-            var countryID = $(this).val();
-        	var stateID = {{ null !== old('address.state_id') ? old('address.state_id') : 
-        				( isset($customer->address->state_id) ? $customer->address->state_id : 0 ) }};
+<script type="text/javascript">
+
+    $('select[name="state_selector"]').change(function () {
+        
+        $('#state_id').val( $('select[name="state_selector"]').val() );
+        
+    });
+
+    $('select[name="address[country_id]"]').change(function () {
+        var new_countryID = $(this).val();
+
+    	populateStatesByCountryID( new_countryID );
+        
+    });
+
+    function populateStatesByCountryID( countryID, stateID = 0 )
+    {
+        $.get('{{ url('/') }}/countries/' + countryID + '/getstates', function (states) {
             
-            $.get('{{ url('/') }}/countries/' + countryID + '/getstates', function (states) {
-                
 
-                $('select[name="address[state_id]"]').empty();
-                $('select[name="address[state_id]"]').append('<option value=0>{{ l('-- Please, select --', [], 'layouts') }}</option>');
-                $.each(states, function (key, value) {
-                    $('select[name="address[state_id]"]').append('<option value=' + value.id + '>' + value.name + '</option>');
-                });
-                
-		        if ( stateID > 0 ) {
-		        	$('select[name="address[state_id]"]').val(stateID);
-		        }
-
+            $('select[name="state_selector"]').empty();
+            $('select[name="state_selector"]').append('<option value=0>{{ l('-- Please, select --', [], 'layouts') }}</option>');
+            $.each(states, function (key, value) {
+                $('select[name="state_selector"]').append('<option value=' + value.id + '>' + value.name + '</option>');
             });
-        });
 
-        // Select default country
-        if ( !($('select[name="address[country_id]"]').val() > 0) ) {
-        	var def_countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
+        }).done( function() { 
 
-        	$('select[name="address[country_id]"]').val(def_countryID);
-        }
+		    $('select[name="state_selector').val(stateID);
 
-        $('select[name="address[country_id]"]').change();
+		    $('#state_id').val(stateID);
 
-    </script>
+		    // See: https://stackoverflow.com/questions/17863432/how-select-default-option-of-dynamically-added-dropdown-list
+
+    	});
+    }
+
+    var countryID = $('select[name="address[country_id]"]').val();
+    var stateID   = $('#state_id').val();
+
+    // Select default country
+    if ( !( countryID > 0) ) {
+    	
+    	countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
+
+    	$('select[name="address[country_id]"]').val(countryID);
+
+    	stateID = 0;
+
+    }
+
+    populateStatesByCountryID( countryID, stateID );
+
+</script>
 
 @endsection

@@ -197,9 +197,9 @@ class CustomerOrder extends Model
     |--------------------------------------------------------------------------
     */
     
-    public function makeTotals( $document_discount_percent = 0.0 )
+    public function makeTotals( $document_discount_percent = null )
     {
-        if ( $document_discount_percent >= 0.0 )
+        if ( ($document_discount_percent !== null) && ($document_discount_percent >= 0.0) )
             $this->document_discount_percent = $document_discount_percent;
 
         $lines = $this->customerorderlines;

@@ -242,6 +242,14 @@
 @endif
                         @if ( Auth::user()->isAdmin() )
                         <li class="divider"></li>
+                        
+@if (config('app.url') =='http://localhost/enatural')
+                         <li>
+                            <a href="{{ URL::to('configurationkeys') }}">
+                                 {{l('Configuration - All keys', [], 'layouts')}}
+                            </a>
+                        </li>
+@endif
                          <li>
                             <a href="{{ URL::to('configurations') }}">
                                  {{l('Configuration', [], 'layouts')}}

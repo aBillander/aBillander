@@ -114,7 +114,35 @@ class MeasureUnitsController extends Controller {
 	 */
 	public function destroy($id)
 	{
-        $this->measureunit->findOrFail($id)->delete();
+        // check if measure unit is in use (short test)
+        $in_use= false;
+
+        // Products
+        if ( \App\Product::where('measure_unit_id', $id)->get() ) {
+
+        	$in_use = true;
+        } else 
+
+        // ProductBOMLines
+        if ( \App\ProductBOMLine::where('measure_unit_id', $id)->get() ) {
+
+        	$in_use = true;
+        } else 
+
+        // Default measure unit
+        if (   (\App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') == $id) 
+        	|| (\App\Configuration::get('DEF_MEASURE_UNIT_FOR_BOMS'    ) == $id) ) {
+
+        	$in_use = true;
+        }
+
+        if ( $in_use )
+	        return redirect('measureunits')
+					->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+
+        // So far, so good
+		$this->measureunit->findOrFail($id)->delete();
 
         return redirect('measureunits')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

@@ -13,7 +13,7 @@ use Illuminate\Support\Str as Str;
 use Auth;
 use App\User as User;
 use Config, App;
-use Request, Cookie;
+use Request, Cookie;		// , DB, Session;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SetContextMiddleware {
@@ -35,6 +35,12 @@ class SetContextMiddleware {
 		| Load Context.
 		|
 		*/
+
+		// Set database
+		// https://stackoverflow.com/questions/21918457/laravel-selecting-the-database-to-use-at-login
+
+
+		// Continue stuff
 
 		if( Auth::check() )
 			$user = User::with('language')->find( Auth::id() );		// $email = Auth::user()->email;

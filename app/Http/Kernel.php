@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrustProxies::class,
 
         \App\Http\Middleware\SetContextMiddleware::class,
+//        \App\Http\Middleware\SetGuestContextMiddleware::class,
     ];
 
     /**
@@ -59,5 +60,9 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+
+//        'customer'  => \App\Http\Middleware\RedirectIfCustomer::class,
+//        'authAdmin'  => \App\Http\Middleware\RedirectIfNotAdmin::class,
+//        'context'  => \App\Http\Middleware\SetContextMiddleware::class,
     ];
 }

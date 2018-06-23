@@ -217,6 +217,18 @@ Route::group(['middleware' =>  ['auth']], function()
 
 /* ********************************************************** */
 
+// Customer's Center
+
+// Fast & dirty
+// To Do: Put this in Routes Service Provider
+
+if (file_exists(__DIR__.'/abcc.php')) {
+    include __DIR__.'/abcc.php';
+}
+
+
+/* ********************************************************** */
+
 
 if (file_exists(__DIR__.'/gorrino_routes.php')) {
     include __DIR__.'/gorrino_routes.php';

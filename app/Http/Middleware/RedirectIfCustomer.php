@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class RedirectIfAuthenticated
+class RedirectIfCustomer
 {
     /**
      * Handle an incoming request.
@@ -17,6 +17,9 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+//        abi_r(Auth::guard($guard)->check());
+//        abi_r($guard, true);
+
         if (Auth::guard($guard)->check()) {
             
             // Customers
@@ -24,16 +27,6 @@ class RedirectIfAuthenticated
                 return redirect()->route('customer.dashboard');
             }
 
-            // Regular Users
-            if ( Auth::user()->home_page == '/' ) 
-                return redirect('/home');
-            else
-                if ( checkRoute( Auth::user()->home_page ) )
-                    return redirect( Auth::user()->home_page );
-                else
-                    return redirect('/home');
-
-            // return redirect('/home');
         }
 
         return $next($request);

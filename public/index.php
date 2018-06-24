@@ -23,6 +23,11 @@ define('LARAVEL_START', microtime(true));
 
 require __DIR__.'/../vendor/autoload.php';
 
+// Poor Man Multi Tennant
+// https://scotch.io/@stephenafamo/how-to-build-a-multi-tenant-site-with-laravel
+
+require __DIR__.'/../bootstrap/env.php';
+
 /*
 |--------------------------------------------------------------------------
 | Turn On The Lights

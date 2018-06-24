@@ -11,6 +11,7 @@ npm-debug.log
 yarn-error.log
 .env
 .env_dist
+.env-test
 commands_XN.txt
 Screenshot at 2018-02-07.png
 enatural.zip

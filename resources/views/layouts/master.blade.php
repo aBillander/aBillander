@@ -36,21 +36,9 @@
         <!-- script src="https://code.jquery.com/jquery-1.12.4.js"></script -->
         <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
 
-        <script src="{{ asset('js/common.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('assets/theme/js/common.js') }}" type="text/javascript"></script>
 
         <script type="text/javascript">
-
-            // https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
-            // usage:var n = 1.7777;    n.round(2); // 1.78
-
-            Number.prototype.round = function(places) {
-              return +(Math.round(this + "e+" + places)  + "e-" + places);
-            }
-
-            // Numbers as string rounding. Groovy!!!
-            String.prototype.round = function(places) {
-              return +(Math.round(parseFloat(this) + "e+" + places)  + "e-" + places);
-            }
 
             // Passing data from Eloquent to Javascript
             // See: https://github.com/laracasts/PHP-Vars-To-Js-Transformer

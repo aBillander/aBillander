@@ -35,7 +35,7 @@
    </div>
 
    <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
-      {!! Form::label('amount', l('Currency')) !!}
+      {!! Form::label('currency_id', l('Currency')) !!}
       {!! Form::select('currency_id', array('0' => l('-- Please, select --', [], 'layouts')) + $currencyList, null, array('class' => 'form-control')) !!}
       {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
    </div>

@@ -44,7 +44,7 @@
     <li><a class="create-order-product"       href="#">{{l('Product')}}</a></li>
     <li><a class="create-order-service"       href="#">{{l('Service')}}</a></li>
     <li><a class="create-order-discount-line" href="#">{{l('Discount Line')}}</a></li>
-    <li><a class="create-order-text-line"     href="#">{{l('Text Line')}}</a></li>
+    <!-- li><a class="create-order-text-line"     href="#">{{l('Text Line')}}</a></li -->
 
     <!-- li class="divider"></li>
     <li><a href="#">Separated link</a></li -->

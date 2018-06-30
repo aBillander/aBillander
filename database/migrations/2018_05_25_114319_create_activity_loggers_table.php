@@ -17,22 +17,11 @@ class CreateActivityLoggersTable extends Migration
 
         Schema::create('activity_loggers', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('log_name')->index()->default('default');
-            $table->text('description');
-
-            $table->smallInteger('level')->default(0);
-            $table->string('level_name', 32)->default('');       // $type='INFO', 'WARNING', 'ERROR'
-            $table->text('message')->default('');
-            $table->text('context')->nullable();
-
-//            $table->morphs('loggable');
-            $table->integer('loggable_id')->unsigned()->nullable();
-            $table->string('loggable_type')->nullable();
+            $table->string('name', 128)->nullable(false)->default('default');
+            $table->string('signature', 32)->index()->nullable(false);           // md5(description)
+            $table->text('description');        // Something like : Controller::class+' :: '+controller::Method+' :: '+User->id
 
             $table->integer('user_id')->nullable();
-
-            $table->dateTime('date_added')->nullable(false)->useCurrent();
-            $table->string('secs_added', 6)->nullable(false)->default('000000');
 
             $table->timestamps();
         });

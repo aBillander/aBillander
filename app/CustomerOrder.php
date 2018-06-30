@@ -219,16 +219,26 @@ class CustomerOrder extends Model
         $this->total_lines_tax_incl = $lines->sum('total_tax_incl');
         $this->total_lines_tax_excl = $lines->sum('total_tax_excl');
 
-        $total_tax_incl = $this->total_lines_tax_incl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_incl;
-        $total_tax_excl = $this->total_lines_tax_excl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_excl;
+        if ($this->document_discount_percent>0) 
+        {
+            $total_tax_incl = $this->total_lines_tax_incl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_incl;
+            $total_tax_excl = $this->total_lines_tax_excl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_excl;
 
-        // Make a Price object for rounding
-        $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $this->currency, $this->currency_conversion_rate);
+            // Make a Price object for rounding
+            $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $this->currency, $this->currency_conversion_rate);
 
-        $p->applyRounding( );
+            // Improve this: Sum subtotals by tax type must match Order Totals
+            $p->applyRoundingWithoutTax( );
 
-        $this->total_tax_incl = $p->getPriceWithTax();
-        $this->total_tax_excl = $p->getPrice();
+            $this->total_tax_incl = $p->getPriceWithTax();
+            $this->total_tax_excl = $p->getPrice();
+
+        } else {
+
+            $this->total_tax_incl = $this->total_lines_tax_incl;
+            $this->total_tax_excl = $this->total_lines_tax_excl;
+            
+        }
 
         $this->save();
 

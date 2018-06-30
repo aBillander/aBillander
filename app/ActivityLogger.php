@@ -4,48 +4,17 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\ActivityLoggerLine;
+
 class ActivityLogger extends Model
 {
-    // See: https://github.com/afrittella/laravel-loggable/blob/master/src/database/migrations/2017_07_05_191642_create_logs_table.php
-    // https://docs.spatie.be/laravel-activitylog/v2/introduction
 
-    const TIMER = 0;
-    const DEBUG = 100;
-    const INFO = 200;
-    const NOTICE = 250;
-    const WARNING = 300;
-    const ERROR = 400;
-    const CRITICAL = 500;
-    const ALERT = 550;
-    const EMERGENCY = 600;
-
-    public $levels = [
-        self::TIMER => 'TIMER',
-        self::DEBUG => 'DEBUG',
-        self::INFO => 'INFO',
-        self::NOTICE => 'NOTICE',
-        self::WARNING => 'WARNING',
-        self::ERROR => 'ERROR',
-        self::CRITICAL => 'CRITICAL',
-        self::ALERT => 'ALERT',
-        self::EMERGENCY => 'EMERGENCY'
-    ];
     protected $timer_start;
     protected $timer_stop;
     protected $timer_total;
 
-    private $loggable_model;
-//    public $log_name = 'default';
-//    public $description = '';
 
-    private $write_to; //  = 'database';
-    public  $msg_queue = array();
-    
-    protected $casts = [
-        'context' => 'array',
-    ];
-
-    protected $fillable = [ 'log_name', 'description', 'level', 'level_name', 'message','context', 'user_id', 'date_added', 'secs_added' ];
+    protected $fillable = [ 'name', 'signature', 'description', 'user_id' ];
 
     
     /*
@@ -54,19 +23,41 @@ class ActivityLogger extends Model
     |--------------------------------------------------------------------------
     */
 
-//    public function __construct( $loggable_model = null, $write_to = 'database' ) 
-    public function __construct( $log_name = 'default', $write_to = 'database' ) 
+    public static function setup( $log_name = 'default', $log_description = '', $log_signature = '' )
     {
+      // https://stackoverflow.com/questions/28395855/how-to-create-constructor-with-optional-parameters
+      // https://stackoverflow.com/questions/1699796/best-way-to-do-multiple-constructors-in-php
+
+      $self = new self();
+
       // 
-      // $this->loggable_model = $loggable_model;
+
+      $self->name = 'default';
       if ( $log_name ) {
 //      		if ( is_object( $log_name ) && !method_exists( $log_name, '__toString' ) ) 
-      		$this->log_name = $log_name;
+      		$self->name = $log_name;
       }  // else -> use 'default' value
 
-      $this->description = '';
       
-      $this->write_to = $write_to;
+      $self->description = $log_description;
+      if ( !$log_description ) {
+          $self->description = $self->name;
+      }
+
+      $self->user_id = \Auth::check() ? \Auth::user()->id : null;
+
+      $self->signature = $log_signature;
+      if ( !$log_signature ) {
+          $self->signature = $self->description;
+      }
+
+      $self->signature = md5( $self->signature.' :: '.$self->user_id );
+
+      if ( $al = ActivityLogger::where( 'signature', $self->signature)->first() ) return $al;
+
+      $self->save();
+
+      return $self;
     }
 
     public function timer_start() 
@@ -111,51 +102,7 @@ class ActivityLogger extends Model
       return '<span class="smallText">'.$p.' :: Parse Time: ' . $this->timer_total . 's</span>';
     }
 
-    public function addLog($level = 0, $message = '', $context = [])
-    {
-        if ( !$message && !$level ) $message="Unknown error";
 
-        if (!empty($message)) {
-            $message = $this->interpolate($message, $context);
-        }
-
-        $level_name = is_string( $level ) ? $level : $this->getLevelName($level);
-
-        $temp = explode(" ", microtime());
-        $date_added = date('Y-m-d H:i:s', $temp[1]);
-        $secs_added = substr($temp[0], 2, 6);
-
-        $user_id = \Auth::check() ? \Auth::user()->id : null;
-
-        $log_data = [
-           'log_name' => $this->log_name,
-           'description' => $this->description,
-           'level' => $level,
-           'level_name' => $level_name,
-           'message' => $message,
-           'context' => $context,
-           'user_id' => $user_id,
-           'date_added' => $date_added,
-           'secs_added' => $secs_added,
-        ];
-
-
-	    if ($this->write_to == 'database')
-	    {  
-
-	        $log_record = new ActivityLogger();
-	        $log_record->fill($log_data);
-
-	        //@TODO manage exceptions
-//	        $log_record->loggable()->associate($this->loggable_model);
-
-	        $log_record->save();
-
-	    } else {
-
-	          $this->msg_queue[] = $log_data;
-	    }
-    }
 
     public function start() 
     {
@@ -164,6 +111,8 @@ class ActivityLogger extends Model
 
     public function reset() 
     {
+          return ;
+
           // Table name: ((new self)->getTable());     or   $item->getTable();
 //          abi_r($this->log_name);
 
@@ -180,7 +129,7 @@ class ActivityLogger extends Model
 
     public function empty() 
     {
-          ActivityLogger::truncate();
+          // ActivityLogger::truncate();
     }
 
     public function stop() 
@@ -192,78 +141,11 @@ class ActivityLogger extends Model
 
     public function log($level = '', $message = '', $context = [])
     {
-        $this->addLog($level, $message, $context);
+        $record = ActivityLoggerLine::addLog($level, $message, $context);
+
+        $this->activityloggerlines()->save($record);
     }
 
-    /**
-     * Return array with level-names => level-codes
-     *
-     * @return array
-     */
-    public function getLevels(): array
-    {
-        return array_flip($this->levels);
-    }
-
-
-    public function getLevelName(int $level): string
-    {
-        if (!isset($this->levels[$level])) {
-            // throw new InvalidArgumentException('Level "' . $level . '" is not defined.');
-            return 'unknown';
-        }
-
-        return $this->levels[$level];
-    }
-
-
-    public function toLoggerLevel($level): int
-    {
-        if (is_string($level)) {
-            if (defined(__CLASS__.'::'.strtoupper($level))) {
-                return constant(__CLASS__.'::'.strtoupper($level));
-            }
-            // throw new InvalidArgumentException('Level "'.$level.'" is not defined, use one of: '.implode(', ', array_keys($this->levels)));
-            return 0;
-        }
-        return $level;
-    }
-
-    /**
-     * Interpolates context values into the message placeholders.
-     */
-    public function interpolate($message, $context = array())
-    {
-        // build a replacement array with braces around the context keys
-        $replace = array();
-        foreach ($context as $key => $val) {
-            // check that the value can be casted to string
-            if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-                $replace['{' . $key . '}'] = $val;
-            }
-        }
-
-        // interpolate replacement values into the message and return
-        return strtr($message, $replace);
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Methods
-    |--------------------------------------------------------------------------
-    */
-
-
-    public function scopeFilter($query, $params)
-    {
-        if ( isset($params['log_name']) && $params['log_name'] !== '' )
-        {
-            $query->where('log_name', $params['log_name']);
-        }
-
-        return $query;
-    }
 
 
 
@@ -273,6 +155,16 @@ class ActivityLogger extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
+    
+    public function activityloggerlines()
+    {
+        return $this->hasMany('App\ActivityLoggerLine', 'activity_logger_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 
     public function loggable()
     {
@@ -293,9 +185,9 @@ class ActivityLogger extends Model
   // FSX LOG parameters
   define('LOG_SHOWOFF_FORMAT', 'color: green; font-weight: bold');
 
-  define('LOG_INFO_1000' , 'LOG iniciado');
-  define('LOG_INFO_1010' , 'LOG reiniciado');
-  define('LOG_INFO_1020' , 'LOG terminado');
+  define('LOG_INFO_1000' , ':_> LOG iniciado');
+  define('LOG_INFO_1010' , ':_> LOG reiniciado');
+  define('LOG_INFO_1020' , ':_> LOG terminado');
 
   define('LOG_INFO_6000' , '<b>Secciónes</b>: NO se cargan.');
   define('LOG_INFO_6005' , 'Sección [%s] %s se ha cargado a la Tienda.');

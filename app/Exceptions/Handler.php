@@ -9,6 +9,9 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
     use Illuminate\Auth\AuthenticationException;
     use Response;
 
+// https://stackoverflow.com/questions/30276325/laravel-5-how-do-i-handle-methodnotallowedhttpexception
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+
 class Handler extends ExceptionHandler
 {
     /**
@@ -52,6 +55,17 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof MethodNotAllowedHttpException) 
+        {
+            return redirect('404')->with('info', 'Method is not allowed for the requested route');
+/*
+            return response()->json( [
+                                        'success' => 0,
+                                        'message' => 'Method is not allowed for the requested route',
+                                    ], 405 );
+*/        
+        }
+
         return parent::render($request, $exception);
     }
 

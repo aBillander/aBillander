@@ -75,7 +75,7 @@ class MailController extends Controller {
 		            'user_message' => $body,
 		        ), function($message) use ( $request )
 		    {
-		        $message->from(    $request->input('from_email'), $request->input('from_name') );
+		        $message->from(    config('mail.from.address'  ), config('mail.from.name'    ) );
 		        $message->replyTo( $request->input('from_email'), $request->input('from_name') );
 		        $message->to(      $request->input('to_email'  ), $request->input('to_name')   )->subject( $request->input('subject') );
 		    });

@@ -84,6 +84,7 @@ return [
 	'Scrap (%)'     => 'Merma (%)',
 
 	'Lead Time'     => 'Plazo de entrega',
+	'Main Supplier' => 'Proveedor Principal',
 	'Supplier Reference'     => 'Referencia del Proveedor',
 
 	'Price Lists'     => 'Tarifas',

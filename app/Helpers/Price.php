@@ -203,6 +203,14 @@ class Price {
         $this->price_tax_inc = $gross;
     }
     
+    public function applyRoundingWithoutTax( )
+    {
+        // 
+
+        $this->price         = (float) $this->as_priceable( $this->price,         $this->currency );
+        $this->price_tax_inc = (float) $this->as_priceable( $this->price_tax_inc, $this->currency );
+    }
+    
     public function applyRoundingOnlyTax( )
     {
         // $net is fixed!

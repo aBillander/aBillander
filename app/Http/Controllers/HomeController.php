@@ -23,6 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+/*
         $loggers = \App\ActivityLogger::filter( ['log_name' => 'aBillander_messenger'] )->orderBy('id', 'desc');
 
 
@@ -31,6 +32,9 @@ class HomeController extends Controller
         // abi_r($loggers, true);
 
         $loggers->setPath('home');     // Customize the URI used by the paginator
+*/
+
+        $loggers = null;
 
         return view('home.home', compact('loggers'));
     }

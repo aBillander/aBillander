@@ -459,7 +459,7 @@ class CustomerOrdersController extends Controller
                 'customer_id' => $customer_id,
                 'currency' => $currency,
     
-    
+                'measure_unit_id' => $product->measure_unit_id,
                 'reorder_point'      => $product->reorder_point, 
                 'quantity_onhand'    => $product->quantity_onhand, 
                 'quantity_onorder'   => $product->quantity_onorder, 
@@ -588,175 +588,7 @@ class CustomerOrdersController extends Controller
             $unit_final_price         = $unit_customer_final_price / (1.0 + $tax_percent/100.0);
             $unit_final_price_tax_inc = $unit_customer_final_price;
 
-        } else {
-
-            $unit_final_price         = $unit_customer_final_price;
-            $unit_final_price_tax_inc = $unit_customer_final_price * (1.0 + $tax_percent/100.0);
-
-        }
-
-        $unit_final_price         = $unit_final_price         * (1.0 - $discount_percent/100.0);
-        $unit_final_price_tax_inc = $unit_final_price_tax_inc * (1.0 - $discount_percent/100.0);
-
-        $total_tax_excl = $quantity * $unit_final_price;
-        $total_tax_incl = $quantity * $unit_final_price_tax_inc;
-
-        $tax_id = $product->tax_id;
-        $sales_equalization = $request->input('sales_equalization', 0);
-
-        // Build OrderLine Object
-        $data = [
-            'line_sort_order' => $request->input('line_sort_order'),
-            'line_type' => $request->input('line_type'),
-            'product_id' => $request->input('product_id', 0),
-            'combination_id' => $request->input('combination_id', 0),
-            'reference' => $reference,
-            'name' => $name,
-            'quantity' => $quantity,
-            'measure_unit_id' => $product->measure_unit_id,
-    
-            'cost_price' => $cost_price,
-            'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price,
-            'unit_final_price' => $unit_final_price,
-            'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
-            'sales_equalization' => $sales_equalization,
-            'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => floatval( $request->input('discount_amount_tax_incl', 0.0) ),
-            'discount_amount_tax_excl' => floatval( $request->input('discount_amount_tax_excl', 0.0) ),
-
-            'total_tax_incl' => $total_tax_incl,
-            'total_tax_excl' => $total_tax_excl,
-
-            'tax_percent' => $tax_percent,
-            'commission_percent' => $request->input('commission_percent', 0.0),
-            'notes' => $request->input('notes'),
-            'locked' => 0,
-    
-    //        'customer_order_id',
-            'tax_id' => $tax_id,
-            'sales_rep_id' => $request->input('sales_rep_id'),
-        ];
-
-
-        // Finishing touches
-        $order = $this->customerOrder->findOrFail($order_id);
-
-        $order_line = $this->customerOrderLine->create( $data );
-
-        $order->customerorderlines()->save($order_line);
-
-        // Let's deal with taxes
-        $product->sales_equalization = $sales_equalization;
-        $rules = $product->getTaxRules( $order->taxingaddress,  $order->customer );
-
-        $base_price = $order_line->quantity*$order_line->unit_final_price;
-
-        $order_line->total_tax_incl = $order_line->total_tax_excl = $base_price;
-
-        foreach ( $rules as $rule ) {
-
-            $line_tax = new \App\CustomerOrderLineTax();
-
-                $line_tax->name = $rule->fullName;
-                $line_tax->tax_rule_type = $rule->rule_type;
-
-                $p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $order->currency, $order->currency_conversion_rate);
-
-                $p->applyRounding( );
-
-                $line_tax->taxable_base = $base_price;
-                $line_tax->percent = $rule->percent;
-                $line_tax->amount = $rule->amount;
-                $line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
-
-                $line_tax->position = $rule->position;
-
-                $line_tax->tax_id = $tax_id;
-                $line_tax->tax_rule_id = $rule->id;
-
-                $line_tax->save();
-                $order_line->total_tax_incl += $line_tax->total_line_tax;
-
-                $order_line->CustomerOrderLineTaxes()->save($line_tax);
-                $order_line->save();
-
-        }
-
-        // Now, update Order Totals
-        $order->makeTotals();
-
-
-
-
-
-
-
-
-
-        return response()->json( [
-                'msg' => 'OK',
-                'data' => $order_line->toArray()
-        ] );
-    }
-
-
-
-    public function updateOrderLineProduct(Request $request, $line_id)
-    {
-        return response()->json( ['msg' => 'OK',] );
-
-        $order_line = $this->customerOrderLine
-                        ->findOrFail($line_id);
-
-        $order_line->update( $request->all() );
-
-        return response()->json( [
-                'msg' => 'OK',
-                'data' => $order_line->toArray()
-        ] );
-
-        // return response()->json(['order_id' => $order_id] + $request->all());
-
-        $product_id      = $request->input('product_id');
-        $combination_id  = $request->input('combination_id');
-
-        // Do the Mambo!
-        // Product
-        if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
-            $product = $combination->product;
-            $product->reference = $combination->reference;
-            $product->name = $product->name.' | '.$combination->name;
-        } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
-        }
-
-        $reference  = $product->reference;
-        $name       = $request->input('name', $product->name);
-        $cost_price = $request->input('cost_price', $product->cost_price);
-
-        $quantity = $request->input('quantity');
-
-        // ToDo: Don't trust values from browser. Do not be lazy and get them from database
-        $tax_percent = $request->input('tax_percent');
-        $unit_price  = $request->input('unit_price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-            $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
-
-        $unit_customer_price = $request->input('unit_customer_price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-            $unit_customer_price = $unit_customer_price / (1.0 + $tax_percent/100.0);
-
-        $discount_percent = $request->input('discount_percent', 0.0);
-
-        $unit_customer_final_price = $request->input('unit_customer_final_price');
-
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ) {
-
-            $unit_final_price         = $unit_customer_final_price / (1.0 + $tax_percent/100.0);
-            $unit_final_price_tax_inc = $unit_customer_final_price;
+            $unit_customer_final_price = $unit_final_price;
 
         } else {
 
@@ -811,13 +643,190 @@ class CustomerOrdersController extends Controller
 
 
         // Finishing touches
-        $order = $this->customerOrder->findOrFail($order->customer_order_id);
+        $order = $this->customerOrder->findOrFail($order_id);
 
         $order_line = $this->customerOrderLine->create( $data );
 
         $order->customerorderlines()->save($order_line);
 
         // Let's deal with taxes
+        $product->sales_equalization = $sales_equalization;
+        $rules = $product->getTaxRules( $order->taxingaddress,  $order->customer );
+
+        $base_price = $order_line->quantity*$order_line->unit_final_price;
+        // Rounded $base_price is the same, no matters the value of ROUND_PRICES_WITH_TAX
+
+        $order_line->total_tax_incl = $order_line->total_tax_excl = $base_price;
+
+        foreach ( $rules as $rule ) {
+
+            $line_tax = new \App\CustomerOrderLineTax();
+
+                $line_tax->name = $rule->fullName;
+                $line_tax->tax_rule_type = $rule->rule_type;
+
+                $p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $order->currency, $order->currency_conversion_rate);
+
+                $p->applyRounding( );
+
+                $line_tax->taxable_base = $base_price;
+                $line_tax->percent = $rule->percent;
+                $line_tax->amount = $rule->amount;
+                $line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
+
+                $line_tax->position = $rule->position;
+
+                $line_tax->tax_id = $tax_id;
+                $line_tax->tax_rule_id = $rule->id;
+
+                $line_tax->save();
+                $order_line->total_tax_incl += $line_tax->total_line_tax;
+
+                $order_line->CustomerOrderLineTaxes()->save($line_tax);
+                $order_line->save();
+
+        }
+
+        // Now, update Order Totals
+        $order->makeTotals();
+
+
+
+
+
+
+
+
+
+        return response()->json( [
+                'msg' => 'OK',
+                'data' => $order_line->toArray()
+        ] );
+    }
+
+
+
+    public function updateOrderLineProduct(Request $request, $line_id)
+    {
+        // return response()->json( ['msg' => 'OK',] );
+
+        $order_line = $this->customerOrderLine
+                        ->findOrFail($line_id);
+
+        $order_id = $order_line->customer_order_id;
+
+//        $order_line->update( $request->all() );
+
+//        return response()->json( [
+//                'msg' => 'OK',
+//                'data' => $order_line->toArray()
+//        ] );
+
+        // return response()->json(['order_id' => $order_id] + $request->all());
+
+        $product_id      = $request->input('product_id');
+        $combination_id  = $request->input('combination_id');
+
+        // Do the Mambo!
+        // Product
+        if ($combination_id>0) {
+            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+        }
+
+        $reference  = $product->reference;
+        $name       = $request->input('name', $product->name);
+        $cost_price = $order_line->cost_price;                 // Use original cost price (avoid tamppering!) instead of: $request->input('cost_price', $product->cost_price);
+
+        $quantity = $request->input('quantity');
+
+        // ToDo: Don't trust values from browser. Do not be lazy and get them from database
+        $tax_percent = $request->input('tax_percent');
+        $unit_price  = $order_line->unit_price;                 // $request->input('unit_price');
+//        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+//            $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
+
+        $unit_customer_price = $order_line->unit_customer_price;     // $request->input('unit_customer_price');
+//        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+//            $unit_customer_price = $unit_customer_price / (1.0 + $tax_percent/100.0);
+
+        $discount_percent = $request->input('discount_percent', 0.0);
+
+        $unit_customer_final_price = $request->input('unit_customer_final_price');
+
+        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ) {
+
+            $unit_final_price         = $unit_customer_final_price / (1.0 + $tax_percent/100.0);
+            $unit_final_price_tax_inc = $unit_customer_final_price;
+
+            $unit_customer_final_price = $unit_final_price;
+
+        } else {
+
+            $unit_final_price         = $unit_customer_final_price;
+            $unit_final_price_tax_inc = $unit_customer_final_price * (1.0 + $tax_percent/100.0);
+
+        }
+
+        $unit_final_price         = $unit_final_price         * (1.0 - $discount_percent/100.0);
+        $unit_final_price_tax_inc = $unit_final_price_tax_inc * (1.0 - $discount_percent/100.0);
+
+        $total_tax_excl = $quantity * $unit_final_price;
+        $total_tax_incl = $quantity * $unit_final_price_tax_inc;
+
+        $tax_id = $product->tax_id;
+        $sales_equalization = $request->input('sales_equalization', 0);
+
+        // Build OrderLine Object
+        $data = [
+//            'line_sort_order' => $request->input('line_sort_order'),
+//            'line_type' => $request->input('line_type'),
+//            'product_id' => $request->input('product_id', 0),
+//            'combination_id' => $request->input('combination_id', 0),
+//            'reference' => $reference,
+            'name' => $name,
+            'quantity' => $quantity,
+            'measure_unit_id' => $request->input('measure_unit_id', $product->measure_unit_id),
+    
+            'cost_price' => $cost_price,
+            'unit_price' => $unit_price,
+            'unit_customer_price' => $unit_customer_price,
+            'unit_customer_final_price' => $unit_customer_final_price,
+            'unit_final_price' => $unit_final_price,
+            'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
+            'sales_equalization' => $sales_equalization,
+            'discount_percent' => $discount_percent,
+            'discount_amount_tax_incl' => floatval( $request->input('discount_amount_tax_incl', 0.0) ),
+            'discount_amount_tax_excl' => floatval( $request->input('discount_amount_tax_excl', 0.0) ),
+
+            'total_tax_incl' => $total_tax_incl,
+            'total_tax_excl' => $total_tax_excl,
+
+            'tax_percent' => $tax_percent,
+            'commission_percent' => $request->input('commission_percent', 0.0),
+            'notes' => $request->input('notes'),
+            'locked' => 0,
+    
+    //        'customer_order_id',
+            'tax_id' => $tax_id,
+            'sales_rep_id' => $request->input('sales_rep_id'),
+        ];
+
+
+        // Finishing touches
+        $order = $this->customerOrder->findOrFail($order_id);
+
+        $order_line->update( $data );
+
+//        $order->customerorderlines()->save($order_line);
+
+        // Let's deal with taxes
+        $order_line->customerorderlinetaxes()->delete();
+
         $product->sales_equalization = $sales_equalization;
         $rules = $product->getTaxRules( $order->taxingaddress,  $order->customer );
 

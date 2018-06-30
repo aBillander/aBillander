@@ -57,7 +57,7 @@
                 <a class="btn btn-sm btn-danger delete-user" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('users/' . $user->id ) }}" 
                 		data-content="Esta acción NO podrá deshacerse." 
-                		data-title="Tarifas. Realmente desea eliminar:  ({{$user->id}}) {{{ $user->username }}} ?" 
+                		data-title="Tarifas. Realmente desea eliminar:  ({{$user->id}}) {{ $user->username }}" 
                 		onClick="return false;" title=" Eliminar "><i class="fa fa-trash-o"></i></a>
 
 							{{-- Form::open(array('method' => 'DELETE', 'route' => array('users.destroy', $user->id))) }}

@@ -1,4 +1,8 @@
-<?php namespace App;
+<?php
+
+namespace App;
+
+// Check this: http://www.qcode.in/save-laravel-app-settings-in-database/
 
 use Illuminate\Database\Eloquent\Model;
 

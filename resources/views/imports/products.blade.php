@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Import - Products', [], 'imports') }} @parent @stop
+@section('title') {{ l('Import - Products') }} @parent @stop
 
 
 @section('content') 
@@ -8,9 +8,9 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
-                <a href="{{ URL::to('products') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Products', [], 'imports') }}</a>
+                <a href="{{ URL::to('products') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Products') }}</a>
             </div>
-            <h2><a href="{{ URL::to('products') }}">{{ l('Products', [], 'imports') }}</a> <span style="color: #cccccc;">/</span> XXX</h2>
+            <h2><a href="{{ URL::to('products') }}">{{ l('Products') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }}</h2>
         </div>
     </div>
 </div>
@@ -48,22 +48,16 @@
             <a id="b_internet" href="#internet" class="list-group-item">
                <i class="fa fa-cloud"></i>
                &nbsp; {{ l('Internet') }}
-            </a -->
+            </a>
             <a id="b_" href="#" class="list-group-item">
                <i class="fa fa-cloud"></i>
                &nbsp; 
-            </a>
-         </div>
-
-         <div class="list-group">
-
-            <img src="{{ URL::to( \App\Image::$products_path . '/default-medium_default.png' ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
-
+            </a -->
          </div>
 
       </div>
       
-      <div class="col-lg-10 col-md-10 col-sm-9">
+      <div class="col-lg-8 col-md-8 col-sm-8">
 
           @include('imports._panel_products')
 

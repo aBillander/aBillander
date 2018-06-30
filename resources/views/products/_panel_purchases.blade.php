@@ -16,6 +16,13 @@
                      {!! Form::text('supply_lead_time', null, array('class' => 'form-control', 'id' => 'supply_lead_time')) !!}
                      {!! $errors->first('supply_lead_time', '<span class="help-block">:message</span>') !!}
                   </div>
+
+             <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('main_supplier_id') ? 'has-error' : '' }}">
+                {{ l('Main Supplier') }}
+                {!! Form::select('main_supplier_id', array('' => l('-- Please, select --', [], 'layouts')) + $supplierList, null, array('class' => 'form-control')) !!}
+                {!! $errors->first('main_supplier_id', '<span class="help-block">:message</span>') !!}
+             </div>
+
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('supplier_reference') ? 'has-error' : '' }}">
                      {{ l('Supplier Reference') }}
                      {!! Form::text('supplier_reference', null, array('class' => 'form-control', 'id' => 'supplier_reference')) !!}

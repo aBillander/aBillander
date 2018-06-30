@@ -53,7 +53,7 @@
 <div id="div_loggers">
    <div class="table-responsive">
 
-@if ($loggers->count())
+@if ($loggers && $loggers->count())
 <table id="loggers" class="table table-hover">
     <thead>
         <tr>

@@ -7,29 +7,8 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-        @if( $logger_errors )
-        <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="return false;" 
-                title="{{l('ERRORS')}}"><i class="fa fa-hand-stop-o"></i> {{ $logger_errors }} {{l('ERROR(S)')}}</a>
-        @endif
-        @if( $logger_warnings )
-        <a href="javascript:void(0);" class="btn btn-sm btn-warning" onclick="return false;" 
-                title="{{l('WARNINGS')}}"><i class="fa fa-hand-stop-o"></i> {{ $logger_warnings }} {{l('WARNING(S)')}}</a>
-        @endif
-        @if ($loggers->count())
-
-        @if (count($log_names) > 1)
-
-          {!! Form::model(Request::all(), array('route' => 'activityloggers.index', 'method' => 'GET', 'style' => "display: inline-block; margin: 0;")) !!}
-
-            {!! Form::select('log_name', array('' => l('-- Please, select --', [], 'layouts')) + $log_names, null, array('class' => 'xform-control', 'id' => 'log_name', 'onchange' => 'this.form.submit()')) !!}
-
-          {!! Form::close() !!}
-
-        @endif
-
-        <a href="{{{ URL::to('activityloggers/empty') }}}" class="btn btn-sm btn-success" 
-                title="{{l('Empty LOG')}}"><i class="fa fa-scissors"></i> {{l('Empty LOG')}}</a>
-        @endif
+        <!-- a href="{{ URL::to('activitylogges/create') }}" class="btn btn-sm btn-success" 
+                title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a -->
     </div>
     <h2>
         {{ l('aBillander LOG') }}
@@ -43,23 +22,33 @@
 <table id="loggers" class="table table-hover">
     <thead>
         <tr>
+            <th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th class="text-left">{{l('User ID')}}</th>
             <th class="text-left">{{l('LOG Name')}}</th>
-            <th class="text-left">{{l('ID', [], 'layouts')}}</th>
+            <th class="text-left">{{l('Description')}}</th>
             <th class="text-left">{{l('Date/Time')}}</th>
-            <th class="text-left">{{l('Type')}}</th>
-            <th class="text-left">{{l('Message')}}</th>
+            <th class="text-left"> </th>
         </tr>
     </thead>
     <tbody>
         @foreach ($loggers as $logger)
         <tr>
-            <td>{{ $logger->user_id }}</td>
-            <td>{{ $logger->log_name }}</td>
             <td>{{ $logger->id }}</td>
-            <td>{{ $logger->date_added }} &nbsp; {{ sprintf( "(.%04s)",   intval(intval($logger->secs_added)/100.0) ) }}</td>
-            <td><span class="log-{{ $logger->level_name }}-format">{{ $logger->level_name }}</span></td>
-            <td>{!! $logger->message !!}</td>
+            <td>{{ $logger->user_id }} [{{ $logger->user->getFullName() }}]</td>
+            <td>{{ $logger->name }}</td>
+            <td>{{ $logger->description }}</td>
+            <td>{{ $logger->created_at }}</td>
+
+            <td class="text-right button-pad">
+
+                      <a class="btn btn-sm btn-success" href="{{ URL::to('activityloggers/' . $logger->id) }}" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
+                      <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                          href="{{ URL::to('activityloggers/' . $logger->id ) }}" 
+                          data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
+                          data-title="{{ l('aBillander LOG') }} :: ({{$logger->id}}) {{ $logger->name }}" 
+                          onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+
+            </td>
         </tr>
         @endforeach
     </tbody>
@@ -79,12 +68,16 @@
 @endsection
 
 
+@include('layouts/modal_delete')
+
+
 @section('styles')    @parent
 
 <style>
   .log-showoff-format {
       color: #3a87ad;;
       font-weight: bold;
+      font-style: italic;
   }
 
   .log-INFO-format {

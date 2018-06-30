@@ -75,7 +75,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('salesreps/' . $salesrep->id ) }}" 
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Warehouses') }} ::  ({{$salesrep->id}}) {{ $salesrep->alias }} ?" 
+                    data-title="{{ l('Warehouses') }} ::  ({{$salesrep->id}}) {{ $salesrep->alias }}" 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('salesreps/' . $salesrep->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

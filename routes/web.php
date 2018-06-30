@@ -89,6 +89,8 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('users', 'UsersController');
 
+        Route::resource('suppliers', 'SuppliersController');
+
         Route::resource('templates', 'TemplatesController');
 
         Route::resource('currencies', 'CurrenciesController');
@@ -162,9 +164,9 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('carriers', 'CarriersController');
 
-//        Route::resource('activityloggers', 'ActivityLoggersController');
-        Route::get('activityloggers', ['uses' => 'ActivityLoggersController@index', 
-                         'as'   => 'activityloggers.index'] );
+        Route::resource('activityloggers', 'ActivityLoggersController');
+//        Route::get('activityloggers', ['uses' => 'ActivityLoggersController@index', 
+//                         'as'   => 'activityloggers.index'] );
         Route::get('activityloggers/empty', ['uses' => 'ActivityLoggersController@empty', 
                          'as'   => 'activityloggers.empty'] );
 

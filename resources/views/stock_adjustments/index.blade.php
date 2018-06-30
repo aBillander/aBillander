@@ -84,7 +84,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('stockmovements/' . $stockmovement->id ) }}" 
                 		data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Stock Movements') }} ::  ({{$stockmovement->id}}) {{ $stockmovement->date }} ?" 
+                		data-title="{{ l('Stock Movements') }} ::  ({{$stockmovement->id}}) {{ $stockmovement->date }}" 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('stockmovements/' . $stockmovement->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

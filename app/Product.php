@@ -329,6 +329,11 @@ class Product extends Model {
     {
         return $this->hasMany('App\StockMovement');
     }
+
+    public function supplier()
+    {
+        return $this->belongsTo('App\Supplier', 'main_supplier_id');
+    }
     
     public function warehouses()
     {
@@ -475,7 +480,11 @@ class Product extends Model {
                 ->merge( $this->getTaxRulesByCustomer( $customer ) )
                 ->merge( $this->getTaxRulesByProduct() );
 
-        return $rules;
+        // Higher Tax first
+        // return $rules->sortByDesc('percent');
+        // Not needed: use rule 'position' for precedence
+
+        return $rules->sortBy('position');
     }
     
 

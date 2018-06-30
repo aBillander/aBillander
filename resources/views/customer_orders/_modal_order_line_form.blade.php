@@ -17,91 +17,17 @@
 
 @section('scripts')    @parent
 
-{{-- Tabbed menu --}}
-
 <script type="text/javascript">
 
-$(document).ready(function() {
-   
-   $("#tab_new_product").click(function(event) {
-      event.preventDefault();
-      modal_search_tab_hide_all();
-      $("#li_new_product").addClass('active');
 
-      // Reset values
-      $('#line_type').val('product');
-      $("#line_autoproduct_name").val('');
-      $('#line_product_id').val();
-      $('#line_combination_id').val();
-      $('#line_quantity').val(1.0);
-      $('#line_cost_price').val();
-      $('#line_unit_price').val();
-      $('#line_unit_customer_price').val();
-      $('#line_price').val();
-      $('#line_tax_id').val(0);
-      $('#line_tax_percent').val(0.0);
-      $('#line_tax_label').html('');
-      $('#line_discount_percent').val(0.0);
-      $('#line_discount_amount_tax_incl').val(0.0);
-      $('#line_discount_amount_tax_excl').val(0.0);
-      $('#line_sales_rep_id').val( $('#sales_rep_id').val() );
-      $('#line_total_tax_exc').html('');
-      $('#line_total_tax_inc').html('');
-      $('#line_notes').val('');
+// $(document).ready(function() {
 
-      $("#new_product").show();
-      $("#line_autoproduct_name").focus();
-   });
-   
-   $("#tab_new_service").click(function(event) {
-      event.preventDefault();
-      modal_search_tab_hide_all()
-      $("#li_new_service").addClass('active');
+// });
 
-      // Reset values
-      $('#line_type').val('service');
-      $('#name').val('');
-//      $('#is_shipping').val(0);
-      $('input[name=is_shipping][value=0]').prop('checked', 'checked');
-      $('#cost_price').val(0.0);
-      $('#price').val(0.0);
-      $('#tax_id').val({{ \App\Configuration::get('DEF_TAX') }});
-      $('#line_tax_percent').val(0.0);
-      $('#price_tax_inc').val(0.0);
-      $('#service_notes').val('');
 
-      $("#new_service").show();
-      $("#name").focus();
-   });
-   
-   $("#tab_new_discount").click(function(event) {
-      event.preventDefault();
-      modal_search_tab_hide_all()
-      $("#li_new_discount").addClass('active');
-      $('#line_type').val('discount');
-      $("#new_discount").show();
-      document.f_new_discount.discount_name.select();
-   });
+function calculate_line_product( ) {
 
-      // To get focus properly:
-      $("#tab_new_product").trigger("click");
-
-});
-
-function modal_search_tab_hide_all() {
-
-  $("#nav_new_order_line li").each(function() {
-     $(this).removeClass("active");
-  });
-
-     $("#new_product").hide();
-     $("#new_service").hide();
-     $("#new_discount").hide();
-}
-
-function calculate_line_product( prefix = '' ) {
-
-   var QUANTITY_DECIMAL_PLACES = $('#product_line_quantity_decimal_places').val();
+   var QUANTITY_DECIMAL_PLACES = $('#line_quantity_decimal_places').val();
    var tax_percent;
 
     // parseFloat
@@ -109,20 +35,20 @@ function calculate_line_product( prefix = '' ) {
     var total;
     var total_tax_exc;
     var total_tax_inc;
-//    var tax_percent = $('#"+prefix+"line_tax_percent').val();
+//    var tax_percent = $('line_tax_percent').val();
 
-    if ($("#"+prefix+"line_tax_id").val()>0) { 
+    if ($("#line_tax_id").val()>0) { 
       tax_percent = parseFloat( 
-        get_tax_percent_by_id( $("#"+prefix+"line_tax_id").val(), $("input[name='line_is_sales_equalization']:checked").val() ) 
+        get_tax_percent_by_id( $("#line_tax_id").val(), $("input[name='line_is_sales_equalization']:checked").val() ) 
       ); 
     }
     else { return false; }
 
-    if ( nbr_decimals( $("#"+prefix+"line_quantity").val() ) > QUANTITY_DECIMAL_PLACES )
-        $("#"+prefix+"line_quantity").val( $("#"+prefix+"line_quantity").val().round( QUANTITY_DECIMAL_PLACES ) );
+    if ( nbr_decimals( $("#line_quantity").val() ) > QUANTITY_DECIMAL_PLACES )
+        $("#line_quantity").val( $("#line_quantity").val().round( QUANTITY_DECIMAL_PLACES ) );
 
-    final_price = $("#"+prefix+"line_price").val() * ( 1.0 - $("#"+prefix+"line_discount_percent").val() / 100.0 );
-    total       = $("#"+prefix+"line_quantity").val() * final_price;
+    final_price = $("#line_price").val() * ( 1.0 - $("#line_discount_percent").val() / 100.0 );
+    total       = $("#line_quantity").val() * final_price;
 
     if ( PRICES_ENTERED_WITH_TAX ) {
         total_tax_inc = total;
@@ -132,9 +58,9 @@ function calculate_line_product( prefix = '' ) {
         total_tax_exc = total;
     }
 
-    $("#"+prefix+"line_final_price").html( final_price.round( PRICE_DECIMAL_PLACES ) );
-    $("#"+prefix+"line_total_tax_exc").html( total_tax_exc.round( PRICE_DECIMAL_PLACES ) );
-    $("#"+prefix+"line_total_tax_inc").html( total_tax_inc.round( PRICE_DECIMAL_PLACES ) );
+    $("#line_final_price").html( final_price.round( PRICE_DECIMAL_PLACES ) );
+    $("#line_total_tax_exc").html( total_tax_exc.round( PRICE_DECIMAL_PLACES ) );
+    $("#line_total_tax_inc").html( total_tax_inc.round( PRICE_DECIMAL_PLACES ) );
 }
 
 

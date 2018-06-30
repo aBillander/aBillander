@@ -6,104 +6,23 @@
 
 <div class="panel panel-info" id="panel_import_products">
    <div class="panel-heading">
-      <h3 class="panel-title">{{ l('Import Product File', [], 'imports') }}</h3>
+      <h3 class="panel-title">{{ l('Import Product File') }}</h3>
    </div>
    <div class="panel-body">
 
-<!-- Images -->
 
           @include('imports._form_upload_products')   
 
+   </div>
+
    <div class="panel-footer text-right">
       <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
-         <i class="fa fa-hdd-o"></i>
-         &nbsp; {{l('Save', [], 'layouts')}}
+         <i class="fa fa-upload"></i>
+         &nbsp; {{l('Import', [], 'layouts')}}
       </button>
    </div>
 
-        <div class="row">
-         <hr style="height:2px; border: 1px solid #eeeeee;">
-        </div>
-        <div class="row">
-              <div class="form-group col-lg-10 col-md-10 col-sm-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
 
-    <div id="div_rows">
-       <div class="table-responsive">
-
-    <table id="rows" class="table table-hover">
-      <thead>
-        <tr>
-          <th>{{l('ID', [], 'layouts')}}</th>
-          <th>{{ l('Image') }}</th>
-          <th>{{ l('Caption') }}</th>
-          <th>{{l('Position', [], 'layouts')}}</th>
-          <th class="text-center">{{l('Is Featured?')}}</th>
-          <th class="text-right"> </th>
-        </tr>
-      </thead>
-      <tbody>
-      @if (0 && $product->images->count())
-         @foreach ($product->images as $img)
-           <tr style="vertical-align:middle;">
-               <td>{{ $img->id }}</td>
-               <td>
-
-              <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
-                     data-content="{{l('You are going to view a record. Are you sure?')}}" 
-                     data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
-                     data-caption="({{$img->id}}) {{ $img->caption }} " 
-                     onClick="return false;" title="{{l('View Image')}}">
-
-                      <img src="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() . $img->id . '-small_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
-              </a>
-
-               </td>
-               <td>{{ $img->caption }}</td>
-               <td>{{ $img->position }}</td>
-
-               <td class="text-center">@if ($img->is_featured) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
-
-               <td class="text-right">
-
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('products/' . $product->id.'/images/' . $img->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to('products/' . $product->id.'/images/' . $img->id ) }}" 
-                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                     data-title="{{ l('Product Images') }} :: ({{$img->id}}) {{{ $img->caption }}} " 
-                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-
-                </td>
-           </tr>
-         @endforeach
-      @else
-           <tr style="vertical-align:middle;">
-               <td colspan=5>
-                 <div class="alert alert-warning alert-block">
-                     <i class="fa fa-warning"></i>
-                     {{l('No records found', [], 'layouts')}}
-                 </div>
-                </td>
-           </tr>
-      @endif
-        </tbody>
-    </table>
-
-       </div>
-    </div>
-
-
-
-
-              </div>
-        </div>
-
-        <div class="row">
-        </div>
-
-<!-- Images ENDS -->
-
-   </div>
 
    <!-- div class="panel-footer text-right">
       <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">

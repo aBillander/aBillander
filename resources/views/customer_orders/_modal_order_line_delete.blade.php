@@ -63,7 +63,8 @@
                     loadCustomerOrderlines()
 
                     $('#modalOrderlineDelete').modal('toggle');
-                    $("#msg-success-delete").fadeIn();
+                    
+                    showAlertDivWithDelay("#msg-success-delete");
     
                     console.log(result);
                 }

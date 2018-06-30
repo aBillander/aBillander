@@ -26,7 +26,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		//
 
 		// Languages
-		view()->composer(array('users.create', 'users.edit'), function($view) {
+		view()->composer(array('users.create', 'users.edit', 'suppliers._form'), function($view) {
 		    
 		    $view->with('languageList', \App\Language::pluck('name', 'id')->toArray());
 		    
@@ -76,15 +76,22 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		// Suppliers
+		view()->composer(array('products._panel_purchases'), function($view) {
+		    
+		    $view->with('supplierList', \App\Supplier::pluck('name_fiscal', 'id')->toArray());
+		    
+		});
+
 		// Payment Methods
-		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2', 'suppliers._form'), function($view) {
 		    
 		    $view->with('payment_methodList', \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Currencies
-		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create', 'configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create', 'configuration_keys.key_group_2', 'suppliers._form'), function($view) {
 		    
 		    $view->with('currencyList', \App\Currency::pluck('name', 'id')->toArray());
 		    

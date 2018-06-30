@@ -17,6 +17,7 @@
 
             {{ Form::hidden('line_product_id',     null, array('id' => 'line_product_id'    )) }}
             {{ Form::hidden('line_combination_id', null, array('id' => 'line_combination_id')) }}
+            {{ Form::hidden('line_reference',      null, array('id' => 'line_reference'     )) }}
 
             {{ Form::hidden('line_type',           null, array('id' => 'line_type'          )) }}
 
@@ -27,6 +28,9 @@
             {{-- Not in use so far --}}
             {{ Form::hidden('line_discount_amount_tax_incl', null, array('id' => 'line_discount_amount_tax_incl')) }}
             {{ Form::hidden('line_discount_amount_tax_excl', null, array('id' => 'line_discount_amount_tax_excl')) }}
+
+            {{ Form::hidden('line_sales_rep_id',       null, array('id' => 'line_sales_rep_id'      )) }}
+            {{ Form::hidden('line_commission_percent', null, array('id' => 'line_commission_percent')) }}
                
 
 
@@ -142,7 +146,7 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="modal_product_order_line_productSubmit" id="modal_product_order_line_productSubmit">
+               <button type="submit" class="btn btn-success" name="modal_edit_order_line_productSubmit" id="modal_edit_order_line_productSubmit">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 

@@ -17,6 +17,7 @@
 
             {{ Form::hidden('line_product_id',     null, array('id' => 'line_product_id'    )) }}
             {{ Form::hidden('line_combination_id', null, array('id' => 'line_combination_id')) }}
+            {{ Form::hidden('line_reference',      null, array('id' => 'line_reference'     )) }}
 
             {{ Form::hidden('line_type',           null, array('id' => 'line_type'          )) }}
 
@@ -27,6 +28,9 @@
             {{-- Not in use so far --}}
             {{ Form::hidden('line_discount_amount_tax_incl', null, array('id' => 'line_discount_amount_tax_incl')) }}
             {{ Form::hidden('line_discount_amount_tax_excl', null, array('id' => 'line_discount_amount_tax_excl')) }}
+
+            {{ Form::hidden('line_sales_rep_id',       null, array('id' => 'line_sales_rep_id'      )) }}
+            {{ Form::hidden('line_commission_percent', null, array('id' => 'line_commission_percent')) }}
 
 
 
@@ -71,6 +75,21 @@
                    
         </div>
 
+        <!-- div class="row">
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                  </div>
+
+                 <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('product_line_measure_unit_id') ? 'has-error' : '' }}">
+                    {{ l('Measure Unit') }}
+                    {!! Form::select('product_line_measure_unit_id', array('0' => l('-- Please, select --', [], 'layouts')) , null, array('class' => 'form-control', 'id' => 'product_line_measure_unit_id', 'onFocus' => 'this.blur()')) !!}
+                    {!! $errors->first('product_line_measure_unit_id', '<span class="help-block">:message</span>') !!}
+                 </div>
+
+        </div -->
+
+                    {{ Form::hidden( 'line_measure_unit_id', null, ['id' => 'line_measure_unit_id'] ) }}
+
          <div class="row">
                  <!-- div class="form-group col-lg-3 col-md-3 col-sm-3">
                     {{ l('Cost Price') }}
@@ -82,6 +101,9 @@
                      {{ l('Quantity') }}
                      {!! Form::text('line_quantity', null, array('class' => 'form-control', 'id' => 'line_quantity', 'onkeyup' => 'calculate_line_product( )', 'onchange' => 'calculate_line_product( )', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
                      {!! $errors->first('line_quantity', '<span class="help-block">:message</span>') !!}
+
+                     {{ Form::hidden('line_quantity_decimal_places', null, array('id' => 'line_quantity_decimal_places')) }}
+
                   </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
                     @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )

@@ -22,6 +22,20 @@ class ActivityLoggersController extends Controller
      */
     public function index(Request $request)
     {
+        $loggers = $this->logger->orderBy('id', 'desc');
+
+
+        $loggers = $loggers->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        // abi_r($loggers, true);
+
+        $loggers->setPath('activityloggers');     // Customize the URI used by the paginator
+
+//        $loggers = collect([]);
+
+        return view('activity_loggers.index', compact('loggers'));
+
+/*
         $loggers = $this->logger->filter( $request->all() )->orderBy('id', 'desc');
 
 
@@ -40,6 +54,7 @@ class ActivityLoggersController extends Controller
 //        $loggers = collect([]);
 
         return view('activity_loggers.index', compact('loggers', 'logger_errors', 'logger_warnings', 'log_names'));
+*/
         
     }
 
@@ -67,21 +82,38 @@ class ActivityLoggersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ActivityLogger  $activityLogger
+     * @param  \App\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
-    public function show(ActivityLogger $activityLogger)
+    public function show(ActivityLogger $activitylogger)
     {
-        //
+
+        $loggers = $activitylogger->activityloggerlines()->orderBy('id', 'desc');
+
+
+
+        $logger_errors = $activitylogger->activityloggerlines()->where('level_name', 'ERROR')->count();
+
+        $logger_warnings = $activitylogger->activityloggerlines()->where('level_name', 'WARNING')->count();
+
+
+        $loggers = $loggers->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        // abi_r($loggers, true);
+
+        $loggers->setPath('');     // Customize the URI used by the paginator
+
+
+        return view('activity_loggers.show', compact('activitylogger', 'loggers', 'logger_errors', 'logger_warnings'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ActivityLogger  $activityLogger
+     * @param  \App\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
-    public function edit(ActivityLogger $activityLogger)
+    public function edit(ActivityLogger $activitylogger)
     {
         //
     }
@@ -90,10 +122,10 @@ class ActivityLoggersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ActivityLogger  $activityLogger
+     * @param  \App\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ActivityLogger $activityLogger)
+    public function update(Request $request, ActivityLogger $activitylogger)
     {
         //
     }
@@ -101,12 +133,21 @@ class ActivityLoggersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ActivityLogger  $activityLogger
+     * @param  \App\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ActivityLogger $activityLogger)
+    public function destroy(ActivityLogger $activitylogger)
     {
-        //
+        $id = $activitylogger->id;
+
+        // Lines
+        $activitylogger->activityloggerlines()->delete();
+
+        // Logger
+        $activitylogger->delete();
+
+        return redirect('activityloggers')
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
 
@@ -115,7 +156,7 @@ class ActivityLoggersController extends Controller
         // $this->logger->empty();
 
         // Preserve aBillander_messenger
-        $this->logger->where('log_name', '!=', 'aBillander_messenger')->delete();
+        // $this->logger->where('log_name', '!=', 'aBillander_messenger')->delete();
 
         return redirect('activityloggers')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => ''], 'layouts'));

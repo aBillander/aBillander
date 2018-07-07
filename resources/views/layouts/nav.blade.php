@@ -254,13 +254,13 @@
 @if (config('app.url') =='http://localhost/enatural')
                          <li>
                             <a href="{{ URL::to('configurationkeys') }}">
-                                 {{l('Configuration - All keys', [], 'layouts')}}
+                                 {{l('Configuration', [], 'layouts')}}
                             </a>
                         </li>
 @endif
                          <li>
                             <a href="{{ URL::to('configurations') }}">
-                                 {{l('Configuration', [], 'layouts')}}
+                                 {{l('Configuration - All keys', [], 'layouts')}}
                             </a>
                         </li>
                          <li>
@@ -345,3 +345,16 @@
         </div>
     </div>
 </nav>
+
+{{--
+
+Multi-Level Dropdowns
+
+https://www.w3schools.com/Bootstrap/tryit.asp?filename=trybs_ref_js_dropdown_multilevel_css&stacked=h
+
+https://github.com/almasaeed2010/AdminLTE/issues/1275
+^-- "this requires extra JS code to get it to work since Bootstrap propagates the click event and closes the dropdown"
+
+https://bootsnipp.com/snippets/featured/multi-level-dropdown-menu-bs3
+
+--}}

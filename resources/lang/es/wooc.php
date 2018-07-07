@@ -12,11 +12,14 @@ return [
 	*/
 
 	'Online Shop Orders'     => 'Pedidos Tienda Online',
+	'Import Orders'     => 'Importar pedidos',
 	'Add Orders to Production Sheet'     => 'Añadir pedidos a Hoja de Producción',
+	'Add'     => 'Añadir',
 	'Add Orders to NEW Production Sheet'     => 'Añadir pedidos a NUEVA Hoja de Producción',
 	'Date'     => 'Fecha',
 	'Name'     => 'Nombre',
 	'Production Sheet'     => 'Hoja de Producción',
+	'No active Production Sheet found.'     => 'No se han encontrado Hojas de Producción activas.',
 	
 	
 	
@@ -57,6 +60,61 @@ return [
 	'Customer'     => 'Cliente',
 
 	'Transaction ID'     => 'ID Transacción',
+	''     => '',
+	''     => '',
+
+	/*
+	|--------------------------------------------------------------------------
+	| WooCommerce Settings Language Lines :: show
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'General'     => 'General',
+	'Taxes'     => 'Impuestos',
+	'Payment Gateways'     => 'Formas de Pago',
+	'Shipping Methods'     => 'Métodos de Envío',
+	'Other'     => 'Otros',
+	'All Keys'     => 'Todas las Claves',
+
+	'WooConnect Settings'     => 'WooConnect Configuración',
+	'WooCommerce link Settings'     => 'Configuración del enlace con WooCommerce',
+	''     => '',
+
+	/*
+	|--------------------------------------------------------------------------
+	| WooCommerce Settings Language Lines :: help
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'WOOC_DECIMAL_PLACES.name'     => 'Número de decimales',
+	'WOOC_DECIMAL_PLACES.help'     => 'Número de posiciones decimales con que trabaja WooCommerce,',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
+	'WOOC_DEF_CURRENCY.name'     => 'Divisa',
+	'WOOC_DEF_CURRENCY.help'     => 'Moneda de la Tienda WooCommerce.',
+	'WOOC_DEF_CUSTOMER_GROUP.name'     => 'Grupo de Clientes',
+	'WOOC_DEF_CUSTOMER_GROUP.help'     => 'Los Clientes que se importan desde WooCommerce serán asignados a este Grupo.',		// Imported Customers will be asigned to this Group
+	'WOOC_DEF_CUSTOMER_PRICE_LIST.name'     => 'Tarifa',
+	'WOOC_DEF_CUSTOMER_PRICE_LIST.help'     => 'Los Clientes que se importan desde WooCommerce se les asignará esta Tarifa.',	// Imported Customers will be asigned this Price List
+
+	'WOOC_DEF_LANGUAGE.name'     => 'Idioma',
+	'WOOC_DEF_LANGUAGE.help'     => 'Idioma de la Tienda WooCommerce.',
+	'WOOC_DEF_ORDERS_SEQUENCE.name'     => 'Serie para Pedidos',
+	'WOOC_DEF_ORDERS_SEQUENCE.help'     => 'Los Pedidos que se importan desde WooCommerce serán asignados a esta Serie.',		// Sequence for Customer Orders imported from WooCommerce
+	'WOOC_DEF_SHIPPING_TAX.name'     => 'Impuesto para los Gastos de Envío',
+	'WOOC_DEF_SHIPPING_TAX.help'     => 'Impuesto para los Gastos de Envío en la Tienda WooCommerce.',
+
+	'WOOC_ORDER_NIF_META.name'     => 'Campo "Meta" para el NIF.',
+	'WOOC_ORDER_NIF_META.help'     => 'Campo "Meta" del Pedido en WooCommerce donde se guarda el NIF/CIF/NIE.',		// Order Meta field name to store Spanish NIF/CIF/NIE.
+	'WOOC_ORDERS_PER_PAGE.name'     => 'Pedidos por página',
+	'WOOC_ORDERS_PER_PAGE.help'     => 'Número de Pedidos (máximo) para resultados paginados.',
+
+	'WOOC_USE_LOCAL_PRODUCT_NAME.name'     => 'Usar el Nombre local del Producto',
+	'WOOC_USE_LOCAL_PRODUCT_NAME.help'     => 'En los Pedidos importados, usar el Nombre del Producto en lugar del Nombre en WooCommerce.',
 	''     => '',
 	''     => '',
 

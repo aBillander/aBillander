@@ -152,7 +152,8 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 				$order["production_sheet_id"] = '';
 			}
 
-            $state = \App\State::findByIsoCode( (strpos($order['shipping']['state'], '-') ? '' : $order['shipping']['country'].'-').$order['shipping']['state'] );
+            $state = \App\State::findByIsoCode( $order['shipping']['state'], $order['shipping']['country'] );
+
             $state_name = $state ? $state->name : $order['shipping']['state'];
             $order['shipping']['state_name'] = $state_name;
 
@@ -214,6 +215,8 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 	 */
 	public function show($id)
 	{
+		// return $id;
+
 		// print_r(json_decode($json));       -> stdClass Object
 		// print_r(json_decode($json, true)); -> Array
 
@@ -259,7 +262,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		$country = \App\Country::findByIsoCode( $order['billing']['country'] );
 		$order['billing']['country_name'] = $country ? $country->name : $order['billing']['country'];
 
-		$state = \App\State::findByIsoCode( (strpos($order['billing']['state'], '-') ? '' : $order['billing']['country'].'-').$order['billing']['state'] );
+		$state = \App\State::findByIsoCode( $order['billing']['state'], $order['billing']['country'] );
 		$order['billing']['state_name'] = $state ? $state->name : $order['billing']['state'];
 
 
@@ -267,7 +270,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		$country = \App\Country::findByIsoCode( $order['shipping']['country'] );
 		$order['shipping']['country_name'] = $country ? $country->name : $order['shipping']['country'];
 
-		$state = \App\State::findByIsoCode( (strpos($order['shipping']['state'], '-') ? '' : $order['shipping']['country'].'-').$order['shipping']['state'] );
+		$state = \App\State::findByIsoCode( $order['shipping']['state'], $order['shipping']['country'] );
 		$order['shipping']['state_name'] = $state ? $state->name : $order['shipping']['state'];
 
 		return view('woo_connect::woo_orders.show', compact('order', 'customer'));
@@ -331,8 +334,57 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 /* ********************************************************************************************* */   
 
 
+	public function importOrders( Request $request )
+	{
+        // ProductionSheetsController
+        if ( count($request->input('worders', [])) == 0 ) 
+            return redirect()->route('worders.index')
+                ->with('warning', l('No se ha seleccionado ningún Pedido, y no se ha realizado ninguna acción.'));
+
+
+        // Prepare Logger
+        $logger = \aBillander\WooConnect\WooOrderImporter::logger();
+
+        $logger->empty();
+        $logger->start();
+
+        // Do the Mambo!
+        foreach ( $request->input('worders', []) as $oID ) 
+        {
+        	$logger->log("INFO", 'Se descargará el Pedido: <span class="log-showoff-format">{oid}</span> .', ['oid' => $oID]);
+
+        	$importer = \aBillander\WooConnect\WooOrderImporter::processOrder( $oID );
+        }
+
+        $logger->stop();
+
+        return redirect('activityloggers/'.$logger->id);
+
+/* 
+        // Mambo!
+		$importer = \aBillander\WooConnect\WooOrderImporter::makeOrder( $id );
+
+		if ( $importer->tell_run_status() )
+			
+			return redirect()->route('worders.show', $id)
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+		else
+			
+			return redirect()->route('worders.show', $id)
+				->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . $importer->error);
+*/
+	} 
+
+
 	public function import($id)
 	{
+		// return "Order: $id";
+
+        // Prepare Logger
+        // $logger = \App\ActivityLogger::setup( 
+        //    'Import WooCommerce Orders :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s'), \aBillander\WooConnect\WooOrderImporter::loggerSignature() );
+
+        // Mambo!
 		$importer = \aBillander\WooConnect\WooOrderImporter::makeOrder( $id );
 
 		if ( $importer->tell_run_status() )

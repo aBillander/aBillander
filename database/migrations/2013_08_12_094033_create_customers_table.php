@@ -34,7 +34,7 @@ class CreateCustomersTable extends Migration {
 			// EU VAT Id, Tax number, etc.
 
 			$table->string('webshop_id', 16)->nullable();
-//            $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
+            $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
 			$table->string('accounting_id', 32)->nullable();				// Customer's account code 
 
 			$table->string('payment_days', 16)->nullable();					// Comma separated integuers!

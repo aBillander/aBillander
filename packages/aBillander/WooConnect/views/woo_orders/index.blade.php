@@ -10,6 +10,7 @@
 
     <!-- a href="{{ URL::route('worders.imported') }}" class="btn btn-grey" 
         title="{{l('Orders')}}"><i class="fa fa-shopping-cart"></i> {{l('Orders')}}</a -->
+    <a class="btn btn-grey" href="{{ URL::route('wooconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}}"><i class="fa fa-cog"></i> {{l('Configuration', [], 'layouts')}}</a> 
 
     <div class="btn-group" style="margin-right: 152px">
         <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Configuration', [], 'layouts')}}"><i class="fa fa-cog"></i> {{l('Configuration', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
@@ -36,7 +37,7 @@
 
 @if ($orders->count())
 
-{!! Form::open( ['route' => ['productionsheet.addorders', '0'], 'method' => 'POST'] ) !!}
+{!! Form::open( ['route' => ['productionsheet.addorders', '0'], 'method' => 'POST', 'id' => 'form-import'] ) !!}
 {{-- !! csrf_field() !! --}}
 
    <div class="table-responsive">
@@ -135,12 +136,39 @@
 <div name="search_filter" id="search_filter">
 <div class="row" style="padding: 0 20px">
 
+    <div class="col-md-2 xcol-md-offset-3">
+        <div class="panel panel-info">
+            <div class="panel-heading" style="color: #ffffff; background-color: #772953; border-color: #772953;">
+                <h3 class="panel-title">{{ l('Import Orders') }}</h3>
+            </div>
+            <div class="panel-body">
+
+<div class="row">
+    <div class="form-group col-lg-6 col-md-6 col-sm-6" style="padding-top: 22px">
+
+
+                <a class="btn btn-grey" href="javascript:void(0);" title="{{l('Import', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-import').attr('action', '{{ route( 'worders.import.orders' )}}');$('#form-import').submit();return false;"><i class="fa fa-download"></i> {{l('Import', 'layouts')}}</a>
+
+                <!-- https://stackoverflow.com/questions/6799533/how-to-submit-a-form-with-javascript-by-clicking-a-link -->
+
+    </div>
+</div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
     <div class="col-md-4 xcol-md-offset-3">
         <div class="panel panel-info">
             <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to Production Sheet') }}</h3></div>
             <div class="panel-body">
 
-@if ( count( $availableProductionSheetList ) )
+@if ( count( $availableProductionSheetList ) || 1 )
 <div class="row">
 <!-- div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('after', l('Date from')) !!}
@@ -165,7 +193,7 @@
 
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
-    {{l('No se han encontrado Hojas de Producción activas.')}}
+    {{l('No active Production Sheet found')}}
 </div>
 
 @endif
@@ -174,7 +202,7 @@
         </div>
     </div>
 
-    <div class="col-md-6 col-md-offset-1">
+    <div class="col-md-6 xcol-md-offset-1">
         <div class="panel panel-info">
             <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to NEW Production Sheet') }}</h3></div>
             <div class="panel-body">
@@ -195,9 +223,11 @@
             {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
          </div>
 
-<div class="form-group col-lg-4 col-md-4 col-sm-4" style="padding-top: 22px">
+<div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 <input type="hidden" id="production_sheet_mode" name="production_sheet_mode" value="existing" />
 {!! Form::submit(l('Add'), array('class' => 'btn btn-success', 'onclick' => "this.disabled=true;$('#production_sheet_mode').val('new');this.form.submit();")) !!}
+
+
 </div>
 
 </div>

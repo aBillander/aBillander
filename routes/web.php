@@ -211,9 +211,14 @@ Route::group(['middleware' =>  ['auth']], function()
 
 
         // Import to Database
-        Route::get('import/pricelists/{id}', 'Import\ImportPriceListsController@import')->name('pricelist.import');
-        Route::get('import/products', 'Import\ImportProductsController@import')->name('products.import');
+        Route::get( 'import/pricelists/{id}', 'Import\ImportPriceListsController@import' )->name('pricelists.import');
+        Route::post('import/pricelists/{id}', 'Import\ImportPriceListsController@process')->name('pricelists.import.process');
+
+        Route::get( 'import/products', 'Import\ImportProductsController@import' )->name('products.import');
         Route::post('import/products', 'Import\ImportProductsController@process')->name('products.import.process');
+
+        Route::get( 'import/customers', 'Import\ImportCustomersController@import' )->name('customers.import');
+        Route::post('import/customers', 'Import\ImportCustomersController@process')->name('customers.import.process');
 
 });
 

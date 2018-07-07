@@ -138,7 +138,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Customer Groups
-		view()->composer(array('customers.edit'), function($view) {
+		view()->composer(array('customers.index', 'customers.edit'), function($view) {
 		    
 		    $view->with('customer_groupList', \App\CustomerGroup::pluck('name', 'id')->toArray());
 		    

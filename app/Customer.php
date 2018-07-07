@@ -18,8 +18,8 @@ class Customer extends Model {
 //                ];
 
 	
-    protected $fillable = ['name_fiscal', 'name_commercial', 'website', 'identification', 'webshop_id', 
-                            'payment_days', 'no_payment_month', 
+    protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'webshop_id', 'reference_external', 
+                           'website', 'payment_days', 'no_payment_month', 
                            'outstanding_amount_allowed', 'unresolved_amount', 
                            'notes', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
@@ -87,6 +87,59 @@ class Customer extends Model {
 
         return null;
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function scopeFilter($query, $params)
+    {
+        if ( isset($params['name']) && $params['name'] != '' )
+        {
+            $name = $params['name'];
+
+            $query->where( function ($query1) use ($name) {
+                $query1->where(  'name_fiscal',     'LIKE', '%' . $name . '%')
+                       ->OrWhere('name_commercial', 'LIKE', '%' . $name . '%');
+            } );
+        }
+
+        if ( isset($params['identification']) && $params['identification'] != '' )
+        {
+            $query->where('identification', 'LIKE', '%' . $params['identification'] . '%');
+        }
+
+        if ( isset($params['email']) && $params['email'] != '' )
+        {
+            $email = $params['email'];
+
+            $query->whereHas('addresses', function($q) use ($email) 
+            {
+                $q->where('email', 'LIKE', '%' . $email . '%');
+
+            });
+        }
+
+        if ( isset($params['customer_group_id']) && $params['customer_group_id'] > 0 )
+        {
+            $query->where('customer_group_id', '=', $params['customer_group_id']);
+        }
+
+        if ( isset($params['active']) )
+        {
+            if ( $params['active'] == 0 )
+                $query->where('active', '=', 0);
+            if ( $params['active'] == 1 )
+                $query->where('active', '>', 0);
+        }
+
+        return $query;
+    }
+    
     
     public function paymentDays() 
     {
@@ -149,6 +202,107 @@ class Customer extends Model {
         if ( $payday->dayOfWeek == 0 ) $payday->addDays(1); // Sunday
 
         return $payday;
+    }
+
+
+    // NIF
+    // Better use: https://github.com/amnesty/drupal-nif-nie-cif-validator/blob/master/includes/nif-nie-cif.php
+
+    // http://da-software.blogspot.com/2011/12/comprobar-cif-nif-nie-con-php.html
+    public static function check_spanish_nif_cif_nie( $value ) 
+    {
+         //Returns: 
+
+         // 1 = NIF ok,
+
+         // 2 = CIF ok,
+
+         // 3 = NIE ok,
+
+         //-1 = NIF bad,
+
+         //-2 = CIF bad, 
+
+         //-3 = NIE bad, 0 = ??? bad
+        
+        // Sanitize
+        $nif = self::normalize_spanish_nif_cif_nie( $value );
+
+        if ( strlen( $value ) == 9 ) {
+//            $nif = strtoupper( $value );
+
+            for ( $i = 0; $i < 9; $i ++ ) {
+                $num[$i] = substr( $nif, $i, 1 );
+            }
+
+            // Check format :: Si no tiene un formato valido devuelve error
+            if ( !preg_match( '/((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)/', $nif ) ) {
+
+                return 0;
+            }
+
+            // comprobacion de NIFs estandar
+            if ( preg_match( '/(^[0-9]{8}[A-Z]{1}$)/', $nif ) ) {
+                if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( $nif, 0, 8 ) % 23, 1 ) ) {
+                        return 1;
+                  } else {
+                        return -1;
+                  }
+            }
+
+            // algoritmo para comprobacion de codigos tipo CIF
+            $suma = $num[2] + $num[4] + $num[6];
+            for ( $i = 1; $i < 8; $i += 2 ) {
+                $suma += substr( ( 2 * $num[$i] ), 0, 1 ) + substr( ( 2 * $num[$i] ), 1, 1 );
+            }
+            $n = 10 - substr( $suma, strlen( $suma ) - 1, 1 );
+
+            // comprobacion de NIFs especiales (se calculan como CIFs)
+            if ( preg_match( '/^[KLM]{1}/', $nif ) ) { 
+                if ( $num[8] == chr( 64 + $n ) ) {
+                          return 1;
+                  } else {
+                          return -1;
+                  }
+            }
+
+            // comprobacion de CIFs
+            if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $nif ) ) {
+                
+                if ( $num[8] == chr( 64 + $n ) || $num[8] == substr( $n, strlen( $n ) - 1, 1 ) ) { 
+                        return 2;
+                  } else {
+                        return -2;
+                  }
+            }
+
+            // comprobacion de NIEs
+            // T
+            if ( preg_match( '/^[T]{1}/', $nif ) ) {
+                if ( $num[8] == preg_match( '/^[T]{1}[A-Z0-9]{8}$/', $nif ) ) {
+                        return 3;
+                  } else {
+                        return -3;
+                  }
+            }
+
+            // NIE válido (XYZ)
+            if ( preg_match( '/^[XYZ]{1}/', $nif ) ) { 
+                if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X','Y','Z' ), array( '0','1','2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
+                        return 3;
+                  } else {
+                        return -3;
+                  }
+            }
+        }
+
+        // si todavia no se ha verificado devuelve error
+        return 0;
+    }
+
+    public static function normalize_spanish_nif_cif_nie( $value )
+    {
+        return strtoupper( str_replace([' ', '-'], '', $value) );
     }
 
 

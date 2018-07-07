@@ -80,6 +80,8 @@ return [
 	'DEF_ITEMS_PERAJAX.help' => 'Número de items (máximo) devuelto por una consulta Ajax.',
 	'DEF_ITEMS_PERPAGE.name' => 'Items por página',
 	'DEF_ITEMS_PERPAGE.help' => 'Número de items (máximo) para resultados paginados.',
+	'DEF_LOGS_PERPAGE.name' => 'Registros del log por página',
+	'DEF_LOGS_PERPAGE.help' => 'Número de registros del log (máximo) para resultados paginados.',
 	'DEF_PERCENT_DECIMALS.name' => 'Decimales en Porcentajes',
 	'DEF_PERCENT_DECIMALS.help' => 'Número de decimales para porcentajes.',
 	'DEF_QUANTITY_DECIMALS.name' => 'Decimales en Cantidades',

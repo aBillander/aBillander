@@ -6,21 +6,21 @@ return [
     | Home URL to the store you want to connect to here
     |--------------------------------------------------------------------------
     */
-    'store_url' => env('WC_STORE_URL', 'https://www.laextranatural.com/'),
+    'store_url' => env('WC_STORE_URL', 'http://localhost/wooc/'),
 
     /*
     |--------------------------------------------------------------------------
     | Consumer Key
     |--------------------------------------------------------------------------
     */
-    'consumer_key' => env('WC_CONSUMER_KEY', 'ck_64d2e72e8d9120a9f985c1cb4073ff6bfa3b62da'),
+    'consumer_key' => env('WC_CONSUMER_KEY', 'ck_793891a8aea59f7380698f55cf2e284ca199395b'),
 
     /*
     |--------------------------------------------------------------------------
     | Consumer Secret
     |--------------------------------------------------------------------------
     */
-    'consumer_secret' => env('WC_CONSUMER_SECRET', 'cs_ed1170ce21aef204e5db9cdc603f7918734aca7f'),
+    'consumer_secret' => env('WC_CONSUMER_SECRET', 'cs_2955bfceb583540dfded0bdb15203585cc562590'),
 
     /*
     |--------------------------------------------------------------------------

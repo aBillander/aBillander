@@ -195,7 +195,25 @@ class WooOrder // extends Model
 
     public static function getVatNumber( $order = [] )
     {
-        return self::getMetaByKey( $order, 'CIF/NIF' );
+        if ( isset( $order['billing']['vat_number'] ) ) return $order['billing']['vat_number'];
+
+        return self::getMetaByKey( $order, \App\Configuration::get('WOOC_ORDER_NIF_META') );    // 'CIF/NIF' );
+    }
+
+    public static function getNameFiscal( $order = [] )
+    {
+        $name = $order['billing']['company'] ? $order['billing']['company'] : 
+                $order['billing']['first_name'].' '.$order['billing']['last_name'];
+
+        return $name;
+    }
+
+    public static function getNameCommercial( $order = [] )
+    {
+        $name = $order['billing']['company'] ? $order['billing']['company'] : 
+                $order['billing']['first_name'].' '.$order['billing']['last_name'];
+
+        return $name;
     }
 
     public static function getAbiExportedDate( $order = [] )

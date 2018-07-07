@@ -82,6 +82,7 @@
 
   .log-INFO-format {
       color: black;
+      font-weight: bold;
   }
   .log-WARNING-format {
       color: #e7a413;

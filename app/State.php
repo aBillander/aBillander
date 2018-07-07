@@ -21,8 +21,13 @@ class State extends Model {
      * Find ISO Code
      * 
      */
-    public static function findByIsoCode($code)
+    public static function findByIsoCode( $state = '', $country = '' )
     {
+        if ($country)
+            $code = (strpos($state, '-') ? '' : $country.'-').$state;
+        else
+            $code = $state;
+
         return self::where('iso_code', $code)->first();
     }
     

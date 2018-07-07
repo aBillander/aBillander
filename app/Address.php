@@ -21,6 +21,12 @@ class Address extends Model {
 
     public static $rules = array(
         'alias'    => 'required|min:2|max:32',
+        'firstname' => 'max:32',
+        'lasttname' => 'max:32',
+        'phone' => 'max:32',
+        'phone_mobile' => 'max:32',
+        'email' => 'max:128',
+        'fax'   => 'max:32',
         'address1' => 'required|min:2|max:128',
         'state_id' => 'exists:states,id',           // If State exists, Country must do also!
         );

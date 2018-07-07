@@ -42,6 +42,10 @@ class Configuration extends Model
 	  */
 	public static function updateValue($key, $values)
 	{
+		// Prevent NULL values
+        // $values = is_null( $values ) ? '' : $values;
+        if ( is_null( $values ) ) $values = '';
+
 		if (!Configuration::isConfigName($key))
 	 	 	return  false;
 

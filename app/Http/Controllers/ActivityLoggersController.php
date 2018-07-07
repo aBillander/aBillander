@@ -97,7 +97,7 @@ class ActivityLoggersController extends Controller
         $logger_warnings = $activitylogger->activityloggerlines()->where('level_name', 'WARNING')->count();
 
 
-        $loggers = $loggers->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $loggers = $loggers->paginate( \App\Configuration::get('DEF_LOGS_PERPAGE') );
 
         // abi_r($loggers, true);
 

@@ -1,14 +1,21 @@
-<?php namespace App\Http\Controllers;
+<?php 
 
-use App\Http\Requests;
+namespace aBillander\WooConnect\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use \App\Configuration as Configuration;
-use View;
+use WooCommerce;
+use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-class ConfigurationKeysController extends Controller {
+use \aBillander\WooConnect\WooConnector;
+// use \aBillander\WooConnect\WooOrderImporter;
+
+use \App\Configuration as Configuration;
+
+
+class WooConfigurationKeysController extends Controller {
 
    public $conf_keys = array();
 
@@ -19,21 +26,19 @@ class ConfigurationKeysController extends Controller {
 
                 1 => [
 
-                        'ALLOW_PRODUCT_SUBCATEGORIES',
-                        'ALLOW_SALES_RISK_EXCEEDED',
-                        'ALLOW_SALES_WITHOUT_STOCK',
-                        'CUSTOMER_ORDERS_NEED_VALIDATION',
-                        'ENABLE_COMBINATIONS',
-                        'ENABLE_WEBSHOP_CONNECTOR',
-                        'MARGIN_METHOD',
-                        'NEW_PRICE_LIST_POPULATE',
-                        'NEW_PRODUCT_TO_ALL_PRICELISTS',
-                        'PRICES_ENTERED_WITH_TAX',
-                        'PRODUCT_NOT_IN_PRICELIST',
-                        'QUOTES_EXPIRE_AFTER',
-                        'ROUND_PRICES_WITH_TAX',
-                        'SKU_AUTOGENERATE',
-                        'TAX_BASED_ON_SHIPPING_ADDRESS',
+                        'WOOC_DECIMAL_PLACES',
+                        'WOOC_DEF_CURRENCY',
+                        'WOOC_DEF_CUSTOMER_GROUP',
+                        'WOOC_DEF_CUSTOMER_PRICE_LIST',
+
+                        'WOOC_DEF_LANGUAGE',
+                        'WOOC_DEF_ORDERS_SEQUENCE',
+                        'WOOC_DEF_SHIPPING_TAX',
+
+                        'WOOC_ORDER_NIF_META',
+                        'WOOC_ORDERS_PER_PAGE',
+
+                        'WOOC_USE_LOCAL_PRODUCT_NAME',
 
                     ],
 
@@ -59,7 +64,6 @@ class ConfigurationKeysController extends Controller {
 
                         'DEF_ITEMS_PERAJAX',
                         'DEF_ITEMS_PERPAGE',
-                        'DEF_LOGS_PERPAGE',
                         'DEF_PERCENT_DECIMALS',
                         'DEF_QUANTITY_DECIMALS',
 //                        'DEF_DIMENSION_UNIT',
@@ -98,8 +102,8 @@ class ConfigurationKeysController extends Controller {
                         : 1;
         
         // Check tab_index
-        $tab_view = 'configuration_keys.'.'key_group_'.intval($tab_index);
-        if (!View::exists($tab_view)) 
+        $tab_view = 'woo_connect::woo_configuration_keys.'.'key_group_'.intval($tab_index);
+        if (!\View::exists($tab_view)) 
             return \Redirect::to('404');
 
         $key_group = [];
@@ -107,7 +111,14 @@ class ConfigurationKeysController extends Controller {
         foreach ($this->conf_keys[$tab_index] as $key)
             $key_group[$key]= Configuration::get($key);
 
-        return view( $tab_view, compact('tab_index', 'key_group') );
+        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
+        $customer_groupList = \App\CustomerGroup::pluck('name', 'id')->toArray();
+        $price_listList = \App\PriceList::pluck('name', 'id')->toArray();
+        $languageList = \App\Language::pluck('name', 'id')->toArray();
+        $orders_sequenceList = \App\Sequence::listFor( \App\CustomerOrder::class );
+        $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'languageList', 'orders_sequenceList', 'taxList') );
 
         // https://bootsnipp.com/snippets/M27e3
     }
@@ -149,7 +160,7 @@ class ConfigurationKeysController extends Controller {
         {
             if ($request->has($key)) {
 
-                // abi_r($key);
+                // abi_r("-$key-");
                 // abi_r($request->input($key));
 
                 // Prevent NULL values
@@ -161,7 +172,7 @@ class ConfigurationKeysController extends Controller {
 
         // die();
 
-        return redirect('configurationkeys?tab_index='.$tab_index)
+        return redirect('wooc/wooconnect/wooconfigurationkeys?tab_index='.$tab_index)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $tab_index], 'layouts') );
     }
 

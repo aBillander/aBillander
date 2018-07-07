@@ -130,6 +130,8 @@ class ActivityLogger extends Model
     public function empty() 
     {
           // ActivityLogger::truncate();
+      
+          $this->activityloggerlines()->delete();
     }
 
     public function stop() 

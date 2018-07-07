@@ -26,15 +26,20 @@ class CustomersController extends Controller {
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $customers = $this->customer
+                        ->filter( $request->all() )
                         ->with('address')
                         ->with('address.country')
                         ->with('address.state')
-                        ->with('currency')
-                        ->get();
+                        ->with('currency');
+//                        ->get();
         
+        $customers = $customers->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        $customers->setPath('customers');     // Customize the URI used by the paginator
+
         return view('customers.index', compact('customers'));
         
     }

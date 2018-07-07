@@ -43,17 +43,19 @@
                 @if (  is_null($pricelist->deleted_at))
 
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('pricelists/' . $pricelist->id . '/pricelistlines') }}" title="{{l('Show Price List Lines')}}"><i class="fa fa-folder-open-o"></i></a>
+
+                <a class="btn btn-sm btn-grey" href="{{ URL::route('pricelists.import', [$pricelist->id] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-upload"></i></a>
                 
-                <div class="btn-group">
+                <!-- div class="btn-group">
                   <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> {{l('Actions', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu" xstyle="color: #333333; background-color: #ffffff;">
                     <li><a href="#" xstyle="color: #333333; background-color: #ffffff;"><i class="fa fa-chevron-circle-up"></i> {{l('Export', [], 'layouts')}}</a></li>
-                    <li><a href="#"><i class="fa fa-chevron-circle-down"></i> {{l('Import', [], 'layouts')}}</a></li>
+                    <li><a href="{{ URL::route( 'pricelists.import', [$pricelist->id] ) }}"><i class="fa fa-chevron-circle-down"></i> {{l('Import', [], 'layouts')}}</a></li>
                     <li><a href="#"><i class="fa fa-undo"></i> {{l('Reset', [], 'layouts')}}</a></li>
-                    <!-- li class="divider"></li>
-                    <li><a href="#">Separated link</a></li -->
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
                   </ul>
-                </div>
+                </div -->
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('pricelists/' . $pricelist->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 

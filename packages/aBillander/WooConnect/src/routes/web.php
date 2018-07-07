@@ -28,6 +28,8 @@ Route::group([
 //	Route::get('orders/{id}', 'WooOrdersController@show');
 //	Route::post('orders/{id}', ['as' => 'wostatus', 'uses' => 'WooOrdersController@update']);
 
+	Route::resource('wooconnect/wooconfigurationkeys', 'WooConfigurationKeysController');
+
 	Route::get( 'wooconnect/configuration', 'WooConnectController@configurationsEdit')
 			->name('wooconnect.configuration');
 	Route::post('wooconnect/configuration', 'WooConnectController@configurationsUpdate')
@@ -48,6 +50,8 @@ Route::group([
 	Route::post('wooconnect/configuration/shippingmethods', 'WooConnectController@configurationShippingMethodsUpdate')
 			->name('wooconnect.configuration.shippingmethods.update');
 
+    Route::post('worders/importOrders' , array('uses' => 'WooOrdersController@importOrders', 
+                                                        'as'   => 'worders.import.orders' ));
     Route::get('worders/{id}/import' , array('uses' => 'WooOrdersController@import', 
                                                         'as'   => 'worders.import' ));
     Route::get('worders/{id}/fetch' , array('uses' => 'WooOrdersController@fetch', 

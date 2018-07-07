@@ -130,15 +130,15 @@ class ImportProductsController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 
-            'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s'), __METHOD__ );
+        $logger = \App\ActivityLogger::setup( 'Import Products', __METHOD__ );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
+        $logger->empty();
         $logger->start();
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
 
-        $logger->log("INFO", 'Se cargatán los Productos desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $file]);
+        $logger->log("INFO", 'Se cargarán los Productos desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $file]);
 
 
 
@@ -274,7 +274,7 @@ class ImportProductsController extends Controller
                         
                         // Create Product
                         // $product = $this->product->create( $data );
-                        $product = $this->product->storeOrUpdate( [ 'reference' => $data['reference'] ], $data );
+                        $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
 
                         $i_ok++;
 

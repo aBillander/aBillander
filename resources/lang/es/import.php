@@ -36,13 +36,39 @@ return [
 	''     => '',
 	''     => '',
 
+
 	/*
 	|--------------------------------------------------------------------------
-	| Option Groups Language Lines :: create
+	| Customers
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
+
+	'Import - Customers' => 'Importar - Clientes',
+
+	'Back to Customers'     => 'Volver a Clientes',
+	'Customers' => 'Clientes',
+	'Import Customer File'     => 'Importar Fichero de Clientes',
+	'First row should be the header row.'     => 'La primera línea del fichero contiene el nombre de los campos en las columnas.',
+	'File contains header row?'     => '¿Primera línea es encabezado?',
+	'Delete existing Customers?'     => '¿Eliminar los Clientes existentes?',
+	'Simulation Mode?'     => '¿Modo Simulación?',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Price List
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Import - Price Lists' => 'Importar - Tarifas',
+
+	'Back to Price Lists'     => 'Volver a Tarifas',
+	'Price Lists' => 'Tarifas',
+	'Import Price List File'     => 'Importar Fichero de Tarifa',
 
 ];

@@ -113,7 +113,7 @@
 
         $("#city").attr( {"disabled" : "disabled"} );
         $("#country_id").attr( {"disabled" : "disabled"} );
-        $("#state_id").attr( {"disabled" : "disabled"} );
+        $("#state_selector").attr( {"disabled" : "disabled"} );
 
     </script>
 

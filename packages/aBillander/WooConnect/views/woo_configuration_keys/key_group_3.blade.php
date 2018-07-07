@@ -65,20 +65,6 @@
       </div>
     </div>
 
-    <div class="form-group {{ $errors->has('DEF_LOGS_PERPAGE') ? 'has-error' : '' }}">
-      <label for="DEF_LOGS_PERPAGE" class="col-lg-4 control-label">{!! l('DEF_LOGS_PERPAGE.name') !!}</label>
-      <div class="col-lg-8">
-        <div class="row">
-        <div class="col-lg-6">
-        <input class="form-control" type="text" id="DEF_LOGS_PERPAGE" name="DEF_LOGS_PERPAGE" placeholder="" value="{{ old('DEF_LOGS_PERPAGE', $key_group['DEF_LOGS_PERPAGE']) }}" />
-        {{ $errors->first('DEF_LOGS_PERPAGE', '<span class="help-block">:message</span>') }}
-        </div>
-        <div class="col-lg-6"> </div>
-        </div>
-        <span class="help-block">{!! l('DEF_LOGS_PERPAGE.help') !!}</span>
-      </div>
-    </div>
-
     <div class="form-group {{ $errors->has('DEF_PERCENT_DECIMALS') ? 'has-error' : '' }}">
       <label for="DEF_PERCENT_DECIMALS" class="col-lg-4 control-label">{!! l('DEF_PERCENT_DECIMALS.name') !!}</label>
       <div class="col-lg-8">

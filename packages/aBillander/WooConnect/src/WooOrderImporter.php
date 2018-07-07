@@ -38,6 +38,7 @@ class WooOrderImporter {
 
 	// Logger to send messages
 	protected $log;
+	protected $logger;
 	protected $log_has_errors = false;
 
     public function __construct ($order_id = null, Order $order = null)
@@ -48,6 +49,14 @@ class WooOrderImporter {
         $this->order = $order;
 
         $this->run_status = true;
+
+
+        // Start Logger
+//        $this->logger = \App\ActivityLogger::setup( 
+//            'Import WooCommerce Orders', self::loggerSignature() );			//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+
+        $this->logger = self::loggerSetup();
+
 
         // Get order data (if order exists!)
         if ( intval($order_id) ) {
@@ -65,6 +74,29 @@ class WooOrderImporter {
         } else
         	;
     }
+
+
+    public static function loggerName() 
+    {
+    	return 'Import WooCommerce Orders';
+    }
+
+    public static function loggerSignature() 
+    {
+    	return __CLASS__;
+    }
+
+    public static function loggerSetup() 
+    {
+    	return \App\ActivityLogger::setup( 
+            self::loggerName(), 							//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+            self::loggerSignature() );
+    }
+
+    public static function logger() 
+    {
+    	return self::loggerSetup();
+    }
     
     /**
      *   Data retriever & Transformer
@@ -78,6 +110,9 @@ class WooOrderImporter {
         if (!$data) {
             $this->logMessage( 'ERROR', 'Se ha intentado recuperar el Pedido número <b>"'.$order_id.'"</b> y no existe.' );
             $this->run_status = false;
+        } else {
+        	// Data transformers
+
         }
 
         return $this->run_status;
@@ -140,10 +175,15 @@ class WooOrderImporter {
     }
 
 
-    public static function makeOrder( $order_id = null ) 
+    public static function processOrder( $order_id = null ) 
     {
         $importer = new static($order_id);
-        if (!$importer->tell_run_status()) return $importer;
+        if ( !$importer->tell_run_status() ) 
+        {
+        	$importer->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
+
+        	return $importer;
+        }
 
 //        abi_r($importer->raw_data, true);
 
@@ -152,6 +192,8 @@ class WooOrderImporter {
         $importer->setCurrency();
 
         $importer->setCustomer();
+
+        return $importer;
 
         $importer->setOrderDocument();
 
@@ -166,11 +208,13 @@ class WooOrderImporter {
 
         $currency = \App\Currency::findByIsoCode( $order['currency'] );
         if (!$currency) {
-        	$currency = \App\Currency::findByIsoCode( \App\Configuration::get('WOOC_DEF_CURRENCY') );
+        	$currency = \App\Currency::find( \App\Configuration::get('WOOC_DEF_CURRENCY') );
+
+        	$this->logMessage("WARNING", l('Order number <span class="log-showoff-format">{oid}</span> currency not found. Using: <span class="log-showoff-format">{name}</span>.'), ['oid' => $order['id'], 'name' => $currency->name]);
         }
-        // To Do: throw error if currency is not found
+
         $this->currency = $currency;
-        // To Do: retrieve conversion rate according to order date
+        // To Do: retrieve conversion rate according to order date <= Kind of advanced...
     }
 
     public function setCustomer()
@@ -179,6 +223,10 @@ class WooOrderImporter {
         $customer_webshop_id = $this->raw_data['customer_id'];
 
         $this->customer = Customer::where('webshop_id', $customer_webshop_id )->first();
+
+//        abi_r(Customer::all(), true);
+
+//        $this->logMessage('INFO', $this->raw_data['customer_id'].' - '.($this->customer ? $this->customer->id : ''));
 
         if ($this->customer) $this->checkAddresses();
 
@@ -639,18 +687,33 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
     
     public function importCustomer()
     {
+        // Data transformers
+
+        // Spanish VAT Identification
+        // Sometimes customer use "Company" field....
+        if ( \App\Customer::check_spanish_nif_cif_nie( $this->raw_data['billing']['company'] ) > 0 )
+        {
+        	$this->raw_data['billing']['vat_number'] = \App\Customer::normalize_spanish_nif_cif_nie( $this->raw_data['billing']['company'] );
+        	$this->raw_data['billing']['company']    = '';
+        }
+        
+        if ( \App\Customer::check_spanish_nif_cif_nie( $this->raw_data['shipping']['company'] ) > 0 )
+        {
+        	$this->raw_data['shipping']['vat_number'] = \App\Customer::normalize_spanish_nif_cif_nie( $this->raw_data['shipping']['company'] );
+        	$this->raw_data['shipping']['company']    = '';
+        }
+
+
+
         // Build Customer data
         $order = $this->raw_data;
-
-        $name = $order['billing']['company'] ? $order['billing']['company'] : 
-        		$order['billing']['first_name'].' '.$order['billing']['last_name'];
 
         $language_id = \App\Configuration::get('WOOC_DEF_LANGUAGE') ? \App\Configuration::get('WOOC_DEF_LANGUAGE') : 
 							 \App\Configuration::get('DEF_LANGUAGE');
 
 		$data = [
-        	'name_fiscal'     => $name,
-			'name_commercial' => $name,
+        	'name_fiscal'     => WooOrder::getNameFiscal( $order ),
+			'name_commercial' => WooOrder::getNameCommercial( $order ),
 
 //			'website' => $order[''],
 
@@ -677,6 +740,11 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 
 			'currency_id' => $this->currency->id,
 			'language_id' => $language_id,
+
+			'customer_group_id' => \App\Configuration::get('WOOC_DEF_CUSTOMER_GROUP'),
+//			'payment_method_id'
+//			'carrier_id'
+			'price_list_id' => \App\Configuration::get('WOOC_DEF_CUSTOMER_PRICE_LIST'),
 		];
 
 		$customer = Customer::create($data);
@@ -698,6 +766,9 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 				$this->shipping_address_id = $this->invoicing_address_id;
 		}
 		$this->shipping_address = $address;
+
+		// Finish at last!
+		$this->logMessage("INFO", l('A new Customer <span class="log-showoff-format">[{cid}] {name}</span> has been created for Order number <span class="log-showoff-format">{oid}</span>.'), ['cid' => $this->customer->id, 'oid' => $order['id'], 'name' => $this->customer->name_fiscal]);
    	}
 
 
@@ -762,8 +833,8 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
         $customer = $this->customer;
 
 		// Build Billing address
-        $name = $order['billing']['company'] ? $order['billing']['company'] : 
-        		$order['billing']['first_name'].' '.$order['billing']['last_name'];
+//        $name = $order['billing']['company'] ? $order['billing']['company'] : 
+//        		$order['billing']['first_name'].' '.$order['billing']['last_name'];
 
 		$country    = $order['billing']['country'];
 		$country_id = null;
@@ -786,7 +857,7 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 			'alias' => $order['id'].'-Billing',
 			'webshop_id' => WooOrder::getBillingAddressId( $order ),
 
-			'name_commercial' => $name,
+			'name_commercial' => WooOrder::getNameCommercial( $order ),
 			
 			'address1' => $order['billing']['address_1'],
 			'address2' => $order['billing']['address_2'],
@@ -895,11 +966,11 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
       return $this->run_status;
     }
     
-    protected function logMessage($type, $msg)
+    protected function logMessage($level = '', $message = '', $context = [])
     {
-        $this->log[] = [$type, $msg];
+        $this->logger->log($level, $message, $context);
 
-        if ( $type == 'ERROR' ) $this->log_has_errors = true;
+        if ( $level == 'ERROR' ) $this->log_has_errors = true;
     }
     
     public function logHasErrors()

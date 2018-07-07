@@ -9,11 +9,77 @@
     <div class="pull-right" style="padding-top: 4px;">
         <a href="{{ URL::to('customers/create') }}" class="btn btn-sm btn-success" 
                  title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+           <i class="fa fa-filter"></i>
+           &nbsp; {{l('Filter', [], 'layouts')}}
+        </button>
+
+        <a href="{{ route('customers.import') }}" class="btn btn-sm btn-warning" 
+                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a>
     </div>
     <h2>
         {{ l('Customers') }}
     </h2>        
 </div>
+
+
+<div name="search_filter" id="search_filter" @if( Request::has('search_status') AND (Request::input('search_status')==1) ) style="display:block" @else style="display:none" @endif>
+<div class="row" style="padding: 0 20px">
+    <div class="col-md-12 xcol-md-offset-3">
+        <div class="panel panel-info">
+            <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
+            <div class="panel-body">
+
+                {!! Form::model(Request::all(), array('route' => 'customers.index', 'method' => 'GET')) !!}
+
+<!-- input type="hidden" value="0" name="search_status" id="search_status" -->
+{!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
+
+<div class="row">
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('name', l('Name')) !!}
+    {!! Form::text('name', null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('identification', l('Identification')) !!}
+    {!! Form::text('identification', null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('email', l('Email')) !!}
+    {!! Form::text('email', null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('customer_group_id', l('Customer Group')) !!}
+    {!! Form::select('customer_group_id', array('0' => l('All', [], 'layouts')) + $customer_groupList, null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2" style="display: none">
+    {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}
+    {!! Form::select('active', array('-1' => l('All', [], 'layouts'),
+                                          '0'  => l('No' , [], 'layouts'),
+                                          '1'  => l('Yes', [], 'layouts'),
+                                          ), null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
+{!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
+{!! link_to_route('customers.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+</div>
+
+</div>
+
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
 
 <div id="div_customers">
    <div class="table-responsive">
@@ -42,7 +108,7 @@
             <td>{{ $customer->address->phone }}</td>
             <td @if ( ($customer->outstanding_amount - $customer->outstanding_amount_allowed)>0 ) class="alert alert-danger" @endif>{{ $customer->as_money('outstanding_amount', $customer->currency) }}</td>
             <td class="text-center">@if ($customer->blocked) <i class="fa fa-lock" style="color: #df382c;"></i> @else <i class="fa fa-unlock" style="color: #38b44a;"></i> @endif</td>
-            <td class="text-right">
+            <td class="text-right button-pad">
                 @if (  is_null($customer->deleted_at))
                 
                 <a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
@@ -55,8 +121,16 @@
                         onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
                 
                 <div class="btn-group">
-                    <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
+                    <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{-- l('Document', [], 'layouts') --}} &nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu  pull-right"">
+                      <li style="
+color: #3a87ad;
+background-color: #d9edf7;
+border-color: #bce8f1;
+padding: 3px 20px;
+line-height: 1.42857143;
+                        ">{{l('Add Document', [], 'layouts')}}</li>
+                      <li class="divider"></li>
                       <li><a href="{{ route('customer.createorder', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <!-- li><a href="#">Separated link</a></li -->
@@ -78,6 +152,8 @@
         @endforeach
     </tbody>
 </table>
+{!! $customers->appends( Request::all() )->render() !!} 
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $customers->total() ], 'layouts')}} </span></li></ul>
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
@@ -109,3 +185,18 @@
 
 @include('layouts/modal_mail')
 @include('layouts/modal_delete')
+
+@section('scripts') @parent 
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+   $("#b_search_filter").click(function() {
+      $('#search_status').val(1);
+      $('#search_filter').show();
+   });
+});
+
+</script>
+
+@endsection

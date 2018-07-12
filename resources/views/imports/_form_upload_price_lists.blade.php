@@ -37,6 +37,28 @@
        </div>
       </div>
 
+     <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-empty_log">
+       {!! Form::label('empty_log', l('Empty LOG?'), ['class' => 'control-label']) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Empty LOG before Price List Lines import.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+       <div>
+         <div class="radio-inline">
+           <label>
+             {!! Form::radio('empty_log', '1', false, ['id' => 'empty_log_on']) !!}
+             {!! l('Yes', [], 'layouts') !!}
+           </label>
+         </div>
+         <div class="radio-inline">
+           <label>
+             {!! Form::radio('empty_log', '0', true, ['id' => 'empty_log_off']) !!}
+             {!! l('No', [], 'layouts') !!}
+           </label>
+         </div>
+       </div>
+      </div>
+
      <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-simulate" xstyle="display: none">
        {!! Form::label('simulate', l('Simulation Mode?'), ['class' => 'control-label']) !!}
        <div>

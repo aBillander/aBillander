@@ -37,7 +37,7 @@
         <div class="row" id="product-search-autocomplete">
 
                   <div class="form-group col-lg-7 col-md-7 col-sm-7">
-                     {{ l('Product name') }}
+                     {{ l('Product Name') }}
                      {!! Form::text('line_autoproduct_name', null, array('class' => 'form-control', 'id' => 'line_autoproduct_name', 'onclick' => 'this.select()')) !!}
                   </div>
 
@@ -112,7 +112,7 @@
                     {{ l('Price') }}
                     @endif
                     {!! Form::text('line_price', null, array('class' => 'form-control', 'id' => 'line_price', 'onkeyup' => 'calculate_line_product( )', 'onchange' => 'calculate_line_product( )', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
-                    {!! $errors->first('price', '<span class="help-block">:message</span>') !!}
+                    {!! $errors->first('line_price', '<span class="help-block">:message</span>') !!}
                  </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
                     {{ l('Discount') }} (%)

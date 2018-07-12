@@ -18,6 +18,11 @@
               {!! Form::text('identification', null, array('class' => 'form-control', 'id' => 'identification')) !!}
               {!! $errors->first('identification', '<span class="help-block">:message</span>') !!}
             </div>
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('reference_external') ? 'has-error' : '' !!}">
+              {{ l('External Reference') }}
+              {!! Form::text('reference_external', null, array('class' => 'form-control', 'id' => 'reference_external')) !!}
+              {!! $errors->first('reference_external', '<span class="help-block">:message</span>') !!}
+            </div>
         </div>
 
 @include('addresses._form_fields_model_related')

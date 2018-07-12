@@ -14,6 +14,11 @@ return [
 	'Product Categories' => 'Categorías de Productos',
 	'Expand / Collapse'     => 'Ver / Ocultar',
 
+	'Show Sub-Categories' => 'Ver Sub-Categorías',
+	'Categories' => 'Categorías',
+	''     => '',
+	''     => '',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Categories Language Lines :: create
@@ -55,6 +60,6 @@ return [
 	'META Title'     => 'META Título',
 	'META Description'     => 'META Descripción',
 	'META Keywords'     => 'META Palabras Clave',
-	''     => '',
+	'Internet'     => 'Internet',
 
 ];

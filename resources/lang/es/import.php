@@ -70,5 +70,7 @@ return [
 	'Back to Price Lists'     => 'Volver a Tarifas',
 	'Price Lists' => 'Tarifas',
 	'Import Price List File'     => 'Importar Fichero de Tarifa',
+	'Empty LOG?'     => '¿Vaciar el LOG?',
+	'Empty LOG before Price List Lines import.'     => 'Vaciar el LOG antes de importar las Líneas de Tarifa.',
 
 ];

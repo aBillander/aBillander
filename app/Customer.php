@@ -108,6 +108,11 @@ class Customer extends Model {
             } );
         }
 
+        if ( isset($params['reference_external']) && $params['reference_external'] != '' )
+        {
+            $query->where('reference_external', 'LIKE', '%' . $params['reference_external'] . '%');
+        }
+
         if ( isset($params['identification']) && $params['identification'] != '' )
         {
             $query->where('identification', 'LIKE', '%' . $params['identification'] . '%');

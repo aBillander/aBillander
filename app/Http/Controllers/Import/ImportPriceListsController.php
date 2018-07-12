@@ -165,7 +165,11 @@ class ImportPriceListsController extends Controller
         $logger = \App\ActivityLogger::setup( 'Import Price List', __METHOD__ );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
-        $logger->empty();
+        if ( $request->input('empty_log', 0) ) 
+        {
+            $logger->empty();
+        }
+
         $logger->start();
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
@@ -263,6 +267,8 @@ class ImportPriceListsController extends Controller
                 $logger->log("WARNING", "Modo SIMULACION. Se mostrarán errores, pero no se cargará nada en la base de datos.");
 
             $price_list_id = intval($params['price_list_id']);
+            $pricelist = $this->pricelist->findOrFail($price_list_id);
+
             $name = $params['name'];
 
             $i = 0;
@@ -306,7 +312,7 @@ class ImportPriceListsController extends Controller
                     }
 
                     // Get Product id
-                    if ( array_key_exists('id', $data) ) {
+                    if ( array_key_exists('product_id', $data) ) {
 
                         // OK. Let's move on
                     } else
@@ -315,7 +321,8 @@ class ImportPriceListsController extends Controller
 
                         $product = $this->product->where('reference', $data['reference'])->first();
 
-                        if ( $product ) $data['id'] = $product->id;
+                        if ( $product ) 
+                            $data['product_id'] = $product->id;
                         else {
                             
                             $logger->log("ERROR", "La fila (".$item.") no corresponde a ningún Producto. [".$data['reference']."]");
@@ -349,6 +356,8 @@ class ImportPriceListsController extends Controller
                         {
                             // Create Price List line
                             $pricelistline = $this->pricelistline->create( $data );
+
+                            $pricelist->pricelistlines()->save($pricelistline);
 
                         }
 

@@ -32,11 +32,13 @@
 
                <th class="text-left" style="width:1px; white-space: nowrap;"></th>
                <th class="text-left" xwidth="115">{{l('Notes', 'layouts')}}</th>
-                <th class="text-right"> 
+                <th class="text-right button-pad"> 
 
-                  <!-- a class="btn btn-sm btn-success create-order-line" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a -->
+                  <a class="btn btn-sm btn-success create-order-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-shopping-basket"></i> </a>
 
+                  <a class="btn btn-sm btn-success create-order-service" title="{{l('Add Service')}}" style="background-color: #2bbbad;"><i class="fa fa-plus"></i> <i class="fa fa-handshake-o"></i> </a>
 
+{{--
 <div class="btn-group" xstyle="width:98%">
   <a href="#" class="btn btn-sm btn-success create-order-product"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
   <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
@@ -50,7 +52,7 @@
     <li><a href="#">Separated link</a></li -->
   </ul>
 </div>
-
+--}}
 
                 </th>
             </tr>

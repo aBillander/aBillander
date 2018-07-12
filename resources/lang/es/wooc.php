@@ -108,7 +108,7 @@ return [
 	'WOOC_DEF_SHIPPING_TAX.name'     => 'Impuesto para los Gastos de Envío',
 	'WOOC_DEF_SHIPPING_TAX.help'     => 'Impuesto para los Gastos de Envío en la Tienda WooCommerce.',
 
-	'WOOC_ORDER_NIF_META.name'     => 'Campo "Meta" para el NIF.',
+	'WOOC_ORDER_NIF_META.name'     => 'Campo "Meta" para el NIF',
 	'WOOC_ORDER_NIF_META.help'     => 'Campo "Meta" del Pedido en WooCommerce donde se guarda el NIF/CIF/NIE.',		// Order Meta field name to store Spanish NIF/CIF/NIE.
 	'WOOC_ORDERS_PER_PAGE.name'     => 'Pedidos por página',
 	'WOOC_ORDERS_PER_PAGE.help'     => 'Número de Pedidos (máximo) para resultados paginados.',

@@ -12,11 +12,21 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
+    // php artisan event:generate
     protected $listen = [
         'App\Events\ProductCreated' => [
             'App\Listeners\InitializeStock',
             'App\Listeners\AssignToPriceLists',
         ],
+/*
+        'App\Events\CustomerInvoiceViewed' => [
+            'App\Listeners\CustomerInvoiceSetDates',
+        ],
+        
+        'App\Events\Event' => [
+            'App\Listeners\EventListener',
+        ],
+*/
     ];
     // php artisan event:generate
 

@@ -166,7 +166,7 @@ class ImportCustomersController extends Controller
             \DB::table('addresses')->where('addressable_type', "App\\Customer")->delete();
 
             // Note: This solution is for resetting the auto_increment of the table without truncating the table itself
-            $max = \DB::table('addresses')->max('id') + 10; 
+            $max = \DB::table('addresses')->max('id') + 1; 
             \DB::statement("ALTER TABLE addresses AUTO_INCREMENT = $max");
 
             $logger->log("INFO", "Se han borrado todos los Clientes antes de la Importación. En total {nbr} Clientes.", ['nbr' => $nbr]);
@@ -397,6 +397,8 @@ class ImportCustomersController extends Controller
                             $customer->save();
 
                             // $logger->log("TIMER", " Se ha creado el Cliente: ".$item." - " . $customer->id);
+
+                            unset( $data['webshop_id'] );
 
                             $address = $this->address->create($data);
                             $customer->addresses()->save($address);

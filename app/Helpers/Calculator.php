@@ -134,6 +134,8 @@ class Calculator {
       if ($currency === null)
             $currency = \App\Context::getContext()->currency;
 
+      if ( $product_price == 0.0 ) return 0.0;
+
       $discount = 100.0*(1.0-($line_price/$currency->conversion_rate)/$product_price);
 
       return $discount;

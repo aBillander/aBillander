@@ -23,18 +23,17 @@ class HomeController extends Controller
      */
     public function index()
     {
-/*
-        $loggers = \App\ActivityLogger::filter( ['log_name' => 'aBillander_messenger'] )->orderBy('id', 'desc');
+
+        $logger = \App\ActivityLogger::setup( 'aBillander Project Updates', 'devMessenger-'.md5( config('app.url') ) );
 
 
-        $loggers = $loggers->paginate( 2 * \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $loggers = $logger->activityloggerlines()->orderBy('id', 'desc')->paginate( 2 * \App\Configuration::get('DEF_ITEMS_PERPAGE') );
 
         // abi_r($loggers, true);
 
         $loggers->setPath('home');     // Customize the URI used by the paginator
-*/
 
-        $loggers = null;
+
 
         return view('home.home', compact('loggers'));
     }

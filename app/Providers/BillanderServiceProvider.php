@@ -43,5 +43,17 @@ class BillanderServiceProvider extends ServiceProvider
     public function register()
     {
         // The database connection is not available in register() function,
+
+/*
+
+        $this->app->singleton(Configuration::class, function ($app) {
+            return new Configuration();
+        });
+
+        // http://martinbean.co.uk/blog/2017/11/27/binding-configured-services-to-laravels-container/
+        // https://engageinteractive.co.uk/blog/use-the-laravel-service-container
+        // https://code.tutsplus.com/tutorials/how-to-register-use-laravel-service-providers--cms-28966
+        
+*/
     }
 }

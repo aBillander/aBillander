@@ -251,7 +251,7 @@
                         @if ( Auth::user()->isAdmin() )
                         <li class="divider"></li>
                          <li>
-                            <a href="{{ URL::to('configurations') }}">
+                            <a href="{{ URL::to('configurationkeys') }}">
                                  {{l('Configuration', [], 'layouts')}}
                             </a>
                         </li>

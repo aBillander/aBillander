@@ -32,7 +32,9 @@
                  @if($customer->sales_equalization)
                   <span id="sales_equalization_badge" class="badge" title="{{l('Equalization Tax')}}"> RE </span>
                  @endif
-                 </span> &nbsp; {{ $order->document_reference }} &nbsp; <span class="badge" style="background-color: #3a87ad;">{{ $order->currency->iso_code }} {{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') }}</span>
+                 </span> &nbsp; {{ $order->document_reference }} &nbsp; <span class="badge" style="background-color: #3a87ad;" title="{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                                                        l('Prices are entered inclusive of tax', [], 'appmultilang') :
+                                                        l('Prices are entered exclusive of tax', [], 'appmultilang') }}">{{ $order->currency->iso_code }}</span>
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
              </h2>
 
@@ -45,13 +47,33 @@
       <div class="col-lg-2 col-md-2 col-sm-3">
 
 
-          <div class="panel panel-default">
-          <div class="panel-body">
+          <div class="xpanel xpanel-default">
+          <div class="xpanel-body">
 
-            <h4>{{ l('Customer Risk') }}</h4>
+            <!-- h4>{{ l('Customer Risk') }}</h4>
             <div class="progress progress-striped">
                 <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
-            </div>
+            </div -->
+            <ul class="list-group">
+              <li class="list-group-item" style="color: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
+                <h4>{{ l('Customer Infos') }}</h4>
+              </li>
+              <li class="list-group-item">
+                {{l('Customer Group')}}:<br /> {{ $customer->customergroup->name ?? '-' }}
+              </li>
+              <li class="list-group-item">
+                {{l('Price List')}}:<br /> {{ $customer->pricelist->name ?? '-' }}
+              </li>
+
+              <!-- li class="list-group-item">
+                <h4 class="list-group-item-heading">{{l('Customer Group')}}</h4>
+                <p class="list-group-item-text">{{ $customer->customergroup->name ?? '' }}</p>
+              </li>
+              <li class="list-group-item">
+                <h4 class="list-group-item-heading">{{l('Price List')}}</h4>
+                <p class="list-group-item-text">{{ $customer->pricelist->name ?? '' }}</p>
+              </li -->
+            </ul>
 
           </div>
           </div>

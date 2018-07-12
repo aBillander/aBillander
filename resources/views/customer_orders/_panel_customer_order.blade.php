@@ -193,6 +193,11 @@
     <!-- script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script -->
     {{-- See: Laravel 5.4 ajax todo project: Autocomplete search #7 --}}
 
+
+
+@include('customer_orders._chunck_js_service')
+
+
     <script type="text/javascript">
 
         var PRICE_DECIMAL_PLACES;
@@ -201,7 +206,8 @@
 
 //          loadBOMlines();
 
-  //            alert('id');
+
+
 
           $(document).on('click', '.create-order-product', function(evnt) {
 
@@ -266,6 +272,33 @@
 
           $(document).on('click', '.edit-order-line', function(evnt) {
 
+              // What to do? Let's see:
+              var line_type = $(this).attr('data-type');
+
+              switch( line_type ) {
+                  case 'product':
+                      
+                      editCustomerOrderProductLine( $(this) );
+                      break;
+
+                  case 'service':
+                  case 'shipping':
+                      
+                      editCustomerOrderServiceLine( $(this) );
+                      break;
+
+                  default:
+                      // Not good to reach this point
+                      return false;
+              } 
+
+              return false;
+
+          });
+          
+
+          function editCustomerOrderProductLine( selector ) {
+
             // Load form first
                var panel = $("#order_line_form");
                var url = "{{ route('customerorderline.productform', ['edit']) }}";
@@ -286,94 +319,70 @@
             // Set delay to wait for form load
             setTimeout(function(){  }, 1000); 
 
-              var id = $(this).attr('data-id');
-              var line_type = $(this).attr('data-type');
+              var id = selector.attr('data-id');
+              var line_type = selector.attr('data-type');
               var url = "{{ route('customerorder.getline', [$order->id, '']) }}/"+id;
               var label = '';
 
               PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
 
-              if ( line_type == 'product' )
-              {
-                  $.get(url, function(result){
-                        var label = '['+result.product.reference+'] '+result.product.name+' ('+result.measureunit.name+')';
-                        var QUANTITY_DECIMAL_PLACES = result.product.quantity_decimal_places;
+              // if ( line_type == 'product' )
+              
+              $.get(url, function(result){
+                    var label = '['+result.product.reference+'] '+result.product.name+' ('+result.measureunit.name+')';
+                    var QUANTITY_DECIMAL_PLACES = result.product.quantity_decimal_places;
 
-                        $('#modal_product_order_line_Label').text(label);
-    
-                        $('#line_id').val(result.id);
-                        $('#line_sort_order').val(result.line_sort_order);
-                        $('#line_product_id').val(result.product_id);
-                        $('#line_combination_id').val(result.combination_id);
-                        $('#line_type').val(result.line_type);
+                    $('#modal_product_order_line_Label').text(label);
 
-                        $('#line_name').val(result.name);
-                        $('#line_reference').val(result.reference);
+                    $('#line_id').val(result.id);
+                    $('#line_sort_order').val(result.line_sort_order);
+                    $('#line_product_id').val(result.product_id);
+                    $('#line_combination_id').val(result.combination_id);
+                    $('#line_type').val(result.line_type);
 
-                        $('#line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
-                        $('#line_quantity').val(result.quantity.round( QUANTITY_DECIMAL_PLACES ));
-                        $('#line_measure_unit_id').val(result.measure_unit_id);
+                    $('#line_name').val(result.name);
+                    $('#line_reference').val(result.reference);
 
-                        $('#line_cost_price').val(result.cost_price);
-                        $('#line_unit_price').val(result.unit_price);
-                        $('#line_unit_customer_price').val(result.unit_customer_price);
-                        
-                        $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
-                        $('#line_discount_percent').val(result.discount_percent);
+                    $('#line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
+                    $('#line_quantity').val(result.quantity.round( QUANTITY_DECIMAL_PLACES ));
+                    $('#line_measure_unit_id').val(result.measure_unit_id);
 
-                        $('#discount_amount_tax_incl').val(result.discount_amount_tax_incl);
-                        $('#discount_amount_tax_excl').val(result.discount_amount_tax_excl);
+                    $('#line_cost_price').val(result.cost_price);
+                    $('#line_unit_price').val(result.unit_price);
+                    $('#line_unit_customer_price').val(result.unit_customer_price);
+                    
+                    $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
+                    $('#line_discount_percent').val(result.discount_percent);
 
-                        $('#line_tax_label').html(result.tax_label);
-                        $('#line_tax_id').val(result.tax_id);
-                        $('#line_tax_percent').val(result.tax_percent);
+                    $('#discount_amount_tax_incl').val(result.discount_amount_tax_incl);
+                    $('#discount_amount_tax_excl').val(result.discount_amount_tax_excl);
 
-                        if ($('#sales_equalization').val()>0) {
-                            $('input:radio[name=line_is_sales_equalization]').val([1]);
-                            $('#line_sales_equalization').show();
-                        }
+                    $('#line_tax_label').html(result.tax_label);
+                    $('#line_tax_id').val(result.tax_id);
+                    $('#line_tax_percent').val(result.tax_percent);
 
-                        calculate_line_product( );
+                    if ($('#sales_equalization').val()>0) {
+                        $('input:radio[name=line_is_sales_equalization]').val([1]);
+                        $('#line_sales_equalization').show();
+                    }
 
-                        $('#line_sales_rep_id').val( result.sales_rep_id );
-                        $('#line_commission_percent').val( result.commission_percent );
-                        
-                        $('#line_notes').val(result.notes);
-    
-                        console.log(result);
-                  });
+                    calculate_line_product( );
 
-                  $('#modal_order_line').modal({show: true});
-                  $("#line_quantity").focus();
+                    $('#line_sales_rep_id').val( result.sales_rep_id );
+                    $('#line_commission_percent').val( result.commission_percent );
+                    
+                    $('#line_notes').val(result.notes);
 
-                  return false;
-              }
+                    console.log(result);
+              });
 
+              $('#modal_order_line').modal({show: true});
+              $("#line_quantity").focus();
 
-              if ( line_type == 'service' )
-              {
-                  $.get(url, function(result){
-                        label = '['+result.product.reference+'] '+result.product.name;
-                        $('#modal_order_line_Label').text(label);
-    
-                        $('#line_id').val(result.id);
-                        $('#line_sort_order').val(result.line_sort_order);
-                        $('#line_product_id').val(result.product_id);
-                        $('#line_quantity').val(result.quantity);
-                        $('#line_measure_unit_id').val(result.measure_unit_id);
-                        $('#line_scrap').val(result.scrap);
-                        $('#line_notes').val(result.notes);
-    
-                        console.log(result);
-                  });
+              return false;
 
-                  $('#modal_service_order_line').modal({show: true});
-                  $("#edit_line_quantity").focus();
+          };
 
-                  return false;
-              }
-
-          });
 
           loadCustomerOrderlines();
 
@@ -387,7 +396,8 @@
 
           
 
-        });
+        });       // $(document).ready(function() {    ENDS
+  
 
         function loadCustomerOrderlines() {
            

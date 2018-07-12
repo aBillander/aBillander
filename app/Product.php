@@ -510,6 +510,11 @@ class Product extends Model {
         return $query->where('procurement_type', 'purchase');
     }
 
+    public function scopeIsService($query)
+    {
+        return $query->where('procurement_type', 'none');
+    }
+
     public function scopeQualifyForCustomer($query, $customer_id, $currency_id) 
     {
         // Filter Products by Customer

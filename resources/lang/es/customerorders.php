@@ -16,7 +16,8 @@ return [
 	'Product Reference' => 'Referencia',
 	'Product Name' => 'Nombre del Producto',
 	'Quantity' => 'Cantidad',
-	'' => '',
+
+	'Copy Order' => 'Copiar Pedido',
 
 
 	/*
@@ -124,6 +125,8 @@ return [
 	'Notes to Customer'     => 'Notas para el Cliente',
 	
 	// _order_lines
+	'Add Product'     => 'Añadir Producto',
+	'Add Service'     => 'Añadir Servicio',
 	'Reference'     => 'Referencia',
 	'Description'     => 'Descripción',
 	'Quantity'     => 'Cantidad',
@@ -148,6 +151,7 @@ return [
 
 	// modal_product_search
 	'Add Product to Order'     => 'Nuevo Producto',
+	'Add Service to Order'     => 'Nuevo Servicio',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -202,6 +206,11 @@ return [
 	'Customer Orders - Edit'     => 'Pedidos de Clientes - Modificar',
 	'Edit Customer Order'     => 'Modificar Pedido de Cliente',
 	'Order to'     => 'Pedido para',
+
+	'Customer Infos'     => 'Info del Cliente',
+	'Customer Risk'     => 'Riesgo alcanzado',
+	'Customer Group'     => 'Grupo de Clientes',
+	'Price List'     => 'Tarifa',
 
 	'Totals'     => 'Totales',
 	'Total Lines'     => 'Total Líneas',

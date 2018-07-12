@@ -151,7 +151,7 @@ class Price {
     public function getPrice()
     {
         if ($this->price_is_tax_inc) {
-            if ( $this->tax_percent == null ) return null;
+            if ( $this->tax_percent === null ) return null;
             else return $this->price;
         } else {
             return $this->price;
@@ -163,7 +163,7 @@ class Price {
         if ($this->price_is_tax_inc) {
             return $this->price_tax_inc;
         } else {
-            if ( $this->tax_percent == null ) return null;
+            if ( $this->tax_percent === null ) return null;
             else return $this->price_tax_inc;
         }
     }

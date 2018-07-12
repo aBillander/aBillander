@@ -25,9 +25,10 @@
 // });
 
 
-function calculate_line_product( ) {
+function calculate_line_product() {
 
    var QUANTITY_DECIMAL_PLACES = $('#line_quantity_decimal_places').val();
+   var PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
    var tax_percent;
 
     // parseFloat
@@ -35,17 +36,20 @@ function calculate_line_product( ) {
     var total;
     var total_tax_exc;
     var total_tax_inc;
-//    var tax_percent = $('line_tax_percent').val();
+//    var tax_percent = $('#line_tax_percent').val();
 
     if ($("#line_tax_id").val()>0) { 
       tax_percent = parseFloat( 
         get_tax_percent_by_id( $("#line_tax_id").val(), $("input[name='line_is_sales_equalization']:checked").val() ) 
       ); 
+      $('#line_tax_percent').val( tax_percent );
     }
     else { return false; }
 
     if ( nbr_decimals( $("#line_quantity").val() ) > QUANTITY_DECIMAL_PLACES )
         $("#line_quantity").val( $("#line_quantity").val().round( QUANTITY_DECIMAL_PLACES ) );
+
+    //
 
     final_price = $("#line_price").val() * ( 1.0 - $("#line_discount_percent").val() / 100.0 );
     total       = $("#line_quantity").val() * final_price;
@@ -58,35 +62,19 @@ function calculate_line_product( ) {
         total_tax_exc = total;
     }
 
+    //
+
     $("#line_final_price").html( final_price.round( PRICE_DECIMAL_PLACES ) );
     $("#line_total_tax_exc").html( total_tax_exc.round( PRICE_DECIMAL_PLACES ) );
     $("#line_total_tax_inc").html( total_tax_inc.round( PRICE_DECIMAL_PLACES ) );
 }
 
 
-function calculate_service_price( with_tax )
+function calculate_service_price()
 {
-   var tax_percent;
+   calculate_line_product();
 
-  if ($("#tax_id").val()>0) { 
-    tax_percent = parseFloat( 
-      get_tax_percent_by_id( $("#tax_id").val(), $("input[name='is_sales_equalization']:checked").val() ) 
-    ); 
-  }
-  else { return ; }
-
-   $('#line_tax_percent').val( tax_percent );
-
-   if (with_tax=='with_tax')
-   {
-      p = $("#price").val();
-      p_t = p*(1.0 + tax_percent/100.0)
-      $("#price_tax_inc").val(p_t);
-   } else {
-      p_t = $("#price_tax_inc").val();
-      p = p_t/(1.0 + tax_percent/100.0)
-      $("#price").val(p);
-   }
+   return ;
 }
 
 

@@ -151,7 +151,7 @@
                 @endif
                 </td>
                 <td class="text-right">
-                    <a class="btn btn-sm btn-warning" href="{{ URL::to('pricelistlines/' . $theprice->price_list_line_id . '/edit?back_route=' . urlencode('products/' . $product->id . '/edit#sales')) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                    <!-- a class="btn btn-sm btn-warning" href="{{ URL::to('pricelistlines/' . $theprice->price_list_line_id . '/edit?back_route=' . urlencode('products/' . $product->id . '/edit#sales')) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
                 </td>
             </tr>
             

@@ -134,4 +134,74 @@ class PriceListsController extends Controller {
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 
+
+	public function setAsDefault($id)
+	{
+        // return $id;
+
+        $pricelist = $this->pricelist
+        			->with('pricelistlines')
+        			->with('pricelistlines.product')
+        			->with('pricelistlines.product.tax')
+        			->findOrFail($id);
+
+
+        $name = '['.$pricelist->id.'] '.$pricelist->name;
+
+        // Start Logger
+        $logger = \App\ActivityLogger::setup( 'Set Price List Prices as Default Product Prices', __METHOD__ );
+
+        $logger->empty();
+        $logger->start();
+
+        $logger->log("INFO", 'Se actualizará el Precio de los Productos con la Tarifa <span class="log-showoff-format">{name}</span> .', ['name' => $name]);
+
+        $i = 0;
+        $i_ok = 0;
+
+        // Let's get dirty!!!
+        if ( $pricelist->pricelistlines()->count() )
+        if ( $pricelist->price_is_tax_inc )
+        {
+	        foreach ($pricelist->pricelistlines as $line)
+	        {
+	        	$tax_percent = $line->product->tax->percent;
+
+	        	$line->product->price = $line->price / ( 1.0 + $tax_percent / 100.0 );
+	        	$line->product->price_tax_inc = $line->price;
+
+	        	$line->product->save();
+
+	        	$i_ok++;
+	        	$i++;
+	        }
+
+        } else {
+
+	        foreach ($pricelist->pricelistlines as $line)
+	        {
+	        	$tax_percent = $line->product->tax->percent;
+
+	        	$line->product->price = $line->price;
+	        	$line->product->price_tax_inc = $line->price * ( 1.0 + $tax_percent / 100.0 );
+
+	        	$line->product->save();
+
+	        	$i_ok++;
+	        	$i++;
+	        }
+
+        }
+
+        $logger->log('INFO', 'Se han actualizado {i} Productos.', ['i' => $i_ok]);
+
+        $logger->log('INFO', 'Se han procesado {i} Líneas de Tarifa.', ['i' => $i]);
+
+        $logger->stop();
+
+
+        return redirect('activityloggers/'.$logger->id)
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+	}
+
 }

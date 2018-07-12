@@ -43,6 +43,11 @@
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('reference_external', l('External Reference')) !!}
+    {!! Form::text('reference_external', null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('identification', l('Identification')) !!}
     {!! Form::text('identification', null, array('class' => 'form-control')) !!}
 </div>
@@ -89,6 +94,7 @@
     <thead>
         <tr>
             <th class="text-left">{{ l('ID', [], 'layouts') }}</th>
+            <th class="text-left">{{ l('External Reference') }}</th>
             <th class="text-left">{{ l('Name') }}</th>
             <th class="text-left">{{ l('Identification') }}</th>
             <th class="text-left">{{ l('Email') }}</th>
@@ -102,6 +108,7 @@
         @foreach ($customers as $customer)
         <tr>
             <td>{{ $customer->id }}</td>
+            <td>{{ $customer->reference_external }}</td>
             <td>{{ $customer->name_fiscal }}<br />{{ $customer->name_commercial }}</td>
             <td>{{ $customer->identification }}</td>
             <td>{{ $customer->address->email }}</td>

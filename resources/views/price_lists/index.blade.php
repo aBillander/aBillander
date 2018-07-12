@@ -45,6 +45,12 @@
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('pricelists/' . $pricelist->id . '/pricelistlines') }}" title="{{l('Show Price List Lines')}}"><i class="fa fa-folder-open-o"></i></a>
 
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('pricelists.import', [$pricelist->id] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-upload"></i></a>
+
+                <a class="btn btn-sm btn-info set-default-prices" data-html="false" data-toggle="modal" 
+                        href="{{ URL::route('pricelist.default', [$pricelist->id] ) }}" 
+                        data-content="{{l('You are going to CHANGE all Product default Prices. Are you sure?')}}" 
+                        data-title="{{ l('Price Lists') }} :: ({{$pricelist->id}}) {{ $pricelist->name }}" 
+                        onClick="return false;" title="{{l('Set these Prices as Default')}}"><i class="fa fa-superpowers"></i></a>
                 
                 <!-- div class="btn-group">
                   <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> {{l('Actions', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
@@ -58,6 +64,7 @@
                 </div -->
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('pricelists/' . $pricelist->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('pricelists/' . $pricelist->id ) }}" 
                 		data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
@@ -103,5 +110,7 @@
 
 
 
+
+@include('price_lists/_modal_set_prices')
 
 @include('layouts/modal_delete')

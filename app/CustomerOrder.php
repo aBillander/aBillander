@@ -99,15 +99,16 @@ class CustomerOrder extends Model
         {
             $corder->secure_key = md5(uniqid(rand(), true));
         });
-/*
-        static::deleting(function ($corder)    // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
+
+        // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
+        static::deleting(function ($corder)
         {
             // before delete() method call this
             foreach($corder->customerOrderLines as $line) {
                 $line->delete();
             }
         });
-*/
+
     }
     
 

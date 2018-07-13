@@ -37,6 +37,20 @@ class LoginController extends Controller
         $this->middleware(['guest', 'guest:customer'])->except('logout');
     }
 /*
+    //Remember to use Auth;
+    protected function authenticated()
+    {
+        if(Auth::User()->isAdmin())
+        {
+            return redirect(‘/admin’);
+        }
+        else
+        {
+            return redirect(‘/’);
+        }
+    }
+*/
+/*
     public function userLogout()
     {
         Auth::guard('web')->logout();

@@ -62,7 +62,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
 //        'customer'  => \App\Http\Middleware\RedirectIfCustomer::class,
-//        'authAdmin'  => \App\Http\Middleware\RedirectIfNotAdmin::class,
+        'authAdmin'  => \App\Http\Middleware\RedirectIfNotAdmin::class,
 //        'context'  => \App\Http\Middleware\SetContextMiddleware::class,
     ];
 }

@@ -19,9 +19,9 @@ class CreateSequencesTable extends Migration {
 			$table->string('model_name', 64)->nullable(false);    	// This sequence applies to this Model
 //			$table->string('sequenceable_type');					// Full qualified clss name, please ;)
 			
-			$table->string('prefix', 8)->index();
-			$table->tinyInteger('length')->unsigned();				// Document id will be left padded with 0'es to this length
-			$table->string('separator', 3);							// To show between document_prefix and document_id
+			$table->string('prefix', 8)->nullable()->default(NULL);
+			$table->tinyInteger('length')->unsigned();					// Document id will be left padded with 0'es to this length
+			$table->string('separator', 3)->nullable()->default(NULL);	// To show between document_prefix and document_id
 			
 			$table->integer('next_id')->unsigned();
 			$table->timestamp('last_date_used')->nullable()->default(NULL);

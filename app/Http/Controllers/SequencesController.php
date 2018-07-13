@@ -25,7 +25,7 @@ class SequencesController extends Controller {
 	 */
 	public function index()
 	{
-        $sequences = $this->sequence->orderBy('prefix', 'ASC')->get();
+        $sequences = $this->sequence->orderBy('model_name', 'ASC')->get();
 
         return view('sequences.index', compact('sequences'));
 	}
@@ -47,7 +47,7 @@ class SequencesController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		$this->validate($request, Sequence::$rules);
+		$this->validate($request, Sequence::get_rules());
 
 		$sequence = $this->sequence->create($request->all());
 
@@ -89,7 +89,7 @@ class SequencesController extends Controller {
 	{
 		$sequence = Sequence::findOrFail($id);
 
-		$this->validate($request, Sequence::$rules);
+		$this->validate($request, Sequence::get_rules());
 
 		$sequence->update($request->all());
 

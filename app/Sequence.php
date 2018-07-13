@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+// use Illuminate\Validation\Rule;
+
 use \Lang as Lang;
 
 class Sequence extends Model {
@@ -12,17 +14,17 @@ class Sequence extends Model {
     use SoftDeletes;
 
     public static $types = array(
-            'Product', 
-            'Customer', 
+//            'Product', 
+//            'Customer', 
             'CustomerOrder',
             'CustomerInvoice',
-            'StockCount',
+//            'StockCount',
         );
 
     // Move this to config folder? Maybe yes...
     public static $models = array(
-            Product::class         => 'Product', 
-            Customer::class        => 'Customer', 
+//            Product::class         => 'Product', 
+//            Customer::class        => 'Customer', 
             CustomerOrder::class   => 'CustomerOrder',
             CustomerInvoice::class => 'CustomerInvoice',
         );
@@ -36,9 +38,36 @@ class Sequence extends Model {
 
     public static $rules = array(
     	'name'    => 'required|min:2|max:128',
-    	'model_name' => 'required',
-    	'next_id' => 'integer|min:0',
+        'model_name' => 'required|in:',
+//                            'required',
+//                            Rule::in( self::$types ),
+//                        ],
+        'prefix' => 'required_with:separator',
+        'length' => 'integer|min:2|max:12',
+        'next_id' => 'integer|min:1',
     	);
+
+    public static function get_rules()
+    {
+        $rules = self::$rules;
+
+        $rules['model_name'] .= implode(',', self::$types);
+
+        return $rules;
+    }
+
+    /**
+     * Mutators
+     */
+    public function setPrefixAttribute($value)
+    {
+        $this->attributes['prefix'] = $value ?? '';
+    }
+
+    public function setSeparatorAttribute($value)
+    {
+        $this->attributes['separator'] = $value ?? '';
+    }
 
     
     public static function listFor( $model_class = '' )

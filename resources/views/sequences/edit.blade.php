@@ -8,7 +8,7 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3" style="margin-top: 50px">
 		<div class="panel panel-info">
-			<div class="panel-heading"><h3 class="panel-title">{{ l('Edit Sequence') }} :: ({{$sequence->id}}) {{$sequence->name}}</h3></div>
+			<div class="panel-heading"><h3 class="panel-title">{{ l('Edit Sequence') }} :: ({{$sequence->id}}) {{$sequence->name}} - <span id="sequence_format" class="label label-info"></span></h3></div>
 			<div class="panel-body">
 
 				@include('errors.list')

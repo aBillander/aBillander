@@ -29,7 +29,7 @@ class CustomerHomeController extends Controller
 
         // ToDo: remember language using cookie :: echo Request::cookie('user_language');
 
-        return view('customer_center.home')->with(compact('languages'));
+        return view('abcc.home')->with(compact('languages'));
     }
 
     /**

@@ -31,7 +31,7 @@ class AbccCustomerVouchersController extends Controller {
 					->where('payment_type', 'receivable')
 					->orderBy('due_date', 'desc')->get();
 
-        return view('customer_center.vouchers.index', compact('payments'));
+        return view('abcc.vouchers.index', compact('payments'));
 	}
 
 	/**

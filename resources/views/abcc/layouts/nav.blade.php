@@ -11,9 +11,10 @@
                 <a href="{{ URL::to( (Auth::user()->home_page ? Auth::user()->home_page : '/abcc') ) }}" class="navbar-brand" style="xposition: relative;">
                 @if ( 0 )
 <!--                @ i f ($img = \App\Context::getContext()->company->company_logo)          -->
-                    <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">{!! \App\Configuration::get('HEADER_TITLE') !!}
+                    <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
+                    <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>
                 @else
-                {!! \App\Configuration::get('HEADER_TITLE') !!}
+                    <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>
                 @endif
                 </a>
             @else
@@ -26,31 +27,31 @@
                 @if( Auth::guard('customer')->check() )
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-text"></i> {{l('Invoicing', [], 'layouts')}} <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-text"></i> {{l('Invoicing', [], 'abcc/layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
-                            <a href="{{ route('customer.dashboard') }}">
-                                 {{l('Sale Orders', [], 'layouts')}} [WooC]
+                            <a href="{{ route('abcc.invoices.index') }}">
+                                 {{l('Orders', [], 'abcc/layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>
-                         <li>
+                         <!-- li>
                             <a href="{{ route('abcc.invoices.index') }}">
-                                 {{l('Customer Invoices', [], 'layouts')}}
+                                 {{l('Customer Invoices', [], 'abcc/layouts')}}
                             </a>
                         </li>
                          <li>
                             <a href="{{ route('abcc.vouchers.index') }}">
-                                 {{l('Customer Vouchers', [], 'layouts')}}
+                                 {{l('Customer Vouchers', [], 'abcc/layouts')}}
                             </a>
-                        </li>
+                        </li -->
                         <li class="divider"></li>
                     </ul>
                 </li>
 
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'layouts')}} <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'abcc/layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li class="divider"></li>
                     </ul>
@@ -62,17 +63,17 @@
                     <ul class="dropdown-menu" role="menu">
                          <li>
                             <a href="https://abillander.gitbooks.io/abillander-tutorial-spanish/content/" target="_blank">
-                                 {{l('Documentation', [], 'layouts')}}
+                                 {{l('Documentation', [], 'abcc/layouts')}}
                             </a>
                         </li>
                          <li>
                             <a data-target="#contactForm" data-toggle="modal" onclick="return false;" href="">
-                                 {{l('Support & feed-back', [], 'layouts')}}
+                                 {{l('Support & feed-back', [], 'abcc/layouts')}}
                             </a>
                         </li>
                          <li>
                             <a data-target="#aboutLaraBillander" data-toggle="modal" onclick="return false;" href="">
-                                 {{l('About ...', [], 'layouts')}}
+                                 {{l('About ...', [], 'abcc/layouts')}}
                             </a>
                         </li>
                         
@@ -101,7 +102,7 @@
                             <a href="javascript:void(0);"
                                 onclick="event.preventDefault();
                                          document.getElementById('logout-form').submit();">
-                                <i class="fa fa-power-off"></i> {{l('Logout', [], 'layouts')}}
+                                <i class="fa fa-power-off"></i> {{l('Logout', [], 'abcc/layouts')}}
                             </a>
 
                             <form id="logout-form" action="{{ route('customer.logout') }}" method="POST" style="display: none;">
@@ -115,7 +116,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <a href="{{ URL::to('login') }}">
                     <button class="btn btn-default navbar-btn">
-                        <i class="fa fa-user"></i> {{l('Login', [], 'layouts')}} 
+                        <i class="fa fa-user"></i> {{l('Login', [], 'abcc/layouts')}} 
                     </button>
                 </a>
                     @if( isset($languages) )

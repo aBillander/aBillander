@@ -1,4 +1,4 @@
-@extends('customer_center.layouts.master')
+@extends('abcc.layouts.master')
 
 @section('title') {{ l('Customer Invoices - Show') }} @parent @stop
 

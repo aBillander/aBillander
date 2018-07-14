@@ -12,7 +12,7 @@
         <title>@section('title'):: aBillander @show </title>
 
         <!-- Styles -->
-        <link rel="shortcut icon" href="{{ asset('abcccon.png') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('abcc_icon.png') }}" type="image/x-icon">
         <!-- link href='//fonts.googleapis.com/css?family=Roboto:300,400,700,900,100' rel='stylesheet' type='text/css' -->
 
         <link href="{{ asset('assets/theme/css/bootstrap-united.min.css') }}" rel="stylesheet" type="text/css"/>
@@ -22,21 +22,21 @@
         @yield('styles')
     </head>
     <body>
-        @include('customer_center/layouts/nav')
+        @include('abcc/layouts/nav')
         <div class="container-fluid" style="margin: 10px 0px 10px 0px;"> 
-            @include('customer_center/layouts/notifications')
+            @include('abcc/layouts/notifications')
             @yield('content')
 
-{{--
+{{-- --}}
 
             @include('layouts/modal_feedback')
             @include('layouts/modal_about')
 
---}}
+{{-- --}}
 
             @yield('modals')
        </div>
-        @include('customer_center/layouts/footer')
+        @include('abcc/layouts/footer')
 
         <!-- Scripts -->
         <script src="{{ asset('assets/plugins/jQuery/jquery.min.js' ) }}" type="text/javascript"></script>

@@ -40,7 +40,7 @@ class AbccCustomerInvoicesController extends Controller
                             ->with('paymentmethod')
                             ->orderBy('id', 'desc')->get();
 
-        return view('customer_center.invoices.index', compact('customer_invoices'));
+        return view('abcc.invoices.index', compact('customer_invoices'));
     }
 
     public function show($cinvoiceKey)
@@ -73,7 +73,7 @@ class AbccCustomerInvoicesController extends Controller
         // $company = \App\Context::getContext()->company;
         $company = \App\Company::with('currency')->findOrFail( intval(Configuration::get('DEF_COMPANY')) );
 
-        return view('customer_center.invoices.show', compact('cinvoice', 'company'));
+        return view('abcc.invoices.show', compact('cinvoice', 'company'));
     }
 
     public function pdf($cinvoiceKey, Request $request)

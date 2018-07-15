@@ -115,12 +115,23 @@ abi_r('********************************************************');
 
 
 		// Not really "the controller", but enough to retrieve translation files
-		Context::getContext()->controller = $request->segment(1);
-		if ($request->segment(3) == 'options' ) Context::getContext()->controller = $request->segment(3);
-		if ($request->segment(3) == 'states'  ) Context::getContext()->controller = $request->segment(3);
-		if ($request->segment(3) == 'taxrules') Context::getContext()->controller = $request->segment(3);
-		if ($request->segment(3) == 'pricelistlines') Context::getContext()->controller = $request->segment(3);
-		Context::getContext()->action     = NULL;
+		$dominion = $request->segment(1);
+		// Known dominions:
+		if ( $dominion == 'abcc' ) {
+			//
+			Context::getContext()->controller = 'abcc/'.$request->segment(2);
+
+		} else {
+			//
+			Context::getContext()->controller = $dominion;
+			if ($request->segment(3) == 'options' ) Context::getContext()->controller = $request->segment(3);
+			if ($request->segment(3) == 'states'  ) Context::getContext()->controller = $request->segment(3);
+			if ($request->segment(3) == 'taxrules') Context::getContext()->controller = $request->segment(3);
+			if ($request->segment(3) == 'pricelistlines') Context::getContext()->controller = $request->segment(3);
+//			Context::getContext()->action     = NULL;
+
+		}
+
 
 // abi_r(Context::getContext()->user);
 // abi_r(Context::getContext()->language);

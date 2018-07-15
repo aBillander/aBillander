@@ -1,4 +1,4 @@
-@extends('customer_center.layouts.master')
+@extends('abcc.layouts.master')
 
 @section('title') {{ l('Welcome') }} @parent @stop
 
@@ -22,7 +22,7 @@
     </h2>        
 </div>
 
-<div class="container">
+<!-- div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
@@ -40,9 +40,9 @@
             </div>
         </div>
     </div>
-</div>
+</div -->
 
-{{--
+
 <div class="jumbotron">
   <!-- h1>Jumbotron</h1>
   <p>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
@@ -55,8 +55,8 @@
                             -moz-border-radius: 18px;
                             -khtml-border-radius: 18px;
                             -webkit-border-radius: 18px;">
-{ {-- HTML::image('img/picture.jpg', 'a picture', array('class' => 'thumb')) --} }
+{{-- HTML::image('img/picture.jpg', 'a picture', array('class' => 'thumb')) --}}
 </div>
---}}
 
-@stop
+
+@endsection

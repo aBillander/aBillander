@@ -39,13 +39,13 @@ class ConfigurationKeysController extends Controller {
 
                 2 => [
 
-                        'DEF_CARRIER',
                         'DEF_COMPANY',
                         'DEF_COUNTRY',
                         'DEF_CURRENCY',
                         'DEF_CUSTOMER_INVOICE_SEQUENCE',
                         'DEF_CUSTOMER_INVOICE_TEMPLATE',
                         'DEF_CUSTOMER_PAYMENT_METHOD',
+                        'DEF_SHIPPING_METHOD',
                         'DEF_LANGUAGE',
                         'DEF_MEASURE_UNIT_FOR_BOMS',
                         'DEF_MEASURE_UNIT_FOR_PRODUCTS',

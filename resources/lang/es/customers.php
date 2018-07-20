@@ -80,6 +80,7 @@ return [
 	'Sales Representative'     => 'Agente Comercial',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Carrier'     => 'Transportista',
+	'Shipping Method'     => 'Método de Envío',
 	'Webshop ID'     => 'Código en la Tienda Web',
 	'Payment Day(s)'     => 'Día(s) de Pago',
 	'Comma separated list of days, as in: 3,17' => 'Lista separada por comas, como: 3,17',

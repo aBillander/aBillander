@@ -38,21 +38,6 @@
 
 
 
-    <div class="form-group {{ $errors->has('DEF_CARRIER') ? 'has-error' : '' }}">
-      <label for="DEF_CARRIER" class="col-lg-4 control-label">{!! l('DEF_CARRIER.name') !!}</label>
-      <div class="col-lg-8">
-        <div class="row">
-        <div class="col-lg-8">
-        {!! Form::select('DEF_CARRIER', ['0' => l('-- Please, select --', [], 'layouts')] + $carrierList, old('DEF_CARRIER', $key_group['DEF_CARRIER']), array('class' => 'form-control')) !!}
-        {{ $errors->first('DEF_CARRIER', '<span class="help-block">:message</span>') }}
-        </div>
-        <div class="col-lg-4"> </div>
-        </div>
-        <span class="help-block">{!! l('DEF_CARRIER.help') !!}</span>
-      </div>
-    </div>
-
-
     <div class="form-group {{ $errors->has('DEF_COMPANY') ? 'has-error' : '' }}">
       <label for="DEF_COMPANY" class="col-lg-4 control-label">{!! l('DEF_COMPANY.name') !!}</label>
       <div class="col-lg-8">
@@ -136,6 +121,22 @@
         <span class="help-block">{!! l('DEF_CUSTOMER_PAYMENT_METHOD.help') !!}</span>
       </div>
     </div>
+
+    
+    <div class="form-group {{ $errors->has('DEF_SHIPPING_METHOD') ? 'has-error' : '' }}">
+      <label for="DEF_SHIPPING_METHOD" class="col-lg-4 control-label">{!! l('DEF_SHIPPING_METHOD.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SHIPPING_METHOD', ['' => l('-- Please, select --', [], 'layouts')] + $shipping_methodList, old('DEF_SHIPPING_METHOD', $key_group['DEF_SHIPPING_METHOD']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SHIPPING_METHOD', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SHIPPING_METHOD.help') !!}</span>
+      </div>
+    </div>
+
 
     <div class="form-group {{ $errors->has('DEF_LANGUAGE') ? 'has-error' : '' }}">
       <label for="DEF_LANGUAGE" class="col-lg-4 control-label">{!! l('DEF_LANGUAGE.name') !!}</label>

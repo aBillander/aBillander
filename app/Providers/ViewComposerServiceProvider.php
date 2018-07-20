@@ -124,9 +124,16 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Carriers
-		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2', 'shipping_methods._form'), function($view) {
+		view()->composer(array('shipping_methods._form'), function($view) {
 		    
 		    $view->with('carrierList', \App\Carrier::pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Shipping Methods
+		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('shipping_methodList', \App\ShippingMethod::pluck('name', 'id')->toArray());
 		    
 		});
 

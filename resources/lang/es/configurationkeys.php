@@ -51,6 +51,8 @@ return [
 	'Default Values' => 'Valores por Defecto',
 	'DEF_CARRIER.name' => 'Transportista',
 	'DEF_CARRIER.help' => '',
+	'DEF_SHIPPING_METHOD.name' => 'Método de Envío para Clientes',
+	'DEF_SHIPPING_METHOD.help' => '',
 	'DEF_COMPANY.name' => 'Empresa',
 	'DEF_COMPANY.help' => '',
 	'DEF_COUNTRY.name' => 'País',

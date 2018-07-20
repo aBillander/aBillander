@@ -70,7 +70,7 @@ class CustomerOrder extends Model
                             'customer_note', 'notes', 'notes_to_customer',
                             'status', 'locked',
                             'invoicing_address_id', 'shipping_address_id', 
-                            'warehouse_id', 'carrier_id', 'sales_rep_id', 'currency_id', 'payment_method_id', 'template_id',
+                            'warehouse_id', 'shipping_method_id', 'sales_rep_id', 'currency_id', 'payment_method_id', 'template_id',
 
                             'production_sheet_id',
                           ];
@@ -98,6 +98,13 @@ class CustomerOrder extends Model
         static::creating(function($corder)
         {
             $corder->secure_key = md5(uniqid(rand(), true));
+            
+            $corder->carrier_id = $corder->shippingmethod->carrier_id;
+        });
+
+        static::saving(function($corder)
+        {
+            $corder->carrier_id = $corder->shippingmethod->carrier_id;
         });
 
         // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models

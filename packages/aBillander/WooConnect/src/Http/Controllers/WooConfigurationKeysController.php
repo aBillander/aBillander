@@ -551,7 +551,7 @@ class WooConfigurationKeysController extends Controller {
             $dic_val[$woosmethod['id']] = Configuration::get($dic[$woosmethod['id']]);
         }
 
-        $smethodsList = \App\Carrier::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $smethodsList = \App\ShippingMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         return view('woo_connect::woo_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'woosmethods', 'dic', 'dic_val', 'smethodsList'));
     }
@@ -570,7 +570,7 @@ class WooConfigurationKeysController extends Controller {
         
         foreach ( $request->input('dic') as $key => $val) 
         {
-            $rules[ 'dic.'.$key ] = 'sometimes|nullable|exists:carriers,id';
+            $rules[ 'dic.'.$key ] = 'sometimes|nullable|exists:shipping_methods,id';
         }
 
         $this->validate($request, $rules);

@@ -62,7 +62,8 @@ class CreateCustomersTable extends Migration {
 			$table->integer('payment_method_id')->unsigned()->nullable();
 //			$table->integer('sequence_id')->unsigned()->nullable();
 			$table->integer('invoice_template_id')->unsigned()->nullable();
-			$table->integer('carrier_id')->unsigned()->nullable();
+//			$table->integer('carrier_id')->unsigned()->nullable();
+			$table->integer('shipping_method_id')->unsigned()->nullable();
 			$table->integer('price_list_id')->unsigned()->nullable();
 			$table->integer('direct_debit_account_id')->unsigned()->nullable(); // Cuenta remesas
 

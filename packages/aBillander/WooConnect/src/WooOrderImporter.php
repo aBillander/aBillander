@@ -298,7 +298,7 @@ class WooOrderImporter {
 			'shipping_address_id'  => $this->shipping_address_id,
 
 			'warehouse_id' => \App\Configuration::get('DEF_WAREHOUSE'),
-			'carrier_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
+			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
 //			'sales_rep_id' => $order[''],
 			'currency_id' => $this->currency->id,
 			'payment_method_id' => WooOrder::getPaymentMethodId( $order['payment_method'], $order['payment_method_title'] ),

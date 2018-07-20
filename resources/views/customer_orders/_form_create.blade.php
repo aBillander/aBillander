@@ -105,10 +105,10 @@
             {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
          </div>
          
-         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
-            {{ l('Carrier') }}
-            {!! Form::select('carrier_id', ['0' => l('-- Please, select --', [], 'layouts')] + $carrierList, old('carrier_id'), array('class' => 'form-control', 'id' => 'carrier_id')) !!}
-            {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !!}
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipping_method_id') ? 'has-error' : '' }}">
+            {{ l('Shipping Method') }}
+            {!! Form::select('shipping_method_id', ['' => l('-- Please, select --', [], 'layouts')] + $shipping_methodList, old('shipping_method_id'), array('class' => 'form-control', 'id' => 'shipping_method_id')) !!}
+            {!! $errors->first('shipping_method_id', '<span class="help-block">:message</span>') !!}
          </div>
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shipping_conditions') ? 'has-error' : '' }}">
@@ -310,6 +310,7 @@ function get_currency_rate(currency_id)
                 },
                 success: function (response) {
                     var str = '[' + response.identification+'] ' + response.name_fiscal;
+                    var shipping_method_id;
 
                     $("#order_autocustomer_name").val(str);
                     $('#customer_id').val(response.id);
@@ -351,7 +352,13 @@ function get_currency_rate(currency_id)
                     }
 
                     $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
-                    $('#carrier_id').val(response.carrier_id);
+
+                    shipping_method_id = response.shipping_method_id;
+                    if (shipping_method_id == null) {
+                        shipping_method_id = "{{ intval(\App\Configuration::get('DEF_SHIPPING_METHOD'))}}";
+                    }
+                    $('#shipping_method_id').val( shipping_method_id );
+
                     $('#sales_rep_id').val(response.sales_rep_id);
 
                     console.log(response);

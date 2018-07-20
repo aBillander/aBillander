@@ -118,10 +118,10 @@
                     </select>
                     {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
                   </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
-                     {{ l('Carrier') }}
-                     {!! Form::select('carrier_id', array('0' => l('-- Please, select --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control')) !!}
-                     {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !!}
+                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shipping_method_id') ? 'has-error' : '' }}">
+                     {{ l('Shipping Method') }}
+                     {!! Form::select('shipping_method_id', array('' => l('-- Please, select --', [], 'layouts')) + $shipping_methodList, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('shipping_method_id', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="col-md-4">
                       <div class="form-group {{ $errors->has('webshop_id') ? 'has-error' : '' }}">

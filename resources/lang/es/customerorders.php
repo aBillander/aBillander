@@ -119,6 +119,7 @@ return [
 	'Number of Packages'     => 'Número de Bultos',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
+	'Shipping Method'     => 'Método de Envío',
 	'Carrier'     => 'Transportista',
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',

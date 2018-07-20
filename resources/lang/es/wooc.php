@@ -76,12 +76,11 @@ return [
 	'Taxes'     => 'Impuestos',
 	'Payment Gateways'     => 'Formas de Pago',
 	'Shipping Methods'     => 'Métodos de Envío',
-	'Other'     => 'Otros',
+	'Shop'     => 'Tienda',
 	'All Keys'     => 'Todas las Claves',
 
 	'WooConnect Settings'     => 'WooConnect Configuración',
 	'WooCommerce link Settings'     => 'Configuración del enlace con WooCommerce',
-	''     => '',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -117,5 +116,43 @@ return [
 	'WOOC_USE_LOCAL_PRODUCT_NAME.help'     => 'En los Pedidos importados, usar el Nombre del Producto en lugar del Nombre en WooCommerce.',
 	''     => '',
 	''     => '',
+
+	/*
+	|--------------------------------------------------------------------------
+	| WooCommerce Settings Language Lines :: Configuration
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'WooCommerce Connect - Configuration'     => 'WooCommerce Connect - Configuración',
+	'WooCommerce Connect - Configurations'     => 'WooCommerce Connect - Configuraciones',
+
+	'WooCommerce Connect - WooCommerce Shop Settings'     => 'WooCommerce Connect - Configuración de la Tienda WooCommerce',
+	'Retrieve your WooCommerce shop Settings.'     => 'Cargar las Configuraciones de la Tienda WooCommerce.',
+
+	'WooCommerce Connect - Taxes Dictionary'     => 'WooCommerce Connect - Diccionario de Impuestos',
+	'WooCommerce Connect - Payment Gateways Dictionary'     => 'WooCommerce Connect - Diccionario de Formas de Pago',
+	'WooCommerce Connect - Shipping Methods Dictionary'     => 'WooCommerce Connect - Diccionario de Métodos de Envío',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	'Disabled'     => 'Deshabilitado',
+	''     => '',
+	''     => '',
+
+	/*
+	|--------------------------------------------------------------------------
+	| WooOrderImporter
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'-Billing'     => '-Principal',
+	'-Shipping'    => '-Envío',
 
 ];

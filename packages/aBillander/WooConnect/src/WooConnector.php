@@ -20,6 +20,8 @@ class WooConnector {    // extends Model {
             'failed',
         );
 
+    public static  $woo_settings = NULL;
+
 //    protected $dates = ['deleted_at'];
 
 
@@ -49,20 +51,26 @@ class WooConnector {    // extends Model {
             return 'WOOC_PAYMENT_GATEWAY_'.strtoupper($id);
     }
 
+    public static function getShippingMethodKey( $id = '' )
+    {
+            return 'WOOC_SHIPPING_METHOD_'.strtoupper($id);
+    }
+
 
 /* ********************************************************************************************* */   
 
 
     public static function getWooConfigurations()
     {
-        // 
+        if ( !isset(self::$woo_settings) )
+            self::$woo_settings = json_decode(\App\Configuration::get('WOOC_CONFIGURATIONS_CACHE'), true);
 
-        return [];
+        return self::$woo_settings;
     }
     
     public static function getWooSetting( $setting_id = '' )
     {
-        $settings = json_decode(\App\Configuration::get('WOOC_CONFIGURATIONS_CACHE'), true);
+        $settings = self::getWooConfigurations();
 
 //        abi_r($settings);
 
@@ -174,6 +182,32 @@ class WooConnector {    // extends Model {
 //      abi_r($gateways, true);
 
         return $gateways;
+    }
+
+    
+    public static function getWooShippingMethods()
+    {
+        // Do the Mambo!!!
+        try {
+
+            $methods = WooCommerce::get('shipping_methods');   // Array
+        }
+
+        catch( WooHttpClientException $e ) {
+
+            /*
+            $e->getMessage(); // Error message.
+
+            $e->getRequest(); // Last request data.
+
+            $e->getResponse(); // Last response data.
+            */
+
+            $methods = [];
+
+        }
+
+        return $methods;
     }
     
 

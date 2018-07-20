@@ -112,11 +112,12 @@ class TranslationsController extends Controller {
 			// 
 			$fileContents=file_get_contents( realpath(base_path('resources/views/'.$id.'/'.$vfile)) );
 			// preg_match_all("/[^A-Za-z0-9_]+l\((.*?)\)/", $fileContents, $matches);
-			preg_match_all("/[^A-Za-z0-9_]+l\((.*?)(\]|')\)/", $fileContents, $matches);
+			$nbr = preg_match_all("/[^A-Za-z0-9_]+l\((.*?)(\]|')\)/", $fileContents, $matches);
 			// preg_match_all("/[^A-Za-z0-9_]+l\(\'(.*?)\'(.*?)\)/", $fileContents, $matches);
 
 			// abi_r($matches[1]);
 
+			if ( intval($nbr) > 0 ) {
 			foreach ($matches[1] as $k){
 
 				if ($k) {
@@ -124,23 +125,49 @@ class TranslationsController extends Controller {
 					$f = strrpos($k, '[');
 					$l = strrpos($k, ']');
 
+					if (!$l && $f) {
+						$k .= "]";
+						$l = strrpos($k, ']');
+					}
+					else
+						$k .= "'";
+
 					$s='';
 					if ( $l && $f && (($l-$f)>1) ) {
 						$s = substr ( $k , $f, $l-$f+1 );
 						$k=str_replace($s, '[17]', $k);
 					}
 
-					if (!$l && $f) 
-						$k .= "]";
-					else
-						$k .= "'";
-
 
 					// 
 					// echo_r( $vfile.' - '."\$values = App\\Http\\Controllers\\extractor(".$k.");".' - '.$s.'' );
 
 					/* */
-					eval( "\$values = App\\Http\\Controllers\\extractor( $k );" );
+
+$exp = "\$values = App\\Http\\Controllers\\extractor( $k );";
+
+ // abi_r( $exp );
+ // $values = ['culo',[],''];
+
+try {
+  
+  	eval( $exp );
+
+}
+
+//catch exception
+catch(ParseError $e) {
+
+  	echo 'Caught exception: '.$e->getMessage()."\n";
+
+  	abi_r( $exp, true );
+
+}
+					
+
+					
+
+
 					if ( isset($v_keys[$values[0]]) ) 
 						$v_keys[$values[0]]['infile'] .= ', '.$vfile;
 					else {
@@ -153,14 +180,19 @@ class TranslationsController extends Controller {
 					/* */
 				}
 			}
+			}
+
+			// abi_r($vfile.' => '.$nbr);
+			// abi_r($v_keys);
 		}
 
 		// Merge translations
 		foreach ($t_keys as $k => $v) {
 			if ( isset($v_keys[$k]) ) {
 				$v_keys[$k]['local'] = $v;
-			} else 
+			} else {
 				$v_keys[$k] = ['infile' => '', 'forcefile' => '', 'local' => $v];
+			}
 		}
 
 
@@ -175,13 +207,13 @@ foreach ($t_keys as $k => $v) {
 echo '<pre>';
 print_r($t_keys);
 echo '</pre>';
-
+* /
 echo '<pre>';
 print_r($v_keys);
 echo '</pre>';
+/ * */
 
-die();
-*/
+// die();
 
 //		echo_r($viewfiles);die();
 		return view('translations.edit', compact('id', 'v_keys', 'language'));

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Settings') }} @parent @stop
+@section('title') {{ l('WooCommerce Connect - Configuration') }} @parent @stop
 
 @section('content') 
 <div class="row">
@@ -8,7 +8,7 @@
         <div class="page-header">
             <div class="pull-right">
             </div>
-            <h2>{{ l('Settings') }}</h2>
+            <h2>{{ l('WooCommerce Connect - Configuration') }}</h2>
         </div>
     </div>
 </div>
@@ -16,7 +16,7 @@
 <div class="container-fluid">
    <div class="row">
 
-        @include('configuration_keys.key_groups')
+        @include('woo_connect::woo_configuration_keys._key_groups')
       
       <div class="col-lg-10 col-md-10 col-sm-9">
 
@@ -27,96 +27,40 @@
                <div class="panel-body well">
 
 
-@if (\App\Configuration::get('SKU_AUTOGENERATE') )
+{!! Form::open(array('route' => 'wooconnect.configuration.shippingmethods.update', 'class' => 'form' )) !!}
 
 
-{!! Form::open(array('url' => 'configurationkeys', 'id' => 'key_group_'.intval($tab_index), 'name' => 'key_group_'.intval($tab_index), 'class' => 'form-horizontal')) !!}
-
-
-  {!! Form::hidden('tab_index', $tab_index, array('id' => 'tab_index')) !!}
+  {{-- !! Form::hidden('tab_index', $tab_index, array('id' => 'tab_index')) !! --}}
 
   <fieldset>
-    <legend>{{ l('Auto-SKU') }}</legend>
-    
+    <legend>{{ l('WooCommerce Connect - Shipping Methods Dictionary') }}</legend>
 
 
-    <div class="form-group {{ $errors->has('SKU_PREFIX_LENGTH') ? 'has-error' : '' }}">
-      <label for="SKU_PREFIX_LENGTH" class="col-lg-4 control-label">{!! l('SKU_PREFIX_LENGTH.name') !!}</label>
-      <div class="col-lg-8">
-        <div class="row">
-        <div class="col-lg-6">
-        <input class="form-control" type="text" id="SKU_PREFIX_LENGTH" name="SKU_PREFIX_LENGTH" placeholder="" value="{{ old('SKU_PREFIX_LENGTH', $key_group['SKU_PREFIX_LENGTH']) }}" />
-        {{ $errors->first('SKU_PREFIX_LENGTH', '<span class="help-block">:message</span>') }}
-        </div>
-        <div class="col-lg-6"> </div>
-        </div>
-        <span class="help-block">{!! l('SKU_PREFIX_LENGTH.help') !!}</span>
-      </div>
-    </div>
-    
-    <div class="form-group {{ $errors->has('SKU_PREFIX_OFFSET') ? 'has-error' : '' }}">
-      <label for="SKU_PREFIX_OFFSET" class="col-lg-4 control-label">{!! l('SKU_PREFIX_OFFSET.name') !!}</label>
-      <div class="col-lg-8">
-        <div class="row">
-        <div class="col-lg-6">
-        <input class="form-control" type="text" id="SKU_PREFIX_OFFSET" name="SKU_PREFIX_OFFSET" placeholder="" value="{{ old('SKU_PREFIX_OFFSET', $key_group['SKU_PREFIX_OFFSET']) }}" />
-        {{ $errors->first('SKU_PREFIX_OFFSET', '<span class="help-block">:message</span>') }}
-        </div>
-        <div class="col-lg-6"> </div>
-        </div>
-        <span class="help-block">{!! l('SKU_PREFIX_OFFSET.help') !!}</span>
-      </div>
+
+@foreach ( $woosmethods as $pgates )
+<div class="row">
+
+  <div class="form-group col-lg-6 col-md-6 col-sm-6">
+      {{-- !! Form::label($pgates['id'], $pgates['method_title']) !! --}}
+      <div class="text-right">
+      <label title="{{ $pgates['description'] }}">
+      {{ ' ['.$pgates['id'].'] '.$pgates['title'] }}</label></div>
+      {{-- !! Form::text($pgates['id'], null, array('class' => 'form-control')) !! --}}
+  </div>
+  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('dic.'.$dic[$pgates['id']]) ? 'has-error' : '' }}">
+        {!! Form::select('dic['.$dic[$pgates['id']].']', array('' => l('-- Please, select --', [], 'layouts')) + $smethodsList, $dic_val[$pgates['id']], array('class' => 'form-control')) !!}
+      {!! $errors->first('dic.'.$dic[$pgates['id']], '<span class="help-block">:message</span>') !!}
     </div>
 
-    <div class="form-group {{ $errors->has('SKU_SEPARATOR') ? 'has-error' : '' }}">
-      <label for="SKU_SEPARATOR" class="col-lg-4 control-label">{!! l('SKU_SEPARATOR.name') !!}</label>
-      <div class="col-lg-8">
-        <div class="row">
-        <div class="col-lg-6">
-        <input class="form-control" type="text" id="SKU_SEPARATOR" name="SKU_SEPARATOR" placeholder="" value="{{ old('SKU_SEPARATOR', $key_group['SKU_SEPARATOR']) }}" />
-        {{ $errors->first('SKU_SEPARATOR', '<span class="help-block">:message</span>') }}
-        </div>
-        <div class="col-lg-6"> </div>
-        </div>
-        <span class="help-block">{!! l('SKU_SEPARATOR.help') !!}</span>
-      </div>
-    </div>
+</div>
 
-    <div class="form-group {{ $errors->has('SKU_SUFFIX_LENGTH') ? 'has-error' : '' }}">
-      <label for="SKU_SUFFIX_LENGTH" class="col-lg-4 control-label">{!! l('SKU_SUFFIX_LENGTH.name') !!}</label>
-      <div class="col-lg-8">
-        <div class="row">
-        <div class="col-lg-6">
-        <input class="form-control" type="text" id="SKU_SUFFIX_LENGTH" name="SKU_SUFFIX_LENGTH" placeholder="" value="{{ old('SKU_SUFFIX_LENGTH', $key_group['SKU_SUFFIX_LENGTH']) }}" />
-        {{ $errors->first('SKU_SUFFIX_LENGTH', '<span class="help-block">:message</span>') }}
-        </div>
-        <div class="col-lg-6"> </div>
-        </div>
-        <span class="help-block">{!! l('SKU_SUFFIX_LENGTH.help') !!}</span>
-      </div>
-    </div>
-
-
-
-    <div class="form-group">
-      <label class="col-lg-4 control-label"> </label>
-      <div class="col-lg-8">
-        <div class="row">
-        <div>
-
-{!! l('Auto-SKU.help') !!}
-
-        </div>
-        </div>
-      </div>
-    </div>
-
+@endforeach
 
 
     <div class="form-group">
       <div class="col-lg-8 col-lg-offset-4">
         <!-- button class="btn btn-default">Cancelar</button -->
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">
           <i class="fa fa-hdd-o"></i>
                      &nbsp; {{l('Save', [], 'layouts')}}
           </button>
@@ -125,8 +69,6 @@
   </fieldset>
 {!! Form::close() !!}
 
-
-@endif
 
 
                </div>

@@ -261,6 +261,11 @@ class Product extends Model {
             return $list;
     }
 
+    public static function getTypeName( $status )
+    {
+            return l($status, [], 'appmultilang');;
+    }
+
             
 
     public static function getProcurementTypeList()
@@ -271,6 +276,11 @@ class Product extends Model {
             }
 
             return $list;
+    }
+
+    public static function getProcurementTypeName( $status )
+    {
+            return l($status, [], 'appmultilang');;
     }
 
     

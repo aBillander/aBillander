@@ -15,6 +15,10 @@ class WooOrder // extends Model
 
 //    protected $guarded = [];
 
+    public static  $smethods = NULL;
+    public static  $gates = NULL;
+    public static  $taxes = NULL;
+
     protected $data = [];
     protected $run_status = true;       // So far, so good. Can continue export
     protected $error = null;
@@ -195,9 +199,18 @@ class WooOrder // extends Model
 
     public static function getVatNumber( $order = [] )
     {
-        if ( isset( $order['billing']['vat_number'] ) ) return $order['billing']['vat_number'];
+        if ( isset( $order['billing']['vat_number'] ) && $order['billing']['vat_number'] ) 
+             return $order['billing']['vat_number'];
 
         return self::getMetaByKey( $order, \App\Configuration::get('WOOC_ORDER_NIF_META') );    // 'CIF/NIF' );
+    }
+
+    public static function getSalesEqualization( $order = [] )
+    {
+        // Code here...
+        $sales_equalization = 0;
+
+        return $sales_equalization;
     }
 
     public static function getNameFiscal( $order = [] )
@@ -252,7 +265,9 @@ class WooOrder // extends Model
 		$vn = '';
 
 		if ( isset( $order[$address] ) ) {
-			$str = $order[$address]['address_1'].
+			$str = $order[$address]['first_name'].
+                   $order[$address]['last_name'].
+                   $order[$address]['address_1'].
 			       $order[$address]['address_2'].
 			       $order[$address]['postcode'].
 			       $order[$address]['city'];
@@ -279,14 +294,14 @@ class WooOrder // extends Model
 		return $date;
     }
     
-    public static function getShippingMethodId( $shipping_lines = [] )
+    public static function getLineShippingMethodId( $shipping_lines = [] )
     {
         $smi = isset( $shipping_lines[0]['method_id'] ) ? $shipping_lines[0]['method_id'] : '';
 
         return $smi;
     }
     
-    public static function getShippingMethodTitle( $shipping_lines = [] )
+    public static function getLineShippingMethodTitle( $shipping_lines = [] )
     {
         $smt = isset( $shipping_lines[0]['method_title'] ) ? $shipping_lines[0]['method_title'] : '';
 
@@ -323,26 +338,48 @@ class WooOrder // extends Model
         return $s;
     }
     
-    public static function getPaymentMethodId( $method = '' )
+    public static function getShippingMethodId( $method = '', $title = '' )
     {
-        if (!$method) return 0;
+        if (!$method) return null;
 
         // Dictionary
-        $gates = json_decode(\App\Configuration::get('WOOC_PAYMENT_GATEWAYS_DICTIONARY_CACHE'), true);
+        if ( !isset(self::$smethods) )
+            self::$smethods = json_decode(\App\Configuration::get('WOOC_SHIPPING_METHODS_DICTIONARY_CACHE'), true);
 
-        return isset($gates[$method]) ? $gates[$method] : 0;
+        $smethods = self::$smethods;
+
+        return isset($smethods[$method]) ? $smethods[$method] : null;
+
+        // return \App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD');
+    }
+    
+    public static function getPaymentMethodId( $method = '', $title = '' )
+    {
+        if (!$method) return null;
+
+        // Dictionary
+        if ( !isset(self::$gates) )
+            self::$gates = json_decode(\App\Configuration::get('WOOC_PAYMENT_GATEWAYS_DICTIONARY_CACHE'), true);
+
+        $gates = self::$gates;
+
+        return isset($gates[$method]) ? $gates[$method] : null;
 
         // return \App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD');
     }
     
     public static function getTaxId( $slug = '' )
     {
-        if (!$slug) return 0;
+        if (!$slug) 
+            $slug = 'standard';
 
         // Dictionary
-        $taxes = json_decode(\App\Configuration::get('WOOC_TAXES_DICTIONARY_CACHE'), true);
+        if ( !isset(self::$taxes) )
+            self::$taxes = json_decode(\App\Configuration::get('WOOC_TAXES_DICTIONARY_CACHE'), true);
 
-        return isset($taxes[$slug]) ? $taxes[$slug] : 0;
+        $taxes = self::$taxes;
+
+        return isset($taxes[$slug]) ? $taxes[$slug] : null;
     }
     
     

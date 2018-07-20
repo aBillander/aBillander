@@ -47,6 +47,7 @@ return [
 
 	'Basic Data'     => 'Tablas Generales',
 	'Currencies' => 'Divisas',
+	'Shipping Methods'     => 'Métodos de Envío',
 	'Payment Methods'     => 'Formas de Pago',
 	'Taxes'     => 'Impuestos',
 	'Product Categories'     => 'Categorías de Productos',
@@ -289,9 +290,9 @@ return [
 	'November' => 'Noviembre',
 	'December' => 'Diciembre',
 
-	'monthNames' => ['Enero','Febrero','Marzo','Abril','Mayo','Junio', 'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+//	'monthNames' => ['Enero','Febrero','Marzo','Abril','Mayo','Junio', 'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
 
-	'dayNames' => ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],			// firstDay: 1,
+//	'dayNames' => ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],			// firstDay: 1,
               
 
 ];

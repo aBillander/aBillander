@@ -343,6 +343,16 @@ class CustomerOrder extends Model
         return $this->belongsTo('App\Customer');
     }
 
+    public function shippingmethod()
+    {
+        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+    }
+
+    public function carrier()
+    {
+        return $this->belongsTo('App\Carrier');
+    }
+
     public function paymentmethod()
     {
         return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
@@ -356,11 +366,6 @@ class CustomerOrder extends Model
     public function warehouse()
     {
         return $this->belongsTo('App\Warehouse');
-    }
-
-    public function carrier()
-    {
-        return $this->belongsTo('App\Carrier');
     }
 
     public function salesrep()

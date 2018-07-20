@@ -16,6 +16,29 @@ class ActivityLogger extends Model
 
     protected $fillable = [ 'name', 'signature', 'description', 'user_id' ];
 
+//    protected $appends = ['last_modified_at'];
+    
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    public function getLastModifiedAtAttribute()
+    {
+        $value = $this->activityloggerlines()
+                ->latest('created_at')
+                ->first(); // ->updated_at;
+
+        // abi_r($value);
+
+        // return $value; // ->created_at; // ->toDateString();
+
+        if ( $value ) return $value->created_at->toDateString();
+        return null;
+    }
+
     
     /*
     |--------------------------------------------------------------------------
@@ -137,6 +160,10 @@ class ActivityLogger extends Model
     public function stop() 
     {
           $this->log("INFO", LOG_INFO_1020);
+
+          // Avoid touch date on every log entry 
+          $this->updated_at = $this->last_modified_at;
+          $this->save();
     }
 
 

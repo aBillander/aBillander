@@ -16,7 +16,7 @@
 <div class="container-fluid">
    <div class="row">
 
-        @include('woo_connect::woo_configuration_keys.key_groups')
+        @include('woo_connect::woo_configuration_keys._key_groups')
       
       <div class="col-lg-10 col-md-10 col-sm-9">
 
@@ -35,6 +35,21 @@
   <fieldset>
     <legend>{{ l('General') }}</legend>
 
+    <div class="form-group {{ $errors->has('WOOC_DEF_LANGUAGE') ? 'has-error' : '' }}">
+      <label for="WOOC_DEF_LANGUAGE" class="col-lg-4 control-label">{!! l('WOOC_DEF_LANGUAGE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('WOOC_DEF_LANGUAGE', $languageList, old('WOOC_DEF_LANGUAGE', $key_group['WOOC_DEF_LANGUAGE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('WOOC_DEF_LANGUAGE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('WOOC_DEF_LANGUAGE.help') !!}</span>
+      </div>
+    </div>
+
+{{--
     <div class="form-group {{ $errors->has('WOOC_DECIMAL_PLACES') ? 'has-error' : '' }}">
       <label for="WOOC_DECIMAL_PLACES" class="col-lg-4 control-label">{!! l('WOOC_DECIMAL_PLACES.name') !!}</label>
       <div class="col-lg-8">
@@ -62,6 +77,7 @@
         <span class="help-block">{!! l('WOOC_DEF_CURRENCY.help') !!}</span>
       </div>
     </div>
+--}}
 
     <div class="form-group {{ $errors->has('WOOC_DEF_CUSTOMER_GROUP') ? 'has-error' : '' }}">
       <label for="WOOC_DEF_CUSTOMER_GROUP" class="col-lg-4 control-label">{!! l('WOOC_DEF_CUSTOMER_GROUP.name') !!}</label>
@@ -88,20 +104,6 @@
         <div class="col-lg-4"> </div>
         </div>
         <span class="help-block">{!! l('WOOC_DEF_CUSTOMER_PRICE_LIST.help') !!}</span>
-      </div>
-    </div>
-
-    <div class="form-group {{ $errors->has('WOOC_DEF_LANGUAGE') ? 'has-error' : '' }}">
-      <label for="WOOC_DEF_LANGUAGE" class="col-lg-4 control-label">{!! l('WOOC_DEF_LANGUAGE.name') !!}</label>
-      <div class="col-lg-8">
-        <div class="row">
-        <div class="col-lg-8">
-        {!! Form::select('WOOC_DEF_LANGUAGE', $languageList, old('WOOC_DEF_LANGUAGE', $key_group['WOOC_DEF_LANGUAGE']), array('class' => 'form-control')) !!}
-        {{ $errors->first('WOOC_DEF_LANGUAGE', '<span class="help-block">:message</span>') }}
-        </div>
-        <div class="col-lg-4"> </div>
-        </div>
-        <span class="help-block">{!! l('WOOC_DEF_LANGUAGE.help') !!}</span>
       </div>
     </div>
 

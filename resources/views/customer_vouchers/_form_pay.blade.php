@@ -8,7 +8,7 @@
 </div>
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('status_name', l('Status', [], 'layouts')) !!}
-    {!! Form::text('status_name', l($payment->status, [], 'appmultilang'), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
+    {!! Form::text('status_name', \App\Payment::getStatusName($payment->status), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
     {!! Form::hidden('status', null, array('id' => 'status')) !!}
 </div>
 </div>

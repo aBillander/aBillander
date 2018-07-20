@@ -20,11 +20,11 @@
 
 	<div class="form-group col-lg-6 col-md-6 col-sm-6">
 	    {{-- !! Form::label($tax['slug'], $tax['name']) !! --}}
-	    <div class="text-right"><label>{{ $tax['name'].' ['.$tax['slug'].']' }}</label></div>
+	    <div class="text-right" title="{{' ['.$tax['slug'].'] '}}"><label>{{ $tax['name'] }}</label></div>
 	    {{-- !! Form::text($tax['slug'], null, array('class' => 'form-control')) !! --}}
 	</div>
 	<div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('dic.'.$dic[$tax['slug']]) ? 'has-error' : '' }}">
-        {!! Form::select('dic['.$dic[$tax['slug']].']', array('0' => l('-- Please, select --', [], 'layouts')) + $taxList, $dic_val[$tax['slug']], array('class' => 'form-control')) !!}
+        {!! Form::select('dic['.$dic[$tax['slug']].']', array('' => l('-- Please, select --', [], 'layouts')) + $taxList, $dic_val[$tax['slug']], array('class' => 'form-control')) !!}
     	{!! $errors->first('dic.'.$dic[$tax['slug']], '<span class="help-block">:message</span>') !!}
     </div>
 

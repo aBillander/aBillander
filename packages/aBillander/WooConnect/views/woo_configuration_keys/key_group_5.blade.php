@@ -27,37 +27,47 @@
                <div class="panel-body well">
 
 
-{!! Form::open(array('route' => 'wooconnect.configuration.paymentgateways.update', 'class' => 'form' )) !!}
+{!! Form::open(array('route' => 'wooconnect.configuration.update', 'class' => 'form' )) !!}
 
 
   {{-- !! Form::hidden('tab_index', $tab_index, array('id' => 'tab_index')) !! --}}
 
   <fieldset>
-    <legend>{{ l('WooCommerce Connect - Payment Gateways Dictionary') }}</legend>
+    <legend>{{ l('WooCommerce Connect - WooCommerce Shop Settings') }}</legend>
 
 
 
-@foreach ( $woopgates as $pgates )
+        <p>{{ l('Retrieve your WooCommerce shop Settings.') }}</p>
+
+
+<div id="wooconfs" style="display:none;">
+@foreach ( $wooconfs as $wooconf )
 <div class="row">
 
   <div class="form-group col-lg-6 col-md-6 col-sm-6">
-      {{-- !! Form::label($pgates['id'], $pgates['method_title']) !! --}}
+
       <div class="text-right">
-      <label>
-      @if (!$pgates['enabled'])
-        <i class="fa fa-warning xalert alert-warning xalert-block" title="{{ l('Disabled') }}"></i> 
-      @endif
-      {{ ' ['.$pgates['id'].'] '.$pgates['method_title'] }}</label><br />{{ $pgates['title'] }}</div>
-      {{-- !! Form::text($pgates['id'], null, array('class' => 'form-control')) !! --}}
+        <label>{{ $wooconf['id'] }}</label>
+      </div>
+
+  {{-- abi_r($wooconf) --}}
+
+      {{-- !! Form::label($tax['slug'], $tax['name']) !! --}}
+      <!-- div class="text-right"><label>{ { $tax['name'].' ['.$tax['slug'].']' } }</label></div -->
+      {{-- !! Form::text($tax['slug'], null, array('class' => 'form-control')) !! --}}
   </div>
-  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('dic.'.$dic[$pgates['id']]) ? 'has-error' : '' }}">
-        {!! Form::select('dic['.$dic[$pgates['id']].']', array('' => l('-- Please, select --', [], 'layouts')) + $pgatesList, $dic_val[$pgates['id']], array('class' => 'form-control')) !!}
-      {!! $errors->first('dic.'.$dic[$pgates['id']], '<span class="help-block">:message</span>') !!}
+  <div class="form-group col-lg-6 col-md-6 col-sm-6 { { $errors->has('dic.'.$dic[$tax['slug']]) ? 'has-error' : '' } }">
+
+    {{ $wooconf['value'] }}
+
+        {{-- !! Form::select('dic['.$dic[$tax['slug']].']', array('0' => l('-- Please, select --', [], 'layouts')) + $taxList, $dic_val[$tax['slug']], array('class' => 'form-control')) !! --}}
+      {{-- !! $errors->first('dic.'.$dic[$tax['slug']], '<span class="help-block">:message</span>') !! --}}
     </div>
 
 </div>
 
 @endforeach
+</div>
 
 
     <div class="form-group">
@@ -65,7 +75,7 @@
         <!-- button class="btn btn-default">Cancelar</button -->
         <button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">
           <i class="fa fa-hdd-o"></i>
-                     &nbsp; {{l('Save', [], 'layouts')}}
+                     &nbsp; {{l('Update', [], 'layouts')}}
           </button>
       </div>
     </div>

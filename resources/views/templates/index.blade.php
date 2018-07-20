@@ -42,7 +42,7 @@
 			<td>{{ $template->folder }}</td>
 			<td>{{ $template->file_name }}</td>
 			<td>{{ $template->paper }}</td>
-			<td>{{ l($template->orientation,  [], 'appmultilang') }}</td>
+			<td>{{ \App\Template::getOrientationName($template->orientation) }}</td>
 
             <!-- td class="text-center">@if ($template->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td -->
 

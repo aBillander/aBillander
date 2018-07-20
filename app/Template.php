@@ -75,6 +75,11 @@ class Template extends Model {
     {
             return l('template.'.$types, [], 'appmultilang');;
     }
+
+    public static function getOrientationName( $types )
+    {
+            return l('orientation.'.$types, [], 'appmultilang');;
+    }
     
 
     /*

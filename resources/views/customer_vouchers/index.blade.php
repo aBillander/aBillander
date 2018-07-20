@@ -54,7 +54,7 @@
             	@else
             		<span>
             	@endif
-            	{{l( $payment->status, [], 'appmultilang' )}}</span></td>
+            	{{\App\Payment::getStatusName($payment->status)}}</span></td>
 
 			<td class="text-right">
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>

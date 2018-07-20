@@ -37,7 +37,7 @@
             <td>{{ $logger->user_id }} [{{ $logger->user->getFullName() }}]</td>
             <td>{{ $logger->name }}</td>
             <td>{{ $logger->description }}</td>
-            <td>{{ $logger->created_at }}</td>
+            <td>{{ $logger->last_modified_at }}</td>
 
             <td class="text-right button-pad">
 

@@ -158,7 +158,16 @@
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
                      <label for="margin_method" class="control-label">{{ l('Margin calculation method') }}</label>
-                     <div class="form-control" id="margin_method"><strong>{{ \App\Configuration::get('MARGIN_METHOD') }}</strong> : {{ l(\App\Configuration::get('MARGIN_METHOD'), [], 'appmultilang') }}</div>
+                     <div class="form-control" id="margin_method">
+                      <strong>{{ \App\Configuration::get('MARGIN_METHOD') }}</strong> : 
+
+   @if ( \App\Configuration::get('MARGIN_METHOD') == 'CST' )  
+      {{ l('Margin calculation is based on Cost Price', [], 'layouts') }}.
+   @else
+      {{ l('Margin calculation is based on Sales Price', [], 'layouts') }}.
+   @endif
+                        {{-- l (\App\Configuration::get('MARGIN_METHOD'), [], 'appmultilang') --}}
+                      </div>
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
                      <label for="prices_entered" class="control-label">{{ l('Price input method') }}</label>

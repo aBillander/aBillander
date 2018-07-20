@@ -328,7 +328,11 @@
         </div>
         <span class="help-block">{!! l('TAX_BASED_ON_SHIPPING_ADDRESS.help') !!}</span>
       </div>
-    </div>
+    </div>{{-- woocommerce_tax_based_on :: 
+    Customer billing address - shipping
+    Customer shipping address (default) - billing
+    Store/Company base address - base/company
+ --}}
 
 
 

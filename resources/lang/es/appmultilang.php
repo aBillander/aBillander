@@ -245,6 +245,9 @@ return array(
 	'Landscape' => 'Horizontal',
 	'portrait' => 'Vertical',
 	'landscape' => 'Horizontal',
+	
+	'orientation.portrait' => 'Vertical',
+	'orientation.landscape' => 'Horizontal',
 
 
 	/*
@@ -264,4 +267,31 @@ return array(
 	'Mass'     => 'Masa',
 	'Time'     => 'Tiempo',
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Months
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'monthNames' => [
+			'Enero',
+			'Febrero',
+			'Marzo',
+			'Abril',
+			'Mayo',
+			'Junio',
+			'Julio',
+			'Agosto',
+			'Septiembre',
+			'Octubre',
+			'Noviembre',
+			'Diciembre',
+	]
+
+//	'dayNames' => ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],			// firstDay: 1,
+	
 );

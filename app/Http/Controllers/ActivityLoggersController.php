@@ -22,7 +22,11 @@ class ActivityLoggersController extends Controller
      */
     public function index(Request $request)
     {
-        $loggers = $this->logger->where('description', 'NOT LIKE', '%devMessenger%')->orderBy('id', 'desc');
+        $loggers = $this->logger->where('description', 'NOT LIKE', '%devMessenger%')->orderBy('updated_at', 'desc');
+//                ->orderBy( function ($activitylogger) { return $activitylogger->last_modified_at; } );
+
+        // See: ProductionSheetsController->index
+
 
 
         $loggers = $loggers->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );

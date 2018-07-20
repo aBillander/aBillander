@@ -54,6 +54,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('shippingmethods') }}">
+                                 {{l('Shipping Methods', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('carriers') }}">
                                  {{l('Carriers', [], 'layouts')}}
                             </a>

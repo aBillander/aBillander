@@ -62,6 +62,11 @@ class Payment extends Model {
 
             return $list;
     }
+
+    public static function getStatusName( $status )
+    {
+            return l($status, [], 'appmultilang');;
+    }
     
     public function getDueDateAttribute($value)
     {

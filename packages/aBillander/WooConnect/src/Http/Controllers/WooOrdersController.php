@@ -121,8 +121,8 @@ class WooOrdersController extends Controller {
 		$last  = $orders->last()["id"];
 
 //		$abi_orders = \App\CustomerOrder::where('reference', '>=', $last)->where('reference', '<=', $first)->get();
-		$abi_orders = \App\CustomerOrder::with('productionsheet')->whereBetween('reference', [$last, $first])->get();
-		$abi_orders = $abi_orders->keyBy('reference');
+		$abi_orders = \App\CustomerOrder::with('productionsheet')->whereBetween('reference_external', [$last, $first])->get();
+		$abi_orders = $abi_orders->keyBy('reference_external');
 /*
 		foreach ($orders as &$order){
 			// Rock 'n Roll!
@@ -172,19 +172,6 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 	}
 
 	/**
-	 * Display a listing of the resource.
-	 * GET worders/imported
-	 *
-	 * @return Response
-	 */
-	public function importedIndex()
-	{
-		$orders = $this->order->with('customer')->orderBy('date_created', 'desc')->get();
-
-        return view('woo_connect::woo_orders.imported_index', compact('orders'));
-	}
-
-	/**
 	 * Show the form for creating a new resource.
 	 * GET /worders/create
 	 *
@@ -225,7 +212,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		// https://www.tychesoftwares.com/how-to-add-prefix-or-suffix-to-woocommerce-order-number/
 		// https://www.tychesoftwares.com/how-to-reset-woocommerce-order-numbers-every-24-hours/
 		// https://www.tychesoftwares.com/add-new-column-woocommerce-orders-page/
-
+/*
 		try {
 			$wc_currency = \App\Currency::findOrFail( intval(\App\Configuration::get('WOOC_DEF_CURRENCY')) );
 		} catch (ModelNotFoundException $ex) {
@@ -238,8 +225,17 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		];
 
 		$order = WooCommerce::get('orders/'.$id, $params);	// Array
-
+*/
+		
+		// Real Mambo here:
 		$order = WooOrder::fetch( $id );
+
+		// Catch error:
+
+//            if (!$this->data) {
+//                $this->error[] = 'Se ha intentado recuperar el Pedido número <b>"'.$order_id.'"</b> y no existe.';
+//                $this->run_status = false;
+//            }
 
 		// I am thirsty. Let's get hydrated!
 		$customer = \App\Customer::where('webshop_id', $order['customer_id'])->first();
@@ -248,14 +244,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		$vatNumber = WooOrder::getVatNumber( $order );
 		$order['billing']['vat_number'] = $vatNumber;
 
-		$date_downloaded = '';
-		foreach($order['meta_data'] as $meta) {
-			if ($meta['key']=='date_abi_exported') {
-				$date_downloaded = $meta['value'];
-				break;
-			}
-		}
-		$order["date_downloaded"] = $date_downloaded;
+		$order["date_downloaded"] = WooOrder::getAbiExportedDate( $order );
 
 
 		// Billing
@@ -312,6 +301,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
              ]],
 		];
 
+		// To do: catch errore¡s
 		WooCommerce::put('orders/'.$id, $data);
 
 		return redirect()->route('worders.index', $query)
@@ -358,7 +348,8 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 
         $logger->stop();
 
-        return redirect('activityloggers/'.$logger->id);
+        return redirect('activityloggers/'.$logger->id)
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $logger->id], 'layouts'));
 
 /* 
         // Mambo!
@@ -385,7 +376,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
         //    'Import WooCommerce Orders :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s'), \aBillander\WooConnect\WooOrderImporter::loggerSignature() );
 
         // Mambo!
-		$importer = \aBillander\WooConnect\WooOrderImporter::makeOrder( $id );
+		$importer = \aBillander\WooConnect\WooOrderImporter::processOrder( $id );
 
 		if ( $importer->tell_run_status() )
 			

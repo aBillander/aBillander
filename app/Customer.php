@@ -233,7 +233,14 @@ class Customer extends Model {
         // Sanitize
         $nif = self::normalize_spanish_nif_cif_nie( $value );
 
-        if ( strlen( $value ) == 9 ) {
+        // Poor man check
+        if ( strlen( $nif ) > 0 ) {
+            if ( ctype_alnum($nif) && (strlen($nif)==9 || strlen($nif)==8) ) return 1;
+            else return 0;
+        } else return 0;
+
+
+        if ( strlen( $nif ) == 9 ) {
 //            $nif = strtoupper( $value );
 
             for ( $i = 0; $i < 9; $i ++ ) {

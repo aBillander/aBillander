@@ -154,8 +154,8 @@ class WooOrderImporter {
 
             'payment_method'        => $order['payment_method'],
             'payment_method_title'  => $order['payment_method_title'],
-            'shipping_method_id'    => WooOrder::getShippingMethodId($order['shipping_lines']),
-            'shipping_method_title' => WooOrder::getShippingMethodTitle($order['shipping_lines']),
+            'shipping_method_id'    => WooOrder::getLineShippingMethodId($order['shipping_lines']),
+            'shipping_method_title' => WooOrder::getLineShippingMethodTitle($order['shipping_lines']),
 		];
 
 
@@ -193,11 +193,9 @@ class WooOrderImporter {
 
         $importer->setCustomer();
 
-        return $importer;
+//        return $importer;
 
         $importer->setOrderDocument();
-
-        abi_r($importer->order->id);
 
         return $importer;
     }
@@ -210,7 +208,7 @@ class WooOrderImporter {
         if (!$currency) {
         	$currency = \App\Currency::find( \App\Configuration::get('WOOC_DEF_CURRENCY') );
 
-        	$this->logMessage("WARNING", l('Order number <span class="log-showoff-format">{oid}</span> currency not found. Using: <span class="log-showoff-format">{name}</span>.'), ['oid' => $order['id'], 'name' => $currency->name]);
+        	$this->logMessage("WARNING", l('Order number <span class="log-showoff-format">{oid}</span> Currency not found. Using: <span class="log-showoff-format">{name}</span>.'), ['oid' => $order['id'], 'name' => $currency->name]);
         }
 
         $this->currency = $currency;
@@ -241,13 +239,14 @@ class WooOrderImporter {
 
 		$data = [
 			'customer_id' => $this->customer->id,
+			'user_id' => \App\Context::getContext()->user->id,
         	'sequence_id' => \App\Configuration::get('WOOC_DEF_ORDERS_SEQUENCE'),
 //			'document_prefix' => $order[''],
 //			'document_id' => $order[''],
 //			'document_reference' => $order[''],
 			'reference' => WooOrder::getOrderReference( $order ),
 //			'reference_customer', 
-//			'reference_external',
+			'reference_external' => $order['id'],
 
 			'created_via' => 'webshop',
 
@@ -258,7 +257,11 @@ class WooOrderImporter {
 //			'delivery_date_real' => $order[''],
 //			'close_date' => $order[''],
 
-//			'document_discount_percent','document_discount_amount_tax_incl', 'document_discount_amount_tax_excl' => $order[''],
+//			'document_discount_percent',
+//			'document_discount_amount_tax_incl' => $order['discount_total'],
+//			'document_discount_amount_tax_excl' => $order['discount_total'] - $order['discount_tax'],
+
+			'number_of_packages' => 1,
 //			'shipping_conditions' => $order[''],
 
 //			'prices_entered_with_tax' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX'),
@@ -276,16 +279,16 @@ class WooOrderImporter {
 //			'total_other_tax_incl' => $order[''],
 //			'total_other_tax_excl' => $order[''],
 			
-			'total_lines_tax_incl' => $order['total'],
-			'total_lines_tax_excl' => $order['total'] - $order['total_tax'],
+//			'total_lines_tax_incl' => $order['total'],
+//			'total_lines_tax_excl' => $order['total'] - $order['total_tax'],
 			
 			'total_tax_incl' => $order['total'],
 			'total_tax_excl' => $order['total'] - $order['total_tax'],
 
 //			'commission_amount' => $order[''],
 
-			'customer_note' => WooOrder::getDocumentNotes( $order ),
-//			'notes',
+			'notes_from_customer' => WooOrder::getDocumentNotes( $order ),
+//			'notes' => $order[''],
 //			'notes_to_customer' => $order[''],
 
 			'status' => 'confirmed', 	// Sorry: cannot be 'closed' because it is not delivered (even if $order['date_paid'] != 0)
@@ -294,8 +297,8 @@ class WooOrderImporter {
 			'invoicing_address_id' => $this->invoicing_address_id,
 			'shipping_address_id'  => $this->shipping_address_id,
 
-//			'warehouse_id' => $order[''],
-//			'carrier_id' => $order[''],
+			'warehouse_id' => \App\Configuration::get('DEF_WAREHOUSE'),
+			'carrier_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
 //			'sales_rep_id' => $order[''],
 			'currency_id' => $this->currency->id,
 			'payment_method_id' => WooOrder::getPaymentMethodId( $order['payment_method'], $order['payment_method_title'] ),
@@ -313,6 +316,8 @@ class WooOrderImporter {
 
 		$data = array_merge($data, $extradata);
 
+//		abi_r($data, true);
+
 		$order = Order::create($data);
 /*
 		$order->total_tax_incl = $order['total'];
@@ -329,9 +334,6 @@ class WooOrderImporter {
 
         // Shipping
         $this->setOrderDocumentShippingLines();
-
-
-        return true;
         
 
         // Fee lines
@@ -359,16 +361,19 @@ foreach ( $order['line_items'] as $i => $item ) {
 		$combination_id = null;
 		$reference = '';
 		$name = $item['name'];
-		$cost_price = $item['price'];
+//		$cost_price = $item['price'];
 		$final_price = $item['price']; // ( $item['subtotal'] )/$item['quantity'];	// Approximation. Maybe better: $item['price']  (price before discount) ???
 		$line_tax_id = WooOrder::getTaxId($item['tax_class']);
 /*
-		if ( $tax_id == 0 ) {
+		if ( !$tax_id ) {
 			// Tax not found. Issue an ERROR.
 			$tax_id = \App\Configuration::get('WOOC_DEF_TAX');	// To Do: Improbe this guess...
+
+			$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado correspondencia del Impuesto <b>"'.$item['tax_class'].'"</b>.' );
 		}
+
+		$tax = Tax::find($tax_id);
 */
-//		$tax = Tax::find($tax_id);
 		/*
 
 		*/
@@ -401,7 +406,7 @@ foreach ( $order['line_items'] as $i => $item ) {
 			if ($product) {
 				$product_id = $product->id;
 				$combination_id = null;
-				$reference = $sku;
+				$reference = $product->reference;
 				if ( \App\Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $product->name;
 				$cost_price = $product->cost_price;
 //				$tax_id = $product->tax_id;		// To Do: Match with WooCommerce & Tax Dictionary?
@@ -410,22 +415,26 @@ foreach ( $order['line_items'] as $i => $item ) {
 				$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado el Producto con SKU <b>"'.$sku.'"</b>.' );
 			}
 		}
-
+/*
 		//
 		// Testing
 			$product = Product::with('tax')->find(21);
 				$product_id = $product->id;
 				$combination_id = null;
 				$reference = $product->reference;
+				if ( \App\Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $product->name;
+				$cost_price = $product->cost_price;
 		//
 		//
-
+*/
 		// If no Product found...
 		if (!$product) {
 			// No database persistance, please!
 //			$product  = new \App\Product(['product_type' => 'simple', 'name' => $name, 'tax_id' => $tax_id]);
 //			$tax = $product->tax;
 			$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado el Producto con SKU <b>"'.$sku.'"</b>.' );
+
+			// To Do: abort Order download
 
 			continue ;
 		}
@@ -435,10 +444,13 @@ foreach ( $order['line_items'] as $i => $item ) {
 
         $tax = $product->tax;
         $tax_id = $product->tax_id;
+        $sales_equalization = $this->customer->sales_equalization;
 
         if ( $line_tax_id != $tax_id ) {
         	// Taxes mismatch
 			$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO hay correspondencia del Impuesto para el Producto con SKU <b>"'.$sku.'"</b>.' );
+
+			// To Do: abort Order download
 
 			continue ;
         }
@@ -454,18 +466,17 @@ foreach ( $order['line_items'] as $i => $item ) {
 			'name'           => $name,
 
 			'quantity' => $item['quantity'],
+			'measure_unit_id' => $product->measure_unit_id,
 
 			'cost_price' => $cost_price,
 			'unit_price' => $unit_price,
             'unit_customer_price' => $unit_price,	// To Do: if Customer existed, can search for these prices
             'unit_customer_final_price' => $unit_price,
 
-    //        'sales_equalization' => $request->input(''),
-
 			'unit_final_price' => $final_price,
 			'unit_final_price_tax_inc' => $final_price+$item['subtotal_tax']/$item['quantity'],	// Approximation
 
-//			'sales_equalization' => $item[''],				// Charge Sales equalization tax? (only Spain)
+			'sales_equalization' => $sales_equalization,				// Charge Sales equalization tax? (only Spain)
 
 //			'discount_percent' => $item[''],
 			'discount_amount_tax_incl' => ( $item['subtotal'] + $item['subtotal_tax'] ) - ( $item['total'] + $item['total_tax'] ),
@@ -474,7 +485,7 @@ foreach ( $order['line_items'] as $i => $item ) {
 			'total_tax_incl' => $item['total'] + $item['total_tax'],
 			'total_tax_excl' => $item['total'],
 
-			'tax_percent' => ($item['total_tax']/$item['total'])*100.0,
+			'tax_percent' => ($item['total'] != 0.0) ? ($item['total_tax']/$item['total'])*100.0 : 0.0,
 //			'commission_percent' => $item[''],
 
 //			'notes' => $item[''],
@@ -488,15 +499,18 @@ foreach ( $order['line_items'] as $i => $item ) {
 
 		$line = OrderLine::create($data);
 
+		$this->order->customerorderlines()->save($line);
+
 		// abi_r($line, true);
 
 		// Let's deal with taxes
+		$product->sales_equalization = $sales_equalization;
         $rules = $product->getTaxRules( $this->getAddressForTaxCalculation(),  $this->customer );
 
 		$base_price = $line->total_tax_excl;
 
-//		$line->total_tax_excl = $base_price;
-//		$line->total_tax_incl = $base_price;	// After this, loop to add line taxes
+		$line->total_tax_excl = $base_price;
+		$line->total_tax_incl = $base_price;	// After this, loop to add line taxes
 
 		foreach ( $rules as $rule ) {
 			$line_tax = new OrderLineTax();
@@ -521,12 +535,14 @@ foreach ( $order['line_items'] as $i => $item ) {
 			$line_tax->tax_rule_id = $rule->id;
 
 			$line_tax->save();
-//			$line->total_tax_incl += $line_tax->total_line_tax;
+			$line->total_tax_incl += $line_tax->total_line_tax;
 
 			$line->customerorderlinetaxes()->save($line_tax);
+            $line->save();
 		}
 
-		$this->order->customerorderlines()->save($line);
+        // Now, update Order Totals
+        $this->order->makeTotals();
 
 //		abi_r($this->order->id.' Done!');
 
@@ -534,7 +550,7 @@ foreach ( $order['line_items'] as $i => $item ) {
 		abi_r('Real: '.$this->order->total_tax_excl.' - Calculado: '.$this->order->getTotalTaxExcl());
 		abi_r('Real: '.$this->order->total_tax_incl.' - Calculado: '.$this->order->getTotalTaxIncl());
 
-		abi_r('>>>>>>>   '.$this->order->getLastLineSortOrder());
+//		abi_r('>>>>>>>   '.$this->order->getLastLineSortOrder());
 
 		// NEXT: Issue payment
 
@@ -569,20 +585,24 @@ foreach ( $order['shipping_lines'] as $item ) {
 		$reference = '';
 		$name = $item['method_title'];	// .' ('.$item['method_id'].')';
 		$cost_price = $item['total'];
+		$unit_price = $item['total'];
 		$final_price = $item['total'];
 //		$line_tax_id = WooOrder::getTaxId($item['tax_class']);
-		$tax_id = \App\Configuration::get('WOOC_DEF_SHIPPING_TAX');	// WooOrder::getTaxId('standard');
+		$tax_id = intval(\App\Configuration::get('WOOC_DEF_SHIPPING_TAX'));	// WooOrder::getTaxId('standard');
 		if ( $tax_id == 0 ) {
 			// Tax not found. Issue an ERROR.
 			$tax_id = \App\Configuration::get('WOOC_DEF_TAX');	// To Do: Improbe this guess...
+			// -- This key does not exist?? --^
 		}
 		$tax = Tax::find($tax_id);
+		// Not a Product, hence:
+        $sales_equalization = 0;	// $this->customer->sales_equalization;
 
 		// No database persistance, please!
 		$product  = new \App\Product(['product_type' => 'simple', 'name' => $name, 'tax_id' => $tax_id]);
 		// $tax = $product->tax;
 
-abi_r('>> # >> '.$this->order->customerorderlines->count());
+// abi_r('>> # >> '.$this->order->customerorderlines->count());
 
 		$data = [
 			'line_sort_order' => $this->getNextLineSortOrder(), // $this->order->getLastLineSortOrder(),
@@ -594,16 +614,17 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 			'name'           => $name,
 
 			'quantity' => 1,
+			'measure_unit_id' => \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
 
 			'cost_price' => $cost_price,
-			'unit_price' => $final_price,
-			'unit_customer_price' => $final_price,	// To Do: if Customer existed, can search for these prices
-            'unit_customer_final_price' => $final_price,
+			'unit_price' => $unit_price,
+			'unit_customer_price' => $unit_price,
+            'unit_customer_final_price' => $unit_price,
 
 			'unit_final_price' => $final_price,
 			'unit_final_price_tax_inc' => $final_price+$item['total_tax'],	// Approximation
 
-//			'sales_equalization' => $item[''],				// Charge Sales equalization tax? (only Spain)
+			'sales_equalization' => $sales_equalization,				// Charge Sales equalization tax? (only Spain)
 
 //			'discount_percent' => $item[''],
 			'discount_amount_tax_incl' => 0.0,
@@ -612,7 +633,7 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 			'total_tax_incl' => $item['total'] + $item['total_tax'],
 			'total_tax_excl' => $item['total'],
 
-			'tax_percent' => ($item['total_tax']/$item['total'])*100.0,
+			'tax_percent' => ($item['total'] != 0.0) ? ($item['total_tax']/$item['total'])*100.0 : 0.0,
 //			'commission_percent' => $item[''],
 
 //			'notes' => $item[''],
@@ -626,9 +647,11 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 
 		$line = OrderLine::create($data);
 
+		$this->order->customerorderlines()->save($line);
+
 		// abi_r($line, true);
 
-		$product->tax_id = $tax_id;		// Better clone...
+		$product->sales_equalization = $sales_equalization;
 		$rules = $product->getTaxRules( $this->getAddressForTaxCalculation(),  $this->customer );
 
 		$base_price = $line->total_tax_excl;
@@ -660,9 +683,11 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 			$line->total_tax_incl += $line_tax->total_line_tax;
 
 			$line->customerorderlinetaxes()->save($line_tax);
+            $line->save();
 		}
 
-		$this->order->customerorderlines()->save($line);
+        // Now, update Order Totals
+        $this->order->makeTotals();
 
 		// Check total
 		abi_r('Real: '.$this->order->total_tax_excl.' - Calculado: '.$this->order->getTotalTaxExcl());
@@ -670,9 +695,9 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 
 }
 
-		abi_r($this->log);
+//		abi_r($this->log);
 
-		die();
+//		die();
 
     }
 
@@ -708,8 +733,10 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
         // Build Customer data
         $order = $this->raw_data;
 
-        $language_id = \App\Configuration::get('WOOC_DEF_LANGUAGE') ? \App\Configuration::get('WOOC_DEF_LANGUAGE') : 
-							 \App\Configuration::get('DEF_LANGUAGE');
+        $language_id = intval(\App\Configuration::get('WOOC_DEF_LANGUAGE'));
+
+        $language_id = $language_id > 0 ? $language_id : 
+						\App\Configuration::get('DEF_LANGUAGE');
 
 		$data = [
         	'name_fiscal'     => WooOrder::getNameFiscal( $order ),
@@ -731,7 +758,7 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 
 //			'notes' => $order['customer_note'],
 //			'customer_logo',
-//			'sales_equalization' => $order[''],
+			'sales_equalization' => WooOrder::getSalesEqualization( $order ),
 //			'allow_login' => $order[''],
 
 			'accept_einvoice' => 1,
@@ -774,7 +801,8 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 
     public function getAddressForTaxCalculation()
     {
-    	return \App\Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') ? $this->shipping_address : $this->invoicing_address ;
+    	return (\App\Configuration::get('WOOC_TAX_BASED_ON') == 'shipping') ? $this->shipping_address : $this->invoicing_address ;
+    	// Don't care if \App\Configuration::get('WOOC_TAX_BASED_ON') == 'local'
    	}
 
 
@@ -854,7 +882,7 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 		}
 
 		$data = [
-			'alias' => $order['id'].'-Billing',
+			'alias' => $order['id'].l('-Billing'),
 			'webshop_id' => WooOrder::getBillingAddressId( $order ),
 
 			'name_commercial' => WooOrder::getNameCommercial( $order ),
@@ -920,7 +948,7 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
 		}
 
 		$data = [
-			'alias' => $order['id'].'-Shipping',
+			'alias' => $order['id'].l('-Shipping'),
 			'webshop_id' => WooOrder::getShippingAddressId( $order ),
 
 			'name_commercial' => $name,
@@ -971,6 +999,26 @@ abi_r('>> # >> '.$this->order->customerorderlines->count());
         $this->logger->log($level, $message, $context);
 
         if ( $level == 'ERROR' ) $this->log_has_errors = true;
+    }
+    
+    protected function logInfo($message = '', $context = [])
+    {
+        $this->logMessage('INFO', $message, $context);
+    }
+    
+    protected function logWarning($message = '', $context = [])
+    {
+        $this->logMessage('WARNING', $message, $context);
+    }
+    
+    protected function logError($message = '', $context = [])
+    {
+        $this->logMessage('ERROR', $message, $context);
+    }
+    
+    protected function logTimer($message = '', $context = [])
+    {
+        $this->logMessage('TIMER', $message, $context);
     }
     
     public function logHasErrors()

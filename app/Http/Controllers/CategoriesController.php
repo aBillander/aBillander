@@ -152,12 +152,33 @@ class CategoriesController extends Controller {
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
+
+    // https://github.com/marcovaccarini/laravel5-category-tree-view
+    public function manageCategory()
+    {
+
+        $categories = Category::where('parent_id', '=', 0)->get();
+
+        $allCategories = Category::pluck('name','id')->all();
+
+        return view('categories.categoryTreeview',compact('categories','allCategories'));
+
+    }
+
+    // Better: https://github.com/kun391/laravel-categories
+    // https://github.com/lazychaser/laravel-nestedset
+    // https://github.com/redooor
+
+
+
+
+/*
     /**
      * Update/Publish to web the specified resource in storage.
      *
      * @param  int  $id
      * @return Response
-     */
+     * /
     public function publish($id, Request $request)
     {
         $section =  $request->input('tab_name')     ? 
@@ -283,5 +304,6 @@ try {
 
      
     }
+*/
 
 }

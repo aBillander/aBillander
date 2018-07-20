@@ -70,7 +70,7 @@ class Price {
 
         $priceObj->amount = $price_is_tax_inc ? $price[1] : $price[0] ;
         $priceObj->price_is_tax_inc = $price_is_tax_inc;
-        $priceObj->tax_percent = $price[0] ? (($price[1]-$price[0])/$price[0])*100.0 : 0.0;
+        $priceObj->tax_percent = ($price[0] != 0.0) ? (($price[1]-$price[0])/$price[0])*100.0 : 0.0;
         $currency->conversion_rate = $currency_conversion_rate;
         $priceObj->currency = $currency;
 //        $priceObj->currency_conversion_rate = $currency_conversion_rate;

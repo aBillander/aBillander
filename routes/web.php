@@ -126,6 +126,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
 
         Route::resource('categories', 'CategoriesController');
+        Route::get('category-tree-view', ['uses'=>'CategoriesController@manageCategory']);
+        Route::post('add-category',['as'=>'add.category','uses'=>'CategoriesController@create']);
         Route::resource('categories.subcategories', 'CategoriesController');
         Route::post('categories/{id}/publish', array('uses' => 'CategoriesController@publish', 
                                                         'as'   => 'categories.publish' ));
@@ -152,6 +154,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::post('mail', 'MailController@store');
 
         Route::resource('paymentmethods', 'PaymentMethodsController');
+
+        Route::resource('shippingmethods', 'ShippingMethodsController');
 
         Route::resource('customergroups', 'CustomerGroupsController');
 

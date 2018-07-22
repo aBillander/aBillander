@@ -17,6 +17,9 @@
 
         <a href="{{ route('customers.import') }}" class="btn btn-sm btn-warning" 
                 title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a>
+
+        <a href="{{ route('customers.export') }}" class="btn btn-sm btn-grey" 
+                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
     </div>
     <h2>
         {{ l('Customers') }}

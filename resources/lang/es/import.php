@@ -72,5 +72,6 @@ return [
 	'Import Price List File'     => 'Importar Fichero de Tarifa',
 	'Empty LOG?'     => '¿Vaciar el LOG?',
 	'Empty LOG before Price List Lines import.'     => 'Vaciar el LOG antes de importar las Líneas de Tarifa.',
+	'Simulation Mode: errors will be shown, but database will not be changed.' => 'Modo Simulación: se mostrarán errores, pero no se cargará nada en la base de datos.'
 
 ];

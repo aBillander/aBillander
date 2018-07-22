@@ -56,6 +56,8 @@ return [
 	'Description'     => 'Descripción',
 	'Quantity'     => 'Cantidad',
 	'Payment method'     => 'Método de Pago',
+	'Shipping method'     => 'Método de Envío',
+	'Carrier'     => 'Transportista',
 
 	'Customer'     => 'Cliente',
 

@@ -262,6 +262,19 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		$state = \App\State::findByIsoCode( $order['shipping']['state'], $order['shipping']['country'] );
 		$order['shipping']['state_name'] = $state ? $state->name : $order['shipping']['state'];
 
+		// Carrier
+		$order['shipping']['shipping_method'] = '('.$order['shipping_lines'][0]['method_id'].') '.$order['shipping_lines'][0]['method_title'];
+		$shipping_method = \App\ShippingMethod::with('carrier')->find( WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ) );
+
+		if ( $shipping_method ) {
+			$order['shipping']['shipping_method'] = $shipping_method->name;
+			
+			$order['shipping']['carrier'] = '';
+			if ($shipping_method->carrier) {
+				$order['shipping']['carrier'] = $shipping_method->carrier->name;
+			}
+		}
+
 		return view('woo_connect::woo_orders.show', compact('order', 'customer'));
 	}
 
@@ -369,6 +382,10 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 
 	public function import($id)
 	{
+
+        return redirect()->route('worders.index')
+				->with('error', l('Por favor, marque el pedido y clique sobre "Importar", en la caja "Importar pedidos".'));
+
 		// return "Order: $id";
 
         // Prepare Logger

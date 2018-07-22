@@ -165,7 +165,7 @@
 
 
 
-    <div class="col-md-4 xcol-md-offset-3">
+    <div class="col-md-4 xcol-md-offset-3" style="display:none">
         <div class="panel panel-info">
             <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to Production Sheet') }}</h3></div>
             <div class="panel-body">
@@ -204,7 +204,7 @@
         </div>
     </div>
 
-    <div class="col-md-6 xcol-md-offset-1">
+    <div class="col-md-6 xcol-md-offset-1" style="display:none">
         <div class="panel panel-info">
             <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to NEW Production Sheet') }}</h3></div>
             <div class="panel-body">

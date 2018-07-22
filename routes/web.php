@@ -219,15 +219,18 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('images', 'ImagesController');
 
 
-        // Import to Database
+        // Import / Export to Database
         Route::get( 'import/pricelists/{id}', 'Import\ImportPriceListsController@import' )->name('pricelists.import');
         Route::post('import/pricelists/{id}', 'Import\ImportPriceListsController@process')->name('pricelists.import.process');
+        Route::get( 'export/pricelists/{id}', 'Import\ImportPriceListsController@export' )->name('pricelists.export');
 
         Route::get( 'import/products', 'Import\ImportProductsController@import' )->name('products.import');
         Route::post('import/products', 'Import\ImportProductsController@process')->name('products.import.process');
+        Route::get( 'export/products', 'Import\ImportProductsController@export' )->name('products.export');
 
         Route::get( 'import/customers', 'Import\ImportCustomersController@import' )->name('customers.import');
         Route::post('import/customers', 'Import\ImportCustomersController@process')->name('customers.import.process');
+        Route::get( 'export/customers', 'Import\ImportCustomersController@export' )->name('customers.export');
 
 });
 

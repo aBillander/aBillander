@@ -390,6 +390,16 @@ class Customer extends Model {
         return $this->belongsTo('App\Currency');
     }
 
+    public function paymentmethod()
+    {
+        return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
+    }
+
+    public function shippingmethod()
+    {
+        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+    }
+
     public function pricelist()
     {
         return $this->belongsTo('App\PriceList', 'price_list_id');

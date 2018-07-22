@@ -61,6 +61,10 @@
 
      <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-simulate" xstyle="display: none">
        {!! Form::label('simulate', l('Simulation Mode?'), ['class' => 'control-label']) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Simulation Mode: errors will be shown, but database will not be changed.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
        <div>
          <div class="radio-inline">
            <label>

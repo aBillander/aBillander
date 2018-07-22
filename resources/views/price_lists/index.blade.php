@@ -51,6 +51,8 @@
                         data-content="{{l('You are going to CHANGE all Product default Prices. Are you sure?')}}" 
                         data-title="{{ l('Price Lists') }} :: ({{$pricelist->id}}) {{ $pricelist->name }}" 
                         onClick="return false;" title="{{l('Set these Prices as Default')}}"><i class="fa fa-superpowers"></i></a>
+
+                <a class="btn btn-sm btn-grey" href="{{ URL::route('pricelists.export', [$pricelist->id] ) }}" title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i></a>
                 
                 <!-- div class="btn-group">
                   <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> {{l('Actions', [], 'layouts')}} &nbsp;<span class="caret"></span></a>

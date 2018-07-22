@@ -217,7 +217,15 @@
                         @if ( $order['date_paid'] )
                         &nbsp; <span class="fa fa-check-circle" title="{{ l('Paid') }}"></span><br />
                         {{ l('Transaction ID') }}: &nbsp;{{ $order['transaction_id'] ? $order['transaction_id'] : ' - - - - - ' }}
-						@endif
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right warning">
+                        <b>{{ l('Shipping method') }}:</b> {{ $order['shipping']['shipping_method'] }}
+
+                        <br />
+                        <b>{{ l('Carrier') }}:</b> &nbsp;{{ $order['shipping']['carrier'] ? $order['shipping']['carrier'] : ' - - - - - ' }}
                     </td>
                 </tr>
             </table>

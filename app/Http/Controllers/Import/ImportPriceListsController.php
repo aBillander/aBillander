@@ -400,4 +400,69 @@ class ImportPriceListsController extends Controller
         }, false);      // should not queue $shouldQueue
 
     }
+
+
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function export($id)
+    {
+        
+/*        $pricelist = $this->pricelist
+                    ->with('pricelistlines')
+                    ->with('pricelistlines.product')
+                    ->findOrFail($id);
+*/
+
+        $pricelist  = $this->pricelist->findOrFail($id);
+        $lines = $this->pricelistline
+                        ->select('price_list_lines.*', 'products.id', 'products.reference', 'products.name')
+//                        ->with('product')
+                        ->where('price_list_id', $id)
+                        ->join('products', 'products.id', '=', 'price_list_lines.product_id')       // Get field to order by
+                        ->orderBy('products.reference', 'asc')
+                        ->get();
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = []; 
+
+        // Define the Excel spreadsheet headers
+        $data[] = [ 'reference', 'NOMBRE', 'price', 'price_list_id' ];
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the payments array.
+        foreach ($lines as $line) {
+            // $data[] = $line->toArray();
+            $data[] = [
+                            'reference' => $line->reference,
+                            'NOMBRE' => $line->name,
+                            'price' => $line->price,
+                            'price_list_id' => $id,
+            ];
+        }
+
+        $sheetName = $pricelist->price_is_tax_inc > 0 ?
+                    'Precio incluye IVA' :
+                    'Precio es SIN IVA' ;
+
+        // Generate and return the spreadsheet
+        Excel::create('Price_List_'.$id, function($excel) use ($id, $sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');
+
+        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
+        // https://www.youtube.com/watch?v=s-ZeszfCoEs
+    }
 }

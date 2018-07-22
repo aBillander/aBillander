@@ -448,4 +448,84 @@ class ImportCustomersController extends Controller
         }, false);      // should not queue $shouldQueue
 
     }
+
+
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function export()
+    {
+        
+        $customers = $this->customer
+                        ->with('customergroup')
+                        ->with('pricelist')
+                        ->with('paymentmethod')
+                        ->with('shippingmethod')
+                        ->with('address')
+                        ->with('address.country')
+                        ->with('address.state')
+//                        ->with('currency');
+                        ->orderBy('reference_external', 'asc')
+                        ->get();
+
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = [];  
+
+        // Define the Excel spreadsheet headers
+        $headers = [ 'reference_external', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
+                    'customer_group_id', 'CUSTOMER_GROUP_NAME', 'price_list_id', 'PRICE_LIST_NAME', 
+                    'payment_method_id', 'PAYMENT_METHOD_NAME', 'shipping_method_id', 'SHIPPING_METHOD_NAME', 
+                    'outstanding_amount_allowed', 'notes', 'allow_login', 'blocked', 'active', 
+                    'currency_id', 'language_id', 
+
+                    'address1', 'address2', 'postcode', 'city', 'state_id', 'STATE_NAME', 'country_id', 'COUNTRY_NAME', 
+                    'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax',
+        ];
+
+        $data[] = $headers;
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the payments array.
+        foreach ($customers as $customer) {
+            // $data[] = $line->toArray();
+            $row = [];
+            foreach ($headers as $header)
+            {
+                $row[$header] = $customer->{$header} ?? ( $customer->address->{$header} ?? '');
+            }
+            $row['CUSTOMER_GROUP_NAME']  = $customer->customergroup  ? $customer->customergroup->name : '';
+            $row['PRICE_LIST_NAME']      = $customer->pricelist      ? $customer->pricelist->name : '';
+            $row['PAYMENT_METHOD_NAME']  = $customer->paymentmethod  ? $customer->paymentmethod->name : '';
+            $row['SHIPPING_METHOD_NAME'] = $customer->shippingmethod ? $customer->shippingmethod->name : '';
+            $row['STATE_NAME']           = $customer->address->state    ? $customer->address->state->name : '';
+            $row['COUNTRY_NAME']         = $customer->address->country  ? $customer->address->country->name : '';
+
+            $data[] = $row;
+        }
+
+        $sheetName = 'Customers' ;
+
+        // abi_r($data, true);
+
+        // Generate and return the spreadsheet
+        Excel::create('Customers', function($excel) use ($sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');           // ->export('pdf');  <= Does not work. See: https://laracasts.com/discuss/channels/general-discussion/dompdf-07-on-maatwebsiteexcel-autoloading-issue
+
+        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
+        // https://www.youtube.com/watch?v=s-ZeszfCoEs
+    }
 }

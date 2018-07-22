@@ -306,4 +306,85 @@ class ImportProductsController extends Controller
         }, false);      // should not queue $shouldQueue
 
     }
+
+
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function export()
+    {
+        $products = $this->product
+                          ->with('measureunit')
+//                          ->with('combinations')                                  
+                          ->with('category')
+                          ->with('tax')
+                          ->with('supplier')
+                          ->orderBy('reference', 'asc')
+                          ->get();
+
+/*        $pricelist = $this->pricelist
+                    ->with('pricelistlines')
+                    ->with('pricelistlines.product')
+                    ->findOrFail($id);
+
+        $pricelist  = $this->pricelist->findOrFail($id);
+        $lines = $this->pricelistline
+                        ->select('price_list_lines.*', 'products.id', 'products.reference', 'products.name')
+//                        ->with('product')
+                        ->where('price_list_id', $id)
+                        ->join('products', 'products.id', '=', 'price_list_lines.product_id')       // Get field to order by
+                        ->orderBy('products.reference', 'asc')
+                        ->get();
+*/
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = []; 
+
+        // Define the Excel spreadsheet headers
+        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'category_id', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'SUPPLIER_NAME'
+        ];
+
+        $data[] = $headers;
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the payments array.
+        foreach ($products as $product) {
+            // $data[] = $line->toArray();
+            $row = [];
+            foreach ($headers as $header)
+            {
+                $row[$header] = $product->{$header} ?? '';
+            }
+            $row['CATEGORY_NAME']     = $product->category ? $product->category->name : '';
+            $row['TAX_NAME']          = $product->tax ? $product->tax->name : '';
+            $row['MEASURE_UNIT_NAME'] = $product->measureunit ? $product->measureunit->name : '';
+            $row['SUPPLIER_NAME']     = $product->supplier ? $product->supplier->name : '';
+
+            $data[] = $row;
+        }
+
+        $sheetName = 'Products' ;
+
+        // abi_r($data, true);
+
+        // Generate and return the spreadsheet
+        Excel::create('Products', function($excel) use ($sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');
+
+        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
+        // https://www.youtube.com/watch?v=s-ZeszfCoEs
+    }
 }

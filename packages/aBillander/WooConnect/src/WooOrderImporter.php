@@ -307,6 +307,17 @@ class WooOrderImporter {
 
         	
 		$seq = \App\Sequence::find( \App\Configuration::get('WOOC_DEF_ORDERS_SEQUENCE') );
+
+		if ( !$seq ) 
+		{
+			$this->run_status = false;
+
+			$this->logError( l('No existe una Serie de Documentos para descargar los Pedidos. Asigne una en en el menú de Configuración.') );
+
+			// Rock n Roll is over! 
+			return ;
+		}
+
 		$doc_id = $seq->getNextDocumentId();
 
 		$extradata = [	'document_prefix'      => $seq->prefix,

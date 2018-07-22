@@ -204,6 +204,50 @@ class CustomerOrder extends Model
     | Methods
     |--------------------------------------------------------------------------
     */
+
+    public function confirm()
+    {
+        // Already confirmed?
+        if ( $this->document_reference || ( $this->status != 'draft' ) ) return ;
+
+        // Sequence
+        $seq_id = $this->sequence_id > 0 ? $this->sequence_id : \App\Configuration::get('DEF_CUSTOMER_ORDER_SEQUENCE');
+        $seq = \App\Sequence::find( $seq_id );
+        $doc_id = $seq->getNextDocumentId();
+
+        $this->document_prefix    = $seq->prefix;
+        $this->document_id        = $doc_id;
+        $this->document_reference = $seq->getDocumentReference($doc_id);
+
+        $this->status = 'confirmed';
+
+        $this->save();
+    }
+
+    public function close()
+    {
+        // Can I ...?
+        if ( $this->status != 'canceled' ) return ;
+
+        // Do stuf...
+
+        $this->status = 'closed';
+
+        $this->save();
+    }
+
+    public function cancel()
+    {
+        // Can I ...?
+        if ( $this->status != 'closed' ) return ;
+
+        // Do stuf...
+
+        $this->status = 'canceled';
+
+        $this->save();
+    }
+
     
     public function makeTotals( $document_discount_percent = null )
     {

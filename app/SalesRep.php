@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php 
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,11 +14,32 @@ class SalesRep extends Model {
     protected $dates = ['deleted_at'];
 	
     protected $fillable = ['alias', 'identification', 'notes', 
-    					   'commission_percent', 'max_discount_allowed', 'irpf', 'active'];
+                           'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax',
+    					   'commission_percent', 'max_discount_allowed', 'pitw', 'active'];
 
     public static $rules = array(
-        'alias' => array('required|min:2|max:32'),
+        'alias'    => 'required|min:2|max:32',
+        'firstname' => 'max:32',
+        'lasttname' => 'max:32',
+        'phone' => 'max:32',
+        'phone_mobile' => 'max:32',
+        'email' => 'max:128',
+        'fax'   => 'max:32',
+
+        'commission_percent' => 'numeric|min:0', 
+        'max_discount_allowed' => 'numeric|min:0', 
+        'pitw' => 'numeric|min:0',
+//        'address1' => 'required|min:2|max:128',
+//        'state_id' => 'exists:states,id',           // If State exists, Country must do also!
     	);
+
+
+    // Get the full name of a User instance using Eloquent accessors
+    
+    public function getNameAttribute() 
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
 
 
     /*
@@ -27,6 +50,6 @@ class SalesRep extends Model {
 
     public function address()
     {
-        return $this->hasOne('App\Address', 'owner_id')->where('model_name', '=', 'SalesRep');
+        // return $this->hasOne('App\Address', 'owner_id')->where('model_name', '=', 'SalesRep');
     }
 }

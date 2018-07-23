@@ -33,7 +33,8 @@ class CustomersController extends Controller {
                         ->with('address')
                         ->with('address.country')
                         ->with('address.state')
-                        ->with('currency');
+                        ->with('currency')
+                        ->orderBy('reference_external', 'asc');
 //                        ->get();
         
         $customers = $customers->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );

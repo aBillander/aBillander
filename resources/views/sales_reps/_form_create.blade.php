@@ -1,6 +1,8 @@
 
 <div class="panel-body">
 
+	@include('addresses._form_fields_salesrep')
+
 	<div class="row">
 	          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('alias') ? 'has-error' : '' }}">
 	            {{ l('Alias', [],'addresses') }}
@@ -32,8 +34,6 @@
                </div>
 	</div>
 
-	@include('addresses._form_fields_salesrep')
-
 	<div class="row">
 	          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('commission_percent') ? 'has-error' : '' }}">
 	            {{ l('Commission (%)') }}
@@ -42,7 +42,7 @@
 	          </div>
 	          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('max_discount_allowed') ? 'has-error' : '' }}">
 	            {{ l('Max. Discount allowed (%)') }}
-	            {!! Form::text('max_discount_allowede', null, array('class' => 'form-control', 'id' => 'max_discount_allowed')) !!}
+	            {!! Form::text('max_discount_allowed', null, array('class' => 'form-control', 'id' => 'max_discount_allowed')) !!}
 	            {!! $errors->first('max_discount_allowed', '<span class="help-block">:message</span>') !!}
 	          </div>
 	          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('pitw') ? 'has-error' : '' }}">

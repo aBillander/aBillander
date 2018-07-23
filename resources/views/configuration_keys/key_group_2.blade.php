@@ -80,12 +80,26 @@
       </div>
     </div>
 
+    <div class="form-group {{ $errors->has('DEF_CUSTOMER_ORDER_SEQUENCE') ? 'has-error' : '' }}">
+      <label for="DEF_CUSTOMER_ORDER_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_ORDER_SEQUENCE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_CUSTOMER_ORDER_SEQUENCE', ['0' => l('-- Please, select --', [], 'layouts')] + $orders_sequenceList, old('DEF_CUSTOMER_ORDER_SEQUENCE', $key_group['DEF_CUSTOMER_ORDER_SEQUENCE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_CUSTOMER_ORDER_SEQUENCE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_CUSTOMER_ORDER_SEQUENCE.help') !!}</span>
+      </div>
+    </div>
+
     <div class="form-group {{ $errors->has('DEF_CUSTOMER_INVOICE_SEQUENCE') ? 'has-error' : '' }}">
       <label for="DEF_CUSTOMER_INVOICE_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_INVOICE_SEQUENCE.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-8">
-        {!! Form::select('DEF_CUSTOMER_INVOICE_SEQUENCE', ['0' => l('-- Please, select --', [], 'layouts')] + [], old('DEF_CUSTOMER_INVOICE_SEQUENCE', $key_group['DEF_CUSTOMER_INVOICE_SEQUENCE']), array('class' => 'form-control')) !!}
+        {!! Form::select('DEF_CUSTOMER_INVOICE_SEQUENCE', ['0' => l('-- Please, select --', [], 'layouts')] + $invoices_sequenceList, old('DEF_CUSTOMER_INVOICE_SEQUENCE', $key_group['DEF_CUSTOMER_INVOICE_SEQUENCE']), array('class' => 'form-control')) !!}
         {{ $errors->first('DEF_CUSTOMER_INVOICE_SEQUENCE', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-4"> </div>

@@ -112,7 +112,7 @@
         <tr>
             <td>{{ $customer->id }}</td>
             <td>{{ $customer->reference_external }}</td>
-            <td>{{ $customer->name_fiscal }}<br />{{ $customer->name_commercial }}</td>
+            <td>{{ $customer->name_fiscal }}<!-- br / -->{{-- $customer->name_commercial --}}</td>
             <td>{{ $customer->identification }}</td>
             <td>{{ $customer->address->email }}</td>
             <td>{{ $customer->address->phone }}</td>

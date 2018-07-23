@@ -59,6 +59,8 @@ return [
 	'DEF_COUNTRY.help' => '',
 	'DEF_CURRENCY.name' => 'Divisa',
 	'DEF_CURRENCY.help' => 'Moneda por defecto.',
+	'DEF_CUSTOMER_ORDER_SEQUENCE.name' => 'Serie de Pedidos para Clientes',
+	'DEF_CUSTOMER_ORDER_SEQUENCE.help' => '',
 	'DEF_CUSTOMER_INVOICE_SEQUENCE.name' => 'Serie de Facturas para Clientes',
 	'DEF_CUSTOMER_INVOICE_SEQUENCE.help' => '',
 	'DEF_CUSTOMER_INVOICE_TEMPLATE.name' => 'Plantilla de Facturas para Clientes',

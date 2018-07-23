@@ -30,7 +30,7 @@ Route::group([
 
 	Route::resource('wooconnect/wooconfigurationkeys', 'WooConfigurationKeysController');
 
-// Deprecated to -->>  WooConfigurationKeysController
+
 	Route::get( 'wooconnect/configuration', 'WooConfigurationKeysController@configurationsEdit')
 			->name('wooconnect.configuration');
 	Route::post('wooconnect/configuration', 'WooConfigurationKeysController@configurationsUpdate')

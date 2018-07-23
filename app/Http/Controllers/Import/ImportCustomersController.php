@@ -348,11 +348,11 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'phone_mobile' es demasiado largo (32). ".$data['phone_mobile']);
                     }
 
-
+/*
                     if ( $data['country'] != 'ESPAÑA' )
                     {
                             $data['country_id'] =$data['country'];
-/*
+/ *
                             $data['country_name'] = $data['country'];
                             $data['state_name']   = $data['state_id'];
 
@@ -360,12 +360,12 @@ class ImportCustomersController extends Controller
                             $data['state_id']   = null;
 
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'country' es inválido: " . $data['country']);
-*/
+* /
                             // continue;
                     } else {
                             $data['country_id'] = 1;
                     }
-
+*/
                     $data['alias'] = l('Main Address', [],'addresses');
 
                     $data['outstanding_amount_allowed'] = \App\Configuration::get('DEF_OUTSTANDING_AMOUNT');
@@ -375,7 +375,7 @@ class ImportCustomersController extends Controller
                     {
                         $data['notes'] = trim( $data['notes'] );
 
-                        $logger->log("WARNING", "Cliente ".$item.":<br />" . "El campo 'notes' es: " . $data['notes']);
+                        // $logger->log("WARNING", "Cliente ".$item.":<br />" . "El campo 'notes' es: " . $data['notes']);
                     }
 
 
@@ -390,21 +390,37 @@ class ImportCustomersController extends Controller
                             // Create Customer
                             // $product = $this->product->create( $data );
     //                        $customer = $this->customer->storeOrUpdate( [ 'reference_external' => $data['reference_external'] ], $data );
+/*
                             $customer = new Customer;
                             $customer = $customer->fill($data);
                             if ( isset($data['id']) ) $customer->id = $data['id'];
                             else unset( $customer->id );
                             $customer->save();
+*/
+                            $customer = $this->customer->updateOrCreate( [ 
+                                'reference_external' => $data['reference_external'] 
+                            ], $data );
 
                             // $logger->log("TIMER", " Se ha creado el Cliente: ".$item." - " . $customer->id);
 
                             unset( $data['webshop_id'] );
 
-                            $address = $this->address->create($data);
-                            $customer->addresses()->save($address);
+                            $address = $customer->address;
 
-                            $customer->update(['invoicing_address_id' => $address->id, 'shipping_address_id' => $address->id]);
+                            if ( $address )
+                            {
 
+                                $address->fill($data);
+                                $address->save();
+
+                            } else {
+
+                                $address = $this->address->create($data);
+                                $customer->addresses()->save($address);
+
+                                $customer->update(['invoicing_address_id' => $address->id, 'shipping_address_id' => $address->id]);
+                                
+                            }
                         }
 
                         $i_ok++;

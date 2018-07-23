@@ -23,7 +23,7 @@
     <thead>
         <tr>
             <th class="text-left">{{l('ID', [], 'layouts')}}</th>
-            <th class="text-left">{{l('Alias')}}</th>
+            <!-- th class="text-left">{{l('Alias')}}</th -->
             <th class="text-left">{{l('Identification')}}</th>
             <th class="text-left">{{l('Contact')}}</th>
             <th class="text-left">{{l('Address')}}</th>
@@ -39,22 +39,22 @@
         @foreach ($salesreps as $salesrep)
         <tr>
             <td>{{ $salesrep->id }}</td>
-            <td>{{ $salesrep->address->alias }}</td>
+            <!-- td>{{ $salesrep->alias }}</td -->
             <td>{{ $salesrep->identification }}</td>
 
-            <td>{{ $salesrep->address->firstname }} {{ $salesrep->address->lastname }}<br />
-                {{ $salesrep->address->phone }} &nbsp; {{ $salesrep->address->phone_mobile }}<br />
-                {{ $salesrep->address->email }}
+            <td>{{ $salesrep->name }}<br />
+                {{ $salesrep->phone }} &nbsp; {{ $salesrep->phone_mobile }}<br />
+                {{ $salesrep->email }}
             </td>
 
-            <td>{{ $salesrep->address->name_commercial }}<br />
+            <td>{{-- $salesrep->address->name_commercial }}<br />
                 {{ $salesrep->address->address1 }} {{ $salesrep->address->address2 }}<br />
                 {{ $salesrep->address->postcode }} {{ $salesrep->address->city }}, {{ $salesrep->address->state }}<br />
-                {{ $salesrep->address->country }}
+                {{ $salesrep->address->country --}}
             </td>
-            <td>{{ App\FP::percent( $salesrep->commission_percent ) }}</td>
-            <td>{{ App\FP::percent( $salesrep->max_discount_allowed ) }}</td>
-            <td>{{ App\FP::percent( $salesrep->pitw ) }}</td>
+            <td>{{ ( $salesrep->commission_percent ) }}</td>
+            <td>{{ ( $salesrep->max_discount_allowed ) }}</td>
+            <td>{{ ( $salesrep->pitw ) }}</td>
             <td class="text-center">
                 @if ($salesrep->notes)
                  <a href="javascript:void(0);">
@@ -69,13 +69,21 @@
 
             <td class="text-right">
                 @if (  is_null($salesrep->deleted_at))
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('salesreps/' . $salesrep->id) . '/mail' }}" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
+                <a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
+                        xhref="{{ URL::to('salesreps/' . $salesrep->id) . '/mail' }}" 
+                        href="{{ URL::to('mail') }}" 
+                        data-to_name = "{{ $salesrep->name }}" 
+                        data-to_email = "{{ $salesrep->email }}" 
+                        data-from_name = "{{ \App\Context::getContext()->user->getFullName() }}" 
+                        data-from_email = "{{ \App\Context::getContext()->user->email }}" 
+                        onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
+
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('salesreps/' . $salesrep->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('salesreps/' . $salesrep->id ) }}" 
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Warehouses') }} ::  ({{$salesrep->id}}) {{ $salesrep->alias }}" 
+                    data-title="{{ l('Sales Representatives') }} :: ({{$salesrep->id}}) {{ $salesrep->name }}" 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('salesreps/' . $salesrep->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
@@ -96,6 +104,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
+@include('layouts/modal_mail')
 @include('layouts/modal_delete')

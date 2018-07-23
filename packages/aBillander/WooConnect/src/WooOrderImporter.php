@@ -71,8 +71,10 @@ class WooOrderImporter {
 			$this->fill_in_data( intval($order_id) );
             // return true
 
-        } else
-        	;
+        } else {
+            $this->logMessage( 'ERROR', 'El número de Pedido <b>"'.$order_id.'"</b>no es válido.' );
+            $this->run_status = false;
+        }
     }
 
 
@@ -112,6 +114,7 @@ class WooOrderImporter {
             $this->run_status = false;
         } else {
         	// Data transformers
+        	;
 
         }
 
@@ -123,55 +126,6 @@ class WooOrderImporter {
         $this->next_sort_order += 10;;
 
         return $this->next_sort_order;
-    }
-
-
-    public static function makeOrderOld( $order_id = null ) {
-        // See: https://stackoverflow.com/questions/1699796/best-way-to-do-multiple-constructors-in-php
-        $importer = new static($order_id);
-        if (!$importer->tell_run_status()) return $importer;
-
-        // Do stuff
-
-        $order = $importer->raw_data;
-
-		// Save
-		$data = [
-            'id' => $order['id'],
-
-            'number'    => $order['number'],
-            'order_key' => $order['order_key'],
-            'currency'  => $order['currency'],
-
-            'date_created'      => WooOrder::getDate( $order['date_created'] ),
-            'date_abi_exported' => WooOrder::getExportedAt($order['meta_data']),
-
-            'total'     => $order['total'],
-            'total_tax' => $order['total_tax'],
-            
-            'customer_id'   => $order['customer_id'],
-            'customer_note' => $order['customer_note'],
-
-            'payment_method'        => $order['payment_method'],
-            'payment_method_title'  => $order['payment_method_title'],
-            'shipping_method_id'    => WooOrder::getLineShippingMethodId($order['shipping_lines']),
-            'shipping_method_title' => WooOrder::getLineShippingMethodTitle($order['shipping_lines']),
-		];
-
-
-        try {
-
-        	$wc_order = WooOrder::updateOrCreate($data);
-		}
-
-		catch( \Exception $e ) {
-			$importer->run_status = false;
-			$importer->error = $e->getMessage();
-		}
-
-
-        return $importer;
-
     }
 
 
@@ -189,13 +143,42 @@ class WooOrderImporter {
 
         // Do stuff
 
+        // Some preparatory checks
         $importer->setCurrency();
 
+        // Mambo!
         $importer->setCustomer();
+        if ( !$importer->tell_run_status() ) 
+        {
+        	$importer->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
 
-//        return $importer;
+        	return $importer;
+        }
 
         $importer->setOrderDocument();
+        if ( !$importer->tell_run_status() ) 
+        {
+        	$importer->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
+
+        	$importer->order->delete();
+
+        	// Delete Customer as well -> No! Customer order is in place no matter import errors...
+
+        	return $importer;
+        }
+
+		// Check totals
+		$diffTaxExc = ($this->raw_data['total'] - $this->raw_data['total_tax']) - $this->order->total_tax_excl;
+		$diffTaxInc =  $this->raw_data['total']                                 - $this->order->total_tax_incl;
+
+		if ( $diffTaxExc != 0 )
+			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> Total Tax Excluded difference: {diffTaxExc}.'), ['oid' => $order_id, 'diffTaxExc' => $diffTaxExc]);
+
+		if ( $diffTaxInc != 0 )
+			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> Total Tax Included difference: {diffTaxInc}.'), ['oid' => $order_id, 'diffTaxInc' => $diffTaxInc]);
+
+		// Good boy:
+		$importer->order->confirm();
 
         return $importer;
     }
@@ -291,7 +274,7 @@ class WooOrderImporter {
 //			'notes' => $order[''],
 //			'notes_to_customer' => $order[''],
 
-			'status' => 'confirmed', 	// Sorry: cannot be 'closed' because it is not delivered (even if $order['date_paid'] != 0)
+			'status' => 'draft', 	// Sorry: cannot be 'closed' because it is not delivered (even if $order['date_paid'] != 0)
 			'locked' => 1,
 
 			'invoicing_address_id' => $this->invoicing_address_id,
@@ -318,6 +301,8 @@ class WooOrderImporter {
 			return ;
 		}
 
+		// Not so fast, dudde:
+/*
 		$doc_id = $seq->getNextDocumentId();
 
 		$extradata = [	'document_prefix'      => $seq->prefix,
@@ -326,7 +311,7 @@ class WooOrderImporter {
 					 ];
 
 		$data = array_merge($data, $extradata);
-
+*/
 //		abi_r($data, true);
 
 		$order = Order::create($data);
@@ -342,15 +327,34 @@ class WooOrderImporter {
 
         // Product
         $this->setOrderDocumentProductLines();
+        if ( !$this->tell_run_status() ) 
+        {
+        	return ;
+        }
+
 
         // Shipping
         $this->setOrderDocumentShippingLines();
-        
+        if ( !$this->tell_run_status() ) 
+        {
+        	return ;
+        }
+
 
         // Fee lines
         $this->setOrderDocumentServiceLines();
+        if ( !$this->tell_run_status() ) 
+        {
+        	return ;
+        }
+
 
         // Coupon lines
+        $this->setOrderDocumentCouponLines();
+        if ( !$this->tell_run_status() ) 
+        {
+        	return ;
+        }
     }
 
     /**
@@ -408,7 +412,12 @@ foreach ( $order['line_items'] as $i => $item ) {
 //				$tax_id = $product->tax_id;		// To Do: Match with WooCommerce & Tax Dictionary?
 //				$tax = $product->tax;
 			} else {
-				$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado el Producto con SKU <b>"'.$sku.'"</b>.' );
+				$this->run_status = false;
+
+				$this->logError( 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado el Producto (Variación) con SKU <b>"'.$sku.'"</b>.' );
+
+				// Rock n Roll is over! 
+				return ;
 			}
 		} else {
 			// Search Product
@@ -423,7 +432,12 @@ foreach ( $order['line_items'] as $i => $item ) {
 //				$tax_id = $product->tax_id;		// To Do: Match with WooCommerce & Tax Dictionary?
 //				$tax = $product->tax;
 			} else {
-				$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado el Producto con SKU <b>"'.$sku.'"</b>.' );
+				$this->run_status = false;
+
+				$this->logError( 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado el Producto con SKU <b>"'.$sku.'"</b>.' );
+
+				// Rock n Roll is over! 
+				return ;
 			}
 		}
 /*
@@ -438,18 +452,8 @@ foreach ( $order['line_items'] as $i => $item ) {
 		//
 		//
 */
-		// If no Product found...
-		if (!$product) {
-			// No database persistance, please!
-//			$product  = new \App\Product(['product_type' => 'simple', 'name' => $name, 'tax_id' => $tax_id]);
-//			$tax = $product->tax;
-			$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado el Producto con SKU <b>"'.$sku.'"</b>.' );
 
-			// To Do: abort Order download
-
-			continue ;
-		}
-
+		// Let's get (really) dirty, you naughty!
 		$cost_price = $product->cost_price;
 		$unit_price = $product->price;
 
@@ -458,12 +462,13 @@ foreach ( $order['line_items'] as $i => $item ) {
         $sales_equalization = $this->customer->sales_equalization;
 
         if ( $line_tax_id != $tax_id ) {
+			$this->run_status = false;
+
         	// Taxes mismatch
-			$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO hay correspondencia del Impuesto para el Producto con SKU <b>"'.$sku.'"</b>.' );
+			$this->logError( 'Pedido número <b>"'.$order["id"].'"</b>: NO hay correspondencia del Impuesto para el Producto con SKU <b>"'.$sku.'"</b>.' );
 
-			// To Do: abort Order download
-
-			continue ;
+			// Rock n Roll is over! 
+			return ;
         }
 
 
@@ -555,19 +560,27 @@ foreach ( $order['line_items'] as $i => $item ) {
         // Now, update Order Totals
         $this->order->makeTotals();
 
-//		abi_r($this->order->id.' Done!');
-
-		// Check total
-		abi_r('Real: '.$this->order->total_tax_excl.' - Calculado: '.$this->order->getTotalTaxExcl());
-		abi_r('Real: '.$this->order->total_tax_incl.' - Calculado: '.$this->order->getTotalTaxIncl());
-
-//		abi_r('>>>>>>>   '.$this->order->getLastLineSortOrder());
-
-		// NEXT: Issue payment
-
-		// NEXT: Stok movements
-
 }
+
+		// So far, so good! Bye, then!
+
+    }
+
+    public function setOrderDocumentCouponLines()
+    {
+        $order = $this->raw_data;
+
+        // Lines stuff :: Fee lines
+
+		if ( count($order['coupon_lines']) ) 
+		{
+				$this->run_status = false;
+
+				$this->logError( 'Order number <b>"'.$order["id"].'"</b>: cannot process Coupon Lines.' );
+
+				// Rock n Roll is over! 
+				return ;
+		}
 
     }
 
@@ -577,8 +590,15 @@ foreach ( $order['line_items'] as $i => $item ) {
 
         // Lines stuff :: Fee lines
 
-		$data = [
-		];
+		if ( count($order['fee_lines']) ) 
+		{
+				$this->run_status = false;
+
+				$this->logError( 'Order number <b>"'.$order["id"].'"</b>: cannot process Fee Lines.' );
+
+				// Rock n Roll is over! 
+				return ;
+		}
 
     }
 
@@ -700,15 +720,9 @@ foreach ( $order['shipping_lines'] as $item ) {
         // Now, update Order Totals
         $this->order->makeTotals();
 
-		// Check total
-		abi_r('Real: '.$this->order->total_tax_excl.' - Calculado: '.$this->order->getTotalTaxExcl());
-		abi_r('Real: '.$this->order->total_tax_incl.' - Calculado: '.$this->order->getTotalTaxIncl());
-
 }
 
-//		abi_r($this->log);
-
-//		die();
+		// So far, so good! Bye, then!
 
     }
 

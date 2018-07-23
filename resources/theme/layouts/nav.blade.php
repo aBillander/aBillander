@@ -65,7 +65,7 @@
                         </li>
                         <li class="divider"></li>
                          <li>
-                            <a href="{{ route('fsxconfigurations') }}">
+                            <a href="{{ route('fsxconfigurationkeys.index') }}">
                                  <i class="fa fa-foursquare btn-xs btn-danger"></i> 
                                  {{l('Enlace FactuSOL', 'layouts')}}
                             </a>

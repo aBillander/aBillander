@@ -16,7 +16,7 @@
 	    </div>
 	</div>
 
-	<div class="row">
+	<div class="row" style="display:none">
 	          <div class="form-group col-lg-5 col-md-5 col-sm-5 {{ $errors->has('address1') ? 'has-error' : '' }}">
 	            {{ l('Address (street, square, road...)', [],'addresses') }}
 	            {!! Form::text('address1', null, array('class' => 'form-control', 'id' => 'address1')) !!}
@@ -34,7 +34,7 @@
 	          </div>
 	</div>
 
-	<div class="row">
+	<div class="row" style="display:none">
 	          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('city') ? 'has-error' : '' }}">
 	            {{ l('City', [],'addresses') }}
 	            {!! Form::text('city', null, array('class' => 'form-control', 'id' => 'city')) !!}

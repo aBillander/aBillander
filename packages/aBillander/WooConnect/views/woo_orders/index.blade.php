@@ -8,7 +8,7 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-    <a class="btn btn-success" style="margin-right: 152px" href="{{ URL::route('wooconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}}"><i class="fa fa-cog"></i> {{l('Configuration', [], 'layouts')}}</a> 
+    <a class="btn btn-sm btn-success" style="margin-right: 152px" href="{{ URL::route('wooconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}}"><i class="fa fa-cog"></i> {{l('Configuration', [], 'layouts')}}</a> 
 
 {{--
     <div class="btn-group" style="margin-right: 152px">

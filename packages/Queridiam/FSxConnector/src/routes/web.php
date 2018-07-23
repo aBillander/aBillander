@@ -17,17 +17,26 @@ Route::group([
 //	Route::post('orders/{id}', ['as' => 'wostatus', 'uses' => 'WooOrdersController@update']);
 
 
-
+/*
 	Route::get('/', ['uses' => 'FSxOrdersController@index', 
 	                 'as'   => 'fsxorders.index'] );
 
-
-	Route::get('fsxconfigurations', ['uses' => 'FSxConfigurationsController@index', 
-	                 'as'   => 'fsxconfigurations'] );
-
-
 	Route::get('fsxorders', ['uses' => 'FSxOrdersController@index', 
 	                 'as'   => 'fsxorders.index'] );
+*/
+
+
+	Route::resource('fsxconfigurationkeys', 'FSxConfigurationKeysController');
+
+
+
+    Route::resource('fsxorders', 'FSxOrdersController');
+
+    Route::post('fsxorders/exportOrders' , array('uses' => 'FSxOrdersController@exportOrders', 
+                                                        'as'   => 'fsxorders.export.orders' ));
+    Route::get('fsxorders/{id}/export' , array('uses' => 'FSxOrdersController@export', 
+                                                        'as'   => 'fsxorders.export' ));
+
 
 
 	Route::get('fsxlog', ['uses' => 'FsxLoggersController@index', 

@@ -337,10 +337,11 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 /* ********************************************************************************************* */   
 
 
-	public function importOrders( Request $request )
+	
+	public function importOrderList( $list )
 	{
         // ProductionSheetsController
-        if ( count($request->input('worders', [])) == 0 ) 
+        if ( count( $list ) == 0 ) 
             return redirect()->route('worders.index')
                 ->with('warning', l('No se ha seleccionado ningún Pedido, y no se ha realizado ninguna acción.'));
 
@@ -352,7 +353,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
         $logger->start();
 
         // Do the Mambo!
-        foreach ( $request->input('worders', []) as $oID ) 
+        foreach ( $list as $oID ) 
         {
         	$logger->log("INFO", 'Se descargará el Pedido: <span class="log-showoff-format">{oid}</span> .', ['oid' => $oID]);
 
@@ -363,47 +364,21 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 
         return redirect('activityloggers/'.$logger->id)
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $logger->id], 'layouts'));
+	}
 
-/* 
-        // Mambo!
-		$importer = \aBillander\WooConnect\WooOrderImporter::makeOrder( $id );
+	public function importOrders( Request $request )
+	{
 
-		if ( $importer->tell_run_status() )
-			
-			return redirect()->route('worders.show', $id)
-				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
-		else
-			
-			return redirect()->route('worders.show', $id)
-				->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . $importer->error);
-*/
+        return $this->importOrderList( $request->input('worders', []) );
 	} 
 
 
 	public function import($id)
 	{
-
-        return redirect()->route('worders.index')
-				->with('error', l('Por favor, marque el pedido y clique sobre "Importar", en la caja "Importar pedidos".'));
-
-		// return "Order: $id";
-
-        // Prepare Logger
-        // $logger = \App\ActivityLogger::setup( 
-        //    'Import WooCommerce Orders :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s'), \aBillander\WooConnect\WooOrderImporter::loggerSignature() );
-
-        // Mambo!
-		$importer = \aBillander\WooConnect\WooOrderImporter::processOrder( $id );
-
-		if ( $importer->tell_run_status() )
-			
-			return redirect()->route('worders.show', $id)
-				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
-		else
-			
-			return redirect()->route('worders.show', $id)
-				->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . $importer->error);
+		
+        return $this->importOrderList( [$id] );
 	}
+
 
 	public function fetch($id)
 	{

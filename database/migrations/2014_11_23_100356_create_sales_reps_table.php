@@ -13,15 +13,25 @@ class CreateSalesRepsTable extends Migration {
 	 */
 	public function up()
 	{
+		Schema::dropIfExists('sales_reps');
+		
 		// Maybe Sales Agent
 		Schema::create('sales_reps', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->string('alias', 32)->nullable(false);
 			$table->string('identification', 64)->nullable();					// VAT ID or the like (only companies & pro's?). Número del Documento Nacional de Identidad o Código de Identificación Fiscal. Al introducir el DNI, y darle al enter, nos calculará automáticamente la letra para el NIF, podemos aceptar o no el cambio del mismo.
-		/* */
+
+			$table->string('firstname', 32)->nullable();			// Contact information
+			$table->string('lastname', 32)->nullable();
+			$table->string('email', 128)->nullable();
+
+			$table->string('phone', 32)->nullable();
+			$table->string('phone_mobile', 32)->nullable();
+			$table->string('fax', 32)->nullable();
+
 			$table->text('notes')->nullable();
-		/* */
+
 			$table->decimal('commission_percent', 8, 3)->default(0.0);			// Sales Representative commission amount
 			$table->decimal('max_discount_allowed', 20, 6)->default(0.0);		// Sales Representative max discount allowed
 
@@ -45,7 +55,7 @@ class CreateSalesRepsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('sales_reps');
+		Schema::dropIfExists('sales_reps');
 	}
 
 }

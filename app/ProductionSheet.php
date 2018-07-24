@@ -46,7 +46,7 @@ class ProductionSheet extends Model
     
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerOrder')->orderBy('date_created', 'desc');
+        return $this->hasMany('App\CustomerOrder')->orderBy('created_at', 'desc');
     }
     
     public function nbr_customerorders()
@@ -72,9 +72,32 @@ class ProductionSheet extends Model
 
     public function customerorderlinesGrouped()
     {
-        $mystuff = $this->customerorderlines;
+        $mystuff = collect([]);
+        $lines = $this->customerorderlines;     // ()->whereHas('product');
 
-        $num = $mystuff->groupBy('product_id')->reduce(function ($result, $group) {
+// abi_r($lines, true);
+
+        foreach($lines as $line)
+        {
+            if ( $line->product )
+                if ( ($line->product->procurement_type == 'manufacture') ||
+                 ($line->product->procurement_type == 'assembly') ) {
+
+                    $mystuff->push($line);
+                }
+
+        }
+
+// abi_r($mystuff, true);
+
+        $num = $mystuff
+//                    ->where('procurement_type', 'manufacture')
+//                    ->where('procurement_type', 'assembly')
+//                    ->filter(function($line) {
+//                        return ($line->product->procurement_type == 'manufacture') ||
+//                               ($line->product->procurement_type == 'assembly');
+//                    })
+                    ->groupBy('product_id')->reduce(function ($result, $group) {
                       return $result->put($group->first()->product_id, [
                         'product_id' => $group->first()->product_id,
                         'reference' => $group->first()->reference,

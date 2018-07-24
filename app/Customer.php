@@ -68,7 +68,7 @@ class Customer extends Model {
     
     public function getNameAttribute() 
     {
-        return $this->firstname . ' ' . $this->lastname;
+        return $this->address->firstname . ' ' . $this->address->lastname;
     }
 
     public function currentpricelist()

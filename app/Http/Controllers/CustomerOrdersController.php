@@ -38,8 +38,12 @@ class CustomerOrdersController extends Controller
                             ->with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
-                            ->orderBy('id', 'desc')->get();
+                            ->orderBy('id', 'desc');        // ->get();
 
+        $customer_orders = $customer_orders->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        $customer_orders->setPath('customerorders');
+        
         return view('customer_orders.index', compact('customer_orders'));
     }
 

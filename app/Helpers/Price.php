@@ -132,7 +132,7 @@ class Price {
     {
         if ( $percent === null ) $percent = 0.0;
 
-        $this->price_is_tax_inc = 0;
+        // $this->price_is_tax_inc = 0;
 
         $this->applyTaxPercent($percent);
     }

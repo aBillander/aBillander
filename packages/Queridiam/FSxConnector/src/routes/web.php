@@ -30,6 +30,17 @@ Route::group([
 
 
 
+	Route::get( 'fsxconfiguration', 'FSxConfigurationKeysController@configurationsEdit')
+			->name('fsx.configuration');
+	Route::post('fsxconfiguration', 'FSxConfigurationKeysController@configurationsUpdate')
+			->name('fsx.configuration.update');
+
+	Route::get( 'fsxconfiguration/paymentmethods', 'FSxConfigurationKeysController@configurationPaymentMethodsEdit')
+			->name('fsx.configuration.paymentmethods');
+	Route::post('fsxconfiguration/paymentmethods', 'FSxConfigurationKeysController@configurationPaymentMethodsUpdate')
+			->name('fsx.configuration.paymentmethods.update');
+
+
     Route::resource('fsxorders', 'FSxOrdersController');
 
     Route::post('fsxorders/exportOrders' , array('uses' => 'FSxOrdersController@exportOrders', 

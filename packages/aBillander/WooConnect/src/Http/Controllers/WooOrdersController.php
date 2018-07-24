@@ -143,10 +143,12 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 			// Rock 'n Roll!
 			$needle = $abi_orders->get( $order["id"] );
 			if ($needle) {
+				$order["abi_order_id"] = $needle->id;
 				$order["imported_at"] = $needle->created_at->toDateString();
-				$order["production_at"] = $needle->productionsheet->due_date;
-				$order["production_sheet_id"] = $needle->productionsheet->id;
+				$order["production_at"] = ''; // $needle->productionsheet->due_date;
+				$order["production_sheet_id"] = ''; // $needle->productionsheet->id;
 			} else {
+				$order["abi_order_id"] = '';
 				$order["imported_at"] = '';
 				$order["production_at"] = '';
 				$order["production_sheet_id"] = '';
@@ -266,10 +268,12 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		$order['shipping']['shipping_method'] = '('.$order['shipping_lines'][0]['method_id'].') '.$order['shipping_lines'][0]['method_title'];
 		$shipping_method = \App\ShippingMethod::with('carrier')->find( WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ) );
 
+		// $order['shipping']['shipping_method'] = '';
+		$order['shipping']['carrier'] = '';
+
 		if ( $shipping_method ) {
 			$order['shipping']['shipping_method'] = $shipping_method->name;
 			
-			$order['shipping']['carrier'] = '';
 			if ($shipping_method->carrier) {
 				$order['shipping']['carrier'] = $shipping_method->carrier->name;
 			}

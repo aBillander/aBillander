@@ -116,8 +116,12 @@
                 <a class="btn btn-sm btn-info" href="{{ URL::route('worders.fetch', [$order["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}"><i class="fa fa-superpowers"></i></a>
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to('wooc/worders/' . $order["id"]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
-
+      
+      @if ( $order["imported_at"] )
+                <a class="btn btn-sm btn-lightblue" href="{{ URL::route('customerorders.edit', [$order["abi_order_id"]] ) }}" title="aBillander :: {{l('Show', [], 'layouts')}}"><i class="fa fa-file-text-o"></i></a>
+      @else
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('worders.import', [$order["id"]] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
+      @endif
 
                 <!-- a class="btn btn-sm btn-info" href="{{ URL::route('worders.invoice', [$order["id"]] ) }}" title="{{l('Invoice', [], 'layouts')}}"><i class="fa fa-file-text"></i></a -->
 
@@ -164,7 +168,7 @@
 
 
 
-
+{{--
     <div class="col-md-4 xcol-md-offset-3" style="display:none">
         <div class="panel panel-info">
             <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to Production Sheet') }}</h3></div>
@@ -181,7 +185,7 @@
     {!! Form::text('before', null, array('class' => 'form-control')) !!}
 </div -->
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
-    {!! Form::label('production_sheet_id', l('Production Sheet')) !!} {{-- \Carbon\Carbon::now() --}}
+    {!! Form::label('production_sheet_id', l('Production Sheet')) !!} { {-- \Carbon\Carbon::now() --} }
     {!! Form::select('production_sheet_id', $availableProductionSheetList, null, array('class' => 'form-control', 'id' => 'production_sheet_id')) !!}
 </div>
 
@@ -246,7 +250,7 @@
             </div>
         </div>
     </div>
-
+--}}
 </div>
 </div>
 

@@ -11,7 +11,7 @@
       <th class="text-left">{{l('Reference')}}</th>
       <th>{{l('Customer')}}</th>
       <th>{{l('Order Date')}}</th>
-      <th>{{l('Total')}} ({{ \aBillander\WooConnect\WooConnector::getWooSetting( 'woocommerce_currency' ) }})</th>
+      <th>{{l('Total')}}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
       <th class="text-right"> </th>
     </tr>
@@ -29,8 +29,8 @@
                     </button>
                  </a>
       </td>
-      <td>{{ abi_date_form_full($order->date_created) }}</td>
-      <td>{{ $order->total }}</td>
+      <td>{{ abi_date_form_full($order->created_at) }}</td>
+      <td>{{ $order->total_tax_incl }}</td>
             <td class="text-center">
                 @if ($order->customer_note)
                  <a href="javascript:void(0);">

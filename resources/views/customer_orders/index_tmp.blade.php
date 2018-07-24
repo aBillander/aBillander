@@ -38,7 +38,7 @@
             <th> </th>
         </tr>
     </thead>
-    <tbody id="order_lines">
+    <tbody>
         @foreach ($customer_orders as $order)
         <tr>
             @if ( $order->imported_at )
@@ -55,10 +55,9 @@
             <td>{{ abi_date_short($order->document_date) }}</td>
             <!-- td>{{ abi_date_short($order->delivery_date) }}</td -->
 
-              <td>
+              <td>{{ abi_date_form_short($order->production_at) }}
               
         @if ($order->production_sheet_id)
-                        {{ abi_date_form_short($order->productionsheet->due_date) }} 
                         <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $order->production_sheet_id) }}" title="{{l('Go to Production Sheet')}}"><i class="fa fa-external-link"></i></a>
         @endif
               </td>
@@ -106,18 +105,38 @@
 <div class="row" style="padding: 0 20px">
 
     <div class="col-md-2 xcol-md-offset-3">
+        <div class="panel panel-info">
+            <div class="panel-heading" style="color: #ffffff; background-color: #772953; border-color: #772953;">
+                <h3 class="panel-title">{{ l('Import Orders') }}</h3>
+            </div>
+            <div class="panel-body">
+
+<div class="row">
+    <div class="form-group col-lg-6 col-md-6 col-sm-6" style="padding-top: 22px">
+
+
+                <a class="btn btn-grey" href="javascript:void(0);" title="{{l('Import', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-import').attr('action', '{{ route( 'worders.import.orders' )}}');$('#form-import').submit();return false;"><i class="fa fa-download"></i> {{l('Import', 'layouts')}}</a>
+
+                <!-- https://stackoverflow.com/questions/6799533/how-to-submit-a-form-with-javascript-by-clicking-a-link -->
+
+    </div>
+</div>
+
+
+            </div>
+        </div>
     </div>
 
 
 
 
 
-    <div class="col-md-4 xcol-md-offset-3" xstyle="display:none">
+    <div class="col-md-4 xcol-md-offset-3" style="display:none">
         <div class="panel panel-info">
             <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to Production Sheet') }}</h3></div>
             <div class="panel-body">
 
-@if ( count( $availableProductionSheetList ) )
+@if ( count( $availableProductionSheetList ) || 1 )
 <div class="row">
 <!-- div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('after', l('Date from')) !!}
@@ -151,14 +170,14 @@
         </div>
     </div>
 
-    <div class="col-md-6 xcol-md-offset-1" xstyle="display:none">
+    <div class="col-md-6 xcol-md-offset-1" style="display:none">
         <div class="panel panel-info">
             <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to NEW Production Sheet') }}</h3></div>
             <div class="panel-body">
 
 <div class="row">
 
-         <div class="col-lg-3 col-md-3 col-sm-3 {{ $errors->has('due_date') ? 'has-error' : '' }}">
+         <div class="col-lg-3 col-md-3 col-sm-3{{ $errors->has('due_date') ? 'has-error' : '' }}">
             <div class="form-group">
                {{ l('Date') }}
                {!! Form::text('due_date', null, array('class' => 'form-control', 'id' => 'due_date', 'autocomplete' => 'off')) !!}

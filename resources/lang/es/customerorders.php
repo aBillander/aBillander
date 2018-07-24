@@ -16,8 +16,20 @@ return [
 	'Product Reference' => 'Referencia',
 	'Product Name' => 'Nombre del Producto',
 	'Quantity' => 'Cantidad',
+	'Production Date'     => 'Fecha Producción',
+	'Customer Notes'     => 'Notas Cliente',
 
+	'Go to Production Sheet'     => 'Ir a la Hoja de Producción',
 	'Copy Order' => 'Copiar Pedido',
+
+	
+	'Add Orders to Production Sheet'     => 'Añadir pedidos a Hoja de Producción',
+	'Add'     => 'Añadir',
+	'Add Orders to NEW Production Sheet'     => 'Añadir pedidos a NUEVA Hoja de Producción',
+	'Date'     => 'Fecha',
+	'Name'     => 'Nombre',
+	'Production Sheet'     => 'Hoja de Producción',
+	'No active Production Sheet found.'     => 'No se han encontrado Hojas de Producción activas.',
 
 
 	/*
@@ -32,6 +44,7 @@ return [
 	'Customer Orders' => 'Pedidos de Clientes',
 	'Order #'     => 'Número',
 	'Date'     => 'Fecha',
+	'Created via'     => 'Creado por',
 
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Prox. Vencimiento',
@@ -44,7 +57,6 @@ return [
 	'Pending: Print and Send'     => 'Pendiente: Imprimir y Enviar',
 	'Pr'     => 'Im',
 	'Paid'     => 'Pagado',
-	''     => '',
 	''     => '',
 	''     => '',
 	''     => '',

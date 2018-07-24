@@ -99,12 +99,14 @@ class CustomerOrder extends Model
         {
             $corder->secure_key = md5(uniqid(rand(), true));
             
-            $corder->carrier_id = $corder->shippingmethod->carrier_id;
+            if ( $corder->shippingmethod )
+                $corder->carrier_id = $corder->shippingmethod->carrier_id;
         });
 
         static::saving(function($corder)
         {
-            $corder->carrier_id = $corder->shippingmethod->carrier_id;
+            if ( $corder->shippingmethod )
+                $corder->carrier_id = $corder->shippingmethod->carrier_id;
         });
 
         // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
@@ -156,23 +158,23 @@ class CustomerOrder extends Model
     
     public function customerCard()
     {
-        $customer = unserialize( $this->customer );
+        $address = $this->customer->address;
 
-        $card = $customer["first_name"].' '.$customer["last_name"] .'<br />'.
-                $customer["address_1"] .'<br />'.
-                $customer["city"].' - '.($customer["state_name"] ?? '').' <a href="#" class="btn btn-grey btn-xs disabled">'. $customer["phone"] .'</a>';
+        $card = $customer->name .'<br />'.
+                $address->address_1 .'<br />'.
+                $address->city . ' - ' . $address->state->name.' <a href="javascript:void(0)" class="btn btn-grey btn-xs disabled">'. $$address->phone .'</a>';
 
         return $card;
     }
     
     public function customerCardFull()
     {
-        $customer = unserialize( $this->customer );
+        $address = $this->customer->address;
 
-        $card = ($customer["company"] ? $customer["company"] .'<br />' : '').
-                ($customer["first_name"] ? $customer["first_name"].' '.$customer["last_name"] .'<br />' : '').
-                $customer["address_1"] . ($customer["address_2"] ? ' - ' : '') . $customer["address_2"] .'<br />'.
-                $customer["city"].' - '.($customer["state_name"] ?? '').' <a href="#" class="btn btn-grey btn-xs disabled">'. $customer["phone"] .'</a>';
+        $card = ($address->name_fiscal ? $address->name_fiscal .'<br />' : '').
+                ($address->firstname  ? $address->firstname . ' '.$address->lastname .'<br />' : '').
+                $address->address1 . ($address->address2 ? ' - ' : '') . $address->address2 .'<br />'.
+                $address->city . ' - ' . $address->state->name.' <a href="javascript:void(0)" class="btn btn-grey btn-xs disabled">'. $address->phone .'</a>';
 
         return $card;
     }
@@ -188,12 +190,12 @@ class CustomerOrder extends Model
     
     public function customerInfo()
     {
-        $customer = unserialize( $this->customer );
+        $customer = $this->customer;
 
-        $name = (( $customer["first_name"] || $customer["last_name"] ) ? $customer["first_name"].' '.$customer["last_name"]  : '');
+        $name = $customer->name;
 
         if ( !$name ) 
-            $name = ($customer["company"] ? $customer["company"] : '');
+            $name = $customer->name_fiscal ? $customer->name_fiscal : '';
 
         return $name;
     }
@@ -253,6 +255,8 @@ class CustomerOrder extends Model
     {
         if ( ($document_discount_percent !== null) && ($document_discount_percent >= 0.0) )
             $this->document_discount_percent = $document_discount_percent;
+
+        $this->load('customerorderlines');
 
         $lines = $this->customerorderlines;
         

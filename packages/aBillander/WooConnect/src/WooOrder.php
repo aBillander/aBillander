@@ -342,6 +342,11 @@ class WooOrder // extends Model
     {
         if (!$method) return null;
 
+        // Mmmm!
+        $tokens = explode(':', $method);
+        $method = $tokens[0];
+
+
         // Dictionary
         if ( !isset(self::$smethods) )
             self::$smethods = json_decode(\App\Configuration::get('WOOC_SHIPPING_METHODS_DICTIONARY_CACHE'), true);

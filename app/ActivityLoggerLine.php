@@ -176,10 +176,5 @@ class ActivityLoggerLine extends Model
     {
         return $this->belongsTo('App\ActivityLogger');
     }
-
-    public function loggable()
-    {
-        return $this->morphTo();
-    }
 }
 

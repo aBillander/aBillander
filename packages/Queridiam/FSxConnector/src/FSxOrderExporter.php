@@ -1,9 +1,6 @@
 <?php 
 
-namespace aBillander\WooConnect;
-
-use WooCommerce;
-use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
+namespace Queridiam\FSxConnector;
 
 use App\Customer as Customer;
 use App\Address as Address;
@@ -14,11 +11,13 @@ use App\Product;
 use App\Combination;
 use App\Tax;
 
-use \aBillander\WooConnect\WooOrder;
-
 // use \aBillander\WooConnect\WooOrder;
 
-class WooOrderImporter {
+use App\Traits\LoggableTrait;
+
+class FSxOrderExporter {
+
+    use LoggableTrait;
 
 	protected $wc_order;
 	protected $run_status = true;		// So far, so good. Can continue export
@@ -55,11 +54,11 @@ class WooOrderImporter {
 //        $this->logger = \App\ActivityLogger::setup( 
 //            'Import WooCommerce Orders', self::loggerSignature() );			//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
-        $this->logger = self::loggerSetup();
+        $this->logger = self::loggerSetup( 'Descargar Pedidos y Clientes a FactuSOL' );
 
 
         // Get order data (if order exists!)
-        if ( intval($order_id) ) {
+        if ( intval($order_id) && 0 ) {
             // set the product
             // $this->fill_in_data( intval($order_id) );
 
@@ -77,28 +76,6 @@ class WooOrderImporter {
         }
     }
 
-
-    public static function loggerName() 
-    {
-    	return 'Import WooCommerce Orders';
-    }
-
-    public static function loggerSignature() 
-    {
-    	return __CLASS__;
-    }
-
-    public static function loggerSetup() 
-    {
-    	return \App\ActivityLogger::setup( 
-            self::loggerName(), 							//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
-            self::loggerSignature() );
-    }
-
-    public static function logger() 
-    {
-    	return self::loggerSetup();
-    }
     
     /**
      *   Data retriever & Transformer
@@ -167,16 +144,9 @@ class WooOrderImporter {
         	return $importer;
         }
 
-
-		// Good boy:
-		$importer->order->confirm();
-
-		// $importer->order->makeTotals();
-
-
 		// Check totals
-		$diffTaxExc = ($importer->raw_data['total'] - $importer->raw_data['total_tax']) - $importer->order->total_tax_excl;
-		$diffTaxInc =  $importer->raw_data['total']                                     - $importer->order->total_tax_incl;
+		$diffTaxExc = ($this->raw_data['total'] - $this->raw_data['total_tax']) - $this->order->total_tax_excl;
+		$diffTaxInc =  $this->raw_data['total']                                 - $this->order->total_tax_incl;
 
 		if ( $diffTaxExc != 0 )
 			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> Total Tax Excluded difference: {diffTaxExc}.'), ['oid' => $order_id, 'diffTaxExc' => $diffTaxExc]);
@@ -184,6 +154,8 @@ class WooOrderImporter {
 		if ( $diffTaxInc != 0 )
 			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> Total Tax Included difference: {diffTaxInc}.'), ['oid' => $order_id, 'diffTaxInc' => $diffTaxInc]);
 
+		// Good boy:
+		$importer->order->confirm();
 
         return $importer;
     }
@@ -1023,41 +995,6 @@ foreach ( $order['shipping_lines'] as $item ) {
     public function tell_run_status() {
       return $this->run_status;
     }
-    
-    protected function logMessage($level = '', $message = '', $context = [])
-    {
-        $this->logger->log($level, $message, $context);
 
-        if ( $level == 'ERROR' ) $this->log_has_errors = true;
-    }
-    
-    protected function logInfo($message = '', $context = [])
-    {
-        $this->logMessage('INFO', $message, $context);
-    }
-    
-    protected function logWarning($message = '', $context = [])
-    {
-        $this->logMessage('WARNING', $message, $context);
-    }
-    
-    protected function logError($message = '', $context = [])
-    {
-        $this->logMessage('ERROR', $message, $context);
-    }
-    
-    protected function logTimer($message = '', $context = [])
-    {
-        $this->logMessage('TIMER', $message, $context);
-    }
-    
-    public function logHasErrors()
-    {
-        return $this->log_has_errors; 
-    }
-    
-    public function logView()
-    {
-        return $this->log; 
-    }
+
 }

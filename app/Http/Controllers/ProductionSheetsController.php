@@ -134,9 +134,9 @@ class ProductionSheetsController extends Controller
         $sheet = $this->productionSheet->findOrFail($id);
 
         // Delete Production Orders from Web
-        $porders = $sheet->productionorders()->isFromWeb()->get();
+        $porders = $sheet->productionorders()->get();
         foreach ($porders as $order) {
-            $order->delete();
+            $order->deleteWithLines();
         }
 
         $errors = [];
@@ -145,7 +145,7 @@ class ProductionSheetsController extends Controller
         foreach ($sheet->customerorderlinesGrouped() as $pid => $line) {
             // Create Production Order
             $order = \App\ProductionOrder::createWithLines([
-                'created_via' => 'webshop',
+                'created_via' => 'manufacturing',
 //                'status' => 'released',
                 'product_id' => $pid,
 //                'product_reference' => $line['reference'],
@@ -175,16 +175,20 @@ class ProductionSheetsController extends Controller
 
     public function addOrders(Request $request, $id)
     {
-        if ( count($request->input('worders', [])) == 0 ) 
-            return redirect()->route('worders.index')
+        if ( count($request->input('corders', [])) == 0 ) 
+            return redirect()->route('customerorders.index')
                 ->with('warning', l('No se ha seleccionado ningún Pedido, y no se ha realizado ninguna acción.'));
 
 //        if ( intval($id) <= 0 ) $id = $request->input('production_sheet_id', 0);
 
+        $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
+
+        $this->validate($request, ProductionSheet::$rules);
+
         // Need to create Production Sheet?
         if ( $request->input('production_sheet_mode', '') == 'new' ) {
 
-            $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
+            // $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
 
             $sheet = $this->productionSheet->create($request->all() + ['is_dirty' => 0]);
         } else {
@@ -197,80 +201,23 @@ class ProductionSheetsController extends Controller
                 $sheet = $this->productionSheet->findOrFail($id);
         }
 
+        if ( !$sheet ) 
+            return redirect()->route('customerorders.index')
+                ->with('error', l('No se ha seleccionado una Hoja de Producción válida, y no se ha realizado ninguna acción.'));
 
-        $errors = [];
 
         // Do the Mambo!
-        foreach ( $request->input('worders', []) as $oID ) {
+        foreach ( $request->input('corders', []) as $oID ) {
+
             // Retrieve order
-            $params = [
-//                'dp'   => $wc_currency->decimalPlaces,
-            ];
+            $order = \App\CustomerOrder::findOrFail( $oID );
 
-            $order = WooCommerce::get('orders/'.$oID, $params);
+            $order->update(['production_sheet_id' => $sheet->id]);
 
-            $state = \App\State::findByIsoCode( (strpos($order['shipping']['state'], '-') ? '' : $order['shipping']['country'].'-').$order['shipping']['state'] );
-            $state_name = $state ? $state->name : $order['shipping']['state'];
-
-            $abi_order = \App\CustomerOrder::create([
-                'created_via' => 'webshop',
-                'reference' => $order['id'], 
-                'date_created' => \Carbon\Carbon::parse($order['date_created']), 
-                'date_paid' => \Carbon\Carbon::parse($order['date_paid']), 
-                'total' => $order['total'], 
-                'customer' => serialize( $order["shipping"] + ["phone" => $order["billing"]["phone"], 'state_name' => $state_name]), 
-                'customer_note' => $order['customer_note'], 
-//                'production_at' => , 
-                'production_sheet_id' => $sheet->id
-            ]);
-
-//            $abi_order->save();
-
-            foreach ( $order['line_items'] as $item ) {
-
-                $abi_product = \App\Product::where('reference', $item['sku'])->first();
-
-                if ( !$abi_product ) {
-                    // Create
-                    $abi_product = \App\Product::create([
-                        'product_type' => 'simple',
-                        'procurement_type' => 'manufacture', 
-                        'name' => $item['name'],
-                        'reference' => $item['sku'],
-                        'quantity_decimal_places' => \App\Configuration::get('DEF_QUANTITY_DECIMALS'),
-                        'manufacturing_batch_size' => 1,
-                        'measure_unit_id' => \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
-
-                    ]);
-
-                    $errors[] = '<li>['.$item['sku'].'] '.$item['name'].'</li>';
-                }
-
-                $abi_order_line = \App\CustomerOrderLine::create([
-                    'product_id' => $abi_product->id, 
-                    'woo_product_id' => $item['product_id'],
-                    'woo_variation_id' => $item['variation_id'],
-                    'reference' => $item['sku'],
-                    'name' => $item['name'], 
-                    'quantity' => $item['quantity'], 
-//                    'customer_order_id' => $abi_order->id,
-                ]);
-
-                $abi_order->customerorderlines()->save($abi_order_line);
-
-            }
         }
 
-        $extra='';
-        $msg='success';
-
-        if (count($errors)) {
-            $extra='Se han creado los siguientes Productos, porque no se han encontrado:' . '<ul>' . implode('', $errors) . '</ul>';
-            $msg='warning';
-        }
-
-        return redirect()->route('worders.index')
-                ->with($msg, l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts').$extra);
+        return redirect()->route('customerorders.index')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts'));
     }
 
 

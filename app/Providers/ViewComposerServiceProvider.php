@@ -290,7 +290,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 
 
 		// Available Production Sheets
-		view()->composer(array('woo_connect::woo_orders.index',  'production_sheets._modal_customer_order_move'), function($view) {
+		view()->composer(array('customer_orders.index',  'production_sheets._modal_customer_order_move'), function($view) {
 		    
 		    $availableProductionSheets = \App\ProductionSheet::isOpen()->orderBy('due_date', 'asc')->pluck('due_date', 'id')->toArray();
 

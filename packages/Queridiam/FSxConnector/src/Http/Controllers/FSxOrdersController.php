@@ -49,18 +49,33 @@ class FSxOrdersController extends Controller
 
 
         // Prepare Logger
-        $logger = \aBillander\WooConnect\WooOrderImporter::logger();
+        $logger = \Queridiam\FSxConnector\FSxOrderExporter::logger();
 
         $logger->empty();
         $logger->start();
+
+
+        // Initialize counters
+        $i_ok=$i_nok=0;
+        $i_all=$i_ok+$i_nok;
 
         // Do the Mambo!
         foreach ( $list as $oID ) 
         {
         	$logger->log("INFO", 'Se descargará el Pedido: <span class="log-showoff-format">{oid}</span> .', ['oid' => $oID]);
 
-        	$exporter = \aBillander\WooConnect\WooOrderImporter::processOrder( $oID );
+        	$exporter = \Queridiam\FSxConnector\FSxOrderExporter::processOrder( $oID );
+
+            if ( $exporter->tell_run_status() ) {
+                $i_ok++;
+            } else {
+                $i_nok++;
+            }
         }
+
+        $i_all=$i_ok+$i_nok;
+
+        $logger->logInfo('Resumen de Pedidos:<br /><b>'.$i_all.'</b> Pedidos procesados.<br /> - <b>'.$i_ok.'</b> descargados.<br /> - <b>'.$i_nok.'</b> NO descargados.');
 
         $logger->stop();
 
@@ -77,7 +92,7 @@ class FSxOrdersController extends Controller
 
 	public function export($id)
 	{
-		return $id;
+		// return $id;
 		
         return $this->exportOrderList( [$id] );
 	}

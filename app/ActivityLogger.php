@@ -35,7 +35,7 @@ class ActivityLogger extends Model
 
         // return $value; // ->created_at; // ->toDateString();
 
-        if ( $value ) return $value->created_at->toDateString();
+        if ( $value ) return $value->created_at;    //->toDateString();
         return null;
     }
 
@@ -173,6 +173,27 @@ class ActivityLogger extends Model
         $record = ActivityLoggerLine::addLog($level, $message, $context);
 
         $this->activityloggerlines()->save($record);
+    }
+    
+    // Some ALIAS functions:
+    public function logInfo($message = '', $context = [])
+    {
+        $this->log('INFO', $message, $context);
+    }
+    
+    public function logWarning($message = '', $context = [])
+    {
+        $this->log('WARNING', $message, $context);
+    }
+    
+    public function logError($message = '', $context = [])
+    {
+        $this->log('ERROR', $message, $context);
+    }
+    
+    public function logTimer($message = '', $context = [])
+    {
+        $this->log('TIMER', $message, $context);
     }
 
 

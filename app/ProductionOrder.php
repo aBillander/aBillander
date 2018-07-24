@@ -37,7 +37,7 @@ class ProductionOrder extends Model
         $bomitem = $product->bomitem();
         $bom     = $product->bom();
 
-        if (!$bom) return NULL;
+        // if (!$bom) return NULL;
 
         // Adjust Manufacturing batch size
         $nbt = ceil($data['planned_quantity'] / $product->manufacturing_batch_size);

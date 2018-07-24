@@ -6,78 +6,93 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| FSx-Connector FSxLogger Language Lines :: Español
+	| FSx-Connector Settings Language Lines :: show
 	|--------------------------------------------------------------------------
+	|
+	| .
 	|
 	*/
 
-	'aBillander LOG' => 'aBillander LOG',
+	'General'     => 'General',
+	'Taxes'     => 'Impuestos',
+	'Payment Methods'     => 'Formas de Pago',
+	'Shipping Methods'     => 'Métodos de Envío',
+	'FactuSOLWeb'     => 'FactuSOLWeb',
+	'All Keys'     => 'Todas las Claves',
 
-	'Date/Time' => 'Fecha/Hora',
-	'Type' => 'Tipo',
-	'Message' => 'Mensaje',
-	'' => '',
-	'WARNING(S)' => 'AVISO(S)',
-	'ERROR(S)' => 'ERROR(ES)',
-	'Empty LOG' => 'Vaciar el LOG',
-	'' => '',
-
+	'WooConnect Settings'     => 'WooConnect Configuración',
+	'WooCommerce link Settings'     => 'Configuración del enlace con WooCommerce',
 
 	/*
 	|--------------------------------------------------------------------------
-	| FSx-Connector FSxLogger Language Lines :: ERRORES
+	| FSx-Connector Settings Language Lines :: help
 	|--------------------------------------------------------------------------
+	|
+	| .
 	|
 	*/
 
-	'LOG_INFO_1000' => 'LOG iniciado',
-	'LOG_INFO_1010' => 'LOG reiniciado',
-	'LOG_INFO_1020' => 'LOG terminado',
+	'WOOC_DECIMAL_PLACES.name'     => 'Número de decimales',
+	'WOOC_DECIMAL_PLACES.help'     => 'Número de posiciones decimales con que trabaja WooCommerce,',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
+	'WOOC_DEF_CURRENCY.name'     => 'Divisa',
+	'WOOC_DEF_CURRENCY.help'     => 'Moneda de FactuSOL.',
+	'WOOC_DEF_CUSTOMER_GROUP.name'     => 'Grupo de Clientes',
+	'WOOC_DEF_CUSTOMER_GROUP.help'     => 'Los Clientes que se importan desde WooCommerce serán asignados a este Grupo.',		// Imported Customers will be asigned to this Group
+	'WOOC_DEF_CUSTOMER_PRICE_LIST.name'     => 'Tarifa',
+	'WOOC_DEF_CUSTOMER_PRICE_LIST.help'     => 'Los Clientes que se importan desde WooCommerce se les asignará esta Tarifa.',	// Imported Customers will be asigned this Price List
 
-	'LOG_INFO_6000' => '<b>Secciónes</b>: NO se cargan.',
-	'LOG_INFO_6005' => 'Sección [%s] %s se ha cargado a la Tienda.',
-	'LOG_AVISO_6010' => 'Sección [%s] %s ya existe en la Tienda. No se ha cargado.',
-	'LOG_AVISO_6210' => 'Se ha borrado una entrada del Diccionario (Sección).',
-	'LOG_ERROR_6215' => 'No se encuentra la Categoría %s correspondiente a la Sección [%s] %s.',
-	'LOG_ERROR_6220' => 'No se encuentra la Sección %s correspondiente a la Categoría [%s] %s.',
-	'LOG_ERROR_6225' => 'No se encuentra la Categoría %s. No se encuentra la Sección %s.',
+	'WOOC_DEF_LANGUAGE.name'     => 'Idioma',
+	'WOOC_DEF_LANGUAGE.help'     => 'Idioma de FactuSOL.',
+	'WOOC_DEF_ORDERS_SEQUENCE.name'     => 'Serie para Pedidos',
+	'WOOC_DEF_ORDERS_SEQUENCE.help'     => 'Los Pedidos que se importan desde WooCommerce serán asignados a esta Serie.',		// Sequence for Customer Orders imported from WooCommerce
+	'WOOC_DEF_SHIPPING_TAX.name'     => 'Impuesto para los Gastos de Envío',
+	'WOOC_DEF_SHIPPING_TAX.help'     => 'Impuesto para los Gastos de Envío en FactuSOL.',
 
-	'LOG_INFO_6100' => '<b>Familias</b>: NO se cargan.',
-	'LOG_INFO_6101' => '<b>Familias</b>: Se cargan en la raíz del Catálogo.',
-	'LOG_INFO_6105' => 'Familia [%s] %s se ha cargado a la Tienda.',
-	'LOG_AVISO_6110' => 'Familia [%s] %s ya existe en la Tienda. No se ha cargado.',
-	'LOG_AVISO_6310' => 'Se ha borrado una entrada del Diccionario (Familia).',
-	'LOG_ERROR_6315' => 'No se encuentra la Categoría %s correspondiente a la Familia [%s] %s.',
-	'LOG_ERROR_6320' => 'No se encuentra la Familia %s correspondiente a la Categoría [%s] %s.',
-	'LOG_ERROR_6325' => 'No se encuentra la Categoría %s. No se encuentra la Familia %s.',
+	'WOOC_ORDER_NIF_META.name'     => 'Campo "Meta" para el NIF',
+	'WOOC_ORDER_NIF_META.help'     => 'Campo "Meta" del Pedido en WooCommerce donde se guarda el NIF/CIF/NIE.',		// Order Meta field name to store Spanish NIF/CIF/NIE.
+	'WOOC_ORDERS_PER_PAGE.name'     => 'Pedidos por página',
+	'WOOC_ORDERS_PER_PAGE.help'     => 'Número de Pedidos (máximo) para resultados paginados.',
 
-	'LOG_INFO_6500'  , '<b>Artículos</b>: NO se cargan.',
-	'LOG_INFO_6505'  , 'Artículo [%s] %s se ha cargado a la Tienda.',
-	'LOG_ERROR_6505' => 'Artículo [%s] %s <span class="log-showoff-format">NO</span> se ha cargado a la Tienda. No se ha encontrado la correspondencia en el Impuesto',
-	'LOG_AVISO_6510' => 'Artículo [%s] %s ya existe en la Tienda. No se ha cargado.',
-	'LOG_INFO_6550'  , 'Se ha actualizado el Precio de todos los Productos en la Tienda.',
-	'LOG_INFO_6551'  , 'Se ha actualizado el Stock de todos los Productos en la Tienda.',
-	'LOG_AVISO_6555' => 'Se ha desactivado el Producto [<b>%s</b>] <b>%s</b> en la Tienda (no se encontró en FactuSol).',
+	'WOOC_USE_LOCAL_PRODUCT_NAME.name'     => 'Usar el Nombre local del Producto',
+	'WOOC_USE_LOCAL_PRODUCT_NAME.help'     => 'En los Pedidos importados, usar el Nombre del Producto en lugar del Nombre en WooCommerce.',
+	''     => '',
+	''     => '',
 
-	'LOG_INFO_8000'  , 'El Pedido %s se ha descargado correctamente. ',
-	'LOG_ERROR_8001' => 'No se pueden descargar Clientes. La carpeta destino no tiene permisos de escritura (%s).',
-	'LOG_INFO_8004'  , 'El Cliente <span class="log-showoff-format">(%s) %s</span> del Pedido %s ya está en FactuSOL (%s). No se ha creado un fichero para descargarlo.',
-	'LOG_INFO_8005'  , 'Se ha creado un fichero de Cliente <span class="log-showoff-format">(%s) %s</span> para el Pedido %s.',
-	'LOG_ERROR_8006' => 'El fichero de Cliente %s ya existe. El Pedido %s no se descargará.',
-	'LOG_ERROR_8007' => 'No se ha creado un fichero de Cliente <span class="log-showoff-format">(%s) %s</span>. El Pedido <b>%s</b> no se descargará.',
-	'LOG_INFO_8010'  , 'El <span class="log-showoff-format">Pedido %s</span> no se ha descargado. ',
-	'LOG_INFO_8012'  , 'El País del Cliente no coincide.',
-	'LOG_INFO_8013'  , 'La Dirección de Entrega del Pedido es diferente de la Dirección Principal del Cliente.',
-	'LOG_ERROR_8022' => 'El Producto <span class="log-showoff-format">(%s) %s</span> no se ha hallado correspondencia en FactuSol. El Pedido <b>%s</b> no se descargará.',
-	'LOG_AVISO_8022' => 'El Producto <span class="log-showoff-format">(%s) %s</span> no se ha hallado correspondencia en FactuSol (en el Pedido: <b>%s</b>).',
-	'LOG_AVISO_8023' => 'El Producto <span class="log-showoff-format">(%s) %s</span> no se ha hallado correspondencia en FactuSol y tiene un valor no nulo en el campo "Referencia" %s (en el Pedido: <b>%s</b>).',
-	'LOG_ERROR_8025' => 'El Producto <span class="log-showoff-format">(%s) %s</span> tiene un Impuesto que no se ha hallado correspondencia en FactuSol. El Pedido <b>%s</b> no se descargará.',
-	'LOG_ERROR_8028' => 'El Coste de Envío del Pedido <span class="log-showoff-format">%s</span> tiene un Impuesto que no se ha hallado correspondencia en FactuSol. El Pedido <b>%s</b> no se descargará.',
-	'LOG_ERROR_8029' => 'El Coste de Contra-Reembolso del Pedido <span class="log-showoff-format">%s</span> tiene un Impuesto que no se ha hallado correspondencia en FactuSol. El Pedido <b>%s</b> no se descargará.',
-	'LOG_AVISO_8032' => 'La Forma de Pago del Pedido <span class="log-showoff-format">%s</span> (%s) no se ha hallado correspondencia en FactuSol. Deberá ponerla manualmente en FactuSol.',
-	'LOG_ERROR_8101' => 'No se pueden descargar Pedidos. La carpeta destino no tiene permisos de escritura (%s).',
-	'LOG_ERROR_8106' => 'El fichero %s ya existe. El Pedido <b>%s</b> no se ha descargado.',
-	'LOG_ERROR_8107' => 'No se ha podido crear un fichero de Pedido %s. El Pedido <b>%s</b> no se ha descargado.',
-	'LOG_ERROR_8110' => 'No se ha podido borrar el fichero de Pedido %s, deberá borrarlo manualmente. El Pedido <b>%s</b> no se ha descargado.',
+	/*
+	|--------------------------------------------------------------------------
+	| FSx-Connector Settings Language Lines :: Configuration
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'FSx-Connector - Configuration'     => 'FSx-Connector - Configuración',
+	'FSx-Connector - Configurations'     => 'FSx-Connector - Configuraciones',
+
+	'FSx-Connector - FactuSOL Settings'     => 'FSx-Connector - Configuración de FactuSOL',
+	'Retrieve your FactuSOL Settings.'     => 'Cargar las Configuraciones de FactuSOL.',
+
+	'FSx-Connector - Taxes Dictionary'     => 'FSx-Connector - Diccionario de Impuestos',
+	'FSx-Connector - Payment Methods Dictionary'     => 'FSx-Connector - Diccionario de Formas de Pago',
+	'FSx-Connector - Shipping Methods Dictionary'     => 'FSx-Connector - Diccionario de Métodos de Envío',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	'Disabled'     => 'Deshabilitado',
+	''     => '',
+	''     => '',
+
+	/*
+	|--------------------------------------------------------------------------
+	| FSxOrderImporter
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	''     => '',
 
 ];

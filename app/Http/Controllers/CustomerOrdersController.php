@@ -38,7 +38,7 @@ class CustomerOrdersController extends Controller
                             ->with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
-                            ->orderBy('id', 'desc');        // ->get();
+                            ->orderBy('document_date', 'desc');        // ->get();
 
         $customer_orders = $customer_orders->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
 
@@ -1391,16 +1391,19 @@ class CustomerOrdersController extends Controller
 
         // Extra data
         $seq = \App\Sequence::findOrFail( $order->sequence_id );
+
+        // Not so fast, dudde:
+/*
         $doc_id = $seq->getNextDocumentId();
 
         $clone->document_prefix      = $seq->prefix;
         $clone->document_id          = $doc_id;
         $clone->document_reference   = $seq->getDocumentReference($doc_id);
-
+*/
         $clone->user_id              = \App\Context::getContext()->user->id;
 
         $clone->created_via          = 'manual';
-        $clone->status               =  \App\Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed';
+        $clone->status               = 'draft';
         $clone->locked               = 0;
         
         $clone->document_date = \Carbon\Carbon::now();
@@ -1427,8 +1430,11 @@ class CustomerOrdersController extends Controller
                     }
             }
 
-        // Save BOM
+        // Save Customer order
         $clone->push();
+
+        // Good boy:
+        $clone->confirm();
 
 
         return redirect('customerorders/'.$clone->id.'/edit')

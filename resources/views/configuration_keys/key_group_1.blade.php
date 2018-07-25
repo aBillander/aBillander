@@ -240,13 +240,13 @@
         </div>
         <div class="radio">
           <label>
-            <input name="PRODUCT_NOT_IN_PRICELIST" id="PRODUCT_NOT_IN_PRICELIST_pricelist" value="pricelist" @if( !old('PRODUCT_NOT_IN_PRICELIST', $key_group['PRODUCT_NOT_IN_PRICELIST']) == 'pricelist' ) checked="checked" @endif type="radio">
+            <input name="PRODUCT_NOT_IN_PRICELIST" id="PRODUCT_NOT_IN_PRICELIST_pricelist" value="pricelist" @if( old('PRODUCT_NOT_IN_PRICELIST', $key_group['PRODUCT_NOT_IN_PRICELIST']) == 'pricelist' ) checked="checked" @endif type="radio">
             {!! l('PRODUCT_NOT_IN_PRICELIST.option.pricelist') !!}
           </label>
         </div>
         <div class="radio">
           <label>
-            <input name="PRODUCT_NOT_IN_PRICELIST" id="PRODUCT_NOT_IN_PRICELIST_product" value="product" @if( !old('PRODUCT_NOT_IN_PRICELIST', $key_group['PRODUCT_NOT_IN_PRICELIST']) == 'product' ) checked="checked" @endif type="radio">
+            <input name="PRODUCT_NOT_IN_PRICELIST" id="PRODUCT_NOT_IN_PRICELIST_product" value="product" @if( old('PRODUCT_NOT_IN_PRICELIST', $key_group['PRODUCT_NOT_IN_PRICELIST']) == 'product' ) checked="checked" @endif type="radio">
             {!! l('PRODUCT_NOT_IN_PRICELIST.option.product') !!}
           </label>
         </div>

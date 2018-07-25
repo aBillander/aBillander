@@ -41,7 +41,7 @@
     <tbody id="order_lines">
         @foreach ($customer_orders as $order)
         <tr>
-            @if ( $order->imported_at )
+            @if ( $order->production_sheet_id )
               <td> </td>
             @else
               <td class="text-center warning">{!! Form::checkbox('corders[]', $order->id, false, ['class' => 'case checkbox']) !!}</td>
@@ -142,7 +142,7 @@
 
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
-    {{l('No active Production Sheet found')}}
+    {{l('No active Production Sheet found.')}}
 </div>
 
 @endif

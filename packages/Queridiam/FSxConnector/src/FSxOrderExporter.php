@@ -71,7 +71,8 @@ class FSxOrderExporter {
             // return true
 
         } else {
-            $this->logMessage( 'ERROR', 'El número de Pedido <b>"'.$order_id.'"</b>no es válido.' );
+            $this->logMessage( 'ERROR', 'La descarga de Pedidos a FactuSOL está en desarrollo.' );
+            // $this->logMessage( 'ERROR', 'El número de Pedido <b>"'.$order_id.'"</b>no es válido.' );
             $this->run_status = false;
         }
     }

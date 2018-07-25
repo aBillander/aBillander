@@ -23,9 +23,9 @@ return [
 	'Copy Order' => 'Copiar Pedido',
 
 	
-	'Add Orders to Production Sheet'     => 'Añadir pedidos a Hoja de Producción',
+	'Add Orders to Production Sheet'     => 'Añadir Pedidos a una Hoja de Producción',
 	'Add'     => 'Añadir',
-	'Add Orders to NEW Production Sheet'     => 'Añadir pedidos a NUEVA Hoja de Producción',
+	'Add Orders to NEW Production Sheet'     => 'Añadir Pedidos a una Hoja de Producción NUEVA',
 	'Date'     => 'Fecha',
 	'Name'     => 'Nombre',
 	'Production Sheet'     => 'Hoja de Producción',

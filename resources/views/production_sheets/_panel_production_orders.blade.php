@@ -148,7 +148,10 @@ $(document).ready(function() {
                 data : payload,
 
                 success: function($data){
-                    if ($data.status == 'OK') location.reload();
+                    if ($data.status == 'OK') {
+                        location.reload(); 
+                        return ;
+                    }
 
                     $("#msg-error-text").text($data.message);
                     $("#msg-error").fadeIn();

@@ -133,42 +133,9 @@ class ProductionSheetsController extends Controller
     {
         $sheet = $this->productionSheet->findOrFail($id);
 
-        // Delete Production Orders from Web
-        $porders = $sheet->productionorders()->get();
-        foreach ($porders as $order) {
-            $order->deleteWithLines();
-        }
+        $sheet->calculateProductionOrders();
 
-        $errors = [];
-
-        // Do the Mambo!
-        foreach ($sheet->customerorderlinesGrouped() as $pid => $line) {
-            // Create Production Order
-            $order = \App\ProductionOrder::createWithLines([
-                'created_via' => 'manufacturing',
-//                'status' => 'released',
-                'product_id' => $pid,
-//                'product_reference' => $line['reference'],
-//                'product_name' => $line['name'],
-                'planned_quantity' => $line['quantity'],
-//                'product_bom_id' => 1,
-                'due_date' => $sheet->due_date,
-                'notes' => '',
-//                
-//                'work_center_id' => 2,
-//                'warehouse_id' => 0,
-                'production_sheet_id' => $sheet->id,
-            ]);
-
-            if (!$order) $errors[] = '<li>['.$line['reference'].'] '.$line['name'].'</li>';
-        }
-
-        if (count($errors)) 
-            return redirect('productionsheets/'.$id)
-                ->with('error', l('No se ha podido crear una Orden de Fabricación para los siguientes Productos, porque no se ha encontrado una Lista de Materiales:') . '<ul>' . implode('', $errors) . '</ul>');
-        
-        else 
-            return redirect('productionsheets/'.$id)
+        return redirect('productionsheets/'.$id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -183,12 +150,11 @@ class ProductionSheetsController extends Controller
 
         $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
 
-        $this->validate($request, ProductionSheet::$rules);
-
         // Need to create Production Sheet?
         if ( $request->input('production_sheet_mode', '') == 'new' ) {
 
             // $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
+            $this->validate($request, ProductionSheet::$rules);
 
             $sheet = $this->productionSheet->create($request->all() + ['is_dirty' => 0]);
         } else {

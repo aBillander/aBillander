@@ -11,6 +11,8 @@ use App\Product;
 use App\Combination;
 use App\Tax;
 
+use App\Configuration;
+
 // use \aBillander\WooConnect\WooOrder;
 
 use App\Traits\LoggableTrait;
@@ -19,24 +21,24 @@ class FSxOrderExporter {
 
     use LoggableTrait;
 
-	protected $wc_order;
-	protected $run_status = true;		// So far, so good. Can continue export
-	protected $error = null;
+	protected $abi_order;
+  	protected $run_status = true;			// So far, so good. Can continue export
+	protected $customer_download = false;	// Should I download the Customer?
+  	protected $dest_clientes;
+  	protected $dest_pedidos;
 
-	protected $raw_data = array();
+	protected $raw_data = [];
 
-	protected $currency;				// aBillander Object
-	protected $customer;				// aBillander Object
-	protected $order;					// aBillander Object
-	protected $invoicing_address;		// aBillander Object
-	protected $shipping_address;		// aBillander Object
-	protected $invoicing_address_id;
-	protected $shipping_address_id;
+	protected $info     = [];
+	protected $customer = [];
+	protected $delivery = [];
+	protected $billing  = [];
+	protected $products = [];
+	protected $other    = [];
 
-	protected $next_sort_order = 0;
+//	protected $next_sort_order = 0;
 
 	// Logger to send messages
-	protected $log;
 	protected $logger;
 	protected $log_has_errors = false;
 
@@ -50,15 +52,16 @@ class FSxOrderExporter {
         $this->run_status = true;
 
 
-        // Start Logger
-//        $this->logger = \App\ActivityLogger::setup( 
-//            'Import WooCommerce Orders', self::loggerSignature() );			//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+     	$this->dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG');	// Destination folders
+     	$this->dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG');	// 
 
+
+        // Start Logger
         $this->logger = self::loggerSetup( 'Descargar Pedidos y Clientes a FactuSOL' );
 
 
         // Get order data (if order exists!)
-        if ( intval($order_id) && 0 ) {
+        if ( intval($order_id) ) {
             // set the product
             // $this->fill_in_data( intval($order_id) );
 
@@ -71,8 +74,8 @@ class FSxOrderExporter {
             // return true
 
         } else {
-            $this->logMessage( 'ERROR', 'La descarga de Pedidos a FactuSOL está en desarrollo.' );
-            // $this->logMessage( 'ERROR', 'El número de Pedido <b>"'.$order_id.'"</b>no es válido.' );
+            // $this->logMessage( 'ERROR', 'La descarga de Pedidos a FactuSOL está en desarrollo.' );
+            $this->logMessage( 'ERROR', 'El número de Pedido <b>"'.$order_id.'"</b>no es válido.' );
             $this->run_status = false;
         }
     }
@@ -83,9 +86,38 @@ class FSxOrderExporter {
      */
     public function fill_in_data($order_id = null)
     {
-        // 
     	// Get $order_id data...
-//        $data = $this->raw_data = WooConnector::getWooOrder( intval($order_id) );
+        $this->abi_order = Order::
+        					  with('customer')
+        					->with('invoicingaddress')
+        					->with('shippingaddress')
+        					->findOrFail( $order_id );
+
+        $order = $this->abi_order;
+        if (!$order->id) {
+            $this->logError( 'Se ha intentado recuperar el Pedido número <b>"'.$order_id.'"</b> y no existe.' );
+            $this->run_status = false;
+            return $this->run_status;
+        }
+
+        $customer = $order->customer;
+        $cid_customer = $customer->id;
+
+
+		$addressInvoice  = $order->invoicingaddress;
+		$addressDelivery = $order->shippingaddress;
+
+		if ($order->invoicing_address_id == $order->shipping_address_id) 
+		{
+			//
+		}
+
+
+
+
+
+
+// Old stuff:
         $data = $this->raw_data = WooOrder::fetch( $order_id );
         if (!$data) {
             $this->logMessage( 'ERROR', 'Se ha intentado recuperar el Pedido número <b>"'.$order_id.'"</b> y no existe.' );

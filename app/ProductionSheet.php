@@ -24,15 +24,39 @@ class ProductionSheet extends Model
     |--------------------------------------------------------------------------
     */
     
-    public function xgetDueDateAttribute($value)
+    public function calculateProductionOrders()
     {
-        return abi_date_short($value);
-    }
-    
-    public function xsetDueDateAttribute($value)
-    {
-        return $value ? \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $value ) 
-                        : null;
+
+        // Delete current Production Orders
+        $porders = $this->productionorders()->get();
+        foreach ($porders as $order) {
+            $order->deleteWithLines();
+        }
+
+        // $errors = [];
+
+        // Do the Mambo!
+        foreach ($this->customerorderlinesGrouped() as $pid => $line) {
+            // Create Production Order
+            $order = \App\ProductionOrder::createWithLines([
+                'created_via' => 'manufacturing',
+//                'status' => 'released',
+                'product_id' => $pid,
+//                'product_reference' => $line['reference'],
+//                'product_name' => $line['name'],
+                'planned_quantity' => $line['quantity'],
+//                'product_bom_id' => 1,
+                'due_date' => $this->due_date,
+                'notes' => '',
+//                
+//                'work_center_id' => 2,
+//                'warehouse_id' => 0,
+                'production_sheet_id' => $this->id,
+            ]);
+
+            // if (!$order) $errors[] = '<li>['.$line['reference'].'] '.$line['name'].'</li>';
+        }
+
     }
     
 

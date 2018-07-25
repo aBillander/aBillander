@@ -64,6 +64,8 @@ class ProductionOrder extends Model
 
 
         // Order lines
+        if ( !$bomitem ) return $order;
+
         // BOM quantities
         $line_qty = $order_quantity * $bomitem->quantity / $bom->quantity;
 

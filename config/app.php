@@ -195,6 +195,9 @@ return [
          */
         aBillander\WooConnect\WooConnectServiceProvider::class,
         Queridiam\FSxConnector\FSxConnectorServiceProvider::class,
+        Queridiam\FSxConnector\FSxViewComposerServiceProvider::class,
+
+        // composer dump-autoload -o
 
     ],
 

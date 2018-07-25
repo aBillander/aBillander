@@ -172,7 +172,7 @@
 
 <div id="panel_customer_order_lines" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-<!--  @ include('customer_orders._panel_order_lines') -->
+{{--  @ include('customer_orders._panel_order_lines') --}}
 
 </div>
 

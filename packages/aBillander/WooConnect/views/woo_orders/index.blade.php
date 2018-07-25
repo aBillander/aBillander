@@ -112,8 +112,11 @@
 			<td class="text-right" style="width:1px; white-space: nowrap;">
 
                 <!-- a class='open-AddBookDialog btn btn-sm btn-warning' href="{{ URL::route('worders.update', [$order["id"]] + $query ) }}" data-target='#myModalOrder' data-id="{{ $order["id"] }}" data-status="{{ $order["status"] }}" data-statusname="{{ \aBillander\WooConnect\WooConnector::getOrderStatusName( $order["status"] ) }}" data-toggle="modal" onClick="return false;" title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a -->
+                        
+@if (config('app.url') =='http://localhost/enatural')
 
                 <a class="btn btn-sm btn-info" href="{{ URL::route('worders.fetch', [$order["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}"><i class="fa fa-superpowers"></i></a>
+@endif
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to('wooc/worders/' . $order["id"]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
       

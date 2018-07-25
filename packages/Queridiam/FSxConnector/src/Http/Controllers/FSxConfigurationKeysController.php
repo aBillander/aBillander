@@ -307,21 +307,40 @@ class FSxConfigurationKeysController extends Controller {
         $settings = [];
 
         // Get Configurations from FactuSOL Web
-        \Config::set("database.connections.fsx-bbdd", [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE_FSX', 'wooc_btester'),
-            'username' => env('DB_USERNAME_FSX', 'root'),
-            'password' => env('DB_PASSWORD_FSX', '1qaz2wsx'),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-//            'strict' => true,
-            'strict' => false,
-            'engine' => null,
-        ]);
+        if (config('app.url') =='http://abimfg.laextranatural.es')
+        {
+                \Config::set("database.connections.fsx-bbdd", [
+                    'driver' => 'mysql',
+                    'host' => env('DB_HOST', 'localhost'),
+                    'port' => env('DB_PORT', '3306'),
+                    'database' => env('DB_DATABASE_FSX', 'laextran_com'),
+                    'username' => env('DB_USERNAME_FSX', 'laextran_com'),
+                    'password' => env('DB_PASSWORD_FSX', 'DAS#6XqwyK%z'),
+                    'unix_socket' => env('DB_SOCKET', ''),
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+        //            'strict' => true,
+                    'strict' => false,
+                    'engine' => null,
+                ]);
+        } else {
+                \Config::set("database.connections.fsx-bbdd", [
+                    'driver' => 'mysql',
+                    'host' => env('DB_HOST', '127.0.0.1'),
+                    'port' => env('DB_PORT', '3306'),
+                    'database' => env('DB_DATABASE_FSX', 'wooc_btester'),
+                    'username' => env('DB_USERNAME_FSX', 'root'),
+                    'password' => env('DB_PASSWORD_FSX', '1qaz2wsx'),
+                    'unix_socket' => env('DB_SOCKET', ''),
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+        //            'strict' => true,
+                    'strict' => false,
+                    'engine' => null,
+                ]);
+        }
 
         // Start Logic Probe, now!
         try {

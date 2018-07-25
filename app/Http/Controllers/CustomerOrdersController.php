@@ -247,6 +247,13 @@ class CustomerOrdersController extends Controller
 
         $order->update(['production_sheet_id' => $request->input('production_sheet_id')]);
 
+        // Update Sheets!
+        $sheet = ProductionSheet::findOrFail( $request->input('current_production_sheet_id') );
+        $sheet->calculateProductionOrders();
+
+        $sheet = ProductionSheet::findOrFail( $request->input('production_sheet_id') );
+        $sheet->calculateProductionOrders();
+
         if ( $request->input('stay_current_sheet', 0) )
             $sheet_id = $request->input('current_production_sheet_id');
         else
@@ -260,18 +267,13 @@ class CustomerOrdersController extends Controller
     {
         $order = \App\CustomerOrder::findOrFail($id);
 
-        // Destroy Order Lines
-        foreach( $order->customerorderlines as $line ) {
-            $line->delete();
-        }
+        $sheet_id = $order->production_sheet_id;
 
-        // Destroy Order
-        $order->delete();
+        $order->update(['production_sheet_id' => null]);
 
-        $sheet_id = $request->input('current_production_sheet_id');
+        // $sheet_id = $request->input('current_production_sheet_id');
 
-        return redirect('productionsheets/'.$sheet_id)
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        return redirect()->route('productionsheet.calculate', [$sheet_id]);
     }
 
 

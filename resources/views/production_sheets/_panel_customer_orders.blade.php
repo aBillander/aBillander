@@ -8,20 +8,22 @@
     <thead>
         <tr>
       <th>{{l('ID', [], 'layouts')}}</th>
-      <th class="text-left">{{l('Reference')}}</th>
-      <th>{{l('Customer')}}</th>
+      <th>{{l('Customer External Reference')}}</th>
       <th>{{l('Order Date')}}</th>
-      <th>{{l('Total')}}</th>
+      <th>{{l('Customer')}}</th>
+      <th class="text-left">{{l('Reference')}}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
+      <th>{{l('Shipping Method')}}</th>
       <th class="text-right"> </th>
     </tr>
   </thead>
   <tbody>
   @foreach ($sheet->customerorders as $order)
     <tr>
-      <td>{{ $order->id }}</td>
-      <td>{{ $order->reference }}</td>
-      <td>{!! $order->customerInfo() !!}
+      <td><a href="{{ URL::to('customerorders/' . $order->id . '/edit') }}" title="{{l('View Order')}}" target="_blank"> {{ $order->id }} </a></td>
+      <td>{{ $order->customer->reference_external }}</td>
+      <td>{{ abi_date_form_full($order->created_at) }}</td>
+      <td><a href="{{ URL::to('customers/' . $order->customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{!! $order->customerInfo() !!}</a>
                  <a href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
                             data-content="{{ $order->customerCardFull() }}">
@@ -29,9 +31,8 @@
                     </button>
                  </a>
       </td>
-      <td>{{ abi_date_form_full($order->created_at) }}</td>
-      <td>{{ $order->total_tax_incl }}</td>
-            <td class="text-center">
+      <td>{{ $order->reference }}</td>
+      <td class="text-center">
                 @if ($order->customer_note)
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
@@ -39,7 +40,9 @@
                         <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
                     </button>
                  </a>
-                @endif</td>
+                @endif
+      </td>
+      <td title="{{ $order->carrier->name ?? '' }}">{{ $order->shippingmethod->name ?? '' }}</td>
 
            <td class="text-right" style="width:1px; white-space: nowrap;">
 

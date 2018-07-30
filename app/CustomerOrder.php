@@ -27,6 +27,8 @@ class CustomerOrder extends Model
                         'delivery_date',
                         'delivery_date_real',
                         'close_date',
+
+                        'export_date',
                        ];
 
 //                        'document_date', 
@@ -192,10 +194,10 @@ class CustomerOrder extends Model
     {
         $customer = $this->customer;
 
-        $name = $customer->name;
+        $name = $customer->name_fiscal ?: $customer->name_commercial;
 
         if ( !$name ) 
-            $name = $customer->name_fiscal ? $customer->name_fiscal : '';
+            $name = $name = $customer->name;
 
         return $name;
     }

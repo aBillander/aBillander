@@ -2,16 +2,18 @@
 
 namespace Queridiam\FSxConnector;
 
-use App\Customer as Customer;
-use App\Address as Address;
-use App\CustomerOrder as Order;
-use App\CustomerOrderLine as OrderLine;
-use App\CustomerOrderLineTax as OrderLineTax;
+use App\Customer;
+use App\Address;
+use App\CustomerOrder;
+use App\CustomerOrderLine;
+use App\CustomerOrderLineTax;
 use App\Product;
 use App\Combination;
 use App\Tax;
 
 use App\Configuration;
+
+use Queridiam\FSxConnector\FSxTools;
 
 // use \aBillander\WooConnect\WooOrder;
 
@@ -21,35 +23,36 @@ class FSxOrderExporter {
 
     use LoggableTrait;
 
-	protected $abi_order;
-  	protected $run_status = true;			// So far, so good. Can continue export
-	protected $customer_download = false;	// Should I download the Customer?
-  	protected $dest_clientes;
-  	protected $dest_pedidos;
+  	protected $abi_order;
+    protected $run_status = true;			// So far, so good. Can continue export
+  	protected $customer_download = false;	// Should I download the Customer?
+    protected $dest_clientes;
+    protected $dest_pedidos;
 
-	protected $raw_data = [];
+  	protected $raw_data = [];
 
-	protected $info     = [];
-	protected $customer = [];
-	protected $delivery = [];
-	protected $billing  = [];
-	protected $products = [];
-	protected $other    = [];
+  	protected $info     = [];
+  	protected $customer = [];
+  	protected $delivery = [];
+  	protected $billing  = [];
+  	protected $products = [];
+  	protected $other    = [];    // Handy array to manage non Product costs
 
-//	protected $next_sort_order = 0;
+  //	protected $next_sort_order = 0;
 
-	// Logger to send messages
-	protected $logger;
-	protected $log_has_errors = false;
+  	// Logger to send messages
+  	protected $logger;
+  	protected $log_has_errors = false;
 
-    public function __construct ($order_id = null, Order $order = null)
+    public function __construct ($order_id = null, CustomerOrder $order = null)
     {
         // Get logger
         // $this->log = $rwsConnectorLog;
 
-        $this->order = $order;
+        $this->abi_order = $order;
 
         $this->run_status = true;
+        $this->customer_download = false;     // ¿Debe descargarse el Cliente?
 
 
      	$this->dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG');	// Destination folders
@@ -70,7 +73,7 @@ class FSxOrderExporter {
             
             // $this->import();  // The whole process
 
-			$this->fill_in_data( intval($order_id) );
+	          $this->fill_in_data( intval($order_id) );
             // return true
 
         } else {
@@ -87,7 +90,7 @@ class FSxOrderExporter {
     public function fill_in_data($order_id = null)
     {
     	// Get $order_id data...
-        $this->abi_order = Order::
+        $this->abi_order = CustomerOrder::
         					  with('customer')
         					->with('invoicingaddress')
         					->with('shippingaddress')
@@ -101,639 +104,690 @@ class FSxOrderExporter {
         }
 
         $customer = $order->customer;
-        $cid_customer = $customer->id;
-
+        // $cid_customer = $customer->id;
+        $cid_customer = $customer->reference_external;
+        if ( !$cid_customer ) $this->customer_download = true;
 
 		$addressInvoice  = $order->invoicingaddress;
 		$addressDelivery = $order->shippingaddress;
 
-		if ($order->invoicing_address_id == $order->shipping_address_id) 
+		if ($order->invoicing_address_id != $order->shipping_address_id) 
 		{
-			//
+			// Igual debería descargarse el cliente
+      if ( Configuration::get('FSX_DLOAD_CUSTOMER_SHIPPING_ADDRESS') > 0 ) $this->customer_download = true;
 		}
 
-
-
-
-
-
-// Old stuff:
-        $data = $this->raw_data = WooOrder::fetch( $order_id );
-        if (!$data) {
-            $this->logMessage( 'ERROR', 'Se ha intentado recuperar el Pedido número <b>"'.$order_id.'"</b> y no existe.' );
-            $this->run_status = false;
-        } else {
-        	// Data transformers
-        	;
-
-        }
-
-        return $this->run_status;
-    }
-    
-    public function getNextLineSortOrder()
-    {
-        $this->next_sort_order += 10;;
-
-        return $this->next_sort_order;
-    }
-
-
-    public static function processOrder( $order_id = null ) 
-    {
-        $importer = new static($order_id);
-        if ( !$importer->tell_run_status() ) 
-        {
-        	$importer->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
-
-        	return $importer;
-        }
-
-//        abi_r($importer->raw_data, true);
-
-        // Do stuff
-
-        // Some preparatory checks
-        $importer->setCurrency();
-
-        // Mambo!
-        $importer->setCustomer();
-        if ( !$importer->tell_run_status() ) 
-        {
-        	$importer->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
-
-        	return $importer;
-        }
-
-        $importer->setOrderDocument();
-        if ( !$importer->tell_run_status() ) 
-        {
-        	$importer->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
-
-        	$importer->order->delete();
-
-        	// Delete Customer as well -> No! Customer order is in place no matter import errors...
-
-        	return $importer;
-        }
-
-		// Check totals
-		$diffTaxExc = ($this->raw_data['total'] - $this->raw_data['total_tax']) - $this->order->total_tax_excl;
-		$diffTaxInc =  $this->raw_data['total']                                 - $this->order->total_tax_incl;
-
-		if ( $diffTaxExc != 0 )
-			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> Total Tax Excluded difference: {diffTaxExc}.'), ['oid' => $order_id, 'diffTaxExc' => $diffTaxExc]);
-
-		if ( $diffTaxInc != 0 )
-			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> Total Tax Included difference: {diffTaxInc}.'), ['oid' => $order_id, 'diffTaxInc' => $diffTaxInc]);
-
-		// Good boy:
-		$importer->order->confirm();
-
-        return $importer;
-    }
-        
-    public function setCurrency()
-    {
-        $order = $this->raw_data;
-
-        $currency = \App\Currency::findByIsoCode( $order['currency'] );
-        if (!$currency) {
-        	$currency = \App\Currency::find( \App\Configuration::get('WOOC_DEF_CURRENCY') );
-
-        	$this->logMessage("WARNING", l('Order number <span class="log-showoff-format">{oid}</span> Currency not found. Using: <span class="log-showoff-format">{name}</span>.'), ['oid' => $order['id'], 'name' => $currency->name]);
-        }
-
-        $this->currency = $currency;
-        // To Do: retrieve conversion rate according to order date <= Kind of advanced...
-    }
-
-    public function setCustomer()
-    {
-        // Check if Customer exists; Othrewise, import it
-        $customer_webshop_id = $this->raw_data['customer_id'];
-
-        $this->customer = Customer::where('webshop_id', $customer_webshop_id )->first();
-
-//        abi_r(Customer::all(), true);
-
-//        $this->logMessage('INFO', $this->raw_data['customer_id'].' - '.($this->customer ? $this->customer->id : ''));
-
-        if ($this->customer) $this->checkAddresses();
-
-        else                 $this->importCustomer();
-    }
-
-    public function setOrderDocument()
-    {
-        $order = $this->raw_data;
-
-        // Header stuff here in
-
-		$data = [
-			'customer_id' => $this->customer->id,
-			'user_id' => \App\Context::getContext()->user->id,
-        	'sequence_id' => \App\Configuration::get('WOOC_DEF_ORDERS_SEQUENCE'),
-//			'document_prefix' => $order[''],
-//			'document_id' => $order[''],
-//			'document_reference' => $order[''],
-			'reference' => WooOrder::getOrderReference( $order ),
-//			'reference_customer', 
-			'reference_external' => $order['id'],
-
-			'created_via' => 'webshop',
-
-			'document_date' => WooOrder::getDate( $order['date_created'] ),
-			'payment_date'  => WooOrder::getDate( $order['date_paid'] ),
-//			'valid_until_date' => $order[''],
-//			'delivery_date' => $order[''],
-//			'delivery_date_real' => $order[''],
-//			'close_date' => $order[''],
-
-//			'document_discount_percent',
-//			'document_discount_amount_tax_incl' => $order['discount_total'],
-//			'document_discount_amount_tax_excl' => $order['discount_total'] - $order['discount_tax'],
-
-			'number_of_packages' => 1,
-//			'shipping_conditions' => $order[''],
-
-//			'prices_entered_with_tax' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX'),
-//			'round_prices_with_tax'   => \App\Configuration::get('ROUND_PRICES_WITH_TAX'),
-
-			'currency_conversion_rate' => $this->currency->conversion_rate,
-//			'down_payment' => $order[''],
-
-//			'total_discounts_tax_incl' => $order[''],
-//			'total_discounts_tax_excl' => $order[''],
-//			'total_products_tax_incl' => $order[''],
-//			'total_products_tax_excl' => $order[''],
-//			'total_shipping_tax_incl' => $order[''],
-//			'total_shipping_tax_excl' => $order[''],
-//			'total_other_tax_incl' => $order[''],
-//			'total_other_tax_excl' => $order[''],
-			
-//			'total_lines_tax_incl' => $order['total'],
-//			'total_lines_tax_excl' => $order['total'] - $order['total_tax'],
-			
-			'total_tax_incl' => $order['total'],
-			'total_tax_excl' => $order['total'] - $order['total_tax'],
-
-//			'commission_amount' => $order[''],
-
-			'notes_from_customer' => WooOrder::getDocumentNotes( $order ),
-//			'notes' => $order[''],
-//			'notes_to_customer' => $order[''],
-
-			'status' => 'draft', 	// Sorry: cannot be 'closed' because it is not delivered (even if $order['date_paid'] != 0)
-			'locked' => 1,
-
-			'invoicing_address_id' => $this->invoicing_address_id,
-			'shipping_address_id'  => $this->shipping_address_id,
-
-			'warehouse_id' => \App\Configuration::get('DEF_WAREHOUSE'),
-			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
-//			'sales_rep_id' => $order[''],
-			'currency_id' => $this->currency->id,
-			'payment_method_id' => WooOrder::getPaymentMethodId( $order['payment_method'], $order['payment_method_title'] ),
-//			'template_id' => \App\Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE'),
-		];
-
-        	
-		$seq = \App\Sequence::find( \App\Configuration::get('WOOC_DEF_ORDERS_SEQUENCE') );
-
-		if ( !$seq ) 
-		{
-			$this->run_status = false;
-
-			$this->logError( l('No existe una Serie de Documentos para descargar los Pedidos. Asigne una en en el menú de Configuración.') );
-
-			// Rock n Roll is over! 
-			return ;
-		}
-
-		// Not so fast, dudde:
-/*
-		$doc_id = $seq->getNextDocumentId();
-
-		$extradata = [	'document_prefix'      => $seq->prefix,
-						'document_id'          => $doc_id,
-						'document_reference'   => $seq->getDocumentReference($doc_id),
-					 ];
-
-		$data = array_merge($data, $extradata);
-*/
-//		abi_r($data, true);
-
-		$order = Order::create($data);
-/*
-		$order->total_tax_incl = $order['total'];
-		$order->total_tax_excl = $order['total'] - $order['total_tax'];
-		$order->save();
-*/
-        $this->order = $order;
-
-
-        // Lines stuff here in
-
-        // Product
-        $this->setOrderDocumentProductLines();
-        if ( !$this->tell_run_status() ) 
-        {
-        	return ;
-        }
+        $products  = $order->customerorderlines->filter(function($line) {
+		    	return ($line->line_type == 'product') || ($line->line_type == 'service');
+			  });
+        $discounts = $order->customerorderlines->where('line_type', '=', 'discount');
+//        $coupons   = $order->get_items( 'coupon' );
+//        $fees      = $order->get_items( 'fee' );        // Future use
+        $shipping = $order->customerorderlines->where('line_type', '=', 'shipping')->first();
 
 
         // Shipping
-        $this->setOrderDocumentShippingLines();
-        if ( !$this->tell_run_status() ) 
+
+        $this->other['ot_shipping'] =  [];
+
+        if ($shipping)
+        $this->other['ot_shipping'] = array(
+                    'id' => $shipping->product_id,
+                    'reference' => $shipping->reference,
+                    'name' => $shipping->name,
+                    'qty' => $shipping->quantity,
+
+                    'unit_customer_final_price' => $shipping->unit_customer_final_price,
+                    'discount_percent' => $shipping->discount_percent,
+                    'unit_final_price' => $shipping->unit_final_price,
+                    'unit_final_price_tax_inc' => $shipping->unit_final_price_tax_inc,
+
+                    'total_tax_incl' => $shipping->total_tax_incl,
+                    'total_tax_excl' => $shipping->total_tax_excl,
+
+                    'tax_id' => $shipping->tax_id,
+                    'sales_equalization' => $shipping->sales_equalization,
+
+//                    'tax_rate' => $tax_rate,
+                    'allow_tax' => '0'     // Tax not included
+                );
+        
+        // Coupons & Discounts
+        $this->other['ot_discount'] = [];
+
+        // Fees
+        $this->other['ot_fees'][] = [];
+
+        // Order Info
+        $reference = $order->document_reference;
+        if ( $order->created_via == 'webshop' ) $reference = $order->reference;
+
+        $this->info = array(
+                      'orders_id' => $order->id,
+                      'document_reference' => $order->document_reference,
+                      'reference' => $order->reference,
+                      'created_via' => $order->created_via,
+//                      'currency' => $order->get_order_currency(),
+//                      'currency_value' => $order->conversion_rate,
+//                      'payment_title' => $order->payment_method_title,
+                      'payment_method' => $order->payment_method_id,
+//                      'shipping_title' => $order->get_shipping_method(),
+//                      'order_status' => $order->get_status(),
+                      'date_purchased' => $order->document_date,
+//                      'last_modified' => $order->modified_date,
+                      'comments' => $order->notes_from_customer,  // ISO-8859-1 charset does not contain the EURO sign, therefor the EURO sign will be converted into a question mark character '?'. In order to convert properly UTF8 data with EURO sign you must use: iconv("UTF-8", "CP1252", $data)
+
+                      'id_customer' => $order->customer_id,
+                      'id_address_delivery' => $addressDelivery->id,
+                      'id_address_invoice' => $addressInvoice->id,
+//                      'id_carrier' => '',
+
+                      'docpago' => '',
+                          );
+
+        $this->customer = array(
+                      'name' => $addressInvoice->firstname . ' ' . $addressInvoice->lastname, 
+                      'ID' => $customer->id,    // User ID who the order belongs to. 0 for guests.
+//                      'wooID' => $woo_customer,
+                      'csID' => $cid_customer,
+                      'is_new' => $customer->reference_external > 0 ? false : true,
+                      'customer_user' => $addressInvoice->email,  // $user->data->user_login,
+                      'vat_id' => $customer->identification,
+                      'email_address' => $addressInvoice->email,
+                      
+                      'company' => $addressInvoice->name_commercial,
+                      'street_address' => $addressInvoice->address1 . ' ' . $addressInvoice->address2,
+                      'city' => $addressInvoice->city,
+                      'postcode' => $addressInvoice->postcode,
+                      'state' => $addressInvoice->state->name,
+                      'country' => $addressInvoice->country->name,
+					 
+                      'telephone' => $addressInvoice->phone,
+                      'mobile' => $addressInvoice->phone_mobile,
+                      'fax' => $addressInvoice->fax,
+                          );
+
+
+        $this->delivery = array(
+                      'name' => $addressDelivery->firstname . ' ' . $addressDelivery->lastname,
+                      'company' => $addressDelivery->name_commercial,
+                      'street_address' => $addressDelivery->address1 . ' ' . $addressDelivery->address2,
+                      'city' => $addressDelivery->city,
+                      'postcode' => $addressDelivery->postcode,
+                      'state' => $addressDelivery->state->name,
+                      'country' => $addressDelivery->country,
+
+                      'telephone' => $addressDelivery->phone,
+                      'mobile' => $addressDelivery->phone_mobile,
+                      'fax' => $addressDelivery->fax,
+							  );
+        
+        // Order Lines
+        foreach ($products as $item)
         {
-        	return ;
+        	// 
+
+        	$this->products[] = array(
+                    'qty' => $item->quantity,
+                    'name' => $item->name,
+                    'id' => $item->product_id,
+                    'reference' => $item->reference,
+
+                    'unit_customer_final_price' => $item->unit_customer_final_price,
+                    'discount_percent' => $item->discount_percent,
+                    'unit_final_price' => $item->unit_final_price,
+                    'unit_final_price_tax_inc' => $item->unit_final_price_tax_inc,
+
+                    'total_tax_excl' => $item->total_tax_excl,
+                    'total_tax_incl' => $item->total_tax_incl,
+
+                    'tax_id' => $item->tax_id,
+                    'sales_equalization' => $item->sales_equalization,
+
+//                    'tax_rate' => $tax_rate,
+                    'allow_tax' => '0',     // Tax not included
+                    
+                    'product_id' => $item->product_id,
+                    'product_variation_id' => $item->combination_id,
+                        );
         }
 
-
-        // Fee lines
-        $this->setOrderDocumentServiceLines();
-        if ( !$this->tell_run_status() ) 
-        {
-        	return ;
-        }
+        // OK. Let's move on!
+        return $this->run_status;
+    }
+   
 
 
-        // Coupon lines
-        $this->setOrderDocumentCouponLines();
-        if ( !$this->tell_run_status() ) 
-        {
-        	return ;
-        }
+    public function tell_run_status() {
+      return $this->run_status;
     }
 
-    /**
-     *   Set Document lines
-     */
-    public function setOrderDocumentProductLines()
+    public function customer_must_download() {
+      return $this->customer_download;
+    }
+
+    public function delivery_is_new_address() {
+      return ( $this->info['id_address_delivery'] != $this->info['id_address_invoice'] );
+    }
+
+
+
+
+    private function _fsol_customer_code( $abi_customer_id, $codbase = 0 ) 
     {
-        // abi_r('**>>>>>>>   '.$this->order->getLastLineSortOrder());
+		$fsol_codcli = intval($codbase) + intval($abi_customer_id);
+	    return $fsol_codcli;
+    }
 
-        $order = $this->raw_data;
+    private function _prepare_fsol_codcli() {
 
-        // Lines stuff :: Product lines
+		// Recuperar el Código de Cliente FactuSol
+		if ( $this->customer['csID'] && ( $this->customer['csID'] > 0 ) ) { 
 
-foreach ( $order['line_items'] as $i => $item ) {
-
-		// Get Product & Variation
-		$sku  = $item['sku'];
-		$product_id = null;
-		$combination_id = null;
-		$reference = '';
-		$name = $item['name'];
-//		$cost_price = $item['price'];
-		$final_price = $item['price']; // ( $item['subtotal'] )/$item['quantity'];	// Approximation. Maybe better: $item['price']  (price before discount) ???
-		$line_tax_id = WooOrder::getTaxId($item['tax_class']);
-/*
-		if ( !$tax_id ) {
-			// Tax not found. Issue an ERROR.
-			$tax_id = \App\Configuration::get('WOOC_DEF_TAX');	// To Do: Improbe this guess...
-
-			$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado correspondencia del Impuesto <b>"'.$item['tax_class'].'"</b>.' );
-		}
-
-		$tax = Tax::find($tax_id);
-*/
-		/*
-
-		*/
-
-//		if ($sku=='LEGUM003') $item['variation_id'] = 1;
-
-		/*
-
-		*/
-		$product = null;
-		if ( intval($item['variation_id']) > 0 ) {
-			// Search Combination
-			$combination = Combination::with('product')->with('product.tax')->where('reference', $sku)->first();
-			if ($combination) {
-				$product = $combination->product;
-				$product_id = $product->id;
-				$combination_id = $combination->id;
-				$reference = $sku;
-				if ( \App\Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $combination->name(' - ');
-				$cost_price = $product->cost_price;
-//				$tax_id = $product->tax_id;		// To Do: Match with WooCommerce & Tax Dictionary?
-//				$tax = $product->tax;
-			} else {
-				$this->run_status = false;
-
-				$this->logError( 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado el Producto (Variación) con SKU <b>"'.$sku.'"</b>.' );
-
-				// Rock n Roll is over! 
-				return ;
-			}
+			$this->logInfo(sprintf( 'El Cliente <span style="color: green; font-weight: bold">(%s) %s</span> del Pedido %s ya está en FactuSOL (%s). No se ha creado un fichero para descargarlo.', $this->customer['ID'], ($this->customer['company']?$this->customer['company']:$this->customer['name']), $this->info['orders_id'], $this->customer['csID'] ));
 		} else {
-			// Search Product
-			// $combination = (object) ['id' => null];
-			$product = Product::with('tax')->where('reference', $sku)->first();
-			if ($product) {
-				$product_id = $product->id;
-				$combination_id = null;
-				$reference = $product->reference;
-				if ( \App\Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $product->name;
-				$cost_price = $product->cost_price;
-//				$tax_id = $product->tax_id;		// To Do: Match with WooCommerce & Tax Dictionary?
-//				$tax = $product->tax;
-			} else {
-				$this->run_status = false;
 
-				$this->logError( 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado el Producto con SKU <b>"'.$sku.'"</b>.' );
+			// Calculate Código de Cliente FactuSol
 
-				// Rock n Roll is over! 
-				return ;
+			switch ( $this->info['created_via'] ) {
+				case 'webshop':
+					# code...
+					$codbase = Configuration::get('FSOL_WEB_CUSTOMER_CODE_BASE');;
+					break;
+				
+				case 'manual':
+					# code...
+					$codbase = Configuration::get('FSOL_ABI_CUSTOMER_CODE_BASE');;
+					break;
+				
+				default:
+					# code...
+					$codbase = 0;
+					break;
 			}
+
+			$fsol_codcli = $this->_fsol_customer_code( $this->customer['ID'], $codbase );
+
+			$this->customer['csID'] = $fsol_codcli;
+			// $this->customer_download=true;
 		}
-/*
-		//
-		// Testing
-			$product = Product::with('tax')->find(21);
-				$product_id = $product->id;
-				$combination_id = null;
-				$reference = $product->reference;
-				if ( \App\Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $product->name;
-				$cost_price = $product->cost_price;
-		//
-		//
-*/
 
-		// Let's get (really) dirty, you naughty!
-		$cost_price = $product->cost_price;
-		$unit_price = $product->price;
+		return $this->customer['csID'];
+    }
 
-        $tax = $product->tax;
-        $tax_id = $product->tax_id;
-        $sales_equalization = $this->customer->sales_equalization;
+    private function _fsol_customer_filename($abi_customer = '') {
+      if ($abi_customer) $fsol_clifile = strtolower( str_replace("@", "_", $abi_customer) ) . '.txt';
+      else               $fsol_clifile = "cliente_" . $this->customer['csID']               . '.txt';
+      return $fsol_clifile;
+    }
 
-        if ( $line_tax_id != $tax_id ) {
-			$this->run_status = false;
+    private function _fsol_order_filename($abi_order_id) {
+      $fsol_order_series=intval( Configuration::get('FSOL_SPCCFG') );
 
-        	// Taxes mismatch
-			$this->logError( 'Pedido número <b>"'.$order["id"].'"</b>: NO hay correspondencia del Impuesto para el Producto con SKU <b>"'.$sku.'"</b>.' );
+      $fsol_pedfile  = 'pedidofactusolweb' . strval($fsol_order_series*1000000 + intval( $abi_order_id )) . '.txt';
+      return $fsol_pedfile;
+    }
 
-			// Rock n Roll is over! 
-			return ;
+
+
+    private function _check_destination_folders() {
+      $go_ahead=true;
+      if (!is_writable( $this->dest_clientes )) { // ERROR!
+	$this->logError(sprintf( 'No se pueden descargar Clientes. La carpeta destino no tiene permisos de escritura (%s).' , $this->dest_clientes ));
+	$go_ahead=false;
+      }
+      if (!is_writable( $this->dest_pedidos )) { // ERROR!
+	$this->logError(sprintf( 'No se pueden descargar Pedidos. La carpeta destino no tiene permisos de escritura (%s).' , $this->dest_pedidos ));
+	$go_ahead=false;
+      }
+      return $go_ahead;
+    }
+
+//*
+//* **********  Common functions END *********************************** */
+//*
+    
+
+/* ********************************************************************************************* */   
+
+    function export_order_customer( $output = 'file' ) {
+
+    if ( Configuration::get('FSX_FORCE_CUSTOMERS_DOWNLOAD') > 0 ) $this->customer_download = true;
+
+    if ( !$this->customer_download ) {
+      
+        $this->logInfo(sprintf( 'El Cliente <span style="color: green; font-weight: bold">(%s) %s</span> del Pedido %s ya está en FactuSOL (%s), y NO se ha creado un fichero para descargarlo.', $this->customer['ID'], ($this->customer['company']?$this->customer['company']:$this->customer['name']), $this->info['orders_id'], $this->customer['csID'] ));
+
+        return ;
+    }
+
+    $this->_prepare_fsol_codcli();
+        
+    if ( !isset($this->info['orders_id']) || ($this->info['orders_id'] < 1)) { $this->run_status = false; }
+    if ($this->run_status == false) return ;
+    $err = 0;
+
+        $fsol_clifile = $this->_fsol_customer_filename( $this->customer['email_address'] );
+        if (file_exists( $this->dest_clientes . $fsol_clifile )) { // ERROR!
+            $this->logError(sprintf( 'El fichero de Cliente <span style="color: green; font-weight: bold">%s</span> ya existe. El Pedido %s no se descargará.' , $fsol_clifile,  $this->info['orders_id']));
+            // continue;
+            $this->run_status = false;
+            return ;
         }
 
+        // Calculate Código de Cliente FactuSOL -> 
+        $fsol_codcli = $this->customer['csID'];
 
-		$data = [
-			'line_sort_order' => $this->getNextLineSortOrder(),		// 10*($i+1),
-			'line_type' => 'product',		// product, service, shipping, discount, comment
 
-			'product_id'     => $product_id,
-			'combination_id' => $combination_id,
-			'reference'      => $reference,
-			'name'           => $name,
+    // Calculate Customer values
+    $fsweb_user = array();
 
-			'quantity' => $item['quantity'],
-			'measure_unit_id' => $product->measure_unit_id,
+$fsweb_user['CUWCLI']  = $this->customer['customer_user'];  // onagrosan
+$fsweb_user['CAWCLI']  = 'unknown';                     // nredondo
+$fsweb_user['SNOMCFG'] = ($this->customer['company']?$this->customer['company']:$this->customer['name']);   // José I. 
+$fsweb_user['SDOMCFG'] = $this->customer['street_address']; // Mar de Aral 7
+$fsweb_user['SCPOCFG'] = $this->customer['postcode'];       // 28033
+$fsweb_user['SPOBCFG'] = $this->customer['city'];       // Madrid
+$fsweb_user['SPROCFG'] = $this->customer['state'];      // Madrid
+$fsweb_user['SNIFCFG'] = $this->customer['vat_id'];     // 50811875e
+$fsweb_user['STELCFG'] = $this->customer['telephone'];      // 913825704
+$fsweb_user['SFAXCFG'] = $this->delivery['fax'];                    // (Fax)
+$fsweb_user['SMOVCFG'] = $this->customer['mobile'];                 // 618646400
+// 
+$fsweb_user['SEMACFG'] = $this->customer['email_address'];  // noname@none.com
+$fsweb_user['SPCOCFG'] = $this->customer['name'];       // Mari Complejines
+$fsweb_user['SNENCFG'] = ($this->delivery['company']?$this->delivery['company']:$this->delivery['name']);   // Muelle 22
+$fsweb_user['SDENCFG'] = $this->delivery['street_address']; // Polígano Coslada
+$fsweb_user['SCPECFG'] = $this->delivery['postcode'];       // 28009
+$fsweb_user['SPOECFG'] = $this->delivery['city'];       // Coslada
+$fsweb_user['SPRECFG'] = $this->delivery['state'];      // Madrid
+$fsweb_user['SPCECFG'] = $this->delivery['name'];       // Almacenero
+$fsweb_user['STCECFG'] = $this->delivery['telephone']?:$this->customer['telephone'];       // 911234567
+$fsweb_user['SFPACFG'] = '';                   // COD
+$fsweb_user['Terminado'] = 'Alta Cliente';
 
-			'cost_price' => $cost_price,
-			'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_price,	// To Do: if Customer existed, can search for these prices
-            'unit_customer_final_price' => $unit_price,
+// Según fsweb/confaltacliente.php
+        //hay que crear el archivo con el usuario y los datos. y la sentencia SQL
+        //recorro toda la matriz de campos rellenos
+        $campos = '';
+        $valores = '';
+        $cadena = '';
+        foreach($fsweb_user as $nombre_var => $valor_var) {
+            $cadena .= $nombre_var . ":" . $valor_var . "\n";
+            if($nombre_var != 'Terminado' and substr($nombre_var, (strlen($nombre_var)-3)) != 'CFG') {
+                $campos .= $nombre_var . ',';
+                $valores .= "'" . $valor_var . "',";
+            }
+        }
+        //escribo el usuario en el archivo de texto.
+        $cadena = $fsol_codcli . "\ \n" . $cadena;
+        if ($output == 'file') {
+            $fp = fopen( $this->dest_clientes .  $fsol_clifile,'w');
+            $err = fwrite($fp, utf8_decode($cadena));
+            fclose($fp);
+        } else {
+        	$err = 0;
+        	abi_r($fsol_clifile);
+        	abi_r($cadena);
+        }
 
-			'unit_final_price' => $final_price,
-			'unit_final_price_tax_inc' => $final_price+$item['subtotal_tax']/$item['quantity'],	// Approximation
+        if ($err != -1) {
+            if ( $this->customer['is_new'] )
+            {
+                if ($output == 'file')
+                $this->abi_order->customer->update(['reference_external' => $this->customer['csID']]);
+            }
+            
+            $this->logInfo(sprintf( 'Se ha creado un fichero de Cliente <span style="color: green; font-weight: bold">(%s) %s</span> para el Pedido %s.', $fsol_codcli, $fsweb_user['SNOMCFG'], $this->info['orders_id'] ));
+        } else {
+            $this->run_status = false;
+            $this->logError(sprintf( 'No se ha creado un fichero de Cliente <span style="color: green; font-weight: bold">(%s) %s</span> porque se ha producido un error al crear el archivo. El Pedido <b>%s</b> no se descargará.', $fsol_codcli, $fsweb_user['SNOMCFG'], $this->info['orders_id'] ));
 
-			'sales_equalization' => $sales_equalization,				// Charge Sales equalization tax? (only Spain)
+        }
+      
+    }  //  export_order_customer() ENDS
 
-//			'discount_percent' => $item[''],
-			'discount_amount_tax_incl' => ( $item['subtotal'] + $item['subtotal_tax'] ) - ( $item['total'] + $item['total_tax'] ),
-			'discount_amount_tax_excl' => $item['subtotal'] - $item['total'],
+/*  *******************************************************************************************************  */
 
-			'total_tax_incl' => $item['total'] + $item['total_tax'],
-			'total_tax_excl' => $item['total'],
+    public function export_order( $output = 'file' ) {
 
-			'tax_percent' => ($item['total'] != 0.0) ? ($item['total_tax']/$item['total'])*100.0 : 0.0,
-//			'commission_percent' => $item[''],
+    if ( !isset($this->info['orders_id']) || ($this->info['orders_id'] < 1)) { $this->run_status = false; }
+    if ($this->run_status == false) return ;
 
-//			'notes' => $item[''],
-			
-			'locked' => 1,							// 0 -> NO; 1 -> Yes (line is after a shipping-slip => should not mofify quantity).
+// Calculate Order values
+        $fsol_order_series=Configuration::get('FSOL_SPCCFG');
+        $fsweb_order = array();
+        $fsweb_order_products = array();
+        $fsweb_order_footer = array();
+        $net1pcl = 0;
+        $net2pcl = 0;
+        $net3pcl = 0;
+        $net4pcl = 0;
+        $iiva1pcl = 0;
+        $iiva2pcl = 0;
+        $iiva3pcl = 0;
+        $iiva4pcl = 0;
 
-//			'customer_order_id' => $item[''],
-			'tax_id' => $tax_id,
-//			'sales_rep_id' => $item[''],
-		];
+        $irec1pcl = 0;
+        $irec2pcl = 0;
+        $irec3pcl = 0;
+        $irec4pcl = 0;
 
-		$line = OrderLine::create($data);
+// Según function escribearchivo($serie, $numero, $pagos)  de fsweb/confirmacion.php
+	    $fsol_pedfile =  $this->_fsol_order_filename( $this->info['orders_id'] );
+	    if(file_exists($this->dest_pedidos . $fsol_pedfile)) { // ERROR!  'Este pedido ya se finalizó anteriormente.'
+	        $this->logError(sprintf( 'El fichero <span style="color: green; font-weight: bold">%s</span> ya existe. El Pedido <b>%s</b> no se ha descargado.', $fsol_pedfile, $this->info['orders_id'] ));
+	        $this->run_status = false;
+	        return ;
+	    } 
 
-		$this->order->customerorderlines()->save($line);
+// Product loop here
 
-		// abi_r($line, true);
+for ($i=0; $i<count($this->products); $i++) {  // Order Products loop STARTS
+$products = $this->products[$i]; 
 
-		// Let's deal with taxes
-		$product->sales_equalization = $sales_equalization;
-        $rules = $product->getTaxRules( $this->getAddressForTaxCalculation(),  $this->customer );
+// Manage Product Description
+// ^-- U Kidding?
+$order_articulo_fsol = $products['name'];
 
-		$base_price = $line->total_tax_excl;
 
-		$line->total_tax_excl = $base_price;
-		$line->total_tax_incl = $base_price;	// After this, loop to add line taxes
-
-		foreach ( $rules as $rule ) {
-			$line_tax = new OrderLineTax();
-
-			$line_tax->name = $rule->fullName;
-			$line_tax->tax_rule_type = $rule->rule_type;
-
-			$p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $this->currency, $this->currency->currency_conversion_rate);
-
-//			abi_r($line, true);
-
-			$p->applyRounding( );
-
-			$line_tax->taxable_base = $base_price;
-			$line_tax->percent = $rule->percent;
-			$line_tax->amount = $rule->amount;
-			$line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
-
-			$line_tax->position = $rule->position;
-
-			$line_tax->tax_id = $tax->id;
-			$line_tax->tax_rule_id = $rule->id;
-
-			$line_tax->save();
-			$line->total_tax_incl += $line_tax->total_line_tax;
-
-			$line->customerorderlinetaxes()->save($line_tax);
-            $line->save();
-		}
-
-        // Now, update Order Totals
-        $this->order->makeTotals();
-
+// 
+$fsol_tipo_iva = FSxTools::getTipoIVA($products['tax_id']);
+if ($fsol_tipo_iva<0) { // ERROR!
+    $this->logError(sprintf( 'El Producto <span style="color: green; font-weight: bold">(%s) %s</span> tiene un Impuesto <b>[%s%%]</b> que no se ha hallado correspondencia en FactuSOL. El Pedido <b>%s</b> no se descargará.', $products['id'], $products['name'], $products['tax_rate'], $this->info['orders_id'] ));
+    $this->run_status = false;
+    continue;
 }
 
-		// So far, so good! Bye, then!
+$fsol_has_rec = $products['sales_equalization'];
 
-    }
+$fsweb_order_products[$i]['TIPLPC'] = $fsol_order_series; // :8
+$fsweb_order_products[$i]['CODLPC'] = $this->info['orders_id']; // :6
+$fsweb_order_products[$i]['POSLPC'] = $i+1; // :1
+$fsweb_order_products[$i]['ARTLPC'] = $products['reference']; // :010FAGESF
+$fsweb_order_products[$i]['DESLPC'] = $order_articulo_fsol; // :Fagodio Esforulante de 10x10
 
-    public function setOrderDocumentCouponLines()
-    {
-        $order = $this->raw_data;
+$fsweb_order_products[$i]['CANLPC'] = $products['qty']; // :1.0000
+$fsweb_order_products[$i]['DT1LPC'] = $products['discount_percent']; // :2   Descuento
+$fsweb_order_products[$i]['PRELPC'] = $products['unit_customer_final_price']; // :110.0000
+$fsweb_order_products[$i]['TOTLPC'] = $products['total_tax_excl']; // :107.8000 (había descuento!)
+$fsweb_order_products[$i]['IVALPC'] = $fsol_tipo_iva; // :0   Tipo de IVA 0,1,2,3 (16/7/4/0)
+$fsweb_order_products[$i]['IINLPC'] = $products['allow_tax']; // :0   IVA NO incluido en el precio
 
-        // Lines stuff :: Fee lines
+$price_no_tax = $fsweb_order_products[$i]['TOTLPC'];
+$net = 'net'  . ($fsol_tipo_iva+1) . 'pcl';
+$iva = 'iiva' . ($fsol_tipo_iva+1) . 'pcl';
+$$net += $price_no_tax;
 
-		if ( count($order['coupon_lines']) ) 
-		{
-				$this->run_status = false;
+$line_tax = $products['total_tax_incl'] - $products['total_tax_excl'];
+if ($fsol_has_rec) {
+    $rec = 'irec' . ($fsol_tipo_iva+1) . 'pcl';
 
-				$this->logError( 'Order number <b>"'.$order["id"].'"</b>: cannot process Coupon Lines.' );
+    $piva = floatval( Configuration::get('FSOL_PIV' . ($fsol_tipo_iva+1) . 'CFG') );
+    $prec = floatval( Configuration::get('FSOL_PRE' . ($fsol_tipo_iva+1) . 'CFG') );
+    $riva = $piva / ($piva + $prec) ;
+    $rrec = $prec / ($piva + $prec) ;
 
-				// Rock n Roll is over! 
-				return ;
-		}
-
-    }
-
-    public function setOrderDocumentServiceLines()
-    {
-        $order = $this->raw_data;
-
-        // Lines stuff :: Fee lines
-
-		if ( count($order['fee_lines']) ) 
-		{
-				$this->run_status = false;
-
-				$this->logError( 'Order number <b>"'.$order["id"].'"</b>: cannot process Fee Lines.' );
-
-				// Rock n Roll is over! 
-				return ;
-		}
-
-    }
-
-    public function setOrderDocumentShippingLines()
-    {
-        $order = $this->raw_data;
-
-        // Lines stuff :: Shipping
-
-foreach ( $order['shipping_lines'] as $item ) {
-
-		// Get Product & Variation
-		$product_id = null;
-		$combination_id = null;
-		$reference = '';
-		$name = $item['method_title'];	// .' ('.$item['method_id'].')';
-		$cost_price = $item['total'];
-		$unit_price = $item['total'];
-		$final_price = $item['total'];
-//		$line_tax_id = WooOrder::getTaxId($item['tax_class']);
-		$tax_id = intval(\App\Configuration::get('WOOC_DEF_SHIPPING_TAX'));	// WooOrder::getTaxId('standard');
-		if ( $tax_id == 0 ) {
-			// Tax not found. Issue an ERROR.
-			$tax_id = \App\Configuration::get('WOOC_DEF_TAX');	// To Do: Improbe this guess...
-			// -- This key does not exist?? --^
-		}
-		$tax = Tax::find($tax_id);
-		// Not a Product, hence:
-        $sales_equalization = 0;	// $this->customer->sales_equalization;
-
-		// No database persistance, please!
-		$product  = new \App\Product(['product_type' => 'simple', 'name' => $name, 'tax_id' => $tax_id]);
-		// $tax = $product->tax;
-
-// abi_r('>> # >> '.$this->order->customerorderlines->count());
-
-		$data = [
-			'line_sort_order' => $this->getNextLineSortOrder(), // $this->order->getLastLineSortOrder(),
-			'line_type' => 'shipping',		// product, service, shipping, discount, comment
-
-			'product_id'     => $product_id,
-			'combination_id' => $combination_id,
-			'reference'      => $reference,
-			'name'           => $name,
-
-			'quantity' => 1,
-			'measure_unit_id' => \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
-
-			'cost_price' => $cost_price,
-			'unit_price' => $unit_price,
-			'unit_customer_price' => $unit_price,
-            'unit_customer_final_price' => $unit_price,
-
-			'unit_final_price' => $final_price,
-			'unit_final_price_tax_inc' => $final_price+$item['total_tax'],	// Approximation
-
-			'sales_equalization' => $sales_equalization,				// Charge Sales equalization tax? (only Spain)
-
-//			'discount_percent' => $item[''],
-			'discount_amount_tax_incl' => 0.0,
-			'discount_amount_tax_excl' => 0.0,
-
-			'total_tax_incl' => $item['total'] + $item['total_tax'],
-			'total_tax_excl' => $item['total'],
-
-			'tax_percent' => ($item['total'] != 0.0) ? ($item['total_tax']/$item['total'])*100.0 : 0.0,
-//			'commission_percent' => $item[''],
-
-//			'notes' => $item[''],
-			
-			'locked' => 1,							// 0 -> NO; 1 -> Yes (line is after a shipping-slip => should not mofify quantity).
-
-//			'customer_order_id' => $item[''],
-			'tax_id' => $tax_id,
-//			'sales_rep_id' => $item[''],
-		];
-
-		$line = OrderLine::create($data);
-
-		$this->order->customerorderlines()->save($line);
-
-		// abi_r($line, true);
-
-		$product->sales_equalization = $sales_equalization;
-		$rules = $product->getTaxRules( $this->getAddressForTaxCalculation(),  $this->customer );
-
-		$base_price = $line->total_tax_excl;
-
-		$line->total_tax_excl = $base_price;
-		$line->total_tax_incl = $base_price;	// After this, loop to add line taxes
-
-		foreach ( $rules as $rule ) {
-			$line_tax = new OrderLineTax();
-
-			$line_tax->name = $rule->fullName;
-			$line_tax->tax_rule_type = $rule->rule_type;
-
-			$p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $this->currency, $this->currency->currency_conversion_rate);
-
-			$p->applyRounding( );
-
-			$line_tax->taxable_base = $base_price;
-			$line_tax->percent = $rule->percent;
-			$line_tax->amount = $rule->amount;
-			$line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
-
-			$line_tax->position = $rule->position;
-
-			$line_tax->tax_id = $tax->id;
-			$line_tax->tax_rule_id = $rule->id;
-
-			$line_tax->save();
-			$line->total_tax_incl += $line_tax->total_line_tax;
-
-			$line->customerorderlinetaxes()->save($line_tax);
-            $line->save();
-		}
-
-        // Now, update Order Totals
-        $this->order->makeTotals();
-
+    $$iva += $line_tax * $riva;
+    $$rec += $line_tax * $rrec;
+} else {
+    $$iva += $line_tax;
 }
 
-		// So far, so good! Bye, then!
+}  // Order Products loop ENDS
 
+if ($this->run_status==false) return ;
+
+//
+// Portes ot_shipping STARTS
+// 
+if ( isset($this->other['ot_shipping']['name'])
+      &&  ($this->other['ot_shipping']['total_tax_excl']>0)
+      &&  ($this->other['ot_shipping']['total_tax_incl']  >0) ) {
+
+// 
+$fsol_tax_id = $this->other['ot_shipping']['tax_id'];  
+$fsol_tipo_iva = FSxTools::getTipoIVA($fsol_tax_id);
+if ($fsol_tipo_iva<0) { // ERROR!
+    $this->logError(sprintf( 'El Coste de Envío del Pedido <span style="color: green; font-weight: bold">%s</span> tiene un Impuesto <b>[%s%%]</b> que no se ha hallado correspondencia en FactuSOL. El Pedido <b>%s</b> no se descargará.', $this->info['orders_id'], $fsol_tax_rate, $this->info['orders_id'] ));
+    $this->run_status = false;
+    return ;
+}
+
+$fsol_has_rec = $this->other['ot_shipping']['sales_equalization'];
+
+$price_no_tax = $this->other['ot_shipping']['total_tax_excl'];
+
+$fsweb_order_products[$i]['TIPLPC'] = $fsol_order_series; // :8
+$fsweb_order_products[$i]['CODLPC'] = $this->info['orders_id']; // :6
+$fsweb_order_products[$i]['POSLPC'] = $i+1; // :1
+$fsweb_order_products[$i]['ARTLPC'] = ''; // :010FAGESF
+$fsweb_order_products[$i]['DESLPC'] = $this->other['ot_shipping']['name']; // :Fagodio Esforulante de 10x10
+$fsweb_order_products[$i]['CANLPC'] = $this->other['ot_shipping']['qty']; // :1.0000
+$fsweb_order_products[$i]['DT1LPC'] = '0'; // :2   Descuento
+$fsweb_order_products[$i]['PRELPC'] = $price_no_tax; // :110.0000
+$fsweb_order_products[$i]['TOTLPC'] = $price_no_tax; // :107.8000 (había descuento!)
+$fsweb_order_products[$i]['IVALPC'] = $fsol_tipo_iva; // :0   Tipo de IVA 0,1,2 (16/7/4)
+$fsweb_order_products[$i]['IINLPC'] = $this->other['ot_shipping']['allow_tax']; // :0   IVA NO incluido en el precio
+
+// $price_no_tax = $this->other['ot_shipping']['value'];
+$net = 'net'  . ($fsol_tipo_iva+1) . 'pcl';// echo "<br>".$net;
+$iva = 'iiva' . ($fsol_tipo_iva+1) . 'pcl';// echo "<br>".$iva.$products['tax'];
+$$net += $price_no_tax;
+
+$line_tax = $this->other['ot_shipping']['total_tax_incl'] - $this->other['ot_shipping']['total_tax_excl'];
+if ($fsol_has_rec) {
+    $rec = 'irec' . ($fsol_tipo_iva+1) . 'pcl';
+
+    $piva = floatval( Configuration::get('FSOL_PIV' . ($fsol_tipo_iva+1) . 'CFG') );
+    $prec = floatval( Configuration::get('FSOL_PRE' . ($fsol_tipo_iva+1) . 'CFG') );
+    $riva = $piva / ($piva + $prec) ;
+    $rrec = $prec / ($piva + $prec) ;
+
+    $$iva += $line_tax * $riva;
+    $$rec += $line_tax * $rrec;
+} else {
+    $$iva += $line_tax;
+}
+
+$i += 1;  // Ready for next item (if any)
+}
+//  
+// Portes ot_shipping ENDS
+//
+
+
+
+
+// Order body here:
+$order_delivery_flag = $this->delivery_is_new_address();
+
+$fsweb_order['TIPPCL'] = $fsol_order_series; // :8   Serie de Pedidos
+$fsweb_order['CODPCL'] = $this->info['orders_id']; // :26   Hasta 6 posiciones
+$fsweb_order['REFPCL'] = $this->info['created_via'] == 'webshop' ? $this->info['reference'] : 'ABI '.$this->info['orders_id']; // : Referencia varchar(12)
+$fsweb_order['FECPCL'] = substr($this->info['date_purchased'], 0, 10).' 00:00:00'; // :2008-11-25 00:00:00
+$fsweb_order['AGEPCL'] = '0'; // :0   Agente
+$fsweb_order['CLIPCL'] = $this->customer['csID']; // :2   Cliente FSOL
+$fsweb_order['DIRPCL'] = '1'; // ( $order_delivery_flag ? '0' : '1' ); // :1
+$fsweb_order['TIVPCL'] = '0'; // :0   Con IVA
+$fsweb_order['REQPCL'] = '0'; // :0   Sin RE
+$fsweb_order['ALMPCL'] = ''; // :
+
+$fsweb_order['NET1PCL'] = $net1pcl; // :107.8000
+$fsweb_order['NET2PCL'] = $net2pcl; // :196.0000
+$fsweb_order['NET3PCL'] = $net3pcl; // :49.0000
+$fsweb_order['NET4PCL'] = $net4pcl; // :0.0000
+
+$fsweb_order['PDTO1PCL'] = '0'; // :0.0000
+$fsweb_order['PDTO2PCL'] = '0'; // :0.0000
+$fsweb_order['PDTO3PCL'] = '0'; // :0.0000
+// $fsweb_order['PDTO4PCL'] = '0'; // :0.0000
+$fsweb_order['IDTO1PCL'] = '0'; // :0.0000
+$fsweb_order['IDTO2PCL'] = '0'; // :0.0000
+$fsweb_order['IDTO3PCL'] = '0'; // :0.0000
+// $fsweb_order['IDTO4PCL'] = '0'; // :0.0000
+$fsweb_order['PPPA1PCL'] = '0'; // :0.0000
+$fsweb_order['PPPA2PCL'] = '0'; // :0.0000
+$fsweb_order['PPPA3PCL'] = '0'; // :0.0000
+// $fsweb_order['PPPA4PCL'] = '0'; // :0.0000
+$fsweb_order['IPPA1PCL'] = '0'; // :0.0000
+$fsweb_order['IPPA2PCL'] = '0'; // :0.0000
+$fsweb_order['IPPA3PCL'] = '0'; // :0.0000
+// $fsweb_order['IPPA4PCL'] = '0'; // :0.0000
+$fsweb_order['PFIN1PCL'] = '0'; // :0.0000
+$fsweb_order['PFIN2PCL'] = '0'; // :0.0000
+$fsweb_order['PFIN3PCL'] = '0'; // :0.0000
+// $fsweb_order['PFIN4PCL'] = '0'; // :0.0000
+$fsweb_order['IFIN1PCL'] = '0'; // :0.0000
+$fsweb_order['IFIN2PCL'] = '0'; // :0.0000
+$fsweb_order['IFIN3PCL'] = '0'; // :0.0000
+// $fsweb_order['IFIN4PCL'] = '0'; // :0.0000
+
+$fsweb_order['BAS1PCL'] = $net1pcl; // :107.8000
+$fsweb_order['BAS2PCL'] = $net2pcl; // :196.0000
+$fsweb_order['BAS3PCL'] = $net3pcl; // :49.0000
+// $fsweb_order['BAS4PCL'] = $net4pcl; // :0.0000
+$fsweb_order['PIVA1PCL'] = Configuration::get('FSOL_PIV1CFG'); // :16.0000
+$fsweb_order['PIVA2PCL'] = Configuration::get('FSOL_PIV2CFG'); // :7.0000
+$fsweb_order['PIVA3PCL'] = Configuration::get('FSOL_PIV3CFG'); // :4.0000
+// $fsweb_order['PIVA4PCL'] = 0.0000;       // :Exento!
+$fsweb_order['IIVA1PCL'] = $iiva1pcl; // :17.2500
+$fsweb_order['IIVA2PCL'] = $iiva2pcl; // :13.7200
+$fsweb_order['IIVA3PCL'] = $iiva3pcl; // :1.9600
+// $fsweb_order['IIVA4PCL'] = $iiva4pcl; // :0.0 Always!
+
+$fsweb_order['PREC1PCL'] = Configuration::get('FSOL_PRE1CFG'); // :4.0000
+$fsweb_order['PREC2PCL'] = Configuration::get('FSOL_PRE2CFG'); // :1.0000
+$fsweb_order['PREC3PCL'] = Configuration::get('FSOL_PRE3CFG'); // :0.5000
+$fsweb_order['IREC1PCL'] = $irec1pcl; // :0.0000
+$fsweb_order['IREC2PCL'] = $irec2pcl; // :0.0000
+$fsweb_order['IREC3PCL'] = $irec3pcl; // :0.0000
+// $fsweb_order['IREC4PCL'] = $irec4pcl; // :0.0000 Always!
+
+$fsweb_order['TOTPCL']  = $fsweb_order['BAS1PCL']  + $fsweb_order['BAS2PCL']  + $fsweb_order['BAS3PCL']  + $net4pcl; // :385.7300
+$fsweb_order['TOTPCL'] += $fsweb_order['IIVA1PCL'] + $fsweb_order['IIVA2PCL'] + $fsweb_order['IIVA3PCL'] + 0.0;
+$fsweb_order['TOTPCL'] += $fsweb_order['IREC1PCL'] + $fsweb_order['IREC2PCL'] + $fsweb_order['IREC3PCL'] + 0.0;
+
+$fsol_forma_pago = FSxTools::getCodigoFormaDePago( $this->info['payment_method'] );
+if ( !$fsol_forma_pago ) $this->logWarning(sprintf( 'La Forma de Pago del Pedido <span style="color: green; font-weight: bold">%s</span> (%s) no se ha hallado correspondencia en FactuSOL. Deberá ponerla manualmente en FactuSOL.', $this->info['orders_id'], $this->info['payment_method']));
+$fsweb_order['FOPPCL'] = $fsol_forma_pago; // :COD
+
+$fsweb_order['OB1PCL'] = substr( str_replace(array("\n", "\r"), '', $this->info['comments'] ), 0, 50); // :Es DT1CLI un 2%   varchar(50)
+$fsweb_order['OB2PCL'] = $order_delivery_flag ? 'Compruebe la Dirección de Entrega.' : '' ; // :Dirección "1"   varchar(50)
+$fsweb_order['PPOPCL'] = ''; // :   Pedido por  varchar(40)
+$fsweb_order['ESTPCL'] = '0'; // :0   Estado: Pendiente
+
+// Tax exempt
+$fsweb_order['NET4PCL'] = $net4pcl; // :0.0000
+$fsweb_order['PDTO4PCL'] = '0'; // :0.0000
+$fsweb_order['IDTO4PCL'] = '0'; // :0.0000
+$fsweb_order['PPP4PCL'] = '0'; // :0.0000
+$fsweb_order['IPP4PCL'] = '0'; // :0.0000
+$fsweb_order['PFIN4PCL'] = '0'; // :0.0000
+$fsweb_order['IFIN4PCL'] = '0'; // :0.0000
+$fsweb_order['BAS4PCL'] = $net4pcl; // :0.0000
+
+$fsweb_order_footer['DOCPAGO'] = ''; // :
+// $fsweb_order_footer['STATUS'] = 'OK'; // :OK  OJO!! no añade "\n"
+
+// 
+// Write to file 
+// Según function escribearchivo($serie, $numero, $pagos)  de fsweb/confirmacion.php
+
+$order='';
+$products='';
+$footer='';
+
+        foreach($fsweb_order as $nombre_var => $valor_var) {
+            $order .= $nombre_var . ":" . $valor_var . "\n";
+        }
+        for ($i=0; $i<count($fsweb_order_products); $i++) {
+          foreach($fsweb_order_products[$i] as $nombre_var => $valor_var) {
+              $products .= $nombre_var . ":" . $valor_var . "\n";
+          }
+        }
+        foreach($fsweb_order_footer as $nombre_var => $valor_var) {
+            $footer .= $nombre_var . ":" . $valor_var . "\n";
+        }
+
+        $linea  = $order.$products.$footer;
+        $linea .= 'STATUS:OK';
+
+        if ($output == 'file') {
+            $fp = fopen($this->dest_pedidos . $fsol_pedfile, 'w');
+
+            $err = fwrite($fp, utf8_decode($linea));
+            fclose($fp);
+        } else {
+          $err = 0;
+          abi_r($fsol_pedfile);
+          abi_r($linea);
+        }
+
+        if ($err != -1) {
+            if ($output == 'file')
+            {    
+                $this->abi_order->export_date = \Carbon\Carbon::now();
+                $this->abi_order->save();
+            }
+
+            $this->logInfo(sprintf( 'El Pedido <b>%s</b> se ha descargado correctamente.', $this->info['orders_id'] ));
+        }else{ 
+            $this->run_status = false;
+            $this->logError(sprintf( 'No se ha podido crear un fichero de Pedido %s. El Pedido <b>%s</b> no se ha descargado.', $this->info['orders_id'] )); 
+        }  
+
+
+
+
+	}	//   public function export_order() 
+
+
+/*  *******************************************************************************************************  */
+
+    
+
+/* ********************************************************************************************* */   
+
+/* ********************************************************************************************* */   
+
+
+ 
+    public static function processOrder( $order_id = null ) 
+    {
+        $exporter = new static($order_id);
+        if ( !$exporter->tell_run_status() ) 
+        {
+        	$exporter->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
+
+        	return $exporter;
+        }
+
+        // Mambo!
+        $output = 'screen';
+
+        $exporter->export_order_customer( $output );
+        if ( !$exporter->tell_run_status() ) 
+        {
+          $exporter->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
+
+          return $exporter;
+        }
+
+        $exporter->export_order( $output );
+        if ( !$exporter->tell_run_status() ) 
+        {
+          $exporter->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
+
+          // Delete Customer file? -> No! Customer order is in place no matter import errors...
+
+          return $exporter;
+        }
+
+        // die();
+
+        // So far, so good! Bye, then!
+        return $exporter;
     }
 
     
@@ -745,289 +799,11 @@ foreach ( $order['shipping_lines'] as $item ) {
     |--------------------------------------------------------------------------
     */
     
-    public function importCustomer()
-    {
-        // Data transformers
-
-        // Spanish VAT Identification
-        // Sometimes customer use "Company" field....
-        if ( \App\Customer::check_spanish_nif_cif_nie( $this->raw_data['billing']['company'] ) > 0 )
-        {
-        	$this->raw_data['billing']['vat_number'] = \App\Customer::normalize_spanish_nif_cif_nie( $this->raw_data['billing']['company'] );
-        	$this->raw_data['billing']['company']    = '';
-        }
-        
-        if ( \App\Customer::check_spanish_nif_cif_nie( $this->raw_data['shipping']['company'] ) > 0 )
-        {
-        	$this->raw_data['shipping']['vat_number'] = \App\Customer::normalize_spanish_nif_cif_nie( $this->raw_data['shipping']['company'] );
-        	$this->raw_data['shipping']['company']    = '';
-        }
-
-
-
-        // Build Customer data
-        $order = $this->raw_data;
-
-        $language_id = intval(\App\Configuration::get('WOOC_DEF_LANGUAGE'));
-
-        $language_id = $language_id > 0 ? $language_id : 
-						\App\Configuration::get('DEF_LANGUAGE');
-
-		$data = [
-        	'name_fiscal'     => WooOrder::getNameFiscal( $order ),
-			'name_commercial' => WooOrder::getNameCommercial( $order ),
-
-//			'website' => $order[''],
-
-			'identification' => WooOrder::getVatNumber( $order ),
-
-			'webshop_id' => $order['customer_id'],
-//			'accounting_id',
-
-//			'payment_days' => $order[''],
-//			'no_payment_month' => $order[''],
-
-			'outstanding_amount_allowed' => \App\Configuration::get('DEF_OUTSTANDING_AMOUNT'),
-//			'outstanding_amount' => $order[''],
-//			'unresolved_amount',
-
-//			'notes' => $order['customer_note'],
-//			'customer_logo',
-			'sales_equalization' => WooOrder::getSalesEqualization( $order ),
-//			'allow_login' => $order[''],
-
-			'accept_einvoice' => 1,
-			'blocked' => 0,
-			'active'  => 1,
-
-			'currency_id' => $this->currency->id,
-			'language_id' => $language_id,
-
-			'customer_group_id' => \App\Configuration::get('WOOC_DEF_CUSTOMER_GROUP'),
-//			'payment_method_id'
-//			'carrier_id'
-			'price_list_id' => \App\Configuration::get('WOOC_DEF_CUSTOMER_PRICE_LIST'),
-		];
-
-		$customer = Customer::create($data);
-        $this->customer = $customer;
-
-		// Build Billing address
-		$this->invoicing_address = $address = $this->createInvoicingAddress();
-		$this->invoicing_address_id = $address->id;
-
-
-		// Build Shipping address
-		if ( WooOrder::getShippingAddressId( $order ) != $address->webshop_id ) {
-				// Shipping is a new Address. Let's create it!
-
-				$address = $this->createShippingAddress();
-				$this->shipping_address_id = $address->id;
-		} else {
-				        
-				$this->shipping_address_id = $this->invoicing_address_id;
-		}
-		$this->shipping_address = $address;
-
-		// Finish at last!
-		$this->logMessage("INFO", l('A new Customer <span class="log-showoff-format">[{cid}] {name}</span> has been created for Order number <span class="log-showoff-format">{oid}</span>.'), ['cid' => $this->customer->id, 'oid' => $order['id'], 'name' => $this->customer->name_fiscal]);
-   	}
-
-
-    public function getAddressForTaxCalculation()
-    {
-    	return (\App\Configuration::get('WOOC_TAX_BASED_ON') == 'shipping') ? $this->shipping_address : $this->invoicing_address ;
-    	// Don't care if \App\Configuration::get('WOOC_TAX_BASED_ON') == 'local'
-   	}
-
-
-    public function checkAddresses()
-    {
-        // Build Customer data
-        $order = $this->raw_data;
-
-        // Build Billing address
-		$needle = WooOrder::getBillingAddressId( $order );
-		$addr = $this->customer->addresses()->where('webshop_id', $needle )->first();
-        if ( $addr ) {
-
-	        $this->invoicing_address_id = $addr->id;
-	        $this->invoicing_address = $addr;
-
-        } else {
-        	
-        	// Create Address
-        	$address = $this->createInvoicingAddress();
-
-        	$this->invoicing_address_id = $address->id;
-        	$this->invoicing_address = $address;
-
-        }
-
-        // Need to update Customer Invoicing Address?
-        if ($this->customer->invoicing_address_id != $this->invoicing_address_id) {
-        	$this->customer->update( [ 'invoicing_address_id' => $this->invoicing_address_id ] );
-        }
-
-
-		// Build Shipping address
-		$needle = WooOrder::getShippingAddressId( $order );
-		$addr = $this->customer->addresses()->where('webshop_id', $needle )->first();
-        if ( $addr ) {
-
-        	$this->shipping_address_id = $addr->id;
-        	$this->shipping_address = $addr;
-
-        } else {
-        	
-        	// Create Address
-        	$address = $this->createShippingAddress();
-
-        	$this->shipping_address_id = $address->id;
-        	$this->shipping_address = $address;
-
-        }
-    }
-    
-    public function createInvoicingAddress()
-    {
-        // Build Customer data
-        $order = $this->raw_data;
-        $customer = $this->customer;
-
-		// Build Billing address
-//        $name = $order['billing']['company'] ? $order['billing']['company'] : 
-//        		$order['billing']['first_name'].' '.$order['billing']['last_name'];
-
-		$country    = $order['billing']['country'];
-		$country_id = null;
-		$state      = $order['billing']['state'];
-		$state_id   = null;
-
-		$bcountry = \App\Country::findByIsoCode( $order['billing']['country'] );
-		if ($bcountry) {
-			$country    = $bcountry->name;
-			$country_id = $bcountry->id;
-		}
-
-		$bstate = WooOrder::getState( $order['billing']['state'], $order['billing']['country'] );
-		if ($bstate) {
-			$state    = $bstate->name;
-			$state_id = $bstate->id;
-		}
-
-		$data = [
-			'alias' => $order['id'].l('-Billing'),
-			'webshop_id' => WooOrder::getBillingAddressId( $order ),
-
-			'name_commercial' => WooOrder::getNameCommercial( $order ),
-			
-			'address1' => $order['billing']['address_1'],
-			'address2' => $order['billing']['address_2'],
-			'postcode' => $order['billing']['postcode'],
-			'city'         => $order['billing']['city'],
-			'state_name'   => $state,
-			'country_name' => $country,
-			
-			'firstname' => $order['billing']['first_name'],
-			'lastname'  => $order['billing']['last_name'],
-			'email'     => $order['billing']['email'],
-
-			'phone' => $order['billing']['phone'],
-//			'phone_mobile' => $order[''],
-//			'fax' => $order[''],
-			
-			'notes' => null,
-			'active' => 1,
-
-//			'latitude' => $order[''],
-//			'longitude' => $order[''],
-
-			'state_id'   => $state_id,
-			'country_id' => $country_id,
-		];
-
-        $address = Address::create($data);
-        $customer->addresses()->save($address);
-
-        $customer->update(['invoicing_address_id' => $address->id]);
-        
-        return $address;
-    }
-    
-    public function createShippingAddress()
-    {
-        // Build Customer data
-        $order = $this->raw_data;
-        $customer = $this->customer;
-
-		// Build Shipping address
-        $name = $order['shipping']['company'] ? $order['shipping']['company'] : 
-        		$order['shipping']['first_name'].' '.$order['shipping']['last_name'];
-
-		$country    = $order['shipping']['country'];
-		$country_id = null;
-		$state      = $order['shipping']['state'];
-		$state_id   = null;
-
-		$scountry = \App\Country::findByIsoCode( $order['shipping']['country'] );
-		if ($scountry) {
-			$country    = $scountry->name;
-			$country_id = $scountry->id;
-		}
-
-		$sstate = WooOrder::getState( $order['shipping']['state'], $order['shipping']['country'] );
-		if ($sstate) {
-			$state    = $sstate->name;
-			$state_id = $sstate->id;
-		}
-
-		$data = [
-			'alias' => $order['id'].l('-Shipping'),
-			'webshop_id' => WooOrder::getShippingAddressId( $order ),
-
-			'name_commercial' => $name,
-			
-			'address1' => $order['shipping']['address_1'],
-			'address2' => $order['shipping']['address_2'],
-			'postcode' => $order['shipping']['postcode'],
-			'city'         => $order['shipping']['city'],
-			'state_name'   => $state,
-			'country_name' => $country,
-			
-			'firstname' => $order['shipping']['first_name'],
-			'lastname'  => $order['shipping']['last_name'],
-//			'email'     => $order['shipping']['email'],
-
-//			'phone' => $order['shipping']['phone'],
-//			'phone_mobile' => $order[''],
-//			'fax' => $order[''],
-			
-			'notes' => null,
-			'active' => 1,
-
-//			'latitude' => $order[''],
-//			'longitude' => $order[''],
-
-			'state_id'   => $state_id,
-			'country_id' => $country_id,
-		];
-
-        $address = Address::create($data);
-        $customer->addresses()->save($address);
-
-        $customer->update(['shipping_address_id' => $address->id]);
-        
-        return $address;
-    }
+    // public function importCustomer()
 
 
 /* ********************************************************************************************* */   
 
-
-    public function tell_run_status() {
-      return $this->run_status;
-    }
 
 
 }

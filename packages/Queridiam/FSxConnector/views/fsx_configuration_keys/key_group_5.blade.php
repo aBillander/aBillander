@@ -33,11 +33,11 @@
   {{-- !! Form::hidden('tab_index', $tab_index, array('id' => 'tab_index')) !! --}}
 
   <fieldset>
-    <legend>{{ l('FSx-Connector - FactuSOL Settings') }}</legend>
+    <legend>{{ l('FSx-Connector - FactuSOLWeb Settings') }}</legend>
 
 
 
-        <p>{{ l('Retrieve your FactuSOL Settings.') }}</p>
+        <p>{{ l('Retrieve your FactuSOLWeb Settings.') }}</p>
 
 
 <div id="fsxconfs" style="display:none;">

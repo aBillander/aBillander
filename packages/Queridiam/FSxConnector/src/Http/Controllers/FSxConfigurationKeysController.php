@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 // use \aBillander\WooConnect\WooConnector;
 // use \aBillander\WooConnect\WooOrderImporter;
+use Queridiam\FSxConnector\FSxTools;
 
 use \App\Configuration;
 
@@ -22,61 +23,53 @@ class FSxConfigurationKeysController extends Controller {
 
                 1 => [
 
-                        'FSX_IMPERSONATE_TIMEOUT',
-						'FSX_TIME_OFFSET'               => '3',
-						'FSX_MAX_ROUNDCYCLES'           => '50',
+//                        'FSX_IMPERSONATE_TIMEOUT' => '0',,
+//						'FSX_TIME_OFFSET'               => '3',
+//						'FSX_MAX_ROUNDCYCLES'           => '50',
 
-                        'FSOL_WEB_CUSTOMER_CODE_BASE'     => 50000,
-						'FSOL_WEB_GUEST_CODE_BASE'        => 60000,		// 'WOOC_ENABLE_GUEST_CHECKOUT'
-                        'FSOL_ABI_CUSTOMER_CODE_BASE'     => 80000,
+                        'FSOL_WEB_CUSTOMER_CODE_BASE', //      => 50000,
+//						'FSOL_WEB_GUEST_CODE_BASE'        => 60000,		// 'WOOC_ENABLE_GUEST_CHECKOUT'
+                        'FSOL_ABI_CUSTOMER_CODE_BASE', //      => 80000,
 
 
-						'FSOL_CBDCFG' => '/public_html/laextranatural.com/wp-content/plugins/FSx-Connector/fsweb/BBDD/',
-						'FSOL_CIACFG' => 'imagenes/',
-						'FSOL_CPVCFG' => 'npedidos/',
-						'FSOL_CCLCFG' => 'nclientes/',
-						'FSOL_CBRCFG' => 'factusolweb.sql',
+						'FSOL_CBDCFG', //  => '/public_html/laextranatural.com/wp-content/plugins/FSx-Connector/fsweb/BBDD/',
+						'FSOL_CIACFG', //  => 'imagenes/',
+						'FSOL_CPVCFG', //  => 'npedidos/',
+						'FSOL_CCLCFG', //  => 'nclientes/',
+						'FSOL_CBRCFG', //  => 'factusolweb.sql',
 
-						'FSOL_TCACFG' => '',	// Tarifa
-						'FSOL_AUSCFG' => '',	// Almacén
-						'FSOL_SPCCFG' => '',	// Serie de Pedidos
 
-						'FSOL_PIV1CFG' => '',
-						'FSOL_PIV2CFG' => '',
-						'FSOL_PIV3CFG' => '',
-
-						'FSOL_PRE1CFG' => '',
-						'FSOL_PRE2CFG' => '',
-						'FSOL_PRE2CFG' => '',
-
-						'FSOL_IMPUESTO_DIRECTO_TIPO_1' => '-1',
-						'FSOL_IMPUESTO_DIRECTO_TIPO_2' => '-1',
-						'FSOL_IMPUESTO_DIRECTO_TIPO_3' => '-1',
-						'FSOL_IMPUESTO_DIRECTO_TIPO_4' => '-1',
-
-						'',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
+//    'WOO_ORDER_TO_DOWNLOAD_STATUS_ID'  => '-1',
+//    'WOO_ORDER_DOWNLOADED_STATUS_ID'   => '-1',
+                        'FSX_FORCE_CUSTOMERS_DOWNLOAD', //     => '0',
+                        'FSX_DLOAD_CUSTOMER_SHIPPING_ADDRESS', // => '0',
+//    'WOO_USE_WEB_DESC'                 => '0',
+                          'FSX_ORDER_LINES_REFERENCE_CHECK', //  => '0',
 
                     ],
 
                 2 => [
 
+            'FSOL_IMPUESTO_DIRECTO_TIPO_1', //  => '',
+            'FSOL_IMPUESTO_DIRECTO_TIPO_2', //  => '',
+            'FSOL_IMPUESTO_DIRECTO_TIPO_3', //  => '',
+            'FSOL_IMPUESTO_DIRECTO_TIPO_4', //  => '',
 
                     ],
 
                 3 => [
 
+            'FSOL_TCACFG', //  => '',  // Tarifa
+            'FSOL_AUSCFG', //  => '',  // Almacén
+            'FSOL_SPCCFG', //  => '',  // Serie de Pedidos
+
+            'FSOL_PIV1CFG', //  => '',
+            'FSOL_PIV2CFG', //  => '',
+            'FSOL_PIV3CFG', //  => '',
+
+            'FSOL_PRE1CFG', //  => '',
+            'FSOL_PRE2CFG', //  => '',
+            'FSOL_PRE2CFG', //  => '',
 
                     ],
 
@@ -101,14 +94,10 @@ class FSxConfigurationKeysController extends Controller {
 	 */
 	public function index(Request $request)
 	{
-        // return view('fsx_connector::fsx_configuration_keys.index');
-
         $conf_keys = array();
         $tab_index =   $request->has('tab_index')
                         ? intval($request->input('tab_index'))
                         : 1;
-        
-        return redirect()->route('fsx.configuration');
 
         // Check tab_index
         $tab_view = 'fsx_connector::fsx_configuration_keys.'.'key_group_'.intval($tab_index);
@@ -120,53 +109,11 @@ class FSxConfigurationKeysController extends Controller {
         foreach ($this->conf_keys[$tab_index] as $key)
             $key_group[$key]= Configuration::get($key);
 
-        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
-        $customer_groupList = \App\CustomerGroup::pluck('name', 'id')->toArray();
-        $price_listList = \App\PriceList::pluck('name', 'id')->toArray();
-        $languageList = \App\Language::pluck('name', 'id')->toArray();
-        $orders_sequenceList = \App\Sequence::listFor( \App\CustomerOrder::class );
-        $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-
-        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'languageList', 'orders_sequenceList', 'taxList') );
+// abi_r($key_group, true);
+        return view( $tab_view, compact('tab_index', 'key_group') );
 
 	}
-   
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
-    public function rindex(Request $request)
-    {
-        $conf_keys = array();
-        $tab_index =   $request->has('tab_index')
-                        ? intval($request->input('tab_index'))
-                        : 1;
-        
-        // Check tab_index
-        $tab_view = 'woo_connect::woo_configuration_keys.'.'key_group_'.intval($tab_index);
-        if (!\View::exists($tab_view)) 
-            return \Redirect::to('404');
-
-        $key_group = [];
-
-        foreach ($this->conf_keys[$tab_index] as $key)
-            $key_group[$key]= Configuration::get($key);
-
-        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
-        $customer_groupList = \App\CustomerGroup::pluck('name', 'id')->toArray();
-        $price_listList = \App\PriceList::pluck('name', 'id')->toArray();
-        $languageList = \App\Language::pluck('name', 'id')->toArray();
-        $orders_sequenceList = \App\Sequence::listFor( \App\CustomerOrder::class );
-        $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-
-        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'languageList', 'orders_sequenceList', 'taxList') );
-
-        // https://bootsnipp.com/snippets/M27e3
-    }
 	
-	
-
     /**
      * Show the form for creating a new resource.
      *
@@ -214,7 +161,7 @@ class FSxConfigurationKeysController extends Controller {
 
         // die();
 
-        return redirect('wooc/wooconnect/wooconfigurationkeys?tab_index='.$tab_index)
+        return redirect('fsx/fsxconfigurationkeys?tab_index='.$tab_index)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $tab_index], 'layouts') );
     }
 
@@ -307,40 +254,7 @@ class FSxConfigurationKeysController extends Controller {
         $settings = [];
 
         // Get Configurations from FactuSOL Web
-        if (config('app.url') =='http://abimfg.laextranatural.es')
-        {
-                \Config::set("database.connections.fsx-bbdd", [
-                    'driver' => 'mysql',
-                    'host' => env('DB_HOST', 'localhost'),
-                    'port' => env('DB_PORT', '3306'),
-                    'database' => env('DB_DATABASE_FSX', 'laextran_com'),
-                    'username' => env('DB_USERNAME_FSX', 'laextran_com'),
-                    'password' => env('DB_PASSWORD_FSX', 'DAS#6XqwyK%z'),
-                    'unix_socket' => env('DB_SOCKET', ''),
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'prefix' => '',
-        //            'strict' => true,
-                    'strict' => false,
-                    'engine' => null,
-                ]);
-        } else {
-                \Config::set("database.connections.fsx-bbdd", [
-                    'driver' => 'mysql',
-                    'host' => env('DB_HOST', '127.0.0.1'),
-                    'port' => env('DB_PORT', '3306'),
-                    'database' => env('DB_DATABASE_FSX', 'wooc_btester'),
-                    'username' => env('DB_USERNAME_FSX', 'root'),
-                    'password' => env('DB_PASSWORD_FSX', '1qaz2wsx'),
-                    'unix_socket' => env('DB_SOCKET', ''),
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'prefix' => '',
-        //            'strict' => true,
-                    'strict' => false,
-                    'engine' => null,
-                ]);
-        }
+        FSxTools::setFSxConnection();
 
         // Start Logic Probe, now!
         try {
@@ -389,6 +303,74 @@ class FSxConfigurationKeysController extends Controller {
     }
 
 
+/* ********************************************************************************************* */    
+
+
+    /**
+     * Show the form for editing the specified resource.
+     * GET 
+     *
+     * @param  
+     * @return Response
+     */
+    public function configurationTaxesEdit()
+    {
+        $tab_index = 2;
+
+// abi_r($tab_index, true);
+
+        $key_group = [];
+        $key_percent = [];
+
+        foreach ($this->conf_keys[$tab_index] as $key)
+        {
+              $key_group[$key]= Configuration::get($key);
+
+              $i = substr($key, -1);
+
+              $key_percent[$key] = $i == '4' ? '0.00' : number_format(floatval( Configuration::get('FSOL_PIV'.$i.'CFG') ), 2);
+        }
+        $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+        return view('fsx_connector::fsx_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'key_group', 'key_percent', 'taxList'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     * PUT 
+     *
+     * @param  
+     * @return Response
+     */
+    public function configurationTaxesUpdate(Request $request)
+    {
+        $tab_index = 2;
+
+        $key_group = $this->conf_keys[$tab_index];
+
+        // Validation rules
+        $rules = [];
+        
+        foreach ($this->conf_keys[$tab_index] as $key)
+        {
+            $rules[ $key ] = 'sometimes|nullable|exists:taxes,id';
+        }
+
+        $this->validate($request, $rules);
+
+        foreach ($key_group as $key) 
+        {
+            if ($request->has($key)) {
+
+                \App\Configuration::updateValue($key, $request->input($key));
+            }
+        }
+
+        return redirect()->route('fsx.configuration.taxes')
+                ->with('success', l('This configuration has been successfully updated', [], 'layouts'));
+    }
+
+
 /* ********************************************************************************************* */
 
 
@@ -403,30 +385,29 @@ class FSxConfigurationKeysController extends Controller {
     {
         $tab_index = 3;
 
-        return $tab_index ;
+        // return $tab_index ;
 
-        $woopgates = WooConnector::getWooPaymentGateways();
+        $fsolpaymethods = FSxTools::getFormasDePagoList();
 
-// abi_r($woopgates, true);
+//        abi_r($fsolpaymethods, true);
 
-        // Save Payment Gateways Cache
-        // Loose some fat first
-        $woopgates = array_map(function($value){
-            unset($value['settings']);
-            return $value;
-        }, $woopgates);
-        Configuration::updateValue('WOOC_PAYMENT_GATEWAYS_CACHE', json_encode($woopgates));
-        // Woo Payment Gateways Dictionary
+        // Save Payment Methods Cache
+        Configuration::updateValue('FSX_FORMAS_DE_PAGO_CACHE', json_encode($fsolpaymethods));
+
+        // aBillander Methods
+        $pgatesList = \App\PaymentMethod::select('id', 'name')->orderby('name', 'desc')->get()->toArray();
+
+        // abi_r($pgatesList, true);
+
+        // Payment Methods Dictionary
         $dic = [];
         $dic_val = [];
-        foreach ($woopgates as $woopgate) {
-            $dic[$woopgate['id']] = WooConnector::getPaymentGatewayKey( $woopgate['id'] );
-            $dic_val[$woopgate['id']] = Configuration::get($dic[$woopgate['id']]);
+        foreach ($pgatesList as $paymethod) {
+            $dic[$paymethod['id']] = FSxTools::getPaymentMethodKey( $paymethod['id'] );
+            $dic_val[$paymethod['id']] = Configuration::get($dic[$paymethod['id']]);
         }
 
-        $pgatesList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-
-        return view('woo_connect::woo_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'woopgates', 'dic', 'dic_val', 'pgatesList'));
+        return view('fsx_connector::fsx_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'fsolpaymethods', 'dic', 'dic_val', 'pgatesList'));
     }
 
     /**
@@ -440,31 +421,32 @@ class FSxConfigurationKeysController extends Controller {
     {
         // Validation rules
         $rules = [];
-        
+/* Poor man...        
         foreach ( $request->input('dic') as $key => $val) 
         {
             $rules[ 'dic.'.$key ] = 'sometimes|nullable|exists:payment_methods,id';
         }
 
         $this->validate($request, $rules);
-        
+*/        
         foreach ( $request->input('dic') as $key => $val) 
         {
             Configuration::updateValue($key, $val);
         }
         // Save Payment Gateways Dictionary Cache
         $dic_val = [];
-        $woopgates = json_decode(Configuration::get('WOOC_PAYMENT_GATEWAYS_CACHE'), true);
-        foreach ($woopgates as $woopgate) {
-            $dic_val[$woopgate['id']] = Configuration::get(WooConnector::getPaymentGatewayKey($woopgate['id']));
+        // aBillander Methods
+        $pgatesList = \App\PaymentMethod::select('id', 'name')->orderby('name', 'desc')->get()->toArray();
+        foreach ($pgatesList as $paymethod) {
+            $dic_val[$paymethod['id']] = Configuration::get(FSxTools::getPaymentMethodKey($paymethod['id']));
         }
 
-        Configuration::updateValue('WOOC_PAYMENT_GATEWAYS_DICTIONARY_CACHE', json_encode($dic_val));
+        Configuration::updateValue('FSX_FORMAS_DE_PAGO_DICTIONARY_CACHE', json_encode($dic_val));
 
 //      abi_r($request->input('dic'));
 //      abi_r($dic_val, true);
 
-        return redirect()->route('wooconnect.configuration.paymentgateways')
+        return redirect()->route('fsx.configuration.paymentmethods')
                 ->with('success', l('This configuration has been successfully updated', [], 'layouts'));
     }
 

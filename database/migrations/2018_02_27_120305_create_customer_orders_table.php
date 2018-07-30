@@ -108,6 +108,7 @@ class CreateCustomerOrdersTable extends Migration
 
 //            $table->dateTime('production_at')->nullable();                      // Scheduled to Production
             $table->integer('production_sheet_id')->unsigned()->nullable();
+            $table->dateTime('export_date')->nullable();                // Exported to an external system (such as FactuSOL)
             
             $table->string('secure_key', 32)->nullable(false);                  // = md5(uniqid(rand(), true))
 

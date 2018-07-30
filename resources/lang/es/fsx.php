@@ -20,8 +20,8 @@ return [
 	'FactuSOLWeb'     => 'FactuSOLWeb',
 	'All Keys'     => 'Todas las Claves',
 
-	'WooConnect Settings'     => 'WooConnect Configuración',
-	'WooCommerce link Settings'     => 'Configuración del enlace con WooCommerce',
+	'FSx-Connector Settings'     => 'FSx-Connector Configuración',
+	'FactuSOL link Settings'     => 'Configuración del enlace con FactuSOL',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -32,31 +32,48 @@ return [
 	|
 	*/
 
-	'WOOC_DECIMAL_PLACES.name'     => 'Número de decimales',
-	'WOOC_DECIMAL_PLACES.help'     => 'Número de posiciones decimales con que trabaja WooCommerce,',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
-	'WOOC_DEF_CURRENCY.name'     => 'Divisa',
-	'WOOC_DEF_CURRENCY.help'     => 'Moneda de FactuSOL.',
-	'WOOC_DEF_CUSTOMER_GROUP.name'     => 'Grupo de Clientes',
-	'WOOC_DEF_CUSTOMER_GROUP.help'     => 'Los Clientes que se importan desde WooCommerce serán asignados a este Grupo.',		// Imported Customers will be asigned to this Group
-	'WOOC_DEF_CUSTOMER_PRICE_LIST.name'     => 'Tarifa',
-	'WOOC_DEF_CUSTOMER_PRICE_LIST.help'     => 'Los Clientes que se importan desde WooCommerce se les asignará esta Tarifa.',	// Imported Customers will be asigned this Price List
+	'FSOL_WEB_CUSTOMER_CODE_BASE.name' => 'Código base para Clientes (Web) en FactuSOL',
+	'FSOL_WEB_CUSTOMER_CODE_BASE.help' => '',
 
-	'WOOC_DEF_LANGUAGE.name'     => 'Idioma',
-	'WOOC_DEF_LANGUAGE.help'     => 'Idioma de FactuSOL.',
-	'WOOC_DEF_ORDERS_SEQUENCE.name'     => 'Serie para Pedidos',
-	'WOOC_DEF_ORDERS_SEQUENCE.help'     => 'Los Pedidos que se importan desde WooCommerce serán asignados a esta Serie.',		// Sequence for Customer Orders imported from WooCommerce
-	'WOOC_DEF_SHIPPING_TAX.name'     => 'Impuesto para los Gastos de Envío',
-	'WOOC_DEF_SHIPPING_TAX.help'     => 'Impuesto para los Gastos de Envío en FactuSOL.',
+	'FSOL_ABI_CUSTOMER_CODE_BASE.name' => 'Código base para Clientes (aBillander) en FactuSOL',
+	'FSOL_ABI_CUSTOMER_CODE_BASE.help' => '',
 
-	'WOOC_ORDER_NIF_META.name'     => 'Campo "Meta" para el NIF',
-	'WOOC_ORDER_NIF_META.help'     => 'Campo "Meta" del Pedido en WooCommerce donde se guarda el NIF/CIF/NIE.',		// Order Meta field name to store Spanish NIF/CIF/NIE.
-	'WOOC_ORDERS_PER_PAGE.name'     => 'Pedidos por página',
-	'WOOC_ORDERS_PER_PAGE.help'     => 'Número de Pedidos (máximo) para resultados paginados.',
+	'FSOL_CBDCFG.name' => 'Carpeta de subida de datos',
+	'FSOL_CBDCFG.help' => '/public_html/laextranatural.com/wp-content/plugins/FSx-Connector/fsweb/BBDD/',
 
-	'WOOC_USE_LOCAL_PRODUCT_NAME.name'     => 'Usar el Nombre local del Producto',
-	'WOOC_USE_LOCAL_PRODUCT_NAME.help'     => 'En los Pedidos importados, usar el Nombre del Producto en lugar del Nombre en WooCommerce.',
-	''     => '',
-	''     => '',
+	'FSOL_CIACFG.name' => 'Carpeta de imágenes',
+	'FSOL_CIACFG.help' => 'imagenes/',
+
+	'FSOL_CPVCFG.name' => 'Carpeta descarga de Pedidos',
+	'FSOL_CPVCFG.help' => 'npedidos/',
+
+	'FSOL_CCLCFG.name' => 'Carpeta descarga de Clientes',
+	'FSOL_CCLCFG.help' => 'nclientes/',
+
+	'FSOL_CBRCFG.name' => 'Nombre del Fichero de Datos',
+	'FSOL_CBRCFG.help' => 'factusolweb.sql',
+
+	'FSX_FORCE_CUSTOMERS_DOWNLOAD.name' => 'Descargar siempre el Cliente del Pedido',
+	'FSX_FORCE_CUSTOMERS_DOWNLOAD.help' => '1 : Se descargará el Cliente cada vez que hace un Pedido. <br>0 : Sólo se descarga el Cliente la primera vez que hace un Pedido.',
+
+	'FSX_DLOAD_CUSTOMER_SHIPPING_ADDRESS.name' => 'Descargar Clientes con Dirección de Entrega',
+	'FSX_DLOAD_CUSTOMER_SHIPPING_ADDRESS.help' => '1 : Se descargará el Cliente siempre que la Dirección de Entrega del Pedido es diferente de la Dirección Principal del Cliente. <br>0 : El Cliente se descarga según otras configuraciones.',
+
+	'FSX_ORDER_LINES_REFERENCE_CHECK.name' => 'Comprobar la Referencia de las Líneas de Pedido',
+	'FSX_ORDER_LINES_REFERENCE_CHECK.help' => '',
+
+	'FSOL_IMPUESTO_DIRECTO_TIPO_1.name' => 'Impuesto Directo Tipo 1',
+	'FSOL_IMPUESTO_DIRECTO_TIPO_1.help' => 'El valor obtenido de FactuSOL es: <span style="font-size: 12px; font-weight: bold">:fsol_value%</span>.',
+
+	'FSOL_IMPUESTO_DIRECTO_TIPO_2.name' => 'Impuesto Directo Tipo 2',
+	'FSOL_IMPUESTO_DIRECTO_TIPO_2.help' => 'El valor obtenido de FactuSOL es: <span style="font-size: 12px; font-weight: bold">:fsol_value%</span>.',
+
+	'FSOL_IMPUESTO_DIRECTO_TIPO_3.name' => 'Impuesto Directo Tipo 3',
+	'FSOL_IMPUESTO_DIRECTO_TIPO_3.help' => 'El valor obtenido de FactuSOL es: <span style="font-size: 12px; font-weight: bold">:fsol_value%</span>.',
+
+	'FSOL_IMPUESTO_DIRECTO_TIPO_4.name' => 'Impuesto Directo Tipo 4',
+	'FSOL_IMPUESTO_DIRECTO_TIPO_4.help' => 'El valor obtenido de FactuSOL es: <span style="font-size: 12px; font-weight: bold">:fsol_value%</span>.',
+
 
 	/*
 	|--------------------------------------------------------------------------
@@ -70,8 +87,8 @@ return [
 	'FSx-Connector - Configuration'     => 'FSx-Connector - Configuración',
 	'FSx-Connector - Configurations'     => 'FSx-Connector - Configuraciones',
 
-	'FSx-Connector - FactuSOL Settings'     => 'FSx-Connector - Configuración de FactuSOL',
-	'Retrieve your FactuSOL Settings.'     => 'Cargar las Configuraciones de FactuSOL.',
+	'FSx-Connector - FactuSOLWeb Settings'     => 'FSx-Connector - Configuración de FactuSOLWeb',
+	'Retrieve your FactuSOLWeb Settings.'     => 'Cargar las Configuraciones de FactuSOLWeb.',
 
 	'FSx-Connector - Taxes Dictionary'     => 'FSx-Connector - Diccionario de Impuestos',
 	'FSx-Connector - Payment Methods Dictionary'     => 'FSx-Connector - Diccionario de Formas de Pago',

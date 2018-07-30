@@ -10,6 +10,8 @@ class FSxTools
 	/** @var array Connections.fsx-bbdd cache */
 	protected static $_FSXCON;
 
+    public static  $gates = NULL;
+
 
 	public static function setFSxConnection()
 	{
@@ -60,7 +62,7 @@ class FSxTools
 	/**
 	  * Get a single configuration value
 	  */
-	public static function getFormasDePago()
+	public static function getFormasDePagoList()
 	{
 		if (!self::$_FSXCON)
 		{
@@ -82,8 +84,23 @@ class FSxTools
 
         }
 		
-		return collect($formasp)->map(function($x){ return (array) $x; })->toArray();
+		return collect($formasp)->pluck('description', 'id')->toArray();
+		
+		// return collect($formasp)->map(function($x){ return (array) $x; })->toArray();
 	}
+    
+    public static function getCodigoFormaDePago( $paymentm_id = '' )
+    {
+        if (!$paymentm_id) return null;
+
+        // Dictionary
+        if ( !isset(self::$gates) )
+            self::$gates = json_decode(\App\Configuration::get('FSX_FORMAS_DE_PAGO_DICTIONARY_CACHE'), true);
+
+        $gates = self::$gates;
+
+        return isset($gates[$paymentm_id]) ? $gates[$paymentm_id] : null;
+    }
 
 
 /* ********************************************************************************************* */
@@ -119,7 +136,7 @@ class FSxTools
 
 
 
-    public static function getFormaDePagoKey( $id = '' )
+    public static function getPaymentMethodKey( $id = '' )
     {
             return 'FSX_PAYMENT_METHOD_'.strtoupper($id);
     }

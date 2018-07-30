@@ -58,5 +58,26 @@ trait LoggableTrait
     {
         return $this->log_has_errors; 
     }
+    
+    // Some ALIAS functions:
+    public function logInfo($message = '', $context = [])
+    {
+        $this->logMessage('INFO', $message, $context);
+    }
+    
+    public function logWarning($message = '', $context = [])
+    {
+        $this->logMessage('WARNING', $message, $context);
+    }
+    
+    public function logError($message = '', $context = [])
+    {
+        $this->logMessage('ERROR', $message, $context);
+    }
+    
+    public function logTimer($message = '', $context = [])
+    {
+        $this->logMessage('TIMER', $message, $context);
+    }
 
 }

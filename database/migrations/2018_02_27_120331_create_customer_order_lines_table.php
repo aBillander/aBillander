@@ -37,6 +37,9 @@ class CreateCustomerOrderLinesTable extends Migration
             $table->decimal('quantity', 20, 6);
             $table->integer('measure_unit_id')->unsigned()->nullable(false);
 
+            $table->tinyInteger('prices_entered_with_tax')->default(0);
+//            $table->tinyInteger('tax_computation_method');
+
             $table->decimal('cost_price', 20, 6)->default(0.0);
             $table->decimal('unit_price', 20, 6)->default(0.0);                 // From Product data (initial price)
             $table->decimal('unit_customer_price', 20, 6)->default(0.0);        // Calculated custom for customer (initial price for customer)

@@ -8,15 +8,15 @@
                <i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>
                &nbsp; {{ l('FactuSOLWeb') }}
             </a>
+            <a id="tab_index_2" href="{{ URL::route('fsx.configuration.taxes') }}" class="list-group-item @if ($tab_index==2) active @endif">
+               <i class="fa fa-bank"></i></span>
+               &nbsp; {{ l('Taxes') }}
+            </a>
             <a id="tab_index_3" href="{{ URL::route('fsx.configuration.paymentmethods') }}" class="list-group-item @if ($tab_index==3) active @endif">
                <i class="fa fa-money"></i></span>
                &nbsp; {{ l('Payment Methods') }}
             </a>
 {{--
-            <a id="tab_index_2" href="{{ URL::route('fsx.configuration.taxes') }}" class="list-group-item @if ($tab_index==2) active @endif">
-               <i class="fa fa-bank"></i></span>
-               &nbsp; {{ l('Taxes') }}
-            </a>
             <a id="tab_index_4" href="{{ URL::route('fsx.configuration.shippingmethods') }}" class="list-group-item @if ($tab_index==4) active @endif">
                <i class="fa fa-truck"></i>
                &nbsp; {{ l('Shipping Methods') }}

@@ -40,6 +40,11 @@ Route::group([
 	Route::post('fsxconfiguration/paymentmethods', 'FSxConfigurationKeysController@configurationPaymentMethodsUpdate')
 			->name('fsx.configuration.paymentmethods.update');
 
+	Route::get( 'fsxconfiguration/taxes', 'FSxConfigurationKeysController@configurationTaxesEdit')
+			->name('fsx.configuration.taxes');
+	Route::post('fsxconfiguration/taxes', 'FSxConfigurationKeysController@configurationTaxesUpdate')
+			->name('fsx.configuration.taxes.update');
+
 
     Route::resource('fsxorders', 'FSxOrdersController');
 

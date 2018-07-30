@@ -37,18 +37,18 @@
 
 
 
-@foreach ( $fsolpaymethods as $pgates )
+@foreach ( $pgatesList as $pgates )
 <div class="row">
 
   <div class="form-group col-lg-6 col-md-6 col-sm-6">
       {{-- !! Form::label($pgates['id'], $pgates['method_title']) !! --}}
       <div class="text-right">
       <label>
-      {{ ' ['.$pgates['id'].'] '.$pgates['description'] }}</label></div>
+      {{ ' ['.$pgates['id'].'] '.$pgates['name'] }}</label></div>
       {{-- !! Form::text($pgates['id'], null, array('class' => 'form-control')) !! --}}
   </div>
   <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('dic.'.$dic[$pgates['id']]) ? 'has-error' : '' }}">
-        {!! Form::select('dic['.$dic[$pgates['id']].']', array('' => l('-- Please, select --', [], 'layouts')) + $pgatesList, $dic_val[$pgates['id']], array('class' => 'form-control')) !!}
+        {!! Form::select('dic['.$dic[$pgates['id']].']', array('' => l('-- Please, select --', [], 'layouts')) + $fsolpaymethods, $dic_val[$pgates['id']], array('class' => 'form-control')) !!}
       {!! $errors->first('dic.'.$dic[$pgates['id']], '<span class="help-block">:message</span>') !!}
     </div>
 

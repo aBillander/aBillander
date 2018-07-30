@@ -352,6 +352,7 @@
                     $('#line_unit_customer_price').val(result.unit_customer_price);
                     
                     $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
+                    $("#line_price").val( result.unit_customer_final_price );
                     $('#line_discount_percent').val(result.discount_percent);
 
                     $('#discount_amount_tax_incl').val(result.discount_amount_tax_incl);
@@ -679,6 +680,7 @@
                     price = response.unit_customer_price.display;
                     $("#line_unit_customer_price").val( price );
                     $("#line_price").val( price.round( PRICE_DECIMAL_PLACES ) );
+                    $("#line_price").val( price );
 
                     calculate_line_product();
 

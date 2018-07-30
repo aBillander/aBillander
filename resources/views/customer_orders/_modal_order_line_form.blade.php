@@ -67,6 +67,10 @@ function calculate_line_product() {
     $("#line_final_price").html( final_price.round( PRICE_DECIMAL_PLACES ) );
     $("#line_total_tax_exc").html( total_tax_exc.round( PRICE_DECIMAL_PLACES ) );
     $("#line_total_tax_inc").html( total_tax_inc.round( PRICE_DECIMAL_PLACES ) );
+
+    $("#line_final_price").html( final_price );
+    $("#line_total_tax_exc").html( total_tax_exc );
+    $("#line_total_tax_inc").html( total_tax_inc );
 }
 
 

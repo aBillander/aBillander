@@ -1,9 +1,9 @@
 
-    <div class="page-header">
+    <!-- div class="page-header">
         <h3>
-            <span style="color: #dd4814;">{{ l('Lines') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $order->name }} -->
+            <span style="color: #dd4814;">{{ l('Lines') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $order->name }} - - >
         </h3>        
-    </div>
+    </div -->
 
     <div id="div_customer_order_lines">
        <div class="table-responsive">
@@ -33,6 +33,8 @@
                <th class="text-left" style="width:1px; white-space: nowrap;"></th>
                <th class="text-left" xwidth="115">{{l('Notes', 'layouts')}}</th>
                 <th class="text-right button-pad"> 
+
+                  <a class="btn btn-sm btn-magick btn-pressure btn-sensitive create-order-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
 
                   <a class="btn btn-sm btn-success create-order-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-shopping-basket"></i> </a>
 

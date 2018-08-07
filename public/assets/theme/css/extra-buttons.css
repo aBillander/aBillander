@@ -285,7 +285,54 @@ fieldset[disabled] .btn-navy.active {
   border-bottom: 1px solid #022241;
 }
 
+
 /* - */
+/* https://bootsnipp.com/snippets/featured/onvenient-buttons */
+/* - */
+
+.btn-white {
+    color: #555;
+    background-color: #f9f9f9;
+    border-color: #cacaca;
+    text-shadow: 1px 1px 0 #f5f5f5;
+}
+.btn-white:hover, .btn-white:focus {
+    background-color: #f4f4f4;
+    border-color: #bebebe;
+}
+
+
+.btn-magick {
+    color: #fff;
+    background-color: #bb39d7;
+    border-color: #9a00cd;
+    text-shadow: 1px 1px 0 #9823d5;
+}
+.btn-magick:hover, .btn-magick:focus {
+    color: #fff;
+    background-color: #b13acd;
+    border-color: #8600b9;
+}
+.btn-pressure {
+    position: relative;
+    margin-bottom: 0;
+}
+.btn-pressure:focus {
+    -moz-outline-style:none;
+         outline:medium none;
+}
+.btn-pressure:active, .btn-pressure.active {
+    top: 4px;
+    border: 0;
+    position: relative;
+}
+.btn-sensitive:active, .btn-sensitive.active {
+    top: 1px;
+    margin-top: 4px;
+}
+
+
+
 /* - Help Icon - */
 
 .abi-help {

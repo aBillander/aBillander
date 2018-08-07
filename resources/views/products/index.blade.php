@@ -19,6 +19,9 @@
 
         <a href="{{ route('products.export') }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
+        <a href="{{ route('wproducts.import.product.images') }}" class="btn btn-sm btn-info" 
+                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-image"></i> </a>
     </div>
     <h2>
         {{ l('Products') }}
@@ -97,10 +100,10 @@
 			<th>{{l('ID', [], 'layouts')}}</th>
       <th>{{ l('Reference') }}</th>
       <th>{{ l('Procurement type') }}</th>
-			<th>{{ l('Product Name') }}</th>
-			<th>{{ l('Measure Unit') }}</th>
+      <th colspan="2">{{ l('Product Name') }}</th>
+			<!-- th>{{ l('Measure Unit') }}</th>
             <th>{{ l('Stock') }}</th>
-            <th>{{ l('Cost Price') }}</th>
+            <th>{{ l('Cost Price') }}</th -->
             <th>{{ l('Customer Price') }}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                         data-content="{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
@@ -108,7 +111,7 @@
                                     l('Prices are entered exclusive of tax', [], 'appmultilang') }}">
                     <i class="fa fa-question-circle abi-help"></i>
                  </a></th>
-            <th>{{ l('Tax') }}</th>
+            <!-- th>{{ l('Tax') }}</th -->
             <!-- th>{{ l('Tax') }} (%)</th -->
             <th>{{ l('Category') }}</th>
             <th>{{ l('Quantity decimals') }}</th>
@@ -126,12 +129,30 @@
                 @else {{ $product->reference }}
                 @endif</td>
       <td>{{ $product->procurement_type }}</td>
+
+      <td>
+@php
+  $img = $product->getFeaturedImage();
+@endphp
+@if ($img)
+              <a class="view-image" data-html="false" data-toggle="modal" 
+                     href="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
+                     data-content="{{l('You are going to view a record. Are you sure?')}}" 
+                     data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
+                     data-caption="({{$img->id}}) {{ $img->caption }} " 
+                     onClick="return false;" title="{{l('View Image')}}">
+
+                      <img src="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+              </a>
+@endif
+      </td>
+
       <td>{{ $product->name }}</td>
-			<td>{{ $product->measureunit->name }}</td>
+			<!-- td>{{ $product->measureunit->name }}</td>
             <td>{{ $product->as_quantity('quantity_onhand') }}</td>
-            <td>{{ $product->as_price('cost_price') }}</td>
+            <td>{{ $product->as_price('cost_price') }}</td -->
             <td>{{ $product->displayPrice }}</td>
-            <td>{{ $product->tax->name }}</td>
+            <!-- td>{{ $product->tax->name }}</td -->
             <!-- td>{{ $product->as_percentable($product->tax->percent) }}</td -->
             <td>@if (isset($product->category)) {{ $product->category->name }} @else - @endif</td>
             <td>{{ $product->quantity_decimal_places }}</td>
@@ -193,3 +214,6 @@ $(document).ready(function() {
 </script>
 
 @stop
+
+
+@include('products._modal_view_image')

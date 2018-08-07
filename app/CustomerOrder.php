@@ -173,7 +173,7 @@ class CustomerOrder extends Model
     {
         $address = $this->customer->address;
 
-        $card = ($address->name_fiscal ? $address->name_fiscal .'<br />' : '').
+        $card = ($address->name_commercial ? $address->name_commercial .'<br />' : '').
                 ($address->firstname  ? $address->firstname . ' '.$address->lastname .'<br />' : '').
                 $address->address1 . ($address->address2 ? ' - ' : '') . $address->address2 .'<br />'.
                 $address->city . ' - ' . $address->state->name.' <a href="javascript:void(0)" class="btn btn-grey btn-xs disabled">'. $address->phone .'</a>';

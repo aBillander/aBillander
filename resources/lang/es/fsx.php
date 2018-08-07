@@ -39,7 +39,7 @@ return [
 	'FSOL_ABI_CUSTOMER_CODE_BASE.help' => '',
 
 	'FSOL_CBDCFG.name' => 'Carpeta de subida de datos',
-	'FSOL_CBDCFG.help' => '/public_html/laextranatural.com/wp-content/plugins/FSx-Connector/fsweb/BBDD/',
+	'FSOL_CBDCFG.help' => '/home/laextran/public_html/laextranatural.com/wp-content/plugins/FSx-Connector/fsweb/BBDD/',
 
 	'FSOL_CIACFG.name' => 'Carpeta de imágenes',
 	'FSOL_CIACFG.help' => 'imagenes/',

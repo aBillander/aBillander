@@ -63,5 +63,10 @@ Route::group([
     Route::get('worders/{id}/invoice', array('uses' => 'WooOrdersController@invoice', 
                                                         'as'   => 'worders.invoice' ));
 
+    Route::get('wproducts/{id}/fetch' , array('uses' => 'WooProductsController@fetch', 
+                                                        'as'   => 'wproducts.fetch' ));
+    Route::get('wproducts/importProductImages' , array('uses' => 'WooProductsController@importProductImages', 
+                                                        'as'   => 'wproducts.import.product.images' ));
+
 });
 

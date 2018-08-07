@@ -19,7 +19,8 @@ class FSxTools
 
 
         // Get Configurations from FactuSOL Web
-        if (config('app.url') =='http://abimfg.laextranatural.es')
+        if (config('app.url') =='http://abimfg.laextranatural.es' 
+         || config('app.url') =='http://abimfg-test.laextranatural.es')
         {
                 self::$_FSXCON['fsx-bbdd'] = 
                 [
@@ -64,7 +65,18 @@ class FSxTools
 	  */
 	public static function getFormasDePagoList()
 	{
-		if (!self::$_FSXCON)
+		// Force use cache
+        if ( 1 )
+        {
+            // Payment Methods Cache
+            $cache = Configuration::get('FSX_FORMAS_DE_PAGO_CACHE');
+
+            return json_decode( $cache , true);
+        }
+        // See comments by the end of this file
+
+
+        if (!self::$_FSXCON)
 		{
 			FSxTools::setFSxConnection();
 		}
@@ -143,3 +155,41 @@ class FSxTools
 
 
 }
+
+
+
+
+/* ********************************************************** * /
+
+
+Route::get('fpago', function()
+{
+    // aBillander Methods
+    $pgatesList = \App\PaymentMethod::select('id', 'name')->orderby('name', 'desc')->get()->toArray();
+
+    $l= [];
+
+    foreach($pgatesList as $k => $v)
+    {
+        $l[] = 
+                [
+                    'id' => '00'.$v['id'],
+                    'name' => $v['name']
+                ];
+    }
+
+    $ll =collect($l)->pluck('name', 'id')->toArray();
+
+    \App\Configuration::updateValue('FSX_FORMAS_DE_PAGO_CACHE', json_encode($ll));
+
+
+
+    abi_r(  \App\Configuration::get('FSX_FORMAS_DE_PAGO_CACHE') );
+
+    $fsolpaymethods = \Queridiam\FSxConnector\FSxTools::getFormasDePagoList();
+    abi_r( ($fsolpaymethods ) );
+
+});
+
+
+/ * ********************************************************** */

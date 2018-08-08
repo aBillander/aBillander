@@ -27,7 +27,7 @@
 
 function calculate_line_product() {
 
-   var QUANTITY_DECIMAL_PLACES = $('#line_quantity_decimal_places').val();
+   var QUANTITY_DECIMAL_PLACES = parseInt($('#line_quantity_decimal_places').val());
    var PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
    var tax_percent;
 
@@ -54,7 +54,7 @@ function calculate_line_product() {
     final_price = $("#line_price").val() * ( 1.0 - $("#line_discount_percent").val() / 100.0 );
     total       = $("#line_quantity").val() * final_price;
 
-    if ( PRICES_ENTERED_WITH_TAX ) {
+    if ( $('#line_is_prices_entered_with_tax').val() > 0 ) {
         total_tax_inc = total;
         total_tax_exc = total / ( 1.0 + tax_percent / 100.0 );
     } else {

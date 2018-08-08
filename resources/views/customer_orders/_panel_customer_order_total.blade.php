@@ -1,5 +1,5 @@
 
-    <div class="page-header">
+    <div xclass="page-header">
         <h3>
             <span style="color: #dd4814;">{{ l('Totals') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $order->name }} -->
              {{-- include getSubtotals functions in billable trait --}}

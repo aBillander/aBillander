@@ -41,10 +41,10 @@
                 @include('customer_orders._tab_edit_lines')
 
       </div>
-      <div class="tab-pane fade" id="tab3default">
+      <!-- div class="tab-pane fade" id="tab3default">
                 Default 3
       </div>
-      <!-- div class="tab-pane fade" id="tab4default">
+      <div class="tab-pane fade" id="tab4default">
                 Default 4
       </div>
       <div class="tab-pane fade" id="tab5default">
@@ -121,6 +121,16 @@
                         $('input:radio[name=line_is_sales_equalization]').val([1]);
                         $('#line_sales_equalization').show();
                     }
+
+                    // set labels
+                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                        $(".label_tax_exc").hide();
+                        $(".label_tax_inc").show();
+                    @else
+                        $(".label_tax_inc").hide();
+                        $(".label_tax_exc").show();
+                    @endif
+
 
                     calculate_line_product();
 
@@ -534,6 +544,8 @@
 
                     $('#line_reference').val(response.reference);
                     $('#line_measure_unit_id').val(response.measure_unit_id);
+                    $('#line_quantity').val(1);
+                    $('#line_quantity_decimal_places').val(response.quantity_decimal_places);
 
                     PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
 
@@ -550,9 +562,31 @@
                     
                     $('#line_discount_percent').val(0);
 //                    price = parseFloat(response.unit_customer_price.display);
-                    price = response.unit_customer_price.display;
+
+                    $('#line_is_prices_entered_with_tax').val(response.unit_customer_price.price_is_tax_inc);
+
+                    if ( $('#line_is_prices_entered_with_tax').val() > 0 )
+                    {
+                        //
+                        price = response.unit_customer_price.tax_inc;
+
+                        // set labels
+                        $(".label_tax_exc").hide();
+                        $(".label_tax_inc").show();
+
+                    } else {
+
+                        //
+                        price = response.unit_customer_price.tax_exc;
+
+                        // set labels
+                        $(".label_tax_inc").hide();
+                        $(".label_tax_exc").show();
+
+                    }
+
                     $("#line_unit_customer_price").val( price );
-                    $("#line_price").val( price.round( PRICE_DECIMAL_PLACES ) );
+                    // $("#line_price").val( price.round( PRICE_DECIMAL_PLACES ) );
                     $("#line_price").val( price );
 
                     calculate_line_product();
@@ -707,6 +741,7 @@ function get_currency_rate(currency_id)
 
 @section('styles')    @parent
 
+{{--
 <style>
   .panel-heading h3:after {
       font-family:'FontAwesome';
@@ -720,6 +755,7 @@ function get_currency_rate(currency_id)
       float: right;
   }
 </style>
+--}}
 
 {{-- Auto Complete --}}
 

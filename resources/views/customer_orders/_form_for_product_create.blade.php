@@ -32,6 +32,8 @@
             {{ Form::hidden('line_sales_rep_id',       null, array('id' => 'line_sales_rep_id'      )) }}
             {{ Form::hidden('line_commission_percent', null, array('id' => 'line_commission_percent')) }}
 
+            {{ Form::hidden('line_is_prices_entered_with_tax', null, array('id' => 'line_is_prices_entered_with_tax')) }}
+
 
 
         <div class="row" id="product-search-autocomplete">
@@ -106,11 +108,11 @@
 
                   </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-                    {{ l('Price with Tax') }}
-                    @else
-                    {{ l('Price') }}
-                    @endif
+                    
+                    <span class="label_tax_inc">{{ l('Price with Tax') }}</span>
+                    
+                    <span class="label_tax_exc">{{ l('Price') }}</span>
+                    
                     {!! Form::text('line_price', null, array('class' => 'form-control', 'id' => 'line_price', 'onkeyup' => 'calculate_line_product( )', 'onchange' => 'calculate_line_product( )', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
                     {!! $errors->first('line_price', '<span class="help-block">:message</span>') !!}
                  </div>
@@ -120,11 +122,11 @@
                     {!! $errors->first('line_discount_percent', '<span class="help-block">:message</span>') !!}
                  </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-                    {{ l('Final Price with Tax') }}
-                    @else
-                    {{ l('Final Price') }}
-                    @endif
+                    
+                    <span class="label_tax_inc">{{ l('Final Price with Tax') }}</span>
+                    
+                    <span class="label_tax_exc">{{ l('Final Price') }}</span>
+                    
                     <div id="line_final_price" class="form-control"></div>
                  </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">

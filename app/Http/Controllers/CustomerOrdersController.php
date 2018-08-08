@@ -535,13 +535,15 @@ class CustomerOrdersController extends Controller
                             'tax_exc' => $price->getPrice(), 
                             'tax_inc' => $price->getPriceWithTax(),
                             'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                        $price->getPriceWithTax() : $price->getPrice() ],
+                                        $price->getPriceWithTax() : $price->getPrice(),
+                            'price_is_tax_inc' => $price->price_is_tax_inc,  ],
     
                 'unit_customer_price' => [ 
                             'tax_exc' => $customer_price->getPrice(), 
                             'tax_inc' => $customer_price->getPriceWithTax(),
                             'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                        $customer_price->getPriceWithTax() : $customer_price->getPrice() ],
+                                        $customer_price->getPriceWithTax() : $customer_price->getPrice(),
+                            'price_is_tax_inc' => $customer_price->price_is_tax_inc,  ],
     
                 'tax_percent' => $tax_percent,
                 'tax_id' => $product->tax_id,
@@ -550,6 +552,7 @@ class CustomerOrdersController extends Controller
                 'currency' => $currency,
     
                 'measure_unit_id' => $product->measure_unit_id,
+                'quantity_decimal_places' => $product->quantity_decimal_places,
                 'reorder_point'      => $product->reorder_point, 
                 'quantity_onhand'    => $product->quantity_onhand, 
                 'quantity_onorder'   => $product->quantity_onorder, 

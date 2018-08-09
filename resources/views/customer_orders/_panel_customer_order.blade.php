@@ -189,19 +189,28 @@
                panel.html('');
                panel.addClass('loading');
 
-               $.get(url, {async:false}, function(result){
+               $.get(url, function(result){
                      panel.html(result);
                      panel.removeClass('loading');
 
                      $("[data-toggle=popover]").popover();
-                     // sortableCustomerOrderLines();
+
+                     // Populate form
+                     getProductLineData( selector );
+
                }, 'html');
 
 
-            // Populate form
-            // Set delay to wait for form load
-            setTimeout(function(){  }, 1000); 
+              $('#modal_order_line').modal({show: true});
+              $("#line_quantity").focus();
 
+              return false;
+
+          };
+
+
+          function getProductLineData( selector ) {
+                          
               var id = selector.attr('data-id');
               var line_type = selector.attr('data-type');
               var url = "{{ route('customerorder.getline', [$order->id, '']) }}/"+id;
@@ -233,9 +242,34 @@
                     $('#line_cost_price').val(result.cost_price);
                     $('#line_unit_price').val(result.unit_price);
                     $('#line_unit_customer_price').val(result.unit_customer_price);
+
+                    $('#line_is_prices_entered_with_tax').val(result.prices_entered_with_tax);
+
+                    if ( $('#line_is_prices_entered_with_tax').val() > 0 )
+                    {
+                        //
+                        price = result.unit_customer_final_price_tax_inc;
+
+                        // set labels
+                        $(".label_tax_exc").hide();
+                        $(".label_tax_inc").show();
+
+                    } else {
+
+                        //
+                        price = result.unit_customer_final_price;
+
+                        // set labels
+                        $(".label_tax_inc").hide();
+                        $(".label_tax_exc").show();
+
+                    }
+
+                    $("#line_price").val( price );
                     
-                    $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
-                    $("#line_price").val( result.unit_customer_final_price );
+                    // $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
+                    // $("#line_price").val( result.unit_customer_final_price );
+
                     $('#line_discount_percent').val(result.discount_percent);
 
                     $('#discount_amount_tax_incl').val(result.discount_amount_tax_incl);
@@ -259,13 +293,7 @@
 
                     console.log(result);
               });
-
-              $('#modal_order_line').modal({show: true});
-              $("#line_quantity").focus();
-
-              return false;
-
-          };
+          }
 
 
           loadCustomerOrderlines();
@@ -392,7 +420,7 @@
                               unit_price : $('#line_unit_price').val(),
                               unit_customer_price : $('#line_unit_customer_price').val(),
                               unit_customer_final_price : $('#line_price').val(),
-                              prices_entered_with_tax : PRICES_ENTERED_WITH_TAX,
+                              prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_percent : $('#line_tax_percent').val(),
                               sales_equalization : $("input[name='line_is_sales_equalization']:checked").val(),
                               currency_id : $("#currency_id").val(),
@@ -459,7 +487,7 @@
                               unit_price : $('#line_unit_price').val(),
                               unit_customer_price : $('#line_unit_customer_price').val(),
                               unit_customer_final_price : $('#line_price').val(),
-                              prices_entered_with_tax : PRICES_ENTERED_WITH_TAX,
+                              prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_percent : $('#line_tax_percent').val(),
                               sales_equalization : $("input[name='line_is_sales_equalization']:checked").val(),
                               currency_id : $("#currency_id").val(),
@@ -622,7 +650,7 @@
                               cost_price : $('#cost_price').val(),
                               price : $('#price').val(),
                               price_tax_inc : $('#price_tax_inc').val(),
-                              prices_entered_with_tax : PRICES_ENTERED_WITH_TAX,
+                              prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_id : $('#tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
                               currency_id : $("#currency_id").val(),

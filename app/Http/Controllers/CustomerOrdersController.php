@@ -667,18 +667,20 @@ class CustomerOrdersController extends Controller
         // ToDo: Don't trust values from browser. Do not be lazy and get them from database
         $tax_percent = $request->input('tax_percent');
         $unit_price  = $request->input('unit_price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', \App\Configuration::get('PRICES_ENTERED_WITH_TAX')) );
+        if ( $pricetaxPolicy > 0 )
             $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
 
         $unit_customer_price = $request->input('unit_customer_price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+        if ( $pricetaxPolicy > 0 )
             $unit_customer_price = $unit_customer_price / (1.0 + $tax_percent/100.0);
 
         $discount_percent = $request->input('discount_percent', 0.0);
 
-        $unit_customer_final_price = $request->input('unit_customer_final_price');
+        $unit_customer_final_price_tax_inc = $unit_customer_final_price = $request->input('unit_customer_final_price');
 
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ) {
+        if ( $pricetaxPolicy > 0 ) {
 
             $unit_final_price         = $unit_customer_final_price / (1.0 + $tax_percent/100.0);
             $unit_final_price_tax_inc = $unit_customer_final_price;
@@ -689,6 +691,8 @@ class CustomerOrdersController extends Controller
 
             $unit_final_price         = $unit_customer_final_price;
             $unit_final_price_tax_inc = $unit_customer_final_price * (1.0 + $tax_percent/100.0);
+
+            $unit_customer_final_price_tax_inc = $unit_final_price_tax_inc;
 
         }
 
@@ -711,17 +715,20 @@ class CustomerOrdersController extends Controller
             'name' => $name,
             'quantity' => $quantity,
             'measure_unit_id' => $request->input('measure_unit_id', $product->measure_unit_id),
+
+            'prices_entered_with_tax' => $pricetaxPolicy,
     
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,
             'unit_customer_price' => $unit_customer_price,
             'unit_customer_final_price' => $unit_customer_final_price,
+            'unit_customer_final_price_tax_inc' => $unit_customer_final_price_tax_inc,
             'unit_final_price' => $unit_final_price,
             'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
             'sales_equalization' => $sales_equalization,
             'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => floatval( $request->input('discount_amount_tax_incl', 0.0) ),
-            'discount_amount_tax_excl' => floatval( $request->input('discount_amount_tax_excl', 0.0) ),
+            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
+            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
 
             'total_tax_incl' => $total_tax_incl,
             'total_tax_excl' => $total_tax_excl,
@@ -842,6 +849,8 @@ class CustomerOrdersController extends Controller
         // ToDo: Don't trust values from browser. Do not be lazy and get them from database
         $tax_percent = $request->input('tax_percent');
         $unit_price  = $order_line->unit_price;                 // $request->input('unit_price');
+
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', \App\Configuration::get('PRICES_ENTERED_WITH_TAX')) );
 //        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
 //            $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
 
@@ -851,9 +860,9 @@ class CustomerOrdersController extends Controller
 
         $discount_percent = $request->input('discount_percent', 0.0);
 
-        $unit_customer_final_price = $request->input('unit_customer_final_price');
+        $unit_customer_final_price_tax_inc = $unit_customer_final_price = $request->input('unit_customer_final_price');
 
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ) {
+        if ( $pricetaxPolicy > 0 ) {
 
             $unit_final_price         = $unit_customer_final_price / (1.0 + $tax_percent/100.0);
             $unit_final_price_tax_inc = $unit_customer_final_price;
@@ -864,6 +873,8 @@ class CustomerOrdersController extends Controller
 
             $unit_final_price         = $unit_customer_final_price;
             $unit_final_price_tax_inc = $unit_customer_final_price * (1.0 + $tax_percent/100.0);
+
+            $unit_customer_final_price_tax_inc = $unit_final_price_tax_inc;
 
         }
 
@@ -886,17 +897,20 @@ class CustomerOrdersController extends Controller
             'name' => $name,
             'quantity' => $quantity,
             'measure_unit_id' => $request->input('measure_unit_id', $product->measure_unit_id),
+
+            'prices_entered_with_tax' => $pricetaxPolicy,
     
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,
             'unit_customer_price' => $unit_customer_price,
             'unit_customer_final_price' => $unit_customer_final_price,
+            'unit_customer_final_price_tax_inc' => $unit_customer_final_price_tax_inc,
             'unit_final_price' => $unit_final_price,
             'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
             'sales_equalization' => $sales_equalization,
             'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => floatval( $request->input('discount_amount_tax_incl', 0.0) ),
-            'discount_amount_tax_excl' => floatval( $request->input('discount_amount_tax_excl', 0.0) ),
+            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
+            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
 
             'total_tax_incl' => $total_tax_incl,
             'total_tax_excl' => $total_tax_excl,

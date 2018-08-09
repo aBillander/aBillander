@@ -43,7 +43,8 @@ class CreateCustomerOrderLinesTable extends Migration
             $table->decimal('cost_price', 20, 6)->default(0.0);
             $table->decimal('unit_price', 20, 6)->default(0.0);                 // From Product data (initial price)
             $table->decimal('unit_customer_price', 20, 6)->default(0.0);        // Calculated custom for customer (initial price for customer)
-            $table->decimal('unit_customer_final_price', 20, 6)->default(0.0); 
+            $table->decimal('unit_customer_final_price', 20, 6)->default(0.0);  // Customer Price for this line
+            $table->decimal('unit_customer_final_price_tax_inc', 20, 6)->default(0.0); 
                                                                                 
             $table->decimal('unit_final_price', 20, 6)->default(0.0);           // Price after discounts = unit_customer_final_price - discount
             $table->decimal('unit_final_price_tax_inc', 20, 6)->default(0.0);

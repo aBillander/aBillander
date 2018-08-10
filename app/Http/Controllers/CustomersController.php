@@ -7,8 +7,9 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Customer as Customer;
-use App\Address as Address;
+use App\Customer;
+use App\Address;
+use App\CustomerOrder;
 use View;
 
 class CustomersController extends Controller {
@@ -324,6 +325,32 @@ class CustomersController extends Controller {
             $params['name_commercial'] = 1;
         
         return Customer::searchByNameAutocomplete($request->input('query'), $params);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getOrders($id, Request $request)
+    {
+        $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+
+        $customer_orders = CustomerOrder::where('customer_id', $id)
+                            ->with('customer')
+                            ->with('currency')
+                            ->with('paymentmethod')
+                            ->orderBy('document_date', 'desc');        // ->get();
+
+        $customer_orders = $customer_orders->paginate( $items_per_page );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+
+        $customer_orders->setPath('customerorders');
+
+        //return $items_per_page ;
+        
+        return view('customers.orders', compact('customer_orders', 'items_per_page'));
     }
 
 }

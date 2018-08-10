@@ -147,6 +147,7 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('customers', 'CustomersController');
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customer.createorder');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup')); 
+        Route::get('customers/{id}/getorders',             'CustomersController@getOrders' )->name('customer.getorders');
 
 //        Route::resource('addresses', 'AddressesController');
         Route::resource('customers.addresses', 'CustomerAddressesController');
@@ -198,6 +199,7 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::post('customerorders/updateline/{lid}',  'CustomerOrdersController@updateOrderLine'  )->name('customerorder.updateline' );
         Route::post('customerorders/deleteline/{lid}',  'CustomerOrdersController@deleteOrderLine'  )->name('customerorder.deleteline' );
         Route::get('customerorders/{id}/duplicate',     'CustomerOrdersController@duplicateOrder'   )->name('customerorder.duplicate'  );
+        Route::get('customerorders/{id}/profit',        'CustomerOrdersController@getOrderProfit'   )->name('customerorder.profit'     );
 
         Route::post('customerorders/sortlines', 'CustomerOrdersController@sortLines')->name('customerorder.sortlines');
 

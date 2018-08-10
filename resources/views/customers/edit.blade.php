@@ -57,10 +57,14 @@
                <i class="fa fa-book"></i></span>
                &nbsp; Contabilidad
             </a -->
-            <a id="b_statistics" href="#statistics" class="list-group-item">
+            <a id="b_orders" href="#orders" class="list-group-item">
+               <i class="fa fa-file-text-o"></i>
+               &nbsp; {{ l('Orders') }}
+            </a>
+            <!-- a id="b_statistics" href="#statistics" class="list-group-item">
                <i class="fa fa-bar-chart"></i>
                &nbsp; {{ l('Statistics') }}
-            </a>
+            </a -->
          </div>
       </div>
       
@@ -76,8 +80,10 @@
 
           @include('customers._panel_addressbook')
 
+          @include('customers._panel_orders')
+{{--
           @include('customers._panel_statistics')
-
+--}}
       </div><!-- div class="col-lg-10 col-md-10 col-sm-9" -->
 
    </div>
@@ -94,7 +100,8 @@
       $("#panel_addressbook").hide();
  //     $("#panel_specialprices").hide();
  //     $("#panel_accounting").hide();
-      $("#panel_statistics").hide();
+      $("#panel_orders").hide();
+ //     $("#panel_statistics").hide();
 
       $("#b_main").removeClass('active');
       $("#b_commercial").removeClass('active');
@@ -102,7 +109,8 @@
       $("#b_addressbook").removeClass('active');
  //     $("#b_specialprices").removeClass('active');
  //     $("#b_accounting").removeClass('active');
-      $("#b_statistics").removeClass('active');
+      $("#b_orders").removeClass('active');
+//      $("#b_statistics").removeClass('active');
       
       if(window.location.hash.substring(1) == 'commercial')
       {
@@ -114,6 +122,12 @@
       {
          $("#panel_addressbook").show();
          $("#b_addressbook").addClass('active');
+      }
+      else if(window.location.hash.substring(1) == 'orders')
+      {
+         $("#panel_orders").show();
+         $("#b_orders").addClass('active');
+         getCustomerOrders();
       }
       else if(window.location.hash.substring(1) == 'statistics')
       {

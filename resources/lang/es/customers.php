@@ -105,6 +105,18 @@ return [
 	'Default Shipping Address has been updated for Customer (:id) :name'     => 'Se ha actualizado la Dirección de Envío por defecto para el Cliente (:id) :name',
 	'You should set the Main Address for Customer (:id) :name'     => 'Debe indicar la Dirección Principal para el Cliente (:id) :name',
 	'No Payment Month'     => 'Mes de No Pago',
+
+
+	'Orders'     => 'Pedidos',
+	'View Order' => 'Ir al Pedido',
+	'Order #'     => 'Número',
+	'Date'     => 'Fecha',
+	'Created via'     => 'Creado por',
+	'Delivery Date'     => 'Fecha Entrega',
+	'Total'     => 'Total',
+	''     => '',
+	''     => '',
+	''     => '',
 	''     => '',
 	''     => '',
 

@@ -45,7 +45,17 @@ return [
 
 	'Price List Lines - Edit'     => 'Líneas de Tarifa - Modificar',
 	'Edit Price List Line'     => 'Modificar Línea de Tarifa',
-	''     => '',
+
+	'Price List'     => 'Tarifa',
+	'Cost Price'     => 'Precio de Coste',
+	'Sales Price'     => 'Precio de Venta',
+	'Sales Price (with Tax)'     => 'Precio (con Impuestos)',
+	'Discount (%)'     => 'Descuento (%)',
+	'Margin (%)'     => 'Margen (%)',
+	'Tax Inc'      => 'IVA inc',
+
+	'Ratio between Price List Price (Tax excluded) and Defaul Price as taken from Product Data.'     => 
+	'Ratio entre el Precio que aparece en la Tarifa (Impuestos excluidos) y el Precio por Defecto, tal como aparece en la Ficha del Producto.',
 	''     => '',
 	''     => '',
 	''     => '',

@@ -9,8 +9,8 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab1default" data-toggle="tab">{{ l('Header Data') }}</a></li>
                             <li><a href="#tab2default" data-toggle="tab">{{ l('Lines') }}</a></li>
-                            <!-- li><a href="#tab3default" data-toggle="tab">Otro</a></li>
-                            <li class="dropdown">
+                            <li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li>
+                            <!-- li class="dropdown">
                                 <a href="#" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="#tab4default" data-toggle="tab">Default 4</a></li>
@@ -41,10 +41,12 @@
                 @include('customer_orders._tab_edit_lines')
 
       </div>
-      <!-- div class="tab-pane fade" id="tab3default">
-                Default 3
+      <div class="tab-pane fade" id="tab3default">
+                
+                @include('customer_orders._tab_profitability')
+
       </div>
-      <div class="tab-pane fade" id="tab4default">
+      <!-- div class="tab-pane fade" id="tab4default">
                 Default 4
       </div>
       <div class="tab-pane fade" id="tab5default">

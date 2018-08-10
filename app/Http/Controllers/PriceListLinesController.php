@@ -28,7 +28,7 @@ class PriceListLinesController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index($pricelistId)
+	public function index($pricelistId, Request $request)
     {
         $list  = $this->pricelist->findOrFail($pricelistId);
         $lines = $this->pricelistline
@@ -36,7 +36,8 @@ class PriceListLinesController extends Controller {
         				->with('product')
         				->where('price_list_id', $pricelistId)
         				->join('products', 'products.id', '=', 'price_list_lines.product_id')		// Get field to order by
-        				->orderBy('products.name', 'asc');
+        				->filter( $request->all() )
+                        ->orderBy('products.name', 'asc');
 
         $lines = $lines->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
 

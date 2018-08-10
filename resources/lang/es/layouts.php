@@ -152,6 +152,7 @@ return [
 	'View more'     => 'Ver más',
 	'Edit'     => 'Modificar',
 	'Apply'     => 'Aplicar',
+	'Refresh'     => 'Refrescar',
 	'Show'     => 'Mostrar',
 	'Save'     => 'Guardar',
 	'Save & Complete'     => 'Guardar y Completar',
@@ -203,7 +204,12 @@ return [
 	'You are going to PERMANENTLY delete a record. Are you sure?' => 'Está a punto de borrar PERMANENTEMENTE un registro ¿Está seguro?',
 	'You are going to delete a record. Are you sure?' => 'Está a punto de borrar un registro ¿Está seguro?',
 	'No records found' => 'No se han encontrado registros',
+
 	'Found :nbr record(s)'     => 'Hay :nbr registro(s)',
+	'Items per page'     => 'Registros por página',
+	'Per page'     => 'Por página',
+	''     => '',
+
 	'This record has been already published with id=:id'     => 'Este registro ya se ha publicado en la Tienda Web con id=:id',
 
 	'Use multiples of 10. Use other values to interpolate.' => 'Use múltiplos de 10. Use otros valores para intercalar.',

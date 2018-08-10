@@ -1460,4 +1460,20 @@ class CustomerOrdersController extends Controller
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $clone->id], 'layouts'));
     }
 
+
+    public function getOrderProfit($id)
+    {
+        return 'getOrderProfit';
+
+        $order = \App\CustomerOrder::findOrFail($id);
+
+        $sheet_id = $order->production_sheet_id;
+
+        $order->update(['production_sheet_id' => null]);
+
+        // $sheet_id = $request->input('current_production_sheet_id');
+
+        return redirect()->route('productionsheet.calculate', [$sheet_id]);
+    }
+
 }

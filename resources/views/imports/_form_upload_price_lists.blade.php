@@ -19,23 +19,33 @@
 
     </div>
 
-     <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-truncate" style="display: none">
-       {!! Form::label('truncate', l('Delete existing Price Lists?'), ['class' => 'control-label']) !!}
+     <div class="form-group col-lg-6 col-md-6 col-sm-6" id="div-round_price" xstyle="display: none">
+       {!! Form::label('round_price', l('Round Prices to Currency decimal places?'), ['class' => 'control-label']) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Prices will be rounded to Price List Currency decimal places.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
        <div>
          <div class="radio-inline">
            <label>
-             {!! Form::radio('truncate', '1', false, ['id' => 'truncate_on']) !!}
+             {!! Form::radio('round_price', '1', false, ['id' => 'round_price_on']) !!}
              {!! l('Yes', [], 'layouts') !!}
            </label>
          </div>
          <div class="radio-inline">
            <label>
-             {!! Form::radio('truncate', '0', true, ['id' => 'truncate_off']) !!}
+             {!! Form::radio('round_price', '0', true, ['id' => 'round_price_off']) !!}
              {!! l('No', [], 'layouts') !!}
            </label>
          </div>
        </div>
       </div>
+
+</div>
+<div class="row">
+
+     <div class="form-group col-lg-6 col-md-6 col-sm-6">
+     </div>
 
      <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-empty_log">
        {!! Form::label('empty_log', l('Empty LOG?'), ['class' => 'control-label']) !!}

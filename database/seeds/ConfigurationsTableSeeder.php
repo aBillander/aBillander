@@ -76,6 +76,7 @@ $confs = [
 ['FSX_ORDER_LINES_REFERENCE_CHECK', '0'],
 ['FSX_PAYMENT_METHODS_CACHE', ''],
 ['HEADER_TITLE', '<span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>'],
+['INCLUDE_SHIPPING_COST_IN_PROFIT', '0'],
 ['MARGIN_METHOD', 'PRC'],
 ['NEW_PRICE_LIST_POPULATE', '0'],
 ['NEW_PRODUCT_TO_ALL_PRICELISTS', '0'],

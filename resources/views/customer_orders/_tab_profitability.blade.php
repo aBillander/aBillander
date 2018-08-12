@@ -2,7 +2,12 @@
 
                <div class="panel-body">
 
-               <div class="profitability-content"></div>
+
+<div id="panel_customer_order_profitability" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
+  
+{{--  @ include('customer_orders._panel_customer_order_profitability') --}}
+
+</div>
 
                </div><!-- div class="panel-body" -->
 
@@ -19,6 +24,8 @@
 
    });
 
+{{--
+   		/*
    		$(window).on('hashchange',function(){
 			page = window.location.hash.replace('#','');
 			getCustomerOrders(page);
@@ -36,18 +43,6 @@
 			// location.hash = page;
 		});
 
-		function getOrderProfit()
-		{
-			$.ajax({
-				url: '{{ route( 'customerorder.profit', [$order->id] ) }}',
-				data: {
-					items_per_page: $("#items_per_page").val()
-				}
-			}).done(function(data){
-				$('.profitability-content').html(data);
-			});
-		}
-
 		$(document).on('keydown','.items_per_page', function(e)
 		{
   
@@ -59,6 +54,27 @@
 		  }
 
 		});
+		*/
+--}}
+		function getOrderProfit()
+		{
+           var panel = $("#panel_customer_order_profitability");
+           var url = "{{ route( 'customerorder.profit', [$order->id] ) }}";
+
+           panel.addClass('loading');
+
+			$.ajax({
+				type: "GET",
+				url: url,
+				data: {
+					items_per_page: $("#items_per_page").val()
+				}
+			}).done(function(data){
+				panel.html(data);
+				panel.removeClass('loading');
+			});
+                 
+		}
 
 		// See: https://stackoverflow.com/questions/20705905/bootstrap-3-jquery-event-for-active-tab-change
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

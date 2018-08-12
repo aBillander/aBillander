@@ -126,9 +126,11 @@
 
                     // set labels
                     @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                        $('#line_is_prices_entered_with_tax').val(1);
                         $(".label_tax_exc").hide();
                         $(".label_tax_inc").show();
                     @else
+                        $('#line_is_prices_entered_with_tax').val(0);
                         $(".label_tax_inc").hide();
                         $(".label_tax_exc").show();
                     @endif
@@ -281,8 +283,9 @@
                     $('#line_tax_id').val(result.tax_id);
                     $('#line_tax_percent').val(result.tax_percent);
 
+                    // sales_equalization
                     if ($('#sales_equalization').val()>0) {
-                        $('input:radio[name=line_is_sales_equalization]').val([1]);
+                        $('input:radio[name=line_is_sales_equalization]').val([result.sales_equalization]);
                         $('#line_sales_equalization').show();
                     }
 
@@ -305,6 +308,18 @@
 
               updateCustomerOrderTotal();
               return false;
+
+          });
+          
+
+          $(document).on('keydown','.input-update-order-total', function(e){
+        
+            if (e.keyCode == 13) {
+             // console.log("put function call here");
+             e.preventDefault();
+             updateCustomerOrderTotal();
+             return false;
+            }
 
           });
 
@@ -350,6 +365,8 @@
                    panel.html(response);
                    panel.removeClass('loading');
                    $("[data-toggle=popover]").popover();
+
+                    showAlertDivWithDelay("#msg-success-update");
                 }
             });
 
@@ -417,12 +434,14 @@
                               combination_id : $('#line_combination_id').val(),
                               reference : $('#line_reference').val(),
                               quantity : $('#line_quantity').val(),
+                              quantity_decimal_places : $('#line_quantity_decimal_places').val(),
                               measure_unit_id : $('#line_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_unit_price').val(),
                               unit_customer_price : $('#line_unit_customer_price').val(),
                               unit_customer_final_price : $('#line_price').val(),
                               prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
+                              tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
                               sales_equalization : $("input[name='line_is_sales_equalization']:checked").val(),
                               currency_id : $("#currency_id").val(),
@@ -484,12 +503,14 @@
                               reference : $('#line_reference').val(),
                               name : $('#line_name').val(),
                               quantity : $('#line_quantity').val(),
+                              quantity_decimal_places : $('#line_quantity_decimal_places').val(),
                               measure_unit_id : $('#line_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_unit_price').val(),
                               unit_customer_price : $('#line_unit_customer_price').val(),
                               unit_customer_final_price : $('#line_price').val(),
                               prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
+                              tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
                               sales_equalization : $("input[name='line_is_sales_equalization']:checked").val(),
                               currency_id : $("#currency_id").val(),
@@ -580,7 +601,7 @@
                     PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
 
                     $('#line_cost_price').val(response.cost_price);
-                    $('#line_unit_price').val(response.unit_price.display);
+                    
                     $('#line_tax_label').html(response.tax_label);
                     $('#line_tax_id').val(response.tax_id);
                     $('#line_tax_percent').val(response.tax_percent);
@@ -597,6 +618,8 @@
 
                     if ( $('#line_is_prices_entered_with_tax').val() > 0 )
                     {
+                        
+                        unit_price = response.unit_price.tax_inc;
                         //
                         price = response.unit_customer_price.tax_inc;
 
@@ -606,6 +629,7 @@
 
                     } else {
 
+                        unit_price = response.unit_price.tax_exc;
                         //
                         price = response.unit_customer_price.tax_exc;
 
@@ -615,6 +639,7 @@
 
                     }
 
+                    $('#line_unit_price').val( unit_price );
                     $("#line_unit_customer_price").val( price );
                     // $("#line_price").val( price.round( PRICE_DECIMAL_PLACES ) );
                     $("#line_price").val( price );
@@ -626,73 +651,6 @@
             });
         }
 
-
-        $("#modal_order_line_serviceSubmit").click(function() {
-
- //         alert('etgwer');
-
-            var id = $('#line_id').val();
-            var url = "{{ route('customerorder.updateline', ['']) }}/"+id;
-            var token = "{{ csrf_token() }}";
-
-            if ( id == '' )
-                url = "{{ route('customerorder.storeline', [$order->id]) }}";
-            else
-                url = "{{ route('customerorder.updateline', ['']) }}/"+id;
-
-  //        alert(url);
-
-            var payload = { 
-                              order_id : {{ $order->id }},
-                              line_sort_order : $('#line_sort_order').val(),
-                              line_type : $('#line_type').val(),
-                              name : $('#name').val(),
-                              quantity : 1,
-                              is_shipping : $("input[name='is_shipping']:checked").val(),
-                              cost_price : $('#cost_price').val(),
-                              price : $('#price').val(),
-                              price_tax_inc : $('#price_tax_inc').val(),
-                              prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
-                              tax_id : $('#tax_id').val(),
-                              tax_percent : $('#line_tax_percent').val(),
-                              currency_id : $("#currency_id").val(),
-                              conversion_rate: $("#currency_conversion_rate").val(),
-//                              sales_rep_id : $('#line_sales_rep_id').val(),
-                              notes : $('#service_notes').val()
-                          };
-
-
-
-//    pload = pload + "&customer_id="+$("#customer_id").val();
-//    pload = pload + "&currency_id="+$("#currency_id").val()+"&conversion_rate="+$("#currency_conversion_rate").val();
-//    pload = pload + "&_token="+$('[name="_token"]').val();
-
-  //          alert(payload);
-
-            $.ajax({
-                url : url,
-                headers : {'X-CSRF-TOKEN' : token},
-                type : 'POST',
-                dataType : 'json',
-                data : payload,
-
-                success: function(){
-                    loadCustomerOrderlines();
-                    $(function () {  $('[data-toggle="tooltip"]').tooltip()});
-//                    $("[data-toggle=popover]").popover();
-
-                    $('#modal_order_line').modal('toggle');
-                    $("#msg-success").fadeIn();
-                }
-            });
-
-/*            $(function () {  $('[data-toggle="tooltip"]').tooltip()});
-            $("[data-toggle=popover]").popover();
-            $(function () {
-  $('[data-toggle="popover"]').popover()
-})
-*/
-        });
 
     </script>
 

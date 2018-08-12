@@ -10,7 +10,7 @@
             <div class="pull-right">
                 <a href="{{ URL::to('pricelists') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Price Lists') }}</a>
             </div>
-            <h2><a href="{{ URL::to('pricelists') }}">{{ l('Price Lists') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }}</h2>
+            <h2><a href="{{ URL::to('pricelists') }}">{{ l('Price Lists') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }} <span style="color: #cccccc;">::</span> {{$pricelist->name}} </h2>
         </div>
     </div>
 </div>
@@ -19,6 +19,31 @@
    <div class="row">
 
       <div class="col-lg-2 col-md-2 col-sm-3">
+
+          <div class="panel panel-default">
+          <div class="panel-body">
+
+            <!-- h4>{{ l('Customer Risk') }}</h4>
+            <div class="progress progress-striped">
+                <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
+            </div -->
+            <br />
+                    <span class="badge" style="background-color: #3a87ad;" title="{{ $pricelist->currency->name }}">{{ $pricelist->currency->iso_code }}</span> ({{ l(':decimals decimals', ['decimals' => $pricelist->currency->decimalPlaces])}} )
+                        <br />
+                    <span class="label label-success">{{ $pricelist->getType() }}</span>
+                    @if ($pricelist->type != 'price')
+                      <span class="label label-default">{{ $pricelist->as_percent('amount') }}%</span>
+                    @endif
+                    @if ( $pricelist->price_is_tax_inc )
+                        <br />
+                        <span class="label label-info">{{ l('Tax Included', [], 'pricelists') }}</span>
+                    @endif
+            <br />
+            <br />
+
+          </div>
+          </div>
+
          <div class="list-group">
             <!-- a id="b_main_data" href="#" class="list-group-item active">
                <i class="fa fa-asterisk"></i>

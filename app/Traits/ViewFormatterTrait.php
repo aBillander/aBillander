@@ -69,6 +69,8 @@ trait ViewFormatterTrait
 
         $number = round($amount, $currency->decimalPlaces);
 
+        $number = number_format($number, $currency->decimalPlaces, '.', '');
+
         return $number;
     }
 
@@ -144,6 +146,8 @@ trait ViewFormatterTrait
 
         $number = round($amount, $currency->decimalPlaces);
 
+        $number = number_format($number, $currency->decimalPlaces, '.', '');
+
         return $number;
     }
 
@@ -188,3 +192,5 @@ trait ViewFormatterTrait
         return $date->format($format);
     }
 }
+
+// Nice to see: https://stackoverflow.com/questions/4483540/show-a-number-to-2-decimal-places#

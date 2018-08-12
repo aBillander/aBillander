@@ -100,7 +100,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		// Sales Representatives
 		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
 		    
-		    $view->with('salesrepList', \App\SalesRep::select(DB::raw('alias as name, id'))->pluck('name', 'id')->toArray());
+		    $view->with('salesrepList', \App\SalesRep::pluck('alias', 'id')->toArray());
 		    
 		});
 

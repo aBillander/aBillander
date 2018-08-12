@@ -177,11 +177,27 @@ class ImportPriceListsController extends Controller
         $logger->log("INFO", 'Se cargará la Tarifa {name} desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['name' => $name, 'file' => $file]);
 
 
+        if ( $request->input('round_price', 0) )
+        {
+            $decimal_places = $pricelist->currency->decimalPlaces;
+            $logger->log("INFO", 'Se redondearán los Precios a <span class="log-showoff-format">{decimal_places} decimales</span>.', ['decimal_places' => $decimal_places]);
+            
+        } else {
+
+            $decimal_places = -1;
+        }
+
+
         // Delete Price List Lines
         $pricelist->pricelistlines()->delete();
 
 
-        $params = ['price_list_id' => $pricelist->id, 'name' => $name, 'simulate' => $request->input('simulate', 0)];
+        $params = [
+                    'price_list_id' => $pricelist->id, 
+                    'name' => $name, 
+                    'decimal_places' => $decimal_places, 
+                    'simulate' => $request->input('simulate', 0),
+        ];
 
 
         try{
@@ -270,6 +286,7 @@ class ImportPriceListsController extends Controller
             $pricelist = $this->pricelist->findOrFail($price_list_id);
 
             $name = $params['name'];
+            $decimal_places = $params['decimal_places'];
 
             $i = 0;
             $i_ok = 0;
@@ -301,6 +318,11 @@ class ImportPriceListsController extends Controller
 
                         $i++;
                         continue;
+                    }
+
+                    // Need rounding?
+                    if ( $decimal_places >= 0 ) {
+                        $data['price'] = round($data['price'], $decimal_places);
                     }
 
                     if ( intval($data['price_list_id']) != $price_list_id ) {

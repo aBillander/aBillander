@@ -64,6 +64,14 @@
               <li class="list-group-item">
                 {{l('Price List')}}:<br /> {{ $customer->pricelist->name ?? '-' }}
               </li>
+              <li class="list-group-item">
+                {{l('Sales Representative')}}:<br />
+                @if( $order->salesrep )
+                <a href="{{ URL::to('salesreps/' . $order->salesrep->id . '/edit') }}" target="_new">{{ $order->salesrep->name }}</a>
+                @else
+                -
+                @endif
+              </li>
 
               <!-- li class="list-group-item">
                 <h4 class="list-group-item-heading">{{l('Customer Group')}}</h4>
@@ -116,6 +124,10 @@
 {{-- See also: https://bootsnipp.com/snippets/featured/panel-with-tabs --}}
 
 <style>
+
+{{-- See: https://stackoverflow.com/questions/4285970/css-firefox-how-to-deactivate-the-dotted-border-firefox-click-indicator --}}
+a { outline: none!important; }
+
 
 .panel.with-nav-tabs .panel-heading{
     padding: 5px 5px 0 5px;

@@ -574,15 +574,15 @@ class CustomerOrdersController extends Controller
                         ->with('measureunit')
                         ->with('tax')
                         ->findOrFail($line_id);
-
+/*
         $unit_customer_final_price = \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
                                         $order_line->unit_customer_final_price * ( 1.0 + $order_line->tax_percent / 100.0 ) : 
                                         $order_line->unit_customer_final_price ;
-
+*/
         $tax = $order_line->tax;
 
         return response()->json( $order_line->toArray() + [
-            'unit_customer_final_price' => $unit_customer_final_price,
+//            'unit_customer_final_price' => $unit_customer_final_price,
             'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)"
         ] );
     }
@@ -995,29 +995,34 @@ class CustomerOrdersController extends Controller
     {
         // return response()->json(['order_id' => $order_id] + $request->all());
 
-        $product_id      = 0;
-        $combination_id  = 0;
+        $product_id      = $request->input('product_id', 0);
+        $combination_id  = $request->input('combination_id', 0);
 
         // Do the Mambo!
         // Product
-/*        
-        if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
-            $product = $combination->product;
-            $product->reference = $combination->reference;
-            $product->name = $product->name.' | '.$combination->name;
+        if ($product_id>0)
+        {
+                if ($combination_id>0) {
+                    $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+                    $product = $combination->product;
+                    $product->reference = $combination->reference;
+                    $product->name = $product->name.' | '.$combination->name;
+                } else {
+                    $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+                }
+        
         } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+        
+                // No database persistance, please!
+                $product  = new \App\Product([
+                    'product_type' => 'simple', 
+                    'reference' => $request->input('reference', ''),
+                    'name' => $request->input('name'), 
+                    'tax_id' => $request->input('tax_id'),
+                    'cost_price' => $request->input('cost_price'), 
+                ]);
+        
         }
-*/        
-        // No database persistance, please!
-        $product  = new \App\Product([
-            'product_type' => 'simple', 
-            'reference' => $request->input('reference', ''),
-            'name' => $request->input('name'), 
-            'tax_id' => $request->input('tax_id'),
-            'cost_price' => $request->input('cost_price'), 
-        ]);
 
         $reference  = $product->reference;
         $name       = $product->name;
@@ -1025,23 +1030,23 @@ class CustomerOrdersController extends Controller
 
         $quantity = $request->input('quantity');
 
+        // ToDo: Don't trust values from browser. Do not be lazy and get them from database
         $tax_percent = $request->input('tax_percent');
-//        $tax_percent = $product->tax->percent;
-/*
-        $unit_price  = $request->input('price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+        $unit_price  = $request->input('unit_price');
+
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', \App\Configuration::get('PRICES_ENTERED_WITH_TAX')) );
+        if ( $pricetaxPolicy > 0 )
             $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
 
-        $unit_customer_price = $request->input('price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-            $unit_customer_price = $price / (1.0 + $tax_percent/100.0);
-*/
+        $unit_customer_price = $request->input('unit_customer_price');
+        if ( $pricetaxPolicy > 0 )
+            $unit_customer_price = $unit_customer_price / (1.0 + $tax_percent/100.0);
 
         $discount_percent = $request->input('discount_percent', 0.0);
 
-        $unit_customer_final_price = $request->input('unit_customer_final_price');
+        $unit_customer_final_price_tax_inc = $unit_customer_final_price = $request->input('unit_customer_final_price');
 
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ) {
+        if ( $pricetaxPolicy > 0 ) {
 
             $unit_final_price         = $unit_customer_final_price / (1.0 + $tax_percent/100.0);
             $unit_final_price_tax_inc = $unit_customer_final_price;
@@ -1053,10 +1058,9 @@ class CustomerOrdersController extends Controller
             $unit_final_price         = $unit_customer_final_price;
             $unit_final_price_tax_inc = $unit_customer_final_price * (1.0 + $tax_percent/100.0);
 
-        }
+            $unit_customer_final_price_tax_inc = $unit_final_price_tax_inc;
 
-        // Service
-        $unit_price  = $unit_customer_price = $unit_final_price;
+        }
 
         $unit_final_price         = $unit_final_price         * (1.0 - $discount_percent/100.0);
         $unit_final_price_tax_inc = $unit_final_price_tax_inc * (1.0 - $discount_percent/100.0);
@@ -1082,12 +1086,13 @@ class CustomerOrdersController extends Controller
             'unit_price' => $unit_price,
             'unit_customer_price' => $unit_customer_price,
             'unit_customer_final_price' => $unit_customer_final_price,
+            'unit_customer_final_price_tax_inc' => $unit_customer_final_price_tax_inc,
             'unit_final_price' => $unit_final_price,
             'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
             'sales_equalization' => $sales_equalization,  // By default, sales_equalization = 0 , because is a service. Otherwise: $request->input('sales_equalization', 0),
             'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => floatval( $request->input('discount_amount_tax_incl', 0.0) ),
-            'discount_amount_tax_excl' => floatval( $request->input('discount_amount_tax_excl', 0.0) ),
+            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
+            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
 
             'total_tax_incl' => $total_tax_incl,
             'total_tax_excl' => $total_tax_excl,
@@ -1221,26 +1226,26 @@ class CustomerOrdersController extends Controller
             $unit_customer_price = $price / (1.0 + $tax_percent/100.0);
 */
 
+
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', \App\Configuration::get('PRICES_ENTERED_WITH_TAX')) );
+
         $discount_percent = $request->input('discount_percent', 0.0);
 
-        $unit_customer_final_price = $request->input('unit_customer_final_price');
+        if ( $pricetaxPolicy > 0 ) {
 
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ) {
-
-            $unit_final_price         = $unit_customer_final_price / (1.0 + $tax_percent/100.0);
-            $unit_final_price_tax_inc = $unit_customer_final_price;
-
-            $unit_customer_final_price = $unit_final_price;
+            $price          = $request->input('unit_customer_final_price') / (1.0 + $tax_percent/100.0);
+            $price_with_tax = $request->input('unit_customer_final_price');
 
         } else {
 
-            $unit_final_price         = $unit_customer_final_price;
-            $unit_final_price_tax_inc = $unit_customer_final_price * (1.0 + $tax_percent/100.0);
+            $price          = $request->input('unit_customer_final_price');
+            $price_with_tax = $request->input('unit_customer_final_price') * (1.0 + $tax_percent/100.0);
 
         }
 
         // Service
-        $unit_price  = $unit_customer_price = $unit_final_price;
+        $unit_price = $unit_customer_price = $unit_customer_final_price = $unit_final_price = $price;
+        $unit_customer_final_price_tax_inc = $unit_final_price_tax_inc = $price_with_tax;
 
         $unit_final_price         = $unit_final_price         * (1.0 - $discount_percent/100.0);
         $unit_final_price_tax_inc = $unit_final_price_tax_inc * (1.0 - $discount_percent/100.0);
@@ -1266,12 +1271,13 @@ class CustomerOrdersController extends Controller
             'unit_price' => $unit_price,
             'unit_customer_price' => $unit_customer_price,
             'unit_customer_final_price' => $unit_customer_final_price,
+            'unit_customer_final_price_tax_inc' => $unit_customer_final_price_tax_inc,
             'unit_final_price' => $unit_final_price,
             'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
             'sales_equalization' => $sales_equalization,  // By default, sales_equalization = 0 , because is a service. Otherwise: $request->input('sales_equalization', 0),
             'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => floatval( $request->input('discount_amount_tax_incl', 0.0) ),
-            'discount_amount_tax_excl' => floatval( $request->input('discount_amount_tax_excl', 0.0) ),
+            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
+            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
 
             'total_tax_incl' => $total_tax_incl,
             'total_tax_excl' => $total_tax_excl,
@@ -1463,7 +1469,12 @@ class CustomerOrdersController extends Controller
 
     public function getOrderProfit($id)
     {
-        return 'getOrderProfit';
+        $order = $this->customerOrder
+                        ->with('customerorderlines')
+                        ->with('customerorderlines.product')
+                        ->findOrFail($id);
+
+        return view('customer_orders._panel_customer_order_profitability', compact('order'));
 
         $order = \App\CustomerOrder::findOrFail($id);
 

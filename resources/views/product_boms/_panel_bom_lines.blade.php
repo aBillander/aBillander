@@ -14,7 +14,7 @@
                 <!-- th class="text-left">{{l('Position', [], 'layouts')}}</th -->
                 <th class="text-left">{{l('Product')}}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                      data-content="{{ l('Arrastre para reordenar.') }}">
+                                      data-content="{{ l('Drag to Sort.', 'layouts') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
                            </a></th>
                 <th class="text-left">{{l('Quantity')}}</th>

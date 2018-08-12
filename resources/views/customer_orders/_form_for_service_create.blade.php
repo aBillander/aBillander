@@ -32,6 +32,8 @@
             {{ Form::hidden('line_sales_rep_id',       null, array('id' => 'line_sales_rep_id'      )) }}
             {{ Form::hidden('line_commission_percent', null, array('id' => 'line_commission_percent')) }}
 
+            {{ Form::hidden('line_is_prices_entered_with_tax', null, array('id' => 'line_is_prices_entered_with_tax')) }}
+
 
 
         <div class="row" id="service-search-autocomplete">
@@ -99,11 +101,11 @@
                  {{ Form::hidden( 'line_measure_unit_id', null, ['id' => 'line_measure_unit_id'] ) }}
 
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-                    {{ l('Price with Tax') }}
-                    @else
-                    {{ l('Price') }}
-                    @endif
+                    
+                    <span class="label_tax_inc">{{ l('Price with Tax') }}</span>
+                    
+                    <span class="label_tax_exc">{{ l('Price') }}</span>
+                    
                     {!! Form::text('line_price', null, array('class' => 'form-control', 'id' => 'line_price', 'onkeyup' => 'calculate_service_price( )', 'onchange' => 'calculate_service_price( )', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
                     {!! $errors->first('line_price', '<span class="help-block">:message</span>') !!}
 

@@ -33,7 +33,7 @@
 
         <tbody>
             <tr>
-                <td>
+                <td style="vertical-align: middle;">
 
                     @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
                     {{ $order->as_price('total_lines_tax_incl') }}
@@ -42,9 +42,9 @@
                     @endif
 
                 </td>
-                <td style="width:1px; white-space: nowrap;">
+                <td style="width:1px; white-space: nowrap;vertical-align: middle;">
 
-                    <div class="form-group">
+                    <div xclass="form-group">
                       @if ($order->locked || $order->status == 'closed' || $order->status == 'canceled')
                         {{ $order->as_percent('document_discount_percent') }}
                       @else
@@ -52,7 +52,7 @@
 
                         <span class="input-group-addon input-sm"><strong>%</strong></span>
 
-                        <input name="document_discount_percent" id="document_discount_percent" class="form-control input-sm col-xs-2" type="text" size="5" maxlength="10" style="width: auto;" value="{{ $order->as_percent('document_discount_percent') }}" onclick="this.select()" xonchange="add_discount_to_order($('#order_id').val());">
+                        <input name="document_discount_percent" id="document_discount_percent" class="input-update-order-total form-control input-sm col-xs-2" type="text" size="5" maxlength="10" style="width: auto;" value="{{ $order->as_percent('document_discount_percent') }}" onclick="this.select()" xonchange="add_discount_to_order($('#order_id').val());">
 
                         <span class="input-group-btn">
                           <button class="update-order-total btn btn-sm btn-lightblue" type="button" title="{{l('Apply', [], 'layouts')}}" xonclick="add_discount_to_order($('#order_id').val());">
@@ -65,9 +65,9 @@
                     </div>
 
                 </td>
-                <td>{{ $order->as_price('total_tax_excl', $order->currency) }}</td>
-                <td>{{ $order->as_priceable($order->total_tax_incl - $order->total_tax_excl) }}</td>
-                <td class="text-right lead"><strong>{{ $order->as_price('total_tax_incl') }}</strong></td>
+                <td style="vertical-align: middle;">{{ $order->as_price('total_tax_excl', $order->currency) }}</td>
+                <td style="vertical-align: middle;">{{ $order->as_priceable($order->total_tax_incl - $order->total_tax_excl) }}</td>
+                <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $order->as_price('total_tax_incl') }}</strong></td>
             </tr>
         </tbody>
     </table>

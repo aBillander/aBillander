@@ -144,6 +144,43 @@ class CustomerOrder extends Model
             return l('customerOrder.'.$status, [], 'appmultilang');;
     }
 
+    public function getTotalRevenueAttribute()
+    {
+        $lines = $this->customerorderlines;
+        $filter = !(intval( \App\Configuration::get('INCLUDE_SHIPPING_COST_IN_PROFIT') ) > 0);
+
+        $total_revenue = $lines->sum(function ($line) use ($filter) {
+
+                if ( ($line->line_type == 'shipping') && $filter ) return 0.0;
+
+                return $line->quantity * $line->unit_final_price;
+
+            });
+
+        return $total_revenue;
+    }
+
+    public function getTotalRevenueWithDiscountAttribute()
+    {
+        return $this->total_revenue * ( 1.0 - $this->document_discount_percent / 100.0 );
+    }
+
+    public function getTotalCostPriceAttribute()
+    {
+        $lines = $this->customerorderlines;
+        $filter = !(intval( \App\Configuration::get('INCLUDE_SHIPPING_COST_IN_PROFIT') ) > 0);
+
+        $total_cost_price = $lines->sum(function ($line) use ($filter) {
+
+                if ( ($line->line_type == 'shipping') && $filter ) return 0.0;
+
+                return $line->quantity * $line->cost_price;
+
+            });
+
+        return $total_cost_price;
+    }
+
     public function getEditableAttribute()
     {
         return $this->status != 'closed';

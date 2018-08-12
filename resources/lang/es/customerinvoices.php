@@ -139,14 +139,14 @@ return [
 	// create_profit_blade
 	'Profitability Analysis'     => 'Rentabilidad de la Venta',
 	'Sales Representative'     => 'Agente',
-	'Cost-benefit per line'     => 'Rentabiliada por Línea',
+	'Cost-benefit per line'     => 'Rentabiliad por Línea',
 	'Qty.'     => 'Ud.',
 	'Cost'     => 'Coste',
 	'Margin 1 (%)'     => 'Margen 1 (%)',
 	'Margin 2 (%)'     => 'Margen 2 (%)',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',
-	'Order Cost-Benefit Analysis'     => 'Rentabiliada Total de la Venta',
+	'Order Cost-Benefit Analysis'     => 'Rentabiliad Total de la Venta',
 	'Margin'     => 'Margen',
 
 	'Finish Up'     => 'Emitir',

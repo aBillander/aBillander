@@ -33,6 +33,10 @@ return [
 
 	'Margin calculation is based on Cost Price'  => 'El Margen se calcula sobre el Precio de Coste',
 	'Margin calculation is based on Sales Price' => 'El Margen se calcula sobre el Precio de Venta',
+
+	'Shipping Cost included'     => 'Coste de Envío incluido',
+	'Shipping Cost excluded'     => 'Coste de Envío excluido',
+
 	'Discount on Product Price' => 'Descuento sobre el Precio del Producto',
 
 
@@ -212,6 +216,7 @@ return [
 
 	'This record has been already published with id=:id'     => 'Este registro ya se ha publicado en la Tienda Web con id=:id',
 
+	'Drag to Sort.'     => 'Arrastre para reordenar.',
 	'Use multiples of 10. Use other values to interpolate.' => 'Use múltiplos de 10. Use otros valores para intercalar.',
 
 	'DRAFT'     => 'BORRADOR',

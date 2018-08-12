@@ -55,11 +55,23 @@
                     // https://www.codebyamir.com/blog/populate-a-select-dropdown-list-with-json
                     cb = '';
                     $.each(ORDER_AVAILABLE_TAXES, function(key, data){
-				         cb += '<option value="'+key+'">'+data+'</option>';
-				    });
-				    $("#line_tax_id").append(cb);
+        				         cb += '<option value="'+key+'">'+data+'</option>';
+        				    });
+        				    $("#line_tax_id").append(cb);
 
-				    $('#line_tax_id').val({{ \App\Configuration::get('DEF_TAX') }});
+        				    $('#line_tax_id').val({{ \App\Configuration::get('DEF_TAX') }});
+
+                    // set labels
+                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                        $('#line_is_prices_entered_with_tax').val(1);
+                        $(".label_tax_exc").hide();
+                        $(".label_tax_inc").show();
+                    @else
+                        $('#line_is_prices_entered_with_tax').val(0);
+                        $(".label_tax_inc").hide();
+                        $(".label_tax_exc").show();
+                    @endif
+
 
                     calculate_service_price();
 
@@ -107,10 +119,10 @@
                               is_shipping : $("input[name='line_is_shipping']:checked").val(),
                               measure_unit_id : $('#line_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
-                              unit_price : $('#line_unit_price').val(),
-                              unit_customer_price : $('#line_unit_customer_price').val(),
+                              unit_price : $('#line_price').val(),
+                              unit_customer_price : $('#line_price').val(),
                               unit_customer_final_price : $('#line_price').val(),
-                              prices_entered_with_tax : PRICES_ENTERED_WITH_TAX,
+                              prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
                               sales_equalization : $("input[name='line_is_sales_equalization']:checked").val(),
@@ -181,7 +193,7 @@
                               unit_price : $('#line_unit_price').val(),
                               unit_customer_price : $('#line_unit_customer_price').val(),
                               unit_customer_final_price : $('#line_price').val(),
-                              prices_entered_with_tax : PRICES_ENTERED_WITH_TAX,
+                              prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
                               sales_equalization : $("input[name='line_is_sales_equalization']:checked").val(),
@@ -230,18 +242,26 @@
                panel.html('');
                panel.addClass('loading');
 
-               $.get(url, {async:false}, function(result){
+               $.get(url, function(result){
                      panel.html(result);
                      panel.removeClass('loading');
 
-                     $("[data-toggle=popover]").popover();
-                     // sortableCustomerOrderLines();
+                     // Populate form
+                     getServiceLineData( selector );
+
                }, 'html');
 
 
-            // Populate form
-            // Set delay to wait for form load
-            setTimeout(function(){  }, 1000); 
+              $('#modal_order_line').modal({show: true});
+              //  $("#line_autoservice_name").focus();
+              $("#line_price").focus();
+
+              return false;
+
+          };
+
+
+          function getServiceLineData( selector ) {
 
               var id = selector.attr('data-id');
               var line_type = selector.attr('data-type');
@@ -254,8 +274,17 @@
 
               $.get(url, function(result){
                     // label = '['+result.product.reference+'] '+result.product.name;
-                    label = result.name;
+                    var label;
                     var QUANTITY_DECIMAL_PLACES = 0;		// This is a Service!
+
+                    if ( result.product == null )
+                    {
+                          label = result.name;
+
+                    } else {
+                          label = '['+result.product.reference+'] '+result.product.name;  // +' ('+result.measureunit.name+')';
+
+                    }
                     
                     $('#modal_service_order_line_Label').text(label);
 
@@ -283,9 +312,34 @@
                     $('#line_cost_price').val(result.cost_price);
                     $('#line_unit_price').val(result.unit_price);
                     $('#line_unit_customer_price').val(result.unit_customer_price);
+
+                    $('#line_is_prices_entered_with_tax').val(result.prices_entered_with_tax);
+
+                    if ( $('#line_is_prices_entered_with_tax').val() > 0 )
+                    {
+                        //
+                        price = result.unit_customer_final_price_tax_inc;
+
+                        // set labels
+                        $(".label_tax_exc").hide();
+                        $(".label_tax_inc").show();
+
+                    } else {
+
+                        //
+                        price = result.unit_customer_final_price;
+
+                        // set labels
+                        $(".label_tax_inc").hide();
+                        $(".label_tax_exc").show();
+
+                    }
+
+                    $("#line_price").val( price );
                     
-                    $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
-                    $("#line_price").val( result.unit_customer_final_price );
+                    // $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
+                    // $("#line_price").val( result.unit_customer_final_price );
+
                     $('#line_discount_percent').val(result.discount_percent);
 
                     $('#discount_amount_tax_incl').val(result.discount_amount_tax_incl);
@@ -299,22 +353,25 @@
                     }
 */
 
-                // sales_equalization
-                $('input:radio[name=line_is_sales_equalization]').val([result.sales_equalization]);
+                    // Populate Taxes
+                    // https://www.codebyamir.com/blog/populate-a-select-dropdown-list-with-json
+                    cb = '';
+                    $.each(ORDER_AVAILABLE_TAXES, function(key, data){
+          			         cb += '<option value="'+key+'">'+data+'</option>';
+          			    });
+          			    $("#line_tax_id").append(cb);
 
-                // Populate Taxes
-                // https://www.codebyamir.com/blog/populate-a-select-dropdown-list-with-json
-                cb = '';
-                $.each(ORDER_AVAILABLE_TAXES, function(key, data){
-			         cb += '<option value="'+key+'">'+data+'</option>';
-			    });
-			    $("#line_tax_id").append(cb);
-
-			    $('#line_tax_id').val({{ \App\Configuration::get('DEF_TAX') }});
+          			    $('#line_tax_id').val(result.tax_id);
 
 
 //                    $('#line_tax_label').html(result.tax_label);
                     $('#line_tax_percent').val(result.tax_percent);
+
+                    // sales_equalization
+                    if ($('#sales_equalization').val()>0) {
+                        $('input:radio[name=line_is_sales_equalization]').val([result.sales_equalization]);
+                        $('#line_sales_equalization').show();
+                    }
 
                     calculate_service_price( );
 
@@ -324,16 +381,7 @@
                     $('#line_notes').val(result.notes);
 
                     console.log(result);
-
-
               });
-
-              $('#modal_order_line').modal({show: true});
-              //  $("#line_autoservice_name").focus();
-              $("#line_price").focus();
-
-              return false;
-
           };
 
 

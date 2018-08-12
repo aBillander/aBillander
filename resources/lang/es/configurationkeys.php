@@ -27,6 +27,8 @@ return [
 	'MARGIN_METHOD.option.CST' => '<strong>CST</strong>: Sobre el Precio de Coste<br />Margen = (Precio de Venta - Precio de Coste) / Precio de Coste X 100',
 	'MARGIN_METHOD.option.PRC' => '<strong>PRC</strong>: Sobre el Precio de Venta<br />Margen = (Precio de Venta - Precio de Coste) / Precio de Venta X 100',
 	'MARGIN_METHOD.help' => '',
+	'INCLUDE_SHIPPING_COST_IN_PROFIT.name' => 'Incluir el Coste de Envío para calcular el Margen',
+	'INCLUDE_SHIPPING_COST_IN_PROFIT.help' => '',
 	'NEW_PRICE_LIST_POPULATE.name' => 'Añadir Productos a una nueva Tarifa',
 	'NEW_PRICE_LIST_POPULATE.help' => '1: Cuando se crea una nueva Tarifa, todos los Productos se añaden. El Precio se calcula según el Tipo de Tarifa.<br />0: Los Productos deberán añadirse manualmente a la nueva Tarifa.',
 	'NEW_PRODUCT_TO_ALL_PRICELISTS.name' => 'Añadir un nuevo Producto a todas las Tarifas',

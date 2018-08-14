@@ -37,6 +37,7 @@
                <th class="text-left" style="width:1px; white-space: nowrap;"></th>
                <th class="text-left" xwidth="115">{{l('Notes', 'layouts')}}</th>
                 <th class="text-right button-pad"> 
+                      @if ( $order->editable )
 
                   <a class="btn btn-sm btn-magick btn-pressure btn-sensitive create-order-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
 
@@ -59,6 +60,9 @@
   </ul>
 </div>
 --}}
+                      @else
+
+                      @endif
 
                 </th>
             </tr>
@@ -99,6 +103,7 @@
                  </a>
                 @endif</td>
                 <td class="text-right">
+                      @if ( $order->editable )
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerorderlines();"><i class="fa fa-pencil"></i></a -->
                     
                     <a class="btn btn-sm btn-warning edit-order-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
@@ -107,6 +112,10 @@
                         data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                         data-title="{{ '('.$line->id.') ['.$line->reference.'] '.$line->name }}" 
                         onClick="return false;"><i class="fa fa-trash-o"></i></a>
+
+                      @else
+                      
+                      @endif
 
                 </td>
             </tr>

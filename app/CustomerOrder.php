@@ -183,7 +183,7 @@ class CustomerOrder extends Model
 
     public function getEditableAttribute()
     {
-        return $this->status != 'closed';
+        return !( $this->locked || $this->status == 'closed' || $this->status == 'canceled' );
     }
 
     public function getNumberAttribute()

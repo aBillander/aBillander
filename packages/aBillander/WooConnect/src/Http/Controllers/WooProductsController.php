@@ -143,6 +143,8 @@ class WooProductsController extends Controller {
 	{
 		// Route::get('wproducts/importProductImages'
 
+		// En el Servidor se recuperaron las imagnes de la WooTienda, pero dió un gateway timeout => ¿Se podría hacer por partes (chuncks) para que no pase esto?
+
 		// Products
 		$list = Product::select('id', 'reference', 'name')->where('reference', '!=', '')->get();
 		// $list = Product::select('id', 'reference', 'name')->where('reference', '4003')->get();		// ->where('reference', '!=', '');	// ->pluck('reference');

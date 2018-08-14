@@ -20,7 +20,7 @@
         <a href="{{ route('products.export') }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
-        <a href="{{ route('wproducts.import.product.images') }}" class="btn btn-sm btn-info" 
+        <a href="{{ route('wproducts.import.product.images') }}" class="btn btn-sm btn-info" style="display:none;"
                 title="{{l('Import', [], 'layouts')}}"><i class="fa fa-image"></i> </a>
     </div>
     <h2>

@@ -120,7 +120,22 @@ class Image extends Model {
 
         //create instance of image from temp upload
 
-        $image = iImage::make( $img_url )
+
+
+// ERROR: https://www.google.com/search?client=ubuntu&channel=fs&q=+Intervention+%5C+Image+%5C+Exception+%5C+NotReadableExceptionUnable+to+init+from+given+url+&ie=utf-8&oe=utf-8
+// https://github.com/Intervention/image/issues/283
+// https://github.com/Intervention/image/issues/773
+
+$file_data = file_get_contents( $img_url, false, stream_context_create( [
+    'ssl' => [
+        'verify_peer'      => false,
+        'verify_peer_name' => false,
+    ],
+] ) );
+
+
+//        $image = iImage::make( $img_url )
+        $image = iImage::make( $file_data )
                 ->save(public_path() . $destinationFolder . $imageName . '.' . $extension);
 
 //        foreach (array_reverse(self::$products_types) as $type => $size) {

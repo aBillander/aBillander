@@ -45,9 +45,7 @@
                 <td style="width:1px; white-space: nowrap;vertical-align: middle;">
 
                     <div xclass="form-group">
-                      @if ($order->locked || $order->status == 'closed' || $order->status == 'canceled')
-                        {{ $order->as_percent('document_discount_percent') }}
-                      @else
+                      @if ( $order->editable )
                       <div class="input-group">
 
                         <span class="input-group-addon input-sm"><strong>%</strong></span>
@@ -61,6 +59,8 @@
                         </span>
 
                       </div>
+                      @else
+                        {{ $order->as_percent('document_discount_percent') }}
                       @endif
                     </div>
 

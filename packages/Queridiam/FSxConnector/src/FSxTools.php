@@ -71,7 +71,10 @@ class FSxTools
             // Payment Methods Cache
             $cache = Configuration::get('FSX_FORMAS_DE_PAGO_CACHE');
 
-            return json_decode( $cache , true);
+            $fpas = json_decode( $cache , true);
+            ksort($fpas);
+
+            return $fpas;
         }
         // See comments by the end of this file
 

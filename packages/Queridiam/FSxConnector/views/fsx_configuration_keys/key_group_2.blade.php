@@ -33,7 +33,12 @@
   {{-- !! Form::hidden('tab_index', $tab_index, array('id' => 'tab_index')) !! --}}
 
   <fieldset>
-    <legend>{{ l('FSx-Connector - Taxes Dictionary') }}</legend>
+    <legend>{{ l('FSx-Connector - Taxes Dictionary') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('A la izquierda aparecen los Tipos de Impuestos definidos en FactuSOL; a la derecha en los desplegables, los definidos en aBillander.') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </a>
+    </legend>
 
 
 

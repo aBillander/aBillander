@@ -55,10 +55,12 @@ Route::group([
 
 
 
-	Route::get('fsxlog', ['uses' => 'FsxLoggersController@index', 
-	                 'as'   => 'fsxlog.index'] );
-	Route::get('fsxlog/empty', ['uses' => 'FsxLoggersController@empty', 
-	                 'as'   => 'fsxlog.empty'] );
+	Route::post('fpas', ['uses' => 'FSxFPAsController@store', 
+	                 'as'   => 'fpas.store'] );
+	Route::post('fpas/{cod}', ['uses' => 'FSxFPAsController@update', 
+	                 'as'   => 'fpas.update'] );
+	Route::delete('fpas/{cod}', ['uses' => 'FSxFPAsController@destroy', 
+	                 'as'   => 'fpas.destroy'] );
 
 
 	Route::get('dummy', function () {

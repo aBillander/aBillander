@@ -394,8 +394,15 @@ class FSxConfigurationKeysController extends Controller {
         // Save Payment Methods Cache
         Configuration::updateValue('FSX_FORMAS_DE_PAGO_CACHE', json_encode($fsolpaymethods));
 
+        // Beautifier:
+        $fsolpaymethods_full=[];
+        foreach ($fsolpaymethods as $key => $value) {
+            # code...
+            $fsolpaymethods_full[$key] = "[$key] &nbsp; $value";
+        }
+
         // aBillander Methods
-        $pgatesList = \App\PaymentMethod::select('id', 'name')->orderby('name', 'desc')->get()->toArray();
+        $pgatesList = \App\PaymentMethod::select('id', 'name')->orderby('name', 'asc')->get()->toArray();
 
         // abi_r($pgatesList, true);
 
@@ -407,7 +414,7 @@ class FSxConfigurationKeysController extends Controller {
             $dic_val[$paymethod['id']] = Configuration::get($dic[$paymethod['id']]);
         }
 
-        return view('fsx_connector::fsx_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'fsolpaymethods', 'dic', 'dic_val', 'pgatesList'));
+        return view('fsx_connector::fsx_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'fsolpaymethods', 'fsolpaymethods_full', 'dic', 'dic_val', 'pgatesList'));
     }
 
     /**

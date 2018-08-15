@@ -81,6 +81,12 @@
                 <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerorders/' . $order->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
                 <a class="btn btn-sm btn-success" href="{{ URL::to('customerorders/' . $order->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
                 -->
+@if (       config('app.url') =='http://abimfg.laextranatural.es' 
+         || config('app.url') =='http://abimfg-test.laextranatural.es')
+
+@else
+                <a class="btn btn-sm btn-info" href="{{ URL::to('customerorders/' . $order->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></a>
+@endif
 
                 @if ($order->export_date)
                 <a class="btn btn-sm btn-default" href="javascript:void(0);" title="{{$order->export_date}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>

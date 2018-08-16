@@ -54,7 +54,7 @@ class SetContextMiddleware {
 		$language = $user->language;
 
 		// Better use defautt language
-		$language = Language::find( intval(Configuration::get('DEF_LANGUAGE')) );
+		// $language = Language::find( intval(Configuration::get('DEF_LANGUAGE')) );
 		
 		if ( !$language )
 			$language = Language::find( intval(Configuration::get('DEF_LANGUAGE')) );

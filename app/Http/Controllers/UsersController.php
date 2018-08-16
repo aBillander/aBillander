@@ -53,7 +53,7 @@ class UsersController extends Controller {
 		$this->validate($request, User::$rules);
 		
 		$password = \Hash::make($request->input('password'));
-		$request->replace( ['password' => $password] );
+		$request->merge( ['password' => $password] );
 
 		$user = $this->user->create($request->all());
 
@@ -101,7 +101,7 @@ class UsersController extends Controller {
 			$this->validate( $request, User::$rules );
 
 			$password = \Hash::make($request->input('password'));
-			$request->replace( ['password' => $password] );
+			$request->merge( ['password' => $password] );
 			$user->update($request->all());
 		} else {
 			$this->validate($request, array_except( User::$rules, array('password')) );

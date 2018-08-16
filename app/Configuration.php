@@ -120,6 +120,18 @@ class Configuration extends Model
 		return $resTab;
 	}
 
+	// Helper function
+	public static function isTrue($key)
+	{
+		return ( intval( Configuration::get($key) ) > 0 );
+	}
+
+	// Helper function
+	public static function isFalse($key)
+	{
+		return !Configuration::isTrue($key);
+	}
+
 	/**
 	  * Set TEMPORARY a single configuration value
 	  *

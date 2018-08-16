@@ -203,6 +203,8 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::post('customerorders/sortlines', 'CustomerOrdersController@sortLines')->name('customerorder.sortlines');
 
+        Route::get('customerorders/{id}/pdf',        'CustomerOrdersController@showPdf'   )->name('customerorder.pdf'     );
+
         
 
         Route::resource('pricelists',           'PriceListsController');

@@ -494,6 +494,12 @@ class CustomerOrder extends Model
     {
         return $this->hasMany('App\CustomerOrderLine', 'customer_order_id')->orderBy('line_sort_order', 'ASC');
     }
+
+    // Alias
+    public function documentlines()
+    {
+        return $this->customerorderlines();
+    }
     
     public function customerorderlinetaxes()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
@@ -522,6 +528,12 @@ class CustomerOrder extends Model
         }
 
         return collect($taxes)->sortByDesc('percent')->values()->all();
+    }
+    
+    // Alias
+    public function documenttaxes()      // http://advancedlaravel.com/eloquent-relationships-examples
+    {
+        return $this->customerordertaxes();
     }
 
 

@@ -102,6 +102,12 @@ class CustomerOrderLine extends Model
     {
         return $this->hasMany('App\CustomerOrderLineTax', 'customer_order_line_id');
     }
+    
+    // Alias
+    public function documentlinetaxes()
+    {
+        return $this->customerorderlinetaxes();
+    }
 
     public function tax()
     {

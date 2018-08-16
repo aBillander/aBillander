@@ -14,7 +14,8 @@
         "laravelcollective/html": "^5.5.0",
         "maatwebsite/excel": "~2.1.0",
         "mindsize/laravel5-woocommerce": "^1.0",
-        "unisharp/laravel-ckeditor": "^4.7"
+        "unisharp/laravel-ckeditor": "^4.7",
+        "abillander/abillander-installer": "dev-master"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

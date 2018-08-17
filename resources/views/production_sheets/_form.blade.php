@@ -20,7 +20,7 @@
 <div class="row">
 
          <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('notes') ? 'has-error' : '' }}">
-            {{ l('Notes') }}
+            {{ l('Notes', 'layouts') }}
             {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}
             {{ $errors->first('notes', '<span class="help-block">:message</span>') }}
          </div>

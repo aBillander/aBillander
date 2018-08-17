@@ -38,14 +38,14 @@ class StockCountsController extends Controller
     public function create()
     {
         $date = abi_date_short( \Carbon\Carbon::now() );
-
-        $sequenceList = \App\Sequence::listFor('StockCount');
+/*
+        $sequenceList = \App\Sequence::listFor( StockCount::class );
 
         if ( !$sequenceList )
             return redirect('stockcounts')
                 ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
-
-        return view('stock_counts.create', compact('date', 'sequenceList'));
+*/
+        return view('stock_counts.create', compact('date'));       // , 'sequenceList'));
     }
 
     /**
@@ -59,22 +59,25 @@ class StockCountsController extends Controller
         $date_raw = $request->input('document_date');
         $date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $date_raw )->toDateString();
 
-
-        $seq = \App\Sequence::find( $request->input('sequence_id') );
+/*
+        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
         $doc_id = $seq->getNextDocumentId();
         $extradata = [  'document_prefix'      => $seq->prefix,
                         'document_id'          => $doc_id,
                         'document_reference'   => $seq->getDocumentReference($doc_id),
                         'document_date' => $date,
                      ];
-        $request->merge( $extradata );
+*/                     
+        $request->merge( ['document_date' => $date] );
+
+        // abi_r($request->all());die();
 
         $this->validate($request, StockCount::$rules);
 
         $stockcount = $this->stockcount->create($request->all());
 
         return redirect('stockcounts')
-                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $stockcount->id], 'layouts') . $stockcount->document_reference);
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $stockcount->id], 'layouts') . $stockcount->name);
     }
 
     /**
@@ -83,9 +86,9 @@ class StockCountsController extends Controller
      * @param  \App\StockCount  $stockCount
      * @return \Illuminate\Http\Response
      */
-    public function show(StockCount $stockCount)
+    public function show(StockCount $stockcount)
     {
-        //
+        return $this->edit($stockcount);
     }
 
     /**
@@ -94,9 +97,11 @@ class StockCountsController extends Controller
      * @param  \App\StockCount  $stockCount
      * @return \Illuminate\Http\Response
      */
-    public function edit(StockCount $stockCount)
+    public function edit(StockCount $stockcount)
     {
-        //
+        $date = abi_date_short( $stockcount->document_date );
+
+        return view('stock_counts.edit', compact('stockcount', 'date'));
     }
 
     /**
@@ -106,9 +111,21 @@ class StockCountsController extends Controller
      * @param  \App\StockCount  $stockCount
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, StockCount $stockCount)
+    public function update(Request $request, StockCount $stockcount)
     {
-        //
+        $date_raw = $request->input('document_date');
+        $date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $date_raw )->toDateString();
+
+        $request->merge( ['document_date' => $date] );
+
+        // abi_r($request->all());die();
+
+        $this->validate($request, StockCount::$rules);
+
+        $stockcount->update($request->all());
+
+        return redirect('stockcounts')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $stockcount->id], 'layouts') . $stockcount->name);
     }
 
     /**
@@ -117,8 +134,17 @@ class StockCountsController extends Controller
      * @param  \App\StockCount  $stockCount
      * @return \Illuminate\Http\Response
      */
-    public function destroy(StockCount $stockCount)
+    public function destroy(StockCount $stockcount)
     {
-        //
+        $id = $stockcount->id;
+
+        $stockcount->stockcountlines()->each(function($line) {
+                    $line->delete();
+                });
+
+        $stockcount->delete();
+
+        return redirect('stockcounts')
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 }

@@ -105,7 +105,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Warehouses
-		view()->composer(array('products.create', 'stock_movements.create', 'stock_counts.create', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
+		view()->composer(array('products.create', 'stock_movements.create', 'stock_counts._form', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
 /*		    
 		    $whList = \App\Warehouse::with('address')->get();
 
@@ -254,6 +254,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		// Stock Movement Types
+		view()->composer(array('stock_movements.index', 'stock_movements.create'), function($view) {
+		    
+		    $view->with('movement_typeList', \App\StockMovement::stockmovementList());
+		    
+		});
+
 		// Sequences
 		
 		// Customer Orders Sequencess
@@ -316,13 +323,6 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		view()->composer(array('customers.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
 		    
 		    $view->with('customerinvoicetemplateList', \App\Template::where('model_name', '=', '\App\CustomerInvoice')->pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Stock Movement Types
-		view()->composer(array('stock_movements.index', 'stock_movements.create'), function($view) {
-		    
-		    $view->with('movement_typeList', \App\StockMovement::stockmovementList());
 		    
 		});
 

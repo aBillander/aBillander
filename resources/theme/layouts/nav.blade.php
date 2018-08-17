@@ -153,7 +153,7 @@
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('activityloggers') }}">
-                                 <i class="fa fa-list-alt text-success"></i>
+                                 <i class="fa fa-clipboard text-warning"></i>
                                  {{l('aBillander LOG', [], 'layouts')}}
                             </a>
                         </li>

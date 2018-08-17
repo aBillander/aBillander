@@ -13,17 +13,21 @@ class CreateStockCountsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('stock_counts');
+
         Schema::create('stock_counts', function (Blueprint $table) {
             $table->increments('id');
             $table->date('document_date');
-            $table->integer('sequence_id')->unsigned()->nullable(false);
-            $table->string('document_prefix', 8);                               // From Sequence. Needed for index.
-            $table->integer('document_id')->unsigned()->default(0);
-            $table->string('document_reference', 64);                           // document_prefix + document_id of model_name (or supplier reference, etc.)
+//            $table->integer('sequence_id')->unsigned()->nullable(false);
+//            $table->string('document_prefix', 8)->nullable();                    // From Sequence. Needed for index.
+//            $table->integer('document_id')->unsigned()->default(0);
+//            $table->string('document_reference', 64);                           // document_prefix + document_id of model_name (or supplier reference, etc.)
+            
+            $table->string('name', 128)->nullable();
+            $table->text('notes')->nullable();
 
             $table->integer('warehouse_id')->unsigned()->nullable(false);
             $table->tinyInteger('initial_inventory')->default(0);               // Is initial Inventory?
-            $table->text('notes')->nullable();
 
             $table->timestamps();
         });

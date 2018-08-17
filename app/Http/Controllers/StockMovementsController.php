@@ -70,7 +70,7 @@ class StockMovementsController extends Controller {
 			$combination_id = \App\Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
 			$request->merge(array('combination_id' => $combination_id));
 		} else {
-			$combination_id = 0;
+			$combination_id = null;
 		}
 
 		$conversion_rate = \App\Currency::find($request->input('currency_id'))->conversion_rate;
@@ -84,7 +84,10 @@ class StockMovementsController extends Controller {
 //		abi_r($date_view->toDateString(), true);
  
 		$extradata = ['date' =>  $date_view->toDateString(), 
-					  'combination_id' => $combination_id, 'conversion_rate' => $conversion_rate, 'user_id' => \Auth::id()];
+					  'combination_id' => $combination_id, 
+					  'conversion_rate' => $conversion_rate, 
+//					  'user_id' => \Auth::id()
+					  ];
 
 		$this->validate($request, StockMovement::getRules( $request->input('movement_type_id') ));
 

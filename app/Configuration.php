@@ -132,6 +132,12 @@ class Configuration extends Model
 		return !Configuration::isTrue($key);
 	}
 
+	// Helper function
+	public static function getInt($key)
+	{
+		return intval(Configuration::get($key));
+	}
+
 	/**
 	  * Set TEMPORARY a single configuration value
 	  *

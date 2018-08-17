@@ -8,13 +8,13 @@ class StockCount extends Model
 {
     protected $dates = ['document_date'];
     
-    protected $fillable = [ 'document_date', 'sequence_id'. 'document_prefix', 'document_id', 'document_reference', 
+    protected $fillable = [ 'document_date', 'name', 
     						'warehouse_id', 'initial_inventory', 'notes' 
     						];
 
     public static $rules = array(
-                            'document_date' => 'date',
-                            'sequence_id' => 'exists:sequences,id',
+//                            'document_date' => 'date',
+//                            'sequence_id' => 'exists:sequences,id',
                             'warehouse_id' => 'exists:warehouses,id',
     	);
 

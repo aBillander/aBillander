@@ -108,6 +108,14 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
 //        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
 
+        Route::post('products/{id}/combine', array('as' => 'products.combine', 'uses'=>'ProductsController@combine'));
+        Route::get('products/ajax/name_lookup'  , array('uses' => 'ProductsController@ajaxProductSearch', 
+                                                        'as'   => 'products.ajax.nameLookup' ));
+        Route::post('products/ajax/options_lookup'  , array('uses' => 'ProductsController@ajaxProductOptionsSearch', 
+                                                        'as'   => 'products.ajax.optionsLookup' ));
+        Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
+                                                        'as'   => 'products.ajax.combinationLookup' ));
+
         Route::resource('ingredients', 'IngredientsController');
 
         Route::resource('productboms', 'ProductBOMsController');
@@ -235,6 +243,35 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get( 'import/customers', 'Import\ImportCustomersController@import' )->name('customers.import');
         Route::post('import/customers', 'Import\ImportCustomersController@process')->name('customers.import.process');
         Route::get( 'export/customers', 'Import\ImportCustomersController@export' )->name('customers.export');
+
+        Route::get( 'import/stockcounts/{id}', 'Import\ImportStockCountsController@import' )->name('stockcounts.import');
+        Route::post('import/stockcounts/{id}', 'Import\ImportStockCountsController@process')->name('stockcounts.import.process');
+        Route::get( 'export/stockcounts/{id}', 'Import\ImportStockCountsController@export' )->name('stockcounts.export');
+
+
+
+        /* ******************************************************************************************************** */
+
+
+// If Stock Counting is in progress, disable these routes:
+// if ( ! \App\Configuration::get('STOCK_COUNT_IN_PROGRESS') ) {
+
+        // Route::resource( ... );   
+// }
+
+        Route::resource('stockmovements', 'StockMovementsController');
+
+        Route::resource('stockcounts',                 'StockCountsController');
+        Route::resource('stockcounts.stockcountlines', 'StockCountLinesController');
+        Route::get('stockcounts/{id}/stockcountline/searchproduct', 'StockCountLinesController@searchProduct')->name('stockcountline.searchproduct');
+
+        Route::resource('stockadjustments', 'StockAdjustmentsController', 
+                ['except' => [
+                    'index', 'update', 'destroy'
+                ]]);
+
+
+
 
 });
 

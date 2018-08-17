@@ -9,7 +9,7 @@
     <div class="col-md-8 col-md-offset-2" style="margin-top: 50px">
         <div class="panel panel-info">
             <div class="panel-heading"><h3 class="panel-title">{{ l('New Stock Adjustment') }}</h3></div>
-            <div class="panel-body">
+            <div class="panel-body" id="stock_adjustment">
 
                 @include('errors.list')
 
@@ -51,7 +51,7 @@
 
     <!-- input type="hidden" name="_token" value="{{ csrf_token() }}" / -->
 
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div_product_options" style="display:none">
         {!! Form::label('options', l('Product Options')) !!}
         <div id="product_options"> &nbsp; 
         </div>
@@ -93,15 +93,15 @@
     </div>
 </div>
 
-@stop
+@endsection
 
-@section('scripts')
-@parent
+@section('scripts')    @parent
 
 {{-- Date Picker --}}
 
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-{!! HTML::script('assets/jquery-ui/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
@@ -124,12 +124,14 @@
   $(function() {
     $( "#product_query" ).autocomplete({
       source: "{{ route('products.ajax.nameLookup') }}",
-      minLength: 2,
+      minLength: 1,
+      appendTo : "#stock_adjustment",
       select: function( event, ui ) {
       //  alert( ui.item ?
       //    "Selected: " + ui.item.value + " aka " + ui.item.id :
       //    "Nothing selected, input was " + this.value );
 
+        $( "#product_query" ).val(ui.item.name);
         $( "#reference" ).val( ui.item.reference );
         $( "#product_id" ).val( ui.item.id );
 
@@ -145,19 +147,32 @@
               success: function(data) {
                  $("#product_options").html(data);
                  $("#product_options").removeClass('loading');
+
+                 if ( data == '' ) 
+                 {
+                      $( "#div_product_options" ).hide();
+                      // $( "#quantity" ).focus();
+                 } else {
+                      $( "#div_product_options" ).show();
+                      $( "#product_query" ).blur();
+                      // ...and/or set focus on first select field
+                 }
               }
            });
+          
+          return false;
       }
     })
     // http://stackoverflow.com/questions/9887032/how-to-highlight-input-words-in-autocomplete-jquery-ui
     .data("ui-autocomplete")._renderItem = function (ul, item) {
-        var newText = String(item.value).replace(
-                new RegExp(this.term, "gi"),
-                "<span class='ui-state-highlight' style='color: #dd4814;'><strong>$&</strong></span>");
+//        var newText = String(item.name).replace(
+//                new RegExp(this.term, "gi"),
+//                "<span class='ui-state-highlight' style='color: #dd4814;'><strong>$&</strong></span>");
 
         return $("<li></li>")
-            .data("item.autocomplete", item)
-            .append("<a>" + newText + "</a>")
+//            .data("item.autocomplete", item)
+//            .append("<a>" + newText + "</a>")
+            .append( '<div>[' + item.id + '] [' + item.reference + '] ' + item.name + "</div>" )
             .appendTo(ul);
     };
   });
@@ -227,12 +242,18 @@ function findCombination(firstTime)
 
 </script>
 
-@stop
+@endsection
 
-@section('styles')
-@parent
+@section('styles')    @parent
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+{{-- Auto Complete --}}
+
+  {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script>
+
 
 <style>
   .ui-autocomplete-loading{
@@ -241,6 +262,11 @@ function findCombination(firstTime)
   .loading{
     background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
   }
+
+
+
+  .ui-datepicker{ z-index: 9999 !important;}
+  
 </style>
 
-@stop
+@endsection

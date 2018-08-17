@@ -1,13 +1,13 @@
 
 <div class="row">
-    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+    <div class="form-group col-lg-4 col-md-4 col-sm-4">
         {!! Form::label('document_date', l('Date')) !!}
         {!! Form::text('document_date', $date, array('id' => 'document_date', 'xreadonly' => 'xreadonly', 'class' => 'form-control')) !!}
     </div>
-     <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
-        {!! Form::label('sequence_id', l('Sequence')) !!}
-        {!! Form::select('sequence_id', array('0' => l('-- Please, select --', [], 'layouts')) + $sequenceList, null, array('class' => 'form-control')) !!}
-        {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
+     <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('name') ? 'has-error' : '' }}">
+        {{ l('Name') }}
+        {!! Form::text('name', null, array('class' => 'form-control', 'id' => 'name')) !!}
+        {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
      </div>
 </div>
 

@@ -13,7 +13,7 @@
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url('/') }}">
                 <?php $img = \App\Context::getContext()->company->company_logo ?? ''; ?>
-                @if ( $img )
+                @if ( $img && \App\Configuration::isTrue('USE_CUSTOM_THEME') )
 
                     <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
 
@@ -87,6 +87,37 @@
                         <li class="divider"></li>
                     </ul>
                 </li>
+
+
+
+
+@if (config('app.url') =='http://localhost/enatural')
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('stockmovements') }}">
+                                 {{l('Stock Movements', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('stockcounts') }}">
+                                 {{l('Inventory Count', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('stockadjustments/create') }}">
+                                 {{l('Inventory Adjustments', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+@endif
+
+
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> {{l('System', [], 'layouts')}} <span class="caret"></span></a>
@@ -162,33 +193,7 @@
                 </li>
 
 
-
 @if (config('app.url') =='http://localhost/enatural' AND 0)
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li class="divider"></li>
-                         <li>
-                            <a href="{{ URL::to('stockmovements') }}">
-                                 {{l('Stock Movements', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('stockcounts') }}">
-                                 {{l('Inventory Count', [], 'layouts')}}
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                         <li>
-                            <a href="{{ URL::to('stockadjustments/create') }}">
-                                 {{l('Inventory Adjustments', [], 'layouts')}}
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                    </ul>
-                </li>
-
-
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-text"></i> {{l('Invoicing', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">

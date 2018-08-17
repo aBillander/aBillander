@@ -18,7 +18,7 @@ class Sequence extends Model {
 //            'Customer', 
             'CustomerOrder',
             'CustomerInvoice',
-//            'StockCount',
+            'StockCount',
         );
 
     // Move this to config folder? Maybe yes...
@@ -27,6 +27,7 @@ class Sequence extends Model {
 //            Customer::class        => 'Customer', 
             CustomerOrder::class   => 'CustomerOrder',
             CustomerInvoice::class => 'CustomerInvoice',
+            StockCount::class      => 'StockCount',
         );
 
     protected $dates = ['deleted_at', 'last_date_used'];

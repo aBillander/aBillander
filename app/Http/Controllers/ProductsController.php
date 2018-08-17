@@ -495,6 +495,8 @@ class ProductsController extends Controller {
                     $groups[$option->optiongroup->id]['values'][$option->id] = $option->name;
                 }
             }
+        } else {
+            return '';
         }
 
         $str = '';
@@ -565,12 +567,12 @@ LIMIT 1
      */
     public function ajaxProductSearch(Request $request)
     {
-//        $term  = $request->has('term')  ? $request->input('term')  : null ;
-//        $query = $request->has('query') ? $request->input('query') : $term;
+        $term  = $request->has('term')  ? $request->input('term')  : null ;
+        $query = $request->has('query') ? $request->input('query') : $term;
 
-//        if ( $query )
+        if ( $query )
 
-        if ($request->has('query'))
+//        if ($request->has('query'))
         {
             $onhand_only = ( $request->has('onhand_only') ? 1 : 0 );
 

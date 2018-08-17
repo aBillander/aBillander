@@ -59,7 +59,7 @@
                         {{ $stockmovement->product->reference }}
                     @endif
             </td>
-			<td>{{ $stockmovement->product->name }}
+			<td><a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $stockmovement->product->name }}</a>
                     @if ( $stockmovement->combination_id > 0 )
                         <br />{{ $stockmovement->combination->name() }}
                     @endif

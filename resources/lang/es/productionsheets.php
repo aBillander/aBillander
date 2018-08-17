@@ -13,6 +13,7 @@ return [
 
     'Customer Orders'     => 'Pedidos de Clientes',
 	'Reference'     => 'Referencia',
+	'Date'     => 'Fecha',
 	'Order Date'     => 'Fecha del Pedido',
     'Customer'     => 'Cliente',
     'Shipping Method' => 'Método de Envío',
@@ -41,7 +42,13 @@ return [
 	'Customer Order Summary'     => 'Resumen de Pedidos de Cliente',
 	'Lack'     => 'Falta',
 	'Excess'     => 'Sobra',
-	''     => '',
+
+	'Production Sheets - Create'     => 'Hojas de Producción - Crear',
+	'New Production Sheet'     => 'Nueva Hoja de Producción',
+
+
+	'Production Sheets - Edit'     => 'Hojas de Producción - Modificar',
+	'Edit Production Sheet'     => 'Modificar Hoja de Producción',
 
 
 ];

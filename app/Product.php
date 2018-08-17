@@ -407,7 +407,7 @@ class Product extends Model {
      * @param  string $query
      * @return json
      */
- /*   public static function searchByNameAutocomplete($query, $onhand_only = 0)
+    public static function searchByNameAutocomplete($query, $onhand_only = 0)
     {
         $columns = [ 'id', 'product_type', 'name', 'reference',
  //                   'measure_unit', 'quantity_decimal_places', 
@@ -420,16 +420,19 @@ class Product extends Model {
 //       $q = Product::with('tax')
         $q = Product::select( $columns )
                     ->where('name', 'like', '%' . $query . '%')
+                    ->orWhere('reference', 'like', '%' . $query . '%')
                     ->take( intval( \App\Configuration::get('DEF_ITEMS_PERAJAX') ) )
                     ->orderBy('name');
 
         if ($onhand_only) $q = $q->where('quantity_onhand', '>', '0');
 
-         $products = $q->get();
+         $products = $q->take( \App\Configuration::getInt('DEF_ITEMS_PERAJAX') )->get();
 
-         return json_encode( array('query' => $query, 'suggestions' => $products) );
+
+         return json_encode( $products );
+//         return json_encode( array('query' => $query, 'suggestions' => $products) );
     }
-*/	
+	
 
     
 

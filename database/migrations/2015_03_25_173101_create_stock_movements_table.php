@@ -13,6 +13,8 @@ class CreateStockMovementsTable extends Migration {
 	 */
 	public function up()
 	{
+        Schema::dropIfExists('stock_movements');
+
 		Schema::create('stock_movements', function(Blueprint $table)
 		{
 			$table->increments('id');
@@ -22,22 +24,28 @@ class CreateStockMovementsTable extends Migration {
 			$table->string('stockmovementable_type');
 //			$table->string('model_name', 64)->nullable(false);    	// Stock movement may be owned by a shipping slip, invoice, stock adjustment...!
 //			$table->integer('document_id')->unsigned()->default(0);	// id of model_name
-			$table->integer('stockmovementable_line_id')->unsigned()->default(0);	// line id of document_id
+			$table->integer('stockmovementable_line_id')->unsigned()->nullable();	// line id of document_id
 
-			$table->string('document_reference', 64)->nullable();				// document_prefix + document_id of model_name (or supplier reference, etc.)
+			$table->string('document_reference', 64)->nullable();		// document_prefix + document_id of model_name (or supplier reference, etc.)
 
 			$table->decimal('quantity', 20, 6);
+			$table->decimal('quantity_after_movement', 20, 6);
 			$table->decimal('price', 20, 6);
 			$table->integer('currency_id')->unsigned()->nullable(false);
 			$table->decimal('conversion_rate', 20, 6);
 
-			$table->text('notes')->nullable();
+			$table->text('notes')->nullable();			// Reason for this movement and other comments
 			
 			$table->integer('product_id')->unsigned()->nullable(false);
-			$table->integer('combination_id')->unsigned()->nullable(false)->default(0);
+			$table->integer('combination_id')->unsigned()->nullable();
 			$table->integer('warehouse_id')->unsigned()->nullable(false);
+			$table->integer('warehouse_counterpart_id')->unsigned()->nullable();			// For Stock Transfers between Warehouses
+
 			$table->smallInteger('movement_type_id')->unsigned()->nullable(false);			// Movement types: Input (Purchase order...), Output (Sales order,...), Stock Adjustment
 			$table->integer('user_id')->unsigned()->nullable(false)->default(0);
+
+
+			$table->string('inventorycode', 128)->nullable();			// code used to group different movement line into one operation (may be an inventory, a mass picking) 
 			
 			$table->timestamps();
 			$table->softDeletes();
@@ -52,7 +60,7 @@ class CreateStockMovementsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('stock_movements');
+        Schema::dropIfExists('stock_movements');
 	}
 
 }

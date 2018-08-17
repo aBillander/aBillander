@@ -15,7 +15,7 @@ class StockMovement extends Model {
     protected $dates = ['date', 'deleted_at'];
 
     protected $fillable = ['date', 'document_reference', 'price', 'currency_id', 'conversion_rate', 'quantity', 'notes',
-                           'product_id', 'combination_id', 'warehouse_id', 'movement_type_id'];
+                           'product_id', 'combination_id', 'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id'];
 
 //        'date' => 'required|date|date_format:YY-MM-DD',
 //         See: https://es.stackoverflow.com/questions/57020/validaci%C3%B3n-de-formato-de-fecha-no-funciona-laravel-5-3
@@ -48,7 +48,7 @@ class StockMovement extends Model {
                     'currency_id' => 'exists:currencies,id',
                     'quantity' => 'required',                   //|not_in:0',
                     'product_id' => 'exists:products,id',
-                    'combination_id' => 'sometimes|exists:combinations,id',
+//                    'combination_id' => 'sometimes|exists:combinations,id',       // In fact, combination_id is CALCULATED in Controller
                     'warehouse_id' => 'exists:warehouses,id',
                     'movement_type_id' => 'required',
                     ),
@@ -90,6 +90,7 @@ class StockMovement extends Model {
                     'product_id' => 'exists:products,id',
                     'combination_id' => 'sometimes|exists:combinations,id',
                     'warehouse_id' => 'exists:warehouses,id',
+                    'warehouse_counterpart_id' => 'exists:warehouses,id',
                     'movement_type_id' => 'required',
                     ),
             '41' => array(
@@ -100,6 +101,7 @@ class StockMovement extends Model {
                     'product_id' => 'exists:products,id',
                     'combination_id' => 'sometimes|exists:combinations,id',
                     'warehouse_id' => 'exists:warehouses,id',
+                    'warehouse_counterpart_id' => 'exists:warehouses,id',
                     'movement_type_id' => 'required',
                     ),
             '50' => array(
@@ -143,6 +145,27 @@ class StockMovement extends Model {
         'warehouse_id' => 'exists:warehouses,id',
 //        'movement_type_id' => 'required',
     );
+
+
+    public static function boot()
+    {
+        parent::boot();
+/*
+        static::creating(function($corder)
+        {
+            $corder->secure_key = md5(uniqid(rand(), true));
+            
+            if ( $corder->shippingmethod )
+                $corder->carrier_id = $corder->shippingmethod->carrier_id;
+        });
+*/
+        static::saving(function($record)
+        {
+            $record->user_id = \Auth::id();
+        });
+
+    }
+
 
     public static function validTypeRule()
     {
@@ -372,6 +395,7 @@ class StockMovement extends Model {
     // PURCHASE_ORDER
     public function process_20()
     {
+        // Price 4 Cost average calculations
         if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
             $currency = \App\Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
@@ -382,6 +406,8 @@ class StockMovement extends Model {
         // Update Product
         $product = \App\Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand + $this->quantity;
+        $this->quantity_after_movement = $quantity_onhand;
+        $this->save();
 
         // Average price stuff
         if ( !($this->combination_id > 0) ) {

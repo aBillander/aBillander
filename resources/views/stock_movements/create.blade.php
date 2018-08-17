@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Stock Movements - Create') }} @parent @stop
+@section('title') {{ l('Stock Movements - Create') }} @parent @endsection
 
 
 @section('content')
@@ -9,22 +9,26 @@
     <div class="col-md-8 col-md-offset-2" style="margin-top: 50px">
         <div class="panel panel-info">
             <div class="panel-heading"><h3 class="panel-title">{{ l('New Stock Movement') }}</h3></div>
-            <div class="panel-body">
+            <div class="panel-body" id="stock_movement">
 
                 @include('errors.list')
 
 				{!! Form::open(array('route' => 'stockmovements.store')) !!}
     
 <div class="row">
-    <div class="form-group col-lg-4 col-md-4 col-sm-4">
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('date', l('Date')) !!}
         {!! Form::text('date', $date, array('id' => 'date', 'xreadonly' => 'xreadonly', 'class' => 'form-control')) !!}
     </div>
-    <div class="form-group col-lg-4 col-md-4 col-sm-4">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('warehouse_id', l('Warehouse')) !!}
         {!! Form::select('warehouse_id', $warehouseList, \App\Configuration::get('DEF_WAREHOUSE'), array('class' => 'form-control')) !!}
     </div>
     <div class="form-group col-lg-4 col-md-4 col-sm-4">
+        {!! Form::label('movement_type_id', l('Movement type')) !!}
+        {!! Form::select('movement_type_id', array('0' => l('-- Please, select --', [], 'layouts')) + $movement_typeList, $movement_type_id, array('class' => 'form-control')) !!}
+    </div>
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('document_reference', l('Document')) !!}
         {!! Form::text('document_reference', $document_reference, array('class' => 'form-control')) !!}
     </div>
@@ -53,19 +57,16 @@
 
     <!-- input type="hidden" name="_token" value="{{ csrf_token() }}" / -->
 
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div_product_options" style="display:none">
         {!! Form::label('options', l('Product Options')) !!}
         <div id="product_options"> &nbsp; 
+                {{-- !! Form::hidden('combination_id', null, array('id' => 'combination_id')) !! --}}
         </div>
     </div>
 
 </div>
 
 <div class="row">
-    <div class="form-group col-lg-4 col-md-4 col-sm-4">
-        {!! Form::label('movement_type_id', l('Movement type')) !!}
-        {!! Form::select('movement_type_id', array('0' => l('-- Please, select --', [], 'layouts')) + $movement_typeList, $movement_type_id, array('class' => 'form-control')) !!}
-    </div>
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('quantity', l('Quantity')) !!}
         {!! Form::text('quantity', null, array('class' => 'form-control')) !!}
@@ -110,10 +111,9 @@
     </div>
 </div>
 
-@stop
+@endsection
 
-@section('scripts')
-@parent
+@section('scripts')    @parent
 
 {{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
 
@@ -142,12 +142,14 @@
   $(function() {
     $( "#product_query" ).autocomplete({
       source: "{{ route('products.ajax.nameLookup') }}",
-      minLength: 2,
+      minLength: 1,
+      appendTo : "#stock_movement",
       select: function( event, ui ) {
       //  alert( ui.item ?
       //    "Selected: " + ui.item.value + " aka " + ui.item.id :
       //    "Nothing selected, input was " + this.value );
 
+        $( "#product_query" ).val(ui.item.name);
         $( "#reference" ).val( ui.item.reference );
         $( "#product_id" ).val( ui.item.id );
 
@@ -163,19 +165,32 @@
               success: function(data) {
                  $("#product_options").html(data);
                  $("#product_options").removeClass('loading');
+
+                 if ( data == '' ) 
+                 {
+                      $( "#div_product_options" ).hide();
+                      $( "#quantity" ).focus();
+                 } else {
+                      $( "#div_product_options" ).show();
+                      $( "#product_query" ).blur();
+                      // ...and/or set focus on first select field
+                 }
               }
            });
+          
+          return false;
       }
     })
     // http://stackoverflow.com/questions/9887032/how-to-highlight-input-words-in-autocomplete-jquery-ui
     .data("ui-autocomplete")._renderItem = function (ul, item) {
-        var newText = String(item.value).replace(
-                new RegExp(this.term, "gi"),
-                "<span class='ui-state-highlight' style='color: #dd4814;'><strong>$&</strong></span>");
+//        var newText = String(item.value).replace(
+//                new RegExp(this.term, "gi"),
+//                "<span class='ui-state-highlight' style='color: #dd4814;'><strong>$&</strong></span>");
 
         return $("<li></li>")
-            .data("item.autocomplete", item)
-            .append("<a>" + newText + "</a>")
+//            .data("item.autocomplete", item)
+//            .append("<a>" + newText + "</a>")
+            .append( '<div>[' + item.id + '] [' + item.reference + '] ' + item.name + "</div>" )
             .appendTo(ul);
     };
   });
@@ -245,12 +260,18 @@ function findCombination(firstTime)
 
 </script>
 
-@stop
+@endsection
 
-@section('styles')
-@parent
+@section('styles')    @parent
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+{{-- Auto Complete --}}
+
+  {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script>
+
 
 <style>
   .ui-autocomplete-loading{
@@ -265,4 +286,4 @@ function findCombination(firstTime)
   .ui-datepicker{ z-index: 9999 !important;}
 </style>
 
-@stop
+@endsection

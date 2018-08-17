@@ -84,12 +84,13 @@ class CurrenciesTableSeeder extends Seeder {
 
 		// Uncomment the below to run the seeder
 		DB::table('currencies')->insert($configurations);
-
+/*
 		$c = \App\Currency::where('iso_code', '=', 'EUR')->first();
 		\App\Configuration::updateValue('DEF_CURRENCY', $c->id);
 
 		$company = \App\Company::findOrFail( intval(\App\Configuration::get('DEF_COMPANY')) );
 		$company->update( ['currency_id' => $c->id] );
+*/		
 	}
 
 }

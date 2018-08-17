@@ -10,6 +10,7 @@ return [
 	*/
 
 	'Date' => 'Fecha',
+	'Name' => 'Nombre',
 	'Sequence' => 'Serie',
 	'Warehouse' => 'Almacén',
 	'Initial Inventory?' => '¿De Apertura?',
@@ -21,5 +22,6 @@ return [
 	'Count #' => 'Inventario #',
 	'Stock Count Lines' => 'Introducir Inventario',
 
+	'Back to Stock Counts' => 'Volver a Inventarios de Almacén',
 
 ];

@@ -5,8 +5,9 @@ namespace App;
 // Check this: http://www.qcode.in/save-laravel-app-settings-in-database/
 
 use Illuminate\Database\Eloquent\Model;
+use aBillander\Installer\Helpers\Installer;
 
-class Configuration extends Model 
+class Configuration extends Model
 {
     protected $fillable = [ 'name', 'value', 'description' ];
 
@@ -20,15 +21,17 @@ class Configuration extends Model
 
 	public static function loadConfiguration()
 	{
-		self::$_CONF = array();
+		if (Installer::alreadyInstalled()) {
+			self::$_CONF = array();
 
-		$results = Configuration::All();
+			$results = Configuration::All();
 
-		if ($results->count())
-			foreach ($results as $result)
-			{
-				self::$_CONF[$result->name] = $result->value;
-			}
+			if ($results->count())
+				foreach ($results as $result)
+				{
+					self::$_CONF[$result->name] = $result->value;
+				}
+		}
 	}
 
 	/**
@@ -52,7 +55,7 @@ class Configuration extends Model
 		$current_value = Configuration::get($key);
 
 		/* Update classic values */
-		
+
 			/* If the current value exists but the _CONF_IDS[$key] does not, it mean the value has been set but not save, we need to add */
 		 	if ( $current_value !== false )
 		 	{
@@ -77,7 +80,7 @@ class Configuration extends Model
 					self::$_CONF[$key] = $values;   // Configuration::set($key, $values, $id_shop_group, $id_shop);
 				}
 			}
-	
+
 		return (bool)$result;
 	}
 
@@ -100,7 +103,7 @@ class Configuration extends Model
 	}
 
 	/**
-	  * Get several configuration values 
+	  * Get several configuration values
 	  *
 	  * @param array $keys Keys wanted
 	  * @param integer $id_lang Language ID
@@ -116,7 +119,7 @@ class Configuration extends Model
 		foreach ($keys as $key)
 			if (array_key_exists($key, self::$_CONF))
 				$resTab[$key] = self::$_CONF[$key];
-		
+
 		return $resTab;
 	}
 
@@ -171,7 +174,7 @@ class Configuration extends Model
 	}
 
 	/**
-	  * Delete a configuration key in database 
+	  * Delete a configuration key in database
 	  *
 	  * @param string $key Key to delete
 	  * @return boolean Deletion result
@@ -181,7 +184,7 @@ class Configuration extends Model
 		// If the key is invalid or if it does not exists, do nothing.
 	 	// if (!Validate::isConfigName($key))
 		// 	return false;
-		
+
 		$model = Configuration::where('name', '=', $key)->first();
 		if ($model && $model->delete())
 			unset(self::$_CONF[$key]);

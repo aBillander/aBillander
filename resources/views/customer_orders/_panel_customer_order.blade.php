@@ -10,6 +10,10 @@
                             <li class="active"><a href="#tab1default" data-toggle="tab">{{ l('Header Data') }}</a></li>
                             <li><a href="#tab2default" data-toggle="tab">{{ l('Lines') }}</a></li>
                             <li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li>
+
+@if ( \App\Configuration::isFalse('USE_CUSTOM_THEME') )                            
+                            <li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
+@endif
                             <!-- li class="dropdown">
                                 <a href="#" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
@@ -44,6 +48,11 @@
       <div class="tab-pane fade" id="tab3default">
                 
                 @include('customer_orders._tab_profitability')
+
+      </div>
+      <div class="tab-pane fade" id="tab4default">
+                
+                @include('customer_orders._tab_availability')
 
       </div>
       <!-- div class="tab-pane fade" id="tab4default">

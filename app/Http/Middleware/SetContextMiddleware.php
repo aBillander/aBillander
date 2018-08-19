@@ -130,6 +130,7 @@ class SetContextMiddleware {
 				if ($request->segment(3) == 'states'  ) Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'taxrules') Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'pricelistlines') Context::getContext()->controller = $request->segment(3);
+				if ($request->segment(3) == 'stockcountlines') Context::getContext()->controller = $request->segment(3);
 	//			Context::getContext()->action     = NULL;
 
 			}

@@ -1488,6 +1488,38 @@ class CustomerOrdersController extends Controller
     }
 
 
+    public function getOrderAvailability($id)
+    {
+        $order = $this->customerOrder
+                        ->with('customerorderlines')
+                        ->with('customerorderlines.product')
+                        ->findOrFail($id);
+
+        return view('customer_orders._panel_customer_order_availability', compact('order'));
+
+        $order = \App\CustomerOrder::findOrFail($id);
+
+        $sheet_id = $order->production_sheet_id;
+
+        $order->update(['production_sheet_id' => null]);
+
+        // $sheet_id = $request->input('current_production_sheet_id');
+
+        return redirect()->route('productionsheet.calculate', [$sheet_id]);
+    }
+
+
+    public function quickAddLines(Request $request, $order_id)
+    {
+        parse_str($request->input('product_id_values'), $product_id);
+        parse_str($request->input('combination_id_values'), $combination_id);
+        parse_str($request->input('quantity_values'), $quantity);
+
+        return compact('order_id', 'product_id', 'combination_id', 'quantity');
+    }
+
+
+
 
     /*
     |--------------------------------------------------------------------------

@@ -20,8 +20,5 @@ return [
 	'Edit Stock Count' => 'Modificar Inventario de Almacén',
 	'Stock Counts' => 'Inventario de Almacén',
 	'Count #' => 'Inventario #',
-	'Stock Count Lines' => 'Introducir Inventario',
-
-	'Back to Stock Counts' => 'Volver a Inventarios de Almacén',
 
 ];

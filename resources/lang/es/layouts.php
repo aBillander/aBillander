@@ -177,6 +177,7 @@ return [
 	'Browse'     => 'Seleccionar',
 
 	'Add New Item'     => 'Añadir Nuevo',
+	'Add'     => 'Añadir',
 	'Add New'     => 'Nuevo',
 	'Add to Document'     => 'Añadir al Documento',
 

@@ -23,6 +23,8 @@
                </div><!-- div class="panel-body" -->
 
 
+@include('customer_orders._modal_order_lines_quick_form')
+
 @include('customer_orders._modal_order_line_form')
 
 @include('customer_orders._modal_order_line_delete')

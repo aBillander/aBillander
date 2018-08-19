@@ -94,6 +94,7 @@ return [
 	'Header'     => 'Cabecera',
 	'Lines'     => 'Líneas',
 	'Profitability'     => 'Rentabilidad',
+	'Availability'     => 'Disponibilidad',
 	'Payments'     => 'Pagos',
 
 	'Accepts eInvoice'     => 'Acepta Factura Electrónica',
@@ -138,6 +139,7 @@ return [
 	'Notes to Customer'     => 'Notas para el Cliente',
 	
 	// _order_lines
+	'Quick Add Lines'     => 'Entrada rápida de Líneas',
 	'Add Product'     => 'Añadir Producto',
 	'Add Service'     => 'Añadir Servicio',
 	'Reference'     => 'Referencia',
@@ -163,6 +165,7 @@ return [
 	'Text Line'     => 'Línea de Texto',
 
 	// modal_product_search
+	'Quick Add Products to Order'     => 'Entrada rápida de Productos',
 	'Add Product to Order'     => 'Nuevo Producto',
 	'Add Service to Order'     => 'Nuevo Servicio',
 	'Search Products'     => 'Buscar Productos',
@@ -196,6 +199,11 @@ return [
 	'Commission'     => 'Comisión',
 	'Order Cost-Benefit Analysis'     => 'Rentabiliad Total de la Venta',
 	'Margin'     => 'Margen',
+
+	// Stock availability
+	'Stock Availability'     => 'Disponibilidad de Stock',
+	''     => '',
+	''     => '',
 
 	'Finish Up'     => 'Emitir',
 	'Invoice This'  => 'Facturar',

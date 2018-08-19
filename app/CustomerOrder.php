@@ -570,4 +570,46 @@ class CustomerOrder extends Model
         return $query->where( 'due_date', '>=', \Carbon\Carbon::now()->toDateString() );
     }
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Data Factory :: Pump it up!
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * 
+     */
+    public function addProductLine( $product_id, $combination_id = null, $quantity = 1.0, $params = [] )
+    {
+
+        // Do the Mambo!
+        // Product
+        if ($combination_id>0) {
+            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+        }
+
+        $reference  = $product->reference;
+        $name       = $product->name;
+        $cost_price = $product->cost_price;
+
+        $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
+                            ? $params['prices_entered_with_tax'] 
+                            : \App\Configuration::getInt('PRICES_ENTERED_WITH_TAX');
+
+        $tax_percent = 
+
+
+
+        return 'HW!';
+    }
+
 }

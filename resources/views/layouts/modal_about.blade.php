@@ -10,7 +10,7 @@
             <div class="row">
               <div class="col-md-12">
                 <h4><a class="footer-logo" href="http://www.abillander.com/" target="new"><i class="fa fa-bolt"></i> Lar<span>aBillander</span></a> <span style="font-size: 14px;">by Lara Billander</span></h4>
-                    {!! HTML::image('assets/theme/images/tumblr_m3z2ciodE01qh4utio1_500.jpg', 'Lara Billander', array('title' => 'Lara Billander :: The Girl with the Dragon Tattoo', 'width' => '150', 'height' => '176', 'class' => 'center-block')) !!}
+                    {!! HTML::image('assets/theme/images/laravatar.png', 'Lara Billander', array('title' => 'Lara Billander :: The Girl with the Dragon Tattoo', 'width' => '150', 'xheight' => '176', 'class' => 'center-block', 'style' => 'padding: 10px')) !!}
                 <p>{{l('Version', [], 'layouts')}} {{ App\Configuration::get('SW_VERSION') }}</p>
 
 

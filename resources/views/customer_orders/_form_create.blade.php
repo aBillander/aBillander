@@ -107,7 +107,7 @@
          
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipping_method_id') ? 'has-error' : '' }}">
             {{ l('Shipping Method') }}
-            {!! Form::select('shipping_method_id', ['' => l('-- Please, select --', [], 'layouts')] + $shipping_methodList, old('shipping_method_id'), array('class' => 'form-control', 'id' => 'shipping_method_id')) !!}
+            {!! Form::select('shipping_method_id', ['0' => l('-- Please, select --', [], 'layouts')] + $shipping_methodList, old('shipping_method_id'), array('class' => 'form-control', 'id' => 'shipping_method_id')) !!}
             {!! $errors->first('shipping_method_id', '<span class="help-block">:message</span>') !!}
          </div>
 

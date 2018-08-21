@@ -72,6 +72,14 @@
                 -
                 @endif
               </li>
+              <li class="list-group-item">
+                {{l('Equalization Tax')}}:<br />
+                @if( $order->customer->sales_equalization > 0 )
+                {{l('Yes', 'layouts')}}
+                @else
+                {{l('No', 'layouts')}}
+                @endif
+              </li>
 
               <!-- li class="list-group-item">
                 <h4 class="list-group-item-heading">{{l('Customer Group')}}</h4>

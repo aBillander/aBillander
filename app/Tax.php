@@ -65,10 +65,11 @@ class Tax extends Model {
     {
         if ( !$address ) $address = \App\Context::getContext()->company->address;
 
-        $rules = $address->getTaxRules( $this );
+        $rules = $address->getTaxRules( $this );    // Only rule_type = sales
 
         $percent = $rules->where('rule_type', '=', 'sales')->sum('percent');
 
+        // No effect: $rules are only rule_type = sales
         if ($with_sales_equalization)
             $percent += $rules->where('rule_type', '=', 'sales_equalization')->sum('percent');
 

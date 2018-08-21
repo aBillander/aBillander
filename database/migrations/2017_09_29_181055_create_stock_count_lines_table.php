@@ -13,14 +13,16 @@ class CreateStockCountLinesTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('stock_count_lines');
+        
         Schema::create('stock_count_lines', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamp('date');
 
-            $table->decimal('quantity_before_count', 20, 6);
+//            $table->decimal('quantity_before_count', 20, 6);
             $table->decimal('quantity', 20, 6);
             $table->decimal('cost_price', 20, 6);
-            $table->decimal('cost_price_before_count', 20, 6);
+//            $table->decimal('cost_price_before_count', 20, 6);
             // What happen with cost_average if cost_price is set???
 
             $table->integer('stock_count_id')->unsigned()->nullable(false);

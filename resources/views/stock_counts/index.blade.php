@@ -56,6 +56,12 @@
 
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('stockcounts.import', [$stockcount->id] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-upload"></i></a>
 
+                <a class="btn btn-sm btn-info update-warehouse-stock" data-html="false" data-toggle="modal" 
+                        href="{{ URL::route('stockcount.warehouse.update', [$stockcount->id] ) }}" 
+                        data-content="{{l('You are going to UPDATE the Stock of Products in Warehouse :ws. Are you sure?', ['ws' => $stockcount->warehouse->name])}}" 
+                        data-title="{{ l('Stock Counts') }} :: ({{$stockcount->id}}) {{ $stockcount->name }}" 
+                        onClick="return false;" title="{{l('Update Warehouse Stock')}}"><i class="fa fa-superpowers"></i></a>
+
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('stockcounts.export', [$stockcount->id] ) }}" title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i></a>
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('stockcounts/' . $stockcount->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
@@ -81,5 +87,8 @@
 </div>
 
 @stop
+
+
+@include('stock_counts/_modal_update_warehouse_stock')
 
 @include('layouts/modal_delete')

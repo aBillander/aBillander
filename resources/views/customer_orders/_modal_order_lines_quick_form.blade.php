@@ -18,31 +18,10 @@
 
             {{-- csrf_field() --}}
             {!! Form::token() !!}
-            <!-- input type="hidden" name="_token" value="{ { csrf_token() } }" -->
-            <!-- input type="hidden" id="" -->
-            {{ Form::hidden('line_id',         null, array('id' => 'line_id'        )) }}
-            {{ Form::hidden('line_sort_order', null, array('id' => 'line_sort_order')) }}
 
             {{ Form::hidden('row_count',             0, array('id' => 'row_count'         )) }}
             {{ Form::hidden('row_product_id',     null, array('id' => 'row_product_id'    )) }}
             {{ Form::hidden('row_combination_id', null, array('id' => 'row_combination_id')) }}
-
-            {{ Form::hidden('line_reference',      null, array('id' => 'line_reference'     )) }}
-
-            {{ Form::hidden('line_type',           null, array('id' => 'line_type'          )) }}
-
-            {{ Form::hidden('line_cost_price',          null, array('id' => 'line_cost_price'         )) }}
-            {{ Form::hidden('line_unit_price',          null, array('id' => 'line_unit_price'         )) }}
-            {{ Form::hidden('line_unit_customer_price', null, array('id' => 'line_unit_customer_price')) }}
-
-            {{-- Not in use so far --}}
-            {{ Form::hidden('line_discount_amount_tax_incl', null, array('id' => 'line_discount_amount_tax_incl')) }}
-            {{ Form::hidden('line_discount_amount_tax_excl', null, array('id' => 'line_discount_amount_tax_excl')) }}
-
-            {{ Form::hidden('line_sales_rep_id',       null, array('id' => 'line_sales_rep_id'      )) }}
-            {{ Form::hidden('line_commission_percent', null, array('id' => 'line_commission_percent')) }}
-
-            {{ Form::hidden('line_is_prices_entered_with_tax', null, array('id' => 'line_is_prices_entered_with_tax')) }}
 
 
 
@@ -50,7 +29,7 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{-- $errors->has('row_reference') ? 'has-error' : '' --}}">
                      {{ l('Reference') }}
-                     {!! Form::text('row_reference', null, ['class' => 'form-control', 'id' => 'row_reference',  'xonfocus' => 'this.blur()' ]) !!}
+                     {!! Form::text('row_reference', null, ['class' => 'form-control', 'id' => 'row_reference',  'onfocus' => 'this.blur()' ]) !!}
                      {{-- !! $errors->first('row_reference', '<span class="help-block">:message</span>') !! --}}
                   </div>
 
@@ -386,6 +365,8 @@ function quick_formSubmit()
                     console.log(result);
 
                     showAlertDivWithDelay("#msg-success");
+
+                    loadCustomerOrderlines();
                 }
             });
 
@@ -446,7 +427,7 @@ function quick_formSubmit()
                     $('#row_reference').val(value.item.reference);
                     $("#row_autoproduct_name").val(str);
                     $('#row_product_id').val(value.item.id);
-                    $('#row_combination_id').val(0)
+                    $('#row_combination_id').val(0);
 
                     // getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
 

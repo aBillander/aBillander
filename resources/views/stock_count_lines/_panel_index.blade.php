@@ -8,7 +8,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => array('pricelists.pricelistlines.index',$list->id), 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => array('stockcounts.stockcountlines.index',$list->id), 'method' => 'GET')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -50,7 +50,7 @@
 --}}
 <div class="form-group col-lg-4 col-md-4 col-sm-4" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route('pricelists.pricelistlines.index', l('Reset', [], 'layouts'), [$list->id], array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('stockcounts.stockcountlines.index', l('Reset', [], 'layouts'), [$list->id], array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>
@@ -63,11 +63,11 @@
 </div>
 
 
-<div id="div_pricelists">
+<div id="div_stockcounts">
    <div class="table-responsive">
 
 @if ($lines->count())
-<table id="pricelists" class="table table-hover">
+<table id="stockcounts" class="table table-hover">
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
@@ -75,19 +75,19 @@
             <th>{{l('Product Name')}}</th>
             <th>{{l('Customer Price')}} 
                 @if ( $list->price_is_tax_inc)
-                    ({{l('Tax Inc', 'pricelistlines')}})
+                    ({{l('Tax Inc', 'stockcountlines')}})
                 @endif
 
 
             </th>
 
-            <th class="text-left"colspan="2">{{l('Discount (%)', 'pricelistlines')}}
+            <th class="text-left"colspan="2">{{l('Discount (%)', 'stockcountlines')}}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Ratio between Price List Price (Tax excluded) and Defaul Price as taken from Product Data.') }}">
+                                    data-content="{{ l('Ratio between Stock Count Price (Tax excluded) and Defaul Price as taken from Product Data.') }}">
                                 <i class="fa fa-question-circle abi-help"></i>
                          </a></th>
-            <th class="text-left">{{l('Cost Price', 'pricelistlines')}}</th>
-            <th class="text-left">{{l('Margin (%)', 'pricelistlines')}}
+            <th class="text-left">{{l('Cost Price', 'stockcountlines')}}</th>
+            <th class="text-left">{{l('Margin (%)', 'stockcountlines')}}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
                                         l('Margin calculation is based on Cost Price', [], 'layouts') :
@@ -117,15 +117,15 @@ border-color: #bce8f1;cursor: default">{{ $line->as_percentable( \App\Calculator
 
 			<td class="text-right button-pad">
                 @if (  is_null($line->deleted_at))
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('pricelists/' . $list->id.'/pricelistlines/' . $line->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                <a class="btn btn-sm btn-warning" href="{{ URL::to('stockcounts/' . $list->id.'/stockcountlines/' . $line->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                		href="{{ URL::to('pricelists/' . $list->id.'/pricelistlines/' . $line->id ) }}" 
+                		href="{{ URL::to('stockcounts/' . $list->id.'/stockcountlines/' . $line->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Price List Lines') }} :: ({{$line->id}}) {{{ $line->product->name }}} " 
+                		data-title="{{ l('Stock Count Lines') }} :: ({{$line->id}}) {{{ $line->product->name }}} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
-                <a class="btn btn-warning" href="{{ URL::to('pricelistlines/' . $line->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
-                <a class="btn btn-danger" href="{{ URL::to('pricelistlines/' . $line->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
+                <a class="btn btn-warning" href="{{ URL::to('stockcountlines/' . $line->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
+                <a class="btn btn-danger" href="{{ URL::to('stockcountlines/' . $line->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
                 @endif
 			</td>
 		</tr>

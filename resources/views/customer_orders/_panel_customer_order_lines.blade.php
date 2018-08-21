@@ -76,7 +76,7 @@
             @foreach ($order->customerorderlines as $line)
             <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
                 <td>[{{ $line->id }}] {{$line->line_sort_order }}</td>
-                <td>{{ $line->reference }}</td>
+                <td><a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
                 <td>
                 @if($line->line_type == 'shipping')
                   <i class="fa fa-truck abi-help" title="{{l('Shipping Cost')}}"></i> 

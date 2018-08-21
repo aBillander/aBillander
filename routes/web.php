@@ -264,7 +264,9 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('stockmovements', 'StockMovementsController');
 
-        Route::resource('stockcounts',                 'StockCountsController');
+        Route::resource('stockcounts',              'StockCountsController');
+        Route::post( 'stockcounts/{id}/warehouse/update',    'StockCountsController@warehouseUpdate' )->name('stockcount.warehouse.update');
+
         Route::resource('stockcounts.stockcountlines', 'StockCountLinesController');
         Route::get('stockcounts/{id}/stockcountline/searchproduct', 'StockCountLinesController@searchProduct')->name('stockcountline.searchproduct');
 

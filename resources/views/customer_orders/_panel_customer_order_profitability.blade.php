@@ -49,7 +49,7 @@
                 @if($line->line_type == 'shipping')
                   <i class="fa fa-truck abi-help" title="{{l('Shipping Cost')}}"></i> 
                 @endif
-                {{ $line->reference }}</td>
+                <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
                 <td>
                 {{ $line->name }}</td>
                 <td class="text-right">{{ $line->as_price('unit_final_price') }}</td>

@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use App\StockCount;
 use App\StockCountLine;
 
+use App\Traits\BillableTrait;
+
 class StockCountLinesController extends Controller
 {
 
+   use BillableTrait;
 
    protected $stockcount;
    protected $stockcountline;
@@ -48,9 +51,11 @@ class StockCountLinesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($stockcountId)
     {
-        //
+        $list  = $this->stockcount->findOrFail($stockcountId);
+
+        return view('stock_count_lines.create', compact('list'));
     }
 
     /**
@@ -59,9 +64,21 @@ class StockCountLinesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($stockcountId, Request $request)
     {
-        //
+        // Dates (cuen)
+        $this->mergeFormDates( ['date'], $request );
+        
+        $list = $this->stockcount->findOrFail($stockcountId);
+
+        $this->validate($request, StockCountLine::$rules);
+
+        $line = $this->stockcountline->create($request->all());
+
+        $list->stockcountlines()->save($line);
+
+        return redirect(route('stockcounts.stockcountlines.index',$stockcountId))
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $line->id], 'layouts'));
     }
 
     /**
@@ -107,5 +124,31 @@ class StockCountLinesController extends Controller
     public function destroy(StockCountLine $stockCountLine)
     {
         //
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+    public function searchProduct($id, Request $request)
+    {
+        $search = $request->term;
+
+        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+                                ->where(   'name',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
+//                                ->isManufactured()
+//                                ->qualifyForPriceList( $id )
+//                                ->with('measureunit')
+//                                ->toSql();
+                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+
+
+//                                dd($products);
+
+        return response( $products );
     }
 }

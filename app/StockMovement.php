@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,6 +13,10 @@ class StockMovement extends Model {
 
     use ViewFormatterTrait;
     use SoftDeletes;
+
+    protected $product;
+    protected $combination;
+    protected $price_in;        // Movement Price in Company Currency (for average price calculations)
 
     protected $dates = ['date', 'deleted_at'];
 
@@ -247,6 +253,30 @@ class StockMovement extends Model {
 
     public function process()
     {
+        // $price_in;
+        // Price 4 Cost average calculations
+        if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
+            $currency = \App\Currency::find($this->currency_id);
+            $conversion_rate = $currency->conversion_rate;
+            $this->price_in = $this->price*$conversion_rate;
+        } else
+            $this->price_in = $this->price;
+
+
+        //$product;
+        // Update Product
+        $this->product = \App\Product::find($this->product_id);
+        // if ( !$this->product ) ... Maybe boot method?
+
+
+        // $combination;
+        // Update Cpmbination
+        if ($this->combination_id > 0) {
+            $this->combination = \App\Combination::find($this->combination_id);
+            // if ( !$this->combination ) ...
+        }
+
+
         $list = $this->stockmovementList();
         if ( isset($list[$this->movement_type_id]) ) 
             return $this->{'process_'.$this->movement_type_id}();
@@ -254,15 +284,26 @@ class StockMovement extends Model {
             return false;
     }
 
+    public function process_stock()
+    {
+        return false;
+    }
+
+    public function process_price()
+    {
+        return false;
+    }
+
+
     // INITIAL_STOCK
     public function process_10()
     {
         if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
             $currency = \App\Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
-            $price = $this->price*$conversion_rate;
+            $this->price_in = $this->price*$conversion_rate;
         } else
-            $price = $this->price;
+            $this->price_in = $this->price;
 
         // Update Product
         $product = \App\Product::find($this->product_id);
@@ -272,7 +313,7 @@ class StockMovement extends Model {
 
         // Average price stuff
         if ( !($this->combination_id > 0) ) {
-            $product->cost_average = $price;
+            $product->cost_average = $this->price_in;
             $product->last_purchase_price = 0.0;
         }
 
@@ -284,7 +325,7 @@ class StockMovement extends Model {
             $combination = \App\Combination::find($this->combination_id);
             $quantity_onhand = $this->quantity;
 
-            $combination->cost_average = $price;
+            $combination->cost_average = $this->price_in;
             $combination->last_purchase_price = 0.0;
 
             $combination->quantity_onhand = $quantity_onhand;
@@ -399,9 +440,9 @@ class StockMovement extends Model {
         if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
             $currency = \App\Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
-            $price = $this->price*$conversion_rate;
+            $this->price_in = $this->price*$conversion_rate;
         } else
-            $price = $this->price;
+            $this->price_in = $this->price;
 
         // Update Product
         $product = \App\Product::find($this->product_id);
@@ -412,10 +453,10 @@ class StockMovement extends Model {
         // Average price stuff
         if ( !($this->combination_id > 0) ) {
             // $cost = $product->cost_average;
-            $cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $price) / ($product->quantity_onhand + $this->quantity);
+            $cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $this->price_in) / ($product->quantity_onhand + $this->quantity);
 
             $product->cost_average = $cost_average;
-            $product->last_purchase_price = $price;
+            $product->last_purchase_price = $this->price_in;
         }
 
         $product->quantity_onhand = $quantity_onhand;
@@ -428,10 +469,10 @@ class StockMovement extends Model {
 
             // Average price stuff
             // $cost = $combination->cost_average;
-            $cost_average = ($combination->quantity_onhand * $combination->cost_average + $this->quantity * $price) / ($combination->quantity_onhand + $this->quantity);
+            $cost_average = ($combination->quantity_onhand * $combination->cost_average + $this->quantity * $this->price_in) / ($combination->quantity_onhand + $this->quantity);
             
             $combination->cost_average = $cost_average;
-            $combination->last_purchase_price = $price;
+            $combination->last_purchase_price = $this->price_in;
 
             $combination->quantity_onhand = $quantity_onhand;
             $combination->save();
@@ -482,9 +523,9 @@ class StockMovement extends Model {
         if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
             $currency = \App\Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
-            $price = $this->price*$conversion_rate;
+            $this->price_in = $this->price*$conversion_rate;
         } else
-            $price = $this->price;
+            $this->price_in = $this->price;
 
         // Update Product
         $product = \App\Product::find($this->product_id);
@@ -493,10 +534,10 @@ class StockMovement extends Model {
         // Average price stuff
         if ( !($this->combination_id > 0) ) {
             // $cost = $product->cost_average;
-            $cost_average = ($product->quantity_onhand * $product->cost_average - $this->quantity * $price) / ($product->quantity_onhand - $this->quantity);
+            $cost_average = ($product->quantity_onhand * $product->cost_average - $this->quantity * $this->price_in) / ($product->quantity_onhand - $this->quantity);
 
             $product->cost_average = $cost_average;
-//            $product->last_purchase_price = $price;
+//            $product->last_purchase_price = $this->price_in;
         }
 
         $product->quantity_onhand = $quantity_onhand;
@@ -509,10 +550,10 @@ class StockMovement extends Model {
 
             // Average price stuff
             // $cost = $combination->cost_average;
-            $cost_average = ($combination->quantity_onhand * $combination->cost_average - $this->quantity * $price) / ($combination->quantity_onhand - $this->quantity);
+            $cost_average = ($combination->quantity_onhand * $combination->cost_average - $this->quantity * $this->price_in) / ($combination->quantity_onhand - $this->quantity);
             
             $combination->cost_average = $cost_average;
-//            $combination->last_purchase_price = $price;
+//            $combination->last_purchase_price = $this->price_in;
 
             $combination->quantity_onhand = $quantity_onhand;
             $combination->save();
@@ -627,9 +668,9 @@ class StockMovement extends Model {
         if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
             $currency = \App\Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
-            $price = $this->price*$conversion_rate;
+            $this->price_in = $this->price*$conversion_rate;
         } else
-            $price = $this->price;
+            $this->price_in = $this->price;
 
         // Update Product
         $product = \App\Product::find($this->product_id);
@@ -638,10 +679,10 @@ class StockMovement extends Model {
         // Average price stuff
         if ( !($this->combination_id > 0) ) {
             // $cost = $product->cost_average;
-            $cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $price) / ($product->quantity_onhand + $this->quantity);
+            $cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $this->price_in) / ($product->quantity_onhand + $this->quantity);
 
             $product->cost_average = $cost_average;
-//            $product->last_purchase_price = $price;
+//            $product->last_purchase_price = $this->price_in;
         }
 
         $product->quantity_onhand = $quantity_onhand;
@@ -654,10 +695,10 @@ class StockMovement extends Model {
 
             // Average price stuff
             // $cost = $combination->cost_average;
-            $cost_average = ($combination->quantity_onhand * $combination->cost_average + $this->quantity * $price) / ($combination->quantity_onhand + $this->quantity);
+            $cost_average = ($combination->quantity_onhand * $combination->cost_average + $this->quantity * $this->price_in) / ($combination->quantity_onhand + $this->quantity);
             
             $combination->cost_average = $cost_average;
- //           $combination->last_purchase_price = $price;
+ //           $combination->last_purchase_price = $this->price_in;
 
             $combination->quantity_onhand = $quantity_onhand;
             $combination->save();
@@ -899,9 +940,9 @@ class StockMovement extends Model {
         if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
             $currency = \App\Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
-            $price = $this->price*$conversion_rate;
+            $this->price_in = $this->price*$conversion_rate;
         } else
-            $price = $this->price;
+            $this->price_in = $this->price;
 
         // Update Product
         $product = \App\Product::find($this->product_id);
@@ -910,10 +951,10 @@ class StockMovement extends Model {
         // Average price stuff
         if ( !($this->combination_id > 0) ) {
             // $cost = $product->cost_average;
-            $cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $price) / ($product->quantity_onhand + $this->quantity);
+            $cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $this->price_in) / ($product->quantity_onhand + $this->quantity);
 
             $product->cost_average = $cost_average;
-//            $product->last_purchase_price = $price;
+//            $product->last_purchase_price = $this->price_in;
         }
 
         $product->quantity_onhand = $quantity_onhand;
@@ -926,10 +967,10 @@ class StockMovement extends Model {
 
             // Average price stuff
             // $cost = $combination->cost_average;
-            $cost_average = ($combination->quantity_onhand * $combination->cost_average + $this->quantity * $price) / ($combination->quantity_onhand + $this->quantity);
+            $cost_average = ($combination->quantity_onhand * $combination->cost_average + $this->quantity * $this->price_in) / ($combination->quantity_onhand + $this->quantity);
             
             $combination->cost_average = $cost_average;
-//            $combination->last_purchase_price = $price;
+//            $combination->last_purchase_price = $this->price_in;
 
             $combination->quantity_onhand = $quantity_onhand;
             $combination->save();
@@ -1041,6 +1082,7 @@ class StockMovement extends Model {
         }
     }
     
+    // Used in StockAdjustmentsController->store
     public function fulfill()
     {
         // Update Product

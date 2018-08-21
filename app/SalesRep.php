@@ -40,6 +40,15 @@ class SalesRep extends Model {
     {
         return $this->firstname . ' ' . $this->lastname;
     }
+    
+    public function getCommision( \App\Product $product = null, \App\Customer $customer = null ) 
+    {
+        // ToDo: Apply more complex rules
+
+        $commission_percent = $this->commission_percent;
+
+        return $commission_percent;
+    }
 
 
     /*

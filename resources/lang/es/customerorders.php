@@ -143,6 +143,7 @@ return [
 	'Add Product'     => 'Añadir Producto',
 	'Add Service'     => 'Añadir Servicio',
 	'Reference'     => 'Referencia',
+	'View Product' => 'Ir a la Ficha del Producto',
 	'Description'     => 'Descripción',
 	'Quantity'     => 'Cantidad',
 	'Unit final Price after Discount and Taxes.'     => 'Precio final por unidad antes de Descuento e Impuestos.',

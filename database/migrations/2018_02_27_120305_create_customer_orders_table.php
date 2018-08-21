@@ -98,7 +98,6 @@ class CreateCustomerOrdersTable extends Migration
             $table->integer('warehouse_id')->unsigned()->nullable();
             $table->integer('shipping_method_id')->unsigned()->nullable();
             $table->integer('carrier_id')->unsigned()->nullable();
-            $table->integer('shipping_method_id')->unsigned()->nullable();
             $table->integer('sales_rep_id')->unsigned()->nullable();             // Sales representative
             $table->integer('currency_id')->unsigned()->nullable(false);
             $table->integer('payment_method_id')->unsigned()->nullable(false);

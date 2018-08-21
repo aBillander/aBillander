@@ -1,19 +1,25 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Price List Lines - Create') }} :: @parent @stop
+@section('title') {{ l('Stock Count Lines - Create') }} :: @parent @stop
 
 
 @section('content')
 
-<div class="row" id="pricelistlineCreate">
+<div class="row" id="stockcountlineCreate">
 	<div class="col-md-6 col-md-offset-3" style="margin-top: 50px">
 		<div class="panel panel-info">
-			<div class="panel-heading"><h3 class="panel-title"><strong>{{ $list->name }}</strong> :: {{ l('New Price List Line') }}</h3></div>
+			<div class="panel-heading"><h3 class="panel-title"><strong>{{ $list->name }}</strong> :: {{ l('New Stock Count Line') }}</h3></div>
 			<div class="panel-body">
-				{!! Form::open(array('route' => array('pricelists.pricelistlines.store', $list->id))) !!}
+				{!! Form::open(array('route' => array('stockcounts.stockcountlines.store', $list->id))) !!}
 
 
 			        <div class="row" id="product-search-autocomplete">
+
+                          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{-- $errors->has('row_reference') ? 'has-error' : '' --}}">
+                             {{ l('Reference') }}
+                             {!! Form::text('line_reference', null, ['class' => 'form-control', 'id' => 'line_reference',  'onfocus' => 'this.blur()' ]) !!}
+                             {{-- !! $errors->first('row_reference', '<span class="help-block">:message</span>') !! --}}
+                          </div>
 
 		                  <div class="form-group col-lg-10 col-md-10 col-sm-10">
 		                     {{ l('Product Name') }}
@@ -22,7 +28,7 @@
 
 			        </div>
 
-					@include('price_list_lines._form')
+					@include('stock_count_lines._form')
 
 				{!! Form::close() !!}
 			</div>
@@ -58,17 +64,19 @@
 
 
         $("#line_autoproduct_name").autocomplete({
-            source : "{{ route('pricelistline.searchproduct', $list->id) }}",
+            source : "{{ route('stockcountline.searchproduct', $list->id) }}",
             minLength : 1,
-            appendTo : "#pricelistlineCreate",
+            appendTo : "#stockcountlineCreate",
 
             select : function(key, value) {
                 var str = '[' + value.item.reference+'] ' + value.item.name;
 
-                $("#line_autoproduct_name").val(str);
+                $('#line_reference').val(value.item.reference);
+                $("#line_autoproduct_name").val(value.item.name);
                 $('#product_id').val(value.item.id);
-                $('#price').focus();
-                $('#price').select();
+                $('#combination_id').val(0);
+                $('#quantity').focus();
+ //               $('#quantity').select();
 
                 return false;
             }

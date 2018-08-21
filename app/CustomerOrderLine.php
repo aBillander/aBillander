@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use \App\CustomerOrderLineTax;
+use \App\Price;
+
 use App\Traits\ViewFormatterTrait;
 
 class CustomerOrderLine extends Model
@@ -39,6 +42,16 @@ class CustomerOrderLine extends Model
     public static $rules = [
 //        'product_id'    => 'required',
     ];
+
+
+    public function getCurrencyAttribute()
+    {
+        $currency = $this->customerorder->currency;
+        $currency->conversion_rate = $this->customerorder->currency_conversion_rate;
+
+        return $currency;
+    }
+
 
     public static function getTypeList()
     {
@@ -80,7 +93,7 @@ class CustomerOrderLine extends Model
     
     public function customerorder()
     {
-        return $this->belongsTo('App\CustomerOrder');
+        return $this->belongsTo('App\CustomerOrder', 'customer_order_id');
     }
 
     public function product()
@@ -113,4 +126,60 @@ class CustomerOrderLine extends Model
     {
         return $this->belongsTo('App\Tax');
     }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Data Factory :: Pump it up!
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Add Taxes to Order Line
+     *
+     *     ''
+     */
+    public function applyTaxRules( $rules )
+    {
+        // Do the Mambo!
+        // $this->load('customerorder');
+
+        $base_price = $this->quantity*$this->unit_final_price;
+        // Rounded $base_price is the same, no matters the value of ROUND_PRICES_WITH_TAX
+
+        // Initialize totals
+        $this->total_tax_incl = $this->total_tax_excl = $base_price;
+
+        foreach ( $rules as $rule ) {
+
+            $line_tax = new CustomerOrderLineTax();
+
+                $line_tax->name = $rule->fullName;
+                $line_tax->tax_rule_type = $rule->rule_type;
+
+                $p = Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $this->currency, $this->currency->conversion_rate);
+
+                $p->applyRounding( );
+
+                $line_tax->taxable_base = $base_price;
+                $line_tax->percent = $rule->percent;
+                $line_tax->amount = $rule->amount;
+                $line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
+
+                $line_tax->position = $rule->position;
+
+                $line_tax->tax_id = $rule->tax_id;
+                $line_tax->tax_rule_id = $rule->id;
+
+                $line_tax->save();
+                $this->total_tax_incl += $line_tax->total_line_tax;
+
+                $this->CustomerOrderLineTaxes()->save($line_tax);
+                $this->save();
+
+        }
+
+    }
+
 }

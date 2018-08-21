@@ -147,4 +147,76 @@ class StockCountsController extends Controller
         return redirect('stockcounts')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
+
+
+    public function warehouseUpdate($id)
+    {
+        return redirect('stockcounts')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+
+        $stockcount = $this->stockcount
+                    ->with('stockcountlines')
+                    ->with('stockcountlines.product')
+                    ->with('stockcountlines.product.tax')
+                    ->findOrFail($id);
+
+
+        $name = '['.$stockcount->id.'] '.$stockcount->name;
+
+        // Start Logger
+        $logger = \App\ActivityLogger::setup( 'Set Price List Prices as Default Product Prices', __METHOD__ );
+
+        $logger->empty();
+        $logger->start();
+
+        $logger->log("INFO", 'Se actualizará el Precio de los Productos con la Tarifa <span class="log-showoff-format">{name}</span> .', ['name' => $name]);
+
+        $i = 0;
+        $i_ok = 0;
+
+        // Let's get dirty!!!
+        if ( $stockcount->stockcountlines()->count() )
+        if ( $stockcount->price_is_tax_inc )
+        {
+            foreach ($stockcount->stockcountlines as $line)
+            {
+                $tax_percent = $line->product->tax->percent;
+
+                $line->product->price = $line->price / ( 1.0 + $tax_percent / 100.0 );
+                $line->product->price_tax_inc = $line->price;
+
+                $line->product->save();
+
+                $i_ok++;
+                $i++;
+            }
+
+        } else {
+
+            foreach ($stockcount->stockcountlines as $line)
+            {
+                $tax_percent = $line->product->tax->percent;
+
+                $line->product->price = $line->price;
+                $line->product->price_tax_inc = $line->price * ( 1.0 + $tax_percent / 100.0 );
+
+                $line->product->save();
+
+                $i_ok++;
+                $i++;
+            }
+
+        }
+
+        $logger->log('INFO', 'Se han actualizado {i} Productos.', ['i' => $i_ok]);
+
+        $logger->log('INFO', 'Se han procesado {i} Líneas de Tarifa.', ['i' => $i]);
+
+        $logger->stop();
+
+
+        return redirect('activityloggers/'.$logger->id)
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
 }

@@ -22,14 +22,13 @@ class CreateStockMovementsTable extends Migration {
 
 			$table->integer('stockmovementable_id');
 			$table->string('stockmovementable_type');
-//			$table->string('model_name', 64)->nullable(false);    	// Stock movement may be owned by a shipping slip, invoice, stock adjustment...!
-//			$table->integer('document_id')->unsigned()->default(0);	// id of model_name
-			$table->integer('stockmovementable_line_id')->unsigned()->nullable();	// line id of document_id
 
 			$table->string('document_reference', 64)->nullable();		// document_prefix + document_id of model_name (or supplier reference, etc.)
 
+			$table->decimal('quantity_before_movement', 20, 6);
 			$table->decimal('quantity', 20, 6);
 			$table->decimal('quantity_after_movement', 20, 6);
+			
 			$table->decimal('price', 20, 6);
 			$table->integer('currency_id')->unsigned()->nullable(false);
 			$table->decimal('conversion_rate', 20, 6);

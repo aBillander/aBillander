@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 use Auth;
 
+use \App\CustomerOrderLine;
+
 use App\Traits\ViewFormatterTrait;
 
 class CustomerOrder extends Model
@@ -579,14 +581,23 @@ class CustomerOrder extends Model
     */
 
     /**
-     * Scope a query to only include active users.
+     * Add Product to Order
      *
-     * 
+     *     'prices_entered_with_tax', 'unit_customer_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
      */
     public function addProductLine( $product_id, $combination_id = null, $quantity = 1.0, $params = [] )
     {
-
         // Do the Mambo!
+        $line_type = 'product';
+
+        // Customer
+        $customer = $this->customer;
+        $salesrep = $customer->salesrep;
+        
+        // Currency
+        $currency = $this->currency;
+        $currency->conversion_rate = $this->conversion_rate;
+
         // Product
         if ($combination_id>0) {
             $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
@@ -599,17 +610,142 @@ class CustomerOrder extends Model
 
         $reference  = $product->reference;
         $name       = $product->name;
+        $measure_unit_id = $product->measure_unit_id;
         $cost_price = $product->cost_price;
 
+        // Tax
+        $tax = $product->tax;
+        $taxing_address = $this->taxingaddress;
+        $tax_percent = $tax->getTaxPercent( $taxing_address );
+        $sales_equalization = array_key_exists('sales_equalization', $params) 
+                            ? $params['sales_equalization'] 
+                            : $customer->sales_equalization;
+
+        // Product Price
+        $price = $product->getPrice();
+//        if ( $price->currency->id != $currency->id ) {
+//            $price = $price->convert( $currency );
+//        }
+        $unit_price = $price->getPrice();
+
+        // Calculate price per $customer_id now!
+        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+
+        // Is there a Price for this Customer?
+        if (!$customer_price) return null;      // Product not allowed for this Customer
+
+        $customer_price->applyTaxPercent( $tax_percent );
+        $unit_customer_price = $customer_price->getPrice();
+
+        // Price Policy
         $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
                             ? $params['prices_entered_with_tax'] 
-                            : \App\Configuration::getInt('PRICES_ENTERED_WITH_TAX');
+                            : $customer_price->price_is_tax_inc;
 
-        $tax_percent = 
+        // Customer Final Price
+        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
+        {
+            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+
+            $unit_customer_final_price->applyTaxPercent( $tax_percent );
+
+        } else {
+
+            $unit_customer_final_price = clone $customer_price;
+        }
+
+        // Discount
+        $discount_percent = array_key_exists('discount_percent', $params) 
+                            ? $params['discount_percent'] 
+                            : 0.0;
+
+        // Final Price
+        $unit_final_price = clone $unit_customer_final_price;
+        if ( $discount_percent ) 
+            $unit_final_price->applyDiscountPercen( $discount_percent );
+
+        // Sales Rep
+        $sales_rep_id = array_key_exists('sales_rep_id', $params) 
+                            ? $params['sales_rep_id'] 
+                            : optional($salesrep)->id;
+        
+        $commission_percent = array_key_exists('sales_rep_id', $params) && array_key_exists('commission_percent', $params) 
+                            ? $params['commission_percent'] 
+                            : optional($salesrep)->getCommision( $product, $customer ) ?? 0.0;
 
 
 
-        return 'HW!';
+        // Misc
+        $line_sort_order = array_key_exists('line_sort_order', $params) 
+                            ? $params['line_sort_order'] 
+                            : $this->getMaxLineSortOrder() + 10;
+
+        $notes = array_key_exists('notes', $params) 
+                            ? $params['notes'] 
+                            : '';
+
+
+        // Build OrderLine Object
+        $data = [
+            'line_sort_order' => $line_sort_order,
+            'line_type' => $line_type,
+            'product_id' => $product_id,
+            'combination_id' => $combination_id,
+            'reference' => $reference,
+            'name' => $name,
+            'quantity' => $quantity,
+            'measure_unit_id' => $measure_unit_id,
+
+            'prices_entered_with_tax' => $pricetaxPolicy,
+    
+            'cost_price' => $cost_price,
+            'unit_price' => $unit_price,
+            'unit_customer_price' => $unit_customer_price,
+            'unit_customer_final_price' => $unit_customer_final_price->getPrice(),
+            'unit_customer_final_price_tax_inc' => $unit_customer_final_price->getPriceWithTax(),
+            'unit_final_price' => $unit_final_price->getPrice(),
+            'unit_final_price_tax_inc' => $unit_final_price->getPriceWithTax(), 
+            'sales_equalization' => $sales_equalization,
+            'discount_percent' => $discount_percent,
+            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
+            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
+
+            'total_tax_incl' => $quantity * $unit_final_price->getPriceWithTax(),
+            'total_tax_excl' => $quantity * $unit_final_price->getPrice(),
+
+            'tax_percent' => $tax_percent,
+            'commission_percent' => $commission_percent,
+            'notes' => $notes,
+            'locked' => 0,
+    
+    //        'customer_order_id',
+            'tax_id' => $tax->id,
+            'sales_rep_id' => $sales_rep_id,
+        ];
+
+
+// return new CustomerOrderLine( $data );
+
+        // Finishing touches
+        $document_line = CustomerOrderLine::create( $data );
+
+        $this->customerorderlines()->save($document_line);
+
+
+        // Let's deal with taxes
+        $product->sales_equalization = $sales_equalization;
+        $rules = $product->getTaxRules( $this->taxingaddress,  $this->customer );
+
+        $document_line->applyTaxRules( $rules );
+
+
+        // Now, update Order Totals
+        $this->makeTotals();
+
+
+        // Good boy, bye then
+        return $document_line;
+
     }
 
 }

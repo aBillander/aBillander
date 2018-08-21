@@ -27,9 +27,9 @@
 <div class="container-fluid">
    <div class="row">
       <div class="col-lg-2 col-md-2 col-sm-3">
-{{--
+
           @include('stock_count_lines._panel_infos')
---}}
+
       </div>
       
       <div class="col-lg-9 col-md-9 col-sm-9">

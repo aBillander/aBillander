@@ -1511,11 +1511,35 @@ class CustomerOrdersController extends Controller
 
     public function quickAddLines(Request $request, $order_id)
     {
-        parse_str($request->input('product_id_values'), $product_id);
-        parse_str($request->input('combination_id_values'), $combination_id);
-        parse_str($request->input('quantity_values'), $quantity);
+        parse_str($request->input('product_id_values'));
+        parse_str($request->input('combination_id_values'));
+        parse_str($request->input('quantity_values'));
 
-        return compact('order_id', 'product_id', 'combination_id', 'quantity');
+        // Let's Rock!
+        $order = $this->customerOrder
+                        ->with('customer')
+                        ->with('taxingaddress')
+                        ->with('salesrep')
+                        ->with('currency')
+                        ->findOrFail($order_id);
+
+        // return $order;
+
+        foreach ($product_id_values as $key => $pid) {
+            # code...
+
+            $line[] = $order->addProductLine( $pid, $combination_id_values[$key], $quantity_values[$key], [] );
+
+            // abi_r($line, true);
+        }
+
+        return response()->json( [
+                'msg' => 'OK',
+                'order' => $order_id,
+                'data' => $line,
+ //               'currency' => $line[0]->currency,
+        ] );
+
     }
 
 

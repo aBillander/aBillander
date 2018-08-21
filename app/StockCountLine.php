@@ -4,23 +4,48 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\ViewFormatterTrait;
+
 class StockCountLine extends Model
 {
+
+    use ViewFormatterTrait;
     // Good for Stock Counts and for Stock Adjustments (lines that not belong to any Stock Count)
 
     protected $dates = ['date'];
     
-    protected $fillable = [ 'date', 'quantity', 'quantity_counted', 'price',  
+    protected $fillable = [ 'date', 'quantity', 'cost_price',  
     						'product_id', 'combination_id', 'warehouse_id', 'user_id'
     						];
 
     public static $rules = array(
                             'date' => 'date',
                             'product_id' => 'exists:products,id',
-                            'combination_id' => 'sometimes|exists:combinations,id',
-                            'warehouse_id' => 'exists:warehouses,id',
-                            'user_id' => 'exists:users,id',
+//                            'combination_id' => 'sometimes|exists:combinations,id',
+                            'quantity'      => 'required|numeric|min:0', 
+//                           'warehouse_id' => 'exists:warehouses,id',
+//                           'user_id' => 'exists:users,id',
     	);
+
+
+    public static function boot()
+    {
+        parent::boot();
+/*
+        static::creating(function($corder)
+        {
+            $corder->secure_key = md5(uniqid(rand(), true));
+            
+            if ( $corder->shippingmethod )
+                $corder->carrier_id = $corder->shippingmethod->carrier_id;
+        });
+*/
+        static::saving(function($record)
+        {
+            $record->user_id = \Auth::id();
+        });
+
+    }
 
 
     /*
@@ -93,5 +118,10 @@ class StockCountLine extends Model
     public function stockcount()
     {
         return $this->belongsTo('App\StockCount');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo('App\Product');
     }
 }

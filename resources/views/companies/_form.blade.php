@@ -27,7 +27,7 @@
 
         <div class="row">
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                  <div class="form-group {{ $errors->has('currency_id') ? 'has-error' : '' }}">
                     {{ l('Currency') }} {{ l('(cannot be changed)') }}
                     @if(isset($company))
@@ -39,7 +39,15 @@
                  </div>
             </div>
 
-           <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-apply_RE">
+            <div class="col-md-2">
+                 <div class="form-group {{ $errors->has('language_id') ? 'has-error' : '' }}">
+                    {{ l('Language') }}
+                      {!! Form::select('language_id', array('0' => l('-- Please, select --', [], 'layouts')) + $languageList, null, array('class' => 'form-control')) !!}
+                      {!! $errors->first('language_id', '<span class="help-block">:message</span>') !!}
+                 </div>
+            </div>
+
+           <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-apply_RE">
              {!! Form::label('apply_RE', l('Applies Equalization Tax?'), ['class' => 'control-label']) !!}
              <div>
                <div class="radio-inline">

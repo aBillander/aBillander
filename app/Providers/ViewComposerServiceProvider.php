@@ -26,7 +26,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		//
 
 		// Languages
-		view()->composer(array('users.create', 'users.edit', 'suppliers._form'), function($view) {
+		view()->composer(array('users.create', 'users.edit', 'suppliers._form', 'companies._form'), function($view) {
 		    
 		    $view->with('languageList', \App\Language::pluck('name', 'id')->toArray());
 		    

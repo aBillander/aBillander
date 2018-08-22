@@ -71,6 +71,7 @@ return [
 	'Email'     => 'Correo Electrónico',
 	'Web'     => 'Web',
 	'Currency'     => 'Divisa',
+	'Language'     => 'Idioma',
 	'(cannot be changed)'     => '(no puede cambiarse)',
 	'Company logo'     => 'Logotipo',
 	'Applies Equalization Tax?'     => '¿Aplica Recargo de Equivalencia?',

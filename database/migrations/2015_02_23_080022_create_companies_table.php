@@ -30,6 +30,7 @@ class CreateCompaniesTable extends Migration {
 			// ToDo: extra fields: "Registro mercantil" and the like
 
 			$table->integer('currency_id')->unsigned()->nullable(false); 
+            $table->integer('language_id')->unsigned()->nullable(false); 
 			
 			$table->timestamps();
 		});

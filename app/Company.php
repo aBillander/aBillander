@@ -10,7 +10,7 @@ class Company extends Model {
     protected static $access_rights = 0775;
 
 	protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'apply_RE', 
-                            'website', 'company_logo','notes', 'currency_id'];
+                            'website', 'company_logo','notes', 'currency_id', 'language_id'];
 	
 //    protected $guarded = array('id', 'address_id', 'currency_id');
 
@@ -19,6 +19,7 @@ class Company extends Model {
     	'name_fiscal' => array('required', 'min:2', 'max:128'),
         'website'     => 'nullable|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/',     // See: https://laracasts.com/discuss/channels/general-discussion/url-validation
         'currency_id' => 'exists:currencies,id',
+        'language_id' => 'exists:languages,id',
     	);
 
 
@@ -45,5 +46,10 @@ class Company extends Model {
     public function currency()
     {
         return $this->belongsTo('App\Currency');
+    }
+
+    public function language()
+    {
+        return $this->belongsTo('App\Language');
     }
 }

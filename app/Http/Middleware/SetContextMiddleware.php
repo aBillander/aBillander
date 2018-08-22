@@ -47,7 +47,7 @@ class SetContextMiddleware {
 			if( Auth::check() )
 				$user = User::with('language')->find( Auth::id() );		// $email = Auth::user()->email;
 			else
-				$user = User::with('language')->find( 1 );		// Gorrino sensible default
+				$user = User::with('language')->where('is_admin', 1)->first( );		// Gorrino sensible default
 	//			$user = new \stdClass();
 
 			// Set Language

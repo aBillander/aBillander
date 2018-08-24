@@ -52,6 +52,11 @@ class ConfigurationsController extends Controller {
 	{
 		$this->validate($request, Configuration::$rules);
 
+        // Prevent NULL values
+        $value = is_null( $request->input('value') ) ? '' : $request->input('value');
+
+        $request->merge(['value'=>$value]);
+
 		$configuration = $this->configuration->create($request->all());
 
 		return redirect('configurations')
@@ -93,6 +98,11 @@ class ConfigurationsController extends Controller {
 		$configuration = Configuration::findOrFail($id);
 
 		$this->validate($request, Configuration::$rules);
+
+        // Prevent NULL values
+        $value = is_null( $request->input('value') ) ? '' : $request->input('value');
+
+        $request->merge(['value'=>$value]);
 
 		$configuration->update($request->all());
 

@@ -38,6 +38,23 @@
 
 
         <p>{{ l('Retrieve your FactuSOLWeb Settings.') }}</p>
+        <br />
+
+
+
+    <div class="form-group {{ $errors->has('FSOL_SPCCFG') ? 'has-error' : '' }}">
+      <label for="FSOL_SPCCFG" class="col-lg-4 control-label">{!! l('FSOL_SPCCFG.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="FSOL_SPCCFG" name="FSOL_SPCCFG" placeholder="" value="{{ old('FSOL_SPCCFG', $key_group['FSOL_SPCCFG']) }}" />
+        {{ $errors->first('FSOL_SPCCFG', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('FSOL_SPCCFG.help') !!}</span>
+      </div>
+    </div>
 
 
 <div id="fsxconfs" style="display:none;">

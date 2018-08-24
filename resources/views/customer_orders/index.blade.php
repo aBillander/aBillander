@@ -5,6 +5,35 @@
 
 @section('content')
 
+@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+
+<div class="alert alert-block alert-info" style="display:none">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <strong>Info: </strong>
+            {{ \App\Configuration::get('FSOL_CBDCFG') }} 
+</div>
+
+@if ( $anyClient > 0 )
+<div class="alert alert-danger alert-block">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <strong>Aviso: </strong>
+            Hay <b>{{$anyClient}}</b> ficheros en la Carpeta de descarga de <b>Clientes</b>. Debe importarlos a FactuSOL, o borrarlos. 
+
+                <a style="color: #e95420; text-decoration: none;" class="btn btn-sm btn-grey" href="{{ route('fsxorders.deletecustomerfiles') }}" title="{{l('Eliminar Ficheros')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> Eliminar Ficheros</a>
+</div>
+@endif
+
+@if ( $anyOrder > 0 )
+<div class="alert alert-danger alert-block">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <strong>Aviso: </strong>
+            Hay <b>{{$anyOrder}}</b> ficheros en la Carpeta de descarga de <b>Pedidos</b>. Debe importarlos a FactuSOL, o borrarlos. 
+
+                <a style="color: #e95420; text-decoration: none;" class="btn btn-sm btn-grey" href="{{ route('fsxorders.deleteorderfiles') }}" title="{{l('Eliminar Ficheros')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> Eliminar Ficheros</a>
+</div>
+@endif
+@endif
+
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
@@ -34,6 +63,7 @@
             <th class="text-left">{{ l('Order #') }}</th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Production Date')}}</th>
+            <th class="text-left">{{ l('Export to FS')}}</th>
             <!-- th class="text-left">{{ l('Delivery Date') }}</th -->
             <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Payment Method') }}</th>
@@ -66,8 +96,15 @@
                         <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $order->production_sheet_id) }}" title="{{l('Go to Production Sheet')}}"><i class="fa fa-external-link"></i></a>
         @endif
               </td>
+
+              <td>
+              
+        @if ($order->export_date)
+                        {{ abi_date_short($order->export_date) }}
+        @endif
+              </td>
             
-            <td><a class="" href="{{ URL::to('customers/' .$order->customer->id . '/edit') }}" title="{{ l('Show Customer') }}">
+            <td><a class="" href="{{ URL::to('customers/' .$order->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
             	{{ $order->customer->name_fiscal }}
             	</a>
             </td>

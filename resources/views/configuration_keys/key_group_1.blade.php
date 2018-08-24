@@ -149,6 +149,25 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ENABLE_FSOL_CONNECTOR.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ENABLE_FSOL_CONNECTOR" id="ENABLE_FSOL_CONNECTOR_on" value="1" @if( old('ENABLE_FSOL_CONNECTOR', $key_group['ENABLE_FSOL_CONNECTOR']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ENABLE_FSOL_CONNECTOR" id="ENABLE_FSOL_CONNECTOR_off" value="0" @if( !old('ENABLE_FSOL_CONNECTOR', $key_group['ENABLE_FSOL_CONNECTOR']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ENABLE_FSOL_CONNECTOR.help') !!}</span>
+      </div>
+    </div>
+
 
 
 

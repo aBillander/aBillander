@@ -25,6 +25,7 @@ class ConfigurationKeysController extends Controller {
                         'CUSTOMER_ORDERS_NEED_VALIDATION',
                         'ENABLE_COMBINATIONS',
                         'ENABLE_WEBSHOP_CONNECTOR',
+                        'ENABLE_FSOL_CONNECTOR',
                         'MARGIN_METHOD',
                         'INCLUDE_SHIPPING_COST_IN_PROFIT',
                         'NEW_PRICE_LIST_POPULATE',

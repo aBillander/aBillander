@@ -97,7 +97,7 @@ class UsersController extends Controller {
 
 		$user = User::findOrFail($id);
 
-		if ( $request->input('password') ) {
+		if ( $request->input('password') != '' ) {
 			$this->validate( $request, User::$rules );
 
 			$password = \Hash::make($request->input('password'));

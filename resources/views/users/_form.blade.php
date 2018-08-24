@@ -6,7 +6,7 @@
 </div>
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('password', l('Password')) !!}
-    {!! Form::password('password', '', array('class' => 'form-control', 'required' => 'required')) !!}
+    {!! Form::password('password', array('id' => 'password', 'class' => 'form-control',  "autocomplete" => "off")) !!}
 </div><br />
 </div>
 

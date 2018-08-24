@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 use App\Customer;
 use App\CustomerOrder;
@@ -34,6 +35,22 @@ class CustomerOrdersController extends Controller
      */
     public function index()
     {
+        if ( Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+        {
+            //
+            $dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG');
+
+            $dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG');
+            
+            // Calculate last minute stuff!
+            $anyClient = count(File::files( $dest_clientes ));
+            
+            $anyOrder  = count(File::files( $dest_pedidos ));
+
+            // The difference between files and allFiles is that allFiles will recursively search sub-directories unlike files. 
+        }
+
+
         $customer_orders = $this->customerOrder
                             ->with('customer')
                             ->with('currency')
@@ -44,7 +61,7 @@ class CustomerOrdersController extends Controller
 
         $customer_orders->setPath('customerorders');
         
-        return view('customer_orders.index', compact('customer_orders'));
+        return view('customer_orders.index', compact('customer_orders', 'anyClient', 'anyOrder'));
     }
 
     /**
@@ -170,7 +187,7 @@ class CustomerOrdersController extends Controller
         }
 
         // Dates (cuen)
-        $this->addFormDates( ['document_date', 'delivery_date'], $order );
+        $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $order );
 
         return view('customer_orders.edit', compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'order'));
     }
@@ -212,12 +229,15 @@ class CustomerOrdersController extends Controller
         $request->merge( $extradata );
 */
         $customerorder->fill($request->all());
+
+        if ( $request->input('export_date_form') == '' ) $customerorder->export_date = null;
+
         $customerorder->save();
 
         // abi_r($request->all(), true);
 
         return redirect('customerorders/'.$customerorder->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerorder->id], 'layouts'));
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customerorder->id], 'layouts'));
 
     }
 
@@ -1691,3 +1711,57 @@ class CustomerOrdersController extends Controller
 
 
 }
+
+
+/* ********************************************************************************************* */
+
+
+
+function rws_is_empty_folder($dir) {
+  if ($dir[strlen($dir)-1]=='/') $dir = substr($dir, 0, strlen($dir)-1);
+  $eflag = false;
+
+  if (is_dir($dir)) {
+
+    if ($handle = opendir($dir)) {
+    while (false !== ($file = readdir($handle))) {
+        if ($file != '.' && $file != '..' && is_file($dir.'/'.$file)) {
+            $eflag = true;
+            break;
+        }
+    }
+    closedir($handle);
+    }
+
+  }
+  return $eflag; 
+}
+
+function rws_delete_files_in_folder($dir) {
+  if ($dir[strlen($dir)-1]=='/') $dir = substr($dir, 0, strlen($dir)-1);
+  $eflag = true;
+
+  if (is_dir($dir)) {
+
+    if ($handle = opendir($dir)) {
+    while (false !== ($file = readdir($handle))) {
+        if ($file != '.' && $file != '..' && is_file($dir.'/'.$file)) {
+            if (@unlink($dir.'/'.$file)) { $eflag = true; }
+            else { $eflag = false; break; }
+        }
+//        else if ($file != '.' && $file != '..' && is_dir($dir.'/'.$file)) {
+//            delete_files_in_folder($dir.'/'.$file);
+//            if (rmdir($dir.'/'.$file)) { echo $dir . '/' . $file . ' (directory) deleted<br />'; }
+//            else { echo $dir . '/' . $file . ' (directory) NOT deleted!<br />'; }
+//        }
+    }
+    closedir($handle);
+    }
+
+  }
+  return $eflag;
+}
+
+
+/* ********************************************************************************************* */
+

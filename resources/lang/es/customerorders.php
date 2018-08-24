@@ -17,6 +17,7 @@ return [
 	'Product Name' => 'Nombre del Producto',
 	'Quantity' => 'Cantidad',
 	'Production Date'     => 'Fecha Producción',
+	'Export to FS'     => 'Exportado FSOL',
 	'Customer Notes'     => 'Notas Cliente',
 
 	'Go to Production Sheet'     => 'Ir a la Hoja de Producción',

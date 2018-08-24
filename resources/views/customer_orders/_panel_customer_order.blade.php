@@ -754,11 +754,21 @@ function get_currency_rate(currency_id)
 </style>
 --}}
 
+
+{{-- Date Picker --}}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+    .ui-datepicker { z-index: 10000 !important; }
+</style>
+
+
 {{-- Auto Complete --}}
 
   {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
 
 <style>
 
@@ -775,15 +785,6 @@ function get_currency_rate(currency_id)
     z-index:100000000;
 }
  */
-</style>
-
-
-{{-- Date Picker --}}
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
-<style>
-    .ui-datepicker { z-index: 10000 !important; }
 </style>
 
 @endsection

@@ -425,7 +425,7 @@ function quick_formSubmit()
                     var str = '[' + value.item.reference+'] ' + value.item.name;
 
                     $('#row_reference').val(value.item.reference);
-                    $("#row_autoproduct_name").val(str);
+                    $("#row_autoproduct_name").val(value.item.name);
                     $('#row_product_id').val(value.item.id);
                     $('#row_combination_id').val(0);
 

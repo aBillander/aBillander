@@ -5,6 +5,7 @@ namespace Queridiam\FSxConnector\Http\Controllers;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 use App\Customer;
 use App\CustomerOrder;
@@ -79,22 +80,61 @@ class FSxOrdersController extends Controller
 
         $logger->stop();
 
+        // Last minute stuff
+        // Do not log this, since figures may change after log is created
+        
+            $dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG');
+
+            $dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG');
+            
+            // Calculate last minute stuff!
+            $anyClient = count(File::files( $dest_clientes ));
+            
+            $anyOrder  = count(File::files( $dest_pedidos ));
+
+
         return redirect('activityloggers/'.$logger->id)
-				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $logger->id], 'layouts'));
-	}
+                ->with('info', [ 
+                    l('Hay <b>:anyClient</b> ficheros en la Carpeta de descarga de <b>Clientes</b>. Debe importarlos a FactuSOL, o borrarlos.', ['anyClient' => $anyClient]),
+                    l('Hay <b>:anyOrder</b> ficheros en la Carpeta de descarga de <b>Pedidos</b>. Debe importarlos a FactuSOL, o borrarlos.', ['anyOrder' => $anyOrder])
+                        ] );
+    	}
 
-	public function exportOrders( Request $request )
-	{
+    	public function exportOrders( Request $request )
+    	{
 
-        return $this->exportOrderList( $request->input('worders', []) );
-	} 
+            return $this->exportOrderList( $request->input('worders', []) );
+    	} 
 
 
-	public function export($id)
-	{
-		// return $id;
-		
-        return $this->exportOrderList( [$id] );
-	}
+        public function export($id)
+        {
+            // return $id;
+            
+            return $this->exportOrderList( [$id] );
+        }
+
+
+        public function deleteCustomerFiles()
+        {
+            // 
+            $dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG');
+            
+            File::cleanDirectory( $dest_clientes );
+            
+            return redirect('customerorders')
+                    ->with('success', l('Se ha vaciado la Carpeta de descarga de Clientes.'));
+        }
+
+        public function deleteOrderFiles()
+        {
+            // 
+            $dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG');
+            
+            File::cleanDirectory( $dest_pedidos );
+            
+            return redirect('customerorders')
+                    ->with('success', l('Se ha vaciado la Carpeta de descarga de Pedidos.'));
+        }
 
 }

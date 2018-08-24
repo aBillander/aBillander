@@ -270,7 +270,7 @@ function findCombination(firstTime)
 
   {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
 
 
 <style>

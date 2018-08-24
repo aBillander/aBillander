@@ -80,6 +80,18 @@ class FSxConfigurationKeysController extends Controller {
 
                 5 => [
 
+            'FSOL_TCACFG', //  => '',  // Tarifa
+            'FSOL_AUSCFG', //  => '',  // Almacén
+            'FSOL_SPCCFG', //  => '',  // Serie de Pedidos
+
+            'FSOL_PIV1CFG', //  => '',
+            'FSOL_PIV2CFG', //  => '',
+            'FSOL_PIV3CFG', //  => '',
+
+            'FSOL_PRE1CFG', //  => '',
+            'FSOL_PRE2CFG', //  => '',
+            'FSOL_PRE2CFG', //  => '',
+
 
                     ],
         ];
@@ -224,6 +236,11 @@ class FSxConfigurationKeysController extends Controller {
     {
         $tab_index = 5;
 
+        $key_group = [];
+
+        foreach ($this->conf_keys[$tab_index] as $key)
+            $key_group[$key]= Configuration::get($key);
+        
         $fsxconfs = [];
 
         $fsxconfs[] = [ 'id' => 'FSOL_TCACFG', 'value' => Configuration::get('FSOL_TCACFG') ];
@@ -239,7 +256,7 @@ class FSxConfigurationKeysController extends Controller {
         $fsxconfs[] = [ 'id' => 'FSOL_PRE3CFG', 'value' => Configuration::get('FSOL_PRE3CFG') ];
 
 
-        return view('fsx_connector::fsx_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'fsxconfs'));
+        return view('fsx_connector::fsx_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'key_group', 'fsxconfs'));
     }
 
     /**

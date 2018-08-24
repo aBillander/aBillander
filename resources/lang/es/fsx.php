@@ -32,6 +32,9 @@ return [
 	|
 	*/
 
+	'FSOL_SPCCFG.name' => 'Número de Serie para pedidos por Internet',
+	'FSOL_SPCCFG.help' => 'Los Pedidos importados a FactuSOL irán a esta Serie.',
+
 	'FSOL_WEB_CUSTOMER_CODE_BASE.name' => 'Código base para Clientes (Web) en FactuSOL',
 	'FSOL_WEB_CUSTOMER_CODE_BASE.help' => '',
 

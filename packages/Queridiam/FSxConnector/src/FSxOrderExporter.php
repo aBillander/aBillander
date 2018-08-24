@@ -94,11 +94,17 @@ class FSxOrderExporter {
         					  with('customer')
         					->with('invoicingaddress')
         					->with('shippingaddress')
-        					->findOrFail( $order_id );
+        					->find( $order_id );
 
         $order = $this->abi_order;
-        if (!$order->id) {
+        if (!$order) {
             $this->logError( 'Se ha intentado recuperar el Pedido número <b>"'.$order_id.'"</b> y no existe.' );
+            $this->run_status = false;
+            return $this->run_status;
+        }
+
+        if ($order->export_date) {
+            $this->logError( 'El Pedido número <b>"'.$order_id.'"</b> ya se descargó el <b>"'.$order->export_date.'"</b>.' );
             $this->run_status = false;
             return $this->run_status;
         }
@@ -284,7 +290,9 @@ class FSxOrderExporter {
 		// Recuperar el Código de Cliente FactuSol
 		if ( $this->customer['csID'] && ( $this->customer['csID'] > 0 ) ) { 
 
-			$this->logInfo(sprintf( 'El Cliente <span style="color: green; font-weight: bold">(%s) %s</span> del Pedido %s ya está en FactuSOL (%s). No se ha creado un fichero para descargarlo.', $this->customer['ID'], ($this->customer['company']?$this->customer['company']:$this->customer['name']), $this->info['orders_id'], $this->customer['csID'] ));
+      // No calculation needed
+
+			// $this->logInfo(sprintf( 'El Cliente <span style="color: green; font-weight: bold">(%s) %s</span> del Pedido %s ya está en FactuSOL (%s). No se ha creado un fichero para descargarlo.', $this->customer['ID'], ($this->customer['company']?$this->customer['company']:$this->customer['name']), $this->info['orders_id'], $this->customer['csID'] ));
 		} else {
 
 			// Calculate Código de Cliente FactuSol
@@ -765,11 +773,12 @@ $footer='';
 
         // Mambo!
         $output = 'screen';
+        $output = 'file';
 
         $exporter->export_order_customer( $output );
         if ( !$exporter->tell_run_status() ) 
         {
-          $exporter->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
+          $exporter->logMessage("ERROR", l('El Pedido <span class="log-showoff-format">:oid</span> no se descargará.'), ['oid' => $order_id]);
 
           return $exporter;
         }

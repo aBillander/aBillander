@@ -48,10 +48,12 @@ Route::group([
 
     Route::resource('fsxorders', 'FSxOrdersController');
 
-    Route::post('fsxorders/exportOrders' , array('uses' => 'FSxOrdersController@exportOrders', 
+    Route::post('fsxorders/export/orders' , array('uses' => 'FSxOrdersController@exportOrders', 
                                                         'as'   => 'fsxorders.export.orders' ));
     Route::get('fsxorders/{id}/export' , array('uses' => 'FSxOrdersController@export', 
                                                         'as'   => 'fsxorders.export' ));
+    Route::get('fsxorders/customerfiles/delete' , 'FSxOrdersController@deleteCustomerFiles')->name('fsxorders.deletecustomerfiles' );
+    Route::get('fsxorders/orderfiles/delete'    , 'FSxOrdersController@deleteOrderFiles')->name('fsxorders.deleteorderfiles' );
 
 
 

@@ -14,7 +14,7 @@
 
       <div class="row">
 
-         <div class="form-group col-lg-8 col-md-8 col-sm-8">
+         <div class="form-group col-lg-6 col-md-6 col-sm-6">
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference') ? 'has-error' : '' }}">
@@ -27,6 +27,25 @@
             {{ l('Sales Representative') }}
             {!! Form::select('sales_rep_id', array('0' => l('-- Please, select --', [], 'layouts')) + $salesrepList, null, array('class' => 'form-control', 'id' => 'sales_rep_id')) !!}
             {!! $errors->first('sales_rep_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('export_date') ? 'has-error' : '' }}">
+               
+               
+            <label for="export_date_form">{{ l('Export to FS') }}</label>
+            <div  class="input-group">
+               {!! Form::text('export_date_form', null, array('class' => 'form-control', 'id' => 'export_date_form', 'autocomplete' => 'off', 'onfocus' => 'this.blur()')) !!}
+               {!! $errors->first('export_date', '<span class="help-block">:message</span>') !!}
+
+              @if ($order->export_date)
+              <span class="input-group-btn" title="{{ l('Reset', 'layouts') }}">
+              <button class="btn btn-md btn-danger" type="button" onclick="$('#export_date_form').val('');">
+                  <span class="fa fa-refresh"></span>
+              </button>
+              </span>
+              @endif
+            </div>
+
          </div>
 
       </div>

@@ -39,10 +39,10 @@
 
       
       <div class="col-lg-9 col-md-9 col-sm-10">
-      <div class="jumbotron" style="background: no-repeat url('{{URL::to('/assets/theme/images/Dashboard.jpg')}}'); background-size: 100% auto;">
+      <div class="jumbotron" style="background: no-repeat url('{{URL::to('/assets/theme/images/Dashboard.jpg')}}'); background-size: 100% auto;min-height: 200px">
 
 
-<div class="panel panel-info">
+<div class="panel panel-info" style="display:none">
   <div class="panel-heading">
     <h3 class="panel-title">{{ l('Updates') }}</h3>
   </div>

@@ -32,7 +32,7 @@
             var message = $(this).attr('data-content');
             var title = $(this).attr('data-title');
             $('#myModalSetDefaultLabel').text(title);
-            $('#dataSetDefaultModal .modal-body').text(message);
+            $('#dataSetDefaultModal .modal-body').html(message);
             $('#actionSetDefault').attr('action', href);
             $('#dataSetDefaultModal').modal({show: true});
             return false;

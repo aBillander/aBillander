@@ -30,9 +30,15 @@
 			<th>{{l('Warehouse')}}</th>
             <th>{{l('Reference')}}</th>
             <th>{{l('Product')}}</th>
-            <th>{{l('Quantity')}}</th>
-			<th>{{l('Price')}}</th>
-			<th>{{l('Document')}}</th>
+            <th class="text-right">{{l('Quantity')}}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('A positive value means stock increases.') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </a>
+            </th>
+            <th class="text-right">{{l('Stock after')}}</th>
+			<th class="text-right">{{l('Price')}}</th>
+			<th class="text-right">{{l('Document')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
@@ -43,14 +49,9 @@
 		<tr>
 			<td>{{ $stockmovement->id }}</td>
 			<td>{{ abi_date_short( $stockmovement->date ) }}</td>
-            <td>
-                 <a href="javascript:void(0);">
-                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
-                            data-content="{{ $movement_typeList[$stockmovement->movement_type_id] }}">
-                        {{ $stockmovement->movement_type_id }}
-                    </button>
-                 </a>
-                </td>
+            <td>[{{ $stockmovement->movement_type_id }}] - 
+                 {{ \App\StockMovement::getTypeName($stockmovement->movement_type_id) }}
+            </td>
 
 			<td>{{ $stockmovement->warehouse->alias }}</td>
             <td>    @if ( $stockmovement->combination_id > 0 )
@@ -64,9 +65,10 @@
                         <br />{{ $stockmovement->combination->name() }}
                     @endif
             </td>
-            <td>{{ $stockmovement->as_quantity( 'quantity' ) }}</td>
-			<td>{{ $stockmovement->as_price( 'price' ) }}</td>
-			<td>{{ $stockmovement->document_reference }}</td>
+            <td class="text-right">{{ $stockmovement->as_quantityable( $stockmovement->quantity_after_movement - $stockmovement->quantity_before_movement ) }}</td>
+            <td class="text-right">{{ $stockmovement->as_quantity( 'quantity_after_movement' ) }}</td>
+			<td class="text-right">{{ $stockmovement->as_price( 'price' ) }}</td>
+			<td class="text-right">{{ $stockmovement->document_reference }}</td>
             <td class="text-center">
                 @if ($stockmovement->notes)
                  <a href="javascript:void(0);">

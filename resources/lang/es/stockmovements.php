@@ -15,7 +15,7 @@ return [
 	'Type'     => 'Tipo',
 	'Reference'     => 'Referencia',
 	'Product'     => 'Producto',
-	''     => '',
+	'Stock after'     => 'Stock final',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
 
 	'Stockmovements - Edit'     => 'Movimientos de Stock - Modificar',
 	'Edit Stockmovement'     => 'Modificar Movimiento de Stock',
-	''     => '',
+	'A positive value means stock increases.'     => 'Un valor positivo significa que el stock aumenta.',
 	''     => '',
 	''     => '',
 	''     => '',

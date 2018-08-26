@@ -24,8 +24,10 @@ return [
 	'This record has been successfully updated &#58&#58 (:id) '  =>  'El registro se ha actualizado correctamente &#58&#58 (:id) ',
 	'This record has been successfully deleted &#58&#58 (:id) '  =>  'El registro se ha eliminado correctamente &#58&#58 (:id) ',
 	'This record cannot be deleted because it is in use &#58&#58 (:id) '  =>  'El registro no puede ser eliminado porque está en uso &#58&#58 (:id) ',
+	'Unable to create this record &#58&#58 (:id) '               =>  'No se ha podido crear el registro solicitado &#58&#58 (:id) ',
 	'Unable to update this record &#58&#58 (:id) '               =>  'No se ha podido actualizar el registro solicitado &#58&#58 (:id) ',
 	'Unable to delete this record &#58&#58 (:id) '               =>  'No se ha podido borrar el registro solicitado &#58&#58 (:id) ',
+	'This record cannot be created because it already exists &#58&#58 (:id) '  =>  'El registro no puede ser creado porque ya existe &#58&#58 (:id) ',
 	'The record with id=:id does not exist'                      =>  'El registro con id=:id no existe',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
 
@@ -206,8 +208,8 @@ return [
 	'-- Click to Select --'     => '-- Haga click para Seleccionar --',
 	'All'     => 'Todos',
 
-	'You are going to PERMANENTLY delete a record. Are you sure?' => 'Está a punto de borrar PERMANENTEMENTE un registro ¿Está seguro?',
-	'You are going to delete a record. Are you sure?' => 'Está a punto de borrar un registro ¿Está seguro?',
+	'You are going to PERMANENTLY delete a record. Are you sure?' => 'Está a punto de borrar PERMANENTEMENTE un registro. ¿Está seguro?',
+	'You are going to delete a record. Are you sure?' => 'Está a punto de borrar un registro. ¿Está seguro?',
 	'No records found' => 'No se han encontrado registros',
 
 	'Found :nbr record(s)'     => 'Hay :nbr registro(s)',

@@ -38,7 +38,7 @@
                &nbsp; {{ l('Main Data') }}
             </a>
             <a id="b_commercial" href="#commercial" class="list-group-item">
-               <i class="fa fa-dashboard"></i></span>
+               <i class="fa fa-dashboard"></i>
                &nbsp; {{ l('Commercial') }}
             </a>
             <!-- a id="b_bankaccounts" href="#bankaccounts" class="list-group-item">
@@ -46,7 +46,7 @@
                &nbsp; Bancos
             </a -->
             <a id="b_addressbook" href="#addressbook" class="list-group-item">
-               <i class="fa fa-address-book"></i></span>
+               <i class="fa fa-address-book"></i>
                &nbsp; {{ l('Address Book') }}
             </a>
             <!-- a id="b_specialprices" href="#specialprices" class="list-group-item">

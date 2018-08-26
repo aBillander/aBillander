@@ -73,27 +73,8 @@
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{l('Reference')}}</th>
             <th>{{l('Product Name')}}</th>
-            <th>{{l('Customer Price')}} 
-                @if ( $list->price_is_tax_inc)
-                    ({{l('Tax Inc', 'stockcountlines')}})
-                @endif
-
-
-            </th>
-
-            <th class="text-left"colspan="2">{{l('Discount (%)', 'stockcountlines')}}
-                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Ratio between Stock Count Price (Tax excluded) and Defaul Price as taken from Product Data.') }}">
-                                <i class="fa fa-question-circle abi-help"></i>
-                         </a></th>
-            <th class="text-left">{{l('Cost Price', 'stockcountlines')}}</th>
-            <th class="text-left">{{l('Margin (%)', 'stockcountlines')}}
-                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
-                                        l('Margin calculation is based on Cost Price', [], 'layouts') :
-                                        l('Margin calculation is based on Sales Price', [], 'layouts') }}">
-                                <i class="fa fa-question-circle abi-help"></i>
-                         </a></th>
+            <th>{{l('Quantity')}}</th>
+            <th>{{l('Cost Price')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -103,29 +84,17 @@
 			<td>{{ $line->id }}</td>
             <td><a href="{{ URL::to('products/' . $line->product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $line->product->reference }}</a></td>
             <td>{{ $line->product->name }}</td>
-            <td>{{ $line->as_price('price') }}</td>
-
-            <td class="text-center"><span style="text-decoration: underline;">{{$line->as_priceable($line->price_tax_exc)}}</span><br />{{$line->as_priceable($line->product->price)}}</td>
-
-            <td>= <span class="btn btn-xs btn-grey" style="font-weight: bold;color: #c09853;
-background-color: #fcf8e3;
-border-color: #fbeed5;cursor: default">{{ $line->as_percentable( \App\Calculator::discount( $line->product->price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
-            <td>{{ $line->as_priceable($line->product->cost_price) }}</td>
-            <td><span class="btn btn-xs btn-grey" style="font-weight: bold;color: #3a87ad;
-background-color: #d9edf7;
-border-color: #bce8f1;cursor: default">{{ $line->as_percentable( \App\Calculator::margin( $line->product->cost_price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
+            <td>{{ $line->as_quantity('quantity') }}</td>
+            <td>{{ $line->as_price('cost_price') }}</td>
 
 			<td class="text-right button-pad">
-                @if (  is_null($line->deleted_at))
+                @if ( !$line->stockcount->processed )
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('stockcounts/' . $list->id.'/stockcountlines/' . $line->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('stockcounts/' . $list->id.'/stockcountlines/' . $line->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                 		data-title="{{ l('Stock Count Lines') }} :: ({{$line->id}}) {{{ $line->product->name }}} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-                @else
-                <a class="btn btn-warning" href="{{ URL::to('stockcountlines/' . $line->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
-                <a class="btn btn-danger" href="{{ URL::to('stockcountlines/' . $line->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
                 @endif
 			</td>
 		</tr>

@@ -479,6 +479,12 @@ class CustomerOrder extends Model
         return $this->belongsTo('App\Address', 'invoicing_address_id')->withTrashed();
     }
 
+    // Alias function
+    public function billingaddress()
+    {
+        return $this->invoicingaddress();
+    }
+
     public function shippingaddress()
     {
         return $this->belongsTo('App\Address', 'shipping_address_id')->withTrashed();

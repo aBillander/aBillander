@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use App\StockCount;
 use App\StockCountLine;
 
-use App\Traits\BillableTrait;
+// use App\Traits\BillableTrait;
 
 class StockCountLinesController extends Controller
 {
 
-   use BillableTrait;
+   // use BillableTrait;
 
    protected $stockcount;
    protected $stockcountline;
@@ -67,9 +67,22 @@ class StockCountLinesController extends Controller
     public function store($stockcountId, Request $request)
     {
         // Dates (cuen)
-        $this->mergeFormDates( ['date'], $request );
+        // $this->mergeFormDates( ['date'], $request );
         
         $list = $this->stockcount->findOrFail($stockcountId);
+
+        $line = $list->stockcountlines()
+                ->where('product_id',     $request->input('product_id'))
+                ->where('combination_id', $request->input('combination_id', null))
+                ->first();
+
+        if ($line)
+            return redirect()->back()
+                ->with('error', l('This record cannot be created because it already exists &#58&#58 (:id) ', ['id' => $line->id], 'layouts').' ['.$line->product->id.'] '.$line->product->name);
+
+
+        if ( !$request->input('cost_price') ) $request->merge(['cost_price'=>0.0]);
+
 
         $this->validate($request, StockCountLine::$rules);
 
@@ -87,9 +100,9 @@ class StockCountLinesController extends Controller
      * @param  \App\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
-    public function show(StockCountLine $stockCountLine)
+    public function show($stockcountId, $id)
     {
-        //
+        $this->edit($stockcountId, $id);
     }
 
     /**
@@ -98,9 +111,12 @@ class StockCountLinesController extends Controller
      * @param  \App\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
-    public function edit(StockCountLine $stockCountLine)
+    public function edit($stockcountId, $id)
     {
-        //
+        $list = $this->stockcount->findOrFail($stockcountId);
+        $line = $this->stockcountline->with('product')->findOrFail($id);
+
+        return view('stock_count_lines.edit', compact('list', 'line'));
     }
 
     /**
@@ -110,9 +126,21 @@ class StockCountLinesController extends Controller
      * @param  \App\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, StockCountLine $stockCountLine)
+    public function update($stockcountId, $id, Request $request)
     {
-        //
+        $line = $this->stockcountline->findOrFail($id);
+
+        if ($line->stock_count_id != $stockcountId)
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+
+        $this->validate($request, stockcountLine::$rules);
+
+        $line->update($request->all());
+
+        return redirect(route('stockcounts.stockcountlines.index',$stockcountId))
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
     /**
@@ -121,9 +149,12 @@ class StockCountLinesController extends Controller
      * @param  \App\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
-    public function destroy(StockCountLine $stockCountLine)
+    public function destroy($stockcountId, $id)
     {
-        //
+        $this->stockcountline->findOrFail($id)->delete();
+
+        return redirect(route('stockcounts.stockcountlines.index',$stockcountId))
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
 

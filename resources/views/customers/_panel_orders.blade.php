@@ -16,6 +16,7 @@
 <!-- ORDERS ENDS -->
 
                </div>
+            </div>
                
 </div>
 

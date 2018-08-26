@@ -5,9 +5,11 @@
          {!! Form::hidden('combination_id', null, array('id' => 'combination_id')) !!}
 
        <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date') ? 'has-error' : '' }}">
-             {{ l('Date') }}
-             {!! Form::text('date_form', old('date_form'), array('class' => 'form-control', 'id' => 'date_form', 'autocomplete' => 'off')) !!}
-             {!! $errors->first('date', '<span class="help-block">:message</span>') !!}
+{{--
+            {{ l('Date') }}
+            {!! Form::text('date_form', old('date_form'), array('class' => 'form-control', 'id' => 'date_form', 'autocomplete' => 'off')) !!}
+            {!! $errors->first('date', '<span class="help-block">:message</span>') !!}
+--}}             
        </div>
 
       <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('quantity') ? 'has-error' : '' }}">

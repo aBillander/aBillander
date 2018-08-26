@@ -22,12 +22,14 @@ class CreateStockCountsTable extends Migration
 //            $table->string('document_prefix', 8)->nullable();                    // From Sequence. Needed for index.
 //            $table->integer('document_id')->unsigned()->default(0);
 //            $table->string('document_reference', 64);                           // document_prefix + document_id of model_name (or supplier reference, etc.)
+
+            $table->tinyInteger('initial_inventory')->default(0);               // Is initial Inventory?
+            $table->tinyInteger('processed')->default(0);               // Warehouse has been updated?
             
             $table->string('name', 128)->nullable();
             $table->text('notes')->nullable();
 
             $table->integer('warehouse_id')->unsigned()->nullable(false);
-            $table->tinyInteger('initial_inventory')->default(0);               // Is initial Inventory?
 
             $table->timestamps();
         });

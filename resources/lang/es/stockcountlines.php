@@ -17,7 +17,7 @@ return [
 	'Reference'     => 'Referencia',
 
 	'Initial Inventory'     => 'Inventario de Apertura',
-	''     => '',
+	'Quantity'     => 'Cantidad',
 	''     => '',
 
 	/*

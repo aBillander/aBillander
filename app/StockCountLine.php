@@ -15,14 +15,15 @@ class StockCountLine extends Model
     protected $dates = ['date'];
     
     protected $fillable = [ 'date', 'quantity', 'cost_price',  
-    						'product_id', 'combination_id', 'warehouse_id', 'user_id'
+    						'product_id', 'combination_id', 'user_id'
     						];
 
     public static $rules = array(
-                            'date' => 'date',
+//                            'date' => 'date',
                             'product_id' => 'exists:products,id',
 //                            'combination_id' => 'sometimes|exists:combinations,id',
                             'quantity'      => 'required|numeric|min:0', 
+                            'cost_price'      => 'sometimes|numeric|min:0', 
 //                           'warehouse_id' => 'exists:warehouses,id',
 //                           'user_id' => 'exists:users,id',
     	);
@@ -117,11 +118,29 @@ class StockCountLine extends Model
 
     public function stockcount()
     {
-        return $this->belongsTo('App\StockCount');
+        return $this->belongsTo('App\StockCount', 'stock_count_id');
     }
 
     public function product()
     {
         return $this->belongsTo('App\Product');
+    }
+
+    /**
+     * Get all of the stock count line's stock movements.
+     */
+    public function stockmovements()
+    {
+        return $this->morphMany('App\StockMovement', 'stockmovementable');
+    }
+
+    /**
+     * Get the only of the stock count line's stock movements.
+     * (if U R sure there is only one!)
+     */
+    public function stockmovement()
+    {
+        return $this->hasOne('App\StockMovement', 'stockmovementable_id','id')
+                        ->where('stockmovementable_type', StockCountLine::class);
     }
 }

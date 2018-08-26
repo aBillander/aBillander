@@ -243,6 +243,22 @@ class StockMovement extends Model {
 
         return $list;
     }
+
+
+    public static function getTypeList()
+    {
+            $list = [];
+            foreach (self::validTypes() as $type) {
+                $list[$type] = l($type, [], 'appmultilang');
+            }
+
+            return $list;
+    }
+
+    public static function getTypeName( $movement_type_id )
+    {
+            return l($movement_type_id, 'appmultilang');;
+    }
     
     
     /*
@@ -310,6 +326,9 @@ class StockMovement extends Model {
         if ( $product->quantity_onhand > 0.0 ) return false;
         
         $quantity_onhand = $this->quantity;
+        $this->quantity_before_movement = 0.0;
+        $this->quantity_after_movement = $quantity_onhand;
+        $this->save();
 
         // Average price stuff
         if ( !($this->combination_id > 0) ) {
@@ -381,6 +400,11 @@ class StockMovement extends Model {
         // Average price stuff - Not needed!
 
         $product->quantity_onhand = $quantity_onhand;
+
+        $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
+        $this->quantity_after_movement = $quantity_onhand;
+        $this->save();
+
         $product->save();
 
         // Update Cpmbination

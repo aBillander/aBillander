@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\StockCount as StockCount;
+use App\StockCount;
+use App\StockMovement;
 
 class StockCountsController extends Controller
 {
@@ -136,6 +137,11 @@ class StockCountsController extends Controller
      */
     public function destroy(StockCount $stockcount)
     {
+        // Cannot delete
+        if ( $stockcount->processed )
+            return redirect('stockcounts');
+
+
         $id = $stockcount->id;
 
         $stockcount->stockcountlines()->each(function($line) {
@@ -151,70 +157,107 @@ class StockCountsController extends Controller
 
     public function warehouseUpdate($id)
     {
-        return redirect('stockcounts')
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
-
 
         $stockcount = $this->stockcount
                     ->with('stockcountlines')
-                    ->with('stockcountlines.product')
-                    ->with('stockcountlines.product.tax')
+ //                   ->with('stockcountlines.product')
+ //                   ->with('stockcountlines.product.tax')
                     ->findOrFail($id);
 
 
+
         $name = '['.$stockcount->id.'] '.$stockcount->name;
+        $wsname = '['.$stockcount->warehouse->id.'] '.$stockcount->warehouse->name;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Set Price List Prices as Default Product Prices', __METHOD__ );
+        $logger = \App\ActivityLogger::setup( 'Process Inventory Count', __METHOD__ );
 
         $logger->empty();
         $logger->start();
 
-        $logger->log("INFO", 'Se actualizará el Precio de los Productos con la Tarifa <span class="log-showoff-format">{name}</span> .', ['name' => $name]);
+        $logger->log("INFO", 'Se actualizará el Stock de los Productos en el Almacén <span class="log-showoff-format">:name</span> .', ['name' => $wsname]);
 
         $i = 0;
         $i_ok = 0;
 
-        // Let's get dirty!!!
-        if ( $stockcount->stockcountlines()->count() )
-        if ( $stockcount->price_is_tax_inc )
+        if ($stockcount->initial_inventory) 
         {
-            foreach ($stockcount->stockcountlines as $line)
-            {
-                $tax_percent = $line->product->tax->percent;
+            //
+            $movement_type_id = StockMovement::INITIAL_STOCK;
 
-                $line->product->price = $line->price / ( 1.0 + $tax_percent / 100.0 );
-                $line->product->price_tax_inc = $line->price;
-
-                $line->product->save();
-
-                $i_ok++;
-                $i++;
-            }
+            $logger->log("INFO", 'Se creará el Stock Inicial de los Productos.');
 
         } else {
+            //
+            $movement_type_id = StockMovement::ADJUSTMENT;
 
-            foreach ($stockcount->stockcountlines as $line)
-            {
-                $tax_percent = $line->product->tax->percent;
-
-                $line->product->price = $line->price;
-                $line->product->price_tax_inc = $line->price * ( 1.0 + $tax_percent / 100.0 );
-
-                $line->product->save();
-
-                $i_ok++;
-                $i++;
-            }
+            $logger->log("INFO", 'Se hará un Ajuste del Stock de los Productos.');
 
         }
 
+
+        // Let's get dirty!!!
+        if ( $stockcount->stockcountlines()->count() )
+        foreach ($stockcount->stockcountlines as $line)
+        {
+/*
+
+        if ( $request->input('movement_type_id') == 10 ) {
+            $product = \App\Product::find( $request->input('product_id') );
+            if ( $product->quantity_onhand > 0.0 )
+                return redirect('stockmovements/create')
+                        ->with( 'error', l('Can not set Initial Stock &#58&#58 (:id) :name has already non zero stock', ['id' => $product->id, 'name' => $product->name]) );
+        }
+
+*/
+            //
+            $data = [
+
+                    'movement_type_id' => $movement_type_id,
+                    'date' => $stockcount->document_date,
+
+ //                   'stockmovementable_id' => ,
+ //                   'stockmovementable_type' => ,
+
+                    'document_reference' => $stockcount->id,
+ //                   'quantity_before_movement' => ,
+                    'quantity' => $line->quantity,
+ //                   'quantity_after_movement' => ,
+
+                    'price' => $line->cost_price,
+                    'currency_id' => \App\Context::getContext()->company->currency->id,
+                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $line->product_id,
+                    'combination_id' => $line->combination_id,
+                    'warehouse_id' => $stockcount->warehouse_id,
+ //                   'warehouse_counterpart_id' => ,
+                    
+            ];
+
+            $stockmovement = StockMovement::create( $data );
+            $line->stockmovements()->save( $stockmovement );
+
+            // Stock movement fulfillment (perform stock movements)
+            $stockmovement->process();
+
+
+            $i_ok++;
+            $i++;
+        }
+
+
         $logger->log('INFO', 'Se han actualizado {i} Productos.', ['i' => $i_ok]);
 
-        $logger->log('INFO', 'Se han procesado {i} Líneas de Tarifa.', ['i' => $i]);
+        $logger->log('INFO', 'Se han procesado {i} Líneas de Inventario.', ['i' => $i]);
 
         $logger->stop();
 
+
+        $stockcount->processed = 1;
+        $stockcount->save();
 
         return redirect('activityloggers/'.$logger->id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));

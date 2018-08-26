@@ -265,7 +265,7 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('stockmovements', 'StockMovementsController');
 
         Route::resource('stockcounts',              'StockCountsController');
-        Route::post( 'stockcounts/{id}/warehouse/update',    'StockCountsController@warehouseUpdate' )->name('stockcount.warehouse.update');
+        Route::post( 'stockcounts/{id}/warehouseupdate',    'StockCountsController@warehouseUpdate' )->name('stockcount.warehouse.update');
 
         Route::resource('stockcounts.stockcountlines', 'StockCountLinesController');
         Route::get('stockcounts/{id}/stockcountline/searchproduct', 'StockCountLinesController@searchProduct')->name('stockcountline.searchproduct');
@@ -279,6 +279,24 @@ Route::group(['middleware' =>  ['auth']], function()
 
 
 });
+
+/* ********************************************************** */
+
+// Charts routes
+
+Route::group(['prefix' => 'chart', 'namespace' => '\Chart'], function ()
+{
+
+    Route::get('/get-monthly-sales',      'ChartCustomerOrdersController@getMonthlySales')->name('chart.customerorders.monthly');
+    Route::get('/get-monthly-sales-data', 'ChartCustomerOrdersController@getMonthlySalesData')->name('chart.customerorders.monthly.data');
+
+    Route::get('r', function()
+        {
+            return 'Hello, world!';
+        });
+
+});
+
 
 /* ********************************************************** */
 

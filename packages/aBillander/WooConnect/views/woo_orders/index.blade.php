@@ -8,6 +8,11 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+           <i class="fa fa-filter"></i>
+           &nbsp; {{l('Filter', [], 'layouts')}}
+        </button>
+
     <a class="btn btn-sm btn-success" style="margin-right: 152px" href="{{ URL::route('wooconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}}"><i class="fa fa-cog"></i> {{l('Configuration', [], 'layouts')}}</a> 
 
 {{--
@@ -31,6 +36,49 @@
         {{ l('Online Shop Orders') }}
     </h2>        
 </div>
+
+
+
+<div name="search_filter" id="search_filter" @if( Request::has('search_status') AND (Request::input('search_status')==1) ) style="display:block" @else style="display:none" @endif>
+<div class="row" style="padding: 0 20px">
+    <div class="col-md-12 xcol-md-offset-3">
+        <div class="panel panel-info">
+            <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
+            <div class="panel-body">
+
+                {!! Form::model(Request::all(), array('route' => 'worders.index', 'method' => 'GET')) !!}
+
+<!-- input type="hidden" value="0" name="search_status" id="search_status" -->
+{!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
+
+<div class="row">
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('date_from_form', l('Date from')) !!}
+        {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('date_to_form', l('Date to')) !!}
+        {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
+    </div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
+{!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
+{!! link_to_route('worders.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+</div>
+
+</div>
+
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
 
 
 <div id="div_orders">
@@ -426,6 +474,18 @@ $("#order_lines").on("change", function () {
 
 </script>
 
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+   $("#b_search_filter").click(function() {
+      $('#search_status').val(1);
+      $('#search_filter').show();
+   });
+});
+
+</script>
+
 @endsection
 
 
@@ -443,6 +503,22 @@ $("#order_lines").on("change", function () {
 
   $(function() {
     $( "#due_date" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+  
+  $(function() {
+    $( "#date_from_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+  $(function() {
+    $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"

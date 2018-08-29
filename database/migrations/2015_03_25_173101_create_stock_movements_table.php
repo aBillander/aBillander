@@ -37,6 +37,9 @@ class CreateStockMovementsTable extends Migration {
 			
 			$table->integer('product_id')->unsigned()->nullable(false);
 			$table->integer('combination_id')->unsigned()->nullable();
+            $table->string('reference', 32)->nullable();
+            $table->string('name', 128)->nullable(false);
+
 			$table->integer('warehouse_id')->unsigned()->nullable(false);
 			$table->integer('warehouse_counterpart_id')->unsigned()->nullable();			// For Stock Transfers between Warehouses
 

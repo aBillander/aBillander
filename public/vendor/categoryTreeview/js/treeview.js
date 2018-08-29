@@ -52,6 +52,14 @@ $.fn.extend({
                 e.preventDefault();
             });
         });
+
+        /* fire event to open branch if the li ends with caret */
+        tree.find('.branch.caret').each(function () {
+            $(this).on('click', function (e) {
+                $(this).closest('li').click();
+                e.preventDefault();
+            });
+        });
     }
 });
 

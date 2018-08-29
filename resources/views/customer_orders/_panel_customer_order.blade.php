@@ -11,7 +11,7 @@
                             <li><a href="#tab2default" data-toggle="tab">{{ l('Lines') }}</a></li>
                             <li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li>
 
-@if ( \App\Configuration::isFalse('USE_CUSTOM_THEME') )                            
+@if ( \App\Configuration::isFalse('USE_CUSTOM_THEME') || 1 )                            
                             <li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
 @endif
                             <!-- li class="dropdown">

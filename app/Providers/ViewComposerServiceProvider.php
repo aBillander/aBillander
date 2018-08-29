@@ -105,7 +105,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Warehouses
-		view()->composer(array('products.create', 'stock_movements.create', 'stock_counts._form', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
+		view()->composer(array('products.create', 'stock_movements.index', 'stock_movements.create', 'stock_counts._form', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
 /*		    
 		    $whList = \App\Warehouse::with('address')->get();
 

@@ -1,15 +1,21 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\StockMovement as StockMovement;
+use App\StockMovement;
 use View, Cookie;
 
-class StockMovementsController extends Controller {
+use App\Traits\DateFormFormatterTrait;
 
+class StockMovementsController extends Controller 
+{
+   
+   use DateFormFormatterTrait;
 
    protected $stockmovement;
 
@@ -23,9 +29,27 @@ class StockMovementsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-        $mvts = StockMovement::with('warehouse')->with('product')->with('combination')->orderBy('created_at', 'ASC')->get();
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
+//        abi_r($request->all(), true);
+
+        $mvts = $this->stockmovement
+        						->filter( $request->all() )
+        						->with('warehouse')
+        						->with('product')
+        						->with('combination')
+        						->orderBy('created_at', 'ASC');
+
+//         abi_r($mvts->toSql(), true);
+
+        $mvts = $mvts->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        // $mvts = $mvts->paginate( 1 );
+
+        $mvts->setPath('stockmovements');     // Customize the URI used by the paginator
+
         return View::make('stock_movements.index')->with('stockmovements', $mvts);
 	}
 
@@ -65,6 +89,8 @@ class StockMovementsController extends Controller {
 		// Move on
 		$action = $request->input('nextAction', '');
 
+		$product_id = $request->input('product_id');
+
 		// Has Combination?
 		if ($request->has('group')) {
 			$combination_id = \App\Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
@@ -89,9 +115,27 @@ class StockMovementsController extends Controller {
 //					  'user_id' => \Auth::id()
 					  ];
 
-		$this->validate($request, StockMovement::getRules( $request->input('movement_type_id') ));
+		$rules = StockMovement::getRules( $request->input('movement_type_id') );
+		if ( !$combination_id ) unset( $rules['combination_id'] );
+
+		$this->validate($request, $rules);
 
 		$stockmovement = $this->stockmovement->create( array_merge( $request->all(), $extradata ) );
+
+        // Product
+        if ($combination_id>0) {
+            $combination = \App\Combination::with('product')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = \App\Product::findOrFail(intval($product_id));
+        }
+
+        $stockmovement->reference  = $product->reference;
+        $stockmovement->name       = $product->name;
+
+        $stockmovement->save();
 
 		// Time savers
 		Cookie::queue('date', $date_raw, 1);	// Live 1 minute

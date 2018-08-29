@@ -81,9 +81,9 @@ class CustomerOrder extends Model
 
 
     public static $rules = [
-                            'document_date' => 'date',
+                            'document_date' => 'required|date',
 //                            'payment_date'  => 'date',
-                            'delivery_date' => 'nullable|date',
+                            'delivery_date' => 'nullable|date|after_or_equal:document_date',
                             'customer_id' => 'exists:customers,id',
                             'invoicing_address_id' => '',
                             'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
@@ -186,6 +186,11 @@ class CustomerOrder extends Model
     public function getEditableAttribute()
     {
         return !( $this->locked || $this->status == 'closed' || $this->status == 'canceled' );
+    }
+
+    public function getDeletableAttribute()
+    {
+        return !( $this->status == 'closed' || $this->status == 'canceled' );
     }
 
     public function getNumberAttribute()

@@ -87,7 +87,7 @@ var charts = {
         },
 
         ajaxGetPostMonthlyData: function () {
-            var urlPath =  'http://' + window.location.hostname + '/enatural/public/chart/get-monthly-sales-data';
+            var urlPath =  "{{ route( 'chart.customerorders.monthly.data' ) }}";
             var request = $.ajax( {
                 method: 'GET',
                 url: urlPath

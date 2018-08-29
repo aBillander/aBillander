@@ -184,6 +184,7 @@ return [
 	'Final Price with Tax'     => 'Precio Final con IVA',
 	'Tax'     => 'Impuesto',
 	'Is Shipping Cost?'     => '¿Es Coste de Envío?',
+	'Type a Product Name or Product Reference.'     => 'Escriba un Nombre de Producto o Referencia.',
 	''     => '',
 
 	// Modal edit line

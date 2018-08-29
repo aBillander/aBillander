@@ -22,6 +22,8 @@ return [
 	'No active Production Sheet found.'     => 'No se han encontrado Hojas de Producción activas.',
 	
 	
+	'Date from'     => 'Fecha desde',
+	'Date to'     => 'Fecha hasta',
 	
 	'Order #'     => 'Pedido #',
 	'Order Date'     => 'Fecha Pedido',

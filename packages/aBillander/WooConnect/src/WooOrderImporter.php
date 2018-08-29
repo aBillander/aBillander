@@ -105,6 +105,13 @@ class WooOrderImporter {
      */
     public function fill_in_data($order_id = null)
     {
+    	// Already downloaded?
+    	$abi_order = Order::where('reference_external', $order_id)->first();
+    	if ( $abi_order ) {
+            $this->logMessage( 'ERROR', 'El Pedido número <b>"'.$order_id.'"</b> ya se descargó: '.$abi_order->id.' ('.$abi_order->document_reference.').' );
+            $this->run_status = false;
+        }
+        
         // 
     	// Get $order_id data...
 //        $data = $this->raw_data = WooConnector::getWooOrder( intval($order_id) );

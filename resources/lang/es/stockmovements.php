@@ -16,6 +16,8 @@ return [
 	'Reference'     => 'Referencia',
 	'Product'     => 'Producto',
 	'Stock after'     => 'Stock final',
+	'Date from'     => 'Fecha desde',
+	'Date to'     => 'Fecha hasta',
 
 	/*
 	|--------------------------------------------------------------------------

@@ -421,3 +421,9 @@
 	< ? php $wpo_wcpdf->footer(); ?>
 --}}
 </div><!-- #letter-footer -->
+
+<div id="footer">
+
+	<p><span class="pagenum"></span> / <span class="pagecount">{{PAGE_COUNT}}</span></p>
+
+</div>

@@ -1220,4 +1220,51 @@ class StockMovement extends Model {
     {
         return $this->belongsTo('App\User');
 	}
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function scopeFilter($query, $params)
+    {
+
+        if (trim($params['date_from']) || trim($params['date_to']))
+            // if ( isset($params['date_to']) && trim($params['date_to']) != '' )
+        {
+            $query->whereBetween('date', [trim($params['date_from']).' 00:00:00', trim($params['date_to']).' 23:59:59']);
+        }
+
+
+        if ( isset($params['reference']) && trim($params['reference']) !== '' )
+        {
+            $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
+            // $query->orWhere('combinations.reference', 'LIKE', '%' . trim($params['reference'] . '%'));
+/*
+            // Moved from controller
+            $reference = $params['reference'];
+            $query->orWhereHas('combinations', function($q) use ($reference)
+                                {
+                                    // http://stackoverflow.com/questions/20801859/laravel-eloquent-filter-by-column-of-relationship
+                                    $q->where('reference', 'LIKE', '%' . $reference . '%');
+                                }
+            );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
+*/
+        }
+
+        if ( isset($params['name']) && trim($params['name']) !== '' )
+        {
+            $query->where('name', 'LIKE', '%' . trim($params['name'] . '%'));
+        }
+
+        if ( isset($params['warehouse_id']) && $params['warehouse_id'] > 0 )
+        {
+            $query->where('warehouse_id', '=', $params['warehouse_id']);
+        }
+
+        return $query;
+    }
 }

@@ -35,6 +35,10 @@
 
                   <div class="form-group col-lg-7 col-md-7 col-sm-7">
                      {{ l('Product Name') }}
+                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Type a Product Name or Product Reference.') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                          </a>
                      {!! Form::text('row_autoproduct_name', null, array('class' => 'form-control', 'id' => 'row_autoproduct_name', 'onclick' => 'this.select()')) !!}
                   </div>
 

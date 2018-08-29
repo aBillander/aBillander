@@ -33,7 +33,8 @@
 <table id="categories" class="table table-hover">
     <thead>
         <tr>
-            <th class="text-left">{{l('ID', [], 'layouts')}}</th>
+            <th class="text-left" style="width: 35px">{{l('ID', [], 'layouts')}}</th>
+            <th class="text-left" style="width: 35px"> </th>
             <th class="text-left">{{l('Category Name')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-right"> </th>
@@ -41,8 +42,9 @@
     </thead>
     <tbody>
         @foreach ($categories as $category)
-        <tr>
+        <tr class="parent">
             <td>{{ $category->id }}</td>
+            <td> </td>
             <td>{{ $category->name }}</td>
             
             <td class="text-center">@if ($category->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
@@ -69,9 +71,10 @@
 @if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $category->parent_id==0 )
         @foreach ($category->children as $child)
 
-        <tr class="child" style="display: none;">
+        <tr class="child warning" style="display: none;">
             <td> </td>
-            <td>{{ $child->id }} - {{ $child->name }}</td>
+            <td>{{ $child->id }}</td>
+            <td><span style="padding-left: 35px;">{{ $child->name }}</span></td>
             
             <td class="text-center">@if ($child->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 
@@ -152,17 +155,25 @@
           $(".child").toggle("slow");
 
           if ( c != 'expanded' )
+        {
             createCookie('tree','expanded',7);
+                $("tr.parent").addClass("info");
+        }
           else
+        {
             eraseCookie('tree');
+                $("tr.parent").removeClass("info");
+        }
 
         });
 
         var c = readCookie( 'tree' );
 
         if ( c == 'expanded' )
-            $(".child").toggle("slow");
-
+        {
+                $(".child").toggle("slow");
+                $("tr.parent").addClass("info");
+        }
     </script>
 
 @endsection

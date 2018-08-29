@@ -55,7 +55,8 @@ class CustomerOrdersController extends Controller
                             ->with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
-                            ->orderBy('document_date', 'desc');        // ->get();
+                            ->orderBy('document_date', 'desc')
+                            ->orderBy('id', 'desc');        // ->get();
 
         $customer_orders = $customer_orders->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
 
@@ -1531,9 +1532,15 @@ class CustomerOrdersController extends Controller
 
     public function quickAddLines(Request $request, $order_id)
     {
-        parse_str($request->input('product_id_values'));
-        parse_str($request->input('combination_id_values'));
-        parse_str($request->input('quantity_values'));
+        parse_str($request->input('product_id_values'), $output);
+        $product_id_values = $output['product_id_values'];
+
+        parse_str($request->input('combination_id_values'), $output);
+        $combination_id_values = $output['combination_id_values'];
+
+        parse_str($request->input('quantity_values'), $output);
+        $quantity_values = $output['quantity_values'];
+
 
         // Let's Rock!
         $order = $this->customerOrder

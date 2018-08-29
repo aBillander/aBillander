@@ -15,8 +15,12 @@ use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientExcept
 
 use \aBillander\WooConnect\WooOrder;
 
-class WooOrdersController extends Controller {
+use App\Traits\DateFormFormatterTrait;
 
+class WooOrdersController extends Controller 
+{
+   
+   use DateFormFormatterTrait;
 
    protected $order;
 
@@ -33,11 +37,14 @@ class WooOrdersController extends Controller {
 	 */
 	public function index(Request $request)
 	{
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
 		// https://www.youtube.com/watch?v=IcLaNHxGTrs
 		// $user = User::query();
 		$queries = [];
 		$columns = ['after', 'before', 'status'];
-		$column_dates = ['after', 'before'];
+//		$column_dates = ['after', 'before'];
 
 		// ToDo: convert dates to ISO8601 compliant date
 
@@ -70,9 +77,13 @@ class WooOrdersController extends Controller {
 //		    'status' => 'completed',
 //	    	'after'  => '2017-08-01 00:00:00',		//  ISO8601 compliant date
 //	    	'before' => '2017-12-31T23:59:59',
+//	    	'after'  => $request->input('date_from', '') ? $request->input('date_from').' 00:00:00' : '',
+//	    	'before' => $request->input('date_to', '')   ? $request->input('date_to')  .' 23:59:59' : '',
 //	    	'orderby' => 'id',
 //	    	'order'   => 'asc',
 		];
+		if ($request->input('date_from', '')) $params['after']  = $request->input('date_from').' 00:00:00';
+		if ($request->input('date_to', ''))   $params['before'] = $request->input('date_to')  .' 23:59:59';
 
 		foreach ($columns as $column) {
 			if (request()->has($column) && request($column)) {
@@ -80,13 +91,13 @@ class WooOrdersController extends Controller {
 				$params[$column] = request($column);
 			}
 		}
-
+/*
 		foreach ($column_dates as $column) {
 			if (isset($params[$column])) {
 				$params[$column] .= ' 00:00:00';	// Convert date to ISO8601 compliant date
 			}
 		}
-
+*/
 		// abi_r($params, true);
 
         try {

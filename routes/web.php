@@ -277,23 +277,23 @@ Route::group(['middleware' =>  ['auth']], function()
 
 
 
-
-});
-
 /* ********************************************************** */
 
-// Charts routes
+        // Charts routes
 
-Route::group(['prefix' => 'chart', 'namespace' => '\Chart'], function ()
-{
-
-    Route::get('/get-monthly-sales',      'ChartCustomerOrdersController@getMonthlySales')->name('chart.customerorders.monthly');
-    Route::get('/get-monthly-sales-data', 'ChartCustomerOrdersController@getMonthlySalesData')->name('chart.customerorders.monthly.data');
-
-    Route::get('r', function()
+        Route::group(['prefix' => 'chart', 'namespace' => '\Chart'], function ()
         {
-            return 'Hello, world!';
+
+            Route::get('/get-monthly-sales',      'ChartCustomerOrdersController@getMonthlySales')->name('chart.customerorders.monthly');
+            Route::get('/get-monthly-sales-data', 'ChartCustomerOrdersController@getMonthlySalesData')->name('chart.customerorders.monthly.data');
+
+            Route::get('r', function()
+                {
+                    return 'Hello, world!';
+                });
+
         });
+
 
 });
 

@@ -283,4 +283,40 @@ ________________________________________
 {{--
 	< ? php $wpo_wcpdf->footer(); ?>
 --}}
+
+
+	<!-- p><span class="pagenum"></span> / <span class="pagecount">{PAGE_COUNT}</span></p -->
+
+
+<script type="text/php">
+
+    if ( isset($pdf) ) {
+
+//        $pdf->page_text(30, ($pdf->get_height() - 26.89), "Date Printed: " . date('d M Y H:i:s'), null, 10);
+        
+        if ( $PAGE_COUNT > 0 )
+        {
+               $pdf->page_text(($pdf->get_width() - 84), ($pdf->get_height() - 26.89), "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10);
+        }
+
+
+    }
+
+</script>
+
+
 </div><!-- #letter-footer -->
+
+{{-- 
+
+https://github.com/dompdf
+
+view-source:https://dompdf.net/test/print_header_footer.html
+
+https://groups.google.com/forum/#!forum/dompdf
+
+https://groups.google.com/forum/#!topic/dompdf/X9sl6KLYimM
+
+https://github.com/samuelterra22/laravel-report-generator/blob/master/src/views/general-pdf-template.blade.php
+
+--}}

@@ -31,9 +31,11 @@
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<strong>{!! l('Error', [], 'layouts') !!}: </strong>
     @if(is_array($message))
-    @foreach ($message as $m)
-    {!! $m !!}
-    @endforeach
+        <ul>
+        @foreach ($message as $m)
+            <li>{!! $m !!}</li>
+        @endforeach
+        <ul>
     @else
     {!! $message !!}
     @endif
@@ -49,7 +51,7 @@
         @foreach ($message as $m)
             <li>{!! $m !!}</li>
         @endforeach
-    <ul>
+        <ul>
     @else
     {!! $message !!}
     @endif

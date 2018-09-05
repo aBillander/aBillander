@@ -57,6 +57,7 @@ return array(
     'Product' => 'Producto', 
     'Customer' => 'Cliente', 
 	'CustomerOrder' => 'Pedido de Cliente',
+	'CustomerShippingSlip' => 'Albarán de Cliente',
 	'CustomerInvoice' => 'Factura de Cliente',
     'StockCount' => 'Inventario de Almacén',
 
@@ -71,6 +72,7 @@ return array(
 	*/
 
     'template.CustomerOrderPdf'   => 'Pedido de Cliente (Pdf)',
+    'template.CustomerShippingSlipPdf'   => 'Albarán de Cliente (Pdf)',
 	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',
     'template.Pdf' => 'Plantilla Pdf',
     'template.Mail' => 'Plantilla Mail',
@@ -189,6 +191,20 @@ return array(
 	'customerOrder.confirmed'    => 'Confirmado',
 	'customerOrder.closed'    => 'Cerrado',
     'customerOrder.canceled' => 'Cancelado',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customer Shipping Slip Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'customerShippingSlip.draft' => 'Borrador',
+	'customerShippingSlip.confirmed'    => 'Confirmado',
+	'customerShippingSlip.closed'    => 'Cerrado',
+    'customerShippingSlip.canceled' => 'Cancelado',
 
 	/*
 	|--------------------------------------------------------------------------

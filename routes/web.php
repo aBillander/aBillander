@@ -214,7 +214,16 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::post('customerorders/sortlines', 'CustomerOrdersController@sortLines')->name('customerorder.sortlines');
 
+        Route::get('customerorders/{id}/shippingslip',  'CustomerOrdersController@makeShippingSlip'   )->name('customerorder.duplicate'  );
+
         Route::get('customerorders/{id}/pdf',        'CustomerOrdersController@showPdf'   )->name('customerorder.pdf'     );
+
+
+
+        Route::resource('customershippingslips', 'CustomerShippingSlipsController');
+
+        Route::get('customershippingslips/{id}/pdf', 'CustomerShippingSlipsController@showPdf')->name('customershippingslip.pdf');
+        
 
         
 

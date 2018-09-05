@@ -125,6 +125,8 @@
          || config('app.url') =='http://abimfg-test.laextranatural.es')
 
 @else
+                <a class="btn btn-sm btn-lightblue" href="{{ URL::to('customerorders/' . $order->id . '/shippingslip') }}" title="{{l('Shipping Slip', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
+
                 <a class="btn btn-sm btn-info" href="{{ URL::to('customerorders/' . $order->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 

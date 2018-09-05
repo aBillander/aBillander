@@ -79,7 +79,10 @@ class CreateCustomerOrdersTable extends Migration
             $table->decimal('total_lines_tax_incl', 20, 6)->default(0.0);       // total = total_lines - document_discount
             $table->decimal('total_lines_tax_excl', 20, 6)->default(0.0);
             
-            $table->decimal('total_tax_incl', 20, 6)->default(0.0);
+            $table->decimal('total_currency_tax_incl', 20, 6)->default(0.0);    // Totals using Customer Order Currency
+            $table->decimal('total_currency_tax_excl', 20, 6)->default(0.0);
+            
+            $table->decimal('total_tax_incl', 20, 6)->default(0.0);    // Totals using Company Currency
             $table->decimal('total_tax_excl', 20, 6)->default(0.0);
 
             $table->decimal('commission_amount', 20, 6)->default(0.0);          // Sales Representative commission amount

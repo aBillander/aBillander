@@ -72,6 +72,7 @@ return [
 	'Warehouse'     => 'Almacén',
 	'Purchase Orders'     => 'Pedidos de Compra',
 	'Sale Orders'     => 'Pedidos de Venta',
+	'Shipping Slips'     => 'Albaranes',
 	'Stock Movements'     => 'Movimientos de Almacén',
 	'Inventory Count'     => 'Inventario de Almacén',
 	'Inventory Adjustments'     => 'Regularización de Almacén',

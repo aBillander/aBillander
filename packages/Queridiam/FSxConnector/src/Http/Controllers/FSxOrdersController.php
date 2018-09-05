@@ -92,12 +92,15 @@ class FSxOrdersController extends Controller
             
             $anyOrder  = count(File::files( $dest_pedidos ));
 
+            $infos = [];
+
+        if ( $anyClient > 0 ) $infos[] = l('Hay <b>:anyClient</b> ficheros en la Carpeta de descarga de <b>Clientes</b>. Debe importarlos a FactuSOL, o borrarlos.', ['anyClient' => $anyClient]);
+        
+        if ( $anyOrder  > 0 ) $infos[] = l('Hay <b>:anyOrder</b> ficheros en la Carpeta de descarga de <b>Pedidos</b>. Debe importarlos a FactuSOL, o borrarlos.', ['anyOrder' => $anyOrder]);
+
 
         return redirect('activityloggers/'.$logger->id)
-                ->with('info', [ 
-                    l('Hay <b>:anyClient</b> ficheros en la Carpeta de descarga de <b>Clientes</b>. Debe importarlos a FactuSOL, o borrarlos.', ['anyClient' => $anyClient]),
-                    l('Hay <b>:anyOrder</b> ficheros en la Carpeta de descarga de <b>Pedidos</b>. Debe importarlos a FactuSOL, o borrarlos.', ['anyOrder' => $anyOrder])
-                        ] );
+                ->with('info', $infos );
     	}
 
     	public function exportOrders( Request $request )

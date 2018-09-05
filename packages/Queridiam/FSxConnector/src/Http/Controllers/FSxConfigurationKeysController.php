@@ -121,6 +121,9 @@ class FSxConfigurationKeysController extends Controller {
         foreach ($this->conf_keys[$tab_index] as $key)
             $key_group[$key]= Configuration::get($key);
 
+        $errors = $this->checkFolderErrors();
+        session()->put('error', $errors);       //  Session::set()  use Illuminate\Support\Facades\Session;
+
 // abi_r($key_group, true);
         return view( $tab_view, compact('tab_index', 'key_group') );
 
@@ -171,9 +174,9 @@ class FSxConfigurationKeysController extends Controller {
             }
         }
 
-        // die();
 
         return redirect('fsx/fsxconfigurationkeys?tab_index='.$tab_index)
+                ->with('error', $this->checkFolderErrors() )
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $tab_index], 'layouts') );
     }
 
@@ -472,6 +475,31 @@ class FSxConfigurationKeysController extends Controller {
 
         return redirect()->route('fsx.configuration.paymentmethods')
                 ->with('success', l('This configuration has been successfully updated', [], 'layouts'));
+    }
+
+
+/* ********************************************************************************************* */
+
+    
+    public function checkFolder( $folder = '' )
+    {
+        return $folder && is_dir($folder) && is_writable ($folder);
+    }
+
+    
+    public function checkFolderErrors()
+    {
+        // Check folder permissions
+        $dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG'); // Destination folders
+        $dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG'); // 
+
+        $errors = [];
+
+        if ( !$this->checkFolder( $dest_clientes ) ) $errors[] = l('La carpeta <b style="font-weight: bold">'.$dest_clientes.'</b> (descarga de Clientes) no existe, o no tiene permisos de escritura.');
+
+        if ( !$this->checkFolder( $dest_pedidos ) ) $errors[] = l('La carpeta <b style="font-weight: bold">'.$dest_pedidos.'</b> (descarga de Pedidos) no existe, o no tiene permisos de escritura');
+        
+        return $errors;
     }
 
 

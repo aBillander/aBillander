@@ -45,6 +45,8 @@ class ConfigurationKeysController extends Controller {
                         'DEF_COUNTRY',
                         'DEF_CURRENCY',
                         'DEF_CUSTOMER_ORDER_SEQUENCE',
+                        'DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE',
+                        'DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE',
                         'DEF_CUSTOMER_INVOICE_SEQUENCE',
                         'DEF_CUSTOMER_INVOICE_TEMPLATE',
                         'DEF_CUSTOMER_PAYMENT_METHOD',

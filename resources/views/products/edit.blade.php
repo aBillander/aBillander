@@ -29,7 +29,7 @@
                &nbsp; {{ l('Purchases') }}
             </a>
             <a id="b_sales" href="#sales" class="list-group-item">
-               <i class="fa fa-share-square-o"></i>
+               <i class="fa fa-shopping-bag"></i>
                &nbsp; {{ l('Sales') }}
             </a>
             <a id="b_inventory" href="#inventory" class="list-group-item">

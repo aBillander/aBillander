@@ -107,6 +107,13 @@ return [
 	'Quantity allocated'     => 'Reservado',
 	'Available'     => 'Disponible',
 
+	'Stock Movements' => 'Movimientos de Stock',
+	'Pending Movements' => 'Movimientos Pendientes',
+	'' => '',
+	'' => '',
+	'' => '',
+	'' => '',
+
 
 	'Can not create Combinations'     => 'No es posible crear Combinaciones',
 	'Product Stock is not equal to 0'     => 'El Stock del Producto es diferente de 0',

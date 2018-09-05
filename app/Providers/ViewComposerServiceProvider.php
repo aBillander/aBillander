@@ -270,10 +270,33 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 		
+		// Customer Shipping Slips Sequencess
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('shipping_slips_sequenceList', \App\Sequence::listFor( \App\CustomerShippingSlip::class ));
+		    
+		});
+		
 		// Customer Invoices Sequencess
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('invoices_sequenceList', \App\Sequence::listFor( \App\CustomerInvoice::class ));
+		    
+		});
+
+		// Templates
+
+		// Customer Shipping Slips Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('shipping_slips_templateList', \App\Template::listFor( \App\CustomerShippingSlip::class ));
+		    
+		});
+
+		// Customer Invoices Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('invoices_templateList', \App\Template::listFor( \App\CustomerInvoice::class ));
 		    
 		});
 		

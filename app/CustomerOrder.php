@@ -332,21 +332,51 @@ class CustomerOrder extends Model
             // Improve this: Sum subtotals by tax type must match Order Totals
             $p->applyRoundingWithoutTax( );
 
+            $this->total_currency_tax_incl = $p->getPriceWithTax();
+            $this->total_currency_tax_excl = $p->getPrice();
+
+        } else {
+
+            $this->total_currency_tax_incl = $this->total_lines_tax_incl;
+            $this->total_currency_tax_excl = $this->total_lines_tax_excl;
+            
+        }
+
+
+        // Not so fast, Sony Boy
+        if ( $this->currency_conversion_rate != 1.0 ) 
+        {
+
+            // Make a Price object 
+            $p = \App\Price::create([$this->total_currency_tax_excl, $this->total_currency_tax_incl], $this->currency, $this->currency_conversion_rate);
+
+            // abi_r($p);
+
+            $p = $p->convertToBaseCurrency();
+
+            // abi_r($p, true);
+
+            // Improve this: Sum subtotals by tax type must match Order Totals
+            $p->applyRoundingWithoutTax( );
+
             $this->total_tax_incl = $p->getPriceWithTax();
             $this->total_tax_excl = $p->getPrice();
 
         } else {
 
-            $this->total_tax_incl = $this->total_lines_tax_incl;
-            $this->total_tax_excl = $this->total_lines_tax_excl;
-            
+            $this->total_tax_incl = $this->total_currency_tax_incl;
+            $this->total_tax_excl = $this->total_currency_tax_excl;
+
         }
 
+
+        // So far, so good
         $this->save();
 
         return true;
     }
     
+    // Deprecated
     public function getTotalTaxIncl()
     {
         $lines = $this->customerorderlines;
@@ -380,6 +410,7 @@ class CustomerOrder extends Model
         return $this->total_tax_incl;
     }
     
+    // Deprecated
     public function getTotalTaxExcl()
     {
         $lines = $this->customerorderlines;

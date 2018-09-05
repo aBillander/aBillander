@@ -8,7 +8,7 @@ class SequencesTableSeeder extends Seeder {
   
     public function run() {
         Sequence::truncate();
-  
+/*  
         Sequence::create( [
             'name'    => 'Recuentos de Stock', 
             'model_name'    => 'StockCount', 
@@ -18,11 +18,12 @@ class SequencesTableSeeder extends Seeder {
             'next_id'     => '1',
             'active'    => '1' ,
         ] );
+ */ 
   
         Sequence::create( [
-            'name'    => 'Facturas Nacional', 
-            'model_name'    => 'CustomerInvoice', 
-            'prefix'    => 'NAC', 
+            'name'    => 'Pedidos de Clientes', 
+            'model_name'    => 'CustomerOrder', 
+            'prefix'    => 'POT', 
             'length'    => '4', 
             'separator'    => '-', 
             'next_id'     => '1',
@@ -30,9 +31,19 @@ class SequencesTableSeeder extends Seeder {
         ] );
   
         Sequence::create( [
-            'name'    => 'Pedidos de Clientes', 
-            'model_name'    => 'CustomerOrder', 
-            'prefix'    => 'POT', 
+            'name'    => 'Albaranes de Clientes', 
+            'model_name'    => 'CustomerShippingSlip', 
+            'prefix'    => 'ALB', 
+            'length'    => '4', 
+            'separator'    => '-', 
+            'next_id'     => '1',
+            'active'    => '1' ,
+        ] );
+
+        Sequence::create( [
+            'name'    => 'Facturas Nacional', 
+            'model_name'    => 'CustomerInvoice', 
+            'prefix'    => 'NAC', 
             'length'    => '4', 
             'separator'    => '-', 
             'next_id'     => '1',

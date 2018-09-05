@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 use App\Customer;
 use App\CustomerOrder;
 use App\CustomerOrderLine;
+use App\CustomerShippingSlip;
 
 use App\Configuration;
 use App\Sequence;
@@ -557,14 +558,18 @@ class CustomerOrdersController extends Controller
                             'tax_inc' => $price->getPriceWithTax(),
                             'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
                                         $price->getPriceWithTax() : $price->getPrice(),
-                            'price_is_tax_inc' => $price->price_is_tax_inc,  ],
+                            'price_is_tax_inc' => $price->price_is_tax_inc,  
+//                            'price_obj' => $price,
+                            ],
     
                 'unit_customer_price' => [ 
                             'tax_exc' => $customer_price->getPrice(), 
                             'tax_inc' => $customer_price->getPriceWithTax(),
                             'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
                                         $customer_price->getPriceWithTax() : $customer_price->getPrice(),
-                            'price_is_tax_inc' => $customer_price->price_is_tax_inc,  ],
+                            'price_is_tax_inc' => $customer_price->price_is_tax_inc,  
+//                            'price_obj' => $customer_price,
+                            ],
     
                 'tax_percent' => $tax_percent,
                 'tax_id' => $product->tax_id,
@@ -1567,6 +1572,99 @@ class CustomerOrdersController extends Controller
  //               'currency' => $line[0]->currency,
         ] );
 
+    }
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shipping Slip
+    |--------------------------------------------------------------------------
+    */
+
+    public function makeShippingSlip($id)
+    {
+        // https://github.com/BKWLD/cloner
+
+        $order_except_fields = ['id', 'sequence_id', 'document_prefix', 'document_id', 'document_reference', 'reference', 
+                                'reference_customer', 'reference_external', 
+                                'created_via', 'validation_date', 
+                                'delivery_date', 'delivery_date_real', 'close_date', 'status', 'locked', 'template_id', 
+                                'parent_document_id', 'production_sheet_id', 'export_date', 
+                                'created_at', 'updated_at'
+        ];
+
+        $order = $this->customerOrder->findOrFail($id);
+
+        $data = $order->attributesToArray();
+
+        $data['document_date'] = \Carbon\Carbon::now();
+
+        $slip = (new CustomerShippingSlip())->forceCreate( array_except($data, $order_except_fields) );
+
+
+
+        return redirect('customershippingslips')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $slip->id], 'layouts'));
+
+
+
+        // Duplicate BOM
+        $clone = $order->replicate();
+
+        // Extra data
+        $seq = \App\Sequence::findOrFail( $order->sequence_id );
+
+        // Not so fast, dudde:
+/*
+        $doc_id = $seq->getNextDocumentId();
+
+        $clone->document_prefix      = $seq->prefix;
+        $clone->document_id          = $doc_id;
+        $clone->document_reference   = $seq->getDocumentReference($doc_id);
+*/
+        $clone->user_id              = \App\Context::getContext()->user->id;
+
+        $clone->created_via          = 'manual';
+        $clone->status               = 'draft';
+        $clone->locked               = 0;
+        
+        $clone->document_date = \Carbon\Carbon::now();
+        $clone->delivery_date = null;
+
+
+        $clone->save();
+
+        // Duplicate BOM Lines
+        if ( $order->customerorderlines()->count() )
+            foreach ($order->customerorderlines as $line) {
+
+                $clone_line = $line->replicate();
+
+                $clone->customerorderlines()->save($clone_line);
+
+                if ( $line->customerorderlinetaxes()->count() )
+                    foreach ($line->customerorderlinetaxes as $linetax) {
+
+                        $clone_line_tax = $linetax->replicate();
+
+                        $clone_line->customerorderlinetaxes()->save($clone_line_tax);
+
+                    }
+            }
+
+        // Save Customer order
+        $clone->push();
+
+        // Good boy:
+        $clone->confirm();
+
+
+        return redirect('customerorders/'.$clone->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $clone->id], 'layouts'));
     }
 
 

@@ -17,6 +17,7 @@ class Sequence extends Model {
 //            'Product', 
 //            'Customer', 
             'CustomerOrder',
+            'CustomerShippingSlip',
             'CustomerInvoice',
             'StockCount',
         );
@@ -26,6 +27,7 @@ class Sequence extends Model {
 //            Product::class         => 'Product', 
 //            Customer::class        => 'Customer', 
             CustomerOrder::class   => 'CustomerOrder',
+            CustomerShippingSlip::class   => 'CustomerShippingSlip',
             CustomerInvoice::class => 'CustomerInvoice',
             StockCount::class      => 'StockCount',
         );

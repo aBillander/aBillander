@@ -52,6 +52,12 @@
 
                 <a class="btn btn-sm btn-danger unlink-customer-order" href="{{ URL::to('customerorders/' . $order->id . '/unlink') }}" title="{{l('Unlink')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-unlink"></i></a>
 
+                @if ($order->export_date)
+                <a class="btn btn-sm btn-default" style="display:none;" href="javascript:void(0);" title="{{$order->export_date}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
+                @else
+                <a class="btn btn-sm btn-grey" href="{{ URL::route('fsxorders.export', [$order->id] ) }}" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
+                @endif
+
             </td>
     </tr>
   @endforeach
@@ -70,14 +76,29 @@
 
 </div><!-- div class="panel-body" -->
 
-<div class="panel-footer text-right">
+<div class="panel-footer">
   <!-- a class="btn btn-link" data-dismiss="modal" href="{{ URL::to('workcenters') }}">{{l('Cancel', [], 'layouts')}}</a>
   <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">
      <i class="fa fa-floppy-o"></i>
      &nbsp; {{ l('Save', [], 'layouts') }}
   </button -->
 
+
+<div class="row">
+
+         <div class="form-group col-lg-8 col-md-8 col-sm-8">
+         <span class="label label-success">{{ $sheet->customerorders()->count() }}</span> pedido(s) en total.
+         <br />
+         <span class="label label-danger"> {{ $sheet->customerorders()->where('export_date', null)->count() }}</span> pedido(s) pendientes descargar a FactuSOL.
+         </div>
+
+         <div class="col-lg-4 col-md-4 col-sm-4 text-right">
+
   <a class="btn btn-sm btn-success show-order-products-summary" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Show Summary')}}</a></th>
+
+         </div>
+
+</div>
 </div>
 
 

@@ -88,21 +88,27 @@ class Price {
     |--------------------------------------------------------------------------
     */
 
-    public function convert( Currency $currency, $currency_conversion_rate = null )
+    public function convert( Currency $currency = null, $currency_conversion_rate = null )
     {
         $currency_from = $this->currency;
 //        $currency_from->conversion_rate = $this->currency_conversion_rate;
 
+        if ( $currency === null ) $currency = \App\Context::getContext()->currency;
         $currency_to = $currency;
+        
         if ( $currency_conversion_rate !== null ) $currency_to->conversion_rate = $currency_conversion_rate;
 
         if ( ($currency_from->id == $currency_to->id) && ($currency_from->conversion_rate == $currency_to->conversion_rate) ) return clone $this;
 
         $amount = Currency::convertPrice($this->amount, $currency_from, $currency_to);
 
-        $priceObject = new Price( $amount, $this->price_is_tax_inc, $currency, $currency_conversion_rate);
+        $priceObject = new Price( $amount, $this->price_is_tax_inc, $currency_to);
+
+        // abi_r( $priceObject );
 
         if ($this->tax_percent !== null) $priceObject->applyTaxPercent( $this->tax_percent );
+        
+        // abi_r( $priceObject, true );
 
         $priceObject->price_list_id      = $this->price_list_id;
         $priceObject->price_list_line_id = $this->price_list_line_id;
@@ -119,7 +125,7 @@ class Price {
     {
         if ( $percent === null ) $percent = 0.0;
 
-        if ($this->price_is_tax_inc) {
+        if ($this->price_is_tax_inc>0) {
             $this->price = $this->price_tax_inc/(1.0+$percent/100.0);
         } else {
             $this->price_tax_inc = $this->price*(1.0+$percent/100.0);

@@ -13,6 +13,7 @@ class Template extends Model {
 
     public static $types = array(
             'CustomerOrderPdf',
+            'CustomerShippingSlipPdf',
             'CustomerInvoicePdf',
             'Pdf',
             'Mail',
@@ -21,6 +22,7 @@ class Template extends Model {
     // Move this to config folder? Maybe yes...
     public static $models = array(
             CustomerOrder::class   => 'CustomerOrderPdf',
+            CustomerShippingSlip::class   => 'CustomerShippingSlipPdf',
             CustomerInvoice::class => 'CustomerInvoicePdf',
         );
 

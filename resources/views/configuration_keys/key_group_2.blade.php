@@ -94,12 +94,40 @@
       </div>
     </div>
 
+    <div class="form-group {{ $errors->has('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE') ? 'has-error' : '' }}">
+      <label for="DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE', $shipping_slips_sequenceList, old('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE', $key_group['DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE') ? 'has-error' : '' }}">
+      <label for="DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE', $shipping_slips_templateList, old('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE', $key_group['DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE.help') !!}</span>
+      </div>
+    </div>
+
     <div class="form-group {{ $errors->has('DEF_CUSTOMER_INVOICE_SEQUENCE') ? 'has-error' : '' }}">
       <label for="DEF_CUSTOMER_INVOICE_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_INVOICE_SEQUENCE.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-8">
-        {!! Form::select('DEF_CUSTOMER_INVOICE_SEQUENCE', ['0' => l('-- Please, select --', [], 'layouts')] + $invoices_sequenceList, old('DEF_CUSTOMER_INVOICE_SEQUENCE', $key_group['DEF_CUSTOMER_INVOICE_SEQUENCE']), array('class' => 'form-control')) !!}
+        {!! Form::select('DEF_CUSTOMER_INVOICE_SEQUENCE', $invoices_sequenceList, old('DEF_CUSTOMER_INVOICE_SEQUENCE', $key_group['DEF_CUSTOMER_INVOICE_SEQUENCE']), array('class' => 'form-control')) !!}
         {{ $errors->first('DEF_CUSTOMER_INVOICE_SEQUENCE', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-4"> </div>
@@ -113,7 +141,7 @@
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-8">
-        {!! Form::select('DEF_CUSTOMER_INVOICE_TEMPLATE', ['0' => l('-- Please, select --', [], 'layouts')] + [], old('DEF_CUSTOMER_INVOICE_TEMPLATE', $key_group['DEF_CUSTOMER_INVOICE_TEMPLATE']), array('class' => 'form-control')) !!}
+        {!! Form::select('DEF_CUSTOMER_INVOICE_TEMPLATE', $invoices_templateList, old('DEF_CUSTOMER_INVOICE_TEMPLATE', $key_group['DEF_CUSTOMER_INVOICE_TEMPLATE']), array('class' => 'form-control')) !!}
         {{ $errors->first('DEF_CUSTOMER_INVOICE_TEMPLATE', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-4"> </div>

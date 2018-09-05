@@ -45,6 +45,12 @@
                         </li>
                         <li class="divider"></li>
                          <li>
+                            <a href="{{ URL::to('customershippingslips') }}"> 
+                                 {{l('Shipping Slips', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
                             <a href="{{ URL::to('customers') }}">
                                  {{l('Customers', [], 'layouts')}}
                             </a>

@@ -265,6 +265,7 @@ class WooOrderImporter {
         	if ( $customer_reference_external && ($this->customer = Customer::where('reference_external', $customer_reference_external )->first()) )
         	{
 
+        		// Unrealistic:
         		if ( $this->customer->webshop_id ) {
 
         			// Error gordo!

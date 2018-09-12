@@ -200,6 +200,18 @@ class CustomerOrder extends Model
                 ? $this->document_reference
                 : l('draft', [], 'appmultilang') ;
     }
+
+    public function getAllNotesAttribute()
+    {
+        $notes = '';
+
+        if ($this->notes_from_customer ) $notes .= $this->notes_from_customer."\n\n";
+        if ($this->notes               ) $notes .= $this->notes."\n\n";
+        if ($this->notes_to_customer   ) $notes .= $this->notes_to_customer."\n\n";
+
+
+        return $notes;
+    }
     
     
     public function customerCard()
@@ -450,6 +462,11 @@ class CustomerOrder extends Model
             return $this->customerorderlines->max('line_sort_order');
 
         return 0;           // Or: return intval( $this->customerorderlines->max('line_sort_order') );
+    }
+    
+    public function hasShippingAddress()
+    {
+        return $this->shipping_address_id && ( $this->shipping_address_id == $this->invoicing_address_id );
     }
     
 

@@ -557,7 +557,7 @@ if ( isset($this->other['ot_shipping']['name'])
 $fsol_tax_id = $this->other['ot_shipping']['tax_id'];  
 $fsol_tipo_iva = FSxTools::getTipoIVA($fsol_tax_id);
 if ($fsol_tipo_iva<0) { // ERROR!
-    $this->logError(sprintf( 'El Coste de Envío del Pedido <span style="color: green; font-weight: bold">%s</span> tiene un Impuesto <b>[%s%%]</b> que no se ha hallado correspondencia en FactuSOL. El Pedido <b>%s</b> no se descargará.', $this->info['orders_id'], $fsol_tax_rate, $this->info['orders_id'] ));
+    $this->logError(sprintf( 'El Coste de Envío del Pedido <span style="color: green; font-weight: bold">%s</span> tiene un Impuesto <b>[%s]</b> que no se ha hallado correspondencia en FactuSOL. El Pedido <b>%s</b> no se descargará.', $this->info['orders_id'], $fsol_tax_id, $this->info['orders_id'] ));
     $this->run_status = false;
     return ;
 }

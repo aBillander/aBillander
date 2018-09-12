@@ -11,6 +11,7 @@
       <th>{{l('Customer External Reference')}}</th>
       <th>{{l('Order Date')}}</th>
       <th>{{l('Customer')}}</th>
+      <th class="text-left">{{ l('Deliver to') }}</th>
       <th class="text-left">{{l('Reference')}}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
       <th>{{l('Shipping Method')}}</th>
@@ -22,7 +23,7 @@
     <tr>
       <td><a href="{{ URL::to('customerorders/' . $order->id . '/edit') }}" title="{{l('View Order')}}" target="_blank"> {{ $order->document_reference }} </a></td>
       <td>{{ $order->customer->reference_external }}</td>
-      <td>{{ abi_date_form_full($order->created_at) }}</td>
+      <td title="{{ abi_date_form_full($order->created_at) }}">{{ abi_toLocale_date_short($order->created_at) }}</td>
       <td><a href="{{ URL::to('customers/' . $order->customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{!! $order->customerInfo() !!}</a>
                  <a href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
@@ -31,12 +32,40 @@
                     </button>
                  </a>
       </td>
+      <td>
+          @if ( $order->hasShippingAddress() )
+
+
+
+          {{ $order->shippingaddress->alias }} 
+           <a href="javascript:void(0);">
+              <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $order->shippingaddress->firstname }} {{ $order->shippingaddress->lastname }}<br />{{ $order->shippingaddress->address1 }}<br />{{ $order->shippingaddress->city }} - {{ $order->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $order->shippingaddress->phone }}</a>" data-original-title="" title="">
+                  <i class="fa fa-address-card-o"></i>
+              </button>
+           </a>
+
+
+          @endif
+      </td>
       <td>{{ $order->reference }}</td>
       <td class="text-center">
                 @if ($order->customer_note)
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
                             data-content="{{ $order->customer_note }}">
+                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                    </button>
+                 </a>
+                @endif
+
+                @if ($order->all_notes)
+                 <a href="javascript:void(0);">
+                    <button type="button" style="padding: 3px 8px;
+font-size: 12px;
+line-height: 1.5;
+border: 1px solid #adadad;;
+border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
+                            data-content="{!! nl2br($order->all_notes) !!}">
                         <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
                     </button>
                  </a>

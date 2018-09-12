@@ -1453,12 +1453,31 @@ class CustomerOrdersController extends Controller
 */
         $clone->user_id              = \App\Context::getContext()->user->id;
 
+        $clone->document_reference = null;
+        $clone->reference = '';
+        $clone->reference_customer = '';
+        $clone->reference_external = '';
+
         $clone->created_via          = 'manual';
         $clone->status               = 'draft';
         $clone->locked               = 0;
         
         $clone->document_date = \Carbon\Carbon::now();
+        $clone->payment_date = null;
+        $clone->validation_date = null;
         $clone->delivery_date = null;
+        $clone->delivery_date_real = null;
+        $clone->close_date = null;
+        
+        $clone->tracking_number = null;
+
+        $clone->parent_document_id = null;
+
+        $clone->production_sheet_id = null;
+        $clone->export_date = null;
+        
+        $clone->secure_key = null;
+        $clone->import_key = '';
 
 
         $clone->save();

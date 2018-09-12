@@ -19,6 +19,8 @@ return [
 	'Production Date'     => 'Fecha Producción',
 	'Export to FS'     => 'Exportado FSOL',
 	'Customer Notes'     => 'Notas Cliente',
+	'Notes'     => 'Notas',
+	'Deliver to'     => 'Entregar en',
 
 	'Go to Production Sheet'     => 'Ir a la Hoja de Producción',
 	'Copy Order' => 'Copiar Pedido',

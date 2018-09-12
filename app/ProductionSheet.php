@@ -70,7 +70,7 @@ class ProductionSheet extends Model
     
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerOrder')->orderBy('created_at', 'desc');
+        return $this->hasMany('App\CustomerOrder')->orderBy('shipping_method_id', 'asc');
     }
     
     public function nbr_customerorders()

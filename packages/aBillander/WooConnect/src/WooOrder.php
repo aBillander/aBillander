@@ -60,7 +60,7 @@ class WooOrder // extends Model
             $params = [
     //          'dp'   => 6,        // WooCommerce serve store some values rounded. 
                                     // Not useful this option. Use WooCommerce API default instead: 2 decimal places
-                'dp'   => \App\Configuration::get('WOOC_DECIMAL_PLACES'),
+                'dp'   => \App\Configuration::get('WOOC_DECIMAL_PLACES')+2,
  //               'dp'   => $wc_currency->decimalPlaces,
             ];
 

@@ -26,7 +26,7 @@
     <tr>
       <td>{{ $order->id }}</td>
       <!-- td>{{ $order->product_id }}</td -->
-      <td>{{ $order->product_reference }}</td>
+      <td><a href="{{ URL::to('products/' . $order->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $order->product_reference }}</a></td>
       <td>{{ $order->product_name }}</td>
       <td>{{ $product->as_quantityable($order->planned_quantity) }}</td>
       <td>{{ $order->workcenter->name ?? '' }}</td>

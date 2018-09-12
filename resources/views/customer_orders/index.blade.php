@@ -69,9 +69,10 @@
             <th class="text-left">{{ l('Export to FS')}}</th>
             <!-- th class="text-left">{{ l('Delivery Date') }}</th -->
             <th class="text-left">{{ l('Customer') }}</th>
-            <th class="text-left">{{ l('Payment Method') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
+            <th class="text-center">{{ l('Notes') }}</th>
             <th> </th>
         </tr>
     </thead>
@@ -111,11 +112,33 @@
             	{{ $order->customer->name_fiscal }}
             	</a>
             </td>
-            <td>{{ $order->paymentmethod->name ?? '' }}
+            <td>
+                @if ( $order->hasShippingAddress() )
+
+
+
+                {{ $order->shippingaddress->alias }} 
+                 <a href="javascript:void(0);">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $order->shippingaddress->firstname }} {{ $order->shippingaddress->lastname }}<br />{{ $order->shippingaddress->address1 }}<br />{{ $order->shippingaddress->city }} - {{ $order->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $order->shippingaddress->phone }}</a>" data-original-title="" title="">
+                        <i class="fa fa-address-card-o"></i>
+                    </button>
+                 </a>
+      
+
+                @endif
             </td>
             <td>{{ $order->created_via }}
             </td>
             <td class="text-right">{{ $order->as_money_amount('total_tax_incl') }}</td>
+            <td class="text-center">@if ($order->all_notes)
+                 <a href="javascript:void(0);">
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                            data-content="{!! nl2br($order->all_notes) !!}">
+                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                    </button>
+                 </a>
+                @endif
+            </td>
             <td class="text-right">
                 <!--
                 <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerorders/' . $order->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               

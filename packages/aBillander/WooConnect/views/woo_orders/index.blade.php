@@ -8,6 +8,9 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
+        <a class="btn btn-sm btn-grey" style="margin-right: 21px" href="javascript:void(0);" title="{{l('Import', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-import').attr('action', '{{ route( 'worders.import.orders' )}}');$('#form-import').submit();return false;"><i class="fa fa-download"></i> {{l('Import', 'layouts')}}</a>
+
+
         <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
@@ -101,7 +104,7 @@
       <th>{{l('Order Date')}}</th>
       <th>{{l('Payment Date')}}</th>
       <th>{{l('Import Date')}}</th>
-      <th>{{l('Production Date')}}</th>
+      <!-- th>{{l('Production Date')}}</th -->
       <th>{{l('Status')}}</th>
       <th>{{l('Total')}} ({{ \aBillander\WooConnect\WooConnector::getWooSetting( 'woocommerce_currency' ) }})</th>
       <th>{{l('Customer Note')}}</th>
@@ -115,35 +118,46 @@
 
     $order = aBillander\WooConnect\WooOrder::viewIndexTransformer( $order );
 
+    $line_danger = $order["date_paid"] ? '' : 'class="danger"';
+
 @endphp
 
-		<tr>
+		<tr {!! $line_danger !!}>
 			@if ( $order["imported_at"] )
       <td> </td>
       @else
       <td class="text-center warning">{!! Form::checkbox('worders[]', $order['id'], false, ['class' => 'case checkbox']) !!}</td>
       @endif
       <td>{{ $order["id"] }}</td>
-			<td>{{ $order["billing"]["first_name"].' '.$order["billing"]["last_name"] }}<br />
+			<td xclass="button-pad">
+
+          {{ $order["billing"]["first_name"].' '.$order["billing"]["last_name"] }} 
+                 <a href="javascript:void(0);">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $order["shipping"]["first_name"].' '.$order["shipping"]["last_name"] }}<br />{{ $order["shipping"]["address_1"] }}<br />{{ $order["shipping"]["city"] }} - {{ $order["shipping"]["state_name"] }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $order["billing"]["phone"] }}</a>" data-original-title="" title="">
+                        <i class="fa fa-address-card-o"></i>
+                    </button>
+                 </a>
+      
+{{--
+          {{ $order["billing"]["first_name"].' '.$order["billing"]["last_name"] }}<br />
           {{ $order["shipping"]["address_1"] }}<br />
-          {{ $order["shipping"]["city"] }} - {{ $order["shipping"]["state_name"] }} <a href="#" class="btn btn-grey btn-xs disabled">{{ $order["billing"]["phone"] }}</a></td>
+          {{ $order["shipping"]["city"] }} - {{ $order["shipping"]["state_name"] }} <a href="#" class="btn btn-grey btn-xs disabled">{{ $order["billing"]["phone"] }}</a>
+--}}
+
+      </td>
 			<!-- td>{{ $order["billing"]["phone"] }}</td -->
-      <td>{{ abi_date_form_short($order["date_created_date"]) }}<br />
-          {{ $order["date_created_time"] }}</td>
-      @if ($order["date_paid"]) 
-      <td>{{ abi_date_form_short($order["date_paid"]) }}<br />
-          {{ $order["payment_method_title"] }}</td>
-      @else
-      <td class="danger"> <br />
-          {{ $order["payment_method_title"] }}</td>
-      @endif
+      <td title="{{ abi_date_form_short($order["date_created_date"]) }} {{ $order["date_created_time"] }}">{{ abi_date_form_short($order["date_created_date"]) }}
+          {{-- $order["date_created_time"] --}}</td>
+
+      <td>{{ $order["payment_method_title"] }} :: {{ abi_date_form_short($order["date_paid"]) }}</td>
+
       <td>{{ abi_date_form_short($order["imported_at"]) }}</td>
-      <td>{{ abi_date_form_short($order["production_at"]) }}
+      <!-- td>{{ abi_date_form_short($order["production_at"]) }}
       
 @if ($order["production_sheet_id"])
                 <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $order["production_sheet_id"]) }}" title="{{l('Go to Production Sheet')}}"><i class="fa fa-external-link"></i></a>
 @endif
-      </td>
+      </td -->
       <td>{{ \aBillander\WooConnect\WooConnector::getOrderStatusName($order["status"]) }}</td>
       <td>{{ $order['total'] }}</td>
 

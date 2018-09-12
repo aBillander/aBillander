@@ -7,6 +7,8 @@ namespace aBillander\WooConnect;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
+use aBillander\WooConnect\FSxTools;
+
 class WooOrder // extends Model
 {
 //    protected $dates = ['deleted_at', 'date_created', 'date_paid', 'date_abi_exported', 'date_invoiced'];
@@ -88,6 +90,10 @@ class WooOrder // extends Model
                 $this->error[] = 'Se ha intentado recuperar el Pedido número <b>"'.$order_id.'"</b> y no existe.';
                 $this->run_status = false;
             }
+
+            // Get Customer reference in FactuSOL (if exists)
+            $woo_customer = intval($this->data['customer_id']);
+            $this->data['customer_reference_external'] = FSxTools::translate_customers_fsol($woo_customer>0?$woo_customer:$this->data['billing']['email']);
 
         }
 

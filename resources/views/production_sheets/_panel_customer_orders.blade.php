@@ -20,7 +20,7 @@
   <tbody>
   @foreach ($sheet->customerorders as $order)
     <tr>
-      <td><a href="{{ URL::to('customerorders/' . $order->id . '/edit') }}" title="{{l('View Order')}}" target="_blank"> {{ $order->id }} </a></td>
+      <td><a href="{{ URL::to('customerorders/' . $order->id . '/edit') }}" title="{{l('View Order')}}" target="_blank"> {{ $order->document_reference }} </a></td>
       <td>{{ $order->customer->reference_external }}</td>
       <td>{{ abi_date_form_full($order->created_at) }}</td>
       <td><a href="{{ URL::to('customers/' . $order->customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{!! $order->customerInfo() !!}</a>
@@ -86,15 +86,19 @@
 
 <div class="row">
 
-         <div class="form-group col-lg-8 col-md-8 col-sm-8">
+         <div class="form-group col-lg-6 col-md-6 col-sm-6">
          <span class="label label-success">{{ $sheet->customerorders()->count() }}</span> pedido(s) en total.
          <br />
          <span class="label label-danger"> {{ $sheet->customerorders()->where('export_date', null)->count() }}</span> pedido(s) pendientes descargar a FactuSOL.
          </div>
 
-         <div class="col-lg-4 col-md-4 col-sm-4 text-right">
+         <div class="col-lg-6 col-md-6 col-sm-6 text-right">
 
-  <a class="btn btn-sm btn-success show-order-products-summary" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Show Summary')}}</a></th>
+  <a href="{{ route('productionsheet.pickinglist', [$sheet->id]) }}" class="btn btn-sm btn-info hidden" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Picking List')}}</a>
+
+  <a href="{{ route('productionsheet.products', [$sheet->id]) }}" class="btn btn-sm btn-warning hidden" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Show Products')}}</a>
+
+  <a class="btn btn-sm btn-success show-order-products-summary" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Show Summary')}}</a>
 
          </div>
 

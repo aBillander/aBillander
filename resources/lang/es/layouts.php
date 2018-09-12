@@ -170,6 +170,7 @@ return [
 	'Select'     => 'Seleccionar',
 	'Delete'     => 'Eliminar',
 	'Continue'     => 'Continuar',
+	'Back'     => 'Volver',
 	'Send'     => 'Enviar',
 	'Send eMail'     => 'Enviar eMail',
 	'Send by eMail'     => 'Enviar por eMail',

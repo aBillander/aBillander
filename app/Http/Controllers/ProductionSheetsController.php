@@ -186,6 +186,39 @@ class ProductionSheetsController extends Controller
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts'));
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\ProductionSheet  $productionSheet
+     * @return \Illuminate\Http\Response
+     */
+    public function pickinglist($id)
+    {
+        $sheet = $this->productionSheet
+                      ->with('customerorders')
+                      ->with('customerorders.customerorderlines')
+                      ->findOrFail($id);
+
+        return view('production_sheets.pickinglist', compact('sheet'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\ProductionSheet  $productionSheet
+     * @return \Illuminate\Http\Response
+     */
+    public function getProducts($id)
+    {
+        $sheet = $this->productionSheet->findOrFail($id);
+
+        return 'getProducts '.$id;
+    }
+
+
+
+
+
 
     /**
      * AJAX Stuff.

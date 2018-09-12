@@ -215,15 +215,82 @@ class WooOrderImporter {
         // Check if Customer exists; Othrewise, import it
         $customer_webshop_id = $this->raw_data['customer_id'];
 
+        $customer_reference_external = $this->raw_data['customer_reference_external'];
+
         $this->customer = Customer::where('webshop_id', $customer_webshop_id )->first();
+
+        // Customer already in FactuSOL?
+        // ^-- lo sé mirando el diccionario de clientes wp_fsx_dic
+
+
+//        $this->customer = Customer::where('webshop_id', $customer_webshop_id )->first();
 
 //        abi_r(Customer::all(), true);
 
 //        $this->logMessage('INFO', $this->raw_data['customer_id'].' - '.($this->customer ? $this->customer->id : ''));
 
-        if ($this->customer) $this->checkAddresses();
+        if ($this->customer) {
 
-        else                 $this->importCustomer();
+        	if ( !$customer_reference_external && $this->customer->reference_external ) {
+
+        		// Update diccionario de fsxweb
+        		\aBillander\WooConnect\FSxTools::new_customers_entry($customer_webshop_id, $customer_reference_external);
+        		
+        	}
+
+        	if ( $customer_reference_external && !$this->customer->reference_external ) {
+
+        		// Update customer
+        		$this->customer->update(['reference_external' => $customer_reference_external]);
+        		
+        	}
+
+        	if ( $customer_reference_external && $this->customer->reference_external && ( $customer_reference_external != $this->customer->reference_external ) ) {
+
+        		// Error gordo!
+				$this->run_status = false;
+
+				$this->logError( l('Los campos que relacionan el Cliente entre la Tienda web, aBillander y FactuSOL no coinciden.') );
+
+				// Rock n Roll is over! 
+				return ;
+        	}
+
+        	// Good boy!
+        	$this->checkAddresses();
+
+        } else {
+
+        	// Let's try this way:
+        	if ( $customer_reference_external && ($this->customer = Customer::where('reference_external', $customer_reference_external )->first()) )
+        	{
+
+        		if ( $this->customer->webshop_id ) {
+
+        			// Error gordo!
+					$this->run_status = false;
+
+					$this->logError( l('Los campos que relacionan el Cliente entre la Tienda web, aBillander y FactuSOL no coinciden.') );
+
+					// Rock n Roll is over! 
+					return ;
+	        	}
+
+    			$this->customer->update(['webshop_id' => $customer_webshop_id]);
+
+	        	// Good boy!
+	        	$this->checkAddresses();
+
+        	} else {
+	        	
+	        	$this->importCustomer();
+
+        	}
+        }
+
+//        if ($this->customer) $this->checkAddresses();
+
+//        else                 $this->importCustomer();
     }
 
     public function setOrderDocument()
@@ -784,6 +851,7 @@ foreach ( $order['shipping_lines'] as $item ) {
 			'identification' => WooOrder::getVatNumber( $order ),
 
 			'webshop_id' => $order['customer_id'],
+			'reference_external' => $order['customer_reference_external'],
 //			'accounting_id',
 
 //			'payment_days' => $order[''],

@@ -618,7 +618,7 @@ foreach ( $order['line_items'] as $i => $item ) {
 
 //			abi_r($line, true);
 
-			$p->applyRounding( );
+			// $p->applyRounding( );
 
 			$line_tax->taxable_base = $base_price;
 			$line_tax->percent = $rule->percent;
@@ -778,7 +778,7 @@ foreach ( $order['shipping_lines'] as $item ) {
 
 			$p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $this->currency, $this->currency->currency_conversion_rate);
 
-			$p->applyRounding( );
+			// $p->applyRounding( );
 
 			$line_tax->taxable_base = $base_price;
 			$line_tax->percent = $rule->percent;

@@ -16,6 +16,15 @@
         @endif
         <a href="{{ URL::to('categories/'.$parentId.'/subcategories/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+        @if ( $parentId==0 )
+        <a href="{{ route('categories.import') }}" class="btn btn-sm btn-warning" 
+                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a>
+
+        <a href="{{ route('categories.export') }}" class="btn btn-sm btn-grey" 
+                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+        @endif
+
     </div>
     <h2>
         @if ( $parentId>0 )

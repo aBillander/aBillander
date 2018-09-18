@@ -169,6 +169,26 @@
     </div>
 
 
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('SELL_ONLY_MANUFACTURED.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="SELL_ONLY_MANUFACTURED" id="SELL_ONLY_MANUFACTURED_on" value="1" @if( old('SELL_ONLY_MANUFACTURED', $key_group['SELL_ONLY_MANUFACTURED']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="SELL_ONLY_MANUFACTURED" id="SELL_ONLY_MANUFACTURED_off" value="0" @if( !old('SELL_ONLY_MANUFACTURED', $key_group['SELL_ONLY_MANUFACTURED']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('SELL_ONLY_MANUFACTURED.help') !!}</span>
+      </div>
+    </div>
+
+
 
 
     <div class="form-group">

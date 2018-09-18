@@ -160,7 +160,7 @@ class CustomerOrderLine extends Model
 
                 $p = Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $this->currency, $this->currency->conversion_rate);
 
-                $p->applyRounding( );
+                // $p->applyRounding( );
 
                 $line_tax->taxable_base = $base_price;
                 $line_tax->percent = $rule->percent;

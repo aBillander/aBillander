@@ -523,6 +523,15 @@ class Product extends Model {
         return $query->where('procurement_type', 'purchase');
     }
 
+    public function scopeIsSaleable($query)
+    {
+        // Apply filters here
+        if ( \App\Configuration::isTrue('SELL_ONLY_MANUFACTURED') ) 
+            return $query->where('procurement_type', 'manufacture');
+
+        return $query;
+    }
+
     public function scopeIsService($query)
     {
         return $query->where('procurement_type', 'none');

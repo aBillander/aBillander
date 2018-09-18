@@ -441,7 +441,7 @@ class CustomerShippingSlipsController extends Controller
         $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
-                                ->isManufactured()
+                                ->IsSaleable()
                                 ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
 //                                ->with('measureunit')
 //                                ->toSql();

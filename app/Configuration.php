@@ -141,6 +141,12 @@ class Configuration extends Model
 		return intval(Configuration::get($key));
 	}
 
+	// Helper function
+	public static function isEmpty($key)
+	{
+		return strlen(trim($key)) === 0;
+	}
+
 	/**
 	  * Set TEMPORARY a single configuration value
 	  *

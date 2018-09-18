@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php 
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -26,6 +28,7 @@ class ConfigurationKeysController extends Controller {
                         'ENABLE_COMBINATIONS',
                         'ENABLE_WEBSHOP_CONNECTOR',
                         'ENABLE_FSOL_CONNECTOR',
+                        'SELL_ONLY_MANUFACTURED',
                         'MARGIN_METHOD',
                         'INCLUDE_SHIPPING_COST_IN_PROFIT',
                         'NEW_PRICE_LIST_POPULATE',

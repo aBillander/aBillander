@@ -467,7 +467,7 @@ class CustomerOrdersController extends Controller
         $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
-                                ->isManufactured()
+                                ->IsSaleable()
                                 ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
 //                                ->with('measureunit')
 //                                ->toSql();
@@ -1725,6 +1725,8 @@ class CustomerOrdersController extends Controller
         // Template impersonation
         $template = \App\Template::create(['file_name'=>'shipping_slip', 'paper'=>'A4', 'orientation'=>'portrait']);
         $document->template = $template;
+
+        $template->delete();
 
         $template = 'customer_orders.templates.' . $document->template->file_name;  // . '_dist';
         $paper = $document->template->paper;    // A4, letter

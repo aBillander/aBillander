@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Product as Product;
+use App\Category;
 
 use Excel;
 
-class ImportProductsController extends Controller
+class ImportCategoriesController extends Controller
 {
 /*
    use BillableTrait;
@@ -24,7 +24,7 @@ class ImportProductsController extends Controller
         $this->customerOrderLine = $customerOrderLine;
    }
 */
-    public static $table = 'products';
+    public static $table = 'categories';
 
     public static $column_mask;		// Column fields (?)
 
@@ -47,11 +47,11 @@ class ImportProductsController extends Controller
 
 // //////////////////////////////////////////////////// //   
 
-   protected $product;
+   protected $category;
 
-   public function __construct(Product $product)
+   public function __construct(Category $category)
    {
-        $this->product = $product;
+        $this->category = $category;
    }
 
 
@@ -62,7 +62,7 @@ class ImportProductsController extends Controller
      */
     public function import()
     {
-        return view('imports.products');
+        return view('imports.categories');
 /*
 		$country = $this->country->findOrFail($id);
 		
@@ -130,7 +130,7 @@ class ImportProductsController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Products', __METHOD__ );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = \App\ActivityLogger::setup( 'Import Categories', __METHOD__ );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         $logger->empty();
@@ -138,7 +138,7 @@ class ImportProductsController extends Controller
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
 
-        $logger->log("INFO", 'Se cargarán los Productos desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $file]);
+        $logger->log("INFO", 'Se cargarán las Categorías desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $file]);
 
 
 
@@ -147,11 +147,11 @@ class ImportProductsController extends Controller
         // Truncate table
         if ( $truncate > 0 ) {
 
-            $nbr = Product::count();
+            $nbr = Category::count();
             
-            Product::truncate();
+            Category::truncate();
 
-            $logger->log("INFO", "Se han borrado todos los Productos antes de la Importación. En total {nbr} Productos.", ['nbr' => $nbr]);
+            $logger->log("INFO", "Se han borrado todos las Categorías antes de la Importación. En total {nbr} Categorías.", ['nbr' => $nbr]);
         }
 
 
@@ -171,10 +171,10 @@ class ImportProductsController extends Controller
 
 
         return redirect('activityloggers/'.$logger->id)
-                ->with('success', l('Se han cargado los Productos desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
+                ->with('success', l('Se han cargado las Categorías desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
 
 
-//        abi_r('Se han cargado: '.$i.' productos');
+//        abi_r('Se han cargado: '.$i.' categoryos');
 
 
 
@@ -242,7 +242,7 @@ class ImportProductsController extends Controller
             if(!empty($reader) && $reader->count()) {
 
                         
-                        
+                Category::unguard();      
 
                 foreach($reader as $row)
                 {
@@ -253,37 +253,51 @@ class ImportProductsController extends Controller
                     $data = $row->toArray();
 
                     // Some Poor Man checks:
-                    $data['quantity_decimal_places'] = intval( $data['quantity_decimal_places'] );
+                    if ( array_key_exists('id', $data)) {
+                        $data['id'] = intval( $data['id'] );
+                        if ( $data['id'] <= 0 ) unset( $data['id'] );
+                    }
 
-                    $data['manufacturing_batch_size'] = intval( $data['manufacturing_batch_size'] );
-                    if ( $data['manufacturing_batch_size'] <= 0 ) $data['manufacturing_batch_size'] = 1;
+                    $data['publish_to_web'] = intval( $data['publish_to_web'] ) > 0 ? 1 : 0;
 
-                    $data['measure_unit_id'] = intval( $data['measure_unit_id'] );
-                    if ( $data['measure_unit_id'] <= 0 ) $data['measure_unit_id'] = \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
+                    $data['webshop_id'] = $data['webshop_id'] ? $data['webshop_id'] : null;
 
-                    $data['work_center_id'] = intval( $data['work_center_id'] );
-                    if ( $data['work_center_id'] <= 0 ) $data['work_center_id'] = NULL;
+                    $data['active'] = intval( $data['active'] ) > 0 ? 1 : 0;
 
-                    $data['main_supplier_id'] = intval( $data['main_supplier_id'] );
-                    if ( $data['main_supplier_id'] <= 0 ) $data['main_supplier_id'] = NULL;
+                    $data['parent_id'] = intval( $data['parent_id'] );
+                    if ( $data['parent_id'] <= 0 ) $data['parent_id'] = 0;
+
+
+                    if ( \App\Configuration::isFalse('ALLOW_PRODUCT_SUBCATEGORIES') && ( $data['parent_id'] > 0 ) )
+                    {
+
+                            $item = '[<span class="log-showoff-format">'.($data['id'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
+
+                            $logger->log("ERROR", "La Categoría ".$item." no se cargará porque no está permitido el uso de Subcategorías.");
+
+                            $i++;
+
+                            continue;
+
+                    }
 
 
 
 
                     try{
                         
-                        // Create Product
-                        // $product = $this->product->create( $data );
-                        $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
+                        // Create Category
+                        // $category = $this->category->create( $data );
+                        $category = $this->category->create( $data );
 
                         $i_ok++;
 
                     }
                     catch(\Exception $e){
 
-                            $item = '[<span class="log-showoff-format">'.$data['reference'].'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
+                            $item = '[<span class="log-showoff-format">'.($data['id'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
 
-                            $logger->log("ERROR", "Se ha producido un error al procesar el Producto ".$item.":<br />" . $e->getMessage());
+                            $logger->log("ERROR", "Se ha producido un error al procesar la Categoría ".$item.":<br />" . $e->getMessage());
 
                     }
 
@@ -294,12 +308,12 @@ class ImportProductsController extends Controller
             } else {
 
                 // No data in file
-                $logger->log('WARNING', 'No se encontraton datos de Productos en el fichero.');
+                $logger->log('WARNING', 'No se encontraton datos de Categorías en el fichero.');
             }
 
-            $logger->log('INFO', 'Se han creado / actualizado {i} Productos.', ['i' => $i_ok]);
+            $logger->log('INFO', 'Se han creado / actualizado {i} Categorías.', ['i' => $i_ok]);
 
-            $logger->log('INFO', 'Se han procesado {i} Productos.', ['i' => $i]);
+            $logger->log('INFO', 'Se han procesado {i} Categorías.', ['i' => $i]);
 
 // Process reader          
     
@@ -315,27 +329,23 @@ class ImportProductsController extends Controller
      */
     public function export()
     {
-        $products = $this->product
-                          ->with('measureunit')
-//                          ->with('combinations')                                  
-                          ->with('category')
-                          ->with('tax')
-                          ->with('supplier')
-                          ->orderBy('reference', 'asc')
+        $categories = $this->category
+                          ->orderBy('parent_id', 'asc')
+                          ->orderBy('name', 'asc')
                           ->get();
 
 /*        $pricelist = $this->pricelist
                     ->with('pricelistlines')
-                    ->with('pricelistlines.product')
+                    ->with('pricelistlines.category')
                     ->findOrFail($id);
 
         $pricelist  = $this->pricelist->findOrFail($id);
         $lines = $this->pricelistline
-                        ->select('price_list_lines.*', 'products.id', 'products.reference', 'products.name')
-//                        ->with('product')
+                        ->select('price_list_lines.*', 'categories.id', 'categories.reference', 'categories.name')
+//                        ->with('category')
                         ->where('price_list_id', $id)
-                        ->join('products', 'products.id', '=', 'price_list_lines.product_id')       // Get field to order by
-                        ->orderBy('products.reference', 'asc')
+                        ->join('categories', 'categories.id', '=', 'price_list_lines.category_id')       // Get field to order by
+                        ->orderBy('categories.reference', 'asc')
                         ->get();
 */
 
@@ -343,34 +353,32 @@ class ImportProductsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'category_id', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'SUPPLIER_NAME'
+        $headers = [ 'id', 'name', 'publish_to_web', 'webshop_id', 'active', 'parent_id',
+//                    'position', 'is_root', 
         ];
 
         $data[] = $headers;
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
-        foreach ($products as $product) {
+        foreach ($categories as $category) {
             // $data[] = $line->toArray();
             $row = [];
             foreach ($headers as $header)
             {
-                $row[$header] = $product->{$header} ?? '';
+                $row[$header] = $category->{$header} ?? '';
             }
-            $row['CATEGORY_NAME']     = $product->category ? $product->category->name : '';
-            $row['TAX_NAME']          = $product->tax ? $product->tax->name : '';
-            $row['MEASURE_UNIT_NAME'] = $product->measureunit ? $product->measureunit->name : '';
-            $row['SUPPLIER_NAME']     = $product->supplier ? $product->supplier->name : '';
+//            $row['TAX_NAME']          = $category->tax ? $category->tax->name : '';
 
             $data[] = $row;
         }
 
-        $sheetName = 'Products' ;
+        $sheetName = 'Categories' ;
 
         // abi_r($data, true);
 
         // Generate and return the spreadsheet
-        Excel::create('Products', function($excel) use ($sheetName, $data) {
+        Excel::create('Categories', function($excel) use ($sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');

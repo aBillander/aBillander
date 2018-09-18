@@ -126,20 +126,17 @@
 
 
 
-    <div class="form-group">
-      <label class="col-lg-4 control-label">{!! l('USE_CUSTOM_THEME.name') !!}</label>
+
+
+    <div class="form-group {{ $errors->has('USE_CUSTOM_THEME') ? 'has-error' : '' }}">
+      <label for="USE_CUSTOM_THEME" class="col-lg-4 control-label">{!! l('USE_CUSTOM_THEME.name') !!}</label>
       <div class="col-lg-8">
-        <div class="radio">
-          <label>
-            <input name="USE_CUSTOM_THEME" id="USE_CUSTOM_THEME_on" value="1" @if( old('USE_CUSTOM_THEME', $key_group['USE_CUSTOM_THEME']) ) checked="checked" @endif type="radio">
-            {!! l('Yes', [], 'layouts') !!}
-          </label>
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="USE_CUSTOM_THEME" name="USE_CUSTOM_THEME" placeholder="" value="{{ old('USE_CUSTOM_THEME', $key_group['USE_CUSTOM_THEME']) }}" />
+        {{ $errors->first('USE_CUSTOM_THEME', '<span class="help-block">:message</span>') }}
         </div>
-        <div class="radio">
-          <label>
-            <input name="USE_CUSTOM_THEME" id="USE_CUSTOM_THEME_off" value="0" @if( !old('USE_CUSTOM_THEME', $key_group['USE_CUSTOM_THEME']) ) checked="checked" @endif type="radio">
-            {!! l('No', [], 'layouts') !!}
-          </label>
+        <div class="col-lg-6"> </div>
         </div>
         <span class="help-block">{!! l('USE_CUSTOM_THEME.help') !!}</span>
       </div>

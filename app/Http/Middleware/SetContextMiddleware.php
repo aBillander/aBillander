@@ -168,7 +168,7 @@ class SetContextMiddleware {
 			// https://stackoverflow.com/questions/27458439/how-to-set-view-file-path-in-laravel
 			// Apparently setting the config won't change anything because it is loaded when the application bootstraps and ignored afterwards.
 			// To change the path at runtime you have to create a new instance of the FileViewFinder. Here's how that looks like:
-			if ( Configuration::get('USE_CUSTOM_THEME') ) 		// ToDo: Move this to a ServiceProvider
+			if ( !Configuration::isEmpty('USE_CUSTOM_THEME') ) 		// ToDo: Move this to a ServiceProvider
 			{
 	/*			$paths = \Config::get('view.paths');
 				array_unshift($paths, realpath(base_path('resources/views')).'/../theme');
@@ -176,7 +176,7 @@ class SetContextMiddleware {
 		//		abi_r($finder, true);
 				\View::setFinder($finder);
 	*/
-				\View::getFinder()->prependLocation( realpath(base_path('resources/views')).'/../theme' );
+				\View::getFinder()->prependLocation( realpath(base_path('resources/views')).'/../theme/'.Configuration::get('USE_CUSTOM_THEME') );
 			}
 
 		}

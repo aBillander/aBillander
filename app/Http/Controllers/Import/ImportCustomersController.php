@@ -234,7 +234,7 @@ class ImportCustomersController extends Controller
         // 
         // See: https://www.youtube.com/watch?v=rWjj9Slg1og
         // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
+        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
         {
             
  /*           $reader->each(function ($sheet){

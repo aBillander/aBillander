@@ -160,7 +160,7 @@ class PriceListLinesController extends Controller {
         $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
-                                ->isManufactured()
+                                ->IsSaleable()
                                 ->qualifyForPriceList( $id )
 //                                ->with('measureunit')
 //                                ->toSql();

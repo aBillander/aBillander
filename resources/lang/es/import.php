@@ -17,6 +17,28 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
+	| Categories
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Import - Categories' => 'Importar - Categorías',
+
+	'Back to Categories'     => 'Volver a Categorías',
+	'Categories' => 'Categorías',
+	'Import Category File'     => 'Importar Fichero de Categorías',
+	'First row should be the header row.'     => 'La primera línea del fichero contiene el nombre de los campos en las columnas.',
+	'File contains header row?'     => '¿Primera línea es encabezado?',
+	'Delete existing Categories?'     => '¿Eliminar las Categorías existentes?',
+	''     => '',
+	''     => '',
+	''     => '',
+
+
+	/*
+	|--------------------------------------------------------------------------
 	| Products
 	|--------------------------------------------------------------------------
 	|

@@ -268,7 +268,7 @@ class CustomerOrder extends Model
     public function confirm()
     {
         // Already confirmed?
-        if ( $this->document_reference || ( $this->status != 'draft' ) ) return ;
+        if ( $this->document_reference || ( $this->status != 'draft' ) ) return false;
 
         // Sequence
         $seq_id = $this->sequence_id > 0 ? $this->sequence_id : \App\Configuration::get('DEF_CUSTOMER_ORDER_SEQUENCE');
@@ -282,30 +282,36 @@ class CustomerOrder extends Model
         $this->status = 'confirmed';
 
         $this->save();
+
+        return true;
     }
 
     public function close()
     {
         // Can I ...?
-        if ( $this->status != 'canceled' ) return ;
+        if ( $this->status != 'confirmed' ) return false;
 
         // Do stuf...
 
         $this->status = 'closed';
 
         $this->save();
+
+        return true;
     }
 
     public function cancel()
     {
         // Can I ...?
-        if ( $this->status != 'closed' ) return ;
+        if ( $this->status != 'confirmed' ) return false;
 
         // Do stuf...
 
         $this->status = 'canceled';
 
         $this->save();
+
+        return true;
     }
 
     
@@ -342,7 +348,7 @@ class CustomerOrder extends Model
             $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $this->currency, $this->currency_conversion_rate);
 
             // Improve this: Sum subtotals by tax type must match Order Totals
-            $p->applyRoundingWithoutTax( );
+            // $p->applyRoundingWithoutTax( );
 
             $this->total_currency_tax_incl = $p->getPriceWithTax();
             $this->total_currency_tax_excl = $p->getPrice();
@@ -369,7 +375,7 @@ class CustomerOrder extends Model
             // abi_r($p, true);
 
             // Improve this: Sum subtotals by tax type must match Order Totals
-            $p->applyRoundingWithoutTax( );
+            // $p->applyRoundingWithoutTax( );
 
             $this->total_tax_incl = $p->getPriceWithTax();
             $this->total_tax_excl = $p->getPrice();
@@ -466,7 +472,7 @@ class CustomerOrder extends Model
     
     public function hasShippingAddress()
     {
-        return $this->shipping_address_id && ( $this->shipping_address_id == $this->invoicing_address_id );
+        return $this->shipping_address_id !== $this->invoicing_address_id;
     }
     
 

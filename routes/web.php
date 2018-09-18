@@ -217,7 +217,7 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::post('customerorders/sortlines', 'CustomerOrdersController@sortLines')->name('customerorder.sortlines');
 
-        Route::get('customerorders/{id}/shippingslip',  'CustomerOrdersController@makeShippingSlip'   )->name('customerorder.duplicate'  );
+        Route::get('customerorders/{id}/shippingslip',  'CustomerOrdersController@makeShippingSlip'   )->name('customerorder.shippingslip'  );
 
         Route::get('customerorders/{id}/pdf',        'CustomerOrdersController@showPdf'   )->name('customerorder.pdf'     );
 
@@ -250,6 +250,10 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get( 'import/pricelists/{id}', 'Import\ImportPriceListsController@import' )->name('pricelists.import');
         Route::post('import/pricelists/{id}', 'Import\ImportPriceListsController@process')->name('pricelists.import.process');
         Route::get( 'export/pricelists/{id}', 'Import\ImportPriceListsController@export' )->name('pricelists.export');
+
+        Route::get( 'import/categories', 'Import\ImportCategoriesController@import' )->name('categories.import');
+        Route::post('import/categories', 'Import\ImportCategoriesController@process')->name('categories.import.process');
+        Route::get( 'export/categories', 'Import\ImportCategoriesController@export' )->name('categories.export');
 
         Route::get( 'import/products', 'Import\ImportProductsController@import' )->name('products.import');
         Route::post('import/products', 'Import\ImportProductsController@process')->name('products.import.process');

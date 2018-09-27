@@ -56,6 +56,12 @@ Route::group([
     Route::get('fsxorders/orderfiles/delete'    , 'FSxOrdersController@deleteOrderFiles')->name('fsxorders.deleteorderfiles' );
 
 
+    Route::resource('fsxproducts', 'FSxProductsController');
+
+    Route::post('fsxproducts/import/products' , array('uses' => 'FSxProductsController@importProducts', 
+                                                        'as'   => 'fsxproducts.import.products' ));
+
+
 
 	Route::post('fpas', ['uses' => 'FSxFPAsController@store', 
 	                 'as'   => 'fpas.store'] );

@@ -154,6 +154,8 @@ return [
 	'Actions'     => 'Acciones',
 	'Export'     => 'Exportar',
 	'Import'     => 'Importar',
+	'File'     => 'Fichero',
+	'Load'     => 'Cargar',
 	'Reset'     => 'Reiniciar',
 	'View'     => 'Ver',
 	'View more'     => 'Ver más',

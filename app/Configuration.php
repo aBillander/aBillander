@@ -144,7 +144,7 @@ class Configuration extends Model
 	// Helper function
 	public static function isEmpty($key)
 	{
-		return strlen(trim($key)) === 0;
+		return strlen(trim(Configuration::get($key))) === 0;
 	}
 
 	/**

@@ -39,7 +39,9 @@ trait LoggableTrait
     */
     public static function logger() 
     {
-        return self::loggerSetup();
+        $obj = new self();
+
+        return $obj->logger;
     }
 
 

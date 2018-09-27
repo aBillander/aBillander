@@ -90,6 +90,59 @@ class Image extends Model {
     }
 
     
+    public static function createForProductFromPath( $img_path = '', $params = [] )
+    {
+        if (!$img_path) return null;
+
+        // http://image.intervention.io/api/make
+
+        $extension = pathinfo($img_path, PATHINFO_EXTENSION);
+
+        $data = [
+                'caption' => null,
+                'extension' => $extension,
+                'position' => 0,
+                'is_featured' => 0,
+                'active' => 1,
+                ];
+        $data = array_merge($data, $params);
+        $image_raw = self::create($data);
+
+        $imageName = $image_raw->id;
+        $destinationFolder = self::$products_path . $image_raw->getImageFolder();
+        // Create Folder
+        $image_raw->createImageFolder();
+
+        //create instance of image from path
+
+        $image = iImage::make($img_path)
+                ->save(public_path() . $destinationFolder . $imageName . '.' . $extension);
+
+//        foreach (array_reverse(self::$products_types) as $type => $size) {
+        foreach (self::$products_types as $type => $size) {
+            $imager = iImage::make(public_path() . $destinationFolder . $imageName . '.' . $extension);
+
+            // This will generate an image with transparent background
+            // If you need to have a background you can pass a third parameter (e.g: '#000000')
+            $canvas = iImage::canvas($size['width'], $size['height']);
+    
+            $imager->resize($size['width'], $size['height'], function ($constraint) {
+                    $constraint->aspectRatio();
+ //                   $constraint->upsize();
+                });
+    
+            $canvas->insert($imager, 'center');
+            $canvas->save(public_path() . $destinationFolder . $imageName . '-' . $type . '.' . $extension, 100);
+            // $image->save(public_path() . $destinationFolder . $imageName . '-' . $type . '.' . $extension, 100);
+
+            // ImageMagick module not available with this PHP installation.
+        }
+
+        return $image_raw;
+                
+    }
+
+    
     public static function createForProductFromUrl( $img_url = '', $params = [] )
     {
         if (!$img_url) return null;

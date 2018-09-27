@@ -19,6 +19,8 @@ class CreatePriceListsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name', 32)->nullable(false);
+			
+            $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
 
 
 			$table->string('type', 32)->nullable(false);	// 'price' -> amount; 'discount' - > percent of discount: 'margin' -> percent of margin

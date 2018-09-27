@@ -77,6 +77,26 @@ return [
 	'FSOL_IMPUESTO_DIRECTO_TIPO_4.name' => 'Impuesto Directo Tipo 4',
 	'FSOL_IMPUESTO_DIRECTO_TIPO_4.help' => 'El valor obtenido de FactuSOL es: <span style="font-size: 12px; font-weight: bold">:fsol_value%</span>.',
 
+	'FSX_LOAD_FAMILIAS_TO_ROOT.name' => 'Familias en la raíz del Catálogo',
+	'FSX_LOAD_FAMILIAS_TO_ROOT.help' => 'Las Familias se cargarán en la raíz del Catálogo.<br /><b>Atención:</b><br /> si selecciona \'Sí\', entonces las Secciones NO se tendrán en cuenta.',
+
+	'FSX_LOAD_ARTICULOS.name' => 'Cargar Catálogo',
+	'FSX_LOAD_ARTICULOS.help' => 'Cargar las Secciones, las Familias y los Artículos nuevos de FactuSOL que no están en aBillander.',
+
+	'FSX_LOAD_ARTICULOS_ACTIVE.name' => '¿Activar nuevos Productos?',
+	'FSX_LOAD_ARTICULOS_ACTIVE.help' => 'Los nuevos Artículos se crean con status \'Activo\'.',
+
+	'FSX_LOAD_ARTICULOS_PRIZE_ALL.name' => 'Actualizar Precios',
+	'FSX_LOAD_ARTICULOS_PRIZE_ALL.help' => 'Actualizar precios de todos los Productos.',
+
+	'FSX_LOAD_ARTICULOS_STOCK_ALL.name' => 'Actualizar Stock',
+	'FSX_LOAD_ARTICULOS_STOCK_ALL.help' => 'Actualizar stock de todos los Productos.',
+
+	'FSX_FSOL_AUSCFG_PEER.name' => 'Almacén para cargar el Stock',
+	'FSX_FSOL_AUSCFG_PEER.help' => '',
+
+
+
 
 	/*
 	|--------------------------------------------------------------------------
@@ -113,6 +133,20 @@ return [
 	|
 	*/
 
+	''     => '',
+
+	/*
+	|--------------------------------------------------------------------------
+	| FSxProductImporter
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'FSx-Connector - Import Products' => 'FSx-Connector - Importar Productos',
+	'Products' => 'Productos',
+	'Back to Products'     => 'Volver a Productos',
 	''     => '',
 
 ];

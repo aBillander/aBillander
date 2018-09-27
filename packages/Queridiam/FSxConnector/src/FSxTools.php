@@ -7,8 +7,113 @@ use \App\Configuration;
 class FSxTools
 {
 
-	/** @var array Connections.fsx-bbdd cache */
-	protected static $_FSXCON;
+    /** @var array Configuration key Groups */
+    public static $_key_groups = [
+
+                1 => [
+
+//                        'FSX_IMPERSONATE_TIMEOUT' => '0',,
+//                      'FSX_TIME_OFFSET'               => '3',
+//                      'FSX_MAX_ROUNDCYCLES'           => '50',
+
+                        'FSOL_WEB_CUSTOMER_CODE_BASE', //      => 50000,
+//                      'FSOL_WEB_GUEST_CODE_BASE'        => 60000,     // 'WOOC_ENABLE_GUEST_CHECKOUT'
+                        'FSOL_ABI_CUSTOMER_CODE_BASE', //      => 80000,
+
+
+                        'FSOL_CBDCFG', //  => '/public_html/laextranatural.com/wp-content/plugins/FSx-Connector/fsweb/BBDD/',
+                        'FSOL_CIACFG', //  => 'imagenes/',
+                        'FSOL_CPVCFG', //  => 'npedidos/',
+                        'FSOL_CCLCFG', //  => 'nclientes/',
+                        'FSOL_CBRCFG', //  => 'factusolweb.sql',
+
+
+//    'WOO_ORDER_TO_DOWNLOAD_STATUS_ID'  => '-1',
+//    'WOO_ORDER_DOWNLOADED_STATUS_ID'   => '-1',
+                        'FSX_FORCE_CUSTOMERS_DOWNLOAD', //     => '0',
+                        'FSX_DLOAD_CUSTOMER_SHIPPING_ADDRESS', // => '0',
+//    'WOO_USE_WEB_DESC'                 => '0',
+                          'FSX_ORDER_LINES_REFERENCE_CHECK', //  => '0',
+
+                    ],
+
+                2 => [
+
+            'FSOL_IMPUESTO_DIRECTO_TIPO_1', //  => '',
+            'FSOL_IMPUESTO_DIRECTO_TIPO_2', //  => '',
+            'FSOL_IMPUESTO_DIRECTO_TIPO_3', //  => '',
+            'FSOL_IMPUESTO_DIRECTO_TIPO_4', //  => '',
+
+                    ],
+
+                3 => [
+/*
+            'FSOL_TCACFG', //  => '',  // Tarifa
+            'FSOL_AUSCFG', //  => '',  // Almacén
+            'FSOL_SPCCFG', //  => '',  // Serie de Pedidos
+
+            'FSOL_PIV1CFG', //  => '',
+            'FSOL_PIV2CFG', //  => '',
+            'FSOL_PIV3CFG', //  => '',
+
+            'FSOL_PRE1CFG', //  => '',
+            'FSOL_PRE2CFG', //  => '',
+            'FSOL_PRE2CFG', //  => '',
+*/
+                    ],
+
+                4 => [
+
+
+                    ],
+
+                5 => [
+
+            'FSOL_TCACFG', //  => '',  // Tarifa
+            'FSOL_AUSCFG', //  => '',  // Almacén
+            'FSOL_SPCCFG', //  => '',  // Serie de Pedidos
+
+            'FSOL_PIV1CFG', //  => '',
+            'FSOL_PIV2CFG', //  => '',
+            'FSOL_PIV3CFG', //  => '',
+
+            'FSOL_PRE1CFG', //  => '',
+            'FSOL_PRE2CFG', //  => '',
+            'FSOL_PRE2CFG', //  => '',
+
+
+                    ],
+
+                6 => [
+
+
+                    ],
+
+                7 => [
+
+//    'FSOL_LOAD_SECCIONES'           => '1',
+//    'FSOL_LOAD_FAMILIAS'            => '1',
+    'FSX_LOAD_FAMILIAS_TO_ROOT',
+    'FSX_LOAD_ARTICULOS',
+//    'FSX_ADD_TO_ALL_CATS'           => '0',  // Add Product to Section and Family
+//    'FSOL_ARTICULOS_DESC_WEB'       => '2',  // 1=> la Descripción Corta, 2=> la Descripción Larga, 3=> Ambas
+    'FSX_LOAD_ARTICULOS_ACTIVE',
+//    'FSOL_LOAD_ARTICULOS_STATUS'     => 'draft',   // publish, pending, draft
+ //   'FSOL_LOAD_ARTICULOS_VISIBILITY' => 'visible', // visible, catalog, search, hidden
+    'FSX_LOAD_ARTICULOS_PRIZE_ALL',
+    'FSX_LOAD_ARTICULOS_STOCK_ALL',
+//    'FSOL_ARTICULOS_CAT_NOT_FOUND'  => '0',
+//    'FSOL_PROD_WOO_ONLY_DEACTIVATE' => '0',
+//    'FSX_RESUME_ON_TIMEOUT'         => '0',
+
+            'FSX_FSOL_AUSCFG_PEER', //  => '',  // Almacén correspondiente en aBillander para cargar el stock
+            
+                    ],
+
+        ];
+
+    /** @var array Connections.fsx-bbdd cache */
+    protected static $_FSXCON;
 
     public static  $gates = NULL;
 
@@ -145,6 +250,30 @@ class FSxTools
 		}   
 
 	}
+
+
+    static public function translate_tivart($fsol_tax_value) 
+    {
+        // Prototipo: function tiposiva($tipo){ (func.php)
+        // $fsol_tax_value es TIVART
+        switch (intval($fsol_tax_value)){
+                case 0:
+                      return Configuration::getInt('FSOL_IMPUESTO_DIRECTO_TIPO_1');
+                      break;
+                case 1:
+                      return Configuration::getInt('FSOL_IMPUESTO_DIRECTO_TIPO_2');
+                      break;
+                case 2:
+                      return Configuration::getInt('FSOL_IMPUESTO_DIRECTO_TIPO_3');
+                      break; 
+                case 3:
+                      return Configuration::getInt('FSOL_IMPUESTO_DIRECTO_TIPO_4');
+                      break; 
+                default:
+                      return -1;
+                      break; 
+        }      
+    }
 
 
 /* ********************************************************************************************* */

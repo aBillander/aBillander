@@ -58,7 +58,7 @@ class FSxConfigurationKeysController extends Controller {
                     ],
 
                 3 => [
-
+/*
             'FSOL_TCACFG', //  => '',  // Tarifa
             'FSOL_AUSCFG', //  => '',  // Almacén
             'FSOL_SPCCFG', //  => '',  // Serie de Pedidos
@@ -70,7 +70,7 @@ class FSxConfigurationKeysController extends Controller {
             'FSOL_PRE1CFG', //  => '',
             'FSOL_PRE2CFG', //  => '',
             'FSOL_PRE2CFG', //  => '',
-
+*/
                     ],
 
                 4 => [
@@ -94,6 +94,33 @@ class FSxConfigurationKeysController extends Controller {
 
 
                     ],
+
+                6 => [
+
+
+                    ],
+
+                7 => [
+
+//    'FSOL_LOAD_SECCIONES'           => '1',
+//    'FSOL_LOAD_FAMILIAS'            => '1',
+    'FSX_LOAD_FAMILIAS_TO_ROOT',
+    'FSX_LOAD_ARTICULOS',
+//    'FSX_ADD_TO_ALL_CATS'           => '0',  // Add Product to Section and Family
+//    'FSOL_ARTICULOS_DESC_WEB'       => '2',  // 1=> la Descripción Corta, 2=> la Descripción Larga, 3=> Ambas
+    'FSX_LOAD_ARTICULOS_ACTIVE',
+//    'FSOL_LOAD_ARTICULOS_STATUS'     => 'draft',   // publish, pending, draft
+ //   'FSOL_LOAD_ARTICULOS_VISIBILITY' => 'visible', // visible, catalog, search, hidden
+    'FSX_LOAD_ARTICULOS_PRIZE_ALL',
+    'FSX_LOAD_ARTICULOS_STOCK_ALL',
+//    'FSOL_ARTICULOS_CAT_NOT_FOUND'  => '0',
+//    'FSOL_PROD_WOO_ONLY_DEACTIVATE' => '0',
+//    'FSX_RESUME_ON_TIMEOUT'         => '0',
+
+            'FSX_FSOL_AUSCFG_PEER', //  => '',  // Almacén correspondiente en aBillander para cargar el stock
+
+                    ],
+
         ];
 
    }

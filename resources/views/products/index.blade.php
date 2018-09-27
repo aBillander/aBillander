@@ -14,8 +14,25 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ route('products.import') }}" class="btn btn-sm btn-warning" 
-                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a>
+        <!-- a href="{{ route('products.import') }}" class="btn btn-sm btn-warning" 
+                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a -->
+
+
+
+        <div class="btn-group xopen">
+          <a href="#" class="btn btn-warning btn-sm"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a>
+          <a href="#" class="btn btn-warning btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{{ route('products.import') }}"><i class="fa fa-file-excel-o"></i> &nbsp; {{l('File', [], 'layouts')}}</a>
+            </li>
+            <li class="divider"></li>
+            <li><a href="{{ route('fsxproducts.index') }}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> &nbsp; {{l('FactuSOL')}}</a>
+            </li>
+          </ul>
+        </div>
+
+
+
 
         <a href="{{ route('products.export') }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>

@@ -1,11 +1,13 @@
-<?php namespace App;
+<?php 
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model {
     
-    protected $fillable = [ 'name', 'position', 'publish_to_web', 'webshop_id', 
+    protected $fillable = [ 'name', 'position', 'publish_to_web', 'webshop_id', 'reference_external', 
                             'is_root', 'active', 'parent_id'
                           ];
 

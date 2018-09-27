@@ -114,7 +114,7 @@ class CreateCustomerOrdersTable extends Migration
             
             $table->string('secure_key', 32)->nullable(false);                  // = md5(uniqid(rand(), true))
 
-            $table->string('import_key', 16)->nullable(false);
+            $table->string('import_key', 16)->nullable();
             // This field contains an id defined by an import process (when using an Import Module). Goal is to have a field to link and track all records that are added into database by an import process/transaction. This can be used to make a mass delete correction if an import was made successfully by error. 
 
             $table->timestamps();

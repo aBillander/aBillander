@@ -89,14 +89,36 @@
   <li class="list-group-item" style="background-color: #dff0d8;
 border-color: #d6e9c6;
 color: #468847;">
-    <h4 class="list-group-item-heading">FactuSOL</h4>
+    <h4 class="list-group-item-heading">Informaciones</h4>
   </li>
   <li class="list-group-item">
-    <h4 class="list-group-item-heading">Tarifa</h4>
+    <h4 class="list-group-item-heading">Fecha fichero <i title=" {$fsw_format} ">{{\App\Configuration::get('FSOL_CBRCFG')}}</i></h4>
+    <p class="list-group-item-text">{!! $fsw_date !!}</p>
+  </li>
+  <li class="list-group-item">
+    <h4 class="list-group-item-heading">Ultima actualización (importar <i>{{\App\Configuration::get('FSOL_CBRCFG')}}</i>)</h4>
+    <p class="list-group-item-text">{!! \App\Configuration::get('FSOLWEB_SQL_LAST_DBUPDATE') ?? '<span style="color: red; font-weight: bold">NUNCA</span>' !!}</p>
+    @if ( $fsw_date > \App\Configuration::get('FSOLWEB_SQL_LAST_DBUPDATE') )
+      <p class="list-group-item-text">
+        <span style="color: red; font-weight: bold">DEBE</span> Actualizar la Base de Datos de FactuSOLWeb.
+      </p>
+    @endif
+  </li>
+  <li class="list-group-item">
+    <h4 class="list-group-item-heading">Ultima carga del Catálogo</h4>
+    <p class="list-group-item-text">{!!\App\Configuration::get('FSX_CATALOGUE_LAST_RUN_DATE') ?: '<span style="color: red; font-weight: bold">NUNCA</span>'!!}</p>
+  </li>
+
+
+
+
+
+  <li class="list-group-item">
+    <h4 class="list-group-item-heading">FactuSOL :: Tarifa</h4>
     <p class="list-group-item-text">[{{ \Queridiam\FSxConnector\Tarifa::tarifa_codigo() }}] {{  \Queridiam\FSxConnector\Tarifa::tarifa_nombre() }}</p>
   </li>
   <li class="list-group-item">
-    <h4 class="list-group-item-heading">Almacén</h4>
+    <h4 class="list-group-item-heading">FactuSOL :: Almacén</h4>
     <p class="list-group-item-text">[{{ \Queridiam\FSxConnector\Stock::almacen_codigo() }}] {{  \Queridiam\FSxConnector\Stock::almacen_nombre() }}</p>
   </li>
 </ul>

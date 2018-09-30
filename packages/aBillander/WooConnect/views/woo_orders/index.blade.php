@@ -173,7 +173,7 @@
 
 			<td class="text-right" style="width:1px; white-space: nowrap;">
 
-                <!-- a class='open-AddBookDialog btn btn-sm btn-warning' href="{{ URL::route('worders.update', [$order["id"]] + $query ) }}" data-target='#myModalOrder' data-id="{{ $order["id"] }}" data-status="{{ $order["status"] }}" data-statusname="{{ \aBillander\WooConnect\WooConnector::getOrderStatusName( $order["status"] ) }}" data-toggle="modal" onClick="return false;" title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a -->
+                <a class='open-AddBookDialog btn btn-sm btn-warning' href="{{ URL::route('worders.update', [$order["id"]] + $query ) }}" data-target='#myModalOrder' data-id="{{ $order["id"] }}" data-status="{{ $order["status"] }}" data-statusname="{{ \aBillander\WooConnect\WooConnector::getOrderStatusName( $order["status"] ) }}" data-toggle="modal" onClick="return false;" title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>
                         
 @if (config('app.url') =='http://localhost/enatural')
 
@@ -355,7 +355,7 @@
 
                <button type="button" class="close" data-dismiss="modal">&times;</button>
 
-               <h4 class="modal-title">{{l('Change WooCommerce Order Status')}}</h4>
+               <h4 class="modal-title">{{l('Change Order Status')}}</h4>
 
            </div>
 
@@ -369,18 +369,18 @@
                   
 <div class="row">
 		<div class="form-group col-lg-6 col-md-6 col-sm-6">
-		                       <label for="bookId" xclass="col-sm-3 control-label text-right">{{l('Order ID')}}</label>
+		                       <label for="bookId" xclass="col-sm-3 control-label text-right">{{l('Order #')}}</label>
 		                       <input type="text" class="form-control" name="bookId" id="bookId" value="" onfocus="this.blur();">
 		</div>
 
 		<div class="form-group col-lg-6 col-md-6 col-sm-6">
-		                       <label for="bookStatus" xclass="col-sm-3 control-label text-right">{{l('Order Status')}}</label>
+		                       <label for="bookStatus" xclass="col-sm-3 control-label text-right">{{l('Status')}}</label>
 		                       <input type="text" class="form-control" name="bookStatus" id="bookStatus" value="" onfocus="this.blur();">
 		</div>
 </div>
 
 <div class="row">
-  <div class="form-group">
+  <div class="form-group col-lg-6 col-md-6 col-sm-6">
                          <label for="order_status">{{l('New Order Status')}}</label>
 
                          {!! Form::select('order_status', \aBillander\WooConnect\WooConnector::getOrderStatusList(), null, array('class' => 'form-control', 'id' => 'order_status')) !!}
@@ -541,7 +541,7 @@ $(document).ready(function() {
   
 </script>
 
-@stop
+@endsection
 
 
 
@@ -556,4 +556,4 @@ $(document).ready(function() {
     .ui-datepicker { z-index: 10000 !important; }
 </style>
 
-@stop
+@endsection

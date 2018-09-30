@@ -63,7 +63,23 @@ class FSxProductsController extends Controller
         if ( isset($key_group['FSX_FSOL_AUSCFG_PEER']) && ( intval($key_group['FSX_FSOL_AUSCFG_PEER']) <= 0 ) ) 
             $key_group['FSX_FSOL_AUSCFG_PEER'] = Configuration::getInt('DEF_WAREHOUSE');
 
-        return view('fsx_connector::fsx_products.index', compact('tab_index', 'key_group', 'warehouseList'));
+        // factusolweb.sql
+        $fswebFile = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CBRCFG');
+
+        if (file_exists($fswebFile)) {
+            $fsw_date=date('Y-m-d H:i:s', filemtime($fswebFile));
+
+//            $file_fsol = detect_utf_encoding($fswebFile);
+//            if     ($file_fsol==1) $this_format='ISO-8859-1';
+//            elseif ($file_fsol==0) $this_format='UTF-8';
+//            else                   $this_format='desconocido';
+        } else {
+            $fsw_date='<span style="color: red; font-weight: bold">NO SE HA ENCONTRADO</span>';
+            
+ //           $this_format='';
+        }
+
+        return view('fsx_connector::fsx_products.index', compact('tab_index', 'key_group', 'warehouseList', 'fsw_date'));
 	}
 
     /**

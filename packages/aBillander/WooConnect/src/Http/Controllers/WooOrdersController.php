@@ -322,12 +322,31 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 
 		$data = [
 		    'status'   => $status,
+//		    'date_paid'     => '2017-07-21T13:58:25',
+//    		'date_paid_gmt' => '2017-07-21T12:58:25',
+/*
 		    'set_paid' => (boolean) $set_paid,
 		    'meta_data' => [[									// Meta para saber cuándo fue descargada
 		    	'key'   => 'date_abi_exported',
                 'value' => (string) \Carbon\Carbon::now(),
              ]],
+*/
 		];
+
+		if ($set_paid) {
+
+			$today = \Carbon\Carbon::now();
+
+			$data += [
+			    'status'   => $status,
+			    'date_paid'     => (string) $today,
+	    		'date_paid_gmt' => (string) $today->tz('UTC'),
+	
+			    'set_paid' => (boolean) $set_paid,
+	
+			];
+
+		}
 
 		// To do: catch errore¡s
 		WooCommerce::put('orders/'.$id, $data);

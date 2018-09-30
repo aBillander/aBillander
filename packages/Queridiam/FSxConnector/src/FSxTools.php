@@ -110,6 +110,13 @@ class FSxTools
             
                     ],
 
+                8 => [
+
+            'FSOLWEB_SQL_LAST_DBUPDATE', //  => '',
+            'FSX_CATALOGUE_LAST_RUN_DATE', //  => '',
+
+                    ],
+
         ];
 
     /** @var array Connections.fsx-bbdd cache */

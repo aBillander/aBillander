@@ -32,6 +32,12 @@ return [
 	'Production Date'     => 'Fecha Producción',
 	'Customer Note'     => 'Notas Cliente',
 	'Go to Production Sheet'     => 'Ir a la Hoja de Producción',
+
+	'Change Order Status'     => 'Cambiar el Estado del Pedido',
+	'New Order Status'     => 'Nuevo Estado',
+	'Mark as Paid'     => 'Marcar como pagado',
+	''     => '',
+
 	''     => '',
 
 	/*

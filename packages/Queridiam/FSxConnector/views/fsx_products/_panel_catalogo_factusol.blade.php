@@ -88,7 +88,7 @@ $art_total = Articulo::count();
 </div>
 
 
-<p style="padding:0px; margin:10px 0px 10px 0px;">En total: &nbsp; <b>{{$sec_total}}</b> Seccion(es), &nbsp; <b>{{$fam_total}}</b> Familia(s), &nbsp; <span class="badge">{{$art_total}}</span> Artículo(s)<!-- sup> *</sup -->.</p>
+<p style="padding:0px; margin:10px 0px 10px 0px;">En total: &nbsp; <button class="btn btn-sm btn-default"><span class="badge">{{$sec_total}}</span> Seccion(es)</button> &nbsp; <button class="btn btn-sm btn-warning"><span class="badge">{{$fam_total}}</span> Familia(s)</button> &nbsp; <button class="btn btn-sm btn-success"><span class="badge">{{$art_total}}</span> Artículo(s)</button><!-- sup> *</sup --></p>
 
 </div>
 

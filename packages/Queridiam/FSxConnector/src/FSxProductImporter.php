@@ -59,7 +59,8 @@ class FSxProductImporter {
         if ( Configuration::isTrue('FSX_LOAD_ARTICULOS') )
         	$processor->processCatalogo();
 
-        // Actualizar
+        // So far, so GOOD!
+        Configuration::updateValue('FSX_CATALOGUE_LAST_RUN_DATE', \Carbon\Carbon::now()->format('Y-m-d H:i:s'));
 
         return true;
     } 

@@ -33,6 +33,7 @@ return [
 	'New Customer'     => 'Nuevo Cliente',
 	'Back to Customers'     => 'Volver a Clientes',
 	'Fiscal Name'     => 'Nombre Fiscal',
+	'Commercial Name'     => 'Nombre Comercial',
 	'Identification'     => 'NIF / CIF',
 	''     => '',
 	''     => '',

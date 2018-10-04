@@ -140,6 +140,7 @@ return [
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',
 	'Notes to Customer'     => 'Notas para el Cliente',
+	'Notes from Customer'     => 'Notas del Cliente',
 	
 	// _order_lines
 	'Quick Add Lines'     => 'Entrada rápida de Líneas',

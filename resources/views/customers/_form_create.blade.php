@@ -22,7 +22,7 @@
             </div>
         </div>
 
-@include('addresses._form_fields_model_related')
+@include('addresses._form_fields_model_customer')
 
          </div><!-- div class="panel-body" -->
 

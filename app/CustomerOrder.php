@@ -71,7 +71,7 @@ class CustomerOrder extends Model
 */
             
                             'total_lines_tax_incl', 'total_lines_tax_excl', 'total_tax_incl', 'total_tax_excl',
-                            'customer_note', 'notes', 'notes_to_customer',
+                            'notes_from_customer', 'notes', 'notes_to_customer',
                             'status', 'locked',
                             'invoicing_address_id', 'shipping_address_id', 
                             'warehouse_id', 'shipping_method_id', 'sales_rep_id', 'currency_id', 'payment_method_id', 'template_id',
@@ -394,7 +394,7 @@ class CustomerOrder extends Model
         return true;
     }
     
-    // Deprecated
+    // Deprecated / Borrable
     public function getTotalTaxIncl()
     {
         $lines = $this->customerorderlines;
@@ -428,7 +428,7 @@ class CustomerOrder extends Model
         return $this->total_tax_incl;
     }
     
-    // Deprecated
+    // Deprecated / Borrable
     public function getTotalTaxExcl()
     {
         $lines = $this->customerorderlines;

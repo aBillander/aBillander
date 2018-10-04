@@ -152,7 +152,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Countries
-		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'tax_rules._form', 'configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'addresses._form_fields_model_customer', 'tax_rules._form', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('countryList', \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
 		    

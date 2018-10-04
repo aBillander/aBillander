@@ -25,7 +25,7 @@
             </div>
         </div>
 
-@include('addresses._form_fields_model_related')
+@include('addresses._form_fields_model_customer')
 
         <div class="row">
             <div class="form-group col-lg-3 col-md-3 col-sm-3">

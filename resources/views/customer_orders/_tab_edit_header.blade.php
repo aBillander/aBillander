@@ -134,16 +134,22 @@
       </div>
       <div class="row">
 
-         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('notes') ? 'has-error' : '' }}" xstyle="margin-top: 20px;">
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes') ? 'has-error' : '' }}" xstyle="margin-top: 20px;">
             {{ l('Notes', [], 'layouts') }}
             {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}
             {{ $errors->first('notes', '<span class="help-block">:message</span>') }}
          </div>
 
-         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('notes_to_customer') ? 'has-error' : '' }}">
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes_to_customer') ? 'has-error' : '' }}">
             {{ l('Notes to Customer') }}
             {!! Form::textarea('notes_to_customer', null, array('class' => 'form-control', 'id' => 'notes_to_customer', 'rows' => '2')) !!}
             {{ $errors->first('notes_to_customer', '<span class="help-block">:message</span>') }}
+         </div>
+
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes_from_customer') ? 'has-error' : '' }}">
+            {{ l('Notes from Customer') }}
+            {!! Form::textarea('notes_from_customer', null, array('class' => 'form-control', 'id' => 'notes_from_customer', 'rows' => '2')) !!}
+            {{ $errors->first('notes_from_customer', '<span class="help-block">:message</span>') }}
          </div>
 
       </div>

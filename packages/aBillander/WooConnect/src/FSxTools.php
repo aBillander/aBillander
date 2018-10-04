@@ -88,7 +88,7 @@ class FSxTools
                              where fsol_group_key='$fsol_group_key'
                              and fsol_value='$fsol_value'");
 
-        return $customer_external_reference[0]->woo_value;
+        return $customer_external_reference ? $customer_external_reference[0]->woo_value : null;
     }
 
     static public function new_customers_entry($woo_value, $fsol_value) { 

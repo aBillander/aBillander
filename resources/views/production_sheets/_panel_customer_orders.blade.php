@@ -49,16 +49,16 @@
       </td>
       <td>{{ $order->reference }}</td>
       <td class="text-center">
-                @if ($order->customer_note)
+                @if ($order->notes_from_customer && 0)
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
-                            data-content="{{ $order->customer_note }}">
+                            data-content="{{ $order->notes_from_customer }}">
                         <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
                     </button>
                  </a>
                 @endif
 
-                @if ($order->all_notes)
+                @if ($order->all_notes && 0)
                  <a href="javascript:void(0);">
                     <button type="button" style="padding: 3px 8px;
 font-size: 12px;
@@ -70,6 +70,7 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
                     </button>
                  </a>
                 @endif
+                {!! nl2br($order->all_notes) !!}
       </td>
       <td title="{{ $order->carrier->name ?? '' }}">{{ $order->shippingmethod->name ?? '' }}</td>
 

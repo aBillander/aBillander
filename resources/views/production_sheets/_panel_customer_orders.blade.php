@@ -128,7 +128,20 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 
   <a href="{{ route('productionsheet.products', [$sheet->id]) }}" class="btn btn-sm btn-warning hidden" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Show Products')}}</a>
 
-  <a class="btn btn-sm btn-success show-order-products-summary" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Show Summary')}}</a>
+  <a class="btn btn-sm btn-success show-order-products-summary" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Show Order Summary')}}</a>
+
+
+<div class="btn-group">
+  <a href="#" title="{{l('Show', [], 'layouts')}}" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-table"></i> {{l('Show Summary Table')}}</a>
+  <a href="#" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+  <ul class="dropdown-menu">
+    @foreach($work_centerList as $id => $name)
+    <li><a href="{{ route('productionsheet.summary', [$sheet->id, 'work_center_id' => $id]) }}">{{ $name }}</a></li>
+    @endforeach
+    <li class="divider"></li>
+    <li><a href="{{ route('productionsheet.summary', [$sheet->id, 'work_center_id' => 0]) }}">{{ l('All', 'layouts') }}</a></li>
+  </ul>
+</div>
 
          </div>
 

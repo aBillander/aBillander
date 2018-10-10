@@ -70,7 +70,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Work Centers
-		view()->composer(array('products._panel_manufacturing', 'production_sheets._modal_production_order_form', 'production_sheets._modal_production_order_edit'), function($view) {
+		view()->composer(array('products._panel_manufacturing', 'production_sheets._panel_customer_orders', 'production_sheets._modal_production_order_form', 'production_sheets._modal_production_order_edit'), function($view) {
 		    
 		    $view->with('work_centerList', \App\WorkCenter::pluck('name', 'id')->toArray());
 		    

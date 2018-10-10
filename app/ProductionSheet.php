@@ -134,7 +134,55 @@ class ProductionSheet extends Model
         return $num->sortBy('reference');
     }
 
-    /* Production Orders */
+    public function customerorderlinesGroupedByWorkCenter( $work_center_id = null )
+    {
+        //
+        if ($work_center_id === null) $work_center_id = 0;
+
+        $mystuff = collect([]);
+        $lines = $this->customerorderlines->load('product');     // ()->whereHas('product');
+
+// abi_r($lines, true);
+
+        foreach($lines as $line)
+        {
+            if ( $line->product )
+                if ( ($work_center_id == 0) ||
+                     ($work_center_id == $line->product->work_center_id) ) {
+
+                    $mystuff->push($line);
+                }
+
+        }
+
+// abi_r($mystuff, true);
+
+        $num = $mystuff
+//                    ->where('procurement_type', 'manufacture')
+//                    ->where('procurement_type', 'assembly')
+//                    ->filter(function($line) {
+//                        return ($line->product->procurement_type == 'manufacture') ||
+//                               ($line->product->procurement_type == 'assembly');
+//                    })
+                    ->groupBy('product_id')->reduce(function ($result, $group) {
+                      return $result->put($group->first()->product_id, [
+                        'product_id' => $group->first()->product_id,
+                        'reference' => $group->first()->reference,
+                        'name' => $group->first()->name,
+                        'quantity' => $group->sum('quantity'),
+                      ]);
+                    }, collect());
+
+        // Sort order
+        return $num->sortBy('reference');
+    }
+
+
+    /*
+    *
+    * Production Orders 
+    *
+    */
     
     public function productionorders()
     {

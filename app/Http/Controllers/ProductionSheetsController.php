@@ -215,6 +215,30 @@ class ProductionSheetsController extends Controller
         return 'getProducts '.$id;
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\ProductionSheet  $productionSheet
+     * @return \Illuminate\Http\Response
+     */
+    public function getSummary(Request $request, $id)
+    {
+        $sheet = $this->productionSheet->findOrFail($id);
+        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+
+
+        $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
+        // $sheet->customerorders()->load(['customer', 'customerorderlines']);
+
+        $columns = $sheet->customerorderlinesGroupedByWorkCenter($work_center->id);
+
+        // abi_r($sheet, true);
+        // abi_r($columns, true);
+
+        return view('production_sheets.summary_table', compact('work_center', 'sheet', 'columns'));
+    }
+
 
 
 

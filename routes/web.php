@@ -69,6 +69,9 @@ Route::get('404', function()
 // Secure-Routes
 Route::group(['middleware' =>  ['auth']], function()
 {
+    Route::group(['middleware' => 'authAdmin'], function()
+    {
+    });
         
         Route::resource('configurations',    'ConfigurationsController');
         Route::resource('configurationkeys', 'ConfigurationKeysController');
@@ -88,6 +91,9 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('sequences', 'SequencesController');
 
         Route::resource('users', 'UsersController');
+
+        Route::resource('customerusers', 'CustomerUsersController');
+        Route::get('customerusers/create/withcustomer/{customer}', 'CustomerUsersController@createWithCustomer')->name('customer.createuser');
 
         Route::resource('suppliers', 'SuppliersController');
 
@@ -180,6 +186,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('salesreps', 'SalesRepsController');
 
         Route::resource('carriers', 'CarriersController');
+
+        Route::resource('manufacturers', 'ManufacturersController');
 
         Route::resource('activityloggers', 'ActivityLoggersController');
 //        Route::get('activityloggers', ['uses' => 'ActivityLoggersController@index', 

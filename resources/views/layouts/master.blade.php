@@ -8,7 +8,7 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>@section('title'):: {{ config('app.name', 'Laravel') }} @show </title>
+        <title>@section('title'):: {{ config('app.name', 'aBillander') }} @show </title>
 
         <!-- Styles -->
         <link rel="shortcut icon" href="{{ asset('company_icon.png') }}" type="image/x-icon">

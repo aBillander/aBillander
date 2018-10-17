@@ -26,6 +26,7 @@ class ConfigurationKeysController extends Controller {
                         'ALLOW_SALES_WITHOUT_STOCK',
                         'CUSTOMER_ORDERS_NEED_VALIDATION',
                         'ENABLE_COMBINATIONS',
+                        'ENABLE_CUSTOMER_CENTER',
                         'ENABLE_WEBSHOP_CONNECTOR',
                         'ENABLE_FSOL_CONNECTOR',
                         'SELL_ONLY_MANUFACTURED',
@@ -88,6 +89,16 @@ class ConfigurationKeysController extends Controller {
                         'SKU_PREFIX_OFFSET',
                         'SKU_SEPARATOR',
                         'SKU_SUFFIX_LENGTH',
+
+                    ],
+
+                5 => [  // Cusromer Center
+
+                        'ABCC_HEADER_TITLE',
+                        'ABCC_STOCK_THRESHOLD',
+                        'ABCC_DEFAULT_PASSWORD',
+//                        'SUPPORT_CENTER_EMAIL',
+//                        'SUPPORT_CENTER_NAME',
 
                     ],
         ];

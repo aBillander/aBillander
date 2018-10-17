@@ -61,6 +61,35 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::get('payments' , ['uses' => 'CustomerCenterPaymentController@index'  , 'as' => 'customerCenter.payments']);
     });
 */
+
+    Route::group(['middleware' =>  ['auth:customer', 'abcccontext']], function()
+    {
+        Route::get( '/account/edit', 'AbccCustomerUserController@edit'  )->name('abcc.account.edit'  );
+        Route::post('/account',      'AbccCustomerUserController@update')->name('abcc.account.update');
+
+        Route::get('/catalogue', 'AbccCatalogueController@index'  )->name('abcc.catalogue');
+//        Route::get('/catalogue/category/{id}', 'AbccCatalogueController@categoryShow')->name('abcc.catalogue.category.show');
+
+        Route::get('/orders', 'AbccCustomerOrdersController@index')->name('abcc.orders.index');
+
+        Route::get('/cart', 'AbccCustomerCartController@index')->name('abcc.cart');
+        Route::get('/cart/line/searchproduct',        'AbccCustomerCartController@searchProduct' )->name('cart.searchproduct');
+        Route::get('/cart/line/getproduct',           'AbccCustomerCartController@getProduct'    )->name('cart.getproduct');
+        Route::get('/cart/add/{id}', 'AbccCustomerCartController@addItem')->name('abcc.addToCart');
+        Route::post('cart/additem',  'AbccCustomerCartController@add'    )->name('abcc.cart.add'  );
+        Route::get('cart/getlines',  'AbccCustomerCartController@getCartLines' )->name('abcc.cart.getlines');
+        Route::post('customercart/deleteline/{lid}',  'AbccCustomerCartController@deleteCartLine'  )->name('cart.deleteline' );
+    });
 });
 
 /* ********************************************************** */
+
+/*
+carriers                | carriers.index   | App\Http\Controllers\CarriersController@index
+carriers                | carriers.store   | App\Http\Controllers\CarriersController@store
+carriers/create         | carriers.create  | App\Http\Controllers\CarriersController@create
+carriers/{carrier}      | carriers.destroy | App\Http\Controllers\CarriersController@destroy
+carriers/{carrier}      | carriers.update  | App\Http\Controllers\CarriersController@update
+carriers/{carrier}      | carriers.show    | App\Http\Controllers\CarriersController@show
+carriers/{carrier}/edit | carriers.edit    | App\Http\Controllers\CarriersController@edit         
+*/

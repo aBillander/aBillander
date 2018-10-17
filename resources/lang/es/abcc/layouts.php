@@ -24,6 +24,14 @@ return [
 	|
 	*/
 
+	'Shopping Cart'     => 'Carrito',
+	'Catalogue'     => 'Catálogo',
+	'Order History'     => 'Historial',
+
+	'My Account'     => 'Mi Cuenta',
+	'Contact'     => 'Contacto',
+	''     => '',
+
 	'Basic Data'     => 'Tablas Generales',
 	'Currencies' => 'Divisas',
 	'Payment Methods'     => 'Formas de Pago',
@@ -78,12 +86,28 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
+	| Common Language Lines :: Stock levels
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'stock.badge.success'     => 'Disponible',
+	'stock.badge.warning'     => 'Stock bajo',
+	'stock.badge.danger'     => 'Sin stock',
+
+
+	/*
+	|--------------------------------------------------------------------------
 	| Common Language Lines :: forms & buttons
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
+
+	'Add to Cart'     => 'Añadir al Carrito',
 /*
 	'ID'      => 'ID',
 	'Active'  => 'Activo',

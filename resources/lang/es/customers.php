@@ -63,6 +63,7 @@ return [
 	'Address Book'     => 'Direcciones',
 	'Special Prices'     => 'Precios Especiales',
 	'Statistics'     => 'Estadísticas',
+	'ABCC Access'     => 'Acceso ABCC',
 
 	'Website'     => 'Web',
 	'Misc'     => 'Otros',
@@ -115,9 +116,12 @@ return [
 	'Created via'     => 'Creado por',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Total'     => 'Total',
-	''     => '',
-	''     => '',
-	''     => '',
+
+	'Customer Center Access'     => 'Acceso al Centro de Clientes',
+	'Allow Customer Center access?'     => '¿Permitir acceso al Centro de Clientes?',
+
+	'Can not create a User for this Customer:'     => 'No es posible crear un Usuario para este Cliente:',
+	'This Customer has not a valid email address.'     => 'Este Cliente no tiene una dirección de correo electrónico válida.',
 	''     => '',
 	''     => '',
 

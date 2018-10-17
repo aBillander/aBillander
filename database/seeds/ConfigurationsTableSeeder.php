@@ -17,6 +17,10 @@ class ConfigurationsTableSeeder extends Seeder {
 
 $confs = [
 
+['ABCC_HEADER_TITLE', '<span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>'],
+['ABCC_STOCK_THRESHOLD', '999'],
+['ABCC_DEFAULT_PASSWORD', '12345678'],
+
 ['ALLOW_PRODUCT_SUBCATEGORIES', '1'],
 ['ALLOW_SALES_RISK_EXCEEDED', '0'],
 ['ALLOW_SALES_WITHOUT_STOCK', '0'],
@@ -46,6 +50,7 @@ $confs = [
 ['DEF_WAREHOUSE', ''],
 ['DEF_WEIGHT_UNIT', 'kg'],
 ['ENABLE_COMBINATIONS', '0'],
+['ENABLE_CUSTOMER_CENTER', '0'],
 ['ENABLE_WAREHOUSE', '1'],
 ['ENABLE_WEBSHOP_CONNECTOR', '0'],
 ['ENABLE_FSOL_CONNECTOR', '0'],

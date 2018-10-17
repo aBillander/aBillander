@@ -38,7 +38,7 @@ class CustomerLoginController extends Controller
       $this->validate($request, CustomerUser::$rules);
 
       // Attempt to log the user in
-      if (Auth::guard('customer')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+      if (Auth::guard('customer')->attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->remember)) {
         
         // if successful, then redirect to their intended location
         return redirect()->intended(route('customer.dashboard'));
@@ -46,6 +46,15 @@ class CustomerLoginController extends Controller
 
       // if unsuccessful, then redirect back to the login with the form data
       return redirect()->back()->withInput($request->only('email', 'remember'));
+    }
+
+    // Not working:
+    protected function credentials(Request $request)
+    {
+        $credentials = $request->only($this->username(), 'password');
+        $credentials['active'] = 1;
+
+        return $credentials;
     }
 
     // See: /vendor/laravel/framework/src/Illuminate/Foundation/Auth/AuthenticatesUsers.php

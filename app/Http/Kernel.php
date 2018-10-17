@@ -64,5 +64,7 @@ class Kernel extends HttpKernel
 //        'customer'  => \App\Http\Middleware\RedirectIfCustomer::class,
         'authAdmin'  => \App\Http\Middleware\RedirectIfNotAdmin::class,
 //        'context'  => \App\Http\Middleware\SetContextMiddleware::class,
+
+        'abcccontext'  => \App\Http\Middleware\CustomerCenter\SetAbccContextMiddleware::class,
     ];
 }

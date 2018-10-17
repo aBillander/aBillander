@@ -20,6 +20,12 @@ class CustomerUser extends Authenticatable
     protected $guard = 'customer';
 
     /**
+     * Always load relations.
+     *
+     */
+    public $with = ['customer'];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
@@ -54,6 +60,7 @@ class CustomerUser extends Authenticatable
         'email'       => array('required', 'email'),
         'password'    => array('required', 'min:2', 'max:32'),
         'language_id' => 'exists:languages,id',
+        'customer_id' => 'exists:customers,id',
     );
 
     /**  trait CanResetPassword
@@ -78,6 +85,13 @@ class CustomerUser extends Authenticatable
         return $this->firstname.' '.$this->lastname;
     }
 
+    public function isActive()
+    {
+        return $this->active;
+
+        // See: https://pusher.com/tutorials/multiple-authentication-guards-laravel#modify-how-our-users-are-redirected-if-authenticated
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -92,6 +106,6 @@ class CustomerUser extends Authenticatable
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer');
+        return $this->belongsTo('App\Customer', 'customer_id');
     }
 }

@@ -28,6 +28,12 @@
                      {!! Form::text('supplier_reference', null, array('class' => 'form-control', 'id' => 'supplier_reference')) !!}
                      {!! $errors->first('supplier_reference', '<span class="help-block">:message</span>') !!}
                   </div>
+
+             <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('manufacturer_id') ? 'has-error' : '' }}">
+                {{ l('Manufacturer') }}
+                {!! Form::select('manufacturer_id', array('' => l('-- Please, select --', [], 'layouts')) + $manufacturerList, null, array('class' => 'form-control')) !!}
+                {!! $errors->first('manufacturer_id', '<span class="help-block">:message</span>') !!}
+             </div>
         </div>
 
         <div class="row">

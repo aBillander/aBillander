@@ -29,7 +29,8 @@
 <table id="sheets" class="table table-hover">
   <thead>
     <tr>
-			<th> </th>
+      <th> </th>
+      <th> </th>
 			@foreach ($columns as $col)
       <th>{{ $col['reference'] }} - {{ $col['name'] }}</th>
       @endforeach
@@ -38,9 +39,16 @@
 	<tbody>
 
 
+{{-- Rows --}}
+
 	@foreach ($sheet->customerorders as $order)
 		<tr>
-			<td>[{{ $order->document_reference }}] {{ $order->customer->name_commercial }}</td>
+			<td style="font-weight: bold;">[{{ $order->document_reference }}] {{ $order->customer->name_commercial }}</td>
+      <td style="font-weight: bold;">
+          @if ( $order->hasShippingAddress() )
+              {{ $order->shippingaddress->alias }} 
+          @endif
+      </td>
 
 @php
         $lines = $order->customerorderlines
@@ -74,7 +82,11 @@
 		</tr>
 	@endforeach
 
+
+{{-- Totals --}}
+
     <tr class="info">
+      <td> </td>
       <td class="text-center"><strong>{{ l('Total', 'layouts') }}</strong></td>
 
       @foreach ($columns as $col)
@@ -84,6 +96,19 @@
       @endforeach
 
     </tr>
+
+
+{{-- Repeat header --}}
+
+    <tr>
+      <th> </th>
+      <th> </th>
+      @foreach ($columns as $col)
+      <th>{{ $col['reference'] }} - {{ $col['name'] }}</th>
+      @endforeach
+    </tr>
+
+{{-- --}}
 
     </tbody>
 </table>

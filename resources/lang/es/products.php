@@ -86,6 +86,7 @@ return [
 	'Lead Time'     => 'Plazo de entrega',
 	'Main Supplier' => 'Proveedor Principal',
 	'Supplier Reference'     => 'Referencia del Proveedor',
+	'Manufacturer'     => 'Fabricante / Marca',
 
 	'Price Lists'     => 'Tarifas',
 	'Base Price'     => 'Precio Base',

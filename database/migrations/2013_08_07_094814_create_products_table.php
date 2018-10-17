@@ -93,6 +93,7 @@ class CreateProductsTable extends Migration {
 			$table->integer('measure_unit_id')->unsigned()->nullable(false);
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->integer('main_supplier_id')->unsigned()->nullable();
+			$table->integer('manufacturer_id')->unsigned()->nullable();
 
 			// Route stuff
 			$table->integer('work_center_id')->unsigned()->nullable();

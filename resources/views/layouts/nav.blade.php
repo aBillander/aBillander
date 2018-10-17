@@ -176,6 +176,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('manufacturers') }}">
+                                 {{l('Manufacturers', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('customergroups') }}">
                                  {{l('Customer Groups', [], 'layouts')}}
                             </a>

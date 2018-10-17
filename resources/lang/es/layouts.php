@@ -31,6 +31,8 @@ return [
 	'The record with id=:id does not exist'                      =>  'El registro con id=:id no existe',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
 
+	'No action is taken &#58&#58 (:id) ' => 'No se ha realizado ninguna acción &#58&#58 (:id) ',
+
 	'This configuration has been successfully updated'  =>  'La configuración se ha actualizado correctamente',
 
 	'Margin calculation is based on Cost Price'  => 'El Margen se calcula sobre el Precio de Coste',
@@ -56,6 +58,7 @@ return [
 	'Shipping Methods'     => 'Métodos de Envío',
 	'Payment Methods'     => 'Formas de Pago',
 	'Taxes'     => 'Impuestos',
+	'Manufacturers'     => 'Fabricantes',
 	'Product Categories'     => 'Categorías de Productos',
 	'Customer Groups'     => 'Grupos de Clientes',
 
@@ -149,8 +152,10 @@ return [
 	'Notes'     => 'Notas',
 
 	'Filter Records'     => 'Filtrar Registros',
+	'Search Records'     => 'Buscar Registros',
 
 	'Filter'     => 'Filtrar',
+	'Search' => 'Buscar',
 	'Actions'     => 'Acciones',
 	'Export'     => 'Exportar',
 	'Import'     => 'Importar',

@@ -1,4 +1,6 @@
-<?php namespace App\Providers;
+<?php
+
+namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use DB;
@@ -80,6 +82,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		view()->composer(array('products._panel_purchases'), function($view) {
 		    
 		    $view->with('supplierList', \App\Supplier::pluck('name_fiscal', 'id')->toArray());
+		    
+		});
+
+		// Manufacturers
+		view()->composer(array('products._panel_purchases'), function($view) {
+		    
+		    $view->with('manufacturerList', \App\Manufacturer::pluck('name', 'id')->toArray());
 		    
 		});
 

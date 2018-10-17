@@ -30,7 +30,7 @@ class CreateCustomerOrdersTable extends Migration
             $table->string('reference_customer', 32)->nullable();         // Custumer order number 
             $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
 
-            $table->string('created_via', 32)->default('webshop')->nullable();
+            $table->string('created_via', 32)->default('manual')->nullable();
             // How we received the order: 'webshop', 'manual', 'by phone', 'by email', etc.
 
             $table->dateTime('document_date');                          // If document is imported, document_date != created_at
@@ -105,6 +105,7 @@ class CreateCustomerOrdersTable extends Migration
             $table->integer('currency_id')->unsigned()->nullable(false);
             $table->integer('payment_method_id')->unsigned()->nullable(false);
             $table->integer('template_id')->nullable();
+//            $table->integer('language_id')->nullable();
 
             $table->integer('parent_document_id')->unsigned()->nullable();      // Parent of Order is Quotation
 

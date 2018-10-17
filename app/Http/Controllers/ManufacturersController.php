@@ -1,11 +1,24 @@
-<?php namespace App\Http\Controllers;
+<?php 
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
+use App\Manufacturer;
+
 class ManufacturersController extends Controller {
+
+
+   protected $manufacturer;
+
+   public function __construct(Manufacturer $manufacturer)
+   {
+        $this->manufacturer = $manufacturer;
+   }
+
 
 	/**
 	 * Display a listing of the resource.
@@ -15,7 +28,9 @@ class ManufacturersController extends Controller {
 	 */
 	public function index()
 	{
-		//
+        $manufacturers = $this->manufacturer->orderBy('name', 'asc')->get();
+
+        return view('manufacturers.index', compact('manufacturers'));
 	}
 
 	/**
@@ -26,7 +41,7 @@ class ManufacturersController extends Controller {
 	 */
 	public function create()
 	{
-		//
+		return view('manufacturers.create');
 	}
 
 	/**
@@ -35,9 +50,14 @@ class ManufacturersController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
-		//
+		$this->validate($request, Manufacturer::$rules);
+
+		$manufacturer = $this->manufacturer->create($request->all());
+
+		return redirect('manufacturers')
+				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $manufacturer->id], 'layouts') . $request->input('name'));
 	}
 
 	/**
@@ -49,7 +69,7 @@ class ManufacturersController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		return $this->edit($id);
 	}
 
 	/**
@@ -61,7 +81,9 @@ class ManufacturersController extends Controller {
 	 */
 	public function edit($id)
 	{
-		//
+		$manufacturer = $this->manufacturer->findOrFail($id);
+		
+		return view('manufacturers.edit', compact('manufacturer'));
 	}
 
 	/**
@@ -71,9 +93,16 @@ class ManufacturersController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update($id, Request $request)
 	{
-		//
+		$manufacturer = $this->manufacturer->findOrFail($id);
+
+		$this->validate($request, Manufacturer::$rules);
+
+		$manufacturer->update($request->all());
+
+		return redirect('manufacturers')
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
 	}
 
 	/**
@@ -85,7 +114,14 @@ class ManufacturersController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+        // Destroy States
+        $manufacturer = $this->manufacturer->findOrFail($id);
+
+        // Destroy Manufacturer
+        $manufacturer->delete();
+
+        return redirect('manufacturers')
+				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 
 }

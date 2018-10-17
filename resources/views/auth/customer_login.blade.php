@@ -64,7 +64,7 @@
 							<div class="col-md-6 col-md-offset-4">
 								<button type="submit" class="btn btn-primary">{{l('Login', [], 'layouts')}}</button>
 
-								<a class="btn btn-link" href="{{ route('customer.password.request') }}">{{ l('Forgot Your Password?') }}</a>
+								<a class="btn btn-link" href="{{ route('customer.password.request') }}">{{ l('Forgot Your Password?', 'layouts') }}</a>
 							</div>
 						</div>
 					</form>
@@ -81,8 +81,12 @@
         <script type="text/javascript">
         	var $this = $('.navbar');
 
+        	// Change background
         	$this.removeClass('navbar-default');
         	$this.addClass('navbar-inverse');
+
+        	// Remove right side nav menu
+        	$('.navbar-right').html('');
 
         </script>
 

@@ -43,7 +43,7 @@ class Product extends Model {
 //                            'warranty_period', 
 
                             'reorder_point', 'maximum_stock', 'price', 'price_tax_inc', 'cost_price', 
-                            'supplier_reference', 'supply_lead_time',  
+                            'supplier_reference', 'supply_lead_time', 'manufacturer_id', 
 
                             'location', 'width', 'height', 'depth', 'weight', 
 
@@ -135,6 +135,17 @@ class Product extends Model {
                  $this->price ;
 
         return $this->as_priceable($value);
+    }
+
+    public function getStockBadgeAttribute()
+    {
+        $value = $this->quantity_onhand;
+
+        if ( $value > \App\Configuration::get('ABCC_STOCK_THRESHOLD') ) return 'success';
+
+        if ( $value > 0.0 ) return 'warning';
+
+        return 'danger';
     }
 
 
@@ -344,6 +355,11 @@ class Product extends Model {
     {
         return $this->belongsTo('App\Supplier', 'main_supplier_id');
     }
+
+    public function manufacturer()
+    {
+        return $this->belongsTo('App\Manufacturer', 'manufacturer_id');
+    }
     
     public function warehouses()
     {
@@ -535,6 +551,11 @@ class Product extends Model {
     public function scopeIsService($query)
     {
         return $query->where('procurement_type', 'none');
+    }
+
+    public function scopeIsActive($query)
+    {
+        return $query->where('active', '>', 0);
     }
 
     public function scopeQualifyForCustomer($query, $customer_id, $currency_id) 

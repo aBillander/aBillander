@@ -65,6 +65,10 @@
                <i class="fa fa-bar-chart"></i>
                &nbsp; {{ l('Statistics') }}
             </a -->
+            <a id="b_customeruser" href="#customeruser" class="list-group-item">
+               <i class="fa fa-bolt"></i>
+               &nbsp; {{ l('ABCC Access') }}
+            </a>
          </div>
       </div>
       
@@ -84,11 +88,18 @@
 {{--
           @include('customers._panel_statistics')
 --}}
+
+@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+
+          @include('customers._panel_customeruser')
+
+@endif
+
       </div><!-- div class="col-lg-10 col-md-10 col-sm-9" -->
 
    </div>
 </div>
-@stop
+@endsection
 
 @section('scripts')     @parent
 <script type="text/javascript">
@@ -102,6 +113,7 @@
  //     $("#panel_accounting").hide();
       $("#panel_orders").hide();
  //     $("#panel_statistics").hide();
+      $("#panel_customeruser").hide();
 
       $("#b_main").removeClass('active');
       $("#b_commercial").removeClass('active');
@@ -111,6 +123,7 @@
  //     $("#b_accounting").removeClass('active');
       $("#b_orders").removeClass('active');
 //      $("#b_statistics").removeClass('active');
+      $("#b_customeruser").removeClass('active');
       
       if(window.location.hash.substring(1) == 'commercial')
       {
@@ -133,6 +146,11 @@
       {
          $("#panel_statistics").show();
          $("#b_statistics").addClass('active');
+      }
+      else if(window.location.hash.substring(1) == 'customeruser')
+      {
+         $("#panel_customeruser").show();
+         $("#b_customeruser").addClass('active');
       }
       else  
       {

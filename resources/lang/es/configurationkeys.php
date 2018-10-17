@@ -21,6 +21,8 @@ return [
 	'CUSTOMER_ORDERS_NEED_VALIDATION.help' => 'Sólo los Pedidos de Clientes que han sido validados podrán enviarse y facturarse.<br />1: Los Pedidos de Clientes se crearán con Estado = "<strong>draft</strong>".<br />0: Los Pedidos de Clientes se crearán con Estado = "<strong>confirmed</strong>".',
 	'ENABLE_COMBINATIONS.name' => 'Activar Combinaciones',
 	'ENABLE_COMBINATIONS.help' => 'Permitir crear Productos con Combinaciones.',
+	'ENABLE_CUSTOMER_CENTER.name' => 'Activar el Centro de Clientes',
+	'ENABLE_CUSTOMER_CENTER.help' => 'Permitir a los Clientes introducir Pedidos y más.',
 	'ENABLE_WEBSHOP_CONNECTOR.name' => 'Activar enlace con la Tienda online.',
 	'ENABLE_WEBSHOP_CONNECTOR.help' => 'Para que el enlace funcione correctamente, puede ser necesario algún "package" adicional.',
 	'ENABLE_FSOL_CONNECTOR.name' => 'Activar enlace con FactuSOL',
@@ -104,6 +106,7 @@ return [
 	'TIMEZONE.help' => 'Zona horaria admitida por PHP.',
 	'USE_CUSTOM_THEME.name' => 'Usar Tema presonalizado',
 	'USE_CUSTOM_THEME.help' => 'El Tema personalizado está en la carpeta <i>/resources/theme/</i>.',
+
 	'Auto-SKU' => 'Auto-SKU',
 	'SKU_PREFIX_LENGTH.name' => 'Prefijo',
 	'SKU_PREFIX_LENGTH.help' => 'Se toma el ID del Producto. Si tiene una longitud (número de cifras) menor que este valor, se rellena con ceros por la izquierda hasta esta longitud.',
@@ -114,6 +117,16 @@ return [
 	'SKU_SUFFIX_LENGTH.name' => 'Sufijo',
 	'SKU_SUFFIX_LENGTH.help' => 'Se toma el ID de la Combinación. Si tiene una longitud (número de cifras) menor que este valor, se rellena con ceros por la izquierda hasta esta longitud.',
 	'Auto-SKU.help' => '<blockquote><p>Ejemplo:</p><p>SKU_PREFIX_LENGTH = 6</p><p>SKU_PREFIX_OFFSET = 10000</p><p>SKU_SUFFIX_LENGTH = 3</p><p>SKU_SEPARATOR = "-" (sin comillas)</p><p>ID de Producto = 323</p><p>ID de Combinación = 12</p><p><strong>SKU</strong> = 010323-012</p><p>Si SKU_SUFFIX_LENGTH = 1, entonces <strong>SKU</strong> = 010323-12.</p><p>Si no es una Combinación (ID de Combinación = 0), entonces <strong>SKU</strong> = 010323.</p></blockquote>',
+	
+	'Customer Center' => 'Centro de Clientes',
+	'ABCC_HEADER_TITLE.name' => 'Texto de Cabecera',
+	'ABCC_HEADER_TITLE.help' => 'Aparece en la esquina superior izquierda de cada página.',
+	'ABCC_STOCK_THRESHOLD.name' => 'Umbral de Stock',
+	'ABCC_STOCK_THRESHOLD.help' => 'Cuando el Stock es inferior a esta cantidad, aparece el aviso "Poco Stock".',
+	'ABCC_DEFAULT_PASSWORD.name' => 'Contraseña por defecto',
+	'ABCC_DEFAULT_PASSWORD.help' => 'Esta Contraseña será asignada cuando se permite a un Cliente acceder al Centro de Clientes. Más adelante podrá cambiarse.',
+
+
 	'All Keys' => 'Todas las Claves',
 	'Configuration Keys' => 'Claves de Configuración',
 	'Back to Configurations' => 'Volver a Configuración',

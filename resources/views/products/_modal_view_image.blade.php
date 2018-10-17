@@ -25,7 +25,8 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.view-image').click(function (evnt) {
+//        $('.view-image').click(function (evnt) {
+        $('body').on('click', ".view-image", function(evnt) {
             var href = $(this).attr('href');
 //            var message = $(this).attr('data-content');
             var title = $(this).attr('data-title');

@@ -25,7 +25,7 @@ class AbccCustomerInvoicesController extends Controller
      */
     public function __construct(Customer $customer, CustomerInvoice $customerInvoice, CustomerInvoiceLine $customerInvoiceLine)
     {
-        $this->middleware('auth:customer')->except('pdf');
+        // $this->middleware('auth:customer')->except('pdf');
 
         $this->customer            = $customer;
         $this->customerInvoice     = $customerInvoice;

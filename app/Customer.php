@@ -433,6 +433,14 @@ class Customer extends Model {
         return $this->morphMany('App\Payment', 'paymentorable');
     }
 
+    /**
+     * Get the user record associated with the user.
+     */
+    public function user()
+    {
+        return $this->hasOne('App\CustomerUser', 'customer_id');
+    }
+
     
     /*
     |--------------------------------------------------------------------------

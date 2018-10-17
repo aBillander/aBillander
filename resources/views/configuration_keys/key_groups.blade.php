@@ -18,6 +18,13 @@
                &nbsp; {{ l('Auto-SKU') }}
             </a>
 @endif
+
+@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+            <a id="b_tab_index_5" href="{{ URL::to('configurationkeys?tab_index=5') }}" class="list-group-item @if ($tab_index==5) active @endif">
+               <i class="fa fa-user-circle"></i></span>
+               &nbsp; {{ l('Customer Center') }}
+            </a>
+@endif
             <a id="b_tab_index_none" href="" class="list-group-item" style="padding: 3px 15px;">
             </a>
             <a id="b_tab_index_" href="{{ URL::to('configurations') }}" class="list-group-item @if ($tab_index==-1) active @endif">

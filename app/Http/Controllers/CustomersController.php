@@ -264,6 +264,14 @@ class CustomersController extends Controller {
 
         }
 
+        if ($section == '#customeruser')
+        {
+
+            return redirect(route('customers.edit', $id) . $section)
+                ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name_commercial', ''));
+
+        }
+
         
         $customer = $this->customer->with('address')->findOrFail($id);
         $address = $customer->address;

@@ -97,6 +97,8 @@ class ConfigurationKeysController extends Controller {
                         'ABCC_HEADER_TITLE',
                         'ABCC_STOCK_THRESHOLD',
                         'ABCC_DEFAULT_PASSWORD',
+                        'ABCC_CART_PERSISTANCE',
+                        'ABCC_ORDERS_SEQUENCE',
 //                        'SUPPORT_CENTER_EMAIL',
 //                        'SUPPORT_CENTER_NAME',
 

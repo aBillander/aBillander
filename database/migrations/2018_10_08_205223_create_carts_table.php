@@ -25,6 +25,8 @@ class CreateCartsTable extends Migration
 //            $table->string('reference_customer', 32)->nullable();         // Custumer order number 
             $table->text('notes_from_customer')->nullable();          // Notes FROM the Customer
 
+            $table->timestamp('date_prices_updated')->nullable();       // Reference date for prices & Cart persistance
+
             $table->integer('total_items')->unsigned()->default(0);
             $table->decimal('total_currency_tax_excl', 20, 6)->default(0.0);
             $table->decimal('total_tax_excl', 20, 6)->default(0.0);

@@ -25,7 +25,7 @@
   <thead>
         <tr>
             <!-- th class="text-left" xstyle="width: 35px">{{l('ID', [], 'layouts')}}</th -->
-            <th class="text-left">{{l('Category Name')}}</th>
+            <th class="text-left">{{-- l('Category Name') --}}</th>
             <th class="text-right"> </th>
         </tr>
   </thead>
@@ -48,7 +48,7 @@
 
     <tr class="child xwarning {{ $child->id == $category_id ? 'warning' : '' }}">
       <!--td><span class="treegrid-expander"></span>[{{ $child->id }}]</td -->
-      <td style="padding-left: 32px"><!-- span class="treegrid-indent"></span><span class="treegrid-expander xglyphicon xglyphicon-plus"></span -->{{ $child->name }} <span class="badge" title="{{l('Products in this Category')}}">{{ $child->products()->count() }}</span></td>
+      <td style="padding-left: 32px"><!-- span class="treegrid-indent"></span><span class="treegrid-expander xglyphicon xglyphicon-plus"></span -->{{ $child->name }} <span class="badge" title="{{l('Products in this Category')}}">{{ $child->customerproducts()->count() }}</span></td>
 
       <td class="text-right">
                 <!-- a class="btn btn-sm btn-warning" href="" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-refresh"></i> &nbsp; {{l('Import', [], 'layouts')}}</a -->

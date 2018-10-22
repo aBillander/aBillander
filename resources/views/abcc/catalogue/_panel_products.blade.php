@@ -68,7 +68,7 @@
       </td>
 
       <td>{{ $product->name }}</td>
-      <td>{{ optional($product->manufacturer)->name }}</td>
+      <td>{{ optional($product->manufacturer)->name }} {{ optional($product->category)->name }}</td>
       <td>
         <div class="progress progress-striped" style="width: 34px">
           <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%"></div>
@@ -78,6 +78,7 @@
 
       <td class="text-right xbutton-pad" style="white-space: nowrap;">
 
+{{--
             <div class="btn-group">
               <a href="#" class="btn btn-sm btn-warning">Warning</a>
               <a href="#" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
@@ -101,12 +102,27 @@
                 </li>
               </ul>
             </div>
-{{--
+
 https://stackoverflow.com/questions/25424163/bootstrap-button-dropdown-with-custom-content/25426890
 https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-group-with-an-html-form
 --}}
 
-            <a class="btn btn-sm btn-info" href="{{ route('abcc.cart.add', ['id' => $product->id]) }}" title="{{l('Add to Cart', 'abcc/layouts')}}"><i class="fa fa-cart-plus"></i></a>
+            <!-- a class="btn btn-sm btn-info" href="{{ route('abcc.addToCart', ['id' => $product->id]) }}" title="{{l('Add to Cart', 'abcc/layouts')}}"><i class="fa fa-cart-plus"></i></a -->
+
+            <div xclass="form-group">
+              <div class="input-group" style="width: 72px;">
+
+                <input class="input-product-quantity form-control input-sm col-xs-2" data-id="{{$product->id}}" type="text" size="5" maxlength="5" style="xwidth: auto;" value="1" onclick="this.select()" >
+
+                <span class="input-group-btn">
+                  <button class="update-product-quantity btn btn-sm btn-info" data-id="{{$product->id}}" type="button" title="{{l('Add to Cart', 'abcc/layouts')}}" xonclick="add_discount_to_order($('#order_id').val());">
+                      <span id="add-icon-{{$product->id}}" class="fa fa-cart-plus"></span>
+                  </button>
+                </span>
+
+              </div>
+            </div>
+
 
       </td>
     </tr>
@@ -133,3 +149,101 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 
 
 @include('products._modal_view_image')
+
+
+
+@section('scripts')    @parent
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+
+
+        $(document).on('click', '.update-product-quantity', function(evnt) {
+            var id       = $(this).attr('data-id');
+            var quantity = $(this).parent().prev( ".input-product-quantity" ).val();
+            var el  = $('#add-icon-'+id);
+            var elp = $('#add-icon-'+id).parent();
+
+            el.removeClass('fa-cart-plus');
+            el.addClass('fa-spinner');
+
+            addProductToCart(id, quantity);
+
+            el.removeClass('fa-spinner');
+            el.addClass('fa-check');
+            elp.removeClass('btn-info');
+            elp.addClass('btn-success');
+            return false;
+
+        });
+        
+
+        $(document).on('keydown','.input-product-quantity', function(evnt){
+            var id       = $(this).attr('data-id');
+            var quantity = $(this).val();
+            var el  = $('#add-icon-'+id);
+            var elp = $('#add-icon-'+id).parent();
+      
+          if (evnt.keyCode == 13) {
+             // console.log("put function call here");
+             evnt.preventDefault();
+             addProductToCart(id, quantity);
+
+              el.removeClass('fa-cart-plus');
+              el.addClass('fa-check');
+              elp.removeClass('btn-info');
+              elp.addClass('btn-success');
+             return false;
+          }
+
+        });
+
+
+  }); // $(document).ready
+
+
+/* ******************************************************************************************************************************************** */
+  
+
+  function addProductToCart(product_id=0, quantity=1) {
+     
+     if (product_id<=0) return ;
+
+     // alert(product_id+' - '+quantity);return ;
+
+      var url = "{{ route('abcc.cart.add') }}";
+      var token = "{{ csrf_token() }}";
+
+      var payload = { 
+                        product_id : product_id,
+                        quantity : quantity
+                    };
+
+      $.ajax({
+          url : url,
+          headers : {'X-CSRF-TOKEN' : token},
+          type : 'POST',
+          dataType : 'json',
+          data : payload,
+
+          success: function(result){
+
+              // loadCartlines();
+
+              $(function () {  $('[data-toggle="tooltip"]').tooltip()});
+
+              // showAlertDivWithDelay("#msg-success");
+
+              console.log(result);
+          }
+      });
+
+  }
+  
+  
+</script>
+
+@endsection

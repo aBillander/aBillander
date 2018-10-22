@@ -69,6 +69,14 @@ Route::get('404', function()
 // Secure-Routes
 Route::group(['middleware' =>  ['auth']], function()
 {
+    // Route::get( 'contact', 'ContactMessagesController@create');
+    Route::post('contact', 'ContactMessagesController@store');
+
+    Route::get('soon', function()
+    {
+        return view('soon');
+    });
+    
     Route::group(['middleware' => 'authAdmin'], function()
     {
     });

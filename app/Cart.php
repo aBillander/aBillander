@@ -18,6 +18,10 @@ class Cart extends Model
 
     //
 
+    protected $dates = [
+                        'date_prices_updated'
+                        ];
+
     protected $fillable = [
     						'customer_user_id', 'customer_id', 'notes_from_customer', 
     						'total_items', 'total_currency_tax_excl', 'total_tax_excl', 
@@ -62,6 +66,31 @@ class Cart extends Model
             }
         });
 
+        static::deleted(function ()
+        {
+            // after delete() method call this
+            if ( !Auth::guard('customer')->check() )
+                return null;
+
+            // Get Customer Cart
+            $customer = Auth::user()->customer;
+
+            // Create instance
+            $cart = Cart::create([
+                'customer_user_id' => Auth::user()->id,
+                'customer_id' => $customer->id,
+                'invoicing_address_id' => $customer->invoicing_address_id,
+                'shipping_address_id' => $customer->shipping_address_id,
+                'shipping_method_id' => $customer->shipping_method_id,
+ //             'carrier_id',
+                'currency_id' => $customer->currency_id,
+                'payment_method_id' => $customer->payment_method_id,
+            ]);
+
+            \App\Context::getContext()->cart = $cart;
+
+        });
+
     }
     
 
@@ -94,6 +123,7 @@ class Cart extends Model
  //       		'carrier_id',
         		'currency_id' => $customer->currency_id,
         		'payment_method_id' => $customer->payment_method_id,
+//                'date_prices_updated',
         	]);
         }
 
@@ -154,7 +184,17 @@ class Cart extends Model
 
     public function nbrItems()
     {
-        return $this->cartlines()->count();
+        return $this->cartlines()->count() . ' - ' . $this->persistance_left;
+    }
+
+    public function getPersistanceLeftAttribute()
+    {
+        $persistance = \App\Configuration::getInt('ABCC_CART_PERSISTANCE');
+        $now = \Carbon\Carbon::now();
+
+        $days = $this->date_prices_updated ? $now->diffInDays($this->date_prices_updated) : $persistance;
+
+        return $days;
     }
 
     public function getQuantityAttribute() 

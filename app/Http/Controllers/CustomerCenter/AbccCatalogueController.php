@@ -5,11 +5,13 @@ namespace App\Http\Controllers\CustomerCenter;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\Category;
 use App\Product;
 
-class AbccCatalogueController extends Controller {
+class AbccCatalogueController extends Controller
+{
 
 
    protected $category;
@@ -30,6 +32,8 @@ class AbccCatalogueController extends Controller {
 	 */
 	public function index(Request $request)
 	{
+    	$customer_user = Auth::user();
+		
 		$category_id = $request->input('category_id', 0);
 		// Not needed: $request->merge( ['category_id' => $category_id] );
 
@@ -68,19 +72,24 @@ class AbccCatalogueController extends Controller {
 			// abi_r($parent->name.' / '.$child->name, true);
 		}
 
-        $products = $this->product
-                              ->filter( $request->all() )
- //                             ->with('measureunit')
-							  ->with('combinations')                                  
- //                             ->with('category')
- //                             ->with('tax')
-                              ->IsActive()
-                              ->orderBy('reference', 'asc');
+		$products = null;
 
-        $products = $products->paginate( 10 );	// \App\Configuration::get('DEF_ITEMS_PERPAGE') );
-
-        $products->setPath('catalogue');     // Customize the URI used by the paginator
+		if ( $customer_user ) {
+                $products = $this->product
+                                      ->filter( $request->all() )
+         //                             ->with('measureunit')
+        							  ->with('combinations')                                  
+         //                             ->with('category')
+         //                             ->with('tax')
+	                                  ->IsSaleable()
+	                                  ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id)
+                                      ->IsActive()
+                                      ->orderBy('reference', 'asc');
         
+                $products = $products->paginate( 10 );	// \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        
+                $products->setPath('catalogue');     // Customize the URI used by the paginator
+        }        
         return view('abcc.catalogue.index', compact('category_id', 'categories', 'products', 'breadcrumb'));
 	}
 

@@ -81,6 +81,34 @@
         <span class="help-block">{!! l('ABCC_DEFAULT_PASSWORD.help') !!}</span>
       </div>
     </div>
+
+    <div class="form-group {{ $errors->has('ABCC_CART_PERSISTANCE') ? 'has-error' : '' }}">
+      <label for="ABCC_CART_PERSISTANCE" class="col-lg-4 control-label">{!! l('ABCC_CART_PERSISTANCE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_CART_PERSISTANCE" name="ABCC_CART_PERSISTANCE" placeholder="" value="{{ old('ABCC_CART_PERSISTANCE', $key_group['ABCC_CART_PERSISTANCE']) }}" />
+        {{ $errors->first('ABCC_CART_PERSISTANCE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_CART_PERSISTANCE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('ABCC_ORDERS_SEQUENCE') ? 'has-error' : '' }}">
+      <label for="ABCC_ORDERS_SEQUENCE" class="col-lg-4 control-label">{!! l('ABCC_ORDERS_SEQUENCE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('ABCC_ORDERS_SEQUENCE', $orders_sequenceList, old('ABCC_ORDERS_SEQUENCE', $key_group['ABCC_ORDERS_SEQUENCE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('ABCC_ORDERS_SEQUENCE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_ORDERS_SEQUENCE.help') !!}</span>
+      </div>
+    </div>
     
 
 

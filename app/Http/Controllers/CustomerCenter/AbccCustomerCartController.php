@@ -338,7 +338,7 @@ class AbccCustomerCartController extends Controller
         // return response()->json(['order_id' => $order_id] + $request->all());
 
         $product_id      = $request->input('product_id');
-        $combination_id  = $request->input('combination_id');
+        $combination_id  = $request->input('combination_id', 0);
 
         // Do the Mambo!
         // Product
@@ -388,6 +388,44 @@ class AbccCustomerCartController extends Controller
         ] );
     }
 
+
+    public function updateLineQuantity(Request $request)
+    {
+
+        $line_id = $request->input('line_id', 0);
+
+    	if ( !$line_id ) 
+    		return response( null );
+
+        $quantity = floatval( $request->input('quantity', 1.0) );
+        $quantity >= 0 ?: 1.0;
+
+    	$customer_user = Auth::user();	// Don't trust: $request->input('customer_id')
+
+    	if ( !$customer_user ) 
+    		return response( null );
+
+        $cart =  \App\Context::getContext()->cart;
+
+        // Get line
+        $line = $cart->cartlines()->where('id', $line_id);
+
+        if ($quantity>0)
+        	$line->update(['quantity' => $quantity]);
+        else
+        	$line->delete();
+
+
+        // Now, update Order Totals
+        // $order->makeTotals();
+
+
+
+        return response()->json( [
+                'msg' => 'OK',
+                'data' => [$line_id, $quantity]
+        ] );
+    }
 
 
 

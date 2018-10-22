@@ -8,12 +8,16 @@
               <th>{{ l('Reference') }}</th>
               <th colspan="2">{{ l('Product Name') }}</th>
               <th>{{ l('Stock') }}</th>
-               <th class="text-center">{{ l('Quantity') }}
+               <th class="text-center button-pad">{{ l('Quantity') }}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                           data-content="{{ l('Change Quantity and press [Enter] or click button on the right.') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                    </a></th>
-               <th class="text-right">{{ l('Customer Price') }}</th>
+               <th class="text-right">{{ l('Customer Price') }}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Prices are exclusive of Tax') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a></th>
                <th class="text-right">{{ l('Total') }}</th>
               <th class="text-right"> </th>
             </tr>
@@ -55,10 +59,10 @@
             <div xclass="form-group">
               <div class="input-group" style="width: 72px;">
 
-                <input name="document_discount_percent" id="document_discount_percent" class="input-update-order-total form-control input-sm col-xs-2" type="text" size="5" maxlength="5" style="xwidth: auto;" value="{{ (int) $line->quantity }}" onclick="this.select()" xonchange="add_discount_to_order($('#order_id').val());">
+                <input class="input-line-quantity form-control input-sm col-xs-2" data-id="{{$line->id}}" data-quantity="{{ (int) $line->quantity }}" type="text" size="5" maxlength="5" style="xwidth: auto;" value="{{ (int) $line->quantity }}" onclick="this.select()" >
 
                 <span class="input-group-btn">
-                  <button class="update-order-total btn btn-sm btn-lightblue" type="button" title="{{l('Apply', [], 'layouts')}}" xonclick="add_discount_to_order($('#order_id').val());">
+                  <button class="update-line-quantity btn btn-sm btn-lightblue" data-id="{{$line->id}}" data-quantity="{{ (int) $line->quantity }}" type="button" title="{{l('Apply', [], 'layouts')}}" xonclick="add_discount_to_order($('#order_id').val());">
                       <span class="fa fa-calculator"></span>
                   </button>
                 </span>

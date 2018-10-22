@@ -273,7 +273,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		// Sequences
 		
 		// Customer Orders Sequencess
-		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('configuration_keys.key_group_2', 'configuration_keys.key_group_5'), function($view) {
 		    
 		    $view->with('orders_sequenceList', \App\Sequence::listFor( \App\CustomerOrder::class ));
 		    

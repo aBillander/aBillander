@@ -20,6 +20,8 @@ $confs = [
 ['ABCC_HEADER_TITLE', '<span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>'],
 ['ABCC_STOCK_THRESHOLD', '999'],
 ['ABCC_DEFAULT_PASSWORD', '12345678'],
+['ABCC_CART_PERSISTANCE', '30'],
+['ABCC_ORDERS_SEQUENCE', ''],
 
 ['ALLOW_PRODUCT_SUBCATEGORIES', '1'],
 ['ALLOW_SALES_RISK_EXCEEDED', '0'],
@@ -42,6 +44,7 @@ $confs = [
 ['DEF_MEASURE_UNIT_FOR_BOMS', ''],
 ['DEF_MEASURE_UNIT_FOR_PRODUCTS', ''],
 ['DEF_OUTSTANDING_AMOUNT', '3000.0'],
+['DEF_PAYMENT_METHOD', ''],
 ['DEF_PERCENT_DECIMALS', '2'],
 ['DEF_QUANTITY_DECIMALS', '2'],
 ['DEF_SHIPPING_METHOD', ''],

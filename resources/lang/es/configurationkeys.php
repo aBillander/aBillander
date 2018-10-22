@@ -125,6 +125,10 @@ return [
 	'ABCC_STOCK_THRESHOLD.help' => 'Cuando el Stock es inferior a esta cantidad, aparece el aviso "Poco Stock".',
 	'ABCC_DEFAULT_PASSWORD.name' => 'Contraseña por defecto',
 	'ABCC_DEFAULT_PASSWORD.help' => 'Esta Contraseña será asignada cuando se permite a un Cliente acceder al Centro de Clientes. Más adelante podrá cambiarse.',
+	'ABCC_CART_PERSISTANCE.name' => 'Persistencia del Carrito (días)',
+	'ABCC_CART_PERSISTANCE.help' => 'Número de días durante los que se preservará el Precio de los Productos en el Carrito.',
+	'ABCC_ORDERS_SEQUENCE.name' => 'Serie de Pedidos para Clientes',
+	'ABCC_ORDERS_SEQUENCE.help' => 'Los Pedidos que se crean en el Centro de Clientes irán a esta Serie.',
 
 
 	'All Keys' => 'Todas las Claves',

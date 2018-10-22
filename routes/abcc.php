@@ -64,21 +64,34 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
 
     Route::group(['middleware' =>  ['auth:customer', 'abcccontext']], function()
     {
-        Route::get( '/account/edit', 'AbccCustomerUserController@edit'  )->name('abcc.account.edit'  );
-        Route::post('/account',      'AbccCustomerUserController@update')->name('abcc.account.update');
-
         Route::get('/catalogue', 'AbccCatalogueController@index'  )->name('abcc.catalogue');
 //        Route::get('/catalogue/category/{id}', 'AbccCatalogueController@categoryShow')->name('abcc.catalogue.category.show');
 
-        Route::get('/orders', 'AbccCustomerOrdersController@index')->name('abcc.orders.index');
+ //       Route::get( '/orders', 'AbccCustomerOrdersController@index')->name('abcc.orders.index');
+ //       Route::post('/orders', 'AbccCustomerOrdersController@store')->name('abcc.orders.store');
+        Route::resource('/orders',          'AbccCustomerOrdersController')->names('abcc.orders');
+        Route::get('orders/{id}/duplicate', 'AbccCustomerOrdersController@duplicateOrder'   )->name('abcc.order.duplicate'  );
 
         Route::get('/cart', 'AbccCustomerCartController@index')->name('abcc.cart');
         Route::get('/cart/line/searchproduct',        'AbccCustomerCartController@searchProduct' )->name('cart.searchproduct');
         Route::get('/cart/line/getproduct',           'AbccCustomerCartController@getProduct'    )->name('cart.getproduct');
         Route::get('/cart/add/{id}', 'AbccCustomerCartController@addItem')->name('abcc.addToCart');
         Route::post('cart/additem',  'AbccCustomerCartController@add'    )->name('abcc.cart.add'  );
-        Route::get('cart/getlines',  'AbccCustomerCartController@getCartLines' )->name('abcc.cart.getlines');
-        Route::post('customercart/deleteline/{lid}',  'AbccCustomerCartController@deleteCartLine'  )->name('cart.deleteline' );
+        Route::post('cart/updateline',  'AbccCustomerCartController@updateLineQuantity'    )->name('abcc.cart.updateline');
+        Route::get('/cart/getlines',  'AbccCustomerCartController@getCartLines' )->name('abcc.cart.getlines');
+        Route::post('cart/deleteline/{lid}',  'AbccCustomerCartController@deleteCartLine'  )->name('cart.deleteline');
+
+
+        Route::get( '/account/edit', 'AbccCustomerUserController@edit'  )->name('abcc.account.edit'  );
+        Route::post('/account',      'AbccCustomerUserController@update')->name('abcc.account.update');
+
+        Route::get('/customer/edit', 'AbccCustomerController@edit')->name('abcc.customer.edit');
+        Route::get('/customer',      'AbccCustomerController@update')->name('abcc.customer.update');
+
+        Route::resource('/addresses',  'AbccCustomerAddressesController')->names('abcc.customer.addresses');
+
+        // Route::resource('customers.addresses', 'CustomerAddressesController');
+
     });
 });
 

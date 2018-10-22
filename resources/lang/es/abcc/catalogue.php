@@ -12,6 +12,7 @@ return [
 	*/
 
 	'Catalogue'     => 'Catálogo',
+	'Category'     => 'Categoría',
 	'Categories'     => 'Categorías',
 	'Products in this Category'     => 'Productos en esta Categoría',
 	'Products'     => 'Productos',

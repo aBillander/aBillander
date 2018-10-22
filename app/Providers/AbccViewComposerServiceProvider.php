@@ -49,6 +49,13 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		    }
 		    
 		});
+
+		// Manufacturers
+		view()->composer(array('abcc.catalogue.index'), function($view) {
+		    
+		    $view->with('manufacturerList', \App\Manufacturer::pluck('name', 'id')->toArray());
+		    
+		});
 	}
 
 

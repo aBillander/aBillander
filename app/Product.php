@@ -191,6 +191,11 @@ class Product extends Model {
             $query->where('category_id', '=', $params['category_id']);
         }
 
+        if ( isset($params['manufacturer_id']) && $params['manufacturer_id'] > 0 )
+        {
+            $query->where('manufacturer_id', '=', $params['manufacturer_id']);
+        }
+
         if ( isset($params['procurement_type']) && $params['procurement_type'] != '' )
         {
             $query->where('procurement_type', '=', $params['procurement_type']);

@@ -5,10 +5,14 @@ namespace App\Http\Controllers\CustomerCenter;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\CustomerUser;
+// use App\Customer;
+// use App\Address;
 
-class AbccCustomerUserController extends Controller {
+class AbccCustomerUserController extends Controller 
+{
 
 
    protected $customer_user;
@@ -69,17 +73,15 @@ class AbccCustomerUserController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit(Request $request)
+	public function edit()
 	{
 		// Get logged in user
+        $customer_user = Auth::user();
+        $customer      = Auth::user()->customer;
 
-		return 'OK';
-
-		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
+        $tab_index = 'account';
 		
-		$payment = null;
-		
-		return view('customer_vouchers.edit', compact('payment', 'back_route'));
+		return view('abcc.account.edit', compact('customer_user', 'customer', 'tab_index'));
 	}
 
 	/**
@@ -88,7 +90,7 @@ class AbccCustomerUserController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id, Request $request)
+	public function update(Request $request)
 	{
 		//
 	}

@@ -54,7 +54,7 @@
     {!! Form::label('name', l('Product Name')) !!}
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-2 col-md-2 col-sm-2" style="display: none">
     {!! Form::label('stock', l('Stock')) !!}
     {!! Form::select('stock', array('-1' => l('All', [], 'layouts'),
                                           '0'  => l('No' , [], 'layouts'),
@@ -68,8 +68,8 @@
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {!! Form::label('procurement_type', l('Procurement type'), ['class' => 'control-label']) !!}
-    {!! Form::select('procurement_type', ['' => l('All', [], 'layouts')] + ($product_procurementtypeList=[]), null, array('class' => 'form-control')) !!}
+    {!! Form::label('manufacturer_id', l('Manufacturer')) !!}
+    {!! Form::select('manufacturer_id', array('0' => l('All', [], 'layouts')) + $manufacturerList, null, array('class' => 'form-control')) !!}
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="display: none">

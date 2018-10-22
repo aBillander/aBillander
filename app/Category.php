@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Illuminate\Support\Facades\Auth;
+
 class Category extends Model {
     
     protected $fillable = [ 'name', 'position', 'publish_to_web', 'webshop_id', 'reference_external', 
@@ -36,6 +38,13 @@ class Category extends Model {
     public function products()
     {
         return $this->hasMany('App\Product');
+    }
+
+    public function customerproducts($customer_id=null, $currency_id=null)
+    {
+        $customer_user = Auth::user();
+
+        return $this->hasMany('App\Product')->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id )->get();
     }
 	
 }

@@ -19,6 +19,9 @@ return [
 	'Prices are exclusive of Tax'     => 'El Precio no incluye Impuestos',
 	'Quantity'     => 'Cantidad',
 	'Total'     => 'Total',
+
+	'Change Quantity and press [Enter] or click button on the right.'     => 'Cambie la Cantidad y pulse [Enter] o click en el botón a la derecha.',
+//	'Taxes are not included.'     => 'Impuestos no incluidos.',
 	
 	'View Image'     => 'Ver Imagen',
 	'Product Images'     => 'Imágenes de Productos',

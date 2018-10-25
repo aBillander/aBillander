@@ -57,10 +57,10 @@ class CustomerUser extends Authenticatable
      * 
      */
     public static $rules = array(
-        'email'       => array('required', 'email'),
+//        'email'       => array('required', 'email'),
         'password'    => array('required', 'min:2', 'max:32'),
-        'language_id' => 'exists:languages,id',
-        'customer_id' => 'exists:customers,id',
+//        'language_id' => 'exists:languages,id',
+//        'customer_id' => 'exists:customers,id',
     );
 
     /**  trait CanResetPassword

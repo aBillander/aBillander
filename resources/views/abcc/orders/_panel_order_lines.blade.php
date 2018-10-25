@@ -36,13 +36,13 @@
   @foreach ($order->customerorderlines as $line)
     <tr>
       <!-- td>{{ $line->id }}</td -->
-      <td title="{{ $line->product->id }}">@if ($line->product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
-                @else {{ $line->product->reference }}
+      <td title="{{ optional($line->product)->id }}">@if (optional($line->product)->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
+                @else {{ $line->reference }}
                 @endif</td>
 
       <td>
 @php
-  $img = $line->product->getFeaturedImage();
+  $img = optional($line->product)->getFeaturedImage();
 @endphp
 @if ($img)
               <a class="view-image" data-html="false" data-toggle="modal" 
@@ -57,7 +57,7 @@
 @endif
       </td>
 
-      <td>{{ $line->product->name }}</td>
+      <td>{{ $line->name }}</td>
 
         <td>{{ $line->as_quantity('quantity') }}</td>
 

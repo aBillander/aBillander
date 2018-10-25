@@ -1,11 +1,11 @@
 {{-- File name after template name --}}
 
-@extends('templates::customer_shipping_slips.default.master_shipping_slip')
+@extends('templates::abcc.customer_orders.default.master_order')
 
 
 @section('content')
 
-	@include('templates::customer_shipping_slips.default.shipping_slip_body')
+	@include('templates::abcc.customer_orders.default.order_body')
 
 @endsection
 
@@ -19,7 +19,7 @@
 
 <style>
 
-	@include('templates::customer_shipping_slips.default.shipping_slip_css')
+	@include('templates::abcc.customer_orders.default.order_css')
 
 </style>
 

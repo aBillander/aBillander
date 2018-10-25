@@ -93,9 +93,28 @@ class AbccCustomerController extends Controller
      * @param  \App\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request)
     {
-        //
+        // Get logged in user
+        $customer_user = Auth::user();
+        $customer      = Auth::user()->customer;
+        $address = $customer->address;
+
+//        $rules = array_except( Customer::$rules, array('password') );
+        $rules = [];
+        $this->validate($request, $rules);
+
+        $request->merge( ['name_commercial' => $request->input('address.name_commercial')] );
+
+        // $customer->update( array_merge($request->all(), ['name_commercial' => $request->input('address.name_commercial')] ) );
+        $customer->update( $request->all() );
+        if ( !$request->input('address.name_commercial') ) $request->merge( ['address.name_commercial' => $request->input('name_fiscal')] );
+        $data = $request->input('address');
+        $address->update($data);
+
+
+       return redirect()->route('abcc.customer.edit')
+            ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') . $request->input('name_commercial'));
     }
 
     /**

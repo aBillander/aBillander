@@ -7,8 +7,14 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
+
         <a href="{{ URL::to('templates/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+        <button type="button" class="btn btn-sm btn-info" 
+        		data-toggle="modal" data-target="#templatesHelp"
+        		title="{{l('Help', [], 'layouts')}}"><i class="fa fa-medkit"></i> {{l('Help', [], 'layouts')}}</button>
+
     </div>
     <h2>
         {{ l('Templates') }}
@@ -76,3 +82,5 @@
 @stop
 
 @include('layouts/modal_delete')
+
+@include('templates/_modal_help')

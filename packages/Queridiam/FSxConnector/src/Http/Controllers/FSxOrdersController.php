@@ -105,6 +105,7 @@ class FSxOrdersController extends Controller
 
     	public function exportOrders( Request $request )
     	{
+            // abi_r( $request->input('worders', []) , true);
 
             return $this->exportOrderList( $request->input('worders', []) );
     	} 

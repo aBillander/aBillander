@@ -74,7 +74,11 @@
           <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%"></div>
         </div></td>
 
-      <td>{{ $product->displayPrice }}</td>
+      <td>{{ $product->as_priceable( 
+              $product->getPriceByList( 
+                  \Auth::user()->customer->currentpricelist() 
+              )->getPrice() 
+            ) }}</td>
 
       <td class="text-right xbutton-pad" style="white-space: nowrap;">
 
@@ -107,7 +111,7 @@ https://stackoverflow.com/questions/25424163/bootstrap-button-dropdown-with-cust
 https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-group-with-an-html-form
 --}}
 
-            <!-- a class="btn btn-sm btn-info" href="{{ route('abcc.addToCart', ['id' => $product->id]) }}" title="{{l('Add to Cart', 'abcc/layouts')}}"><i class="fa fa-cart-plus"></i></a -->
+            <!-- a class="btn btn-sm btn-info" href="{ { route('abcc.addToCart', ['id' => $product->id]) } }" title="{{l('Add to Cart', 'abcc/layouts')}}"><i class="fa fa-cart-plus"></i></a -->
 
             <div xclass="form-group">
               <div class="input-group" style="width: 72px;">

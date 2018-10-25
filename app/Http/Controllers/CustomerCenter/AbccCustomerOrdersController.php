@@ -48,7 +48,7 @@ class AbccCustomerOrdersController extends Controller {
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 
-        $customer_orders = $customer_orders->paginate( 2 );	// \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $customer_orders = $customer_orders->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $customer_orders->setPath('orders');
 
@@ -277,7 +277,7 @@ class AbccCustomerOrdersController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+		// You naughty boy! 
 	}
 
 
@@ -294,84 +294,68 @@ class AbccCustomerOrdersController extends Controller {
         	return redirect()->route('abcc.orders.index')
                 	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
-        return redirect()->route('abcc.cart');
+        $cart = \App\Context::getContext()->cart;
 
+        foreach ($order->customerOrderLines as $orderline) {
+        	# code...
+        	$line = $cart->addLine($orderline->product_id, $orderline->combination_id, $orderline->quantity);
+        }
 
-
-        $order = $this->customerOrder->findOrFail($id);
-
-        // Duplicate BOM
-        $clone = $order->replicate();
-
-        // Extra data
-        $seq = \App\Sequence::findOrFail( $order->sequence_id );
-
-        // Not so fast, dudde:
-/*
-        $doc_id = $seq->getNextDocumentId();
-
-        $clone->document_prefix      = $seq->prefix;
-        $clone->document_id          = $doc_id;
-        $clone->document_reference   = $seq->getDocumentReference($doc_id);
-*/
-        $clone->user_id              = \App\Context::getContext()->user->id;
-
-        $clone->document_reference = null;
-        $clone->reference = '';
-        $clone->reference_customer = '';
-        $clone->reference_external = '';
-
-        $clone->created_via          = 'manual';
-        $clone->status               = 'draft';
-        $clone->locked               = 0;
-        
-        $clone->document_date = \Carbon\Carbon::now();
-        $clone->payment_date = null;
-        $clone->validation_date = null;
-        $clone->delivery_date = null;
-        $clone->delivery_date_real = null;
-        $clone->close_date = null;
-        
-        $clone->tracking_number = null;
-
-        $clone->parent_document_id = null;
-
-        $clone->production_sheet_id = null;
-        $clone->export_date = null;
-        
-        $clone->secure_key = null;
-        $clone->import_key = '';
-
-
-        $clone->save();
-
-        // Duplicate BOM Lines
-        if ( $order->customerorderlines()->count() )
-            foreach ($order->customerorderlines as $line) {
-
-                $clone_line = $line->replicate();
-
-                $clone->customerorderlines()->save($clone_line);
-
-                if ( $line->customerorderlinetaxes()->count() )
-                    foreach ($line->customerorderlinetaxes as $linetax) {
-
-                        $clone_line_tax = $linetax->replicate();
-
-                        $clone_line->customerorderlinetaxes()->save($clone_line_tax);
-
-                    }
-            }
-
-        // Save Customer order
-        $clone->push();
-
-        // Good boy:
-        $clone->confirm();
-
-
-        return redirect('customerorders/'.$clone->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $clone->id], 'layouts'));
+        return redirect()->route('abcc.cart')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $order->id], 'layouts'));
     }
 
+
+	public function showPdf($id, Request $request)
+	{
+
+        $customer      = Auth::user()->customer;
+
+        $document = $this->customerOrder->where('id', $id)->where('customer_id', $customer->id)->first();
+
+        if (!$document) 
+        	return redirect()->route('abcc.orders.index')
+                	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
+        
+
+        $company = \App\Context::getContext()->company;
+
+        // Get Template
+        $t = \App\Template::find( Configuration::getInt('ABCC_DEFAULT_ORDER_TEMPLATE') ); // abi_r($template, true);
+
+        if ( !$t )
+        	return redirect()->route('abcc.orders.show', $id)
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+        $document->template = $t;
+
+        $template = $t->getPath( 'CustomerOrder' );
+
+        $paper = $document->template->paper;    // A4, letter
+        $orientation = $document->template->orientation;    // 'portrait' or 'landscape'.
+        
+        // Catch for errors
+		try{
+        		$pdf        = \PDF::loadView( $template, compact('document', 'company') )
+                            ->setPaper( $paper, $orientation );
+		}
+		catch(\Exception $e){
+
+		    	return redirect()->route('abcc.orders.show', $id)
+                	->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+		}
+
+        // PDF stuff ENDS
+
+        $pdfName    = 'order_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
+
+        if ($request->has('screen')) return view($template, compact('document', 'company'));
+        
+        return  $pdf->stream();
+        return  $pdf->download( $pdfName . '.pdf');
+
+
+        return redirect()->route('abcc.orders.index')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+	}
 }

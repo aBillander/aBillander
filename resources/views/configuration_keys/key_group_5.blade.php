@@ -54,6 +54,34 @@
       </div>
     </div>
 
+    <div class="form-group {{ $errors->has('ABCC_EMAIL') ? 'has-error' : '' }}">
+      <label for="ABCC_EMAIL" class="col-lg-4 control-label">{!! l('ABCC_EMAIL.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_EMAIL" name="ABCC_EMAIL" placeholder="" value="{{ old('ABCC_EMAIL', $key_group['ABCC_EMAIL']) }}" />
+        {{ $errors->first('ABCC_EMAIL', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_EMAIL.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('ABCC_EMAIL_NAME') ? 'has-error' : '' }}">
+      <label for="ABCC_EMAIL_NAME" class="col-lg-4 control-label">{!! l('ABCC_EMAIL_NAME.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_EMAIL_NAME" name="ABCC_EMAIL_NAME" placeholder="" value="{{ old('ABCC_EMAIL_NAME', $key_group['ABCC_EMAIL_NAME']) }}" />
+        {{ $errors->first('ABCC_EMAIL_NAME', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_EMAIL_NAME.help') !!}</span>
+      </div>
+    </div>
+
     <div class="form-group {{ $errors->has('ABCC_STOCK_THRESHOLD') ? 'has-error' : '' }}">
       <label for="ABCC_STOCK_THRESHOLD" class="col-lg-4 control-label">{!! l('ABCC_STOCK_THRESHOLD.name') !!}</label>
       <div class="col-lg-8">
@@ -93,6 +121,20 @@
         <div class="col-lg-6"> </div>
         </div>
         <span class="help-block">{!! l('ABCC_CART_PERSISTANCE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('ABCC_DEFAULT_ORDER_TEMPLATE') ? 'has-error' : '' }}">
+      <label for="ABCC_DEFAULT_ORDER_TEMPLATE" class="col-lg-4 control-label">{!! l('ABCC_DEFAULT_ORDER_TEMPLATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('ABCC_DEFAULT_ORDER_TEMPLATE', $orders_templateList, old('ABCC_DEFAULT_ORDER_TEMPLATE', $key_group['ABCC_DEFAULT_ORDER_TEMPLATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('ABCC_DEFAULT_ORDER_TEMPLATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_DEFAULT_ORDER_TEMPLATE.help') !!}</span>
       </div>
     </div>
 

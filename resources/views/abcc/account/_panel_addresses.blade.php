@@ -1,7 +1,7 @@
 
 <div id="panel_addressbook">
 
-         {!! Form::model($customer, array('route' => array('customers.update', $customer->id), 'method' => 'PUT', 'class' => 'form')) !!}
+         {!! Form::model($customer, array('route' => array('abcc.customer.addresses.default'), 'xmethod' => 'PUT', 'class' => 'form')) !!}
 
             <div class="panel panel-primary">
                <div class="panel-heading">
@@ -56,7 +56,7 @@
 
     <div class="page-header">
         <div class="pull-right" style="padding-top: 4px;">
-            <a href="{{ URL::to('customers/' . $customer->id . '/addresses/create') . '?back_route=' . urlencode('customers/' . $customer->id . '/edit#addressbook') }}" class="btn btn-sm btn-success" 
+            <a href="{{ route('abcc.customer.addresses.create') }}" class="btn btn-sm btn-success" 
                     title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
         </div>
         <h3>
@@ -117,11 +117,11 @@
                             data-from_name = "{{ \App\Context::getContext()->user->getFullName() }}" 
                             data-from_email = "{{ \App\Context::getContext()->user->email }}" 
                             onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a -->               
-                    <a class="btn btn-sm btn-warning" href="{{ URL::to( 'customers/'.$customer->id.'/addresses/' . $addr->id . '/edit?back_route=' . urlencode('customers/' . $customer->id . '/edit#addressbook') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                    <a class="btn btn-sm btn-warning" href="{{ route( 'abcc.customer.addresses.edit', $addr->id ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
                       @if ( $customer->invoicing_address_id != $addr->id )
                     <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                            href="{{ URL::to('customers/'.$customer->id.'/addresses/' . $addr->id . '?back_route=' . urlencode('customers/' . $customer->id . '/edit#addressbook') ) }}" 
+                            href="{{ route( 'abcc.customer.addresses.destroy', $addr->id ) }}" 
                             data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                             data-title="{{ l('Address Book') }} :: ({{$addr->id}}) {{ $addr->alias }} " 
                             onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>

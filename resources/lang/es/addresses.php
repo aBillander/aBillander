@@ -4,6 +4,31 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
+	| Addresses Language Lines :: create
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Addresses - Create' => 'Direcciones - Crear',
+	'New Address'     => 'Nueva Dirección',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| States Language Lines :: edit
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Addresses - Edit'     => 'Direcciones - Modificar',
+	'Edit Address'     => 'Modificar Dirección',
+
+	/*
+	|--------------------------------------------------------------------------
 	| Address form fields :: 
 	|--------------------------------------------------------------------------
 	|
@@ -29,6 +54,7 @@ return [
 	'Longitude'     => 'Longitud',
 	'Latitude'     => 'Latitud',
 
+	'Address'     => 'Dirección Postal',
 	'Contact'     => 'Contacto',
 	''     => '',
 	''     => '',

@@ -24,8 +24,6 @@ Route::group(['prefix' => 'abcc'], function ()
     Route::get('password/reset', ['as' => 'customer.password.request', 'uses' => 'Auth\CustomerForgotPasswordController@showLinkRequestForm']);
     Route::post('password/reset', ['uses' => 'Auth\CustomerResetPasswordController@reset']);
     Route::get('password/reset/{token}', ['as' => 'customer.password.reset', 'uses' => 'Auth\CustomerResetPasswordController@showResetForm']);
-
-    Route::get('/', ['uses' => 'CustomerCenter\CustomerHomeController@index', 'as' => 'customer.dashboard']);
 });
 
 
@@ -64,18 +62,22 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
 
     Route::group(['middleware' =>  ['auth:customer', 'abcccontext']], function()
     {
+        Route::get('/', ['uses' => 'CustomerHomeController@index', 'as' => 'customer.dashboard']);
+
         Route::get('/catalogue', 'AbccCatalogueController@index'  )->name('abcc.catalogue');
 //        Route::get('/catalogue/category/{id}', 'AbccCatalogueController@categoryShow')->name('abcc.catalogue.category.show');
 
  //       Route::get( '/orders', 'AbccCustomerOrdersController@index')->name('abcc.orders.index');
  //       Route::post('/orders', 'AbccCustomerOrdersController@store')->name('abcc.orders.store');
         Route::resource('/orders',          'AbccCustomerOrdersController')->names('abcc.orders');
-        Route::get('orders/{id}/duplicate', 'AbccCustomerOrdersController@duplicateOrder'   )->name('abcc.order.duplicate'  );
+        Route::get('orders/{id}/duplicate', 'AbccCustomerOrdersController@duplicateOrder')->name('abcc.order.duplicate'  );
+        Route::get('orders/{id}/pdf', 'AbccCustomerOrdersController@showPdf')->name('abcc.order.pdf'  );
 
         Route::get('/cart', 'AbccCustomerCartController@index')->name('abcc.cart');
         Route::get('/cart/line/searchproduct',        'AbccCustomerCartController@searchProduct' )->name('cart.searchproduct');
         Route::get('/cart/line/getproduct',           'AbccCustomerCartController@getProduct'    )->name('cart.getproduct');
-        Route::get('/cart/add/{id}', 'AbccCustomerCartController@addItem')->name('abcc.addToCart');
+// Deprecated
+//        Route::get('/cart/add/{id}', 'AbccCustomerCartController@addItem')->name('abcc.addToCart');
         Route::post('cart/additem',  'AbccCustomerCartController@add'    )->name('abcc.cart.add'  );
         Route::post('cart/updateline',  'AbccCustomerCartController@updateLineQuantity'    )->name('abcc.cart.updateline');
         Route::get('/cart/getlines',  'AbccCustomerCartController@getCartLines' )->name('abcc.cart.getlines');
@@ -85,10 +87,11 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::get( '/account/edit', 'AbccCustomerUserController@edit'  )->name('abcc.account.edit'  );
         Route::post('/account',      'AbccCustomerUserController@update')->name('abcc.account.update');
 
-        Route::get('/customer/edit', 'AbccCustomerController@edit')->name('abcc.customer.edit');
-        Route::get('/customer',      'AbccCustomerController@update')->name('abcc.customer.update');
+        Route::get( '/customer/edit', 'AbccCustomerController@edit')->name('abcc.customer.edit');
+        Route::post('/customer',      'AbccCustomerController@update')->name('abcc.customer.update');
 
         Route::resource('/addresses',  'AbccCustomerAddressesController')->names('abcc.customer.addresses');
+        Route::post('/addresses/default',  'AbccCustomerAddressesController@updateDefaultAddresses')->name('abcc.customer.addresses.default');
 
         // Route::resource('customers.addresses', 'CustomerAddressesController');
 

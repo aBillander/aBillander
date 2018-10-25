@@ -390,6 +390,11 @@ class Customer extends Model {
         return $this->belongsTo('App\Currency');
     }
 
+    public function language()
+    {
+        return $this->belongsTo('App\Language');
+    }
+
     public function paymentmethod()
     {
         return $this->belongsTo('App\PaymentMethod', 'payment_method_id');

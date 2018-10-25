@@ -205,7 +205,7 @@ class CustomerOrder extends Model
     {
         $notes = '';
 
-        if ($this->notes_from_customer ) $notes .= $this->notes_from_customer."\n\n";
+        if ($this->notes_from_customer && (strlen($this->notes_from_customer) > 4)) $notes .= $this->notes_from_customer."\n\n";        // Prevent accidental whitespaces
         if ($this->notes               ) $notes .= $this->notes."\n\n";
         if ($this->notes_to_customer   ) $notes .= $this->notes_to_customer."\n\n";
 

@@ -21,6 +21,9 @@
                     </ul>
                 </div>
                 <a href="{{ URL::to('customers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a -->
+
+                <a class="btn xbtn-sm btn-grey" href="{{ route('abcc.order.pdf', [$order->id]) }}" title="{{l('PDF Export', [], 'layouts')}}" style="margin-right: 72px"><i class="fa fa-file-pdf-o"></i> {{l('PDF Export', [], 'layouts')}}</a>
+
                 <a href="{{ URL::to('abcc/orders') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to History')}}</a>
             </div>
             <h2>

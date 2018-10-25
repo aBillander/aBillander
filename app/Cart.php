@@ -85,6 +85,7 @@ class Cart extends Model
  //             'carrier_id',
                 'currency_id' => $customer->currency_id,
                 'payment_method_id' => $customer->payment_method_id,
+//                'date_prices_updated',
             ]);
 
             \App\Context::getContext()->cart = $cart;
@@ -112,6 +113,12 @@ class Cart extends Model
         if ( $cart ) 
         {
         	// Update some values if customer data have changed -> cart data & cart line prices & stock
+            if ( $cart->persistance_left <= 0 )
+            {
+                // Update Cart Prices
+                $cart->updateLinePrices();
+
+            }
         } else {
         	// Create instance
         	$cart = Cart::create([
@@ -131,6 +138,49 @@ class Cart extends Model
     }
 
 
+    public function addLine($product_id = null, $combination_id = null, $quantity = 1.0)
+    {
+
+        $customer_user = Auth::user();  // Don't trust: $request->input('customer_id')
+
+        if ( !$customer_user ) 
+            return response( null );
+
+        // Do the Mambo!
+        // Product
+        if ($combination_id>0) {
+            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = \App\Product::with('tax')->find(intval($product_id));
+        }
+
+        // Is there a Price for this Customer?
+        if (!$product) return false;    // redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no se encontró.');
+
+        $quantity > 0 ?: 1.0;
+
+        $cart =  \App\Context::getContext()->cart;
+
+        // Get Customer Price
+        $customer = $cart->customer;
+        $currency = $cart->currency;
+        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+
+        // Is there a Price for this Customer?
+        if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
+
+        $tax_percent = $product->tax->percent;
+
+        $customer_price->applyTaxPercent( $tax_percent );
+        $unit_customer_price = $customer_price->getPrice();
+
+        return $cart->add($product, $unit_customer_price, $quantity);
+    }
+
+
     public function add($product = null, $price = null, $quantity = 1.0)
     {
         // If $product is a 'prodduct_id', instantiate product, please.
@@ -147,7 +197,10 @@ class Cart extends Model
         $line = $this->cartlines()->where('product_id', $product->id)->first();
         if ( $line )
         {
-        	$line->quantity += $quantity;
+        	// Keep line price
+
+            // Quantity
+            $line->quantity += $quantity;
 
         	if ( $line->quantity <= 0 )
         	{
@@ -162,6 +215,12 @@ class Cart extends Model
         	if ( $quantity > 0 )
         	{
         		// New line
+                if( $this->isEmpty() ) 
+                {
+                    $this->date_prices_updated = \Carbon\Carbon::now();
+                    $this->save();
+                }
+
 	        	$line = CartLine::create([
 	        		'line_sort_order' => 0,
 	        		'product_id' => $product->id,
@@ -180,11 +239,42 @@ class Cart extends Model
         	} 
         }
 
+        return $line;
     }
+
+    public function updateLinePrices()
+    {
+        // Update prices or remove from cart
+        foreach ($this->cartlines as $line) {
+            # code...
+
+            $product_id     = $line->product_id;
+            $combination_id = $line->combination_id;
+            $quantity       = $line->quantity;
+
+            // Remove line
+            $line->delete();
+
+            // Recreate
+            $newline = $this->addLine($product_id, $combination_id, $quantity);
+        }
+
+        $this->date_prices_updated = \Carbon\Carbon::now();
+        $this->save();
+
+        return true;
+    }
+
+
 
     public function nbrItems()
     {
         return $this->cartlines()->count() . ' - ' . $this->persistance_left;
+    }
+
+    public function isEmpty()
+    {
+        return !$this->cartlines()->count();
     }
 
     public function getPersistanceLeftAttribute()
@@ -192,7 +282,7 @@ class Cart extends Model
         $persistance = \App\Configuration::getInt('ABCC_CART_PERSISTANCE');
         $now = \Carbon\Carbon::now();
 
-        $days = $this->date_prices_updated ? $now->diffInDays($this->date_prices_updated) : $persistance;
+        $days = $this->date_prices_updated ? $persistance - $now->diffInDays($this->date_prices_updated) : $persistance;
 
         return $days;
     }

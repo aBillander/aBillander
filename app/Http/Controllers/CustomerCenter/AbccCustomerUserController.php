@@ -31,9 +31,7 @@ class AbccCustomerUserController extends Controller
 	 */
 	public function index()
 	{
-		$payments = [];
-
-        return view('abcc.vouchers.index', compact('payments'));
+		//
 	}
 
 	/**
@@ -92,7 +90,29 @@ class AbccCustomerUserController extends Controller
 	 */
 	public function update(Request $request)
 	{
-		//
+		// Get logged in user
+        $customer_user = Auth::user();
+        $customer      = Auth::user()->customer;
+
+
+		if ( $request->input('password') != '' ) {
+			$this->validate( $request, CustomerUser::$rules );
+
+			$password = \Hash::make($request->input('password'));
+			$request->merge( ['password' => $password] );
+			$customer_user->update($request->all());
+		} else {
+			$this->validate($request, array_except( CustomerUser::$rules, array('password')) );
+			$customer_user->update($request->except(['password']));
+		}
+/*
+		if ( \Auth::user()->id == $id ) {
+			$language = Language::find( $request->input('language_id') );
+			\App::setLocale($language->iso_code);
+		}
+*/		
+		return redirect()->route('abcc.account.edit')
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customer_user->id], 'layouts') . $customer_user->getFullName());
 	}
 
 	/**

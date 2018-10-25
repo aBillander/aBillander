@@ -4,9 +4,14 @@
 
 
 @if ($sheet->customerorders()->count())
+
+{!! Form::open( ['route' => ['fsxorders.export.orders'], 'method' => 'POST', 'id' => 'form-export'] ) !!}
+{{-- !! csrf_field() !! --}}
+
 <table id="sheets" class="table table-hover">
     <thead>
         <tr>
+      <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
       <th>{{l('ID', [], 'layouts')}}</th>
       <th>{{l('Customer External Reference')}}</th>
       <th>{{l('Order Date')}}</th>
@@ -18,9 +23,14 @@
       <th class="text-right"> </th>
     </tr>
   </thead>
-  <tbody>
+  <tbody id="order_lines">
   @foreach ($sheet->customerorders as $order)
     <tr>
+      @if ( $order->export_date )
+      <td> </td>
+      @else
+      <td class="text-center warning">{!! Form::checkbox('worders[]', $order->id, false, ['class' => 'case checkbox']) !!}</td>
+      @endif
       <td><a href="{{ URL::to('customerorders/' . $order->id . '/edit') }}" title="{{l('View Order')}}" target="_blank"> {{ $order->document_reference }} </a></td>
       <td>{{ $order->customer->reference_external }}</td>
       <td title="{{ abi_date_form_full($order->created_at) }}">{{ abi_toLocale_date_short($order->created_at) }}</td>
@@ -94,6 +104,10 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
     </tbody>
 </table>
 
+
+{!! Form::close() !!}
+
+
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
@@ -117,12 +131,21 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 <div class="row">
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6">
-         <span class="label label-success">{{ $sheet->customerorders()->count() }}</span> pedido(s) en total.
+
+        <a class="btn btn-sm btn-grey pull-left" style="margin-right: 21px" href="javascript:void(0);" title="{{l('Exportar Pedidos seleccionados')}}" onclick = "this.disabled=true;$('#form-export').attr('action', '{{ route( 'fsxorders.export.orders' )}}');$('#form-export').submit();return false;"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>  {{l('Exportar a FactuSOL')}}</a>
+
+         <div><span class="label label-success">{{ $sheet->customerorders()->count() }}</span> pedido(s) en total.
          <br />
-         <span class="label label-danger"> {{ $sheet->customerorders()->where('export_date', null)->count() }}</span> pedido(s) pendientes descargar a FactuSOL.
+         <span class="label label-danger"> {{ $sheet->customerorders()->where('export_date', null)->count() }}</span> pedido(s) pendientes descargar a FactuSOL.</div>
          </div>
 
          <div class="col-lg-6 col-md-6 col-sm-6 text-right">
+
+                <!-- a class="btn btn-sm btn-grey" href="{{ URL::route('fsxorders.export', [$order->id] ) }}" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Exportar a FactuSOL')}}</a -->
+
+
+
+        <!-- a class="btn btn-sm btn-grey" style="margin-right: 21px" href="javascript:void(0);" title="{{l('Exportar Pedidos seleccionados')}}" onclick = "this.disabled=true;$('#form-export').attr('action', '{{ route( 'fsxorders.export.orders' )}}');$('#form-export').submit();return false;"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>  {{l('Exportar a FactuSOL')}}</a -->
 
   <a href="{{ route('productionsheet.pickinglist', [$sheet->id]) }}" class="btn btn-sm btn-info hidden" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Picking List')}}</a>
 
@@ -158,18 +181,40 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 @include('production_sheets._modal_customer_order_summary')
 
 
+
+{{-- *************************************** --}}
+
+
 @section('scripts') @parent 
 
-<!-- script type="text/javascript">
+<script type="text/javascript">
 
-$(document).ready(function() {
-   $("#b_search_filter").click(function() {
-      $('#search_status').val(1);
-      $('#search_filter').show();
-   });
+// check box selection -->
+// See: http://www.dotnetcurry.com/jquery/1272/select-deselect-multiple-checkbox-using-jquery
+
+$(function () {
+    var $tblChkBox = $("#order_lines input:checkbox");
+    $("#ckbCheckAll").on("click", function () {
+        $($tblChkBox).prop('checked', $(this).prop('checked'));
+    });
 });
 
-</script -->
+$("#order_lines").on("change", function () {
+    if (!$(this).prop("checked")) {
+        $("#ckbCheckAll").prop("checked", false);
+    }
+});
+
+// check box selection ENDS -->
+
+
+/*
+$(document).ready(function() {
+
+});
+*/
+
+</script>
 
 @endsection
 

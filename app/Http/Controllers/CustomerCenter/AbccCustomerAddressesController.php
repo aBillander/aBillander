@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\CustomerCenter;
 
+use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
 use App\Customer;
 use App\Address;
 
-class AbccCustomerAddressesController // extends Controller
+class AbccCustomerAddressesController extends Controller
 {
 
 
@@ -27,7 +30,7 @@ class AbccCustomerAddressesController // extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         // Get logged in user
         $customer_user = Auth::user();
@@ -45,11 +48,9 @@ class AbccCustomerAddressesController // extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($customerId, Request $request)
+    public function create()
     {
         $customer      = Auth::user()->customer;
-
-        $customer = $this->customer->findOrFail($customerId);
 
         return view('abcc.addresses.create', compact('customer'));
     }
@@ -60,10 +61,9 @@ class AbccCustomerAddressesController // extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($customerId, Request $request)
+    public function store(Request $request)
     {
-        $customer = $this->customer->findOrFail($customerId);
-        $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
+        $customer      = Auth::user()->customer;
 
         $this->validate($request, Address::$rules);
 
@@ -71,10 +71,7 @@ class AbccCustomerAddressesController // extends Controller
 
         $customer->addresses()->save($address);
 
-        return redirect($back_route)
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $address->id], 'layouts') . $request->input('alias'));
-
-        return redirect()->route('abcc.customer_addresses.index')
+        return redirect()->route('abcc.customer.addresses.index')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $address->id], 'layouts'));
     }
 
@@ -84,7 +81,7 @@ class AbccCustomerAddressesController // extends Controller
      * @param  \App\Address  $address
      * @return \Illuminate\Http\Response
      */
-    public function show($customerId, Address $address)
+    public function show(Address $address)
     {
         //
     }
@@ -95,7 +92,7 @@ class AbccCustomerAddressesController // extends Controller
      * @param  \App\Address  $address
      * @return \Illuminate\Http\Response
      */
-    public function edit(Address $address, Request $request)
+    public function edit($id)
     {
         $customer      = Auth::user()->customer;
 
@@ -104,14 +101,15 @@ class AbccCustomerAddressesController // extends Controller
 
         // We can't be sure that the post belongs to the user, so shall
         // we re-fetch the model through the association?
-        $address = $customer->addresses()->findOrFail($address->id) ?? abort(404);;
+        // $address = $customer->addresses()->find($address->id) ?? abort(404);
 
- //       $address = $this->address->findOrFail($id);
-        $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
+        // Is it a legal address?
+        $address = $customer->addresses()->find($id);
+        if( !$address )
+            return redirect()->route('abcc.customer.addresses.index')
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
 
-        return view('abcc.addresses.edit', compact('customer', 'address', 'back_route'));
-
-        return view('abcc.customer_addresses.edit', compact(''));
+        return view('abcc.addresses.edit', compact('customer', 'address'));
     }
 
     /**
@@ -121,17 +119,58 @@ class AbccCustomerAddressesController // extends Controller
      * @param  \App\Address  $address
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $customerId, Address $address)
+    public function update($id, Request $request)
     {
- //       $address = $this->address->findOrFail($id);
-        $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
+        $customer      = Auth::user()->customer;
+
+        // Is it a legal address?
+        $address = $customer->addresses()->find($id);
+        if( !$address )
+            return redirect()->route('abcc.customer.addresses.index')
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
 
         $this->validate($request, Address::$rules);
 
         $address->update($request->all());
 
-        return redirect($back_route)
-            ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $address->id], 'layouts') . $request->input('alias'));
+
+        return redirect()->route('abcc.customer.addresses.index')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $address->id], 'layouts') . $request->input('alias'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Address  $address
+     * @return \Illuminate\Http\Response
+     */
+    public function updateDefaultAddresses(Request $request)
+    {
+        $customer      = Auth::user()->customer;
+        $customer_id = $customer->id;
+
+        // Need custom validator: address must be in table addresses, AND should belong to Customer
+        $rule = [
+                    'required',
+                    Rule::exists('addresses', 'id')->where(function ($query) use ($customer_id) {
+                        $query->where('addressable_id', $customer_id)
+                        ->where('addressable_type', Customer::class)
+                        ->where('deleted_at', null);
+                    }),
+                ];
+
+        $rules = [
+                            'invoicing_address_id' => $rule,
+                            'shipping_address_id'  => $rule,
+                ];
+
+        $this->validate($request, $rules);
+
+        $customer->update($request->only(['invoicing_address_id', 'shipping_address_id']));
+
+        return redirect()->route('abcc.customer.addresses.index')
+            ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
     }
 
     /**
@@ -140,14 +179,19 @@ class AbccCustomerAddressesController // extends Controller
      * @param  \App\Address  $address
      * @return \Illuminate\Http\Response
      */
-    public function destroy($customerId, Address $address, Request $request)
+    public function destroy($id)
     {
- //       $address = $this->address->findOrFail($id);
-        $back_route = $request->input('back_route', '');
+        $customer      = Auth::user()->customer;
+
+        // Is it a legal address?
+        $address = $customer->addresses()->find($id);
+        if( !$address )
+            return redirect()->route('abcc.customer.addresses.index')
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
 
         $address->delete();
         
-        return redirect( $back_route )
+        return redirect()->route('abcc.customer.addresses.index')
             ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts') );
     }
 }

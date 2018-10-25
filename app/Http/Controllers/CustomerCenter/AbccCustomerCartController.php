@@ -130,6 +130,7 @@ class AbccCustomerCartController extends Controller
 	 * 
 	 */
 
+    // Deprecated
     public function addItem(Request $request, $id)
     {
         $cart = Cart::getCustomerCart();
@@ -329,63 +330,28 @@ class AbccCustomerCartController extends Controller
 
     public function add(Request $request)
     {
-
-    	$customer_user = Auth::user();	// Don't trust: $request->input('customer_id')
-
-    	if ( !$customer_user ) 
-    		return response( null );
-        
         // return response()->json(['order_id' => $order_id] + $request->all());
 
         $product_id      = $request->input('product_id');
         $combination_id  = $request->input('combination_id', 0);
 
-        // Do the Mambo!
-        // Product
-        if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
-            $product = $combination->product;
-            $product->reference = $combination->reference;
-            $product->name = $product->name.' | '.$combination->name;
-        } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
-        }
-
-        // Is there a Price for this Customer?
-        if (!$product) redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no se encontró.');
-
-        $reference  = $product->reference;
-        $name       = $product->name;
-
-        $cart =  \App\Context::getContext()->cart;
-
         $quantity = floatval( $request->input('quantity', 1.0) );
-        $quantity > 0 ?: 1.0;
 
-        // Get Customer Price
-        $customer = $cart->customer;
-        $currency = $cart->currency;
-        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $cart = Cart::getCustomerCart();
 
-        // Is there a Price for this Customer?
-        if (!$customer_price) return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
-
-        $tax_percent = $product->tax->percent;
-
-        $customer_price->applyTaxPercent( $tax_percent );
-        $unit_customer_price = $customer_price->getPrice();
-
-        $cart->add($product, $unit_customer_price, $quantity);
+        $line = $cart->addLine($product_id, $combination_id, $quantity);
 
 
-        // Now, update Order Totals
-        // $order->makeTotals();
-
-
-        return response()->json( [
-                'msg' => 'OK',
- //               'data' => $cart_line->toArray()
-        ] );
+        if ($line)
+            return response()->json( [
+                    'msg' => 'OK',
+     //               'data' => $cart_line->toArray()
+            ] );
+        else
+            return response()->json( [
+                    'msg' => 'ERROR',
+     //               'data' => $cart_line->toArray()
+            ] );
     }
 
 

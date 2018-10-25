@@ -95,12 +95,13 @@ class ConfigurationKeysController extends Controller {
                 5 => [  // Cusromer Center
 
                         'ABCC_HEADER_TITLE',
+                        'ABCC_EMAIL',
+                        'ABCC_EMAIL_NAME',
                         'ABCC_STOCK_THRESHOLD',
                         'ABCC_DEFAULT_PASSWORD',
                         'ABCC_CART_PERSISTANCE',
+                        'ABCC_DEFAULT_ORDER_TEMPLATE',
                         'ABCC_ORDERS_SEQUENCE',
-//                        'SUPPORT_CENTER_EMAIL',
-//                        'SUPPORT_CENTER_NAME',
 
                     ],
         ];

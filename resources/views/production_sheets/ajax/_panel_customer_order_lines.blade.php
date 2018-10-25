@@ -21,7 +21,7 @@
       <td>{{ $line->product_id }}</td>
       <td>{{ $line->reference }}</td>
       <td>{{ $line->name }}</td>
-      <td>{{ $line->quantity }}</td>
+      <td>{{ $line->as_quantity('quantity') }}</td>
     </tr>
   @endforeach
     </tbody>
@@ -36,6 +36,9 @@
 
    </div>
 
+@if ($order->all_notes)
+  <div class="alert alert-success alert-block"><strong>{{l('Notes', [], 'layouts')}}:</strong><br /> {!! nl2br($order->all_notes) !!} </div>
+@endif
 
 </div><!-- div class="panel-body" -->
 

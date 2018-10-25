@@ -28,6 +28,14 @@ class SetAbccContextMiddleware {
 	 */
 	public function handle($request, Closure $next, $guard = null)
 	{
+		// if ( !auth()->check() || !auth()->user()->isAdmin() ) // Not logged or not Admin
+		if ( !$request->user() || !$request->user()->isActive() ) /** if not logged at all redirect to home. this is to prevent an error if the user is not logged in and tries to access the portal via the url **/
+		{
+			// Si el usuario está logueado, debe desloguearse!!!
+			return redirect()->route('customer.logout');
+		}
+
+
 		$customer_user = Auth::user();
         $customer      = Auth::user()->customer;
 

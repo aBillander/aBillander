@@ -56,6 +56,13 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		    $view->with('manufacturerList', \App\Manufacturer::pluck('name', 'id')->toArray());
 		    
 		});
+
+		// Countries
+		view()->composer(array('abcc.addresses._form'), function($view) {
+		    
+		    $view->with('countryList', \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
+		    
+		});
 	}
 
 
@@ -186,13 +193,6 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		view()->composer(array('customers.index', 'customers.edit'), function($view) {
 		    
 		    $view->with('customer_groupList', \App\CustomerGroup::pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Countries
-		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'addresses._form_fields_model_customer', 'tax_rules._form', 'configuration_keys.key_group_2'), function($view) {
-		    
-		    $view->with('countryList', \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
 		    
 		});
 

@@ -19,6 +19,9 @@ class BillanderServiceProvider extends ServiceProvider
         // Maybe modify here Laravel config array loaded from files...
         Configuration::loadConfiguration();
 
+        // Load Template Views
+        $this->loadViewsFrom(__DIR__ . '/../../resources/templates', 'templates');
+
 
         /*
         if( \Auth::check() )

@@ -3,13 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 use \Lang as Lang;
 
 class Template extends Model {
 
-    use SoftDeletes;
+//    use SoftDeletes;
 
     public static $types = array(
             'CustomerOrderPdf',
@@ -21,7 +21,7 @@ class Template extends Model {
 
     // Move this to config folder? Maybe yes...
     public static $models = array(
-            CustomerOrder::class   => 'CustomerOrderPdf',
+            CustomerOrder::class   => 'CustomerOrderPdf', // Maybe string or array ???
             CustomerShippingSlip::class   => 'CustomerShippingSlipPdf',
             CustomerInvoice::class => 'CustomerInvoicePdf',
         );
@@ -75,12 +75,18 @@ class Template extends Model {
 
     public static function getTypeName( $types )
     {
-            return l('template.'.$types, [], 'appmultilang');;
+            return l('template.'.$types, [], 'appmultilang');
     }
 
     public static function getOrientationName( $types )
     {
-            return l('orientation.'.$types, [], 'appmultilang');;
+            return l('orientation.'.$types, [], 'appmultilang');
+    }
+
+
+    public function getPath( $model = '' )
+    {
+            return $this->folder.'.'.snake_case( str_plural( $model ) ).'.'.$this->file_name.'.'.$this->file_name;
     }
     
 

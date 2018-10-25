@@ -475,7 +475,18 @@ class Product extends Model {
     public function getPriceByList( \App\PriceList $list )
     {
         // Return \App\Price Object
-        return $list->getPrice( $this );
+        if ($list)
+        {
+            if ( $price = $list->getPrice( $this ) )
+            {
+                // Apply taxes
+                $tax_percent = $this->tax->percent;
+                $price->applyTaxPercent( $tax_percent );
+            }
+            
+            return $price;
+        } else
+            return $this->getPrice();
     }
 
     public function getPriceByCustomer( \App\Customer $customer, \App\Currency $currency = null )

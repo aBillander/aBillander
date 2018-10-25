@@ -308,6 +308,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    $view->with('invoices_templateList', \App\Template::listFor( \App\CustomerInvoice::class ));
 		    
 		});
+
+		// Customer Center Order Template
+		view()->composer(array('configuration_keys.key_group_5'), function($view) {
+		    
+		    $view->with('orders_templateList', \App\Template::listFor( \App\CustomerOrder::class ));
+		    
+		});
 		
 
 		// Months

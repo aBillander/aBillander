@@ -161,6 +161,15 @@ class Currency extends Model {
     {
         return self::convertAmount($amount, $currency_from, $currency_to);
     }
+
+    
+    public function round($amount)
+    {
+        if (!is_numeric($amount))
+            return $amount;
+
+        return round($amount, $this->decimalPlaces);
+    }
     
 
     /*

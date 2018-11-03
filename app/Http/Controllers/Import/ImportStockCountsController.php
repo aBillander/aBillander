@@ -15,7 +15,7 @@ use Excel;
 class ImportStockCountsController extends Controller
 {
 /*
-   use BillableTrait;
+   use BillableControllerTrait;
 
    protected $customer, $customerOrder, $customerOrderLine;
 

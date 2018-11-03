@@ -13,6 +13,7 @@ return [
 
 //	'Error 404 / Page not found'     => 'Error 404 / Página no encontada',
 //	'Coming soon...' => 'Próximamente...',
+	'Your session has expired because your account is deactivated.'     => 'Su sesión ha expirado porque su cuenta ha sido desactivada.',
 
 
 	/*

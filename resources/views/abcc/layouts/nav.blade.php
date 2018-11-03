@@ -143,7 +143,7 @@
                 @else
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <a href="{{ URL::to('login') }}">
+                <a href="{{ URL::to('abcc/login') }}">
                     <button class="btn btn-default navbar-btn">
                         <i class="fa fa-user"></i> {{l('Login', [], 'abcc/layouts')}} 
                     </button>

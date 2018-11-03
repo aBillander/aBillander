@@ -12,6 +12,7 @@
       <th>{{l('Product Reference')}}</th>
       <th>{{l('Product Name')}}</th>
       <th>{{l('Quantity')}}</th>
+      <th xclass="text-center">{{l('Notes', [], 'layouts')}}</th>
     </tr>
   </thead>
   <tbody>
@@ -22,6 +23,7 @@
       <td>{{ $line->reference }}</td>
       <td>{{ $line->name }}</td>
       <td>{{ $line->as_quantity('quantity') }}</td>
+      <td>{{ $line->notes }}</td>
     </tr>
   @endforeach
     </tbody>
@@ -36,9 +38,11 @@
 
    </div>
 
+{{--
 @if ($order->all_notes)
   <div class="alert alert-success alert-block"><strong>{{l('Notes', [], 'layouts')}}:</strong><br /> {!! nl2br($order->all_notes) !!} </div>
 @endif
+--}}
 
 </div><!-- div class="panel-body" -->
 

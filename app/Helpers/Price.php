@@ -52,7 +52,16 @@ class Price {
      */
     public static function create( $price = [], Currency $currency = null, $currency_conversion_rate = null ) 
     {
-        // $price = [ price, price_tax_inc ]
+        // $price = [ price, price_tax_inc, price_is_tax_inc ]
+
+        $price_is_tax_inc = \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
+
+        if ( count($price) == 3 )
+        {
+            //
+            $price_is_tax_inc = $price[2];
+            unset($price[2]);
+        }
 
         if (count($price)!=2) return self::create( [0.0, 0.0], $currency, $currency_conversion_rate );
 
@@ -63,7 +72,6 @@ class Price {
 
         if ( $currency === null ) $currency = \App\Context::getContext()->currency;
         if ( $currency_conversion_rate === null ) $currency_conversion_rate = $currency->conversion_rate;
-        $price_is_tax_inc = \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
 
         $priceObj->price = $price[0];
         $priceObj->price_tax_inc = $price[0] ? $price[1] : 0.0;

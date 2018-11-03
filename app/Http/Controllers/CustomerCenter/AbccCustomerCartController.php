@@ -15,12 +15,12 @@ use App\CartLine;
 
 use App\Configuration;
 
-use App\Traits\BillableTrait;
+use App\Traits\BillableControllerTrait;
 
 class AbccCustomerCartController extends Controller 
 {
 
-   use BillableTrait;
+   use BillableControllerTrait;
 
    protected $customer_user;
    protected $customer, $cart, $cartLine, $product;
@@ -345,6 +345,7 @@ class AbccCustomerCartController extends Controller
         if ($line)
             return response()->json( [
                     'msg' => 'OK',
+                    'cart_nbr_items' => $cart->nbrItems(),
      //               'data' => $cart_line->toArray()
             ] );
         else

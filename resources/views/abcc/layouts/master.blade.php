@@ -30,7 +30,9 @@
 
     {{-- --}}
 
-                @include('layouts/modal_feedback')
+            @auth('customer')
+                @include('abcc/layouts/modal_feedback')
+            @endif
                 @include('layouts/modal_about')
 
     {{-- --}}
@@ -50,28 +52,6 @@
 
         <script src="{{ asset('assets/theme/js/common.js') }}" type="text/javascript"></script>
 
-        <script type="text/javascript">
-        $(function(){
-           $("#f_feedback").on('submit', function(e){
-              e.preventDefault();
-              $.post("{{ URL::to('contact') }}", $(this).serialize(), function(data){
-
-                 if (data == 'ERROR') {
-                    $("#error").addClass("alert alert-danger");
-                    $("#error").html('<a class="close" data-dismiss="alert" href="#">×</a><li class="error">{{ l('There was an error. Your message could not be sent.', [], 'layouts') }}</li>');
-                 } else {
-                     // Reset form
-                     $("#notes").val('');
-                     // $("#email").val('');
-                     // $("#name").val('');
-                     // 
-                     $("#modal-body").html('<div class="alert alert-success">{{ l('Your email has been sent!', [], 'layouts') }}</div>');
-                     $("#modal-footer").html('<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ l('Continue', [], 'layouts') }}</button>');
-                 }
-              });
-           });
-        });
-        </script>
 {{--
        <script type="text/javascript">
 
@@ -82,6 +62,7 @@
 
        </script>
 --}}       
+
         @yield('scripts')
     </body>
 </html>

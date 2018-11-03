@@ -29,11 +29,17 @@ class SetAbccContextMiddleware {
 	public function handle($request, Closure $next, $guard = null)
 	{
 		// if ( !auth()->check() || !auth()->user()->isAdmin() ) // Not logged or not Admin
-		if ( !$request->user() || !$request->user()->isActive() ) /** if not logged at all redirect to home. this is to prevent an error if the user is not logged in and tries to access the portal via the url **/
-		{
-			// Si el usuario está logueado, debe desloguearse!!!
-			return redirect()->route('customer.logout');
-		}
+//		if ( !$request->user() || !$request->user()->isActive() ) /** if not logged at all redirect to home. this is to prevent an error if the user is not logged in and tries to access the portal via the url **/
+//		{
+        if (Auth::check())
+        {
+            if ( !Auth::user()->isActive() )
+            {
+                Auth::logout();
+                return redirect()->route('customer.login')->with('warning', l('Your session has expired because your account is deactivated.', 'abcc/layouts'));
+            }
+        }
+//		}
 
 
 		$customer_user = Auth::user();

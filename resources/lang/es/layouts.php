@@ -180,6 +180,7 @@ return [
 	'Continue'     => 'Continuar',
 	'Back'     => 'Volver',
 	'Send'     => 'Enviar',
+	'Sending...'     => 'Enviando...',
 	'Send eMail'     => 'Enviar eMail',
 	'Send by eMail'     => 'Enviar por eMail',
 	'PDF Export'     => 'Exportar PDF',
@@ -273,8 +274,15 @@ return [
 	'<strong>Whoops!</strong> There were some problems with your input.'     => '<strong>Whoops!</strong> Hay algunos problemas con sus datos.',
 	'E-Mail Address'     => 'Dirección de Correo',
 	'Password'     => 'Contraseña',
+	'Confirm Password'     => 'Confirmar Contraseña',
 	'Remember Me'     => 'Recuérdame',
 	'Forgot Your Password?'     => '¿Olvidó su Contraseña?',
+	'Send Password Reset Link.'     => 'Si olvidó la contraseña de acceso, introduzca su dirección de correo electrónico. Una vez enviado este formulario, recibirá en su correo las instrucciones para actualizar la contraseña.',
+	'Reset Password'     => 'Cambiar Contraseña',
+	'Customer Reset Password'     => 'Cambiar Contraseña para el Centro de Clientes',
+	''     => '',
+	''     => '',
+	''     => '',
 
 
 	/*

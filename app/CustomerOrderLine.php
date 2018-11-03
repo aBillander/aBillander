@@ -8,11 +8,13 @@ use \App\CustomerOrderLineTax;
 use \App\Price;
 
 use App\Traits\ViewFormatterTrait;
+use App\Traits\BillableLineTrait;
 
 class CustomerOrderLine extends Model
 {
 
     use ViewFormatterTrait;
+    use BillableLineTrait;
 
     public static $types = array(
             'product',
@@ -20,6 +22,7 @@ class CustomerOrderLine extends Model
             'shipping', 
             'discount', 
             'comment',
+            'account',      // Something to charge to an accounting account
         );
 	
 //    protected $fillable = [ 'product_id', 'woo_product_id', 'woo_variation_id', 
@@ -42,15 +45,6 @@ class CustomerOrderLine extends Model
     public static $rules = [
 //        'product_id'    => 'required',
     ];
-
-
-    public function getCurrencyAttribute()
-    {
-        $currency = $this->customerorder->currency;
-        $currency->conversion_rate = $this->customerorder->currency_conversion_rate;
-
-        return $currency;
-    }
 
 
     public static function getTypeList()
@@ -121,6 +115,12 @@ class CustomerOrderLine extends Model
     {
         return $this->customerorderlinetaxes();
     }
+    
+    // Alias
+    public function xlinetaxes()
+    {
+        return $this->customerorderlinetaxes();
+    }
 
     public function tax()
     {
@@ -144,6 +144,9 @@ class CustomerOrderLine extends Model
     {
         // Do the Mambo!
         // $this->load('customerorder');
+
+        // Reset
+        $this->customerorderlinetaxes()->delete();
 
         $base_price = $this->quantity*$this->unit_final_price;
         // Rounded $base_price is the same, no matters the value of ROUND_PRICES_WITH_TAX

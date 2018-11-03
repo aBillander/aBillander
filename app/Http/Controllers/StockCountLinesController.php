@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use App\StockCount;
 use App\StockCountLine;
 
-// use App\Traits\BillableTrait;
+// use App\Traits\BillableControllerTrait;
 
 class StockCountLinesController extends Controller
 {
 
-   // use BillableTrait;
+   // use BillableControllerTrait;
 
    protected $stockcount;
    protected $stockcountline;

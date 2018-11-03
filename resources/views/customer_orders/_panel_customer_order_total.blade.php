@@ -70,7 +70,7 @@
 
                 </td>
                 <td style="vertical-align: middle;">{{ $order->as_price('total_currency_tax_excl', $order->currency) }}</td>
-                <td style="vertical-align: middle;">{{ $order->as_priceable($order->total_currency_tax_incl - $order->currency_total_tax_excl) }}</td>
+                <td style="vertical-align: middle;">{{ $order->as_priceable($order->total_currency_tax_incl - $order->total_currency_tax_excl) }}</td>
                 <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $order->as_price('total_currency_tax_incl') }}</strong></td>
             </tr>
 

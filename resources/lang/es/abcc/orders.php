@@ -34,7 +34,7 @@ return [
 	|
 	*/
 
-	' :_> New Customer Order #:num'     => ' :_> Nuevo Pedido sw Cliente #:num',
+	' :_> New Customer Order #:num'     => ' :_> Nuevo Pedido de Cliente #:num',
 	''     => '',
 	''     => '',
 

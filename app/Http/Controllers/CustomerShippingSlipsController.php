@@ -12,12 +12,12 @@ use App\CustomerShippingSlipLine;
 use App\Configuration;
 use App\Sequence;
 
-use App\Traits\BillableTrait;
+use App\Traits\BillableControllerTrait;
 
 class CustomerShippingSlipsController extends Controller
 {
 
-   use BillableTrait;
+   use BillableControllerTrait;
 
    protected $customer, $customerShippingSlip, $customerShippingSlipLine;
 

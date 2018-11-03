@@ -13,7 +13,7 @@ use Excel;
 class ImportCategoriesController extends Controller
 {
 /*
-   use BillableTrait;
+   use BillableControllerTrait;
 
    protected $customer, $customerOrder, $customerOrderLine;
 

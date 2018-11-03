@@ -15,7 +15,7 @@ use Excel;
 class ImportPriceListsController extends Controller
 {
 /*
-   use BillableTrait;
+   use BillableControllerTrait;
 
    protected $customer, $customerOrder, $customerOrderLine;
 

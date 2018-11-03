@@ -38,6 +38,7 @@ class ConfigurationKeysController extends Controller {
                         'PRODUCT_NOT_IN_PRICELIST',
                         'QUOTES_EXPIRE_AFTER',
                         'ROUND_PRICES_WITH_TAX',
+                        'DOCUMENT_ROUNDING_METHOD',
                         'SKU_AUTOGENERATE',
                         'TAX_BASED_ON_SHIPPING_ADDRESS',
 

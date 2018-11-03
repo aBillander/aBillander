@@ -371,6 +371,38 @@
     </div>
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('DOCUMENT_ROUNDING_METHOD.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="DOCUMENT_ROUNDING_METHOD" id="DOCUMENT_ROUNDING_METHOD_line" value="line" @if( old('DOCUMENT_ROUNDING_METHOD', $key_group['DOCUMENT_ROUNDING_METHOD']) == 'line' ) checked="checked" @endif type="radio">
+            {!! l('DOCUMENT_ROUNDING_METHOD.option.line') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="DOCUMENT_ROUNDING_METHOD" id="DOCUMENT_ROUNDING_METHOD_total" value="total" @if( old('DOCUMENT_ROUNDING_METHOD', $key_group['DOCUMENT_ROUNDING_METHOD']) == 'total' ) checked="checked" @endif type="radio">
+            {!! l('DOCUMENT_ROUNDING_METHOD.option.total') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="DOCUMENT_ROUNDING_METHOD" id="DOCUMENT_ROUNDING_METHOD_none" value="none" @if( old('DOCUMENT_ROUNDING_METHOD', $key_group['DOCUMENT_ROUNDING_METHOD']) == 'none' ) checked="checked" @endif type="radio">
+            {!! l('DOCUMENT_ROUNDING_METHOD.option.none') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="DOCUMENT_ROUNDING_METHOD" id="DOCUMENT_ROUNDING_METHOD_custom" value="custom" @if( old('DOCUMENT_ROUNDING_METHOD', $key_group['DOCUMENT_ROUNDING_METHOD']) == 'custom' ) checked="checked" @endif type="radio">
+            {!! l('DOCUMENT_ROUNDING_METHOD.option.custom') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('DOCUMENT_ROUNDING_METHOD.help') !!}</span>
+      </div>
+    </div>
+    
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('SKU_AUTOGENERATE.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

@@ -22,7 +22,7 @@
     </h2>        
 </div>
 
-<div class="container">
+<div class="container hide">
 
 {{-- 
     https://startbootstrap.com/template-overviews/sb-admin-2/

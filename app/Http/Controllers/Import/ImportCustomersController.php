@@ -14,7 +14,7 @@ use Excel;
 class ImportCustomersController extends Controller
 {
 /*
-   use BillableTrait;
+   use BillableControllerTrait;
 
    protected $customer, $customerOrder, $customerOrderLine;
 

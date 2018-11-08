@@ -207,9 +207,13 @@ class Price {
             else
                 $tax = 0.0;
             $net   = $gross - $tax;
+            // Or:
+            // $net   = (float) $this->as_priceable( $net, $this->currency );
         } else {
             $net   = (float) $this->as_priceable( $net, $this->currency );
             $tax   = (float) $this->as_priceable( $net*($tax_percent/100.0), $this->currency );
+            // Simpler version (may produce 1 cent higher tax):
+            // $tax   = (float) $this->as_priceable( $gross - $net, $this->currency );
             $gross = $net + $tax;
         }
 

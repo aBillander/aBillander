@@ -132,11 +132,11 @@
       <label for="USE_CUSTOM_THEME" class="col-lg-4 control-label">{!! l('USE_CUSTOM_THEME.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
-        <div class="col-lg-6">
-        <input class="form-control" type="text" id="USE_CUSTOM_THEME" name="USE_CUSTOM_THEME" placeholder="" value="{{ old('USE_CUSTOM_THEME', $key_group['USE_CUSTOM_THEME']) }}" />
+        <div class="col-lg-8">
+        {!! Form::select('USE_CUSTOM_THEME', ['' => '-- '.l( 'None', [], 'layouts').' --'] + $themeList, old('USE_CUSTOM_THEME', $key_group['USE_CUSTOM_THEME']), array('class' => 'form-control')) !!}
         {{ $errors->first('USE_CUSTOM_THEME', '<span class="help-block">:message</span>') }}
         </div>
-        <div class="col-lg-6"> </div>
+        <div class="col-lg-4"> </div>
         </div>
         <span class="help-block">{!! l('USE_CUSTOM_THEME.help') !!}</span>
       </div>

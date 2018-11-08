@@ -86,7 +86,9 @@ class Template extends Model {
 
     public function getPath( $model = '' )
     {
-            return $this->folder.'.'.snake_case( str_plural( $model ) ).'.'.$this->file_name.'.'.$this->file_name;
+            $separator = ends_with($this->folder, ':') ? '' : '.';
+
+            return $this->folder.$separator.snake_case( str_plural( $model ) ).'.'.$this->file_name.'.'.$this->file_name;
     }
     
 

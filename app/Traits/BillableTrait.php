@@ -14,6 +14,15 @@ trait BillableTrait
     use BillableIntrospectorTrait;
     use BillableCustomTrait;
 
+
+    public function getDocumentCurrencyAttribute()
+    {
+        $currency = $this->currency;
+        $currency->conversion_rate = $this->currency_conversion_rate;
+
+        return $currency;
+    }
+
     public function documentlines()
     {
 
@@ -53,11 +62,13 @@ trait BillableTrait
 
         if ( method_exists($this, $method) ) {
             //
-            return $this->$method();
+            $totals = $this->$method();
         } else {
             //
-            return $this->documenttotals_rounding_none();
+            $totals = $this->documenttotals_rounding_none();
         }
+
+        return $totals;
     }
     
     // Alias
@@ -65,12 +76,32 @@ trait BillableTrait
     {
         return $this->documenttotals( $document_rounding_method );
     }
+    
+    // Handy 4 debuggin'
+    public function totalsonscreen( $document_rounding_method = null )
+    {
+        $totals = $this->documenttotals( $document_rounding_method );
+
+/* */
+        // Output
+        foreach ($totals as $total) {
+            # code...
+            abi_r($total['tax_id'].' - '.$total['tax_name'].' - '.$total['net_amount'].' - '.$total['tax_amount']);
+
+            foreach ($total['tax_lines'] as $value) {
+                # code...
+                abi_r(' ^---'.$value->name.' - '.$value->taxable_base.' - '.$value->total_line_tax.' - '.'');
+            }
+        }
+/* */
+        
+    }
 
 
     private function documenttotals_rounding_total()
     {
-        $currency = $this->currency;
-        $currency->conversion_rate = $this->conversion_rate;
+        $currency = $this->document_currency;
+//        $currency->conversion_rate = $this->conversion_rate;
 
         $document_lines      = $this->documentlines;
         // $line_taxes = $this->customerorderlinetaxes;
@@ -98,7 +129,7 @@ trait BillableTrait
 
                         $tl->taxable_base += $linetax->taxable_base;
                         $tl->total_line_tax += $linetax->total_line_tax;
-                        $tl->customer_order_line_id = 0;
+                        // $tl->customer_order_line_id = 0;
 
                         $key = $linetax->tax_rule_id;
                         $tax_lines = $tax_lines->reject(function ($value, $key) use ($key) {
@@ -147,10 +178,10 @@ trait BillableTrait
                         'tax_amount' => 0.0,
                         'tax_lines' => $item['tax_lines']->map(function ($item1, $key1) use ($currency) {
                             //
-                            $item1->taxable_base   =  $currency->round($item1->taxable_base  );
-                            $item1->total_line_tax =  $currency->round($item1->total_line_tax);
+                            // $item1->taxable_base   =  $currency->round($item1->taxable_base  );
+                            // $item1->total_line_tax =  $currency->round($item1->total_line_tax);
 
-                            return $item1;
+                            return $item1->applyRounding();
                         }),
                     ];
 
@@ -161,20 +192,6 @@ trait BillableTrait
 
 
         // abi_r($totals_rounded);die();
-/* * /
-        // Output
-        foreach ($totals_rounded as $total) {
-            # code...
-            abi_r($total['tax_id'].' - '.$total['tax_name'].' - '.$total['net_amount'].' - '.$total['tax_amount']);
-
-            foreach ($total['tax_lines'] as $value) {
-                # code...
-                abi_r(' ^---'.$value->name.' - '.$value->taxable_base.' - '.$value->total_line_tax.' - '.'');
-            }
-        }
-/ * */
-        
-        // die();
 
 
 /*
@@ -210,8 +227,9 @@ trait BillableTrait
 
     private function documenttotals_rounding_line()
     {
-        $currency = $this->currency;
-        $currency->conversion_rate = $this->conversion_rate;
+        $currency = $this->document_currency;
+//        $currency = $this->currency;
+//        $currency->conversion_rate = $this->conversion_rate;
 
         $document_lines      = $this->documentlines;
         
@@ -230,22 +248,22 @@ trait BillableTrait
 
                 foreach ($document_line->linetaxes as $linetax) {
                     # code...
-                    $tl = $linetax;
+                    $tl = $linetax->applyRounding();
                     if ( ( $tls = $tax_lines->where('tax_rule_id', $linetax->tax_rule_id) )->count() > 0 )
                     {
                         //
-                        $tl = $tls->first();
+                        $tl1 = $tls->first();
 
-                        $tl->taxable_base += $currency->round($linetax->taxable_base);
-                        $tl->total_line_tax += $currency->round($linetax->total_line_tax);
-                        $tl->customer_order_line_id = 0;
+                        $tl1->taxable_base += $tl->taxable_base;
+                        $tl1->total_line_tax += $tl->total_line_tax;
+                        // $tl1->customer_order_line_id = 0;
 
                         $key = $linetax->tax_rule_id;
                         $tax_lines = $tax_lines->reject(function ($value, $key) use ($key) {
                                             return $value->tax_rule_id == $key;
                                         })
 //                                  ->put($item['tax_id'], $tl);
-                                  ->push($tl);
+                                  ->push($tl1);
                     } else {
                         //
                         $tax_lines->push($tl);
@@ -267,10 +285,10 @@ trait BillableTrait
                                         'net_amount' => $document_line->total_tax_excl,
                                         'tax_lines' => $document_line->linetaxes->map(function ($item1, $key1) use ($currency) {
                                             //
-                                            $item1->taxable_base   =  $currency->round($item1->taxable_base  );
-                                            $item1->total_line_tax =  $currency->round($item1->total_line_tax);
+                                            // $item1->taxable_base   =  $currency->round($item1->taxable_base  );
+                                            // $item1->total_line_tax =  $currency->round($item1->total_line_tax);
 
-                                            return $item1;
+                                            return $item1->applyRounding();
                                         }),
                     ]);
             }

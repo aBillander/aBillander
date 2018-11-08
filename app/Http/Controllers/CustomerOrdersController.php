@@ -1466,6 +1466,73 @@ class CustomerOrdersController extends Controller
     |--------------------------------------------------------------------------
     */
 
+
+    public function showPdfInvoice($id, Request $request)
+    {
+
+        // die($id);
+
+        try {
+            $document = $this->customerOrder
+                            ->with('customer')
+//                            ->with('invoicingAddress')
+//                            ->with('customerInvoiceLines')
+//                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
+                            ->with('currency')
+                            ->with('paymentmethod')
+                            ->with('template')
+                            ->findOrFail($id);
+
+        } catch(ModelNotFoundException $e) {
+
+            return redirect('customerorders')
+                     ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
+        }
+        
+
+        $company = \App\Context::getContext()->company;
+
+        // Get Template
+        $t = $document->template ?? 
+             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );
+
+        if ( !$t )
+            return redirect()->route('customerorders.show', $id)
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+        // $document->template = $t;
+
+        $template = $t->getPath( 'CustomerInvoice' );
+
+        $paper = $t->paper;    // A4, letter
+        $orientation = $t->orientation;    // 'portrait' or 'landscape'.
+        
+        // Catch for errors
+        try{
+                $pdf        = \PDF::loadView( $template, compact('document', 'company') )
+                            ->setPaper( $paper, $orientation );
+        }
+        catch(\Exception $e){
+
+                return redirect()->route('customerorders.show', $id)
+                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+        }
+
+        // PDF stuff ENDS
+
+        $pdfName    = 'invoice_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
+
+        if ($request->has('screen')) return view($template, compact('document', 'company'));
+        
+        return  $pdf->stream();
+        return  $pdf->download( $pdfName . '.pdf');
+
+
+        return redirect()->route('abcc.orders.index')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
     protected function showPdf($id, Request $request)
     {
         // return $id;

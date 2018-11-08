@@ -321,18 +321,19 @@ class AbccCustomerOrdersController extends Controller {
         $company = \App\Context::getContext()->company;
 
         // Get Template
-        $t = \App\Template::find( Configuration::getInt('ABCC_DEFAULT_ORDER_TEMPLATE') ); // abi_r($template, true);
+        $t = $document->template ?? 
+             \App\Template::find( Configuration::getInt('ABCC_DEFAULT_ORDER_TEMPLATE') );
 
         if ( !$t )
         	return redirect()->route('abcc.orders.show', $id)
                 ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
-        $document->template = $t;
+        // $document->template = $t;
 
         $template = $t->getPath( 'CustomerOrder' );
 
-        $paper = $document->template->paper;    // A4, letter
-        $orientation = $document->template->orientation;    // 'portrait' or 'landscape'.
+        $paper = $t->paper;    // A4, letter
+        $orientation = $t->orientation;    // 'portrait' or 'landscape'.
         
         // Catch for errors
 		try{

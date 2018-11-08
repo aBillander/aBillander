@@ -174,6 +174,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		// Eco-Taxes
+		view()->composer(array('products.create', 'products.edit'), function($view) {
+		    
+		    $view->with('ecotaxList', \App\Ecotax::orderby('name', 'desc')->pluck('name', 'id')->toArray());
+		    
+		});
+
 		view()->composer(array('products.create', 'products.edit', 'price_list_lines.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
 
 		    // https://laracasts.com/discuss/channels/eloquent/eloquent-model-lists-id-and-a-custom-accessor-field
@@ -267,6 +274,27 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		view()->composer(array('stock_movements.index', 'stock_movements.create'), function($view) {
 		    
 		    $view->with('movement_typeList', \App\StockMovement::stockmovementList());
+		    
+		});
+
+		// Themes
+		view()->composer(array('configuration_keys.key_group_3'), function($view) {
+		    
+		    
+			$directories = \File::directories(resource_path().'/theme');
+			$directories = array_diff($directories, ['.', '..']);
+
+			$themeList = [];
+
+			foreach ($directories as $dir) {
+				# 
+				$segments = array_reverse(explode('/', $dir));
+				$theme = $segments[0];
+
+				$themeList[$theme] = $theme;
+			}
+
+		    $view->with('themeList', $themeList);
 		    
 		});
 

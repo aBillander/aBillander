@@ -28,6 +28,7 @@
                         <th class="text-left">{{l('Net')}}</th -->
                         <th class="text-right">{{l('Cost')}}</th>
                         <th class="text-right">{{l('Margin 1 (%)')}}</th>
+                        <th class="text-right">{{l('Margin Amount')}}</th>
 @if ($order->salesrep)
                         <th class="text-right">{{l('Commission (%)')}}</th>
                         <th class="text-right">{{l('Margin 2 (%)')}}</th>
@@ -55,6 +56,7 @@
                 <td class="text-right">{{ $line->as_price('unit_final_price') }}</td>
                 <td class="text-right">{{ $line->as_price('cost_price') }}</td>
                 <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price, $line->unit_final_price, $order->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $line->cost_price )*$line->quantity ) }}</td>
 
 
 
@@ -112,6 +114,7 @@
                           <th class="text-left">{{l('Net')}}</th>
                           <th class="text-right">{{l('Cost')}}</th>
                           <th class="text-right">{{l('Margin 1 (%)')}}</th>
+                          <th class="text-right">{{l('Margin Amount')}}</th>
 @if ($order->salesrep)
                         <th class="text-right">{{l('Commission (%)')}}</th>
                         <th class="text-right">{{l('Margin 2 (%)')}}</th>
@@ -127,6 +130,7 @@
                 <td>{{ $order->as_priceable($order->total_revenue_with_discount) }}</td>
                 <td class="text-right">{{ $order->as_priceable($order->total_cost_price) }}</td>
                 <td class="text-right">{{ $order->as_percentable( \App\Calculator::margin( $order->total_cost_price, $order->total_revenue_with_discount, $order->currency ) ) }}</td>
+                <td class="text-right">{{ $order->as_priceable( $order->total_revenue_with_discount - $order->total_cost_price ) }}</td>
 
 
 

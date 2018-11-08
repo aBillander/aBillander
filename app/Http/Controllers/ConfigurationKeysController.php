@@ -26,6 +26,7 @@ class ConfigurationKeysController extends Controller {
                         'ALLOW_SALES_WITHOUT_STOCK',
                         'CUSTOMER_ORDERS_NEED_VALIDATION',
                         'ENABLE_COMBINATIONS',
+                        'ENABLE_ECOTAXES',
                         'ENABLE_CUSTOMER_CENTER',
                         'ENABLE_WEBSHOP_CONNECTOR',
                         'ENABLE_FSOL_CONNECTOR',

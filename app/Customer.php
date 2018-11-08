@@ -400,6 +400,11 @@ class Customer extends Model {
         return $this->belongsTo('App\Language');
     }
 
+    public function cart()
+    {
+        return $this->hasOne('App\Cart');
+    }
+
     public function paymentmethod()
     {
         return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
@@ -541,6 +546,56 @@ class Customer extends Model {
         $price = $price->convert( $currency );
 
         return $price;
+    }
+
+    public function getLastPrice( \App\Product $product = null, \App\Currency $currency = null )
+    {
+        // 
+        if ( $product == null) return null;
+
+        $customerId = $this->id;
+        $productId = $product->id;
+
+
+        // https://stackoverflow.com/questions/41679771/eager-load-relationships-in-laravel-with-conditions-on-the-relation?rq=1
+
+        $line = \App\CustomerOrderLine::whereHas(
+
+                'customerorder', function ($order) use ($customerId) {
+                    return $order->where('customer_id', $customerId);
+                }
+
+
+        )->whereHas(
+
+                'product', function ($product) use ($productId) {
+                    return $product->where('id', $productId);
+                }
+
+        )->with([
+    //https://stackoverflow.com/questions/41679771/eager-load-relationships-in-laravel-with-conditions-on-the-relation?rq=1
+    // https://stackoverflow.com/questions/25700529/laravel-eloquent-how-to-order-results-of-related-models
+    // https://laracasts.com/discuss/channels/eloquent/order-by-on-relationship
+    // https://laracasts.com/discuss/channels/eloquent/eloquent-order-by-related-table
+    // https://stackoverflow.com/questions/40837690/laravel-eloquent-sort-by-relationship
+    /*
+                Won't work. Why?
+                'customerorder' => function ($order) {
+                    return $order->orderBy('document_date', 'desc');
+                }
+    */
+                'customerorder',
+
+                'product'
+
+        ])->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
+          ->orderBy('customer_orders.document_date', 'desc')
+          ->orderBy('customer_orders.id', 'desc')
+          ->select('customer_order_lines.*')->first();
+
+        if ($line) return $line->getPrice();
+
+        else return null;
     }
 
     public function getTaxRules( \App\Product $product, $address = null )

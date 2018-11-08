@@ -200,6 +200,7 @@ return [
 	'Qty.'     => 'Ud.',
 	'Cost'     => 'Coste',
 	'Margin 1 (%)'     => 'Margen 1 (%)',
+	'Margin Amount'     => 'Margen Neto',
 	'Margin 2 (%)'     => 'Margen 2 (%)',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',

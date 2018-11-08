@@ -42,6 +42,13 @@ class Currency extends Model {
 
         return $format;
     }
+
+    public function getSignPrintableAttribute()
+    {
+        if ($this->iso_code == 'EUR') return "&euro;";
+
+        return $this->sign;
+    }
     
     /**
      * Find ISO Code

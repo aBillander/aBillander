@@ -13,6 +13,14 @@ class CartLine extends Model
     use ViewFormatterTrait;
 
     //
+//    protected $with = ['cart'];
+
+    /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['cart'];
 
     protected $fillable = [
     						'line_sort_order', 'product_id', 'combination_id', 'reference', 'name', 
@@ -35,7 +43,7 @@ class CartLine extends Model
     
     public function cart()
     {
-        return $this->belongsTo('App\Cart');
+        return $this->belongsTo('App\Cart', 'cart_id', 'id');
     }
 
     public function product()

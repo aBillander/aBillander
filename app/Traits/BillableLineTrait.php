@@ -34,7 +34,7 @@ trait BillableLineTrait
 */
     public function getCurrencyAttribute()
     {
-        $currency = $this->document->currency;
+        $currency = $this->document->document_currency;
         $currency->conversion_rate = $this->document->currency_conversion_rate;
 
         return $currency;

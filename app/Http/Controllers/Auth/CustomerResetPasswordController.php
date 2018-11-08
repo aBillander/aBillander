@@ -67,4 +67,15 @@ class CustomerResetPasswordController extends Controller
             ['token' => $token, 'email' => $request->email]
         );
     }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new App\Notifications\CustomerResetPasswordNotification($token));
+    }
 }

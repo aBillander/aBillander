@@ -120,6 +120,24 @@ return [
 	'Customer Center Access'     => 'Acceso al Centro de Clientes',
 	'Allow Customer Center access?'     => '¿Permitir acceso al Centro de Clientes?',
 
+	'Shopping Cart'     => 'Contenido del Carrito',
+
+	'Cart Items'     => 'Productos en el Carrito',
+
+	'Reference'     => 'Referencia',
+	'Product Name'     => 'Producto',
+	'Customer Price'     => 'Precio',
+	'Prices are exclusive of Tax'     => 'El Precio no incluye Impuestos',
+	'Quantity'     => 'Cantidad',
+	'Total'     => 'Total',
+
+	'View Image'     => 'Ver Imagen',
+	'Product Images'     => 'Imágenes de Productos',
+
+	'EAN Code'     => 'Código EAN',
+	'Manufacturer'     => 'Marca',
+	'Stock'     => 'Stock',
+
 	'Can not create a User for this Customer:'     => 'No es posible crear un Usuario para este Cliente:',
 	'This Customer has not a valid email address.'     => 'Este Cliente no tiene una dirección de correo electrónico válida.',
 	''     => '',

@@ -329,7 +329,8 @@ class CustomerOrder extends Model
         $currency->conversion_rate = $this->conversion_rate;
 
         // Just to make sure...
-        $this->load('customerorderlines');
+        // https://blog.jgrossi.com/2018/querying-and-eager-loading-complex-relations-in-laravel/
+        $this->load(['customerorderlines', 'customerorderlinetaxes']);
 
         $lines      = $this->customerorderlines;
         $line_taxes = $this->customerorderlinetaxes;
@@ -386,9 +387,14 @@ class CustomerOrder extends Model
         switch ( $document_rounding_method ) {
             case 'line':
                 # Round off lines and summarize
+
+                // abi_r($line_taxes);die();
+
                 $this->total_lines_tax_incl = $line_taxes->sum( function ($line) use ($currency) {
                             return $line->as_price('total_line_tax', $currency);
                         } );
+                // abi_r($this->total_lines_tax_incl, true);
+
                 break;
             
             case 'total':
@@ -430,6 +436,8 @@ class CustomerOrder extends Model
         }
 
         $this->total_lines_tax_incl += $this->total_lines_tax_excl;
+
+        // abi_r($this->total_lines_tax_incl, true);
 
         // These are NOT rounded!
 //        $this->total_lines_tax_excl = $lines->sum('total_tax_excl');

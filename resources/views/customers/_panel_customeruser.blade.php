@@ -94,5 +94,15 @@
 
 </div><!-- div class="panel panel-info" -->
 
-               
+@if( $customer->user )
+
+@php
+
+    $cart = $customer->cart;
+
+@endphp
+
+@include('customers._panel_cart_lines')
+
+@endif         
 </div>

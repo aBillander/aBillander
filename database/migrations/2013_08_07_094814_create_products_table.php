@@ -90,6 +90,7 @@ class CreateProductsTable extends Migration {
 			$table->tinyInteger('active')->default(1);
 			
 			$table->integer('tax_id')->unsigned()->nullable(false);
+			$table->integer('ecotax_id')->unsigned()->nullable();
 			$table->integer('measure_unit_id')->unsigned()->nullable(false);
 			$table->integer('category_id')->unsigned()->nullable();
 			$table->integer('main_supplier_id')->unsigned()->nullable();

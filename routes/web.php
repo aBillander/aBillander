@@ -175,6 +175,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup')); 
         Route::get('customers/{id}/getorders',             'CustomersController@getOrders' )->name('customer.getorders');
 
+        Route::resource('carts', 'CartsController');
+
 //        Route::resource('addresses', 'AddressesController');
         Route::resource('customers.addresses', 'CustomerAddressesController');
 
@@ -188,6 +190,7 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('taxes',          'TaxesController');
         Route::resource('taxes.taxrules', 'TaxRulesController');
+        Route::resource('ecotaxes',       'EcotaxesController');
 
         Route::resource('warehouses', 'WarehousesController');
         
@@ -236,7 +239,8 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::get('customerorders/{id}/shippingslip',  'CustomerOrdersController@makeShippingSlip'   )->name('customerorder.shippingslip'  );
 
-        Route::get('customerorders/{id}/pdf',        'CustomerOrdersController@showPdf'   )->name('customerorder.pdf'     );
+        Route::get('customerorders/{id}/pdf',         'CustomerOrdersController@showPdf'       )->name('customerorder.pdf'     );
+        Route::get('customerorders/{id}/invoice/pdf', 'CustomerOrdersController@showPdfInvoice')->name('customerorder.invoice.pdf'     );
 
 
 

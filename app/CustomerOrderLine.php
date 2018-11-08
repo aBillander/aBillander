@@ -87,7 +87,7 @@ class CustomerOrderLine extends Model
     
     public function customerorder()
     {
-        return $this->belongsTo('App\CustomerOrder', 'customer_order_id');
+        return $this->belongsTo('App\CustomerOrder', 'customer_order_id', 'id');
     }
 
     public function product()
@@ -183,6 +183,15 @@ class CustomerOrderLine extends Model
 
         }
 
+    }
+
+    public function getPrice()
+    {
+        $price = [ $this->total_tax_excl/$this->quantity, $this->total_tax_incl/$this->quantity ];        // These prices are in Customer Order Currency
+
+        $priceObject = \App\Price::create( $price, $this->currency );
+
+        return $priceObject;
     }
 
 }

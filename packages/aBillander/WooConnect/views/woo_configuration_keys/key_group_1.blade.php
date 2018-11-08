@@ -49,13 +49,12 @@
       </div>
     </div>
 
-{{--
     <div class="form-group {{ $errors->has('WOOC_DECIMAL_PLACES') ? 'has-error' : '' }}">
       <label for="WOOC_DECIMAL_PLACES" class="col-lg-4 control-label">{!! l('WOOC_DECIMAL_PLACES.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-8">
-        {!! Form::select('WOOC_DECIMAL_PLACES', [0 => '0', 1 => '1', 2 => '2', 3 => 's', ], old('WOOC_DECIMAL_PLACES', $key_group['WOOC_DECIMAL_PLACES']), array('class' => 'form-control')) !!}
+        {!! Form::select('WOOC_DECIMAL_PLACES', [2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', ], old('WOOC_DECIMAL_PLACES', $key_group['WOOC_DECIMAL_PLACES']), array('class' => 'form-control')) !!}
         {{ $errors->first('WOOC_DECIMAL_PLACES', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-4"> </div>
@@ -64,6 +63,7 @@
       </div>
     </div>
 
+{{--
     <div class="form-group {{ $errors->has('WOOC_DEF_CURRENCY') ? 'has-error' : '' }}">
       <label for="WOOC_DEF_CURRENCY" class="col-lg-4 control-label">{!! l('WOOC_DEF_CURRENCY.name') !!}</label>
       <div class="col-lg-8">

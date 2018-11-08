@@ -131,6 +131,25 @@
     </div>
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ENABLE_ECOTAXES.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ENABLE_ECOTAXES" id="ENABLE_ECOTAXES_on" value="1" @if( old('ENABLE_ECOTAXES', $key_group['ENABLE_ECOTAXES']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ENABLE_ECOTAXES" id="ENABLE_ECOTAXES_off" value="0" @if( !old('ENABLE_ECOTAXES', $key_group['ENABLE_ECOTAXES']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ENABLE_ECOTAXES.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ENABLE_CUSTOMER_CENTER.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

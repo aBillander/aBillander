@@ -34,6 +34,7 @@ return [
 	'Reference'     => 'Referencia',
 	'Customer Price'     => 'Precio de Venta',
 	'Tax'     => 'Impuesto',
+	'Eco-Tax'     => 'Eco-Impuesto',
 	'Customer Price (with Tax)'     => 'Precio de Venta (con IVA)',
 	'Cost Price'     => 'Precio de Coste',
 	'Margin'     => 'Margen',

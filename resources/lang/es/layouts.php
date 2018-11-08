@@ -59,6 +59,7 @@ return [
 	'Shipping Methods'     => 'Métodos de Envío',
 	'Payment Methods'     => 'Formas de Pago',
 	'Taxes'     => 'Impuestos',
+	'Ecotaxes'     => 'Eco-Impuestos',
 	'Manufacturers'     => 'Fabricantes',
 	'Product Categories'     => 'Categorías de Productos',
 	'Customer Groups'     => 'Grupos de Clientes',
@@ -204,6 +205,8 @@ return [
 	'Voucher'     => 'Recibo',
 	'Add Document'     => 'Añadir Documento',
 
+	'View Carts'     => 'Ver Carritos',
+
 	''     => '',
 
 //	'Send eMail'     => 'Enviar Email',
@@ -219,6 +222,7 @@ return [
 	'-- Please, select --'     => '-- Seleccione --',
 	'-- Click to Select --'     => '-- Haga click para Seleccionar --',
 	'All'     => 'Todos',
+	'None'     => 'Ninguno',
 
 	'You are going to PERMANENTLY delete a record. Are you sure?' => 'Está a punto de borrar PERMANENTEMENTE un registro. ¿Está seguro?',
 	'You are going to delete a record. Are you sure?' => 'Está a punto de borrar un registro. ¿Está seguro?',

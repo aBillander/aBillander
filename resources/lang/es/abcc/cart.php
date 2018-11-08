@@ -20,6 +20,8 @@ return [
 	'Quantity'     => 'Cantidad',
 	'Total'     => 'Total',
 
+	'Change Quantity and press [Enter] or click button below.'     => 'Cambie la Cantidad y pulse [Enter] o click en el botón de más abajo.',
+
 	'Change Quantity and press [Enter] or click button on the right.'     => 'Cambie la Cantidad y pulse [Enter] o click en el botón a la derecha.',
 //	'Taxes are not included.'     => 'Impuestos no incluidos.',
 	

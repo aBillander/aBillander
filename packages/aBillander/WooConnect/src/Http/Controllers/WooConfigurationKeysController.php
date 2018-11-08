@@ -26,7 +26,7 @@ class WooConfigurationKeysController extends Controller {
 
                 1 => [
 
-//                        'WOOC_DECIMAL_PLACES',
+                        'WOOC_DECIMAL_PLACES',
 //                        'WOOC_DEF_CURRENCY',
                         'WOOC_DEF_CUSTOMER_GROUP',
                         'WOOC_DEF_CUSTOMER_PRICE_LIST',
@@ -299,7 +299,9 @@ class WooConfigurationKeysController extends Controller {
         Configuration::updateValue('WOOC_CURRENCY', WooConnector::getWooSetting( 'woocommerce_currency' ));         // EUR
 
 
-        Configuration::updateValue('WOOC_DECIMAL_PLACES', WooConnector::getWooSetting( 'woocommerce_price_num_decimals' )); // 2
+        // This is currency decimal places, NOT precision in amounts
+        // Configuration::updateValue('WOOC_DECIMAL_PLACES', WooConnector::getWooSetting( 'woocommerce_price_num_decimals' )); // 2
+
 //      Configuration::updateValue('WOOC_', WooConnector::getWooSetting( 'woocommerce_weight_unit' ));      // kg
 //      Configuration::updateValue('WOOC_', WooConnector::getWooSetting( 'woocommerce_dimension_unit' ));   // cm
         Configuration::updateValue('WOOC_PRICES_INCLUDE_TAX', WooConnector::getWooSetting( 'woocommerce_prices_include_tax' )); // no

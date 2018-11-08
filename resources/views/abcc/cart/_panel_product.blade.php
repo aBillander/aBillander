@@ -22,8 +22,12 @@
                      {{ Form::hidden( 'line_measure_unit_id', null, ['id' => 'line_measure_unit_id'] ) }}
                   </div>
 
-                 <div class="form-group col-lg-4 col-md-2 col-sm-2" {{ $errors->has('line_quantity') ? 'has-error' : '' }}">
+                 <div class="form-group col-lg-4 col-md-2 col-sm-2 {{ $errors->has('line_quantity') ? 'has-error' : '' }}">
                     {{ l('Quantity') }}
+                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                              data-content="{{ l('Change Quantity and press [Enter] or click button below.') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                       </a>
                      {!! Form::text('line_quantity', null, array('class' => 'form-control', 'id' => 'line_quantity', 'xonkeyup' => 'calculate_line_product( )', 'xonchange' => 'calculate_line_product( )', 'onfocus' => 'this.select()', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
                      {!! $errors->first('line_quantity', '<span class="help-block">:message</span>') !!}
 
@@ -57,6 +61,8 @@
 
             var url = "{{ route('abcc.cart.add') }}";
             var token = "{{ csrf_token() }}";
+
+            if ($('#line_product_id').val() == "") return false;
 
             var payload = { 
                               product_id : $('#line_product_id').val(),
@@ -107,7 +113,7 @@
                     $('#line_product_id').val(value.item.id);
                     $('#line_combination_id').val(0);
 
-                    getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
+                    // getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
 
                     $('#line_quantity').focus();
 
@@ -220,6 +226,18 @@
              // console.log("put function call here");
              evnt.preventDefault();
              updateCartlineQuantity(id, quantity);
+             return false;
+          }
+
+        });
+        
+
+        $(document).on('keydown','#line_quantity', function(evnt){
+
+          if (evnt.keyCode == 13) {
+             // console.log("put function call here");
+             evnt.preventDefault();
+             $("#product_add_to_cart").click();
              return false;
           }
 

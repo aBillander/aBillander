@@ -196,6 +196,13 @@
                                  {{l('Taxes', [], 'layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                         <li>
+                            <a href="{{ URL::to('ecotaxes') }}">
+                                 {{l('Ecotaxes', [], 'layouts')}}
+                            </a>
+                        </li>
+@endif
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('activityloggers') }}">

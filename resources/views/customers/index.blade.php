@@ -20,6 +20,12 @@
 
         <a href="{{ route('customers.export') }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
+@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+        <a href="{{ route('carts.index') }}" class="btn btn-sm btn-info" 
+                title="{{l('View Carts', [], 'layouts')}}"><i class="fa fa-shopping-cart"></i> {{l('View Carts', [], 'layouts')}}</a>
+@endif
+
     </div>
     <h2>
         {{ l('Customers') }}

@@ -378,7 +378,10 @@ class AbccCustomerCartController extends Controller
         $line = $cart->cartlines()->where('id', $line_id);
 
         if ($quantity>0)
-        	$line->update(['quantity' => $quantity]);
+        {
+            $line->update(['quantity' => $quantity]);
+            $cart->touch(); //  protected $touches = ['cart']; will not work on update. Why?
+        }
         else
         	$line->delete();
 

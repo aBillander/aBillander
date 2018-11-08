@@ -185,11 +185,13 @@ class WooOrderImporter {
 		$diffTaxExc = ($importer->raw_data['total'] - $importer->raw_data['total_tax']) - $importer->order->total_tax_excl;
 		$diffTaxInc =  $importer->raw_data['total']                                     - $importer->order->total_tax_incl;
 
-		if ( $diffTaxExc != 0 )
-			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> Total Tax Excluded difference: {diffTaxExc}.'), ['oid' => $order_id, 'diffTaxExc' => $diffTaxExc]);
+        $e = 0.0001;
 
-		if ( $diffTaxInc != 0 )
-			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> Total Tax Included difference: {diffTaxInc}.'), ['oid' => $order_id, 'diffTaxInc' => $diffTaxInc]);
+		if ( abs($diffTaxExc) > $e )
+			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> [:abi_oid] Total Tax Excluded difference: {diffTaxExc} (:curr).'), ['oid' => $order_id, 'abi_oid' => $importer->order->id, 'diffTaxExc' => $diffTaxExc, 'curr' => $importer->raw_data['currency']]);
+
+		if ( abs($diffTaxInc) > $e )
+			$importer->logWarning( l('Order number <span class="log-showoff-format">{oid}</span> [:abi_oid] Total Tax Included difference: {diffTaxInc} (:curr).'), ['oid' => $order_id, 'abi_oid' => $importer->order->id, 'diffTaxInc' => $diffTaxInc, 'curr' => $importer->raw_data['currency']]);
 
 
         return $importer;
@@ -345,7 +347,11 @@ class WooOrderImporter {
 //			'total_lines_tax_incl' => $order['total'],
 //			'total_lines_tax_excl' => $order['total'] - $order['total_tax'],
 			
-			'total_tax_incl' => $order['total'],
+            'total_currency_paid' => $order['total'],
+            'total_currency_tax_incl' => $order['total'],
+            'total_currency_tax_excl' => $order['total'] - $order['total_tax'],
+
+            'total_tax_incl' => $order['total'],
 			'total_tax_excl' => $order['total'] - $order['total_tax'],
 
 //			'commission_amount' => $order[''],

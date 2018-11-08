@@ -43,9 +43,15 @@ class CustomerResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('You are receiving this email because we received a password reset request for your account.')
-                    ->action('Reset Password', route('customer.password.reset', $this->token))
-                    ->line('If you did not request a password reset, no further action is required.');
+//                    ->view('auth.passwords.customer_reset_email')
+                    ->markdown('auth.passwords.customer_reset_email')      // From: resources/views/auth/passwords (See: https://laravel.com/docs/5.5/passwords#resetting-views)
+                    // See: https://thewebtier.com/laravel/modify-password-reset-email-text-laravel/
+//                    ->from('info@example.com')
+                    ->subject( 'Recuperar la contraseña ['.config('app.name').']' )
+                    ->line('Recibe este email porque hemos recibido una solicitud para recuperar la contraseña de su Cuenta.')
+                    ->action('Recuperar la Contraseña', route('customer.password.reset', $this->token))
+ //                   ->attach('reset.attachment')
+                    ->line('Si no solicitó recuperar su contraseña, no necesita hacer nada más.');
     }
 
     /**

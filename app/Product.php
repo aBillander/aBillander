@@ -49,7 +49,7 @@ class Product extends Model {
 
                             'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 
 
-                            'tax_id', 'category_id', 'main_supplier_id', 
+                            'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
 
                             'measure_unit_id', 'work_center_id', 'route_notes',
                           ];

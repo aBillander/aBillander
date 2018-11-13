@@ -16,7 +16,8 @@ return [
 	'product(s)'     => 'producto(s)',
 	'Reference'     => 'Referencia',
 
-	'Initial Inventory'     => 'Inventario de Apertura',
+	'Initial Inventory'     => 'Inventario Inicial',
+	'Stock Adjustment'     => 'Ajuste de Stock',
 	'Quantity'     => 'Cantidad',
 	''     => '',
 
@@ -63,4 +64,6 @@ return [
 	''     => '',
 	''     => '',
 
+	'Process Stock Count'     => 'Procesar Inventario',
+	'You are going to UPDATE the Stock of Products in Warehouse <i><u>:ws</u></i>. Are you sure?' => 'Está a punto de ACTUALIZAR el Stock de Productos en el Almacén <i><u>:ws</u></i>. ¿Está seguro?',
 ];

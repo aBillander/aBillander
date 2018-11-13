@@ -170,6 +170,8 @@ return [
 	'Apply'     => 'Aplicar',
 	'Refresh'     => 'Refrescar',
 	'Show'     => 'Mostrar',
+	'Show Log'     => 'Mostrar el Log',
+	'Progress'     => 'Progreso',
 	'Save'     => 'Guardar',
 	'Save & Complete'     => 'Guardar y Completar',
 	'Save & Continue'     => 'Guardar y Continuar',
@@ -223,6 +225,8 @@ return [
 	'-- Click to Select --'     => '-- Haga click para Seleccionar --',
 	'All'     => 'Todos',
 	'None'     => 'Ninguno',
+	'Loading...'     => 'Cargando...',
+	'Processing...'     => 'Procesando...',
 
 	'You are going to PERMANENTLY delete a record. Are you sure?' => 'Está a punto de borrar PERMANENTEMENTE un registro. ¿Está seguro?',
 	'You are going to delete a record. Are you sure?' => 'Está a punto de borrar un registro. ¿Está seguro?',

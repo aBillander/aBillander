@@ -97,6 +97,28 @@ return [
 	'Prices will be rounded to Price List Currency decimal places.'     => 'Los Precios se redondearán de acuerdo al número de posiciones decimales de la Divisa que corresponde a la Tarifa.',
 	'Empty LOG?'     => '¿Vaciar el LOG?',
 	'Empty LOG before Price List Lines import.'     => 'Vaciar el LOG antes de importar las Líneas de Tarifa.',
-	'Simulation Mode: errors will be shown, but database will not be changed.' => 'Modo Simulación: se mostrarán errores, pero no se cargará nada en la base de datos.'
+	'Simulation Mode: errors will be shown, but database will not be changed.' => 'Modo Simulación: se mostrarán errores, pero no se cargará nada en la base de datos.',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Price List
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Import - Stock Counts' => 'Importar - Inventario de Almacén',
+
+	'Back to Stock Counts'     => 'Volver a Inventarios de Almacén',
+	'Stock Counts' => 'Inventario de Almacén',
+	'Import Stock Count File'     => 'Importar Fichero de Inventario de Almacén',
+
+	'Initial Inventory' => 'Inventario Inicial',
+	'Stock Adjustment'     => 'Ajuste de Stock',
+
+	''     => '',
+	''     => '',
+	''     => '',
 
 ];

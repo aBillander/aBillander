@@ -143,6 +143,19 @@ class Combination extends Model {
 
         return $quantity;
     }
+    
+    public function getStock()
+    { 
+        $warehouses = \App\Warehouse::get();
+        $count = 0;
+
+        foreach ($warehouses as $warehouse) {
+            # code...
+            $count += $this->getStockByWarehouse( $warehouse->id );
+        }
+
+        return $count;
+    }
 
     
     /*

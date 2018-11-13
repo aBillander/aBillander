@@ -13,15 +13,19 @@ class CreateProductWarehouseTable extends Migration {
 	 */
 	public function up()
 	{
+        Schema::dropIfExists('product_warehouse');
+        
 		Schema::create('product_warehouse', function(Blueprint $table)
 		{
 			$table->increments('id');
 
-			$table->integer('product_id')->unsigned()->index();
+			$table->integer('product_id')->unsigned();
 //			$table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 
-			$table->integer('warehouse_id')->unsigned()->index();
+			$table->integer('warehouse_id')->unsigned();
 //			$table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
+
+			$table->index(['warehouse_id', 'product_id']);
 
 			$table->decimal('quantity', 20, 6)->default(0.0);
 			
@@ -37,7 +41,7 @@ class CreateProductWarehouseTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('product_warehouse');
+		Schema::dropIfExists('product_warehouse');
 	}
 
 }

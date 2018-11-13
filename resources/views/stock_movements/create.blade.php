@@ -37,21 +37,25 @@
 <div class="row">
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('reference', l('Product Reference')) !!}
-        {!! Form::text('reference', null, array('id' => 'reference', 'class' => 'form-control')) !!}
+        {!! Form::text('reference', null, array('id' => 'reference', 'class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
     </div>
     <div class="form-group col-lg-6 col-md-6 col-sm-6">
         {!! Form::label('product_query', l('Product Name')) !!}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Search by Product Reference or Name') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a>
         <div class="input-group">
-          {!! Form::hidden('product_id', '0', array('id' => 'product_id')) !!}
+          {!! Form::hidden('product_id', '', array('id' => 'product_id')) !!}
           {!! Form::hidden('combination_id', '0', array('id' => 'combination_id')) !!}
 
-          {!! Form::text('product_query', null, array('id' => 'product_query', 'autocomplete' => 'off', 'class' => 'form-control')) !!}
+          {!! Form::text('product_query', null, array('id' => 'product_query', 'autocomplete' => 'off', 'class' => 'form-control', 'onclick' => 'this.select()')) !!}
 
-           <span class="input-group-btn">
+           <!-- span class="input-group-btn">
               <button class="btn btn-primary" type="submit" onclick="return false;">
                  <i class="fa fa-search"></i>
               </button>
-           </span>
+           </span -->
         </div>
     </div>
 
@@ -133,6 +137,8 @@
 
 
 {{-- AutoComplete :: https://jqueryui.com/autocomplete/--}}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script>
 

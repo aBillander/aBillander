@@ -13,15 +13,19 @@ class CreateCombinationWarehouseTable extends Migration {
 	 */
 	public function up()
 	{
+        Schema::dropIfExists('combination_warehouse');
+        
 		Schema::create('combination_warehouse', function(Blueprint $table)
 		{
 			$table->increments('id');
 
-			$table->integer('combination_id')->unsigned()->index();
+			$table->integer('combination_id')->unsigned();
 //			$table->foreign('combination_id')->references('id')->on('combinations')->onDelete('cascade');
 
-			$table->integer('warehouse_id')->unsigned()->index();
+			$table->integer('warehouse_id')->unsigned();
 //			$table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
+
+			$table->index(['warehouse_id', 'combination_id']);
 
 			$table->decimal('quantity', 20, 6)->default(0.0);
 			
@@ -37,7 +41,7 @@ class CreateCombinationWarehouseTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('combination_warehouse');
+		Schema::dropIfExists('combination_warehouse');
 	}
 
 }

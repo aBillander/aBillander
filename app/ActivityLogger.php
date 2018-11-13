@@ -14,7 +14,7 @@ class ActivityLogger extends Model
     protected $timer_total;
 
 
-    protected $fillable = [ 'name', 'signature', 'description', 'user_id' ];
+    protected $fillable = [ 'name', 'signature', 'description', 'back_to', 'user_id' ];
 
 //    protected $appends = ['last_modified_at'];
     
@@ -46,7 +46,7 @@ class ActivityLogger extends Model
     |--------------------------------------------------------------------------
     */
 
-    public static function setup( $log_name = 'default', $log_description = '', $log_signature = '' )
+    public static function setup( $log_name = 'default', $log_description = '', $log_signature = '', $back_to = '' )
     {
       // https://stackoverflow.com/questions/28395855/how-to-create-constructor-with-optional-parameters
       // https://stackoverflow.com/questions/1699796/best-way-to-do-multiple-constructors-in-php
@@ -76,12 +76,35 @@ class ActivityLogger extends Model
 
       $self->signature = md5( $self->signature.' :: '.$self->user_id );
 
-      if ( $al = ActivityLogger::where( 'signature', $self->signature)->first() ) return $al;
+      if ( $al = ActivityLogger::where( 'signature', $self->signature)->first() )
+      {
+          if ($al->back_to != '')
+          {
+              //
+              $al->back_to = $back_to;
+
+              $al->save();
+          }
+
+          return $al;
+      }
+
+      $self->back_to = $back_to;
 
       $self->save();
 
       return $self;
     }
+
+    public function backTo( $back_to = '' ) 
+    {
+          $this->back_to = $back_to;
+
+          $this->save();
+
+          return $this;
+    }
+
 
     public function timer_start() 
     {
@@ -196,6 +219,17 @@ class ActivityLogger extends Model
         $this->log('TIMER', $message, $context);
     }
 
+
+    
+    public function hasErrors()
+    {
+        return $this->activityloggerlines()->where('level_name', 'ERROR')->count();
+    }
+
+    public function hasWarnings()
+    {
+        return $this->activityloggerlines()->where('level_name', 'WARNING')->count();
+    }
 
 
 

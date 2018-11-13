@@ -7,6 +7,17 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
+        <a class="btn btn-sm btn-grey" href="{{ URL::route('stockcounts.import', [$list->id] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-upload"></i></a>
+
+        <a class="btn btn-sm btn-info update-warehouse-stock" data-html="false" data-toggle="modal" 
+                href="{{ URL::route('stockcount.warehouse.update', [$list->id] ) }}" 
+                data-content="{{l('You are going to UPDATE the Stock of Products in Warehouse <i><u>:ws</u></i>. Are you sure?', ['ws' => $list->warehouse->name])}}" 
+                data-wsname="{{ $list->warehouse->name }}" 
+                data-title="{{ l('Stock Counts') }} :: ({{$list->id}}) {{ $list->name }}" 
+                onClick="return false;" title="{{l('Process Stock Count')}}"><i class="fa fa-superpowers"></i> {{-- l('Process Stock Count') --}}</a>
+
+        <a class="btn btn-sm btn-grey" href="{{ URL::route('stockcounts.export', [$list->id] ) }}" title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
         <a href="{{ URL::to('stockcounts/'.$list->id.'/stockcountlines/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
@@ -41,5 +52,8 @@
 </div>
 
 @endsection
+
+
+@include('stock_counts/_modal_update_warehouse_stock')
 
 @include('layouts/modal_delete')

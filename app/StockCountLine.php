@@ -15,7 +15,8 @@ class StockCountLine extends Model
     protected $dates = ['date'];
     
     protected $fillable = [ 'date', 'quantity', 'cost_price',  
-    						'product_id', 'combination_id', 'user_id'
+    						'product_id', 'combination_id', 'reference', 'name',
+                            'user_id'
     						];
 
     public static $rules = array(

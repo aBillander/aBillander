@@ -107,6 +107,48 @@
       </div>
     </div>
 
+    <div class="form-group {{ $errors->has('ABI_IMPERSONATE_TIMEOUT') ? 'has-error' : '' }}">
+      <label for="ABI_IMPERSONATE_TIMEOUT" class="col-lg-4 control-label">{!! l('ABI_IMPERSONATE_TIMEOUT.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABI_IMPERSONATE_TIMEOUT" name="ABI_IMPERSONATE_TIMEOUT" placeholder="" value="{{ old('ABI_IMPERSONATE_TIMEOUT', $key_group['ABI_IMPERSONATE_TIMEOUT']) }}" />
+        {{ $errors->first('ABI_IMPERSONATE_TIMEOUT', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABI_IMPERSONATE_TIMEOUT.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('ABI_TIMEOUT_OFFSET') ? 'has-error' : '' }}">
+      <label for="ABI_TIMEOUT_OFFSET" class="col-lg-4 control-label">{!! l('ABI_TIMEOUT_OFFSET.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABI_TIMEOUT_OFFSET" name="ABI_TIMEOUT_OFFSET" placeholder="" value="{{ old('ABI_TIMEOUT_OFFSET', $key_group['ABI_TIMEOUT_OFFSET']) }}" />
+        {{ $errors->first('ABI_TIMEOUT_OFFSET', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABI_TIMEOUT_OFFSET.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('ABI_MAX_ROUNDCYCLES') ? 'has-error' : '' }}">
+      <label for="ABI_MAX_ROUNDCYCLES" class="col-lg-4 control-label">{!! l('ABI_MAX_ROUNDCYCLES.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABI_MAX_ROUNDCYCLES" name="ABI_MAX_ROUNDCYCLES" placeholder="" value="{{ old('ABI_MAX_ROUNDCYCLES', $key_group['ABI_MAX_ROUNDCYCLES']) }}" />
+        {{ $errors->first('ABI_MAX_ROUNDCYCLES', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABI_MAX_ROUNDCYCLES.help') !!}</span>
+      </div>
+    </div>
+
 
 
     <div class="form-group {{ $errors->has('TIMEZONE') ? 'has-error' : '' }}">

@@ -28,18 +28,21 @@
                 <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
             </div -->
             <br />
+
+                    <span class="badge" style="background-color: #3a87ad;"> {{ $stockcount->warehouse->alias }} </span> {{ $stockcount->warehouse->name }}
+                        <br />
+                        <br />
+                    @if ($stockcount->initial_inventory)
+                      <span class="label label-success">{{ l('Initial Inventory') }}</span>
+                    @else
+                      <span class="label label-success">{{ l('Stock Adjustment') }}</span>
+                    @endif
 {{--
-                                        <span class="badge" style="background-color: #3a87ad;" title="{{ $stockcount->currency->name }}">{{ $stockcount->currency->iso_code }}</span> ({{ l(':decimals decimals', ['decimals' => $stockcount->currency->decimalPlaces])}} )
-                                            <br />
-                                        <span class="label label-success">{{ $stockcount->getType() }}</span>
-                                        @if ($stockcount->type != 'price')
-                                          <span class="label label-default">{{ $stockcount->as_percent('amount') }}%</span>
-                                        @endif
-                                        @if ( $stockcount->price_is_tax_inc )
-                                            <br />
-                                            <span class="label label-info">{{ l('Tax Included', [], 'stockcounts') }}</span>
-                                        @endif
-                    --}}                    
+                    @if ( $stockcount->price_is_tax_inc )
+                        <br />
+                        <span class="label label-info">{{ l('Tax Included', [], 'stockcounts') }}</span>
+                    @endif
+--}}
             <br />
             <br />
 

@@ -21,7 +21,11 @@
             data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
             data-title="{{ l('aBillander LOG') }} :: ({{$activitylogger->id}}) {{ $activitylogger->name }}" 
             onClick="return false;" title="{{l('Delete LOG')}}"><i class="fa fa-trash-o"></i> {{l('Delete LOG')}}</a>
-        
+
+@if ($activitylogger->back_to)
+        <a href="{{ $activitylogger->back_to }}" class="btn btn-lightblue"><i class="fa fa-mail-reply"></i> {{l('Back', 'layouts')}}</a>
+@endif
+
         <a href="{{ URL::to('activityloggers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to aBillander LOG')}}</a>
     </div>
     <h2>

@@ -63,6 +63,7 @@
                 <a class="btn btn-sm btn-info update-warehouse-stock" data-html="false" data-toggle="modal" 
                         href="{{ URL::route('stockcount.warehouse.update', [$stockcount->id] ) }}" 
                         data-content="{{l('You are going to UPDATE the Stock of Products in Warehouse <i><u>:ws</u></i>. Are you sure?', ['ws' => $stockcount->warehouse->name])}}" 
+                        data-wsname="{{ $stockcount->warehouse->name }}" 
                         data-title="{{ l('Stock Counts') }} :: ({{$stockcount->id}}) {{ $stockcount->name }}" 
                         onClick="return false;" title="{{l('Process Stock Count')}}"><i class="fa fa-superpowers"></i></a>
 

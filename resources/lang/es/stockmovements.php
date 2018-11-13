@@ -40,6 +40,7 @@ return [
 	'Price'     => 'Precio',
 	'Currency'     => 'Divisa',
 	'Movement type'     => 'Tipo de movimiento',
+	'Search by Product Reference or Name'     => 'Busque por Nombre o Referencia',
 
 
 	/*

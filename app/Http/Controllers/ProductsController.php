@@ -577,7 +577,7 @@ LIMIT 1
             $onhand_only = ( $request->has('onhand_only') ? 1 : 0 );
 
 //            return Product::searchByNameAutocomplete($query, $onhand_only);
-            return Product::searchByNameAutocomplete($request->input('query'), $onhand_only);
+            return Product::searchByNameAutocomplete($query, $onhand_only);
         } else {
             // die silently
             return json_encode( [ 'query' => '', 'suggestions' => [] ] );

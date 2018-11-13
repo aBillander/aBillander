@@ -219,6 +219,8 @@ class Product extends Model {
                     ? $warehouse
                     : $warehouse->id ;
 
+        $this->load(['warehouses']);
+
     //    $product = \App\Product::find($this->id);
 
         $whs = $this->warehouses;
@@ -231,6 +233,32 @@ class Product extends Model {
         }
 
         return $quantity;
+    }
+    
+    public function getStock()
+    { 
+        $warehouses = \App\Warehouse::get();
+        $count = 0;
+
+        foreach ($warehouses as $warehouse) {
+            # code...
+            $count += $this->getStockByWarehouse( $warehouse->id );
+        }
+
+        return $count;
+    }
+    
+    public function getStockNew()
+    { 
+        $warehouses = \App\Warehouse::get();
+        $count = 0;
+
+        foreach ($warehouses as $warehouse) {
+            # code...
+            $count += $this->getStockByWarehouse( $warehouse->id );
+        }
+
+        return $count;
     }
     
 
@@ -368,7 +396,13 @@ class Product extends Model {
     
     public function warehouses()
     {
-        return $this->belongsToMany('App\Warehouse')->withPivot('quantity')->withTimestamps();
+        return $this->belongsToMany('App\Warehouse')    //->as('warehouseline')
+        ->withPivot('quantity')->withTimestamps();
+    }
+
+    public function warehouselines()
+    {
+        return $this->hasMany('App\WarehouseProductLine');
     }
 
     public function pricelistlines()

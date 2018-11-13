@@ -41,7 +41,7 @@ class StockMovementsController extends Controller
         						->with('warehouse')
         						->with('product')
         						->with('combination')
-        						->orderBy('created_at', 'ASC');
+        						->orderBy('created_at', 'DESC');
 
 //         abi_r($mvts->toSql(), true);
 
@@ -76,14 +76,16 @@ class StockMovementsController extends Controller
 	 */
 	public function store(Request $request)
 	{
+		// abi_r($request->all(), true);
+
 		// Valid type?
 		$this->validate($request, StockMovement::validTypeRule());
 
         if ( $request->input('movement_type_id') == 10 ) {
         	$product = \App\Product::find( $request->input('product_id') );
-            if ( $product->quantity_onhand > 0.0 )
+            if ( $product->getStockByWarehouse( $request->input('warehouse_id') ) > 0.0 )
 				return redirect('stockmovements/create')
-						->with( 'error', l('Can not set Initial Stock &#58&#58 (:id) :name has already non zero stock', ['id' => $product->id, 'name' => $product->name]) );
+						->with( 'error', l('Can not set Initial Stock &#58&#58 (:id) :name has already non zero stock in Warehouse :ws', ['id' => $product->id, 'name' => $product->name, 'ws' => $request->input('warehouse_id')]) );
         }
 
 		// Move on
@@ -120,11 +122,9 @@ class StockMovementsController extends Controller
 
 		$this->validate($request, $rules);
 
-		$stockmovement = $this->stockmovement->create( array_merge( $request->all(), $extradata ) );
-
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->findOrFail(intval($combination_id));
+            $combination = \App\Combination::with('product')->find(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
@@ -132,10 +132,13 @@ class StockMovementsController extends Controller
             $product = \App\Product::findOrFail(intval($product_id));
         }
 
-        $stockmovement->reference  = $product->reference;
-        $stockmovement->name       = $product->name;
+        $extradata['reference']  = $product->reference;
+        $extradata['name']       = $product->name;
 
-        $stockmovement->save();
+
+//		$stockmovement = $this->stockmovement->create( array_merge( $request->all(), $extradata ) );
+		$stockmovement = $this->stockmovement->createAndProcess( array_merge( $request->all(), $extradata ) );
+
 
 		// Time savers
 		Cookie::queue('date', $date_raw, 1);	// Live 1 minute
@@ -144,7 +147,7 @@ class StockMovementsController extends Controller
 		Cookie::queue('currency_id',        $request->input('currency_id'), 1);
 
 		// Stock movement fulfillment (perform stock movements)
-		$stockmovement->process();
+//		$stockmovement->process();
 
         if ($action == 'saveAndContinue')
         return redirect('stockmovements/create')

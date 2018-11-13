@@ -13,7 +13,7 @@ return [
 	'Name' => 'Nombre',
 	'Sequence' => 'Serie',
 	'Warehouse' => 'Almacén',
-	'Initial Inventory?' => '¿De Apertura?',
+	'Initial Inventory?' => '¿Inventario Inicial?',
 	'Processed?' => '¿Procesado?',
 	'Stock Counts - Create' => 'Inventario de Almacén - Crear',
 	'New Stock Count' => 'Nuevo Inventario de Almacén',

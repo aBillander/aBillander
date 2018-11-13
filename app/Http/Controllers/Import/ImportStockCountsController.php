@@ -162,7 +162,7 @@ class ImportStockCountsController extends Controller
         $name = '['.$stockcount->id.'] '.$stockcount->name;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Stock Count', __METHOD__ );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = \App\ActivityLogger::setup( 'Import Stock Count', __METHOD__, '', route('stockcounts.stockcountlines.index', [$stockcount->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         if ( $request->input('empty_log', 0) ) 
@@ -174,9 +174,9 @@ class ImportStockCountsController extends Controller
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
 
-        $logger->log("INFO", 'Se cargará la Tarifa {name} desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['name' => $name, 'file' => $file]);
+        $logger->log("INFO", 'Se cargará el Recuento de Stock {name} desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['name' => $name, 'file' => $file]);
 
-
+/*
         if ( $request->input('round_price', 0) )
         {
             $decimal_places = $stockcount->currency->decimalPlaces;
@@ -186,18 +186,19 @@ class ImportStockCountsController extends Controller
 
             $decimal_places = -1;
         }
-
-
-        // Delete Stock Count Lines
-        $stockcount->stockcountlines()->delete();
+*/
 
 
         $params = [
-                    'price_list_id' => $stockcount->id, 
+                    'stock_count_id' => $stockcount->id, 
                     'name' => $name, 
-                    'decimal_places' => $decimal_places, 
+//                    'decimal_places' => $decimal_places, 
                     'simulate' => $request->input('simulate', 0),
         ];
+
+        // Delete Stock Count Lines
+        if ( !($params['simulate'] > 0) )
+            $stockcount->stockcountlines()->delete();
 
 
         try{
@@ -216,7 +217,7 @@ class ImportStockCountsController extends Controller
 
 
         return redirect('activityloggers/'.$logger->id)
-                ->with('success', l('Se ha cargado la Tarifa :name desde el Fichero: <strong>:file</strong> .', ['name' => $name, 'file' => $file]));
+                ->with('success', l('Se ha cargado el Recuento de Stock :name desde el Fichero: <strong>:file</strong> .', ['name' => $name, 'file' => $file]));
 
 
 //        abi_r('Se han cargado: '.$i.' productos');
@@ -282,11 +283,11 @@ class ImportStockCountsController extends Controller
             if ( $params['simulate'] > 0 ) 
                 $logger->log("WARNING", "Modo SIMULACION. Se mostrarán errores, pero no se cargará nada en la base de datos.");
 
-            $price_list_id = intval($params['price_list_id']);
-            $stockcount = $this->stockcount->findOrFail($price_list_id);
+            $stock_count_id = intval($params['stock_count_id']);
+            $stockcount = $this->stockcount->findOrFail($stock_count_id);
 
             $name = $params['name'];
-            $decimal_places = $params['decimal_places'];
+//            $decimal_places = $params['decimal_places'];
 
             $i = 0;
             $i_ok = 0;
@@ -307,53 +308,50 @@ class ImportStockCountsController extends Controller
                     // Prepare data
                     $data = $row->toArray();
 
-                    // $item = implode(', ', $data);
+                    $item = implode(', ', $data);
                     // $item = str_replace('=', ':', http_build_query($data, null, ', '));
-                    $item = http_build_query($data, null, ', ');
+                    // $item = http_build_query($data, null, ', ');
 
                     // Some Poor Man checks:
-                    if ( $data['price'] <= 0.0 ) {
+ /*                   if ( $data['cost_price'] <= 0.0 ) {
                         
                         // Product not for this Stock Count
 
                         $i++;
                         continue;
                     }
-
-                    // Need rounding?
+*/
+/*                    // Need rounding?
                     if ( $decimal_places >= 0 ) {
                         $data['price'] = round($data['price'], $decimal_places);
                     }
-
-                    if ( intval($data['price_list_id']) != $price_list_id ) {
+*/
+                    if ( intval($data['stock_count_id']) != $stock_count_id ) {
                         
-                        $logger->log("ERROR", "La fila (".$item.") no corresponde a la Tarifa ".$name);
+                        $logger->log("ERROR", 'La fila <span class="log-ERROR-format">('.$item.')</span> no corresponde al Recuento de Stock <span class="log-showoff-format">'.$name.'</span>');
 
                         $i++;
                         continue;
                     }
 
-                    // Get Product id
-                    if ( array_key_exists('product_id', $data) ) {
+                    // Get Product
+                    $product = null;
+                    if ( array_key_exists('product_id', $data) && ($product_id=trim($data['product_id'])) ) {
 
-                        // OK. Let's move on
+                        $product = $this->product->find($product_id);
+
                     } else
 
-                    if ( array_key_exists('reference', $data) ) {
+                    if ( array_key_exists('reference', $data) && ($reference=trim($data['reference'])) ) {
 
-                        $product = $this->product->where('reference', $data['reference'])->first();
+                        $product = $this->product->where('reference', $reference)->first();
+                    } 
 
-                        if ( $product ) 
+                    if ( $product ) {
                             $data['product_id'] = $product->id;
-                        else {
-                            
-                            $logger->log("ERROR", "La fila (".$item.") no corresponde a ningún Producto. [".$data['reference']."]");
-
-                            $i++;
-                            continue;
-                        }
-
-                    } else {
+                            $data['reference']  = $product->reference;
+                            $data['name']  = $product->reference;
+                        } else {
                         
                         $logger->log("ERROR", "La fila (".$item.") no corresponde a ningún Producto.");
 
@@ -410,12 +408,12 @@ class ImportStockCountsController extends Controller
             } else {
 
                 // No data in file
-                $logger->log('WARNING', 'No se encontraton datos de Tarifa en el fichero.');
+                $logger->log('WARNING', 'No se encontraton datos de Recuento de Stock en el fichero.');
             }
 
-            $logger->log('INFO', 'Se han creado / actualizado {i} Líneas de Tarifa.', ['i' => $i_ok]);
+            $logger->log('INFO', 'Se han creado / actualizado {i} Líneas de Recuento de Stock.', ['i' => $i_ok]);
 
-            $logger->log('INFO', 'Se han procesado {i} Líneas de Tarifa.', ['i' => $i]);
+            $logger->log('INFO', 'Se han procesado {i} Líneas de Recuento de Stock.', ['i' => $i]);
 
 // Process reader          
     
@@ -431,6 +429,7 @@ class ImportStockCountsController extends Controller
      */
     public function export($id)
     {
+        \App\Configuration::updateValue('EXPORT_DECIMAL_SEPARATOR', ',');
         
 /*        $stockcount = $this->stockcount
                     ->with('stockcountlines')
@@ -438,12 +437,12 @@ class ImportStockCountsController extends Controller
                     ->findOrFail($id);
 */
 
-        $stockcount  = $this->stockcount->findOrFail($id);
+        $stockcount  = $this->stockcount->with('warehouse')->findOrFail($id);
         $lines = $this->stockcountline
-                        ->select('price_list_lines.*', 'products.id', 'products.reference', 'products.name')
+                        ->select('stock_count_lines.*', 'products.id', 'products.reference', 'products.name')
 //                        ->with('product')
-                        ->where('price_list_id', $id)
-                        ->join('products', 'products.id', '=', 'price_list_lines.product_id')       // Get field to order by
+                        ->where('stock_count_id', $id)
+                        ->join('products', 'products.id', '=', 'stock_count_lines.product_id')       // Get field to order by
                         ->orderBy('products.reference', 'asc')
                         ->get();
 
@@ -451,26 +450,27 @@ class ImportStockCountsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $data[] = [ 'reference', 'NOMBRE', 'price', 'price_list_id' ];
+        $data[] = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'cost_price', 'stock_count_id', 'stock_count_NAME' ];
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
         foreach ($lines as $line) {
             // $data[] = $line->toArray();
             $data[] = [
+                            'product_id' => $line->product_id,
                             'reference' => $line->reference,
                             'NOMBRE' => $line->name,
-                            'price' => $line->price,
-                            'price_list_id' => $id,
+                            'quantity'   => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->quantity  ),
+                            'cost_price' => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->cost_price),
+                            'stock_count_id' => $id,
+                            'stock_count_NAME' => $stockcount->name,
             ];
         }
 
-        $sheetName = $stockcount->price_is_tax_inc > 0 ?
-                    'Precio incluye IVA' :
-                    'Precio es SIN IVA' ;
+        $sheetName = $stockcount->warehouse->alias.' - '.$stockcount->warehouse->name;
 
         // Generate and return the spreadsheet
-        Excel::create('Stock_Count_'.$id, function($excel) use ($id, $sheetName, $data) {
+        Excel::create('Stock_Count_'.$id.'_'.$stockcount->warehouse->alias, function($excel) use ($id, $sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');

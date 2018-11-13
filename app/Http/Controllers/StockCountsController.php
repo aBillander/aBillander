@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Configuration;
+
 use App\StockCount;
+use App\StockCountLine;
 use App\StockMovement;
 
 class StockCountsController extends Controller
@@ -13,10 +16,12 @@ class StockCountsController extends Controller
 
 
    protected $stockcount;
+   protected $stockcountline;
 
-   public function __construct(StockCount $stockcount)
+   public function __construct(StockCount $stockcount, StockCountLine $stockcountline)
    {
         $this->stockcount = $stockcount;
+        $this->stockcountline = $stockcountline;
    }
 
     /**
@@ -155,10 +160,32 @@ class StockCountsController extends Controller
     }
 
 
-    public function warehouseUpdate($id)
+
+/* ********************************************************************************************* */    
+
+
+
+    public function warehouseUpdate(Request $request, $id)
     {
+/*
+        if ($request->ajax()) {
+            
+            sleep(5);
+
+            return response()->json(['url_to' => 'OK']);
+        }
+
+        return 'ok';
+*/
+        // Prepare
+        $roundCycle = $request->input('roundCycle', 0);
+        $nextItem = $request->input('nextItem', 0);
+
+        // Go for it
+        $roundCycle++;
 
         $stockcount = $this->stockcount
+                    ->with('warehouse')
                     ->with('stockcountlines')
  //                   ->with('stockcountlines.product')
  //                   ->with('stockcountlines.product.tax')
@@ -170,46 +197,88 @@ class StockCountsController extends Controller
         $wsname = '['.$stockcount->warehouse->id.'] '.$stockcount->warehouse->name;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Process Inventory Count', __METHOD__ );
+        $logger = \App\ActivityLogger::setup( 'Process Inventory Count', __METHOD__ )
+                    ->backTo( route('stockcounts.stockcountlines.index', [$stockcount->id]) );
 
-        $logger->empty();
+        if ($roundCycle==1)
+            $logger->empty();
         $logger->start();
 
-        $logger->log("INFO", 'Se actualizará el Stock de los Productos en el Almacén <span class="log-showoff-format">:name</span> .', ['name' => $wsname]);
 
-        $i = 0;
-        $i_ok = 0;
+        $abiTimer = new \App\eggTimer( Configuration::getInt('ABI_IMPERSONATE_TIMEOUT'), Configuration::getInt('ABI_TIMEOUT_OFFSET') );
+        $logger->log("TIMER", 'Control de tiempo Iniciado. Ronda: '.$roundCycle.' :: [Tiempo concedido: '.$abiTimer->getAllowedTime().' segundos].');
 
-        if ($stockcount->initial_inventory) 
+        if ($roundCycle==1)
         {
-            //
-            $movement_type_id = StockMovement::INITIAL_STOCK;
-
-            $logger->log("INFO", 'Se creará el Stock Inicial de los Productos.');
+            // "Header" info
+            $logger->log("INFO", 'Se actualizará el Stock de los Productos en el Almacén <span class="log-showoff-format">:name</span> utilizando el Inventario (:id) <span class="log-showoff-format">:cname</span> [:date].', ['name' => $wsname, 'id' => $stockcount->id, 'cname' => $stockcount->name, 'date' => abi_date_short($stockcount->document_date)]);
+        
+            if ($stockcount->initial_inventory) 
+            {
+                //
+                $movement_type_id = StockMovement::INITIAL_STOCK;
+    
+                $logger->log("INFO", 'Se creará el Stock Inicial de los Productos.');
+    
+            } else {
+                //
+                $movement_type_id = StockMovement::ADJUSTMENT;
+    
+                $logger->log("INFO", 'Se hará un Ajuste del Stock de los Productos.');
+    
+            }
 
         } else {
-            //
-            $movement_type_id = StockMovement::ADJUSTMENT;
-
-            $logger->log("INFO", 'Se hará un Ajuste del Stock de los Productos.');
-
+            // "Header" info
+            if ($stockcount->initial_inventory) 
+            {
+                //
+                $movement_type_id = StockMovement::INITIAL_STOCK;
+    
+            } else {
+                //
+                $movement_type_id = StockMovement::ADJUSTMENT;
+    
+            }
         }
 
 
         // Let's get dirty!!!
-        if ( $stockcount->stockcountlines()->count() )
-        foreach ($stockcount->stockcountlines as $line)
-        {
-/*
+        $lines = $this->stockcountline->where('stock_count_id', $id)->where('id', '>=', $nextItem)->orderBy('id', 'asc')->get();
 
-        if ( $request->input('movement_type_id') == 10 ) {
-            $product = \App\Product::find( $request->input('product_id') );
-            if ( $product->quantity_onhand > 0.0 )
-                return redirect('stockmovements/create')
-                        ->with( 'error', l('Can not set Initial Stock &#58&#58 (:id) :name has already non zero stock', ['id' => $product->id, 'name' => $product->name]) );
+        $count = $lines->count();
+        if ($roundCycle==1)
+        {
+                $logger->log('INFO', 'Se han encontrado <span class="log-showoff-format">{i} Líneas</span> de Inventario.', ['i' => $count]);
+                $item_total = $count;
+                $item_count = 0;
+        } else {
+                $logger->log('INFO', 'Se han encontrado <span class="log-showoff-format">{i} Líneas</span> de Inventario pedientes.', ['i' => $count]);
+                $item_total = $request->input('item_total', 0);
+                $item_count = $request->input('item_count', 0);
         }
 
-*/
+        $i = 0;
+        $i_ok = 0;
+        $timeoutReached = false;
+        $cyclesReached = false;
+        $messages = [];
+
+        // abi_r($lines);die();
+
+//        if ( $count > 0 )
+        foreach ($lines as $line)
+        {
+            // Check timeout
+            if ($timeoutReached=$abiTimer->checkTimeout())  {
+                // Do Stuff...
+                $nextItem = $line->id;
+                $logger->log('INFO', ' - <span style="color: red; font-weight: bold">'.$i.'</span> líneas procesados de <span style="color: green; font-weight: bold">'.$count . '</span>');
+                $logger->log('INFO', 'Siguiente línea: ' . '('.$line->id.') [' . $line->referencee. '] ' . $line->name);
+                // $messages['informations'][] = ' - <span style="color: red; font-weight: bold">'.$art_count.'</span> Artículos procesados de <span style="color: green; font-weight: bold">'.$art_total . '</span>';
+                break;
+            }
+
             //
             $data = [
 
@@ -219,7 +288,7 @@ class StockCountsController extends Controller
  //                   'stockmovementable_id' => ,
  //                   'stockmovementable_type' => ,
 
-                    'document_reference' => $stockcount->id,
+                    'document_reference' => 'Stock Count #'.$stockcount->id,
  //                   'quantity_before_movement' => ,
                     'quantity' => $line->quantity,
  //                   'quantity_after_movement' => ,
@@ -232,32 +301,93 @@ class StockCountsController extends Controller
 
                     'product_id' => $line->product_id,
                     'combination_id' => $line->combination_id,
+                    'reference' => $line->reference,
+                    'name' => $line->name,
                     'warehouse_id' => $stockcount->warehouse_id,
  //                   'warehouse_counterpart_id' => ,
                     
             ];
 
-            $stockmovement = StockMovement::create( $data );
-            $line->stockmovements()->save( $stockmovement );
+
+
+            $stockmovement = StockMovement::createAndProcess( $data );  // null; sleep(2);    // 
 
             // Stock movement fulfillment (perform stock movements)
-            $stockmovement->process();
+            if( $stockmovement )
+            {
+                $line->stockmovements()->save( $stockmovement );
 
+                $i_ok++;
+            } else {    
+                // Error
+                $logger->log("ERROR", 'la línea núm, <span class="log-ERROR-format">:id</span> del Recuento NO ha podido ser procesada.', ['id' => $line->id]);
+            }
 
-            $i_ok++;
             $i++;
         }
 
+        $logger->log("TIMER", 'Control de tiempo Detenido. Ronda: '.$roundCycle);
 
-        $logger->log('INFO', 'Se han actualizado {i} Productos.', ['i' => $i_ok]);
+        $item_count += $i;
+        
+        if ($timeoutReached)
+        {
+            $messages['informations'][] = "Ha terminado la Ronda: <b>$roundCycle</b>";
+            $messages['informations'][] = ' - <span style="color: red; font-weight: bold">'.$i.'</span> Productos actualizados de <span style="color: green; font-weight: bold">'.$item_count . '</span>. Quedan pendientes: <span style="color: blue; font-weight: bold">'.($item_total - $item_count) . '</span>.';
 
-        $logger->log('INFO', 'Se han procesado {i} Líneas de Inventario.', ['i' => $i]);
+            $logger->log('INFO', 'Ha terminado la Ronda: <b>:roundCycle</b>.', ['roundCycle' => $roundCycle]);
+            $logger->log('INFO', ' - <span style="color: red; font-weight: bold">'.$item_count.'</span> Productos actualizados de <span style="color: green; font-weight: bold">'.$item_total . '</span>. Quedan pendientes: <span style="color: blue; font-weight: bold">'.($item_total - $item_count) . '</span>.', ['i' => $i]);
+        } else {
+            $stockcount->processed = 1;
+            $stockcount->save();
+
+//            $logger->log('INFO', 'Se han actualizado {i} Productos.', ['i' => $i_ok]);
+            $logger->log('INFO', 'Se han procesado {i} Líneas de Inventario en total.', ['i' => $item_total]);
+        }
+
+        if ($roundCycle>1)
+        {
+            $messages['informations'][] = "Ha terminado la Ronda: <b>$roundCycle</b>";
+            $messages['informations'][] = ' - <span style="color: red; font-weight: bold">'.$i.'</span> Productos actualizados de <span style="color: green; font-weight: bold">'.$item_count . '</span>. Quedan pendientes: <span style="color: blue; font-weight: bold">'.($item_total - $item_count) . '</span>.';
+
+            $logger->log('INFO', ' - Ronda: '.$roundCycle.' TERMINADA');
+        }
+
+        if ( $roundCycle >= Configuration::getInt('ABI_MAX_ROUNDCYCLES') ) {
+            // Abort
+            $cyclesReached = true;
+            $messages['warnings'][] = 'Se ha alcanzado el número máximo de ciclos permitido: '.Configuration::getInt('ABI_MAX_ROUNDCYCLES');
+            $messages['errors'][] = 'Se ha alcanzado el número máximo de ciclos permitido: '.Configuration::getInt('ABI_MAX_ROUNDCYCLES');
+
+            $severity = ($item_total - $item_count) > 0 ? 'ERROR' : 'WARNING' ;
+            $logger->log($severity, 'Se ha alcanzado el número máximo de ciclos permitido.');
+        }
 
         $logger->stop();
 
 
-        $stockcount->processed = 1;
-        $stockcount->save();
+        if ($request->ajax()) {
+
+            $iamdone = $cyclesReached ? -1 : ($timeoutReached ? 0 : 1);
+            $progress = $item_total>0 ? ceil(($item_count/$item_total)*100.0) : 100;
+
+            return response()->json([
+//                'action' => $action, 
+//                'current_task' => $current_task, 
+//                'current_task_status' => $current_task_status, 
+                'item_count' => $item_count, 
+                'item_total' => $item_total, 
+                'roundCycle' => $roundCycle,
+                'progress' => $progress,
+                'iamdone'  => $iamdone, 
+                'nextItem' => $nextItem,
+                'messages' => $messages,
+
+                'url_to' => route('activityloggers.show', [$logger->id]),
+                'errors'   => $logger->hasErrors(),
+                'warnings' => $logger->hasWarnings(),
+            ]);
+        }
 
         return redirect('activityloggers/'.$logger->id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));

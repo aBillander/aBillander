@@ -29,7 +29,7 @@ class CreateStockMovementsTable extends Migration {
 			$table->decimal('quantity', 20, 6);
 			$table->decimal('quantity_after_movement', 20, 6);
 			
-			$table->decimal('price', 20, 6);
+			$table->decimal('price', 20, 6)->nullable();
 			$table->integer('currency_id')->unsigned()->nullable(false);
 			$table->decimal('conversion_rate', 20, 6);
 

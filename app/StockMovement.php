@@ -14,14 +14,12 @@ class StockMovement extends Model {
     use ViewFormatterTrait;
     use SoftDeletes;
 
-    protected $product;
-    protected $combination;
     protected $price_in;        // Movement Price in Company Currency (for average price calculations)
 
     protected $dates = ['date', 'deleted_at'];
 
     protected $fillable = ['date', 'document_reference', 'price', 'currency_id', 'conversion_rate', 'quantity', 'notes',
-                           'product_id', 'combination_id', 'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id'];
+                           'product_id', 'combination_id', 'reference', 'name', 'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id'];
 
 //        'date' => 'required|date|date_format:YY-MM-DD',
 //         See: https://es.stackoverflow.com/questions/57020/validaci%C3%B3n-de-formato-de-fecha-no-funciona-laravel-5-3
@@ -257,7 +255,7 @@ class StockMovement extends Model {
 
     public static function getTypeName( $movement_type_id )
     {
-            return l($movement_type_id, 'appmultilang');;
+            return l($movement_type_id, 'appmultilang');
     }
     
     
@@ -267,30 +265,29 @@ class StockMovement extends Model {
     |--------------------------------------------------------------------------
     */
 
+    public static function createAndProcess( $data = [] )
+    {
+        // 
+        $movement = StockMovement::create( $data );
+
+        if ( $movement->process() ) return $movement;   // ->fresh();  Need this???
+
+        // If process fails, then delete
+        $movement->delete();
+
+        return null;
+    }
+
     public function process()
     {
         // $price_in;
         // Price 4 Cost average calculations
-        if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
-            $currency = \App\Currency::find($this->currency_id);
-            $conversion_rate = $currency->conversion_rate;
-            $this->price_in = $this->price*$conversion_rate;
-        } else
-            $this->price_in = $this->price;
+        $this->price_in = $this->price/$this->conversion_rate;
 
 
-        //$product;
-        // Update Product
-        $this->product = \App\Product::find($this->product_id);
-        // if ( !$this->product ) ... Maybe boot method?
-
-
-        // $combination;
+        // Product & Combination;
         // Update Cpmbination
-        if ($this->combination_id > 0) {
-            $this->combination = \App\Combination::find($this->combination_id);
-            // if ( !$this->combination ) ...
-        }
+        $this->load(['product', 'combination']);
 
 
         $list = $this->stockmovementList();
@@ -314,16 +311,10 @@ class StockMovement extends Model {
     // INITIAL_STOCK
     public function process_10()
     {
-        if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
-            $currency = \App\Currency::find($this->currency_id);
-            $conversion_rate = $currency->conversion_rate;
-            $this->price_in = $this->price*$conversion_rate;
-        } else
-            $this->price_in = $this->price;
-
         // Update Product
-        $product = \App\Product::find($this->product_id);
-        if ( $product->quantity_onhand > 0.0 ) return false;
+        $product = $this->product;
+
+        if ( $product->getStockByWarehouse( $this->warehouse_id ) > 0.0 ) return false;
         
         $quantity_onhand = $this->quantity;
         $this->quantity_before_movement = 0.0;
@@ -336,18 +327,20 @@ class StockMovement extends Model {
             $product->last_purchase_price = 0.0;
         }
 
-        $product->quantity_onhand = $quantity_onhand;
+        // All warehouses
+        $product->quantity_onhand += $quantity_onhand;
         $product->save();
 
         // Update Cpmbination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = $this->combination;
             $quantity_onhand = $this->quantity;
 
+            // Average price stuff
             $combination->cost_average = $this->price_in;
             $combination->last_purchase_price = 0.0;
 
-            $combination->quantity_onhand = $quantity_onhand;
+            $combination->quantity_onhand += $quantity_onhand;
             $combination->save();
         }
 
@@ -388,34 +381,38 @@ class StockMovement extends Model {
                     $combination->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
             }
         }
+
+        return $this;
     }
 
     // ADJUSTMENT
     public function process_12()
     {
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = $this->product;
+
         $quantity_onhand = $this->quantity;
-
-        // Average price stuff - Not needed!
-
-        $product->quantity_onhand = $quantity_onhand;
-
         $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
         $this->quantity_after_movement = $quantity_onhand;
+        if ($this->price === null) 
+        {
+            $this->price = ($this->combination_id > 0) ? $combination->cost_average : $product->cost_average;
+            $this->price_in = $this->price;
+        }
         $this->save();
 
-        $product->save();
+        // Average price stuff
+        if ( !($this->combination_id > 0) ) {
+            $product->cost_average = $this->price_in;
+        }
 
         // Update Cpmbination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = $this->combination;
             $quantity_onhand = $this->quantity;
 
-            // Average price stuff - Not needed!
-
-            $combination->quantity_onhand = $quantity_onhand;
-            $combination->save();
+            // Average price stuff
+            $combination->cost_average = $this->price_in;
         }
 
         // Update Product-Warehouse relationship (quantity)
@@ -436,6 +433,9 @@ class StockMovement extends Model {
                 $product->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
         }
 
+        $product->quantity_onhand = $product->getStock();
+        $product->save();
+
         // Update Combination-Warehouse relationship (quantity)
         if ($this->combination_id > 0) {
             $whs = $combination->warehouses;
@@ -454,7 +454,12 @@ class StockMovement extends Model {
                 if ($this->quantity != 0) 
                     $combination->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
             }
+
+            $combination->quantity_onhand = $combination->getStock();
+            $combination->save();
         }
+
+        return $this;
     }
 
     // PURCHASE_ORDER
@@ -628,8 +633,11 @@ class StockMovement extends Model {
     public function process_30()
     {
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = $this->product;
         $quantity_onhand = $product->quantity_onhand - $this->quantity;
+        $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
+        $this->quantity_after_movement = $this->quantity_before_movement - $this->quantity;
+        $this->save();
 
         // Average price stuff - Not needed!
 
@@ -638,7 +646,7 @@ class StockMovement extends Model {
 
         // Update Cpmbination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = $this->combination;
             $quantity_onhand = $combination->quantity_onhand - $this->quantity;
 
             // Average price stuff - Not needed!
@@ -684,6 +692,8 @@ class StockMovement extends Model {
                     $combination->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
             }
         }
+
+        return $this;
     }
 
     // SALE_RETURN

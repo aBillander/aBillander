@@ -9,9 +9,13 @@
             <br />
                     <!-- span class="badge" style="background-color: #3a87ad;" title="{ { $list->currency->name } }">{ { $list->currency->iso_code }} </span>
                         <br / -->
-                    <span class="label label-success" title=" [{{ $list->warehouse->alias }}] {{ $list->warehouse->name }} ">[{{ $list->warehouse->alias }}] {{ $list->warehouse->name }}</span>
+                    <span class="badge" style="background-color: #3a87ad;"> {{ $list->warehouse->alias }} </span> {{ $list->warehouse->name }}</span>
+                        <br />
+                        <br />
                     @if ($list->initial_inventory)
-                      <span class="label label-default">{{l('Initial Inventory')}}</span>
+                      <span class="label label-success">{{ l('Initial Inventory') }}</span>
+                    @else
+                      <span class="label label-success">{{ l('Stock Adjustment') }}</span>
                     @endif
             <br />
             <br />

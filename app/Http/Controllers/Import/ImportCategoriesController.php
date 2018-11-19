@@ -130,7 +130,8 @@ class ImportCategoriesController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Categories', __METHOD__ );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = \App\ActivityLogger::setup( 'Import Categories', __METHOD__ )
+                    ->backTo( route('categories.import') );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         $logger->empty();
@@ -252,6 +253,8 @@ class ImportCategoriesController extends Controller
                     // Prepare data
                     $data = $row->toArray();
 
+                    $item = '[<span class="log-showoff-format">'.($data['id'] ?? $data['reference_external'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
+
                     // Some Poor Man checks:
                     if ( array_key_exists('id', $data)) {
                         $data['id'] = intval( $data['id'] );
@@ -266,12 +269,30 @@ class ImportCategoriesController extends Controller
 
                     $data['parent_id'] = intval( $data['parent_id'] );
                     if ( $data['parent_id'] <= 0 ) $data['parent_id'] = 0;
+                    
+
+                    // Parent Category
+                    if ( !array_key_exists('parent_id', $data) )
+                    {
+                        if (  array_key_exists('parent_REFERENCE_EXTERNAL', $data) ) 
+                        {
+                            if ( $category = \App\Category::where('reference_external', $data['parent_REFERENCE_EXTERNAL'])->first())
+                                $data['parent_id'] = $category_id;
+                            else
+                                $logger->log("ERROR", "Categoría ".$item.":<br />" . "El campo 'parent_REFERENCE_EXTERNAL' es inválido: " . ($data['parent_REFERENCE_EXTERNAL'] ?? ''));
+                        }
+                    } else {
+                        if ( $category = \App\Category::find($data['parent_id']))
+                                ;
+                            else{
+                                $logger->log("ERROR", "Categoría ".$item.":<br />" . "El campo 'parent_id' es inválido: " . ($data['parent_id'] ?? ''));
+                                $data['parent_id'] = null;
+                            }
+                    }
 
 
                     if ( \App\Configuration::isFalse('ALLOW_PRODUCT_SUBCATEGORIES') && ( $data['parent_id'] > 0 ) )
                     {
-
-                            $item = '[<span class="log-showoff-format">'.($data['id'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
 
                             $logger->log("ERROR", "La Categoría ".$item." no se cargará porque no está permitido el uso de Subcategorías.");
 
@@ -353,7 +374,8 @@ class ImportCategoriesController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'name', 'publish_to_web', 'webshop_id', 'active', 'parent_id',
+        $headers = [ 'id', 'reference_external', 'name', 'publish_to_web', 'webshop_id', 
+                     'active', 'parent_id', 'parent_REFERENCE_EXTERNAL', 'position',
 //                    'position', 'is_root', 
         ];
 

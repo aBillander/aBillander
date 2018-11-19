@@ -55,6 +55,7 @@ return [
 	'Publish to web?'     => '¿Publicar en la web?',
 	'Web Shop Data'     => 'Datos para la Tienda Web',
 	'Name'     => 'Nombre',
+	'External Reference'     => 'Referencia Externa',
 	'Description'     => 'Descripción',
 	'Friendly URL'     => 'URL Amigable',
 	'META Title'     => 'META Título',

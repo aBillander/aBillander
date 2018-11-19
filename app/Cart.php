@@ -181,6 +181,43 @@ class Cart extends Model
     }
 
 
+    public function addLineByAdmin($product_id = null, $combination_id = null, $quantity = 1.0)
+    {
+        // Do the Mambo!
+        // Product
+        if ($combination_id>0) {
+            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = \App\Product::with('tax')->find(intval($product_id));
+        }
+
+        // Is there a Price for this Customer?
+        if (!$product) return false;    // redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no se encontró.');
+
+        $quantity > 0 ?: 1.0;
+
+        $cart = $this;
+
+        // Get Customer Price
+        $customer = $cart->customer;
+        $currency = $cart->currency;
+        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+
+        // Is there a Price for this Customer?
+        if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
+
+        $tax_percent = $product->tax->percent;
+
+        $customer_price->applyTaxPercent( $tax_percent );
+        $unit_customer_price = $customer_price->getPrice();
+
+        return $cart->add($product, $unit_customer_price, $quantity);
+    }
+
+
     public function add($product = null, $price = null, $quantity = 1.0)
     {
         // If $product is a 'prodduct_id', instantiate product, please.
@@ -242,7 +279,7 @@ class Cart extends Model
         return $line;
     }
 
-    public function updateLinePrices()
+    public function updateLinePrices($byAdmin = false)
     {
         // Update prices or remove from cart
         foreach ($this->cartlines as $line) {
@@ -256,7 +293,10 @@ class Cart extends Model
             $line->delete();
 
             // Recreate
-            $newline = $this->addLine($product_id, $combination_id, $quantity);
+            if ($byAdmin)
+                $newline = $this->addLineByAdmin($product_id, $combination_id, $quantity);
+            else
+                $newline = $this->addLine($product_id, $combination_id, $quantity);
         }
 
         $this->date_prices_updated = \Carbon\Carbon::now();
@@ -265,11 +305,20 @@ class Cart extends Model
         return true;
     }
 
+    public function updateLinePricesByAdmin()
+    {
+        return $this->updateLinePrices(true);
+    }
+
 
 
     public function nbrItems()
     {
-        return $this->cartlines()->count() . ' - ' . $this->persistance_left;
+        if ( \App\Configuration::isTrue('ABCC_NBR_ITEMS_IS_QUANTITY') ) 
+            return $this->quantity;
+
+        else
+            return $this->cartlines()->count(); // . ' - ' . $this->persistance_left;
     }
 
     public function isEmpty()

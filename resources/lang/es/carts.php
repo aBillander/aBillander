@@ -17,6 +17,10 @@ return [
 	'Date Updated'     => 'Última Actualización',
 	'Items / Quantity'     => 'Productos / Cantidad',
 	'Total (Tax excl.)'     => 'Total (Impuestos excl.)',
+	'Update Cart Prices'     => 'Actualizar Precios del Carrito',
+	'Update Prices'     => 'Actualizar Precios',
+
+	'You are going to UPDATE all Product Prices in this Cart. Are you sure?'     => 'Está a punto de ACTUALIZAR el Precio de los Productos de este Carrito. ¿Está seguro?',
 	''     => '',
 
 	/*

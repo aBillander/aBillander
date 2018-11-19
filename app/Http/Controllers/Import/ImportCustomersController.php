@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 use App\Customer;
 use App\Address;
+use App\Country;
+use App\State;
 
 use Excel;
 
@@ -133,7 +135,8 @@ class ImportCustomersController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Customers', __METHOD__ );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = \App\ActivityLogger::setup( 'Import Customers', __METHOD__ )
+                    ->backTo( route('customers.import') );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         $logger->empty();
@@ -259,6 +262,12 @@ class ImportCustomersController extends Controller
             $i_ok = 0;
             $max_id = 2000;
 
+            // Custom
+            $state_names = [];
+            if (file_exists(__DIR__.'/FSOL_provincias.php')) {
+                $state_names = include __DIR__.'/FSOL_provincias.php';
+            }
+
 
             if(!empty($reader) && $reader->count()) {
 
@@ -348,24 +357,52 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'phone_mobile' es demasiado largo (32). ".$data['phone_mobile']);
                     }
 
-/*
-                    if ( $data['country'] != 'ESPAÑA' )
+
+                    // Country
+                    if ( !array_key_exists('country_id', $data) || intval($data['country_id']) == 0 ) 
                     {
-                            $data['country_id'] =$data['country'];
-/ *
-                            $data['country_name'] = $data['country'];
-                            $data['state_name']   = $data['state_id'];
-
-                            $data['country_id'] = null;
-                            $data['state_id']   = null;
-
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'country' es inválido: " . $data['country']);
-* /
-                            // continue;
-                    } else {
-                            $data['country_id'] = 1;
+                        $data['country_id'] = \App\Configuration::get('DEF_COUNTRY');
                     }
-*/
+                    $country = Country::find($data['country_id']);
+
+if ($country) {                    
+
+                    // State
+                    if ( !array_key_exists('state_id', $data) ) 
+                    {
+                        // Guess
+                        $data['state_id'] = 0;
+                        if ( array_key_exists('STATE_NAME', $data) ) 
+                        {
+                        
+                            if ( array_key_exists($data['STATE_NAME'], $state_names) )
+                                $data['state_id'] = $state_names[$data['STATE_NAME']];
+                            else
+                                if ( array_key_exists(strtoupper($data['STATE_NAME']), $state_names) )
+                                    $data['state_id'] = strtoupper($state_names[$data['STATE_NAME']]);
+                        }
+                    }
+                    if ( !$country->hasState( $data['state_id'] ) )
+                        $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'state_id' es inválido o no corresponde con el país: " . ($data['state_id'] ?? $data['STATE_NAME'] ?? ''));
+
+                    // VAT ID 'identification'
+                    if ( array_key_exists('identification', $data) && trim($data['identification'])) 
+                    {
+                        // Check
+                        if ( !$country->checkIdentification( $data['identification'] ) ) 
+                        {
+                        
+                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'identification' es inválido o no corresponde con el país: " . $data['identification']);
+                        }
+                    }
+
+} else {
+
+                    // No Country
+                    $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'country_id' es inválido: " . ($data['country_id'] ?? ''));
+
+}
+
                     $data['alias'] = l('Main Address', [],'addresses');
 
                     $data['outstanding_amount_allowed'] = \App\Configuration::get('DEF_OUTSTANDING_AMOUNT');
@@ -498,7 +535,7 @@ class ImportCustomersController extends Controller
                     'currency_id', 'language_id', 
 
                     'address1', 'address2', 'postcode', 'city', 'state_id', 'STATE_NAME', 'country_id', 'COUNTRY_NAME', 
-                    'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax',
+                    'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax', 'sales_rep_id'
         ];
 
         $data[] = $headers;

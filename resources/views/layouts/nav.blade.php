@@ -123,6 +123,11 @@
                             </a>
                         </li>
                         <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('suppliers') }}">
+                                 {{l('Suppliers', [], 'layouts')}}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 @endif

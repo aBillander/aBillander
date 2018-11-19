@@ -27,6 +27,8 @@ class CreateSuppliersTable extends Migration {
 			
 			$table->string('identification', 64)->nullable();					// VAT ID or the like (only companies & pro's?)
 			// EU VAT Id, Tax number, etc.
+			
+            $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
 
 		/* */
 			$table->text('notes')->nullable();

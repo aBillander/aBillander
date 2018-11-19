@@ -10,8 +10,11 @@
                      {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
                   </div>
 
-                  <div class="form-group col-lg-3 col-md-3 col-sm-3">
-                  </div>
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('reference_external') ? 'has-error' : '' !!}">
+              {{ l('External Reference') }}
+              {!! Form::text('reference_external', null, array('class' => 'form-control', 'id' => 'reference_external')) !!}
+              {!! $errors->first('reference_external', '<span class="help-block">:message</span>') !!}
+            </div>
 
                    <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-active">
                      {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}

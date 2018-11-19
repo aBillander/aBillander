@@ -1705,7 +1705,7 @@ class CustomerShippingSlipsController extends Controller
 
 
 
-function rws_is_empty_folder($dir) {
+function xrws_is_empty_folder($dir) {
   if ($dir[strlen($dir)-1]=='/') $dir = substr($dir, 0, strlen($dir)-1);
   $eflag = false;
 
@@ -1725,7 +1725,7 @@ function rws_is_empty_folder($dir) {
   return $eflag; 
 }
 
-function rws_delete_files_in_folder($dir) {
+function rxws_delete_files_in_folder($dir) {
   if ($dir[strlen($dir)-1]=='/') $dir = substr($dir, 0, strlen($dir)-1);
   $eflag = true;
 

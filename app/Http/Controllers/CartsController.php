@@ -128,4 +128,18 @@ class CartsController extends Controller
     {
         //
     }
+
+
+
+    public function updatePrices(Cart $cart)
+    {
+        // abi_r($cart->customer);die();
+
+
+        // Update Cart Prices
+        $cart->updateLinePricesByAdmin();
+        
+        return redirect()->route('carts.show', [$cart->id])
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $cart->id], 'layouts'));
+    }
 }

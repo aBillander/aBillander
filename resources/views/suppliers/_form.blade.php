@@ -10,11 +10,11 @@
                   {!! Form::text('identification', null, array('class' => 'form-control', 'id' => 'identification')) !!}
                   {!! $errors->first('identification', '<span class="help-block">:message</span>') !!}
             </div>
-              <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('website') ? 'has-error' : '' !!}">
-                {!! Form::label('website', l('Website')) !!}
-                {!! Form::text('website', null, array('class' => 'form-control', 'id' => 'website')) !!}
-                {!! $errors->first('website', '<span class="help-block">:message</span>') !!}
-              </div>
+            <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('reference_external') ? 'has-error' : '' !!}">
+              {!! Form::label('reference_external', l('External Reference')) !!}
+              {!! Form::text('reference_external', null, array('class' => 'form-control', 'id' => 'reference_external')) !!}
+              {!! $errors->first('reference_external', '<span class="help-block">:message</span>') !!}
+            </div>
         </div>
 
         <div class="row">

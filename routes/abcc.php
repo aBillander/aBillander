@@ -19,6 +19,9 @@ Route::group(['prefix' => 'abcc'], function ()
     Route::post('/login', 'Auth\CustomerLoginController@login')->name('customer.login.submit');
     Route::post('/logout', 'Auth\CustomerLoginController@customerLogout')->name('customer.logout');
 
+    Route::get('/register', 'Auth\CustomerRegisterController@showRegistrationForm')->name('customer.register');
+    Route::post('/register', 'Auth\CustomerRegisterController@register')->name('customer.register.submit');
+
 // Password Reset Routes...
     Route::post('password/email', ['as' => 'customer.password.email', 'uses' => 'Auth\CustomerForgotPasswordController@sendResetLinkEmail']);
     Route::get('password/reset', ['as' => 'customer.password.request', 'uses' => 'Auth\CustomerForgotPasswordController@showLinkRequestForm']);

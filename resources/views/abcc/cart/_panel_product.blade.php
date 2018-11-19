@@ -1,7 +1,7 @@
 <div class="panel panel-primary" id="panel_product">
 
    <div class="panel-heading">
-      <h3 class="panel-title" data-toggle="collapse" data-target="#header_data" aria-expanded="true">{{ l('Search Product') }}</h3>
+      <h3 class="panel-title">{{ l('Search Product') }}</h3>
    </div>
 
    <div class="panel-body">

@@ -291,8 +291,10 @@ class StockMovement extends Model {
 
 
         $list = $this->stockmovementList();
-        if ( isset($list[$this->movement_type_id]) ) 
-            return $this->{'process_'.$this->movement_type_id}();
+        $method = 'process_'.$this->movement_type_id;
+        
+        if ( isset($list[$this->movement_type_id]) && method_exists($this, $method) ) 
+            return $this->{$method}();
         else
             return false;
     }

@@ -150,9 +150,9 @@
 @else
                 <a class="btn btn-sm btn-info" href="{{ URL::to('customerorders/' . $order->id . '/invoice/pdf') }}" title="{{l('PDF Invoice', [], 'layouts')}}"><i class="fa fa-money"></i></a>
 
-                <a class="btn btn-sm btn-lightblue" href="{{ URL::to('customerorders/' . $order->id . '/shippingslip') }}" title="{{l('Shipping Slip', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
+                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('customerorders/' . $order->id . '/shippingslip') }}" title="{{l('Shipping Slip', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
 
-                <a class="btn btn-sm btn-info" href="{{ URL::to('customerorders/' . $order->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></a>
+                <a class="btn btn-sm btn-lightblue xbtn-info" href="{{ URL::to('customerorders/' . $order->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
 @endif
 
                 @if ($order->export_date)

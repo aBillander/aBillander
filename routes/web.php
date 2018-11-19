@@ -23,7 +23,7 @@ Auth::routes();
 // See:
 // https://stackoverflow.com/questions/29183348/how-to-disable-registration-new-user-in-laravel-5
 // https://stackoverflow.com/questions/42695917/laravel-5-4-disable-register-route/42700000
-if ( !env('ALLOW_USER_REGISTRATION', false) )
+if ( !env('ALLOW_USER_REGISTRATION', true) )
 {
     Route::get('register', function()
         {
@@ -176,6 +176,7 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('customers/{id}/getorders',             'CustomersController@getOrders' )->name('customer.getorders');
 
         Route::resource('carts', 'CartsController');
+        Route::post('carts/{cart}/updateprices',  'CartsController@updatePrices')->name('carts.updateprices');
 
 //        Route::resource('addresses', 'AddressesController');
         Route::resource('customers.addresses', 'CustomerAddressesController');
@@ -237,7 +238,7 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::post('customerorders/sortlines', 'CustomerOrdersController@sortLines')->name('customerorder.sortlines');
 
-        Route::get('customerorders/{id}/shippingslip',  'CustomerOrdersController@makeShippingSlip'   )->name('customerorder.shippingslip'  );
+//        Route::get('customerorders/{id}/shippingslip',  'CustomerOrdersController@makeShippingSlip'   )->name('customerorder.shippingslip'  );
 
         Route::get('customerorders/{id}/pdf',         'CustomerOrdersController@showPdf'       )->name('customerorder.pdf'     );
         Route::get('customerorders/{id}/invoice/pdf', 'CustomerOrdersController@showPdfInvoice')->name('customerorder.invoice.pdf'     );

@@ -74,6 +74,12 @@
             </td -->
             <td class="text-right">
 
+                <a class="btn btn-sm btn-info update-cart-prices" data-html="false" data-toggle="modal" 
+                        href="{{ URL::route('carts.updateprices', [$cart->id] ) }}" 
+                        data-content="{{l('You are going to UPDATE all Product Prices in this Cart. Are you sure?')}}" 
+                        data-title="{{ l('Carts') }} :: ({{$cart->customer->id}}) {{ $cart->customer->name }}" 
+                        onClick="return false;" title="{{l('Update Cart Prices')}}"><i class="fa fa-superpowers"></i></a>
+
                 <a class="btn btn-sm btn-success" href="{{ URL::to('carts/' . $cart->id ) }}" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
             </td>
         </tr>
@@ -112,6 +118,9 @@
 </div><!-- div id="div_carts" ENDS -->
 
 @endsection
+
+
+@include('carts/_modal_update_prices')
 
 
 {{-- *************************************** --}}

@@ -110,6 +110,30 @@
       </div>
     </div>
 
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_NBR_ITEMS_IS_QUANTITY.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_NBR_ITEMS_IS_QUANTITY" id="ABCC_NBR_ITEMS_IS_QUANTITY_on" value="1" @if( old('ABCC_NBR_ITEMS_IS_QUANTITY', $key_group['ABCC_NBR_ITEMS_IS_QUANTITY']) == '1' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_NBR_ITEMS_IS_QUANTITY.option.1') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_NBR_ITEMS_IS_QUANTITY" id="ABCC_NBR_ITEMS_IS_QUANTITY_off" value="0" @if( old('ABCC_NBR_ITEMS_IS_QUANTITY', $key_group['ABCC_NBR_ITEMS_IS_QUANTITY']) == '0' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_NBR_ITEMS_IS_QUANTITY.option.0') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_NBR_ITEMS_IS_QUANTITY.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
     <div class="form-group {{ $errors->has('ABCC_CART_PERSISTANCE') ? 'has-error' : '' }}">
       <label for="ABCC_CART_PERSISTANCE" class="col-lg-4 control-label">{!! l('ABCC_CART_PERSISTANCE.name') !!}</label>
       <div class="col-lg-8">

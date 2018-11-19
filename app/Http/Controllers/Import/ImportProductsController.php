@@ -130,7 +130,8 @@ class ImportProductsController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Products', __METHOD__ );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = \App\ActivityLogger::setup( 'Import Products', __METHOD__ )
+                    ->backTo( route('products.import') );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         $logger->empty();
@@ -143,6 +144,7 @@ class ImportProductsController extends Controller
 
 
         $truncate = $request->input('truncate', 0);
+        $params = ['simulate' => $request->input('simulate', 0)];
 
         // Truncate table
         if ( $truncate > 0 ) {
@@ -234,6 +236,9 @@ class ImportProductsController extends Controller
 
 // Process reader STARTS
 
+            if ( $params['simulate'] > 0 ) 
+                $logger->log("WARNING", "Modo SIMULACION. Se mostrarán errores, pero no se cargará nada en la base de datos.");
+
             $i = 0;
             $i_ok = 0;
             $max_id = 1000;
@@ -252,6 +257,8 @@ class ImportProductsController extends Controller
                     // Prepare data
                     $data = $row->toArray();
 
+                    $item = '[<span class="log-showoff-format">'.($data['reference'] ?? $data['id'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
+
                     // Some Poor Man checks:
                     $data['quantity_decimal_places'] = intval( $data['quantity_decimal_places'] );
 
@@ -268,13 +275,21 @@ class ImportProductsController extends Controller
                     if ( $data['main_supplier_id'] <= 0 ) $data['main_supplier_id'] = NULL;
 
 
+                    // Category
+                    if ( \App\Category::where('id', $data['category_id'])->exists())
+                        $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'category_id' es inválido: " . ($data['category_id'] ?? ''));
+
+
 
 
                     try{
                         
-                        // Create Product
-                        // $product = $this->product->create( $data );
-                        $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
+                        if ( !($params['simulate'] > 0) ) 
+                        {
+                            // Create Product
+                            // $product = $this->product->create( $data );
+                            $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
+                        }
 
                         $i_ok++;
 
@@ -343,7 +358,7 @@ class ImportProductsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'category_id', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'SUPPLIER_NAME'
+        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'category_id', 'category_REFERENCE_EXTERNAL', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'main_supplier_REFERENCE_EXTERNAL', 'SUPPLIER_NAME'
         ];
 
         $data[] = $headers;

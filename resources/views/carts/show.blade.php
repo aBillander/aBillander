@@ -20,6 +20,13 @@
                       <li class="divider"></li>
                     </ul>
                 </div-->
+
+                <a class="btn xbtn-sm btn-info update-cart-prices" data-html="false" data-toggle="modal" 
+                        href="{{ URL::route('carts.updateprices', [$cart->id] ) }}" 
+                        data-content="{{l('You are going to UPDATE all Product Prices in this Cart. Are you sure?')}}" 
+                        data-title="{{ l('Carts') }} :: ({{$cart->customer->id}}) {{ $cart->customer->name }}" 
+                        onClick="return false;" title="{{l('Update Cart Prices')}}"><i class="fa fa-superpowers"></i> {{l('Update Prices')}}</a>
+
                 <a href="{{ URL::to('carts') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Shopping Carts') }}</a>
             </div>
             <h2>
@@ -73,6 +80,12 @@
    </div>
 </div>
 @endsection
+
+
+@include('carts/_modal_update_prices')
+
+
+{{-- *************************************** --}}
 
 
 {{--

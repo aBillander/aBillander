@@ -1,6 +1,9 @@
+<?php
 
 // FSOL_name => abi_id
-[
+
+return [
+
 	'ALAVA' => '3',
 	'ALBACETE' => '4',
 	'ALICANTE' => '2',
@@ -54,9 +57,9 @@
 	'ZARAGOZA' => '50',
 	'CEUTA' => '51',
 	'MELILLA' => '52',
-]
+];
 
-
+/*
 // FSOL_id => abi_id
 [
 	'01' => '3',
@@ -112,3 +115,5 @@
 	'51' => '51',
 	'52' => '52',
 ]
+
+*/

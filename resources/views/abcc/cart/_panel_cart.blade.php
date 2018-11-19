@@ -6,7 +6,7 @@
       <h3 class="panel-title">{{ l('') }}{{ l('Cart Items') }}</h3>
    </div>
 
-   <div id="header_data" class="panel-collapse collapse in" aria-expanded="true" style="">
+   <div id="header_data" style="">
 
 
    <div class="panel-body">

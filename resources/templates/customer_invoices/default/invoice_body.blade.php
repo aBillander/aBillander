@@ -141,7 +141,7 @@
 
 					<th>Forma de Pago:</th>
 
-					<td>{{ $document->paymentmethod->name }}</td>
+					<td>{{ optional($document->paymentmethod)->name }}</td>
 
 				</tr>
 

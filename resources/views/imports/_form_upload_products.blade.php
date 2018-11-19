@@ -19,7 +19,7 @@
 
     </div>
 
-     <div class="form-group col-lg-6 col-md-6 col-sm-6" id="div-truncate">
+     <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-truncate">
        {!! Form::label('truncate', l('Delete existing Products?'), ['class' => 'control-label']) !!}
        <div>
          <div class="radio-inline">
@@ -31,6 +31,28 @@
          <div class="radio-inline">
            <label>
              {!! Form::radio('truncate', '0', true, ['id' => 'truncate_off']) !!}
+             {!! l('No', [], 'layouts') !!}
+           </label>
+         </div>
+       </div>
+      </div>
+
+     <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-simulate">
+       {!! Form::label('simulate', l('Simulation Mode?'), ['class' => 'control-label']) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Simulation Mode: errors will be shown, but database will not be changed.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+       <div>
+         <div class="radio-inline">
+           <label>
+             {!! Form::radio('simulate', '1', false, ['id' => 'simulate_on']) !!}
+             {!! l('Yes', [], 'layouts') !!}
+           </label>
+         </div>
+         <div class="radio-inline">
+           <label>
+             {!! Form::radio('simulate', '0', true, ['id' => 'simulate_off']) !!}
              {!! l('No', [], 'layouts') !!}
            </label>
          </div>

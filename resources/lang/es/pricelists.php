@@ -16,7 +16,7 @@ return [
 	'Show Price List Lines'     => 'Ver Líneas de Tarifa',
 
 	'Set these Prices as Default'     => 'Hacer esta Tarifa por Defecto',
-	'You are going to CHANGE all Product default Prices. Are you sure?'     => 'Está a punto de CAMBIAR el Precio por defecto de todos los Productos ¿Está seguro?',
+	'You are going to CHANGE all Product default Prices. Are you sure?'     => 'Está a punto de CAMBIAR el Precio por defecto de todos los Productos. ¿Está seguro?',
 
 	/*
 	|--------------------------------------------------------------------------

@@ -12,7 +12,7 @@ class Supplier extends Model {
     protected $dates = ['deleted_at'];
     
     protected $fillable = [ 'alias', 'name_fiscal', 'name_commercial', 
-                            'website', 'identification', 'notes', 
+                            'website', 'identification', 'reference_external', 'notes', 
                             'currency_id', 'language_id', 'payment_method_id', 'active' 
                         ];
 
@@ -20,7 +20,7 @@ class Supplier extends Model {
     	'name_fiscal' => 'required|min:2|max:128',
         'currency_id' => 'exists:currencies,id',
         'language_id' => 'exists:languages,id',
-        'payment_method_id' => 'exists:payment_methods,id',
+//        'payment_method_id' => 'exists:payment_methods,id',
     	);
 
     

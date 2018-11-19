@@ -16,6 +16,7 @@ return [
 
 	'Fiscal Name'     => 'Nombre Fiscal',
 	'Identification'     => 'NIF / CIF',
+	'External Reference'     => 'Referencia Externa',
 
 	/*
 	|--------------------------------------------------------------------------

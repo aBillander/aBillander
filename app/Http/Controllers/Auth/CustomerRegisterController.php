@@ -7,10 +7,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Events\Registered;
+// use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
-use App\CustomerUser as CustomerUser;
+use App\Events\CustomerRegistered;
+
+use App\Customer;
+use App\Address;
+use App\CustomerUser;
 
 class CustomerRegisterController extends Controller
 {
@@ -32,7 +36,7 @@ class CustomerRegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/abcc';
+    protected $redirectTo = '/abcc/login';
 
     /**
      * Create a new controller instance.
@@ -65,16 +69,44 @@ class CustomerRegisterController extends Controller
      */
     public function register(Request $request)
     {
-        return redirect($this->redirectPath());
+        // return redirect($this->redirectPath());
 
         $this->validator($request->all())->validate();
 
-        event(new Registered($user = $this->create($request->all())));
+        // event(new Registered($user = $this->create($request->all())));
 
+        // Create Customer
+        $customer = $this->createCustomer($request);
+        $customer = $customer->fresh();     // ->load('address');
+
+        // Create CustomerUser con active=0
+        // $customer = $this->customer->with('address')->find($customer_id);
+
+        $data = [
+                'name' => '', 
+//                'email' => $customer->address->email, 
+                'password' => \Hash::make( $request->input('password') ), 
+                'firstname' => $request->input('address.firstname'), 
+                'lastname' => $request->input('address.lastname'), 
+                'active' => 0, 
+                'language_id' => $customer->language_id, 
+                'customer_id' => $customer->id,
+        ];
+
+        $request->merge( $data );
+
+        // $customeruser = CustomerUser::create($request->all());
+        // $customeruser = $customeruser->fresh();     // ->load('customer');
+
+        event(new CustomerRegistered($customer));
+/*
         $this->guard()->login($user);
 
         return $this->registered($request, $user)
                         ?: redirect($this->redirectPath());
+*/
+        return redirect($this->redirectPath())
+                ->with('success', l('Your request has been sent. Check your email for further instructions.', 'layouts') . $request->input('name'));
     }
 
     /**
@@ -97,8 +129,8 @@ class CustomerRegisterController extends Controller
     {
         return Validator::make($data, [
 //            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|string|email|max:255|unique:customer_users',
+//            'password' => 'required|string|min:6|confirmed',
         ]);
     }
 
@@ -110,12 +142,83 @@ class CustomerRegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return true;
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
+    }
+
+
+
+    /**
+     * Create a new Customer instance.
+     *
+     * @param  array  $data
+     * @return \App\User
+     */
+    protected function createCustomer(Request $request)
+    {
+
+        // Prepare address data
+        $address = $request->input('address');
+
+        $request->merge( ['outstanding_amount_allowed' => \App\Configuration::get('DEF_OUTSTANDING_AMOUNT')] );
+
+        if ( !$request->input('address.name_commercial') ) {
+
+            $request->merge( ['name_commercial' => $request->input('name_fiscal')] );
+            $address['name_commercial'] = $request->input('name_fiscal');
+        } else {
+
+            $request->merge( ['name_commercial' => $request->input('address.name_commercial')] );
+        }
+
+//        $this->validate($request, Customer::$rules);
+
+        $address['alias'] = l('Main Address', [],'addresses');
+        $address['email'] = $request->input('email');
+
+        $request->merge( ['address' => $address] );
+
+//        $this->validate($request, Address::related_rules());
+
+        if ( !$request->has('language_id') ) $request->merge( ['language_id' => \App\Configuration::get('DEF_LANGUAGE')] );
+
+        if ( !$request->has('currency_id') ) $request->merge( ['currency_id' => \App\Configuration::get('DEF_CURRENCY')] );
+
+        if ( !$request->has('payment_day') ) $request->merge( ['payment_day' => null] );
+
+        // ToDO: put default accept einvoice in a configuration key
+        
+        $customer = Customer::create($request->all());
+
+        $data = $request->input('address');
+
+        $address = Address::create($data);
+        $customer->addresses()->save($address);
+
+        $customer->invoicing_address_id = $address->id;
+        $customer->shipping_address_id  = $address->id;
+        $customer->save();
+
+        return $customer;
 
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    /**
+     * Create a new CustomerUser instance.
+     *
+     * @param  array  $data
+     * @return \App\User
+     */
+    protected function createUser(Request $request)
+    {
+        return ;
     }
 }

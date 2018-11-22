@@ -22,6 +22,15 @@
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
 @if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+                
+        <a class="btn btn-sm btn-navy invite-customer" data-html="false" data-toggle="modal" 
+                href="{{ route('customers.invite') }}" 
+                data-to_name = "" 
+                data-to_email = "" 
+                data-from_name = "{{ \App\Context::getContext()->user->getFullName() }}" 
+                data-from_email = "{{ \App\Context::getContext()->user->email }}" 
+                onClick="return false;" title="{{l('Invite Customer')}}"><i class="fa fa-paper-plane"></i> {{l('Invite')}}</a>
+
         <a href="{{ route('carts.index') }}" class="btn btn-sm btn-info" 
                 title="{{l('View Carts', [], 'layouts')}}"><i class="fa fa-shopping-cart"></i> {{l('View Carts', [], 'layouts')}}</a>
 @endif
@@ -200,6 +209,7 @@ line-height: 1.42857143;
 @endsection
 
 @include('layouts/modal_mail')
+@include('layouts/modal_invite_customer')
 @include('layouts/modal_delete')
 
 @section('scripts') @parent 

@@ -100,6 +100,9 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('users', 'UsersController');
 
+        Route::resource('todos', 'TodosController');
+        Route::post('todos/{todo}/complete', 'TodosController@complete')->name('todos.complete');
+
         Route::resource('customerusers', 'CustomerUsersController');
         Route::get('customerusers/create/withcustomer/{customer}', 'CustomerUsersController@createWithCustomer')->name('customer.createuser');
 
@@ -174,6 +177,7 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customer.createorder');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup')); 
         Route::get('customers/{id}/getorders',             'CustomersController@getOrders' )->name('customer.getorders');
+        Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
 
         Route::resource('carts', 'CartsController');
         Route::post('carts/{cart}/updateprices',  'CartsController@updatePrices')->name('carts.updateprices');

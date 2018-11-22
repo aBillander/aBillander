@@ -12,11 +12,19 @@
               {!! Form::text('identification', null, array('class' => 'form-control', 'id' => 'identification')) !!}
               {!! $errors->first('identification', '<span class="help-block">:message</span>') !!}
             </div>
+        <div class="col-md-4">
+            <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
+                <label for="email" class="control-label">{{ l('Email', 'layouts') }}</label>
+                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+                {!! $errors->first('email', '<span class="help-block">:message</span>') !!}
+            </div>
+        </div>
   </div>
 
 @include('auth._form_address_fields')
 
-  <div class="row">
+
+  <!-- div class="row hidden">
         <div class="col-md-4">
             <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
                 <label for="email" class="control-label">{{ l('Email', 'layouts') }}</label>
@@ -41,7 +49,7 @@
               {!! $errors->first('password_confirmation', '<span class="help-block">:message</span>') !!}
           </div>
       </div>
-  </div>
+  </div -->
 
         <div class="row">
             <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('notes') ? 'has-error' : '' }}">

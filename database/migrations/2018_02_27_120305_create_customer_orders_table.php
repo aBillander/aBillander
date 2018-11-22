@@ -59,8 +59,11 @@ class CreateCustomerOrdersTable extends Migration
             $table->decimal('document_discount_amount_tax_excl', 20, 6)->default(0.0);
 
             $table->smallInteger('number_of_packages')->unsigned()->default(1);
+            $table->decimal('volume', 20, 6)->nullable()->default(0.0);  // m3
+            $table->decimal('weight', 20, 6)->nullable()->default(0.0);  // kg
             $table->text('shipping_conditions')->nullable();                    // For Shipping Slip!
             $table->string('tracking_number')->nullable();                      // For Shipping Slip!
+
 
             $table->decimal('currency_conversion_rate', 20, 6)->default(1.0);
             $table->decimal('down_payment', 20, 6)->default(0.0);               // Payment before issue invoice

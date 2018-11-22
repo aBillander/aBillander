@@ -19,6 +19,10 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
+	'Invite Customer'     => 'Invitar a un Cliente',
+	'Invite'     => 'Invitar',
+	'Send an Invitation Email'     => 'Enviar una Invitación por Email',
+	' :_> :company invites you to his Customer Center'     => ' :_> :company le invita a su Centro de Clientes',
 
 	/*
 	|--------------------------------------------------------------------------

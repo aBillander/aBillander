@@ -52,7 +52,8 @@ class CustomerOrder extends Model
                             'created_via', 'document_prefix', 'document_id', 'document_reference',
                             'document_date', 'payment_date', 'validation_date', 'delivery_date',
 
-                            'document_discount_percent', 'document_discount_amount', 'shipping_conditions',
+                            'document_discount_percent', 'document_discount_amount', 'shipping_conditions', 
+//                            'number_of_packages', 'volume', 'weight', 'tracking_number',
 
                             'currency_conversion_rate', 'down_payment', 
 

@@ -70,7 +70,17 @@ class Customer extends Model {
     {
         return $this->address->firstname . ' ' . $this->address->lastname;
     }
+/*    
+    public function getFirstnameAttribute() 
+    {
+        return $this->address->firstname;
+    }
     
+    public function getLastnameAttribute() 
+    {
+        return $this->address->lastname;
+    }
+*/    
     public function getEmailAttribute() 
     {
         return $this->address->email;

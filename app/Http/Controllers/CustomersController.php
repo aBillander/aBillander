@@ -6,11 +6,13 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Validator;
+
+use View, Mail;
 
 use App\Customer;
 use App\Address;
 use App\CustomerOrder;
-use View;
 
 class CustomersController extends Controller {
 
@@ -359,6 +361,64 @@ class CustomersController extends Controller {
         //return $items_per_page ;
         
         return view('customers.orders', compact('customer_orders', 'items_per_page'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function invite(Request $request)
+    {
+        
+        // See: https://itsolutionstuff.com/post/laravel-5-ajax-request-validation-exampleexample.html
+        $validator = Validator::make($request->all(), [
+
+            'invitation_to_name' => 'required',
+            'invitation_to_email' => 'required|email',
+            'invitation_subject' => 'required',
+            'invitation_message' => 'required',
+
+        ]);
+
+
+        if ( !$validator->passes() ) {
+
+            return response()->json(['error'=>$validator->errors()->all()]);
+
+        }
+
+
+        // ToDo: validate if send to and send from fields are defined
+
+        $body = $request->input('invitation_message');
+
+        if ( !stripos( $body, '<br' ) ) $body = nl2br($body);
+
+        // See ContactMessagesController
+        try{
+            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.invitation',
+                array(
+                    'user_email'   => $request->input('invitation_from_email'),
+                    'user_name'    => $request->input('invitation_from_name'),
+                    'user_message' => $body,
+                ), function($message) use ( $request )
+            {
+                $message->from(    config('mail.from.address'  ), config('mail.from.name'    ) );
+                $message->replyTo( $request->input('invitation_from_email'), $request->input('invitation_from_name') );
+                $message->to(      $request->input('invitation_to_email'  ), $request->input('invitation_to_name')   )->subject( $request->input('invitation_subject') );
+            });
+        }
+        catch(\Exception $e){
+
+                return response()->json(['error'=>[
+                        l('There was an error. Your message could not be sent.', [], 'layouts'),
+                        $e->getMessage()
+                ]]);
+        }
+        
+
+        return response()->json(['success'=>'Email sent.']);
     }
 
 }

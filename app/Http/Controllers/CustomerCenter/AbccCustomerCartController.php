@@ -222,6 +222,7 @@ class AbccCustomerCartController extends Controller
         $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'ean13',     'LIKE', '%'.$search.'%' )
                                 ->IsSaleable()
                                 ->qualifyForCustomer( $customer_user->customer_id, $request->input('currency_id') )
 //                                ->with('measureunit')

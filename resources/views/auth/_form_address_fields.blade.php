@@ -110,25 +110,20 @@
 
 
 
+
 @section('scripts')  @parent 
 
 <script type="text/javascript">
 
-    	
-    	countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
+    // Initialize	
+    	var countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
+    	var stateID = '0';
 
     	$('select[name="address[country_id]"]').val(countryID);
 
-</script>
+    	$('select[name="state_selector').val(stateID);
+		$('#state_id').val(stateID);
 
-@endsection
-
-
-
-{{--
-@section('scripts')  @parent 
-
-<script type="text/javascript">
 
     $('select[name="state_selector"]').change(function () {
         
@@ -165,8 +160,8 @@
     	});
     }
 
-    var countryID = $('select[name="address[country_id]"]').val();
-    var stateID   = $('#state_id').val();
+//    var countryID = $('select[name="address[country_id]"]').val();
+//    var stateID   = $('#state_id').val();
 
     // Select default country
     if ( !( countryID > 0) ) {
@@ -184,4 +179,4 @@
 </script>
 
 @endsection
---}}
+

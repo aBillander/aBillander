@@ -260,7 +260,9 @@
 
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ Auth::user()->getFullName() }} <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ Auth::user()->getFullName() }}  <span id="nbr_todos" class="badge" title="{{l('Pending Todos', [], 'layouts')}}">
+                        {{ \App\Todo::pending() }}
+                    </span> <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <!-- li>
                             <a data-target="#contactForm" data-toggle="modal" onclick="return false;" href="">
@@ -292,6 +294,12 @@
 @endif
                         @if ( Auth::user()->isAdmin() )
                         <li class="divider"></li>
+
+                         <li>
+                            <a href="{{ URL::to('todos') }}">
+                                 <i class="fa fa-tags text-success"></i> {{l('Todos', [], 'layouts')}}
+                            </a>
+                        </li>
                         
 @if (config('app.url') =='http://localhost/enatural')
                          <li>

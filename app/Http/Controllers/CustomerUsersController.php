@@ -9,6 +9,8 @@ use App\CustomerUser;
 use App\Configuration;
 use App\Language;
 
+use Mail;
+
 class CustomerUsersController extends Controller
 {
     //
@@ -47,17 +49,6 @@ class CustomerUsersController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createWithCustomer($customer_id)
-    {
-        
-        return view('customer_orders.create', compact('sequenceList', 'customer_id'));
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -88,6 +79,49 @@ class CustomerUsersController extends Controller
 		];
 
 		$customeruser = $this->customeruser->create($data);
+        // Notify Customer
+        // 
+        // $customer = $this->customeruser->customer;
+
+
+        // MAIL stuff
+        try {
+
+            $template_vars = array(
+                'customer'   => $customer,
+//                'custom_body'   => $request->input('email_body'),
+                );
+
+            $data = array(
+                'from'     => \App\Configuration::get('ABCC_EMAIL'),         // config('mail.from.address'  ),
+                'fromName' => \App\Configuration::get('ABCC_EMAIL_NAME'),    // config('mail.from.name'    ),
+                'to'       => $customer->address->email,         // $cinvoice->customer->address->email,
+                'toName'   => $customer->name_fiscal,    // $cinvoice->customer->name_fiscal,
+                'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => \App\Context::getcontext()->company->name_fiscal]),
+                );
+
+            
+
+            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.invitation_confirmation', $template_vars, function($message) use ($data)
+            {
+                $message->from($data['from'], $data['fromName']);
+
+                $message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );    // Will send blind copy to sender!
+
+            }); 
+
+        } catch(\Exception $e) {
+
+             abi_r($e->getMessage());
+
+/*            return redirect()->route('abcc.orders.index')
+                    ->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
+                        $e->getMessage());
+*/
+            // return false;
+        }
+        // MAIL stuff ENDS
+
 
 		return redirect(route('customers.edit', $customer_id) . $section)
 				->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customeruser->id], 'layouts') . $customeruser->getFullName());

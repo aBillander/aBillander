@@ -20,7 +20,8 @@ class CreateImagesTable extends Migration {
 
 			$table->string('extension', 10)->default('');
 			$table->integer('position')->unsigned()->default(0);
-			$table->boolean('is_featured')->default(false);
+//			$table->boolean('is_featured')->default(false);
+			$table->tinyInteger('is_featured')->default(0);
 
 			$table->tinyInteger('active')->default(1);
 

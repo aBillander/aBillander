@@ -117,6 +117,26 @@
     </div>
 
 
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('FSX_PROD_ABI_ONLY_DEACTIVATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="FSX_PROD_ABI_ONLY_DEACTIVATE" id="FSX_PROD_ABI_ONLY_DEACTIVATE_on" value="1" @if( old('FSX_PROD_ABI_ONLY_DEACTIVATE', $key_group['FSX_PROD_ABI_ONLY_DEACTIVATE']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="FSX_PROD_ABI_ONLY_DEACTIVATE" id="FSX_PROD_ABI_ONLY_DEACTIVATE_off" value="0" @if( !old('FSX_PROD_ABI_ONLY_DEACTIVATE', $key_group['FSX_PROD_ABI_ONLY_DEACTIVATE']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('FSX_PROD_ABI_ONLY_DEACTIVATE.help') !!}</span>
+      </div>
+    </div>
+
+
 
     <div class="form-group {{ $errors->has('FSX_FSOL_AUSCFG_PEER') ? 'has-error' : '' }}">
       <label for="FSX_FSOL_AUSCFG_PEER" class="col-lg-4 control-label">{!! l('FSX_FSOL_AUSCFG_PEER.name') !!}</label>

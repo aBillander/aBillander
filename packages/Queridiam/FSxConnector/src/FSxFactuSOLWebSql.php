@@ -252,7 +252,7 @@ class FSxFactuSOLWebSql {
 
 
 
-
+/*
 // Unicode BOM is U+FEFF, but after encoded, it will look like this.
 define ('UTF32_BIG_ENDIAN_BOM'   , chr(0x00) . chr(0x00) . chr(0xFE) . chr(0xFF));
 define ('UTF32_LITTLE_ENDIAN_BOM', chr(0xFF) . chr(0xFE) . chr(0x00) . chr(0x00));
@@ -305,7 +305,7 @@ function detect_utf_encodings($text) {
 function utf8_encoded($text) {
       return $text;
 }
-
+*/
 
 
 // Define the database table names used in the project

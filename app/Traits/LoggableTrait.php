@@ -26,12 +26,12 @@ trait LoggableTrait
     /**
     * Set up Logger 
     */
-    public static function loggerSetup( $name = '', $signature = '' ) 
+    public static function loggerSetup( $name = '', $signature = '', $back_to = '' ) 
     {
         if ( !$name)      $name      = self::loggerName();
         if ( !$signature) $signature = self::loggerSignature();
 
-        return \App\ActivityLogger::setup( $name, $signature );
+        return \App\ActivityLogger::setup( $name, $signature, $back_to );
     }
 
     /**

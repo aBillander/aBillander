@@ -49,8 +49,18 @@ class FSxProductsController extends Controller
 
         if ($tab_index != 1)
         if ( Configuration::isEmpty('FSOL_TCACFG') || Configuration::isEmpty('FSOL_AUSCFG') )
+        {
+            $errors = [];
+
+            if ( Configuration::isEmpty('FSOL_TCACFG') )
+                $errors[] = l('No se ha encontrado un valor para la Tarifa por defecto, y no se puede importar los Precios.');
+            if ( Configuration::isEmpty('FSOL_AUSCFG') )
+                $errors[] = l('No se ha encontrado un valor para el Almacén por defecto, y no se puede importar el Stock.');
+
             return redirect()->route('fsxproducts.index')
-                ->with('error', l('Antes de importar Secciones, Familias y Artículos, debe cargar primero la Base de Datos de FactuSOLWeb'));
+                ->with('warning', l('Antes de importar Secciones, Familias y Artículos, debe cargar primero la Base de Datos de FactuSOLWeb.'))                
+                ->with('error', $errors);
+        }
         
         $warehouseList = \App\Warehouse::select('id', DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();;
 
@@ -68,18 +78,20 @@ class FSxProductsController extends Controller
 
         if (file_exists($fswebFile)) {
             $fsw_date=date('Y-m-d H:i:s', filemtime($fswebFile));
+            $fsw_alert = '';
 
-//            $file_fsol = detect_utf_encoding($fswebFile);
-//            if     ($file_fsol==1) $this_format='ISO-8859-1';
-//            elseif ($file_fsol==0) $this_format='UTF-8';
-//            else                   $this_format='desconocido';
+            $file_fsol = detect_utf_encoding($fswebFile);
+            if     ($file_fsol==1) $fsw_format='ISO-8859-1';
+            elseif ($file_fsol==0) $fsw_format='UTF-8';
+            else                   $fsw_format='desconocido';
         } else {
             $fsw_date='<span style="color: red; font-weight: bold">NO SE HA ENCONTRADO</span>';
+            $fsw_alert = \App\Configuration::get('FSOL_CBRCFG').' :: '.$fsw_date;
             
- //           $this_format='';
+            $fsw_format='';
         }
 
-        return view('fsx_connector::fsx_products.index', compact('tab_index', 'key_group', 'warehouseList', 'fsw_date'));
+        return view('fsx_connector::fsx_products.index', compact('tab_index', 'key_group', 'warehouseList', 'fsw_date', 'fsw_alert', 'fsw_format'));
 	}
 
     /**
@@ -90,7 +102,7 @@ class FSxProductsController extends Controller
     public function store(Request $request)
     {
         // Prepare Logger
-        $logger = FSxFactuSOLWebSql::logger();
+        $logger = FSxFactuSOLWebSql::logger()->backTo( route('fsxproducts.index') );
 
         $logger->empty();
         $logger->start();
@@ -142,7 +154,7 @@ class FSxProductsController extends Controller
 
         // Mambo time here on:
         // Prepare Logger
-        $logger = FSxProductImporter::logger();
+        $logger = FSxProductImporter::logger()->backTo( route('fsxproducts.index').'?tab_index=7' );
 
         $logger->empty();
         $logger->start();

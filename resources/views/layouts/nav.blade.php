@@ -24,6 +24,7 @@
                     @endif
                 @else
                     {!! \App\Configuration::get('HEADER_TITLE') !!}
+                    {{-- <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span> --}}
                 @endif
             </a>
         </div>
@@ -41,6 +42,15 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Sales', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+                         <li>
+                            <a href="{{ URL::to('wooc/worders') }}">
+                                 <i class="fa fa-cloud-download btn-xs btn-warning"></i> 
+                                 {{l('Sale Orders', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+@endif
                          <li>
                             <a href="{{ URL::to('customerorders') }}">
                                  <i class="fa fa-keyboard-o btn-xs btn-success"></i> 
@@ -48,7 +58,7 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-                         <li>
+                         <li style="display:none;">
                             <a href="{{ URL::to('customershippingslips') }}"> 
                                  {{l('Shipping Slips', [], 'layouts')}}
                             </a>
@@ -75,9 +85,15 @@
                             </a>
                         </li>
                         <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('salesreps') }}">
+                                 {{l('Sales Representatives', [], 'layouts')}}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cubes"></i> {{l('Manufacturing', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -97,11 +113,12 @@
                         <li class="divider"></li>
                     </ul>
                 </li>
+@endif
 
 
 
 
-@if (config('app.url') =='http://localhost/enatural')
+@if ( \App\Configuration::isTrue('DEVELOPER_MODE') )
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -152,16 +169,20 @@
                                  {{l('Ingredients', [], 'layouts')}}
                             </a>
                         </li -->
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
                          <li>
                             <a href="{{ URL::to('productboms') }}">
                                  {{l('Bills of Materials', [], 'layouts')}}
                             </a>
                         </li>
+@endif
+@if ( \App\Configuration::isTrue('ENABLE_COMBINATIONS') )
                          <li>
                             <a href="{{ URL::to('optiongroups') }}">
                                  {{l('Product Options', [], 'layouts')}}
                             </a>
                         </li>
+@endif
 
                         <li class="divider"></li>
 
@@ -220,7 +241,7 @@
                 </li>
 
 
-@if (config('app.url') =='http://localhost/enatural' AND 0)
+@if ( 0 )
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-text"></i> {{l('Invoicing', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -246,7 +267,7 @@
 @endif
 
 
-                <li class="dropdown">
+                <li class="dropdown" style="display:none;">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
@@ -260,9 +281,13 @@
 
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ Auth::user()->getFullName() }}  <span id="nbr_todos" class="badge" title="{{l('Pending Todos', [], 'layouts')}}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ Auth::user()->getFullName() }}  
+@if ( \App\Todo::pending() )
+                    <span id="nbr_todos" class="badge" title="{{l('Pending Todos', [], 'layouts')}}">
                         {{ \App\Todo::pending() }}
-                    </span> <span class="caret"></span></a>
+                    </span> 
+@endif
+                    <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <!-- li>
                             <a data-target="#contactForm" data-toggle="modal" onclick="return false;" href="">
@@ -274,24 +299,7 @@
                                  {{l('About ...', [], 'layouts')}}
                             </a>
                         </li>
-@if (config('app.url') =='http://localhost/enatural') {{-- or Config::get('app.myVarname'); see https://laracasts.com/discuss/channels/general-discussion/ho-to-access-config-variables-in-laravel-5 --}}
-                        <li class="divider"></li>
-                         <li>
-                            <a href="http://bootswatch.com/3/united/" target="_blank">
-                                 Plantilla BS3
-                            </a>
-                        </li>
-                         <!-- li>
-                            <a href="http://getbootstrap.com/components/" target="_blank">
-                                 Glyphicons
-                            </a>
-                        </li -->
-                         <li>
-                            <a href="https://fontawesome.com/v4.7.0/icons/" target="_blank">
-                                 Font-Awesome
-                            </a>
-                        </li>
-@endif
+
                         @if ( Auth::user()->isAdmin() )
                         <li class="divider"></li>
 
@@ -300,14 +308,6 @@
                                  <i class="fa fa-tags text-success"></i> {{l('Todos', [], 'layouts')}}
                             </a>
                         </li>
-                        
-@if (config('app.url') =='http://localhost/enatural')
-                         <li>
-                            <a href="{{ URL::to('configurations') }}">
-                                 {{l('Configuration - All keys', [], 'layouts')}}
-                            </a>
-                        </li>
-@endif
                          <li>
                             <a href="{{ URL::to('configurationkeys') }}">
                                  {{l('Configuration', [], 'layouts')}}
@@ -338,24 +338,6 @@
                                  {{l('Document sequences', [], 'layouts')}}
                             </a>
                         </li>
-                         <li>
-                            <a href="{{ URL::to('salesreps') }}">
-                                 {{l('Sales Representatives', [], 'layouts')}}
-                            </a>
-                        </li>
-                        
-@if (config('app.url') =='http://localhost/enatural')
-                         <li>
-                            <a href="{{ URL::to('translations') }}">
-                                 {{l('Translations', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('templates') }}">
-                                 {{l('Document templates', [], 'layouts')}}
-                            </a>
-                        </li>
-@endif
                          <li>
                             <a href="{{ URL::to('companies') }}">
                                  {{l('Company', [], 'layouts')}}

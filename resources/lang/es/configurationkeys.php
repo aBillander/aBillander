@@ -25,6 +25,8 @@ return [
 	'ENABLE_ECOTAXES.help' => 'Permitir añadir una Eco-Tasa a los Productos.',
 	'ENABLE_CUSTOMER_CENTER.name' => 'Activar el Centro de Clientes',
 	'ENABLE_CUSTOMER_CENTER.help' => 'Permitir a los Clientes introducir Pedidos y más.',
+	'ENABLE_MANUFACTURING.name' => 'ENABLE_MANUFACTURING',
+	'ENABLE_MANUFACTURING.help' => '',
 	'ENABLE_WEBSHOP_CONNECTOR.name' => 'Activar enlace con la Tienda online.',
 	'ENABLE_WEBSHOP_CONNECTOR.help' => 'Para que el enlace funcione correctamente, puede ser necesario algún "package" adicional.',
 	'ENABLE_FSOL_CONNECTOR.name' => 'Activar enlace con FactuSOL',
@@ -120,6 +122,8 @@ return [
 	'TIMEZONE.help' => 'Zona horaria admitida por PHP.',
 	'USE_CUSTOM_THEME.name' => 'Usar Tema presonalizado',
 	'USE_CUSTOM_THEME.help' => 'El Tema personalizado está en la carpeta <i>/resources/theme/</i>.',
+	'DEVELOPER_MODE.name' => 'DEVELOPER_MODE',
+	'DEVELOPER_MODE.help' => '',
 
 	'Auto-SKU' => 'Auto-SKU',
 	'SKU_PREFIX_LENGTH.name' => 'Prefijo',

@@ -103,7 +103,7 @@ class FSxTools
     'FSX_LOAD_ARTICULOS_PRIZE_ALL',
     'FSX_LOAD_ARTICULOS_STOCK_ALL',
 //    'FSOL_ARTICULOS_CAT_NOT_FOUND'  => '0',
-//    'FSOL_PROD_WOO_ONLY_DEACTIVATE' => '0',
+    'FSX_PROD_ABI_ONLY_DEACTIVATE',
 //    'FSX_RESUME_ON_TIMEOUT'         => '0',
 
             'FSX_FSOL_AUSCFG_PEER', //  => '',  // Almacén correspondiente en aBillander para cargar el stock
@@ -178,7 +178,7 @@ class FSxTools
 	public static function getFormasDePagoList()
 	{
 		// Force use cache
-        if ( 1 )
+        if ( 0 )
         {
             // Payment Methods Cache
             $cache = Configuration::get('FSX_FORMAS_DE_PAGO_CACHE');

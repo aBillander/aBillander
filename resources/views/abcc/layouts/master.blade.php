@@ -12,7 +12,7 @@
         <title>@section('title'):: {{ config('app.name', 'aBillander') }} @show </title>
 
         <!-- Styles -->
-        <link rel="shortcut icon" href="{{ asset('abcc_icon.png') }}" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ asset('assets/theme/company_abcc_icon.png') }}" type="image/x-icon">
         <!-- link href='//fonts.googleapis.com/css?family=Roboto:300,400,700,900,100' rel='stylesheet' type='text/css' -->
 
         <link href="{{ asset('assets/theme/css/bootstrap-united.min.css') }}" rel="stylesheet" type="text/css"/>

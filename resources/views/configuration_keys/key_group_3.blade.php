@@ -187,6 +187,27 @@
 
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('DEVELOPER_MODE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="DEVELOPER_MODE" id="DEVELOPER_MODE_on" value="1" @if( old('DEVELOPER_MODE', $key_group['DEVELOPER_MODE']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="DEVELOPER_MODE" id="DEVELOPER_MODE_off" value="0" @if( !old('DEVELOPER_MODE', $key_group['DEVELOPER_MODE']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('DEVELOPER_MODE.help') !!}</span>
+      </div>
+    </div>
+
+    
+
+    <div class="form-group">
       <div class="col-lg-8 col-lg-offset-4">
         <!-- button class="btn btn-default">Cancelar</button -->
         <button type="submit" class="btn btn-primary">

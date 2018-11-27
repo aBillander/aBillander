@@ -41,7 +41,8 @@
                &nbsp; {{ l('Manufacturing') }}
             </a>
 
-@if ( ($product->product_type == 'simple') || ($product->product_type == 'combinable') )
+@if ( \App\Configuration::isTrue('ENABLE_COMBINATIONS') &&  
+      ($product->product_type == 'simple') || ($product->product_type == 'combinable')) )
 
             <a id="b_combinations" href="#combinations" class="list-group-item">
                <i class="fa fa-tags"></i>

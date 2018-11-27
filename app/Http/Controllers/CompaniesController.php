@@ -80,6 +80,24 @@ class CompaniesController extends Controller {
 
 		Configuration::updateValue('DEF_COMPANY', $this->company->id);
 
+        // Create Warehouse (guess it is the same address...)
+        $warehouse = $this->warehouse->create( $request->all() );
+
+        $address = $this->address->create($data);
+        $warehouse->addresses()->save($address);
+
+        Configuration::updateValue('DEF_WAREHOUSE', $warehouse->id);
+
+
+        // Set some sensible defaults!
+        Configuration::updateValue('DEF_COUNTRY', $company->address->country_id);
+
+        Configuration::updateValue('DEF_CURRENCY',  $company->currency_id);
+
+        Configuration::updateValue('DEF_LANGUAGE', $company->id);
+
+//        Configuration::updateValue('DEF_TAX', Tax::first()->id);
+
 		return redirect('companies/'.$company->id.'/edit')
 				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $company->id], 'layouts') . $request->input('name_fiscal'));
 	}

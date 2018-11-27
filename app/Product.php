@@ -108,6 +108,17 @@ class Product extends Model {
                 if ( !$product->reference )
                     $product->autoSKU();
         });
+
+        // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
+        static::deleting(function ($corder)
+        {
+            // before delete() method call this
+            foreach($corder->images as $line) {
+                $line->deleteImage();
+                $line->delete();
+            }
+        });
+
     }
 
     

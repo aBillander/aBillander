@@ -7,6 +7,7 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
+
 {{--
         <a href="{{ URL::to('customerorders/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
@@ -14,8 +15,11 @@
         <a href="{{ route('chart.customerorders.monthly') }}" class="btn btn-sm btn-warning" 
                 title="{{l('Reports', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'layouts')}}</a>
 
+@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
         <a class="btn btn-sm btn-grey" xstyle="margin-right: 152px" href="{{ route('fsxconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}} {{l('Enlace FactuSOL', 'layouts')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Configuration', [], 'layouts')}}</a> 
+@endif
 --}}
+
     </div>
     <h2>
         <a href="{{ URL::to('customers') }}">{{l('Customers', 'customers')}}</a> <span style="color: #cccccc;">/</span> {{ l('Carts') }}

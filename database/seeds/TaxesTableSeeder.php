@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Tax as Tax;
-use App\TaxRule as TaxRule;
-use App\Country as Country;
+
+use App\Configuration;
+use App\Tax;
+use App\TaxRule;
+use App\Country;
   
 class TaxesTableSeeder extends Seeder {
   
@@ -21,6 +23,11 @@ class TaxesTableSeeder extends Seeder {
                     'created_at'  => \Carbon\Carbon::now()->toDateTimeString(),
                     'updated_at'  => \Carbon\Carbon::now()->toDateTimeString(),
         ] );
+
+/*
+ * Default
+ */
+        Configuration::updateValue('DEF_TAX', $tax->id);
   
         $taxRule = TaxRule::create( [
             'country_id' => $country_id ,

@@ -31,7 +31,17 @@ class Tarifa extends Model
     
     public static function tarifa_nombre()
     {
-        return \DB::table( 'F_TAR' )->where('CODTAR', \App\Configuration::get('FSOL_TCACFG'))->first()->DESTAR;
+        try {
+
+            $val = \DB::table( 'F_TAR' )->where('CODTAR', \App\Configuration::get('FSOL_TCACFG'))->first()->DESTAR;
+
+            return $val;
+            
+        } catch (\Exception $e) {
+
+            return '';
+            
+        }
     }
     
     public function precio( $art )

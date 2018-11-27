@@ -59,6 +59,10 @@ class FSxProductImporter {
         if ( Configuration::isTrue('FSX_LOAD_ARTICULOS') )
         	$processor->processCatalogo();
 
+        // Desactivar no encontrados
+        if ( Configuration::isTrue('FSX_PROD_ABI_ONLY_DEACTIVATE') )
+            $processor->processNotFound();
+
         // So far, so GOOD!
         Configuration::updateValue('FSX_CATALOGUE_LAST_RUN_DATE', \Carbon\Carbon::now()->format('Y-m-d H:i:s'));
 
@@ -72,6 +76,11 @@ class FSxProductImporter {
     public function processCatalogoUpdate()
     {
         // 
+        $this->processSecciones();
+
+        $this->processFamilias();
+
+        // 
         $art_query = Articulo::whereHas('product')->with('stock')->get();
 
         if ($arts = $art_query->count()) {
@@ -84,21 +93,27 @@ class FSxProductImporter {
 
     			if ( Configuration::isTrue('FSX_LOAD_ARTICULOS_STOCK_ALL') ) {
     				//
-    				// ToDo
-    				//
+                    $data += [
+                        'quantity_onhand' => $articulo->USTART > 0 ?: 0.0, 
+                    ];
+
+//                    $p = $articulo->product->update( $data );
     			}
 
     			if ( Configuration::isTrue('FSX_LOAD_ARTICULOS_PRIZE_ALL') ) {
     				//
     				$price = $articulo->precio();
 
-    				$data = [
+    				$data += [
 	        			'price' => $price->getPrice(), 
 	        			'price_tax_inc' => $price->getPriceWithTax(), 
 	        		];
 
-	        		$p = $articulo->product->update( $data );
+//	        		$p = $articulo->product->update( $data );
     			}
+
+                if ( count($data) )
+                    $p = $articulo->product->update( $data );
 
         	}
 
@@ -207,6 +222,8 @@ class FSxProductImporter {
 
         	$this->logInfo('Comienza la carga de Artículos.');
 
+            $measure_unit = \App\MeasureUnit::find( Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') );
+
         	foreach ($art_query AS $articulo) {
 
     			// if ($articulo->CODART != 'BURGUER002') continue;
@@ -232,10 +249,10 @@ class FSxProductImporter {
         			'description' => '',
         			'description_short' => $articulo->DEWART,
 
-        			'quantity_decimal_places' => Configuration::get('DEF_QUANTITY_DECIMALS'),
+        			'quantity_decimal_places' => $measure_unit->decimalPlaces,
  //       			'manufacturing_batch_size' => '',
 
-//        			'quantity_onhand' => '', 
+        			'quantity_onhand' => $articulo->USTART > 0 ?: 0.0, 
 //        			'quantity_onorder' => '', 
 //        			'quantity_allocated' => '', 
 //        			'quantity_onorder_mfg' => '', 
@@ -265,7 +282,7 @@ class FSxProductImporter {
         			'active' => Configuration::get('FSX_LOAD_ARTICULOS_ACTIVE'),
 
         			'tax_id' => FSxTools::translate_tivart($articulo->TIVART),
-        			'measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+        			'measure_unit_id' => $measure_unit->id,
         			'category_id' => $category_id,
 //        			'main_supplier_id' => '',
 //        			'work_center_id' => '',
@@ -275,12 +292,26 @@ class FSxProductImporter {
         		$p = Product::create( $data );
 
         		// Load image...
-        		$img_path = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CIACFG').$articulo->IMGART;
+                if ($articulo->IMGART)
+                {
+                    try {
 
-        		$image = \App\Image::createForProductFromPath($img_path, ['caption' => $p->name, 'is_featured'=> 1]);
-        		$p->images()->save($image);
+                        $img_path = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CIACFG').$articulo->IMGART;
 
-        		// ToDo: Set Stock
+                        $image = \App\Image::createForProductFromPath($img_path, ['caption' => $p->name, 'is_featured'=> 1]);
+                        
+                        if ( $image )
+                            $p->images()->save($image);
+                        else
+                            $this->logError('El Artículo [:codart] :desart NO se ha cpodido cargar la Imagen (:img_path), porque: :img_error ', ['codart' => $articulo->CODART, 'desart' => $articulo->DESART, 'img_path' => $img_path, 'img_error' => 'No se encontró la imagen '.$articulo->IMGART]);
+                        
+                    } catch (\Exception $e) {
+
+                        $this->logError('El Artículo [:codart] :desart NO se ha cpodido cargar la Imagen (:img_path), porque: :img_error ', ['codart' => $articulo->CODART, 'desart' => $articulo->DESART, 'img_path' => $img_path, 'img_error' => $e->getMessage()]);                        
+                    }
+                }
+
+        		// ToDo: Set Stock as Stock Count (stock adjustment)
 
         	}
 
@@ -290,11 +321,44 @@ class FSxProductImporter {
         	$this->logInfo('No hay Artículos nuevos.');
     }
 
+
+    public function processNotFound()
+    {
+        // 
+        $art_query = FSxProduct::doesntHave('articulo')->get();
+
+        if ($arts = $art_query->count()) {
+
+            $this->logInfo('Comienza la desactivación de Productos.');
+
+            $i=0;
+            foreach ($art_query AS $product) {
+
+                if (!$product->active) continue;
+                
+                $product->update(['active' => 0]);
+
+                $this->logWarning('Se ha desactivado el Producto: (:id) [:ref] :name', ['id' => $product->id, 'ref' => $product->ref, 'name' => $product->name, ]);
+
+                $i++;
+            }
+
+            $this->logInfo('Se han desactivado :nbr Producto(s) de :tot no encontrado(s).', ['nbr' => $i, 'tot' => $arts]);
+
+        } else
+            $this->logInfo('No hay Productos para desactivar.');
+    }
+
 }
 
 
 class FSxProduct extends Product
 {
+    protected $table = 'products';
+
+    protected $guarded = ['id'];
+
+    protected $primaryKey = 'id';
 
     
     /*

@@ -39,16 +39,26 @@ class CustomerOrdersController extends Controller
         if ( Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
         {
             //
-            $dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG');
+            try {
 
-            $dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG');
-            
-            // Calculate last minute stuff!
-            $anyClient = count(File::files( $dest_clientes ));
-            
-            $anyOrder  = count(File::files( $dest_pedidos ));
+                $dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG');
 
-            // The difference between files and allFiles is that allFiles will recursively search sub-directories unlike files. 
+                $dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG');
+                
+                // Calculate last minute stuff!
+                $anyClient = count(File::files( $dest_clientes ));
+                
+                $anyOrder  = count(File::files( $dest_pedidos ));
+
+                // The difference between files and allFiles is that allFiles will recursively search sub-directories unlike files. 
+                
+            } catch ( \Exception $e ) {     // Notice namespaced Exceptions. Otherwise, won't redirect!
+
+                // return $e->getMessage();
+
+                return redirect()->route('fsxconfigurationkeys.index');
+                
+            }
         }
 
 

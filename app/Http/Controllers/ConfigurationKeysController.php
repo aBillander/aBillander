@@ -28,6 +28,7 @@ class ConfigurationKeysController extends Controller {
                         'ENABLE_COMBINATIONS',
                         'ENABLE_ECOTAXES',
                         'ENABLE_CUSTOMER_CENTER',
+                        'ENABLE_MANUFACTURING',
                         'ENABLE_WEBSHOP_CONNECTOR',
                         'ENABLE_FSOL_CONNECTOR',
                         'SELL_ONLY_MANUFACTURED',
@@ -85,6 +86,7 @@ class ConfigurationKeysController extends Controller {
 //                        'SUPPORT_CENTER_NAME',
                         'TIMEZONE',
                         'USE_CUSTOM_THEME',
+                        'DEVELOPER_MODE',
 
                     ],
 

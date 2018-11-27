@@ -147,6 +147,12 @@ class Configuration extends Model
 		return strlen(trim(Configuration::get($key))) === 0;
 	}
 
+	// Helper function
+	public static function isNotEmpty($key)
+	{
+		return !Configuration::isEmpty($key);
+	}
+
 	/**
 	  * Set TEMPORARY a single configuration value
 	  *

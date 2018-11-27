@@ -22,7 +22,7 @@
                 @endif
                 </a>
             @else
-                <a href="{{ URL::to('/') }}" class="navbar-brand"><span style="color:#dddddd"><i class="fa fa-bolt"></i> a<span style="color:#fff">Billander</span></span></a>
+                <a href="{{ URL::to('/abcc') }}" class="navbar-brand"><span style="color:#dddddd"><i class="fa fa-bolt"></i> a<span style="color:#fff">Billander</span></span></a>
             @endauth
         </div>
         {{-- abi_r(Auth::user()) --}}

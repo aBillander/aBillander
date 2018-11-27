@@ -78,7 +78,7 @@ class ActivityLogger extends Model
 
       if ( $al = ActivityLogger::where( 'signature', $self->signature)->first() )
       {
-          if ($al->back_to != '')
+          if ($al->back_to == '')
           {
               //
               $al->back_to = $back_to;

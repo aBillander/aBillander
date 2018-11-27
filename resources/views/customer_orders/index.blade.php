@@ -43,7 +43,9 @@
         <a href="{{ route('chart.customerorders.monthly') }}" class="btn btn-sm btn-warning" 
                 title="{{l('Reports', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'layouts')}}</a>
 
+@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
         <a class="btn btn-sm btn-grey" xstyle="margin-right: 152px" href="{{ route('fsxconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}} {{l('Enlace FactuSOL', 'layouts')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Configuration', [], 'layouts')}}</a> 
+@endif
 
     </div>
     <h2>
@@ -144,10 +146,8 @@
                 <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerorders/' . $order->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
                 <a class="btn btn-sm btn-success" href="{{ URL::to('customerorders/' . $order->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
                 -->
-@if (       config('app.url') =='http://abimfg.laextranatural.es' 
-         || config('app.url') =='http://abimfg-test.laextranatural.es')
+@if ( \App\Configuration::isTrue('DEVELOPER_MODE') )
 
-@else
                 <a class="btn btn-sm btn-info" href="{{ URL::to('customerorders/' . $order->id . '/invoice/pdf') }}" title="{{l('PDF Invoice', [], 'layouts')}}"><i class="fa fa-money"></i></a>
 
                 <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('customerorders/' . $order->id . '/shippingslip') }}" title="{{l('Shipping Slip', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
@@ -155,11 +155,13 @@
                 <a class="btn btn-sm btn-lightblue xbtn-info" href="{{ URL::to('customerorders/' . $order->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
 @endif
 
+@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
                 @if ($order->export_date)
                 <a class="btn btn-sm btn-default" style="display:none;" href="javascript:void(0);" title="{{$order->export_date}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
                 @else
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('fsxorders.export', [$order->id] ) }}" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
                 @endif
+@endif
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to('customerorders/' . $order->id . '/duplicate') }}" title="{{l('Copy Order')}}"><i class="fa fa-copy"></i></a>
 

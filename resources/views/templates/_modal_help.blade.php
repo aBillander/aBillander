@@ -21,7 +21,7 @@
  &nbsp; &nbsp; ^-- invoice_footer.blade.php<br />
 
 </p>
-<p>En este ejemplo, la plantilla se referenciará por su nombre "invoice". Desde este fichero, se incluyen (mediante los mecanosmos de Blade) los parciales <em>invoice_header.blade.php</em>, <em>invoice_body.blade.php</em> y <em>invoice_footer.blade.php</em>.</p>
+<p>En este ejemplo, la plantilla se referenciará por su nombre "invoice". Desde este fichero, se incluyen (mediante los mecanismos de Blade) los parciales <em>invoice_header.blade.php</em>, <em>invoice_body.blade.php</em> y <em>invoice_footer.blade.php</em>.</p>
 
 <p>Cada plantilla está asociada a un tipo de documento. Por eso, los ficheros de las plantillas se ubican en carpetas según el tipo de documento al que corresponden. Y todas estas carpetas se ubican en <em>resources/templates</em>.</p>
 
@@ -61,13 +61,40 @@
 
 
 
+<h2>La clase <em>Template</em></h2>
+<p><strong>folder</strong> es la carpeta principal que aloja la plantilla. La ruta es relativa a la carpeta <em>resources/</em>, y se especifica según la notación "Blade". Si se deja en blanco, se tomará el valor por defecto <em>templates::</em>.</p>
+<p><strong>model_name</strong> es el tipo de documento al que se asocia la plantilla.</p>
+<p><strong>file_name</strong> es el nombre de la carpeta con los ficheros de la plantilla, y a la vez, el nombre fichero principal de la plantilla.</p>
+
+<p></p>
+<div class="alert alert-info">
+    <p><strong>// Código de ejemplo</strong></p>
+    <p></p>
+    <p>$document = CustomerInvoice::first();</p>
+    <p></p>
+    <p>// Get Template</p>
+    <p></p>
+    <p>$t = $document->template ?? </p>
+    <p> &nbsp;  &nbsp;  &nbsp;  &nbsp; \App\Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );</p>
+    <p></p>
+    <p>$template = $t->folder.snake_case( str_plural( 'CustomerInvoice' ) ).'.'.$t->file_name.'.'.$t->file_name;</p>
+    <p></p>
+    <p>// O lo que es lo mismo (recomendado):</p>
+    <p></p>
+    <p>$template = $t->getPath();</p>
+    <p></p>
+    <p>return view( $template, compact('document') );</p>
+</div>
+
+
+{{--
 <h2>Example body text</h2>
 <p>Nullam quis risus eget <a href="#">urna mollis ornare</a> vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.</p>
 <p><small>This line of text is meant to be treated as fine print.</small></p>
 <p>The following snippet of text is <strong>rendered as bold text</strong>.</p>
 <p>The following snippet of text is <em>rendered as italicized text</em>.</p>
 <p>An abbreviation of the word attribute is <abbr title="attribute">attr</abbr>.</p>
-
+--}}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{l('Continue', [], 'layouts')}}</button>

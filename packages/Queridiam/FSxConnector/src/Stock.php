@@ -47,7 +47,17 @@ class Stock extends Model
     
     public static function almacen_nombre()
     {
-        return \DB::table( 'F_ALM' )->where('CODALM', \App\Configuration::get('FSOL_AUSCFG'))->first()->NOMALM;
+        try {
+
+            $val = \DB::table( 'F_ALM' )->where('CODALM', \App\Configuration::get('FSOL_AUSCFG'))->first()->NOMALM;
+
+            return $val;
+            
+        } catch (\Exception $e) {
+
+            return '';
+            
+        }
     }
 
     

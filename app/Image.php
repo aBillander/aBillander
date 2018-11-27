@@ -92,7 +92,7 @@ class Image extends Model {
     
     public static function createForProductFromPath( $img_path = '', $params = [] )
     {
-        if (!$img_path) return null;
+        if (!$img_path || !file_exists($img_path)) return null;
 
         // http://image.intervention.io/api/make
 
@@ -145,7 +145,7 @@ class Image extends Model {
     
     public static function createForProductFromUrl( $img_url = '', $params = [] )
     {
-        if (!$img_url) return null;
+        if (!$img_url) return null;     // ToDo: check if image exists
 
         $extension = pathinfo($img_url, PATHINFO_EXTENSION);        // See: https://www.w3schools.com/php/func_filesystem_pathinfo.asp
 

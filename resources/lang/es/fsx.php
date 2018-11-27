@@ -42,7 +42,7 @@ return [
 	'FSOL_ABI_CUSTOMER_CODE_BASE.help' => '',
 
 	'FSOL_CBDCFG.name' => 'Carpeta de subida de datos',
-	'FSOL_CBDCFG.help' => '/home/laextran/public_html/laextranatural.com/wp-content/plugins/FSx-Connector/fsweb/BBDD/',
+	'FSOL_CBDCFG.help' => 'Ruta completa, como: <i>/home/mysite/public_html/FSx-Connector/fsweb/BBDD/</i>.',
 
 	'FSOL_CIACFG.name' => 'Carpeta de imágenes',
 	'FSOL_CIACFG.help' => 'imagenes/',
@@ -91,6 +91,9 @@ return [
 
 	'FSX_LOAD_ARTICULOS_STOCK_ALL.name' => 'Actualizar Stock',
 	'FSX_LOAD_ARTICULOS_STOCK_ALL.help' => 'Actualizar stock de todos los Productos.',
+
+	'FSX_PROD_ABI_ONLY_DEACTIVATE.name' => 'Desactivar los Productos no encontrados',
+	'FSX_PROD_ABI_ONLY_DEACTIVATE.help' => 'Desactivar los Productos de aBillander que no tienen correspondencia en FactuSOL.',
 
 	'FSX_FSOL_AUSCFG_PEER.name' => 'Almacén para cargar el Stock',
 	'FSX_FSOL_AUSCFG_PEER.help' => '',

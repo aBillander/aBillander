@@ -6,6 +6,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Configuration;
+
 
 class User extends Authenticatable
 {
@@ -56,6 +58,21 @@ class User extends Authenticatable
     public function getFullName()
     {
         return $this->firstname.' '.$this->lastname;
+    }
+
+    public function getTheme()
+    {
+        if ( $this->theme )
+        {
+            return $this->theme;
+        }
+        
+        if ( Configuration::isNotEmpty('USE_CUSTOM_THEME') )
+        {
+            return Configuration::get('USE_CUSTOM_THEME');
+        }
+
+        return '';
     }
 
     public function isAdmin()

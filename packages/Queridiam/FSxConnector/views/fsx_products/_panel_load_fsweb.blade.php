@@ -4,15 +4,22 @@
 
                <div class="panel-body well">
 
+  <fieldset>
+    <legend>{{ l('FSx-Connector - Cargar FactuSOLWeb') }}</legend>
+
+
+@if ( $fsw_alert )
+
+        <p>{!! $fsw_alert !!}</p>
+        <br />
+
+@else
+
 
 {!! Form::open(array('route' => 'fsxproducts.store', 'class' => 'form' )) !!}
 
 
   {!! Form::hidden('tab_index', $tab_index, array('id' => 'tab_index')) !!}
-
-  <fieldset>
-    <legend>{{ l('FSx-Connector - Cargar FactuSOLWeb') }}</legend>
-
 
 
         <p>{!! l('Cargar la Base de Datos de FactuSOLWeb desde el fichero <i>factusolweb.sql</i>.') !!}</p>
@@ -74,8 +81,11 @@
           </button>
       </div>
     </div>
-  </fieldset>
 {!! Form::close() !!}
+
+@endif
+
+  </fieldset>
 
 
 
@@ -92,7 +102,7 @@ color: #468847;">
     <h4 class="list-group-item-heading">Informaciones</h4>
   </li>
   <li class="list-group-item">
-    <h4 class="list-group-item-heading">Fecha fichero <i title=" {$fsw_format} ">{{\App\Configuration::get('FSOL_CBRCFG')}}</i></h4>
+    <h4 class="list-group-item-heading">Fecha fichero <i title=" {{$fsw_format}} ">{{\App\Configuration::get('FSOL_CBRCFG')}}</i></h4>
     <p class="list-group-item-text">{!! $fsw_date !!}</p>
   </li>
   <li class="list-group-item">

@@ -24,6 +24,10 @@ class DatabaseSeeder extends Seeder
         $this->call(TaxesTableSeeder::class);
 
         $this->call(SequencesTableSeeder::class);
+
+        $this->call(MeasureUnitsTableSeeder::class);
+
+        $this->call(TemplatesTableSeeder::class);
         
     }
 }

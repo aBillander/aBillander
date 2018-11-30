@@ -8,6 +8,8 @@
     </div>
     <h2>
         @if ( count($breadcrumb) )
+           <a class="btn btn-sm btn-primary" href="{{ route('abcc.catalogue') }}" title="{{l('Home', 'layouts')}}"><i class="fa fa-home"></i></a> 
+           <span style="color: #cccccc;">/</span> 
           @foreach ($breadcrumb as $val)
             <span style="color: #dd4814;">{{ $val->name }}</span> <span style="color: #cccccc;">/</span> 
           @endforeach
@@ -68,7 +70,7 @@
       </td>
 
       <td>{{ $product->name }}</td>
-      <td>{{ optional($product->manufacturer)->name }} {{ optional($product->category)->name }}</td>
+      <td>{{ optional($product->manufacturer)->name }} {{-- optional($product->category)->name --}}</td>
       <td>
         <div class="progress progress-striped" style="width: 34px">
           <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%"></div>

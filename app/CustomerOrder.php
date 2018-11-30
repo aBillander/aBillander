@@ -94,7 +94,7 @@ class CustomerOrder extends Model
 //                            'warehouse_id' => 'exists:warehouses,id',
 //                            'carrier_id'   => 'exists:carriers,id',
                             'currency_id' => 'exists:currencies,id',
-                            'payment_method_id' => 'exists:payment_methods,id',
+                            'payment_method_id' => 'nullable|exists:payment_methods,id',
                ];
 
 
@@ -326,8 +326,7 @@ class CustomerOrder extends Model
         if ( $document_rounding_method === null )
             $document_rounding_method = Configuration::get('DOCUMENT_ROUNDING_METHOD');
 
-        $currency = $this->currency;
-        $currency->conversion_rate = $this->conversion_rate;
+        $currency = $this->documen_currency;
 
         // Just to make sure...
         // https://blog.jgrossi.com/2018/querying-and-eager-loading-complex-relations-in-laravel/
@@ -805,8 +804,7 @@ class CustomerOrder extends Model
         $salesrep = $customer->salesrep;
         
         // Currency
-        $currency = $this->currency;
-        $currency->conversion_rate = $this->conversion_rate;
+        $currency = $this->document_currency;
 
         // Product
         if ($combination_id>0) {
@@ -983,8 +981,7 @@ class CustomerOrder extends Model
         $salesrep = $this->salesrep;
         
         // Currency
-        $currency = $this->currency;
-        $currency->conversion_rate = $this->conversion_rate;
+        $currency = $this->document_currency;
 
         // Product
         if ($document_line->combination_id>0) {

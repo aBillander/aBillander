@@ -167,8 +167,8 @@ class CustomerOrderLine extends Model
 
                 $line_tax->taxable_base = $base_price;
                 $line_tax->percent = $rule->percent;
-                $line_tax->amount = $rule->amount;
-                $line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
+                $line_tax->amount = $rule->amount * $this->quantity;
+                $line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($line_tax->amount);
 
                 $line_tax->position = $rule->position;
 

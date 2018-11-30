@@ -379,6 +379,11 @@ class Product extends Model {
     {
         return $this->belongsTo('App\Tax');
     }
+
+    public function ecotax()
+    {
+        return $this->belongsTo('App\Ecotax');
+    }
 		
     public function category()
     {
@@ -517,7 +522,7 @@ class Product extends Model {
         return $priceObject;
     }
 
-    public function getPriceByList( \App\PriceList $list )
+    public function getPriceByList( \App\PriceList $list = null )
     {
         // Return \App\Price Object
         if ($list)
@@ -558,17 +563,47 @@ class Product extends Model {
         return $customer->getTaxRules( $this );
     }
 
-    public function getTaxRulesByProduct()
+    public function getTaxRulesByProduct( \App\Address $address = null )
     {
         // Taxes depending on Product itself, such as recycle tax
         return collect([]);
+        
+        // If no address, use default Company address
+        if ( $address == null ) $address = \App\Context::getContext()->company->address;
+
+        $rules = collect([]);
+
+        // Sales Equalization
+        if ( 1 && $this->ecotax ) {
+
+            $ecotax = $this->ecotax;
+
+            $country_id = $address->country_id;
+            $state_id   = $address->state_id;
+
+            $rules_eco = $ecotax->ecotaxrules()->where(function ($query) use ($country_id) {
+                $query->where(  'country_id', '=', 0)
+                      ->OrWhere('country_id', '=', $country_id);
+            })
+                                     ->where(function ($query) use ($state_id) {
+                $query->where(  'state_id', '=', 0)
+                      ->OrWhere('state_id', '=', $state_id);
+            })
+                                     ->where('rule_type', '=', 'ecotax')
+                                     ->get();
+
+            if ( $rules_eco->isNotEmpty() ) $rules = $rules->merge( $rules_eco );
+
+        }
+
+        return $rules;
     }
 
     public function getTaxRules( \App\Address $address = null, \App\Customer $customer = null )
     {
-        $rules =         $this->getTaxRulesByAddress(  $address )
+        $rules =         $this->getTaxRulesByAddress(  $address  )
                 ->merge( $this->getTaxRulesByCustomer( $customer ) )
-                ->merge( $this->getTaxRulesByProduct() );
+                ->merge( $this->getTaxRulesByProduct(  $address  ) );
 
         // Higher Tax first
         // return $rules->sortByDesc('percent');

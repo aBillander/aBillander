@@ -132,7 +132,7 @@
                     }
 
                     // set labels
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                    @if( $customer->currentPricesEnteredWithTax( $order->currency ) )
                         $('#line_is_prices_entered_with_tax').val(1);
                         $(".label_tax_exc").hide();
                         $(".label_tax_inc").show();

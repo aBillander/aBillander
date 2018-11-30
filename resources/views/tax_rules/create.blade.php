@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Taxes Rules - Create') }} :: @parent @stop
+@section('title') {{ l('Tax Rules - Create') }} :: @parent @stop
 
 
 @section('content')

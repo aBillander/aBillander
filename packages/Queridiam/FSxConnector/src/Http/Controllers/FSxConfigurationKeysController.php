@@ -38,6 +38,8 @@ class FSxConfigurationKeysController extends Controller {
 						'FSOL_CCLCFG', //  => 'nclientes/',
 						'FSOL_CBRCFG', //  => 'factusolweb.sql',
 
+                        'FSX_USE_LOCAL_DATABASE', //     => '1',
+
 
 //    'WOO_ORDER_TO_DOWNLOAD_STATUS_ID'  => '-1',
 //    'WOO_ORDER_DOWNLOADED_STATUS_ID'   => '-1',

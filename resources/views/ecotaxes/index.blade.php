@@ -23,13 +23,8 @@
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
-            <th class="hidden">{{l('Country')}}</th>
-            <th class="hidden">{{l('State')}}</th>
 			<th>{{l('Ecotax name')}}</th>
-            <th class="hidden">{{l('Ecotax Type')}}</th>
-            <th>{{l('Ecotax Percent')}}</th>
-            <th>{{l('Ecotax Amount')}}</th>
-            <th class="hidden">{{l('Position')}}</th>
+            <th class="text-center">{{l('Active', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -37,16 +32,13 @@
 	@foreach ($ecotaxes as $ecotax)
 		<tr>
 			<td>{{ $ecotax->id }}</td>
-            <td class="hidden">{{ $ecotax->country->name }}</td>
-            <td class="hidden">{{ $ecotax->state->name }}</td>
 			<td>{{ $ecotax->name }}</td>
-            <td class="hidden"><span class="label label-primary">{ { $ecotax_rule_typeList[$ecotax->rule_type] } }</span></td>
-            <td>{{ $ecotax->as_percent('percent') }}%</td>
-            <td>{{ $ecotax->as_money_amount('amount') }}</td>
-            <td class="hidden">{{ $ecotax->position }}</td>
+
+            <td class="text-center">@if ($ecotax->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 
 			<td class="text-right">
                 @if (  is_null($ecotax->deleted_at))
+                <a class="btn btn-sm btn-blue" href="{{ URL::to('ecotaxes/' . $ecotax->id . '/ecotaxrules') }}" title="{{l('Show Ecotax Rules')}}"><i class="fa fa-folder-open-o"></i></a>
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('ecotaxes/' . $ecotax->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('ecotaxes/' . $ecotax->id ) }}" 

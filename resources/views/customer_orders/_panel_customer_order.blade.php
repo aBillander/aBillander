@@ -554,19 +554,36 @@
 
         function auto_product_line( selector = "#line_autoproduct_name" ) {
 
+            // See: http://jsfiddle.net/chridam/hfre25pf/
+
             $( selector ).autocomplete({
-                source : "{{ route('customerorderline.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id"+$('#currency_id').val(),
+                source : "{{ route('customerorderline.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
                 appendTo : "#modal_order_line",
+
+                response: function(event, ui) {
+                    if (!ui.content.length) {
+                        var noResult = { 
+                             id: "", 
+                             reference: "",
+                             name: "{{ l('No records found', 'layouts') }}" 
+                         };
+                         ui.content.push(noResult);                    
+                     } else {
+                        // $("#message").empty();
+                     }
+                },
 
                 select : function(key, value) {
                     var str = '[' + value.item.reference+'] ' + value.item.name;
 
-                    $("#line_autoproduct_name").val(str);
-                    $('#line_product_id').val(value.item.id);
-                    $('#line_combination_id').val(0)
-
-                    getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
+                    if ( value.item.id != '' ) {
+                        $("#line_autoproduct_name").val(str);
+                        $('#line_product_id').val(value.item.id);
+                        $('#line_combination_id').val(0)
+    
+                        getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
+                    }
 
                     return false;
                 }

@@ -36,7 +36,7 @@ if ( !env('ALLOW_USER_REGISTRATION', true) )
         });
 }
 
-Route::get('/', 'WelcomeController@index')->name('home');
+Route::get('/', 'WelcomeController@index');     // ->name('home');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -196,6 +196,7 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('taxes',          'TaxesController');
         Route::resource('taxes.taxrules', 'TaxRulesController');
         Route::resource('ecotaxes',       'EcotaxesController');
+        Route::resource('ecotaxes.ecotaxrules', 'EcotaxRulesController');
 
         Route::resource('warehouses', 'WarehousesController');
         
@@ -244,8 +245,10 @@ Route::group(['middleware' =>  ['auth']], function()
 
 //        Route::get('customerorders/{id}/shippingslip',  'CustomerOrdersController@makeShippingSlip'   )->name('customerorder.shippingslip'  );
 
-        Route::get('customerorders/{id}/pdf',         'CustomerOrdersController@showPdf'       )->name('customerorder.pdf'     );
-        Route::get('customerorders/{id}/invoice/pdf', 'CustomerOrdersController@showPdfInvoice')->name('customerorder.invoice.pdf'     );
+        Route::get('customerorders/{customerorder}/confirm', 'CustomerOrdersController@confirm')->name('customerorder.confirm');
+
+        Route::get('customerorders/{id}/pdf',         'CustomerOrdersController@showPdf'       )->name('customerorder.pdf'        );
+        Route::get('customerorders/{id}/invoice/pdf', 'CustomerOrdersController@showPdfInvoice')->name('customerorder.invoice.pdf');
 
 
 

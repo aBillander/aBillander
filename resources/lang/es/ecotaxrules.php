@@ -4,36 +4,36 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Taxes Language Lines :: index
+	| Ecotaxes Language Lines :: index
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Taxes' => 'Impuestos',
-	'Back to Taxes'     => 'Volver a Impuestos',
-	'Tax Rules' => 'Reglas de Impuesto',
+	'Ecotaxes' => 'Eco-Impuestos',
+	'Back to Ecotaxes'     => 'Volver a Eco-Impuestos',
+	'Ecotax Rules' => 'Reglas de Eco-Impuesto',
 
 	/*
 	|--------------------------------------------------------------------------
-	| Taxes Language Lines :: create
+	| Ecotaxes Language Lines :: create
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Tax Rules - Create' => 'Reglas de Impuestos - Crear',
-	'New Tax Rule'     => 'Nueva Regla de Impuesto',
+	'Ecotax Rules - Create' => 'Reglas de Eco-Impuestos - Crear',
+	'New Ecotax Rule'     => 'Nueva Regla de Eco-Impuesto',
 	'Country'     => 'País',
 	'State'     => 'Provincia',
 	'-- All --'     => '-- Todos --',
 	'Sales Equalization'     => 'Recargo de Equivalencia',
-	'Tax Rule Name'     => 'Nombre de la Regla de Impuesto',
-	'Tax Rule Type'     => 'Tipo',
-	'Tax Rule Percent'     => 'Porcentaje ',
-	'Tax Rule Amount'     => 'Cantidad del Impuesto',
+	'Ecotax Rule Name'     => 'Nombre de la Regla de Eco-Impuesto',
+	'Ecotax Rule Type'     => 'Tipo',
+	'Ecotax Rule Percent'     => 'Porcentaje ',
+	'Ecotax Rule Amount'     => 'Cantidad del Eco-Impuesto',
 	'Position'     => 'Posición',
 
 	'Use this field when tax is a fixed amount per item.'     => 'Use este campo cuando el impuesto es una cantidad fija por producto',
@@ -43,15 +43,15 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Taxes Language Lines :: edit
+	| Ecotaxes Language Lines :: edit
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Tax Rules - Edit'     => 'Reglas de Impuestos - Modificar',
-	'Edit Tax Rule'     => 'Modificar Regla de Impuesto',
+	'Ecotax Rules - Edit'     => 'Reglas de Eco-Impuestos - Modificar',
+	'Edit Ecotax Rule'     => 'Modificar Regla de Eco-Impuesto',
 	''     => '',
 	''     => '',
 	''     => '',

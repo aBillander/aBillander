@@ -55,19 +55,21 @@
 
 <div id="div_customer_orders">
 
+{!! Form::open( ['route' => ['productionsheet.addorders', '0'], 'method' => 'POST', 'id' => 'form-import'] ) !!}
+{{-- !! csrf_field() !! --}}
+
    <div class="table-responsive">
 
 @if ($customer_orders->count())
 <table id="customer_orders" class="table table-hover">
     <thead>
         <tr>
+            <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
             <th class="text-left">{{ l('Order #') }}</th>
             <th class="text-left">{{ l('Date') }}</th>
-            <th class="text-left">{{ l('Delivery Date') }}</th>
-
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+            <th class="text-left">{{ l('Production Date')}}</th>
             <th class="text-left">{{ l('Export to FS')}}</th>
-@endif
+            <!-- th class="text-left">{{ l('Delivery Date') }}</th -->
             <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
@@ -79,21 +81,33 @@
     <tbody id="order_lines">
         @foreach ($customer_orders as $order)
         <tr>
+            @if ( $order->production_sheet_id )
+              <td> </td>
+            @else
+              <td class="text-center warning">{!! Form::checkbox('corders[]', $order->id, false, ['class' => 'case checkbox']) !!}</td>
+            @endif
             <td>{{ $order->id }} / 
                 @if ($order->document_id>0)
                 {{ $order->document_reference }}
                 @else
-                <a class="btn btn-xs btn-grey" href="{{ URL::to('customerorders/' . $order->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-thumbs-o-up"></i>
-                <span xclass="label label-default">{{ l('Draft') }}</span>
-                </a>
+                <span class="label label-default" title="{{ l('Draft') }}">{{ l('Draft') }}</span>
                 @endif</td>
             <td>{{ abi_date_short($order->document_date) }}</td>
-            <td>{{ abi_date_short($order->delivery_date) }}</td>
+            <!-- td>{{ abi_date_short($order->delivery_date) }}</td -->
 
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
-              <td>{{ abi_date_short($order->export_date) }}
-@endif
+              <td>
+              
+        @if ($order->production_sheet_id)
+                        {{ abi_date_form_short($order->productionsheet->due_date) }} 
+                        <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $order->production_sheet_id) }}" title="{{l('Go to Production Sheet')}}"><i class="fa fa-external-link"></i></a>
+        @endif
+              </td>
 
+              <td>
+              
+        @if ($order->export_date)
+                        {{ abi_date_short($order->export_date) }}
+        @endif
               </td>
             
             <td><a class="" href="{{ URL::to('customers/' .$order->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
@@ -169,6 +183,105 @@
 
 {{ $customer_orders->appends( Request::all() )->render() }}
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $customer_orders->total() ], 'layouts')}} </span></li></ul>
+
+
+<div name="search_filter" id="search_filter">
+<div class="row" style="padding: 0 20px">
+
+    <div class="col-md-2 xcol-md-offset-3">
+    </div>
+
+
+
+
+
+    <div class="col-md-4 xcol-md-offset-3" xstyle="display:none">
+        <div class="panel panel-info">
+            <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to Production Sheet') }}</h3></div>
+            <div class="panel-body">
+
+@if ( count( $availableProductionSheetList ) )
+<div class="row">
+<!-- div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('after', l('Date from')) !!}
+    {!! Form::text('after', null, array('class' => 'form-control')) !!}
+</div>
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('before', l('Date to')) !!}
+    {!! Form::text('before', null, array('class' => 'form-control')) !!}
+</div -->
+<div class="form-group col-lg-6 col-md-6 col-sm-6">
+    {!! Form::label('production_sheet_id', l('Production Sheet')) !!} {{-- \Carbon\Carbon::now() --}}
+    {!! Form::select('production_sheet_id', $availableProductionSheetList, null, array('class' => 'form-control', 'id' => 'production_sheet_id')) !!}
+</div>
+
+<div class="form-group col-lg-6 col-md-6 col-sm-6" style="padding-top: 22px">
+{!! Form::submit(l('Add'), array('class' => 'btn btn-success', 'onclick' => "this.disabled=true;this.form.submit();")) !!}
+</div>
+
+</div>
+
+@else
+
+<div class="alert alert-warning alert-block">
+    <i class="fa fa-warning"></i>
+    {{l('No active Production Sheet found.')}}
+</div>
+
+@endif
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 xcol-md-offset-1" xstyle="display:none">
+        <div class="panel panel-info">
+            <div class="panel-heading"><h3 class="panel-title">{{ l('Add Orders to NEW Production Sheet') }}</h3></div>
+            <div class="panel-body">
+
+<div class="row">
+
+         <div class="col-lg-3 col-md-3 col-sm-3 {{ $errors->has('due_date') ? 'has-error' : '' }}">
+            <div class="form-group">
+               {{ l('Date') }}
+               {!! Form::text('due_date', null, array('class' => 'form-control', 'id' => 'due_date', 'autocomplete' => 'off')) !!}
+               {!! $errors->first('due_date', '<span class="help-block">:message</span>') !!}
+            </div>
+         </div>
+
+         <div class="form-group col-lg-5 col-md-5 col-sm-5 {{ $errors->has('name') ? 'has-error' : '' }}">
+            {{ l('Name') }}
+            {!! Form::text('name', null, array('class' => 'form-control', 'id' => 'name')) !!}
+            {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
+         </div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
+<input type="hidden" id="production_sheet_mode" name="production_sheet_mode" value="existing" />
+{!! Form::submit(l('Add'), array('class' => 'btn btn-success', 'onclick' => "this.disabled=true;$('#production_sheet_mode').val('new');this.form.submit();")) !!}
+
+
+</div>
+
+</div>
+<div class="row">
+
+         <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('notes') ? 'has-error' : '' }}">
+            {{ l('Notes', [], 'layouts') }}
+            {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}
+            {{ $errors->first('notes', '<span class="help-block">:message</span>') }}
+         </div>
+
+</div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+
+{!! Form::close() !!}
 
 @else
 <div class="alert alert-warning alert-block">

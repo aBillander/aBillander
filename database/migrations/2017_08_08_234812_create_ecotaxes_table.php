@@ -18,18 +18,10 @@ class CreateEcotaxesTable extends Migration {
 		Schema::create('ecotaxes', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('country_id')->unsigned()->default(0);
-			$table->integer('state_id')->unsigned()->default(0);
-			$table->string('rule_type', 32)->nullable(false)->default('ecotax');			// 'sales', sales_equalization', etc.
-
 			$table->string('name', 64)->nullable(false);
-			$table->decimal('percent', 8, 3)->default(0.0);				// Apply to price
-			$table->decimal('amount', 20, 6)->default(0.0);				// Per unit
 
-			$table->integer('position')->unsigned()->default(0);		// Taxes apply according to this order number (lowest applies first)
+			$table->tinyInteger('active')->default(1);
 			
-//			$table->integer('tax_id')->unsigned()->default(0);
-
 			$table->timestamps();
 		});
 	}
@@ -45,3 +37,13 @@ class CreateEcotaxesTable extends Migration {
 	}
 
 }
+
+/*
+
+1 	Tubos Led y Fluorescentes 	0.00% 	0,12 	
+2 	Lamparas 					0.00% 	0,08 	
+3 	Luminarias > 5kg 			0.00% 	0,28 	
+4 	Luminarias 1-5kg 			0.00% 	0,13 	
+5 	Luminarias < 1kg 			0.00% 	0,06
+
+*/

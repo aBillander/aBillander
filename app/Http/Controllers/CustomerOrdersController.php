@@ -69,7 +69,7 @@ class CustomerOrdersController extends Controller
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 
-        $customer_orders = $customer_orders->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $customer_orders = $customer_orders->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $customer_orders->setPath('customerorders');
         
@@ -140,23 +140,19 @@ class CustomerOrdersController extends Controller
         $this->validate($request, $rules);
 
         // Extra data
-        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
-        $doc_id = $seq->getNextDocumentId();
-
-        $extradata = [  'document_prefix'      => $seq->prefix,
-                        'document_id'          => $doc_id,
-                        'document_reference'   => $seq->getDocumentReference($doc_id),
-
-                        'user_id'              => \App\Context::getContext()->user->id,
+        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
 
                         'created_via'          => 'manual',
-                        'status'               =>  \App\Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
+                        'status'               =>  'draft',
                         'locked'               => 0,
                      ];
 
         $request->merge( $extradata );
 
         $customerOrder = $this->customerOrder->create($request->all());
+
+        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
+            $customerOrder->confirm();
 
         return redirect('customerorders/'.$customerOrder->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerOrder->id], 'layouts'));
@@ -234,7 +230,7 @@ class CustomerOrdersController extends Controller
                         'user_id'              => \App\Context::getContext()->user->id,
 
                         'created_via'          => 'manual',
-                        'status'               =>  \App\Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
+                        'status'               =>  Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
                         'locked'               => 0,
                      ];
 
@@ -267,6 +263,15 @@ class CustomerOrdersController extends Controller
 
         return redirect('customerorders')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
+    protected function confirm(CustomerOrder $customerorder)
+    {
+        $customerorder->confirm();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customerorder->id], 'layouts').' ['.$customerorder->document_reference.']');
     }
 
 
@@ -366,7 +371,7 @@ class CustomerOrdersController extends Controller
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
                                     ->with('currency')
                                     ->with('addresses')
-                                    ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                    ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
 
 //            return $customers;
 //            return Product::searchByNameAutocomplete($query, $onhand_only);
@@ -481,7 +486,7 @@ class CustomerOrdersController extends Controller
                                 ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
 
 
 //                                dd($products);
@@ -500,7 +505,7 @@ class CustomerOrdersController extends Controller
 //                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
 
 
 //                                dd($products);
@@ -566,7 +571,7 @@ class CustomerOrdersController extends Controller
                 'unit_price' => [ 
                             'tax_exc' => $price->getPrice(), 
                             'tax_inc' => $price->getPriceWithTax(),
-                            'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
+                            'display' => Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
                                         $price->getPriceWithTax() : $price->getPrice(),
                             'price_is_tax_inc' => $price->price_is_tax_inc,  
 //                            'price_obj' => $price,
@@ -575,7 +580,7 @@ class CustomerOrdersController extends Controller
                 'unit_customer_price' => [ 
                             'tax_exc' => $customer_price->getPrice(), 
                             'tax_inc' => $customer_price->getPriceWithTax(),
-                            'display' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
+                            'display' => Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
                                         $customer_price->getPriceWithTax() : $customer_price->getPrice(),
                             'price_is_tax_inc' => $customer_price->price_is_tax_inc,  
 //                            'price_obj' => $customer_price,
@@ -611,7 +616,7 @@ class CustomerOrdersController extends Controller
                         ->with('tax')
                         ->findOrFail($line_id);
 /*
-        $unit_customer_final_price = \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
+        $unit_customer_final_price = Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
                                         $order_line->unit_customer_final_price * ( 1.0 + $order_line->tax_percent / 100.0 ) : 
                                         $order_line->unit_customer_final_price ;
 */
@@ -684,7 +689,7 @@ class CustomerOrdersController extends Controller
         $combination_id = $request->input('combination_id', null);
         $quantity       = $request->input('quantity', 1.0);
 
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', \App\Configuration::get('PRICES_ENTERED_WITH_TAX')) );
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', Configuration::get('PRICES_ENTERED_WITH_TAX')) );
 
         $params = [
             'prices_entered_with_tax' => $pricetaxPolicy,
@@ -841,7 +846,7 @@ class CustomerOrdersController extends Controller
         $tax_percent = $request->input('tax_percent');
         $unit_price  = $request->input('unit_price');
 
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', \App\Configuration::get('PRICES_ENTERED_WITH_TAX')) );
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', Configuration::get('PRICES_ENTERED_WITH_TAX')) );
         if ( $pricetaxPolicy > 0 )
             $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
 
@@ -887,7 +892,7 @@ class CustomerOrdersController extends Controller
             'reference' => $reference,
             'name' => $name,
             'quantity' => $quantity,
-            'measure_unit_id' => $request->input('measure_unit_id', \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')),
+            'measure_unit_id' => $request->input('measure_unit_id', Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')),
     
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,
@@ -1025,16 +1030,16 @@ class CustomerOrdersController extends Controller
 //        $tax_percent = $product->tax->percent;
 /*
         $unit_price  = $request->input('price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+        if ( Configuration::get('PRICES_ENTERED_WITH_TAX') )
             $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
 
         $unit_customer_price = $request->input('price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+        if ( Configuration::get('PRICES_ENTERED_WITH_TAX') )
             $unit_customer_price = $price / (1.0 + $tax_percent/100.0);
 */
 
 
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', \App\Configuration::get('PRICES_ENTERED_WITH_TAX')) );
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', Configuration::get('PRICES_ENTERED_WITH_TAX')) );
 
         $discount_percent = $request->input('discount_percent', 0.0);
 
@@ -1072,7 +1077,7 @@ class CustomerOrdersController extends Controller
 //            'reference' => $reference,
             'name' => $name,
             'quantity' => $quantity,
-//            'measure_unit_id' => $request->input('measure_unit_id', \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')),
+//            'measure_unit_id' => $request->input('measure_unit_id', Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')),
     
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,

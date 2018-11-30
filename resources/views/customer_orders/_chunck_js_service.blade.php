@@ -391,7 +391,7 @@
         function auto_service_line( selector = "#line_autoservice_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route('customerorderline.searchservice') }}?customer_id="+$('#customer_id').val()+"&currency_id"+$('#currency_id').val(),
+                source : "{{ route('customerorderline.searchservice') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
                 appendTo : "#modal_order_line",
 

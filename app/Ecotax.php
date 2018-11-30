@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\ViewFormatterTrait;
 
+use App\TaxRule as TaxRule;
+
 class Ecotax extends Model {
 
     use ViewFormatterTrait;
@@ -18,13 +20,14 @@ class Ecotax extends Model {
 
     protected $dates = ['deleted_at'];
     
-    protected $fillable = [ 'country_id', 'state_id', 'rule_type', 'name', 'percent', 'amount', 'position' ];
+    protected $fillable = [ 'name', 'active' ];
+//    protected $fillable = [ 'country_id', 'state_id', 'rule_type', 'name', 'percent', 'amount', 'position' ];
 
     public static $rules = array(
-    	'name'     => array('required'),
-        'percent'  => array('nullable', 'numeric', 'between:0,100'), 
-        'amount'   => array('nullable', 'numeric'),
-        'position' => array('nullable', 'numeric'),      // , 'min:0')   Allow negative in case starts on 0
+    	'name'     => array('required', 'min:2', 'max:64'),
+//        'percent'  => array('nullable', 'numeric', 'between:0,100'), 
+//        'amount'   => array('nullable', 'numeric'),
+//        'position' => array('nullable', 'numeric'),      // , 'min:0')   Allow negative in case starts on 0
     	);
 
     public static function getTypeList()
@@ -43,13 +46,18 @@ class Ecotax extends Model {
     | Accessors
     |--------------------------------------------------------------------------
     */
-
-    public function getFullNameAttribute()
+    
+    public function getFirstRule()
     {
-        $value = $this->tax->name . ' | ' . $this->name;
-
-        return $value;
+        return TaxRule::where('tax_id', '=', $this->id)->orderBy('position', 'asc')->first();
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
 
     
     /*
@@ -57,20 +65,14 @@ class Ecotax extends Model {
     | Relationships
     |--------------------------------------------------------------------------
     */
-
-    public function country()
+    
+    public function ecotaxrules()
     {
-        return $this->belongsTo('App\Country')
-                    ->withDefault(function ($country) {
-                            $country->name = '';
-                        });
+        return $this->hasMany('App\EcotaxRule')->orderBy('position', 'asc');
     }
-
-    public function state()
+    
+    public function products()
     {
-        return $this->belongsTo('App\State')
-                    ->withDefault(function ($state) {
-                            $state->name = '';
-                        });
+        return $this->hasMany('App\Product');
     }
 }

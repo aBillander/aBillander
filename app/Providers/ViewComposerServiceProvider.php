@@ -161,7 +161,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Countries
-		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'addresses._form_fields_model_customer', 'tax_rules._form', 'configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'addresses._form_fields_model_customer', 'tax_rules._form', 'ecotax_rules._form', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('countryList', \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
 		    
@@ -171,13 +171,6 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		view()->composer(array('customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'products.create', 'products.edit', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('taxList', \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray());
-		    
-		});
-
-		// Eco-Taxes
-		view()->composer(array('products.create', 'products.edit'), function($view) {
-		    
-		    $view->with('ecotaxList', \App\Ecotax::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
 		});
 
@@ -206,6 +199,21 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    $list = \App\TaxRule::getTypeList();
 
 		    $view->with('tax_rule_typeList', $list);
+		});
+
+		// Ecotaxes
+		view()->composer(array('products.create', 'products.edit'), function($view) {
+		    
+		    $view->with('ecotaxList', \App\Ecotax::orderby('name', 'desc')->pluck('name', 'id')->toArray());
+		    
+		});
+
+		// Ecotax Rule types
+		view()->composer(array('ecotax_rules._form', 'ecotax_rules.index'), function($view) {
+
+		    $list = \App\EcotaxRule::getTypeList();
+
+		    $view->with('ecotax_rule_typeList', $list);
 		});
 
 		// Price Lists

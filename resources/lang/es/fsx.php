@@ -56,6 +56,9 @@ return [
 	'FSOL_CBRCFG.name' => 'Nombre del Fichero de Datos',
 	'FSOL_CBRCFG.help' => 'factusolweb.sql',
 
+	'FSX_USE_LOCAL_DATABASE.name' => 'FSX_USE_LOCAL_DATABASE',
+	'FSX_USE_LOCAL_DATABASE.help' => '',
+
 	'FSX_FORCE_CUSTOMERS_DOWNLOAD.name' => 'Descargar siempre el Cliente del Pedido',
 	'FSX_FORCE_CUSTOMERS_DOWNLOAD.help' => '1 : Se descargará el Cliente cada vez que hace un Pedido. <br>0 : Sólo se descarga el Cliente la primera vez que hace un Pedido.',
 

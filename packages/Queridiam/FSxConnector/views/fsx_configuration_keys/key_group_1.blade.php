@@ -134,6 +134,27 @@
         <span class="help-block">{!! l('FSOL_CBRCFG.help') !!}</span>
       </div>
     </div>
+    
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('FSX_USE_LOCAL_DATABASE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="FSX_USE_LOCAL_DATABASE" id="FSX_USE_LOCAL_DATABASE_on" value="1" @if( old('FSX_USE_LOCAL_DATABASE', $key_group['FSX_USE_LOCAL_DATABASE']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="FSX_USE_LOCAL_DATABASE" id="FSX_USE_LOCAL_DATABASE_off" value="0" @if( !old('FSX_USE_LOCAL_DATABASE', $key_group['FSX_USE_LOCAL_DATABASE']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('FSX_USE_LOCAL_DATABASE.help') !!}</span>
+      </div>
+    </div>
+
 
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('FSX_FORCE_CUSTOMERS_DOWNLOAD.name') !!}</label>

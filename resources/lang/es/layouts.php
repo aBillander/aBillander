@@ -196,6 +196,7 @@ return [
 	'Upload File'     => 'Subir Fichero',
 	'Browse'     => 'Seleccionar',
 	'Help'     => 'Ayuda',
+	'Home'     => 'Inicio',
 
 	'Add New Item'     => 'Añadir Nuevo',
 	'Add'     => 'Añadir',

@@ -86,21 +86,32 @@ class Customer extends Model {
         return $this->address->email;
     }
 
-    public function currentpricelist()
+    public function currentpricelist( \App\Currency $currency = null )
     {
+        if ( $currency == null )
+        {
+            if ($this->currency_id)
+                $currency = $this->currency ?? \App\Currency::findOrFail( \App\Configuration::get('DEF_CURRENCY') );
+        }
+
         // First: Customer has pricelist?
-        if ($this->pricelist) {
+        if ( $this->pricelist && ($currency->id == $this->pricelist->currency_id) ) {
 
             return $this->pricelist;
         } 
 
         // Second: Customer Group has pricelist?
-        if ($this->customergroup AND $this->customergroup->pricelist) {
+        if ( $this->customergroup && $this->customergroup->pricelist && ($currency->id == $this->customergroup->pricelist->currency_id) ) {
 
             return $this->customergroup->pricelist;
         }
 
         return null;
+    }
+
+    public function currentPricesEnteredWithTax( \App\Currency $currency = null ) 
+    {
+        return $this->currentpricelist( $currency )->price_is_tax_inc ?? \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
     }
 
 

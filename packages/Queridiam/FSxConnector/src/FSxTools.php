@@ -131,25 +131,16 @@ class FSxTools
 
 
         // Get Configurations from FactuSOL Web
-        if (config('app.url') =='http://abimfg.laextranatural.es' 
-         || config('app.url') =='http://abimfg-test.laextranatural.es')
+        if ( \App\Configuration::isTrue('FSX_USE_LOCAL_DATABASE') )
         {
-                self::$_FSXCON['fsx-bbdd'] = 
-                [
-                    'driver' => 'mysql',
-                    'host' => env('DB_HOST', 'localhost'),
-                    'port' => env('DB_PORT', '3306'),
-                    'database' => env('DB_DATABASE_FSX', 'laextran_com'),
-                    'username' => env('DB_USERNAME_FSX', 'laextran_com'),
-                    'password' => env('DB_PASSWORD_FSX', 'DAS#6XqwyK%z'),
-                    'unix_socket' => env('DB_SOCKET', ''),
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'prefix' => '',
-        //            'strict' => true,
-                    'strict' => false,
-                    'engine' => null,
-                ];
+                // https://lukevers.com/2015/03/25/on-the-fly-database-connections-with-laravel-5
+
+                // Figure out the driver and get the default configuration for the driver
+                $driver  = \Config::get("database.default");
+                $default = \Config::get("database.connections.$driver");
+
+                self::$_FSXCON['fsx-bbdd'] = $default;
+
         } else {
                 self::$_FSXCON['fsx-bbdd'] = 
                 [
@@ -206,8 +197,10 @@ class FSxTools
 
         catch( \Exception $e ) {
 
-            return redirect()->route('fsxconfigurationkeys.index')
-                    ->with('error', $e->getMessage());
+            $formasp = null;
+
+//            return redirect()->route('fsxconfigurationkeys.index')
+//                    ->with('error', $e->getMessage());
 
         }
 		

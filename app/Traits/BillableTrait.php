@@ -131,9 +131,9 @@ trait BillableTrait
                         $tl->total_line_tax += $linetax->total_line_tax;
                         // $tl->customer_order_line_id = 0;
 
-                        $key = $linetax->tax_rule_id;
-                        $tax_lines = $tax_lines->reject(function ($value, $key) use ($key) {
-                                            return $value->tax_rule_id == $key;
+                        $tkey = $linetax->tax_rule_id;
+                        $tax_lines = $tax_lines->reject(function ($value, $key) use ($tkey) {
+                                            return $value->tax_rule_id == $tkey;
                                         })
 //                                  ->put($item['tax_id'], $tl);
                                   ->push($tl);
@@ -145,9 +145,9 @@ trait BillableTrait
 
                 $item['tax_lines'] = $tax_lines;
                 
-                $key = $document_line->tax_id;
-                $totals = $totals->reject(function ($value, $key) use ($key) {
-                                    return $value['tax_id'] == $key;
+                $tkey = $document_line->tax_id;
+                $totals = $totals->reject(function ($value, $key) use ($tkey) {
+                                    return $value['tax_id'] == $tkey;
                                 })
                           ->push($item);
                 // abi_r($totals);die();
@@ -258,9 +258,9 @@ trait BillableTrait
                         $tl1->total_line_tax += $tl->total_line_tax;
                         // $tl1->customer_order_line_id = 0;
 
-                        $key = $linetax->tax_rule_id;
-                        $tax_lines = $tax_lines->reject(function ($value, $key) use ($key) {
-                                            return $value->tax_rule_id == $key;
+                        $tkey = $linetax->tax_rule_id;
+                        $tax_lines = $tax_lines->reject(function ($value, $key) use ($tkey) {
+                                            return $value->tax_rule_id == $tkey;
                                         })
 //                                  ->put($item['tax_id'], $tl);
                                   ->push($tl1);
@@ -272,9 +272,9 @@ trait BillableTrait
 
                 $item['tax_lines'] = $tax_lines;
                 
-                $key = $document_line->tax_id;
-                $totals = $totals->reject(function ($value, $key) use ($key) {
-                                    return $value['tax_id'] == $key;
+                $tkey = $document_line->tax_id;
+                $totals = $totals->reject(function ($value, $key) use ($tkey) {
+                                    return $value['tax_id'] == $tkey;
                                 })
                           ->push($item);
 
@@ -355,9 +355,9 @@ trait BillableTrait
                         $tl->total_line_tax += $linetax->total_line_tax;
                         $tl->customer_order_line_id = 0;
 
-                        $key = $linetax->tax_rule_id;
-                        $tax_lines = $tax_lines->reject(function ($value, $key) use ($key) {
-                                            return $value->tax_rule_id == $key;
+                        $tkey = $linetax->tax_rule_id;
+                        $tax_lines = $tax_lines->reject(function ($value, $key) use ($tkey) {
+                                            return $value->tax_rule_id == $tkey;
                                         })
 //                                  ->put($item['tax_id'], $tl);
                                   ->push($tl);
@@ -369,9 +369,9 @@ trait BillableTrait
 
                 $item['tax_lines'] = $tax_lines;
                 
-                $key = $document_line->tax_id;
-                $totals = $totals->reject(function ($value, $key) use ($key) {
-                                    return $value['tax_id'] == $key;
+                $tkey = $document_line->tax_id;
+                $totals = $totals->reject(function ($value, $key) use ($tkey) {
+                                    return $value['tax_id'] == $tkey;
                                 })
                           ->push($item);
 

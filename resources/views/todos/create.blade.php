@@ -23,4 +23,18 @@
 	</div>
 </div>
 
-@stop
+@endsection
+
+@section('scripts') @parent
+
+<script>
+
+  $(function() {
+
+  	$('#due_date').val('{{ abi_date_form_short( 'now' ) }}');
+
+  });
+  
+</script>
+
+@endsection

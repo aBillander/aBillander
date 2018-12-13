@@ -25,7 +25,7 @@ return [
 	|
 	*/
 
-	'Shopping Cart'     => 'Carrito',
+	'Shopping Cart'     => 'Mi Pedido',
 	'Catalogue'     => 'Catálogo',
 	'Order History'     => 'Historial',
 

@@ -1,9 +1,9 @@
 
 @section('modals')    @parent
 
-<div class="modal" id="modal_order_line" tabindex="-1" role="dialog">
+<div class="modal" id="modal_document_line" tabindex="-1" role="dialog">
    <div class="modal-dialog xmodal-lg" style="width: 99%; max-width: 1000px;">
-      <div class="modal-content" id="order_line_form">
+      <div class="modal-content" id="document_line_form">
 
 
 
@@ -94,8 +94,8 @@ function get_tax_percent_by_id(tax_id, se = 0)
                               ) ! ! } ;
 */
    var se;
-   var taxes   = {!! json_encode( $order->taxingaddress->getTaxPercentList() ) !!} ;
-   var retaxes = {!! json_encode( $order->taxingaddress->getTaxWithREPercentList() ) !!} ;
+   var taxes   = {!! json_encode( $document->taxingaddress->getTaxPercentList() ) !!} ;
+   var retaxes = {!! json_encode( $document->taxingaddress->getTaxWithREPercentList() ) !!} ;
 
    // Skip sales equalization
    se = 0;

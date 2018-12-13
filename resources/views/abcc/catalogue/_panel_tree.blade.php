@@ -53,7 +53,11 @@
       <td class="text-right">
                 <!-- a class="btn btn-sm btn-warning" href="" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-refresh"></i> &nbsp; {{l('Import', [], 'layouts')}}</a -->
                 @if ( $child->parent_id>0 )
-                <a class="btn btn-sm btn-lightblue" href="{{ route('abcc.catalogue', ['search_status' => 0, 'category_id' => $child->id]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-share-square-o"></i></a>
+                @if ( $child->id == $category_id )
+                  <a class="btn btn-sm btn-success" href="{{ route('abcc.catalogue', ['search_status' => 0, 'category_id' => $child->id]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
+                @else
+                  <a class="btn btn-sm btn-lightblue" href="{{ route('abcc.catalogue', ['search_status' => 0, 'category_id' => $child->id]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-share-square-o"></i></a>
+                @endif
                 @endif
 
       </td>

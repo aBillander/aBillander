@@ -28,9 +28,9 @@
 
 
 <div class="row">
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('description') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('description') ? 'has-error' : '' }}">
                      {{ l('Description') }}
-                     {!! Form::textarea('description', null, array('class' => 'form-control', 'id' => 'description', 'rows' => '3')) !!}
+                     {!! Form::textarea('description', null, array('class' => 'form-control', 'id' => 'description', 'rows' => '5')) !!}
                      {!! $errors->first('description', '<span class="help-block">:message</span>') !!}
                   </div>
 
@@ -68,3 +68,43 @@
 
 {!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 {!! link_to_route('todos.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+
+
+
+
+
+@section('scripts') @parent 
+
+{{-- Date Picker --}}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script>
+
+  $(function() {
+    $( "#due_date" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+  
+</script>
+
+@endsection
+
+
+
+
+@section('styles') @parent
+
+{{-- Date Picker --}}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+    .ui-datepicker { z-index: 10000 !important; }
+</style>
+
+@endsection

@@ -161,6 +161,8 @@ return [
 
 	'Filter'     => 'Filtrar',
 	'Search' => 'Buscar',
+	'Search terms' => 'Buscar palabras',
+	'Use terms of three (3) characters or more' => 'Use palabras de tres (3) caracteres o más',
 	'Actions'     => 'Acciones',
 	'Export'     => 'Exportar',
 	'Import'     => 'Importar',
@@ -187,6 +189,7 @@ return [
 	'Back'     => 'Volver',
 	'Go to'     => 'Ir a',
 	'Send'     => 'Enviar',
+	'Send to Customer'     => 'Enviar al Cliente',
 	'Sending...'     => 'Enviando...',
 	'Send eMail'     => 'Enviar eMail',
 	'Send by eMail'     => 'Enviar por eMail',

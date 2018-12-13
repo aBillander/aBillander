@@ -11,11 +11,19 @@
         <div class="row">
                   <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('alias') ? 'has-error' : '' }}">
                       {{ l('Alias', [],'addresses') }}
+                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                              data-content="{{ l('Short name to appear in dropdown selectors.','addresses') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                       </a>
                       {!! Form::text('alias', null, array('class' => 'form-control', 'id' => 'alias')) !!}
                       {!! $errors->first('alias', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('name_commercial') ? 'has-error' : '' }}">
                       {{ l('Name', [],'addresses') }}
+                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                              data-content="{!! l('Example: <i>Company Main Warehouse</i>.','addresses') !!}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                       </a>
                       {!! Form::text('name_commercial', null, array('class' => 'form-control', 'id' => 'name_commercial')) !!}
                       {!! $errors->first('name_commercial', '<span class="help-block">:message</span>') !!}
                   </div>

@@ -42,7 +42,7 @@
                   <input type="hidden" value="addressbook" name="tab_name" id="tab_name">
                   <button class="btn xbtn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
                      <i class="fa fa-hdd-o"></i>
-                     &nbsp; {{l('Save & Complete', [], 'layouts')}}
+                     &nbsp; {{l('Save', [], 'layouts')}}
                   </button>
                </div>
                   @endif
@@ -114,8 +114,8 @@
                             href="{{ URL::to('mail') }}" 
                             data-to_name = "{{ $addr->firstname }} {{ $addr->lastname }}" 
                             data-to_email = "{{ $addr->email }}" 
-                            data-from_name = "{{ \App\Context::getContext()->user->getFullName() }}" 
-                            data-from_email = "{{ \App\Context::getContext()->user->email }}" 
+                            data-from_name = "{{ abi_mail_from_name() }}" 
+                            data-from_email = "{{ abi_mail_from_address() }}" 
                             onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a -->               
                     <a class="btn btn-sm btn-warning" href="{{ route( 'abcc.customer.addresses.edit', $addr->id ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 

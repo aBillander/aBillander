@@ -27,12 +27,16 @@
                 href="{{ route('customers.invite') }}" 
                 data-to_name = "" 
                 data-to_email = "" 
-                data-from_name = "{{ \App\Context::getContext()->user->getFullName() }}" 
-                data-from_email = "{{ \App\Context::getContext()->user->email }}" 
+                data-from_name = "{{ abi_mail_from_name() }}" 
+                data-from_email = "{{ abi_mail_from_address() }}" 
                 onClick="return false;" title="{{l('Invite Customer')}}"><i class="fa fa-paper-plane"></i> {{l('Invite')}}</a>
 
-        <a href="{{ route('carts.index') }}" class="btn btn-sm btn-info" 
+        <a href="{{ route('carts.index') }}" class="btn btn-sm btn-blue" 
                 title="{{l('View Carts', [], 'layouts')}}"><i class="fa fa-shopping-cart"></i> {{l('View Carts', [], 'layouts')}}</a>
+
+        <button type="button" class="btn btn-sm btn-info" 
+                data-toggle="modal" data-target="#customercenterHelp"
+                title="{{l('Help', [], 'layouts')}}"><i class="fa fa-medkit"></i> {{l('Help', [], 'layouts')}}</button>
 @endif
 
     </div>
@@ -141,8 +145,8 @@
                         href="{{ URL::to('mail') }}" 
                         data-to_name = "{{ $customer->address->firstname }} {{ $customer->address->lastname }}" 
                         data-to_email = "{{ $customer->address->email }}" 
-                        data-from_name = "{{ \App\Context::getContext()->user->getFullName() }}" 
-                        data-from_email = "{{ \App\Context::getContext()->user->email }}" 
+                        data-from_name = "{{ abi_mail_from_name() }}" 
+                        data-from_email = "{{ abi_mail_from_address() }}" 
                         onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
                 
                 <div class="btn-group">
@@ -211,6 +215,8 @@ line-height: 1.42857143;
 @include('layouts/modal_mail')
 @include('layouts/modal_invite_customer')
 @include('layouts/modal_delete')
+
+@include('customers/_modal_help')
 
 @section('scripts') @parent 
 

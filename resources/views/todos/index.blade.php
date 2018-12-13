@@ -25,6 +25,7 @@
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{l('Todo name')}}</th>
             <th>{{l('Description')}}</th>
+            <th>{{l('Created at')}}</th>
             <th>{{l('Due date')}}</th>
             <th>{{l('Url')}}</th>
             <th class="text-center">{{l('Completed?')}}</th>
@@ -36,8 +37,17 @@
 		<tr>
 			<td>{{ $todo->id }}</td>
             <td>{{ $todo->name }}</td>
-            <td>{{ $todo->description }}</td>
-            <td>{{ $todo->due_date }}</td>
+            <td>
+                @if ($todo->description)
+                 <a href="javascript:void(0);">
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                            data-content="{{ $todo->description }}">
+                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                    </button>
+                 </a>
+                @endif</td>
+            <td>{{ abi_date_form_short($todo->created_at->toDateString()) }}</td>
+            <td @if ( $todo->isOverdue() ) class="danger" @endif >{{ abi_date_form_short($todo->due_date) }}</td>
             <td>{{ $todo->shortUrl() }}</td>
 
             <td class="text-center">

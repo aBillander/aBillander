@@ -398,11 +398,12 @@ class CustomersController extends Controller {
         // See ContactMessagesController
         try{
             $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.invitation',
+                // Data passing to view
                 array(
                     'user_email'   => $request->input('invitation_from_email'),
                     'user_name'    => $request->input('invitation_from_name'),
                     'user_message' => $body,
-                ), function($message) use ( $request )
+                ), function($message) use ( $request )  // Message customization
             {
                 $message->from(    config('mail.from.address'  ), config('mail.from.name'    ) );
                 $message->replyTo( $request->input('invitation_from_email'), $request->input('invitation_from_name') );

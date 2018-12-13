@@ -134,8 +134,7 @@
             <!-- th>{{ l('Tax') }}</th -->
             <!-- th>{{ l('Tax') }} (%)</th -->
             <th>{{ l('Category') }}</th>
-            <th>{{ l('Quantity decimals') }}</th>
-            <th>{{ l('Manufacturing Batch Size') }}</th>
+            <th>{{ l('Stock') }}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th class="text-center">{{l('Active', [], 'layouts')}}</th>
 			<th class="text-right"> </th>
@@ -175,8 +174,7 @@
             <!-- td>{{ $product->tax->name }}</td -->
             <!-- td>{{ $product->as_percentable($product->tax->percent) }}</td -->
             <td>@if (isset($product->category)) {{ $product->category->name }} @else - @endif</td>
-            <td>{{ $product->quantity_decimal_places }}</td>
-            <td>{{ $product->manufacturing_batch_size }}</td>
+            <td class="text-center">{{ $product->as_quantity('quantity_onhand') }}</td>
             <td class="text-center">
                 @if ($product->notes)
                  <a href="javascript:void(0);">

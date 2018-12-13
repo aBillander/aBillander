@@ -1,13 +1,13 @@
 
 @section('modals')    @parent
 
-<div class="modal" id="modal_product_order_line" tabindex="-1" role="dialog">
+<div class="modal" id="modal_product_document_line" tabindex="-1" role="dialog">
    <div class="modal-dialog xmodal-lg" style="width: 99%; max-width: 1000px;">
       <div class="modal-content">
 
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">{{ l('Edit Order Line') }} :: <span  id="modal_product_order_line_Label"></span></h4>
+            <h4 class="modal-title">{{ l('Edit Order Line') }} :: <span  id="modal_product_document_line_Label"></span></h4>
          </div>
 
          <div class="modal-body">
@@ -113,7 +113,7 @@
                      {{ Form::hidden('product_line_quantity_decimal_places', null, array('id' => 'product_line_quantity_decimal_places')) }}
                   </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                    @if( $customer->currentPricesEnteredWithTax( $document->document_currency ) )
                     {{ l('Price with Tax') }}
                     @else
                     {{ l('Price') }}
@@ -127,7 +127,7 @@
                     {!! $errors->first('product_line_discount_percent', '<span class="help-block">:message</span>') !!}
                  </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                    @if( $customer->currentPricesEnteredWithTax( $document->document_currency ) )
                     {{ l('Final Price with Tax') }}
                     @else
                     {{ l('Final Price') }}
@@ -157,7 +157,7 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="modal_product_order_line_productSubmit" id="modal_product_order_line_productSubmit">
+               <button type="submit" class="btn btn-success" name="modal_product_document_line_productSubmit" id="modal_product_document_line_productSubmit">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 

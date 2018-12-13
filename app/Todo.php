@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Todo extends Model
 {
 
-    protected $dates = ['due_date'];
+//    protected $dates = ['due_date'];
 
 	protected $fillable = ['name', 'description', 'url', 'due_date', 'completed', 'user_id'];
 
@@ -26,6 +26,11 @@ class Todo extends Model
     public static function pending() 
     {
         return (int) self::where("completed", '0')->count();
+    }
+
+    public function isOverdue() 
+    {
+        return $this->due_date && ( \Carbon\Carbon::now()->toDateString() > $this->due_date );
     }
 
     public function shortUrl() 

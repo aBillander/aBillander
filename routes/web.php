@@ -252,9 +252,40 @@ Route::group(['middleware' =>  ['auth']], function()
 
 
 
-        Route::resource('customershippingslips', 'CustomerShippingSlipsController');
+        $controller = 'CustomerShippingSlipsController';
+        $path = 'customershippingslips';
 
-        Route::get('customershippingslips/{id}/pdf', 'CustomerShippingSlipsController@showPdf')->name('customershippingslip.pdf');
+        Route::resource($path, $controller);
+
+        Route::get($path.'/ajax/customer_lookup', $controller.'@ajaxCustomerSearch')->name($path.'.ajax.customerLookup');
+        Route::get($path.'/ajax/customer/{id}/adressbook_lookup', $controller.'@customerAdressBookLookup')->name($path.'.ajax.customer.AdressBookLookup');
+
+        Route::get($path.'/{id}/getlines',             $controller.'@getDocumentLines' )->name($path.'.getlines');
+        Route::get($path.'/line/productform/{action}', $controller.'@FormForProduct')->name($path.'.productform');
+        Route::get($path.'/line/serviceform/{action}', $controller.'@FormForService')->name($path.'.serviceform');
+        Route::get($path.'/line/searchproduct',        $controller.'@searchProduct' )->name($path.'.searchproduct');
+        Route::get($path.'/line/searchservice',        $controller.'@searchService' )->name($path.'.searchservice');
+        Route::get($path.'/line/getproduct',           $controller.'@getProduct'    )->name($path.'.getproduct');
+
+
+        Route::post($path.'/{id}/storeline',    $controller.'@storeDocumentLine'   )->name($path.'.storeline'  );
+        Route::post($path.'/{id}/updatetotal',  $controller.'@updateDocumentTotal' )->name($path.'.updatetotal');
+        Route::get($path.'/{id}/getline/{lid}', $controller.'@getDocumentLine'     )->name($path.'.getline'    );
+        Route::post($path.'/updateline/{lid}',  $controller.'@updateDocumentLine'  )->name($path.'.updateline' );
+        Route::post($path.'/deleteline/{lid}',  $controller.'@deleteDocumentLine'  )->name($path.'.deleteline' );
+        Route::get($path.'/{id}/duplicate',     $controller.'@duplicateDocument'   )->name($path.'.duplicate'  );
+        Route::get($path.'/{id}/profit',        $controller.'@getDocumentProfit'   )->name($path.'.profit'     );
+        Route::get($path.'/{id}/availability',  $controller.'@getDocumentAvailability' )->name($path.'.availability' );
+
+        Route::post($path.'/{id}/quickaddlines',    $controller.'@quickAddLines'   )->name($path.'.quickaddlines'  );
+
+        Route::post($path.'/sortlines', $controller.'@sortLines')->name($path.'.sortlines');
+
+        Route::get($path.'/{customerorder}/confirm', $controller.'@confirm')->name($path.'.confirm');
+
+        Route::get($path.'/{id}/pdf',         $controller.'@showPdf'       )->name($path.'.pdf'        );
+        Route::get($path.'/{id}/invoice/pdf', $controller.'@showPdfInvoice')->name($path.'.invoice.pdf');
+        Route::get($path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );
         
 
         

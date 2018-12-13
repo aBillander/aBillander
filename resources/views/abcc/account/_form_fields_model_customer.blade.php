@@ -62,7 +62,7 @@ $countryList=[];
 	            {!! Form::select('address[country_id]', array('0' => l('-- Please, select --', [], 'layouts')) + $countryList, null, array('class' => 'form-control', 'id' => 'country_id')) !!}
 	            {!! $errors->first('address.country_id', '<span class="help-block">:message</span>') !!}
 
-	            {!! Form::text('address[country.name]', null, array('class' => 'form-control', 'id' => 'country')) !!}
+	            {!! Form::text('address[country[name]]', null, array('class' => 'form-control', 'id' => 'country')) !!}
 	          </div>
 	          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('address.state_id') ? 'has-error' : '' }}">
 	            {{ l('State', [],'addresses') }}
@@ -71,7 +71,7 @@ $countryList=[];
 
 	            {!! Form::hidden('address[state_id]', null, array('id' => 'state_id')) !!}
 
-	            {!! Form::text('address[state.name]', null, array('class' => 'form-control', 'id' => 'state')) !!}
+	            {!! Form::text('address[state[name]]', null, array('class' => 'form-control', 'id' => 'state')) !!}
 	          </div>
 	</div>
 
@@ -118,7 +118,7 @@ $countryList=[];
 @section('scripts')  @parent 
 
 <script type="text/javascript">
-
+/*
     $('select[name="state_selector"]').change(function () {
         
         $('#state_id').val( $('select[name="state_selector"]').val() );
@@ -169,7 +169,7 @@ $countryList=[];
     }
 
     populateStatesByCountryID( countryID, stateID );
-
+*/
 </script>
 
 @endsection

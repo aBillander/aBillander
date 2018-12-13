@@ -1,14 +1,14 @@
 
     <!-- div class="page-header">
         <h3>
-            <span style="color: #dd4814;">{{ l('Lines') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $order->name }} - - >
+            <span style="color: #dd4814;">{{ l('Lines') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $document->name }} - - >
         </h3>        
     </div -->
 
-    <div id="div_customer_order_lines">
+    <div id="div_document_lines">
        <div class="table-responsive">
 
-    <table id="order_lines" class="table table-hover">
+    <table id="document_lines" class="table table-hover">
         <thead>
             <tr>
                <th class="text-left" style="width: 60px"></th>
@@ -37,23 +37,23 @@
                <th class="text-left" style="width:1px; white-space: nowrap;"></th>
                <th class="text-left" xwidth="115">{{l('Notes', 'layouts')}}</th>
                 <th class="text-right button-pad"> 
-                      @if ( $order->editable )
+                      @if ( $document->editable )
 
                   <a class="btn btn-sm btn-magick xbtn-pressure xbtn-sensitive lines_quick_form" title="{{l('Quick Add Lines')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
 
-                  <a class="btn btn-sm btn-success create-order-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-shopping-basket"></i> </a>
+                  <a class="btn btn-sm btn-success create-document-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-shopping-basket"></i> </a>
 
-                  <a class="btn btn-sm btn-success create-order-service" title="{{l('Add Service')}}" style="background-color: #2bbbad;"><i class="fa fa-plus"></i> <i class="fa fa-handshake-o"></i> </a>
+                  <a class="btn btn-sm btn-success create-document-service" title="{{l('Add Service')}}" style="background-color: #2bbbad;"><i class="fa fa-plus"></i> <i class="fa fa-handshake-o"></i> </a>
 
 {{--
 <div class="btn-group" xstyle="width:98%">
-  <a href="#" class="btn btn-sm btn-success create-order-product"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+  <a href="#" class="btn btn-sm btn-success create-document-product"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
   <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
   <ul class="dropdown-menu  pull-right">
-    <li><a class="create-order-product"       href="#">{{l('Product')}}</a></li>
-    <li><a class="create-order-service"       href="#">{{l('Service')}}</a></li>
-    <li><a class="create-order-discount-line" href="#">{{l('Discount Line')}}</a></li>
-    <!-- li><a class="create-order-text-line"     href="#">{{l('Text Line')}}</a></li -->
+    <li><a class="create-document-product"       href="#">{{l('Product')}}</a></li>
+    <li><a class="create-document-service"       href="#">{{l('Service')}}</a></li>
+    <li><a class="create-document-discount-line" href="#">{{l('Discount Line')}}</a></li>
+    <!-- li><a class="create-document-text-line"     href="#">{{l('Text Line')}}</a></li -->
 
     <!-- li class="divider"></li>
     <li><a href="#">Separated link</a></li -->
@@ -69,11 +69,11 @@
         </thead>
         <tbody class="sortable">
 
-    @if ($order->customerorderlines->count())
+    @if ($document->lines->count())
             <!-- tr style="color: #3a87ad; background-color: #d9edf7;" -->
             
 
-            @foreach ($order->customerorderlines as $line)
+            @foreach ($document->lines as $line)
             <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
                 <td>[{{ $line->id }}] {{$line->line_sort_order }}</td>
                 <td><a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
@@ -95,20 +95,21 @@
                 </td>
                 <td class="text-center">
                 @if ($line->notes)
-                 <a href="javascript:void(0);">
+                 {!! $line->notes !!}
+                 <!--a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
                             data-content="{{ $line->notes }}">
                         <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
                     </button>
-                 </a>
+                 </a -->
                 @endif</td>
                 <td class="text-right">
-                      @if ( $order->editable )
-                    <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerorderlines();"><i class="fa fa-pencil"></i></a -->
+                      @if ( $document->editable )
+                    <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerdocumentlines();"><i class="fa fa-pencil"></i></a -->
                     
-                    <a class="btn btn-sm btn-warning edit-order-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
+                    <a class="btn btn-sm btn-warning edit-document-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
                     
-                    <a class="btn btn-sm btn-danger delete-order-line" data-id="{{$line->id}}" title="{{l('Delete', [], 'layouts')}}" 
+                    <a class="btn btn-sm btn-danger delete-document-line" data-id="{{$line->id}}" title="{{l('Delete', [], 'layouts')}}" 
                         data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                         data-title="{{ '('.$line->id.') ['.$line->reference.'] '.$line->name }}" 
                         onClick="return false;"><i class="fa fa-trash-o"></i></a>
@@ -127,12 +128,13 @@
             @endphp
 
     @else
-    <tr><td colspan="9">
+    <tr><td colspan="10">
     <div class="alert alert-warning alert-block">
         <i class="fa fa-warning"></i>
         {{l('No records found', [], 'layouts')}}
     </div>
-    </td></tr>
+    </td>
+    <td></td></tr>
     @endif
 
         </tbody>
@@ -153,9 +155,9 @@
   <strong>{!!  l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
 </div>
 
-<div id="panel_customer_order_total" class="">
+<div id="panel_document_total" class="">
   
-    @include('customer_orders._panel_customer_order_total')
+    @include($view_path.'._panel_document_total')
 
 </div>
 

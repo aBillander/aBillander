@@ -2,7 +2,7 @@
 
 //        var PRICE_DECIMAL_PLACES;
 
-		var ORDER_AVAILABLE_TAXES= {!! json_encode( $order->taxingaddress->getTaxList() ) !!} ;
+		var ORDER_AVAILABLE_TAXES= {!! json_encode( $document->taxingaddress->getTaxList() ) !!} ;
 
         $(document).ready(function() {
 
@@ -102,12 +102,12 @@
             var token = "{{ csrf_token() }}";
 
             if ( id == '' )
-                url = "{{ route('customerorder.storeline', [$order->id]) }}";
+                url = "{{ route('customerorder.storeline', [$document->id]) }}";
             else
                 url = "{{ route('customerorder.updateline', ['']) }}/"+id;
 
             var payload = { 
-                              order_id : {{ $order->id }},
+                              document_id : {{ $document->id }},
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),
@@ -172,12 +172,12 @@
             var token = "{{ csrf_token() }}";
 
             if ( id == '' )
-                url = "{{ route('customerorder.storeline', [$order->id]) }}";
+                url = "{{ route('customerorder.storeline', [$document->id]) }}";
             else
                 url = "{{ route('customerorder.updateline', ['']) }}/"+id;
 
             var payload = { 
-                              order_id : {{ $order->id }},
+                              document_id : {{ $document->id }},
                               line_id : id,
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
@@ -265,7 +265,7 @@
 
               var id = selector.attr('data-id');
               var line_type = selector.attr('data-type');
-              var url = "{{ route('customerorder.getline', [$order->id, '']) }}/"+id;
+              var url = "{{ route('customerorder.getline', [$document->id, '']) }}/"+id;
               var label = '';
 
               PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
@@ -391,7 +391,7 @@
         function auto_service_line( selector = "#line_autoservice_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route('customerorderline.searchservice') }}?customer_id="+$('#customer_id').val()+"&currency_id"+$('#currency_id').val(),
+                source : "{{ route('customerorderline.searchservice') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
                 appendTo : "#modal_order_line",
 

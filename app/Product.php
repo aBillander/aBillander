@@ -10,11 +10,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\ViewFormatterTrait;
 use App\Traits\AutoSkuTrait;
 
+use App\Traits\FullTextSearchTrait;
+
 class Product extends Model {
 
     use ViewFormatterTrait;
     use AutoSkuTrait;
     use SoftDeletes;
+
+    use FullTextSearchTrait;
 
 
     public $sales_equalization = 0;         // Handy property not stored. Takes its value after Customer Order Line sales_equalization flag
@@ -32,6 +36,18 @@ class Product extends Model {
             'assembly',
             'none', 
         );
+
+
+    /**
+     * The columns of the full text index
+     */
+    protected $searchable = [
+        'name', 
+        'reference', 
+        'ean13', 
+        'description'
+    ];
+
 
     protected $dates = ['deleted_at'];
 
@@ -64,6 +80,7 @@ class Product extends Model {
 
                             'reference'       => 'required|min:2|max:32|unique:products,reference,{$id},id,deleted_at,NULL', 
                             // See: https://wisdmlabs.com/blog/laravel-soft-delete-unique-validations/
+                            'ean13'       => 'unique', 
                             'measure_unit_id' => 'exists:measure_units,id',
                             'price'         => 'required|numeric|min:0',
                             'price_tax_inc' => 'required|numeric|min:0',
@@ -76,6 +93,7 @@ class Product extends Model {
         'main_data' => array(
                             'name'        => 'required|min:2|max:128',
 //                            'reference'   => 'sometimes|required|min:2|max:32|unique:products,reference,',     // https://laracasts.com/discuss/channels/requests/laravel-5-validation-request-how-to-handle-validation-on-update
+                            // todo: ean13 unique on update
                             'measure_unit_id' => 'exists:measure_units,id',
                             'category_id' => 'exists:categories,id',
                     ),
@@ -169,9 +187,17 @@ class Product extends Model {
 
     public function scopeFilter($query, $params)
     {
+        if ( isset($params['term']) && trim($params['term']) !== '' )
+        {
+            $query->search( trim($params['term']) );
+        }
+
+
+
         if ( isset($params['reference']) && trim($params['reference']) !== '' )
         {
             $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
+            $query->orWhere('ean13', 'LIKE', '%' . trim($params['reference']) . '%');
             // $query->orWhere('combinations.reference', 'LIKE', '%' . trim($params['reference'] . '%'));
 
             // Moved from controller

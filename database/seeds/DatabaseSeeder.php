@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(MeasureUnitsTableSeeder::class);
 
+        $this->call(PaymentMethodsTableSeeder::class);
+
         $this->call(TemplatesTableSeeder::class);
         
     }

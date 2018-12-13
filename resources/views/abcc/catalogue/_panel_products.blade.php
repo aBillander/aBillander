@@ -59,9 +59,9 @@
 @if ($img)
               <a class="view-image" data-html="false" data-toggle="modal" 
                      href="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
-                     data-content="{{l('You are going to view a record. Are you sure?')}}" 
-                     data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
+                     data-title="{{ $product->name }} " 
                      data-caption="({{$img->id}}) {{ $img->caption }} " 
+                     data-content="{{ nl2p($product->description) }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
                       <img src="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
@@ -154,7 +154,7 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 </div>
 
 
-@include('products._modal_view_image')
+@include('abcc.catalogue._modal_view_product')
 
 
 

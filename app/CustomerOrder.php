@@ -120,6 +120,7 @@ class CustomerOrder extends Model
         static::deleting(function ($corder)
         {
             // before delete() method call this
+            if ($corder->has('customerorderlines'))
             foreach($corder->customerOrderLines as $line) {
                 $line->delete();
             }
@@ -292,7 +293,7 @@ class CustomerOrder extends Model
     public function close()
     {
         // Can I ...?
-        if ( $this->status != 'confirmed' ) return false;
+        if ( $this->status != 'canceled' ) return false;
 
         // Do stuf...
 
@@ -306,7 +307,7 @@ class CustomerOrder extends Model
     public function cancel()
     {
         // Can I ...?
-        if ( $this->status != 'confirmed' ) return false;
+        if ( $this->status != 'closed' ) return false;
 
         // Do stuf...
 
@@ -326,7 +327,7 @@ class CustomerOrder extends Model
         if ( $document_rounding_method === null )
             $document_rounding_method = Configuration::get('DOCUMENT_ROUNDING_METHOD');
 
-        $currency = $this->documen_currency;
+        $currency = $this->document_currency;
 
         // Just to make sure...
         // https://blog.jgrossi.com/2018/querying-and-eager-loading-complex-relations-in-laravel/
@@ -462,7 +463,7 @@ class CustomerOrder extends Model
             $total_tax_excl = $this->total_lines_tax_excl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_excl;
 
             // Make a Price object for rounding
-            $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $this->currency, $this->currency_conversion_rate);
+            $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $currency);
 
             // Improve this: Sum subtotals by tax type must match Order Totals
             // $p->applyRoundingWithoutTax( );

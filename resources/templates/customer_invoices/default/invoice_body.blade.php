@@ -297,7 +297,22 @@
 						?>
 --}}
 
-								
+@if($document->document_discount_percent>0)								
+								<tr class="xtotal xgrand-total">
+
+									<th class="description"><span>Sub-Total</span></th>
+
+									<td class="price"><span class="totals-price"><span class="abi-Price-amount amount">{{ $document->as_priceable($document->total_currency_tax_incl/(1.0-$document->document_discount_percent/100.0)) }}</span></span></td>
+
+								</tr>
+								<tr class="xtotal xgrand-total">
+
+									<th class="description"><span>Descuento</span></th>
+
+									<td class="price"><span class="totals-price"><span class="abi-Price-amount amount">{{ $document->as_percent('document_discount_percent') }}%</span></span></td>
+
+								</tr>
+@endif
 								<tr class="total grand-total">
 
 									<th class="description"><span>Total a pagar</span></th>

@@ -246,8 +246,8 @@ class FSxProductImporter {
         			'name' => $articulo->DESART, 
         			'reference' => $articulo->CODART, 
         			'ean13' => $articulo->EANART, 
-        			'description' => '',
-        			'description_short' => $articulo->DEWART,
+        			'description' => $articulo->DEWART,
+        			'description_short' => '',
 
         			'quantity_decimal_places' => $measure_unit->decimalPlaces,
  //       			'manufacturing_batch_size' => '',

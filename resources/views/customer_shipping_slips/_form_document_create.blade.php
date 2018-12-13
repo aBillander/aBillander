@@ -10,7 +10,7 @@
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
             <span id="sales_equalization" class="label label-info" style="display: none;"> {{l('Equalization Tax')}} </span>
-            {!! Form::text('order_autocustomer_name', old('order_autocustomer_name'), array('class' => 'form-control', 'id' => 'order_autocustomer_name')) !!}
+            {!! Form::text('document_autocustomer_name', old('document_autocustomer_name'), array('class' => 'form-control', 'id' => 'document_autocustomer_name')) !!}
 
             {!! Form::hidden('customer_id', old('customer_id'), array('id' => 'customer_id')) !!}
             {!! Form::hidden('invoicing_address_id', old('invoicing_address_id'), array('id' => 'invoicing_address_id')) !!}
@@ -58,7 +58,7 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('payment_method_id') ? 'has-error' : '' }}">
             {{ l('Payment Method') }}
-            {!! Form::select('payment_method_id', array('0' => l('-- Please, select --', [], 'layouts')) + $payment_methodList, old('payment_method_id'), array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
+            {!! Form::select('payment_method_id', array('' => l('-- Please, select --', [], 'layouts')) + $payment_methodList, old('payment_method_id'), array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
             {!! $errors->first('payment_method_id', '<span class="help-block">:message</span>') !!}
          </div>
 
@@ -191,7 +191,7 @@
         @if ( ($cid = intval( old('customer_id') )) > 0 ) 
 
               var id = {{ $cid }};
-              var url = "{{ route('customerorders.ajax.customer.AdressBookLookup', [$cid]) }}";
+              var url = "{{ route($model_path.'.ajax.customer.AdressBookLookup', [$cid]) }}";
               
                $.get(url, function(result){
                     $('#shipping_address_id').empty();
@@ -275,11 +275,11 @@ function get_currency_rate(currency_id)
         get_currency_rate($('#currency_id').val());
 
         // To get focus;
-        $("#order_autocustomer_name").focus();
+        $("#document_autocustomer_name").focus();
 
-        $("#order_autocustomer_name").autocomplete({
+        $("#document_autocustomer_name").autocomplete({
 //            source : "{{ route('customers.ajax.nameLookup') }}",
-            source : "{{ route('customerorders.ajax.customerLookup') }}",
+            source : "{{ route($model_path.'.ajax.customerLookup') }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 
@@ -301,7 +301,7 @@ function get_currency_rate(currency_id)
             var token = "{{ csrf_token() }}";
 
             $.ajax({
-                url: "{{ route('customerorders.ajax.customerLookup') }}",
+                url: "{{ route($model_path.'.ajax.customerLookup') }}",
                 headers : {'X-CSRF-TOKEN' : token},
                 method: 'GET',
                 dataType: 'json',
@@ -312,7 +312,7 @@ function get_currency_rate(currency_id)
                     var str = '[' + response.identification+'] ' + response.name_fiscal;
                     var shipping_method_id;
 
-                    $("#order_autocustomer_name").val(str);
+                    $("#document_autocustomer_name").val(str);
                     $('#customer_id').val(response.id);
                     if (response.sales_equalization > 0) {
                         $('#sales_equalization').show();

@@ -275,7 +275,7 @@ class CustomerOrdersController extends Controller
     }
 
 
-/* ********************************************************************************************* */    
+/* ********* Production Sheet ************************************************************************************** */    
 
 
     public function move(Request $request, $id)
@@ -410,6 +410,7 @@ class CustomerOrdersController extends Controller
         return view('customer_orders._panel_customer_order_lines', compact('order'));
     }
 
+    // Not used ???
     public function getOrderTotal($id)
     {
         $order = $this->customerOrder
@@ -1513,7 +1514,7 @@ class CustomerOrdersController extends Controller
 
         if ( !$t )
             return redirect()->route('customerorders.show', $id)
-                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
 
         // $document->template = $t;
 
@@ -1529,8 +1530,10 @@ class CustomerOrdersController extends Controller
         }
         catch(\Exception $e){
 
-                return redirect()->route('customerorders.show', $id)
-                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+                abi_r($e->getMessage(), true);
+
+                // return redirect()->route('customerorders.show', $id)
+                //    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
         }
 
         // PDF stuff ENDS

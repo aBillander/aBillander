@@ -58,7 +58,7 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-                         <li style="display:none;">
+                         <li>
                             <a href="{{ URL::to('customershippingslips') }}"> 
                                  {{l('Shipping Slips', [], 'layouts')}}
                             </a>

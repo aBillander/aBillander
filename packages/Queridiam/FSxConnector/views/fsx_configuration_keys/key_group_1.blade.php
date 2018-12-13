@@ -37,6 +37,7 @@
 
 
 
+@if (\App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
     <div class="form-group {{ $errors->has('FSOL_WEB_CUSTOMER_CODE_BASE') ? 'has-error' : '' }}">
       <label for="FSOL_WEB_CUSTOMER_CODE_BASE" class="col-lg-4 control-label">{!! l('FSOL_WEB_CUSTOMER_CODE_BASE.name') !!}</label>
       <div class="col-lg-8">
@@ -50,6 +51,7 @@
         <span class="help-block">{!! l('FSOL_WEB_CUSTOMER_CODE_BASE.help') !!}</span>
       </div>
     </div>
+@endif
 
     <div class="form-group {{ $errors->has('FSOL_ABI_CUSTOMER_CODE_BASE') ? 'has-error' : '' }}">
       <label for="FSOL_ABI_CUSTOMER_CODE_BASE" class="col-lg-4 control-label">{!! l('FSOL_ABI_CUSTOMER_CODE_BASE.name') !!}</label>

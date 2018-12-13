@@ -59,6 +59,8 @@ class TodosController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+        $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
+
 		$this->validate($request, Todo::$rules);
 
 		$todo = $this->todo->create($request->all());
@@ -90,6 +92,8 @@ class TodosController extends Controller {
 	{
 		// $todo = Todo::findOrFail($id);
 
+        $todo->due_date = abi_date_form_short($todo->due_date);
+
 		return view('todos.edit', compact('todo'));
 	}
 
@@ -105,6 +109,8 @@ class TodosController extends Controller {
         $id = $todo->id;
 
 		// $todo = Todo::findOrFail($id);
+
+        $request->merge( ['due_date' => abi_form_date_short( $request->input('due_date') )] );
 
 		$this->validate($request, Todo::$rules);
 

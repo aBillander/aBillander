@@ -115,8 +115,8 @@
                             href="{{ URL::to('mail') }}" 
                             data-to_name = "{{ $addr->firstname }} {{ $addr->lastname }}" 
                             data-to_email = "{{ $addr->email }}" 
-                            data-from_name = "{{ \App\Context::getContext()->user->getFullName() }}" 
-                            data-from_email = "{{ \App\Context::getContext()->user->email }}" 
+                            data-from_name = "{{ abi_mail_from_name() }}" 
+                            data-from_email = "{{ abi_mail_from_address() }}" 
                             onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
                     <a class="btn btn-sm btn-warning" href="{{ URL::to( 'customers/'.$customer->id.'/addresses/' . $addr->id . '/edit?back_route=' . urlencode('customers/' . $customer->id . '/edit#addressbook') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 

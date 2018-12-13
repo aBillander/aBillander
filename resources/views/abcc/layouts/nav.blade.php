@@ -7,14 +7,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+{{--
             @auth('customer')
                 <a href="{{ URL::to( (Auth::user()->home_page ? '/abcc' : '/abcc') ) }}" class="navbar-brand" style="xposition: relative;">
-{{--
+{ {--
                 @if ( 0 )
 <!--                @ i f ($img = \App\Context::getContext()->company->company_logo)          -->
                     <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
                     <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>
---}}
+--} }
                 @if ( \App\Configuration::isEmpty('ABCC_HEADER_TITLE') )
                     <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>
                 @else
@@ -24,6 +25,18 @@
             @else
                 <a href="{{ URL::to('/abcc') }}" class="navbar-brand"><span style="color:#dddddd"><i class="fa fa-bolt"></i> a<span style="color:#fff">Billander</span></span></a>
             @endauth
+--}}
+
+                <a href="{{ URL::to('/abcc') }}" class="navbar-brand">
+
+                    @if ( \App\Configuration::isEmpty('ABCC_HEADER_TITLE') )
+                        <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> Customer Center</span>
+                    @else
+                        {!! \App\Configuration::get('ABCC_HEADER_TITLE') !!}
+                    @endif
+
+                </a>
+
         </div>
         {{-- abi_r(Auth::user()) --}}
         <nav class="collapse navbar-collapse" role="navigation">

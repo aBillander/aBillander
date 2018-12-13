@@ -20,7 +20,7 @@ class SequencesTableSeeder extends Seeder {
         ] );
  */ 
   
-        Sequence::create( [
+        $t = Sequence::create( [
             'name'    => 'Pedidos de Clientes', 
             'model_name'    => 'CustomerOrder', 
             'prefix'    => 'POT', 
@@ -29,8 +29,10 @@ class SequencesTableSeeder extends Seeder {
             'next_id'     => '1',
             'active'    => '1' ,
         ] );
+
+        Configuration::updateValue('DEF_CUSTOMER_ORDER_SEQUENCE', $t->id);
   
-        Sequence::create( [
+        $t = Sequence::create( [
             'name'    => 'Albaranes de Clientes', 
             'model_name'    => 'CustomerShippingSlip', 
             'prefix'    => 'ALB', 
@@ -40,7 +42,9 @@ class SequencesTableSeeder extends Seeder {
             'active'    => '1' ,
         ] );
 
-        Sequence::create( [
+        Configuration::updateValue('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE', $t->id);
+
+        $t = Sequence::create( [
             'name'    => 'Facturas Nacional', 
             'model_name'    => 'CustomerInvoice', 
             'prefix'    => 'NAC', 
@@ -49,6 +53,8 @@ class SequencesTableSeeder extends Seeder {
             'next_id'     => '1',
             'active'    => '1' ,
         ] );
+
+        Configuration::updateValue('DEF_CUSTOMER_INVOICE_SEQUENCE', $t->id);
 
     }
 }

@@ -1,101 +1,17 @@
-
-<div id="panel_customer_order"> 
-
-<div class="panel with-nav-tabs panel-info" id="panel_update_order">
-
-   <div class="panel-heading">
-      <!-- h3 class="panel-title collapsed" data-toggle="collapse" data-target="#header_data">{{ l('Header Data') }} :: <span class="label label-warning" title="{{ l('Order Date') }}">{{ $order->document_date_form }}</span> - <span class="label label-info" title="{{ l('Delivery Date') }}">{{ $order->delivery_date_form ?? ' -- / -- / -- '}}</span></h3 -->
-
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#tab1default" data-toggle="tab">{{ l('Header Data') }}</a></li>
-                            <li><a href="#tab2default" data-toggle="tab">{{ l('Lines') }}</a></li>
-                            <li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li>
-
-                            <li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
-                            <!-- li class="dropdown">
-                                <a href="#" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#tab4default" data-toggle="tab">Default 4</a></li>
-                                    <li><a href="#tab5default" data-toggle="tab">Default 5</a></li>
-                                </ul>
-                            </li -->
-                            <li class="pull-right">
-
-
-                        <h4 style="margin-right: 15px;">
-                            <span class="label label-warning" title="{{ l('Order Date') }}">{{ $order->document_date_form }}</span> - 
-                            <span class="label label-info" title="{{ l('Delivery Date') }}">{{ $order->delivery_date_form ?? ' -- / -- / -- '}}</span>
-                        </h4>
-
-                            </li>
-                        </ul>
-
-   </div>
-
-  <div class="tab-content">
-      <div class="tab-pane fade in active" id="tab1default">
-                
-                @include('customer_orders._tab_edit_header')
-
-      </div>
-      <div class="tab-pane fade" id="tab2default">
-                
-                @include('customer_orders._tab_edit_lines')
-
-      </div>
-      <div class="tab-pane fade" id="tab3default">
-                
-                @include('customer_orders._tab_profitability')
-
-      </div>
-      <div class="tab-pane fade" id="tab4default">
-                
-                @include('customer_orders._tab_availability')
-
-      </div>
-      <!-- div class="tab-pane fade" id="tab4default">
-                Default 4
-      </div>
-      <div class="tab-pane fade" id="tab5default">
-                Default 5
-      </div -->
-  </div>
-
-
-</div>    <!-- div class="panel panel-info" id="panel_update_order" ENDS -->
-
-
-</div>
-
-
-@section('scripts')    @parent
-
-    <!-- script src="https://code.jquery.com/jquery-1.12.4.js"></script -->
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!-- script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script -->
-    {{-- See: Laravel 5.4 ajax todo project: Autocomplete search #7 --}}
-
-
-
-@include('customer_orders._chunck_js_service')
-
-
-    <script type="text/javascript">
+   <script type="text/javascript">
 
         var PRICE_DECIMAL_PLACES;
 
         $(document).ready(function() {
 
-//          loadBOMlines();
 
 
 
-
-          $(document).on('click', '.create-order-product', function(evnt) {
+          $(document).on('click', '.create-document-product', function(evnt) {
 
            
-               var panel = $("#order_line_form");
-               var url = "{{ route('customerorderline.productform', ['create']) }}";
+               var panel = $("#document_line_form");
+               var url = "{{ route($model_path.'.productform', ['create']) }}";
 
                panel.addClass('loading');
 
@@ -104,7 +20,7 @@
                      panel.removeClass('loading');
 
                      $("[data-toggle=popover]").popover();
-                     // sortableCustomerOrderLines();
+                     // sortableDocumentLines();
                }, 'html').done( function() { 
 
                     var selector = "#line_autoproduct_name";
@@ -132,7 +48,7 @@
                     }
 
                     // set labels
-                    @if( $customer->currentPricesEnteredWithTax( $order->currency ) )
+                    @if( $customer->currentPricesEnteredWithTax( $document->document_currency ) )
                         $('#line_is_prices_entered_with_tax').val(1);
                         $(".label_tax_exc").hide();
                         $(".label_tax_inc").show();
@@ -156,7 +72,7 @@
                     $('#line_combination_id').val('');
 
 
-                    $('#modal_order_line').modal({show: true});
+                    $('#modal_document_line').modal({show: true});
                     $("#line_autoproduct_name").focus();
 
                 });
@@ -164,7 +80,7 @@
               return false;
           });
 
-          $(document).on('click', '.edit-order-line', function(evnt) {
+          $(document).on('click', '.edit-document-line', function(evnt) {
 
               // What to do? Let's see:
               var line_type = $(this).attr('data-type');
@@ -172,13 +88,13 @@
               switch( line_type ) {
                   case 'product':
                       
-                      editCustomerOrderProductLine( $(this) );
+                      editDocumentProductLine( $(this) );
                       break;
 
                   case 'service':
                   case 'shipping':
                       
-                      editCustomerOrderServiceLine( $(this) );
+                      editDocumentServiceLine( $(this) );
                       break;
 
                   default:
@@ -191,11 +107,11 @@
           });
           
 
-          function editCustomerOrderProductLine( selector ) {
+          function editDocumentProductLine( selector ) {
 
             // Load form first
-               var panel = $("#order_line_form");
-               var url = "{{ route('customerorderline.productform', ['edit']) }}";
+               var panel = $("#document_line_form");
+               var url = "{{ route($model_path.'.productform', ['edit']) }}";
 
                panel.html('');
                panel.addClass('loading');
@@ -212,7 +128,7 @@
                }, 'html');
 
 
-              $('#modal_order_line').modal({show: true});
+              $('#modal_document_line').modal({show: true});
               $("#line_quantity").focus();
 
               return false;
@@ -224,7 +140,7 @@
                           
               var id = selector.attr('data-id');
               var line_type = selector.attr('data-type');
-              var url = "{{ route('customerorder.getline', [$order->id, '']) }}/"+id;
+              var url = "{{ route($model_path.'.getline', [$document->id, '']) }}/"+id;
               var label = '';
 
               PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
@@ -235,7 +151,7 @@
                     var label = '['+result.product.reference+'] '+result.product.name+' ('+result.measureunit.name+')';
                     var QUANTITY_DECIMAL_PLACES = result.product.quantity_decimal_places;
 
-                    $('#modal_product_order_line_Label').text(label);
+                    $('#modal_product_document_line_Label').text(label);
 
                     $('#line_id').val(result.id);
                     $('#line_sort_order').val(result.line_sort_order);
@@ -308,37 +224,43 @@
           }
 
 
-          loadCustomerOrderlines();
+          $(document).on('click', '.update-document-total', function(evnt) {
 
-
-          $(document).on('click', '.update-order-total', function(evnt) {
-
-              updateCustomerOrderTotal();
+              updateDocumentTotal();
               return false;
 
           });
           
 
-          $(document).on('keydown','.input-update-order-total', function(e){
+          $(document).on('keydown','.input-update-document-total', function(e){
         
             if (e.keyCode == 13) {
              // console.log("put function call here");
              e.preventDefault();
-             updateCustomerOrderTotal();
+             updateDocumentTotal();
              return false;
             }
 
           });
 
+
+          loadDocumentlines();
+
           
 
         });       // $(document).ready(function() {    ENDS
+
+
+
+
+{{-- *************************************** --}}
+
   
 
-        function loadCustomerOrderlines() {
+        function loadDocumentlines() {
            
-           var panel = $("#panel_customer_order_lines");
-           var url = "{{ route('customerorder.getlines', $order->id) }}";
+           var panel = $("#panel_{{ $model_snake_case}}_lines");
+           var url = "{{ route($model_path.'.getlines', $document->id) }}";
 
            panel.addClass('loading');
 
@@ -346,15 +268,15 @@
                  panel.html(result);
                  panel.removeClass('loading');
                  $("[data-toggle=popover]").popover();
-                 sortableOrderlines();
+                 sortableDocumentlines();
            }, 'html');
 
         }
 
-        function updateCustomerOrderTotal() {
+        function updateDocumentTotal() {
            
-           var panel = $("#panel_customer_order_total");
-           var url = "{{ route('customerorder.updatetotal', $order->id) }}";
+           var panel = $("#panel_document_total");
+           var url = "{{ route($model_path.'.updatetotal', $document->id) }}";
            var token = "{{ csrf_token() }}";
 
            panel.addClass('loading');
@@ -369,6 +291,8 @@
                 },
                 success: function (response) {
 
+//                   console.log(response);
+
                    panel.html(response);
                    panel.removeClass('loading');
                    $("[data-toggle=popover]").popover();
@@ -379,7 +303,7 @@
 
         }
 
-        function sortableOrderlines() {
+        function sortableDocumentlines() {
 
           // Sortable :: http://codingpassiveincome.com/jquery-ui-sortable-tutorial-save-positions-with-ajax-php-mysql
           // See: https://stackoverflow.com/questions/24858549/jquery-sortable-not-functioning-when-ajax-loaded
@@ -409,7 +333,7 @@
             });
 
             $.ajax({
-                url: "{{ route('customerorder.sortlines') }}",
+                url: "{{ route($model_path.'.sortlines') }}",
                 headers : {'X-CSRF-TOKEN' : token},
                 method: 'POST',
                 dataType: 'json',
@@ -422,19 +346,19 @@
             });
         }
 
-        $("body").on('click', "#modal_order_line_productSubmit", function() {
+        $("body").on('click', "#modal_document_line_productSubmit", function() {
 
             var id = $('#line_id').val();
-            var url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+            var url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
             if ( id == '' )
-                url = "{{ route('customerorder.storeline', [$order->id]) }}";
-            else
-                url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+                url = "{{ route($model_path.'.storeline', [$document->id]) }}";
+//            else
+//                url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
 
             var payload = { 
-                              order_id : {{ $order->id }},
+                              document_id : {{ $document->id }},
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),
@@ -477,11 +401,11 @@
                 data : payload,
 
                 success: function(){
-                    loadCustomerOrderlines();
+                    loadDocumentlines();
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
-                    $('#modal_order_line').modal('toggle');
+                    $('#modal_document_line').modal('toggle');
 
                     showAlertDivWithDelay("#msg-success");
                 }
@@ -489,19 +413,19 @@
 
         });
 
-        $("body").on('click', "#modal_edit_order_line_productSubmit", function() {
+        $("body").on('click', "#modal_edit_document_line_productSubmit", function() {
 
             var id = $('#line_id').val();
-            var url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+            var url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
-            if ( id == '' )
-                url = "{{ route('customerorder.storeline', [$order->id]) }}";
-            else
-                url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+//            if ( id == '' )
+//                url = "{{ route($model_path.'.storeline', [$document->id]) }}";
+//            else
+//                url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
 
             var payload = { 
-                              order_id : {{ $order->id }},
+                              document_id : {{ $document->id }},
                               line_id : id,
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
@@ -538,11 +462,11 @@
                 data : payload,
 
                 success: function(response){
-                    loadCustomerOrderlines();
+                    loadDocumentlines();
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
-                    $('#modal_order_line').modal('toggle');
+                    $('#modal_document_line').modal('toggle');
 
                     showAlertDivWithDelay("#msg-success");
 
@@ -554,19 +478,36 @@
 
         function auto_product_line( selector = "#line_autoproduct_name" ) {
 
+            // See: http://jsfiddle.net/chridam/hfre25pf/
+
             $( selector ).autocomplete({
-                source : "{{ route('customerorderline.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id"+$('#currency_id').val(),
+                source : "{{ route($model_path.'.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
-                appendTo : "#modal_order_line",
+                appendTo : "#modal_document_line",
+
+                response: function(event, ui) {
+                    if (!ui.content.length) {
+                        var noResult = { 
+                             id: "", 
+                             reference: "",
+                             name: "{{ l('No records found', 'layouts') }}" 
+                         };
+                         ui.content.push(noResult);                    
+                     } else {
+                        // $("#message").empty();
+                     }
+                },
 
                 select : function(key, value) {
                     var str = '[' + value.item.reference+'] ' + value.item.name;
 
-                    $("#line_autoproduct_name").val(str);
-                    $('#line_product_id').val(value.item.id);
-                    $('#line_combination_id').val(0)
-
-                    getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
+                    if ( value.item.id != '' ) {
+                        $("#line_autoproduct_name").val(str);
+                        $('#line_product_id').val(value.item.id);
+                        $('#line_combination_id').val(0)
+    
+                        getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
+                    }
 
                     return false;
                 }
@@ -584,7 +525,7 @@
             // https://stackoverflow.com/questions/28417781/jquery-add-csrf-token-to-all-post-requests-data/28418032#28418032
 
             $.ajax({
-                url: "{{ route('customerorderline.getproduct') }}",
+                url: "{{ route($model_path.'.getproduct') }}",
                 headers : {'X-CSRF-TOKEN' : token},
                 method: 'GET',
                 dataType: 'json',
@@ -703,86 +644,3 @@ function get_currency_rate(currency_id)
 }
 
 </script>
-
-
-
-{{-- Date Picker --}}
-
-<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
-
-<script>
-
-  $(function() {
-    $( "#document_date_form" ).datepicker({
-      showOtherMonths: true,
-      selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
-    });
-  });
-
-  $(function() {
-    $( "#delivery_date_form" ).datepicker({
-      showOtherMonths: true,
-      selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
-    });
-  });
-  
-</script>
-
-@endsection
-
-
-@section('styles')    @parent
-
-{{--
-<style>
-  .panel-heading h3:after {
-      font-family:'FontAwesome';
-      content:"\f077";
-      float: right;
-      xcolor: grey;
-  }
-  .panel-heading h3.collapsed:after {
-      font-family:'FontAwesome';
-      content:"\f078";
-      float: right;
-  }
-</style>
---}}
-
-
-{{-- Date Picker --}}
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
-<style>
-    .ui-datepicker { z-index: 10000 !important; }
-</style>
-
-
-{{-- Auto Complete --}}
-
-  {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
-
-<style>
-
-  .ui-autocomplete-loading{
-    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
-  }
-  .loading{
-    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
-  }
-
-
-/* See: http://fellowtuts.com/twitter-bootstrap/bootstrap-popover-and-tooltip-not-working-with-ajax-content/ 
-.modal .popover, .modal .tooltip {
-    z-index:100000000;
-}
- */
-</style>
-
-@endsection

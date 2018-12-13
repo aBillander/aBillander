@@ -84,7 +84,11 @@
             </div -->
 
 
+@if (\App\Configuration::isFalse('FSX_USE_LOCAL_DATABASE') )
+
           @include('fsx_connector::fsx_configuration_keys._panel_FPAs')
+
+@endif
 
 
       </div><!-- div class="col-lg-10 col-md-10 col-sm-9" -->

@@ -111,7 +111,7 @@ return [
 //	'Price'     => 'PVP',
 	'With Tax'     => 'Con IVA',
 	'Stock'     => 'Stock',
-	'On Shipping Slip'     => 'Pendiente',
+	'On Order'     => 'Pendiente',
 	'Allocated'     => 'Reservado',
 	'Available'     => 'Disponible',
 	''     => '',
@@ -138,6 +138,7 @@ return [
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',
 	'Notes to Customer'     => 'Notas para el Cliente',
+	'Notes from Customer'     => 'Notas del Cliente',
 	
 	// _order_lines
 	'Quick Add Lines'     => 'Entrada rápida de Líneas',
@@ -197,10 +198,11 @@ return [
 	'Qty.'     => 'Ud.',
 	'Cost'     => 'Coste',
 	'Margin 1 (%)'     => 'Margen 1 (%)',
+	'Margin Amount'     => 'Margen Neto',
 	'Margin 2 (%)'     => 'Margen 2 (%)',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',
-	'Shipping Slip Cost-Benefit Analysis'     => 'Rentabiliad Total de la Venta',
+	'Cost-Benefit Analysis'     => 'Rentabiliad Total',
 	'Margin'     => 'Margen',
 
 	// Stock availability

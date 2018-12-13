@@ -14,7 +14,7 @@
   <strong>{!!  l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
 </div>
 
-<div id="panel_customer_order_lines" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
+<div id="panel_{{ $model_snake_case }}_lines" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
 {{--  @ include('customer_orders._panel_order_lines') --}}
 
@@ -23,10 +23,10 @@
                </div><!-- div class="panel-body" -->
 
 
-@include('customer_orders._modal_order_lines_quick_form')
+@include($view_path.'._modal_document_lines_quick_form')
 
-@include('customer_orders._modal_order_line_form')
+@include($view_path.'._modal_document_line_form')
 
-@include('customer_orders._modal_order_line_delete')
+@include($view_path.'._modal_document_line_delete')
 
 <!-- Order Lines ENDS -->

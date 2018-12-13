@@ -56,8 +56,9 @@ return [
 
 	'Address'     => 'Dirección Postal',
 	'Contact'     => 'Contacto',
-	''     => '',
-	''     => '',
+
+	'Short name to appear in dropdown selectors.'     => 'Nombre corto que aparecerá en selectores.',
+	'Example: <i>Company Main Warehouse</i>.'     => 'Ejemplo: <i>Almacén Principal de mi Empresa</i>.',
 	''     => '',
 	''     => '',
 

@@ -3,7 +3,7 @@
                <div class="panel-body">
 
 
-<div id="panel_customer_order_profitability" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
+<div id="panel_document_profitability" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
 {{--  @ include('customer_orders._panel_customer_order_profitability') --}}
 
@@ -56,10 +56,10 @@
 		});
 		*/
 --}}
-		function getOrderProfit()
+		function getDocumentProfit()
 		{
-           var panel = $("#panel_customer_order_profitability");
-           var url = "{{ route( 'customerorder.profit', [$order->id] ) }}";
+           var panel = $("#panel_document_profitability");
+           var url = "{{ route( $model_path.'.profit', [$document->id] ) }}";
 
            panel.addClass('loading');
 
@@ -81,7 +81,7 @@
 		  var target = $(e.target).attr("href") // activated tab
 		  if (target == '#tab3default')
 		  {
-		  		getOrderProfit();
+		  		getDocumentProfit();
 		  }
 		  /*
 		  if ($(target).is(':empty')) {

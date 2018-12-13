@@ -47,6 +47,15 @@ class CustomerOrderLine extends Model
     ];
 
 
+    public function getCurrencyAttribute()
+    {
+        $currency = $this->customerorder->currency;
+        $currency->conversion_rate = $this->customerorder->currency_conversion_rate;
+
+        return $currency;
+    }
+
+
     public static function getTypeList()
     {
             $list = [];

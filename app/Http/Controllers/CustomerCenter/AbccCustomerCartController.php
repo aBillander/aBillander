@@ -342,6 +342,9 @@ class AbccCustomerCartController extends Controller
 
         $line = $cart->addLine($product_id, $combination_id, $quantity);
 
+        // Refresh Cart
+        $cart = Cart::getCustomerCart();
+
 
         if ($line)
             return response()->json( [

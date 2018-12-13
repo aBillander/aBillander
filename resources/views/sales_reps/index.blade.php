@@ -74,8 +74,8 @@
                         href="{{ URL::to('mail') }}" 
                         data-to_name = "{{ $salesrep->name }}" 
                         data-to_email = "{{ $salesrep->email }}" 
-                        data-from_name = "{{ \App\Context::getContext()->user->getFullName() }}" 
-                        data-from_email = "{{ \App\Context::getContext()->user->email }}" 
+                        data-from_name = "{{ abi_mail_from_name() }}" 
+                        data-from_email = "{{ abi_mail_from_address() }}" 
                         onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('salesreps/' . $salesrep->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>

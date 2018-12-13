@@ -191,10 +191,10 @@ class AbccCustomerOrdersController extends Controller {
 				);
 
 			$data = array(
-				'from'     => Configuration::get('ABCC_EMAIL'),			// config('mail.from.address'  ),
-				'fromName' => Configuration::get('ABCC_EMAIL_NAME'),	// config('mail.from.name'    ),
-				'to'       => Configuration::get('ABCC_EMAIL'),			// $cinvoice->customer->address->email,
-				'toName'   => Configuration::get('ABCC_EMAIL_NAME'),	// $cinvoice->customer->name_fiscal,
+				'from'     => abi_mail_from_address(),			// config('mail.from.address'  ),
+				'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
+				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
+				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
 				'subject'  => l(' :_> New Customer Order #:num', ['num' => $template_vars['document_num']]),
 				);
 

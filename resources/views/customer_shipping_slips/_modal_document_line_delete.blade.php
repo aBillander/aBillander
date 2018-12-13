@@ -2,19 +2,19 @@
 
 @parent
 
-<div class="modal fade" id="modalOrderlineDelete" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modalDocumentLineDelete" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="modalOrderlineDeleteLabel"></h4>
+                <h4 class="modal-title" id="modalDocumentLineDeleteLabel"></h4>
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">
                 <input type="hidden" id="delete_line_id">
 
                 <button type="button" class="btn btn-link" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-                <button type="submit" class="btn btn-danger" name="btn-update" id="modalOrderlineDeleteSubmit" xonclick="this.disabled=true;">
+                <button type="submit" class="btn btn-danger" name="btn-update" id="modalDocumentLineDeleteSubmit" xonclick="this.disabled=true;">
                     <i class="fa fa-thumbs-up"></i>
                     &nbsp; {{l('Confirm', [], 'layouts')}}</button>
             </div>
@@ -27,25 +27,25 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('body').on('click', '.delete-order-line', function(evnt) { 
+        $('body').on('click', '.delete-document-line', function(evnt) { 
             var id = $(this).attr('data-id');
             var message = $(this).attr('data-content');
             var title = $(this).attr('data-title');
 
             $('#delete_line_id').val(id);
-            $('#modalOrderlineDeleteLabel').text(title);
-            $('#modalOrderlineDelete .modal-body').text(message);
-            $('#modalOrderlineDelete').modal({show: true});
+            $('#modalDocumentLineDeleteLabel').text(title);
+            $('#modalDocumentLineDelete .modal-body').text(message);
+            $('#modalDocumentLineDelete').modal({show: true});
             return false;
         });
     });
 
-        $("#modalOrderlineDeleteSubmit").click(function() {
+        $("#modalDocumentLineDeleteSubmit").click(function() {
 
  //         alert('etgwer');
 
             var id = $('#delete_line_id').val();
-            var url = "{{ route('customerorder.deleteline', ['']) }}/"+id;
+            var url = "{{ route($model_path.'.deleteline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
             var payload = {
@@ -60,9 +60,9 @@
 
                 success: function(result){
                     
-                    loadCustomerOrderlines()
+                    loadDocumentlines()
 
-                    $('#modalOrderlineDelete').modal('toggle');
+                    $('#modalDocumentLineDelete').modal('toggle');
                     
                     showAlertDivWithDelay("#msg-success-delete");
     

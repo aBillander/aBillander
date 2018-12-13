@@ -156,6 +156,24 @@ function abi_date_form_full($str_date_time = '', $format = '')
     }
 
 
+
+function abi_mail_from_name()
+{
+    // \App\Context::getContext()->user->getFullName();
+
+    return config('mail.from.name');
+}
+
+function abi_mail_from_address()
+{
+    // \App\Context::getContext()->user->email;
+
+    return config('mail.from.address');
+}
+
+
+
+
 /**
  * PHP Multi Dimensional Array Combinations.
  *
@@ -205,4 +223,76 @@ function checkRoute($route='') {
     return false;
 }
 
+/**
+    * replacement for php's nl2br tag that produces more designer friendly html
+    *
+    * Modified from: http://www.php-editors.com/contest/1/51-read.html
+    *
+    * @param string $text
+    * @param string $cssClass
+    * @return string
+*/
+    function nl2p($text, $cssClass=''){
+
+      // Return if there are no line breaks.
+      if (!strstr($text, "\n")) {
+         return $text;
+      }
+
+      // Return if text is HTML (simple check).
+      // Etiquetas abren con < y cierran con </, excepto <br />
+      if ( strstr($text, "<") && ( strstr($text, "</") || strstr($text, "/>") ) ) {
+         return $text;
+      } else if ( strstr($text, "<br>") || strstr($text, "<BR>") ) return $text;
+
+      // Add Optional css class
+      if (!empty($cssClass)) {
+         $cssClass = ' class="' . $cssClass . '" ';
+      }
+
+      // put all text into <p> tags
+      $text = '<p' . $cssClass . '>' . $text . '</p>';
+
+      // replace all newline characters with paragraph
+      // ending and starting tags
+      $text = str_replace("\n", "</p>\n<p" . $cssClass . '>', $text);
+
+      // remove empty paragraph tags & any cariage return characters
+      $text = str_replace(array('<p' . $cssClass . '></p>', '<p></p>', "\r"), '', $text);
+
+      return $text;
+
+   } // end nl2p
+
+  /**
+    * expanding on the nl2p tag above to convert user contributed
+    * <br />'s to <p>'s so it displays more nicely.
+    *
+    * @param string $text
+    * @param string $cssClass
+    * @return string
+    */
+    function br2p($text, $cssClass=''){
+
+      // if (!eregi('<br', $text)) {  
+      if (!preg_match('/<br/i', $text)) {
+         return $text;
+      }
+
+      if (!empty($cssClass)) {
+         $cssClass = ' class="' . $cssClass . '" ';
+      }
+
+      // put all text into <p> tags
+      $text = '<p' . $cssClass . '>' . $text . '</p>';
+
+      // replace all break tags with paragraph
+      // ending and starting tags
+      $text = str_replace(array('<br>', '<br />', '<BR>', '<BR />'), "</p>\n<p" . $cssClass . '>', $text);
+
+      // remove empty paragraph tags
+      $text = str_replace(array('<p' . $cssClass . '></p>', '<p></p>', "<p>\n</p>"), '', $text);
+
+      return $text;
+}
 

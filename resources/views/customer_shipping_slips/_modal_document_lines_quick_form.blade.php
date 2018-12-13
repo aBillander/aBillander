@@ -195,7 +195,7 @@ $(document).ready(function() {
                     }
 
                     // set labels
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                    @if( $customer->currentPricesEnteredWithTax( $document->document_currency ) )
                         $('#line_is_prices_entered_with_tax').val(1);
                         $(".label_tax_exc").hide();
                         $(".label_tax_inc").show();
@@ -329,8 +329,8 @@ function quick_formSubmit()
            } 
 
 
-            var order_id = {{ $order->id }};
-            var url = "{{ route('customerorder.quickaddlines', [$order->id]) }}";
+            var document_id = {{ $document->id }};
+            var url = "{{ route('customerorder.quickaddlines', [$document->id]) }}";
             var token = "{{ csrf_token() }}";
 
             var p_ids = $('#quick_order_lines').find('input[name^="product_id_values"]').serialize();
@@ -338,7 +338,7 @@ function quick_formSubmit()
             var qts = $('#quick_order_lines').find('input[name^="quantity_values"]').serialize();
 
             var payload = { 
-                              order_id : {{ $order->id }},
+                              document_id : {{ $document->id }},
                               product_id_values : p_ids,
                               combination_id_values : c_ids,
                               quantity_values : qts
@@ -421,7 +421,7 @@ function quick_formSubmit()
         function auto_product_row( selector = "#row_autoproduct_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route('customerorderline.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id"+$('#currency_id').val(),
+                source : "{{ route('customerorderline.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
                 appendTo : "#modal_order_lines_quick_form",
 

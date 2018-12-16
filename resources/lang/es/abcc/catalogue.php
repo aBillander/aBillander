@@ -16,6 +16,7 @@ return [
 	'Categories'     => 'Categorías',
 	'Products in this Category'     => 'Productos en esta Categoría',
 	'Products'     => 'Productos',
+	'New Products' => 'Novedades',
 
 	'Product Name'     => 'Nombre del Producto',
 	'Reference'     => 'Referencia',

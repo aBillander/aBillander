@@ -25,6 +25,7 @@ return [
 	|
 	*/
 
+	'New Products' => 'Novedades',		// New arrivals -> Novedades
 	'Shopping Cart'     => 'Mi Pedido',
 	'Catalogue'     => 'Catálogo',
 	'Order History'     => 'Historial',

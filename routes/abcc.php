@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Customer Center Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
@@ -13,7 +13,28 @@
 
 /* */
 
+// https://blog.pusher.com/laravel-subdomain-routing/
+
+// https://stackoverflow.com/questions/13647890/prevent-access-to-folder-of-subdomain-on-main-domain
+
+// https://gist.github.com/kosinix/8267252
+
+// RedirectMatch ^/subdomain/(.*)$ http://subdomain.mysite.com/$1
+
+/*
+RewriteEngine on
+RewriteBase / 
+
+#if not already blog.website.com
+RewriteCond %{HTTP_HOST} !^blog\.website\.com$ [NC] 
+#if request is for blog/, go to blog.website.com
+RewriteRule ^blog/$ http://blog.website.com [L,NC,R=301]
+*/
+
+/* */
+
 Route::group(['prefix' => 'abcc'], function ()
+// Route::group(['domain' => env('ABCC_DOMAIN'), 'prefix' => 'abcc'], function ()
 {
     Route::get('/login', 'Auth\CustomerLoginController@showLoginForm')->name('customer.login');
     Route::post('/login', 'Auth\CustomerLoginController@login')->name('customer.login.submit');
@@ -34,6 +55,7 @@ Route::group(['prefix' => 'abcc'], function ()
 
 
 Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
+// Route::group(['domain' => env('ABCC_DOMAIN'), 'prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
 {
 //    Route::get('/', ['uses' => 'DashboardController@redirectToLogin']);
 
@@ -69,7 +91,8 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
 
         Route::post('contact', 'AbccContactMessagesController@store')->name('abcc.contact');
 
-        Route::get('/catalogue', 'AbccCatalogueController@index'  )->name('abcc.catalogue');
+        Route::get('/catalogue',     'AbccCatalogueController@index'      )->name('abcc.catalogue');
+        Route::get('/catalogue/new', 'AbccCatalogueController@newProducts')->name('abcc.catalogue.newproducts');
 //        Route::get('/catalogue/category/{id}', 'AbccCatalogueController@categoryShow')->name('abcc.catalogue.category.show');
 
  //       Route::get( '/orders', 'AbccCustomerOrdersController@index')->name('abcc.orders.index');

@@ -54,7 +54,7 @@
       </div>
     </div>
 
-    <div class="form-group {{ $errors->has('ABCC_EMAIL') ? 'has-error' : '' }}">
+    <div class="form-group {{ $errors->has('ABCC_EMAIL') ? 'has-error' : '' }}" style="display: none;">
       <label for="ABCC_EMAIL" class="col-lg-4 control-label">{!! l('ABCC_EMAIL.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <div class="form-group {{ $errors->has('ABCC_EMAIL_NAME') ? 'has-error' : '' }}">
+    <div class="form-group {{ $errors->has('ABCC_EMAIL_NAME') ? 'has-error' : '' }}" style="display: none;">
       <label for="ABCC_EMAIL_NAME" class="col-lg-4 control-label">{!! l('ABCC_EMAIL_NAME.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
@@ -110,6 +110,42 @@
       </div>
     </div>
 
+
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_ENABLE_NEW_PRODUCTS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_NEW_PRODUCTS" id="ABCC_ENABLE_NEW_PRODUCTS_on" value="1" @if( old('ABCC_ENABLE_NEW_PRODUCTS', $key_group['ABCC_ENABLE_NEW_PRODUCTS']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_NEW_PRODUCTS" id="ABCC_ENABLE_NEW_PRODUCTS_off" value="0" @if( !old('ABCC_ENABLE_NEW_PRODUCTS', $key_group['ABCC_ENABLE_NEW_PRODUCTS']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_ENABLE_NEW_PRODUCTS.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group {{ $errors->has('ABCC_NBR_DAYS_NEW_PRODUCT') ? 'has-error' : '' }}">
+      <label for="ABCC_NBR_DAYS_NEW_PRODUCT" class="col-lg-4 control-label">{!! l('ABCC_NBR_DAYS_NEW_PRODUCT.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_NBR_DAYS_NEW_PRODUCT" name="ABCC_NBR_DAYS_NEW_PRODUCT" placeholder="" value="{{ old('ABCC_NBR_DAYS_NEW_PRODUCT', $key_group['ABCC_NBR_DAYS_NEW_PRODUCT']) }}" />
+        {{ $errors->first('ABCC_NBR_DAYS_NEW_PRODUCT', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_NBR_DAYS_NEW_PRODUCT.help') !!}</span>
+      </div>
+    </div>
 
 
     <div class="form-group">

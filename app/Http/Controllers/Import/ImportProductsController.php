@@ -159,7 +159,7 @@ class ImportProductsController extends Controller
 
         try{
             
-            $this->processFile( $request->file('data_file'), $logger );
+            $this->processFile( $request->file('data_file'), $logger, $params );
 
         }
         catch(\Exception $e){
@@ -212,13 +212,13 @@ class ImportProductsController extends Controller
      *
      * @return 
      */
-    protected function processFile( $file, $logger )
+    protected function processFile( $file, $logger, $params )
     {
 
         // 
         // See: https://www.youtube.com/watch?v=rWjj9Slg1og
         // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger )
+        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
         {
             
  /*           $reader->each(function ($sheet){
@@ -276,7 +276,7 @@ class ImportProductsController extends Controller
 
 
                     // Category
-                    if ( \App\Category::where('id', $data['category_id'])->exists())
+                    if ( ! \App\Category::where('id', $data['category_id'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'category_id' es inválido: " . ($data['category_id'] ?? ''));
 
 

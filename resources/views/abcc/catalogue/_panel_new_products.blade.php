@@ -1,8 +1,8 @@
-<div id="panel_products" style="margin-top: -20px"> 
+<div id="panel_products" xstyle="margin-top: -20px"> 
 
 
 
-<div class="page-header">
+<!-- div class="page-header">
     <div class="pull-right" xstyle="padding-top: 4px;">
 
     </div>
@@ -17,7 +17,7 @@
             <span style="color: #dd4814;">{{ l('Products') }}</span>
         @endif
     </h2>        
-</div>
+</div -->
 
 
 

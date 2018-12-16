@@ -42,6 +42,32 @@ class Billable extends Model
 
                         'export_date',
                        ];
+
+
+    // https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
+    protected $fillable = [ 'sequence_id', 'customer_id', 'reference', 'reference_customer', 'reference_external', 
+                            'created_via', 'document_prefix', 'document_id', 'document_reference',
+                            'document_date', 'payment_date', 'validation_date', 'delivery_date',
+
+                            'document_discount_percent', 'document_discount_amount',
+                            'number_of_packages', 'volume', 'weight', 
+                            'shipping_conditions', 'tracking_number',
+
+                            'currency_conversion_rate', 'down_payment', 
+
+            
+                            'total_lines_tax_incl', 'total_lines_tax_excl', 'total_tax_incl', 'total_tax_excl',
+
+
+                            'notes_from_customer', 'notes', 'notes_to_customer',
+                            'status', 'locked',
+                            'invoicing_address_id', 'shipping_address_id', 
+                            'warehouse_id', 'shipping_method_id', 'sales_rep_id', 'currency_id', 'payment_method_id', 
+                            'template_id',
+
+//                            'production_sheet_id',
+                          ];
+
                        
 
 

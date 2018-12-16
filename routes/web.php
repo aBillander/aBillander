@@ -381,9 +381,9 @@ Route::group(['middleware' =>  ['auth']], function()
 // Fast & dirty
 // To Do: Put this in Routes Service Provider
 
-if ( \App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') ) {
-    include __DIR__.'/abcc.php';
-}
+// if ( \App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') ) {
+//    include __DIR__.'/abcc.php';
+// }
 
 
 /* ********************************************************** */

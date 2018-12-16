@@ -38,13 +38,20 @@ function l($string = NULL, $data = [], $langfile = NULL)
 
 
 function abi_r($foo, $exit=false)
-	{
-		echo '<pre>';
-		print_r($foo);
-		echo '</pre>';
+  {
+    echo '<pre>';
+    print_r($foo);
+    echo '</pre>';
 
-		if ($exit) die();
-	}
+    if ($exit) die();
+  }
+
+
+function abi_toSql($query)
+  {
+    dd($query->toSql(), $query->getBindings());
+  }
+
 
 function abi_date_short(\Carbon\Carbon $date = null, $format = '')
     {

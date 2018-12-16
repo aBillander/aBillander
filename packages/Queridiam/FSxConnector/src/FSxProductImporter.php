@@ -97,6 +97,9 @@ class FSxProductImporter {
                         'quantity_onhand' => $articulo->USTART > 0 ?: 0.0, 
                     ];
 
+                    // Ahhh! 'quantity_onhand' is NOT fillable
+                    $articulo->product->quantity_onhand = $articulo->USTART > 0 ? $articulo->USTART : 0.0;
+
 //                    $p = $articulo->product->update( $data );
     			}
 
@@ -238,6 +241,9 @@ class FSxProductImporter {
     			    continue;
     			}
 
+                // Manufacturer
+                $manufacturer = \App\Manufacturer::firstOrCreate(array('name' => $articulo->CP1ART));
+
     			$price = $articulo->precio();
 
         		$data = [
@@ -285,6 +291,7 @@ class FSxProductImporter {
         			'measure_unit_id' => $measure_unit->id,
         			'category_id' => $category_id,
 //        			'main_supplier_id' => '',
+                    'manufacturer_id' => $manufacturer->id,
 //        			'work_center_id' => '',
 //        			'route_notes' => '',
         		];

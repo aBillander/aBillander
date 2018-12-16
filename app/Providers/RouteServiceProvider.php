@@ -39,7 +39,10 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        // some other mapping actions
+
+        $this->mapAbccRoutes();
+
     }
 
     /**
@@ -51,6 +54,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
+//        Route::domain( env('ABI_DOMAIN') )
+//             ->middleware('web')
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));
@@ -69,5 +74,30 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * Define the Customer Center routes of the application.
+     *
+     *
+     * @return void
+     */
+    protected function mapAbccRoutes()
+    {
+    /*
+        Route::prefix('v1')  // if you need to specify a route prefix
+            ->middleware('auth:api') // specify here your middlewares
+            ->namespace($this->namespace) // leave it as is
+            / ** the name of your route goes here: ** /
+            ->group(base_path('routes/users.php'));
+    */
+
+        if ( \App\Configuration::isFalse('ENABLE_CUSTOMER_CENTER') ) return;
+
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/abcc.php'));
+
+        // Maybe need: php artisan config:clear
     }
 }

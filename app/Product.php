@@ -228,7 +228,7 @@ class Product extends Model {
             $query->where('category_id', '=', $params['category_id']);
         }
 
-        if ( isset($params['manufacturer_id']) && $params['manufacturer_id'] > 0 )
+        if ( isset($params['manufacturer_id']) && $params['manufacturer_id'] > 0 && 0)
         {
             $query->where('manufacturer_id', '=', $params['manufacturer_id']);
         }
@@ -678,6 +678,20 @@ class Product extends Model {
     public function scopeIsActive($query)
     {
         return $query->where('active', '>', 0);
+    }
+
+    public function scopeIsNew($query, $apply = true)
+    {
+        if ( !$apply ) return $query;
+
+        return $query->whereDate('created_at', '>=', \Carbon\Carbon::now()->subDays( \App\Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
+    }
+
+    public function scopeManufacturer($query, $manufacturer_id)
+    {
+        if ( (int) $manufacturer_id > 0 ) return $query->where('manufacturer_id', '=', $manufacturer_id);
+
+        return $query;
     }
 
     public function scopeQualifyForCustomer($query, $customer_id, $currency_id) 

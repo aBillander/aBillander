@@ -44,7 +44,11 @@
 
                 @if( Auth::guard('customer')->check() )
 
-
+@if( \App\Configuration::isTrue('ABCC_ENABLE_NEW_PRODUCTS') )
+                <li class="dropdown">
+                    <a href="{{ route('abcc.catalogue.newproducts') }}" class="dropdown-toggle"><i class="fa fa-bullhorn"></i> {{l('New Products', [], 'abcc/layouts')}} </a>
+                </li>
+@endif
                 <li class="dropdown">
                     <a href="{{ route('abcc.cart') }}" class="dropdown-toggle"><i class="fa fa-shopping-cart"></i> {{l('Shopping Cart', [], 'abcc/layouts')}}  <span id="badge_cart_nbr_items" class="badge">
                         {{ \App\Context::getContext()->cart->nbrItems() }}
@@ -118,25 +122,6 @@
                                  {{l('About ...', [], 'abcc/layouts')}}
                             </a>
                         </li -->
-                        
-@if (config('app.url') =='http://localhost/enatural') {{-- or Config::get('app.myVarname'); see https://laracasts.com/discuss/channels/general-discussion/ho-to-access-config-variables-in-laravel-5 --}}
-                        <li class="divider"></li>
-                         <li>
-                            <a href="http://bootswatch.com/3/united/" target="_blank">
-                                 Plantilla BS3
-                            </a>
-                        </li>
-                         <!-- li>
-                            <a href="http://getbootstrap.com/components/" target="_blank">
-                                 Glyphicons
-                            </a>
-                        </li -->
-                         <li>
-                            <a href="http://fontawesome.io/icons/" target="_blank">
-                                 Font-Awesome
-                            </a>
-                        </li>
-@endif
 
                         <li class="divider"></li>
 

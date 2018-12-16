@@ -77,6 +77,7 @@ class AbccCatalogueController extends Controller
 		if ( $customer_user ) {
                 $products = $this->product
                                       ->filter( $request->all() )
+                                      ->Manufacturer( $request->input( 'manufacturer_id', 0) )
          //                             ->with('measureunit')
         							  ->with('combinations')                                  
          //                             ->with('category')
@@ -85,9 +86,9 @@ class AbccCatalogueController extends Controller
 	                                  ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id)
                                       ->IsActive()
                                       ->orderBy('reference', 'asc');
-        
+
                 $products = $products->paginate( 10 );	// \App\Configuration::get('DEF_ITEMS_PERPAGE') );
-        
+
                 $products->setPath('catalogue');     // Customize the URI used by the paginator
         }        
         return view('abcc.catalogue.index', compact('category_id', 'categories', 'products', 'breadcrumb'));
@@ -165,4 +166,78 @@ class AbccCatalogueController extends Controller
 		//
 	}
 
+
+	/**
+	 * Display a listing of the resource :: New Products.
+	 *
+	 * @return Response
+	 */
+	public function newProducts(Request $request)
+	{
+    	if( \App\Configuration::isFalse('ABCC_ENABLE_NEW_PRODUCTS') )
+    		return $this->index($request);
+
+
+    	$customer_user = Auth::user();
+		
+		$category_id = $request->input('category_id', 0);
+		// Not needed: $request->merge( ['category_id' => $category_id] );
+
+		$parentId=0;
+		$breadcrumb = [];
+
+		$categories = $this->category
+			->with('children')
+//			->withCount('products')
+			->where('parent_id', '=', intval($parentId))
+			->orderBy('name', 'asc')->get();
+
+		if ($category_id>0 && !$request->input('search_status', 0)) {
+			//
+			// abi_r($categories, true);
+
+			$category = $categories->search(function ($item, $key) use ($category_id) {
+			    
+			    $cat = $item->children;
+
+			    $c = $cat->search(function ($item, $key) use ($category_id) {
+				    // abi_r($item->id.' - '.$category_id);
+
+				    return $item->id == $category_id;
+				});
+
+			    // Found?
+			    return $c !== false;
+			});
+
+			$parent = $categories->slice($category, 1)->first();
+			$child = $parent->children->where('id', $category_id)->first();
+
+			$breadcrumb = [$parent, $child];
+
+			// abi_r($parent->name.' / '.$child->name, true);
+		}
+
+		$products = null;
+
+		if ( $customer_user ) {
+                $products = $this->product
+//                                      ->filter( $request->all() )
+//                                      ->Manufacturer( $request->input( 'manufacturer_id', 0) )
+         //                             ->with('measureunit')
+        							  ->with('combinations')                                  
+         //                             ->with('category')
+         //                             ->with('tax')
+	                                  ->IsSaleable()
+	                                  ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id)
+                                      ->IsActive()
+                                      ->IsNew()
+                                      ->orderBy('reference', 'asc');
+
+                $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+
+                $products->setPath('catalogue');     // Customize the URI used by the paginator
+        }        
+        return view('abcc.catalogue.new_products', compact('category_id', 'categories', 'products', 'breadcrumb'));
+	}
 }

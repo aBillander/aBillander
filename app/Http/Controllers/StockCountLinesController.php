@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\StockCount;
 use App\StockCountLine;
+use App\Product;
 
 // use App\Traits\BillableControllerTrait;
 
@@ -16,11 +17,13 @@ class StockCountLinesController extends Controller
 
    protected $stockcount;
    protected $stockcountline;
+   protected $product;
 
-   public function __construct(StockCount $stockcount, StockCountLine $stockcountline)
+   public function __construct(StockCount $stockcount, StockCountLine $stockcountline, Product $product)
    {
         $this->stockcount     = $stockcount;
         $this->stockcountline = $stockcountline;
+        $this->product = $product;
    }
 
     /**
@@ -83,8 +86,17 @@ class StockCountLinesController extends Controller
 
         if ( !$request->input('cost_price') ) $request->merge(['cost_price'=>0.0]);
 
-
         $this->validate($request, StockCountLine::$rules);
+
+
+        $product = $this->product->find( $request->input('product_id') );
+
+        $data['product_id'] = $product->id;
+        $data['reference']  = $product->reference;
+        $data['name']  = $product->name;
+        if ( !$request->input('cost_price', 0.0) ) $data['cost_price']  = $product->cost_price;
+
+        $request->merge($data);
 
         $line = $this->stockcountline->create($request->all());
 

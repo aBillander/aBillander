@@ -26,8 +26,36 @@ class BillableLine extends Model
             'comment',
             'account',      // Something to charge to an accounting account
         );
+    
 
-    protected $totals = [];
+    protected $fillable = ['line_sort_order', 'line_type', 
+                    'product_id', 'combination_id', 'reference', 'name', 'quantity', 'measure_unit_id',
+                    'cost_price', 'unit_price', 'unit_customer_price', 
+                    'prices_entered_with_tax',
+                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
+                    'unit_final_price', 'unit_final_price_tax_inc', 
+                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
+                    'total_tax_incl', 'total_tax_excl', // Not fillable? For sure: NOT. Totals are calculated after ALL taxes are set. BUT handy fillable when importing order!!!
+                    'tax_percent', 'commission_percent', 'notes', 'locked',
+ //                 'customer_shipping_slip_id',
+                    'tax_id', 'sales_rep_id',
+    ];
+
+    protected $line_fillable = [
+    ];
+    
+
+    /**
+     * Get the fillable attributes for the model.
+     *
+     * https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
+     *
+     * @return array
+     */
+    public function getFillable()
+    {
+        return array_merge(parent::getFillable(), $this->line_fillable);
+    }
 
 
     protected static function boot()

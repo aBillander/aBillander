@@ -38,63 +38,12 @@
                   </div>
         </div>
 
-        <div class="row">
-              <div class="form-group col-lg-6 col-md-6 col-sm-6">
-    <div id="div_warehouses">
-       <div class="table-responsive">
 
-    <table id="products" class="table table-hover">
-      <thead>
-        <tr>
-          <th>{{ l('Warehouse') }}</th>
-          <th>{{ l('Quantity') }}</th>
-          <th class="text-right"> </th>
-        </tr>
-      </thead>
-      <tbody>
-      @foreach ($product->warehouses as $wh)
-        <tr>
-          <td>{{ $wh->alias }}</td>
-          <td>{{ $product->as_quantityable($wh->pivot->quantity) }}</td>
-               <td class="text-right">
-                </td>
-        </tr>
-      @endforeach
-        <tr>
-          <td class="text-right">{{ l('TOTAL') }}:</td>
-          <td>{{ $product->as_quantity('quantity_onhand') }}</td>
-               <td class="text-right">
-                </td>
-        </tr>
-        </tbody>
-    </table>
+<div id="panel_stock_summary" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
 
-       </div>
-    </div>
+{{--  @ include('products._panel_stock_summary') --}}
 
-
-
-
-              </div>
-              <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                     <strong>{{ l('Quantity on hand') }}</strong>
-                     {!! Form::text('quantity_onhand', null, array('class' => 'form-control', 'id' => 'quantity_onhand', 'onfocus' => 'this.blur()')) !!}
-                  </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                     {{ l('Quantity on order') }}
-                     {!! Form::text('quantity_onorder', null, array('class' => 'form-control', 'id' => 'quantity_onorder', 'onfocus' => 'this.blur()')) !!}
-                  </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                     {{ l('Quantity allocated') }}
-                     {!! Form::text('quantity_allocated', null, array('class' => 'form-control', 'id' => 'quantity_allocated', 'onfocus' => 'this.blur()')) !!}
-                  </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                     <strong>{{ l('Available') }}</strong>
-                     {!! Form::text('available', null, array('class' => 'form-control', 'id' => 'available', 'onfocus' => 'this.blur()')) !!}
-                  </div>
-              </div>
-        </div>
+</div>
 
         <div class="row">
         </div>
@@ -115,4 +64,69 @@
 
 
     {!! Form::close() !!}
+
+
+
+@section('scripts')     @parent
+<script type="text/javascript">
+   
+   $(document).ready(function() {
+
+        var tab = window.location.hash.replace('#','');
+
+        if (tab=='inventory') getStockSummary();
+      
+   });
+    
+
+    function getStockSummary()
+    {
+           var panel = $("#panel_stock_summary");
+           var url = '{{ route( 'products.stocksummary', [$product->id] ) }}';
+
+           panel.addClass('loading');
+
+      $.ajax({
+        type: "GET",
+        url: url,
+        data: {
+        }
+      }).done(function(data){
+        panel.html(data);
+        panel.removeClass('loading');
+
+                $("[data-toggle=popover]").popover();
+
+  $('#available').text( Number($('#quantity_onhand').val()) + Number($('#quantity_onorder').val()) - Number($('#quantity_allocated').val()) );
+  
+      });
+                 
+    }
+
+    // See: https://stackoverflow.com/questions/20705905/bootstrap-3-jquery-event-for-active-tab-change
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href") // activated tab
+      if (target == '#tab1default')
+      {
+          getStockSummary();
+      }
+      /*
+      if ($(target).is(':empty')) {
+        $.ajax({
+          type: "GET",
+          url: "/article/",
+          error: function(data){
+            alert("There was a problem");
+          },
+          success: function(data){
+            $(target).html(data);
+          }
+      })
+     }
+     */
+    });
+
+
+</script>
+@endsection
     

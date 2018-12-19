@@ -3,37 +3,46 @@
 @section('title') {{ l('Customer Invoices - Create') }} @parent @stop
 
 
-@section('content')
- 
-            @if ( isset($customer->name_fiscal) )
-              @include('customer_invoices._form')
-            @else
-              @include('customer_invoices.search_customer')
-            @endif
+@section('content') 
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <div class="pull-right">
 
-@stop
+@if ($customer_id ?? 0)
+               <a target="_top" class="btn btn-success" href="{{ URL::to('customers/'.$customer_id.'/edit') }}">{{l('View Customer')}}</a>
 
-{{-- ***************************************************************************************************** --}}
+               <a href="{{ URL::to('customers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a>
+@else
+               <a target="_top" class="btn btn-success" href="{{ URL::to('customers/create') }}">{{l('New Customer')}}</a>
 
-@section('styles')
+               <a href="{{ URL::to($model_path) }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customer Invoices') }}</a>
+@endif
+            </div>
+            <h2><a class="btn btn-sm alert-danger" href="{{ URL::to($model_path) }}" title="{{ l('Customer Invoices') }}"><i class="fa fa-money"></i></a> <span style="color: #cccccc;">/</span> {{ l('New Customer Invoice') }}</h2>
+        </div>
+    </div>
+</div> 
 
-   {!! HTML::style('assets/plugins/AutoComplete/styles.css') !!}
-
-{{-- Date Picker --}}
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
-@stop
-
-{{-- ***************************************************************************************************** --}}
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-lg-2 col-md-2 col-sm-3">
 
 
-@section('scripts')
+      </div>
+      
+      <div class="col-lg-10 col-md-10 col-sm-9">
+            <div class="panel panel-primary" id="panel_create_{{ $model_snake_case }}">
+               <div class="panel-heading">
+                  <h3 class="panel-title">{{ l('Header Data') }}</h3>
+               </div>
+                {!! Form::open(array('route' => $model_path.'.store', 'id' => 'create_'.$model_snake_case, 'name' => 'create_'.$model_snake_case, 'class' => 'form')) !!}
 
-            @if ( isset($customer->name_fiscal) )
-              @include('customer_invoices.js.manage_invoice_js')
-            @else
-              @include('customer_invoices.js.search_customer_js')
-            @endif
+                    @include($view_path.'._form_document_create')
 
-@stop
+                {!! Form::close() !!}
+            </div>
+      </div>
+   </div>
+</div>
+@endsection

@@ -57,6 +57,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		// Invoice Types
+		view()->composer(array('customer_invoices.create'), function($view) {
+		    
+		    $view->with('customer_invoice_typeList', \App\CustomerInvoice::getTypeList());
+		    
+		});
+
 		// Languages
 		view()->composer(array('users.create', 'users.edit', 'configuration_keys.key_group_2'), function($view) {
 		    

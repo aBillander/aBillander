@@ -5,71 +5,104 @@
 
 @section('content')
 
+
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{ URL::to('customerinvoices/create') }}" class="btn btn-sm btn-success" 
+
+        <a href="{{ URL::to($model_path.'/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
     </div>
     <h2>
         {{ l('Customer Invoices') }}
     </h2>        
 </div>
 
-<div id="div_customer_invoices">
+<div id="div_documents">
+
    <div class="table-responsive">
 
-@if ($customer_invoices->count())
-<table id="customer_invoices" class="table table-hover">
+@if ($documents->count())
+<table id="documents" class="table table-hover">
     <thead>
         <tr>
-            <th class="text-left">{{ l('Invoice #') }}</th>
+            <th class="text-left">{{ l('Order #') }}</th>
             <th class="text-left">{{ l('Date') }}</th>
+            <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
-            <th class="text-left">{{ l('Payment Method') }}</th>
-            <th class="text-left" colspan="3"> </th>
+            <th class="text-left">{{ l('Deliver to') }}</th>
+            <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
-            <th class="text-right">{{ l('Open Balance') }}</th>
-            <th class="text-right">{{ l('Next Due Date') }}</th>
+            <th class="text-center">{{ l('Notes') }}</th>
             <th> </th>
         </tr>
     </thead>
-    <tbody>
-        @foreach ($customer_invoices as $invoice)
+    <tbody id="document_lines">
+        @foreach ($documents as $document)
         <tr>
-            <td>{{ $invoice->id }} / 
-                @if ($invoice->document_id>0)
-                {{ $invoice->document_reference }}
+            <td>{{ $document->id }} / 
+                @if ($document->document_id>0)
+                {{ $document->document_reference }}
                 @else
-                <span class="label label-default" title="{{ l('Draft') }}">{{ l('Draft') }}</span>
+                <a class="btn btn-xs btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-thumbs-o-up"></i>
+                <span xclass="label label-default">{{ l('Draft') }}</span>
+                </a>
                 @endif</td>
-            <td>{{ abi_date_short($invoice->document_date) }}</td>
-            <td><a class="" href="{{ URL::to('customers/' .$invoice->customer->id . '/edit') }}" title="{{ l('Show Customer') }}">
-            	{{ $invoice->customer->name_fiscal }}
+            <td>{{ abi_date_short($document->document_date) }}</td>
+            <td>{{ abi_date_short($document->delivery_date) }}</td>
+            <td><a class="" href="{{ URL::to('customers/' .$document->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
+            	{{ $document->customer->name_fiscal }}
             	</a>
             </td>
-            <td>{{ $invoice->paymentmethod->name }}
-            	<a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $invoice->id) }}" title="{{ l('Show Payments') }}"><i class="fa fa-eye"></i></a>
-        	</td>
-            <td>@if ( $invoice->editable) <span class="label label-default" title="{{ l('Draft') }}">{{ l('D') }}</span> @endif</td>
-            <td>@if (!$invoice->einvoice_sent) <span class="label label-primary" title="{{ l('Pending: Send by eMail') }}">{{ l('eM') }}</span> @endif
-            	@if (!$invoice->printed) <span class="label label-warning" title="{{ l('Pending: Print and Send') }}">{{ l('Pr') }}</span> @endif</td>
-            <td>@if ( $invoice->status == 'paid') <span class="label label-success" title="{{ l('Paid') }}">{{ l('OK') }}</span> @endif</td>
-            <td class="text-right">{{ $invoice->as_money_amount('total_tax_incl') }}</td>
-            <td class="text-right">{{ $invoice->as_money_amount('open_balance') }}</td>
-            <td  @if( $invoice->next_due_date AND ( $invoice->next_due_date < \Carbon\Carbon::now() ) ) class="danger" @endif>
-                @if ($invoice->open_balance < pow( 10, -$invoice->currency->decimalPlaces ) AND 0 ) 
-                @else
-                    @if ($invoice->next_due_date) {{ \App\FP::date_short($invoice->next_due_date) }} @endif
-                @endif</td>
+            <td>
+                @if ( $document->hasShippingAddress() )
+
+
+
+                {{ $document->shippingaddress->alias }} 
+                 <a href="javascript:void(0);">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $document->shippingaddress->firstname }} {{ $document->shippingaddress->lastname }}<br />{{ $document->shippingaddress->address1 }}<br />{{ $document->shippingaddress->city }} - {{ $document->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $document->shippingaddress->phone }}</a>" data-original-title="" title="">
+                        <i class="fa fa-address-card-o"></i>
+                    </button>
+                 </a>
+      
+
+                @endif
+            </td>
+            <td>{{ $document->created_via }}
+            </td>
+            <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
+            <td class="text-center">@if ($document->all_notes)
+                 <a href="javascript:void(0);">
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                            data-content="{!! nl2br($document->all_notes) !!}">
+                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                    </button>
+                 </a>
+                @endif
+            </td>
             <td class="text-right">
-                <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerinvoices/' . $invoice->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
-                <a class="btn btn-sm btn-success" href="{{ URL::to('customerinvoices/' . $invoice->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('customerinvoices/' . $invoice->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-                @if( $invoice->editable )
+                <!--
+                <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerorders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
+                <a class="btn btn-sm btn-success" href="{{ URL::to('customerorders/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
+                -->
+@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0)
+
+                <a class="btn btn-sm btn-info" href="{{ URL::to($model_path.'/' . $document->id . '/invoice/pdf') }}" title="{{l('PDF Invoice', [], 'layouts')}}"><i class="fa fa-money"></i></a>
+
+                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('customerorders/' . $document->id . '/shippingslip') }}" title="{{l('Customer Invoice', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
+
+                <a class="btn btn-sm btn-lightblue xbtn-info" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
+@endif
+
+                <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy Order')}}"><i class="fa fa-copy"></i></a>
+
+                <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                @if( $document->deletable )
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                    href="{{ URL::to('customerinvoices/' . $invoice->id ) }}" 
+                    href="{{ URL::to($model_path.'/' . $document->id ) }}" 
                     data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Customer Invoices') }} :: ({{$invoice->id}}) {{ $invoice->document_reference }} " 
+                    data-title="{{ l('Customer Invoices') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @endif
             </td>
@@ -77,6 +110,12 @@
         @endforeach
     </tbody>
 </table>
+
+   </div><!-- div class="table-responsive" ENDS -->
+
+{{ $documents->appends( Request::all() )->render() }}
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
+
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
@@ -84,9 +123,25 @@
 </div>
 @endif
 
-   </div>
-</div>
+</div><!-- div id="div_documents" ENDS -->
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')
+
+
+{{-- *************************************** --}}
+
+
+
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+
+@if ($model_path=='customerorders')
+
+
+        @include($view_path.'._chunck_manufacturing')
+
+
+@endif
+
+@endif

@@ -16,18 +16,18 @@
                 @endif
             </div>
             <div style="margin-left:300pt;">
-                <!-- h2>{{ 'Invoice' }} {{-- $cinvoice->document_id > 0 ? '#' . $cinvoice->document_reference : 'BORRADOR' --}}</h2 -->
+                <!-- h2>{{ 'Invoice' }} {{-- $document->document_id > 0 ? '#' . $document->document_reference : 'BORRADOR' --}}</h2 -->
                 <span style="font-size: 24px; margin-bottom: 10px;"><b>Invoice #: </b>  
-                                    @if( $cinvoice->document_id > 0 )
-                                        {{ $cinvoice->document_reference }}
+                                    @if( $document->document_id > 0 )
+                                        {{ $document->document_reference }}
                                     @else
                                         <span class="small">BORRADOR</span>
                                     @endif
                 </span><br />
-                <b>Date: </b> {{ $cinvoice->document_date }}<br />
-                <b>Order Number: </b> {{ $cinvoice->reference }}<br />
-                <b>Agent: </b> {{ $cinvoice->sales_rep_id }}<br />
-                <b>Payment: </b> {{ $cinvoice->paymentmethod->name }}<br />
+                <b>Date: </b> {{ $document->document_date }}<br />
+                <b>Order Number: </b> {{ $document->reference }}<br />
+                <b>Agent: </b> {{ $document->sales_rep_id }}<br />
+                <b>Payment: </b> {{ $document->paymentmethod->name }}<br />
                             
             </div>
         </div>
@@ -53,19 +53,19 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         
-                        {{ $cinvoice->customer->name_fiscal }}<br />
-                        VAT ID: {{ $cinvoice->customer->identification }}<br />
-                        {{ $cinvoice->invoicingAddress->address1 }} {{ $cinvoice->invoicingAddress->address2 }}<br />
-                        {{ $cinvoice->invoicingAddress->postcode}} {{ $cinvoice->invoicingAddress->city }}<br />
-                        {{ $cinvoice->invoicingAddress->state->name }}, {{ $cinvoice->invoicingAddress->country->name }}<br />
-                        {{ $cinvoice->invoicingAddress->phone }} / {{ $cinvoice->invoicingAddress->mail }}<br />
+                        {{ $document->customer->name_fiscal }}<br />
+                        VAT ID: {{ $document->customer->identification }}<br />
+                        {{ $document->invoicingAddress->address1 }} {{ $document->invoicingAddress->address2 }}<br />
+                        {{ $document->invoicingAddress->postcode}} {{ $document->invoicingAddress->city }}<br />
+                        {{ $document->invoicingAddress->state->name }}, {{ $document->invoicingAddress->country->name }}<br />
+                        {{ $document->invoicingAddress->phone }} / {{ $document->invoicingAddress->mail }}<br />
 
                     </div>
                 </div>
             </div>
         </div>
             
-@if ($cinvoice->customerInvoiceLines->count()>0)  
+@if ($document->documentlines->count()>0)  
 
         <!-- h4>Items:</h4 -->
         <table class="table table-bordered">
@@ -81,7 +81,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($cinvoice->customerInvoiceLines as $line)
+                @foreach ($document->documentlines as $line)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $line->reference }}</td>
@@ -107,7 +107,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($cinvoice->customerinvoicetaxes() as $tax)
+                        @foreach ($document->documenttaxes() as $tax)
                         <tr>
                             <td>{{ $tax->percent }} %</td>
                             <td>{{ $tax->taxable_base }}</td>
@@ -124,7 +124,7 @@
                     <tbody>
                         <tr>
                             <td><b>Subtotal</b></td>
-                            <td>{{ $cinvoice->total_tax_excl }}</td>
+                            <td>{{ $document->total_tax_excl }}</td>
                         </tr>
                         <tr>
                             <td>
@@ -132,18 +132,18 @@
                                     Taxes 
                                 </b>
                             </td>
-                            <td>{{ $cinvoice->total_tax_incl - $cinvoice->total_tax_excl }}</td>
+                            <td>{{ $document->total_tax_incl - $document->total_tax_excl }}</td>
                         </tr>
                         <tr>
                             <td><b>TOTAL</b></td>
-                            <td><b>{{ $cinvoice->total_tax_incl }}</b></td>
+                            <td><b>{{ $document->total_tax_incl }}</b></td>
                         </tr>
                     </tbody>
                 </table>
                 <table class="table">
                     <tbody>
                         {{-- Gorrino style programming here :-( (but works!) --}}
-                        @for ($i = 0; $i < (count( $cinvoice->customerinvoicetaxes() )-2); $i++)
+                        @for ($i = 0; $i < (count( $document->documenttaxes() )-2); $i++)
                         <tr style="visibility:hidden">
                             <td> &nbsp; </td>
                             <td> &nbsp; </td>
@@ -163,7 +163,7 @@
                     <h4>Notes:</h4>
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            {{ $cinvoice->notes_to_customer }}
+                            {{ $document->notes_to_customer }}
                         </div>
                     </div>
                 </div>
@@ -172,10 +172,10 @@
             </div>
         </div>
 
-        @if (isset($cinvoice->text))
+        @if (isset($document->text))
             <br /><br />
             <div class="well">
-                {{ $cinvoice->text }}
+                {{ $document->text }}
             </div>
         @endif
     </body>

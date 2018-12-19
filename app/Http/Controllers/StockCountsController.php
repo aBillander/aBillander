@@ -31,7 +31,7 @@ class StockCountsController extends Controller
      */
     public function index()
     {
-        $stockcounts = $this->stockcount->with('warehouse')->orderBy('document_date', 'desc')->get();
+        $stockcounts = $this->stockcount->with('warehouse')->orderBy('document_date', 'desc')->orderBy('id', 'desc')->get();
 
         return view('stock_counts.index', compact('stockcounts'));
     }
@@ -267,6 +267,9 @@ class StockCountsController extends Controller
         // abi_r($lines);die();
 
 //        if ( $count > 0 )
+//        if ( ! ($lines->count() > 0 ) ) $logger->logError('No hay líneas, amiguete!');
+//        $logger->logWarning('No hay líneas, amiguete!');
+
         foreach ($lines as $line)
         {
             // Check timeout
@@ -320,7 +323,9 @@ class StockCountsController extends Controller
                 $i_ok++;
             } else {    
                 // Error
-                $logger->log("ERROR", 'la línea núm, <span class="log-ERROR-format">:id</span> del Recuento NO ha podido ser procesada.', ['id' => $line->id]);
+                // When?
+                // $logger->log("ERROR", 'La línea núm. <span class="log-ERROR-format">:id</span> del Recuento NO ha podido ser procesada.', ['id' => $line->id])
+                ;
             }
 
             $i++;

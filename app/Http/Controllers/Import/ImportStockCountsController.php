@@ -350,7 +350,7 @@ class ImportStockCountsController extends Controller
                     if ( $product ) {
                             $data['product_id'] = $product->id;
                             $data['reference']  = $product->reference;
-                            $data['name']  = $product->reference;
+                            $data['name']  = $product->name;
                         } else {
                         
                         $logger->log("ERROR", "La fila (".$item.") no corresponde a ningún Producto.");

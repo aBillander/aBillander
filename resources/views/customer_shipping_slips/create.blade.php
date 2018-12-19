@@ -19,7 +19,7 @@
                <a href="{{ URL::to($model_path) }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customer Shipping Slips') }}</a>
 @endif
             </div>
-            <h2><a href="{{ URL::to($model_path) }}">{{ l('Customer Shipping Slips') }}</a> <span style="color: #cccccc;">/</span> {{ l('New Customer Shipping Slip') }}</h2>
+            <h2><a class="btn btn-sm alert-info" href="{{ URL::to($model_path) }}" title="{{ l('Customer Shipping Slips') }}"><i class="fa fa-truck"></i></a> <span style="color: #cccccc;">/</span> {{ l('New Customer Shipping Slip') }}</h2>
         </div>
     </div>
 </div> 

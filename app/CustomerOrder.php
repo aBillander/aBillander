@@ -17,6 +17,16 @@ class CustomerOrder extends Model
     use ViewFormatterTrait;
     use BillableTrait;
 
+    /**
+     * The fillable properties for this model.
+     *
+     * @var array
+     *
+     * https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
+     */
+    protected $document_fillable = [
+    ];
+
     public static $statuses = array(
             'draft',
             'confirmed',

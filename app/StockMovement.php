@@ -321,6 +321,12 @@ class StockMovement extends Model {
         $quantity_onhand = $this->quantity;
         $this->quantity_before_movement = 0.0;
         $this->quantity_after_movement = $quantity_onhand;
+
+        if ($this->quantity_before_movement == $this->quantity_after_movement)
+        {
+            // Nothing said about cost price
+            return false;
+        }
         $this->save();
 
         // Average price stuff
@@ -396,6 +402,13 @@ class StockMovement extends Model {
         $quantity_onhand = $this->quantity;
         $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
         $this->quantity_after_movement = $quantity_onhand;
+
+        if ($this->quantity_before_movement == $this->quantity_after_movement)
+        {
+            // Nothing said about cost price
+            return false;
+        }
+
         if ($this->price === null) 
         {
             $this->price = ($this->combination_id > 0) ? $combination->cost_average : $product->cost_average;
@@ -636,26 +649,13 @@ class StockMovement extends Model {
     {
         // Update Product
         $product = $this->product;
+        
         $quantity_onhand = $product->quantity_onhand - $this->quantity;
         $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
         $this->quantity_after_movement = $this->quantity_before_movement - $this->quantity;
         $this->save();
 
         // Average price stuff - Not needed!
-
-        $product->quantity_onhand = $quantity_onhand;
-        $product->save();
-
-        // Update Cpmbination
-        if ($this->combination_id > 0) {
-            $combination = $this->combination;
-            $quantity_onhand = $combination->quantity_onhand - $this->quantity;
-
-            // Average price stuff - Not needed!
-
-            $combination->quantity_onhand = $quantity_onhand;
-            $combination->save();
-        }
 
         // Update Product-Warehouse relationship (quantity)
         $whs = $product->warehouses;
@@ -675,6 +675,9 @@ class StockMovement extends Model {
                 $product->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
         }
 
+        $product->quantity_onhand = $product->getStock();;
+        $product->save();
+
         // Update Combination-Warehouse relationship (quantity)
         if ($this->combination_id > 0) {
             $whs = $combination->warehouses;
@@ -693,6 +696,17 @@ class StockMovement extends Model {
                 if ($this->quantity != 0) 
                     $combination->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
             }
+        }
+
+        // Update Cpmbination
+        if ($this->combination_id > 0) {
+            $combination = $this->combination;
+            $quantity_onhand = $combination->quantity_onhand - $this->quantity;
+
+            // Average price stuff - Not needed!
+
+            $combination->quantity_onhand = $combination->getStock();
+            $combination->save();
         }
 
         return $this;

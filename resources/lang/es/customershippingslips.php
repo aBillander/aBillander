@@ -117,10 +117,10 @@ return [
 	''     => '',
 
 	// _order_header
-	'Shipping Slip Sequence'     => 'Serie de Albaranes',
+	'Sequence'     => 'Serie',	// 'Serie de Albaranes',
 	'Shipping Slip Number'     => 'Número de Albarán',
 	'Reference / Project'     => 'Referencia / Proyecto',
-	'Shipping Slip Date'     => 'Fecha Albarán',
+	'Document Date'     => 'Fecha del Documento',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Template for Printing'     => 'Plantilla para Imprimir',
 	'Save as Draft?'     => '¿Guardar como Borrador?',
@@ -158,7 +158,7 @@ return [
 	'Shipping Slip Discount (%)'     => 'Descuento Especial (%)',
 
 	''     => '',
-	'Header Data'     => 'Datos de cabecera',
+	'Header Data'     => 'Datos de Cabecera',
 	'Customer Name'     => 'Nombre del Cliente',
 	'Seach by Name or Identification (VAT Number).'     => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
 	

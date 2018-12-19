@@ -165,7 +165,22 @@ function doAjaxStockUpdate(payload)
                     $('#modal_Cancel').addClass('hidden');
                     
                     $('#footer-running').addClass('hidden');
-                    $('#stockCountUpdateModal_modal-body').append('<div class="alert alert-info alert-block">{!! l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}'+$('#wsname').val()+'</div>');
+
+                    if (response.errors>0) 
+                    {
+                        $('#stockCountUpdateModal_modal-body').append('<div class="alert alert-danger alert-block">{!! l('This record has been updated with errors &#58&#58 (:id) Check the Log ', ['id' => ''], 'layouts') !!}'+$('#wsname').val()+'</div>');
+                    }
+
+                    if (response.warnings>0) 
+                    {
+                        $('#stockCountUpdateModal_modal-body').append('<div class="alert alert-warning alert-block">{!! l('This record has been updated with warnings &#58&#58 (:id) Check the Log ', ['id' => ''], 'layouts') !!}'+$('#wsname').val()+'</div>');
+                    }
+                    
+                    if (response.errors==0 && response.warnings==0)
+                    {
+                        $('#stockCountUpdateModal_modal-body').append('<div class="alert alert-info alert-block">{!! l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}'+$('#wsname').val()+'</div>');
+                    }
+
                     $('#footer-done').removeClass('hidden');
 
             } 

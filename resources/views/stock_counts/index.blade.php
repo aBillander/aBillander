@@ -56,7 +56,7 @@
 			<td class="text-right">
 
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('stockcounts/' . $stockcount->id . '/stockcountlines') }}" title="{{l('Stock Count Lines')}}"><i class="fa fa-folder-open-o"></i></a>         
-                @if ( !$stockcount->processed )
+                @if ( !$stockcount->processed || \App\Configuration::isTrue('DEVELOPER_MODE') )
 
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('stockcounts.import', [$stockcount->id] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-upload"></i></a>
 

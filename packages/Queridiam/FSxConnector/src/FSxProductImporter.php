@@ -8,6 +8,7 @@ use App\Combination;
 use App\Tax;
 
 use App\Configuration;
+use \App\StockMovement;
 
 use Queridiam\FSxConnector\FSxTools;
 use Queridiam\FSxConnector\Seccion;
@@ -93,6 +94,7 @@ class FSxProductImporter {
 
     			if ( Configuration::isTrue('FSX_LOAD_ARTICULOS_STOCK_ALL') ) {
     				//
+/*
                     $data += [
                         'quantity_onhand' => $articulo->USTART > 0 ?: 0.0, 
                     ];
@@ -100,7 +102,31 @@ class FSxProductImporter {
                     // Ahhh! 'quantity_onhand' is NOT fillable
                     $articulo->product->quantity_onhand = $articulo->USTART > 0 ? $articulo->USTART : 0.0;
 
-//                    $p = $articulo->product->update( $data );
+                    $p = $articulo->product->update( $data );
+*/
+                    // Prepare stock movement
+                    $currency =  \App\Context::getContext()->currency;
+                    $product = $articulo->product;
+                    $datem = \Carbon\Carbon::now()->toDateString();
+
+                    $data = [
+                        'date' => $datem,
+                        'document_reference' => 'FSWeb '.$datem,
+//                        'price' => ,
+                        'currency_id' => $currency->id,
+                        'conversion_rate' => $currency->conversion_rate,
+                        'quantity' => $articulo->USTART > 0 ? $articulo->USTART : 0.0,
+//                        'notes' => ,
+                        'product_id' => $product->id,
+                        'combination_id' => null,
+                        'reference' => $product->reference,
+                        'name' => $product->name,
+                        'warehouse_id' => Configuration::get('FSX_FSOL_AUSCFG_PEER'),
+//                        'warehouse_counterpart_id' => ,
+                        'movement_type_id' => StockMovement::ADJUSTMENT,
+                    ];
+
+                    $stockmovement = StockMovement::createAndProcess( $data );
     			}
 
     			if ( Configuration::isTrue('FSX_LOAD_ARTICULOS_PRIZE_ALL') ) {
@@ -112,11 +138,11 @@ class FSxProductImporter {
 	        			'price_tax_inc' => $price->getPriceWithTax(), 
 	        		];
 
-//	        		$p = $articulo->product->update( $data );
+	        		$p = $articulo->product->update( $data );
     			}
 
-                if ( count($data) )
-                    $p = $articulo->product->update( $data );
+//                if ( count($data) )
+//                    $p = $articulo->product->update( $data );
 
         	}
 

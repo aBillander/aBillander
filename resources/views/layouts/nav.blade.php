@@ -40,7 +40,7 @@
                 @if( Auth::check() )
 
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Sales', [], 'layouts')}} <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-bag"></i> {{l('Sales', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
 @if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
                          <li>
@@ -58,12 +58,22 @@
                             </a>
                         </li>
                         <li class="divider"></li>
+@if ( \App\Configuration::isTrue('DEVELOPER_MODE') )
                          <li>
                             <a href="{{ URL::to('customershippingslips') }}"> 
+                                 <i class="fa fa-exclamation-triangle btn-xs btn-danger"></i> 
                                  {{l('Shipping Slips', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('customerinvoices') }}">
+                                 <i class="fa fa-exclamation-triangle btn-xs btn-danger"></i> 
+                                 {{l('Customer Invoices', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+@endif
                          <li>
                             <a href="{{ URL::to('customers') }}">
                                  {{l('Customers', [], 'layouts')}}
@@ -120,7 +130,7 @@
 
 @if ( \App\Configuration::isTrue('DEVELOPER_MODE') )
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-cart"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-th"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li class="divider"></li>
                          <li>
@@ -289,6 +299,11 @@
 @endif
                     <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
+                         <li>
+                            <a href="https://abillander.gitbook.io" target="_blank">
+                                 {{l('Documentation', [], 'layouts')}}
+                            </a>
+                        </li>
                          <!-- li>
                             <a data-target="#contactForm" data-toggle="modal" onclick="return false;" href="">
                                  {{l('Support & feed-back', [], 'layouts')}}

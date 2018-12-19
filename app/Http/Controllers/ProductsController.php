@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Product as Product;
+use App\Product;
+use App\StockMovement;
 use Form, DB;
 
 use App\Events\ProductCreated;
@@ -640,6 +641,45 @@ LIMIT 1
 
 //        return view('products.ajax.show_price', compact('product', 'tax', 'customer', 'currency', 'product_string'));
         return view('products.ajax.show_price', compact( 'product', 'customer', 'currency' ) );
+    }
+
+
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function getStockMovements($id, Request $request)
+    {
+        $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+
+        $mvts = StockMovement::where('product_id', $id)
+                                ->with('product')
+                                ->with('combination')
+                                ->with('warehouse')
+                                ->orderBy('created_at', 'DESC')
+                                ->orderBy('id', 'DESC');
+
+        $mvts = $mvts->paginate( $items_per_page );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+
+        $mvts->setPath('stockmovements');
+
+        //return $items_per_page ;
+        
+        return view('products._panel_stock_movements', compact('mvts', 'items_per_page'));
+    }
+
+
+    public function getStockSummary($id, Request $request)
+    {
+        
+        $product = $this->editQueryRaw()
+//                        ->isManufactured()
+                        ->findOrFail($id);
+        
+        return view('products._panel_stock_summary', compact('product'));
     }
     
 }

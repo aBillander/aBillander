@@ -121,6 +121,9 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('workcenters', 'WorkCentersController');
 
         Route::resource('products', 'ProductsController');
+        Route::get('products/{id}/stockmovements', 'ProductsController@getStockMovements')->name('products.stockmovements');
+        Route::get('products/{id}/stocksummary', 'ProductsController@getStockSummary')->name('products.stocksummary');
+
         Route::resource('products.images', 'ProductImagesController');
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
 //        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
@@ -175,6 +178,7 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('customers', 'CustomersController');
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customer.createorder');
+        Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup')); 
         Route::get('customers/{id}/getorders',             'CustomersController@getOrders' )->name('customer.getorders');
         Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
@@ -251,11 +255,25 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('customerorders/{id}/invoice/pdf', 'CustomerOrdersController@showPdfInvoice')->name('customerorder.invoice.pdf');
 
 
+        $pairs = [
+                [
+                    'controller' => 'CustomerShippingSlipsController',
+                    'path' => 'customershippingslips',
+                ],
+                [
+                    'controller' => 'CustomerInvoicesController',
+                    'path' => 'customerinvoices',
+                ],
+        ];
 
-        $controller = 'CustomerShippingSlipsController';
-        $path = 'customershippingslips';
+
+foreach ($pairs as $pair) {
+
+        $controller = $pair['controller'];
+        $path = $pair['path'];
 
         Route::resource($path, $controller);
+        Route::get($path.'/create/withcustomer/{customer_id}', $controller.'@createWithCustomer')->name($path.'.create.withcustomer');
 
         Route::get($path.'/ajax/customer_lookup', $controller.'@ajaxCustomerSearch')->name($path.'.ajax.customerLookup');
         Route::get($path.'/ajax/customer/{id}/adressbook_lookup', $controller.'@customerAdressBookLookup')->name($path.'.ajax.customer.AdressBookLookup');
@@ -286,7 +304,7 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get($path.'/{id}/pdf',         $controller.'@showPdf'       )->name($path.'.pdf'        );
         Route::get($path.'/{id}/invoice/pdf', $controller.'@showPdfInvoice')->name($path.'.invoice.pdf');
         Route::get($path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );
-        
+}
 
         
 

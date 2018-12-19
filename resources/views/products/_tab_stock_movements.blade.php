@@ -24,11 +24,11 @@
 
    });
 
-{{--
-   		/*
+
+   		
    		$(window).on('hashchange',function(){
 			page = window.location.hash.replace('#','');
-			getCustomerOrders(page);
+			getStockMovements(page);
 		});
 
 		$(document).on('click','.pagination a', function(e){
@@ -39,7 +39,7 @@
 			stubs = $(this).attr('href').split('page=');
 			page = stubs[ stubs.length - 1 ];	// Like a BOSS!!!!
 
-			getCustomerOrders(page);
+			getStockMovements(page);
 			// location.hash = page;
 		});
 
@@ -49,17 +49,17 @@
 		  if (e.keyCode == 13) {
 		   // console.log("put function call here");
 		   e.preventDefault();
-		   getCustomerOrders();
+		   getStockMovements();
 		   return false;
 		  }
 
 		});
-		*/
---}}
-		function getOrderProfit()
+		
+
+		function getStockMovements( page = 1 )
 		{
            var panel = $("#panel_stock_movements");
-           var url = "{{ route( 'customerorder.profit', [1] ) }}";
+           var url = '{{ route( 'products.stockmovements', [$product->id] ) }}?page=' + page;
 
            panel.addClass('loading');
 
@@ -72,6 +72,8 @@
 			}).done(function(data){
 				panel.html(data);
 				panel.removeClass('loading');
+
+                $("[data-toggle=popover]").popover();
 			});
                  
 		}
@@ -81,9 +83,7 @@
 		  var target = $(e.target).attr("href") // activated tab
 		  if (target == '#tab2default')
 		  {
-		  		// getOrderProfit();
-
-		  		alert('Hi!');
+		  		getStockMovements();
 		  }
 		  /*
 		  if ($(target).is(':empty')) {

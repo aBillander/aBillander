@@ -25,6 +25,8 @@ class Billable extends Model
     protected $totals = [];
 
 
+    public static $types = [];
+
     public static $statuses = array(
             'draft',
             'confirmed',
@@ -41,7 +43,14 @@ class Billable extends Model
                         'close_date',
 
                         'export_date',
+
+                        'printed_at',
+                        'edocument_sent_at',
+                        'customer_viewed_at'
                        ];
+
+    protected $document_dates = [
+    ];
 
 
     // https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
@@ -56,19 +65,42 @@ class Billable extends Model
                             'currency_conversion_rate', 'down_payment', 
 
             
-                            'total_lines_tax_incl', 'total_lines_tax_excl', 'total_tax_incl', 'total_tax_excl',
+                            'total_currency_tax_incl', 'total_currency_tax_excl', 'total_currency_paid',
+                            'total_tax_incl', 'total_tax_excl',
 
+                            'commission_amount', 
 
                             'notes_from_customer', 'notes', 'notes_to_customer',
                             'status', 'locked',
+
                             'invoicing_address_id', 'shipping_address_id', 
                             'warehouse_id', 'shipping_method_id', 'sales_rep_id', 'currency_id', 'payment_method_id', 
                             'template_id',
 
-//                            'production_sheet_id',
+                            'import_key',
                           ];
 
-                       
+    protected $document_fillable = [
+    ];
+
+              
+    
+    /**
+     * Get the fillable attributes for the model.
+     *
+     * https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
+     *
+     * @return array
+     */
+    public function getFillable()
+    {
+        return array_merge(parent::getFillable(), $this->document_fillable);
+    }
+
+    public function getDates()
+    {
+        return array_merge(parent::getDates(), $this->document_dates);
+    }
 
 
     public static function boot()
@@ -157,6 +189,13 @@ class Billable extends Model
         return !( $this->status == 'closed' || $this->status == 'canceled' );
     }
 
+    public function getNumberAttribute()
+    {
+        return    $this->document_id > 0
+                ? $this->document_reference
+                : l($this->getClassName().'.'.'draft', [], 'appmultilang') ;
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -164,11 +203,27 @@ class Billable extends Model
     |--------------------------------------------------------------------------
     */
 
+    public static function getTypeList()
+    {
+            $list = [];
+            foreach (static::$types as $type) {
+                $list[$type] = l(get_called_class().'.'.$type, [], 'appmultilang');;
+            }
+
+            return $list;
+    }
+
+    public static function getTypeName( $type )
+    {
+            return l(get_called_class().'.'.$type, [], 'appmultilang');;
+    }
+
+
     public static function getStatusList()
     {
             $list = [];
-            foreach (self::$statuses as $status) {
-                $list[$status] = l($this->getClassName().'.'.$status, [], 'appmultilang');
+            foreach (static::$statuses as $status) {
+                $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
             }
 
             return $list;
@@ -176,7 +231,7 @@ class Billable extends Model
 
     public static function getStatusName( $status )
     {
-            return l($this->getClassName().'.'.$status, [], 'appmultilang');
+            return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
     public function confirm()
@@ -441,7 +496,7 @@ class Billable extends Model
 
     public function scopeIsOpen($query)
     {
-        // WTF???
+        // WTF???     (ノಠ益ಠ)ノ彡┻━┻ 
         return $query->where( 'due_date', '>=', \Carbon\Carbon::now()->toDateString() );
     }
 

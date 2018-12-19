@@ -136,6 +136,8 @@
       {
          $("#panel_inventory").show();
          $("#b_inventory").addClass('active');
+
+         getStockSummary();
       }
       else if(window.location.hash.substring(1) == 'manufacturing')
       {

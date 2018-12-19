@@ -160,7 +160,11 @@ padding: 3px 20px;
 line-height: 1.42857143;
                         ">{{l('Add Document', [], 'layouts')}}</li>
                       <li class="divider"></li>
-                      <li><a href="{{ route('customer.createorder', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
+                      <li><a href="{{ route('customerorders.create.withcustomer', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{ route('customershippingslips.create.withcustomer', $customer->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{ route('customerinvoices.create.withcustomer', $customer->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>

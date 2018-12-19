@@ -19,7 +19,7 @@
                <a href="{{ URL::to('customerorders') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customer Orders') }}</a>
 @endif
             </div>
-            <h2><a href="{{ URL::to('customerorders') }}">{{ l('Customer Orders') }}</a> <span style="color: #cccccc;">/</span> {{ l('New Customer Order') }}</h2>
+            <h2><a class="btn btn-sm alert-success" href="{{ URL::to('customerorders') }}" title="{{ l('Customer Orders') }}"><i class="fa fa-shopping-bag"></i></a> <span style="color: #cccccc;">/</span> {{ l('New Customer Order') }}</h2>
         </div>
     </div>
 </div> 

@@ -222,6 +222,20 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Customer Invoice Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'App\CustomerInvoice.invoice'    => 'Factura',
+    'App\CustomerInvoice.corrective' => 'Factura Rectificativa',
+    'App\CustomerInvoice.credit'     => 'Nota de Abono',
+    'App\CustomerInvoice.deposit'    => 'Anticipo',
+
+	/*
+	|--------------------------------------------------------------------------
 	| Customer Invoice Statuses
 	|--------------------------------------------------------------------------
 	|
@@ -229,13 +243,26 @@ return array(
 	|
 	*/
 
-	'draft' => 'Borrador',
-	'pending' => 'Pendiente',
-	'halfpaid'    => 'Parcialmente Pagado',
-	'paid'    => 'Pagado',
-    'overdue' => 'Vencido',
-    'doubtful'    => 'Pago Dudoso',
-    'archived' => 'Archivado',
+	'App\CustomerInvoice.draft'     => 'Borrador',
+	'App\CustomerInvoice.confirmed' => 'Confirmado',
+	'App\CustomerInvoice.closed'    => 'Cerrado',
+    'App\CustomerInvoice.canceled'  => 'Cancelado',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customer Invoice Payment Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\CustomerInvoice.pending'  => 'Pendiente',
+	'App\CustomerInvoice.halfpaid' => 'Parcialmente Pagado',
+	'App\CustomerInvoice.paid'     => 'Pagado',
+    'App\CustomerInvoice.overdue'  => 'Vencido',
+    'App\CustomerInvoice.doubtful' => 'Pago Dudoso',
+    'App\CustomerInvoice.archived' => 'Archivado',
 
 	/*
 	|--------------------------------------------------------------------------

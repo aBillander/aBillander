@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+// use App\Http\Requests;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-use App\Customer as Customer;
-use App\CustomerInvoice as CustomerInvoice;
-use App\CustomerInvoiceLine as CustomerInvoiceLine;
+use App\Customer;
+use App\CustomerInvoice;
+use App\CustomerInvoiceLine;
 
-use App\Configuration as Configuration;
+use App\Configuration;
+use App\Sequence;
 
-class CustomerInvoicesController extends Controller {
+class CustomerInvoicesController extends BillableController
+{
 
-
-   protected $customer, $customerInvoice, $customerInvoiceLine;
-
-   public function __construct(Customer $customer, CustomerInvoice $customerInvoice, CustomerInvoiceLine $customerInvoiceLine)
+   public function __construct(Customer $customer, CustomerInvoice $document, CustomerInvoiceLine $document_line)
    {
+        parent::__construct();
+
         $this->customer = $customer;
-        $this->customerInvoice = $customerInvoice;
-        $this->customerInvoiceLine = $customerInvoiceLine;
+        $this->document = $document;
+        $this->document_line = $document_line;
    }
 
 	/**
@@ -33,13 +33,21 @@ class CustomerInvoicesController extends Controller {
 	 */
 	public function index()
 	{
-        $customer_invoices = $this->customerInvoice
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+
+        $documents = $this->document
 							->with('customer')
 							->with('currency')
 							->with('paymentmethod')
-							->orderBy('id', 'desc')->get();
+                            ->orderBy('document_date', 'desc')
+							->orderBy('id', 'desc');        // ->get();
 
-		return view('customer_invoices.index', compact('customer_invoices'));
+        $documents = $documents->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        $documents->setPath($this->model_path);
+
+		return view($this->view_path.'.index', $this->modelVars() + compact('documents'));
 	}
 
 	/**
@@ -47,34 +55,63 @@ class CustomerInvoicesController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function create(Request $request)
+	public function create()
 	{
-		// Some checks to start with:
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+//        $model_snake_case = $this->model_snake_case;
 
-    	$sequenceList = \App\Sequence::listFor('CustomerInvoice');
-        if ( !$sequenceList )
-            return redirect('customerinvoices')
+        // Some checks to start with:
+
+        $sequenceList = $this->document->sequenceList();
+        
+        if ( !(count($sequenceList)>0) )
+            return redirect($this->model_path)
                 ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
 
     	$payments = \App\PaymentMethod::count();
         if ( !$payments )
-            return redirect('customerinvoices')
+            return redirect($this->model_path)
                 ->with('error', l('There is not any Payment Method &#58&#58 You must create one first', [], 'layouts'));
 
 
         if ( !$request->has('customer_id') ) { 
 			// No Customer available, ask for one
-			return view('customer_invoices.create');
+			return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList'));
 		}
+    
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createWithCustomer($customer_id)
+    {
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+
+        // Some checks to start with:
+
+        $sequenceList = $this->document->sequenceList();
+        
+        if ( !(count($sequenceList)>0) )
+            return redirect($this->model_path)
+                ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
+
 
 		// Do the Mambo!!!
         try {
-			$customer = \App\Customer::with('addresses')->findOrFail( $request->input('customer_id') );
+			$customer = \App\Customer::with('addresses')->findOrFail( $customer_id );
 
         } catch(ModelNotFoundException $e) {
 			// No Customer available, ask for one
-			return view('customer_invoices.create');
+			return redirect()->back()
+                	->with('error', l('The record with id=:id does not exist', ['id' => $customer_id], 'layouts'));
         }
+        
+        return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList', 'customer_id'));
 		
 		// Prepare & retrieve customer data to fill in the form
 		// Should check Invoicing Address (at least)
@@ -107,7 +144,7 @@ class CustomerInvoicesController extends Controller {
         }
 
 		// Prepare Customer Invoice default data
-		$invoice = $this->customerInvoice;
+		$invoice = $this->document;
 
 		$invoice->customer_id          = $customer->id;
 
@@ -158,7 +195,7 @@ class CustomerInvoicesController extends Controller {
 		$invoice->template_id          = $customer->template_id > 0 ? $customer->template_id : Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE');
 //			$invoice->parent_document_id   = null;
 
-		$invoice->customerInvoiceLines = collect([]);
+		$invoice->lines = collect([]);
 
 		return view('customer_invoices.create', compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'invoice', 'sequenceList'));
 
@@ -190,21 +227,21 @@ class CustomerInvoicesController extends Controller {
 
 		/* *********************************************************************** */
 
-		$customerInvoice = $this->storeOrUpdate( $request );
+		$document = $this->storeOrUpdate( $request );
 
 		/* *********************************************************************** */
 
 		$nextAction = $request->input('nextAction', '');
 
 		if ( $nextAction == 'showInvoice' ) 
-			return $this->show($customerInvoice->id);
+			return $this->show($document->id);
 		
 		if ( $nextAction == 'completeInvoice' ) 
-			return redirect('customerinvoices/' . $customerInvoice->id . '/edit')
-				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerInvoice->id], 'layouts'));
+			return redirect('customerinvoices/' . $document->id . '/edit')
+				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
 		return redirect('customerinvoices')
-				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerInvoice->id], 'layouts'));
+				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
 	}
 
@@ -216,9 +253,9 @@ class CustomerInvoicesController extends Controller {
 
 
 		// Do the Mambo!
-		$customerInvoice = ( $id == null ) 
+		$document = ( $id == null ) 
 							? new CustomerInvoice() 
-							: $this->customerInvoice->findOrFail($id);
+							: $this->document->findOrFail($id);
 
 		// STEP 1 : validate data
 
@@ -257,7 +294,7 @@ class CustomerInvoicesController extends Controller {
 
 		// STEP 2 : build objects
 
-		if ( !$customerInvoice->document_reference )
+		if ( !$document->document_reference )
 		if ( $request->input('save_as', 'draft') == 'invoice' ) {
 			$seq = \App\Sequence::find( $request->input('sequence_id') );
 			$doc_id = $seq->getNextDocumentId();
@@ -269,9 +306,9 @@ class CustomerInvoicesController extends Controller {
 			$request->merge( $extradata );
 		}
 
-//		$customerInvoice = $this->customerInvoice->create($request->all());
-		$customerInvoice->fill($request->all());
-		$customerInvoice->save();
+//		$document = $this->document->create($request->all());
+		$document->fill($request->all());
+		$document->save();
 
 
 		// 
@@ -280,8 +317,8 @@ class CustomerInvoicesController extends Controller {
 
 		// STEP 3 : Delete current lines
 
-		// $customerInvoice->customerInvoiceLines()->delete();
-		foreach( $customerInvoice->customerInvoiceLines as $line)
+		// $document->lines()->delete();
+		foreach( $document->lines as $line)
 		{
 			if ( $line->locked ) continue;		// Skip locked lines
 			
@@ -294,17 +331,17 @@ class CustomerInvoicesController extends Controller {
 		$total_tax_incl = 0.0;
 		$total_tax_excl = 0.0;
 
-		$line = $this->customerInvoiceLine;
+		$line = $this->document_line;
 
 		// Loop...
 //	    $address  = \App\Address::find( $request->input('invoicing_address_id'));
-	    $customer = \App\Customer::with('address')->find( $customerInvoice->customer_id );
+	    $customer = \App\Customer::with('address')->find( $document->customer_id );
 	    $address  = $customer->address;
 //		$n = intval($request->input('nbrlines', 0));
 		$form_lines = $request->input('lines');
 
 		// Locked lines :: Add ammounts to document total
-		foreach( $customerInvoice->customerInvoiceLines as $line)		// only locked lines are left
+		foreach( $document->lines as $line)		// only locked lines are left
 		{
 			$total_tax_incl += $line->total_tax_incl;
 			$total_tax_excl += $line->total_tax_excl;
@@ -324,7 +361,7 @@ class CustomerInvoicesController extends Controller {
 			if ( !$request->has('lines.'.$i.'.sales_equalization') ) $form_lines[$i]['sales_equalization'] = 0;
         	// Controller: $request->merge(['sales_equalization' => $request->input('sales_equalization', 0)]);
 
-			$line = $this->customerInvoiceLine->create( $form_lines[$i] );
+			$line = $this->document_line->create( $form_lines[$i] );
 
 		    // Calculate Taxes & Totals
 			if ($form_lines[$i]['product_id']>0) {
@@ -351,7 +388,7 @@ class CustomerInvoicesController extends Controller {
 				$line_tax->name = $tax->name . ' | ' . $rule->name;
 				$line_tax->tax_rule_type = $rule->rule_type;
 
-				$p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $customerInvoice->currency, $customerInvoice->currency_conversion_rate);
+				$p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $document->currency, $document->currency_conversion_rate);
 
 				if ($IKnowBase == false) {
 					$p->applyRounding( );
@@ -381,24 +418,24 @@ class CustomerInvoicesController extends Controller {
 
 //			$line->save();
 
-			$customerInvoice->CustomerInvoiceLines()->save($line);
+			$document->CustomerInvoiceLines()->save($line);
 
 			$total_tax_incl += $line->total_tax_incl;
 			$total_tax_excl += $line->total_tax_excl;
 
 		}
 
-		$p = \App\Price::create([$total_tax_excl, $total_tax_incl], $customerInvoice->currency, $customerInvoice->currency_conversion_rate);
-		$p->applyDiscountPercent( $customerInvoice->document_discount );
+		$p = \App\Price::create([$total_tax_excl, $total_tax_incl], $document->currency, $document->currency_conversion_rate);
+		$p->applyDiscountPercent( $document->document_discount );
 
-		$customerInvoice->total_tax_excl = $p->getPrice();
-		$customerInvoice->total_tax_incl = $p->getPriceWithTax();
+		$document->total_tax_excl = $p->getPrice();
+		$document->total_tax_incl = $p->getPriceWithTax();
 		// Open balance: only payments can modify it
-		$customerInvoice->open_balance = $customerInvoice->total_tax_incl;
+		$document->open_balance = $document->total_tax_incl;
 
-		$customerInvoice->save();
+		$document->save();
 
-		return $customerInvoice;
+		return $document;
 	}
 
 	/**
@@ -409,10 +446,10 @@ class CustomerInvoicesController extends Controller {
 	 */
 	public function show($id)
 	{
-		$cinvoice = $this->customerInvoice
+		$cinvoice = $this->document
 							->with('customer')
 							->with('invoicingAddress')
-							->with('customerInvoiceLines')
+							->with('lines')
 							->with('currency')
 							->with('payments')
 							->findOrFail($id);
@@ -433,10 +470,10 @@ class CustomerInvoicesController extends Controller {
 	public function edit($id)
 	{
 		try {
-			$invoice = $this->customerInvoice
+			$invoice = $this->document
 								->with('customer')
 								->with('invoicingAddress')
-								->with('customerInvoiceLines')
+								->with('lines')
 								->with('currency')
 								->findOrFail($id);
 
@@ -479,7 +516,7 @@ class CustomerInvoicesController extends Controller {
 
 		/* *********************************************************************** */
 
-		$customerInvoice = $this->storeOrUpdate( $request, $id );
+		$document = $this->storeOrUpdate( $request, $id );
 
 		/* *********************************************************************** */
 
@@ -488,27 +525,27 @@ class CustomerInvoicesController extends Controller {
 		// 
 		// Vouchers stuff
 		// 
-		if ( !$customerInvoice->draft && 1) {
+		if ( !$document->draft && 1) {
 
-			$customerInvoice->payments()->delete();
+			$document->payments()->delete();
 
-			$ototal = $customerInvoice->total_tax_incl - $customerInvoice->down_payment;
+			$ototal = $document->total_tax_incl - $document->down_payment;
 			$ptotal = 0;
-			$pmethod = $customerInvoice->paymentmethod;
+			$pmethod = $document->paymentmethod;
 			$dlines = $pmethod->deadlines;
-			$pdays = $customerInvoice->customer->paymentDays();
-			// $base_date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $customerInvoice->document_date );
-			$base_date = $customerInvoice->document_date;
+			$pdays = $document->customer->paymentDays();
+			// $base_date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $document->document_date );
+			$base_date = $document->document_date;
 
 			for($i = 0; $i < count($pmethod->deadlines); $i++)
         	{
         		$next_date = $base_date->copy()->addDays($dlines[$i]['slot']);
 
         		// Calculate installment due date
-        		$due_date = $customerInvoice->customer->paymentDate( $next_date );
+        		$due_date = $document->customer->paymentDate( $next_date );
 
         		if ( $i != (count($pmethod->deadlines)-1) ) {
-        			$installment = $customerInvoice->as_priceable( $ototal * $dlines[$i]['percentage'] / 100.0, $customerInvoice->currency, true );
+        			$installment = $document->as_priceable( $ototal * $dlines[$i]['percentage'] / 100.0, $document->currency, true );
         			$ptotal += $installment;
         		} else {
         			// Last Installment
@@ -523,20 +560,20 @@ class CustomerInvoicesController extends Controller {
         					'due_date' => abi_date_short( \Carbon\Carbon::parse( $due_date ) ), 
         					'payment_date' => null, 
                             'amount' => $installment, 
-                            'currency_id' => $customerInvoice->currency_id,
-                            'currency_conversion_rate' => $customerInvoice->currency_conversion_rate, 
+                            'currency_id' => $document->currency_id,
+                            'currency_conversion_rate' => $document->currency_conversion_rate, 
                             'status' => 'pending', 
                             'notes' => null,
-                            'document_reference' => $customerInvoice->document_reference,
+                            'document_reference' => $document->document_reference,
                         ];
 
                 $payment = \App\Payment::create( $data );
-                $customerInvoice->payments()->save($payment);
-                $customerInvoice->customer->payments()->save($payment);
+                $document->payments()->save($payment);
+                $document->customer->payments()->save($payment);
 /*
-                $payment->invoice_id = $customerInvoice->id;
+                $payment->invoice_id = $document->id;
                 $payment->model_name = 'CustomerInvoice';
-                $payment->owner_id = $customerInvoice->customer->id;
+                $payment->owner_id = $document->customer->id;
                 $payment->owner_model_name = 'Customer';
 
                 $payment->save();
@@ -555,14 +592,14 @@ class CustomerInvoicesController extends Controller {
 		$nextAction = $request->input('nextAction', '');
 
 		if ( $nextAction == 'showInvoice' ) 
-			return $this->show($customerInvoice->id);
+			return $this->show($document->id);
 		
 		if ( $nextAction == 'completeInvoice' ) 
-			return redirect('customerinvoices/' . $customerInvoice->id . '/edit')
-				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerInvoice->id], 'layouts'));
+			return redirect('customerinvoices/' . $document->id . '/edit')
+				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
 		return redirect('customerinvoices')
-				->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customerInvoice->id], 'layouts'));
+				->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 	}
 
 	/**
@@ -573,7 +610,7 @@ class CustomerInvoicesController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		$this->customerInvoice->findOrFail($id)->delete();
+		$this->document->findOrFail($id)->delete();
 
         return redirect('customerinvoices')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
@@ -595,7 +632,7 @@ class CustomerInvoicesController extends Controller {
 			$cinvoice = CustomerInvoice::
 							  with('customer')
 							->with('invoicingAddress')
-							->with('customerInvoiceLines')
+							->with('lines')
 							->with('currency')
 							->with('template')
 							->findOrFail($id);
@@ -628,8 +665,8 @@ class CustomerInvoicesController extends Controller {
 			$cinvoice = CustomerInvoice::
 							  with('customer')
 							->with('invoicingAddress')
-							->with('customerInvoiceLines')
-							->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
+							->with('lines')
+							->with('taxes')
 							->with('currency')
 							->with('paymentmethod')
 							->with('template')
@@ -674,8 +711,8 @@ class CustomerInvoicesController extends Controller {
 			$cinvoice = CustomerInvoice::
 							  with('customer')
 							->with('invoicingAddress')
-							->with('customerInvoiceLines')
-							->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
+							->with('lines')
+							->with('taxes')
 							->with('currency')
 							->with('paymentmethod')
 							->with('template')

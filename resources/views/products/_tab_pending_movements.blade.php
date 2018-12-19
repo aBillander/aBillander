@@ -5,7 +5,7 @@
 
 <div id="panel_pending_movements" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('products._panel_stock_movements') --}}
+{{--  @ include('products._panel_pending_movements') --}}
 
 </div>
 
@@ -58,7 +58,7 @@
 --}}
 		function getOrderProfit()
 		{
-           var panel = $("#panel_stock_movements");
+           var panel = $("#panel_pending_movements");
            var url = "{{ route( 'customerorder.profit', [1] ) }}";
 
            panel.addClass('loading');
@@ -83,7 +83,10 @@
 		  {
 		  		// getOrderProfit();
 
-		  		alert('Ho!');
+           		var panel = $("#panel_pending_movements");
+
+				panel.html('Coming soon! Stay tunned.');
+				panel.removeClass('loading');
 		  }
 		  /*
 		  if ($(target).is(':empty')) {

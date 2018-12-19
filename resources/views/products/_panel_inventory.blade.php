@@ -65,7 +65,7 @@
 @section('scripts')     @parent
 
 <script type="text/javascript">
-  $('#available').val( Number($('#quantity_onhand').val()) + Number($('#quantity_onorder').val()) - Number($('#quantity_allocated').val()) );
+
 </script>
 
 @endsection

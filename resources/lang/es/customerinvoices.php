@@ -84,10 +84,12 @@ return [
 	''     => '',
 
 	// _invoice_header
-	'Invoice Sequence'     => 'Serie de Facturas',
+	'Type'     => 'Tipo',
+	'Sequence'     => 'Serie',	// 'Serie de Facturas',
 	'Invoice Number'     => 'Número de Factura',
 	'Reference / Project'     => 'Referencia / Proyecto',
-	'Invoice Date'     => 'Fecha Factura',
+// 	'Invoice Date'     => 'Fecha Factura',
+	'Document Date'     => 'Fecha del Documento',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Template for Printing'     => 'Plantilla para Imprimir',
 	'Save as Draft?'     => '¿Guardar como Borrador?',
@@ -100,6 +102,7 @@ return [
 	'Number of Packages'     => 'Número de Bultos',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
+	'Shipping Method'     => 'Método de Envío',
 	'Carrier'     => 'Transportista',
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',
@@ -116,9 +119,16 @@ return [
 	'Total'     => 'Total',
 	'New line...'     => 'Nueva línea...',
 	'Order Discount (%)'     => 'Descuento Especial (%)',
+
 	''     => '',
-	''     => '',
-	''     => '',
+	'Header Data'     => 'Datos de Cabecera',
+	'Customer Name'     => 'Nombre del Cliente',
+	'Seach by Name or Identification (VAT Number).'     => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
+	
+	'Product'     => 'Producto',
+	'Service'     => 'Servicio',
+	'Discount Line'     => 'Línea de Descuento',
+	'Text Line'     => 'Línea de Texto',
 	
 	// modal_product_search
 	'Search Products'     => 'Buscar Productos',

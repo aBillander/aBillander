@@ -181,6 +181,7 @@ return [
 	'Progress'     => 'Progreso',
 	'Save'     => 'Guardar',
 	'Save & Complete'     => 'Guardar y Completar',
+	'Save & Confirm'      => 'Guardar y Confirmar',
 	'Save & Continue'     => 'Guardar y Continuar',
 	'Update'     => 'Actualizar',
 	'Cancel'     => 'Cancelar',

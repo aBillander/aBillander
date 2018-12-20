@@ -127,7 +127,7 @@ class WarehousesController extends Controller {
 		$warehouse = $this->warehouse->findOrFail($id);
 		$address = $warehouse->address;
 		
-		$warehouse->update( ['notes' => $request->input('address.notes'), 'alias' => $request->input('address.alias'), 'active' => $request->input('active')] );
+		$warehouse->update( ['notes' => $request->input('address.notes'), 'alias' => $request->input('address.alias'), 'name' => $request->input('address.name_commercial'), 'active' => $request->input('active')] );
 
 		// abi_r($request->all(), true);
 

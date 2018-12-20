@@ -143,9 +143,14 @@
                </div><!-- div class="panel-body" -->
 
                <div class="panel-footer text-right">
-                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
-                     <i class="fa fa-hdd-o"></i>
+                  <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">
+                     <i class="fa fa-floppy-o"></i>
                      &nbsp; {{l('Save', [], 'layouts')}}
+                  </button>
+                  <input type="hidden" id="nextAction" name="nextAction" value="" />
+                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
+                     <i class="fa fa-hdd-o"></i>
+                     &nbsp; {{l('Save & Confirm', [], 'layouts')}}
                   </button>
                </div>
 

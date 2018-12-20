@@ -358,7 +358,7 @@ class ImportProductsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'category_id', 'category_REFERENCE_EXTERNAL', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'main_supplier_REFERENCE_EXTERNAL', 'SUPPLIER_NAME'
+        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'description', 'description_short', 'category_id', 'category_REFERENCE_EXTERNAL', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'main_supplier_REFERENCE_EXTERNAL', 'SUPPLIER_NAME'
         ];
 
         $data[] = $headers;

@@ -17,7 +17,13 @@
 
       <div class="row">
 
-         <div class="form-group col-lg-6 col-md-6 col-sm-6">
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('template_id') ? 'has-error' : '' }}">
+            {{ l('Template') }}
+            {!! Form::select('template_id', array('' => l('-- Please, select --', [], 'layouts')) + $invoices_templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
+            {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="form-group col-lg-4 col-md-4 col-sm-4">
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference') ? 'has-error' : '' }}">
@@ -34,7 +40,7 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('export_date') ? 'has-error' : '' }}">
                
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') && $model_path=='customerorders' )
 
             <label for="export_date_form">{{ l('Export to FS') }}</label>
             <div  class="input-group">
@@ -57,7 +63,7 @@
       <div class="row">
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('document_date') ? 'has-error' : '' }}">
-               {{ l('Order Date') }}
+               {{ l('Document Date') }}
                {!! Form::text('document_date_form', null, array('class' => 'form-control', 'id' => 'document_date_form', 'autocomplete' => 'off')) !!}
                {!! $errors->first('document_date', '<span class="help-block">:message</span>') !!}
          </div>
@@ -160,10 +166,17 @@
                </div><!-- div class="panel-body" -->
 
                <div class="panel-footer text-right">
-                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
-                     <i class="fa fa-hdd-o"></i>
+                  <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">
+                     <i class="fa fa-floppy-o"></i>
                      &nbsp; {{l('Save', [], 'layouts')}}
                   </button>
+@if ($document->status=='draft')
+                  <input type="hidden" id="nextAction" name="nextAction" value="" />
+                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
+                     <i class="fa fa-hdd-o"></i>
+                     &nbsp; {{l('Save & Confirm', [], 'layouts')}}
+                  </button>
+@endif
                </div>
 
 <!-- Order header ENDS -->

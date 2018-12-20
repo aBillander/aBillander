@@ -9,11 +9,9 @@
         <div class="page-header">
             <div class="pull-right">
 
-                <a class="btn btn-sm btn-blue xbtn-info" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
+                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
 
-                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}"><i class="fa fa-paper-plane"></i></a>
-
-                <a class="btn btn-sm btn-info" href="{{ URL::to($model_path.'/' . $document->id . '/invoice/pdf') }}" title="{{l('PDF Invoice', [], 'layouts')}}"><i class="fa fa-money"></i></a>
+                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></a>
                 
                 <a href="{{ URL::to($model_path.'') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to Customer Invoices')}}</a>
             </div>

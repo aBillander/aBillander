@@ -177,7 +177,6 @@ Route::group(['middleware' =>  ['auth']], function()
 
 
         Route::resource('customers', 'CustomersController');
-        Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customer.createorder');
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup')); 
         Route::get('customers/{id}/getorders',             'CustomersController@getOrders' )->name('customer.getorders');
@@ -299,11 +298,12 @@ foreach ($pairs as $pair) {
 
         Route::post($path.'/sortlines', $controller.'@sortLines')->name($path.'.sortlines');
 
-        Route::get($path.'/{customerorder}/confirm', $controller.'@confirm')->name($path.'.confirm');
+        Route::get($path.'/{document}/confirm', $controller.'@confirm')->name($path.'.confirm');
 
         Route::get($path.'/{id}/pdf',         $controller.'@showPdf'       )->name($path.'.pdf'        );
         Route::get($path.'/{id}/invoice/pdf', $controller.'@showPdfInvoice')->name($path.'.invoice.pdf');
-        Route::get($path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );
+        Route::match(array('GET', 'POST'), 
+                   $path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );
 }
 
         

@@ -75,11 +75,7 @@ class CustomerInvoicesController extends BillableController
                 ->with('error', l('There is not any Payment Method &#58&#58 You must create one first', [], 'layouts'));
 
 
-        if ( !$request->has('customer_id') ) { 
-			// No Customer available, ask for one
-			return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList'));
-		}
-    
+        return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList'));
     }
 
     /**
@@ -112,93 +108,6 @@ class CustomerInvoicesController extends BillableController
         }
         
         return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList', 'customer_id'));
-		
-		// Prepare & retrieve customer data to fill in the form
-		// Should check Invoicing Address (at least)
-		$addressBook = $customer->addresses;
-/*
-		$theId = $customer->invoicing_address_id;
-		$invoicing_address = $addressBook->filter(function($item) use ($theId) {	// Filter returns a collection!
-		    return $item->id == $theId;
-		})->first();
-
-		$addressbookList = array();
-		foreach ($addressBook as $address) {
-			$addressbookList[$address->id] = $address->alias;
-		}
-*/
-		$invoicing_address = $customer->invoicing_address();
-//		$addressbookList   = $customer->getAddressList();
-		$addressbookList   = $addressBook->pluck( 'alias', 'id' )->toArray();
-
-		$currency_id = $customer->currency_id > 0 ? $customer->currency_id : \App\Context::getContext()->currency->id;
-        try {
-            if ($currency_id == \App\Context::getContext()->currency->id) 
-            	$currency = \App\Context::getContext()->currency;
-           	else 
-           		$currency = \App\Currency::findOrFail($currency_id);
-
-        } catch(ModelNotFoundException $e) {
-
-            $currency = \App\Context::getContext()->currency;		// Really???
-        }
-
-		// Prepare Customer Invoice default data
-		$invoice = $this->document;
-
-		$invoice->customer_id          = $customer->id;
-
-		$invoice->sequence_id          = $customer->sequence_id > 0 ? $customer->sequence_id : Configuration::get('DEF_CUSTOMER_INVOICE_SEQUENCE');
-		$invoice->document_reference   = '';
-
-		$invoice->reference            = '';
-		$invoice->document_discount    = 0.0;
-
-		$invoice->document_date        = \Carbon\Carbon::now();
-		$invoice->document_date_form   = abi_date_short( \Carbon\Carbon::now() );		// Formatted date for view
-		
-		$invoice->delivery_date        = $invoice->document_date;
-		$invoice->delivery_date_form   = $invoice->document_date_form;
-
-		$invoice->printed_at         = null;
-		$invoice->edocument_sent_at  = null;
-		$invoice->customer_viewed_at = null;
-		$invoice->posted_at          = null;
-
-		$invoice->number_of_packages   = 1;
-		$invoice->shipping_conditions  = '';
-		$invoice->tracking_number      = '';
-
-		$invoice->prices_entered_with_tax  = Configuration::get('PRICES_ENTERED_WITH_TAX');
-		$invoice->round_prices_with_tax    = Configuration::get('ROUND_PRICES_WITH_TAX');
-
-		$invoice->currency_conversion_rate = $currency->conversion_rate;
-		$invoice->down_payment         = 0.0;
-		$invoice->open_balance         = 0.0;
-
-		$invoice->total_tax_incl     = 0.0;
-		$invoice->total_tax_excl     = 0.0;
-
-		$invoice->commission_amount  = 0.0;
-
-		$invoice->notes         = '';
-		$invoice->status        = 'draft';
-//			$invoice->einvoice      = $customer->accept_einvoice;
-
-		$invoice->invoicing_address_id = $customer->invoicing_address_id;
-		$invoice->shipping_address_id  = $customer->shipping_address_id > 0 ? $customer->shipping_address_id : $customer->invoicing_address_id;
-		$invoice->warehouse_id         = Configuration::get('DEF_WAREHOUSE');
-		$invoice->carrier_id           = $customer->carrier_id  > 0 ? $customer->carrier_id  : Configuration::get('DEF_CARRIER');
-		$invoice->sales_rep_id         = $customer->sales_rep_id > 0 ? $customer->sales_rep_id : 0;
-		$invoice->currency_id          = $currency->id;
-		$invoice->payment_method_id    = $customer->payment_method_id > 0 ? $customer->payment_method_id : Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD');
-		$invoice->template_id          = $customer->template_id > 0 ? $customer->template_id : Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE');
-//			$invoice->parent_document_id   = null;
-
-		$invoice->lines = collect([]);
-
-		return view('customer_invoices.create', compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'invoice', 'sequenceList'));
-
 	}
 
 	/**
@@ -208,41 +117,58 @@ class CustomerInvoicesController extends BillableController
 	 */
 	public function store(Request $request)
 	{
-		$customer_id = intval($request->input('customer_id', 0));
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
 
-		if ( $request->has('submitCustomer_id')) 
+        $rules = $this->document::$rules;
+
+        $rules['shipping_address_id'] = str_replace('{customer_id}', $request->input('customer_id'), $rules['shipping_address_id']);
+        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
+
+        $this->validate($request, $rules);
+
+        // Extra data
+//        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
+//        $doc_id = $seq->getNextDocumentId();
+
+        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+
+                        'created_via'          => 'manual',
+                        'status'               =>  'draft',
+                        'locked'               => 0,
+                     ];
+
+        $request->merge( $extradata );
+
+        $document = $this->document->create($request->all());
+
+		// Move on
+		if ($request->has('nextAction'))
 		{
-	        try {
-				$customer = \App\Customer::findOrFail( $customer_id );
-
-	        } catch(ModelNotFoundException $e) {
-				// No Customer available, ask for one
-				return view('customer_invoices.create');
-	        }
-			
-			// Valid Customer found: Redirect and collect invoice data
-			return redirect('customerinvoices/create?customer_id='.$customer_id);
-			// return $this->create($request);
+			switch ( $request->input('nextAction') ) {
+				case 'saveAndConfirm':
+					# code...
+					$document->confirm();
+					break;
+				
+				default:
+					# code...
+					break;
+			}
 		}
 
+        // Maybe...
+//        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
+//            $customerOrder->confirm();
+
+        return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
 		/* *********************************************************************** */
 
-		$document = $this->storeOrUpdate( $request );
+#		$document = $this->storeOrUpdate( $request );
 
 		/* *********************************************************************** */
-
-		$nextAction = $request->input('nextAction', '');
-
-		if ( $nextAction == 'showInvoice' ) 
-			return $this->show($document->id);
-		
-		if ( $nextAction == 'completeInvoice' ) 
-			return redirect('customerinvoices/' . $document->id . '/edit')
-				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
-
-		return redirect('customerinvoices')
-				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
-
 	}
 
 	public function storeOrUpdate( Request $request, $id = null )
@@ -458,7 +384,7 @@ class CustomerInvoicesController extends BillableController
 
 //		abi_r($cinvoice, true);
 
-		return view('customer_invoices.show', compact('cinvoice', 'company'));
+		return view($this->view_path.'.show', compact('cinvoice', 'company'));
 	}
 
 	/**
@@ -469,23 +395,22 @@ class CustomerInvoicesController extends BillableController
 	 */
 	public function edit($id)
 	{
-		try {
+//		try {
+			$document = $this->document->findOrFail($id);
+/*
 			$invoice = $this->document
 								->with('customer')
 								->with('invoicingAddress')
 								->with('lines')
 								->with('currency')
 								->findOrFail($id);
-
-	        } catch(ModelNotFoundException $e) {
+*/
+//	        } catch(ModelNotFoundException $e) {
 				// No Customer Invoice available, naughty boy...
-				return redirect('customerinvoices');
-	        }
+//				return redirect($this->view_path);
+//	        }
 
-	    $sequenceList =  ($invoice->status == 'draft') ?
-	    					\App\Sequence::listFor('CustomerInvoice') : [] ;
-
-		$customer = \App\Customer::find( $invoice->customer_id );
+	    $customer = \App\Customer::find( $document->customer_id );
 
 		$addressBook       = $customer->addresses;
 
@@ -499,10 +424,10 @@ class CustomerInvoicesController extends BillableController
 			$addressbookList[$address->id] = $address->alias;
 		}
 
-		$invoice->document_date_form   = abi_date_short( $invoice->document_date );
-		$invoice->delivery_date_form   = abi_date_short( $invoice->delivery_date );
+        // Dates (cuen)
+        $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
 
-		return view('customer_invoices.edit', compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'invoice', 'sequenceList'));
+		return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document'));
 	}
 
 	/**
@@ -511,12 +436,67 @@ class CustomerInvoicesController extends BillableController
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id, Request $request)
+	public function update(Request $request, CustomerInvoice $customerinvoice)
 	{
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
+
+        $rules = $this->document::$rules;
+
+        $rules['shipping_address_id'] = str_replace('{customer_id}', $request->input('customer_id'), $rules['shipping_address_id']);
+        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
+
+        $this->validate($request, $rules);
+/*
+        // Extra data
+        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
+        $doc_id = $seq->getNextDocumentId();
+
+        $extradata = [  'document_prefix'      => $seq->prefix,
+                        'document_id'          => $doc_id,
+                        'document_reference'   => $seq->getDocumentReference($doc_id),
+
+                        'user_id'              => \App\Context::getContext()->user->id,
+
+                        'created_via'          => 'manual',
+                        'status'               =>  \App\Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
+                        'locked'               => 0,
+                     ];
+
+        $request->merge( $extradata );
+*/
+        $document = $customerinvoice;
+
+        $document->fill($request->all());
+
+        // Reset Export date
+        // if ( $request->input('export_date_form') == '' ) $document->export_date = null;
+
+        $document->save();
+
+		// Move on
+		if ($request->has('nextAction'))
+		{
+			switch ( $request->input('nextAction') ) {
+				case 'saveAndConfirm':
+					# code...
+					$document->confirm();
+					break;
+				
+				default:
+					# code...
+					break;
+			}
+		}
+
+        return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+
 
 		/* *********************************************************************** */
 
-		$document = $this->storeOrUpdate( $request, $id );
+#		$document = $this->storeOrUpdate( $request, $id );
 
 		/* *********************************************************************** */
 
@@ -617,6 +597,17 @@ class CustomerInvoicesController extends BillableController
 	}
 
 
+    protected function confirm(CustomerInvoice $document)
+    {
+        $customerinvoice = $document;
+
+        $customerinvoice->confirm();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customerinvoice->id], 'layouts').' ['.$customerinvoice->document_reference.']');
+    }
+
+
 
 
     /*
@@ -624,168 +615,6 @@ class CustomerInvoicesController extends BillableController
     | Not CRUD stuff here
     |--------------------------------------------------------------------------
     */
-
-	protected function invoice2pdf($id)
-	{
-		// PDF stuff
-		try {
-			$cinvoice = CustomerInvoice::
-							  with('customer')
-							->with('invoicingAddress')
-							->with('lines')
-							->with('currency')
-							->with('template')
-							->findOrFail($id);
-
-        } catch(ModelNotFoundException $e) {
-
-            return Redirect::route('customers.index')
-                     ->with('error', 'La Factura de Cliente id='.$id.' no existe.');
-            // return Redirect::to('invoice')->with('message', trans('invoice.access_denied'));
-        }
-
-		$company = Company::find( intval(Configuration::get('DEF_COMPANY')) );
-
-		$template = 'customer_invoices.templates.' . $cinvoice->template->file_name;
-		$paper = $cinvoice->template->paper;	// A4, letter
-		$orientation = $cinvoice->template->orientation;	// 'portrait' or 'landscape'.
-		
-		$pdf 		= PDF::loadView( $template, compact('cinvoice', 'company') )
-							->setPaper( $paper )
-							->setOrientation( $orientation );
-		// PDF stuff ENDS
-		
-		return 	$pdf;
-	}
-
-	public function showpdf($id, Request $request)
-	{
-		// PDF stuff
-		try {
-			$cinvoice = CustomerInvoice::
-							  with('customer')
-							->with('invoicingAddress')
-							->with('lines')
-							->with('taxes')
-							->with('currency')
-							->with('paymentmethod')
-							->with('template')
-							->findOrFail($id);
-
-        } catch(ModelNotFoundException $e) {
-
-            return redirect('customerinvoices')
-                     ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
-            // return Redirect::to('invoice')->with('message', trans('invoice.access_denied'));
-        }
-
-        // abi_r($cinvoice->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
-
-		// $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-		$company = \App\Context::getContext()->company;
-
-		$template = 'customer_invoices.templates.' . $cinvoice->template->file_name;  // . '_dist';
-		$paper = $cinvoice->template->paper;	// A4, letter
-		$orientation = $cinvoice->template->orientation;	// 'portrait' or 'landscape'.
-		
-		$pdf 		= \PDF::loadView( $template, compact('cinvoice', 'company') )
-							->setPaper( $paper, $orientation );
-//		$pdf = \PDF::loadView('customer_invoices.templates.test', $data)->setPaper('a4', 'landscape');
-
-		// PDF stuff ENDS
-
-		$pdfName	= 'invoice_' . $cinvoice->secure_key . '_' . $cinvoice->document_date->format('Y-m-d');
-
-		if ($request->has('screen')) return view($template, compact('cinvoice', 'company'));
-		
-		return 	$pdf->stream();
-		return 	$pdf->download( $pdfName . '.pdf');
-	}
-
-	public function sendemail( Request $request )
-	{
-		$id = $request->input('invoice_id');
-
-		// PDF stuff
-		try {
-			$cinvoice = CustomerInvoice::
-							  with('customer')
-							->with('invoicingAddress')
-							->with('lines')
-							->with('taxes')
-							->with('currency')
-							->with('paymentmethod')
-							->with('template')
-							->findOrFail($id);
-
-        } catch(ModelNotFoundException $e) {
-
-            return redirect('customers.index')
-                     ->with('error', 'La Factura de Cliente id='.$id.' no existe.');
-            // return Redirect::to('invoice')->with('message', trans('invoice.access_denied'));
-        }
-
-		// $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-		$company = \App\Context::getContext()->company;
-
-		$template = 'customer_invoices.templates.' . $cinvoice->template->file_name;
-		$paper = $cinvoice->template->paper;	// A4, letter
-		$orientation = $cinvoice->template->orientation;	// 'portrait' or 'landscape'.
-		
-		$pdf 		= \PDF::loadView( $template, compact('cinvoice', 'company') )
-//							->setPaper( $paper )
-//							->setOrientation( $orientation );
-							->setPaper( $paper, $orientation );
-		// PDF stuff ENDS
-
-		// MAIL stuff
-		try {
-
-			$pdfName	= 'invoice_' . $cinvoice->secure_key . '_' . $cinvoice->document_date->format('Y-m-d');
-
-			$pathToFile 	= storage_path() . '/pdf/' . $pdfName .'.pdf';
-			$pdf->save($pathToFile);
-
-			$template_vars = array(
-				'company'       => $company,
-				'invoice_num'   => $cinvoice->number,
-				'invoice_date'  => abi_date_short($cinvoice->document_date),
-				'invoice_total' => $cinvoice->as_money('total_tax_incl'),
-				'custom_body'   => $request->input('email_body'),
-				);
-
-			$data = array(
-				'from'     => $company->address->email,
-				'fromName' => $company->name_fiscal,
-				'to'       => $cinvoice->customer->address->email,
-				'toName'   => $cinvoice->customer->name_fiscal,
-				'subject'  => $request->input('email_subject'),
-				);
-
-			
-
-			// http://belardesign.com/2013/09/11/how-to-smtp-for-mailing-in-laravel/
-			\Mail::send('emails.customerinvoice.default', $template_vars, function($message) use ($data, $pathToFile)
-			{
-				$message->from($data['from'], $data['fromName']);
-
-				$message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );	// Will send blind copy to sender!
-				
-				$message->attach($pathToFile);
-
-			});	
-			
-			unlink($pathToFile);
-
-        } catch(\Exception $e) {
-
-            return redirect()->back()->with('error', 'La Factura '.$cinvoice->number.' no se pudo enviar al Cliente');
-        }
-		// MAIL stuff ENDS
-		
-
-		return redirect()->back()->with('success', 'La Factura '.$cinvoice->number.' se envió correctamente al Cliente');
-	}
 
 
 /* ********************************************************************************************* */    

@@ -40,4 +40,9 @@ class WarehouseProductLine extends Model
        return $this->belongsTo('App\Product');
     }
 
+    public function measureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+    }
+
 }

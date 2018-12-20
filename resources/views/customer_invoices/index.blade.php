@@ -26,14 +26,14 @@
 <table id="documents" class="table table-hover">
     <thead>
         <tr>
-            <th class="text-left">{{ l('Order #') }}</th>
+            <th class="text-left">{{ l('ID', 'layouts') }}</th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
-            <th class="text-center">{{ l('Notes') }}</th>
+            <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
     </thead>
@@ -88,6 +88,8 @@
                 -->
 @if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0)
 
+                <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy', 'layouts')}}"><i class="fa fa-copy"></i></a>
+
                 <a class="btn btn-sm btn-info" href="{{ URL::to($model_path.'/' . $document->id . '/invoice/pdf') }}" title="{{l('PDF Invoice', [], 'layouts')}}"><i class="fa fa-money"></i></a>
 
                 <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('customerorders/' . $document->id . '/shippingslip') }}" title="{{l('Customer Invoice', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
@@ -95,7 +97,11 @@
                 <a class="btn btn-sm btn-lightblue xbtn-info" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
 @endif
 
-                <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy Order')}}"><i class="fa fa-copy"></i></a>
+                <a class="btn btn-sm btn-lightblue"    href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
+
+                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></a>
+
+                <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 @if( $document->deletable )

@@ -16,7 +16,7 @@
                 <!-- div class="btn-group">
                     <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="{{ route('customer.createorder', 1) }}">{{l('Order', [], 'layouts')}}</a></li>
+                      <li><a href="{{ route('customerorders.create.withcustomer', 1) }}">{{l('Order', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                     </ul>
                 </div-->

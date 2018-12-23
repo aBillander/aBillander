@@ -400,7 +400,7 @@ table.border td {
 
 	        <div class="modal-footer">
 				<button data-dismiss="modal" class="btn btn-default" type="button"> {{l('Cancel', [], 'layouts')}} </button>
-				<button class="btn btn-info pull-right" type="submit" onclick="this.disabled=true;this.form.submit();">
+				<button class="btn btn-info pull-right" type="submit" onclick="fakeLoad();this.disabled=true;this.form.submit();">
 					<span class="fa fa-envelope"></span> &nbsp; {{l('Send', [], 'layouts')}}
 				</button>							
 	        </div>

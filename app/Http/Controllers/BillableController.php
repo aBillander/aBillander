@@ -394,7 +394,9 @@ class BillableController extends Controller
         // Now, update ShippingSlip Totals
         $document->makeTotals( $discount_percent );
 
-        return view($this->view_path.'._panel_document_total', compact('document'));
+        $view_path = $this->view_path;
+
+        return view($view_path.'._panel_document_total', compact('document', 'view_path'));
     }
 
 

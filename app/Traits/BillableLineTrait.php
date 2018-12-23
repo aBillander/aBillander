@@ -17,14 +17,14 @@ trait BillableLineTrait
     {
         static $classname;
 
-        return $classname ?: $classname = rtrim( ( new ReflectionClass($this) )->getShortName(), 'Line' );
+        return $classname ?: $classname = peo( ( new ReflectionClass($this) )->getShortName(), 'Line' );
     }
     
     public function getParentClassName()
     {
         static $classname_full;
 
-        return $classname_full ?: $classname_full = rtrim( ( new ReflectionClass($this) )->getName(), 'Line' );
+        return $classname_full ?: $classname_full = peo( ( new ReflectionClass($this) )->getName(), 'Line' );
     }
     
     public function getParentClassSnakeCase()

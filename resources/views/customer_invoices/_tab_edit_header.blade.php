@@ -17,6 +17,19 @@
 
       <div class="row">
 
+         <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            {{ l('Sent Date') }}
+            <div class="form-control">{{abi_date_short($document->edocument_sent_at)}}</div>
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            {{ l('Payment status') }}
+            <div class="form-control">{{ $document->getPaymentStatusName($document->payment_status) }}</div>
+         </div>
+
+      </div>
+      <div class="row">
+
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('template_id') ? 'has-error' : '' }}">
             {{ l('Template') }}
             {!! Form::select('template_id', array('' => l('-- Please, select --', [], 'layouts')) + $invoices_templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}

@@ -4,11 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\BillableIntrospectorTrait;
+use App\Traits\ViewFormatterTrait;
+use App\Traits\BillableLineTaxTrait;
 
 class BillableLineTax extends Model
 {
-    use BillableIntrospectorTrait;
+    use ViewFormatterTrait;
+    use BillableLineTaxTrait;
 
 	//
 

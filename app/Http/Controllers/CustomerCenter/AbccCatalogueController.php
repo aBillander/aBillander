@@ -87,7 +87,7 @@ class AbccCatalogueController extends Controller
                                       ->IsActive()
                                       ->orderBy('reference', 'asc');
 
-                $products = $products->paginate( 10 );	// \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+                $products = $products->paginate( 10 );	// \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
 
                 $products->setPath('catalogue');     // Customize the URI used by the paginator
         }        
@@ -234,7 +234,7 @@ class AbccCatalogueController extends Controller
                                       ->IsNew()
                                       ->orderBy('reference', 'asc');
 
-                $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+                $products = $products->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
 
                 $products->setPath('catalogue');     // Customize the URI used by the paginator
         }        

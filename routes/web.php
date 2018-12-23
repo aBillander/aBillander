@@ -105,6 +105,7 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('customerusers', 'CustomerUsersController');
         Route::get('customerusers/create/withcustomer/{customer}', 'CustomerUsersController@createWithCustomer')->name('customer.createuser');
+        Route::get('customerusers/{customer}/impersonate', 'CustomerUsersController@impersonate')->name('customer.impersonate');
 
         Route::resource('suppliers', 'SuppliersController');
 
@@ -306,6 +307,7 @@ foreach ($pairs as $pair) {
                    $path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );
 }
 
+        Route::resource('customervouchers'      , 'CustomerVouchersController');
         
 
         Route::resource('pricelists',           'PriceListsController');

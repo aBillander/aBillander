@@ -260,6 +260,8 @@ class ImportProductsController extends Controller
                     $item = '[<span class="log-showoff-format">'.($data['reference'] ?? $data['id'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
 
                     // Some Poor Man checks:
+                    $data['reference'] = trim( $data['reference'] );
+
                     $data['quantity_decimal_places'] = intval( $data['quantity_decimal_places'] );
 
                     $data['manufacturing_batch_size'] = intval( $data['manufacturing_batch_size'] );
@@ -274,10 +276,14 @@ class ImportProductsController extends Controller
                     $data['main_supplier_id'] = intval( $data['main_supplier_id'] );
                     if ( $data['main_supplier_id'] <= 0 ) $data['main_supplier_id'] = NULL;
 
-
                     // Category
                     if ( ! \App\Category::where('id', $data['category_id'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'category_id' es inválido: " . ($data['category_id'] ?? ''));
+
+                    // Check E13
+                    $data['ean13'] = trim( $data['ean13'] );
+                    // Should be unique? => check your spreadsheet
+
 
 
 

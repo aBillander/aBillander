@@ -18,6 +18,8 @@ trait BillableControllerTrait
                 'model_snake_case' => $this->model_snake_case,
                 'model_path' => $this->model_path,
                 'view_path' => $this->view_path,
+                
+                'model_class' => $this->model_class,
         ];
     }
 

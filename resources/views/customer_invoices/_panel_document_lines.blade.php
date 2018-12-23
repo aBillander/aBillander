@@ -95,13 +95,12 @@
                 </td>
                 <td class="text-center">
                 @if ($line->notes)
-                 {!! $line->notes !!}
-                 <!--a href="javascript:void(0);">
+                 <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
                             data-content="{{ $line->notes }}">
-                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                        <i class="fa fa-paperclip"></i> {{-- l('View', [], 'layouts') --}}
                     </button>
-                 </a -->
+                 </a>
                 @endif</td>
                 <td class="text-right">
                       @if ( $document->editable )

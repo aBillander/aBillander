@@ -17,9 +17,11 @@
         <link href="{{ asset('assets/theme/css/extra-buttons.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset('assets/theme/css/custom.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset('assets/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css"/>
+        @include('layouts/simple_spinner')
         @yield('styles')
     </head>
     <body>
+        <div id="cover-spin"></div>
         <div id="app">
             @include('layouts/nav')
             <div class="container-fluid" style="margin: 10px 0px 10px 0px;"> 

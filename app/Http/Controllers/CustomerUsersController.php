@@ -192,4 +192,20 @@ class CustomerUsersController extends Controller
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
+
+
+    /**
+     * Extra Stuff.
+     *
+     * 
+     */  
+
+
+    public function impersonate($id)
+    {
+        
+        \Auth()->guard('customer')->loginUsingId($id);
+
+        return redirect()->route('customer.dashboard');
+    }
 }

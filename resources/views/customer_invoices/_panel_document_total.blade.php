@@ -102,3 +102,6 @@
 
        </div>
     </div>
+
+
+@include($view_path.'._panel_document_total_breakdown')

@@ -296,6 +296,7 @@ class ProductsController extends Controller {
 
         if ( $product->reference == $request->input('reference')) unset($vrules['reference']);
 //        if ( isset($vrules['reference']) ) $vrules['reference'] .= $product->id;
+        if ( isset($vrules['ean13']) ) $vrules['ean13'] = $vrules['ean13'] . ','. $product->id.',id';  // Unique
 
         if ($request->input('tab_name') == 'sales') {
             if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )

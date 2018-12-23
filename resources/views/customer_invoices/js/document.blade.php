@@ -35,6 +35,7 @@
                     $('#line_sort_order').val(next);
                     $('#line_quantity').val(1);
                     $('#line_measure_unit_id').val(0);
+                    $('#line_quantity_decimal_places').val(0);
 
                     $('#line_price').val(0.0);
 
@@ -59,7 +60,10 @@
                     @endif
 
 
-                    calculate_line_product();
+                    // calculate_line_product();
+                    $("#line_final_price").html( '' );
+                    $("#line_total_tax_exc").html( '' );
+                    $("#line_total_tax_inc").html( '' );
 
                     $('#line_sales_rep_id').val( $('#sales_rep_id').val() );
                     $('#line_commission_percent').val( 0.0 );   // Use default

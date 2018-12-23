@@ -153,20 +153,40 @@
       <div class="col-lg-8">
         <div class="radio">
           <label>
-            <input name="ABCC_NBR_ITEMS_IS_QUANTITY" id="ABCC_NBR_ITEMS_IS_QUANTITY_on" value="1" @if( old('ABCC_NBR_ITEMS_IS_QUANTITY', $key_group['ABCC_NBR_ITEMS_IS_QUANTITY']) == '1' ) checked="checked" @endif type="radio">
-            {!! l('ABCC_NBR_ITEMS_IS_QUANTITY.option.1') !!}
+            <input name="ABCC_NBR_ITEMS_IS_QUANTITY" id="ABCC_NBR_ITEMS_IS_QUANTITY_quantity" value="quantity" @if( old('ABCC_NBR_ITEMS_IS_QUANTITY', $key_group['ABCC_NBR_ITEMS_IS_QUANTITY']) == 'quantity' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_NBR_ITEMS_IS_QUANTITY.option.quantity') !!}
           </label>
         </div>
         <div class="radio">
           <label>
-            <input name="ABCC_NBR_ITEMS_IS_QUANTITY" id="ABCC_NBR_ITEMS_IS_QUANTITY_off" value="0" @if( old('ABCC_NBR_ITEMS_IS_QUANTITY', $key_group['ABCC_NBR_ITEMS_IS_QUANTITY']) == '0' ) checked="checked" @endif type="radio">
-            {!! l('ABCC_NBR_ITEMS_IS_QUANTITY.option.0') !!}
+            <input name="ABCC_NBR_ITEMS_IS_QUANTITY" id="ABCC_NBR_ITEMS_IS_QUANTITY_items" value="items" @if( old('ABCC_NBR_ITEMS_IS_QUANTITY', $key_group['ABCC_NBR_ITEMS_IS_QUANTITY']) == 'items' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_NBR_ITEMS_IS_QUANTITY.option.items') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_NBR_ITEMS_IS_QUANTITY" id="ABCC_NBR_ITEMS_IS_QUANTITY_value" value="value" @if( old('ABCC_NBR_ITEMS_IS_QUANTITY', $key_group['ABCC_NBR_ITEMS_IS_QUANTITY']) == 'value' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_NBR_ITEMS_IS_QUANTITY.option.value') !!}
           </label>
         </div>
         <span class="help-block">{!! l('ABCC_NBR_ITEMS_IS_QUANTITY.help') !!}</span>
       </div>
     </div>
 
+
+    <div class="form-group {{ $errors->has('ABCC_ITEMS_PERPAGE') ? 'has-error' : '' }}">
+      <label for="ABCC_ITEMS_PERPAGE" class="col-lg-4 control-label">{!! l('ABCC_ITEMS_PERPAGE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_ITEMS_PERPAGE" name="ABCC_ITEMS_PERPAGE" placeholder="" value="{{ old('ABCC_ITEMS_PERPAGE', $key_group['ABCC_ITEMS_PERPAGE']) }}" />
+        {{ $errors->first('ABCC_ITEMS_PERPAGE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_ITEMS_PERPAGE.help') !!}</span>
+      </div>
+    </div>
 
 
 

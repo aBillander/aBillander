@@ -111,7 +111,7 @@ trait BillableDocumentControllerTrait
              \App\Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
 
         if ( !$t )
-            return redirect()->route('customerorders.show', $id)
+            return redirect()->back()
                 ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
 
 
@@ -130,11 +130,11 @@ trait BillableDocumentControllerTrait
         }
         catch(\Exception $e){
 
-                abi_r($template);
-                abi_r($e->getMessage(), true);
+//                abi_r($template);
+//                abi_r($e->getMessage(), true);
 
-                // return redirect()->route('customerorders.show', $id)
-                //    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+                return redirect()->back()
+                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'<br />'.$e->getMessage());
         }
 
         // PDF stuff ENDS
@@ -155,7 +155,7 @@ trait BillableDocumentControllerTrait
             if ($request->isMethod('get'))
             {
                 // ... this is GET method (call from button)
-                $subject = l('customerinvoices.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails');
+                $subject = l($this->getParentClassLowerCase().'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails');
             }
 
             $template_vars = array(
@@ -190,92 +190,24 @@ trait BillableDocumentControllerTrait
             
             unlink($pathToFile);
 
+            $document->edocument_sent_at = \Carbon\Carbon::now();
+            $document->save();
+
         } catch(\Exception $e) {
 
-                abi_r($e->getMessage(), true);
+ //               abi_r($e->getMessage(), true);
 
-            return redirect()->back()->with('error', 'La Factura '.$document->number.' no se pudo enviar al Cliente');
+            return redirect()->back()->with('error', l('Your Document could not be sent &#58&#58 (:id) ', ['id' => $document->number], 'layouts').'<br />'.$e->getMessage());
         }
         // MAIL stuff ENDS
         
 
-        return redirect()->back()->with('success', 'La Factura '.$document->number.' se envió correctamente al Cliente');
+        return redirect()->back()->with('success', l('Your Document has been sent! &#58&#58 (:id) ', ['id' => $document->number], 'layouts'));
     }
 
 
 
 /* ********************************************************************************************* */    
-
-
-
-    
-    public function showPdfInvoice($id, Request $request)
-    {
-
-        // die($id);
-
-        try {
-            $document = $this->document
-                            ->with('customer')
-//                            ->with('invoicingAddress')
-//                            ->with('customerInvoiceLines')
-//                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->with('template')
-                            ->findOrFail($id);
-
-        } catch(ModelNotFoundException $e) {
-
-            return redirect('customerorders')
-                     ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
-        }
-        
-
-        $company = \App\Context::getContext()->company;
-
-        // Get Template
-        $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );
-
-        if ( !$t )
-            return redirect()->route('customerorders.show', $id)
-                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
-
-        // $document->template = $t;
-
-        $template = $t->getPath( 'CustomerInvoice' );
-
-        $paper = $t->paper;    // A4, letter
-        $orientation = $t->orientation;    // 'portrait' or 'landscape'.
-        
-        // Catch for errors
-        try{
-                $pdf        = \PDF::loadView( $template, compact('document', 'company') )
-                            ->setPaper( $paper, $orientation );
-        }
-        catch(\Exception $e){
-
-                abi_r($template);
-                abi_r($e->getMessage(), true);
-
-                // return redirect()->route('customerorders.show', $id)
-                //    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
-        }
-
-        // PDF stuff ENDS
-
-        $pdfName    = 'invoice_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
-
-        if ($request->has('screen')) return view($template, compact('document', 'company'));
-        
-        return  $pdf->stream();
-        return  $pdf->download( $pdfName . '.pdf');
-
-
-        return redirect()->route('abcc.orders.index')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
-    }
 
 
 }

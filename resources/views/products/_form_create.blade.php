@@ -52,6 +52,12 @@
                      {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
                   </div>
 
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('ean13') ? 'has-error' : '' }}">
+                     {{ l('Ean13') }}
+                     {!! Form::text('ean13', null, array('class' => 'form-control', 'id' => 'ean13')) !!}
+                     {!! $errors->first('ean13', '<span class="help-block">:message</span>') !!}
+                  </div>
+
                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('measure_unit_id') ? 'has-error' : '' }}">
                     {{ l('Measure Unit') }}
                     {!! Form::select('measure_unit_id', $measure_unitList, null, array('class' => 'form-control')) !!}

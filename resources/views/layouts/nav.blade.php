@@ -72,6 +72,12 @@
                                  {{l('Customer Invoices', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ URL::to('customervouchers') }}">
+                                 <i class="fa fa-exclamation-triangle btn-xs btn-danger"></i> 
+                                 {{l('Customer Vouchers', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
 @endif
                          <li>

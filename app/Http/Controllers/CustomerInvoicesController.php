@@ -21,6 +21,8 @@ class CustomerInvoicesController extends BillableController
    {
         parent::__construct();
 
+        $this->model_class = CustomerInvoice::class;
+
         $this->customer = $customer;
         $this->document = $document;
         $this->document_line = $document_line;

@@ -8,6 +8,10 @@ use \App\CustomerInvoiceLine;
 
 class CustomerInvoice extends Billable
 {
+    public static $badges = [
+            'a_class' => 'alert-danger',
+            'i_class' => 'fa-money',
+        ];
 
     public static $types = [
             'invoice',
@@ -34,6 +38,7 @@ class CustomerInvoice extends Billable
      * https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
      */
     protected $document_fillable = [
+                            'type',
                             'valid_until_date',
                             'next_due_date',
                             'posted_at',
@@ -56,11 +61,6 @@ class CustomerInvoice extends Billable
                             'payment_method_id' => 'nullable|exists:payment_methods,id',
 	];
 
-
-    public function getEditableAttribute()
-    {
-        return $this->status == 'draft';
-    }
 
     public function getDeletableAttribute()
     {
@@ -86,7 +86,7 @@ class CustomerInvoice extends Billable
 
     public static function getPaymentStatusName( $status )
     {
-            return l(get_called_class().'.'.$payment_status, [], 'appmultilang');
+            return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
 

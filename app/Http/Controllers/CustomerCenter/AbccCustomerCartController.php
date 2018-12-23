@@ -379,12 +379,12 @@ class AbccCustomerCartController extends Controller
         $cart =  \App\Context::getContext()->cart;
 
         // Get line
-        $line = $cart->cartlines()->where('id', $line_id);
+        $line = $cart->cartlines()->where('id', $line_id)->first();
 
         if ($quantity>0)
         {
             $line->update(['quantity' => $quantity]);
-            $cart->touch(); //  protected $touches = ['cart']; will not work on update. Why?
+            // $cart->touch(); //  protected $touches = ['cart']; 
         }
         else
         	$line->delete();

@@ -73,7 +73,6 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
 //    Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbccCustomerInvoicesController@pdf', 'as' => 'customerCenter.public.invoice.pdf']);
     Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbccCustomerInvoicesController@pdf', 'as' => 'abcc.invoice.pdf']);
 
-    Route::get('/vouchers', 'AbccCustomerVouchersController@index')->name('abcc.vouchers.index');
 
 /*
     Route::group(['middleware' => 'auth.customerCenter'], function ()
@@ -87,7 +86,7 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
 
     Route::group(['middleware' =>  ['auth:customer', 'abcccontext']], function()
     {
-        Route::get('/', ['uses' => 'CustomerHomeController@index', 'as' => 'customer.dashboard']);
+        Route::get('/', 'CustomerHomeController@index')->name('customer.dashboard');
 
         Route::post('contact', 'AbccContactMessagesController@store')->name('abcc.contact');
 
@@ -100,6 +99,8 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::resource('/orders',          'AbccCustomerOrdersController')->names('abcc.orders');
         Route::get('orders/{id}/duplicate', 'AbccCustomerOrdersController@duplicateOrder')->name('abcc.order.duplicate'  );
         Route::get('orders/{id}/pdf', 'AbccCustomerOrdersController@showPdf')->name('abcc.order.pdf'  );
+
+        Route::get('/vouchers', 'AbccCustomerVouchersController@index')->name('abcc.vouchers.index');
 
         Route::get('/cart', 'AbccCustomerCartController@index')->name('abcc.cart');
         Route::get('/cart/line/searchproduct',        'AbccCustomerCartController@searchProduct' )->name('cart.searchproduct');

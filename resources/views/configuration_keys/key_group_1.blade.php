@@ -168,6 +168,29 @@
       </div>
     </div>
 
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ENABLE_SALESREP_CENTER.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ENABLE_SALESREP_CENTER" id="ENABLE_SALESREP_CENTER_on" value="1" @if( old('ENABLE_SALESREP_CENTER', $key_group['ENABLE_SALESREP_CENTER']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ENABLE_SALESREP_CENTER" id="ENABLE_SALESREP_CENTER_off" value="0" @if( !old('ENABLE_SALESREP_CENTER', $key_group['ENABLE_SALESREP_CENTER']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ENABLE_SALESREP_CENTER.help') !!}</span>
+      </div>
+    </div>
+
+    
+
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ENABLE_MANUFACTURING.name') !!}</label>
       <div class="col-lg-8">

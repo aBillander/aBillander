@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Auth;
 
 use App\CartLine;
+use App\Currency;
 use App\Product;
 
 use App\Traits\ViewFormatterTrait;
@@ -314,6 +315,29 @@ class Cart extends Model
 
     public function nbrItems()
     {
+        switch ( \App\Configuration::get('ABCC_NBR_ITEMS_IS_QUANTITY') )
+        {
+            case 'quantity':
+                # code...
+                return $this->quantity;
+                break;
+            
+            case 'items':
+                # code...
+                return $this->cartlines()->count(); // . ' - ' . $this->persistance_left;
+                break;
+            
+            case 'value':
+                # code...
+                return Currency::viewMoneyWithSign($this->amount, $this->currency);
+                break;
+            
+            default:
+                # code...
+                return '';
+                break;
+        }
+
         if ( \App\Configuration::isTrue('ABCC_NBR_ITEMS_IS_QUANTITY') ) 
             return $this->quantity;
 

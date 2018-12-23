@@ -62,7 +62,7 @@ trait BillableIntrospectorTrait
         // CustomerShipping
         static $classname;
 
-        return $classname ?: $classname = rtrim( ( new ReflectionClass($this) )->getShortName(), $this->getClassLastSegment() );
+        return $classname ?: $classname = substr( $this->getClass(), 0, -strlen($this->getClassLastSegment()) );
     }
     
     public function getParentClassName()
@@ -71,7 +71,7 @@ trait BillableIntrospectorTrait
         // App\CustomerShipping
         static $classname_full;
 
-        return $classname_full ?: $classname_full = rtrim( ( new ReflectionClass($this) )->getName(), $this->getClassLastSegment() );
+        return $classname_full ?: $classname_full = substr( $this->getClassName(), 0, -strlen($this->getClassLastSegment()) );
     }
     
     public function getParentClassSnakeCase()

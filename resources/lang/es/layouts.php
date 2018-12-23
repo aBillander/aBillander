@@ -34,6 +34,9 @@ return [
 	'The record with id=:id does not exist'                      =>  'El registro con id=:id no existe',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
 
+	'Your Document has been sent! &#58&#58 (:id) '     => 'Su Documento ¡ha sido enviado! &#58&#58 (:id) ',
+	'Your Document could not be sent &#58&#58 (:id) '     => 'Su Documento no ha podido ser enviado &#58&#58 (:id) ',
+
 	'No action is taken &#58&#58 (:id) ' => 'No se ha realizado ninguna acción &#58&#58 (:id) ',
 
 	'This configuration has been successfully updated'  =>  'La configuración se ha actualizado correctamente',
@@ -228,7 +231,8 @@ return [
 	'To (email)'     => 'Para (email)',
 	''     => '',
 	'Subject'     => 'Asunto',
-	'Your Message'     => 'Mensaje',
+	'Message'     => 'Mensaje',
+	'Your Message'     => 'Su Mensaje',
 	'From (name)'     => 'De (nombre)',
 	'From (email)'     => 'De (email)',
 

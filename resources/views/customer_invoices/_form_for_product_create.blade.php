@@ -61,13 +61,13 @@
                      <div>
                        <div class="radio-inline">
                          <label>
-                           {!! Form::radio('line_is_sales_equalization', '1', false, ['id' => 'line_is_sales_equalization_on', 'xonclick' => 'alert("peo")']) !!}
+                           {!! Form::radio('line_is_sales_equalization', '1', false, ['id' => 'line_is_sales_equalization_on', 'onclick' => 'calculate_line_product();']) !!}
                            {!! l('Yes', [], 'layouts') !!}
                          </label>
                        </div>
                        <div class="radio-inline">
                          <label>
-                           {!! Form::radio('line_is_sales_equalization', '0', true, ['id' => 'line_is_sales_equalization_off']) !!}
+                           {!! Form::radio('line_is_sales_equalization', '0', true, ['id' => 'line_is_sales_equalization_off', 'onclick' => 'calculate_line_product();']) !!}
                            {!! l('No', [], 'layouts') !!}
                          </label>
                        </div>

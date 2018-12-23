@@ -48,7 +48,7 @@ class AbccCustomerOrdersController extends Controller {
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 
-        $customer_orders = $customer_orders->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $customer_orders = $customer_orders->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
 
         $customer_orders->setPath('orders');
 

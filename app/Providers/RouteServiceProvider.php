@@ -43,6 +43,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapAbccRoutes();
 
+        $this->mapAbsrcRoutes();
+
     }
 
     /**
@@ -97,6 +99,24 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
             ->namespace($this->namespace)
             ->group(base_path('routes/abcc.php'));
+
+        // Maybe need: php artisan config:clear
+    }
+
+    /**
+     * Define the Customer Center routes of the application.
+     *
+     *
+     * @return void
+     */
+    protected function mapAbsrcRoutes()
+    {
+        
+        if ( \App\Configuration::isFalse('ENABLE_SALESREP_CENTER') ) return;
+
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/absrc.php'));
 
         // Maybe need: php artisan config:clear
     }

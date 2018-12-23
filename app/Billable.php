@@ -25,6 +25,8 @@ class Billable extends Model
     protected $totals = [];
 
 
+    public static $badges = [];
+
     public static $types = [];
 
     public static $statuses = array(
@@ -232,6 +234,11 @@ class Billable extends Model
     public static function getStatusName( $status )
     {
             return l(get_called_class().'.'.$status, [], 'appmultilang');
+    }
+
+    public static function getBadge( $name )
+    {
+            return array_key_exists( $name, static::$badges) ? static::$badges[$name] : '';
     }
 
     public function confirm()

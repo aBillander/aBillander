@@ -93,12 +93,12 @@ function get_tax_percent_by_id(tax_id, se = 0)
                                   : $taxpercentList 
                               ) ! ! } ;
 */
-   var se;
+//   var se;
    var taxes   = {!! json_encode( $document->taxingaddress->getTaxPercentList() ) !!} ;
    var retaxes = {!! json_encode( $document->taxingaddress->getTaxWithREPercentList() ) !!} ;
 
    // Skip sales equalization
-   se = 0;
+   // se = 0;
 
    if (typeof taxes[tax_id] == "undefined")   // or if (taxes[tax_id] === undefined) {
    {

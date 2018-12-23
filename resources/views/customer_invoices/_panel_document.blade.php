@@ -23,7 +23,7 @@
 
 
                         <h4 style="margin-right: 15px;">
-                            <span class="label label-warning" title="{{ l('Order Date') }}">{{ $document->document_date_form }}</span> - 
+                            <span class="label label-warning" title="{{ l('Document Date') }}">{{ $document->document_date_form }}</span> - 
                             <span class="label label-info" title="{{ l('Delivery Date') }}">{{ $document->delivery_date_form ?? ' -- / -- / -- '}}</span>
                         </h4>
 

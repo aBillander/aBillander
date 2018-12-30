@@ -20,6 +20,7 @@ $confs = [
 ['ABCC_HEADER_TITLE', '<span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>'],
 ['ABCC_EMAIL', ''],
 ['ABCC_EMAIL_NAME', 'Customer Center'],
+['ABCC_STOCK_SHOW', 'label'],
 ['ABCC_STOCK_THRESHOLD', '999'],
 ['ABCC_DEFAULT_PASSWORD', '12345678'],
 ['ABCC_ENABLE_NEW_PRODUCTS', '1'],

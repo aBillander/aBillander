@@ -28,7 +28,7 @@ class Image extends Model {
     public static $rules = array(
     	'caption'  => array('max:128'),
         'position' => array('min:0'),
-        'image'    => 'sometimes | required | mimes:jpeg,jpg,gif,png,svg | max:8000',
+        'image'    => 'required | mimes:jpeg,jpg,gif,png,svg | max:8000',
         // Seems Laravel cannot validate png if it is the last mime (?)
     	);
     

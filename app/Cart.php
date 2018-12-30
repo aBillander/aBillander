@@ -113,7 +113,19 @@ class Cart extends Model
 
         if ( $cart ) 
         {
-        	// Update some values if customer data have changed -> cart data & cart line prices & stock
+        	// Deletable lines
+            $deletables = CartLine::where('cart_id', $cart->id)->doesntHave('product')->get();
+
+            if ( $deletables->count() > 0 )
+            {
+                $deletables->each(function($deletable) {
+                    $deletable->delete();
+                });
+
+                $cart = $cart->fresh();
+            }
+
+            // Update some values if customer data have changed -> cart data & cart line prices & stock
             if ( $cart->persistance_left <= 0 )
             {
                 // Update Cart Prices

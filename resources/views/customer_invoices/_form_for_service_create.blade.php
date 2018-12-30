@@ -2,7 +2,7 @@
 
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="modal_order_line_Label">{{ l('Add Service to Order') }}</h4>
+            <h4 class="modal-title" id="modal_document_line_Label">{{ l('Add Service to Order') }}</h4>
          </div>
 
          <div class="modal-body">
@@ -147,7 +147,7 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="modal_order_line_serviceSubmit" id="modal_order_line_serviceSubmit">
+               <button type="submit" class="btn btn-success" name="modal_document_line_serviceSubmit" id="modal_document_line_serviceSubmit">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 

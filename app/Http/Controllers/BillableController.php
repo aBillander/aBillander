@@ -169,6 +169,25 @@ class BillableController extends Controller
         return response( $products );
     }
 
+    public function searchService(Request $request)
+    {
+        $search = $request->term;
+
+        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+                                ->where(   'name',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
+                                ->isService()
+//                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
+//                                ->with('measureunit')
+//                                ->toSql();
+                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+
+
+//                                dd($products);
+
+        return response( $products );
+    }
+
     public function getProduct(Request $request)
     {
         

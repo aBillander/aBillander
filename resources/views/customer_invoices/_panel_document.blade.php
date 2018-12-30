@@ -75,9 +75,9 @@
 
 @section('scripts')    @parent
 
-    @include($view_path.'._chunck_js_service')
-
     @include($view_path.'.js.document')
+
+    @include($view_path.'.js.document_service_lines')
 
 @endsection
 

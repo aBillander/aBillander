@@ -82,6 +82,36 @@
       </div>
     </div>
 
+
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_STOCK_SHOW.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_STOCK_SHOW" id="ABCC_STOCK_SHOW_none" value="none" @if( old('ABCC_STOCK_SHOW', $key_group['ABCC_STOCK_SHOW']) == 'none' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_STOCK_SHOW.option.none') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_STOCK_SHOW" id="ABCC_STOCK_SHOW_label" value="label" @if( old('ABCC_STOCK_SHOW', $key_group['ABCC_STOCK_SHOW']) == 'label' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_STOCK_SHOW.option.label') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_STOCK_SHOW" id="ABCC_STOCK_SHOW_amount" value="amount" @if( old('ABCC_STOCK_SHOW', $key_group['ABCC_STOCK_SHOW']) == 'amount' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_STOCK_SHOW.option.amount') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_STOCK_SHOW.help') !!}</span>
+      </div>
+    </div>
+
+
+
     <div class="form-group {{ $errors->has('ABCC_STOCK_THRESHOLD') ? 'has-error' : '' }}">
       <label for="ABCC_STOCK_THRESHOLD" class="col-lg-4 control-label">{!! l('ABCC_STOCK_THRESHOLD.name') !!}</label>
       <div class="col-lg-8">

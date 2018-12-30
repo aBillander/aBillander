@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Import;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 use App\Product as Product;
 
 use Excel;
 
-class ImportProductsController extends Controller
+class ImportProductImagesController extends Controller
 {
 /*
    use BillableControllerTrait;
@@ -48,10 +49,15 @@ class ImportProductsController extends Controller
 // //////////////////////////////////////////////////// //   
 
    protected $product;
+   protected $image;
+
+   protected $images_folder;
 
    public function __construct(Product $product)
    {
         $this->product = $product;
+
+        $this->images_folder = public_path().'/uploads/products/images/';
    }
 
 
@@ -62,7 +68,9 @@ class ImportProductsController extends Controller
      */
     public function import()
     {
-        return view('imports.products');
+        $images_folder = $this->images_folder;
+
+        return view('imports.product_images', compact('images_folder'));
 /*
 		$country = $this->country->findOrFail($id);
 		
@@ -80,6 +88,16 @@ class ImportProductsController extends Controller
 
     public function process(Request $request)
     {
+        // return redirect()->back()                ->with('info', 'No se ha hecho nada.');
+
+        // dd($request);
+
+        $path  = $request->input('images_folder', '');
+        if(!File::exists($path)) {
+            // path does not exist
+            $request->merge( ['images_folder' => NULL] );
+        }
+        
         $extra_data = [
             'extension' => ( $request->file('data_file') ? 
                              $request->file('data_file')->getClientOriginalExtension() : 
@@ -90,48 +108,17 @@ class ImportProductsController extends Controller
         $rules = [
                 'data_file' => 'required | max:8000',
                 'extension' => 'in:csv,xlsx,xls,ods', // all working except for ods
+                'images_folder' => 'string',
         ];
 
         $this->validate($request->merge( $extra_data ), $rules);
-
-/*
-        $data_file = $request->file('data_file');
-
-        $data_file_full = $request->file('data_file')->getRealPath();   // /tmp/phpNJt6Fl
-
-        $ext    = $data_file->getClientOriginalExtension();
-*/
-
-/*
-        abi_r($data_file);
-        abi_r($data_file_full);
-        abi_r($ext, true);
-*/
-
-/*
-        \Validator::make(
-            [
-                'document' => $data_file,
-                'format'   => $ext
-            ],[
-                'document' => 'required',
-                'format'   => 'in:csv,xlsx,xls,ods' // all working except for ods
-            ]
-        )->passOrDie();
-*/
-
-        // Avaiable fields
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-        // $columns = \DB::getSchemaBuilder()->getColumnListing( self::$table );
-
-//        abi_r($columns);
 
 
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Products', __METHOD__ )
-                    ->backTo( route('products.import') );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = \App\ActivityLogger::setup( 'Import Product Images', __METHOD__ )
+                    ->backTo( route('products.images.import') );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         $logger->empty();
@@ -139,22 +126,11 @@ class ImportProductsController extends Controller
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
 
-        $logger->log("INFO", 'Se cargarán los Productos desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $file]);
+        $logger->log("INFO", 'Se cargarán las Imágenes de Productos usando el Fichero: <br /><span class="log-showoff-format">{file}</span>  <br /> Desde la Carpeta: <br /><span class="log-showoff-format">{images_folder}</span> .', ['file' => $file, 'images_folder' => $path]);
 
 
 
-        $truncate = $request->input('truncate', 0);
-        $params = ['simulate' => $request->input('simulate', 0)];
-
-        // Truncate table
-        if ( $truncate > 0 ) {
-
-            $nbr = Product::count();
-            
-            Product::truncate();
-
-            $logger->log("INFO", "Se han borrado todos los Productos antes de la Importación. En total {nbr} Productos.", ['nbr' => $nbr]);
-        }
+        $params = ['images_folder' => $path];
 
 
         try{
@@ -173,37 +149,7 @@ class ImportProductsController extends Controller
 
 
         return redirect('activityloggers/'.$logger->id)
-                ->with('success', l('Se han cargado los Productos desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
-
-
-//        abi_r('Se han cargado: '.$i.' productos');
-
-
-
-        // See: https://www.google.com/search?client=ubuntu&channel=fs&q=laravel-excel+%22Serialization+of+%27Illuminate%5CHttp%5CUploadedFile%27+is+not+allowed%22&ie=utf-8&oe=utf-8
-        // https://laracasts.com/discuss/channels/laravel/serialization-of-illuminatehttpuploadedfile-is-not-allowed-on-queue
-
-        // See: https://github.com/LaravelDaily/Laravel-Import-CSV-Demo/blob/master/app/Http/Controllers/ImportController.php
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-/*
-        Excel::filter('chunk')->load('file.csv')->chunk(250, function($results)
-        {
-                foreach($results as $row)
-                {
-                    // do stuff
-                }
-        });
-
-        Excel::filter('chunk')->load(database_path('seeds/csv/users.csv'))->chunk(250, function($results) {
-            foreach ($results as $row) {
-                $user = User::create([
-                    'username' => $row->username,
-                    // other fields
-                ]);
-            }
-        });
-*/
-        // See: https://www.youtube.com/watch?v=z_AhZ2j5sI8  Modificar datos importados
+                ->with('success', l('Se han cargado las Imágenes de Productos desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
     }
 
 
@@ -236,9 +182,6 @@ class ImportProductsController extends Controller
 
 // Process reader STARTS
 
-            if ( $params['simulate'] > 0 ) 
-                $logger->log("WARNING", "Modo SIMULACION. Se mostrarán errores, pero no se cargará nada en la base de datos.");
-
             $i = 0;
             $i_ok = 0;
             $max_id = 1000;
@@ -257,63 +200,72 @@ class ImportProductsController extends Controller
                     // Prepare data
                     $data = $row->toArray();
 
-                    $item = '[<span class="log-showoff-format">'.($data['reference'] ?? $data['id'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
+                    $item = '[<span class="log-showoff-format">'.($data['id'] ?? $data['reference'] ?? '').'</span>] <span class="log-showoff-format">'.$data['image_file_name'].'</span>';
 
                     // Some Poor Man checks:
+                    $data['id'] = intval(trim( $data['id'] ));
                     $data['reference'] = trim( $data['reference'] );
 
-                    $data['quantity_decimal_places'] = intval( $data['quantity_decimal_places'] );
+                    $image_file_name = trim( $data['image_file_name'] );
 
-                    $data['manufacturing_batch_size'] = intval( $data['manufacturing_batch_size'] );
-                    if ( $data['manufacturing_batch_size'] <= 0 ) $data['manufacturing_batch_size'] = 1;
+                    $product = null;
 
-                    $data['measure_unit_id'] = intval( $data['measure_unit_id'] );
-                    if ( $data['measure_unit_id'] <= 0 ) $data['measure_unit_id'] = \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
-
-                    $data['work_center_id'] = intval( $data['work_center_id'] );
-                    if ( $data['work_center_id'] <= 0 ) $data['work_center_id'] = NULL;
-
-                    $data['main_supplier_id'] = intval( $data['main_supplier_id'] );
-                    if ( $data['main_supplier_id'] <= 0 ) $data['main_supplier_id'] = NULL;
-
-                    // Category
-                    if ( ! \App\Category::where('id', $data['category_id'])->exists() )
-                        $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'category_id' es inválido: " . ($data['category_id'] ?? ''));
-
-                    // Tax
-                    $data['tax_id'] = intval( $data['tax_id'] );
-                    if ( ! \App\Tax::where('id', $data['tax_id'])->exists() )
-                        $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'tax_id' es inválido: " . ($data['tax_id'] ?? ''));
-
-                    // Check E13
-                    $data['ean13'] = trim( $data['ean13'] );
-                    // Should be unique? => check your spreadsheet
-                    if ( $data['ean13'] && \App\Product::where('ean13', $data['ean13'])->exists() )
-                        $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'ean13' ya existe: " . ($data['ean13'] ?? ''));
+                    if ($data['id'])
+                        $product = $this->product->where('id', $data['id'])->withCount('images')->first();
+                    else
+                    if ($data['reference'])
+                        $product = $this->product->where('reference', $data['reference'])->withCount('images')->first();
 
 
 
-
+                    if ($image_file_name && $product)
 
                     try{
                         
-                        if ( !($params['simulate'] > 0) ) 
-                        {
-                            // Create Product
-                            // $product = $this->product->create( $data );
-                            $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
+
+                    // Load image...
+                        try {
+
+                            $img_path = $this->images_folder.$image_file_name;
+
+                            // Is featured?
+                            if ( ( $data['image_is_featured'] ?? 0 ) ) $is_featured = 1;
+                            else
+                            if ( $product->images_count == 0 ) $is_featured = 1;
+                            else
+                            $is_featured = 0;
+
+                            $image = \App\Image::createForProductFromPath($img_path, ['caption' => $product->name, 'is_featured'=> $is_featured]);
+                            
+                            if ( $image )
+                            {
+                                $product->images()->save($image);
+
+                                if ( ($product->images_count > 0) && $image->is_featured )
+                                    $product->setFeaturedImage( $image );
+                            }
+                            else
+                                $logger->log("ERROR", 'El Producto [:codart] (:reference) :desart NO se ha podido cargar la Imagen (:img_path), porque: :img_error ', ['codart' => $product->id, 'reference' => $product->reference, 'desart' => $product->name, 'img_path' => $img_path, 'img_error' => 'No se encontró la imagen <span class="log-showoff-format">'.$image_file_name.'</span>']);
+                            
+                        } catch (\Exception $e) {
+
+                            $logger->log("ERROR", 'El Producto [:codart] (:reference) :desart NO se ha podido cargar la Imagen (:img_path), porque: :img_error ', ['codart' => $product->id, 'reference' => $product->reference, 'desart' => $product->name, 'img_path' => $img_path, 'img_error' => $e->getMessage()]);                        
                         }
+
 
                         $i_ok++;
 
                     }
                     catch(\Exception $e){
 
-                            $item = '[<span class="log-showoff-format">'.$data['reference'].'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
+//                            $item = '[<span class="log-showoff-format">'.$data['reference'].'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
 
                             $logger->log("ERROR", "Se ha producido un error al procesar el Producto ".$item.":<br />" . $e->getMessage());
 
                     }
+
+                    else
+                        $logger->log("ERROR", "No se ha encontrado el Producto ".$item." y la imagen no se ha añadido.");
 
                     $i++;
 
@@ -371,7 +323,7 @@ class ImportProductsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'description', 'description_short', 'category_id', 'category_REFERENCE_EXTERNAL', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'main_supplier_REFERENCE_EXTERNAL', 'SUPPLIER_NAME', 'image_file_name', 'image_is_featured'
+        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'description', 'description_short', 'category_id', 'category_REFERENCE_EXTERNAL', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'main_supplier_REFERENCE_EXTERNAL', 'SUPPLIER_NAME'
         ];
 
         $data[] = $headers;

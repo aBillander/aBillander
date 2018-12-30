@@ -338,6 +338,8 @@ foreach ($pairs as $pair) {
         Route::get( 'import/products', 'Import\ImportProductsController@import' )->name('products.import');
         Route::post('import/products', 'Import\ImportProductsController@process')->name('products.import.process');
         Route::get( 'export/products', 'Import\ImportProductsController@export' )->name('products.export');
+        Route::get( 'import/products/images', 'Import\ImportProductImagesController@import' )->name('products.images.import');
+        Route::post('import/products/images', 'Import\ImportProductImagesController@process')->name('products.images.import.process');
 
         Route::get( 'import/customers', 'Import\ImportCustomersController@import' )->name('customers.import');
         Route::post('import/customers', 'Import\ImportCustomersController@process')->name('customers.import.process');
@@ -347,6 +349,11 @@ foreach ($pairs as $pair) {
         Route::post('import/stockcounts/{id}', 'Import\ImportStockCountsController@process')->name('stockcounts.import.process');
         Route::get( 'export/stockcounts/{id}', 'Import\ImportStockCountsController@export' )->name('stockcounts.export');
 
+
+        Route::get('import', function()
+            {
+                return view('imports.index');
+            });
 
 
         /* ******************************************************************************************************** */

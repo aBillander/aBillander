@@ -247,6 +247,13 @@
 @endif
                         <li class="divider"></li>
                          <li>
+                            <a href="{{ URL::to('import') }}">
+                                 <i class="fa fa-file-excel-o text-grey"></i>
+                                 {{l('Import', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
                             <a href="{{ URL::to('activityloggers') }}">
                                  <i class="fa fa-clipboard text-warning"></i>
                                  {{l('aBillander LOG', [], 'layouts')}}

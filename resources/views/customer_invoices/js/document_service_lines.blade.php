@@ -2,16 +2,16 @@
 
 //        var PRICE_DECIMAL_PLACES;
 
-		var ORDER_AVAILABLE_TAXES= {!! json_encode( $document->taxingaddress->getTaxList() ) !!} ;
+		var DOCUMENT_AVAILABLE_TAXES= {!! json_encode( $document->taxingaddress->getTaxList() ) !!} ;
 
         $(document).ready(function() {
 
 
-          $(document).on('click', '.create-order-service', function(evnt) {
+          $(document).on('click', '.create-document-service', function(evnt) {
 
            
-               var panel = $("#order_line_form");
-               var url = "{{ route('customerorderline.serviceform', ['create']) }}";
+               var panel = $("#document_line_form");
+               var url = "{{ route($model_path.'.serviceform', ['create']) }}";
 
                panel.addClass('loading');
 
@@ -34,8 +34,8 @@
 //                    $('#line_type').val('');
                     $('#line_sort_order').val(next);
                     $('#line_quantity').val(1);
-                    $('#line_quantity_decimal_places').val(0);
                     $('#line_measure_unit_id').val( {{ \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') }} );
+                    $('#line_quantity_decimal_places').val(0);
 
                     $('#line_cost_price').val(0.0);
                     $('#line_price').val(0.0);
@@ -54,7 +54,7 @@
                     // Populate Taxes
                     // https://www.codebyamir.com/blog/populate-a-select-dropdown-list-with-json
                     cb = '';
-                    $.each(ORDER_AVAILABLE_TAXES, function(key, data){
+                    $.each(DOCUMENT_AVAILABLE_TAXES, function(key, data){
         				         cb += '<option value="'+key+'">'+data+'</option>';
         				    });
         				    $("#line_tax_id").append(cb);
@@ -73,7 +73,11 @@
                     @endif
 
 
-                    calculate_service_price();
+                    // calculate_service_price();
+                    // calculate_line_product();
+                    $("#line_final_price").html( '' );
+                    $("#line_total_tax_exc").html( '' );
+                    $("#line_total_tax_inc").html( '' );
 
                     $('#line_sales_rep_id').val( $('#sales_rep_id').val() );
                     $('#line_commission_percent').val( 0.0 );   // Use default
@@ -86,7 +90,7 @@
                     $('#line_combination_id').val('');
 
 
-                    $('#modal_order_line').modal({show: true});
+                    $('#modal_document_line').modal({show: true});
                     $("#line_autoservice_name").focus();
 
                 });
@@ -95,16 +99,16 @@
           });
 
 
-        $("body").on('click', "#modal_order_line_serviceSubmit", function() {
+        $("body").on('click', "#modal_document_line_serviceSubmit", function() {
 
             var id = $('#line_id').val();
-            var url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+            var url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
             if ( id == '' )
-                url = "{{ route('customerorder.storeline', [$document->id]) }}";
-            else
-                url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+                url = "{{ route($model_path.'.storeline', [$document->id]) }}";
+//            else
+//                url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
 
             var payload = { 
                               document_id : {{ $document->id }},
@@ -152,11 +156,11 @@
                 data : payload,
 
                 success: function(){
-                    loadCustomerOrderlines();
+                    loadDocumentlines();
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
-                    $('#modal_order_line').modal('toggle');
+                    $('#modal_document_line').modal('toggle');
 
                     showAlertDivWithDelay("#msg-success");
                 }
@@ -165,16 +169,16 @@
         });
 
 
-        $("body").on('click', "#modal_edit_order_line_serviceSubmit", function() {
+        $("body").on('click', "#modal_edit_document_line_serviceSubmit", function() {
 
             var id = $('#line_id').val();
-            var url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+            var url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
-            if ( id == '' )
-                url = "{{ route('customerorder.storeline', [$document->id]) }}";
-            else
-                url = "{{ route('customerorder.updateline', ['']) }}/"+id;
+//            if ( id == '' )
+//                url = "{{ route($model_path.'.storeline', [$document->id]) }}";
+//            else
+//                url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
 
             var payload = { 
                               document_id : {{ $document->id }},
@@ -215,11 +219,11 @@
                 data : payload,
 
                 success: function(response){
-                    loadCustomerOrderlines();
+                    loadDocumentlines();
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
-                    $('#modal_order_line').modal('toggle');
+                    $('#modal_document_line').modal('toggle');
 
                     showAlertDivWithDelay("#msg-success");
 
@@ -233,11 +237,11 @@
         });			// $(document).ready(function() {   ENDS
 
 
-    	function editCustomerOrderServiceLine( selector ) {
+    	function editDocumentServiceLine( selector ) {
 
             // Load form first
-               var panel = $("#order_line_form");
-               var url = "{{ route('customerorderline.serviceform', ['edit']) }}";
+               var panel = $("#document_line_form");
+               var url = "{{ route($model_path.'.serviceform', ['edit']) }}";
 
                panel.html('');
                panel.addClass('loading');
@@ -252,7 +256,7 @@
                }, 'html');
 
 
-              $('#modal_order_line').modal({show: true});
+              $('#modal_document_line').modal({show: true});
               //  $("#line_autoservice_name").focus();
               $("#line_price").focus();
 
@@ -265,7 +269,7 @@
 
               var id = selector.attr('data-id');
               var line_type = selector.attr('data-type');
-              var url = "{{ route('customerorder.getline', [$document->id, '']) }}/"+id;
+              var url = "{{ route($model_path.'.getline', [$document->id, '']) }}/"+id;
               var label = '';
 
               PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
@@ -286,7 +290,7 @@
 
                     }
                     
-                    $('#modal_service_order_line_Label').text(label);
+                    $('#modal_service_document_line_Label').text(label);
 
                     $('#line_id').val(result.id);
                     $('#line_sort_order').val(result.line_sort_order);
@@ -356,7 +360,7 @@
                     // Populate Taxes
                     // https://www.codebyamir.com/blog/populate-a-select-dropdown-list-with-json
                     cb = '';
-                    $.each(ORDER_AVAILABLE_TAXES, function(key, data){
+                    $.each(DOCUMENT_AVAILABLE_TAXES, function(key, data){
           			         cb += '<option value="'+key+'">'+data+'</option>';
           			    });
           			    $("#line_tax_id").append(cb);
@@ -391,9 +395,23 @@
         function auto_service_line( selector = "#line_autoservice_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route('customerorderline.searchservice') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
+                source : "{{ route($model_path.'.searchservice') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
-                appendTo : "#modal_order_line",
+                appendTo : "#modal_document_line",
+
+                response: function(event, ui) {
+                    if (!ui.content.length) {
+                        var noResult = { 
+                             id: "", 
+                             reference: "",
+                             name: "{{ l('No records found', 'layouts') }}" 
+                         };
+                         // Uncoment next line
+                         // ui.content.push(noResult);                    
+                     } else {
+                        // $("#message").empty();
+                     }
+                },
 
                 select : function(key, value) {
                     var str = '[' + value.item.reference+'] ' + value.item.name;

@@ -1,5 +1,5 @@
 
-@include('errors.list')
+{{-- @include('errors.list') --}}
 
 {!! Form::open(array('route' => array('products.images.store', $product->id), 'files' => true)) !!}
 <input type="hidden" value="images" name="tab_name" id="tab_name">

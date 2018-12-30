@@ -54,7 +54,11 @@ return [
 	'First row should be the header row.'     => 'La primera línea del fichero contiene el nombre de los campos en las columnas.',
 	'File contains header row?'     => '¿Primera línea es encabezado?',
 	'Delete existing Products?'     => '¿Eliminar los Productos existentes?',
-	''     => '',
+
+	'Images'     => 'Imágenes',
+	'Import Product Images'     => 'Importar Imágenes de Productos',
+	'Images Folder' => 'Carpeta de las Imágenes',
+	'Image Files are located in this Server Folder.'     => 'Los Ficheros de las Imágenes están en esta Carpeta del Servidor.',
 	''     => '',
 	''     => '',
 

@@ -105,6 +105,7 @@ class ConfigurationKeysController extends Controller {
                         'ABCC_HEADER_TITLE',
                         'ABCC_EMAIL',
                         'ABCC_EMAIL_NAME',
+                        'ABCC_STOCK_SHOW',
                         'ABCC_STOCK_THRESHOLD',
                         'ABCC_DEFAULT_PASSWORD',
                         'ABCC_ENABLE_NEW_PRODUCTS',

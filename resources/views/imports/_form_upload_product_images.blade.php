@@ -6,7 +6,6 @@
                         data-content="{{ l('First row should be the header row.') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
-       {{-- Form::file('image', null, array('required', 'class'=>'form-control')) --}}
 
             <div class="input-group">
                 <label class="input-group-btn">
@@ -19,44 +18,19 @@
 
     </div>
 
-     <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-truncate">
-       {!! Form::label('truncate', l('Delete existing Products?'), ['class' => 'control-label']) !!}
-       <div>
-         <div class="radio-inline">
-           <label>
-             {!! Form::radio('truncate', '1', false, ['id' => 'truncate_on']) !!}
-             {!! l('Yes', [], 'layouts') !!}
-           </label>
-         </div>
-         <div class="radio-inline">
-           <label>
-             {!! Form::radio('truncate', '0', true, ['id' => 'truncate_off']) !!}
-             {!! l('No', [], 'layouts') !!}
-           </label>
-         </div>
-       </div>
-      </div>
+     <div class="form-group col-lg-1 col-md-1 col-sm-1">
+     </div>
 
-     <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-simulate">
-       {!! Form::label('simulate', l('Simulation Mode?'), ['class' => 'control-label']) !!}
+</div>
+<div class="row">
+
+     <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('images_folder') ? 'has-error' : '' }}">
+       {!! Form::label('images_folder', l('Images Folder'), ['class' => 'control-label']) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                        data-content="{{ l('Simulation Mode: errors will be shown, but database will not be changed.') }}">
+                        data-content="{{ l('Image Files are located in this Server Folder.') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
-       <div>
-         <div class="radio-inline">
-           <label>
-             {!! Form::radio('simulate', '1', false, ['id' => 'simulate_on']) !!}
-             {!! l('Yes', [], 'layouts') !!}
-           </label>
-         </div>
-         <div class="radio-inline">
-           <label>
-             {!! Form::radio('simulate', '0', true, ['id' => 'simulate_off']) !!}
-             {!! l('No', [], 'layouts') !!}
-           </label>
-         </div>
-       </div>
+       {!! Form::text('images_folder', old('images_folder', $images_folder), array('class' => 'form-control', 'id' => 'images_folder')) !!}
       </div>
 
 </div>

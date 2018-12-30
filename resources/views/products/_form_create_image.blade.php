@@ -4,7 +4,7 @@
        {!! Form::label('image', l('Upload Image')) !!}
        {{-- Form::file('image', null, array('required', 'class'=>'form-control')) --}}
 
-            <div class="input-group">
+            <div class="input-group {{ $errors->has('image') ? 'has-error' : '' }}">
                 <label class="input-group-btn">
                     <span class="btn btn-blue">
                         {{ l('Browse', [], 'layouts') }}&hellip; <input type="file" name="image" id="image" style="display: none;" multiple>

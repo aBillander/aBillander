@@ -336,11 +336,11 @@ class FSxProductImporter {
                         if ( $image )
                             $p->images()->save($image);
                         else
-                            $this->logError('El Artículo [:codart] :desart NO se ha cpodido cargar la Imagen (:img_path), porque: :img_error ', ['codart' => $articulo->CODART, 'desart' => $articulo->DESART, 'img_path' => $img_path, 'img_error' => 'No se encontró la imagen '.$articulo->IMGART]);
+                            $this->logError('El Artículo [:codart] :desart NO se ha podido cargar la Imagen (:img_path), porque: :img_error ', ['codart' => $articulo->CODART, 'desart' => $articulo->DESART, 'img_path' => $img_path, 'img_error' => 'No se encontró la imagen '.$articulo->IMGART]);
                         
                     } catch (\Exception $e) {
 
-                        $this->logError('El Artículo [:codart] :desart NO se ha cpodido cargar la Imagen (:img_path), porque: :img_error ', ['codart' => $articulo->CODART, 'desart' => $articulo->DESART, 'img_path' => $img_path, 'img_error' => $e->getMessage()]);                        
+                        $this->logError('El Artículo [:codart] :desart NO se ha podido cargar la Imagen (:img_path), porque: :img_error ', ['codart' => $articulo->CODART, 'desart' => $articulo->DESART, 'img_path' => $img_path, 'img_error' => $e->getMessage()]);                        
                     }
                 }
 

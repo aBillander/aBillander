@@ -1,12 +1,15 @@
-<?php namespace App\Http\Controllers;
+<?php 
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Validator;
 
-use App\Product as Product;
-use App\Image as Image;
+use App\Product;
+use App\Image;
 
 class ProductImagesController extends Controller {
 
@@ -59,7 +62,16 @@ class ProductImagesController extends Controller {
 
 //        echo_r($request->all());die();
 
-		$this->validate($request, Image::$rules);
+		// $this->validate($request, Image::$rules);
+
+		// Use own validator
+		$validator = Validator::make($request->all(), Image::$rules);
+     
+	    if ($validator->fails()) {
+	    	return redirect('products/'.$productId.'/edit'.'#'.$request->input('tab_name'))
+	    		->withErrors($validator)
+	    		->withInput();
+	    }
 
         $image = $this->image->createForProduct($request);
 		

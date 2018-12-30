@@ -33,7 +33,11 @@
       <th>{{ l('EAN Code') }}</th>
       <th colspan="2">{{ l('Product Name') }}</th>
       <th>{{ l('Manufacturer') }}</th>
-      <th>{{ l('Stock') }}</th>
+      <th>
+@if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
+      {{ l('Stock') }}
+@endif
+      </th>
       <!-- th>{{ l('Measure Unit') }}</th -->
       <th>{{ l('Customer Price') }}
            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
@@ -82,9 +86,16 @@
       <td>{{ $product->name }}</td>
       <td>{{ optional($product->manufacturer)->name }} {{-- optional($product->category)->name --}}</td>
       <td>
+@if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
         <div class="progress progress-striped" style="width: 34px">
-          <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%"></div>
-        </div></td>
+          <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
+            @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
+                  <span class="badge" style="color: #333333; background-color: #ffffff;">{{ $product->as_quantity('quantity_onhand') }}</span>
+            @endif
+          </div>
+        </div>
+@endif
+      </td>
 
       <td>{{ $product->as_priceable( 
               $product->getPriceByList( 

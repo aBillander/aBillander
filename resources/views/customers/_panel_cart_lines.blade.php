@@ -25,6 +25,15 @@
         </thead>
         <tbody class="sortable ui-sortable">
   @foreach ($cart->cartlines as $line)
+
+@php
+  if ( !$line->product ) 
+  {
+      $line->delete();
+      continue;
+  }
+@endphp
+
     <tr>
       <!-- td>{{ $line->id }}</td -->
       <td title="{{ $line->product->id }}">@if ($line->product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>

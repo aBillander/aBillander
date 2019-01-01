@@ -17,6 +17,11 @@ class CustomerOrder extends Model
     use ViewFormatterTrait;
     use BillableTrait;
 
+    public static $badges = [
+            'a_class' => 'alert-success',
+            'i_class' => 'fa-shopping-bag',
+        ];
+
     /**
      * The fillable properties for this model.
      *

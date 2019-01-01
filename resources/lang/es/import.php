@@ -59,7 +59,7 @@ return [
 	'Import Product Images'     => 'Importar Imágenes de Productos',
 	'Images Folder' => 'Carpeta de las Imágenes',
 	'Image Files are located in this Server Folder.'     => 'Los Ficheros de las Imágenes están en esta Carpeta del Servidor.',
-	''     => '',
+	'Export Headers'     => 'Exportar Cabeceras',
 	''     => '',
 
 

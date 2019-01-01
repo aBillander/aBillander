@@ -43,7 +43,7 @@
 			<td @if( !$payment->payment_date AND ( \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $payment->due_date) < \Carbon\Carbon::now() ) ) class="danger" @endif>
 				{{ $payment->due_date }}</td>
 			<td>{{ $payment->payment_date }}</td>
-			<td>{{ $payment->amount }}</td>
+			<td>{{ $payment->as_money_amount('amount') }}</td>
             <td class="text-center">
             	@if     ( $payment->status == 'pending' )
             		<span class="label label-info">

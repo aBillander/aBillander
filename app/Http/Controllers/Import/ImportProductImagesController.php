@@ -255,6 +255,8 @@ class ImportProductImagesController extends Controller
 
                         $i_ok++;
 
+                        $logger->log('INFO', 'Se han creado / actualizado la Fila {i} [:codart] (:reference) :desart .', ['i' => $i_ok, 'codart' => $product->id, 'reference' => $product->reference, 'desart' => $product->name]);
+
                     }
                     catch(\Exception $e){
 
@@ -295,7 +297,7 @@ class ImportProductImagesController extends Controller
      */
     public function export()
     {
-        $products = $this->product
+/*        $products = $this->product
                           ->with('measureunit')
 //                          ->with('combinations')                                  
                           ->with('category')
@@ -304,7 +306,7 @@ class ImportProductImagesController extends Controller
                           ->orderBy('reference', 'asc')
                           ->get();
 
-/*        $pricelist = $this->pricelist
+        $pricelist = $this->pricelist
                     ->with('pricelistlines')
                     ->with('pricelistlines.product')
                     ->findOrFail($id);
@@ -323,14 +325,15 @@ class ImportProductImagesController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'description', 'description_short', 'category_id', 'category_REFERENCE_EXTERNAL', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'main_supplier_REFERENCE_EXTERNAL', 'SUPPLIER_NAME'
+        $headers = [
+                'id', 'reference', 'NAME', 'image_file_name', 'image_is_featured'
         ];
 
         $data[] = $headers;
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
-        foreach ($products as $product) {
+/*        foreach ($products as $product) {
             // $data[] = $line->toArray();
             $row = [];
             foreach ($headers as $header)
@@ -344,13 +347,13 @@ class ImportProductImagesController extends Controller
 
             $data[] = $row;
         }
-
-        $sheetName = 'Products' ;
+*/
+        $sheetName = 'Product Images' ;
 
         // abi_r($data, true);
 
         // Generate and return the spreadsheet
-        Excel::create('Products', function($excel) use ($sheetName, $data) {
+        Excel::create('ProductImages', function($excel) use ($sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');

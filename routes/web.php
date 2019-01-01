@@ -285,6 +285,8 @@ foreach ($pairs as $pair) {
         Route::get($path.'/line/searchservice',        $controller.'@searchService' )->name($path.'.searchservice');
         Route::get($path.'/line/getproduct',           $controller.'@getProduct'    )->name($path.'.getproduct');
 
+        Route::get($path.'/{id}/getpayments',          $controller.'@getDocumentPayments' )->name($path.'.getpayments');
+
 
         Route::post($path.'/{id}/storeline',    $controller.'@storeDocumentLine'   )->name($path.'.storeline'  );
         Route::post($path.'/{id}/updatetotal',  $controller.'@updateDocumentTotal' )->name($path.'.updatetotal');
@@ -340,6 +342,7 @@ foreach ($pairs as $pair) {
         Route::get( 'export/products', 'Import\ImportProductsController@export' )->name('products.export');
         Route::get( 'import/products/images', 'Import\ImportProductImagesController@import' )->name('products.images.import');
         Route::post('import/products/images', 'Import\ImportProductImagesController@process')->name('products.images.import.process');
+        Route::get( 'export/products/images', 'Import\ImportProductImagesController@export' )->name('products.images.export');
 
         Route::get( 'import/customers', 'Import\ImportCustomersController@import' )->name('customers.import');
         Route::post('import/customers', 'Import\ImportCustomersController@process')->name('customers.import.process');

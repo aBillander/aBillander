@@ -148,6 +148,15 @@ class BillableController extends Controller
         return response()->json($positions);
     }
 
+    public function getDocumentPayments($id)
+    {
+        $document = $this->document
+                        ->with('payments')
+                        ->findOrFail($id);
+
+        return view($this->view_path.'._panel_document_payments', $this->modelVars() + compact('document'));
+    }
+
 
 
     public function searchProduct(Request $request)

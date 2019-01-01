@@ -151,6 +151,10 @@ class CustomerInvoicesController extends BillableController
 				case 'saveAndConfirm':
 					# code...
 					$document->confirm();
+					// 
+					// Vouchers stuff
+					// 
+					$document->makePaymentDeadlines();
 					break;
 				
 				default:
@@ -483,6 +487,10 @@ class CustomerInvoicesController extends BillableController
 				case 'saveAndConfirm':
 					# code...
 					$document->confirm();
+					// 
+					// Vouchers stuff
+					// 
+					$document->makePaymentDeadlines();
 					break;
 				
 				default:
@@ -502,68 +510,6 @@ class CustomerInvoicesController extends BillableController
 
 		/* *********************************************************************** */
 
-
-
-		// 
-		// Vouchers stuff
-		// 
-		if ( !$document->draft && 1) {
-
-			$document->payments()->delete();
-
-			$ototal = $document->total_tax_incl - $document->down_payment;
-			$ptotal = 0;
-			$pmethod = $document->paymentmethod;
-			$dlines = $pmethod->deadlines;
-			$pdays = $document->customer->paymentDays();
-			// $base_date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $document->document_date );
-			$base_date = $document->document_date;
-
-			for($i = 0; $i < count($pmethod->deadlines); $i++)
-        	{
-        		$next_date = $base_date->copy()->addDays($dlines[$i]['slot']);
-
-        		// Calculate installment due date
-        		$due_date = $document->customer->paymentDate( $next_date );
-
-        		if ( $i != (count($pmethod->deadlines)-1) ) {
-        			$installment = $document->as_priceable( $ototal * $dlines[$i]['percentage'] / 100.0, $document->currency, true );
-        			$ptotal += $installment;
-        		} else {
-        			// Last Installment
-        			$installment = $ototal - $ptotal;
-        		}
-
-        		// Create Voucher
-        		$data = [	'payment_type' => 'receivable', 
-        					'reference' => null, 
-                            'name' => ($i+1) . ' / ' . count($pmethod->deadlines), 
-//        					'due_date' => \App\FP::date_short( \Carbon\Carbon::parse( $due_date ), \App\Context::getContext()->language->date_format_lite ), 
-        					'due_date' => abi_date_short( \Carbon\Carbon::parse( $due_date ) ), 
-        					'payment_date' => null, 
-                            'amount' => $installment, 
-                            'currency_id' => $document->currency_id,
-                            'currency_conversion_rate' => $document->currency_conversion_rate, 
-                            'status' => 'pending', 
-                            'notes' => null,
-                            'document_reference' => $document->document_reference,
-                        ];
-
-                $payment = \App\Payment::create( $data );
-                $document->payments()->save($payment);
-                $document->customer->payments()->save($payment);
-/*
-                $payment->invoice_id = $document->id;
-                $payment->model_name = 'CustomerInvoice';
-                $payment->owner_id = $document->customer->id;
-                $payment->owner_model_name = 'Customer';
-
-                $payment->save();
-*/
-                // ToDo: update Invoice next due date
-        	}
-			
-		}
 
 
 

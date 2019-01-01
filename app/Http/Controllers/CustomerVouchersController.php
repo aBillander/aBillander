@@ -30,7 +30,7 @@ class CustomerVouchersController extends Controller {
 					->with('paymentable')
 					->with('paymentable.customer')
 					->where('payment_type', 'receivable')
-					->orderBy('due_date', 'desc')->get();
+					->orderBy('due_date', 'asc')->get();
 
         return view('customer_vouchers.index', compact('payments'));
 	}

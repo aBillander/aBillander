@@ -4,10 +4,15 @@ namespace App;
 
 use Auth;
 
+use App\Traits\CustomerInvoicePaymentsTrait;
+
 use \App\CustomerInvoiceLine;
 
 class CustomerInvoice extends Billable
 {
+    
+    use CustomerInvoicePaymentsTrait;
+
     public static $badges = [
             'a_class' => 'alert-danger',
             'i_class' => 'fa-money',

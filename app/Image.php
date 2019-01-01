@@ -19,7 +19,7 @@ class Image extends Model {
             'mini_default'   => ['width' => 45,  'height' => 45 ],
             'small_default'  => ['width' => 98,  'height' => 98 ],
             'medium_default' => ['width' => 125, 'height' => 125],
-            'home_default'   => ['width' => 250, 'height' => 250],
+//            'home_default'   => ['width' => 250, 'height' => 250],
             'large_default'  => ['width' => 458, 'height' => 458],
         );
 	

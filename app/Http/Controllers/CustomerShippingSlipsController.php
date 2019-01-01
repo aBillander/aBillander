@@ -19,6 +19,8 @@ class CustomerShippingSlipsController extends BillableController
    {
         parent::__construct();
 
+        $this->model_class = CustomerShippingSlip::class;
+
         $this->customer = $customer;
         $this->document = $document;
         $this->document_line = $document_line;

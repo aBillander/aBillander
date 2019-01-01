@@ -250,6 +250,8 @@
 
           loadDocumentlines();
 
+          loadDocumentPayments();
+
           
 
         });       // $(document).ready(function() {    ENDS
@@ -273,6 +275,22 @@
                  panel.removeClass('loading');
                  $("[data-toggle=popover]").popover();
                  sortableDocumentlines();
+           }, 'html');
+
+        }
+
+        function loadDocumentPayments() {
+           
+           var panel = $("#panel_{{ $model_snake_case}}_payments");
+           var url = "{{ route($model_path.'.getpayments', $document->id) }}";
+
+           panel.addClass('loading');
+
+           $.get(url, {}, function(result){
+                 panel.html(result);
+                 panel.removeClass('loading');
+                 $("[data-toggle=popover]").popover();
+                 
            }, 'html');
 
         }

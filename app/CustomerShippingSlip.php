@@ -9,6 +9,11 @@ use \App\CustomerShippingSlipLine;
 class CustomerShippingSlip extends Billable
 {
 
+    public static $badges = [
+            'a_class' => 'alert-info',
+            'i_class' => 'fa-truck',
+        ];
+
     public static $rules = [
                             'document_date' => 'required|date',
 //                            'payment_date'  => 'date',

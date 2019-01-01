@@ -32,7 +32,7 @@
       </div>
       
       <div class="col-lg-10 col-md-10 col-sm-9">
-            <div class="panel panel-primary" id="panel_create_{{ $model_snake_case }}">
+            <div class="panel panel-primary" id="panel_create_document">
                <div class="panel-heading">
                   <h3 class="panel-title">{{ l('Header Data') }}</h3>
                </div>

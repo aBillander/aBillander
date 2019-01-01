@@ -30,9 +30,10 @@ class Payment extends Model {
     					'payment_date'
     					];
 
-    protected $fillable =  ['reference', 'name', 'due_date', 'payment_date', 
+    protected $fillable =  ['payment_type', 'reference', 'name', 'due_date', 'payment_date', 
                             'amount', 'currency_id', 'currency_conversion_rate', 'status', 
-                            'notes'];
+                            'notes', 'document_reference'
+                           ];
 
 	// Add your validation rules here
 	public static $rules = [

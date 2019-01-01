@@ -109,7 +109,7 @@ function make_payment()
  {{-- Date Picker --}}
 
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-{!! HTML::script('assets/jquery-ui/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
 
 <script>
 

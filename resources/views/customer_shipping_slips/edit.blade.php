@@ -18,7 +18,7 @@
                 <a href="{{ URL::to($model_path.'') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to Customer Shipping Slips')}}</a>
             </div>
             
-              <h2><a href="{{ URL::to($model_path.'') }}">{{l('Customer Shipping Slips')}}</a> <span style="color: #cccccc;">/</span> 
+              <h2><a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
                   {{l('Shipping Slip to')}} <span class="lead well well-sm">
 
                   <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_fiscal }}</a>

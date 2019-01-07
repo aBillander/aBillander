@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Auth;
+
 use App\Traits\BillableIntrospectorTrait;
 use App\Traits\BillableCustomTrait;
 use App\Traits\BillableLinesTrait;
@@ -111,6 +113,10 @@ class Billable extends Model
 
         static::creating(function($document)
         {
+//            $document->company_id = \App\Context::getContext()->company;
+
+            $document->user_id = Auth::id();
+
             $document->secure_key = md5(uniqid(rand(), true));
             
             if ( $document->shippingmethod )

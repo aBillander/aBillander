@@ -60,6 +60,10 @@ return [
 	'Images Folder' => 'Carpeta de las Imágenes',
 	'Image Files are located in this Server Folder.'     => 'Los Ficheros de las Imágenes están en esta Carpeta del Servidor.',
 	'Export Headers'     => 'Exportar Cabeceras',
+
+	'Prices'     => 'Precios',
+	'Import Product Price File'     => 'Importar Fichero de Precios de Productos',
+	'These are "default" Prices for Products (as seen on Product record).'     => 'Son los Precios "por defecto", tal como aparecen en la ficha del Producto.',
 	''     => '',
 
 

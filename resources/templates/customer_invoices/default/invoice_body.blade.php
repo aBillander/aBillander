@@ -432,7 +432,7 @@ https://codepen.io/Bhupinderkumar/pen/gKzKGw
 	< ? php $wpo_wcpdf->footer(); ?>
 --}}
 
-{{ $company->name_fiscal }} - .
+{{ $company->name_fiscal }} - {!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
 
 	<!-- p><span class="pagenum"></span> / <span class="pagecount">{PAGE_COUNT}</span></p -->
 
@@ -443,7 +443,7 @@ https://codepen.io/Bhupinderkumar/pen/gKzKGw
 
         // $pdf->page_text(30, ($pdf->get_height() - 26.89), "Impreso el: " . date('d M Y H:i:s'), null, 10);
         
-        if ( $PAGE_COUNT > 1 || 1 )
+        if ( $PAGE_COUNT > 1 || \App\Configuration::isTrue('DEVELOPER_MODE') )
         {
                $pdf->page_text(($pdf->get_width() - 84), ($pdf->get_height() - 26.89), "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10);
         }

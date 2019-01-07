@@ -14,6 +14,8 @@ use App\CustomerInvoiceLine;
 use App\Configuration;
 use App\Sequence;
 
+use App\Events\CustomerInvoiceConfirmed;
+
 class CustomerInvoicesController extends BillableController
 {
 
@@ -134,6 +136,8 @@ class CustomerInvoicesController extends BillableController
 //        $doc_id = $seq->getNextDocumentId();
 
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+
+        				'sequence_id'		   => $request->input('sequence_id') ?? Configuration::getInt('DEF_CUSTOMER_INVOICE_SEQUENCE'),
 
                         'created_via'          => 'manual',
                         'status'               =>  'draft',
@@ -416,6 +420,8 @@ class CustomerInvoicesController extends BillableController
 //				return redirect($this->view_path);
 //	        }
 
+        $sequenceList = $this->document->sequenceList();
+
 	    $customer = \App\Customer::find( $document->customer_id );
 
 		$addressBook       = $customer->addresses;
@@ -433,7 +439,7 @@ class CustomerInvoicesController extends BillableController
         // Dates (cuen)
         $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
 
-		return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document'));
+		return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList'));
 	}
 
 	/**
@@ -547,12 +553,17 @@ class CustomerInvoicesController extends BillableController
 
     protected function confirm(CustomerInvoice $document)
     {
-        $customerinvoice = $document;
+        if ( $document->lines->count() == 0 )
+        {
+        	return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
 
-        $customerinvoice->confirm();
+        // Confirm & Dispatch event
+        if ( $document->confirm() ) event(new CustomerInvoiceConfirmed($document));
 
         return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customerinvoice->id], 'layouts').' ['.$customerinvoice->document_reference.']');
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
     }
 
 

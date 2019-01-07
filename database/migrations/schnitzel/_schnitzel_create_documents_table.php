@@ -82,8 +82,9 @@
 
 //          $table->enum('status', array('draft', 'confirmed', 'closed', 'canceled'))->default('draft');
             $table->string('status', 32)->nullable(false)->default('draft');
+            $table->tinyInteger('onhold')->default(0);            // 0 -> NO; 1 -> Yes (Document cannot change status)
 
-            $table->tinyInteger('locked')->default(0);                          // 0 -> NO; 1 -> Yes (Order cannot be modified if retrieved from external system, i.e., webshop)
+            $table->tinyInteger('locked')->default(0);            // 0 -> NO; 1 -> Yes (Order cannot be modified if retrieved from external system, i.e., webshop)
 
             $table->integer('invoicing_address_id')->unsigned()->nullable(false);
             $table->integer('shipping_address_id')->unsigned()->nullable();     // For Shipping Slip!

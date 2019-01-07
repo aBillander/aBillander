@@ -32,6 +32,10 @@
                <i class="fa fa-picture-o"></i>
                &nbsp; {{ l('Images') }}
             </a>
+            <a id="b_sales" href="{{ route('products.prices.import') }}" class="list-group-item">
+               <i class="fa fa-shopping-bag"></i>
+               &nbsp; {{ l('Prices') }}
+            </a>
             <!-- a id="b_sales" href="#sales" class="list-group-item">
                <i class="fa fa-share-square-o"></i>
                &nbsp; {{ l('Sales') }}

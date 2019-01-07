@@ -1,16 +1,16 @@
 
 @section('modals')    @parent
 
-<div class="modal" id="modal_order_lines_quick_form" tabindex="-1" role="dialog">
+<div class="modal" id="modal_document_lines_quick_form" tabindex="-1" role="dialog">
    <div class="modal-dialog modal-lg" xstyle="width: 99%; max-width: 1000px;">
-      <div class="modal-content" id="order_lines_quick_form">
+      <div class="modal-content" id="document_lines_quick_form">
 
 
 
 
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="modal_order_lines_quick_Label">{{ l('Quick Add Products to Order') }}</h4>
+            <h4 class="modal-title" id="modal_document_lines_quick_Label">{{ l('Quick Add Products to Document') }}</h4>
          </div>
 
          <div class="modal-body">
@@ -66,10 +66,10 @@
 
 
 
-    <div id="div_order_lines_quick_form" style="display:none;">
+    <div id="div_document_lines_quick_form" style="display:none;">
        <div class="table-responsive">
 
-    <table id="quick_order_lines" class="table table-hover">
+    <table id="quick_document_lines" class="table table-hover">
         <thead>
             <tr>
                <th class="text-left">{{ l('Reference') }}
@@ -88,7 +88,7 @@
                 <td class="text-right">
                       
 
-                  <button class="btn btn-md btn-danger delete-quick-order-line" type="button" title="{{l('Delete', [], 'layouts')}}">
+                  <button class="btn btn-md btn-danger delete-quick-document-line" type="button" title="{{l('Delete', [], 'layouts')}}">
                    <i class="fa fa-trash"></i></button>
 
                 </td>
@@ -131,7 +131,7 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-magick" name="modal_order_lines_quick_formSubmit" id="modal_order_lines_quick_formSubmit">
+               <button type="submit" class="btn btn-magick" name="modal_document_lines_quick_formSubmit" id="modal_document_lines_quick_formSubmit">
                 <i class="fa fa-superpowers"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 
@@ -222,10 +222,10 @@ $(document).ready(function() {
 
                     auto_product_row();
 
-                    $('#modal_order_lines_quick_form').modal({show: true});
+                    $('#modal_document_lines_quick_form').modal({show: true});
 
-                    $('#quick_order_lines tbody').html('');
-                    $("#div_order_lines_quick_form").hide();
+                    $('#quick_document_lines tbody').html('');
+                    $("#div_document_lines_quick_form").hide();
 
                     reset_row_form();
 
@@ -236,7 +236,7 @@ $(document).ready(function() {
 
 
 
-        $("body").on('click', "#modal_order_lines_quick_formSubmit", function() {
+        $("body").on('click', "#modal_document_lines_quick_formSubmit", function() {
 
               quick_formSubmit();
 
@@ -251,13 +251,13 @@ $(document).ready(function() {
      });
 
 
-     $(document).on('click', '.delete-quick-order-line', function() {
+     $(document).on('click', '.delete-quick-document-line', function() {
          
           $(this).closest("tr").remove();
 
-          if( $('#quick_order_lines tbody').children('tr').length == 0 )
+          if( $('#quick_document_lines tbody').children('tr').length == 0 )
           {
-                $("#div_order_lines_quick_form").hide("slow");
+                $("#div_document_lines_quick_form").hide("slow");
           }
 
       });
@@ -296,7 +296,7 @@ function add_new_row()
 
               var row = '';
               var data = '';
-              var button_delete = '<button class="btn btn-md btn-danger delete-quick-order-line" type="button" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash"></i></button>';
+              var button_delete = '<button class="btn btn-md btn-danger delete-quick-document-line" type="button" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash"></i></button>';
               //var count = +1.0+parseInt($('#row_count').val());
               var count = +1.0+ +$('#row_count').val(); // Won't work: +1.0++$('#row_count').val()  <= taken as increment operator!!!
 
@@ -307,11 +307,11 @@ function add_new_row()
 
               row = '<tr>'+data+'</tr>';
 
-              $("#quick_order_lines").append(row);
+              $("#quick_document_lines").append(row);
 
               $('#row_count').val(count);
 
-              $("#div_order_lines_quick_form").show("slow");
+              $("#div_document_lines_quick_form").show("slow");
 
               reset_row_form();
 
@@ -320,7 +320,7 @@ function add_new_row()
 
 function quick_formSubmit()
 {
-            var count = $('#quick_order_lines tbody').children('tr').length;
+            var count = $('#quick_document_lines tbody').children('tr').length;
 
            // Nothing to submit!
            if ( count == 0 )
@@ -330,12 +330,12 @@ function quick_formSubmit()
 
 
             var document_id = {{ $document->id }};
-            var url = "{{ route('customerorder.quickaddlines', [$document->id]) }}";
+            var url = "{{ route($model_path.'.quickaddlines', [$document->id]) }}";
             var token = "{{ csrf_token() }}";
 
-            var p_ids = $('#quick_order_lines').find('input[name^="product_id_values"]').serialize();
-            var c_ids = $('#quick_order_lines').find('input[name^="combination_id_values"]').serialize();
-            var qts = $('#quick_order_lines').find('input[name^="quantity_values"]').serialize();
+            var p_ids = $('#quick_document_lines').find('input[name^="product_id_values"]').serialize();
+            var c_ids = $('#quick_document_lines').find('input[name^="combination_id_values"]').serialize();
+            var qts = $('#quick_document_lines').find('input[name^="quantity_values"]').serialize();
 
             var payload = { 
                               document_id : {{ $document->id }},
@@ -364,13 +364,13 @@ function quick_formSubmit()
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
-                    $('#modal_order_lines_quick_form').modal('toggle');
+                    $('#modal_document_lines_quick_form').modal('toggle');
 
                     console.log(result);
 
                     showAlertDivWithDelay("#msg-success");
 
-                    loadCustomerOrderlines();
+                    loadDocumentlines();
                 }
             });
 
@@ -421,9 +421,9 @@ function quick_formSubmit()
         function auto_product_row( selector = "#row_autoproduct_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route('customerorderline.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
+                source : "{{ route($model_path.'.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
-                appendTo : "#modal_order_lines_quick_form",
+                appendTo : "#modal_document_lines_quick_form",
 
                 select : function(key, value) {
                     var str = '[' + value.item.reference+'] ' + value.item.name;

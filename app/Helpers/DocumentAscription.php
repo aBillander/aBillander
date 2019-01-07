@@ -7,9 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class DocumentAscription extends Model {
 
 
-    protected $table = 'parent_child';
+//    protected $table = 'parent_child';
 
     protected $guarded = ['id'];
+
+    public static $rules = [
+            'leftable_id'    => 'required',
+            'leftable_type'  => 'required',
+
+            'rightable_id'   => 'required',
+            'rightable_type' => 'required',
+
+            'type' => 'required',   // in: 'traceability', etc.
+            ];
 
 
     /*
@@ -18,6 +28,17 @@ class DocumentAscription extends Model {
     |--------------------------------------------------------------------------
     */
 
+    public function rightable()
+    {
+       return $this->morphTo();
+    }
+
+    public function leftable()
+    {
+       return $this->morphTo();
+    }
+
+/*
     public function customerinvoices()
     {
        return $this->belongsTo('CustomerInvoice', 'childable_id');
@@ -27,5 +48,5 @@ class DocumentAscription extends Model {
     {
        return $this->belongsTo('aBillander\WooConnect\WooOrder', 'parentable_id');
     }
-
+*/
 }

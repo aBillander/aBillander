@@ -36,7 +36,13 @@
             {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
          </div>
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4">
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
+            {{ l('Sequence') }}
+            {!! Form::select('sequence_id', $sequenceList, old('sequence_id'), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
+            {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2">
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference') ? 'has-error' : '' }}">
@@ -98,6 +104,7 @@
             {!! $errors->first('payment_method_id', '<span class="help-block">:message</span>') !!}
          </div>
 
+@if ( $document->lines->count() == 0 )
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
             {{ l('Currency') }}
             {!! Form::select('currency_id', $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id', 'onchange' => 'get_currency_rate($("#currency_id").val())')) !!}
@@ -119,6 +126,32 @@
             </div>
 
          </div>
+@else
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
+            {{ l('Currency') }}
+            <div class="form-control">{{ $document->currency->name }}</div>
+
+            {!! Form::hidden('currency_id', $document->currency_id, array('name' => 'currency_id', 'id' => 'currency_id')) !!}
+         </div>
+
+    @if( $document->currency_id != \App\Configuration::get('DEF_CURRENCY') )
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
+            {{ l('Conversion Rate') }}
+            <div  class="input-group">
+              {!! Form::text('currency_conversion_rate', null, array('class' => 'form-control', 'id' => 'currency_conversion_rate')) !!}
+              {!! $errors->first('currency_conversion_rate', '<span class="help-block">:message</span>') !!}
+
+              <span class="input-group-btn" title="{{ l('Update Conversion Rate') }}">
+              <button class="btn btn-md btn-lightblue" type="button" onclick="get_currency_rate($('#currency_id').val());">
+                  <span class="fa fa-money"></span>
+              </button>
+              </span>
+            </div>
+         </div>
+    @endif
+
+@endif
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('down_payment') ? 'has-error' : '' }}">
             {{ l('Down Payment') }}
@@ -183,9 +216,12 @@
                      <i class="fa fa-floppy-o"></i>
                      &nbsp; {{l('Save', [], 'layouts')}}
                   </button>
-@if ($document->status=='draft')
+@if ($document->status=='draft' )
+@php
+  $hidden = $document->lines->count() == 0 ? 'hidden' : ''; 
+@endphp
                   <input type="hidden" id="nextAction" name="nextAction" value="" />
-                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
+                  <button class="btn btn-info {{ $hidden }} " type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
                      <i class="fa fa-hdd-o"></i>
                      &nbsp; {{l('Save & Confirm', [], 'layouts')}}
                   </button>

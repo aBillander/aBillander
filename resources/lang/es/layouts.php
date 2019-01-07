@@ -28,6 +28,7 @@ return [
 	'This record cannot be deleted because it is in use &#58&#58 (:id) '  =>  'El registro no puede ser eliminado porque está en uso &#58&#58 (:id) ',
 	'Unable to create this record &#58&#58 (:id) '               =>  'No se ha podido crear el registro solicitado &#58&#58 (:id) ',
 	'Unable to update this record &#58&#58 (:id) '               =>  'No se ha podido actualizar el registro solicitado &#58&#58 (:id) ',
+	'Document has no Lines'                                      =>  'El Documento no contiene Líneas',
 	'Unable to delete this record &#58&#58 (:id) '               =>  'No se ha podido borrar el registro solicitado &#58&#58 (:id) ',
 	'Unable to load PDF Document &#58&#58 (:id) '                =>  'No se puede cargar el documento PDF &#58&#58 (:id) ',
 	'This record cannot be created because it already exists &#58&#58 (:id) '  =>  'El registro no puede ser creado porque ya existe &#58&#58 (:id) ',

@@ -9,7 +9,9 @@
         <div class="page-header">
             <div class="pull-right">
 
+@if ($document->document_id>0)
                 <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
+@endif
 
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></a>
                 
@@ -37,7 +39,17 @@
                  @if($customer->sales_equalization)
                   <span id="sales_equalization_badge" class="badge" title="{{l('Equalization Tax')}}"> RE </span>
                  @endif
-                 </span> &nbsp; {{ $document->document_reference }} &nbsp; <span class="badge" style="background-color: #3a87ad;" title="{{ $customer->currentPricesEnteredWithTax( $document->document_currency ) ?
+                 </span>
+                   &nbsp; 
+                    @if ($document->document_id>0)
+                    {{ $document->document_reference }}
+                    @else
+                    <a class="btn xbtn-xs alert-warning" href="{{ URL::to($model_path.'/' . $document->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
+                    <span xclass="label label-default">{{ l('Draft') }}</span>
+                    </a>
+                    @endif
+                   &nbsp; 
+                  <span class="badge" style="background-color: #3a87ad;" title="{{ $customer->currentPricesEnteredWithTax( $document->document_currency ) ?
                                                         l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                                         l('Prices are entered exclusive of tax', [], 'appmultilang') }}">{{ $document->currency->iso_code }}</span>
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}

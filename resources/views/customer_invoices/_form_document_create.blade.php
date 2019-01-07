@@ -148,7 +148,7 @@
                      &nbsp; {{l('Save', [], 'layouts')}}
                   </button>
                   <input type="hidden" id="nextAction" name="nextAction" value="" />
-                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
+                  <button class="btn btn-info hidden" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
                      <i class="fa fa-hdd-o"></i>
                      &nbsp; {{l('Save & Confirm', [], 'layouts')}}
                   </button>

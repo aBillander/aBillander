@@ -135,7 +135,7 @@ class CustomersController extends Controller {
      */
     public function edit($id)
     {
-        $sequenceList = \App\Sequence::listFor('Customer');
+        $sequenceList = \App\Sequence::listFor( \App\CustomerInvoice::class );
 
         $customer = $this->customer->with('addresses', 'address', 'address.country', 'address.state')->findOrFail($id); 
 

@@ -142,6 +142,12 @@ class Configuration extends Model
 	}
 
 	// Helper function
+	public static function getNumber($key)
+	{
+		return floatval(Configuration::get($key));
+	}
+
+	// Helper function
 	public static function isEmpty($key)
 	{
 		return trim((string) Configuration::get($key)) === '';

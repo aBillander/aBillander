@@ -16,16 +16,14 @@
 
 @if( $customer->user )
 
-      <div class="panel-body">
 
         {!! Form::model($customer->user, array('method' => 'PATCH', 'url' => route('customerusers.update', [$customer->user->id]).'#customeruser' )) !!}
         <input type="hidden" value="{{$customer->id}}" name="customer_id" id="customer_id">
 
-          @include('customer_users._form')
+          @include('customers._form_customer_user')
 
         {!! Form::close() !!}
-
-      </div>
+        
 
 @else
 

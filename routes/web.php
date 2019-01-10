@@ -210,6 +210,9 @@ Route::group(['middleware' =>  ['auth']], function()
 
         Route::resource('manufacturers', 'ManufacturersController');
 
+        Route::resource('helpcontents', 'HelpContentsController');
+        Route::get('helpcontents/{slug}/content', 'HelpContentsController@getContent')->name('helpcontents.content');
+
         Route::resource('activityloggers', 'ActivityLoggersController');
 //        Route::get('activityloggers', ['uses' => 'ActivityLoggersController@index', 
 //                         'as'   => 'activityloggers.index'] );
@@ -307,6 +310,8 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/invoice/pdf', $controller.'@showPdfInvoice')->name($path.'.invoice.pdf');
         Route::match(array('GET', 'POST'), 
                    $path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );
+
+        Route::get($path.'/{document}/onhold/toggle', $controller.'@onholdToggle')->name($path.'.onhold.toggle');
 }
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');

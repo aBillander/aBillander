@@ -155,10 +155,7 @@ class CustomerInvoicesController extends BillableController
 				case 'saveAndConfirm':
 					# code...
 					$document->confirm();
-					// 
-					// Vouchers stuff
-					// 
-					$document->makePaymentDeadlines();
+
 					break;
 				
 				default:
@@ -493,10 +490,7 @@ class CustomerInvoicesController extends BillableController
 				case 'saveAndConfirm':
 					# code...
 					$document->confirm();
-					// 
-					// Vouchers stuff
-					// 
-					$document->makePaymentDeadlines();
+
 					break;
 				
 				default:
@@ -559,8 +553,21 @@ class CustomerInvoicesController extends BillableController
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
         }
 
-        // Confirm & Dispatch event
-        if ( $document->confirm() ) event(new CustomerInvoiceConfirmed($document));
+        // Confirm
+        $document->confirm();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+    }
+
+
+    protected function onholdToggle(CustomerInvoice $document)
+    {
+        // Toggle
+        $toggle = $document->onhold > 0 ? 0 : 1;
+        $document->onhold = $toggle;
+        
+        $document->save();
 
         return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');

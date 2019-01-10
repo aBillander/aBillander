@@ -60,4 +60,7 @@ return [
 	''     => '',
 	''     => '',
 
+	'Enable Quotations'     => 'Permitir Presupuestos',
+	'Enable minimum Order'     => 'Activar Pedido mínimo',
+	'Minimum Order Value'     => 'Importe Pedido mínimo',
 ];

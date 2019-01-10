@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Configuration;
+use App\Currency;
+use App\Todo;
 
 use App\CustomerUser;
 use App\Customer;
@@ -77,6 +79,21 @@ class AbccCustomerOrdersController extends Controller {
         $customer      = Auth::user()->customer;
         $cart = \App\Context::getcontext()->cart;
 
+        if ( $cart->cartlines->count() == 0 )
+        	return redirect()->back()
+                ->with('error', l('Document has no Lines', 'layouts'));
+
+		$reference_customer = $request->input('process_as', 'order') == 'quotation' ? 'QUOTATION' : '';
+
+        // Cart Amount
+        if( ($reference_customer != 'QUOTATION') && Auth::user()->canMinOrderValue() )
+        {
+        	if( $cart->amount < Auth::user()->canMinOrderValue() )
+	        	return redirect()->back()
+	                ->with('error', l('Document amount should be more than: ', 'layouts').abi_money( Auth::user()->canMinOrderValue(), $cart->currency ));
+        }
+		
+
 		// Check
 		$rules = CustomerOrder::$rules;
 		$cartrules['shipping_address_id'] = str_replace('{customer_id}', $customer->id, $rules['shipping_address_id']);
@@ -95,7 +112,7 @@ class AbccCustomerOrdersController extends Controller {
 //			'document_id' => $order[''],
 //			'document_reference' => $order[''],
 //			'reference' => WooOrder::getOrderReference( $order ),
-//			'reference_customer', 
+			'reference_customer' => $reference_customer, 
 //			'reference_external' => $order['id'],
 
 			'created_via' => 'abcc',
@@ -137,7 +154,7 @@ class AbccCustomerOrdersController extends Controller {
 
 //			'commission_amount' => $order[''],
 
-			'notes_from_customer' => $request->input('notes'),
+			'notes_from_customer' => ( $reference_customer == 'QUOTATION' ? '-- QUOTATION --'."\n"."\n" : '' ) . $request->input('notes'),
 //			'notes' => $order[''],
 //			'notes_to_customer' => $order[''],
 
@@ -160,7 +177,10 @@ class AbccCustomerOrdersController extends Controller {
         $customerOrder = $this->customerOrder->create($data);
 
 		// Good boy:
-		if ( Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') ) $customerOrder->confirm();
+		if ( $reference_customer && Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') ) 
+		{
+			$customerOrder->confirm();
+		}
 		
 
         // Lines stuff here in
@@ -177,6 +197,25 @@ class AbccCustomerOrdersController extends Controller {
 
         // Notify Admin
         // 
+        // Create Todo
+        $data = [
+            'name' => l('Preparar un Pedido a un Cliente'), 
+            'description' => l('Un Cliente ha realizado un Pedido desde el Centro de Clientes.'), 
+            'url' => route('customerorders.edit', [$customerOrder->id]), 
+            'due_date' => null, 
+            'completed' => 0, 
+            'user_id' => \App\Context::getContext()->user->id,
+        ];
+
+        if ( $reference_customer )
+        {
+        	$data['name'] = l('Preparar un Presupuesto a un Cliente');
+	        $data['description'] = l('Un Cliente ha solicitado un PRESUPUESTO desde el Centro de Clientes.');
+
+	        $todo = Todo::create($data);
+        }
+
+//        $todo = Todo::create($data);
 
 
 		// MAIL stuff

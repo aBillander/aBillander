@@ -144,6 +144,66 @@
 
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_ENABLE_QUOTATIONS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_QUOTATIONS" id="ABCC_ENABLE_QUOTATIONS_on" value="1" @if( old('ABCC_ENABLE_QUOTATIONS', $key_group['ABCC_ENABLE_QUOTATIONS']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_QUOTATIONS" id="ABCC_ENABLE_QUOTATIONS_off" value="0" @if( !old('ABCC_ENABLE_QUOTATIONS', $key_group['ABCC_ENABLE_QUOTATIONS']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_ENABLE_QUOTATIONS.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_ENABLE_MIN_ORDER.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_MIN_ORDER" id="ABCC_ENABLE_MIN_ORDER_on" value="1" @if( old('ABCC_ENABLE_MIN_ORDER', $key_group['ABCC_ENABLE_MIN_ORDER']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_MIN_ORDER" id="ABCC_ENABLE_MIN_ORDER_off" value="0" @if( !old('ABCC_ENABLE_MIN_ORDER', $key_group['ABCC_ENABLE_MIN_ORDER']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_ENABLE_MIN_ORDER.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group {{ $errors->has('ABCC_MIN_ORDER_VALUE') ? 'has-error' : '' }}">
+      <label for="ABCC_MIN_ORDER_VALUE" class="col-lg-4 control-label">{!! l('ABCC_MIN_ORDER_VALUE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_MIN_ORDER_VALUE" name="ABCC_MIN_ORDER_VALUE" placeholder="" value="{{ old('ABCC_MIN_ORDER_VALUE', $key_group['ABCC_MIN_ORDER_VALUE']) }}" />
+        {{ $errors->first('ABCC_MIN_ORDER_VALUE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_MIN_ORDER_VALUE.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
+
+
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ABCC_ENABLE_NEW_PRODUCTS.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

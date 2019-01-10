@@ -36,6 +36,7 @@ return [
 	'Main Data'     => 'Datos Generales',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Notes'     => 'Notas',
+	'Place Quotation'     => 'Pedir Presupuesto',
 	'Place Order'     => 'Confirmar Pedido',
 	'Cart Items'     => 'Líneas del Pedido',
 	''     => '',

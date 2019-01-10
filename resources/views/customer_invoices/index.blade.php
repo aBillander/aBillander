@@ -27,6 +27,7 @@
     <thead>
         <tr>
             <th class="text-left">{{ l('ID', 'layouts') }}</th>
+            <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
@@ -48,6 +49,15 @@
                 <span xclass="label label-default">{{ l('Draft') }}</span>
                 </a>
                 @endif</td>
+            <td class="text-center">
+
+@if ($document->onhold>0)
+                <a class="btn btn-xs btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
+@else
+                <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
+@endif
+                
+            </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
             <td><a class="" href="{{ URL::to('customers/' .$document->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">

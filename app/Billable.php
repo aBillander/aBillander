@@ -59,7 +59,7 @@ class Billable extends Model
 
     // https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
     protected $fillable = [ 'sequence_id', 'customer_id', 'reference', 'reference_customer', 'reference_external', 
-                            'created_via', 'document_prefix', 'document_id', 'document_reference',
+                            'created_via', '_document_prefix', '_document_id', '_document_reference',
                             'document_date', 'payment_date', 'validation_date', 'delivery_date',
 
                             'document_discount_percent', 'document_discount_amount',
@@ -257,8 +257,11 @@ class Billable extends Model
         $seq = \App\Sequence::find( $seq_id );
         $doc_id = $seq->getNextDocumentId();
 
+        // Not fillable
         $this->document_prefix    = $seq->prefix;
+        // Not fillable
         $this->document_id        = $doc_id;
+        // Not fillable. May come from external system ???
         $this->document_reference = $seq->getDocumentReference($doc_id);
 
         $this->status = 'confirmed';

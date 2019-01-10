@@ -40,7 +40,8 @@ class CustomerUser extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password', 'firstname', 'lastname', 
 //        'home_page', 'is_admin', 
-        'active', 'language_id', 'customer_id'
+        'active', 'enable_quotations', 'enable_min_order', 'min_order_value', 
+        'language_id', 'customer_id'
     ];
 
     /**
@@ -90,6 +91,29 @@ class CustomerUser extends Authenticatable
         return $this->active;
 
         // See: https://pusher.com/tutorials/multiple-authentication-guards-laravel#modify-how-our-users-are-redirected-if-authenticated
+    }
+
+    public function canQuotations()
+    {
+        $can = $this->enable_quotations >= 0 ? $this->enable_quotations : Configuration::isTrue('ABCC_ENABLE_QUOTATIONS') ; 
+
+        return $can;
+    }
+
+    public function canMinOrder()
+    {
+        $can = $this->enable_min_order >= 0 ? $this->enable_min_order : Configuration::isTrue('ABCC_ENABLE_MIN_ORDER') ; 
+
+        return $can;
+    }
+
+    public function canMinOrderValue()
+    {
+        if( !$this->canMinOrder() ) return 0.0;
+
+        $can = $this->min_order_value > 0 ? $this->min_order_value : Configuration::isTrue('ABCC_MIN_ORDER_VALUE') ; 
+
+        return $can;
     }
 
 

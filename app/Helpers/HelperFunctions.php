@@ -178,6 +178,27 @@ function abi_mail_from_address()
     return config('mail.from.address');
 }
 
+function abi_money($amount, \App\Currency $currency = null)
+{
+    if (!is_numeric($amount))
+        return $amount;
+
+    if ($currency === null)
+        $currency = \App\Context::getContext()->currency;
+
+    $number = number_format($amount, $currency->decimalPlaces, $currency->decimalSeparator, $currency->thousandsSeparator);
+
+    $blank = $currency->blank ? ' ' : '';
+    if ( $currency->signPlacement > 0 )
+        $number = $number . $blank . $currency->sign;
+    else
+        $number = $currency->sign . $blank . $number;
+    
+    // NOTE: negative amounts may require additional formatting for negative sign: -100 / 100- / (100)
+
+    return $number;
+}
+
 
 
 

@@ -10,7 +10,7 @@
         <a href="{{ URL::to('todos/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
-        <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
+        <a id="btn1" href="#myHelpModal" data-backdrop="false" data-toggle="modal">Click Me</a>
     </div>
     <h2>
         {{ l('Todos') }}
@@ -98,51 +98,6 @@
 
 @endsection
 
-@include('layouts/modal_delete')
+@ include('layouts/modal_delete')
 
-{{--  --}}
 @include('todos._modal_help')
-{{--  --}}
-
-@section('scripts')
-
-@parent
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.toggle-item').click(function (evnt) {
-
-            var item_id = $(this).attr('id');
-            var href = $(this).attr('href');
-
-            evnt.preventDefault();
-   
-   // https://laracasts.com/discuss/channels/general-discussion/laravel-ajax-post-updating
-   // http://stackoverflow.com/questions/27914559/patch-ajax-request-in-laravel
-
-/* */
-
-            $.ajax({
-              type: 'PATCH',
-              url: href,
-              data: "item_id="+item_id+"&toggleStatus=1&_token={{ csrf_token() }}",  
-              success: function(data) {
-
-                    var status;
-                    var obj = JSON.parse(data);
-
-                    status = obj.active > 0 ? '<i class="fa fa-check-square" style="color: #38b44a;">' : '<i class="fa fa-square-o" style="color: #df382c;">' ;
-                    $('#item_'+obj.item_id).html(status);
-              }
-            });
-
-            // Seems type=POST with data+'&_method=PATCH' won't work!
-
-/* */
-
-            return false;
-        });
-    });
-</script>
-
-@endsection

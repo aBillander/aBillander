@@ -367,6 +367,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('helpcontents') }}">
+                                 <i class="fa fa-life-saver text-info"></i> {{l('Help Contents', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('companies') }}">
                                  {{l('Company', [], 'layouts')}}
                             </a>

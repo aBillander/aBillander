@@ -33,12 +33,36 @@
    </div><!-- div class="panel-body" -->
 
                <div class="panel-footer text-right">
+
+@if( \App\Configuration::isTrue('ABCC_ENABLE_QUOTATIONS') && Auth::user()->enable_quotations != 0 )
+                  <button class="btn btn-warning pull-left" type="submit" onclick="this.disabled=true;$('#process_as').val('quotation');this.form.submit();">
+                     <i class="fa fa-handshake-o"></i>
+                     &nbsp; {{ l('Place Quotation') }}
+                  </button>
+@endif
+
+                  <input type="hidden" id="process_as" name="process_as" value="order" />
+                  
                   <button class="btn btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
                      <i class="fa fa-check-circle"></i>
                      &nbsp; {{ l('Place Order') }}
                   </button>
+
                </div>
 
 {!! Form::close() !!}
 
 </div>
+
+@if( Auth::user()->canMinOrderValue() > 0.0 )
+
+      <div class="panel-body">
+
+         <div class="alert alert-warning alert-block">
+             <i class="fa fa-warning"></i>
+            {{ l('Cart amount should be more than: ') . abi_money( Auth::user()->canMinOrderValue(), $cart->currency ) }}
+         </div>
+         
+      </div>
+
+@endif

@@ -79,6 +79,16 @@ class CustomerInvoice extends Billable
     |--------------------------------------------------------------------------
     */
 
+    public function confirm()
+    {
+        if ( ! parent::confirm() ) return false;
+
+        // Dispatch event
+        event( new CustomerInvoiceConfirmed($this) );
+
+        return true;
+    }
+
     public static function getPaymentStatusList()
     {
             $list = [];

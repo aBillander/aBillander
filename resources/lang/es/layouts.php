@@ -109,6 +109,7 @@ return [
 	'Translations'     => 'Traducciones',
 	'Countries'     => 'Países',
 	'Document sequences'     => 'Series de Documentos',
+	'Help Contents' => 'Contenidos de Ayuda',
 	'Document templates'     => 'Plantillas de Documentos',
 	'Users'     => 'Usuarios',
 	'Logout'     => 'Salir',
@@ -159,6 +160,7 @@ return [
 	'Status'     => 'Estado',
 	'Yes'     => 'Sí',
 	'No'      => 'No',
+	'Default'      => 'Por defecto',
 	'Position'     => 'Posición',
 	'Notes'     => 'Notas',
 
@@ -207,6 +209,9 @@ return [
 	'Browse'     => 'Seleccionar',
 	'Help'     => 'Ayuda',
 	'Home'     => 'Inicio',
+
+	'Set on-hold'     => 'Click para poner en espera',
+	'Unset on-hold'     => 'Click para liberar',
 
 	'Add New Item'     => 'Añadir Nuevo',
 	'Add'     => 'Añadir',

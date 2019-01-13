@@ -65,6 +65,9 @@ return [
 	'FSX_DLOAD_CUSTOMER_SHIPPING_ADDRESS.name' => 'Descargar Clientes con Dirección de Entrega',
 	'FSX_DLOAD_CUSTOMER_SHIPPING_ADDRESS.help' => '1 : Se descargará el Cliente siempre que la Dirección de Entrega del Pedido es diferente de la Dirección Principal del Cliente. <br>0 : El Cliente se descarga según otras configuraciones.',
 
+	'FSX_SHIPPING_ADDRESS_AS_LINE.name' => 'Descargar Dirección de Entrega como línea del Pedido',
+	'FSX_SHIPPING_ADDRESS_AS_LINE.help' => 'Sólo aplica cuando la Dirección de Entrega del Pedido es diferente de la Dirección Principal del Cliente.',
+
 	'FSX_ORDER_LINES_REFERENCE_CHECK.name' => 'Comprobar la Referencia de las Líneas de Pedido',
 	'FSX_ORDER_LINES_REFERENCE_CHECK.help' => '',
 

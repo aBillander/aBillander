@@ -37,7 +37,7 @@
 
          <div class="form-group col-lg-12 col-md-12 col-sm-12">
             <label class="control-label">{{ l('Notes') }}</label>
-            <div class="form-control">{{ $order->notes_from_customer }}</div>
+            <div style="height: auto;" class="form-control">{!! nl2p($order->notes_from_customer) !!}</div>
             
          </div>
       </div>

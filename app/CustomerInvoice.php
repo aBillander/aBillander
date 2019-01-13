@@ -84,7 +84,7 @@ class CustomerInvoice extends Billable
         if ( ! parent::confirm() ) return false;
 
         // Dispatch event
-        event( new CustomerInvoiceConfirmed($this) );
+        event( new \App\Events\CustomerInvoiceConfirmed($this) );
 
         return true;
     }

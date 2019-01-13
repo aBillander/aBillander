@@ -197,6 +197,25 @@
     </div>
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('FSX_SHIPPING_ADDRESS_AS_LINE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="FSX_SHIPPING_ADDRESS_AS_LINE" id="FSX_SHIPPING_ADDRESS_AS_LINE_on" value="1" @if( old('FSX_SHIPPING_ADDRESS_AS_LINE', $key_group['FSX_SHIPPING_ADDRESS_AS_LINE']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="FSX_SHIPPING_ADDRESS_AS_LINE" id="FSX_SHIPPING_ADDRESS_AS_LINE_off" value="0" @if( !old('FSX_SHIPPING_ADDRESS_AS_LINE', $key_group['FSX_SHIPPING_ADDRESS_AS_LINE']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('FSX_SHIPPING_ADDRESS_AS_LINE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('FSX_ORDER_LINES_REFERENCE_CHECK.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

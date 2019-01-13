@@ -150,6 +150,25 @@
     </div>
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('PRICES_ENTERED_WITH_ECOTAX.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="PRICES_ENTERED_WITH_ECOTAX" id="PRICES_ENTERED_WITH_ECOTAX_on" value="1" @if( old('PRICES_ENTERED_WITH_ECOTAX', $key_group['PRICES_ENTERED_WITH_ECOTAX']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="PRICES_ENTERED_WITH_ECOTAX" id="PRICES_ENTERED_WITH_ECOTAX_off" value="0" @if( !old('PRICES_ENTERED_WITH_ECOTAX', $key_group['PRICES_ENTERED_WITH_ECOTAX']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('PRICES_ENTERED_WITH_ECOTAX.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ENABLE_CUSTOMER_CENTER.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

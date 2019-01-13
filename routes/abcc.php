@@ -66,13 +66,6 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
 //        Route::get('/', ['uses' => 'CustomerHomeController@index', 'as' => 'customer.dashboard']);
     });
 
-    Route::get('/invoices', 'AbccCustomerInvoicesController@index')->name('abcc.invoices.index');
-
-    Route::get('invoice/{invoiceKey}', ['uses' => 'AbccCustomerInvoicesController@show', 'as' => 'abcc.invoice.show']);
-
-//    Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbccCustomerInvoicesController@pdf', 'as' => 'customerCenter.public.invoice.pdf']);
-    Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbccCustomerInvoicesController@pdf', 'as' => 'abcc.invoice.pdf']);
-
 
 /*
     Route::group(['middleware' => 'auth.customerCenter'], function ()
@@ -100,7 +93,18 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::get('orders/{id}/duplicate', 'AbccCustomerOrdersController@duplicateOrder')->name('abcc.order.duplicate'  );
         Route::get('orders/{id}/pdf', 'AbccCustomerOrdersController@showPdf')->name('abcc.order.pdf'  );
 
-        Route::get('/vouchers', 'AbccCustomerVouchersController@index')->name('abcc.vouchers.index');
+        Route::resource('/shippingslips', 'AbccCustomerShippingSlipsController')->names('abcc.shippingslips');
+
+        Route::resource('/invoices', 'AbccCustomerInvoicesController')->names('abcc.invoices');
+
+        Route::get('invoice/{invoiceKey}', ['uses' => 'AbccCustomerInvoicesController@show', 'as' => 'abcc.invoice.show']);
+
+//    Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbccCustomerInvoicesController@pdf', 'as' => 'customerCenter.public.invoice.pdf']);
+        Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbccCustomerInvoicesController@pdf', 'as' => 'abcc.invoice.pdf']);
+
+
+        Route::resource('/vouchers', 'AbccCustomerVouchersController')->names('abcc.vouchers');
+
 
         Route::get('/cart', 'AbccCustomerCartController@index')->name('abcc.cart');
         Route::get('/cart/line/searchproduct',        'AbccCustomerCartController@searchProduct' )->name('cart.searchproduct');

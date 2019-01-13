@@ -258,6 +258,48 @@ class FSxOrderExporter {
                         );
         }
 
+        // Wait a minute:
+
+        $this->other['ot_shipping_address'] =  [];
+        
+        if ($order->invoicing_address_id != $order->shipping_address_id) 
+        {
+          // Add Shipping Address as a line in Order
+          if ( Configuration::get('FSX_SHIPPING_ADDRESS_AS_LINE') > 0 )
+          {
+              //
+              // Shipping Address Impersonator
+              $address_name =  $addressDelivery->address1 . 
+                              ($addressDelivery->address2 ? ' ' . $addressDelivery->address2 : '' ) . ',' .
+                               $addressDelivery->postcode . ' ' .
+                               $addressDelivery->city . ',' .
+
+                               $addressDelivery->phone;
+
+              $this->other['ot_shipping_address'] = array(
+                          'id' => 0,
+                          'reference' => 'ENTREGA EN',
+                          'name' => $address_name,
+                          'qty' => 1,
+
+                          'unit_customer_final_price' => 0.0,
+                          'discount_percent' => 0.0,
+                          'unit_final_price' => 0.0,
+                          'unit_final_price_tax_inc' => 0.0,
+
+                          'total_tax_incl' => 0.0,
+                          'total_tax_excl' => 0.0,
+
+                          'tax_id' => Configuration::get('FSOL_IMPUESTO_DIRECTO_TIPO_4'),     // Exento
+                          'sales_equalization' => 0,
+
+      //                    'tax_rate' => $tax_rate,
+                          'allow_tax' => '0'     // Tax not included
+                      );
+              
+          }
+        }
+
         // OK. Let's move on!
         return $this->run_status;
     }
@@ -604,6 +646,62 @@ $i += 1;  // Ready for next item (if any)
 // Portes ot_shipping ENDS
 //
 
+
+//
+// Delivery Address ot_shipping_address STARTS
+// 
+if ( isset($this->other['ot_shipping_address']['name']) ) {
+
+// 
+$fsol_tax_id = $this->other['ot_shipping_address']['tax_id'];  
+$fsol_tipo_iva = FSxTools::getTipoIVA($fsol_tax_id);
+if ($fsol_tipo_iva<0) { // ERROR!
+    $this->logError(sprintf( 'El Coste de Envío del Pedido <span style="color: green; font-weight: bold">%s</span> tiene un Impuesto <b>[%s]</b> que no se ha hallado correspondencia en FactuSOL. El Pedido <b>%s</b> no se descargará.', $this->info['orders_id'], $fsol_tax_id, $this->info['orders_id'] ));
+    $this->run_status = false;
+    return ;
+}
+
+$fsol_has_rec = $this->other['ot_shipping_address']['sales_equalization'];
+
+$price_no_tax = $this->other['ot_shipping_address']['total_tax_excl'];
+
+$fsweb_order_products[$i]['TIPLPC'] = $fsol_order_series; // :8
+$fsweb_order_products[$i]['CODLPC'] = $this->info['orders_id']; // :6
+$fsweb_order_products[$i]['POSLPC'] = $i+1; // :1
+$fsweb_order_products[$i]['ARTLPC'] = ''; // :010FAGESF
+$fsweb_order_products[$i]['DESLPC'] = $this->other['ot_shipping_address']['name']; // :Fagodio Esforulante de 10x10
+$fsweb_order_products[$i]['CANLPC'] = $this->other['ot_shipping_address']['qty']; // :1.0000
+$fsweb_order_products[$i]['DT1LPC'] = '0'; // :2   Descuento
+$fsweb_order_products[$i]['PRELPC'] = $price_no_tax; // :110.0000
+$fsweb_order_products[$i]['TOTLPC'] = $price_no_tax; // :107.8000 (había descuento!)
+$fsweb_order_products[$i]['IVALPC'] = $fsol_tipo_iva; // :0   Tipo de IVA 0,1,2 (16/7/4)
+$fsweb_order_products[$i]['IINLPC'] = $this->other['ot_shipping_address']['allow_tax']; // :0   IVA NO incluido en el precio
+
+// $price_no_tax = $this->other['ot_shipping_address']['value'];
+$net = 'net'  . ($fsol_tipo_iva+1) . 'pcl';// echo "<br>".$net;
+$iva = 'iiva' . ($fsol_tipo_iva+1) . 'pcl';// echo "<br>".$iva.$products['tax'];
+$$net += $price_no_tax;
+
+$line_tax = $this->other['ot_shipping_address']['total_tax_incl'] - $this->other['ot_shipping_address']['total_tax_excl'];
+if ($fsol_has_rec) {
+    $rec = 'irec' . ($fsol_tipo_iva+1) . 'pcl';
+
+    $piva = floatval( Configuration::get('FSOL_PIV' . ($fsol_tipo_iva+1) . 'CFG') );
+    $prec = floatval( Configuration::get('FSOL_PRE' . ($fsol_tipo_iva+1) . 'CFG') );
+    $riva = $piva / ($piva + $prec) ;
+    $rrec = $prec / ($piva + $prec) ;
+
+    $$iva += $line_tax * $riva;
+    $$rec += $line_tax * $rrec;
+} else {
+    $$iva += $line_tax;
+}
+
+$i += 1;  // Ready for next item (if any)
+}
+//  
+// Delivery Address ot_shipping_address ENDS
+//
 
 
 

@@ -253,6 +253,10 @@ class FSxProductImporter {
 
             $measure_unit = \App\MeasureUnit::find( Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') );
 
+            // Prepare stock movements
+            $currency =  \App\Context::getContext()->currency;
+            $datem = \Carbon\Carbon::now()->toDateString();
+
         	foreach ($art_query AS $articulo) {
 
     			// if ($articulo->CODART != 'BURGUER002') continue;
@@ -284,7 +288,7 @@ class FSxProductImporter {
         			'quantity_decimal_places' => $measure_unit->decimalPlaces,
  //       			'manufacturing_batch_size' => '',
 
-        			'quantity_onhand' => $articulo->USTART > 0 ?: 0.0, 
+//        			'quantity_onhand' => $articulo->USTART > 0 ?: 0.0, 
 //        			'quantity_onorder' => '', 
 //        			'quantity_allocated' => '', 
 //        			'quantity_onorder_mfg' => '', 
@@ -323,6 +327,26 @@ class FSxProductImporter {
         		];
 
         		$p = Product::create( $data );
+
+                // Stock Movement
+                $data = [
+                    'date' => $datem,
+                    'document_reference' => 'FSWeb '.$datem,
+//                        'price' => ,
+                    'currency_id' => $currency->id,
+                    'conversion_rate' => $currency->conversion_rate,
+                    'quantity' => $articulo->USTART > 0 ? $articulo->USTART : 0.0,
+//                        'notes' => ,
+                    'product_id' => $product->id,
+                    'combination_id' => null,
+                    'reference' => $product->reference,
+                    'name' => $product->name,
+                    'warehouse_id' => Configuration::get('FSX_FSOL_AUSCFG_PEER'),
+//                        'warehouse_counterpart_id' => ,
+                    'movement_type_id' => StockMovement::INITIAL_STOCK,
+                ];
+
+                $stockmovement = StockMovement::createAndProcess( $data );
 
         		// Load image...
                 if ($articulo->IMGART)

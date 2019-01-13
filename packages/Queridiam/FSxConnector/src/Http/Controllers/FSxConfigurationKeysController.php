@@ -45,6 +45,7 @@ class FSxConfigurationKeysController extends Controller {
 //    'WOO_ORDER_DOWNLOADED_STATUS_ID'   => '-1',
                         'FSX_FORCE_CUSTOMERS_DOWNLOAD', //     => '0',
                         'FSX_DLOAD_CUSTOMER_SHIPPING_ADDRESS', // => '0',
+                        'FSX_SHIPPING_ADDRESS_AS_LINE', // => '0',
 //    'WOO_USE_WEB_DESC'                 => '0',
                           'FSX_ORDER_LINES_REFERENCE_CHECK', //  => '0',
 

@@ -59,6 +59,9 @@ return [
 	'Inventory Adjustments'     => 'Regularización de Almacén',
 
 	'Orders'     => 'Pedidos',
+	'Shipping Slips'     => 'Albaranes',
+	'Invoices'     => 'Facturas',
+	'Vouchers'     => 'Pagos',
 
 	'Invoicing'     => 'Facturación',
 	'Customer Invoices'     => 'Facturas de Clientes',

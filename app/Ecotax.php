@@ -19,6 +19,8 @@ class Ecotax extends Model {
         );
 
     protected $dates = ['deleted_at'];
+
+    protected $appends = ['percent', 'amount'];
     
     protected $fillable = [ 'name', 'active' ];
 //    protected $fillable = [ 'country_id', 'state_id', 'rule_type', 'name', 'percent', 'amount', 'position' ];
@@ -46,10 +48,46 @@ class Ecotax extends Model {
     | Accessors
     |--------------------------------------------------------------------------
     */
+
+    public function getPercentAttribute()
+    {
+        // Address / Company models need fixing to retrieve country ISO code
+        // $country = Context::getContext()->company->address()->country_ISO;
+        
+        $country_id = \App\Configuration::get('DEF_COUNTRY');
+        // $country_id = \App\Context::getContext()->company->address()->country_id;
+
+//        $value = $this->taxrules()->where('country_id', '=', '0')->orWhere('country_id', '=', $country_id)->orderBy('position', 'asc')->first()->percent;
+        $value = $this->ecotaxrules()->where(function ($query) use ($country_id) {
+            $query->where('country_id', '=', '0')
+                  ->OrWhere('country_id', '=', $country_id);
+        })->orderBy('position', 'asc')->first()->percent;
+
+        return $value;
+    }
+
+    public function getAmountAttribute()
+    {
+        $country_id = \App\Configuration::get('DEF_COUNTRY');
+        
+        $value = $this->ecotaxrules()->where(function ($query) use ($country_id) {
+            $query->where('country_id', '=', '0')
+                  ->OrWhere('country_id', '=', $country_id);
+        })->orderBy('position', 'asc')->first()->amount;
+
+        return $value;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
     
     public function getFirstRule()
     {
-        return TaxRule::where('tax_id', '=', $this->id)->orderBy('position', 'asc')->first();
+        return EcotaxRule::where('ecotax_id', '=', $this->id)->orderBy('position', 'asc')->first();
     }
 
 

@@ -199,6 +199,21 @@ function abi_money($amount, \App\Currency $currency = null)
     return $number;
 }
 
+function abi_money_amount($amount, \App\Currency $currency = null)
+{
+    if (!is_numeric($amount))
+        return $amount;
+
+    if ($currency === null)
+        $currency = \App\Context::getContext()->currency;
+
+    $number = number_format($amount, $currency->decimalPlaces, $currency->decimalSeparator, $currency->thousandsSeparator);
+    
+    // NOTE: negative amounts may require additional formatting for negative sign: -100 / 100- / (100)
+
+    return $number;
+}
+
 
 
 

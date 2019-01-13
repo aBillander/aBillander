@@ -137,6 +137,31 @@ class BillableLine extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function getTaxableAmount()
+    {
+        $amount = $this->quantity*$this->unit_final_price;
+
+        if ( Configuration::isFalse('ENABLE_ECOTAXES') ) return $amount;
+
+        if ( $this->product->ecotax_id <= 0 )            return $amount;
+
+        if ( Configuration::isTrue('PRICES_ENTERED_WITH_ECOTAX') ) return $amount;
+        
+        // Apply Eco-Tax
+
+        // Get rules
+        // $rules = $product->getTaxRules( $this->taxingaddress,  $this->customer );
+        // Gorrino style, instead:
+        $ecotax = $this->product->ecotax;
+
+        // Apply rules
+        // $document_line->applyTaxRules( $rules );
+        // Gorrino style again
+        $amount = $amount*(1.0+$ecotax->percent/100.0) + $ecotax->amount * $this->quantity;
+
+        return $amount;
+    }
+
     /**
      * Add Taxes to ShippingSlip Line
      *
@@ -150,7 +175,7 @@ class BillableLine extends Model
         // Reset
         $this->taxes()->delete();
 
-        $base_price = $this->quantity*$this->unit_final_price;
+        $base_price = $this->getTaxableAmount();
         // Rounded $base_price is the same, no matters the value of ROUND_PRICES_WITH_TAX
 
         // Initialize totals

@@ -111,7 +111,7 @@ class CustomerUser extends Authenticatable
     {
         if( !$this->canMinOrder() ) return 0.0;
 
-        $can = $this->min_order_value > 0 ? $this->min_order_value : Configuration::isTrue('ABCC_MIN_ORDER_VALUE') ; 
+        $can = $this->min_order_value > 0 ? $this->min_order_value : Configuration::getNumber('ABCC_MIN_ORDER_VALUE') ; 
 
         return $can;
     }

@@ -14,7 +14,7 @@ use App\Events\CustomerInvoiceViewed as CustomerInvoiceViewed;
 
 use App\Configuration as Configuration;
 
-class AbccCustomerInvoicesController extends Controller
+class AbccCustomerShippingSlipsController extends Controller
 {
     protected $customer, $customerInvoice, $customerInvoiceLine;
 
@@ -42,7 +42,7 @@ class AbccCustomerInvoicesController extends Controller
 
         $customer_invoices = collect([]);
 
-        return view('abcc.invoices.index', compact('customer_invoices'));
+        return view('abcc.shipping_slips.index', compact('customer_invoices'));
     }
 
     public function show($cinvoiceKey)

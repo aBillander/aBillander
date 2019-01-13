@@ -162,6 +162,44 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_ENABLE_SHIPPING_SLIPS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_SHIPPING_SLIPS" id="ABCC_ENABLE_SHIPPING_SLIPS_on" value="1" @if( old('ABCC_ENABLE_SHIPPING_SLIPS', $key_group['ABCC_ENABLE_SHIPPING_SLIPS']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_SHIPPING_SLIPS" id="ABCC_ENABLE_SHIPPING_SLIPS_off" value="0" @if( !old('ABCC_ENABLE_SHIPPING_SLIPS', $key_group['ABCC_ENABLE_SHIPPING_SLIPS']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_ENABLE_SHIPPING_SLIPS.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_ENABLE_INVOICES.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_INVOICES" id="ABCC_ENABLE_INVOICES_on" value="1" @if( old('ABCC_ENABLE_INVOICES', $key_group['ABCC_ENABLE_INVOICES']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_ENABLE_INVOICES" id="ABCC_ENABLE_INVOICES_off" value="0" @if( !old('ABCC_ENABLE_INVOICES', $key_group['ABCC_ENABLE_INVOICES']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_ENABLE_INVOICES.help') !!}</span>
+      </div>
+    </div>
+
 
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ABCC_ENABLE_MIN_ORDER.name') !!}</label>

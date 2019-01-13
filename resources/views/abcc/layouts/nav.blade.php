@@ -59,37 +59,56 @@
                     <a href="{{ route('abcc.catalogue') }}" class="dropdown-toggle"><i class="fa fa-book"></i> {{l('Catalogue', [], 'abcc/layouts')}} </a>
                 </li>
 
+@if ( \App\Configuration::isTrue('ABCC_ENABLE_SHIPPING_SLIPS') || \App\Configuration::isTrue('ABCC_ENABLE_INVOICES') )
+
                 <li class="dropdown">
-                    <a href="{{ route('abcc.orders.index') }}" class="dropdown-toggle"><i class="fa fa-history"></i> {{l('Order History', [], 'abcc/layouts')}} </a>
-                </li>
-
-
-
-{{--
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-text"></i> {{l('Invoicing', [], 'abcc/layouts')}} <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-history"></i> {{l('Order History', [], 'abcc/layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
-                            <a href="{{ route('abcc.invoices.index') }}">
+                            <a href="{{ route('abcc.orders.index') }}">
                                  {{l('Orders', [], 'abcc/layouts')}}
                             </a>
                         </li>
+
+@if ( \App\Configuration::isTrue('ABCC_ENABLE_SHIPPING_SLIPS') )
+
                         <li class="divider"></li>
-                         <!-- li>
+                         <li>
+                            <a href="{{ route('abcc.shippingslips.index') }}">
+                                 {{l('Shipping Slips', [], 'abcc/layouts')}}
+                            </a>
+                        </li>
+@endif
+
+@if ( \App\Configuration::isTrue('ABCC_ENABLE_INVOICES') )
+
+                        <li class="divider"></li>
+                         <li>
                             <a href="{{ route('abcc.invoices.index') }}">
-                                 {{l('Customer Invoices', [], 'abcc/layouts')}}
+                                 {{l('Invoices', [], 'abcc/layouts')}}
                             </a>
                         </li>
                          <li>
                             <a href="{{ route('abcc.vouchers.index') }}">
-                                 {{l('Customer Vouchers', [], 'abcc/layouts')}}
+                                 {{l('Vouchers', [], 'abcc/layouts')}}
                             </a>
-                        </li -->
-                        <li class="divider"></li>
+                        </li>
+@endif
+                        <!-- li class="divider"></li -->
                     </ul>
                 </li>
 
+@else
 
+                <li class="dropdown">
+                    <a href="{{ route('abcc.orders.index') }}" class="dropdown-toggle"><i class="fa fa-history"></i> {{l('Order History', [], 'abcc/layouts')}} </a>
+                </li>
+
+@endif
+
+
+
+{{--
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'abcc/layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">

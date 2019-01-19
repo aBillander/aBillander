@@ -5,14 +5,17 @@ namespace App\Http\Controllers\CustomerCenter;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-use App\Customer as Customer;
-use App\CustomerInvoice as CustomerInvoice;
-use App\CustomerInvoiceLine as CustomerInvoiceLine;
+use App\CustomerUser;
+use App\Customer;
+use App\CustomerInvoice;
+use App\CustomerInvoiceLine;
 
-use App\Events\CustomerInvoiceViewed as CustomerInvoiceViewed;
+use App\Events\CustomerInvoiceViewed;
 
-use App\Configuration as Configuration;
+use App\Configuration;
+use App\Currency;
 
 class AbccCustomerInvoicesController extends Controller
 {
@@ -34,13 +37,15 @@ class AbccCustomerInvoicesController extends Controller
 
     public function index()
     {
-        $customer_invoices = CustomerInvoice::ofCustomer()      // Of Logged in Customer (see scope on Customer Model)
+        $customer_invoices = $this->customerInvoice->ofCustomer()      // Of Logged in Customer (see scope on Billable Trait)
 //                            ->with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
-                            ->orderBy('id', 'desc')->get();
+                            ->orderBy('id', 'desc');
 
-        $customer_invoices = collect([]);
+        $customer_invoices = $customer_invoices->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+
+        $customer_invoices->setPath('invoices');
 
         return view('abcc.invoices.index', compact('customer_invoices'));
     }
@@ -65,7 +70,7 @@ class AbccCustomerInvoicesController extends Controller
 */
 
         $cinvoice = $this->customerInvoice
-                            ->where('secure_key', $cinvoiceKey)
+                            ->findByToken($invoiceKey)
                             ->with('customer')
                             ->with('invoicingAddress')
                             ->with('customerInvoiceLines')
@@ -78,49 +83,62 @@ class AbccCustomerInvoicesController extends Controller
         return view('abcc.invoices.show', compact('cinvoice', 'company'));
     }
 
-    public function pdf($cinvoiceKey, Request $request)
+    public function showPdf($cinvoiceKey, Request $request)
     {
-        // $invoice = $this->invoiceRepository->findByUrlKey($cinvoiceKey);
 
-        // Set up a temporay Context
-        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        \App\Context::getContext()->company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
-        \App\Context::getContext()->controller = 'customerinvoices';
+        $customer      = Auth::user()->customer;
 
-        // PDF stuff
-        try {
-            $cinvoice = $this->customerInvoice
-                            ->where('secure_key', $cinvoiceKey)
-                            ->with('customer')
-                            ->with('invoicingAddress')
-                            ->with('customerInvoiceLines')
-                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
+        $document = $this->customerInvoice
+                            ->findByToken($cinvoiceKey)
+                            ->where('customer_id', $customer->id)
                             ->with('currency')
                             ->with('paymentmethod')
                             ->with('template')
-                            ->firstOrFail();
+                            ->first();
 
-        } catch( \Exception $e ) {
-
-            return l('Customer Invoice id=:id does not exist.', ['id' => $cinvoiceKey] );
-        }
-
-        event(new CustomerInvoiceViewed($cinvoice, 'customer_viewed_at'));
-
-        $template = 'customer_invoices.templates.' . $cinvoice->template->file_name;  // . '_dist';
-        $paper = $cinvoice->template->paper;    // A4, letter
-        $orientation = $cinvoice->template->orientation;    // 'portrait' or 'landscape'.
+        if (!$document) 
+            return redirect()->route('abcc.invoices.index')
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $cinvoiceKey], 'layouts'));
         
-        $pdf        = \PDF::loadView( $template, compact('cinvoice', 'company') )
+
+        $company = \App\Context::getContext()->company;
+/*
+        event(new CustomerInvoiceViewed($cinvoice, 'customer_viewed_at'));
+*/
+
+        // Get Template
+        $t = $document->template ?? 
+             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );
+
+        if ( !$t )
+            return redirect()->route('abcc.invoices.index')
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->$cinvoiceKey], 'layouts'));
+
+        // $document->template = $t;
+
+        $template = $t->getPath( 'CustomerInvoice' );
+
+
+//        $template = 'customer_invoices.templates.' . $cinvoice->template->file_name;  // . '_dist';
+        $paper = $t->paper;    // A4, letter
+        $orientation = $t->orientation;    // 'portrait' or 'landscape'.
+        
+        // Catch for errors
+        try{
+                $pdf        = \PDF::loadView( $template, compact('document', 'company') )
                             ->setPaper( $paper, $orientation );
-//      $pdf = \PDF::loadView('customer_invoices.templates.test', $data)->setPaper('a4', 'landscape');
+        }
+        catch(\Exception $e){
+
+                return redirect()->route('abcc.invoices.index')
+                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->$cinvoiceKey], 'layouts').$e->getMessage());
+        }
 
         // PDF stuff ENDS
 
-        $pdfName    = 'invoice_' . $cinvoice->secure_key . '_' . $cinvoice->document_date;
+        $pdfName    = 'invoice_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
-        if ($request->has('screen')) return view($template, compact('cinvoice', 'company'));
+        if ($request->has('screen')) return view($template, compact('document', 'company'));
         
         return  $pdf->stream();
         return  $pdf->download( $pdfName . '.pdf');
@@ -131,5 +149,39 @@ class AbccCustomerInvoicesController extends Controller
         $invoice = $this->invoiceRepository->findByUrlKey($cinvoiceKey);
 
         return $invoice->html;
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Not CRUD stuff here
+    |--------------------------------------------------------------------------
+    */
+
+
+/* ********************************************************************************************* */    
+
+
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function vouchers($invoiceKey, Request $request)
+    {
+        
+
+        $document = $this->customerInvoice
+                            ->findByToken($invoiceKey)
+//                            ->with('customer')
+//                            ->with('invoicingAddress')
+//                            ->with('customerInvoiceLines')
+                            ->with('payments')
+                            ->with('currency')
+                            ->firstOrFail();
+
+        return view('abcc.invoices._panel_vouchers', compact('document') );
     }
 }

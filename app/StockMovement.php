@@ -18,8 +18,13 @@ class StockMovement extends Model {
 
     protected $dates = ['date', 'deleted_at'];
 
-    protected $fillable = ['date', 'document_reference', 'price', 'currency_id', 'conversion_rate', 'quantity', 'notes',
-                           'product_id', 'combination_id', 'reference', 'name', 'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id'];
+    protected $fillable = [ 'date', 'document_reference', 'price', 'currency_id', 'conversion_rate', 
+                            'quantity', 'measure_unit_id', 
+                            'notes',
+                            'product_id', 'combination_id', 'reference', 'name', 'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id',
+
+                            'user_id', 'inventorycode',
+                           ];
 
 //        'date' => 'required|date|date_format:YY-MM-DD',
 //         See: https://es.stackoverflow.com/questions/57020/validaci%C3%B3n-de-formato-de-fecha-no-funciona-laravel-5-3
@@ -257,6 +262,41 @@ class StockMovement extends Model {
     {
             return l($movement_type_id, 'appmultilang');
     }
+
+    public function getStockmovementableRoute()
+    {
+            $stub = $this->stockmovementable_type;
+
+
+            static $segment;
+
+            if ($segment) return $segment;
+
+            $str = $this->stockmovementable_type;   // Maybe $this->stockmovementable_type = '' or NULL
+            if ( !$str ) return $segment = '';
+
+            $segments = array_reverse(explode('\\', $str));
+
+            return $segment = str_plural(strtolower($segments[0]));
+    }
+
+    public function getStockmovementableDocumentRoute()
+    {
+            static $segment;
+
+            if ($segment) return $segment;
+
+            $str = $this->stockmovementable_type;
+            if ( !$str ) return $segment = '';
+
+            $segments = array_reverse(explode('\\', $str));
+
+
+            // Last segment
+            $str = substr( $segments[0], 0, -strlen('Line') );
+
+            return $segment = str_plural(strtolower($str));
+    }
     
     
     /*
@@ -290,7 +330,7 @@ class StockMovement extends Model {
         $this->load(['product', 'combination']);
 
 
-        $list = $this->stockmovementList();
+        $list = self::stockmovementList();
         $method = 'process_'.$this->movement_type_id;
         
         if ( isset($list[$this->movement_type_id]) && method_exists($this, $method) ) 
@@ -675,7 +715,7 @@ class StockMovement extends Model {
                 $product->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
         }
 
-        $product->quantity_onhand = $product->getStock();;
+        $product->quantity_onhand = $product->getStock();
         $product->save();
 
         // Update Combination-Warehouse relationship (quantity)

@@ -122,6 +122,30 @@ class Customer extends Model {
     */
 
 
+    public function addRisk( $amount, \App\Currency $currency = null ) 
+    {
+        if ($currency != null)
+            $amount = $amount / $currency->conversion_rate;
+
+        $this->outstanding_amount += $amount;
+        $this->save();
+
+        return true;
+    }
+
+
+    public function removeRisk( $amount, \App\Currency $currency = null ) 
+    {
+        if ($currency != null)
+            $amount = $amount / $currency->conversion_rate;
+
+        $this->outstanding_amount -= $amount;
+        $this->save();
+
+        return true;
+    }
+
+
     public function scopeFilter($query, $params)
     {
         if ( isset($params['name']) && $params['name'] != '' )

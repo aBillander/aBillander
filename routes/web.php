@@ -312,6 +312,9 @@ foreach ($pairs as $pair) {
                    $path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );
 
         Route::get($path.'/{document}/onhold/toggle', $controller.'@onholdToggle')->name($path.'.onhold.toggle');
+
+        Route::get($path.'/{document}/close',   $controller.'@close'  )->name($path.'.close'  );
+        Route::get($path.'/{document}/unclose', $controller.'@unclose')->name($path.'.unclose');
 }
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');
@@ -348,6 +351,7 @@ foreach ($pairs as $pair) {
         Route::get( 'import/products/images', 'Import\ImportProductImagesController@import' )->name('products.images.import');
         Route::post('import/products/images', 'Import\ImportProductImagesController@process')->name('products.images.import.process');
         Route::get( 'export/products/images', 'Import\ImportProductImagesController@export' )->name('products.images.export');
+        Route::get( 'export/products/images/delete', 'Import\ImportProductImagesController@deleteAll' )->name('products.images.delete.all');
         Route::get(  'import/products/prices', 'Import\ImportProductPricesController@import' )->name('products.prices.import');
         Route::post( 'import/products/prices', 'Import\ImportProductPricesController@process')->name('products.prices.import.process');
         Route::get(  'export/products/prices', 'Import\ImportProductPricesController@export' )->name('products.prices.export');

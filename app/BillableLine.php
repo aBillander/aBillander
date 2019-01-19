@@ -104,6 +104,11 @@ class BillableLine extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
+
+    public function document()
+    {
+       return $this->belongsTo($this->getParentClassName(), $this->getParentClassSnakeCase().'_id');
+    }
     
     
 
@@ -128,6 +133,13 @@ class BillableLine extends Model
         return $this->belongsTo('App\Tax');
     }
 
+    /**
+     * Get all of the billable's Stock Movements.
+     */
+    public function stockmovements()
+    {
+        return $this->morphMany( StockMovement::class, 'stockmovementable' );
+    }
 
     
 

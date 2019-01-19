@@ -18,6 +18,23 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\CustomerInvoiceConfirmed' => [
             'App\Listeners\CustomerInvoiceConfirmedListener',
         ],
+    
+        'App\Events\CustomerInvoiceClosed' => [
+            'App\Listeners\CustomerInvoiceClosedListener',
+        ],
+    
+        'App\Events\CustomerInvoiceUnclosed' => [
+            'App\Listeners\CustomerInvoiceUnclosedListener',
+        ],
+    
+        'App\Events\CustomerInvoicePrinted' => [
+            'App\Listeners\CustomerInvoicePrintedListener',
+        ],
+    
+        'App\Events\CustomerInvoiceEmailed' => [
+            'App\Listeners\CustomerInvoiceEmailedListener',
+        ],
+
 
         'App\Events\CustomerRegistered' => [
             'App\Listeners\NewCustomerRegistered',

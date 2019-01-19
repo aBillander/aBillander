@@ -41,6 +41,7 @@ class StockMovementsController extends Controller
         						->with('warehouse')
         						->with('product')
         						->with('combination')
+        						->with('stockmovementable.document')
         						->orderBy('created_at', 'DESC');
 
 //         abi_r($mvts->toSql(), true);
@@ -137,7 +138,8 @@ class StockMovementsController extends Controller
 
 
 //		$stockmovement = $this->stockmovement->create( array_merge( $request->all(), $extradata ) );
-		$stockmovement = $this->stockmovement->createAndProcess( array_merge( $request->all(), $extradata ) );
+//		$stockmovement = $this->stockmovement->createAndProcess( array_merge( $request->all(), $extradata ) );
+		$stockmovement = StockMovement::createAndProcess( array_merge( $request->all(), $extradata ) );
 
 
 		// Time savers

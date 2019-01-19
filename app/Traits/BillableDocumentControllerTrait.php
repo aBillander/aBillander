@@ -71,7 +71,17 @@ trait BillableDocumentControllerTrait
         $pdfName    = str_singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
         if ($request->has('screen')) return view($template, compact('document', 'company'));
-        
+
+
+        if ( $request->has('preview') ) 
+        {
+            //
+        } else {
+            // Dispatch event
+            event( new \App\Events\CustomerInvoicePrinted( $document ) );
+        }
+    
+
         return  $pdf->stream();
         return  $pdf->download( $pdfName . '.pdf');
     }
@@ -190,9 +200,6 @@ trait BillableDocumentControllerTrait
             
             unlink($pathToFile);
 
-            $document->edocument_sent_at = \Carbon\Carbon::now();
-            $document->save();
-
         } catch(\Exception $e) {
 
  //               abi_r($e->getMessage(), true);
@@ -200,6 +207,10 @@ trait BillableDocumentControllerTrait
             return redirect()->back()->with('error', l('Your Document could not be sent &#58&#58 (:id) ', ['id' => $document->number], 'layouts').'<br />'.$e->getMessage());
         }
         // MAIL stuff ENDS
+
+
+        // Dispatch event
+        event( new \App\Events\CustomerInvoiceEmailed($document) );
         
 
         return redirect()->back()->with('success', l('Your Document has been sent! &#58&#58 (:id) ', ['id' => $document->number], 'layouts'));

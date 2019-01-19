@@ -30,6 +30,9 @@ class CreateCustomerInvoicesTable extends Migration {
 
 			$table->string('payment_status', 32)->nullable(false)->default('pending');
 
+			$table->string('stock_status', 32)->nullable(false)->default('pending');
+			// 'pending'   => Not performed
+			// 'completed' => Performed
 
 			$table->date('valid_until_date')->nullable();						// For Proposals!
 

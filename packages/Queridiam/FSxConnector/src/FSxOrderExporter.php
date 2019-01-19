@@ -279,7 +279,7 @@ class FSxOrderExporter {
               $this->other['ot_shipping_address'] = array(
                           'id' => 0,
                           'reference' => 'ENTREGA EN',
-                          'name' => $address_name,
+                          'name' => $address_name,        // Tamaño máximo: 50 caracteres
                           'qty' => 1,
 
                           'unit_customer_final_price' => 0.0,

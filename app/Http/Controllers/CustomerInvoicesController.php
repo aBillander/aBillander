@@ -400,22 +400,23 @@ class CustomerInvoicesController extends BillableController
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
+	public function edit($id, Request $request)
 	{
-//		try {
+		// Little bit Gorrino style...
+		// Find by document_reference (if supplied one)
+		if ( $request->has('document_reference') )
+		{
+			$document = $this->document->where('document_reference', $request->input('document_reference'))->firstOrFail();
+
+			// $request->request->remove('document_reference');
+			// $this->edit($document->id, $request);
+
+			return redirect($this->model_path.'/'.$document->id.'/edit');
+		}
+		else
+		{
 			$document = $this->document->findOrFail($id);
-/*
-			$invoice = $this->document
-								->with('customer')
-								->with('invoicingAddress')
-								->with('lines')
-								->with('currency')
-								->findOrFail($id);
-*/
-//	        } catch(ModelNotFoundException $e) {
-				// No Customer Invoice available, naughty boy...
-//				return redirect($this->view_path);
-//	        }
+		}
 
         $sequenceList = $this->document->sequenceList();
 
@@ -545,24 +546,43 @@ class CustomerInvoicesController extends BillableController
 	}
 
 
+	/**
+	 * Manage Status.
+	 *
+	 * ******************************************************************************************************************************* *
+	 * 
+	 */
+
     protected function confirm(CustomerInvoice $document)
     {
+        // Can I?
         if ( $document->lines->count() == 0 )
         {
         	return redirect()->back()
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
         }
 
+        if ( $document->onhold )
+        {
+        	return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
         // Confirm
-        $document->confirm();
+        if ( $document->confirm() )
+        	return redirect()->back()
+                	->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
 
         return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
 
     protected function onholdToggle(CustomerInvoice $document)
     {
+        // No checks. A closed document can be set to "onhold". Maybe usefull...
+
         // Toggle
         $toggle = $document->onhold > 0 ? 0 : 1;
         $document->onhold = $toggle;
@@ -572,6 +592,54 @@ class CustomerInvoicesController extends BillableController
         return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
     }
+
+
+    protected function close(CustomerInvoice $document)
+    {
+        // Can I?
+        if ( $document->lines->count() == 0 )
+        {
+        	return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+        	return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Close
+        if ( $document->close() )
+	        return redirect()->back()
+	                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function unclose(CustomerInvoice $document)
+    {
+
+        if ( $document->status != 'closed' )
+        {
+        	return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+        }
+
+        // Unclose (back to "confirmed" status)
+        if ( $document->unclose() )
+	        return redirect()->back()
+	                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+
+
+        return redirect()->back()
+        		->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
 
 
 

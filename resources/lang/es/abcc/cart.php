@@ -48,7 +48,7 @@ return [
 	'Date'     => 'Fecha',
 
 	'Open Balance'     => 'Pendiente',
-	'Next Due Date'     => 'Prox. Vencimiento',
+	'Next Due Date'     => 'Próx. Vencimiento',
 	'Show Customer'     => 'Ver Cliente',
 	'Show Payments'     => 'Ver Pagos',
 	'Draft'     => 'Borrador',

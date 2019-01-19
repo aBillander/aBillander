@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait BillableLinesTrait
+trait BillableDocumentLinesTrait
 {
 
     /*

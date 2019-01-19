@@ -12,6 +12,9 @@
         <a href="{{ route('products.images.export') }}" class="btn xbtn-sm btn-grey" style="margin-right: 21px" 
                 title="{{l('Export Headers')}}"><i class="fa fa-file-excel-o"></i> {{l('Export Headers')}}</a>
 
+        <a href="{{ route('products.images.delete.all') }}" class="btn xbtn-sm btn-danger" style="margin-right: 21px" 
+                title="{{l('Delete ALL Images')}}"><i class="fa fa-trash"></i> {{l('Delete ALL Images')}}</a>
+
                 <a href="{{ URL::to('products') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Products') }}</a>
             </div>
             <h2><a href="{{ URL::to('products') }}">{{ l('Products') }}</a> <span style="color: #cccccc;">/</span> {{ l('Images') }} <span style="color: #cccccc;">/</span> {{ l('Import') }}</h2>

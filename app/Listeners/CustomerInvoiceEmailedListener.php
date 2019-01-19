@@ -2,11 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\CustomerInvoiceConfirmed;
+use App\Events\CustomerInvoiceEmailed;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class CustomerInvoiceConfirmedListener
+class CustomerInvoiceEmailedListener
 {
     /**
      * Create the event listener.
@@ -21,18 +21,19 @@ class CustomerInvoiceConfirmedListener
     /**
      * Handle the event.
      *
-     * @param  CustomerInvoiceConfirmed  $event
+     * @param  CustomerInvoiceEmailed  $event
      * @return void
      */
-    public function handle(CustomerInvoiceConfirmed $event)
+    public function handle(CustomerInvoiceEmailed $event)
     {
         $document = $event->document;
 
         // Logic here
 
-        // 
-        // Vouchers stuff
-        // 
-        // $document->makePaymentDeadlines();
+        $document->edocument_sent_at = \Carbon\Carbon::now();
+        $document->save();
+
+        $document->close();
+
     }
 }

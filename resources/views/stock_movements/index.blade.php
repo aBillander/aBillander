@@ -110,12 +110,12 @@
 		<tr>
 			<td>{{ $stockmovement->id }}</td>
 			<td>{{ abi_date_short( $stockmovement->date ) }}</td>
-            <td>[{{ $stockmovement->movement_type_id }}] - 
-                 {{ \App\StockMovement::getTypeName($stockmovement->movement_type_id) }}
-            </td>
+      <td>[{{ $stockmovement->movement_type_id }}] - 
+           {{ \App\StockMovement::getTypeName($stockmovement->movement_type_id) }}
+      </td>
 
 			<td>{{ $stockmovement->warehouse->alias }}</td>
-            <td><a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $stockmovement->reference }}</a>
+      <td><a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $stockmovement->reference }}</a>
 {{--
                     @if ( $stockmovement->combination_id > 0 )
                         {{ $stockmovement->combination->reference }}
@@ -135,7 +135,17 @@
             <td class="text-right">{{ $stockmovement->as_quantityable( $stockmovement->quantity_after_movement - $stockmovement->quantity_before_movement ) }}</td>
             <td class="text-right">{{ $stockmovement->as_quantity( 'quantity_after_movement' ) }}</td>
 			<td class="text-right">{{ $stockmovement->as_price( 'price' ) }}</td>
-			<td class="text-right">{{ $stockmovement->document_reference }}</td>
+			<td class="text-right">
+
+@if ( $route = $stockmovement->getStockmovementableDocumentRoute() )
+{{-- optional(optional($stockmovement->stockmovementable)->document)->id --} }
+        <!-- a href="{{ route($route.'.edit', ['0']).'?document_reference='.$stockmovement->document_reference }}" title="{{l('Open Document', [], 'layouts')}}" target="_new" -->  --}}
+        <a href="{{ route($route.'.edit', [$stockmovement->stockmovementable->document->id]) }}" title="{{l('Open Document', [], 'layouts')}}" target="_new">{{ $stockmovement->document_reference }}</a>
+@else
+      {{ $stockmovement->document_reference }}
+@endif
+
+      </td>
             <td class="text-center">
                 @if ($stockmovement->notes)
                  <a href="javascript:void(0);">

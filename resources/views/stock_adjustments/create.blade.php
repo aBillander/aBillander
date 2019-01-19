@@ -24,20 +24,26 @@
     </div>
     <div class="form-group col-lg-4 col-md-4 col-sm-4">
         {!! Form::label('warehouse_id', l('Warehouse')) !!}
-        {!! Form::select('warehouse_id', array('0' => l('-- Please, select --', [], 'layouts')) + $warehouseList, null, array('class' => 'form-control')) !!}
+        {!! Form::select('warehouse_id', $warehouseList, \App\Configuration::get('DEF_WAREHOUSE'), array('class' => 'form-control')) !!}
     </div>
+        {!! Form::hidden('movement_type_id', '0', array('id' => 'movement_type_id')) !!}
 </div>
     
 <div class="row">
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('reference', l('Product Reference')) !!}
-        {!! Form::text('reference', null, array('id' => 'reference', 'class' => 'form-control')) !!}
+        {!! Form::text('reference', null, array('id' => 'reference', 'class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
     </div>
     <div class="form-group col-lg-6 col-md-6 col-sm-6">
         {!! Form::label('product_query', l('Product Name')) !!}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Search by Product Reference or Name', 'stockmovements') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a>
         <div class="input-group">
-          {!! Form::hidden('product_id', '0', array('id' => 'product_id')) !!}
-          {{-- !! Form::hidden('combination_id', '0', array('id' => 'combination_id')) !! --}}
+          {!! Form::hidden('product_id', '', array('id' => 'product_id')) !!}
+          {!! Form::hidden('combination_id', '0', array('id' => 'combination_id')) !!}
+
 
           {!! Form::text('product_query', null, array('id' => 'product_query', 'autocomplete' => 'off', 'class' => 'form-control')) !!}
 

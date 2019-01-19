@@ -8,7 +8,7 @@ use Auth;
 
 use App\Traits\BillableIntrospectorTrait;
 use App\Traits\BillableCustomTrait;
-use App\Traits\BillableLinesTrait;
+use App\Traits\BillableDocumentLinesTrait;
 use App\Traits\BillableTotalsTrait;
 use App\Traits\ViewFormatterTrait;
 
@@ -20,7 +20,7 @@ class Billable extends Model
 {
     use BillableIntrospectorTrait;
     use BillableCustomTrait;
-    use BillableLinesTrait;
+    use BillableDocumentLinesTrait;
     use BillableTotalsTrait;
     use ViewFormatterTrait;
 
@@ -252,6 +252,9 @@ class Billable extends Model
         // Already confirmed?
         if ( $this->document_reference || ( $this->status != 'draft' ) ) return false;
 
+        // onhold?
+        if ( $this->onhold ) return false;
+
         // Sequence
         $seq_id = $this->sequence_id > 0 ? $this->sequence_id : Configuration::get('DEF_'.strtoupper( $this->getClassSnakeCase() ).'_SEQUENCE');
         $seq = \App\Sequence::find( $seq_id );
@@ -265,6 +268,7 @@ class Billable extends Model
         $this->document_reference = $seq->getDocumentReference($doc_id);
 
         $this->status = 'confirmed';
+        $this->validation_date = \Carbon\Carbon::now();
 
         $this->save();
 
@@ -275,11 +279,26 @@ class Billable extends Model
     {
         // Can I ...?
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
+        
+        if ( $this->status == 'closed' ) return false;
 
         // Do stuf...
-        if ( $this->status == 'closed' ) return true;
-
         $this->status = 'closed';
+        $this->close_date = \Carbon\Carbon::now();
+
+        $this->save();
+
+        return true;
+    }
+
+    public function unclose( $status = null )
+    {
+        // Can I ...?
+        if ( $this->status != 'closed' ) return false;
+
+        // Do stuf...
+        $this->status = $status ?: 'confirmed';
+        $this->close_date =null;
 
         $this->save();
 
@@ -500,9 +519,10 @@ class Billable extends Model
 //        return $query->where('customer_id', Auth::user()->customer_id);
 
         if ( isset(Auth::user()->customer_id) && ( Auth::user()->customer_id != NULL ) )
-            return $query->where('customer_id', Auth::user()->customer_id)->where('status', '!=', 'draft');
+            return $query->where('customer_id', Auth::user()->customer_id)->where('status', 'closed');
 
-        return $query;
+        // Not allow to see resource
+        return $query->where('customer_id', 0)->where('status', '');
     }
 
     public function scopeFindByToken($query, $token)

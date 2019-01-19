@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
-use App\Product as Product;
+use App\Product;
 
 use Excel;
 
@@ -369,5 +369,42 @@ class ImportProductImagesController extends Controller
 
         // https://www.youtube.com/watch?v=LWLN4p7Cn4E
         // https://www.youtube.com/watch?v=s-ZeszfCoEs
+    }
+
+
+    /**
+     * Delete ALL Images.
+     *
+     * @return 
+     */
+    public function deleteAll()
+    {
+        $products = $this->product
+                              ->has('images')
+//                              ->where('id', 88)
+                              ->get();
+
+        # abi_r($products);
+        $p = 0;
+        $i = 0;
+
+        foreach ($products as $product) {
+            # code...
+            foreach ($product->images as $image) {
+                # code...
+
+                // Delete file images
+                $image->deleteImage();
+
+                // Delete now!
+                $image->delete();
+                $i++;
+            }
+            $p++;
+        }
+
+
+        return redirect()->route('products.images.import')
+                ->with('success', l('Se han borrado las Imágenes de Productos: <strong>:ni</strong> Imágen(es) de <strong>:np</strong> Producto(s).', ['np' => $p, 'ni' => $i]));
     }
 }

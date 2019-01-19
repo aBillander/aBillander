@@ -96,11 +96,12 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::resource('/shippingslips', 'AbccCustomerShippingSlipsController')->names('abcc.shippingslips');
 
         Route::resource('/invoices', 'AbccCustomerInvoicesController')->names('abcc.invoices');
+        Route::get('/invoices/{invoiceKey}/vouchers', 'AbccCustomerInvoicesController@vouchers')->name('abcc.invoices.vouchers');
 
         Route::get('invoice/{invoiceKey}', ['uses' => 'AbccCustomerInvoicesController@show', 'as' => 'abcc.invoice.show']);
 
 //    Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbccCustomerInvoicesController@pdf', 'as' => 'customerCenter.public.invoice.pdf']);
-        Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbccCustomerInvoicesController@pdf', 'as' => 'abcc.invoice.pdf']);
+        Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbccCustomerInvoicesController@showPdf', 'as' => 'abcc.invoice.pdf']);
 
 
         Route::resource('/vouchers', 'AbccCustomerVouchersController')->names('abcc.vouchers');

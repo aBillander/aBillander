@@ -1,11 +1,12 @@
 
-    <!-- div class="page-header">
-        <h3>
-            <span style="color: #dd4814;">{{ l('Lines') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $document->name }} - - >
-        </h3>        
-    </div -->
 
-    <div id="div_document_lines">
+	 <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">{{ l('Show Payments') }} :: <label class="label label-default">{{ $document->document_reference }}</label></h4>
+	 </div>
+
+	 <div class="modal-body">
+
        <div class="table-responsive">
 
 <table id="payments" name="payments" class="table table-hover">
@@ -17,7 +18,6 @@
 			<th style="text-transform: none;">{{l('Payment Date')}}</th>
 			<th style="text-transform: none;">{{l('Amount')}}</th>
             <th style="text-transform: none;" class="text-center">{{l('Status', [], 'layouts')}}</th>
-			<th> </th>
 		</tr>
 	</thead>
 	<tbody>
@@ -34,7 +34,7 @@
 			<td @if( !$payment->payment_date AND ( \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $payment->due_date) < \Carbon\Carbon::now() ) ) class="danger" @endif>
 				{{ $payment->due_date }}</td>
 			<td>{{ $payment->payment_date }}</td>
-			<td>{{ {{ abi_money_amount($payment->amount, $document->currency) }} }}</td>
+			<td>{{ abi_money_amount($payment->amount, $document->currency) }}</td>
             <td class="text-center">
             	@if     ( $payment->status == 'pending' )
             		<span class="label label-info">
@@ -46,14 +46,6 @@
             		<span>
             	@endif
             	{{l( $payment->status, [], 'appmultilang' )}}</span></td>
-
-			<td class="text-right">
-                @if ( $payment->status == 'paid' )
-                	<!-- a class="btn btn-sm btn-danger" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
-            	@else
-                	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-            	@endif
-			</td>
 		</tr>
 	@endforeach
 
@@ -72,15 +64,18 @@
 
 
 
-		</div>
+		</div>	 
+
+
+
+	 </div><!-- div class="modal-body" ENDS -->
+
+	<div class="modal-footer">
+
+	   <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
+
+	   <!-- button type="submit" class="btn btn-success" name="modal_edit_document_line_productSubmit" id="modal_edit_document_line_productSubmit">
+	    <i class="fa fa-thumbs-up"></i>
+	    &nbsp; {{l('Update', [], 'layouts')}}</button -->
+
 	</div>
-
-
-{{-- ******************************************************************************* --}}
-
-
-<div id="msg-success-update" class="alert alert-success alert-block" style="display:none;">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <span id="msg-success-update-counter" class="badge"></span>
-  <strong>{!!  l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
-</div>

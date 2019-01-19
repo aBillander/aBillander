@@ -5,6 +5,7 @@ namespace App;
 use Auth;
 
 use App\Traits\CustomerInvoicePaymentsTrait;
+use App\Traits\BillableStockMovementsTrait;
 
 use \App\CustomerInvoiceLine;
 
@@ -12,6 +13,7 @@ class CustomerInvoice extends Billable
 {
     
     use CustomerInvoicePaymentsTrait;
+    use BillableStockMovementsTrait;
 
     public static $badges = [
             'a_class' => 'alert-danger',
@@ -88,6 +90,50 @@ class CustomerInvoice extends Billable
 
         return true;
     }
+
+    public function close()
+    {
+        if ( ! parent::close() ) return false;
+
+        // Dispatch event
+        event( new \App\Events\CustomerInvoiceClosed($this) );
+
+        return true;
+    }
+
+    public function unclose( $status = null )
+    {
+        if ( ! parent::unclose() ) return false;
+
+        // Dispatch event
+        event( new \App\Events\CustomerInvoiceUnclosed($this) );
+
+        return true;
+    }
+
+
+    public function shouldPerformStockMovements()
+    {
+        if ( $this->created_via == 'manual' && $this->stock_status == 'pending' ) return true;
+/*
+        if ($this->stock_status == 'pending') return true;
+
+        if ($this->stock_status == 'completed') return false;
+
+        if ($this->created_via == 'aggregate_shipping_slips') return false;
+*/
+        return false;
+    }
+
+
+    public function canRevertStockMovements()
+    {
+        if ($this->created_via == 'manual' && $this->stock_status == 'completed' ) return true;
+
+        return false;
+    }
+
+
 
     public static function getPaymentStatusList()
     {

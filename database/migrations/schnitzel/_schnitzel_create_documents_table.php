@@ -16,7 +16,7 @@
             $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
 
             $table->string('created_via', 32)->default('manual')->nullable();
-            // How we received the order: 'webshop', 'manual', 'by phone', 'by email', etc.
+            // How we received the order: 'webshop', 'manual', 'aggregate', 'by email', etc.
 
             $table->dateTime('document_date');                          // If document is imported, document_date != created_at
             $table->dateTime('payment_date')->nullable();               // Orders from webshop are (usually) paid"

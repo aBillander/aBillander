@@ -2,11 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\CustomerInvoiceConfirmed;
+use App\Events\CustomerInvoicePrinted;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class CustomerInvoiceConfirmedListener
+class CustomerInvoicePrintedListener
 {
     /**
      * Create the event listener.
@@ -21,18 +21,18 @@ class CustomerInvoiceConfirmedListener
     /**
      * Handle the event.
      *
-     * @param  CustomerInvoiceConfirmed  $event
+     * @param  CustomerInvoicePrinted  $event
      * @return void
      */
-    public function handle(CustomerInvoiceConfirmed $event)
+    public function handle(CustomerInvoicePrinted $event)
     {
+        # abi_r($event, true);
+
         $document = $event->document;
 
         // Logic here
 
-        // 
-        // Vouchers stuff
-        // 
-        // $document->makePaymentDeadlines();
+        $document->close();
+
     }
 }

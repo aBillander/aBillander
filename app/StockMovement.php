@@ -268,23 +268,23 @@ class StockMovement extends Model {
             $stub = $this->stockmovementable_type;
 
 
-            static $segment;
+            // static $route;
 
-            if ($segment) return $segment;
+            // if ($route) return $route;
 
             $str = $this->stockmovementable_type;   // Maybe $this->stockmovementable_type = '' or NULL
-            if ( !$str ) return $segment = '';
+            if ( !$str ) return $route = '';
 
             $segments = array_reverse(explode('\\', $str));
 
-            return $segment = str_plural(strtolower($segments[0]));
+            return $route = str_plural(strtolower($segments[0]));
     }
 
     public function getStockmovementableDocumentRoute()
     {
-            static $segment;
+            // static $segment;
 
-            if ($segment) return $segment;
+            // if ($segment) return $segment;
 
             $str = $this->stockmovementable_type;
             if ( !$str ) return $segment = '';
@@ -356,6 +356,12 @@ class StockMovement extends Model {
         // Update Product
         $product = $this->product;
 
+        if ($this->price === null) 
+        {
+            $this->price = ($this->combination_id > 0) ? $combination->cost_average : $product->cost_average;
+            $this->price_in = $this->price;
+        }
+
         if ( $product->getStockByWarehouse( $this->warehouse_id ) > 0.0 ) return false;
         
         $quantity_onhand = $this->quantity;
@@ -365,7 +371,7 @@ class StockMovement extends Model {
         if ($this->quantity_before_movement == $this->quantity_after_movement)
         {
             // Nothing said about cost price
-            return false;
+            // return false;
         }
         $this->save();
 

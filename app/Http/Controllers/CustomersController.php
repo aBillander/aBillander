@@ -13,6 +13,7 @@ use View, Mail;
 use App\Customer;
 use App\Address;
 use App\CustomerOrder;
+use App\CustomerOrderLine;
 
 class CustomersController extends Controller {
 
@@ -361,6 +362,37 @@ class CustomersController extends Controller {
         //return $items_per_page ;
         
         return view('customers.orders', compact('customer_orders', 'items_per_page'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function productConsumption($id, $productid, Request $request)
+    {
+        $customer = $this->customer::findOrFail($id);
+
+        $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+
+        // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
+        $lines = CustomerOrderLine::where('product_id', $productid)
+                            ->with('document')
+//                            ->with(['currency' => function($q) {
+//                                    $q->orderBy('document_date', 'desc');
+//                                }])
+                            ->whereHas('document', function($q) use ($id) {
+                                    $q->where('customer_id', $id);
+                                })
+                            ->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
+                            ->select('customer_order_lines.*', 'customer_orders.document_date')
+                            ->orderBy('customer_orders.document_date', 'desc')
+                            ->take( $items_per_page )
+                            ->get();
+        
+        return view('customers._panel_products', compact('customer', 'lines'));
     }
 
     /**

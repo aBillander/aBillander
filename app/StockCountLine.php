@@ -5,11 +5,15 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\ViewFormatterTrait;
+# use App\Traits\BillableIntrospectorTrait;
+
+# use ReflectionClass;
 
 class StockCountLine extends Model
 {
 
     use ViewFormatterTrait;
+#    use BillableIntrospectorTrait;
     // Good for Stock Counts and for Stock Adjustments (lines that not belong to any Stock Count)
 
     protected $dates = ['date'];
@@ -120,6 +124,17 @@ class StockCountLine extends Model
     public function stockcount()
     {
         return $this->belongsTo('App\StockCount', 'stock_count_id');
+    }
+
+    // Alias
+    public function document()
+    {
+        return $this->stockcount();
+
+        # abi_r($this->getParentClassName());
+        # abi_r($this->getParentClassSnakeCase());
+
+        # return $this->belongsTo($this->getParentClassName(), $this->getParentClassSnakeCase().'_id');
     }
 
     public function product()

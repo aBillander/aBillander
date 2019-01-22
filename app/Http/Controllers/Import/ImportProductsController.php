@@ -285,6 +285,11 @@ class ImportProductsController extends Controller
                     if ( ! \App\Tax::where('id', $data['tax_id'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'tax_id' es inválido: " . ($data['tax_id'] ?? ''));
 
+                    // Ecotax
+                    $data['ecotax_id'] = intval( $data['ecotax_id'] );
+                    if ( ! \App\Ecotax::where('id', $data['ecotax_id'])->exists() )
+                        $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'ecotax_id' es inválido: " . ($data['ecotax_id'] ?? ''));
+
                     // Check E13
                     $data['ean13'] = trim( $data['ean13'] );
                     // Should be unique? => check your spreadsheet
@@ -348,6 +353,7 @@ class ImportProductsController extends Controller
 //                          ->with('combinations')                                  
                           ->with('category')
                           ->with('tax')
+                          ->with('ecotax')
                           ->with('supplier')
                           ->orderBy('reference', 'asc')
                           ->get();
@@ -371,7 +377,7 @@ class ImportProductsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'description', 'description_short', 'category_id', 'category_REFERENCE_EXTERNAL', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'main_supplier_REFERENCE_EXTERNAL', 'SUPPLIER_NAME',
+        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'phantom_assembly', 'ean13', 'description', 'description_short', 'category_id', 'category_REFERENCE_EXTERNAL', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'ecotax_id', 'ECOTAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'main_supplier_REFERENCE_EXTERNAL', 'SUPPLIER_NAME',
         ];
 
         $data[] = $headers;
@@ -387,6 +393,7 @@ class ImportProductsController extends Controller
             }
             $row['CATEGORY_NAME']     = $product->category ? $product->category->name : '';
             $row['TAX_NAME']          = $product->tax ? $product->tax->name : '';
+            $row['ECOTAX_NAME']          = $product->ecotax ? $product->ecotax->name : '';
             $row['MEASURE_UNIT_NAME'] = $product->measureunit ? $product->measureunit->name : '';
             $row['SUPPLIER_NAME']     = $product->supplier ? $product->supplier->name : '';
 

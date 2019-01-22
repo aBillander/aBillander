@@ -312,20 +312,8 @@ class ImportStockCountsController extends Controller
                     // $item = str_replace('=', ':', http_build_query($data, null, ', '));
                     // $item = http_build_query($data, null, ', ');
 
-                    // Some Poor Man checks:
- /*                   if ( $data['cost_price'] <= 0.0 ) {
-                        
-                        // Product not for this Stock Count
+                    // Some Poor Man checks: 
 
-                        $i++;
-                        continue;
-                    }
-*/
-/*                    // Need rounding?
-                    if ( $decimal_places >= 0 ) {
-                        $data['price'] = round($data['price'], $decimal_places);
-                    }
-*/
                     if ( intval($data['stock_count_id']) != $stock_count_id ) {
                         
                         $logger->log("ERROR", 'La fila <span class="log-ERROR-format">('.$item.')</span> no corresponde al Recuento de Stock <span class="log-showoff-format">'.$name.'</span>');
@@ -351,7 +339,20 @@ class ImportStockCountsController extends Controller
                             $data['product_id'] = $product->id;
                             $data['reference']  = $product->reference;
                             $data['name']  = $product->name;
-                        } else {
+
+                            // Cost Price
+                            if ( array_key_exists('cost_price', $data) )
+                            {
+                                if (  $data['cost_price'] === NULL || trim($data['cost_price']) === '' ) 
+                                {
+                                    unset( $data['cost_price'] );
+                                } else {
+                                    $data['cost_price'] = floatval( trim($data['cost_price']) );
+                                }
+                            } else {
+                                $data['cost_price'] = $product->cost_price;
+                            }
+                    } else {
                         
                         $logger->log("ERROR", "La fila (".$item.") no corresponde a ningún Producto.");
 
@@ -450,7 +451,8 @@ class ImportStockCountsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $data[] = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'cost_price', 'stock_count_id', 'stock_count_NAME' ];
+        $data[] = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'stock_count_id', 'stock_count_NAME' ];
+        // removed: , 'cost_price',
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
@@ -461,7 +463,7 @@ class ImportStockCountsController extends Controller
                             'reference' => $line->reference,
                             'NOMBRE' => $line->name,
                             'quantity'   => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->quantity  ),
-                            'cost_price' => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->cost_price),
+//                            'cost_price' => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->cost_price),
                             'stock_count_id' => $id,
                             'stock_count_NAME' => $stockcount->name,
             ];

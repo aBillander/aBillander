@@ -163,7 +163,7 @@ class ImportPriceListsController extends Controller
 
         // Start Logger
         $logger = \App\ActivityLogger::setup( 'Import Price List', __METHOD__ )
-                    ->backTo( route('pricelists.import') );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+                    ->backTo( route('pricelists.import', [$pricelist->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         if ( $request->input('empty_log', 0) ) 

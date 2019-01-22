@@ -21,7 +21,7 @@ class CreateStockCountLinesTable extends Migration
 
 //            $table->decimal('quantity_before_count', 20, 6);
             $table->decimal('quantity', 20, 6);
-            $table->decimal('cost_price', 20, 6)->default(0.0);
+            $table->decimal('cost_price', 20, 6)->nullable();
 //            $table->decimal('cost_price_before_count', 20, 6);
             // What happen with cost_average if cost_price is set???
 

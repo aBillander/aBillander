@@ -87,13 +87,18 @@
       <td>{{ optional($product->manufacturer)->name }} {{-- optional($product->category)->name --}}</td>
       <td>
 @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
-        <div class="progress progress-striped" style="width: 34px">
-          <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
             @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
-                  <span class="badge" style="color: #333333; background-color: #ffffff;">{{ $product->as_quantity('quantity_onhand') }}</span>
+              <div class="progress progress-striped">
+                <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
+                        <span class="badge" style="color: #333333; background-color: #ffffff;">{{ $product->as_quantity('quantity_onhand') }}</span>
+                </div>
+              </div>
+            @else
+              <div class="progress progress-striped" style="width: 34px">
+                <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
+                </div>
+              </div>
             @endif
-          </div>
-        </div>
 @endif
       </td>
 

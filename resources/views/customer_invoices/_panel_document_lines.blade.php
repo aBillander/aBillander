@@ -112,6 +112,8 @@
                         data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                         data-title="{{ '('.$line->id.') ['.$line->reference.'] '.$line->name }}" 
                         onClick="return false;"><i class="fa fa-trash-o"></i></a>
+                    
+                    <a class="btn btn-sm btn-blue show-customer-consumption" data-id="{{$line->product_id}}" title="{{l('Show Customer consumption')}}" onClick="return false;"><i class="fa fa-dropbox"></i></a>
 
                       @else
                       

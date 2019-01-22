@@ -41,6 +41,7 @@ class StockMovementsController extends Controller
         						->with('warehouse')
         						->with('product')
         						->with('combination')
+//        						->with('stockmovementable')
         						->with('stockmovementable.document')
         						->orderBy('created_at', 'DESC');
 

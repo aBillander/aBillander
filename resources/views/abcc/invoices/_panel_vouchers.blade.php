@@ -72,7 +72,7 @@
 
 	<div class="modal-footer">
 
-	   <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
+	   <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Back', [], 'layouts')}}</button>
 
 	   <!-- button type="submit" class="btn btn-success" name="modal_edit_document_line_productSubmit" id="modal_edit_document_line_productSubmit">
 	    <i class="fa fa-thumbs-up"></i>

@@ -24,6 +24,18 @@
 </div>
 
 
+@php
+
+$m = \App\StockMovement::with('stockmovementable')->find(2);
+
+$s = \App\StockCountLine::find(2);
+
+// abi_toSql((\App\StockMovement::with('stockmovementable')->where('id', 43)));
+
+abi_r($m->stockmovementable->document->id);
+
+@endphp
+
 
 <div name="search_filter" id="search_filter" @if( Request::has('search_status') AND (Request::input('search_status')==1) ) style="display:block" @else style="display:none" @endif>
 <div class="row" style="padding: 0 20px">
@@ -107,6 +119,9 @@
 	<tbody>
 
 	@foreach ($stockmovements as $stockmovement)
+  @if ($stockmovement->id>2 && 0)
+{{--  --}}    @continue  {{--  --}}
+  @endif
 		<tr>
 			<td>{{ $stockmovement->id }}</td>
 			<td>{{ abi_date_short( $stockmovement->date ) }}</td>
@@ -135,12 +150,29 @@
             <td class="text-right">{{ $stockmovement->as_quantityable( $stockmovement->quantity_after_movement - $stockmovement->quantity_before_movement ) }}</td>
             <td class="text-right">{{ $stockmovement->as_quantity( 'quantity_after_movement' ) }}</td>
 			<td class="text-right">{{ $stockmovement->as_price( 'price' ) }}</td>
-			<td class="text-right">
+			<td class="text-left">
 
 @if ( $route = $stockmovement->getStockmovementableDocumentRoute() )
-{{-- optional(optional($stockmovement->stockmovementable)->document)->id --} }
-        <!-- a href="{{ route($route.'.edit', ['0']).'?document_reference='.$stockmovement->document_reference }}" title="{{l('Open Document', [], 'layouts')}}" target="_new" -->  --}}
-        <a href="{{ route($route.'.edit', [$stockmovement->stockmovementable->document->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->document_reference }}</a>
+
+@php
+
+$document_id = $stockmovement->stockmovementable->document->id;
+
+@endphp
+
+
+        <a href="{{ route($route.'.edit', $document_id) }}" title="{{l('Open Document', [], 'layouts')}}" target="_new">{{ $stockmovement->document_reference }}</a>
+
+
+@php
+
+// abi_r([$stockmovement->stockmovementable->document->id]);
+
+@endphp
+
+
+
+
 @else
       {{ $stockmovement->document_reference }}
 @endif

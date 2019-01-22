@@ -53,15 +53,20 @@
 
       <td>{{ $line->product->name }}</td>
 
-      <td>
+      <td style="white-space:nowrap">
 @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
-        <div class="progress progress-striped" style="width: 34px">
-          <div class="progress-bar progress-bar-{{ $line->product->stock_badge }}" title="{{ l('stock.badge.'.$line->product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
             @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
-                  <span class="badge" style="color: #333333; background-color: #ffffff;">{{ $line->product->as_quantity('quantity_onhand') }}</span>
+              <div class="progress progress-striped">
+                <div class="progress-bar progress-bar-{{ $line->product->stock_badge }}" title="{{ l('stock.badge.'.$line->product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
+                        <span class="badge" style="color: #333333; background-color: #ffffff;">{{ $line->product->as_quantity('quantity_onhand') }}</span>
+                </div>
+              </div>
+            @else
+              <div class="progress progress-striped" style="width: 34px">
+                <div class="progress-bar progress-bar-{{ $line->product->stock_badge }}" title="{{ l('stock.badge.'.$line->product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
+                </div>
+              </div>
             @endif
-          </div>
-        </div>
 @endif
       </td>
 

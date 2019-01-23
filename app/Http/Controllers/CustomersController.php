@@ -373,6 +373,8 @@ class CustomersController extends Controller {
     {
         $customer = $this->customer::findOrFail($id);
 
+        $product = \App\Product::findOrFail($productid);
+
         $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page >= 0) ) 
             $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
@@ -392,7 +394,7 @@ class CustomersController extends Controller {
                             ->take( $items_per_page )
                             ->get();
         
-        return view('customers._panel_products', compact('customer', 'lines'));
+        return view('customers._panel_products', compact('customer', 'product', 'lines'));
     }
 
     /**

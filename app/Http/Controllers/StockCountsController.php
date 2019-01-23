@@ -324,7 +324,7 @@ class StockCountsController extends Controller
             } else {    
                 // Error
                 // When?
-                // $logger->log("ERROR", 'La línea núm. <span class="log-ERROR-format">:id</span> del Recuento NO ha podido ser procesada.', ['id' => $line->id])
+                $logger->log("ERROR", 'La línea núm. <span class="log-ERROR-format">:id</span> del Recuento NO ha podido ser procesada.', ['id' => $line->id])
                 ;
             }
 

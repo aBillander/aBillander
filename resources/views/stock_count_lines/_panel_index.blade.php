@@ -85,7 +85,13 @@
             <td><a href="{{ URL::to('products/' . $line->product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $line->reference }}</a></td>
             <td>{{ $line->name }}</td>
             <td>{{ $line->as_quantity('quantity') }}</td>
-            <td>{{ $line->as_price('cost_price') }}</td>
+            <td>
+@if ( $line->cost_price == NULL )
+            -
+@else
+            {{ $line->as_price('cost_price') }}
+@endif
+            </td>
 
 			<td class="text-right button-pad">
                 @if ( !$line->stockcount->processed )

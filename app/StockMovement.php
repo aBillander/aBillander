@@ -310,7 +310,7 @@ class StockMovement extends Model {
         // 
         $movement = StockMovement::create( $data );
 
-        if ( $movement->process() ) return $movement;   // ->fresh();  Need this???
+        if ( $movement->process() ) return $movement;   // ->refresh();   // ->fresh();  Need this??? Without fresh() won't work
 
         // If process fails, then delete
         $movement->delete();

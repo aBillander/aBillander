@@ -183,6 +183,7 @@
 {{-- Use CKEditor. See: https://artisansweb.net/install-use-ckeditor-laravel/ --}}
 <script src="{{ asset('vendor/unisharp/laravel-ckeditor/ckeditor.js') }}"></script>
 <script>
+    CKEDITOR.replace( 'description' );
     CKEDITOR.replace( 'route_notes' );
 </script>
 

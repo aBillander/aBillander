@@ -252,10 +252,12 @@ class StockCountsController extends Controller
                 $logger->log('INFO', 'Se han encontrado <span class="log-showoff-format">{i} Líneas</span> de Inventario.', ['i' => $count]);
                 $item_total = $count;
                 $item_count = 0;
+                $item_count_ok = 0;
         } else {
                 $logger->log('INFO', 'Se han encontrado <span class="log-showoff-format">{i} Líneas</span> de Inventario pedientes.', ['i' => $count]);
                 $item_total = $request->input('item_total', 0);
                 $item_count = $request->input('item_count', 0);
+                $item_count = $request->input('item_count_ok', 0);
         }
 
         $i = 0;
@@ -324,8 +326,7 @@ class StockCountsController extends Controller
             } else {    
                 // Error
                 // When?
-                $logger->log("ERROR", 'La línea núm. <span class="log-ERROR-format">:id</span> del Recuento NO ha podido ser procesada.', ['id' => $line->id])
-                ;
+                $logger->log("ERROR", 'NO se ha creado un Movimiento para la línea núm. <span class="log-ERROR-format">:id</span> del Recuento.', ['id' => $line->id]);
             }
 
             $i++;
@@ -334,20 +335,27 @@ class StockCountsController extends Controller
         $logger->log("TIMER", 'Control de tiempo Detenido. Ronda: '.$roundCycle);
 
         $item_count += $i;
+        $item_count_ok += $i_ok;
         
         if ($timeoutReached)
         {
             $messages['informations'][] = "Ha terminado la Ronda: <b>$roundCycle</b>";
             $messages['informations'][] = ' - <span style="color: red; font-weight: bold">'.$i.'</span> Productos actualizados de <span style="color: green; font-weight: bold">'.$item_count . '</span>. Quedan pendientes: <span style="color: blue; font-weight: bold">'.($item_total - $item_count) . '</span>.';
 
+            $messages['informations'][] = 'Se han creado '.$i_ok.' Movimientos de Inventario.';
+
             $logger->log('INFO', 'Ha terminado la Ronda: <b>:roundCycle</b>.', ['roundCycle' => $roundCycle]);
             $logger->log('INFO', ' - <span style="color: red; font-weight: bold">'.$item_count.'</span> Productos actualizados de <span style="color: green; font-weight: bold">'.$item_total . '</span>. Quedan pendientes: <span style="color: blue; font-weight: bold">'.($item_total - $item_count) . '</span>.', ['i' => $i]);
+
+            $logger->log('INFO', 'Se han creado {i} Movimientos de Inventario.', ['i' => $i_ok]);
         } else {
             $stockcount->processed = 1;
             $stockcount->save();
 
 //            $logger->log('INFO', 'Se han actualizado {i} Productos.', ['i' => $i_ok]);
             $logger->log('INFO', 'Se han procesado {i} Líneas de Inventario en total.', ['i' => $item_total]);
+
+            $logger->log('INFO', 'Se han creado {i} Movimientos de Inventario en total.', ['i' => $item_count_ok]);
         }
 
         if ($roundCycle>1)
@@ -381,6 +389,7 @@ class StockCountsController extends Controller
 //                'current_task' => $current_task, 
 //                'current_task_status' => $current_task_status, 
                 'item_count' => $item_count, 
+                'item_count_ok' => $item_count_ok, 
                 'item_total' => $item_total, 
                 'roundCycle' => $roundCycle,
                 'progress' => $progress,

@@ -162,7 +162,8 @@ class ImportStockCountsController extends Controller
         $name = '['.$stockcount->id.'] '.$stockcount->name;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Stock Count', __METHOD__, '', route('stockcounts.stockcountlines.index', [$stockcount->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = \App\ActivityLogger::setup( 'Import Stock Count', __METHOD__ )
+                    ->backTo( route('stockcounts.stockcountlines.index', [$stockcount->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         if ( $request->input('empty_log', 0) ) 
@@ -258,11 +259,13 @@ class ImportStockCountsController extends Controller
      */
     protected function processFile( $file, $logger, $params = [] )
     {
+        $i_total = 0;
+        $i_total_ok = 0;
 
         // 
         // See: https://www.youtube.com/watch?v=rWjj9Slg1og
         // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
+        Excel::filter('chunk')->load( $file )->chunk(250, function ($reader) use ( $logger, $params, &$i_total, &$i_total_ok )
         {
             
  /*           $reader->each(function ($sheet){
@@ -412,6 +415,9 @@ class ImportStockCountsController extends Controller
                 $logger->log('WARNING', 'No se encontraton datos de Recuento de Stock en el fichero.');
             }
 
+            $i_total += $i;
+            $i_total_ok += $i_ok;
+
             $logger->log('INFO', 'Se han creado / actualizado {i} Líneas de Recuento de Stock.', ['i' => $i_ok]);
 
             $logger->log('INFO', 'Se han procesado {i} Líneas de Recuento de Stock.', ['i' => $i]);
@@ -419,6 +425,10 @@ class ImportStockCountsController extends Controller
 // Process reader          
     
         }, false);      // should not queue $shouldQueue
+
+        $logger->log('INFO', 'Se han creado / actualizado {i} Líneas de Recuento de Stock en total.', ['i' => $i_total_ok]);
+
+        $logger->log('INFO', 'Se han procesado {i} Líneas de Recuento de Stock en total.', ['i' => $i_total]);
 
     }
 

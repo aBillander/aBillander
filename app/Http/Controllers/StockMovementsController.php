@@ -154,12 +154,12 @@ class StockMovementsController extends Controller
 
         if ($action == 'saveAndContinue')
         return redirect('stockmovements/create')
-                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $stockmovement->id], 'layouts') . 
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($stockmovement)->id], 'layouts') . 
 					$request->input('document_reference') . ' - ' . $request->input('date') )
 				->with( compact('date', 'document_reference', 'movement_type_id', 'currency_id') );
         else
 		return redirect('stockmovements')
-				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $stockmovement->id], 'layouts') . 
+				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($stockmovement)->id], 'layouts') . 
 					$request->input('document_reference') . ' - ' . $request->input('date') );
 	}
 

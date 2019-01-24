@@ -18,6 +18,10 @@
                     <ul class="dropdown-menu">
                       <li><a href="{{ route('customerorders.create.withcustomer', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
+                      <li><a href="{{ route('customershippingslips.create.withcustomer', $customer->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{ route('customerinvoices.create.withcustomer', $customer->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
                 </div>

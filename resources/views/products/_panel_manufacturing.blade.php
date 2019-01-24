@@ -266,7 +266,7 @@
 
         <div class="row">
 
-              <div class="form-group col-lg-9 col-md-9 col-sm-9{{ $errors->has('route_notes') ? 'has-error' : '' }}">
+              <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('route_notes') ? 'has-error' : '' }}">
                  {{ l('Notes', [], 'layouts') }}
                  {!! Form::textarea('route_notes', null, array('class' => 'form-control', 'id' => 'route_notes', 'rows' => '2')) !!}
                  {!! $errors->first('route_notes', '<span class="help-block">:message</span>') !!}

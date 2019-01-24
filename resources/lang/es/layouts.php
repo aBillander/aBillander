@@ -270,6 +270,7 @@ return [
 	'Drag to Sort.'     => 'Arrastre para reordenar.',
 	'Use multiples of 10. Use other values to interpolate.' => 'Use múltiplos de 10. Use otros valores para intercalar.',
 
+	'Draft'     => 'Borrador',
 	'DRAFT'     => 'BORRADOR',
 	'NOT Saved'     => 'NO se ha Guardado',
 

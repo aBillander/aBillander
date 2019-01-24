@@ -12,14 +12,14 @@ use \Lang as Lang;
 class StockMovement extends Model {
 
     use ViewFormatterTrait;
-    use SoftDeletes;
+//    use SoftDeletes;
 
     protected $price_in;        // Movement Price in Company Currency (for average price calculations)
 
     protected $dates = ['date', 'deleted_at'];
 
-    protected $fillable = [ 'date', 'document_reference', 'price', 'currency_id', 'conversion_rate', 
-                            'quantity', 'measure_unit_id', 
+    protected $fillable = [ 'date', 'document_reference', 
+                            'price', 'price_currency', 'currency_id', 'conversion_rate', 'quantity', 
                             'notes',
                             'product_id', 'combination_id', 'reference', 'name', 'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id',
 

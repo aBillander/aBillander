@@ -14,6 +14,10 @@ use App\Customer;
 use App\Address;
 use App\CustomerOrder;
 use App\CustomerOrderLine;
+use App\CustomerInvoice;
+use App\CustomerInvoiceLine;
+use App\CustomerShippingSlip;
+use App\CustomerShippingSlipLine;
 
 class CustomersController extends Controller {
 
@@ -380,7 +384,7 @@ class CustomersController extends Controller {
             $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
 
         // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
-        $lines = CustomerOrderLine::where('product_id', $productid)
+        $o_lines = CustomerOrderLine::where('product_id', $productid)
                             ->with('document')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');
@@ -389,11 +393,58 @@ class CustomersController extends Controller {
                                     $q->where('customer_id', $id);
                                 })
                             ->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
-                            ->select('customer_order_lines.*', 'customer_orders.document_date')
+                            ->select('customer_order_lines.*', 'customer_orders.document_date', \DB::raw('"customerorders" as route'))
                             ->orderBy('customer_orders.document_date', 'desc')
                             ->take( $items_per_page )
                             ->get();
+
+
+        $s_lines = CustomerShippingSlipLine::where('product_id', $productid)
+                            ->with('document')
+//                            ->with(['currency' => function($q) {
+//                                    $q->orderBy('document_date', 'desc');
+//                                }])
+                            ->whereHas('document', function($q) use ($id) {
+                                    $q->where('customer_id', $id);
+                                    $q->where('created_via', 'manual');
+ //                                   $q->where('status', '!=', 'draft');
+                                })
+                            ->join('customer_shipping_slips', 'customer_shipping_slip_lines.customer_shipping_slip_id', '=', 'customer_shipping_slips.id')
+                            ->select('customer_shipping_slip_lines.*', 'customer_shipping_slips.document_date', \DB::raw('"customershippingslips" as route'))
+                            ->orderBy('customer_shipping_slips.document_date', 'desc')
+                            ->take( $items_per_page )
+                            ->get();
+
+
+        $i_lines = CustomerInvoiceLine::where('product_id', $productid)
+                            ->with('document')
+//                            ->with(['currency' => function($q) {
+//                                    $q->orderBy('document_date', 'desc');
+//                                }])
+                            ->whereHas('document', function($q) use ($id) {
+                                    $q->where('customer_id', $id);
+                                    $q->where('created_via', 'manual');
+ //                                   $q->where('status', '!=', 'draft');
+                                })
+                            ->join('customer_invoices', 'customer_invoice_lines.customer_invoice_id', '=', 'customer_invoices.id')
+                            ->select('customer_invoice_lines.*', 'customer_invoices.document_date', \DB::raw('"customerinvoices" as route'))
+                            ->orderBy('customer_invoices.document_date', 'desc')
+                            ->take( $items_per_page )
+                            ->get();
         
+        // See: https://stackoverflow.com/questions/23083572/merge-and-sort-two-eloquent-collections
+        $lines1 = collect($o_lines);
+        $lines2 = collect($s_lines);
+        $lines3 = collect($i_lines);
+/*
+        This way you can just merge them, even when there are duplicate ID's.
+
+        Eloquent returns an Eloquent Collection and collect() returns a normal Collection. 
+        A 'normal' collection has different methods than the Eloquent Collection
+*/
+
+        $lines = $lines1->merge($lines2)->merge($lines3)->sortByDesc('document_date');
+
         return view('customers._panel_products', compact('customer', 'product', 'lines'));
     }
 

@@ -34,7 +34,15 @@
 		<tr>
 			<td>{{ $line->id }}</td>
 			<td>{{ abi_date_short( $line->document->document_date ) }}</td>
-			<td>{{ $line->document->document_reference}}</td>
+			<td>
+        		<a href="{{ route($line->route.'.edit', [$line->document->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">
+						@if ( $line->document->document_reference )
+		                	{{ $line->document->document_reference}}
+		                @else
+		                	<span class="btn btn-xs btn-grey">{{ l('Draft', 'layouts') }}</span>
+		                @endif
+        		</a>
+        	</td>
 			<td>{{ $line->as_quantity('quantity') }}</td>
 
 			<td>{{ $line->as_price('unit_price') }}</td>

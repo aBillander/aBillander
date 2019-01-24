@@ -34,6 +34,12 @@
                     {!! Form::select('measure_unit_id', array('0' => l('-- Please, select --', [], 'layouts')) + $measure_unitList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('ean13') ? 'has-error' : '' }}">
+                     {{ l('Ean13') }}
+                     {!! Form::text('ean13', null, array('class' => 'form-control', 'id' => 'ean13') + $foo) !!}
+                     {!! $errors->first('ean13', '<span class="help-block">:message</span>') !!}
+                  </div>
+                  
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
                      {{ l('Product type') }}
                      {!! Form::text('product_type_name', \App\Product::getTypeName($product->product_type), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
@@ -70,12 +76,7 @@
         </div>
 
         <div class="row">
-                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('ean13') ? 'has-error' : '' }}">
-                     {{ l('Ean13') }}
-                     {!! Form::text('ean13', null, array('class' => 'form-control', 'id' => 'ean13') + $foo) !!}
-                     {!! $errors->first('ean13', '<span class="help-block">:message</span>') !!}
-                  </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('description') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('description') ? 'has-error' : '' }}">
                      {{ l('Description') }}
                      {!! Form::textarea('description', null, array('class' => 'form-control', 'id' => 'description', 'rows' => '3')) !!}
                      {!! $errors->first('description', '<span class="help-block">:message</span>') !!}

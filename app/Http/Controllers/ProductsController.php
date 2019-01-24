@@ -112,34 +112,39 @@ class ProductsController extends Controller {
         // Event
         // event( new ProductCreated(), $data );
 
-/*
         // Stock Movement
-        if (0)
         if ($request->input('quantity_onhand')>0) 
         {
             // Create stock movement (Initial Stock)
-            $data = [   'date' =>  \Carbon\Carbon::now(), 
+            $data = [   
+                        'movement_type_id' => StockMovement::INITIAL_STOCK,
+                        'date' =>  \Carbon\Carbon::now(), 
+
+ //                   'stockmovementable_id' => ,
+ //                   'stockmovementable_type' => ,
+
                         'document_reference' => '', 
-                        'price' => $request->input('price'), 
-    //                    'price_tax_inc' => $request->input('price_tax_inc'), 
                         'quantity' => $request->input('quantity_onhand'),  
+                        'price' => null,        // Use default
+                        'currency_id' => \App\Context::getContext()->company->currency->id,
+                        'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
                         'notes' => '',
+
                         'product_id' => $product->id, 
-                        'currency_id' => \App\Context::getContext()->currency->id, 
-                        'conversion_rate' => \App\Context::getContext()->currency->conversion_rate, 
+                        'combination_id' => 0,
+                        'reference' => $product->reference,
+                        'name' => $product->name,
                         'warehouse_id' => $request->input('warehouse_id'), 
-                        'movement_type_id' => 10,
-                        'model_name' => '', 'document_id' => 0, 'document_line_id' => 0, 'combination_id' => 0, 'user_id' => \Auth::id()
+ //                   'warehouse_counterpart_id' => ,
             ];
     
             // Initial Stock
-            $stockmovement = \App\StockMovement::create( $data );
-    
-            // Stock movement fulfillment (perform stock movements)
-            $stockmovement->process();
+            $stockmovement = StockMovement::createAndProcess( $data );
         }
 
 
+/*
         // Prices according to Price Lists
         if (0) {
         $plists = \App\PriceList::get();

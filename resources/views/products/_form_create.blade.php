@@ -227,7 +227,7 @@
                   </div>
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
                       {{ l('Warehouse') }}
-                      {!! Form::select('warehouse_id', array('0' => l('-- Please, select --', [], 'layouts')) + $warehouseList, null, array('class' => 'form-control')) !!}
+                      {!! Form::select('warehouse_id', $warehouseList, null, array('class' => 'form-control')) !!}
                       {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
                   </div>
         </div>

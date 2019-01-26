@@ -10,9 +10,9 @@
             <div class="pull-right">
 
 @if ( $document->status == 'closed' )
-                <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
+                <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-lock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
 @else
-                <a class="btn btn-sm alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i></a>
+                <a class="btn btn-sm alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a>
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/pdf?preview') }}" title="{{l('Show Preview', [], 'layouts')}}" target="_blank"><i class="fa fa-eye"></i></a>
 @endif
@@ -59,9 +59,15 @@
                    &nbsp; 
                     @if ($document->document_id>0)
                     {{ $document->document_reference }}
+                              @if ( $document->sequence )
+                              @if ( ($document->sequence->next_id - $document->document_id) == 1 )
+                                  <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unconfirm') }}" title="{{l('Undo Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
+                                  </a>
+                              @endif
+                              @endif
                     @else
                     <a class="btn xbtn-xs alert-warning" href="{{ URL::to($model_path.'/' . $document->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
-                    <span xclass="label label-default">{{ l('Draft') }}</span>
+                    <span xclass="label label-default">{{ l('Draft', 'layouts') }}</span>
                     </a>
                     @endif
                    &nbsp; 

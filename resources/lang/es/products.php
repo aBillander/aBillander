@@ -111,10 +111,11 @@ return [
 
 	'Stock Movements' => 'Movimientos de Stock',
 	'Pending Movements' => 'Movimientos Pendientes',
-	'' => '',
-	'' => '',
-	'' => '',
-	'' => '',
+
+	'Recent Sales' => 'Ultimas Ventas',
+	'Date' => 'Fecha',
+	'Document' => 'Documento',
+	'Customer Final Price' => 'PVP Final',
 
 
 	'Can not create Combinations'     => 'No es posible crear Combinaciones',

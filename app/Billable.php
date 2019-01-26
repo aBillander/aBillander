@@ -204,6 +204,18 @@ class Billable extends Model
                 : l($this->getClassName().'.'.'draft', [], 'appmultilang') ;
     }
 
+    public function getAllNotesAttribute()
+    {
+        $notes = '';
+
+        if ($this->notes_from_customer && (strlen($this->notes_from_customer) > 4)) $notes .= $this->notes_from_customer."\n\n";        // Prevent accidental whitespaces
+        if ($this->notes               ) $notes .= $this->notes."\n\n";
+        if ($this->notes_to_customer   ) $notes .= $this->notes_to_customer."\n\n";
+
+
+        return $notes;
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -260,6 +272,7 @@ class Billable extends Model
         $seq = \App\Sequence::find( $seq_id );
         $doc_id = $seq->getNextDocumentId();
 
+        $this->sequence_id = $seq_id;
         // Not fillable
         $this->document_prefix    = $seq->prefix;
         // Not fillable
@@ -269,6 +282,43 @@ class Billable extends Model
 
         $this->status = 'confirmed';
         $this->validation_date = \Carbon\Carbon::now();
+
+        $this->save();
+
+        return true;
+    }
+
+    public function unConfirm()
+    {
+        // Can I?
+        if ( $this->status != 'confirmed' ) return false;
+
+        // onhold? No problemo
+        // if ( $this->onhold ) return false;
+
+        // Can I "undo" last number in Sequence
+        $seq_id = $this->sequence_id;
+        $seq = \App\Sequence::find( $seq_id );
+        $next_id = $seq->next_id;
+        $doc_id = $this->document_id;
+
+        if ( ($next_id - $doc_id) != 1 ) return false;
+
+        // Update Sequence
+        $seq->next_id = $doc_id;
+// ???        $seq->last_date_used = \Carbon\Carbon::now();
+        $seq->save();
+
+        // Update Document
+        // Not fillable
+        $this->document_prefix    = NULL;
+        // Not fillable
+        $this->document_id        = 0;
+        // Not fillable. May come from external system ???
+        $this->document_reference = NULL;
+
+        $this->status = 'draft';
+        $this->validation_date = NULL;
 
         $this->save();
 
@@ -435,6 +485,11 @@ class Billable extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    public function sequence()
+    {
+        return $this->belongsTo('App\Sequence');
     }
 
     public function customer()

@@ -135,6 +135,8 @@
       {
          $("#panel_sales").show();
          $("#b_sales").addClass('active');
+
+         getRecentSales();
       }
       else if(window.location.hash.substring(1) == 'inventory')
       {

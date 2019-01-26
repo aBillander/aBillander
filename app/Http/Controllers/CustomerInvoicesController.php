@@ -578,6 +578,25 @@ class CustomerInvoicesController extends BillableController
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
+    protected function unConfirm(CustomerInvoice $document)
+    {
+        // Can I?
+        if ( $document->status != 'confirmed' )
+        {
+        	return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        // UnConfirm
+        if ( $document->unConfirm() )
+        	return redirect()->back()
+                	->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
 
     protected function onholdToggle(CustomerInvoice $document)
     {

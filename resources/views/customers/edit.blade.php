@@ -65,6 +65,10 @@
                <i class="fa fa-file-text-o"></i>
                &nbsp; {{ l('Orders') }}
             </a>
+            <a id="b_products" href="#products" class="list-group-item">
+               <i class="fa fa-th"></i>
+               &nbsp; {{ l('Products') }}
+            </a>
             <!-- a id="b_statistics" href="#statistics" class="list-group-item">
                <i class="fa fa-bar-chart"></i>
                &nbsp; {{ l('Statistics') }}
@@ -89,6 +93,8 @@
           @include('customers._panel_addressbook')
 
           @include('customers._panel_orders')
+
+          @include('customers._panel_products')
 {{--
           @include('customers._panel_statistics')
 --}}
@@ -116,6 +122,7 @@
  //     $("#panel_specialprices").hide();
  //     $("#panel_accounting").hide();
       $("#panel_orders").hide();
+      $("#panel_products").hide();
  //     $("#panel_statistics").hide();
       $("#panel_customeruser").hide();
 
@@ -126,6 +133,7 @@
  //     $("#b_specialprices").removeClass('active');
  //     $("#b_accounting").removeClass('active');
       $("#b_orders").removeClass('active');
+      $("#b_products").removeClass('active');
 //      $("#b_statistics").removeClass('active');
       $("#b_customeruser").removeClass('active');
       
@@ -145,6 +153,12 @@
          $("#panel_orders").show();
          $("#b_orders").addClass('active');
          getCustomerOrders();
+      }
+      else if(window.location.hash.substring(1) == 'products')
+      {
+         $("#panel_products").show();
+         $("#b_products").addClass('active');
+         getCustomerProducts();
       }
       else if(window.location.hash.substring(1) == 'statistics')
       {

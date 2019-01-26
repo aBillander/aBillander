@@ -113,6 +113,22 @@ class BillableController extends Controller
     }
 
     
+    public function getDocumentHeader($id)
+    {
+        // Some rework needed!!!
+
+        $document = $this->document
+                        ->with('customer')
+                        ->findOrFail($id);
+        
+        $customer = $document->customer;
+
+        return 'Peo!';
+
+        return view($this->view_path.'._tab_edit_header', $this->modelVars() + compact('document', 'customer'));
+    }
+
+    
     public function getDocumentLines($id)
     {
 //        $model = $this->getParentModelLowerCase();

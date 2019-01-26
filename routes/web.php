@@ -125,6 +125,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('products/{id}/stockmovements', 'ProductsController@getStockMovements')->name('products.stockmovements');
         Route::get('products/{id}/stocksummary', 'ProductsController@getStockSummary')->name('products.stocksummary');
 
+        Route::get('products/{id}/recentsales',  'ProductsController@getRecentSales')->name('products.recentsales');
+
         Route::resource('products.images', 'ProductImagesController');
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
 //        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
@@ -184,6 +186,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
 
         Route::get('customers/{id}/product/{productid}/consumption', 'CustomersController@productConsumption' )->name('customer.product.consumption');
+
+        Route::get('customers/{id}/recentsales',  'CustomersController@getRecentSales')->name('customer.recentsales');
 
         Route::resource('carts', 'CartsController');
         Route::post('carts/{cart}/updateprices',  'CartsController@updatePrices')->name('carts.updateprices');
@@ -283,7 +287,8 @@ foreach ($pairs as $pair) {
         Route::get($path.'/ajax/customer_lookup', $controller.'@ajaxCustomerSearch')->name($path.'.ajax.customerLookup');
         Route::get($path.'/ajax/customer/{id}/adressbook_lookup', $controller.'@customerAdressBookLookup')->name($path.'.ajax.customer.AdressBookLookup');
 
-        Route::get($path.'/{id}/getlines',             $controller.'@getDocumentLines' )->name($path.'.getlines');
+        Route::get($path.'/{id}/getlines',             $controller.'@getDocumentLines'  )->name($path.'.getlines' );
+        Route::get($path.'/{id}/getheader',            $controller.'@getDocumentHeader' )->name($path.'.getheader');
         Route::get($path.'/line/productform/{action}', $controller.'@FormForProduct')->name($path.'.productform');
         Route::get($path.'/line/serviceform/{action}', $controller.'@FormForService')->name($path.'.serviceform');
         Route::get($path.'/line/searchproduct',        $controller.'@searchProduct' )->name($path.'.searchproduct');
@@ -306,7 +311,8 @@ foreach ($pairs as $pair) {
 
         Route::post($path.'/sortlines', $controller.'@sortLines')->name($path.'.sortlines');
 
-        Route::get($path.'/{document}/confirm', $controller.'@confirm')->name($path.'.confirm');
+        Route::get($path.'/{document}/confirm',   $controller.'@confirm'  )->name($path.'.confirm'  );
+        Route::get($path.'/{document}/unconfirm', $controller.'@unConfirm')->name($path.'.unconfirm');
 
         Route::get($path.'/{id}/pdf',         $controller.'@showPdf'       )->name($path.'.pdf'        );
         Route::get($path.'/{id}/invoice/pdf', $controller.'@showPdfInvoice')->name($path.'.invoice.pdf');

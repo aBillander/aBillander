@@ -69,3 +69,5 @@
 @include('products._modal_view_image')
 
 @include('abcc.cart._modal_cart_line_delete')
+
+@include('abcc.layouts.modal_confirm_submit')

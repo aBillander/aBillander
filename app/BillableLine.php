@@ -156,6 +156,7 @@ class BillableLine extends Model
         if ( Configuration::isFalse('ENABLE_ECOTAXES') ) return $amount;
 
         if ( $this->line_type == 'service' )             return $amount;
+        if ( $this->line_type == 'shipping' )            return $amount;
 
         if ( $this->product->ecotax_id <= 0 )            return $amount;
 

@@ -108,7 +108,7 @@ class FSxTools
                                 'last_modified' => date("Y-m-d h:i:s"),
                                 'date_added' => date("Y-m-d h:i:s") );
 
-        $result=DB::table($table_name)->insert( $sql_data_array );
+        $result=\DB::table($table_name)->insert( $sql_data_array );
 
         return $result;
     }

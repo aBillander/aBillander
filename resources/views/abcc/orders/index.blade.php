@@ -43,9 +43,13 @@
         <tr>
             <td>{{ $order->id }} / 
                 @if ($order->document_id>0)
-                {{ $order->document_reference }}
+                    {{ $order->document_reference }}
                 @else
-                <span class="label label-default" title="{{ l('Draft') }}">{{ l('Draft') }}</span>
+                    @if ( $order->notes_from_customer && mb_stripos( $order->notes_from_customer, 'quotation' ) !== false )
+                        <span class="label label-success" title="{{ l('Quotation') }}">{{ l('Quotation', 'layouts') }}</span>
+                    @else
+                        <span class="label label-default" title="{{ l('Draft', 'layouts') }}">{{ l('Draft', 'layouts') }}</span>
+                    @endif
                 @endif</td>
             <td>{{ abi_date_short($order->document_date) }}</td>
             <td>{{ abi_date_short($order->delivery_date_real ?: $order->delivery_date) }}</td>

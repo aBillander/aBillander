@@ -3,9 +3,9 @@
                <div class="panel-body">
 
 
-<div id="panel_stock_movements" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
+<div id="panel_recent_sales" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('products._panel_stock_movements') --}}
+{{--  @ include('products._panel_recent_sales') --}}
 
 </div>
 
@@ -28,10 +28,11 @@
    		
    		$(window).on('hashchange',function(){
 			page = window.location.hash.replace('#','');
-			if (page == 'inventory') getStockMovements(page);
+			// alert(page);
+			if (page == 'sales') getRecentSales(page);
 		});
 
-		$(document).on('click','.pagination_stockmovements a', function(e){
+		$(document).on('click','.pagination_recentsales a', function(e){
 			e.preventDefault();
 			var stubs;
 			var page;
@@ -39,28 +40,27 @@
 			stubs = $(this).attr('href').split('page=');
 			page = stubs[ stubs.length - 1 ];	// Like a BOSS!!!!
 
-			// if (page == 'stockmovements') getStockMovements(page);
-			getStockMovements(page);
+			getRecentSales(page);
 			// location.hash = page;
 		});
 
-		$(document).on('keydown','.items_per_page_stockmovements', function(e)
+		$(document).on('keydown','.items_per_page', function(e)
 		{
   
 		  if (e.keyCode == 13) {
 		   // console.log("put function call here");
 		   e.preventDefault();
-		   getStockMovements();
+		   getRecentSales();
 		   return false;
 		  }
 
 		});
 		
 
-		function getStockMovements( page = 1 )
+		function getRecentSales( page = 1 )
 		{
-           var panel = $("#panel_stock_movements");
-           var url = '{{ route( 'products.stockmovements', [$product->id] ) }}?page=' + page;
+           var panel = $("#panel_recent_sales");
+           var url = '{{ route( 'products.recentsales', [$product->id] ) }}?page=' + page;
 
            panel.addClass('loading');
 
@@ -68,7 +68,7 @@
 				type: "GET",
 				url: url,
 				data: {
-					items_per_page_stockmovements: $("#items_per_page_stockmovements").val()
+					items_per_page: $("#items_per_page").val()
 				}
 			}).done(function(data){
 				panel.html(data);
@@ -82,9 +82,9 @@
 		// See: https://stackoverflow.com/questions/20705905/bootstrap-3-jquery-event-for-active-tab-change
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 		  var target = $(e.target).attr("href") // activated tab
-		  if (target == '#tab2default_m')
+		  if (target == '#tab2default_s')
 		  {
-		  		getStockMovements();
+		  		getRecentSales();
 		  }
 		  /*
 		  if ($(target).is(':empty')) {

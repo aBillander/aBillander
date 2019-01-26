@@ -86,6 +86,20 @@
 
     @include($view_path.'.js.document_service_lines')
 
+
+<script>
+
+  $(document).ready(function() {
+
+    // Jump to tab
+    var myurl = 'tab2default';
+    $("a[href$='"+myurl+"']:first")[0].click();
+//    $("a[href$='tab2default']").css("background-color", "yellow");
+
+  });
+  
+</script>
+
 @endsection
 
 

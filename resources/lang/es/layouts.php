@@ -195,6 +195,7 @@ return [
 	'Update'     => 'Actualizar',
 	'Cancel'     => 'Cancelar',
 	'Confirm'     => 'Confirmar',
+	'Undo Confirm'     => 'Deshacer Confirmar',
 	'Select'     => 'Seleccionar',
 	'Delete'     => 'Eliminar',
 	'Continue'     => 'Continuar',
@@ -217,8 +218,10 @@ return [
 	'Unset on-hold'     => 'Click para liberar',
 
 	'Document closed'     => 'Documento cerrado',
+	'Close'     => 'Cerrar Documento',
 	'Close Document'     => 'Click para Cerrar el Documento',
-	'Unclose Document'     => 'Click para reabrir el documento',
+	'Unclose'     => 'Reabrir Documento',
+	'Unclose Document'     => 'Click para Reabrir el documento',
 
 	'Add New Item'     => 'Añadir Nuevo',
 	'Add'     => 'Añadir',
@@ -263,7 +266,7 @@ return [
 	'Found :nbr record(s)'     => 'Hay :nbr registro(s)',
 	'Items per page'     => 'Registros por página',
 	'Per page'     => 'Por página',
-	''     => '',
+	'Show records:'     => 'Mostrar registros:',
 
 	'This record has been already published with id=:id'     => 'Este registro ya se ha publicado en la Tienda Web con id=:id',
 

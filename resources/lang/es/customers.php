@@ -121,6 +121,10 @@ return [
 	'Delivery Date'     => 'Fecha Entrega',
 	'Total'     => 'Total',
 
+	'Products' => 'Productos',
+	'Product' => 'Producto',
+	'Document' => 'Documento',
+
 	'Customer Center Access'     => 'Acceso al Centro de Clientes',
 	'Allow Customer Center access?'     => '¿Permitir acceso al Centro de Clientes?',
 

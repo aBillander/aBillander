@@ -249,4 +249,21 @@ return [
 	''     => '',
 	''     => '',
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Cart Language Lines :: Messages
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Quotation Confirmation'     => 'Confirmar petición de Presupuesto',
+	'You are going to Ask for Quotation. Are you sure?'     => 'Está a punto de confirmar su petición de Presupuesto. ¿Está seguro?',
+	'Order Confirmation'     => 'Confirmación de Pedido',
+	'You are going to Confirm your Order. Are you sure?'     => 'Está a punto de confirmar su Pedido. ¿Está seguro?',
+
+	'Cart amount should be more than: '     => 'El importe del Pedido debe ser al menos de: ',
+
 ];

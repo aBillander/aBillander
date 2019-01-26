@@ -11,6 +11,13 @@ use App\Product;
 use App\StockMovement;
 use Form, DB;
 
+// use App\CustomerOrder;
+use App\CustomerOrderLine;
+// use App\CustomerInvoice;
+use App\CustomerInvoiceLine;
+// use App\CustomerShippingSlip;
+use App\CustomerShippingSlipLine;
+
 use App\Events\ProductCreated;
 
 class ProductsController extends Controller {
@@ -657,9 +664,9 @@ LIMIT 1
      */
     public function getStockMovements($id, Request $request)
     {
-        $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
-        if ( !($items_per_page >= 0) ) 
-            $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+        $items_per_page_stockmovements = intval($request->input('items_per_page_stockmovements', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page_stockmovements >= 0) ) 
+            $items_per_page_stockmovements = \App\Configuration::get('DEF_ITEMS_PERPAGE');
 
         $mvts = StockMovement::where('product_id', $id)
                                 ->with('product')
@@ -668,13 +675,13 @@ LIMIT 1
                                 ->orderBy('created_at', 'DESC')
                                 ->orderBy('id', 'DESC');
 
-        $mvts = $mvts->paginate( $items_per_page );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+        $mvts = $mvts->paginate( $items_per_page_stockmovements );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
 
         $mvts->setPath('stockmovements');
 
-        //return $items_per_page ;
+        // return $items_per_page_stockmovements ;
         
-        return view('products._panel_stock_movements', compact('mvts', 'items_per_page'));
+        return view('products._panel_stock_movements', compact('mvts', 'items_per_page_stockmovements'));
     }
 
 
@@ -686,6 +693,72 @@ LIMIT 1
                         ->findOrFail($id);
         
         return view('products._panel_stock_summary', compact('product'));
+    }
+
+
+    public function getRecentSales($id, Request $request)
+    {
+        $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+
+        // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
+        $o_lines = CustomerOrderLine::where('product_id', $id)
+                            ->with('document')
+                            ->with('document.customer')
+//                            ->whereHas('document', function($q) use ($id) {
+//                                    $q->where('customer_id', $id);
+//                                })
+                            ->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
+                            ->select('customer_order_lines.*', 'customer_orders.document_date', \DB::raw('"customerorders" as route'))
+                            ->orderBy('customer_orders.document_date', 'desc')
+                            ->take( $items_per_page )
+                            ->get();
+
+
+        $s_lines = CustomerShippingSlipLine::where('product_id', $id)
+                            ->with('document')
+                            ->with('document.customer')
+                            ->whereHas('document', function($q) use ($id) {
+//                                    $q->where('customer_id', $id);
+                                    $q->where('created_via', 'manual');
+//                                   $q->where('status', '!=', 'draft');
+                                })
+                            ->join('customer_shipping_slips', 'customer_shipping_slip_lines.customer_shipping_slip_id', '=', 'customer_shipping_slips.id')
+                            ->select('customer_shipping_slip_lines.*', 'customer_shipping_slips.document_date', \DB::raw('"customershippingslips" as route'))
+                            ->orderBy('customer_shipping_slips.document_date', 'desc')
+                            ->take( $items_per_page )
+                            ->get();
+
+
+        $i_lines = CustomerInvoiceLine::where('product_id', $id)
+                            ->with('document')
+                            ->with('document.customer')
+                            ->whereHas('document', function($q) use ($id) {
+//                                    $q->where('customer_id', $id);
+                                    $q->where('created_via', 'manual');
+//                                   $q->where('status', '!=', 'draft');
+                                })
+                            ->join('customer_invoices', 'customer_invoice_lines.customer_invoice_id', '=', 'customer_invoices.id')
+                            ->select('customer_invoice_lines.*', 'customer_invoices.document_date', \DB::raw('"customerinvoices" as route'))
+                            ->orderBy('customer_invoices.document_date', 'desc')
+                            ->take( $items_per_page )
+                            ->get();
+
+/*
+    Merged collections cannot be easyly paginated :( . 'items_per_page' would be the number of records to show
+
+        $mvts = $mvts->paginate( $items_per_page );
+*/
+        $lines1 = collect($o_lines);
+        $lines2 = collect($s_lines);
+        $lines3 = collect($i_lines);
+
+        $lines = $lines1->merge($lines2)->merge($lines3)->sortByDesc('document_date');
+
+        $lines = $lines->take( $items_per_page );
+        
+        return view('products._panel_recent_sales', compact('lines', 'items_per_page'));
     }
     
 }

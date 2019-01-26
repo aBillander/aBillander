@@ -250,7 +250,7 @@
 
           loadDocumentlines();
 
-          loadDocumentPayments();
+          // loadDocumentPayments();  // Not needed!
 
           
 
@@ -261,11 +261,60 @@
 
 {{-- *************************************** --}}
 
+
+
+    // See: https://stackoverflow.com/questions/20705905/bootstrap-3-jquery-event-for-active-tab-change
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href") // activated tab
+      if (target == '#tab3default')
+      {
+          getDocumentProfit();
+      }
+      if (target == '#tab1default' && 0)
+      {
+          // loadDocumentHeader();
+          location.reload(); 
+      }
+      if (target == '#tab5default')
+      {
+          loadDocumentPayments();
+      }
+      /*
+      if ($(target).is(':empty')) {
+        $.ajax({
+          type: "GET",
+          url: "/article/",
+          error: function(data){
+            alert("There was a problem");
+          },
+          success: function(data){
+            $(target).html(data);
+          }
+      })
+     }
+     */
+    });
   
+
+        function loadDocumentHeader() {
+           
+           var panel = $("#tab1default");
+           var url = "{{ route($model_path.'.getheader', $document->id) }}";
+
+           panel.addClass('loading');
+
+           $.get(url, {}, function(result){
+                 panel.html(result);
+                 panel.removeClass('loading');
+                 $("[data-toggle=popover]").popover();
+
+           }, 'html');
+
+        }
 
         function loadDocumentlines() {
            
-           var panel = $("#panel_{{ $model_snake_case}}_lines");
+           var panel = $("#panel_{{ $model_snake_case }}_lines");
            var url = "{{ route($model_path.'.getlines', $document->id) }}";
 
            panel.addClass('loading');
@@ -281,7 +330,7 @@
 
         function loadDocumentPayments() {
            
-           var panel = $("#panel_{{ $model_snake_case}}_payments");
+           var panel = $("#panel_{{ $model_snake_case }}_payments");
            var url = "{{ route($model_path.'.getpayments', $document->id) }}";
 
            panel.addClass('loading');

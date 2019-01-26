@@ -1,6 +1,4 @@
 
-<div id="panel_inventory"> 
-
 <div class="panel with-nav-tabs panel-success" id="panel_inventory">
 
    <div class="panel-heading">
@@ -9,7 +7,7 @@
 
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab1default" data-toggle="tab">{{ l('Stocks') }}</a></li>
-                            <li><a href="#tab2default" data-toggle="tab">{{ l('Stock Movements') }}</a></li>
+                            <li><a href="#tab2default_m" data-toggle="tab">{{ l('Stock Movements') }}</a></li>
                             <li><a href="#tab3default" data-toggle="tab">{{ l('Pending Movements') }}</a></li>
 
                             <!-- li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
@@ -30,7 +28,7 @@
                 @include('products._tab_stock')
 
       </div>
-      <div class="tab-pane fade" id="tab2default">
+      <div class="tab-pane fade" id="tab2default_m">
                 
                 @include('products._tab_stock_movements')
 
@@ -60,7 +58,6 @@
 </div>    <!-- div class="panel with-nav-tabs panel-primary" id="panel_inventory" ENDS -->
 
 
-</div>
 
 @section('scripts')     @parent
 

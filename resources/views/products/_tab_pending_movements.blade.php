@@ -31,7 +31,7 @@
 			getCustomerOrders(page);
 		});
 
-		$(document).on('click','.pagination a', function(e){
+		$(document).on('click','.pagination_pending_movements a', function(e){
 			e.preventDefault();
 			var stubs;
 			var page;

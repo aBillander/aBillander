@@ -32,10 +32,10 @@
 
    		$(window).on('hashchange',function(){
 			page = window.location.hash.replace('#','');
-			getCustomerOrders(page);
+			if (page == 'orders') getCustomerOrders(page);
 		});
 
-		$(document).on('click','.pagination a', function(e){
+		$(document).on('click','.pagination_orders a', function(e){
 			e.preventDefault();
 			var stubs;
 			var page;
@@ -43,6 +43,7 @@
 			stubs = $(this).attr('href').split('page=');
 			page = stubs[ stubs.length - 1 ];	// Like a BOSS!!!!
 
+			// if (page = 'orders') getCustomerOrders(page);
 			getCustomerOrders(page);
 			// location.hash = page;
 		});

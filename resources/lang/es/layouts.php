@@ -188,6 +188,7 @@ return [
 	'Show Preview'     => 'Vista Previa',
 	'Show Log'     => 'Mostrar el Log',
 	'Progress'     => 'Progreso',
+	'Duplicate' => 'Duplicar',
 	'Save'     => 'Guardar',
 	'Save & Complete'     => 'Guardar y Completar',
 	'Save & Confirm'      => 'Guardar y Confirmar',

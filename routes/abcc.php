@@ -83,8 +83,8 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
 
         Route::post('contact', 'AbccContactMessagesController@store')->name('abcc.contact');
 
-        Route::get('/catalogue',     'AbccCatalogueController@index'      )->name('abcc.catalogue');
-        Route::get('/catalogue/new', 'AbccCatalogueController@newProducts')->name('abcc.catalogue.newproducts');
+        Route::get('/catalogue',             'AbccCatalogueController@index'      )->name('abcc.catalogue');
+        Route::get('/catalogue/newproducts', 'AbccCatalogueController@newProducts')->name('abcc.catalogue.newproducts');
 //        Route::get('/catalogue/category/{id}', 'AbccCatalogueController@categoryShow')->name('abcc.catalogue.category.show');
 
  //       Route::get( '/orders', 'AbccCustomerOrdersController@index')->name('abcc.orders.index');

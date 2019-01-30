@@ -494,13 +494,24 @@ class CustomerInvoicesController extends BillableController
 
 					break;
 				
+				case 'saveAndContinue':
+					# code...
+
+					break;
+				
 				default:
 					# code...
 					break;
 			}
 		}
 
-        return redirect($this->model_path.'/'.$document->id.'/edit')
+		$nextAction = $request->input('nextAction', '');
+		
+		if ( $nextAction == 'saveAndContinue' ) 
+			return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+        return redirect($this->model_path)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
 
@@ -524,6 +535,10 @@ class CustomerInvoicesController extends BillableController
 			return $this->show($document->id);
 		
 		if ( $nextAction == 'completeInvoice' ) 
+			return redirect('customerinvoices/' . $document->id . '/edit')
+				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+		
+		if ( $nextAction == 'saveAndContinue' ) 
 			return redirect('customerinvoices/' . $document->id . '/edit')
 				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
@@ -570,7 +585,7 @@ class CustomerInvoicesController extends BillableController
 
         // Confirm
         if ( $document->confirm() )
-        	return redirect()->back()
+        	return redirect()->route($this->model_path.'.index')
                 	->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 
@@ -630,7 +645,7 @@ class CustomerInvoicesController extends BillableController
 
         // Close
         if ( $document->close() )
-	        return redirect()->back()
+	        return redirect()->route($this->model_path.'.index')
 	                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 

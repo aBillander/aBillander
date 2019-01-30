@@ -187,6 +187,7 @@
 			<td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
            <td class="text-right button-pad">
                 @if (  is_null($product->deleted_at))
+                <a class="btn btn-sm btn-lightblue" href="{{ URL::to('products/' . $product->id . '/duplicate') }}" title="{{l('Duplicate', [], 'layouts')}}"><i class="fa fa-copy"></i></a>
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('products/' . $product->id ) }}" 

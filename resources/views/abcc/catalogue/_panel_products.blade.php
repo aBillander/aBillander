@@ -83,7 +83,12 @@
 @endif
       </td>
 
-      <td>{{ $product->name }}</td>
+      <td>{{ $product->name }}
+          @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax )
+              <br />
+              {{ l('Ecotax: ') }} {{ $product->ecotax->name }} ({{ abi_money( $product->ecotax->amount ) }})
+          @endif
+      </td>
       <td>{{ optional($product->manufacturer)->name }} {{-- optional($product->category)->name --}}</td>
       <td>
 @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
@@ -104,7 +109,8 @@
       <td>{{ $product->as_priceable( 
               $product->getPriceByList( 
                   \Auth::user()->customer->currentpricelist() 
-              )->getPrice() 
+              )->getPrice() + 
+              $product->getEcotax()
             ) }}</td>
 
       <td class="text-right xbutton-pad" style="white-space: nowrap;">

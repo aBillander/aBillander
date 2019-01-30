@@ -372,6 +372,49 @@ class ProductsController extends Controller {
     }
 
 
+/* ********************************************************************************************* */  
+
+
+    /**
+     * MISC Stuff.
+     *
+     * 
+     */
+
+    public function duplicate($id)
+    {
+        $product = $this->product->findOrFail($id);
+
+        // Duplicate
+        $clone = $product->replicate();
+
+        $clone->name      = '[COPY] '.$clone->name;
+        $clone->reference = '[COPY] '.$clone->reference;
+        $clone->ean13 = NULL;
+
+        $clone->supplier_reference =  NULL;
+
+        $clone->quantity_onhand = 0.0;
+        $clone->quantity_onorder = 0.0;
+        $clone->quantity_allocated = 0.0;
+        $clone->quantity_onorder_mfg = 0.0;
+        $clone->quantity_allocated_mfg = 0.0;
+        
+        $clone->last_purchase_price = 0.0;
+        $clone->cost_average = 0.0;
+
+        $clone->save();
+
+
+        // Good boy:
+
+
+        return redirect()->route('products.edit', [$clone->id])
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $clone->id], 'layouts'));
+    }
+
+
+
 
 /* ********************************************************************************************* */    
 

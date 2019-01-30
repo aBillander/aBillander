@@ -26,7 +26,8 @@ return [
 	'Pending: Print and Send'     => 'Pendiente: Imprimir y Enviar',
 	'Pr'     => 'Im',
 	'Paid'     => 'Pagado',
-	''     => '',
+
+	'Email sent:'     => 'Enviado por email:',
 	''     => '',
 	''     => '',
 	''     => '',

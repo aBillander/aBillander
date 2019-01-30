@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 // use Illuminate\Validation\Rule;
 
+use  \App\Configuration;
+
 use App\Traits\ViewFormatterTrait;
 use App\Traits\AutoSkuTrait;
 
-use App\Traits\FullTextSearchTrait;
+use App\Traits\SearchableTrait;
+// use App\Traits\FullTextSearchTrait;
 
 class Product extends Model {
 
@@ -18,7 +21,34 @@ class Product extends Model {
     use AutoSkuTrait;
     use SoftDeletes;
 
-    use FullTextSearchTrait;
+    use SearchableTrait;
+//    use FullTextSearchTrait;
+
+    /**
+     * Searchable rules.
+     *
+     * @var array
+     */
+    protected $searchable = [
+        /**
+         * Columns and their priority in search results.
+         * Columns with higher values are more important.
+         * Columns with equal values have equal importance.
+         *
+         * @var array
+         */
+        'columns' => [
+            'products.name' => 10,
+            'products.reference' => 10,
+            'products.ean13' => 10,
+            'products.description' => 10,
+ //           'posts.title' => 2,
+ //           'posts.body' => 1,
+        ],
+ //       'joins' => [
+ //           'posts' => ['users.id','posts.user_id'],
+ //       ],
+    ];
 
 
     public $sales_equalization = 0;         // Handy property not stored. Takes its value after Customer Order Line sales_equalization flag
@@ -40,14 +70,14 @@ class Product extends Model {
 
     /**
      * The columns of the full text index
-     */
+     * /
     protected $searchable = [
         'name', 
         'reference', 
         'ean13', 
         'description'
     ];
-
+*/
 
     protected $dates = ['deleted_at'];
 
@@ -123,7 +153,7 @@ class Product extends Model {
 
         static::created(function($product)
         {
-            if ( \App\Configuration::get('SKU_AUTOGENERATE') )
+            if ( Configuration::get('SKU_AUTOGENERATE') )
                 if ( !$product->reference )
                     $product->autoSKU();
         });
@@ -160,7 +190,7 @@ class Product extends Model {
 
     public function getDisplayPriceAttribute()
     {
-        $value = \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+        $value = Configuration::get('PRICES_ENTERED_WITH_TAX') ?
                  $this->price_tax_inc :
                  $this->price ;
 
@@ -171,7 +201,7 @@ class Product extends Model {
     {
         $value = $this->quantity_onhand;
 
-        if ( $value > \App\Configuration::get('ABCC_STOCK_THRESHOLD') ) return 'success';
+        if ( $value > Configuration::get('ABCC_STOCK_THRESHOLD') ) return 'success';
 
         if ( $value > 0.0 ) return 'warning';
 
@@ -519,12 +549,12 @@ class Product extends Model {
         $q = Product::select( $columns )
                     ->where('name', 'like', '%' . $query . '%')
                     ->orWhere('reference', 'like', '%' . $query . '%')
-                    ->take( intval( \App\Configuration::get('DEF_ITEMS_PERAJAX') ) )
+                    ->take( intval( Configuration::get('DEF_ITEMS_PERAJAX') ) )
                     ->orderBy('name');
 
         if ($onhand_only) $q = $q->where('quantity_onhand', '>', '0');
 
-         $products = $q->take( \App\Configuration::getInt('DEF_ITEMS_PERAJAX') )->get();
+         $products = $q->take( Configuration::getInt('DEF_ITEMS_PERAJAX') )->get();
 
 
          return json_encode( $products );
@@ -572,6 +602,14 @@ class Product extends Model {
         return $customer->getPrice( $this, $currency );
     }
     
+
+    public function getEcotax()
+    {
+        if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax ) return $this->ecotax->amount;
+
+        return 0.0;
+    }
+
 
     public function getTaxRulesByAddress( \App\Address $address = null )
     {
@@ -665,7 +703,7 @@ class Product extends Model {
     public function scopeIsSaleable($query)
     {
         // Apply filters here
-        if ( \App\Configuration::isTrue('SELL_ONLY_MANUFACTURED') ) 
+        if ( Configuration::isTrue('SELL_ONLY_MANUFACTURED') ) 
             return $query->where('procurement_type', 'manufacture');
 
         return $query;
@@ -685,7 +723,7 @@ class Product extends Model {
     {
         if ( !$apply ) return $query;
 
-        return $query->whereDate('created_at', '>=', \Carbon\Carbon::now()->subDays( \App\Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
+        return $query->whereDate('created_at', '>=', \Carbon\Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
     }
 
     public function scopeManufacturer($query, $manufacturer_id)
@@ -698,7 +736,7 @@ class Product extends Model {
     public function scopeQualifyForCustomer($query, $customer_id, $currency_id) 
     {
         // Filter Products by Customer
-        if ( \App\Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' ) 
+        if ( Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' ) 
         {
             $customer = \App\Customer::with('customergroup')->findorfail($customer_id);
 

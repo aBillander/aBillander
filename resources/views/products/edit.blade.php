@@ -8,6 +8,14 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
+                <a class="btn xbtn-sm btn-lightblue" href="{{ URL::to('products/' . $product->id . '/duplicate') }}" title="{{l('Duplicate', [], 'layouts')}}"><i class="fa fa-copy"></i></a>
+
+                <a class="btn xbtn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                    href="{{ URL::to('products/' . $product->id ) }}" 
+                    data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
+                    data-title="{{ l('Products') }} :: ({{$product->id}}) {{{ $product->name }}}" 
+                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+                
                 <a href="{{ URL::to('products') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Products') }}</a>
             </div>
             <h2><a href="{{ URL::to('products') }}">{{ l('Products') }}</a> <span style="color: #cccccc;">/</span> {{ $product->name }}</h2>

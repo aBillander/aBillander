@@ -60,6 +60,10 @@
 @else
                 <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
 @endif
+
+@if ( $document->edocument_sent_at )
+                <a class="btn btn-xs alert-success" href="#" title="{{l('Email sent:')}} {{ abi_date_short($document->document_date) }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-envelope-o"></i>&nbsp;</a>
+@endif
                 
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>

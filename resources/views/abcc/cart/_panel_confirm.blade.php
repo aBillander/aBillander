@@ -35,7 +35,7 @@
                <div class="panel-footer text-right">
 
 @if( \App\Configuration::isTrue('ABCC_ENABLE_QUOTATIONS') && Auth::user()->enable_quotations != 0 )
-                  <button class="btn btn-warning pull-left confirm-" type="button" data-content="{{l('You are going to Ask for Quotation. Are you sure?', [], 'layouts')}}" data-title="{{ l('Quotation Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" onclick="$('#process_as').val('quotation');">
+                  <button class="btn btn-warning pull-left confirm-" type="button" data-content="{{l('You are going to Ask for Quotation. Are you sure?')}}" data-title="{{ l('Quotation Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" onclick="$('#process_as').val('quotation');">
                      <i class="fa fa-handshake-o"></i>
                      &nbsp; {{ l('Place Quotation') }}
                   </button>
@@ -43,7 +43,7 @@
 
                   <input type="hidden" id="process_as" name="process_as" value="order" />
                   
-                  <button class="btn btn-info confirm-" type="button" data-content="{{l('You are going to Confirm your Order. Are you sure?', [], 'layouts')}}" data-title="{{ l('Order Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" xonclick="this.disabled=true;this.form.submit();">
+                  <button class="btn btn-info confirm-" type="button" data-content="{{l('You are going to Confirm your Order. Are you sure?')}}" data-title="{{ l('Order Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" xonclick="this.disabled=true;this.form.submit();">
                      <i class="fa fa-check-circle"></i>
                      &nbsp; {{ l('Place Order') }}
                   </button>

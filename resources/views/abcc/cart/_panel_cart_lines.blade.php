@@ -17,11 +17,15 @@
                           data-content="{{ l('Change Quantity and press [Enter] or click button on the right.') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                    </a></th>
-               <th class="text-right">{{ l('Customer Price') }}
+               <th class="text-right">
+                  {{ l('Customer Price') }}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                           data-content="{{ l('Prices are exclusive of Tax') }}">
                       <i class="fa fa-question-circle abi-help"></i>
-                   </a></th>
+                   </a>
+
+                  <p class="text-info">{{ l('With Ecotax') }}</p>
+               </th>
                <th class="text-right">{{ l('Total') }}</th>
               <th class="text-right"> </th>
             </tr>
@@ -51,7 +55,12 @@
 @endif
       </td>
 
-      <td>{{ $line->product->name }}</td>
+      <td>{{ $line->product->name }}
+          @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $line->product->ecotax )
+              <br />
+              {{ l('Ecotax: ') }} {{ $line->product->ecotax->name }} ({{ abi_money( $line->product->getEcotax() ) }})
+          @endif
+      </td>
 
       <td style="white-space:nowrap">
 @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
@@ -88,9 +97,13 @@
 
       </td>
 
-      <td class="text-right">{{ $line->as_price('unit_customer_price') }}</td>
+      <td class="text-right">
+          {{ $line->as_price('unit_customer_price') }}
 
-      <td class="text-right">{{ $line->as_priceable($line->quantity * $line->unit_customer_price) }}</td>
+          <p class="text-info">{{ $line->as_priceable($line->unit_customer_price + $line->product->getEcotax()) }}</p>
+      </td>
+
+      <td class="text-right">{{ $line->as_priceable($line->quantity * ($line->unit_customer_price + $line->product->getEcotax())) }}</td>
 
                 <td class="text-right button-pad">
                     <!-- a class="btn btn-sm btn-info" title="XXXXXS" onClick="loadcustomerorderlines();"><i class="fa fa-pencil"></i></a -->

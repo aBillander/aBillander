@@ -45,12 +45,12 @@
                 @if ($order->document_id>0)
                     {{ $order->document_reference }}
                 @else
-                    @if ( $order->notes_from_customer && mb_stripos( $order->notes_from_customer, 'quotation' ) !== false )
-                        <span class="label label-success" title="{{ l('Quotation') }}">{{ l('Quotation', 'layouts') }}</span>
-                    @else
-                        <span class="label label-default" title="{{ l('Draft', 'layouts') }}">{{ l('Draft', 'layouts') }}</span>
-                    @endif
-                @endif</td>
+                    <span class="label label-default" title="{{ l('Draft', 'layouts') }}">{{ l('Draft', 'layouts') }}</span>
+                @endif
+                @if ( $order->notes_from_customer && mb_stripos( $order->notes_from_customer, 'quotation' ) !== false )
+                    <br /><span class="label label-success" title="{{ l('Quotation') }}">{{ l('Quotation', 'layouts') }}</span>
+                @endif
+                </td>
             <td>{{ abi_date_short($order->document_date) }}</td>
             <td>{{ abi_date_short($order->delivery_date_real ?: $order->delivery_date) }}</td>
             <td>

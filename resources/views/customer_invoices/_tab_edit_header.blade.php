@@ -187,6 +187,24 @@
          </div>
 
       </div>
+
+      <div class="row">
+        
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
+            {{ l('Carrier') }}
+            <div class="form-control" id="carrier_id">{{ optional($document->carrier)->name }}</div>
+            {{-- !! Form::select('carrier_id', array('0' => l('-- Please, select --', [], 'layouts')) + ($carrierList = []), null, array('class' => 'form-control', 'id' => 'carrier_id')) !!}
+                        {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !! --}}
+         </div>
+
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('tracking_number') ? 'has-error' : '' }}">
+            {{ l('Tracking Number') }}
+            {!! Form::text('tracking_number', null, array('class' => 'form-control', 'id' => 'tracking_number')) !!}
+            {!! $errors->first('tracking_number', '<span class="help-block">:message</span>') !!}
+         </div>
+
+      </div>
+
       <div class="row">
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes') ? 'has-error' : '' }}" xstyle="margin-top: 20px;">
@@ -212,20 +230,28 @@
                </div><!-- div class="panel-body" -->
 
                <div class="panel-footer text-right">
-                  <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">
-                     <i class="fa fa-floppy-o"></i>
-                     &nbsp; {{l('Save', [], 'layouts')}}
-                  </button>
+
+                  <input type="hidden" id="nextAction" name="nextAction" value="" />
+
 @if ($document->status=='draft' )
 @php
   $hidden = $document->lines->count() == 0 ? 'hidden' : ''; 
 @endphp
-                  <input type="hidden" id="nextAction" name="nextAction" value="" />
-                  <button class="btn btn-info {{ $hidden }} " type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
+                  <button class="btn btn-success {{ $hidden }} " type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
                      <i class="fa fa-hdd-o"></i>
                      &nbsp; {{l('Save & Confirm', [], 'layouts')}}
                   </button>
 @endif
+
+                  <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();" title="{{l('Back to Customer Invoices')}}">
+                     <i class="fa fa-floppy-o"></i>
+                     &nbsp; {{l('Save', [], 'layouts')}}
+                  </button>
+
+                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndContinue');this.form.submit();">
+                     <i class="fa fa-hdd-o"></i>
+                     &nbsp; {{l('Save & Continue', [], 'layouts')}}
+                  </button>
                </div>
 
 <!-- Order header ENDS -->

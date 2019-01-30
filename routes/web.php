@@ -131,6 +131,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
 //        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
 
+        Route::get('products/{id}/duplicate',     'ProductsController@duplicate'   )->name('product.duplicate'  );
+
         Route::post('products/{id}/combine', array('as' => 'products.combine', 'uses'=>'ProductsController@combine'));
         Route::get('products/ajax/name_lookup'  , array('uses' => 'ProductsController@ajaxProductSearch', 
                                                         'as'   => 'products.ajax.nameLookup' ));

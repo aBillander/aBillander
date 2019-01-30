@@ -39,11 +39,11 @@
 @endif
       </th>
       <!-- th>{{ l('Measure Unit') }}</th -->
-      <th>{{ l('Customer Price') }}
+      <th><span class="button-pad">{{ l('Customer Price') }}
            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                   data-content="{{ l('Prices are exclusive of Tax') }}">
               <i class="fa fa-question-circle abi-help"></i>
-           </a></th>
+           </a></span></th>
       <th class="text-right"> </th>
     </tr>
   </thead>
@@ -110,8 +110,7 @@
       <td>{{ $product->as_priceable( 
               $product->getPriceByList( 
                   \Auth::user()->customer->currentpricelist() 
-              )->getPrice()  + 
-              $product->getEcotax()
+              )->getPrice()
             ) }}</td>
 
       <td class="text-right xbutton-pad" style="white-space: nowrap;">

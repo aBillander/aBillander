@@ -41,7 +41,7 @@ class Product extends Model {
             'products.name' => 10,
             'products.reference' => 10,
             'products.ean13' => 10,
-            'products.description' => 10,
+ //           'products.description' => 10,
  //           'posts.title' => 2,
  //           'posts.body' => 1,
         ],
@@ -579,27 +579,98 @@ class Product extends Model {
         return $priceObject;
     }
 
+    public function getPriceWithEcotax()
+    {
+        $price = [ $this->price, $this->price_tax_inc ];        // These prices are in Company Currency
+
+        $priceObject = \App\Price::create( $price, \App\Context::getContext()->company->currency );
+        
+        // Add Ecotax
+        if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        {
+            // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
+//            $ecoprice = \App\Price::create([
+//                        $this->getEcotax(), 
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $price->price_tax_inc
+//                ]);
+
+            $priceObject->add( $this->getEcotax() ); 
+        }
+
+        return $priceObject;
+    }
+
     public function getPriceByList( \App\PriceList $list = null )
     {
         // Return \App\Price Object
-        if ($list)
+        if ($list && ( $price = $list->getPrice( $this ) ))
         {
-            if ( $price = $list->getPrice( $this ) )
-            {
-                // Apply taxes
-                $tax_percent = $this->tax->percent;
-                $price->applyTaxPercent( $tax_percent );
-            }
+            // Apply taxes
+            $tax_percent = $this->tax->percent;
+            $price->applyTaxPercent( $tax_percent );
+        } else {
             
-            return $price;
-        } else
-            return $this->getPrice();
+            $price = $this->getPrice();
+        }
+        
+        // Add Ecotax
+        if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        {
+            // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
+//            $ecoprice = \App\Price::create([
+//                        $this->getEcotax(), 
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $price->price_tax_inc
+//                ]);
+
+            $price->add( $this->getEcotax() ); 
+        }
+
+        return $price;
+    }
+
+    // Deprecated DO NOT USE
+    public function getPriceByListWithEcotax( \App\PriceList $list = null )
+    {
+        // Return \App\Price Object
+        $price = $this->getPriceByList( $list );
+
+        // Add Ecotax
+        if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        {
+            // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
+//            $ecoprice = \App\Price::create([
+//                        $this->getEcotax(), 
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $price->price_tax_inc
+//                ]);
+
+            $price->add( $this->getEcotax() ); 
+        }
+
+        return $price;
     }
 
     public function getPriceByCustomer( \App\Customer $customer, \App\Currency $currency = null )
     {
         // Return \App\Price Object
-        return $customer->getPrice( $this, $currency );
+        $price = $customer->getPrice( $this, $currency );
+
+        // Add Ecotax
+        if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        {
+            // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
+//            $ecoprice = \App\Price::create([
+//                        $this->getEcotax(), 
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $price->price_tax_inc
+//                ]);
+
+            $price->add( $this->getEcotax() ); 
+        }
+
+        return $price;
     }
     
 

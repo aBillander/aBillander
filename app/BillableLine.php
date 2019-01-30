@@ -149,6 +149,7 @@ class BillableLine extends Model
     |--------------------------------------------------------------------------
     */
 
+    // Kind of useless???
     public function getTaxableAmount()
     {
         $amount = $this->quantity*$this->unit_final_price;
@@ -190,7 +191,8 @@ class BillableLine extends Model
         // Reset
         $this->taxes()->delete();
 
-        $base_price = $this->getTaxableAmount();
+        $base_price = $this->quantity*$this->unit_final_price;
+        // $base_price = $this->getTaxableAmount();
         // Rounded $base_price is the same, no matters the value of ROUND_PRICES_WITH_TAX
 
         // Initialize totals

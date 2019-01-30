@@ -248,5 +248,24 @@ class Price {
         $this->price         = $net;
         $this->price_tax_inc = $gross;
     }
+    
+    public function add( $price = null )
+    {
+        if ( $price === null ) return $this;
+
+        if ( $price instanceof Price )
+        {
+            //
+            $p = $price->getPrice();
+        } else {
+            //
+            $p = (float) $price;
+        }
+
+        $this->price         += $p;
+        $this->price_tax_inc += $p * (1.0+$this->tax_percent/100.0);
+
+        return $this;
+    }
 	
 }

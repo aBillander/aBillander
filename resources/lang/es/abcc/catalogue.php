@@ -22,6 +22,7 @@ return [
 	'Reference'     => 'Referencia',
 	'Customer Price'     => 'Precio',
 	'Prices are exclusive of Tax'     => 'El Precio no incluye Impuestos',
+	'Prices are inclusive of Ecotax'  => 'El Precio incluye la Ecotasa',
 	
 	'View Image'     => 'Ver Imagen',
 	'Product Images'     => 'Imágenes de Productos',
@@ -30,6 +31,8 @@ return [
 	'Manufacturer'     => 'Marca',
 	'Stock'     => 'Stock',
 
+	'Ecotax: '     => 'Ecotasa: ',
+	'Without Ecotax'     => 'Sin Ecotasa',
 
 	/*
 	|--------------------------------------------------------------------------

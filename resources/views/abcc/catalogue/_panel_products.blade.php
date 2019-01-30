@@ -39,11 +39,20 @@
 @endif
       </th>
       <!-- th>{{ l('Measure Unit') }}</th -->
-      <th>{{ l('Customer Price') }}
+      <th><span class="button-pad">{{ l('Customer Price') }}
            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                  data-content="{{ l('Prices are exclusive of Tax') }}">
+                  data-content="{{ l('Prices are exclusive of Tax') }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {{ l('Prices are inclusive of Ecotax') }}
+@endif
+          ">
               <i class="fa fa-question-circle abi-help"></i>
-           </a></th>
+           </a></span>
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES'))
+    <br /><span class="button-pad text-muted">
+    {{ l('Without Ecotax') }}</span>
+@endif</th>
       <th class="text-right"> </th>
     </tr>
   </thead>
@@ -109,9 +118,17 @@
       <td>{{ $product->as_priceable( 
               $product->getPriceByList( 
                   \Auth::user()->customer->currentpricelist() 
-              )->getPrice() + 
-              $product->getEcotax()
-            ) }}</td>
+              )->getPrice()
+            ) }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax)
+    <br /><p class="text-muted">
+    {{ $product->as_priceable( 
+              $product->getPriceByList( 
+                  \Auth::user()->customer->currentpricelist() 
+              )->getPrice() - $product->getEcotax()
+            ) }}</p>
+@endif
+      </td>
 
       <td class="text-right xbutton-pad" style="white-space: nowrap;">
 

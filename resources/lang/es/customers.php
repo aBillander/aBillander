@@ -112,7 +112,6 @@ return [
 	'You should set the Main Address for Customer (:id) :name'     => 'Debe indicar la Dirección Principal para el Cliente (:id) :name',
 	'No Payment Month'     => 'Mes de No Pago',
 
-
 	'Orders'     => 'Pedidos',
 	'View Order' => 'Ir al Pedido',
 	'Order #'     => 'Número',
@@ -124,6 +123,21 @@ return [
 	'Products' => 'Productos',
 	'Product' => 'Producto',
 	'Document' => 'Documento',
+
+	'Price Rules' => 'Reglas de Precio',
+	'Category' => 'Categoría',
+	'Discount Percent' => 'Porcentaje de Descuento',
+	'Discount Amount' => 'Cantidad de Descuento',
+	'tax inc.' => 'IVA inc.',
+	'tax exc.' => 'IVA exc.',
+	'Price' => 'Precio',
+	'Currency' => 'Divisa',
+	'From Quantity' => 'Desde Cantidad',
+	'Date from' => 'Fecha desde',
+	'Date to' => 'Fecha hasta',
+	'Create Price Rule' => 'Crear Regla de Precio',
+	'Product Reference' => 'Referencia de Producto',
+	'Search by Product Reference or Name' => 'Busque por Nombre o Referencia',
 
 	'Customer Center Access'     => 'Acceso al Centro de Clientes',
 	'Allow Customer Center access?'     => '¿Permitir acceso al Centro de Clientes?',

@@ -61,7 +61,7 @@ trait BillableDocumentLinesTrait
         $unit_price = $price->getPrice();
 
         // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return null;      // Product not allowed for this Customer
@@ -231,9 +231,14 @@ trait BillableDocumentLinesTrait
         // Product Price
 //        $price = $product->getPrice();
 //        $unit_price = $price->getPrice();
+        
+        if (array_key_exists('quantity', $params)) 
+            $quantity = $params['quantity'];
+        else
+            $quantity = $document_line->quantity;
 
         // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return null;      // Product not allowed for this Customer
@@ -431,7 +436,7 @@ trait BillableDocumentLinesTrait
         $unit_price = $price->getPrice();
 
         // Calculate price per $customer_id now!
-        // $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        // $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
         $customer_price = clone $price;
 
         // Is there a Price for this Customer?
@@ -625,7 +630,7 @@ trait BillableDocumentLinesTrait
         $unit_price = $price->getPrice();
 
         // Calculate price per $customer_id now!
-        // $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        // $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
         $customer_price = clone $price;
 
         // Is there a Price for this Customer?

@@ -83,9 +83,14 @@ class AbccCatalogueController extends Controller
          //                             ->with('category')
          //                             ->with('tax')
 	                                  ->IsSaleable()
+	                                  ->IsAvailable()
 	                                  ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id)
                                       ->IsActive()
                                       ->orderBy('reference', 'asc');
+
+                // abi_toSQL($products);
+
+                                    //  abi_r($products->get());
 
                 $products = $products->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
 

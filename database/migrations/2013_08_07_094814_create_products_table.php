@@ -82,6 +82,9 @@ class CreateProductsTable extends Migration {
 			
 			$table->tinyInteger('stock_control')->default(1);
 			$table->tinyInteger('phantom_assembly')->default(0);
+
+			$table->string('out_of_stock', 32)->nullable(false)->default('default');
+			$table->text('out_of_stock_text')->nullable();
 /* 
 			Phantom Assemblies: - A phantom assembly is a logical (rather than functional) grouping of materials.
 			

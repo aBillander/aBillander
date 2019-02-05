@@ -91,6 +91,12 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('pricerules') }}">
+                                 <i class="fa fa-gavel text-info"></i> 
+                                 {{l('Price Rules', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('shippingmethods') }}">
                                  {{l('Shipping Methods', [], 'layouts')}}
                             </a>

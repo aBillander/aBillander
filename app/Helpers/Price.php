@@ -267,5 +267,74 @@ class Price {
 
         return $this;
     }
+
+
+    /**
+     * @param Collection of \App\PriceRule $rules
+     */
+    public function applyPriceRules( $rules, $quantity = 1 )
+    {
+        if ( !$rules ) return $this;
+
+        $initial_price = clone $this;
+
+        // Apply rules now!
+        foreach ($rules as $rule) {
+            # code...
+            if ($rule->rule_type=='price')
+            {
+                if ($quantity < $rule->from_quantity)
+                    $rule->best_price = $this->getPrice();
+
+                else
+                    $rule->best_price = $rule->price;
+                
+                continue;
+            }
+            if ($rule->discount_type=='percentage')
+            {
+                if ($quantity < $rule->from_quantity)
+                    $rule->best_price = $this->getPrice();
+
+                else
+                    $rule->best_price = $initial_price->getPrice() * (1.0 - $rule->discount_percent/100.0);
+                
+                continue;
+            }
+            if ($rule->discount_type=='amount')
+            {
+                if ($quantity < $rule->from_quantity)
+                    $rule->best_price = $this->getPrice();
+
+                else
+                    ;
+
+                // Not implemented so far
+                // continue;
+            }
+            
+            $rule->best_price = $initial_price->getPrice();
+        }
+
+        // Get minimum price
+        $price_min = $rules->min('best_price');
+
+        // (re)Build Price Object
+        $this->amount = $price_min;
+        // Make sure:
+        $this->price_is_tax_inc = 0;
+
+        if ($this->price_is_tax_inc) {
+            $this->price = null;
+            $this->price_tax_inc = $price_min;
+        } else {
+            $this->price = $price_min;
+            $this->price_tax_inc = null;
+        }
+
+        $this->applyTaxPercent( $this->tax_percent );
+
+        return $this;
+    }
 	
 }

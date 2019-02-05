@@ -84,6 +84,20 @@
 
 
 
+    <div class="form-group {{ $errors->has('ABCC_DEFAULT_PASSWORD') ? 'has-error' : '' }}">
+      <label for="ABCC_DEFAULT_PASSWORD" class="col-lg-4 control-label">{!! l('ABCC_DEFAULT_PASSWORD.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_DEFAULT_PASSWORD" name="ABCC_DEFAULT_PASSWORD" placeholder="" value="{{ old('ABCC_DEFAULT_PASSWORD', $key_group['ABCC_DEFAULT_PASSWORD']) }}" />
+        {{ $errors->first('ABCC_DEFAULT_PASSWORD', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_DEFAULT_PASSWORD.help') !!}</span>
+      </div>
+    </div>
+
 
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ABCC_STOCK_SHOW.name') !!}</label>
@@ -126,21 +140,47 @@
       </div>
     </div>
 
-    <div class="form-group {{ $errors->has('ABCC_DEFAULT_PASSWORD') ? 'has-error' : '' }}">
-      <label for="ABCC_DEFAULT_PASSWORD" class="col-lg-4 control-label">{!! l('ABCC_DEFAULT_PASSWORD.name') !!}</label>
+
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_OUT_OF_STOCK_PRODUCTS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_OUT_OF_STOCK_PRODUCTS" id="ABCC_OUT_OF_STOCK_PRODUCTS_hide" value="hide" @if( old('ABCC_OUT_OF_STOCK_PRODUCTS', $key_group['ABCC_OUT_OF_STOCK_PRODUCTS']) == 'hide' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_OUT_OF_STOCK_PRODUCTS.option.hide') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_OUT_OF_STOCK_PRODUCTS" id="ABCC_OUT_OF_STOCK_PRODUCTS_deny" value="deny" @if( old('ABCC_OUT_OF_STOCK_PRODUCTS', $key_group['ABCC_OUT_OF_STOCK_PRODUCTS']) == 'deny' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_OUT_OF_STOCK_PRODUCTS.option.deny') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_OUT_OF_STOCK_PRODUCTS" id="ABCC_OUT_OF_STOCK_PRODUCTS_allow" value="allow" @if( old('ABCC_OUT_OF_STOCK_PRODUCTS', $key_group['ABCC_OUT_OF_STOCK_PRODUCTS']) == 'allow' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_OUT_OF_STOCK_PRODUCTS.option.allow') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_OUT_OF_STOCK_PRODUCTS.help') !!}</span>
+      </div>
+    </div>
+    
+    <div class="form-group {{ $errors->has('ABCC_OUT_OF_STOCK_TEXT') ? 'has-error' : '' }}">
+      <label for="ABCC_OUT_OF_STOCK_TEXT" class="col-lg-4 control-label">{!! l('ABCC_OUT_OF_STOCK_TEXT.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-6">
-        <input class="form-control" type="text" id="ABCC_DEFAULT_PASSWORD" name="ABCC_DEFAULT_PASSWORD" placeholder="" value="{{ old('ABCC_DEFAULT_PASSWORD', $key_group['ABCC_DEFAULT_PASSWORD']) }}" />
-        {{ $errors->first('ABCC_DEFAULT_PASSWORD', '<span class="help-block">:message</span>') }}
+        <input class="form-control" type="text" id="ABCC_OUT_OF_STOCK_TEXT" name="ABCC_OUT_OF_STOCK_TEXT" placeholder="" value="{{ old('ABCC_OUT_OF_STOCK_TEXT', $key_group['ABCC_OUT_OF_STOCK_TEXT']) }}" />
+        {{ $errors->first('ABCC_OUT_OF_STOCK_TEXT', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-6"> </div>
         </div>
-        <span class="help-block">{!! l('ABCC_DEFAULT_PASSWORD.help') !!}</span>
+        <span class="help-block">{!! l('ABCC_OUT_OF_STOCK_TEXT.help') !!}</span>
       </div>
     </div>
-
-
 
 
     <div class="form-group">

@@ -544,7 +544,7 @@ class Customer extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public function getPrice( \App\Product $product, \App\Currency $currency = null )
+    public function getPrice( \App\Product $product, $quantity = 1, \App\Currency $currency = null )
     {
         // Fall back price (use it if Price for $currency is not set)
         $fallback = null;
@@ -555,14 +555,15 @@ class Customer extends Model {
         if (!$currency)
             $currency = \App\Context::getContext()->currency;
 
-/*
-        // ToDo: Set special prices priorities
-        // First: Product has special price for this Customer?
 
-        // Second: Product has special price for this Customer's Customer Group?
+        // Special prices have more priority
+        $rules = $this->getPriceRules( $product, $currency );
 
-*/
-        // Third: Customer has pricelist?
+        if ( $rules->count() )
+            return $product->getPrice()->applyPriceRules( $rules, $quantity );
+
+
+        // Customer has pricelist?
         if ( $this->pricelist && ($currency->id == $this->pricelist->currency_id) ) {
 
             $price = $this->pricelist->getPrice( $product );
@@ -592,6 +593,47 @@ class Customer extends Model {
 
         return $price;
     }
+
+
+    public function getPriceRules( \App\Product $product, \App\Currency $currency = null )
+    {
+
+        if (!$currency && $this->currency_id)
+            $currency = $this->currency;
+
+        if (!$currency)
+            $currency = \App\Context::getContext()->currency;
+        
+        $rules = \App\PriceRule::where('currency_id', $currency->id)
+                    // Customer range
+                    ->where( function($query) {
+                                $query->where('customer_id', $this->id);
+                                if ($this->customer_group_id)
+                                    $query->orWhere('customer_group_id', $this->customer_group_id);
+                        } )
+                     // Product range
+                    ->where( function($query) use ($product) {
+                                $query->where('product_id', $product->id);
+                                if ($product->category_id)
+                                    $query->orWhere('category_id',  $product->category_id);
+                        } )
+                    // Date range
+                    ->where( function($query){
+                                $now = \Carbon\Carbon::now()->startOfDay(); 
+                                $query->where( function($query) use ($now) {
+                                    $query->where('date_from', null);
+                                    $query->orWhere('date_from', '<=', $now);
+                                } );
+                                $query->where( function($query) use ($now) {
+                                    $query->where('date_to', null);
+                                    $query->orWhere('date_to', '>=', $now);
+                                } );
+                        } )
+                    ->get();
+
+        return $rules;
+    }
+
 
     public function getLastPrice( \App\Product $product = null, \App\Currency $currency = null )
     {

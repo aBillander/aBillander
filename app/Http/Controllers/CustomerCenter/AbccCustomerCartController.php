@@ -146,7 +146,7 @@ class AbccCustomerCartController extends Controller
         // Get Customer Price
         $customer = $cart->customer;
         $currency = $cart->currency;
-        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
@@ -276,7 +276,7 @@ class AbccCustomerCartController extends Controller
         }
 
         // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $customer_price = $product->getPriceByCustomer( $customer, 1, $currency );
 //        $tax_percent = $tax->percent;               // Accessor: $tax->getPercentAttribute()
 //        $price->applyTaxPercent( $tax_percent );
 

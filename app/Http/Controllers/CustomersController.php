@@ -18,6 +18,7 @@ use App\CustomerInvoice;
 use App\CustomerInvoiceLine;
 use App\CustomerShippingSlip;
 use App\CustomerShippingSlipLine;
+use App\PriceRule;
 
 class CustomersController extends Controller {
 
@@ -294,7 +295,8 @@ class CustomersController extends Controller {
         // $customer->update( array_merge($request->all(), ['name_commercial' => $request->input('address.name_commercial')] ) );
         $customer->update( $request->all() );
         if ( !$request->input('address.name_commercial') ) $request->merge( ['address.name_commercial' => $request->input('name_fiscal')] );
-        $data = $request->input('address');
+        // $data = $request->input('address');
+        $data = $request->input('address') + ['country_id' => $address->country_id];     // Gorrino fix: field is disabled in view, so cero value is got in request (although address is not modified)
         $address->update($data);
 
 
@@ -366,6 +368,35 @@ class CustomersController extends Controller {
         //return $items_per_page ;
         
         return view('customers._panel_orders_list', compact('customer_orders', 'items_per_page'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getPriceRules($id, Request $request)
+    {
+        $items_per_page_pricerules = intval($request->input('items_per_page_pricerules', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page_pricerules >= 0) ) 
+            $items_per_page_pricerules = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+
+        $customer_rules = PriceRule::where('customer_id', $id)
+                                ->with('category')
+                                ->with('product')
+                                ->with('combination')
+                                ->with('currency')
+                                ->orderBy('product_id', 'ASC')
+                                ->orderBy('customer_id', 'ASC')
+                                ->orderBy('from_quantity', 'ASC');
+
+        $customer_rules = $customer_rules->paginate( $items_per_page_pricerules );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+
+        $customer_rules->setPath('customerpricerules');
+
+        //return $items_per_page ;
+        
+        return view('customers._panel_pricerules_list', compact('id', 'customer_rules', 'items_per_page_pricerules'));
     }
 
     /**

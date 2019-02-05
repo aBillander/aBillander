@@ -94,6 +94,7 @@ class Product extends Model {
                             'location', 'width', 'height', 'depth', 'weight', 
 
                             'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 
+                            'out_of_stock', 'out_of_stock_text',
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
 
@@ -159,12 +160,17 @@ class Product extends Model {
         });
 
         // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
-        static::deleting(function ($corder)
+        static::deleting(function ($product)
         {
             // before delete() method call this
-            foreach($corder->images as $line) {
+            foreach($product->images as $line) {
                 $line->deleteImage();
                 $line->delete();
+            }
+
+            // Stock Movements
+            foreach($product->stockmovements as $mvt) {
+                $mvt->delete();
             }
         });
 
@@ -327,6 +333,14 @@ class Product extends Model {
         }
 
         return $count;
+    }
+    
+
+    public function getOutOfStock()
+    { 
+        if ( $this->out_of_stock == 'default' ) return Configuration::get('ABCC_OUT_OF_STOCK_PRODUCTS');
+
+        return $this->out_of_stock;
     }
     
 
@@ -652,10 +666,10 @@ class Product extends Model {
         return $price;
     }
 
-    public function getPriceByCustomer( \App\Customer $customer, \App\Currency $currency = null )
+    public function getPriceByCustomer( \App\Customer $customer, $quantity = 1, \App\Currency $currency = null )
     {
         // Return \App\Price Object
-        $price = $customer->getPrice( $this, $currency );
+        $price = $customer->getPrice( $this, $quantity, $currency );
 
         // Add Ecotax
         if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
@@ -845,5 +859,35 @@ class Product extends Model {
         return $query->whereDoesntHave('pricelists', function($query) use ($price_list_id) {
                 $query->where('price_lists.id', '=', $price_list_id);
         });
+    }
+
+
+
+    public function scopeIsAvailable($query) 
+    {
+        // Products with stock
+        $query->where('quantity_onhand', '>', 0);
+
+        $query->orWhere(function ($query) {
+                if ( Configuration::get('ABCC_OUT_OF_STOCK_PRODUCTS') != 'hide' )
+                {
+                    $query->where(function ($query) {
+                            $query->where('quantity_onhand', '<=', 0);
+                            $query->where('out_of_stock', '=', 'default');
+                    });
+                }
+        });
+
+        // return $query;
+
+        $query->orWhere(function ($query) {
+                    $query->where(function ($query) {
+                            $query->where('quantity_onhand', '<=', 0);
+                            $query->where('out_of_stock', '<>', 'default');
+                            $query->where('out_of_stock', '<>', 'hide');
+                    });
+        });
+
+        return $query;
     }
 }

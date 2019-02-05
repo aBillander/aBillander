@@ -8,7 +8,7 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
-                <a class="btn xbtn-sm btn-lightblue" href="{{ URL::to('products/' . $product->id . '/duplicate') }}" title="{{l('Duplicate', [], 'layouts')}}"><i class="fa fa-copy"></i></a>
+                <a class="btn xbtn-sm btn-success" href="{{ URL::to('products/' . $product->id . '/duplicate') }}" title="{{l('Duplicate', [], 'layouts')}}"><i class="fa fa-copy"></i></a>
 
                 <a class="btn xbtn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('products/' . $product->id ) }}" 

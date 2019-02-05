@@ -45,8 +45,40 @@
 
 </div>
 
-        <div class="row">
+@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+
+@php
+    $out_of_stockList = [
+          'hide'    => l('Hide Product'),
+          'deny'    => l('Deny Orders'),
+          'allow'   => l('Allow Orders'),
+          'default' => l('Default Configuration'),
+    ];
+@endphp
+
+        <div class="row" style="margin-bottom: 15px;">
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                 </div>
         </div>
+
+        <div class="row">
+                 <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('out_of_stock') ? 'has-error' : '' }}">
+                    {!! Form::label('out_of_stock', l('When out of stock'), ['class' => 'control-label']) !!}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('Applies to Customer Center only.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                    {!! Form::select('out_of_stock', $out_of_stockList, null, array('class' => 'form-control', 'id' => 'out_of_stock')) !!}
+                    {!! $errors->first('out_of_stock', '<span class="help-block">:message</span>') !!}
+                 </div>
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('out_of_stock_text') ? 'has-error' : '' }}">
+                     {!! Form::label('out_of_stock_text', l('Display text when out of stock'), ['class' => 'control-label']) !!}
+                     {!! Form::textarea('out_of_stock_text', null, array('class' => 'form-control', 'id' => 'out_of_stock_text', 'rows' => '3')) !!}
+                     {!! $errors->first('out_of_stock_text', '<span class="help-block">:message</span>') !!}
+                  </div>
+        </div>
+
+@endif
 
         <div class="row">
         </div>

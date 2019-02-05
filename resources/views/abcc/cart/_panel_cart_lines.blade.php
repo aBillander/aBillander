@@ -84,7 +84,7 @@
         <td style="width:1px; white-space: nowrap;vertical-align: top;">
 
             <div xclass="form-group">
-              <div class="input-group" style="width: 72px;">
+              <div class="input-group" style="width: 81px;">
 
                 <input class="input-line-quantity form-control input-sm col-xs-2" data-id="{{$line->id}}" data-quantity="{{ (int) $line->quantity }}" type="text" size="5" maxlength="5" style="xwidth: auto;" value="{{ (int) $line->quantity }}" onclick="this.select()" >
 

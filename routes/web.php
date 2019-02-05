@@ -184,7 +184,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('customers', 'CustomersController');
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup'));
-        Route::get('customers/{id}/getorders',             'CustomersController@getOrders' )->name('customer.getorders');
+        Route::get('customers/{id}/getorders',             'CustomersController@getOrders'    )->name('customer.getorders');
+        Route::get('customers/{id}/getpricerules',         'CustomersController@getPriceRules')->name('customer.getpricerules');
         Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
 
         Route::get('customers/{id}/product/{productid}/consumption', 'CustomersController@productConsumption' )->name('customer.product.consumption');
@@ -204,6 +205,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('shippingmethods', 'ShippingMethodsController');
 
         Route::resource('customergroups', 'CustomerGroupsController');
+
+        Route::resource('pricerules', 'PriceRulesController');
 
         Route::resource('taxes',          'TaxesController');
         Route::resource('taxes.taxrules', 'TaxRulesController');

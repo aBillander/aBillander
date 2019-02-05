@@ -76,6 +76,7 @@ return [
 	'Customers'     => 'Clientes',
 	'Carriers'     => 'Transportistas',
 	'Price Lists'     => 'Tarifas',
+	'Price Rules'     => 'Reglas de Precio',
 	'Sales Representatives'     => 'Agentes',
 	'Warehouses'     => 'Almacenes',
 	'Product Options'     => 'Opciones de Productos',
@@ -255,6 +256,7 @@ return [
 
 	'-- Please, select --'     => '-- Seleccione --',
 	'-- Click to Select --'     => '-- Haga click para Seleccionar --',
+	'-- All --'     => '-- Todos --',
 	'All'     => 'Todos',
 	'None'     => 'Ninguno',
 	'Loading...'     => 'Cargando...',

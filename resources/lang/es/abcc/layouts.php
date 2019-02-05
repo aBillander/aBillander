@@ -113,6 +113,9 @@ return [
 	*/
 
 	'Add to Cart'     => 'Añadir al Carrito',
+	'More Info'     => 'Más Info',
+	'Click for more Information'     => 'Clic para más Información',
+	'Add to Cart anyway'     => 'Añadir al Pedido de todas formas',
 /*
 	'ID'      => 'ID',
 	'Active'  => 'Activo',

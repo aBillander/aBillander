@@ -93,9 +93,9 @@
 
    </div><!-- div class="table-responsive" ENDS -->
 
-<div class="pagination_orders">
+<span class="pagination_orders">
 {{ $customer_orders->appends( Request::all() )->render() }}
-</div>
+</span>
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $customer_orders->total() ], 'layouts')}} </span></li></ul>
 <ul class="pagination" style="float:right;"><li xclass="active" style="float:right;"><span style="color:#333333;border-color:#ffffff"> <div class="input-group"><span class="input-group-addon" style="border: 0;background-color: #ffffff" title="{{l('Items per page', 'layouts')}}">{{l('Per page', 'layouts')}}</span><input id="items_per_page" name="items_per_page" class="form-control input-sm items_per_page" style="width: 50px !important;" type="text" value="{{ $items_per_page }}" onclick="this.select()">
     <span class="input-group-btn">

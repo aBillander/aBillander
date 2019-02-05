@@ -108,8 +108,10 @@
       </td>
 
       <td>{{ $product->as_priceable( 
-              $product->getPriceByList( 
-                  \Auth::user()->customer->currentpricelist() 
+              $product->getPriceByCustomer( 
+                  \Auth::user()->customer,
+                  1,
+                  \Auth::user()->customer->currency
               )->getPrice()
             ) }}</td>
 

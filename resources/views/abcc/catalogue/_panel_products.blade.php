@@ -58,6 +58,7 @@
   </thead>
   <tbody>
   @foreach ($products as $product)
+  
     <tr>
       <!-- td>{{ $product->id }}</td -->
       <td title="{{ $product->id }}">@if ($product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
@@ -116,15 +117,19 @@
 @endif
       </td>
       <td>{{ $product->as_priceable( 
-              $product->getPriceByList( 
-                  \Auth::user()->customer->currentpricelist() 
+              $product->getPriceByCustomer( 
+                  \Auth::user()->customer,
+                  1,
+                  \Auth::user()->customer->currency
               )->getPrice()
             ) }}
 @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax)
     <br /><p class="text-muted">
     {{ $product->as_priceable( 
-              $product->getPriceByList( 
-                  \Auth::user()->customer->currentpricelist() 
+              $product->getPriceByCustomer( 
+                  \Auth::user()->customer,
+                  1,
+                  \Auth::user()->customer->currency
               )->getPrice() - $product->getEcotax()
             ) }}</p>
 @endif
@@ -161,8 +166,7 @@ https://stackoverflow.com/questions/25424163/bootstrap-button-dropdown-with-cust
 https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-group-with-an-html-form
 --}}
 
-            <!-- a class="btn btn-sm btn-info" href="{ { route('abcc.addToCart', ['id' => $product->id]) } }" title="{{l('Add to Cart', 'abcc/layouts')}}"><i class="fa fa-cart-plus"></i></a -->
-
+@if ($product->quantity_onhand > 0)
             <div xclass="form-group">
               <div class="input-group" style="width: 72px;">
 
@@ -176,7 +180,16 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 
               </div>
             </div>
-
+@else
+            <a class="btn btn-sm btn-warning show-out-of-stock"  data-html="false" data-toggle="modal" 
+                href=""  
+                data-content="{{$product->out_of_stock_text}}" 
+                data-title="({{ $product->id }}) [{{$product->reference}}] - {{ $product->name }}" 
+                data-product_id="{{$product->id}}" 
+                data-orders="{{ $product->getOutOfStock() }}" 
+                title="{{l('Click for more Information', 'abcc/layouts')}}" 
+                onClick="return false;"><i class="fa fa-exclamation-triangle"></i> {{l('More Info', 'abcc/layouts')}}</a>
+@endif
 
       </td>
     </tr>
@@ -203,6 +216,8 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 
 
 @include('abcc.catalogue._modal_view_product')
+
+@include('abcc.catalogue._modal_out_of_stock')
 
 
 

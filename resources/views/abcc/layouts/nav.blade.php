@@ -44,6 +44,10 @@
 
                 @if( Auth::guard('customer')->check() )
 
+                <li class="dropdown">
+                    <a href="{{ route('abcc.customer.pricerules') }}" class="dropdown-toggle"><i class="fa fa-thumbs-o-up"></i> {{l('Price Rules', [], 'abcc/layouts')}} </a>
+                </li>
+
 @if( \App\Configuration::isTrue('ABCC_ENABLE_NEW_PRODUCTS') )
                 <li class="dropdown">
                     <a href="{{ route('abcc.catalogue.newproducts') }}" class="dropdown-toggle"><i class="fa fa-bullhorn"></i> {{l('New Products', [], 'abcc/layouts')}} </a>

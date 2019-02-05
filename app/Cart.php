@@ -173,14 +173,14 @@ class Cart extends Model
         // Is there a Price for this Customer?
         if (!$product) return false;    // redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no se encontró.');
 
-        $quantity > 0 ?: 1.0;
+        $quantity = ($quantity > 0.0) ? $quantity : 1.0;
 
         $cart =  \App\Context::getContext()->cart;
 
         // Get Customer Price
         $customer = $cart->customer;
         $currency = $cart->currency;
-        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
@@ -217,7 +217,7 @@ class Cart extends Model
         // Get Customer Price
         $customer = $cart->customer;
         $currency = $cart->currency;
-        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer

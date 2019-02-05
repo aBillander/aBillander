@@ -254,7 +254,7 @@ class BillableController extends Controller
         }
 
         // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $customer_price = $product->getPriceByCustomer( $customer, 1, $currency );
 //        $tax_percent = $tax->percent;               // Accessor: $tax->getPercentAttribute()
 //        $price->applyTaxPercent( $tax_percent );
 

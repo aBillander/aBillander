@@ -141,12 +141,12 @@ class AbccCustomerCartController extends Controller
         if (!$product) redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no se encontró.');
 
         $quantity = floatval( $request->input('quantity', 1.0) );
-        $quantity > 0 ?: 1.0;
+        $quantity = ($quantity > 0.0) ? $quantity : 1.0;
 
         // Get Customer Price
         $customer = $cart->customer;
         $currency = $cart->currency;
-        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $cart->currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer

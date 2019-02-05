@@ -678,10 +678,12 @@ LIMIT 1
             return '';
         }
 
+        $quantity = $request->input('product_id', 1.0);
+
         $tax = $product->tax;
 
         // Calculate price per $customer_id now!
-        $product->customer_price = $product->getPriceByCustomer( $customer, $currency );
+        $product->customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
         $tax_percent = $tax->percent;
         $product->customer_price->applyTaxPercent( $tax_percent );
 //        if ($customer->sales_equalization) $tax_percent += $tax->extra_percent;

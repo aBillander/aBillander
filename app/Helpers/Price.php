@@ -310,9 +310,10 @@ class Price {
                     ;
 
                 // Not implemented so far
-                // continue;
+                continue;
             }
             
+            // Just in case...
             $rule->best_price = $initial_price->getPrice();
         }
 

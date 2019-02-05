@@ -25,6 +25,7 @@ return [
 	|
 	*/
 
+	'Price Rules' => 'Precios Especiales',
 	'New Products' => 'Novedades',		// New arrivals -> Novedades
 	'Shopping Cart'     => 'Mi Pedido',
 	'Catalogue'     => 'Catálogo',

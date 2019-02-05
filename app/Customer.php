@@ -635,6 +635,49 @@ class Customer extends Model {
     }
 
 
+    public function getQuantityPriceRules( \App\Currency $currency = null )
+    {
+
+        if (!$currency && $this->currency_id)
+            $currency = $this->currency;
+
+        if (!$currency)
+            $currency = \App\Context::getContext()->currency;
+        
+        $rules = \App\PriceRule::where('currency_id', $currency->id)
+                    // Customer range
+                    ->where( function($query) {
+                                $query->where('customer_id', $this->id);
+                                if ($this->customer_group_id)
+                                    $query->orWhere('customer_group_id', $this->customer_group_id);
+                        } )
+                    // Product range
+                    // All Products
+//                    ->where( function($query) use ($product) {
+//                                $query->where('product_id', $product->id);
+//                                if ($product->category_id)
+//                                    $query->orWhere('category_id',  $product->category_id);
+//                        } )
+                    // Quantity range
+                    ->where( 'from_quantity', '>', 1 )
+                    // Date range
+                    ->where( function($query){
+                                $now = \Carbon\Carbon::now()->startOfDay(); 
+                                $query->where( function($query) use ($now) {
+                                    $query->where('date_from', null);
+                                    $query->orWhere('date_from', '<=', $now);
+                                } );
+                                $query->where( function($query) use ($now) {
+                                    $query->where('date_to', null);
+                                    $query->orWhere('date_to', '>=', $now);
+                                } );
+                        } )
+                    ->get();
+
+        return $rules;
+    }
+
+
     public function getLastPrice( \App\Product $product = null, \App\Currency $currency = null )
     {
         // 

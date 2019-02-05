@@ -127,6 +127,8 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::resource('/addresses',  'AbccCustomerAddressesController')->names('abcc.customer.addresses');
         Route::post('/addresses/default',  'AbccCustomerAddressesController@updateDefaultAddresses')->name('abcc.customer.addresses.default');
 
+        Route::get('/customer/pricerules', 'AbccCustomerController@getQuantityPriceRules')->name('abcc.customer.pricerules');
+
         // Route::resource('customers.addresses', 'CustomerAddressesController');
 
     });

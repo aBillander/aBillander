@@ -736,7 +736,7 @@ class CustomerInvoicesController extends BillableController
         $tax = $product->tax;
 
         // Calculate price per $customer_id now!
-        $price = $product->getPriceByCustomer( $customer, $currency );
+        $price = $product->getPriceByCustomer( $customer, 1, $currency );
         $tax_percent = $tax->getFirstRule()->percent;
         $price->applyTaxPercent( $tax_percent );
 

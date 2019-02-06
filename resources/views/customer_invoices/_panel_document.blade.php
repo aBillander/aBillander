@@ -4,7 +4,7 @@
 <div class="panel with-nav-tabs panel-info" id="panel_update_order">
 
    <div class="panel-heading">
-      <!-- h3 class="panel-title collapsed" data-toggle="collapse" data-target="#header_data">{{ l('Header Data') }} :: <span class="label label-warning" title="{{ l('Order Date') }}">{{ $document->document_date_form }}</span> - <span class="label label-info" title="{{ l('Delivery Date') }}">{{ $document->delivery_date_form ?? ' -- / -- / -- '}}</span></h3 -->
+      <!-- h3 class="panel-title collapsed" data-toggle="collapse" data-target="#header_data">{{ l('Header Data') }} :: <span class="label label-warning" title="{ { l ('O rder Date') } }">{{ $document->document_date_form }}</span> - <span class="label label-info" title="{{ l('Delivery Date') }}">{{ $document->delivery_date_form ?? ' -- / -- / -- '}}</span></h3 -->
 
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab1default" data-toggle="tab">{{ l('Header Data') }}</a></li>

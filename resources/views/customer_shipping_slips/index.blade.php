@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Shipping Slips') }} @parent @stop
+@section('title') {{ l('Documents') }} @parent @stop
 
 
 @section('content')
@@ -14,7 +14,7 @@
 
     </div>
     <h2>
-        {{ l('Customer Shipping Slips') }}
+        {{ l('Documents') }}
     </h2>        
 </div>
 
@@ -26,14 +26,15 @@
 <table id="documents" class="table table-hover">
     <thead>
         <tr>
-            <th class="text-left">{{ l('Order #') }}</th>
+            <th class="text-left">{{ l('ID', 'layouts') }}</th>
+            <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
-            <th class="text-center">{{ l('Notes') }}</th>
+            <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
     </thead>
@@ -44,10 +45,27 @@
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
                 @else
-                <a class="btn btn-xs btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-thumbs-o-up"></i>
+                <a class="btn btn-xs btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
                 <span xclass="label label-default">{{ l('Draft') }}</span>
                 </a>
                 @endif</td>
+            <td class="text-center">
+
+@if ( $document->status == 'closed' )
+                <a class="btn btn-xs alert-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
+@endif
+
+@if ($document->onhold>0)
+                <a class="btn btn-xs btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
+@else
+                <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
+@endif
+
+@if ( $document->edocument_sent_at )
+                <a class="btn btn-xs alert-success" href="#" title="{{l('Email sent:')}} {{ abi_date_short($document->document_date) }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-envelope-o"></i>&nbsp;</a>
+@endif
+                
+            </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
             <td><a class="" href="{{ URL::to('customers/' .$document->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
@@ -83,26 +101,34 @@
             </td>
             <td class="text-right">
                 <!--
-                <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerorders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
-                <a class="btn btn-sm btn-success" href="{{ URL::to('customerorders/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
+                <a class="btn btn-sm btn-blue"    href="{{ URL::to('customeror ders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
+                <a class="btn btn-sm btn-success" href="{ { URL::to('customer orders/' . $document->id) } }" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
                 -->
 @if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0)
 
+                <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy', 'layouts')}}"><i class="fa fa-copy"></i></a>
+
                 <a class="btn btn-sm btn-info" href="{{ URL::to($model_path.'/' . $document->id . '/invoice/pdf') }}" title="{{l('PDF Invoice', [], 'layouts')}}"><i class="fa fa-money"></i></a>
 
-                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('customerorders/' . $document->id . '/shippingslip') }}" title="{{l('Customer Shipping Slip', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
+                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('customer orders/' . $document->id . '/shippingslip') }}" title="{{l('Document', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
 
                 <a class="btn btn-sm btn-lightblue xbtn-info" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
 @endif
 
-                <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy Order')}}"><i class="fa fa-copy"></i></a>
+@if ($document->document_id>0)
+                <a class="btn btn-sm btn-lightblue"    href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send by eMail', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
+
+                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+@endif
+
+                <!-- a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a -->
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 @if( $document->deletable )
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to($model_path.'/' . $document->id ) }}" 
                     data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Customer Shipping Slips') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
+                    data-title="{{ l('Documents') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @endif
             </td>

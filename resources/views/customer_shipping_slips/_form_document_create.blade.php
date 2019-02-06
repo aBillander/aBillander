@@ -19,7 +19,7 @@
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
-            {{ l('Order Sequence') }}
+            {{ l('Sequence') }}
             {!! Form::select('sequence_id', $sequenceList, old('sequence_id'), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
             {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
          </div>
@@ -30,17 +30,11 @@
             {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
          </div>
 
-         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sales_rep_id') ? 'has-error' : '' }}">
-            {{ l('Sales Representative') }}
-            {!! Form::select('sales_rep_id', array('0' => l('-- Please, select --', [], 'layouts')) + $salesrepList, old('sales_rep_id'), array('class' => 'form-control', 'id' => 'sales_rep_id')) !!}
-            {!! $errors->first('sales_rep_id', '<span class="help-block">:message</span>') !!}
-         </div>
-
       </div>
       <div class="row">
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('document_date') ? 'has-error' : '' }}">
-               {{ l('Order Date') }}
+               {{ l('Document Date') }}
                {!! Form::text('document_date_form', old('document_date_form'), array('class' => 'form-control', 'id' => 'document_date_form', 'autocomplete' => 'off')) !!}
                {!! $errors->first('document_date', '<span class="help-block">:message</span>') !!}
          </div>
@@ -84,12 +78,18 @@
 
          </div>
 
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sales_rep_id') ? 'has-error' : '' }}">
+            {{ l('Sales Representative') }}
+            {!! Form::select('sales_rep_id', array('0' => l('-- Please, select --', [], 'layouts')) + $salesrepList, old('sales_rep_id'), array('class' => 'form-control', 'id' => 'sales_rep_id')) !!}
+            {!! $errors->first('sales_rep_id', '<span class="help-block">:message</span>') !!}
+         </div>
+{{--
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('down_payment') ? 'has-error' : '' }}">
             {{ l('Down Payment') }}
             {!! Form::text('down_payment', old('down_payment'), array('class' => 'form-control', 'id' => 'down_payment')) !!}
             {!! $errors->first('down_payment', '<span class="help-block">:message</span>') !!}
          </div>
-
+--}}
       </div>
       <div class="row">
 
@@ -137,9 +137,14 @@
                </div><!-- div class="panel-body" -->
 
                <div class="panel-footer text-right">
-                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
-                     <i class="fa fa-hdd-o"></i>
+                  <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">
+                     <i class="fa fa-floppy-o"></i>
                      &nbsp; {{l('Save', [], 'layouts')}}
+                  </button>
+                  <input type="hidden" id="nextAction" name="nextAction" value="" />
+                  <button class="btn btn-info hidden" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
+                     <i class="fa fa-hdd-o"></i>
+                     &nbsp; {{l('Save & Confirm', [], 'layouts')}}
                   </button>
                </div>
 

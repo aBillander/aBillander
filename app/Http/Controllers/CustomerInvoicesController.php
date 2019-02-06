@@ -47,7 +47,7 @@ class CustomerInvoicesController extends BillableController
                             ->orderBy('document_date', 'desc')
 							->orderBy('id', 'desc');        // ->get();
 
-        $documents = $documents->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $documents->setPath($this->model_path);
 
@@ -68,6 +68,8 @@ class CustomerInvoicesController extends BillableController
         // Some checks to start with:
 
         $sequenceList = $this->document->sequenceList();
+
+        $templateList = $this->document->templateList();
         
         if ( !(count($sequenceList)>0) )
             return redirect($this->model_path)
@@ -79,7 +81,7 @@ class CustomerInvoicesController extends BillableController
                 ->with('error', l('There is not any Payment Method &#58&#58 You must create one first', [], 'layouts'));
 
 
-        return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList'));
+        return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList', 'templateList'));
     }
 
     /**
@@ -103,7 +105,7 @@ class CustomerInvoicesController extends BillableController
 
 		// Do the Mambo!!!
         try {
-			$customer = \App\Customer::with('addresses')->findOrFail( $customer_id );
+			$customer = Customer::with('addresses')->findOrFail( $customer_id );
 
         } catch(ModelNotFoundException $e) {
 			// No Customer available, ask for one
@@ -137,7 +139,7 @@ class CustomerInvoicesController extends BillableController
 
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
 
-        				'sequence_id'		   => $request->input('sequence_id') ?? Configuration::getInt('DEF_CUSTOMER_INVOICE_SEQUENCE'),
+        				'sequence_id'		   => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
                         'created_via'          => 'manual',
                         'status'               =>  'draft',
@@ -420,7 +422,9 @@ class CustomerInvoicesController extends BillableController
 
         $sequenceList = $this->document->sequenceList();
 
-	    $customer = \App\Customer::find( $document->customer_id );
+        $templateList = $this->document->templateList();
+
+	    $customer = Customer::find( $document->customer_id );
 
 		$addressBook       = $customer->addresses;
 
@@ -437,7 +441,7 @@ class CustomerInvoicesController extends BillableController
         // Dates (cuen)
         $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
 
-		return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList'));
+		return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList'));
 	}
 
 	/**
@@ -556,7 +560,7 @@ class CustomerInvoicesController extends BillableController
 	{
 		$this->document->findOrFail($id)->delete();
 
-        return redirect('customerinvoices')
+        return redirect($this->model_path)
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 
@@ -820,7 +824,7 @@ class CustomerInvoicesController extends BillableController
         $tax = \App\Tax::find($product->tax_id);
 
         // Calculate price per $customer_id now!
-        $amount_is_tax_inc = \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
+        $amount_is_tax_inc = Configuration::get('PRICES_ENTERED_WITH_TAX');
         $amount = $amount_is_tax_inc ? $product->price_tax_inc : $product->price;
         $price = new \App\Price( $amount, $amount_is_tax_inc, $currency );
         $tax_percent = $tax->getFirstRule()->percent;

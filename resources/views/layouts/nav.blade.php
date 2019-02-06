@@ -60,15 +60,13 @@
                         <li class="divider"></li>
 @if ( \App\Configuration::isTrue('DEVELOPER_MODE') )
                          <li>
-                            <a href="{{ URL::to('customershippingslips') }}"> 
-                                 <i class="fa fa-exclamation-triangle btn-xs btn-danger"></i> 
+                            <a href="{{ URL::to('customershippingslips') }}">
                                  {{l('Shipping Slips', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('customerinvoices') }}">
-                                 <i class="fa fa-exclamation-triangle btn-xs btn-danger"></i> 
                                  {{l('Customer Invoices', [], 'layouts')}}
                             </a>
                         </li>

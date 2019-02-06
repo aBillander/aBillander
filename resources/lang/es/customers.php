@@ -165,4 +165,6 @@ return [
 	''     => '',
 	''     => '',
 
+	'Product consumption' => 'Consumo del Producto',
+	'Customer Final Price'     => 'Precio Final',
 ];

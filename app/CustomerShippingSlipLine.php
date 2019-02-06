@@ -2,8 +2,6 @@
 
 namespace App;
 
-use \App\CustomerShippingSlipLineTax;
-
 class CustomerShippingSlipLine extends BillableLine
 {
 

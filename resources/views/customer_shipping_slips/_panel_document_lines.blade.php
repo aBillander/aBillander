@@ -32,7 +32,7 @@
                {{-- quantity * (price - discount) Con tax o no depende de la configuración de meter precios con impuesto incluido --}}
                <!-- th class="text-right" xwidth="115">{{l('Tax')}}</th -->
 
-               <!-- th class="text-right">{{l('Line Total')}}</th --> {{-- amount * tax --}}
+               <!-- th class="text-right">{ {l ('Line Total')} }</th --> {{-- amount * tax --}}
 
                <th class="text-left" style="width:1px; white-space: nowrap;"></th>
                <th class="text-left" xwidth="115">{{l('Notes', 'layouts')}}</th>
@@ -95,13 +95,12 @@
                 </td>
                 <td class="text-center">
                 @if ($line->notes)
-                 {!! $line->notes !!}
-                 <!--a href="javascript:void(0);">
+                 <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
                             data-content="{{ $line->notes }}">
-                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                        <i class="fa fa-paperclip"></i> {{-- l('View', [], 'layouts') --}}
                     </button>
-                 </a -->
+                 </a>
                 @endif</td>
                 <td class="text-right">
                       @if ( $document->editable )
@@ -116,6 +115,12 @@
 
                       @else
                       
+                      @endif
+                    
+                      @if ( $line->product_id )
+
+                    <a class="btn btn-sm btn-blue show-customer-consumption" data-id="{{$line->product_id}}" title="{{l('Show Customer consumption')}}" onClick="return false;"><i class="fa fa-dropbox"></i></a>
+
                       @endif
 
                 </td>

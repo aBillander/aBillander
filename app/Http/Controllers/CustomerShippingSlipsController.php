@@ -2,24 +2,28 @@
 
 namespace App\Http\Controllers;
 
+// use App\Http\Requests;
+
 use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\File;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Customer;
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
+use App\CustomerShippingSlip as Document;
+use App\CustomerShippingSlipLine as DocumentLine;
 
 use App\Configuration;
 use App\Sequence;
 
+use App\Events\CustomerShippingSlipConfirmed;
+
 class CustomerShippingSlipsController extends BillableController
 {
 
-   public function __construct(Customer $customer, CustomerShippingSlip $document, CustomerShippingSlipLine $document_line)
+   public function __construct(Customer $customer, Document $document, DocumentLine $document_line)
    {
         parent::__construct();
 
-        $this->model_class = CustomerShippingSlip::class;
+        $this->model_class = Document::class;
 
         $this->customer = $customer;
         $this->document = $document;
@@ -38,36 +42,15 @@ class CustomerShippingSlipsController extends BillableController
 
         $documents = $this->document
                             ->with('customer')
-                            ->with('currency')
-                            ->with('paymentmethod')
+//                            ->with('currency')
+//                            ->with('paymentmethod')
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 
-        $documents = $documents->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $documents->setPath($this->model_path);
 
-        // $sequenceList = $this->document->sequenceList();
-
-        // abi_r($sequenceList, true);
-
-        // (new CustomerShippingSlip())->getVars();
-
-/* * /
-        abi_r($this->getClass());
-        abi_r($this->getClassName());
-        abi_r($this->getClassSnakeCase());
-        abi_r($this->getClassLastSegment());
-        abi_r($this->getParentClass());
-        abi_r($this->getParentClassName());
-        abi_r($this->getParentClassSnakeCase());
-        abi_r($this->getParentClassLowerCase());
-        abi_r($this->getParentModelSnakeCase());
-        abi_r($this->getParentModelLowerCase(), true);
-
-
-
-/ * */        
         return view($this->view_path.'.index', $this->modelVars() + compact('documents'));
     }
 
@@ -80,19 +63,19 @@ class CustomerShippingSlipsController extends BillableController
     {
         $model_path = $this->model_path;
         $view_path = $this->view_path;
-        $model_snake_case = $this->model_snake_case;
+//        $model_snake_case = $this->model_snake_case;
 
         // Some checks to start with:
 
         $sequenceList = $this->document->sequenceList();
 
-        // abi_r(!(count($sequenceList)>0), true);
+        $templateList = $this->document->templateList();
 
         if ( !(count($sequenceList)>0) )
             return redirect($this->model_path)
                 ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
         
-        return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList'));
+        return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList', 'templateList'));
     
     }
 
@@ -106,16 +89,6 @@ class CustomerShippingSlipsController extends BillableController
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
-        /*  
-                Crear Pedido desde la ficha del Cliente  =>  ya conozco el customer_id
-
-                ruta:  customers/{id}/createorder
-
-                esta ruta la ejecuta:  CustomerShippingSlipsController@createWithCustomer
-                enviando un objeto CustomerShippingSlip "vacío"
-
-                y vuelve a /customershippingslips
-        */
         // Some checks to start with:
 
         $sequenceList = $this->document->sequenceList();
@@ -123,6 +96,17 @@ class CustomerShippingSlipsController extends BillableController
         if ( !count($sequenceList) )
             return redirect($this->model_path)
                 ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
+
+
+        // Do the Mambo!!!
+        try {
+            $customer = Customer::with('addresses')->findOrFail( $customer_id );
+
+        } catch(ModelNotFoundException $e) {
+            // No Customer available, ask for one
+            return redirect()->back()
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $customer_id], 'layouts'));
+        }
         
         return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList', 'customer_id'));
     }
@@ -146,10 +130,12 @@ class CustomerShippingSlipsController extends BillableController
         $this->validate($request, $rules);
 
         // Extra data
-        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
-        $doc_id = $seq->getNextDocumentId();
+//        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
+//        $doc_id = $seq->getNextDocumentId();
 
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+
+                        'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
                         'created_via'          => 'manual',
                         'status'               =>  'draft',
@@ -159,6 +145,22 @@ class CustomerShippingSlipsController extends BillableController
         $request->merge( $extradata );
 
         $document = $this->document->create($request->all());
+
+        // Move on
+        if ($request->has('nextAction'))
+        {
+            switch ( $request->input('nextAction') ) {
+                case 'saveAndConfirm':
+                    # code...
+                    $document->confirm();
+
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
 
         // Maybe...
 //        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
@@ -177,7 +179,7 @@ class CustomerShippingSlipsController extends BillableController
      */
     public function show($id)
     {
-        return $this->edit( $id );
+        return redirect($this->model_path.'/'.$id.'/edit');
     }
 
     /**
@@ -186,11 +188,29 @@ class CustomerShippingSlipsController extends BillableController
      * @param  \App\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
-        $document = $this->document->findOrFail($id);
+        // Little bit Gorrino style...
+        // Find by document_reference (if supplied one)
+        if ( $request->has('document_reference') )
+        {
+            $document = $this->document->where('document_reference', $request->input('document_reference'))->firstOrFail();
 
-        $customer = \App\Customer::find( $document->customer_id );
+            // $request->request->remove('document_reference');
+            // $this->edit($document->id, $request);
+
+            return redirect($this->model_path.'/'.$document->id.'/edit');
+        }
+        else
+        {
+            $document = $this->document->findOrFail($id);
+        }
+
+        $sequenceList = $this->document->sequenceList();
+
+        $templateList = $this->document->templateList();
+
+        $customer = Customer::find( $document->customer_id );
 
         $addressBook       = $customer->addresses;
 
@@ -207,7 +227,7 @@ class CustomerShippingSlipsController extends BillableController
         // Dates (cuen)
         $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
 
-        return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document'));
+        return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList'));
     }
 
     /**
@@ -217,7 +237,7 @@ class CustomerShippingSlipsController extends BillableController
      * @param  \App\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CustomerShippingSlip $customershippingslip)
+    public function update(Request $request, Document $customershippingslip)
     {
         // Dates (cuen)
         $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
@@ -251,13 +271,38 @@ class CustomerShippingSlipsController extends BillableController
         $document->fill($request->all());
 
         // Reset Export date
-        if ( $request->input('export_date_form') == '' ) $document->export_date = null;
+        // if ( $request->input('export_date_form') == '' ) $document->export_date = null;
 
         $document->save();
 
-        // abi_r($request->all(), true);
+        // Move on
+        if ($request->has('nextAction'))
+        {
+            switch ( $request->input('nextAction') ) {
+                case 'saveAndConfirm':
+                    # code...
+                    $document->confirm();
 
-        return redirect($this->model_path.'/'.$document->id.'/edit')
+                    break;
+                
+                case 'saveAndContinue':
+                    # code...
+
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        $nextAction = $request->input('nextAction', '');
+        
+        if ( $nextAction == 'saveAndContinue' ) 
+            return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+        return redirect($this->model_path)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
     }
@@ -268,469 +313,126 @@ class CustomerShippingSlipsController extends BillableController
      * @param  \App\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CustomerShippingSlip $customershippingslip)
+    public function destroy($id)
     {
-        $id = $customershippingslip->id;
-
-        $customershippingslip->delete();
+        $this->document->findOrFail($id)->delete();
 
         return redirect($this->model_path)
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
 
-    protected function confirm(CustomerShippingSlip $customershippingslip)
+    /**
+     * Manage Status.
+     *
+     * ******************************************************************************************************************************* *
+     * 
+     */
+
+    protected function confirm(Document $document)
     {
-        $customershippingslip->confirm();
+        // Can I?
+        if ( $document->lines->count() == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Confirm
+        if ( $document->confirm() )
+            return redirect()->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
 
         return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customershippingslip->id], 'layouts').' ['.$customershippingslip->document_reference.']');
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
-
-/* ****** Production Sheet *************************************************************************************** */    
-
-
-/* ********************************************************************************************* */    
-
-
-// https://stackoverflow.com/questions/39812203/cloning-model-with-hasmany-related-models-in-laravel-5-3
-
-
-/* ********************************************************************************************* */  
-
-
-
-    /**
-     * AJAX Stuff.
-     *
-     * 
-     */  
-
-
-
-
-
-    public function FormForService( $action )
+    protected function unConfirm(Document $document)
     {
-
-        switch ( $action ) {
-            case 'edit':
-                # code...
-                return view($this->view_path.'._form_for_service_edit');
-                break;
-            
-            case 'create':
-                # code...
-                return view($this->view_path.'._form_for_service_create');
-                break;
-            
-            default:
-                # code...
-                // Form for action not supported
-                return response()->json( [
-                            'msg' => 'ERROR',
-                            'data' => $action
-                    ] );
-                break;
-        }
-        
-    }
-
-
-
-    public function searchService(Request $request)
-    {
-        $search = $request->term;
-
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
-                                ->where(   'name',      'LIKE', '%'.$search.'%' )
-                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
-                                ->isService()
-//                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
-//                                ->with('measureunit')
-//                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
-
-
-//                                dd($products);
-
-        return response( $products );
-    }
-
-
-
-
-
-
-    public function storeShippingSlipLineService(Request $request, $order_id)
-    {
-        // return response()->json(['order_id' => $order_id] + $request->all());
-
-        $product_id      = $request->input('product_id', 0);
-        $combination_id  = $request->input('combination_id', 0);
-
-        // Do the Mambo!
-        // Product
-        if ($product_id>0)
+        // Can I?
+        if ( $document->status != 'confirmed' )
         {
-                if ($combination_id>0) {
-                    $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
-                    $product = $combination->product;
-                    $product->reference = $combination->reference;
-                    $product->name = $product->name.' | '.$combination->name;
-                } else {
-                    $product = \App\Product::with('tax')->findOrFail(intval($product_id));
-                }
-        
-        } else {
-        
-                // No database persistance, please!
-                $product  = new \App\Product([
-                    'product_type' => 'simple', 
-                    'reference' => $request->input('reference', ''),
-                    'name' => $request->input('name'), 
-                    'tax_id' => $request->input('tax_id'),
-                    'cost_price' => $request->input('cost_price'), 
-                ]);
-        
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
         }
 
-        $reference  = $product->reference;
-        $name       = $product->name;
-        $cost_price = $product->cost_price;
+        // UnConfirm
+        if ( $document->unConfirm() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
 
-        $quantity = $request->input('quantity');
-
-        // ToDo: Don't trust values from browser. Do not be lazy and get them from database
-        $tax_percent = $request->input('tax_percent');
-        $unit_price  = $request->input('unit_price');
-
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', \App\Configuration::get('PRICES_ENTERED_WITH_TAX')) );
-        if ( $pricetaxPolicy > 0 )
-            $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
-
-        $unit_customer_price = $request->input('unit_customer_price');
-        if ( $pricetaxPolicy > 0 )
-            $unit_customer_price = $unit_customer_price / (1.0 + $tax_percent/100.0);
-
-        $discount_percent = $request->input('discount_percent', 0.0);
-
-        $unit_customer_final_price_tax_inc = $unit_customer_final_price = $request->input('unit_customer_final_price');
-
-        if ( $pricetaxPolicy > 0 ) {
-
-            $unit_final_price         = $unit_customer_final_price / (1.0 + $tax_percent/100.0);
-            $unit_final_price_tax_inc = $unit_customer_final_price;
-
-            $unit_customer_final_price = $unit_final_price;
-
-        } else {
-
-            $unit_final_price         = $unit_customer_final_price;
-            $unit_final_price_tax_inc = $unit_customer_final_price * (1.0 + $tax_percent/100.0);
-
-            $unit_customer_final_price_tax_inc = $unit_final_price_tax_inc;
-
-        }
-
-        $unit_final_price         = $unit_final_price         * (1.0 - $discount_percent/100.0);
-        $unit_final_price_tax_inc = $unit_final_price_tax_inc * (1.0 - $discount_percent/100.0);
-
-        $total_tax_excl = $quantity * $unit_final_price;
-        $total_tax_incl = $quantity * $unit_final_price_tax_inc;
-
-        $tax_id = $product->tax_id;
-        $sales_equalization = $request->input('sales_equalization', 0);
-
-        // Build ShippingSlipLine Object
-        $data = [
-            'line_sort_order' => $request->input('line_sort_order'),
-            'line_type' => $request->input('is_shipping') > 0 ? 'shipping' : $request->input('line_type'),
-            'product_id' => $product_id,
-            'combination_id' => $combination_id,
-            'reference' => $reference,
-            'name' => $name,
-            'quantity' => $quantity,
-            'measure_unit_id' => $request->input('measure_unit_id', \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')),
-    
-            'cost_price' => $cost_price,
-            'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price,
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price_tax_inc,
-            'unit_final_price' => $unit_final_price,
-            'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
-            'sales_equalization' => $sales_equalization,  // By default, sales_equalization = 0 , because is a service. Otherwise: $request->input('sales_equalization', 0),
-            'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
-            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
-
-            'total_tax_incl' => $total_tax_incl,
-            'total_tax_excl' => $total_tax_excl,
-
-            'tax_percent' => $tax_percent,
-            'commission_percent' => $request->input('commission_percent', 0.0),
-            'notes' => $request->input('notes', ''),
-            'locked' => 0,
-    
-    //        'customer_shipping_slip_id',
-            'tax_id' => $tax_id,
-            'sales_rep_id' => $request->input('sales_rep_id', 0),
-        ];
-
-
-        // Finishin touches
-        $order = $this->document->findOrFail($order_id);
-
-        $order_line = $this->document_line->create( $data );
-
-        $order->customershippingsliplines()->save($order_line);
-
-        // Let's deal with taxes
-        $product->sales_equalization = $sales_equalization;   // Sensible default for services!
-        $rules = $product->getTaxRules( $order->taxingaddress,  $order->customer );
-
-        $base_price = $order_line->quantity*$order_line->unit_final_price;
-        // Rounded $base_price is the same, no matters the value of ROUND_PRICES_WITH_TAX
-
-        $order_line->total_tax_incl = $order_line->total_tax_excl = $base_price;
-
-        foreach ( $rules as $rule ) {
-
-            $line_tax = new \App\CustomerShippingSlipLineTax();
-
-                $line_tax->name = $rule->fullName;
-                $line_tax->tax_rule_type = $rule->rule_type;
-
-                $p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $order->currency, $order->currency_conversion_rate);
-
-                $p->applyRounding( );
-
-                $line_tax->taxable_base = $base_price;
-                $line_tax->percent = $rule->percent;
-                $line_tax->amount = $rule->amount;
-                $line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
-
-                $line_tax->position = $rule->position;
-
-                $line_tax->tax_id = $tax_id;
-                $line_tax->tax_rule_id = $rule->id;
-
-                $line_tax->save();
-                $order_line->total_tax_incl += $line_tax->total_line_tax;
-
-                $order_line->CustomerShippingSlipLineTaxes()->save($line_tax);
-                $order_line->save();
-
-        }
-
-        // Now, update ShippingSlip Totals
-        $order->makeTotals();
-
-
-
-
-
-
-
-
-
-        return response()->json( [
-                'msg' => 'OK',
-                'data' => $order_line->toArray(),
-//                'extra' => [$p->getPriceWithTax() , $p->getPrice() , $p->as_priceable($rule->amount)],
-        ] );
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
 
-    public function updateShippingSlipLineService(Request $request, $line_id)
+    protected function onholdToggle(Document $document)
     {
-        // return response()->json(['order_id' => $order_id] + $request->all());
+        // No checks. A closed document can be set to "onhold". Maybe usefull...
 
-        $order_line = $this->document_line
-                        ->findOrFail($line_id);
+        // Toggle
+        $toggle = $document->onhold > 0 ? 0 : 1;
+        $document->onhold = $toggle;
+        
+        $document->save();
 
-        $order_id = $order_line->customer_shipping_slip_id;
-
- //       $product_id      = $request->input('product_id');
- //       $combination_id  = $request->input('combination_id');
-
-        $product_id      = 0;
-        $combination_id  = 0;
-
-        // Do the Mambo!
-        // Product
-/*        
-        if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
-            $product = $combination->product;
-            $product->reference = $combination->reference;
-            $product->name = $product->name.' | '.$combination->name;
-        } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
-        }
-*/        
-        // No database persistance, please!
-        $product  = new \App\Product([
-            'product_type' => 'simple', 
-            'reference' => $request->input('reference', ''),
-            'name' => $request->input('name'), 
-            'tax_id' => $request->input('tax_id'),
-            'cost_price' => $request->input('cost_price'), 
-        ]);
-
-        $reference  = $product->reference;
-        $name       = $product->name;
-        $cost_price = $product->cost_price;
-
-        $quantity = $request->input('quantity');
-
-        $tax_percent = $request->input('tax_percent');
-//        $tax_percent = $product->tax->percent;
-/*
-        $unit_price  = $request->input('price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-            $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
-
-        $unit_customer_price = $request->input('price');
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-            $unit_customer_price = $price / (1.0 + $tax_percent/100.0);
-*/
-
-
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', \App\Configuration::get('PRICES_ENTERED_WITH_TAX')) );
-
-        $discount_percent = $request->input('discount_percent', 0.0);
-
-        if ( $pricetaxPolicy > 0 ) {
-
-            $price          = $request->input('unit_customer_final_price') / (1.0 + $tax_percent/100.0);
-            $price_with_tax = $request->input('unit_customer_final_price');
-
-        } else {
-
-            $price          = $request->input('unit_customer_final_price');
-            $price_with_tax = $request->input('unit_customer_final_price') * (1.0 + $tax_percent/100.0);
-
-        }
-
-        // Service
-        $unit_price = $unit_customer_price = $unit_customer_final_price = $unit_final_price = $price;
-        $unit_customer_final_price_tax_inc = $unit_final_price_tax_inc = $price_with_tax;
-
-        $unit_final_price         = $unit_final_price         * (1.0 - $discount_percent/100.0);
-        $unit_final_price_tax_inc = $unit_final_price_tax_inc * (1.0 - $discount_percent/100.0);
-
-        $total_tax_excl = $quantity * $unit_final_price;
-        $total_tax_incl = $quantity * $unit_final_price_tax_inc;
-
-        $tax_id = $product->tax_id;
-        $sales_equalization = $request->input('sales_equalization', 0);
-
-        // Build ShippingSlipLine Object
-        $data = [
-//            'line_sort_order' => $request->input('line_sort_order'),
-            'line_type' => $request->input('is_shipping') > 0 ? 'shipping' : 'service',
-//            'product_id' => $product_id,
-//            'combination_id' => $combination_id,
-//            'reference' => $reference,
-            'name' => $name,
-            'quantity' => $quantity,
-//            'measure_unit_id' => $request->input('measure_unit_id', \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')),
-    
-            'cost_price' => $cost_price,
-            'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price,
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price_tax_inc,
-            'unit_final_price' => $unit_final_price,
-            'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
-            'sales_equalization' => $sales_equalization,  // By default, sales_equalization = 0 , because is a service. Otherwise: $request->input('sales_equalization', 0),
-            'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
-            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
-
-            'total_tax_incl' => $total_tax_incl,
-            'total_tax_excl' => $total_tax_excl,
-
-            'tax_percent' => $tax_percent,
-            'commission_percent' => $request->input('commission_percent', 0.0),
-            'notes' => $request->input('notes', ''),
-            'locked' => 0,
-    
-    //        'customer_shipping_slip_id',
-            'tax_id' => $tax_id,
-            'sales_rep_id' => $request->input('sales_rep_id', 0),
-        ];
-
-
-        // Finishin touches
-        $order = $this->document->findOrFail($order_id);
-
-        $order_line->update( $data );
-
-//        $order->customershippingsliplines()->save($order_line);
-
-        // Let's deal with taxes
-        $order_line->customershippingsliplinetaxes()->delete();
-
-        $product->sales_equalization = $sales_equalization;   // Sensible default for services!
-        $rules = $product->getTaxRules( $order->taxingaddress,  $order->customer );
-
-        $base_price = $order_line->quantity*$order_line->unit_final_price;
-        // Rounded $base_price is the same, no matters the value of ROUND_PRICES_WITH_TAX
-
-        $order_line->total_tax_incl = $order_line->total_tax_excl = $base_price;
-
-        foreach ( $rules as $rule ) {
-
-            $line_tax = new \App\CustomerShippingSlipLineTax();
-
-                $line_tax->name = $rule->fullName;
-                $line_tax->tax_rule_type = $rule->rule_type;
-
-                $p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $order->currency, $order->currency_conversion_rate);
-
-                $p->applyRounding( );
-
-                $line_tax->taxable_base = $base_price;
-                $line_tax->percent = $rule->percent;
-                $line_tax->amount = $rule->amount;
-                $line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
-
-                $line_tax->position = $rule->position;
-
-                $line_tax->tax_id = $tax_id;
-                $line_tax->tax_rule_id = $rule->id;
-
-                $line_tax->save();
-                $order_line->total_tax_incl += $line_tax->total_line_tax;
-
-                $order_line->CustomerShippingSlipLineTaxes()->save($line_tax);
-                $order_line->save();
-
-        }
-
-        // Now, update ShippingSlip Totals
-        $order->makeTotals();
-
-
-
-
-
-
-
-
-
-        return response()->json( [
-                'msg' => 'OK',
-                'data' => $order_line->toArray()
-        ] );
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
     }
 
 
+    protected function close(Document $document)
+    {
+        // Can I?
+        if ( $document->lines->count() == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
 
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Close
+        if ( $document->close() )
+            return redirect()->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function unclose(Document $document)
+    {
+
+        if ( $document->status != 'closed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+        }
+
+        // Unclose (back to "confirmed" status)
+        if ( $document->unclose() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
 
 
 
@@ -747,13 +449,177 @@ class CustomerShippingSlipsController extends BillableController
 /* ********************************************************************************************* */    
 
 
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function ajaxLineSearch(Request $request)
+    {
+        // Request data
+        $line_id         = $request->input('line_id');
+        $product_id      = $request->input('product_id');
+        $combination_id  = $request->input('combination_id', 0);
+        $customer_id     = $request->input('customer_id');
+        $sales_rep_id    = $request->input('sales_rep_id', 0);
+        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+
+//        return "$product_id, $combination_id, $customer_id, $currency_id";
+
+        if ($combination_id>0) {
+            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = \App\Product::with('tax')->find(intval($product_id));
+        }
+
+        $customer = \App\Customer::find(intval($customer_id));
+
+        $sales_rep = null;
+        if ($sales_rep_id>0)
+            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+        if (!$sales_rep)
+            $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
+        
+        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
+                    \App\Context::getContext()->currency :
+                    \App\Currency::find(intval($currency_id));
+
+        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
+
+        if ( !$product || !$customer || !$currency ) {
+            // Die silently
+            return '';
+        }
+
+        $tax = $product->tax;
+
+        // Calculate price per $customer_id now!
+        $price = $product->getPriceByCustomer( $customer, 1, $currency );
+        $tax_percent = $tax->getFirstRule()->percent;
+        $price->applyTaxPercent( $tax_percent );
+
+        $data = [
+//          'id' => '',
+            'line_sort_order' => '',
+            'line_type' => 'product',
+            'product_id' => $product->id,
+            'combination_id' => $combination_id,
+            'reference' => $product->reference,
+            'name' => $product->name,
+            'quantity' => 1,
+            'cost_price' => $product->cost_price,
+            'unit_price' => $product->price,
+            'unit_customer_price' => $price->getPrice(),
+            'unit_final_price' => $price->getPrice(),
+            'unit_final_price_tax_inc' => $price->getPriceWithTax(),
+            'unit_net_price' => $price->getPrice(),
+            'sales_equalization' => $customer->sales_equalization,
+            'discount_percent' => 0.0,
+            'discount_amount_tax_incl' => 0.0,
+            'discount_amount_tax_excl' => 0.0,
+            'total_tax_incl' => 0.0,
+            'total_tax_excl' => 0.0,
+            'tax_percent' => $product->as_percentable($tax_percent),
+            'commission_percent' => $sales_rep->commission_percent,
+            'notes' => '',
+            'locked' => 0,
+//          'customer_invoice_id' => '',
+            'tax_id' => $product->tax_id,
+            'sales_rep_id' => $sales_rep->id,
+        ];
+
+        $line = new DocumentLine( $data );
+
+        return view($this->view_path.'._invoice_line', [ 'i' => $line_id, 'line' => $line ] );
+    }
+
+
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function ajaxLineOtherSearch(Request $request)
+    {
+        // Request data
+        $line_id         = $request->input('line_id');
+        $other_json      = $request->input('other_json');
+        $customer_id     = $request->input('customer_id');
+        $sales_rep_id    = $request->input('sales_rep_id', 0);
+        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+
+//        return "$product_id, $combination_id, $customer_id, $currency_id";
+
+        if ($other_json) {
+            $product = (object) json_decode( $other_json, true);
+        } else {
+            $product = $other_json;
+        }
+
+        $customer = \App\Customer::find(intval($customer_id));
+
+        $sales_rep = null;
+        if ($sales_rep_id>0)
+            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+        if (!$sales_rep)
+            $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
+        
+        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
+                    \App\Context::getContext()->currency :
+                    \App\Currency::find(intval($currency_id));
+
+        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
+
+        if ( !$product || !$customer || !$currency ) {
+            // Die silently
+            return '';
+        }
+
+        $tax = \App\Tax::find($product->tax_id);
+
+        // Calculate price per $customer_id now!
+        $amount_is_tax_inc = Configuration::get('PRICES_ENTERED_WITH_TAX');
+        $amount = $amount_is_tax_inc ? $product->price_tax_inc : $product->price;
+        $price = new \App\Price( $amount, $amount_is_tax_inc, $currency );
+        $tax_percent = $tax->getFirstRule()->percent;
+        $price->applyTaxPercent( $tax_percent );
+
+        $data = [
+//          'id' => '',
+            'line_sort_order' => '',
+            'line_type' => $product->line_type,
+            'product_id' => 0,
+            'combination_id' => 0,
+            'reference' => DocumentLine::getTypeList()[$product->line_type],
+            'name' => $product->name,
+            'quantity' => 1,
+            'cost_price' => $product->cost_price,
+            'unit_price' => $product->price,
+            'unit_customer_price' => $price->getPrice(),
+            'unit_final_price' => $price->getPrice(),
+            'unit_final_price_tax_inc' => $price->getPriceWithTax(),
+            'unit_net_price' => $price->getPrice(),
+            'sales_equalization' => $customer->sales_equalization,
+            'discount_percent' => 0.0,
+            'discount_amount_tax_incl' => 0.0,
+            'discount_amount_tax_excl' => 0.0,
+            'total_tax_incl' => 0.0,
+            'total_tax_excl' => 0.0,
+            'tax_percent' => $price->as_percentable($tax_percent),
+            'commission_percent' => $sales_rep->commission_percent,
+            'notes' => '',
+            'locked' => 0,
+//          'customer_invoice_id' => '',
+            'tax_id' => $product->tax_id,
+            'sales_rep_id' => $sales_rep->id,
+        ];
+
+        $line = new DocumentLine( $data );
+
+        return view($this->view_path.'._invoice_line', [ 'i' => $line_id, 'line' => $line ] );
+    }
 
 }
-
-
-/* ********************************************************************************************* */
-
-
-
-/* ********************************************************************************************* */
-

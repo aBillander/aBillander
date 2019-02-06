@@ -2,9 +2,12 @@
 
 return [
 
+	'Shipping Slip #'     => 'Número',
+	'Shipping Slip'     => 'Albarán',
+
 	/*
 	|--------------------------------------------------------------------------
-	| Customer Shipping Slips Language Lines :: index (???)
+	| Customer orders Language Lines :: index (Production Sheets!!! ???)
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -19,14 +22,16 @@ return [
 	'Production Date'     => 'Fecha Producción',
 	'Export to FS'     => 'Exportado FSOL',
 	'Customer Notes'     => 'Notas Cliente',
+	'Notes'     => 'Notas',
+	'Deliver to'     => 'Entregar en',
 
 	'Go to Production Sheet'     => 'Ir a la Hoja de Producción',
-	'Copy Shipping Slip' => 'Copiar Albarán',
+	'Copy Order' => 'Copiar Pedido',
 
 	
-	'Add Shipping Slips to Production Sheet'     => 'Añadir Albaranes a una Hoja de Producción',
+	'Add Orders to Production Sheet'     => 'Añadir Pedidos a una Hoja de Producción',
 	'Add'     => 'Añadir',
-	'Add Shipping Slips to NEW Production Sheet'     => 'Añadir Albaranes a una Hoja de Producción NUEVA',
+	'Add Orders to NEW Production Sheet'     => 'Añadir Pedidos a una Hoja de Producción NUEVA',
 	'Date'     => 'Fecha',
 	'Name'     => 'Nombre',
 	'Production Sheet'     => 'Hoja de Producción',
@@ -35,15 +40,15 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Customer Shipping Slips Language Lines :: index
+	| Documents Language Lines :: index
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Customer Shipping Slips' => 'Albaranes de Clientes',
-	'Shipping Slip #'     => 'Número',
+	'Documents' => 'Albaranes de Clientes',
+	'Document #'     => 'Número',
 	'Date'     => 'Fecha',
 	'Created via'     => 'Creado por',
 
@@ -58,22 +63,24 @@ return [
 	'Pending: Print and Send'     => 'Pendiente: Imprimir y Enviar',
 	'Pr'     => 'Im',
 	'Paid'     => 'Pagado',
+
+	'Email sent:'     => 'Enviado por email:',
+
 	''     => '',
 	''     => '',
 	''     => '',
 
 	/*
 	|--------------------------------------------------------------------------
-	| Customer Shipping Slips Language Lines :: create
+	| Documents Language Lines :: create
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Customer Shipping Slips - Create'     => 'Albaranes de Clientes - Crear',
-	'New Shipping Slip'     => 'Nuevo Albarán',
-	'New Customer Shipping Slip'     => 'Nuevo Albarán de Cliente',
+	'Documents - Create'     => 'Albaranes de Clientes - Crear',
+	'New Document'     => 'Nuevo Albarán de Cliente',
 	
 	// modal_customer_search
 	'Customer Search'     => 'Buscar Cliente',
@@ -83,8 +90,9 @@ return [
 	'New Customer'     => 'Nuevo Cliente',
 	'You should choose a Customer'     => 'Debe seleccionar un Cliente',
 
-	'Customer Shipping Slips'     => 'Albaranes de Clientes',
-	'Back to Customer Shipping Slips'     => 'Volver a Albaranes de Clientes',
+	'Documents'     => 'Albaranes de Clientes',
+	'Document to'     => 'Albarán a',
+	'Back to Documents'     => 'Volver a Albaranes de Clientes',
 	'Back to Customers'     => 'Volver a Clientes',
 	'Invoicing Address'     => 'Datos de Facturación',
 	'VAT ID'     => 'NIF',
@@ -109,18 +117,23 @@ return [
 //	'Reference'     => 'Referencia',
 	'Name'     => 'Nombre',
 //	'Price'     => 'PVP',
-	'With Tax'     => 'Con IVA',
+	'With Tax'     => 'PVP+IVA',
 	'Stock'     => 'Stock',
 	'On Order'     => 'Pendiente',
 	'Allocated'     => 'Reservado',
 	'Available'     => 'Disponible',
 	''     => '',
 
-	// _order_header
+	// _invoice_header
+	'Type'     => 'Tipo',
+	'Template'     => 'Plantilla',
 	'Sequence'     => 'Serie',	// 'Serie de Albaranes',
-	'Shipping Slip Number'     => 'Número de Albarán',
+	'Document Number'     => 'Número de Albarán',
 	'Reference / Project'     => 'Referencia / Proyecto',
+// 	'Invoice Date'     => 'Fecha Factura',
 	'Document Date'     => 'Fecha del Documento',
+	'Sent Date'     => 'Enviado al Cliente',
+	'Payment status' => 'Estado de Pago',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Template for Printing'     => 'Plantilla para Imprimir',
 	'Save as Draft?'     => '¿Guardar como Borrador?',
@@ -144,18 +157,23 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Líneas',
 	'Add Product'     => 'Añadir Producto',
 	'Add Service'     => 'Añadir Servicio',
+	'Product name' => 'Producto',
 	'Reference'     => 'Referencia',
+	'Measure Unit' => 'Unidad de Medida',
 	'View Product' => 'Ir a la Ficha del Producto',
 	'Description'     => 'Descripción',
 	'Quantity'     => 'Cantidad',
 	'Unit final Price after Discount and Taxes.'     => 'Precio final por unidad antes de Descuento e Impuestos.',
+	'Price'     => 'Precio',
 	'Disc. %'     => 'Dto. %',
 	'Net'     => 'Neto',
 	'Tax'     => 'Impuesto',
 	'Total'     => 'Total',
 	'Total with Tax'     => 'Total con IVA',
+	'Show Customer consumption' => 'Ver consumo del Cliente',
 	'New line...'     => 'Nueva línea...',
-	'Shipping Slip Discount (%)'     => 'Descuento Especial (%)',
+	'Order Discount (%)'     => 'Descuento Especial (%)',
+	'Total Breakdown' => 'Desglose del Total',
 
 	''     => '',
 	'Header Data'     => 'Datos de Cabecera',
@@ -166,11 +184,11 @@ return [
 	'Service'     => 'Servicio',
 	'Discount Line'     => 'Línea de Descuento',
 	'Text Line'     => 'Línea de Texto',
-
+	
 	// modal_product_search
-	'Quick Add Products to Shipping Slip'     => 'Entrada rápida de Productos',
-	'Add Product to Shipping Slip'     => 'Nuevo Producto',
-	'Add Service to Shipping Slip'     => 'Nuevo Servicio',
+	'Quick Add Lines'     => 'Entrada rápida de Productos',
+	'Add Product'     => 'Nuevo Producto',
+	'Add Service'     => 'Nuevo Servicio',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -189,7 +207,10 @@ return [
 	''     => '',
 
 	// Modal edit line
-	'Edit Shipping Slip Line' => 'Modificar Línea',
+	'Edit Line' => 'Modificar Línea',
+	'Text Line'     => 'Línea de texto',
+	''     => '',
+	''     => '',
 	
 	// create_profit_blade
 	'Profitability Analysis'     => 'Rentabilidad de la Venta',
@@ -202,7 +223,7 @@ return [
 	'Margin 2 (%)'     => 'Margen 2 (%)',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',
-	'Cost-Benefit Analysis'     => 'Rentabiliad Total',
+	'Cost-Benefit Analysis'     => 'Análisis de Rentabiliad',
 	'Margin'     => 'Margen',
 
 	// Stock availability
@@ -211,7 +232,7 @@ return [
 	''     => '',
 
 	'Finish Up'     => 'Emitir',
-	'Invoice This'  => 'Facturar',
+	'Invoice This'  => 'Albaranar',
 
 	'This Invoice will be saved with a Number for its Sequence, and may not be modified later on. Are you sure?' 
 	=> 'La Factura se guardará como Emitida y ya no podrá modificarse. ¿Está seguro?',
@@ -222,16 +243,17 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Customer Shipping Slips Language Lines :: edit
+	| Documents Language Lines :: edit
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Customer Shipping Slips - Edit'     => 'Albaranes de Clientes - Modificar',
-	'Edit Customer Shipping Slip'     => 'Modificar Albarán de Cliente',
-	'Shipping Slip to'     => 'Albarán para',
+	'Documents - Edit'     => 'Albaranes de Clientes - Modificar',
+	'Edit Document'     => 'Modificar Albarán de Cliente',
+
+
 
 	'Customer Infos'     => 'Info del Cliente',
 	'Customer Risk'     => 'Riesgo alcanzado',
@@ -246,27 +268,33 @@ return [
 
 	'Line #'     => 'Línea',
 	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
 
 
 	/*
 	|--------------------------------------------------------------------------
-	| Customer Shipping Slips Language Lines :: show
+	| Documents Language Lines :: show
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Customer Shipping Slips - Show'     => 'Albaranes de Clientes - Mostrar',
+	'Documents - Show'     => 'Albaranes de Clientes - Mostrar',
 	''     => '',
 	''     => '',
 
 	''     => '',
 	'Show Customer'     => 'Ver Cliente',
-	'Your Shipping Slip :num from :name'     => 'Su Albarán :num de :name',
+	'Your Document :num from :name'     => 'Su Albarán :num de :name',
 
 	'Payment Schedule'     => 'Vencimientos',
-	'Shipping Slip'     => 'Albarán',
+	'Document'     => 'Albarán',
 	'Customer'     => 'Cliente',
 	'Due Date'     => 'Fecha Vencimiento',
 	'Payment Date'     => 'Fecha de Pago',
@@ -274,7 +302,7 @@ return [
 	'Subject'     => 'Concepto',
 	'Status'     => 'Estado',
 
-	'Customer Shipping Slip id=:id does not exist.'     => 'El Albarán de Cliente id=:id no existe.',
+	'Document id=:id does not exist.'     => 'El Albarán de Cliente id=:id no existe.',
 	''     => '',
 	''     => '',
 	''     => '',

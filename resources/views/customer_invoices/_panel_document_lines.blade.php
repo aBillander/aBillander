@@ -32,7 +32,7 @@
                {{-- quantity * (price - discount) Con tax o no depende de la configuración de meter precios con impuesto incluido --}}
                <!-- th class="text-right" xwidth="115">{{l('Tax')}}</th -->
 
-               <!-- th class="text-right">{{l('Line Total')}}</th --> {{-- amount * tax --}}
+               <!-- th class="text-right">{ {l ('Line Total')} }</th --> {{-- amount * tax --}}
 
                <th class="text-left" style="width:1px; white-space: nowrap;"></th>
                <th class="text-left" xwidth="115">{{l('Notes', 'layouts')}}</th>

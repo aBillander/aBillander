@@ -16,23 +16,12 @@ class CreateCustomerShippingSlipLineTaxesTable extends Migration
         Schema::dropIfExists('customer_shipping_slip_line_taxes');
 
         Schema::create('customer_shipping_slip_line_taxes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 128)->nullable(false);
+            if (file_exists(__DIR__.'/schnitzel/_schnitzel_create_document_line_taxes_table.php')) {
+                include __DIR__.'/schnitzel/_schnitzel_create_document_line_taxes_table.php';
+            }
 
-            $table->string('tax_rule_type', 32)->nullable(false);
-
-            $table->decimal('taxable_base', 20, 6)->default(0.0);                       // Base for tax calculations
-            $table->decimal('percent', 8, 3)->default(0.0);                             // Tax percent
-            $table->decimal('amount', 20, 6)->default(0.0);                             // Tax may be fixed amount
-            $table->decimal('total_line_tax', 20, 6)->default(0.0);
-
-            $table->integer('position')->unsigned()->default(0);
-
+            // Parent Document Line
             $table->integer('customer_shipping_slip_line_id')->unsigned()->nullable(false);
-            $table->integer('tax_id')->unsigned()->nullable(false);
-            $table->integer('tax_rule_id')->unsigned()->nullable(false);                    // What if it changes/disappears??
-
-            $table->timestamps();
         });
     }
 

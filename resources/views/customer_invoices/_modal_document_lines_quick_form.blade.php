@@ -10,7 +10,7 @@
 
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="modal_document_lines_quick_Label">{{ l('Quick Add Products to Document') }}</h4>
+            <h4 class="modal-title" id="modal_document_lines_quick_Label">{{ l('Quick Add Lines') }}</h4>
          </div>
 
          <div class="modal-body">
@@ -158,7 +158,7 @@ $(document).ready(function() {
 
  /*          
                var panel = $("#order_line_form");
-               var url = "{{ route('customerorderline.productform', ['create']) }}";
+               var url = "{ { route('customeror derline.productform', ['create']) } }";
 
                panel.addClass('loading');
 

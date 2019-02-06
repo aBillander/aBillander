@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Invoices') }} @parent @stop
+@section('title') {{ l('Documents') }} @parent @stop
 
 
 @section('content')
@@ -14,7 +14,7 @@
 
     </div>
     <h2>
-        {{ l('Customer Invoices') }}
+        {{ l('Documents') }}
     </h2>        
 </div>
 
@@ -101,8 +101,8 @@
             </td>
             <td class="text-right">
                 <!--
-                <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerorders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
-                <a class="btn btn-sm btn-success" href="{{ URL::to('customerorders/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
+                <a class="btn btn-sm btn-blue"    href="{{ URL::to('customeror ders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
+                <a class="btn btn-sm btn-success" href="{ { URL::to('customer orders/' . $document->id) } }" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
                 -->
 @if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0)
 
@@ -110,7 +110,7 @@
 
                 <a class="btn btn-sm btn-info" href="{{ URL::to($model_path.'/' . $document->id . '/invoice/pdf') }}" title="{{l('PDF Invoice', [], 'layouts')}}"><i class="fa fa-money"></i></a>
 
-                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('customerorders/' . $document->id . '/shippingslip') }}" title="{{l('Customer Invoice', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
+                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('customer orders/' . $document->id . '/shippingslip') }}" title="{{l('Document', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
 
                 <a class="btn btn-sm btn-lightblue xbtn-info" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
 @endif
@@ -128,7 +128,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to($model_path.'/' . $document->id ) }}" 
                     data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Customer Invoices') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
+                    data-title="{{ l('Documents') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @endif
             </td>

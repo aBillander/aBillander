@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-use App\CustomerInvoice;
+use App\CustomerInvoice as Document;
 
 class CustomerInvoiceEmailed
 {
@@ -23,7 +23,7 @@ class CustomerInvoiceEmailed
      *
      * @return void
      */
-    public function __construct( CustomerInvoice $document )
+    public function __construct( Document $document )
     {
         $this->document = $document;
     }

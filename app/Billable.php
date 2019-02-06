@@ -59,7 +59,8 @@ class Billable extends Model
 
     // https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
     protected $fillable = [ 'sequence_id', 'customer_id', 'reference', 'reference_customer', 'reference_external', 
-                            'created_via', '_document_prefix', '_document_id', '_document_reference',
+                            'created_via', 
+//                            '_document_prefix', '_document_id', '_document_reference',
                             'document_date', 'payment_date', 'validation_date', 'delivery_date',
 
                             'document_discount_percent', 'document_discount_amount',
@@ -199,6 +200,7 @@ class Billable extends Model
 
     public function getNumberAttribute()
     {
+        // WTF???  (ノಠ益ಠ)ノ彡┻━┻ 
         return    $this->document_id > 0
                 ? $this->document_reference
                 : l($this->getClassName().'.'.'draft', [], 'appmultilang') ;
@@ -380,6 +382,11 @@ class Billable extends Model
     public function sequenceList()
     {
         return Sequence::listFor( $this->getClassName() );
+    }
+
+    public function templateList()
+    {
+        return Template::listFor( $this->getClassName() );
     }
     
 

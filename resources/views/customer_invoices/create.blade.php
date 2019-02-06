@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Invoices - Create') }} @parent @stop
+@section('title') {{ l('Documents - Create') }} @parent @stop
 
 
 @section('content') 
@@ -16,10 +16,10 @@
 @else
                <a target="_top" class="btn btn-success" href="{{ URL::to('customers/create') }}">{{l('New Customer')}}</a>
 
-               <a href="{{ URL::to($model_path) }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customer Invoices') }}</a>
+               <a href="{{ URL::to($model_path) }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Documents') }}</a>
 @endif
             </div>
-            <h2><a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path) }}" title="{{ l('Customer Invoices') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> {{ l('New Customer Invoice') }}</h2>
+            <h2><a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path) }}" title="{{ l('Documents') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> {{ l('New Document') }}</h2>
         </div>
     </div>
 </div> 

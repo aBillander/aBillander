@@ -78,7 +78,8 @@ trait BillableDocumentControllerTrait
             //
         } else {
             // Dispatch event
-            event( new \App\Events\CustomerInvoicePrinted( $document ) );
+            $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Printed';
+            event( new $event_class( $document ) );
         }
     
 
@@ -210,7 +211,8 @@ trait BillableDocumentControllerTrait
 
 
         // Dispatch event
-        event( new \App\Events\CustomerInvoiceEmailed($document) );
+        $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Emailed';
+        event( new $event_class( $document ) );
         
 
         return redirect()->back()->with('success', l('Your Document has been sent! &#58&#58 (:id) ', ['id' => $document->number], 'layouts'));

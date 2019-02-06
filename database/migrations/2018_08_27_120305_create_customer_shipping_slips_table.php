@@ -21,6 +21,14 @@ class CreateCustomerShippingSlipsTable extends Migration
                 include __DIR__.'/schnitzel/_schnitzel_create_customer_orders_table.php';
             }
 
+            $table->date('printed_at')->nullable();                             // Printed at
+            $table->date('edocument_sent_at')->nullable();                      // Electronic document sent at
+            $table->date('customer_viewed_at')->nullable();                     // Customer retrieved invoice from online customer center
+
+
+            $table->tinyInteger('prices_entered_with_tax')->default(0);         // See: PRICES_ENTERED_WITH_TAX; Maybe not needed here (stored for every invoice)
+            $table->tinyInteger('round_prices_with_tax')->default(0);           // See: ROUND_PRICES_WITH_TAX
+
         });
     }
 

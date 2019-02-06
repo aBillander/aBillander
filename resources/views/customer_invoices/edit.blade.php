@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Invoices - Edit') }} @parent @stop
+@section('title') {{ l('Documents - Edit') }} @parent @stop
 
 
 @section('content')
@@ -31,14 +31,14 @@
                 @endif
 @endif
                 
-                <a href="{{ URL::to($model_path.'') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to Customer Invoices')}}</a>
+                <a href="{{ URL::to($model_path.'') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to Documents')}}</a>
 
                 <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
 
             </div>
             
-              <h2><a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Customer Invoices')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
-                  {{l('Invoice to')}} <span class="lead well well-sm">
+              <h2><a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Documents')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
+                  {{l('Document to')}} <span class="lead well well-sm">
 
                   <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_fiscal }}</a>
 
@@ -155,7 +155,7 @@
 
 {{--  --}}
 
-    @include('customer_invoices._modal_help')
+    @include($view_path.'._modal_help')
 
 {{--  --}}
 

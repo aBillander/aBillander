@@ -346,7 +346,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Customer Invoices Template
-		view()->composer(array('configuration_keys.key_group_2', 'customer_invoices.edit', 'customers.edit'), function($view) {
+		view()->composer(array('configuration_keys.key_group_2', 'customers.edit'), function($view) {
 		    
 		    $view->with('invoices_templateList', \App\Template::listFor( \App\CustomerInvoice::class ));
 		    

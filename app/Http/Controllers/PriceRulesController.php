@@ -140,7 +140,7 @@ class PriceRulesController extends Controller
 		
         $this->pricerule->find($id)->delete();
 
-		return redirect('pricerules')
+		return redirect()->back()
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 

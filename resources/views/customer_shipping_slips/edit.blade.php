@@ -30,8 +30,18 @@
                 <a class="btn btn-sm alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
                 @endif
 @endif
-                
-                <a href="{{ URL::to($model_path.'') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to Documents')}}</a>
+
+
+                <div class="btn-group">
+                    <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Back to', 'layouts')}}"><i class="fa fa-mail-reply"></i> &nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu  pull-right"">
+                      <li><a href="{{ URL::to($model_path.'') }}">{{l('Back to Documents')}}</a></li>
+                      <li><a href="{{ route('customer.shippingslips', [$customer->id]) }}">{{l('Group Shipping Slips')}}</a></li>
+                      <!-- li class="divider"></li -->
+                      <!-- li><a href="#">Separated link</a></li -->
+                    </ul>
+                </div>
+
 
                 <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
 

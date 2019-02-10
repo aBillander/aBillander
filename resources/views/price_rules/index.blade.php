@@ -110,8 +110,16 @@
 		<tr>
       <td class="text-center">{{ $rule->id }}</td>
       <td>{{ optional($rule->category)->name }}</td>
-      <td>{{ optional($rule->product)->name }}</td>
-      <td>{{ optional($rule->customer)->name_commercial }}</td>
+      <td>
+          @if($rule->product)
+            [{{ optional($rule->product)->reference }}] <a href="{{ URL::to('products/' . optional($rule->product)->id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ optional($rule->product)->name }}</a>
+          @endif
+        </td>
+      <td>
+          @if($rule->customer)
+            <a href="{{ URL::to('customers/' . optional($rule->customer)->id . '/edit') }}" title="{{l('View Customer')}}" target="_blank">{{ optional($rule->customer)->name_commercial }}</a>
+          @endif
+        </td>
       <td>{{ optional($rule->customergroup)->name }}</td>
       <td>{{ optional($rule->currency)->name }}</td>
 

@@ -20,7 +20,7 @@
 
 <p>2.- Modificar la cabecera, añadir / modificar / borrar líneas.</p>
 
-<p>3.- Confirmar la Factura. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada. Aún es posible madificar la cabecera y las líneas.</p>
+<p>3.- Confirmar la Factura. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada. Aún es posible modificar la cabecera y las líneas.</p>
 
 <p>4.- Cerrar la Factura. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock, se calculan los vencimientos, según la forma de pago de la factura, y se actualiza el riesgo del Cliente. Sólo las Facturas cerradas son visibles por el Cliente en el Centro de Clientes.</p>
 

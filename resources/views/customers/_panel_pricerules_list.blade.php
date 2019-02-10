@@ -12,7 +12,7 @@
         <tr>
             <th class="text-center">{{l('ID', [], 'layouts')}}</th>
               <th>{{l('Category')}}</th>
-              <th>{{l('Product')}}</th>
+              <th colspan="2" class="text-center">{{l('Product')}}</th>
               <th>{{l('Currency')}}</th>
               <th class="text-right">{{l('Price')}}</th>
               <th class="text-right">{{l('Discount Percent')}}</th>
@@ -31,8 +31,14 @@
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
       <td>{{ optional($rule->category)->name }}</td>
-      <td>
-            <a href="{{ URL::to('products/' . optional($rule->product)->name . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ optional($rule->product)->name }}</a>
+      <td class="text-right">
+          @if($rule->product)
+            [{{ optional($rule->product)->reference }}]</td>
+
+            <td><a href="{{ URL::to('products/' . optional($rule->product)->id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ optional($rule->product)->name }}</a>
+          @else
+            </td><td>
+          @endif
       </td>
       <td>{{ optional($rule->currency)->name }}</td>
 
@@ -99,14 +105,26 @@
 
 
 @else
+            <div class="modal-footer">
+                <a href="{{ URL::to('customers/'.$id.'/pricerules/create') }}" class="btn xbtn-sm btn-success create-pricerule pull-right" 
+                title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+            </div>
+
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
     {{l('No records found', [], 'layouts')}}
+
+
 </div>
 @endif
 
 </div><!-- div id="div_customer_rules" ENDS -->
 
+
+
+{{-- Let me know who I am --}}
+{!! Form::hidden('customer_id', $id, array('id' => 'customer_id')) !!}
 
 
 {{-- *************************************** --}}

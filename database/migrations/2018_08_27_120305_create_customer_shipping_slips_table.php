@@ -17,8 +17,8 @@ class CreateCustomerShippingSlipsTable extends Migration
         
         Schema::create('customer_shipping_slips', function (Blueprint $table) {
 
-            if (file_exists(__DIR__.'/schnitzel/_schnitzel_create_customer_orders_table.php')) {
-                include __DIR__.'/schnitzel/_schnitzel_create_customer_orders_table.php';
+            if (file_exists(__DIR__.'/schnitzel/_schnitzel_create_documents_table.php')) {
+                include __DIR__.'/schnitzel/_schnitzel_create_documents_table.php';
             }
 
             $table->date('printed_at')->nullable();                             // Printed at

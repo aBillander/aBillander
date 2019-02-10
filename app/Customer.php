@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Configuration;
+
 use App\Traits\ViewFormatterTrait;
 
 class Customer extends Model {
@@ -91,7 +93,7 @@ class Customer extends Model {
         if ( $currency == null )
         {
             if ($this->currency_id)
-                $currency = $this->currency ?? \App\Currency::findOrFail( \App\Configuration::get('DEF_CURRENCY') );
+                $currency = $this->currency ?? \App\Currency::findOrFail( Configuration::get('DEF_CURRENCY') );
         }
 
         // First: Customer has pricelist?
@@ -111,7 +113,28 @@ class Customer extends Model {
 
     public function currentPricesEnteredWithTax( \App\Currency $currency = null ) 
     {
-        return $this->currentpricelist( $currency )->price_is_tax_inc ?? \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
+        return $this->currentpricelist( $currency )->price_is_tax_inc ?? Configuration::get('PRICES_ENTERED_WITH_TAX');
+    }
+
+
+    public function getInvoiceSequenceId() 
+    {
+        if (   $this->invoice_sequence_id
+            && \App\Sequence::where('id', $this->invoice_sequence_id)->exists()
+            )
+            return $this->invoice_sequence_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_INVOICE_SEQUENCE');
+    }
+
+    public function getInvoiceTemplateId() 
+    {
+        if (   $this->invoice_template_id
+            && \App\Template::where('id', $this->invoice_template_id)->exists()
+            )
+            return $this->invoice_template_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE');
     }
 
 

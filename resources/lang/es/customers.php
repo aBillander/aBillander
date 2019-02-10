@@ -59,6 +59,8 @@ return [
 	'Customers - Edit'     => 'Clientes - Modificar',
 	'Edit Customer'     => 'Modificar Cliente',
 
+	'Group Shipping Slips'     => 'Agrupar Albaranes',
+
 	'Invoice'     => 'Factura',
 
 	'Main Data'     => 'Datos Generales',

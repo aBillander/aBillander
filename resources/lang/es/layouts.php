@@ -202,6 +202,7 @@ return [
 	'Delete'     => 'Eliminar',
 	'Continue'     => 'Continuar',
 	'Back'     => 'Volver',
+	'Back to'     => 'Volver a',
 	'Go to'     => 'Ir a',
 	'Send'     => 'Enviar',
 	'Send to Customer'     => 'Enviar al Cliente',

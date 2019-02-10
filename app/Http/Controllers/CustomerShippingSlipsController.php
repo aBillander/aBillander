@@ -13,6 +13,7 @@ use App\CustomerShippingSlipLine as DocumentLine;
 
 use App\Configuration;
 use App\Sequence;
+use App\Template;
 
 use App\Events\CustomerShippingSlipConfirmed;
 
@@ -434,6 +435,148 @@ class CustomerShippingSlipsController extends BillableController
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
+
+
+
+    protected function getTodaysShippingSlips()
+    {
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+
+        $documents = $this->document
+                            ->where('delivery_date', \Carbon\Carbon::now())
+                            ->orWhere('delivery_date', null)
+                            ->with('customer')
+//                            ->with('currency')
+//                            ->with('paymentmethod')
+                            ->orderBy('delivery_date', 'desc')
+                            ->orderBy('id', 'desc');        // ->get();
+
+        $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        $documents->setPath($this->model_path);
+
+        return view($this->view_path.'.index_for_today', $this->modelVars() + compact('documents'));
+    }
+
+
+    protected function getShippingSlips($id, Request $request)
+    {
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+
+        $items_per_page = intval($request->input('items_per_page', Configuration::getInt('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
+
+        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+
+        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+
+        $customer = $this->customer->findOrFail($id);
+
+        $documents = $this->document
+                            ->where('customer_id', $id)
+//                            ->with('customer')
+                            ->with('currency')
+//                            ->with('paymentmethod')
+                            ->orderBy('document_date', 'desc')
+                            ->orderBy('id', 'desc');        // ->get();
+
+        $documents = $documents->paginate( $items_per_page );
+
+        // abi_r($this->model_path, true);
+
+        $documents->setPath($id);
+
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
+    }
+
+
+    public function createGroupInvoice( Request $request )
+    {
+        // ProductionSheetsController
+        $document_group = $request->input('document_group', []);
+
+        if ( count( $document_group ) == 0 ) 
+            return redirect()->route('customer.shippingslips', $request->input('customer_id'))
+                ->with('warning', l('No se ha seleccionado ningún Albarán, y no se ha realizado ninguna acción.'));
+        
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date'], $request );
+
+        $rules = $this->document::$rules_createinvoice;
+
+        $this->validate($request, $rules);
+
+        // Set params for group
+        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date');
+
+        // abi_r($params, true);
+
+        return $this->invoiceDocumentList( $document_group, $params );
+    } 
+
+    public function createInvoice($id)
+    {
+        $document = $this->document
+                            ->with('customer')
+                            ->findOrFail($id);
+        
+        $customer = $document->customer;
+
+        $params = [
+            'customer_id'   => $customer->id, 
+            'template_id'   => $customer->getInvoiceTemplateId(), 
+            'sequence_id'   => $customer->getInvoiceSequenceId(), 
+            'document_date' => abi_date_form_short( 'now' ),
+        ];
+
+        // abi_r($params, true);
+        
+        return $this->invoiceDocumentList( [$id] );
+    }
+
+
+
+    
+    public function invoiceDocumentList( $list )
+    {
+
+        abi_r($list, true);
+
+/*
+        1.- Recuperar los documntos
+        2.- Comprobar que están todos los de la lista ( comparando count() )
+        3.- Si algún documento tiene plantilla diferente, generar factura para él
+
+        4.- Cear cabecera
+        5.- Crear enlaces para trazabilidad de documentos
+
+        6.- Crear línea de texto con los albaranes ???
+
+        7.- Crear líneas agrupadas ???
+*/
+
+        // Prepare Logger
+        $logger = \aBillander\WooConnect\WooOrderImporter::logger();
+
+        $logger->empty();
+        $logger->start();
+
+        // Do the Mambo!
+        foreach ( $list as $oID ) 
+        {
+            $logger->log("INFO", 'Se descargará el Pedido: <span class="log-showoff-format">{oid}</span> .', ['oid' => $oID]);
+
+            $importer = \aBillander\WooConnect\WooOrderImporter::processOrder( $oID );
+        }
+
+        $logger->stop();
+
+        return redirect('activityloggers/'.$logger->id)
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $logger->id], 'layouts'));
+    }
 
 
 

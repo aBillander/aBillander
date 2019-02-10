@@ -1028,7 +1028,7 @@ class CustomerOrder extends Model
             $data['quantity'] = 1.0;
 
         // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+        $customer_price = $product->getPriceByCustomer( $customer, $data['quantity'], $currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return null;      // Product not allowed for this Customer

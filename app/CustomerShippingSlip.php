@@ -18,6 +18,17 @@ class CustomerShippingSlip extends Billable
             'i_class' => 'fa-truck',
         ];
 
+    public static $shipment_statuses = array(
+            'pending',
+            'processing',              //  order is awaiting fulfillment.
+//            'picking', 
+//            'packing',              // fulfillment : the process of picking, packing, and shipping your order
+              // Pending Carrier Pick up
+            'transit',             // Shipment in process
+            'exception',            // Delivery Exception appears if the shipment fails to reach its final destination due to issues such as rerouting back to the sender, an obstructed mailbox, the recipient refusing the package, or failed delivery attempts.
+            'delivered',
+        );
+
 
     /**
      * The fillable properties for this model.
@@ -41,6 +52,13 @@ class CustomerShippingSlip extends Billable
 //                            'carrier_id'   => 'exists:carriers,id',
                             'currency_id' => 'exists:currencies,id',
                             'payment_method_id' => 'nullable|exists:payment_methods,id',
+               ];
+
+    public static $rules_createinvoice = [
+                            'document_date' => 'required|date',
+                            'customer_id' => 'exists:customers,id',
+                            'sequence_id' => 'exists:sequences,id',
+                            'template_id' => 'exists:templates,id',
                ];
 
 
@@ -160,6 +178,23 @@ class CustomerShippingSlip extends Billable
         if ($this->created_via == 'manual' && $this->stock_status == 'completed' ) return true;
 
         return false;
+    }
+
+
+
+    public static function getShipmentStatusList()
+    {
+            $list = [];
+            foreach (static::$shipment_statuses as $status) {
+                $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
+            }
+
+            return $list;
+    }
+
+    public static function getShipmentStatusName( $status )
+    {
+            return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
 

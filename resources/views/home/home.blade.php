@@ -19,16 +19,125 @@
         </form>
 
          <!-- a href="{{{ URL::to('auth/logout') }}}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Home') }}
-    </h2>        
+    </h2>
 </div>
 
 
+
+<div class="container xhide">
+    <div class="row">
+        <div xclass="col-lg-3 col-md-6">
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">Buscar Cliente</h3>
+              </div>
+              <div class="panel-body">
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12">
+                        {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
+
+                        {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+                     </div>
+
+                  </div>
+                  
+              </div>
+            </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-success">
+              <div class="panel-heading">
+                <h3 class="panel-title">Buscar Producto</h3>
+              </div>
+              <div class="panel-body">
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12">
+                        {!! Form::text('autoproduct_name', null, array('class' => 'form-control', 'id' => 'autoproduct_name')) !!}
+
+                        {!! Form::hidden('product_id', null, array('id' => 'product_id')) !!}
+                     </div>
+
+                  </div>
+
+              </div>
+            </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Albaranes</h3>
+              </div>
+              <div class="panel-body">
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12 text-center">
+                        
+                        <a href="{{{ route('shippingslips.for.today') }}}" class="btn xbtn-sm btn-success" 
+                                title=" Albaranes de hoy "><i class="fa fa-truck"></i> Albaranes de hoy</a>
+
+                     </div>
+
+                  </div>
+                  
+              </div>
+            </div>
+            </div>
+{{-- 
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-danger">
+              <div class="panel-heading">
+                <h3 class="panel-title">Panel danger</h3>
+              </div>
+              <div class="panel-body">
+                Panel content
+              </div>
+            </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Panel primary</h3>
+              </div>
+              <div class="panel-body">
+                Panel content
+              </div>
+            </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-warning">
+              <div class="panel-heading">
+                <h3 class="panel-title">Panel warning</h3>
+              </div>
+              <div class="panel-body">
+                Panel content
+              </div>
+            </div>
+            </div>
+--}}
+        </div>
+    </div>
+</div>
+
+
+
+{{-- ***************************************************** --}}
 
 
 <div class="container-fluid">
    <div class="row">
 
-      <div class="col-lg-2 col-md-2 col-sm-1">
+      <div class="col-lg-2 col-md-2 col-sm-2">
          <!-- div class="list-group">
             <a id="b_main_data" href="#" class="list-group-item active">
                <i class="fa fa-asterisk"></i>
@@ -39,57 +148,7 @@
 
       
       <div class="col-lg-9 col-md-9 col-sm-10">
-      <div class="jumbotron" style="background: no-repeat url('{{URL::to('/assets/theme/images/Dashboard.jpg')}}'); background-size: 100% auto;min-height: 200px">
-
-
-<div class="panel panel-info" style="display:none">
-  <div class="panel-heading">
-    <h3 class="panel-title">{{ l('Updates') }}</h3>
-  </div>
-  <div class="panel-body">
-
-
-
-<div id="div_loggers">
-   <div class="table-responsive">
-
-@if ($loggers && $loggers->count())
-<table id="loggers" class="table table-hover">
-    <thead>
-        <tr>
-            <th class="text-left"></th>
-            <th class="text-left">{{l('Date/Time', 'activityloggers')}}</th>
-            <th class="text-left">{{l('Type', 'activityloggers')}}</th>
-            <th class="text-left">{{l('Message', 'activityloggers')}}</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($loggers as $logger)
-        <tr>
-            <td class="auto-width">({{ $logger->id }}) &nbsp; </td>
-            <td class="auto-width">{{ $logger->date_added }} &nbsp; </td>
-            <td class="auto-width"><span class="log-{{ $logger->level_name }}-format">{{ $logger->level_name }}</span> &nbsp; </td>
-            <td>{!! $logger->message !!}</td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-{!! $loggers->appends( Request::all() )->render() !!} 
-<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $loggers->total() ], 'layouts')}} </span></li></ul>
-@else
-<div class="alert alert-warning alert-block">
-    <i class="fa fa-warning"></i>
-    {{l('No records found', [], 'layouts')}}
-</div>
-@endif
-
-   </div>
-</div>
-
-
-
-  </div>
-</div>
+      <div class="jumbotron" style="background: no-repeat url('{{URL::to('/assets/theme/images/Dashboard.jpg')}}'); background-size: 100% auto;min-height: 200px; margin-top: 40px;">
 
 
       </div>
@@ -124,44 +183,96 @@
 
 @section('styles')    @parent
 
+{{-- Auto Complete --}}
+
+  {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script -->
+
 <style>
-  .log-showoff-format {
-      color: #3a87ad;;
-      font-weight: bold;
+
+  .ui-autocomplete-loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+  }
+  .loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
   }
 
-  .log-INFO-format {
-      color: black;
-  }
-  .log-WARNING-format {
-      color: #e7a413;
-      font-weight: bold;
-  }
-  .log-ERROR-format {
-      color: red;
-      font-weight: bold;
-  }
-  .log-TIMER-format {
-      color: blue;
-      font-weight: bold;
-  }
 
-  .log-PENDING-format {
-      color: blue;
-      font-weight: bold;
-  }
-  .log-SUCCESS-format {
-      color: #38b44a;
-      font-weight: bold;
-  }
-  .log-ATTENTION-format {
-      color: red;
-      font-weight: bold;
-  }
-  .auto-width {
-        width: 1px; 
-        white-space: nowrap;
-  }
+/* See: http://fellowtuts.com/twitter-bootstrap/bootstrap-popover-and-tooltip-not-working-with-ajax-content/ 
+.modal .popover, .modal .tooltip {
+    z-index:100000000;
+}
+ */
 </style>
+
+@endsection
+
+
+@section('scripts')    @parent
+
+
+{{-- Auto Complete --}}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        $("#autocustomer_name").val('');
+        $("#autoproduct_name").val('');
+
+        // To get focus;
+        $("#autocustomer_name").focus();
+
+        $("#autocustomer_name").autocomplete({
+            source : "{{ route('home.searchcustomer') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                customer_id = value.item.id;
+
+                redirect = "{{ URL::to('customers') }}/"+customer_id+"/edit";
+
+                window.location.href = redirect;
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.identification+'] ' + item.name_fiscal + "</div>" )
+                .appendTo( ul );
+            };
+
+
+
+        $("#autoproduct_name").autocomplete({
+            source : "{{ route('home.searchproduct') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                product_id = value.item.id;
+
+                redirect = "{{ URL::to('products') }}/"+product_id+"/edit";
+
+                window.location.href = redirect;
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.reference+'] ' + item.name + "</div>" )
+                .appendTo( ul );
+            };
+
+    });
+
+</script> 
 
 @endsection

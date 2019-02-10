@@ -99,6 +99,8 @@ return [
 	'View Customer'     => 'Ir a la Ficha del Cliente',
 	'View Invoicing Address'     => 'Ver Dirección de Facturación',
 
+	'Group Shipping Slips'     => 'Agrupar Albaranes',
+
 
 	'Header'     => 'Cabecera',
 	'Lines'     => 'Líneas',
@@ -313,5 +315,7 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
+
+	'Create Invoice'     => 'Crear Factura',
 
 ];

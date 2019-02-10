@@ -501,6 +501,7 @@ class CustomersController extends Controller {
         // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
         $o_lines = CustomerOrderLine::
                             with('document')
+                            ->whereHas('product')
                             ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');
@@ -514,16 +515,16 @@ class CustomersController extends Controller {
                             ->take( $items_per_page_products )
                             ->get();
 
-/*
-        $s_lines = CustomerShippingSlipLine::where('product_id', $productid)
-                            ->with('document')
+/* */
+        $s_lines = CustomerShippingSlipLine::
+                            with('document')
+                            ->whereHas('product')
+                            ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');
 //                                }])
                             ->whereHas('document', function($q) use ($id) {
                                     $q->where('customer_id', $id);
-                                    $q->where('created_via', 'manual');
- //                                   $q->where('status', '!=', 'draft');
                                 })
                             ->join('customer_shipping_slips', 'customer_shipping_slip_lines.customer_shipping_slip_id', '=', 'customer_shipping_slips.id')
                             ->select('customer_shipping_slip_lines.*', 'customer_shipping_slips.document_date', \DB::raw('"customershippingslips" as route'))
@@ -532,26 +533,26 @@ class CustomersController extends Controller {
                             ->get();
 
 
-        $i_lines = CustomerInvoiceLine::where('product_id', $productid)
-                            ->with('document')
+        $i_lines = CustomerInvoiceLine::
+                            with('document')
+                            ->whereHas('product')
+                            ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');
 //                                }])
                             ->whereHas('document', function($q) use ($id) {
                                     $q->where('customer_id', $id);
-                                    $q->where('created_via', 'manual');
- //                                   $q->where('status', '!=', 'draft');
                                 })
                             ->join('customer_invoices', 'customer_invoice_lines.customer_invoice_id', '=', 'customer_invoices.id')
                             ->select('customer_invoice_lines.*', 'customer_invoices.document_date', \DB::raw('"customerinvoices" as route'))
                             ->orderBy('customer_invoices.document_date', 'desc')
                             ->take( $items_per_page_products )
                             ->get();
-*/        
+/* */        
         // See: https://stackoverflow.com/questions/23083572/merge-and-sort-two-eloquent-collections
         $lines1 = collect($o_lines);
- //       $lines2 = collect($s_lines);
- //       $lines3 = collect($i_lines);
+        $lines2 = collect($s_lines);
+        $lines3 = collect($i_lines);
 /*
         This way you can just merge them, even when there are duplicate ID's.
 
@@ -559,7 +560,7 @@ class CustomersController extends Controller {
         A 'normal' collection has different methods than the Eloquent Collection
 */
 
-        $lines = $lines1;   // ->merge($lines2)->merge($lines3)->sortByDesc('document_date');
+        $lines = $lines1->merge($lines2)->merge($lines3)->sortByDesc('document_date');
 
         $lines = $lines->take( $items_per_page_products );
 

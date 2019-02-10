@@ -4,9 +4,9 @@
 <div class="modal fade" id="customercenterHelp" tabindex="-1" role="dialog" aria-labelledby="myLaraBillander" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header alert-info">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myLaraBillander">Clientes</h4>
+                <h3 class="modal-title" id="myLaraBillander">Clientes</h3>
             </div>
             <div class="modal-body">
 
@@ -59,3 +59,26 @@
 </div>
 
 @endsection
+
+
+@section('styles')    @parent
+
+<style>
+
+.modal-content {
+  overflow:hidden;
+}
+
+/*
+See: https://coreui.io/docs/components/buttons/ :: Brand buttons
+*/
+.btn-behance {
+    color: #fff;
+    background-color: #1769ff;
+    border-color: #1769ff;
+}
+
+</style>
+
+@endsection
+

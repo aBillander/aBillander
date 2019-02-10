@@ -34,9 +34,9 @@
         <a href="{{ route('carts.index') }}" class="btn btn-sm btn-blue" 
                 title="{{l('View Carts', [], 'layouts')}}"><i class="fa fa-shopping-cart"></i> {{l('View Carts', [], 'layouts')}}</a>
 
-        <button type="button" class="btn btn-sm btn-info" 
+        <button type="button" class="btn btn-sm btn-behance" 
                 data-toggle="modal" data-target="#customercenterHelp"
-                title="{{l('Help', [], 'layouts')}}"><i class="fa fa-medkit"></i> {{l('Help', [], 'layouts')}}</button>
+                title="{{l('Help', [], 'layouts')}}"><i class="fa fa-life-saver"></i> {{l('Help', [], 'layouts')}}</button>
 @endif
 
     </div>

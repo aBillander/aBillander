@@ -280,7 +280,7 @@
 
 <div class="row">
 
-         <div class="col-lg-3 col-md-3 col-sm-3{{ $errors->has('due_date') ? 'has-error' : '' }}">
+         <div class="col-lg-3 col-md-3 col-sm-3 {{ $errors->has('due_date') ? 'has-error' : '' }}">
             <div class="form-group">
                {{ l('Date') }}
                {!! Form::text('due_date', null, array('class' => 'form-control', 'id' => 'due_date', 'autocomplete' => 'off')) !!}

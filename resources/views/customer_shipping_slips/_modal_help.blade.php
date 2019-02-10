@@ -20,9 +20,9 @@
 
 <p>2.- Modificar la cabecera, añadir / modificar / borrar líneas.</p>
 
-<p>3.- Confirmar el Albarán. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada. Aún es posible madificar la cabecera y las líneas.</p>
+<p>3.- Confirmar el Albarán. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada. Aún es posible modificar la cabecera y las líneas.</p>
 
-<p>4.- Cerrar el Albarán. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock. Sólo los Albaranes cerradas son visibles por el Cliente en el Centro de Clientes.</p>
+<p>4.- Cerrar el Albarán. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock. Sólo los Albaranes cerrados son visibles por el Cliente en el Centro de Clientes.</p>
 
 <h3>Estado “Borrador”</h3>
 
@@ -67,6 +67,18 @@
     <p></p>
     <p>* Los movimientos de stock se revierten añadiendo movimientos en sentido contrario.</p>
 </div>
+
+<h3>Estados de Envío</h3>
+
+<p>- <strong>Pendiente</strong>. El Albarán se ha creado a partir de un Pedido o directamente. Es estado es automáticamente Pendiente. Aún no se está haciendo nada con él (está a la espera del fulfillment: picking y packing).</p>
+
+<p>- <strong>Preparación</strong>. Se pasa a este estado cuando se empieza a preparar el Albarán, es decir, se está realizando el picking (proceso de recolección de los artículos desde las distintas ubicaciones en el almacén) y el packing (empaquetado de los pedidos para su entrega).</p>
+
+<p>- <strong>Reparto</strong>. Cuando se entregan los paquetes al Transportista.</p>
+
+<p>- <strong>Excepción</strong>. El Albarán pasa a este estado si la entrega falla (entrega rehusada, pérdida de paquetes, etc.).</p>
+
+<p>- <strong>Entregado</strong>. La mercancía se entregó y el Albarán está firmado por el Cliente y el Transportista.</p>
 
 
 

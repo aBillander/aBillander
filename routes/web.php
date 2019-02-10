@@ -39,6 +39,8 @@ if ( !env('ALLOW_USER_REGISTRATION', true) )
 Route::get('/', 'WelcomeController@index');     // ->name('home');
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('home/searchcustomer', 'HomeController@searchCustomer')->name('home.searchcustomer');
+Route::get('home/searchproduct' , 'HomeController@searchProduct' )->name('home.searchproduct' );
 
 
 // https://www.youtube.com/watch?v=Vb7G1Q2g66g&t=1931s
@@ -329,6 +331,12 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{document}/close',   $controller.'@close'  )->name($path.'.close'  );
         Route::get($path.'/{document}/unclose', $controller.'@unclose')->name($path.'.unclose');
 }
+
+        Route::get( 'customershippingslips/customers/{id}',  'CustomerShippingSlipsController@getShippingSlips')->name('customer.shippingslips');
+        Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');
+        Route::get('customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
+
+        Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('shippingslips.for.today');
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');
         

@@ -401,6 +401,8 @@ class Billable extends Model
     
     public function hasShippingAddress()
     {
+        if ( !$this->shipping_address_id ) return false;
+
         return $this->shipping_address_id !== $this->invoicing_address_id;
     }
 

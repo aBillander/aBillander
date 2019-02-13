@@ -65,7 +65,7 @@ trait BillableTotalsTrait
         $currency = $this->document_currency;
 //        $currency->conversion_rate = $this->conversion_rate;
 
-        $document_lines      = $this->documentlines;
+        $document_lines      = $this->documentlines->where('line_type', '<>', 'comment');
         // $line_taxes = $this->customerorderlinetaxes;
         
         // Let' get dirty!
@@ -193,7 +193,7 @@ trait BillableTotalsTrait
 //        $currency = $this->currency;
 //        $currency->conversion_rate = $this->conversion_rate;
 
-        $document_lines      = $this->documentlines;
+        $document_lines      = $this->documentlines->where('line_type', '<>', 'comment');
         
         // Let' get dirty!
         $totals = collect([]);
@@ -290,7 +290,7 @@ trait BillableTotalsTrait
         $currency = $this->currency;
         $currency->conversion_rate = $this->conversion_rate;
 
-        $document_lines      = $this->documentlines;
+        $document_lines      = $this->documentlines->where('line_type', '<>', 'comment');
         
         // Let' get dirty!
         $totals = collect([]);

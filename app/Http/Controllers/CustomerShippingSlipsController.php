@@ -11,6 +11,11 @@ use App\Customer;
 use App\CustomerShippingSlip as Document;
 use App\CustomerShippingSlipLine as DocumentLine;
 
+use App\CustomerInvoice;
+use App\CustomerInvoiceLine;
+use App\CustomerInvoiceLineTax;
+use App\DocumentAscription;
+
 use App\Configuration;
 use App\Sequence;
 use App\Template;
@@ -53,6 +58,43 @@ class CustomerShippingSlipsController extends BillableController
         $documents->setPath($this->model_path);
 
         return view($this->view_path.'.index', $this->modelVars() + compact('documents'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function indexByCustomer($id, Request $request)
+    {
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+
+        $items_per_page = intval($request->input('items_per_page', Configuration::getInt('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
+
+        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+
+        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+
+        $customer = $this->customer->findOrFail($id);
+
+        $documents = $this->document
+                            ->where('customer_id', $id)
+//                            ->with('customer')
+                            ->with('currency')
+//                            ->with('paymentmethod')
+                            ->orderBy('document_date', 'desc')
+                            ->orderBy('id', 'desc');        // ->get();
+
+        $documents = $documents->paginate( $items_per_page );
+
+        // abi_r($this->model_path, true);
+
+        $documents->setPath($id);
+
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
     }
 
     /**
@@ -460,7 +502,7 @@ class CustomerShippingSlipsController extends BillableController
     }
 
 
-    protected function getShippingSlips($id, Request $request)
+    protected function getInvoiceableShippingSlips($id, Request $request)
     {
         $model_path = $this->model_path;
         $view_path = $this->view_path;
@@ -499,8 +541,8 @@ class CustomerShippingSlipsController extends BillableController
         $document_group = $request->input('document_group', []);
 
         if ( count( $document_group ) == 0 ) 
-            return redirect()->route('customer.shippingslips', $request->input('customer_id'))
-                ->with('warning', l('No se ha seleccionado ningún Albarán, y no se ha realizado ninguna acción.'));
+            return redirect()->route('customer.invoiceable.shippingslips', $request->input('customer_id'))
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
         
         // Dates (cuen)
         $this->mergeFormDates( ['document_date'], $request );
@@ -534,29 +576,255 @@ class CustomerShippingSlipsController extends BillableController
 
         // abi_r($params, true);
         
-        return $this->invoiceDocumentList( [$id] );
+        return $this->invoiceDocumentList( [$id], $params );
     }
 
 
 
     
-    public function invoiceDocumentList( $list )
+    public function invoiceDocumentList( $list, $params )
     {
 
-        abi_r($list, true);
+//        1.- Recuperar los documntos
+//        2.- Comprobar que están todos los de la lista ( comparando count() )
 
-/*
-        1.- Recuperar los documntos
-        2.- Comprobar que están todos los de la lista ( comparando count() )
-        3.- Si algún documento tiene plantilla diferente, generar factura para él
+        try {
 
-        4.- Cear cabecera
-        5.- Crear enlaces para trazabilidad de documentos
+            $customer = $this->customer
+                                ->with('currency')
+                                ->findOrFail($params['customer_id']);
 
-        6.- Crear línea de texto con los albaranes ???
+            $documents = $this->document
+                                ->with('lines')
+                                ->with('lines.linetaxes')
+    //                            ->with('customer')
+    //                            ->with('currency')
+    //                            ->with('paymentmethod')
+                                ->orderBy('document_date', 'asc')
+                                ->orderBy('id', 'asc')
+                                ->findOrFail( $list );
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 
-        7.- Crear líneas agrupadas ???
-*/
+            return redirect()->back()
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $list)], 'layouts'));
+            
+        }
+
+//        4.- Cear cabecera
+
+        // Header
+        // Common data
+        $data = [
+//            'company_id' => $this->company_id,
+            'customer_id' => $customer->id,
+//            'user_id' => $this->,
+
+            'sequence_id' => $params['sequence_id'],
+
+            'created_via' => 'aggregate',
+
+            'document_date' => $params['document_date'],
+
+            'currency_conversion_rate' => $customer->currency->conversion_rate,
+//            'down_payment' => $this->down_payment,
+
+            'total_currency_tax_incl' => $documents->sum('total_currency_tax_incl'),
+            'total_currency_tax_excl' => $documents->sum('total_currency_tax_excl'),
+//            'total_currency_paid' => $this->total_currency_paid,
+
+            'total_tax_incl' => $documents->sum('total_tax_incl'),
+            'total_tax_excl' => $documents->sum('total_tax_excl'),
+
+//            'commission_amount' => $this->commission_amount,
+
+            // Skip notes
+
+            'status' => 'draft',
+            'locked' => 0,
+
+            'invoicing_address_id' => $customer->invoicing_address_id,
+//            'shipping_address_id' => $this->shipping_address_id,
+//            'warehouse_id' => $this->warehouse_id,
+//            'shipping_method_id' => $this->shipping_method_id ?? $this->customer->shipping_method_id ?? Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD'),
+//            'carrier_id' => $this->carrier_id,
+            'sales_rep_id' => $customer->sales_rep_id,
+            'currency_id' => $customer->currency->id,
+            'payment_method_id' => $customer->getPaymentMethodId(),
+            'template_id' => $params['template_id'],
+        ];
+
+        // Model specific data
+        $extradata = [
+            'type' => 'invoice',
+//            'payment_status' => 'pending',
+//            'stock_status_status' => 'completed',
+        ];
+
+
+        // Let's get dirty
+//        CustomerInvoice::unguard();
+        $invoice = CustomerInvoice::create( $data + $extradata );
+//        CustomerInvoice::reguard();
+
+
+//        5a.- Añadir Albarán
+//        5b.- Crear enlaces para trazabilidad de documentos
+        // Initialize grouped lines collection
+        // $grouped_lines = DocumentLine::whereIn($this->getParentModelSnakeCase().'_id', $list)->get();
+
+        // Initialize totals
+        $total_currency_tax_incl = 0;
+        $total_currency_tax_excl = 0;
+        $total_tax_incl = 0;
+        $total_tax_excl = 0;
+
+        // Initialize line sort order
+        $i = 0;
+
+        foreach ($documents as $document) {
+            # code...
+            $i++;
+
+            // Text line announces Shipping Slip
+            $line_data = [
+                'line_sort_order' => $i*10, 
+                'line_type' => 'comment', 
+                'name' => l('Shipping Slip: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]),
+//                'product_id' => , 
+//                'combination_id' => , 
+//                'reference', 'name', 
+                'quantity' => 1, 
+                'measure_unit_id' => Configuration::getInt('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+//                    'cost_price', 'unit_price', 'unit_customer_price', 
+//                    'prices_entered_with_tax',
+//                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
+//                    'unit_final_price', 'unit_final_price_tax_inc', 
+//                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
+//                    'total_tax_incl', 'total_tax_excl', 
+//                    'tax_percent', 'commission_percent', 
+                'notes' => '', 
+                'locked' => 0,
+ //                 'customer_shipping_slip_id',
+                'tax_id' => Configuration::get('DEF_TAX'),  // Just convinient
+ //               'sales_rep_id'
+            ];
+
+            $invoice_line = CustomerInvoiceLine::create( $line_data );
+
+            $invoice->lines()->save($invoice_line);
+
+            // Add current Shipping Slip lines to Invoice
+            foreach ($document->lines as $line) {
+                # code...
+                $i++;
+
+                // $invoice_line = $line->toInvoiceLine();
+
+                // Common data
+                $data = [
+                ];
+
+                $data = $line->toArray();
+                // id
+                unset( $data['id'] );
+                // Parent document
+                unset( $data[$this->getParentModelSnakeCase().'_id'] );
+                // Dates
+                unset( $data['created_at'] );
+                unset( $data['deleted_at'] );
+                // linetaxes
+                unset( $data['linetaxes'] );
+                // Sort order
+                $data['line_sort_order'] = $i*10; 
+                // Locked 
+                $data['locked'] = 1; 
+
+                // Model specific data
+                $extradata = [
+                ];
+
+                // abi_r($this->getParentModelSnakeCase().'_id');
+                // abi_r($data, true);
+
+
+                // Let's get dirty
+                CustomerInvoiceLine::unguard();
+                $invoice_line = CustomerInvoiceLine::create( $data + $extradata );
+                CustomerInvoiceLine::reguard();
+
+                $invoice->lines()->save($invoice_line);
+
+                foreach ($line->taxes as $linetax) {
+
+                    // $invoice_line_tax = $this->lineTaxToInvoiceLineTax( $linetax );
+                    // Common data
+                    $data = [
+                    ];
+
+                    $data = $linetax->toArray();
+                    // id
+                    unset( $data['id'] );
+                    // Parent document
+                    unset( $data[$this->getParentModelSnakeCase().'_line_id'] );
+                    // Dates
+                    unset( $data['created_at'] );
+                    unset( $data['deleted_at'] );
+
+                    // Model specific data
+                    $extradata = [
+                    ];
+
+
+                    // Let's get dirty
+                    CustomerInvoiceLineTax::unguard();
+                    $invoice_line_tax = CustomerInvoiceLineTax::create( $data + $extradata );
+                    CustomerInvoiceLineTax::reguard();
+
+                    $invoice_line->taxes()->save($invoice_line_tax);
+
+                }
+            }
+
+            // Not so fast, Sony Boy
+
+            // Document traceability
+            //     leftable  is this document
+            //     rightable is Customer Invoice Document
+            $link_data = [
+                'leftable_id'    => $document->id,
+                'leftable_type'  => $document->getClassName(),
+
+                'rightable_id'   => $invoice->id,
+                'rightable_type' => CustomerInvoice::class,
+
+                'type' => 'traceability',
+                ];
+
+            $link = DocumentAscription::create( $link_data );
+        }
+
+        // Good boy, so far
+
+
+
+
+        abi_r($grouped_lines, true);
+
+
+
+
+
+
+
+//        3.- Si algún documento tiene plantilla diferente, generar factura para él <= Tontá: el albarán NO tiene plantilla de Factura
+
+//        6.- Crear línea de texto con los albaranes ???
+
+//        7.- Crear líneas agrupadas ???
+
+//        8.- Manage estados de documento, pago y stock
+
 
         // Prepare Logger
         $logger = \aBillander\WooConnect\WooOrderImporter::logger();

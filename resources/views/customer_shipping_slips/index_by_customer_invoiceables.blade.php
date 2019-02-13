@@ -51,7 +51,7 @@
 
 <div class="row">
 
-   <div xclass="col-lg-8 col-md-8">
+   <div class="col-lg-8 col-md-8">
    <div class="table-responsive">
 
 @if ($documents->count())
@@ -136,7 +136,7 @@
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
-{{-- --}}
+{{--
 @if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0)
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy', 'layouts')}}"><i class="fa fa-copy"></i></a>
@@ -162,7 +162,7 @@
                     data-title="{{ l('Documents') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @endif
-{{-- --}}
+--}}
             </td>
         </tr>
         @endforeach
@@ -190,7 +190,7 @@
 
 @if ($documents->count())
 
-   <div class="col-lg-4 col-md-4 hidden">
+   <div class="col-lg-4 col-md-4">
 
             <div class="panel panel-info">
               <div class="panel-heading">
@@ -309,7 +309,7 @@ $("#document_lines").on("change", function () {
 
     function getCustomerShippingSlips( items_per_page = 0 ){
       
-      window.location = "{{ route('customer.shippingslips', $customer->id) }}"+"?items_per_page="+$("#items_per_page").val();
+      window.location = "{{ route('customer.invoiceable.shippingslips', $customer->id) }}"+"?items_per_page="+$("#items_per_page").val();
 
       // 
       // $('#form-select-documents-per-page').submit();

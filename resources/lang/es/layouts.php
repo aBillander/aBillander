@@ -35,11 +35,13 @@ return [
 	'Unable to load PDF Document &#58&#58 (:id) '                =>  'No se puede cargar el documento PDF &#58&#58 (:id) ',
 	'This record cannot be created because it already exists &#58&#58 (:id) '  =>  'El registro no puede ser creado porque ya existe &#58&#58 (:id) ',
 	'The record with id=:id does not exist'                      =>  'El registro con id=:id no existe',
+	'Some records in the list [ :id ] do not exist'              =>  'Algunos registros en la lista [ :id ] no existen',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
 
 	'Your Document has been sent! &#58&#58 (:id) '     => 'Su Documento ¡ha sido enviado! &#58&#58 (:id) ',
 	'Your Document could not be sent &#58&#58 (:id) '     => 'Su Documento no ha podido ser enviado &#58&#58 (:id) ',
 
+	'No records selected. ' => 'No se han seleccionado registros. ',
 	'No action is taken &#58&#58 (:id) ' => 'No se ha realizado ninguna acción &#58&#58 (:id) ',
 
 	'This configuration has been successfully updated'  =>  'La configuración se ha actualizado correctamente',
@@ -87,7 +89,9 @@ return [
 	'Suppliers' => 'Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',
 	'Sale Orders'     => 'Pedidos de Venta',
+	'Orders'     => 'Pedidos',
 	'Shipping Slips'     => 'Albaranes',
+	'Invoices'     => 'Facturas',
 	'Stock Movements'     => 'Movimientos de Almacén',
 	'Inventory Count'     => 'Inventario de Almacén',
 	'Inventory Adjustments'     => 'Regularización de Almacén',
@@ -181,6 +185,7 @@ return [
 	'Load'     => 'Cargar',
 	'Reset'     => 'Reiniciar',
 	'View'     => 'Ver',
+	'View Document'     => 'Ver Documento',
 	'View more'     => 'Ver más',
 	'Edit'     => 'Modificar',
 	'Apply'     => 'Aplicar',

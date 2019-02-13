@@ -270,6 +270,8 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('customerorders/{id}/pdf',         'CustomerOrdersController@showPdf'       )->name('customerorder.pdf'        );
         Route::get('customerorders/{id}/invoice/pdf', 'CustomerOrdersController@showPdfInvoice')->name('customerorder.invoice.pdf');
 
+        Route::get('customerorders/customers/{id}',  'CustomerOrdersController@indexByCustomer')->name('customer.orders');
+
 
         $pairs = [
                 [
@@ -298,6 +300,7 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/getheader',            $controller.'@getDocumentHeader' )->name($path.'.getheader');
         Route::get($path.'/line/productform/{action}', $controller.'@FormForProduct')->name($path.'.productform');
         Route::get($path.'/line/serviceform/{action}', $controller.'@FormForService')->name($path.'.serviceform');
+        Route::get($path.'/line/commentform/{action}', $controller.'@FormForComment')->name($path.'.commentform');
         Route::get($path.'/line/searchproduct',        $controller.'@searchProduct' )->name($path.'.searchproduct');
         Route::get($path.'/line/searchservice',        $controller.'@searchService' )->name($path.'.searchservice');
         Route::get($path.'/line/getproduct',           $controller.'@getProduct'    )->name($path.'.getproduct');
@@ -330,9 +333,11 @@ foreach ($pairs as $pair) {
 
         Route::get($path.'/{document}/close',   $controller.'@close'  )->name($path.'.close'  );
         Route::get($path.'/{document}/unclose', $controller.'@unclose')->name($path.'.unclose');
+
+        Route::get($path.'/customers/{id}',  $controller.'@indexByCustomer')->name('customer.'.str_replace('customer', '', $path));
 }
 
-        Route::get( 'customershippingslips/customers/{id}',  'CustomerShippingSlipsController@getShippingSlips')->name('customer.shippingslips');
+        Route::get( 'customershippingslips/customers/{id}/invoiceables',  'CustomerShippingSlipsController@getInvoiceableShippingSlips')->name('customer.invoiceable.shippingslips');
         Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');
         Route::get('customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
 

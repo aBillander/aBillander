@@ -13,7 +13,7 @@
                   <i class="fa fa-plus"></i> Dirección
                 </button -->
 
-                <a href="{{ route('customer.shippingslips', [$customer->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Shipping Slips')}}</a>
+                <a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Shipping Slips')}}</a>
 
                 <div class="btn-group">
                     <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
@@ -27,7 +27,21 @@
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
                 </div>
-                <a href="{{ URL::to('customers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a>
+
+                <div class="btn-group" style="margin-right: 36px;">
+                    <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', [], 'layouts')}}" style="background-color: #31b0d5;
+border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu pull-right">
+                      <li><a href="{{ route('customer.orders', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Orders', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{ route('customer.shippingslips', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{ route('customer.invoices', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Invoices', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{ URL::to('customers') }}">{{ l('Back to Customers') }}</a></li>
+                    </ul>
+                </div>
+
             </div>
             <h2><a href="{{ URL::to('customers') }}">{{ l('Customers') }}</a> <span style="color: #cccccc;">/</span> {{ $customer->name_fiscal }}</h2>
         </div>

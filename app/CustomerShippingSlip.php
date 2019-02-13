@@ -5,6 +5,7 @@ namespace App;
 use Auth;
 
 use App\Traits\BillableStockMovementsTrait;
+// use App\Traits\BillableInvoiceableTrait;
 
 use \App\CustomerShippingSlipLine;
 
@@ -12,6 +13,7 @@ class CustomerShippingSlip extends Billable
 {
     
     use BillableStockMovementsTrait;
+//    use BillableInvoiceableTrait;
 
     public static $badges = [
             'a_class' => 'alert-info',

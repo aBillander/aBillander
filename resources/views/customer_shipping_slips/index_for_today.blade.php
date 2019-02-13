@@ -14,7 +14,7 @@
 
     </div>
     <h2>
-        {{ l('Documents') }}
+        <button type="button" class="btn xbtn-xs alert-info"><i class="fa fa-calendar"></i> <strong>{{ abi_date_form_short('now') }}</strong></button> <span style="color: #cccccc;">/</span> {{ l('Documents') }}
     </h2>        
 </div>
 

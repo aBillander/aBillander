@@ -189,6 +189,7 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
 	'Add Product'     => 'Nuevo Producto',
 	'Add Service'     => 'Nuevo Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -259,6 +260,8 @@ return [
 	'Customer Risk'     => 'Riesgo alcanzado',
 	'Customer Group'     => 'Grupo de Clientes',
 	'Price List'     => 'Tarifa',
+
+	'Shipping Slips'     => 'Albaranes',
 
 	'Totals'     => 'Totales',
 	'Total Lines'     => 'Total Líneas',

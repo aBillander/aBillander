@@ -131,7 +131,7 @@
         <tr>
             <td>{{ $customer->id }}</td>
             <td>{{ $customer->reference_external }}</td>
-            <td>{{ $customer->name_fiscal }}<!-- br / -->{{-- $customer->name_commercial --}}</td>
+            <td>{{ $customer->name_regular }}<!-- br / -->{{-- $customer->name_commercial --}}</td>
             <td>{{ $customer->identification }}</td>
             <td>{{ $customer->address->email }}</td>
             <td>{{ $customer->address->phone }}</td>
@@ -174,7 +174,7 @@ line-height: 1.42857143;
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('customers/' . $customer->id ) }}" 
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Customers') }} :: ({{$customer->id}}) {{{ $customer->name_fiscal }}} " 
+                    data-title="{{ l('Customers') }} :: ({{$customer->id}}) {{{ $customer->name_regular }}} " 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('customers/' . $customer->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

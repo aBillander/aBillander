@@ -122,7 +122,7 @@
 
 <div class="panel panel-info" style="margin-bottom: 0px;">
   <div class="panel-heading">
-    <h3 class="panel-title"><b>{{l('Customer')}}</b>: {{ $customer->name_fiscal }}</a></h3>
+    <h3 class="panel-title"><b>{{l('Customer')}}</b>: {{ $customer->name_regular }}</a></h3>
   </div>
   <div class="panel-body">
     <b>{{l('Currency')}}</b>: {{ $currency->name }}<br />

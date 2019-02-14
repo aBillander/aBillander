@@ -4,7 +4,7 @@
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 	    <h4 class="modal-title"> 
 
-<button type="button" class="btn btn-sm alert-info" data-dismiss="modal">{{ $customer->name_fiscal }}</button>
+<button type="button" class="btn btn-sm alert-info" data-dismiss="modal">{{ $customer->name_regular }}</button>
 
 	    {{ l('Product consumption') }} :: <label class="label label-success">{{ $product->reference }}</label> {{ $product->name }} ({{ $product->product_id }})</h4>
 	 </div>

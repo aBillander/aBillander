@@ -69,7 +69,7 @@
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
             <td><a class="" href="{{ URL::to('customers/' .$document->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
-            	{{ $document->customer->name_fiscal }}
+            	{{ $document->customer->name_regular }}
             	</a>
             </td>
             <td>

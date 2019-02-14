@@ -43,7 +43,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                 </div>
 
             </div>
-            <h2><a href="{{ URL::to('customers') }}">{{ l('Customers') }}</a> <span style="color: #cccccc;">/</span> {{ $customer->name_fiscal }}</h2>
+            <h2><a href="{{ URL::to('customers') }}">{{ l('Customers') }}</a> <span style="color: #cccccc;">/</span> {{ $customer->name_regular }}</h2>
         </div>
     </div>
 </div>

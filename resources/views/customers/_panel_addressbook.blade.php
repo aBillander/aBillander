@@ -60,7 +60,7 @@
                     title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
         </div>
         <h3>
-            <span style="color: #dd4814;">{{ l('Address Book') }}</span> <span style="color: #cccccc;">/</span> {{ $customer->name_fiscal }}
+            <span style="color: #dd4814;">{{ l('Address Book') }}</span> <span style="color: #cccccc;">/</span> {{ $customer->name_regular }}
         </h3>        
     </div>
 

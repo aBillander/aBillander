@@ -48,7 +48,7 @@
         <tr>
             
             <td><a class="" href="{{ URL::to('customers/' .$cart->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
-                {{ $cart->customer->name_fiscal }}
+                {{ $cart->customer->name_regular }}
                 </a>
 
                 {{ $cart->customer->address->alias }} 

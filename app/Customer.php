@@ -72,6 +72,11 @@ class Customer extends Model {
     {
         return $this->address->firstname . ' ' . $this->address->lastname;
     }
+    
+    public function getNameRegularAttribute() 
+    {
+        return $this->name_commercial;
+    }
 /*    
     public function getFirstnameAttribute() 
     {

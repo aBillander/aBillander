@@ -34,7 +34,7 @@
 
                   {{l(' :: ')}} <span class="lead well well-sm">
 
-                  <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_fiscal }}</a>
+                  <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
 
                  <a title=" {{l('View Invoicing Address')}} " href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-success" data-toggle="popover" data-placement="right" 

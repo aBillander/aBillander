@@ -34,7 +34,7 @@
         @foreach ($suppliers as $supplier)
         <tr>
             <td>{{ $supplier->id }}</td>
-            <td>{{ $supplier->name_fiscal }}</td>
+            <td>{{ $supplier->name_commercial }}</td>
             <td>{{ $supplier->identification }}</td>
 
             <td class="text-center">
@@ -56,7 +56,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('suppliers/' . $supplier->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Suppliers') }} :: ({{$supplier->id}}) {{ $supplier->name_fiscal }}" 
+                		data-title="{{ l('Suppliers') }} :: ({{$supplier->id}}) {{ $supplier->name_commercial }}" 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('suppliers/' . $supplier->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

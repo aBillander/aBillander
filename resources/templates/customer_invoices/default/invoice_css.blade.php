@@ -340,6 +340,10 @@ table.totals td.price {
 	text-align: right;
 }
 
+table.order-details td.quantity {
+	text-align: center;
+}
+
 table.totals .grand-total td,
 table.totals .grand-total th {
 	border-top: 2px solid #000;

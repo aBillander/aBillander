@@ -1,19 +1,5 @@
 
-            <ul class="list-group">
-              <li class="list-group-item" style="background-color: #fcf8e3;
-border-color: #fbeed5;
-color: #c09853;">
-                <h4>{{ l('Stock Status') }}</h4>
-              </li>
-
-                  <li class="list-group-item">
-                      {{ $document->stock_status}}
-                    
-                  </li>
-
-            </ul>
-
-@if ( $document->created_via == 'aggregate' )
+@if ( $document->status == 'closed' )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">
@@ -24,16 +10,21 @@ color: #c09853;">
             </div -->
             <ul class="list-group">
               <li class="list-group-item" style="color: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
-                <h4>{{ l('Shipping Slips') }}</h4>
+                <h4>{{ l('Invoice', 'layouts') }}</h4>
               </li>
-              @foreach( $document->leftShippingSlips() as $document_item )
+              
                   <li class="list-group-item">
-                      <a href="{{ URL::to('customershippingslips/' . $document_item->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
-                          {{ $document_item->document_reference}}
-                      </a> - {{ abi_date_short( $document_item->document_date ) }}
+
+                      @if ( $document->invoiced_at )
+
+                      <a href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+                          {{ $document->customerinvoice()->document_reference}}
+                      </a> - {{ abi_date_short( $document->customerinvoice()->document_date ) }}
+
+                      @endif
                     
                   </li>
-              @endforeach
+
             </ul>
 
           </div>

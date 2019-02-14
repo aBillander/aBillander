@@ -21,6 +21,8 @@ class CreateCustomerShippingSlipsTable extends Migration
                 include __DIR__.'/schnitzel/_schnitzel_create_documents_table.php';
             }
 
+            $table->date('invoiced_at')->nullable();
+
             $table->date('printed_at')->nullable();                             // Printed at
             $table->date('edocument_sent_at')->nullable();                      // Electronic document sent at
             $table->date('customer_viewed_at')->nullable();                     // Customer retrieved invoice from online customer center

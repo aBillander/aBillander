@@ -29,8 +29,8 @@ class CustomerShippingSlipUnclosedListener
         $document = $event->document;
 
         // Update Customer Risk
-        $customer = $document->customer;
-        $customer->removeRisk($document->total_tax_incl);
+//        $customer = $document->customer;
+//        $customer->removeRisk($document->total_tax_incl);
 
         // Revert Stock Movements
         // Only if invoice has not "left document(s)", i.e., only if it is manually generated

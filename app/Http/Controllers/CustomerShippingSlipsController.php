@@ -358,9 +358,15 @@ class CustomerShippingSlipsController extends BillableController
      */
     public function destroy($id)
     {
-        $this->document->findOrFail($id)->delete();
+        $document = $this->document->findOrFail($id);
 
-        return redirect($this->model_path)
+        if( !$document->deletable )
+            return redirect()->back()
+                ->with('error', l('This record cannot be deleted because its Status &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+        $document->delete();
+
+        return redirect()->back()
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -519,6 +525,8 @@ class CustomerShippingSlipsController extends BillableController
 
         $documents = $this->document
                             ->where('customer_id', $id)
+                            ->where('status', 'closed')
+                            ->where('invoiced_at', null)
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
@@ -595,6 +603,8 @@ class CustomerShippingSlipsController extends BillableController
                                 ->findOrFail($params['customer_id']);
 
             $documents = $this->document
+                                ->where('status', 'closed')
+                                ->where('invoiced_at', null)
                                 ->with('lines')
                                 ->with('lines.linetaxes')
     //                            ->with('customer')
@@ -658,7 +668,7 @@ class CustomerShippingSlipsController extends BillableController
         $extradata = [
             'type' => 'invoice',
 //            'payment_status' => 'pending',
-//            'stock_status_status' => 'completed',
+//            'stock_status' => 'completed',
         ];
 
 
@@ -693,7 +703,8 @@ class CustomerShippingSlipsController extends BillableController
                 'name' => l('Shipping Slip: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]),
 //                'product_id' => , 
 //                'combination_id' => , 
-//                'reference', 'name', 
+                'reference' => $document->document_reference, 
+//                'name', 
                 'quantity' => 1, 
                 'measure_unit_id' => Configuration::getInt('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
 //                    'cost_price', 'unit_price', 'unit_customer_price', 
@@ -701,7 +712,8 @@ class CustomerShippingSlipsController extends BillableController
 //                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
 //                    'unit_final_price', 'unit_final_price_tax_inc', 
 //                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
-//                    'total_tax_incl', 'total_tax_excl', 
+                'total_tax_incl' => $document->total_currency_tax_incl, 
+                'total_tax_excl' => $document->total_currency_tax_excl, 
 //                    'tax_percent', 'commission_percent', 
                 'notes' => '', 
                 'locked' => 0,
@@ -788,6 +800,13 @@ class CustomerShippingSlipsController extends BillableController
 
             // Not so fast, Sony Boy
 
+            // Confirm Invoice
+            $document->confirm();
+
+            // Close Invoice
+            $document->close();
+
+
             // Document traceability
             //     leftable  is this document
             //     rightable is Customer Invoice Document
@@ -809,9 +828,12 @@ class CustomerShippingSlipsController extends BillableController
 
 
 
-        abi_r($grouped_lines, true);
+        // abi_r($grouped_lines, true);
 
 
+
+        return redirect('customerinvoices/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
 
 

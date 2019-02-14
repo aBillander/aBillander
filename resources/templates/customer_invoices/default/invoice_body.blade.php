@@ -171,16 +171,16 @@
 			<th class="description">
 				<span>Producto</span>
 			</th>
-			<th  class="price">
-				<span>Precio</span>
-			</th>
 			<th class="quantity last-column">
 				<span>Cantidad</span>
+			</th>
+			<th class="price">
+				<span>Precio</span>
 			</th>
 			<th class="discount">
 				<span>Descuento</span>
 			</th>
-			<th class="total last-column">
+			<th class="total xlast-column">
 				<span>Total</span>
 			</th>
 		</tr>
@@ -189,16 +189,30 @@
 
 	<tbody>
 
-                @foreach ($document->documentlines->sortBy('line_type') as $line)
+                @foreach ($document->documentlines->sortBy('line_order') as $line)
 
 			    @if ( 
 			    			( $line->line_type != 'product'  ) &&
 			    			( $line->line_type != 'service'  ) &&
-			    			( $line->line_type != 'shipping' )
+			    			( $line->line_type != 'shipping' ) &&
+			    			( $line->line_type != 'comment' )
 			    )
 			        @continue
 			    @endif
 
+@if( $line->line_type == 'comment' )
+		<tr class="3655">
+			<td class="sku first-column">
+				<span>{{-- $line->reference --}}</span>
+			</td>
+			<td class="description" colspan="5">
+				<span>
+					<span class="item-name"><strong>{{ $line->name }}</strong></span>
+					<span class="item-combination-options"></span>
+				</span>
+			</td>
+		</tr>
+@else
 		<tr class="3655">
 			<td class="sku first-column">
 				<span>{{ $line->reference }}</span>
@@ -209,16 +223,16 @@
 					<span class="item-combination-options"></span>
 				</span>
 			</td>
-			<td class="price">
+			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
+			</td>
+			<td class="price total last-column">
 				<span>
 					<span class="abi-Price-amount amount">{{ $line->as_price('unit_final_price_tax_inc') }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>
 			</td>
-			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
-			</td>
-			<td class="discount">
+			<td class="discount total last-column">
 				<span>
 					<span class="abi-Price-amount amount">{{ $line->as_percent('discount_percent') }}
 							<!-- span class="abi-Price-currencySymbol">€</span -->
@@ -233,6 +247,7 @@
 				</span>
 			</td>
 		</tr>
+@endif
 
                 @endforeach
 

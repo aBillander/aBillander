@@ -334,6 +334,9 @@ class Billable extends Model
         
         if ( $this->status == 'closed' ) return false;
 
+        // onhold?
+        if ( $this->onhold ) return false;
+
         // Do stuf...
         $this->status = 'closed';
         $this->close_date = \Carbon\Carbon::now();

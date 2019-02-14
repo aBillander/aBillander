@@ -26,8 +26,11 @@
 @if ($document->onhold>0)
                 <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
 @else
-                @if ( $document->status != 'closed' )
                 <a class="btn btn-sm alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
+
+                @if ( $document->status == 'closed'&& !$document->invoiced_at)
+                <a class="btn btn-sm btn-navy" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
+                </a>
                 @endif
 @endif
 
@@ -36,7 +39,7 @@
                     <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Back to', 'layouts')}}"><i class="fa fa-mail-reply"></i> &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu  pull-right">
                       <li><a href="{{ URL::to($model_path.'') }}">{{l('Back to Documents')}}</a></li>
-                      <li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}">{{l('Group Shipping Slips')}}</a></li>
+                      <li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Group Shipping Slips')}}</a></li>
                       <li><a href="{{ route('customer.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', 'layouts')}}</a></li>
                       <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
@@ -74,9 +77,11 @@
                     @if ($document->document_id>0)
                     {{ $document->document_reference }}
                               @if ( $document->sequence )
+                              @if ( $document->status == 'confirmed' )
                               @if ( ($document->sequence->next_id - $document->document_id) == 1 )
                                   <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unconfirm') }}" title="{{l('Undo Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
                                   </a>
+                              @endif
                               @endif
                               @endif
                     @else
@@ -99,54 +104,7 @@
    <div class="row">
       <div class="col-lg-2 col-md-2 col-sm-3">
 
-
-          <div class="xpanel xpanel-default">
-          <div class="xpanel-body">
-
-            <!-- h4>{{ l('Customer Risk') }}</h4>
-            <div class="progress progress-striped">
-                <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
-            </div -->
-            <ul class="list-group">
-              <li class="list-group-item" style="color: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
-                <h4>{{ l('Customer Infos') }}</h4>
-              </li>
-              <li class="list-group-item">
-                {{l('Customer Group')}}:<br /> {{ $customer->customergroup->name ?? '-' }}
-              </li>
-              <li class="list-group-item">
-                {{l('Price List')}}:<br /> {{ $customer->pricelist->name ?? '-' }}
-              </li>
-              <li class="list-group-item">
-                {{l('Sales Representative')}}:<br />
-                @if( $document->salesrep )
-                <a href="{{ URL::to('salesreps/' . $document->salesrep->id . '/edit') }}" target="_new">{{ $document->salesrep->name }}</a>
-                @else
-                -
-                @endif
-              </li>
-              <li class="list-group-item">
-                {{l('Equalization Tax')}}:<br />
-                @if( $document->customer->sales_equalization > 0 )
-                {{l('Yes', 'layouts')}}
-                @else
-                {{l('No', 'layouts')}}
-                @endif
-              </li>
-
-              <!-- li class="list-group-item">
-                <h4 class="list-group-item-heading">{{l('Customer Group')}}</h4>
-                <p class="list-group-item-text">{{ $customer->customergroup->name ?? '' }}</p>
-              </li>
-              <li class="list-group-item">
-                <h4 class="list-group-item-heading">{{l('Price List')}}</h4>
-                <p class="list-group-item-text">{{ $customer->pricelist->name ?? '' }}</p>
-              </li -->
-            </ul>
-
-          </div>
-          </div>
-
+          @include($view_path.'._panel_left_column')
 
       </div>
       

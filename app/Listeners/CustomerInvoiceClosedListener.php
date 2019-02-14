@@ -35,6 +35,11 @@ class CustomerInvoiceClosedListener
         {
             //
             $document->makeStockMovements();
+
+        } else {
+            //
+            $document->stock_status = 'completed';
+            $document->save();
         }
 
         // 

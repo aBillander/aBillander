@@ -558,10 +558,16 @@ class CustomerInvoicesController extends BillableController
 	 */
 	public function destroy($id)
 	{
-		$this->document->findOrFail($id)->delete();
+        $document = $this->document->findOrFail($id);
 
-        return redirect($this->model_path)
-				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        if( !$document->deletable )
+            return redirect()->back()
+                ->with('error', l('This record cannot be deleted because its Status &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+        $document->delete();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 
 

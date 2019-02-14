@@ -32,6 +32,11 @@ class CustomerShippingSlip extends Billable
         );
 
 
+    protected $document_dates = [
+            'invoiced_at'
+    ];
+
+
     /**
      * The fillable properties for this model.
      *
@@ -66,7 +71,7 @@ class CustomerShippingSlip extends Billable
 
     public function getDeletableAttribute()
     {
-        return $this->status == 'draft';
+        return $this->status != 'closed' && !$this->invoiced_at;
     }
     
 
@@ -163,6 +168,8 @@ class CustomerShippingSlip extends Billable
 
     public function shouldPerformStockMovements()
     {
+        return true;
+
         if ( $this->created_via == 'manual' && $this->stock_status == 'pending' ) return true;
 /*
         if ($this->stock_status == 'pending') return true;
@@ -177,9 +184,14 @@ class CustomerShippingSlip extends Billable
 
     public function canRevertStockMovements()
     {
+        if ( $this->status == 'closed' ) return true;
+
+        return false;
+/*
         if ($this->created_via == 'manual' && $this->stock_status == 'completed' ) return true;
 
         return false;
+*/
     }
 
 
@@ -209,9 +221,28 @@ class CustomerShippingSlip extends Billable
 
 
 
-    public function something()
+    public function rightAscriptions()
     {
-        return true;
+        return $this->morphMany('App\DocumentAscription', 'leftable')->where('type', 'traceability')->orderBy('id', 'ASC');
+    }
+
+    public function rightInvoiceAscriptions( $model = '' )
+    {
+        return $this->rightAscriptions->where('rightable_type', 'App\CustomerInvoice');
+    }
+
+    public function rightInvoices()
+    {
+        // $ascriptions = $this->rightInvoiceAscriptions();
+
+        // abi_r($ascriptions->pluck('rightable_id')->all(), true);
+
+        return \App\CustomerInvoice::find( $this->rightInvoiceAscriptions()->pluck('rightable_id') );
+    }
+
+    public function customerinvoice()
+    {
+        return $this->rightInvoices()->first();
     }
 
 

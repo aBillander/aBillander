@@ -63,9 +63,14 @@ class CustomerUsersController extends Controller
         	return redirect(route('customers.edit', $customer_id) . $section)
                 ->with('warning', l('No action is taken &#58&#58 (:id) ', ['id' => $customer_id], 'layouts') );
 
-		$this->validate($request, ['customer_id' => 'exists:customers,id']);
+        $customer = $this->customer->with('address')->find($customer_id);
 
-		$customer = $this->customer->with('address')->find($customer_id);
+        // Check unique
+        if ( $this->customeruser->where('email', $customer->address->email)->first() )
+            return redirect(route('customers.edit', $customer_id) . $section)
+                ->with('error', l('Duplicate email address &#58&#58 (:id) ', ['id' => $customer->address->email], 'layouts') );
+
+        $this->validate($request, ['customer_id' => 'exists:customers,id', 'email' => 'email|unique:customer_users,email']);
 
 		$data = [
 				'name' => '', 
@@ -78,13 +83,22 @@ class CustomerUsersController extends Controller
 				'customer_id' => $customer->id,
 		];
 
-		$customeruser = $this->customeruser->create($data);
+        // Check existence
+        if ( $customeruser = $this->customeruser->where('email', $customer->address->email)->withTrashed()->first() )
+        {
+            $customeruser->active=1;
+            $customeruser->deleted_at=null;    // or $customeruser->restore(); 
+            $customeruser->save();
+        }
+		else
+            $customeruser = $this->customeruser->create($data);
         // Notify Customer
         // 
         // $customer = $this->customeruser->customer;
 
 
         // MAIL stuff
+        if ( $request->input('notify_customer', 0) )
         try {
 
             $template_vars = array(
@@ -162,16 +176,31 @@ class CustomerUsersController extends Controller
         $section = '#customeruser';
         $customer_id = $request->input('customer_id');
 
+        $vrules = array(
+            'email'       => 'required|email',
+            'password'    => array('required', 'min:2', 'max:32'),
+        );
+
+        if ( isset($vrules['email']) ) $vrules['email'] = 'email|unique:customer_users,email' . ','. $customeruser->id.',id';  // Unique
+
 		if ( $request->input('password') != '' ) {
-			$this->validate( $request, CustomerUser::$rules );
+			$this->validate( $request, $vrules );
 
 			$password = \Hash::make($request->input('password'));
 			$request->merge( ['password' => $password] );
 			$customeruser->update($request->all());
 		} else {
-			$this->validate($request, array_except( CustomerUser::$rules, array('password')) );
+			$this->validate($request, array_except( $vrules, array('password')) );
 			$customeruser->update($request->except(['password']));
 		}
+
+        if ( ! $request->input('active') )
+        {
+            $customeruser->delete();
+
+            return redirect(route('customers.edit', $customer_id) . $section)
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customer_id], 'layouts'));
+        }
 
 		return redirect(route('customers.edit', $customer_id) . $section)
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customeruser->id], 'layouts') . $customeruser->getFullName());

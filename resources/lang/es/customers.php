@@ -143,6 +143,7 @@ return [
 
 	'Customer Center Access'     => 'Acceso al Centro de Clientes',
 	'Allow Customer Center access?'     => '¿Permitir acceso al Centro de Clientes?',
+	'Notify Customer? (by email)'     => '¿Informar al Cliente? (por email)',
 
 	'Shopping Cart'     => 'Contenido del Carrito',
 

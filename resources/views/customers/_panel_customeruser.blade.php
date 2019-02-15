@@ -14,7 +14,7 @@
       </h3>
    </div>
 
-@if( $customer->user )
+@if( optional($customer->user)->active )
 
 
         {!! Form::model($customer->user, array('method' => 'PATCH', 'url' => route('customerusers.update', [$customer->user->id]).'#customeruser' )) !!}
@@ -47,18 +47,36 @@
 
         <div class="row">
 
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-allow_abcc_access">
+                   <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-allow_abcc_access">
                      {!! Form::label('allow_abcc_access', l('Allow Customer Center access?'), ['class' => 'control-label']) !!}
                      <div>
                        <div class="radio-inline">
                          <label>
-                           {!! Form::radio('allow_abcc_access', '1', false, ['id' => 'allow_abcc_accessb_on']) !!}
+                           {!! Form::radio('allow_abcc_access', '1', false, ['id' => 'allow_abcc_access_on']) !!}
                            {!! l('Yes', [], 'layouts') !!}
                          </label>
                        </div>
                        <div class="radio-inline">
                          <label>
                            {!! Form::radio('allow_abcc_access', '0', true, ['id' => 'allow_abcc_access_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
+                   <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-notify_customer">
+                     {!! Form::label('notify_customer', l('Notify Customer? (by email)'), ['class' => 'control-label']) !!}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('notify_customer', '1', true, ['id' => 'notify_customerb_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('notify_customer', '0', false, ['id' => 'notify_customer_off']) !!}
                            {!! l('No', [], 'layouts') !!}
                          </label>
                        </div>

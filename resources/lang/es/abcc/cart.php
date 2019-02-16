@@ -50,7 +50,7 @@ return [
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Próx. Vencimiento',
 	'Show Customer'     => 'Ver Cliente',
-	'Show Payments'     => 'Ver Pagos',
+	'Show Payments'     => 'Mostrar Pagos',
 	'Draft'     => 'Borrador',
 	'D'     => 'B',
 	'Pending: Send by eMail'     => 'Pendiente: Enviar por eMail',

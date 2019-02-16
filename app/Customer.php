@@ -19,6 +19,8 @@ class Customer extends Model {
 //    protected $guarded = ['id', 'outstanding_amount', 'unresolved_amount', 'secure_key'
 //                ];
 
+
+    protected $appends = ['name_regular'];
 	
     protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'webshop_id', 'reference_external', 
                            'website', 'payment_days', 'no_payment_month', 
@@ -33,6 +35,7 @@ class Customer extends Model {
 
     public static $rules = array(
         'name_fiscal' => 'required',
+        'currency_id' => 'exists:currencies,id',
         'no_payment_month' => 'numeric|min:0|max:12',
     	);
 

@@ -5,44 +5,63 @@ namespace App\Http\Controllers\CustomerCenter;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-use App\Customer as Customer;
-use App\CustomerInvoice as CustomerInvoice;
-use App\CustomerInvoiceLine as CustomerInvoiceLine;
+use App\Configuration;
+use App\Currency;
 
-use App\Events\CustomerInvoiceViewed as CustomerInvoiceViewed;
+use App\CustomerUser;
+use App\Customer;
+use App\CustomerShippingSlip;
+use App\CustomerShippingSlipLine;
 
-use App\Configuration as Configuration;
+use App\Events\CustomerShippingSlipViewed;
 
 class AbccCustomerShippingSlipsController extends Controller
 {
-    protected $customer, $customerInvoice, $customerInvoiceLine;
+    protected $customer_user, $customerShippingSlip, $customerShippingSlipLine;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(Customer $customer, CustomerInvoice $customerInvoice, CustomerInvoiceLine $customerInvoiceLine)
+    public function __construct(CustomerUser $customer_user, CustomerShippingSlip $customerShippingSlip, CustomerShippingSlipLine $customerShippingSlipLine)
     {
         // $this->middleware('auth:customer')->except('pdf');
 
-        $this->customer            = $customer;
-        $this->customerInvoice     = $customerInvoice;
-        $this->customerInvoiceLine = $customerInvoiceLine;
+        $this->customer_user            = $customer_user;
+        $this->customerShippingSlip     = $customerShippingSlip;
+        $this->customerShippingSlipLine = $customerShippingSlipLine;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
     public function index()
     {
-        $customer_invoices = CustomerInvoice::ofCustomer()      // Of Logged in Customer (see scope on Customer Model)
+        $customer      = Auth::user()->customer;
+
+        $documents = $this->customerShippingSlip    //CustomerInvoice::ofCustomer()      // Of Logged in Customer (see scope on Customer Model)
+                            ->where('customer_id', $customer->id)
+                            ->where( function ($q) {
+                                    $q->where('status', 'closed');
+                                    $q->orWhere('status', 'confirmed');
+                                } )
+                            ->withCount('lines')
 //                            ->with('customer')
                             ->with('currency')
-                            ->with('paymentmethod')
-                            ->orderBy('id', 'desc')->get();
+//                            ->with('paymentmethod')
+                            ->orderBy('document_date', 'desc')
+                            ->orderBy('id', 'desc');
 
-        $customer_invoices = collect([]);
+        $documents = $documents->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
 
-        return view('abcc.shipping_slips.index', compact('customer_invoices'));
+        $documents->setPath('shippingslips');
+
+        return view('abcc.shipping_slips.index', compact('documents'));
     }
 
     public function show($cinvoiceKey)
@@ -78,49 +97,51 @@ class AbccCustomerShippingSlipsController extends Controller
         return view('abcc.invoices.show', compact('cinvoice', 'company'));
     }
 
-    public function pdf($cinvoiceKey, Request $request)
+    public function showPdf($id, Request $request)
     {
-        // $invoice = $this->invoiceRepository->findByUrlKey($cinvoiceKey);
 
-        // Set up a temporay Context
-        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        \App\Context::getContext()->company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
+        $customer      = Auth::user()->customer;
+
+        $document = $this->customerShippingSlip->where('id', $id)->where('customer_id', $customer->id)->first();
+
+        if (!$document) 
+            return redirect()->route('abcc.shippingslips.index')
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts').$customer->id);
+        
+
         $company = \App\Context::getContext()->company;
-        \App\Context::getContext()->controller = 'customerinvoices';
+
+        // Get Template
+        $t = $document->template ?? 
+             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE') );
+
+        if ( !$t )
+            return redirect()->route('abcc.shippingslips.index', $id)
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+        $template = $t->getPath( 'CustomerShippingSlip' );
+
+
+//        $template = 'customer_invoices.templates.' . $cinvoice->template->file_name;  // . '_dist';
+        $paper = $t->paper;    // A4, letter
+        $orientation = $t->orientation;    // 'portrait' or 'landscape'.
 
         // PDF stuff
-        try {
-            $cinvoice = $this->customerInvoice
-                            ->where('secure_key', $cinvoiceKey)
-                            ->with('customer')
-                            ->with('invoicingAddress')
-                            ->with('customerInvoiceLines')
-                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->with('template')
-                            ->firstOrFail();
-
-        } catch( \Exception $e ) {
-
-            return l('Customer Invoice id=:id does not exist.', ['id' => $cinvoiceKey] );
-        }
-
-        event(new CustomerInvoiceViewed($cinvoice, 'customer_viewed_at'));
-
-        $template = 'customer_invoices.templates.' . $cinvoice->template->file_name;  // . '_dist';
-        $paper = $cinvoice->template->paper;    // A4, letter
-        $orientation = $cinvoice->template->orientation;    // 'portrait' or 'landscape'.
-        
-        $pdf        = \PDF::loadView( $template, compact('cinvoice', 'company') )
+        try{
+                $pdf        = \PDF::loadView( $template, compact('document', 'company') )
                             ->setPaper( $paper, $orientation );
-//      $pdf = \PDF::loadView('customer_invoices.templates.test', $data)->setPaper('a4', 'landscape');
+        }
+        catch(\Exception $e){
+
+                return redirect()->route('abcc.invoices.index')
+                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+        }
 
         // PDF stuff ENDS
 
-        $pdfName    = 'invoice_' . $cinvoice->secure_key . '_' . $cinvoice->document_date;
+        $pdfName    = 'Shippingslip_' . $document->secure_key . '_' . $document->document_date;
 
-        if ($request->has('screen')) return view($template, compact('cinvoice', 'company'));
+        if ($request->has('screen')) return view($template, compact('document', 'company'));
         
         return  $pdf->stream();
         return  $pdf->download( $pdfName . '.pdf');

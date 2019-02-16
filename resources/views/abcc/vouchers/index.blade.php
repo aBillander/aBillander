@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('Customer Vouchers') }} @parent @stop
+@section('title') {{ l('My Vouchers') }} @parent @stop
 
 
 @section('content')
@@ -11,7 +11,7 @@
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
     </div -->
     <h2>
-        {{ l('Customer Vouchers') }}
+        {{ l('My Vouchers') }}
     </h2>        
 </div>
 

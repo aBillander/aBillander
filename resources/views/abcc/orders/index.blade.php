@@ -87,7 +87,7 @@
 
                 <!-- a class="btn btn-sm btn-lightblue" href="{ { URL::to('customerorders/' . $order->id . '/shippingslip') }}" title="{{l('Shipping Slip', [], 'layouts')}}"><i class="fa fa-truck"></i></a -->
 
-                <a class="btn btn-sm btn-grey" href="{{ route('abcc.order.pdf', [$order->id]) }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></a>
+                <a class="btn btn-sm btn-grey" href="{{ route('abcc.order.pdf', [$order->id]) }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 
                 <a class="btn btn-sm btn-warning" href="{{ route('abcc.order.duplicate', [$order->id]) }}" title="{{l('Copy Order to Cart')}}"><i class="fa fa-copy"></i></a>
 

@@ -183,6 +183,57 @@ class Product extends Model {
     |--------------------------------------------------------------------------
     */
 
+    public function getQuantityAllocatedAttribute()
+    {
+        // Allocated by Customer Orders
+        // Document status = 'confirmed'
+        $lines1 = \App\CustomerOrderLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q)
+                            {
+                                $q->where('status', 'confirmed');
+                            }
+                    )
+                    ->get();
+
+        $count1 = $lines1->sum('quantity');
+
+        // Allocated by Customer Shipping Slips
+        // Document status = 'confirmed'
+        $lines2 = \App\CustomerShippingSlipLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q)
+                            {
+                                $q->where('status', 'confirmed');
+                            }
+                    )
+                    ->get();
+
+        $count2 = $lines2->sum('quantity');
+
+
+        // Allocated by Customer Invoices
+        // Document status = 'confirmed' && created_via = 'manual'
+        $lines3 = \App\CustomerInvoiceLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q)
+                            {
+                                $q->where('status', 'confirmed');
+                                $q->where('created_via', 'manual');
+                            }
+                    )
+                    ->get();
+
+        $count3 = $lines3->sum('quantity');
+
+        
+
+
+        $count = $count1 + $count2 + $count3;
+
+        return $count;
+    }
+
     public function getQuantityAvailableAttribute()
     {
         $value =      $this->quantity_onhand  

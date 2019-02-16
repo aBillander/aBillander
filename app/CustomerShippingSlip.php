@@ -73,6 +73,12 @@ class CustomerShippingSlip extends Billable
     {
         return $this->status != 'closed' && !$this->invoiced_at;
     }
+
+    // Alias
+    public function getInvoiceAttribute()
+    {
+        return $this->customerinvoice();
+    }
     
 
     /*
@@ -244,6 +250,7 @@ class CustomerShippingSlip extends Billable
     {
         return $this->rightInvoices()->first();
     }
+
 
 
 

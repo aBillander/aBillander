@@ -1,46 +1,39 @@
-@extends('abcc.layouts.master')
-
-@section('title') {{ l('My Shipping Slips') }} @parent @stop
 
 
-@section('content')
+	 <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">{{ l('Show Shipping Slips') }} :: <label class="label label-default">{{ $document->document_reference }}</label></h4>
+	 </div>
 
-<div class="page-header">
-    <h2>
-        {{ l('My Shipping Slips') }}
-    </h2>        
-</div>
+	 <div class="modal-body">
 
-<div id="div_documents">
-   <div class="table-responsive">
+       <div class="table-responsive">
 
-@if ($documents->count())
-<table id="documents" class="table table-hover">
-    <thead>
+<table id="payments" name="payments" class="table table-hover">
+	<thead>
         <tr>
-            <th class="text-left">{{ l('Shipping Slip #') }}</th>
+            <th class="text-left">{{ l('ID #') }}</th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-right">{{ l('Items') }}</th>
             <th class="text-right">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes') }}</th>
-            <th>{{ l('Invoiced at') }}</th>
-            <th> </th>
         </tr>
-    </thead>
-    <tbody>
-        @foreach ($documents as $document)
-        <tr>
-            <td>{{ $document->id }} / 
+	</thead>
+	<tbody>
+@if ($document->shippingslips->count())
 
+
+	@foreach ($document->shippingslips as $document)
+        <tr>
+            <td>
                 <a href="{{ route('abcc.shippingslip.pdf', [$document->id]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
                 @else
                 <span class="label label-default" title="{{ l('Draft') }}">{{ l('Draft') }}</span>
                 @endif
-                <span class="btn btn-sm btn-grey" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></span>
                 </a>
                 </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
@@ -60,7 +53,7 @@
 
                 @endif
             </td>
-            <td class="text-right">{{ $document->lines_count }}</td>
+            <td class="text-right">{{ $document->lines->count() }}</td>
             <td class="text-right">{{ $document->as_money_amount('total_tax_excl') }}</td>
             <td class="text-center">@if ($document->notes_from_customer)
                  <a href="javascript:void(0);">
@@ -71,30 +64,36 @@
                  </a>
                 @endif
             </td>
-            <td>{{ abi_date_short($document->invoiced_at) }}</td>
-            <td>
-@if ( $document->invoice )
-            <a href="{{ route('abcc.invoice.pdf',  ['invoiceKey' => $document->invoice->secure_key]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">{{ $document->invoice->document_reference }}
-                <span class="btn btn-sm btn-grey" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></span>
-            </a>
-@endif
-            </td>
         </tr>
-        @endforeach
-    </tbody>
-</table>
-
-   </div><!-- div class="table-responsive" ENDS -->
-
-{{ $documents->appends( Request::all() )->render() }}
-<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
+	@endforeach
 
 @else
-<div class="alert alert-warning alert-block">
-    <i class="fa fa-warning"></i>
-    {{l('No records found', [], 'layouts')}}
-</div>
+    <tr><td colspan="10">
+	<div class="alert alert-warning alert-block">
+	    <i class="fa fa-warning"></i>
+	    {{l('No records found', [], 'layouts')}}
+	</div>
+    </td>
+    <td></td></tr>
 @endif
-</div>
 
-@endsection
+	</tbody>
+</table>
+
+
+
+		</div>	 
+
+
+
+	 </div><!-- div class="modal-body" ENDS -->
+
+	<div class="modal-footer">
+
+	   <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Back', [], 'layouts')}}</button>
+
+	   <!-- button type="submit" class="btn btn-success" name="modal_edit_document_line_productSubmit" id="modal_edit_document_line_productSubmit">
+	    <i class="fa fa-thumbs-up"></i>
+	    &nbsp; {{l('Update', [], 'layouts')}}</button -->
+
+	</div>

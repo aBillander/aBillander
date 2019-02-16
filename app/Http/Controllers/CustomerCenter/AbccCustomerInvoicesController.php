@@ -112,7 +112,7 @@ class AbccCustomerInvoicesController extends Controller
 
         if ( !$t )
             return redirect()->route('abcc.invoices.index')
-                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->$cinvoiceKey], 'layouts'));
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->cinvoiceKey], 'layouts'));
 
         // $document->template = $t;
 
@@ -131,7 +131,7 @@ class AbccCustomerInvoicesController extends Controller
         catch(\Exception $e){
 
                 return redirect()->route('abcc.invoices.index')
-                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->$cinvoiceKey], 'layouts').$e->getMessage());
+                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->cinvoiceKey], 'layouts').$e->getMessage());
         }
 
         // PDF stuff ENDS
@@ -169,6 +169,23 @@ class AbccCustomerInvoicesController extends Controller
      *
      * @return json
      */
+    public function shippingslips($invoiceKey, Request $request)
+    {
+        
+
+        $document = $this->customerInvoice
+                            ->findByToken($invoiceKey)
+//                            ->withCount('lines')
+//                            ->with('customer')
+//                            ->with('invoicingAddress')
+//                            ->with('customerInvoiceLines')
+//                            ->with('payments')
+                            ->with('currency')
+                            ->firstOrFail();
+
+        return view('abcc.invoices._panel_shippingslips', compact('document') );
+    }
+
     public function vouchers($invoiceKey, Request $request)
     {
         

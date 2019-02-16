@@ -53,13 +53,13 @@ class HomeController extends Controller
         {
             $search = $request->term;
 
-            $customers = \App\Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
-                                    ->where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
+            $customers = \App\Customer::where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
 //                                    ->with('currency')
 //                                    ->with('addresses')
-                                    ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->get();
 
 //            return $customers;
 //            return Product::searchByNameAutocomplete($query, $onhand_only);

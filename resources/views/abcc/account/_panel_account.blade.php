@@ -38,6 +38,7 @@
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('email', l('Email')) !!}
     {{-- {!! Form::text('email', null, array('placeholder' => l('your@email.com'), 'class' => 'form-control', 'required' => 'required')) !!} --}}
+    <input type="hidden" value="{{$customer->email}}" name="email" id="email">
     <div class="form-control">{{ $customer->user->email }}</div>
 </div>
 <div class="form-group col-lg-6 col-md-6 col-sm-6">

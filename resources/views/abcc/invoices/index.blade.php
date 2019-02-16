@@ -1,13 +1,13 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('Customer Invoices') }} @parent @stop
+@section('title') {{ l('My Invoices') }} @parent @stop
 
 
 @section('content')
 
 <div class="page-header">
     <h2>
-        {{ l('Customer Invoices') }}
+        {{ l('My Invoices') }}
     </h2>        
 </div>
 
@@ -54,6 +54,8 @@
                 @endif</td>
             <td class="text-right">
 
+                <a class='btn btn-sm btn-lightblue show-shippingslips' href="#" data-target='#myModalShowShippingSlips' data-id="{{ $invoice->secure_key }}" data-toggle="modal" onClick="return false;" title="{{l('Show Shipping Slips')}}"><i class="fa fa-truck"></i></a>
+
                 <a class='btn btn-sm btn-success show-payments' href="#" data-target='#myModalShowPayments' data-id="{{ $invoice->secure_key }}" data-toggle="modal" onClick="return false;" title="{{l('Show Payments')}}"><i class="fa fa-calendar"></i></a>
 
                 <a class="btn btn-sm btn-grey" href="{{ route('abcc.invoice.pdf',  ['invoiceKey' => $invoice->secure_key]) }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a> 
@@ -74,5 +76,7 @@
 </div>
 
 @endsection
+
+@include('abcc.invoices._modal_shippingslips')
 
 @include('abcc.invoices._modal_payments')

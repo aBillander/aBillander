@@ -74,6 +74,12 @@ class CustomerInvoice extends Billable
         return $this->status == 'draft';
     }
 
+    // Alias
+    public function getShippingslipsAttribute()
+    {
+        return $this->leftShippingSlips();
+    }
+
 
     /*
     |--------------------------------------------------------------------------

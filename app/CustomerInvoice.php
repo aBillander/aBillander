@@ -27,6 +27,11 @@ class CustomerInvoice extends Billable
             'deposit',
         ];
 
+    public static $stock_statuses = [
+            'pending'  , // => Not performed
+            'completed', // => Performed
+        ];
+
     public static $payment_statuses = array(
             'pending',
             'halfpaid',
@@ -86,6 +91,22 @@ class CustomerInvoice extends Billable
     | Methods
     |--------------------------------------------------------------------------
     */
+
+    public static function getStockStatusList()
+    {
+            $list = [];
+            foreach (static::$stock_statuses as $stock_status) {
+                $list[$stock_status] = l(get_called_class().'.'.$stock_status, [], 'appmultilang');
+            }
+
+            return $list;
+    }
+
+    public static function getStockStatusName( $stock_status )
+    {
+            return l(get_called_class().'.'.$stock_status, [], 'appmultilang');
+    }
+
 
     public function confirm()
     {

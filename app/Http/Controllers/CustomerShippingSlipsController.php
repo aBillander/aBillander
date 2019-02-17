@@ -579,7 +579,7 @@ class CustomerShippingSlipsController extends BillableController
             'customer_id'   => $customer->id, 
             'template_id'   => $customer->getInvoiceTemplateId(), 
             'sequence_id'   => $customer->getInvoiceSequenceId(), 
-            'document_date' => abi_date_form_short( 'now' ),
+            'document_date' => \Carbon\Carbon::now()->toDateString(),
         ];
 
         // abi_r($params, true);
@@ -632,7 +632,7 @@ class CustomerShippingSlipsController extends BillableController
 
             'sequence_id' => $params['sequence_id'],
 
-            'created_via' => 'aggregate',
+            'created_via' => 'aggregate_shipping_slips',
 
             'document_date' => $params['document_date'],
 

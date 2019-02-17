@@ -38,6 +38,13 @@ class Billable extends Model
             'canceled',
         );
 
+    public static $created_vias = array(
+            'manual',
+            'abcc',
+            'aggregate_orders',
+            'aggregate_shipping_slips',
+        );
+
     protected $dates = [
                         'document_date',        // Set to "confirmed" date (creation date is "created_at")
                         'payment_date',
@@ -260,6 +267,23 @@ class Billable extends Model
     {
             return array_key_exists( $name, static::$badges) ? static::$badges[$name] : '';
     }
+
+
+    public static function getCreatedViaList()
+    {
+            $list = [];
+            foreach (static::$created_vias as $created_via) {
+                $list[$created_via] = l(get_called_class().'.'.$created_via, [], 'appmultilang');
+            }
+
+            return $list;
+    }
+
+    public static function getCreatedViaName( $created_via )
+    {
+            return l(get_called_class().'.'.$created_via, [], 'appmultilang');
+    }
+
 
     public function confirm()
     {

@@ -34,7 +34,7 @@ class CustomerShippingSlipUnclosedListener
 
         // Revert Stock Movements
         // Only if invoice has not "left document(s)", i.e., only if it is manually generated
-        // 'created_via' != 'aggregate'
+        // 'created_via' != 'aggregate_shipping_slips'
         if ( $document->canRevertStockMovements() )
         {
             //

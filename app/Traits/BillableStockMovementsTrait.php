@@ -58,7 +58,7 @@ trait BillableStockMovementsTrait
             }
         }
 
-        $this->stock_status = 'completed';
+        // $this->stock_status = 'completed';
         $this->save();
 
         return true;
@@ -119,7 +119,7 @@ trait BillableStockMovementsTrait
 
         }   // Lines loop ENDS
 
-        $this->stock_status = 'pending';
+        // $this->stock_status = 'pending';
         $this->save();
 
         return true;

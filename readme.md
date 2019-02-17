@@ -5,25 +5,23 @@ The **aBillander Project** is an Invoicing and Inventory System for SME's powere
 This project is currently in pre-alpha state. After SDGx will be ready for testing (by the end of 20XX).
 
 
-## ab://ander/milestones
+## ab://ander/Status
 
-> SDG0: Layout, Authentication and Application wire-frame (95% done)
+> Implemented Customer Order, Customer Shipping Slip, Customer Invoice, Customer Payment.
 
-> SDG1: Products and Combinations (95% done)
+> Implemented WooCommerce connect (get Orders via REST API).
 
-> SDG2: Stock Movements without a document (90% done) (Refactoring required!)
+> Implemented FactuSOL Connector.
 
-> SDG3: Customers, Customer Invoices and Payments (85% done) (Refactoring required!)
+> A real Company is heavily testing aBillander.
 
-> SDG4: WooCommerce connect (70% done) **MVP ready**
 
-> SDG5: Quotes, Customer Orders and Shipping Slips (50% done)
+## ab://ander/Milestones
 
-> SDG6: Suppliers, Purchase Orders, Purchase Shipping Slips, Purchase Invoices and Payments
-
-> SDG7: Bill of Materials, Manufacturing (15% done)
+> SDG0: **MVP ready** (heavily testing  :_> (ノಠ益ಠ)ノ彡┻━┻ )
 
 A brand-new Schedule is brewing.
+
 
 Curated by **Lara Billander** (@aBillander)
 

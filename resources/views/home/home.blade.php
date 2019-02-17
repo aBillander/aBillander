@@ -91,6 +91,28 @@
               </div>
             </div>
             </div>
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Pedidos</h3>
+              </div>
+              <div class="panel-body">
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12 text-center">
+                        
+                        <a href="{{{ route('orders.for.today') }}}" class="btn xbtn-sm btn-success" 
+                                title=" Pedidos de hoy "><i class="fa fa-shopping-bag"></i> Pedidos de hoy</a>
+
+                     </div>
+
+                  </div>
+                  
+              </div>
+            </div>
+            </div>
 {{-- 
             <div class="col-lg-3 col-md-6">
             <div class="panel panel-danger">

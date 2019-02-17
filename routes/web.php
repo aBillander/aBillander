@@ -235,10 +235,10 @@ Route::group(['middleware' =>  ['auth']], function()
 
 
 
-        Route::resource('customerorders', 'CustomerOrdersController');
+//        Route::resource('customerorders', 'CustomerOrdersController');
         Route::post('customerorders/{id}/move', 'CustomerOrdersController@move')->name('customerorder.move');
         Route::post('customerorders/{id}/unlink', 'CustomerOrdersController@unlink')->name('customerorder.unlink');
-
+/*
         Route::get('customerorders/ajax/customer_lookup', array('uses' => 'CustomerOrdersController@ajaxCustomerSearch', 'as' => 'customerorders.ajax.customerLookup'));
         Route::get('customerorders/ajax/customer/{id}/adressbook_lookup', array('uses' => 'CustomerOrdersController@customerAdressBookLookup', 'as' => 'customerorders.ajax.customer.AdressBookLookup'));
 
@@ -271,9 +271,13 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('customerorders/{id}/invoice/pdf', 'CustomerOrdersController@showPdfInvoice')->name('customerorder.invoice.pdf');
 
         Route::get('customerorders/customers/{id}',  'CustomerOrdersController@indexByCustomer')->name('customer.orders');
-
+*/
 
         $pairs = [
+                [
+                    'controller' => 'CustomerOrdersController',
+                    'path' => 'customerorders',
+                ],
                 [
                     'controller' => 'CustomerShippingSlipsController',
                     'path' => 'customershippingslips',
@@ -305,6 +309,7 @@ foreach ($pairs as $pair) {
         Route::get($path.'/line/searchservice',        $controller.'@searchService' )->name($path.'.searchservice');
         Route::get($path.'/line/getproduct',           $controller.'@getProduct'    )->name($path.'.getproduct');
 
+        // ?? Maybe only for Invoices ??
         Route::get($path.'/{id}/getpayments',          $controller.'@getDocumentPayments' )->name($path.'.getpayments');
 
 
@@ -336,6 +341,8 @@ foreach ($pairs as $pair) {
 
         Route::get($path.'/customers/{id}',  $controller.'@indexByCustomer')->name('customer.'.str_replace('customer', '', $path));
 }
+
+        Route::get('customerorders/pending/today',  'CustomerOrdersController@getTodaysOrders')->name('orders.for.today');
 
         Route::get( 'customershippingslips/customers/{id}/invoiceables',  'CustomerShippingSlipsController@getInvoiceableShippingSlips')->name('customer.invoiceable.shippingslips');
         Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');

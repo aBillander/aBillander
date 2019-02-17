@@ -2,7 +2,7 @@
 
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">{{ l('Edit Order Line') }} :: <span  id="modal_product_order_line_Label"></span></h4>
+            <h4 class="modal-title">{{ l('Edit Line') }} :: <span  id="modal_product_document_line_Label"></span></h4>
          </div>
 
          <div class="modal-body">
@@ -62,13 +62,13 @@
                      <div>
                        <div class="radio-inline">
                          <label>
-                           {!! Form::radio('line_is_sales_equalization', '1', false, ['id' => 'line_is_sales_equalization_on', 'xonclick' => 'alert("peo")']) !!}
+                           {!! Form::radio('line_is_sales_equalization', '1', false, ['id' => 'line_is_sales_equalization_on', 'onclick' => 'calculate_line_product();']) !!}
                            {!! l('Yes', [], 'layouts') !!}
                          </label>
                        </div>
                        <div class="radio-inline">
                          <label>
-                           {!! Form::radio('line_is_sales_equalization', '0', true, ['id' => 'line_is_sales_equalization_off']) !!}
+                           {!! Form::radio('line_is_sales_equalization', '0', true, ['id' => 'line_is_sales_equalization_off', 'onclick' => 'calculate_line_product();']) !!}
                            {!! l('No', [], 'layouts') !!}
                          </label>
                        </div>
@@ -148,7 +148,7 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="modal_edit_order_line_productSubmit" id="modal_edit_order_line_productSubmit">
+               <button type="submit" class="btn btn-success" name="modal_edit_document_line_productSubmit" id="modal_edit_document_line_productSubmit">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 

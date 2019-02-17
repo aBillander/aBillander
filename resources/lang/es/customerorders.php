@@ -2,9 +2,12 @@
 
 return [
 
+	'Order #'     => 'Número',
+	'Order'     => 'Pedido',
+
 	/*
 	|--------------------------------------------------------------------------
-	| Customer orders Language Lines :: index (???)
+	| Customer orders Language Lines :: index (Production Sheets!!! ???)
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -37,15 +40,15 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Customer Orders Language Lines :: index
+	| Documents Language Lines :: index
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Customer Orders' => 'Pedidos de Clientes',
-	'Order #'     => 'Número',
+	'Documents' => 'Pedidos de Clientes',
+	'Document #'     => 'Número',
 	'Date'     => 'Fecha',
 	'Created via'     => 'Creado por',
 
@@ -60,22 +63,24 @@ return [
 	'Pending: Print and Send'     => 'Pendiente: Imprimir y Enviar',
 	'Pr'     => 'Im',
 	'Paid'     => 'Pagado',
+
+	'Email sent:'     => 'Enviado por email:',
+
 	''     => '',
 	''     => '',
 	''     => '',
 
 	/*
 	|--------------------------------------------------------------------------
-	| Customer Orders Language Lines :: create
+	| Documents Language Lines :: create
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Customer Orders - Create'     => 'Pedidos de Clientes - Crear',
-	'New Order'     => 'Nuevo Pedido',
-	'New Customer Order'     => 'Nuevo Pedido de Cliente',
+	'Documents - Create'     => 'Pedidos de Clientes - Crear',
+	'New Document'     => 'Nuevo Pedido de Cliente',
 	
 	// modal_customer_search
 	'Customer Search'     => 'Buscar Cliente',
@@ -85,13 +90,16 @@ return [
 	'New Customer'     => 'Nuevo Cliente',
 	'You should choose a Customer'     => 'Debe seleccionar un Cliente',
 
-	'Customer Orders'     => 'Pedidos de Clientes',
-	'Back to Customer Orders'     => 'Volver a Pedidos de Clientes',
+	'Documents'     => 'Pedidos de Clientes',
+	'Document to'     => 'Pedido a',
+	'Back to Documents'     => 'Volver a Pedidos de Clientes',
 	'Back to Customers'     => 'Volver a Clientes',
 	'Invoicing Address'     => 'Datos de Facturación',
 	'VAT ID'     => 'NIF',
 	'View Customer'     => 'Ir a la Ficha del Cliente',
 	'View Invoicing Address'     => 'Ver Dirección de Facturación',
+
+	'Group Orders'     => 'Agrupar Pedidos',
 
 
 	'Header'     => 'Cabecera',
@@ -111,18 +119,25 @@ return [
 //	'Reference'     => 'Referencia',
 	'Name'     => 'Nombre',
 //	'Price'     => 'PVP',
-	'With Tax'     => 'Con IVA',
+	'With Tax'     => 'PVP+IVA',
 	'Stock'     => 'Stock',
 	'On Order'     => 'Pendiente',
 	'Allocated'     => 'Reservado',
 	'Available'     => 'Disponible',
+	'On hand'     => 'Stock',
+	'On order'     => 'Pendiente',
 	''     => '',
 
-	// _order_header
-	'Order Sequence'     => 'Serie de Pedidos',
-	'Order Number'     => 'Número de Pedido',
+	// _invoice_header
+	'Type'     => 'Tipo',
+	'Template'     => 'Plantilla',
+	'Sequence'     => 'Serie',	// 'Serie de Pedidos',
+	'Document Number'     => 'Número de Pedido',
 	'Reference / Project'     => 'Referencia / Proyecto',
-	'Order Date'     => 'Fecha Pedido',
+// 	'Invoice Date'     => 'Fecha Factura',
+	'Document Date'     => 'Fecha del Documento',
+	'Sent Date'     => 'Enviado al Cliente',
+	'Payment status' => 'Estado de Pago',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Template for Printing'     => 'Plantilla para Imprimir',
 	'Save as Draft?'     => '¿Guardar como Borrador?',
@@ -146,21 +161,26 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Líneas',
 	'Add Product'     => 'Añadir Producto',
 	'Add Service'     => 'Añadir Servicio',
+	'Product name' => 'Producto',
 	'Reference'     => 'Referencia',
+	'Measure Unit' => 'Unidad de Medida',
 	'View Product' => 'Ir a la Ficha del Producto',
 	'Description'     => 'Descripción',
 	'Quantity'     => 'Cantidad',
 	'Unit final Price after Discount and Taxes.'     => 'Precio final por unidad antes de Descuento e Impuestos.',
+	'Price'     => 'Precio',
 	'Disc. %'     => 'Dto. %',
 	'Net'     => 'Neto',
 	'Tax'     => 'Impuesto',
 	'Total'     => 'Total',
 	'Total with Tax'     => 'Total con IVA',
+	'Show Customer consumption' => 'Ver consumo del Cliente',
 	'New line...'     => 'Nueva línea...',
 	'Order Discount (%)'     => 'Descuento Especial (%)',
+	'Total Breakdown' => 'Desglose del Total',
 
 	''     => '',
-	'Header Data'     => 'Datos de cabecera',
+	'Header Data'     => 'Datos de Cabecera',
 	'Customer Name'     => 'Nombre del Cliente',
 	'Seach by Name or Identification (VAT Number).'     => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
 	
@@ -168,11 +188,11 @@ return [
 	'Service'     => 'Servicio',
 	'Discount Line'     => 'Línea de Descuento',
 	'Text Line'     => 'Línea de Texto',
-
+	
 	// modal_product_search
-	'Quick Add Products to Order'     => 'Entrada rápida de Productos',
-	'Add Product to Order'     => 'Nuevo Producto',
-	'Add Service to Order'     => 'Nuevo Servicio',
+	'Quick Add Lines'     => 'Entrada rápida de Productos',
+	'Add Product'     => 'Nuevo Producto',
+	'Add Service'     => 'Nuevo Servicio',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -191,7 +211,10 @@ return [
 	''     => '',
 
 	// Modal edit line
-	'Edit Order Line' => 'Modificar Línea',
+	'Edit Line' => 'Modificar Línea',
+	'Text Line'     => 'Línea de texto',
+	''     => '',
+	''     => '',
 	
 	// create_profit_blade
 	'Profitability Analysis'     => 'Rentabilidad de la Venta',
@@ -204,7 +227,7 @@ return [
 	'Margin 2 (%)'     => 'Margen 2 (%)',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',
-	'Order Cost-Benefit Analysis'     => 'Rentabiliad Total de la Venta',
+	'Cost-Benefit Analysis'     => 'Análisis de Rentabiliad',
 	'Margin'     => 'Margen',
 
 	// Stock availability
@@ -213,7 +236,7 @@ return [
 	''     => '',
 
 	'Finish Up'     => 'Emitir',
-	'Invoice This'  => 'Facturar',
+	'Invoice This'  => 'Albaranar',
 
 	'This Invoice will be saved with a Number for its Sequence, and may not be modified later on. Are you sure?' 
 	=> 'La Factura se guardará como Emitida y ya no podrá modificarse. ¿Está seguro?',
@@ -224,16 +247,17 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Customer Orders Language Lines :: edit
+	| Documents Language Lines :: edit
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Customer Orders - Edit'     => 'Pedidos de Clientes - Modificar',
-	'Edit Customer Order'     => 'Modificar Pedido de Cliente',
-	'Order to'     => 'Pedido para',
+	'Documents - Edit'     => 'Pedidos de Clientes - Modificar',
+	'Edit Document'     => 'Modificar Pedido de Cliente',
+
+
 
 	'Customer Infos'     => 'Info del Cliente',
 	'Customer Risk'     => 'Riesgo alcanzado',
@@ -248,27 +272,33 @@ return [
 
 	'Line #'     => 'Línea',
 	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
 
 
 	/*
 	|--------------------------------------------------------------------------
-	| Customer Orders Language Lines :: show
+	| Documents Language Lines :: show
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Customer Orders - Show'     => 'Pedidos de Clientes - Mostrar',
+	'Documents - Show'     => 'Pedidos de Clientes - Mostrar',
 	''     => '',
 	''     => '',
 
 	''     => '',
 	'Show Customer'     => 'Ver Cliente',
-	'Your Order :num from :name'     => 'Su Pedido :num de :name',
+	'Your Document :num from :name'     => 'Su Pedido :num de :name',
 
 	'Payment Schedule'     => 'Vencimientos',
-	'Order'     => 'Pedido',
+	'Document'     => 'Pedido',
 	'Customer'     => 'Cliente',
 	'Due Date'     => 'Fecha Vencimiento',
 	'Payment Date'     => 'Fecha de Pago',
@@ -276,7 +306,7 @@ return [
 	'Subject'     => 'Concepto',
 	'Status'     => 'Estado',
 
-	'Customer Order id=:id does not exist.'     => 'El Pedido de Cliente id=:id no existe.',
+	'Document id=:id does not exist.'     => 'El Pedido de Cliente id=:id no existe.',
 	''     => '',
 	''     => '',
 	''     => '',
@@ -287,5 +317,8 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
+
+	'Create Invoice'     => 'Crear Factura',
+	'Order: :id [:date]'     => 'Pedido: :id [:date]',
 
 ];

@@ -41,6 +41,9 @@
 			$table->decimal('total_tax_incl', 20, 6)->default(0.0);
 			$table->decimal('total_tax_excl', 20, 6)->default(0.0);
 
+            // margin: margin on purchase/cost price
+            // mark rate or markup: margin on selling price
+
 			$table->decimal('tax_percent', 8, 3)->default(0.0);					// Tax percent
 			$table->decimal('commission_percent', 8, 3)->default(0.0);			// Commission percent
 

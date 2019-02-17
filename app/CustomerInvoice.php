@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Auth;
-
 use App\Traits\CustomerInvoicePaymentsTrait;
 use App\Traits\BillableStockMovementsTrait;
 

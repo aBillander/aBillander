@@ -2,31 +2,38 @@
 
 namespace App\Http\Controllers;
 
+// use App\Http\Requests;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Customer;
-use App\CustomerOrder;
-use App\CustomerOrderLine;
-use App\CustomerShippingSlip;
+use App\CustomerOrder as Document;
+use App\CustomerOrderLine as DocumentLine;
+
+use App\CustomerInvoice;
+use App\CustomerInvoiceLine;
+use App\CustomerInvoiceLineTax;
+use App\DocumentAscription;
 
 use App\Configuration;
 use App\Sequence;
+use App\Template;
 
-use App\Traits\BillableControllerTrait;
+use App\Events\CustomerOrderConfirmed;
 
-class CustomerOrdersController extends Controller
+class CustomerOrdersController extends BillableController
 {
 
-   use BillableControllerTrait;
-
-   protected $customer, $customerOrder, $customerOrderLine;
-
-   public function __construct(Customer $customer, CustomerOrder $customerOrder, CustomerOrderLine $customerOrderLine)
+   public function __construct(Customer $customer, Document $document, DocumentLine $document_line)
    {
+        parent::__construct();
+
+        $this->model_class = Document::class;
+
         $this->customer = $customer;
-        $this->customerOrder = $customerOrder;
-        $this->customerOrderLine = $customerOrderLine;
+        $this->document = $document;
+        $this->document_line = $document_line;
    }
 
     /**
@@ -36,44 +43,58 @@ class CustomerOrdersController extends Controller
      */
     public function index()
     {
-        if ( Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
-        {
-            //
-            try {
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
 
-                $dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG');
-
-                $dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG');
-                
-                // Calculate last minute stuff!
-                $anyClient = count(File::files( $dest_clientes ));
-                
-                $anyOrder  = count(File::files( $dest_pedidos ));
-
-                // The difference between files and allFiles is that allFiles will recursively search sub-directories unlike files. 
-                
-            } catch ( \Exception $e ) {     // Notice namespaced Exceptions. Otherwise, won't redirect!
-
-                // return $e->getMessage();
-
-                return redirect()->route('fsxconfigurationkeys.index');
-                
-            }
-        }
-
-
-        $customer_orders = $this->customerOrder
+        $documents = $this->document
                             ->with('customer')
-                            ->with('currency')
-                            ->with('paymentmethod')
+//                            ->with('currency')
+//                            ->with('paymentmethod')
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 
-        $customer_orders = $customer_orders->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
+        $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
-        $customer_orders->setPath('customerorders');
-        
-        return view('customer_orders.index', compact('customer_orders', 'anyClient', 'anyOrder'));
+        $documents->setPath($this->model_path);
+
+        return view($this->view_path.'.index', $this->modelVars() + compact('documents'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function indexByCustomer($id, Request $request)
+    {
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+
+        $items_per_page = intval($request->input('items_per_page', Configuration::getInt('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
+
+        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+
+        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+
+        $customer = $this->customer->findOrFail($id);
+
+        $documents = $this->document
+                            ->where('customer_id', $id)
+//                            ->with('customer')
+                            ->with('currency')
+//                            ->with('paymentmethod')
+                            ->orderBy('document_date', 'desc')
+                            ->orderBy('id', 'desc');        // ->get();
+
+        $documents = $documents->paginate( $items_per_page );
+
+        // abi_r($this->model_path, true);
+
+        $documents->setPath($id);
+
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
     }
 
     /**
@@ -83,14 +104,21 @@ class CustomerOrdersController extends Controller
      */
     public function create()
     {
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+//        $model_snake_case = $this->model_snake_case;
+
         // Some checks to start with:
 
-        $sequenceList = Sequence::listFor( CustomerOrder::class );
-        if ( !count($sequenceList) )
-            return redirect('customerorders')
+        $sequenceList = $this->document->sequenceList();
+
+        $templateList = $this->document->templateList();
+
+        if ( !(count($sequenceList)>0) )
+            return redirect($this->model_path)
                 ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
         
-        return view('customer_orders.create', compact('sequenceList'));
+        return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList', 'templateList'));
     
     }
 
@@ -101,24 +129,29 @@ class CustomerOrdersController extends Controller
      */
     public function createWithCustomer($customer_id)
     {
-        /*  
-                Crear Pedido desde la ficha del Cliente  =>  ya conozco el customer_id
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
 
-                ruta:  customers/{id}/createorder
-
-                esta ruta la ejecuta:  CustomerOrdersController@createWithCustomer
-                enviando un objeto CustomerOrder "vacío"
-
-                y vuelve a /customerorders
-        */
         // Some checks to start with:
 
-        $sequenceList = Sequence::listFor( CustomerOrder::class );
+        $sequenceList = $this->document->sequenceList();
+
         if ( !count($sequenceList) )
-            return redirect('customerorders')
+            return redirect($this->model_path)
                 ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
+
+
+        // Do the Mambo!!!
+        try {
+            $customer = Customer::with('addresses')->findOrFail( $customer_id );
+
+        } catch(ModelNotFoundException $e) {
+            // No Customer available, ask for one
+            return redirect()->back()
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $customer_id], 'layouts'));
+        }
         
-        return view('customer_orders.create', compact('sequenceList', 'customer_id'));
+        return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList', 'customer_id'));
     }
 
     /**
@@ -132,7 +165,7 @@ class CustomerOrdersController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
 
-        $rules = CustomerOrder::$rules;
+        $rules = $this->document::$rules;
 
         $rules['shipping_address_id'] = str_replace('{customer_id}', $request->input('customer_id'), $rules['shipping_address_id']);
         $rules['invoicing_address_id'] = $rules['shipping_address_id'];
@@ -140,7 +173,12 @@ class CustomerOrdersController extends Controller
         $this->validate($request, $rules);
 
         // Extra data
+//        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
+//        $doc_id = $seq->getNextDocumentId();
+
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+
+                        'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
                         'created_via'          => 'manual',
                         'status'               =>  'draft',
@@ -149,13 +187,30 @@ class CustomerOrdersController extends Controller
 
         $request->merge( $extradata );
 
-        $customerOrder = $this->customerOrder->create($request->all());
+        $document = $this->document->create($request->all());
 
-        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
-            $customerOrder->confirm();
+        // Move on
+        if ($request->has('nextAction'))
+        {
+            switch ( $request->input('nextAction') ) {
+                case 'saveAndConfirm':
+                    # code...
+                    $document->confirm();
 
-        return redirect('customerorders/'.$customerOrder->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerOrder->id], 'layouts'));
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        // Maybe...
+//        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
+//            $customerOrder->confirm();
+
+        return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
     }
 
@@ -165,9 +220,9 @@ class CustomerOrdersController extends Controller
      * @param  \App\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
-    public function show(CustomerOrder $customerorder)
+    public function show($id)
     {
-        return $this->edit( $customerorder );
+        return redirect($this->model_path.'/'.$id.'/edit');
     }
 
     /**
@@ -176,11 +231,29 @@ class CustomerOrdersController extends Controller
      * @param  \App\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
-    public function edit(CustomerOrder $customerorder)
+    public function edit($id, Request $request)
     {
-        $order = $customerorder;
+        // Little bit Gorrino style...
+        // Find by document_reference (if supplied one)
+        if ( $request->has('document_reference') )
+        {
+            $document = $this->document->where('document_reference', $request->input('document_reference'))->firstOrFail();
 
-        $customer = \App\Customer::find( $order->customer_id );
+            // $request->request->remove('document_reference');
+            // $this->edit($document->id, $request);
+
+            return redirect($this->model_path.'/'.$document->id.'/edit');
+        }
+        else
+        {
+            $document = $this->document->findOrFail($id);
+        }
+
+        $sequenceList = $this->document->sequenceList();
+
+        $templateList = $this->document->templateList();
+
+        $customer = Customer::find( $document->customer_id );
 
         $addressBook       = $customer->addresses;
 
@@ -195,9 +268,9 @@ class CustomerOrdersController extends Controller
         }
 
         // Dates (cuen)
-        $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $order );
+        $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
 
-        return view('customer_orders.edit', compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'order'));
+        return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList'));
     }
 
     /**
@@ -207,12 +280,12 @@ class CustomerOrdersController extends Controller
      * @param  \App\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CustomerOrder $customerorder)
+    public function update(Request $request, Document $customerorder)
     {
         // Dates (cuen)
         $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
 
-        $rules = CustomerOrder::$rules;
+        $rules = $this->document::$rules;
 
         $rules['shipping_address_id'] = str_replace('{customer_id}', $request->input('customer_id'), $rules['shipping_address_id']);
         $rules['invoicing_address_id'] = $rules['shipping_address_id'];
@@ -230,22 +303,50 @@ class CustomerOrdersController extends Controller
                         'user_id'              => \App\Context::getContext()->user->id,
 
                         'created_via'          => 'manual',
-                        'status'               =>  Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
+                        'status'               =>  \App\Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
                         'locked'               => 0,
                      ];
 
         $request->merge( $extradata );
 */
-        $customerorder->fill($request->all());
+        $document = $customerorder;
 
-        if ( $request->input('export_date_form') == '' ) $customerorder->export_date = null;
+        $document->fill($request->all());
 
-        $customerorder->save();
+        // Reset Export date
+        // if ( $request->input('export_date_form') == '' ) $document->export_date = null;
 
-        // abi_r($request->all(), true);
+        $document->save();
 
-        return redirect('customerorders/'.$customerorder->id.'/edit')
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customerorder->id], 'layouts'));
+        // Move on
+        if ($request->has('nextAction'))
+        {
+            switch ( $request->input('nextAction') ) {
+                case 'saveAndConfirm':
+                    # code...
+                    $document->confirm();
+
+                    break;
+                
+                case 'saveAndContinue':
+                    # code...
+
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        $nextAction = $request->input('nextAction', '');
+        
+        if ( $nextAction == 'saveAndContinue' ) 
+            return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+        return redirect($this->model_path)
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
     }
 
@@ -255,1223 +356,518 @@ class CustomerOrdersController extends Controller
      * @param  \App\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CustomerOrder $customerorder)
+    public function destroy($id)
     {
-        $id = $customerorder->id;
+        $document = $this->document->findOrFail($id);
 
-        $customerorder->delete();
+        if( !$document->deletable )
+            return redirect()->back()
+                ->with('error', l('This record cannot be deleted because its Status &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 
-        return redirect('customerorders')
+        $document->delete();
+
+        return redirect()->back()
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
 
-    protected function confirm(CustomerOrder $customerorder)
+    /**
+     * Manage Status.
+     *
+     * ******************************************************************************************************************************* *
+     * 
+     */
+
+    protected function confirm(Document $document)
     {
-        $customerorder->confirm();
+        // Can I?
+        if ( $document->lines->count() == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Confirm
+        if ( $document->confirm() )
+            return redirect()->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
 
         return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customerorder->id], 'layouts').' ['.$customerorder->document_reference.']');
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
-
-/* ********* Production Sheet ************************************************************************************** */    
-
-
-    public function move(Request $request, $id)
+    protected function unConfirm(Document $document)
     {
-        $order = \App\CustomerOrder::findOrFail($id);
-
-        $order->update(['production_sheet_id' => $request->input('production_sheet_id')]);
-
-        // Update Sheets!
-        $sheet = ProductionSheet::findOrFail( $request->input('current_production_sheet_id') );
-        $sheet->calculateProductionOrders();
-
-        $sheet = ProductionSheet::findOrFail( $request->input('production_sheet_id') );
-        $sheet->calculateProductionOrders();
-
-        if ( $request->input('stay_current_sheet', 0) )
-            $sheet_id = $request->input('current_production_sheet_id');
-        else
-            $sheet_id = $request->input('production_sheet_id');
-
-        return redirect('productionsheets/'.$sheet_id)
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $sheet_id], 'layouts') . $request->input('name', ''));
-    }
-
-    public function unlink(Request $request, $id)
-    {
-        $order = \App\CustomerOrder::findOrFail($id);
-
-        $sheet_id = $order->production_sheet_id;
-
-        $order->update(['production_sheet_id' => null]);
-
-        // $sheet_id = $request->input('current_production_sheet_id');
-
-        return redirect()->route('productionsheet.calculate', [$sheet_id]);
-    }
-
-
-
-/* ********************************************************************************************* */    
-
-
-// https://stackoverflow.com/questions/39812203/cloning-model-with-hasmany-related-models-in-laravel-5-3
-
-
-/* ********************************************************************************************* */  
-
-
-
-    /**
-     * AJAX Stuff.
-     *
-     * 
-     */  
-
-
-    /**
-     * Return a json list of records matching the provided query
-     *
-     * @return json
-     */
-    public function ajaxCustomerSearch(Request $request)
-    {
-//        $term  = $request->has('term')  ? $request->input('term')  : null ;
-//        $query = $request->has('query') ? $request->input('query') : $term;
-
-//        if ( $query )
-
-        if ($request->has('customer_id'))
+        // Can I?
+        if ( $document->status != 'confirmed' )
         {
-            $search = $request->customer_id;
-
-            $customers = \App\Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
-                                    ->with('currency')
-                                    ->with('addresses')
-                                    ->find( $search );
-
-//            return $customers;
-//            return Product::searchByNameAutocomplete($query, $onhand_only);
-//            return Product::searchByNameAutocomplete($request->input('query'), $onhand_only);
-//            response( $customers );
-//            return json_encode( $customers );
-            return response()->json( $customers );
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
         }
 
-        if ($request->has('term'))
+        // UnConfirm
+        if ( $document->unConfirm() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function onholdToggle(Document $document)
+    {
+        // No checks. A closed document can be set to "onhold". Maybe usefull...
+
+        // Toggle
+        $toggle = $document->onhold > 0 ? 0 : 1;
+        $document->onhold = $toggle;
+        
+        $document->save();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+    }
+
+
+    protected function close(Document $document)
+    {
+        // Can I?
+        if ( $document->lines->count() == 0 )
         {
-            $search = $request->term;
-
-            $customers = \App\Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
-                                    ->where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
-                                    ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
-                                    ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
-                                    ->with('currency')
-                                    ->with('addresses')
-                                    ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
-
-//            return $customers;
-//            return Product::searchByNameAutocomplete($query, $onhand_only);
-//            return Product::searchByNameAutocomplete($request->input('query'), $onhand_only);
-//            response( $customers );
-//            return json_encode( $customers );
-            return response()->json( $customers );
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
         }
 
-        // Otherwise, die silently
-        return json_encode( [ 'query' => '', 'suggestions' => [] ] );
-        
-    }
-
-    public function customerAdressBookLookup($id)
-    {
-        if (intval($id)>0)
+        if ( $document->onhold )
         {
-            $customer = \App\Customer::findorfail($id);
-
-            return response()->json( $customer->getAddressList() );
-        } else {
-            // die silently
-            return json_encode( [] );
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
         }
-    }
 
-
-    public function getOrderLines($id)
-    {
-        $order = $this->customerOrder
-                        ->with('customerorderlines')
-                        ->with('customerorderlines.product')
-                        ->findOrFail($id);
-
-        return view('customer_orders._panel_customer_order_lines', compact('order'));
-    }
-
-    // Not used ???
-    public function getOrderTotal($id)
-    {
-        $order = $this->customerOrder
-//                        ->with('customerorderlines')
-//                        ->with('customerorderlines.product')
-                        ->findOrFail($id);
-
-        return view('customer_orders._panel_customer_order_total', compact('order'));
-    }
-
-
-
-    public function FormForProduct( $action )
-    {
-
-        switch ( $action ) {
-            case 'edit':
-                # code...
-                return view('customer_orders._form_for_product_edit');
-                break;
-            
-            case 'create':
-                # code...
-                return view('customer_orders._form_for_product_create');
-                break;
-            
-            default:
-                # code...
-                // Form for action not supported
-                return response()->json( [
-                            'msg' => 'ERROR',
-                            'data' => $action
-                    ] );
-                break;
-        }
+        // Close
+        if ( $document->close() )
+            return redirect()->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
-    }
 
-    public function FormForService( $action )
-    {
-
-        switch ( $action ) {
-            case 'edit':
-                # code...
-                return view('customer_orders._form_for_service_edit');
-                break;
-            
-            case 'create':
-                # code...
-                return view('customer_orders._form_for_service_create');
-                break;
-            
-            default:
-                # code...
-                // Form for action not supported
-                return response()->json( [
-                            'msg' => 'ERROR',
-                            'data' => $action
-                    ] );
-                break;
-        }
-        
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
 
-    public function searchProduct(Request $request)
+    protected function unclose(Document $document)
     {
-        $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
-                                ->where(   'name',      'LIKE', '%'.$search.'%' )
-                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
-                                ->IsSaleable()
-                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
-//                                ->with('measureunit')
-//                                ->toSql();
-                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
-
-
-//                                dd($products);
-
-        return response( $products );
-    }
-
-    public function searchService(Request $request)
-    {
-        $search = $request->term;
-
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
-                                ->where(   'name',      'LIKE', '%'.$search.'%' )
-                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
-                                ->isService()
-//                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
-//                                ->with('measureunit')
-//                                ->toSql();
-                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
-
-
-//                                dd($products);
-
-        return response( $products );
-    }
-
-    public function getProduct(Request $request)
-    {
-        
-        // Request data
-        $product_id      = $request->input('product_id');
-        $combination_id  = $request->input('combination_id');
-        $customer_id     = $request->input('customer_id');
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
-//        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
-
- //       return response()->json( [ $product_id, $combination_id, $customer_id, $currency_id ] );
-
-        // Do the Mambo!
-        // Product
-        if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
-            $product = $combination->product;
-            $product->reference = $combination->reference;
-            $product->name = $product->name.' | '.$combination->name;
-        } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
-        }
-
-        // Customer
-        $customer = \App\Customer::findOrFail(intval($customer_id));
-        
-        // Currency
-        $currency = \App\Currency::findOrFail(intval($currency_id));
-        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
-
-        // Tax
-        $tax = $product->tax;
-        $taxing_address = \App\Address::findOrFail($request->input('taxing_address_id'));
-        $tax_percent = $tax->getTaxPercent( $taxing_address );
-
-        $price = $product->getPrice();
-        if ( $price->currency->id != $currency->id ) {
-            $price = $price->convert( $currency );
-        }
-
-        // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, 1, $currency );
-//        $tax_percent = $tax->percent;               // Accessor: $tax->getPercentAttribute()
-//        $price->applyTaxPercent( $tax_percent );
-
-        if ($customer_price) 
+        if ( $document->status != 'closed' )
         {
-            $customer_price->applyTaxPercentToPrice($tax_percent);        
-    
-            $data = [
-                'product_id' => $product->id,
-                'combination_id' => $combination_id,
-                'reference' => $product->reference,
-                'name' => $product->name,
-                'cost_price' => $product->cost_price,
-                'unit_price' => [ 
-                            'tax_exc' => $price->getPrice(), 
-                            'tax_inc' => $price->getPriceWithTax(),
-                            'display' => Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                        $price->getPriceWithTax() : $price->getPrice(),
-                            'price_is_tax_inc' => $price->price_is_tax_inc,  
-//                            'price_obj' => $price,
-                            ],
-    
-                'unit_customer_price' => [ 
-                            'tax_exc' => $customer_price->getPrice(), 
-                            'tax_inc' => $customer_price->getPriceWithTax(),
-                            'display' => Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                        $customer_price->getPriceWithTax() : $customer_price->getPrice(),
-                            'price_is_tax_inc' => $customer_price->price_is_tax_inc,  
-//                            'price_obj' => $customer_price,
-                            ],
-    
-                'tax_percent' => $tax_percent,
-                'tax_id' => $product->tax_id,
-                'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
-                'customer_id' => $customer_id,
-                'currency' => $currency,
-    
-                'measure_unit_id' => $product->measure_unit_id,
-                'quantity_decimal_places' => $product->quantity_decimal_places,
-                'reorder_point'      => $product->reorder_point, 
-                'quantity_onhand'    => $product->quantity_onhand, 
-                'quantity_onorder'   => $product->quantity_onorder, 
-                'quantity_allocated' => $product->quantity_allocated, 
-                'blocked' => $product->blocked, 
-                'active'  => $product->active, 
-            ];
-        } else
-            $data = [];
-
-        return response()->json( $data );
-    }
-
-    public function getOrderLine($order_id, $line_id)
-    {
-        $order_line = $this->customerOrderLine
-                        ->with('product')
-                        ->with('product.tax')
-                        ->with('measureunit')
-                        ->with('tax')
-                        ->findOrFail($line_id);
-/*
-        $unit_customer_final_price = Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                        $order_line->unit_customer_final_price * ( 1.0 + $order_line->tax_percent / 100.0 ) : 
-                                        $order_line->unit_customer_final_price ;
-*/
-        $tax = $order_line->tax;
-
-        return response()->json( $order_line->toArray() + [
-//            'unit_customer_final_price' => $unit_customer_final_price,
-            'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)"
-        ] );
-    }
-
-    public function updateOrderLine(Request $request, $line_id)
-    {
-        $line_type = $request->input('line_type', '');
-
-        switch ( $line_type ) {
-            case 'product':
-                # code...
-                return $this->updateOrderLineProduct($request, $line_id);
-                break;
-            
-            case 'service':
-            case 'shipping':
-                # code...
-                return $this->updateOrderLineService($request, $line_id);
-                break;
-            
-            default:
-                # code...
-                // Order Line Type not supported
-                return response()->json( [
-                            'msg' => 'ERROR',
-                            'data' => $request->all()
-                    ] );
-                break;
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
         }
+
+        // Unclose (back to "confirmed" status)
+        if ( $document->unclose() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
-    public function storeOrderLine(Request $request, $order_id)
-    {
-        $line_type = $request->input('line_type', '');
 
-        switch ( $line_type ) {
-            case 'product':
-                # code...
-                return $this->storeOrderLineProduct($request, $order_id);
-                break;
-            
-            case 'service':
-                # code...
-                return $this->storeOrderLineService($request, $order_id);
-                break;
-            
-            default:
-                # code...
-                // Order Line Type not supported
-                return response()->json( [
-                            'msg' => 'ERROR',
-                            'data' => $request->all()
-                    ] );
-                break;
-        }
+
+
+    protected function getTodaysOrders()
+    {
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+
+        $documents = $this->document
+                            ->where('delivery_date', \Carbon\Carbon::now())
+                            ->orWhere('delivery_date', null)
+                            ->with('customer')
+//                            ->with('currency')
+//                            ->with('paymentmethod')
+                            ->orderBy('delivery_date', 'desc')
+                            ->orderBy('id', 'desc');        // ->get();
+
+        $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        $documents->setPath($this->model_path);
+
+        return view($this->view_path.'.index_for_today', $this->modelVars() + compact('documents'));
     }
 
-    public function storeOrderLineProduct(Request $request, $order_id)
+
+    protected function getInvoiceableOrders($id, Request $request)
     {
-        // return response()->json(['order_id' => $order_id] + $request->all());
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
 
-        $product_id     = $request->input('product_id');
-        $combination_id = $request->input('combination_id', null);
-        $quantity       = $request->input('quantity', 1.0);
+        $items_per_page = intval($request->input('items_per_page', Configuration::getInt('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', Configuration::get('PRICES_ENTERED_WITH_TAX')) );
+        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+
+        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+
+        $customer = $this->customer->findOrFail($id);
+
+        $documents = $this->document
+                            ->where('customer_id', $id)
+                            ->where('status', 'closed')
+                            ->where('invoiced_at', null)
+//                            ->with('customer')
+                            ->with('currency')
+//                            ->with('paymentmethod')
+                            ->orderBy('document_date', 'desc')
+                            ->orderBy('id', 'desc');        // ->get();
+
+        $documents = $documents->paginate( $items_per_page );
+
+        // abi_r($this->model_path, true);
+
+        $documents->setPath($id);
+
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
+    }
+
+
+    public function createGroupInvoice( Request $request )
+    {
+        // ProductionSheetsController
+        $document_group = $request->input('document_group', []);
+
+        if ( count( $document_group ) == 0 ) 
+            return redirect()->route('customer.invoiceable.orders', $request->input('customer_id'))
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date'], $request );
+
+        $rules = $this->document::$rules_createinvoice;
+
+        $this->validate($request, $rules);
+
+        // Set params for group
+        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date');
+
+        // abi_r($params, true);
+
+        return $this->invoiceDocumentList( $document_group, $params );
+    } 
+
+    public function createInvoice($id)
+    {
+        $document = $this->document
+                            ->with('customer')
+                            ->findOrFail($id);
+        
+        $customer = $document->customer;
 
         $params = [
-            'prices_entered_with_tax' => $pricetaxPolicy,
-            'discount_percent' => $request->input('discount_percent', 0.0),
-            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
-
-            'line_sort_order' => $request->input('line_sort_order'),
-            'notes' => $request->input('notes', ''),
+            'customer_id'   => $customer->id, 
+            'template_id'   => $customer->getInvoiceTemplateId(), 
+            'sequence_id'   => $customer->getInvoiceSequenceId(), 
+            'document_date' => \Carbon\Carbon::now()->toDateString(),
         ];
 
-        // More stuff
-        if ($request->has('name')) 
-            $params['name'] = $request->input('name');
-
-        if ($request->has('sales_equalization')) 
-            $params['sales_equalization'] = $request->input('sales_equalization');
-
-        if ($request->has('measure_unit_id')) 
-            $params['measure_unit_id'] = $request->input('measure_unit_id');
-
-        if ($request->has('sales_rep_id')) 
-            $params['sales_rep_id'] = $request->input('sales_rep_id');
-
-        if ($request->has('commission_percent')) 
-            $params['commission_percent'] = $request->input('commission_percent');
-
-
-        // Let's Rock!
-        $document = $this->customerOrder
-                        ->with('customer')
-                        ->with('taxingaddress')
-                        ->with('salesrep')
-                        ->with('currency')
-                        ->findOrFail($order_id);
-
-        $document_line = $document->addProductLine( $product_id, $combination_id, $quantity, $params );
-
-
-        return response()->json( [
-                'msg' => 'OK',
-                'data' => $document_line->toArray()
-        ] );
+        // abi_r($params, true);
+        
+        return $this->invoiceDocumentList( [$id], $params );
     }
 
 
 
-    public function updateOrderLineProduct(Request $request, $line_id)
+    
+    public function invoiceDocumentList( $list, $params )
     {
 
-        $params = [
-//            'prices_entered_with_tax' => $pricetaxPolicy,
-//            'discount_percent' => $request->input('discount_percent', 0.0),
-//            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
+//        1.- Recuperar los documntos
+//        2.- Comprobar que están todos los de la lista ( comparando count() )
 
-//            'line_sort_order' => $request->input('line_sort_order'),
-//            'notes' => $request->input('notes'),
-        ];
+        try {
 
-        // More stuff
-        if ($request->has('quantity')) 
-            $params['quantity'] = $request->input('quantity');
+            $customer = $this->customer
+                                ->with('currency')
+                                ->findOrFail($params['customer_id']);
 
-        if ($request->has('prices_entered_with_tax')) 
-            $params['prices_entered_with_tax'] = $request->input('prices_entered_with_tax');
+            $documents = $this->document
+                                ->where('status', 'closed')
+                                ->where('invoiced_at', null)
+                                ->with('lines')
+                                ->with('lines.linetaxes')
+    //                            ->with('customer')
+    //                            ->with('currency')
+    //                            ->with('paymentmethod')
+                                ->orderBy('document_date', 'asc')
+                                ->orderBy('id', 'asc')
+                                ->findOrFail( $list );
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 
-        if ($request->has('discount_percent')) 
-            $params['discount_percent'] = $request->input('discount_percent');
-
-        if ($request->has('unit_customer_final_price')) 
-            $params['unit_customer_final_price'] = $request->input('unit_customer_final_price');
-
-        if ($request->has('line_sort_order')) 
-            $params['line_sort_order'] = $request->input('line_sort_order');
-
-        if ($request->has('notes')) 
-            $params['notes'] = $request->input('notes');
-
-
-        if ($request->has('name')) 
-            $params['name'] = $request->input('name');
-
-        if ($request->has('sales_equalization')) 
-            $params['sales_equalization'] = $request->input('sales_equalization');
-
-        if ($request->has('measure_unit_id')) 
-            $params['measure_unit_id'] = $request->input('measure_unit_id');
-
-        if ($request->has('sales_rep_id')) 
-            $params['sales_rep_id'] = $request->input('sales_rep_id');
-
-        if ($request->has('commission_percent')) 
-            $params['commission_percent'] = $request->input('commission_percent');
-
-
-        // Let's Rock!
-        $document_line = $this->customerOrderLine
-                        ->with('customerorder')
-                        ->findOrFail($line_id);
-
-        
-        $document = $document_line->customerorder;
-
-        $document_line = $document->updateProductLine( $line_id, $params );
-
-
-        return response()->json( [
-                'msg' => 'OK',
-                'data' => $document_line->toArray()
-        ] );
-    }
-
-
-
-    public function storeOrderLineService(Request $request, $order_id)
-    {
-        // return response()->json(['order_id' => $order_id] + $request->all());
-
-        $product_id      = $request->input('product_id', 0);
-        $combination_id  = $request->input('combination_id', 0);
-
-        // Do the Mambo!
-        // Product
-        if ($product_id>0)
-        {
-                if ($combination_id>0) {
-                    $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
-                    $product = $combination->product;
-                    $product->reference = $combination->reference;
-                    $product->name = $product->name.' | '.$combination->name;
-                } else {
-                    $product = \App\Product::with('tax')->findOrFail(intval($product_id));
-                }
-        
-        } else {
-        
-                // No database persistance, please!
-                $product  = new \App\Product([
-                    'product_type' => 'simple', 
-                    'reference' => $request->input('reference', ''),
-                    'name' => $request->input('name'), 
-                    'tax_id' => $request->input('tax_id'),
-                    'cost_price' => $request->input('cost_price'), 
-                ]);
-        
+            return redirect()->back()
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $list)], 'layouts'));
+            
         }
 
-        $reference  = $product->reference;
-        $name       = $product->name;
-        $cost_price = $product->cost_price;
+//        4.- Cear cabecera
 
-        $quantity = $request->input('quantity');
-
-        // ToDo: Don't trust values from browser. Do not be lazy and get them from database
-        $tax_percent = $request->input('tax_percent');
-        $unit_price  = $request->input('unit_price');
-
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', Configuration::get('PRICES_ENTERED_WITH_TAX')) );
-        if ( $pricetaxPolicy > 0 )
-            $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
-
-        $unit_customer_price = $request->input('unit_customer_price');
-        if ( $pricetaxPolicy > 0 )
-            $unit_customer_price = $unit_customer_price / (1.0 + $tax_percent/100.0);
-
-        $discount_percent = $request->input('discount_percent', 0.0);
-
-        $unit_customer_final_price_tax_inc = $unit_customer_final_price = $request->input('unit_customer_final_price');
-
-        if ( $pricetaxPolicy > 0 ) {
-
-            $unit_final_price         = $unit_customer_final_price / (1.0 + $tax_percent/100.0);
-            $unit_final_price_tax_inc = $unit_customer_final_price;
-
-            $unit_customer_final_price = $unit_final_price;
-
-        } else {
-
-            $unit_final_price         = $unit_customer_final_price;
-            $unit_final_price_tax_inc = $unit_customer_final_price * (1.0 + $tax_percent/100.0);
-
-            $unit_customer_final_price_tax_inc = $unit_final_price_tax_inc;
-
-        }
-
-        $unit_final_price         = $unit_final_price         * (1.0 - $discount_percent/100.0);
-        $unit_final_price_tax_inc = $unit_final_price_tax_inc * (1.0 - $discount_percent/100.0);
-
-        $total_tax_excl = $quantity * $unit_final_price;
-        $total_tax_incl = $quantity * $unit_final_price_tax_inc;
-
-        $tax_id = $product->tax_id;
-        $sales_equalization = $request->input('sales_equalization', 0);
-
-        // Build OrderLine Object
+        // Header
+        // Common data
         $data = [
-            'line_sort_order' => $request->input('line_sort_order'),
-            'line_type' => $request->input('is_shipping') > 0 ? 'shipping' : $request->input('line_type'),
-            'product_id' => $product_id,
-            'combination_id' => $combination_id,
-            'reference' => $reference,
-            'name' => $name,
-            'quantity' => $quantity,
-            'measure_unit_id' => $request->input('measure_unit_id', Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')),
-    
-            'cost_price' => $cost_price,
-            'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price,
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price_tax_inc,
-            'unit_final_price' => $unit_final_price,
-            'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
-            'sales_equalization' => $sales_equalization,  // By default, sales_equalization = 0 , because is a service. Otherwise: $request->input('sales_equalization', 0),
-            'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
-            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
+//            'company_id' => $this->company_id,
+            'customer_id' => $customer->id,
+//            'user_id' => $this->,
 
-            'total_tax_incl' => $total_tax_incl,
-            'total_tax_excl' => $total_tax_excl,
+            'sequence_id' => $params['sequence_id'],
 
-            'tax_percent' => $tax_percent,
-            'commission_percent' => $request->input('commission_percent', 0.0),
-            'notes' => $request->input('notes', ''),
+            'created_via' => 'aggregate_shipping_slips',
+
+            'document_date' => $params['document_date'],
+
+            'currency_conversion_rate' => $customer->currency->conversion_rate,
+//            'down_payment' => $this->down_payment,
+
+            'total_currency_tax_incl' => $documents->sum('total_currency_tax_incl'),
+            'total_currency_tax_excl' => $documents->sum('total_currency_tax_excl'),
+//            'total_currency_paid' => $this->total_currency_paid,
+
+            'total_tax_incl' => $documents->sum('total_tax_incl'),
+            'total_tax_excl' => $documents->sum('total_tax_excl'),
+
+//            'commission_amount' => $this->commission_amount,
+
+            // Skip notes
+
+            'status' => 'draft',
             'locked' => 0,
-    
-    //        'customer_order_id',
-            'tax_id' => $tax_id,
-            'sales_rep_id' => $request->input('sales_rep_id', 0),
+
+            'invoicing_address_id' => $customer->invoicing_address_id,
+//            'shipping_address_id' => $this->shipping_address_id,
+//            'warehouse_id' => $this->warehouse_id,
+//            'shipping_method_id' => $this->shipping_method_id ?? $this->customer->shipping_method_id ?? Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD'),
+//            'carrier_id' => $this->carrier_id,
+            'sales_rep_id' => $customer->sales_rep_id,
+            'currency_id' => $customer->currency->id,
+            'payment_method_id' => $customer->getPaymentMethodId(),
+            'template_id' => $params['template_id'],
+        ];
+
+        // Model specific data
+        $extradata = [
+            'type' => 'invoice',
+//            'payment_status' => 'pending',
+//            'stock_status' => 'completed',
         ];
 
 
-        // Finishin touches
-        $order = $this->customerOrder->findOrFail($order_id);
-
-        $order_line = $this->customerOrderLine->create( $data );
-
-        $order->customerorderlines()->save($order_line);
-
-        // Let's deal with taxes
-        $product->sales_equalization = $sales_equalization;   // Sensible default for services!
-        $rules = $product->getTaxRules( $order->taxingaddress,  $order->customer );
-
-        $base_price = $order_line->quantity*$order_line->unit_final_price;
-        // Rounded $base_price is the same, no matters the value of ROUND_PRICES_WITH_TAX
-
-        $order_line->total_tax_incl = $order_line->total_tax_excl = $base_price;
-
-        foreach ( $rules as $rule ) {
-
-            $line_tax = new \App\CustomerOrderLineTax();
-
-                $line_tax->name = $rule->fullName;
-                $line_tax->tax_rule_type = $rule->rule_type;
-
-                $p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $order->currency, $order->currency_conversion_rate);
-
-                $p->applyRounding( );
-
-                $line_tax->taxable_base = $base_price;
-                $line_tax->percent = $rule->percent;
-                $line_tax->amount = $rule->amount;
-                $line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
-
-                $line_tax->position = $rule->position;
-
-                $line_tax->tax_id = $tax_id;
-                $line_tax->tax_rule_id = $rule->id;
-
-                $line_tax->save();
-                $order_line->total_tax_incl += $line_tax->total_line_tax;
-
-                $order_line->CustomerOrderLineTaxes()->save($line_tax);
-                $order_line->save();
-
-        }
-
-        // Now, update Order Totals
-        $order->makeTotals();
-
-
-
-
-
-
-
-
-
-        return response()->json( [
-                'msg' => 'OK',
-                'data' => $order_line->toArray(),
-//                'extra' => [$p->getPriceWithTax() , $p->getPrice() , $p->as_priceable($rule->amount)],
-        ] );
-    }
-
-
-    public function updateOrderLineService(Request $request, $line_id)
-    {
-        // return response()->json(['order_id' => $order_id] + $request->all());
-
-        $order_line = $this->customerOrderLine
-                        ->findOrFail($line_id);
-
-        $order_id = $order_line->customer_order_id;
-
- //       $product_id      = $request->input('product_id');
- //       $combination_id  = $request->input('combination_id');
-
-        $product_id      = 0;
-        $combination_id  = 0;
-
-        // Do the Mambo!
-        // Product
-/*        
-        if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
-            $product = $combination->product;
-            $product->reference = $combination->reference;
-            $product->name = $product->name.' | '.$combination->name;
-        } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
-        }
-*/        
-        // No database persistance, please!
-        $product  = new \App\Product([
-            'product_type' => 'simple', 
-            'reference' => $request->input('reference', ''),
-            'name' => $request->input('name'), 
-            'tax_id' => $request->input('tax_id'),
-            'cost_price' => $request->input('cost_price'), 
-        ]);
-
-        $reference  = $product->reference;
-        $name       = $product->name;
-        $cost_price = $product->cost_price;
-
-        $quantity = $request->input('quantity');
-
-        $tax_percent = $request->input('tax_percent');
-//        $tax_percent = $product->tax->percent;
-/*
-        $unit_price  = $request->input('price');
-        if ( Configuration::get('PRICES_ENTERED_WITH_TAX') )
-            $unit_price = $unit_price / (1.0 + $tax_percent/100.0);
-
-        $unit_customer_price = $request->input('price');
-        if ( Configuration::get('PRICES_ENTERED_WITH_TAX') )
-            $unit_customer_price = $price / (1.0 + $tax_percent/100.0);
-*/
-
-
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', Configuration::get('PRICES_ENTERED_WITH_TAX')) );
-
-        $discount_percent = $request->input('discount_percent', 0.0);
-
-        if ( $pricetaxPolicy > 0 ) {
-
-            $price          = $request->input('unit_customer_final_price') / (1.0 + $tax_percent/100.0);
-            $price_with_tax = $request->input('unit_customer_final_price');
-
-        } else {
-
-            $price          = $request->input('unit_customer_final_price');
-            $price_with_tax = $request->input('unit_customer_final_price') * (1.0 + $tax_percent/100.0);
-
-        }
-
-        // Service
-        $unit_price = $unit_customer_price = $unit_customer_final_price = $unit_final_price = $price;
-        $unit_customer_final_price_tax_inc = $unit_final_price_tax_inc = $price_with_tax;
-
-        $unit_final_price         = $unit_final_price         * (1.0 - $discount_percent/100.0);
-        $unit_final_price_tax_inc = $unit_final_price_tax_inc * (1.0 - $discount_percent/100.0);
-
-        $total_tax_excl = $quantity * $unit_final_price;
-        $total_tax_incl = $quantity * $unit_final_price_tax_inc;
-
-        $tax_id = $product->tax_id;
-        $sales_equalization = $request->input('sales_equalization', 0);
-
-        // Build OrderLine Object
-        $data = [
-//            'line_sort_order' => $request->input('line_sort_order'),
-            'line_type' => $request->input('is_shipping') > 0 ? 'shipping' : 'service',
-//            'product_id' => $product_id,
-//            'combination_id' => $combination_id,
-//            'reference' => $reference,
-            'name' => $name,
-            'quantity' => $quantity,
-//            'measure_unit_id' => $request->input('measure_unit_id', Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')),
-    
-            'cost_price' => $cost_price,
-            'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price,
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price_tax_inc,
-            'unit_final_price' => $unit_final_price,
-            'unit_final_price_tax_inc' => $unit_final_price_tax_inc, 
-            'sales_equalization' => $sales_equalization,  // By default, sales_equalization = 0 , because is a service. Otherwise: $request->input('sales_equalization', 0),
-            'discount_percent' => $discount_percent,
-            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
-            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
-
-            'total_tax_incl' => $total_tax_incl,
-            'total_tax_excl' => $total_tax_excl,
-
-            'tax_percent' => $tax_percent,
-            'commission_percent' => $request->input('commission_percent', 0.0),
-            'notes' => $request->input('notes', ''),
-            'locked' => 0,
-    
-    //        'customer_order_id',
-            'tax_id' => $tax_id,
-            'sales_rep_id' => $request->input('sales_rep_id', 0),
-        ];
-
-
-        // Finishin touches
-        $order = $this->customerOrder->findOrFail($order_id);
-
-        $order_line->update( $data );
-
-//        $order->customerorderlines()->save($order_line);
-
-        // Let's deal with taxes
-        $order_line->customerorderlinetaxes()->delete();
-
-        $product->sales_equalization = $sales_equalization;   // Sensible default for services!
-        $rules = $product->getTaxRules( $order->taxingaddress,  $order->customer );
-
-        $base_price = $order_line->quantity*$order_line->unit_final_price;
-        // Rounded $base_price is the same, no matters the value of ROUND_PRICES_WITH_TAX
-
-        $order_line->total_tax_incl = $order_line->total_tax_excl = $base_price;
-
-        foreach ( $rules as $rule ) {
-
-            $line_tax = new \App\CustomerOrderLineTax();
-
-                $line_tax->name = $rule->fullName;
-                $line_tax->tax_rule_type = $rule->rule_type;
-
-                $p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $order->currency, $order->currency_conversion_rate);
-
-                $p->applyRounding( );
-
-                $line_tax->taxable_base = $base_price;
-                $line_tax->percent = $rule->percent;
-                $line_tax->amount = $rule->amount;
-                $line_tax->total_line_tax = $p->getPriceWithTax() - $p->getPrice() + $p->as_priceable($rule->amount);
-
-                $line_tax->position = $rule->position;
-
-                $line_tax->tax_id = $tax_id;
-                $line_tax->tax_rule_id = $rule->id;
-
-                $line_tax->save();
-                $order_line->total_tax_incl += $line_tax->total_line_tax;
-
-                $order_line->CustomerOrderLineTaxes()->save($line_tax);
-                $order_line->save();
-
-        }
-
-        // Now, update Order Totals
-        $order->makeTotals();
-
-
-
-
-
-
-
-
-
-        return response()->json( [
-                'msg' => 'OK',
-                'data' => $order_line->toArray()
-        ] );
-    }
-
-
-    public function updateOrderTotal(Request $request, $order_id)
-    {
-        $order = $this->customerOrder
-//                        ->with('customerorderlines')
-//                        ->with('customerorderlines.product')
-                        ->findOrFail($order_id);
-
-        $discount_percent = $request->input('document_discount_percent', 0.0);
-
-        // Now, update Order Totals
-        $order->makeTotals( $discount_percent );
-
-        return view('customer_orders._panel_customer_order_total', compact('order'));
-    }
-
-    public function deleteOrderLine($line_id)
-    {
-
-        $order_line = $this->customerOrderLine
-                        ->findOrFail($line_id);
-
-        $order = $this->customerOrder
-                        ->findOrFail($order_line->customer_order_id);
-
-        $order_line->delete();
-
-        // Now, update Order Totals
-        $order->makeTotals();
-
-        return response()->json( [
-                'msg' => 'OK',
-                'data' => $line_id
-        ] );
-    }
-
-    public function sortLines(Request $request)
-    {
-        $positions = $request->input('positions', []);
-
-        \DB::transaction(function () use ($positions) {
-            foreach ($positions as $position) {
-                CustomerOrderLine::where('id', '=', $position[0])->update(['line_sort_order' => $position[1]]);
-            }
-        });
-
-        return response()->json($positions);
-    }
-
-
-    public function duplicateOrder($id)
-    {
-        $order = $this->customerOrder->findOrFail($id);
-
-        // Duplicate BOM
-        $clone = $order->replicate();
-
-        // Extra data
-        $seq = \App\Sequence::findOrFail( $order->sequence_id );
-
-        // Not so fast, dudde:
-/*
-        $doc_id = $seq->getNextDocumentId();
-
-        $clone->document_prefix      = $seq->prefix;
-        $clone->document_id          = $doc_id;
-        $clone->document_reference   = $seq->getDocumentReference($doc_id);
-*/
-        $clone->user_id              = \App\Context::getContext()->user->id;
-
-        $clone->document_reference = null;
-        $clone->reference = '';
-        $clone->reference_customer = '';
-        $clone->reference_external = '';
-
-        $clone->created_via          = 'manual';
-        $clone->status               = 'draft';
-        $clone->locked               = 0;
-        
-        $clone->document_date = \Carbon\Carbon::now();
-        $clone->payment_date = null;
-        $clone->validation_date = null;
-        $clone->delivery_date = null;
-        $clone->delivery_date_real = null;
-        $clone->close_date = null;
-        
-        $clone->tracking_number = null;
-
-        $clone->parent_document_id = null;
-
-        $clone->production_sheet_id = null;
-        $clone->export_date = null;
-        
-        $clone->secure_key = null;
-        $clone->import_key = '';
-
-
-        $clone->save();
-
-        // Duplicate BOM Lines
-        if ( $order->customerorderlines()->count() )
-            foreach ($order->customerorderlines as $line) {
-
-                $clone_line = $line->replicate();
-
-                $clone->customerorderlines()->save($clone_line);
-
-                if ( $line->customerorderlinetaxes()->count() )
-                    foreach ($line->customerorderlinetaxes as $linetax) {
-
-                        $clone_line_tax = $linetax->replicate();
-
-                        $clone_line->customerorderlinetaxes()->save($clone_line_tax);
-
-                    }
-            }
-
-        // Save Customer order
-        $clone->push();
-
-        // Good boy:
-        $clone->confirm();
-
-
-        return redirect('customerorders/'.$clone->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $clone->id], 'layouts'));
-    }
-
-
-    public function getOrderProfit($id)
-    {
-        $order = $this->customerOrder
-                        ->with('customerorderlines')
-                        ->with('customerorderlines.product')
-                        ->findOrFail($id);
-
-        return view('customer_orders._panel_customer_order_profitability', compact('order'));
-
-        $order = \App\CustomerOrder::findOrFail($id);
-
-        $sheet_id = $order->production_sheet_id;
-
-        $order->update(['production_sheet_id' => null]);
-
-        // $sheet_id = $request->input('current_production_sheet_id');
-
-        return redirect()->route('productionsheet.calculate', [$sheet_id]);
-    }
-
-
-    public function getOrderAvailability($id)
-    {
-        $order = $this->customerOrder
-                        ->with('customerorderlines')
-                        ->with('customerorderlines.product')
-                        ->findOrFail($id);
-
-        return view('customer_orders._panel_customer_order_availability', compact('order'));
-
-        $order = \App\CustomerOrder::findOrFail($id);
-
-        $sheet_id = $order->production_sheet_id;
-
-        $order->update(['production_sheet_id' => null]);
-
-        // $sheet_id = $request->input('current_production_sheet_id');
-
-        return redirect()->route('productionsheet.calculate', [$sheet_id]);
-    }
-
-
-    public function quickAddLines(Request $request, $order_id)
-    {
-        parse_str($request->input('product_id_values'), $output);
-        $product_id_values = $output['product_id_values'];
-
-        parse_str($request->input('combination_id_values'), $output);
-        $combination_id_values = $output['combination_id_values'];
-
-        parse_str($request->input('quantity_values'), $output);
-        $quantity_values = $output['quantity_values'];
-
-
-        // Let's Rock!
-        $order = $this->customerOrder
-                        ->with('customer')
-                        ->with('taxingaddress')
-                        ->with('salesrep')
-                        ->with('currency')
-                        ->findOrFail($order_id);
-
-        // return $order;
-
-        foreach ($product_id_values as $key => $pid) {
+        // Let's get dirty
+//        CustomerInvoice::unguard();
+        $invoice = CustomerInvoice::create( $data + $extradata );
+//        CustomerInvoice::reguard();
+
+
+//        5a.- Añadir Albarán
+//        5b.- Crear enlaces para trazabilidad de documentos
+        // Initialize grouped lines collection
+        // $grouped_lines = DocumentLine::whereIn($this->getParentModelSnakeCase().'_id', $list)->get();
+
+        // Initialize totals
+        $total_currency_tax_incl = 0;
+        $total_currency_tax_excl = 0;
+        $total_tax_incl = 0;
+        $total_tax_excl = 0;
+
+        // Initialize line sort order
+        $i = 0;
+
+        foreach ($documents as $document) {
             # code...
+            $i++;
 
-            $line[] = $order->addProductLine( $pid, $combination_id_values[$key], $quantity_values[$key], [] );
+            // Text line announces Shipping Slip
+            $line_data = [
+                'line_sort_order' => $i*10, 
+                'line_type' => 'comment', 
+                'name' => l('Shipping Slip: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]),
+//                'product_id' => , 
+//                'combination_id' => , 
+                'reference' => $document->document_reference, 
+//                'name', 
+                'quantity' => 1, 
+                'measure_unit_id' => Configuration::getInt('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+//                    'cost_price', 'unit_price', 'unit_customer_price', 
+//                    'prices_entered_with_tax',
+//                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
+//                    'unit_final_price', 'unit_final_price_tax_inc', 
+//                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
+                'total_tax_incl' => $document->total_currency_tax_incl, 
+                'total_tax_excl' => $document->total_currency_tax_excl, 
+//                    'tax_percent', 'commission_percent', 
+                'notes' => '', 
+                'locked' => 0,
+ //                 'customer_shipping_slip_id',
+                'tax_id' => Configuration::get('DEF_TAX'),  // Just convinient
+ //               'sales_rep_id'
+            ];
 
-            // abi_r($line, true);
-        }
+            $invoice_line = CustomerInvoiceLine::create( $line_data );
 
-        return response()->json( [
-                'msg' => 'OK',
-                'order' => $order_id,
-                'data' => $line,
- //               'currency' => $line[0]->currency,
-        ] );
+            $invoice->lines()->save($invoice_line);
 
-    }
+            // Add current Shipping Slip lines to Invoice
+            foreach ($document->lines as $line) {
+                # code...
+                $i++;
 
+                // $invoice_line = $line->toInvoiceLine();
 
+                // Common data
+                $data = [
+                ];
 
+                $data = $line->toArray();
+                // id
+                unset( $data['id'] );
+                // Parent document
+                unset( $data[$this->getParentModelSnakeCase().'_id'] );
+                // Dates
+                unset( $data['created_at'] );
+                unset( $data['deleted_at'] );
+                // linetaxes
+                unset( $data['linetaxes'] );
+                // Sort order
+                $data['line_sort_order'] = $i*10; 
+                // Locked 
+                $data['locked'] = 1; 
 
+                // Model specific data
+                $extradata = [
+                ];
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Shipping Slip
-    |--------------------------------------------------------------------------
-    */
-
-    public function makeShippingSlip($id)
-    {
-        // https://github.com/BKWLD/cloner
-
-        $order_except_fields = ['id', 'sequence_id', 'document_prefix', 'document_id', 'document_reference', 'reference', 
-                                'reference_customer', 'reference_external', 
-                                'created_via', 'validation_date', 
-                                'delivery_date', 'delivery_date_real', 'close_date', 'status', 'locked', 'template_id', 
-                                'parent_document_id', 'production_sheet_id', 'export_date', 
-                                'created_at', 'updated_at'
-        ];
-
-        $order = $this->customerOrder->findOrFail($id);
-
-        $data = $order->attributesToArray();
-
-        $data['document_date'] = \Carbon\Carbon::now();
-
-        $slip = (new CustomerShippingSlip())->forceCreate( array_except($data, $order_except_fields) );
-
-
-
-        return redirect('customershippingslips')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $slip->id], 'layouts'));
-
-
-
-        // Duplicate BOM
-        $clone = $order->replicate();
-
-        // Extra data
-        $seq = \App\Sequence::findOrFail( $order->sequence_id );
-
-        // Not so fast, dudde:
-/*
-        $doc_id = $seq->getNextDocumentId();
-
-        $clone->document_prefix      = $seq->prefix;
-        $clone->document_id          = $doc_id;
-        $clone->document_reference   = $seq->getDocumentReference($doc_id);
-*/
-        $clone->user_id              = \App\Context::getContext()->user->id;
-
-        $clone->created_via          = 'manual';
-        $clone->status               = 'draft';
-        $clone->locked               = 0;
-        
-        $clone->document_date = \Carbon\Carbon::now();
-        $clone->delivery_date = null;
+                // abi_r($this->getParentModelSnakeCase().'_id');
+                // abi_r($data, true);
 
 
-        $clone->save();
+                // Let's get dirty
+                CustomerInvoiceLine::unguard();
+                $invoice_line = CustomerInvoiceLine::create( $data + $extradata );
+                CustomerInvoiceLine::reguard();
 
-        // Duplicate BOM Lines
-        if ( $order->customerorderlines()->count() )
-            foreach ($order->customerorderlines as $line) {
+                $invoice->lines()->save($invoice_line);
 
-                $clone_line = $line->replicate();
+                foreach ($line->taxes as $linetax) {
 
-                $clone->customerorderlines()->save($clone_line);
+                    // $invoice_line_tax = $this->lineTaxToInvoiceLineTax( $linetax );
+                    // Common data
+                    $data = [
+                    ];
 
-                if ( $line->customerorderlinetaxes()->count() )
-                    foreach ($line->customerorderlinetaxes as $linetax) {
+                    $data = $linetax->toArray();
+                    // id
+                    unset( $data['id'] );
+                    // Parent document
+                    unset( $data[$this->getParentModelSnakeCase().'_line_id'] );
+                    // Dates
+                    unset( $data['created_at'] );
+                    unset( $data['deleted_at'] );
 
-                        $clone_line_tax = $linetax->replicate();
+                    // Model specific data
+                    $extradata = [
+                    ];
 
-                        $clone_line->customerorderlinetaxes()->save($clone_line_tax);
 
-                    }
+                    // Let's get dirty
+                    CustomerInvoiceLineTax::unguard();
+                    $invoice_line_tax = CustomerInvoiceLineTax::create( $data + $extradata );
+                    CustomerInvoiceLineTax::reguard();
+
+                    $invoice_line->taxes()->save($invoice_line_tax);
+
+                }
             }
 
-        // Save Customer order
-        $clone->push();
+            // Not so fast, Sony Boy
 
-        // Good boy:
-        $clone->confirm();
+            // Confirm Invoice
+            $document->confirm();
+
+            // Close Invoice
+            $document->close();
 
 
-        return redirect('customerorders/'.$clone->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $clone->id], 'layouts'));
+            // Document traceability
+            //     leftable  is this document
+            //     rightable is Customer Invoice Document
+            $link_data = [
+                'leftable_id'    => $document->id,
+                'leftable_type'  => $document->getClassName(),
+
+                'rightable_id'   => $invoice->id,
+                'rightable_type' => CustomerInvoice::class,
+
+                'type' => 'traceability',
+                ];
+
+            $link = DocumentAscription::create( $link_data );
+        }
+
+        // Good boy, so far
+
+
+
+
+        // abi_r($grouped_lines, true);
+
+
+
+        return redirect('customerinvoices/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+
+
+
+
+//        3.- Si algún documento tiene plantilla diferente, generar factura para él <= Tontá: el albarán NO tiene plantilla de Factura
+
+//        6.- Crear línea de texto con los albaranes ???
+
+//        7.- Crear líneas agrupadas ???
+
+//        8.- Manage estados de documento, pago y stock
+
+
+        // Prepare Logger
+        $logger = \aBillander\WooConnect\WooOrderImporter::logger();
+
+        $logger->empty();
+        $logger->start();
+
+        // Do the Mambo!
+        foreach ( $list as $oID ) 
+        {
+            $logger->log("INFO", 'Se descargará el Pedido: <span class="log-showoff-format">{oid}</span> .', ['oid' => $oID]);
+
+            $importer = \aBillander\WooConnect\WooOrderImporter::processOrder( $oID );
+        }
+
+        $logger->stop();
+
+        return redirect('activityloggers/'.$logger->id)
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $logger->id], 'layouts'));
     }
+
 
 
 
@@ -1483,267 +879,180 @@ class CustomerOrdersController extends Controller
     */
 
 
-    public function showPdfInvoice($id, Request $request)
-    {
-
-        // die($id);
-
-        try {
-            $document = $this->customerOrder
-                            ->with('customer')
-//                            ->with('invoicingAddress')
-//                            ->with('customerInvoiceLines')
-//                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->with('template')
-                            ->findOrFail($id);
-
-        } catch(ModelNotFoundException $e) {
-
-            return redirect('customerorders')
-                     ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
-        }
-        
-
-        $company = \App\Context::getContext()->company;
-
-        // Get Template
-        $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );
-
-        if ( !$t )
-            return redirect()->route('customerorders.show', $id)
-                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
-
-        // $document->template = $t;
-
-        $template = $t->getPath( 'CustomerInvoice' );
-
-        $paper = $t->paper;    // A4, letter
-        $orientation = $t->orientation;    // 'portrait' or 'landscape'.
-        
-        // Catch for errors
-        try{
-                $pdf        = \PDF::loadView( $template, compact('document', 'company') )
-                            ->setPaper( $paper, $orientation );
-        }
-        catch(\Exception $e){
-
-                abi_r($e->getMessage(), true);
-
-                // return redirect()->route('customerorders.show', $id)
-                //    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
-        }
-
-        // PDF stuff ENDS
-
-        $pdfName    = 'invoice_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
-
-        if ($request->has('screen')) return view($template, compact('document', 'company'));
-        
-        return  $pdf->stream();
-        return  $pdf->download( $pdfName . '.pdf');
-
-
-        return redirect()->route('abcc.orders.index')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
-    }
-
-
-    protected function showPdf($id, Request $request)
-    {
-        // return $id;
-
-        // PDF stuff
-        try {
-            $document = $this->customerOrder
-                            ->with('customer')
-//                            ->with('invoicingAddress')
-//                            ->with('customerInvoiceLines')
-//                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->with('template')
-                            ->findOrFail($id);
-
-        } catch(ModelNotFoundException $e) {
-
-            return redirect('customerorders')
-                     ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
-        }
-
-        // abi_r($document->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
-
-        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
-
-        // Template impersonation
-        $template = \App\Template::create(['file_name'=>'shipping_slip', 'paper'=>'A4', 'orientation'=>'portrait']);
-        $document->template = $template;
-
-        $template->delete();
-
-        $template = 'customer_orders.templates.' . $document->template->file_name;  // . '_dist';
-        $paper = $document->template->paper;    // A4, letter
-        $orientation = $document->template->orientation;    // 'portrait' or 'landscape'.
-        
-        $pdf        = \PDF::loadView( $template, compact('document', 'company') )
-                            ->setPaper( $paper, $orientation );
-//      $pdf = \PDF::loadView('customer_invoices.templates.test', $data)->setPaper('a4', 'landscape');
-
-        // PDF stuff ENDS
-
-        $pdfName    = 'invoice_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
-
-        if ($request->has('screen')) return view($template, compact('document', 'company'));
-        
-        return  $pdf->stream();
-        return  $pdf->download( $pdfName . '.pdf');
-    }
-
-    public function sendemail( Request $request )
-    {
-        $id = $request->input('invoice_id');
-
-        // PDF stuff
-        try {
-            $document = CustomerInvoice::
-                              with('customer')
-                            ->with('invoicingAddress')
-                            ->with('customerInvoiceLines')
-                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->with('template')
-                            ->findOrFail($id);
-
-        } catch(ModelNotFoundException $e) {
-
-            return redirect('customers.index')
-                     ->with('error', 'La Factura de Cliente id='.$id.' no existe.');
-            // return Redirect::to('invoice')->with('message', trans('invoice.access_denied'));
-        }
-
-        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
-
-        $template = 'customer_invoices.templates.' . $document->template->file_name;
-        $paper = $document->template->paper;    // A4, letter
-        $orientation = $document->template->orientation;    // 'portrait' or 'landscape'.
-        
-        $pdf        = \PDF::loadView( $template, compact('document', 'company') )
-//                          ->setPaper( $paper )
-//                          ->setOrientation( $orientation );
-                            ->setPaper( $paper, $orientation );
-        // PDF stuff ENDS
-
-        // MAIL stuff
-        try {
-
-            $pdfName    = 'invoice_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
-
-            $pathToFile     = storage_path() . '/pdf/' . $pdfName .'.pdf';
-            $pdf->save($pathToFile);
-
-            $template_vars = array(
-                'company'       => $company,
-                'invoice_num'   => $document->number,
-                'invoice_date'  => abi_date_short($document->document_date),
-                'invoice_total' => $document->as_money('total_tax_incl'),
-                'custom_body'   => $request->input('email_body'),
-                );
-
-            $data = array(
-                'from'     => $company->address->email,
-                'fromName' => $company->name_fiscal,
-                'to'       => $document->customer->address->email,
-                'toName'   => $document->customer->name_fiscal,
-                'subject'  => $request->input('email_subject'),
-                );
-
-            
-
-            // http://belardesign.com/2013/09/11/how-to-smtp-for-mailing-in-laravel/
-            \Mail::send('emails.customerinvoice.default', $template_vars, function($message) use ($data, $pathToFile)
-            {
-                $message->from($data['from'], $data['fromName']);
-
-                $message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );    // Will send blind copy to sender!
-                
-                $message->attach($pathToFile);
-
-            }); 
-            
-            unlink($pathToFile);
-
-        } catch(\Exception $e) {
-
-            return redirect()->back()->with('error', 'La Factura '.$document->number.' no se pudo enviar al Cliente');
-        }
-        // MAIL stuff ENDS
-        
-
-        return redirect()->back()->with('success', 'La Factura '.$document->number.' se envió correctamente al Cliente');
-    }
-
-
 /* ********************************************************************************************* */    
 
 
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function ajaxLineSearch(Request $request)
+    {
+        // Request data
+        $line_id         = $request->input('line_id');
+        $product_id      = $request->input('product_id');
+        $combination_id  = $request->input('combination_id', 0);
+        $customer_id     = $request->input('customer_id');
+        $sales_rep_id    = $request->input('sales_rep_id', 0);
+        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
 
-}
+//        return "$product_id, $combination_id, $customer_id, $currency_id";
 
-
-/* ********************************************************************************************* */
-
-
-
-function rws_is_empty_folder($dir) {
-  if ($dir[strlen($dir)-1]=='/') $dir = substr($dir, 0, strlen($dir)-1);
-  $eflag = false;
-
-  if (is_dir($dir)) {
-
-    if ($handle = opendir($dir)) {
-    while (false !== ($file = readdir($handle))) {
-        if ($file != '.' && $file != '..' && is_file($dir.'/'.$file)) {
-            $eflag = true;
-            break;
+        if ($combination_id>0) {
+            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = \App\Product::with('tax')->find(intval($product_id));
         }
-    }
-    closedir($handle);
-    }
 
-  }
-  return $eflag; 
-}
+        $customer = \App\Customer::find(intval($customer_id));
 
-function rws_delete_files_in_folder($dir) {
-  if ($dir[strlen($dir)-1]=='/') $dir = substr($dir, 0, strlen($dir)-1);
-  $eflag = true;
+        $sales_rep = null;
+        if ($sales_rep_id>0)
+            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+        if (!$sales_rep)
+            $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
+        
+        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
+                    \App\Context::getContext()->currency :
+                    \App\Currency::find(intval($currency_id));
 
-  if (is_dir($dir)) {
+        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
-    if ($handle = opendir($dir)) {
-    while (false !== ($file = readdir($handle))) {
-        if ($file != '.' && $file != '..' && is_file($dir.'/'.$file)) {
-            if (@unlink($dir.'/'.$file)) { $eflag = true; }
-            else { $eflag = false; break; }
+        if ( !$product || !$customer || !$currency ) {
+            // Die silently
+            return '';
         }
-//        else if ($file != '.' && $file != '..' && is_dir($dir.'/'.$file)) {
-//            delete_files_in_folder($dir.'/'.$file);
-//            if (rmdir($dir.'/'.$file)) { echo $dir . '/' . $file . ' (directory) deleted<br />'; }
-//            else { echo $dir . '/' . $file . ' (directory) NOT deleted!<br />'; }
-//        }
-    }
-    closedir($handle);
+
+        $tax = $product->tax;
+
+        // Calculate price per $customer_id now!
+        $price = $product->getPriceByCustomer( $customer, 1, $currency );
+        $tax_percent = $tax->getFirstRule()->percent;
+        $price->applyTaxPercent( $tax_percent );
+
+        $data = [
+//          'id' => '',
+            'line_sort_order' => '',
+            'line_type' => 'product',
+            'product_id' => $product->id,
+            'combination_id' => $combination_id,
+            'reference' => $product->reference,
+            'name' => $product->name,
+            'quantity' => 1,
+            'cost_price' => $product->cost_price,
+            'unit_price' => $product->price,
+            'unit_customer_price' => $price->getPrice(),
+            'unit_final_price' => $price->getPrice(),
+            'unit_final_price_tax_inc' => $price->getPriceWithTax(),
+            'unit_net_price' => $price->getPrice(),
+            'sales_equalization' => $customer->sales_equalization,
+            'discount_percent' => 0.0,
+            'discount_amount_tax_incl' => 0.0,
+            'discount_amount_tax_excl' => 0.0,
+            'total_tax_incl' => 0.0,
+            'total_tax_excl' => 0.0,
+            'tax_percent' => $product->as_percentable($tax_percent),
+            'commission_percent' => $sales_rep->commission_percent,
+            'notes' => '',
+            'locked' => 0,
+//          'customer_invoice_id' => '',
+            'tax_id' => $product->tax_id,
+            'sales_rep_id' => $sales_rep->id,
+        ];
+
+        $line = new DocumentLine( $data );
+
+        return view($this->view_path.'._invoice_line', [ 'i' => $line_id, 'line' => $line ] );
     }
 
-  }
-  return $eflag;
+
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function ajaxLineOtherSearch(Request $request)
+    {
+        // Request data
+        $line_id         = $request->input('line_id');
+        $other_json      = $request->input('other_json');
+        $customer_id     = $request->input('customer_id');
+        $sales_rep_id    = $request->input('sales_rep_id', 0);
+        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+
+//        return "$product_id, $combination_id, $customer_id, $currency_id";
+
+        if ($other_json) {
+            $product = (object) json_decode( $other_json, true);
+        } else {
+            $product = $other_json;
+        }
+
+        $customer = \App\Customer::find(intval($customer_id));
+
+        $sales_rep = null;
+        if ($sales_rep_id>0)
+            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+        if (!$sales_rep)
+            $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
+        
+        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
+                    \App\Context::getContext()->currency :
+                    \App\Currency::find(intval($currency_id));
+
+        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
+
+        if ( !$product || !$customer || !$currency ) {
+            // Die silently
+            return '';
+        }
+
+        $tax = \App\Tax::find($product->tax_id);
+
+        // Calculate price per $customer_id now!
+        $amount_is_tax_inc = Configuration::get('PRICES_ENTERED_WITH_TAX');
+        $amount = $amount_is_tax_inc ? $product->price_tax_inc : $product->price;
+        $price = new \App\Price( $amount, $amount_is_tax_inc, $currency );
+        $tax_percent = $tax->getFirstRule()->percent;
+        $price->applyTaxPercent( $tax_percent );
+
+        $data = [
+//          'id' => '',
+            'line_sort_order' => '',
+            'line_type' => $product->line_type,
+            'product_id' => 0,
+            'combination_id' => 0,
+            'reference' => DocumentLine::getTypeList()[$product->line_type],
+            'name' => $product->name,
+            'quantity' => 1,
+            'cost_price' => $product->cost_price,
+            'unit_price' => $product->price,
+            'unit_customer_price' => $price->getPrice(),
+            'unit_final_price' => $price->getPrice(),
+            'unit_final_price_tax_inc' => $price->getPriceWithTax(),
+            'unit_net_price' => $price->getPrice(),
+            'sales_equalization' => $customer->sales_equalization,
+            'discount_percent' => 0.0,
+            'discount_amount_tax_incl' => 0.0,
+            'discount_amount_tax_excl' => 0.0,
+            'total_tax_incl' => 0.0,
+            'total_tax_excl' => 0.0,
+            'tax_percent' => $price->as_percentable($tax_percent),
+            'commission_percent' => $sales_rep->commission_percent,
+            'notes' => '',
+            'locked' => 0,
+//          'customer_invoice_id' => '',
+            'tax_id' => $product->tax_id,
+            'sales_rep_id' => $sales_rep->id,
+        ];
+
+        $line = new DocumentLine( $data );
+
+        return view($this->view_path.'._invoice_line', [ 'i' => $line_id, 'line' => $line ] );
+    }
+
 }
-
-
-/* ********************************************************************************************* */
-

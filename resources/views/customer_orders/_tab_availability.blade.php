@@ -3,7 +3,7 @@
                <div class="panel-body">
 
 
-<div id="panel_customer_order_availability" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
+<div id="panel_document_availability" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
 {{--  @ include('customer_orders._panel_customer_order_availability') --}}
 
@@ -58,10 +58,10 @@
 --}}
 
 
-		function getOrderAvailability()
+		function getDocumentAvailability()
 		{
-           var panel = $("#panel_customer_order_availability");
-           var url = "{{ route( 'customerorder.availability', [$order->id] ) }}";
+           var panel = $("#panel_document_availability");
+           var url = "{{ route( $model_path.'.availability', [$document->id] ) }}";
 
            panel.addClass('loading');
 
@@ -83,7 +83,7 @@
 		  var target = $(e.target).attr("href") // activated tab
 		  if (target == '#tab4default')
 		  {
-		  		getOrderAvailability();
+		  		getDocumentAvailability();
 		  }
 		  /*
 		  if ($(target).is(':empty')) {

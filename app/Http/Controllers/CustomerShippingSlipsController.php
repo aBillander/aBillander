@@ -539,7 +539,7 @@ class CustomerShippingSlipsController extends BillableController
 
         $documents->setPath($id);
 
-        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
+        return view($this->view_path.'.index_by_customer_invoiceables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
     }
 
 

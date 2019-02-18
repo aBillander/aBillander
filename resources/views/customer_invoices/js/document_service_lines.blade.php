@@ -432,8 +432,8 @@
                 };
         }
 
-
-        // Huh?
+{{--
+        // Huh? 
         function getServicetData( product_id, combination_id = 0 ) {
             var price;
             var token = "{{ csrf_token() }}";
@@ -491,6 +491,8 @@
                 }
             });
         }
+
+        --}}
 
 
     </script>

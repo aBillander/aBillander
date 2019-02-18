@@ -58,7 +58,7 @@
 <table id="documents" class="table table-hover">
     <thead>
         <tr>
-            <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
+            <th class="text-center hidden">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
             <th class="text-left">{{ l('ID', 'layouts') }}</th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
@@ -73,7 +73,7 @@
     <tbody id="document_lines">
         @foreach ($documents as $document)
         <tr>
-            <td class="text-center warning">{!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}</td>
+            <td class="text-center warning hidden">{!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}</td>
             <td>{{ $document->id }} / 
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
@@ -188,7 +188,7 @@
 
    </div>
 
-@if ($documents->count())
+@if ($documents->count() && 0)
 
    <div class="col-lg-4 col-md-4 hidden">
 

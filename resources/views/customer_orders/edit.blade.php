@@ -28,7 +28,7 @@
 @else
                 <a class="btn btn-sm alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
 
-                @if ( $document->status == 'closed'&& !$document->invoiced_at)
+                @if ( $document->status == 'closed'&& !$document->invoiced_at && 0 )
                 <a class="btn btn-sm btn-navy" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
                 </a>
                 @endif
@@ -39,8 +39,8 @@
                     <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Back to', 'layouts')}}"><i class="fa fa-mail-reply"></i> &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu  pull-right">
                       <li><a href="{{ URL::to($model_path.'') }}">{{l('Back to Documents')}}</a></li>
-                      <li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Group Shipping Slips')}}</a></li>
-                      <li><a href="{{ route('customer.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', 'layouts')}}</a></li>
+                      <!-- li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Group Shipping Slips')}}</a></li -->
+                      <li><a href="{{ route('customer.orders', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Orders', 'layouts')}}</a></li>
                       <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>

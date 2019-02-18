@@ -112,7 +112,7 @@ class CustomerOrder extends Billable
         if ( ! parent::confirm() ) return false;
 
         // Dispatch event
-        event( new \App\Events\CustomerShippingSlipConfirmed($this) );
+        event( new \App\Events\CustomerOrderConfirmed($this) );
 
         return true;
     }
@@ -122,7 +122,7 @@ class CustomerOrder extends Billable
         if ( ! parent::close() ) return false;
 
         // Dispatch event
-        event( new \App\Events\CustomerShippingSlipClosed($this) );
+        event( new \App\Events\CustomerOrderClosed($this) );
 
         return true;
     }
@@ -132,7 +132,7 @@ class CustomerOrder extends Billable
         if ( ! parent::unclose() ) return false;
 
         // Dispatch event
-        event( new \App\Events\CustomerShippingSlipUnclosed($this) );
+        event( new \App\Events\CustomerOrderUnclosed($this) );
 
         return true;
     }

@@ -18,7 +18,13 @@
                       @if ( $document->invoiced_at )
 
                       <a href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
-                          {{ $document->customerinvoice()->document_reference}}
+
+                          @if ($document->customerinvoice()->document_reference)
+                            {{ $document->customerinvoice()->document_reference }}
+                          @else
+                            <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
+                          @endif
+
                       </a> - {{ abi_date_short( $document->customerinvoice()->document_date ) }}
 
                       @endif

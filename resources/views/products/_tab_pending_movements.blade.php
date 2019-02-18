@@ -55,7 +55,7 @@
 
 		});
 		*/
---}}
+		
 		function getOrderProfit()
 		{
            var panel = $("#panel_pending_movements");
@@ -75,6 +75,7 @@
 			});
                  
 		}
+--}}
 
 		// See: https://stackoverflow.com/questions/20705905/bootstrap-3-jquery-event-for-active-tab-change
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

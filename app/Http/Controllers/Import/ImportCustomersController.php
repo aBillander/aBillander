@@ -286,6 +286,9 @@ class ImportCustomersController extends Controller
                     $item = '[<span class="log-showoff-format">'.$data['reference_external'].'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
 
                     // Some Poor Man checks:
+                    if ( ! $data['name_fiscal'] )
+                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'name_fiscal' está vacío");
+
                     if ( strlen( $data['name_fiscal'] ) > 128 )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'name_fiscal' es demasiado largo (128). ".$data['name_fiscal']);
 

@@ -21,12 +21,13 @@ use Mail;
 class AbccCustomerOrdersController extends Controller {
 
 
-   protected $customer_user, $customerOrder, $customerOrderLine;
+   protected $customer, $customer_user, $customerOrder, $customerOrderLine;
 
-   public function __construct(CustomerUser $customer_user, CustomerOrder $customerOrder, CustomerOrderLine $customerOrderLine)
+   public function __construct(Customer $customer, CustomerUser $customer_user, CustomerOrder $customerOrder, CustomerOrderLine $customerOrderLine)
    {
-        $this->middleware('auth:customer');
+        // $this->middleware('auth:customer');
 
+        $this->customer = $customer;
         $this->customer_user = $customer_user;
         $this->customerOrder = $customerOrder;
         $this->customerOrderLine = $customerOrderLine;
@@ -42,8 +43,9 @@ class AbccCustomerOrdersController extends Controller {
         $customer      = Auth::user()->customer;
 
 		$customer_orders = $this->customerOrder
+//                            ->ofCustomer()      // Of Logged in Customer (see scope on Billable 
                             ->where('customer_id', $customer->id)
-                            ->withCount('customerorderlines')
+                            ->withCount('lines')
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
@@ -274,6 +276,8 @@ class AbccCustomerOrdersController extends Controller {
         $customer      = Auth::user()->customer;
 
         $order = $this->customerOrder
+                            ->with('customer')
+        					->with('lines')
         					->with('currency')
         					->where('id', $id)
         					->where('customer_id', $customer->id)
@@ -327,7 +331,11 @@ class AbccCustomerOrdersController extends Controller {
 
         $customer      = Auth::user()->customer;
 
-        $order = $this->customerOrder->where('id', $id)->where('customer_id', $customer->id)->first();
+        $order = $this->customerOrder
+        					->where('id', $id)
+        					->where('customer_id', $customer->id)
+                            ->withCount('lines')
+        					->first();
 
         if (!$order) 
         	return redirect()->route('abcc.orders.index')
@@ -335,7 +343,7 @@ class AbccCustomerOrdersController extends Controller {
         
         $cart = \App\Context::getContext()->cart;
 
-        foreach ($order->customerOrderLines as $orderline) {
+        foreach ($order->lines as $orderline) {
         	# code...
         	$line = $cart->addLine($orderline->product_id, $orderline->combination_id, $orderline->quantity);
         }

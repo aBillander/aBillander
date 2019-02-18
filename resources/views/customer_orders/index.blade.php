@@ -126,7 +126,7 @@
 
                 <!-- a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a -->
 
-@if ($document->onhold>0)
+@if ($document->onhold>0 || 1)
 
 @else
 

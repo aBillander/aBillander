@@ -54,6 +54,39 @@ class CustomerInvoicesController extends BillableController
 		return view($this->view_path.'.index', $this->modelVars() + compact('documents'));
 	}
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function indexByCustomer($id, Request $request)
+    {
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+
+        $items_per_page = intval($request->input('items_per_page', Configuration::getInt('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
+
+        $customer = $this->customer->findOrFail($id);
+
+        $documents = $this->document
+                            ->where('customer_id', $id)
+//                            ->with('customer')
+                            ->with('currency')
+//                            ->with('paymentmethod')
+                            ->orderBy('document_date', 'desc')
+                            ->orderBy('id', 'desc');        // ->get();
+
+        $documents = $documents->paginate( $items_per_page );
+
+        // abi_r($this->model_path, true);
+
+        $documents->setPath($id);
+
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'items_per_page'));
+    }
+
 	/**
 	 * Show the form for creating a new customerinvoice
 	 *

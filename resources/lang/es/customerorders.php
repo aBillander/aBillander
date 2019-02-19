@@ -232,8 +232,11 @@ return [
 
 	// Stock availability
 	'Stock Availability'     => 'Disponibilidad de Stock',
-	''     => '',
-	''     => '',
+	'Full quantity'     => 'Servir todo',
+	'Quantity on-hand only'     => 'Servir sólo stock disponible',
+	'Create Shipping Slip'     => 'Crear Albarán',
+	'Create retro-Order?'     => '¿Crear un retro-Pedido?',
+	'A new Customer Order will be created if Quantity on-hand is less than Order Quantity.'     => 'Se creará un nuevo Pedido si la Cantidad disponible es inferior a la Cantidad del Pedido.',
 
 	'Finish Up'     => 'Emitir',
 	'Invoice This'  => 'Albaranar',

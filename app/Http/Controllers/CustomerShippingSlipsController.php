@@ -545,7 +545,7 @@ class CustomerShippingSlipsController extends BillableController
 
     public function createGroupInvoice( Request $request )
     {
-        // ProductionSheetsController
+        //
         $document_group = $request->input('document_group', []);
 
         if ( count( $document_group ) == 0 ) 
@@ -801,10 +801,10 @@ class CustomerShippingSlipsController extends BillableController
             // Not so fast, Sony Boy
 
             // Confirm Invoice
-            $document->confirm();
+            $invoice->confirm();
 
             // Close Invoice
-            $document->close();
+            $invoice->close();
 
 
             // Document traceability

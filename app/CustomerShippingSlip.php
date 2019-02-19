@@ -77,6 +77,12 @@ class CustomerShippingSlip extends Billable
     {
         return $this->customerinvoice();
     }
+
+    // Alias
+    public function getOrderAttribute()
+    {
+        return $this->customerorder();
+    }
     
 
     /*
@@ -222,6 +228,52 @@ class CustomerShippingSlip extends Billable
     | Relationships
     |--------------------------------------------------------------------------
     */
+
+
+
+    public function leftAscriptions()
+    {
+ /*       $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+
+        if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
+
+        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+
+        // abi_toSQL($relation->orderBy('id', 'ASC'));die();
+*/
+        return $this->morphMany('App\DocumentAscription', 'rightable')->where('type', 'traceability')->orderBy('id', 'ASC');
+    }
+
+    public function leftOrderAscriptions( $model = '' )
+    {
+/*        $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+
+        if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
+
+        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+
+        // abi_toSQL($relation->orderBy('id', 'ASC'));die();\App\CustomerShippingSlip::class
+*/
+        $ascriptions = $this->leftAscriptions;
+
+        // abi_r($ascriptions);
+
+        return $ascriptions->where('leftable_type', 'App\CustomerOrder');
+    }
+
+    public function leftOrders()
+    {
+        $ascriptions = $this->leftOrderAscriptions();
+
+        // abi_r($ascriptions->pluck('leftable_id')->all(), true);
+
+        return \App\CustomerOrder::find( $ascriptions->pluck('leftable_id') );
+    }
+
+    public function customerorder()
+    {
+        return $this->leftOrders()->first();
+    }
 
 
 

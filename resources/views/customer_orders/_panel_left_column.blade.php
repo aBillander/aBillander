@@ -10,16 +10,22 @@
             </div -->
             <ul class="list-group">
               <li class="list-group-item" style="color: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
-                <h4>{{ l('Invoice', 'layouts') }}</h4>
+                <h4>{{ l('Shipping Slip', 'layouts') }}</h4>
               </li>
               
                   <li class="list-group-item">
 
-                      @if ( $document->invoiced_at )
+                      @if ( $document->close_date || 1)
 
-                      <a href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
-                          {{ $document->customerinvoice()->document_reference}}
-                      </a> - {{ abi_date_short( $document->customerinvoice()->document_date ) }}
+                      <a href="{{ URL::to('customershippingslips/' . optional($document->shippingslip)->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+
+                          @if (optional($document->shippingslip)->document_reference)
+                            {{ optional($document->shippingslip)->document_reference }}
+                          @else
+                            <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
+                          @endif
+
+                      </a> - {{ abi_date_short( optional($document->shippingslip)->document_date ) }}
 
                       @endif
                     

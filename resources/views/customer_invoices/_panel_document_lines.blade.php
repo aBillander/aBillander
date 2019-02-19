@@ -86,8 +86,8 @@
             @foreach ($document->lines as $line)
             <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
                 <td>[{{ $line->id }}] {{$line->line_sort_order }}</td>
-                <td><a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
 @if($line->line_type=='comment')
+                <td>{{-- $line->reference --}}</td>
                 <td class="active" colspan=3><strong>{{ $line->name }}</strong></td>
                 <!-- td class="text-right"> </td>
                 <td class="text-right"> </td -->
@@ -97,6 +97,7 @@
                 <!-- td class="text-right">{{ $line->as_priceable($line->total_tax_incl - $line->total_tax_excl) }}</td -->
                 <td class="text-center"> </td>
 @else
+                <td><a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
                 <td>
                 @if($line->line_type == 'shipping')
                   <i class="fa fa-truck abi-help" title="{{l('Shipping Cost')}}"></i> 

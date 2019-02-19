@@ -413,7 +413,7 @@ class BillableController extends Controller
     }
 
 
-    public function getDocumentAvailability($id)
+    public function getDocumentAvailability($id, Request $request)
     {
         $document = $this->document
                         ->with('lines')

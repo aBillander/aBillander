@@ -42,11 +42,25 @@ class CustomerOrder extends Billable
                             'payment_method_id' => 'nullable|exists:payment_methods,id',
                ];
 
-// Parent
-//    public function getDeletableAttribute()
-//    {
+    public static $rules_createshippingslip = [
+                            'order_id' => 'exists:orders,id',
+                            'shippingslip_date' => 'required|date',
+                            'sequence_id' => 'exists:sequences,id',
+                            'template_id' => 'exists:templates,id',
+               ];
+
+
+    public function getDeletableAttribute()
+    {
 //        return $this->status != 'closed' && !$this->->status != 'canceled';
-//    }
+        return $this->status != 'closed' && !$this->close_date;
+    }
+
+    // Alias
+    public function getShippingslipAttribute()
+    {
+        return $this->customerShippingSlip();
+    }
 
 
     /*
@@ -161,6 +175,37 @@ class CustomerOrder extends Billable
     public function productionsheet()
     {
         return $this->belongsTo('App\ProductionSheet', 'production_sheet_id');
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ascriptions
+    |--------------------------------------------------------------------------
+    */
+    
+    public function rightAscriptions()
+    {
+        return $this->morphMany('App\DocumentAscription', 'leftable')->where('type', 'traceability')->orderBy('id', 'ASC');
+    }
+
+    public function rightShippingSlipAscriptions( $model = '' )
+    {
+        return $this->rightAscriptions->where('rightable_type', 'App\CustomerShippingSlip');
+    }
+
+    public function rightShippingSlips()
+    {
+        // $ascriptions = $this->rightInvoiceAscriptions();
+
+        // abi_r($ascriptions->pluck('rightable_id')->all(), true);
+
+        return \App\CustomerShippingSlip::find( $this->rightShippingSlipAscriptions()->pluck('rightable_id') );
+    }
+
+    public function customerShippingSlip()
+    {
+        return $this->rightShippingSlips()->first();
     }
     
 

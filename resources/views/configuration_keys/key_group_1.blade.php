@@ -112,6 +112,25 @@
     </div>
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ALLOW_CUSTOMER_RETRO_ORDERS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ALLOW_CUSTOMER_RETRO_ORDERS" id="ALLOW_CUSTOMER_RETRO_ORDERS_on" value="1" @if( old('ALLOW_CUSTOMER_RETRO_ORDERS', $key_group['ALLOW_CUSTOMER_RETRO_ORDERS']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ALLOW_CUSTOMER_RETRO_ORDERS" id="ALLOW_CUSTOMER_RETRO_ORDERS_off" value="0" @if( !old('ALLOW_CUSTOMER_RETRO_ORDERS', $key_group['ALLOW_CUSTOMER_RETRO_ORDERS']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ALLOW_CUSTOMER_RETRO_ORDERS.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ENABLE_COMBINATIONS.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

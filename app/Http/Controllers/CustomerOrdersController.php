@@ -14,6 +14,10 @@ use App\CustomerOrderLine as DocumentLine;
 use App\CustomerInvoice;
 use App\CustomerInvoiceLine;
 use App\CustomerInvoiceLineTax;
+
+use App\CustomerShippingSlip;
+use App\CustomerShippingSlipLine;
+use App\CustomerShippingSlipLineTax;
 use App\DocumentAscription;
 
 use App\Configuration;
@@ -870,6 +874,335 @@ class CustomerOrdersController extends BillableController
 
 
 
+
+
+    public function getDocumentAvailability($id, Request $request)
+    {
+        // abi_r($request->all(), true);
+
+        $onhand_only = $request->input('onhand_only', 0);
+
+        $document = $this->document
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->findOrFail($id);
+
+        if ($onhand_only)
+            foreach ($document->lines as $line) {
+                # code...
+                if ( $line->line_type == 'product' ) {
+                    $quantity = $line->quantity;
+                    $onhand   = $line->product->quantity_onhand > 0 ? $line->product->quantity_onhand : 0;
+    
+                    $line->quantity_onhand =  $quantity > $onhand ? $onhand : $quantity;
+
+                } else {
+                    $line->quantity_onhand = $line->quantity;
+
+                }
+            }
+        else
+            foreach ($document->lines as $line) {
+                # code...
+
+                $line->quantity_onhand = $line->quantity;
+            }
+
+        $sequenceList = Sequence::listFor( 'App\\CustomerShippingSlip' );
+
+        $templateList = Template::listFor( 'App\\CustomerShippingSlip' );
+
+        return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document', 'sequenceList', 'templateList', 'onhand_only'));
+    }
+
+
+    public function createSingleShippingSlip( Request $request )
+    {
+        $document = $this->document
+                            ->with('customer')
+                            ->with('currency')
+                            ->findOrFail( $request->input('document_id') );
+        
+        $customer = $document->customer;
+
+        $dispatch = $request->input('dispatch', []);
+
+        // To do: check document status ???
+
+        if ( count( $dispatch ) == 0 ) 
+            return redirect()->route($this->model_path.'/'.$document->id.'/edit')
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // Dates (cuen)
+        $this->mergeFormDates( ['shippingslip_date'], $request );
+
+        $rules = $this->document::$rules_createshippingslip;
+
+        $this->validate($request, $rules);
+
+        // Set params
+        $params = [
+            'customer_id'   => $customer->id, 
+            'template_id'   => $request->input('template_id'), 
+            'sequence_id'   => $request->input('sequence_id'), 
+            'document_date' => $request->input('shippingslip_date'),
+            'retro_order'   => $request->input('retro_order', Configuration::isTrue('ALLOW_CUSTOMER_RETRO_ORDERS'))
+        ];
+
+        // Header
+        // Common data
+        $data = [
+//            'company_id' => $this->company_id,
+            'customer_id' => $customer->id,
+//            'user_id' => $this->,
+
+            'sequence_id' => $params['sequence_id'],
+
+            'created_via' => 'aggregate_orders',
+
+            'document_date' => $params['document_date'],
+
+            'currency_conversion_rate' => $document->currency->conversion_rate,
+//            'down_payment' => $this->down_payment,
+
+            'total_currency_tax_incl' => $document->total_currency_tax_incl,
+            'total_currency_tax_excl' => $document->total_currency_tax_excl,
+//            'total_currency_paid' => $this->total_currency_paid,
+
+            'total_tax_incl' => $document->total_tax_incl,
+            'total_tax_excl' => $document->total_tax_excl,
+
+//            'commission_amount' => $this->commission_amount,
+
+            // Skip notes
+
+            'status' => 'draft',
+            'locked' => 0,
+
+            'invoicing_address_id' => $document->invoicing_address_id,
+//            'shipping_address_id' => $this->shipping_address_id,
+//            'warehouse_id' => $this->warehouse_id,
+//            'shipping_method_id' => $this->shipping_method_id ?? $this->customer->shipping_method_id ?? Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD'),
+//            'carrier_id' => $this->carrier_id,
+            'sales_rep_id' => $document->sales_rep_id,
+            'currency_id' => $document->currency->id,
+            'payment_method_id' => $document->payment_method_id,
+            'template_id' => $params['template_id'],
+        ];
+
+        // Model specific data
+        $extradata = [
+//            'type' => 'invoice',
+//            'payment_status' => 'pending',
+//            'stock_status' => 'completed',
+        ];
+
+
+        // Let's get dirty
+//        CustomerInvoice::unguard();
+        $shippingslip = CustomerShippingSlip::create( $data + $extradata );
+//        CustomerInvoice::reguard();
+
+
+//        5a.- Añadir Albarán
+//        5b.- Crear enlaces para trazabilidad de documentos
+        // Initialize grouped lines collection
+        // $grouped_lines = DocumentLine::whereIn($this->getParentModelSnakeCase().'_id', $list)->get();
+
+        // Initialize totals
+        $total_currency_tax_incl = 0;
+        $total_currency_tax_excl = 0;
+        $total_tax_incl = 0;
+        $total_tax_excl = 0;
+
+        // Initialize line sort order
+        $i = 0;
+
+//        foreach ($documents as $document) {
+            # code...
+            $i++;
+
+            // Text line announces Shipping Slip
+            $line_data = [
+                'line_sort_order' => $i*10, 
+                'line_type' => 'comment', 
+                'name' => l('Order: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]),
+//                'product_id' => , 
+//                'combination_id' => , 
+                'reference' => $document->document_reference, 
+//                'name', 
+                'quantity' => 1, 
+                'measure_unit_id' => Configuration::getInt('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+//                    'cost_price', 'unit_price', 'unit_customer_price', 
+//                    'prices_entered_with_tax',
+//                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
+//                    'unit_final_price', 'unit_final_price_tax_inc', 
+//                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
+                'total_tax_incl' => $document->total_currency_tax_incl, 
+                'total_tax_excl' => $document->total_currency_tax_excl, 
+//                    'tax_percent', 'commission_percent', 
+                'notes' => '', 
+                'locked' => 0,
+ //                 'customer_shipping_slip_id',
+                'tax_id' => Configuration::get('DEF_TAX'),  // Just convinient
+ //               'sales_rep_id'
+            ];
+
+            $shippingslip_line = CustomerShippingSlipLine::create( $line_data );
+
+            $shippingslip->lines()->save($shippingslip_line);
+
+            // Add current Shipping Slip lines to Invoice
+            foreach ($document->lines as $line) {
+                # code...
+                $i++;
+
+                // $shippingslip_line = $line->toInvoiceLine();
+
+                // Common data
+                $data = [
+                ];
+
+                $data = $line->toArray();
+                // id
+                unset( $data['id'] );
+                // Parent document
+                unset( $data[$this->getParentModelSnakeCase().'_id'] );
+                // Dates
+                unset( $data['created_at'] );
+                unset( $data['deleted_at'] );
+                // linetaxes
+                unset( $data['linetaxes'] );
+                // Sort order
+                $data['line_sort_order'] = $i*10; 
+                // Locked 
+                $data['locked'] = 1; 
+
+                // Model specific data
+                $extradata = [
+                ];
+
+                // abi_r($this->getParentModelSnakeCase().'_id');
+                // abi_r($data, true);
+
+
+                // Let's get dirty
+                CustomerShippingSlipLine::unguard();
+                $shippingslip_line = CustomerShippingSlipLine::create( $data + $extradata );
+                CustomerShippingSlipLine::reguard();
+
+                $shippingslip->lines()->save($shippingslip_line);
+
+                foreach ($line->taxes as $linetax) {
+
+                    // $shippingslip_line_tax = $this->lineTaxToInvoiceLineTax( $linetax );
+                    // Common data
+                    $data = [
+                    ];
+
+                    $data = $linetax->toArray();
+                    // id
+                    unset( $data['id'] );
+                    // Parent document
+                    unset( $data[$this->getParentModelSnakeCase().'_line_id'] );
+                    // Dates
+                    unset( $data['created_at'] );
+                    unset( $data['deleted_at'] );
+
+                    // Model specific data
+                    $extradata = [
+                    ];
+
+
+                    // Let's get dirty
+                    CustomerShippingSlipLineTax::unguard();
+                    $shippingslip_line_tax = CustomerShippingSlipLineTax::create( $data + $extradata );
+                    CustomerShippingSlipLineTax::reguard();
+
+                    $shippingslip_line->taxes()->save($shippingslip_line_tax);
+
+                }
+            }
+
+            // Not so fast, Sony Boy
+
+            // Confirm Shipping Slip
+            $shippingslip->confirm();
+
+            // Close Order
+            $document->close();
+
+
+            // Document traceability
+            //     leftable  is this document
+            //     rightable is Customer Shipping Slip Document
+            $link_data = [
+                'leftable_id'    => $document->id,
+                'leftable_type'  => $document->getClassName(),
+
+                'rightable_id'   => $shippingslip->id,
+                'rightable_type' => CustomerShippingSlip::class,
+
+                'type' => 'traceability',
+                ];
+
+            $link = DocumentAscription::create( $link_data );
+//        }
+
+        // Good boy, so far
+
+
+
+
+
+
+
+
+
+        return redirect('customershippingslips/'.$shippingslip->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // ProductionSheetsController
+        $document_group = $request->input('document_group', []);
+
+        if ( count( $document_group ) == 0 ) 
+            return redirect()->route('customer.invoiceable.shippingslips', $request->input('customer_id'))
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date'], $request );
+
+        $rules = $this->document::$rules_createinvoice;
+
+        $this->validate($request, $rules);
+
+        // Set params for group
+        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date');
+
+        // abi_r($params, true);
+
+        return $this->invoiceDocumentList( $document_group, $params );
+    } 
 
 
     /*

@@ -29,7 +29,13 @@ color: #c09853;">
               @foreach( $document->leftShippingSlips() as $document_item )
                   <li class="list-group-item">
                       <a href="{{ URL::to('customershippingslips/' . $document_item->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
-                          {{ $document_item->document_reference}}
+
+                          @if ($document_item->document_reference)
+                            {{ $document_item->document_reference }}
+                          @else
+                            <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
+                          @endif
+
                       </a> - {{ abi_date_short( $document_item->document_date ) }}
                     
                   </li>

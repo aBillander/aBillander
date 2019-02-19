@@ -19,6 +19,8 @@ return [
 	'ALLOW_SALES_WITHOUT_STOCK.help' => '',
 	'CUSTOMER_ORDERS_NEED_VALIDATION.name' => 'Los Pedidos de Clientes necesitan Validación',
 	'CUSTOMER_ORDERS_NEED_VALIDATION.help' => 'Sólo los Pedidos de Clientes que han sido validados podrán enviarse y facturarse.<br />1: Los Pedidos de Clientes se crearán con Estado = "<strong>draft</strong>".<br />0: Los Pedidos de Clientes se crearán con Estado = "<strong>confirmed</strong>".',
+	'ALLOW_CUSTOMER_RETRO_ORDERS.name' => 'Permitir retro-Pedidos',
+	'ALLOW_CUSTOMER_RETRO_ORDERS.help' => 'Se creará un nuevo Pedido si la Cantidad disponible es inferior a la Cantidad del Pedido.',
 	'ENABLE_COMBINATIONS.name' => 'Activar Combinaciones',
 	'ENABLE_COMBINATIONS.help' => 'Permitir crear Productos con Combinaciones.',
 	'ENABLE_ECOTAXES.name' => 'Activar Eco-Impuestos',

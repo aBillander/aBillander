@@ -11,9 +11,11 @@
                             <li><a href="#tab2default" data-toggle="tab">{{ l('Lines') }}</a></li>
                             <li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li>
 
+@if ( $document->status != 'closed' )
                             <li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
+@endif
 
-                            <li><a href="#tab5default" data-toggle="tab">{{ l('Payments') }}</a></li>
+                            <!-- li><a href="#tab5default" data-toggle="tab">{{ l('Payments') }}</a></li -->
                             <!-- li class="dropdown">
                                 <a href="#" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
@@ -50,16 +52,20 @@
                 @include($view_path.'._tab_profitability')
 
       </div>
+
+@if ( $document->status != 'closed' )
       <div class="tab-pane fade" id="tab4default">
                 
                 @include($view_path.'._tab_availability')
 
       </div>
-      <div class="tab-pane fade" id="tab5default">
-                
-                @include($view_path.'._tab_edit_payments')
+@endif
 
-      </div>
+      <!-- div class="tab-pane fade" id="tab5default">
+                
+                @ include($view_path.'._tab_edit_payments')
+
+      </div -->
       <!-- div class="tab-pane fade" id="tab4default">
                 Default 4
       </div>

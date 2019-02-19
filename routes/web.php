@@ -343,6 +343,7 @@ foreach ($pairs as $pair) {
 }
 
         Route::get('customerorders/pending/today',  'CustomerOrdersController@getTodaysOrders')->name('orders.for.today');
+        Route::post('customerorders/create/shippingslip',  'CustomerOrdersController@createSingleShippingSlip')->name('customerorder.shippingslip');
 
         Route::get( 'customershippingslips/customers/{id}/invoiceables',  'CustomerShippingSlipsController@getInvoiceableShippingSlips')->name('customer.invoiceable.shippingslips');
         Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');

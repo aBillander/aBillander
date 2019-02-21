@@ -25,7 +25,7 @@ class ConfigurationKeysController extends Controller {
                         'ALLOW_SALES_RISK_EXCEEDED',
                         'ALLOW_SALES_WITHOUT_STOCK',
                         'CUSTOMER_ORDERS_NEED_VALIDATION',
-                        'ALLOW_CUSTOMER_RETRO_ORDERS',
+                        'ALLOW_CUSTOMER_BACKORDERS',
                         'ENABLE_COMBINATIONS',
                         'ENABLE_ECOTAXES',
                         'PRICES_ENTERED_WITH_ECOTAX',

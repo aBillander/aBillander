@@ -46,7 +46,7 @@
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>{{ abi_date_short($document->delivery_date_real ?: $document->delivery_date) }}</td>
             <td>
-                @if ( $document->hasShippingAddress() || 1)
+                @if ( $document->hasShippingAddress() )
 
 
 

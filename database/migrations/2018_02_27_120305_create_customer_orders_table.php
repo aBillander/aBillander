@@ -21,6 +21,8 @@ class CreateCustomerOrdersTable extends Migration
                 include __DIR__.'/schnitzel/_schnitzel_create_documents_table.php';
             }
             
+            $table->dateTime('backordered_at')->nullable();
+
             $table->integer('production_sheet_id')->unsigned()->nullable();
 
 

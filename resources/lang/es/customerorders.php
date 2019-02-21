@@ -235,7 +235,7 @@ return [
 	'Full quantity'     => 'Servir todo',
 	'Quantity on-hand only'     => 'Servir sólo stock disponible',
 	'Create Shipping Slip'     => 'Crear Albarán',
-	'Create retro-Order?'     => '¿Crear un retro-Pedido?',
+	'Create Back-Order?'     => '¿Crear un retro-Pedido?',
 	'A new Customer Order will be created if Quantity on-hand is less than Order Quantity.'     => 'Se creará un nuevo Pedido si la Cantidad disponible es inferior a la Cantidad del Pedido.',
 
 	'Finish Up'     => 'Emitir',
@@ -261,6 +261,8 @@ return [
 	'Edit Document'     => 'Modificar Pedido de Cliente',
 
 
+	'Backorder'     => 'Retro-Pedido',
+	'Backorder by'  => 'Retro-Pedido por',
 
 	'Customer Infos'     => 'Info del Cliente',
 	'Customer Risk'     => 'Riesgo alcanzado',

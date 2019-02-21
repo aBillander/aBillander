@@ -14,6 +14,7 @@ class CustomerOrder extends Billable
 
 
     protected $document_dates = [
+            'backordered_at'
     ];
 
     /**
@@ -60,6 +61,18 @@ class CustomerOrder extends Billable
     public function getShippingslipAttribute()
     {
         return $this->customerShippingSlip();
+    }
+
+    // Alias
+    public function getBackorderAttribute()
+    {
+        return $this->customerbackorder();
+    }
+
+    // Alias
+    public function getBackordereeAttribute()
+    {
+        return $this->customerorder();
     }
 
 
@@ -186,12 +199,12 @@ class CustomerOrder extends Billable
     
     public function rightAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'leftable')->where('type', 'traceability')->orderBy('id', 'ASC');
+        return $this->morphMany('App\DocumentAscription', 'leftable')->orderBy('id', 'ASC');
     }
 
     public function rightShippingSlipAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('rightable_type', 'App\CustomerShippingSlip');
+        return $this->rightAscriptions->where('type', 'traceability')->where('rightable_type', 'App\CustomerShippingSlip');
     }
 
     public function rightShippingSlips()
@@ -206,6 +219,51 @@ class CustomerOrder extends Billable
     public function customerShippingSlip()
     {
         return $this->rightShippingSlips()->first();
+    }
+
+
+
+    public function rightOrderAscriptions( $model = '' )
+    {
+        return $this->rightAscriptions->where('type', 'backorder')->where('rightable_type', 'App\CustomerOrder');
+    }
+
+    public function rightOrders()
+    {
+        // $ascriptions = $this->rightInvoiceAscriptions();
+
+        // abi_r($ascriptions->pluck('rightable_id')->all(), true);
+
+        return \App\CustomerOrder::find( $this->rightOrderAscriptions()->pluck('rightable_id') );
+    }
+
+    public function customerbackorder()
+    {
+        return $this->rightOrders()->first();
+    }
+
+
+
+    public function leftAscriptions()
+    {
+        return $this->morphMany('App\DocumentAscription', 'rightable')->orderBy('id', 'ASC');
+    }
+
+    public function leftOrderAscriptions( $model = '' )
+    {
+        return $this->leftAscriptions->where('type', 'backorder')->where('leftable_type', 'App\CustomerOrder');
+    }
+
+    public function leftOrders()
+    {
+        $ascriptions = $this->leftOrderAscriptions();
+
+        return \App\CustomerOrder::find( $ascriptions->pluck('leftable_id') );
+    }
+
+    public function customerorder()
+    {
+        return $this->leftOrders()->first();
     }
     
 

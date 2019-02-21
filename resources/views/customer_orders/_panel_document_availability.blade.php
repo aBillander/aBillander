@@ -133,8 +133,8 @@
 
 <div class="row">
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-retro_order">
-           {!! Form::label('retro_order', l('Create retro-Order?'), ['class' => 'control-label']) !!}
+         <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-backorder">
+           {!! Form::label('backorder', l('Create Back-Order?'), ['class' => 'control-label']) !!}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                       data-content="{{ l('A new Customer Order will be created if Quantity on-hand is less than Order Quantity.') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
@@ -142,13 +142,13 @@
            <div>
              <div class="radio-inline">
                <label>
-                 {!! Form::radio('retro_order', '1', \App\Configuration::isTrue('ALLOW_CUSTOMER_RETRO_ORDERS'), ['id' => 'retro_order_on']) !!}
+                 {!! Form::radio('backorder', '1', \App\Configuration::isTrue('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_on']) !!}
                  {!! l('Yes', [], 'layouts') !!}
                </label>
              </div>
              <div class="radio-inline">
                <label>
-                 {!! Form::radio('retro_order', '0', \App\Configuration::isFalse('ALLOW_CUSTOMER_RETRO_ORDERS'), ['id' => 'retro_order_off']) !!}
+                 {!! Form::radio('backorder', '0', \App\Configuration::isFalse('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_off']) !!}
                  {!! l('No', [], 'layouts') !!}
                </label>
              </div>

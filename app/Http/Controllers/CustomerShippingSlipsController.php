@@ -521,6 +521,11 @@ class CustomerShippingSlipsController extends BillableController
 
         $templateList = Template::listFor( 'App\\CustomerInvoice' );
 
+        $statusList = CustomerInvoice::getStatusList();
+
+        // Make sense:
+        unset($statusList['canceled']);
+
         $customer = $this->customer->findOrFail($id);
 
         $documents = $this->document
@@ -539,7 +544,7 @@ class CustomerShippingSlipsController extends BillableController
 
         $documents->setPath($id);
 
-        return view($this->view_path.'.index_by_customer_invoiceables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
+        return view($this->view_path.'.index_by_customer_invoiceables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page'));
     }
 
 
@@ -560,7 +565,7 @@ class CustomerShippingSlipsController extends BillableController
         $this->validate($request, $rules);
 
         // Set params for group
-        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date');
+        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status');
 
         // abi_r($params, true);
 
@@ -580,6 +585,7 @@ class CustomerShippingSlipsController extends BillableController
             'template_id'   => $customer->getInvoiceTemplateId(), 
             'sequence_id'   => $customer->getInvoiceSequenceId(), 
             'document_date' => \Carbon\Carbon::now()->toDateString(),
+            'status'        => 'closed', 
         ];
 
         // abi_r($params, true);
@@ -800,11 +806,37 @@ class CustomerShippingSlipsController extends BillableController
 
             // Not so fast, Sony Boy
 
-            // Confirm Invoice
-            $invoice->confirm();
+            // Manage Invoice Status
+            switch ( $params['status'] ) {
+                case 'draft':
+                    # Noting to do
+                    break;
+                
+                case 'confirmed':
+                    # code...
+                    $invoice->confirm();
+                    break;
+                
+                case 'closed':
+                    # code...
+                    $invoice->confirm();
+                    $invoice->close();
+                    break;
+                
+                case 'canceled':
+                    # code...
+                    $invoice->cancel();
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
 
-            // Close Invoice
-            $invoice->close();
+
+            // Final touches
+            $document->invoiced_at = \Carbon\Carbon::now();
+            $document->save();
 
 
             // Document traceability
@@ -832,8 +864,8 @@ class CustomerShippingSlipsController extends BillableController
 
 
 
-        return redirect('customerinvoices/'.$document->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+        return redirect('customerinvoices/'.$invoice->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $invoice->id], 'layouts'));
 
 
 

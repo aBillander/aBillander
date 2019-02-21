@@ -946,7 +946,9 @@ class CustomerOrdersController extends BillableController
             'template_id'   => $request->input('template_id'), 
             'sequence_id'   => $request->input('sequence_id'), 
             'document_date' => $request->input('shippingslip_date'),
-            'retro_order'   => $request->input('retro_order', Configuration::isTrue('ALLOW_CUSTOMER_RETRO_ORDERS'))
+            'backorder'     => $request->input('backorder', Configuration::isTrue('ALLOW_CUSTOMER_BACKORDERS')),
+
+            'dispatch'      => $request->input('dispatch', []), 
         ];
 
         // Header
@@ -965,12 +967,12 @@ class CustomerOrdersController extends BillableController
             'currency_conversion_rate' => $document->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
 
-            'total_currency_tax_incl' => $document->total_currency_tax_incl,
-            'total_currency_tax_excl' => $document->total_currency_tax_excl,
+//            'total_currency_tax_incl' => $document->total_currency_tax_incl,
+//            'total_currency_tax_excl' => $document->total_currency_tax_excl,
 //            'total_currency_paid' => $this->total_currency_paid,
 
-            'total_tax_incl' => $document->total_tax_incl,
-            'total_tax_excl' => $document->total_tax_excl,
+//            'total_tax_incl' => $document->total_tax_incl,
+//            'total_tax_excl' => $document->total_tax_excl,
 
 //            'commission_amount' => $this->commission_amount,
 
@@ -1052,6 +1054,10 @@ class CustomerOrdersController extends BillableController
 
             $shippingslip->lines()->save($shippingslip_line);
 
+            // Need Backorder? We'll see in a moment:
+            $need_backorder = false;
+            $bo_quantity    = [];       // Backorder quantity
+
             // Add current Shipping Slip lines to Invoice
             foreach ($document->lines as $line) {
                 # code...
@@ -1075,6 +1081,14 @@ class CustomerOrdersController extends BillableController
                 unset( $data['linetaxes'] );
                 // Sort order
                 $data['line_sort_order'] = $i*10; 
+                // Quantity
+                if ( array_key_exists($line->id, $dispatch) && ( $dispatch[$line->id] < $line->quantity ) )
+                {
+                    $data['quantity'] = $dispatch[$line->id];
+
+                    $need_backorder = true;
+                    $bo_quantity[$line->id] = $line->quantity - $dispatch[$line->id];
+                }
                 // Locked 
                 $data['locked'] = 1; 
 
@@ -1092,37 +1106,19 @@ class CustomerOrdersController extends BillableController
                 CustomerShippingSlipLine::reguard();
 
                 $shippingslip->lines()->save($shippingslip_line);
-
-                foreach ($line->taxes as $linetax) {
-
-                    // $shippingslip_line_tax = $this->lineTaxToInvoiceLineTax( $linetax );
-                    // Common data
-                    $data = [
-                    ];
-
-                    $data = $linetax->toArray();
-                    // id
-                    unset( $data['id'] );
-                    // Parent document
-                    unset( $data[$this->getParentModelSnakeCase().'_line_id'] );
-                    // Dates
-                    unset( $data['created_at'] );
-                    unset( $data['deleted_at'] );
-
-                    // Model specific data
-                    $extradata = [
-                    ];
-
-
-                    // Let's get dirty
-                    CustomerShippingSlipLineTax::unguard();
-                    $shippingslip_line_tax = CustomerShippingSlipLineTax::create( $data + $extradata );
-                    CustomerShippingSlipLineTax::reguard();
-
-                    $shippingslip_line->taxes()->save($shippingslip_line_tax);
-
-                }
             }
+
+            // Update lines
+            $shippingslip->load(['lines']);
+
+            foreach ($shippingslip->lines as $line) {
+
+//                if ($line->line_type == 'comment')                   continue;
+
+                $shippingslip->updateLine( $line->id, [ 'line_type' => $line->line_type, 'unit_customer_final_price' => $line->unit_customer_final_price ] );
+            }
+
+
 
             // Not so fast, Sony Boy
 
@@ -1130,6 +1126,7 @@ class CustomerOrdersController extends BillableController
             $shippingslip->confirm();
 
             // Close Order
+            $document->confirm();
             $document->close();
 
 
@@ -1151,6 +1148,96 @@ class CustomerOrdersController extends BillableController
 
         // Good boy, so far
 
+        // Backorder stuff
+        if ( $need_backorder && $params['backorder'] )
+        {
+            // Create Backorder now!
+
+/*
+    Header
+*/
+
+        // Duplicate
+        $clone = $document->replicate();
+
+        // Extra data
+        $seq = Sequence::findOrFail( $document->sequence_id );
+
+        $clone->user_id              = \App\Context::getContext()->user->id;
+
+        $clone->document_reference = null;
+        $clone->reference = '';
+        $clone->reference_customer = '';
+        $clone->reference_external = '';
+
+        $clone->created_via          = 'backorder';
+        $clone->status               = 'draft';
+        $clone->locked               = 0;
+        
+        $clone->document_date = \Carbon\Carbon::now();
+        $clone->payment_date = null;
+        $clone->validation_date = null;
+        $clone->delivery_date = null;
+        $clone->delivery_date_real = null;
+        $clone->close_date = null;
+        
+        $clone->tracking_number = null;
+
+        $clone->parent_document_id = null;
+
+        $clone->production_sheet_id = null;
+        $clone->export_date = null;
+        
+        $clone->secure_key = null;
+        $clone->import_key = '';
+
+
+        $clone->save();
+
+/*
+    Backorder lines
+*/
+
+
+        // Duplicate Lines
+        foreach ($document->lines as $line) {
+
+            if ( !array_key_exists($line->id, $bo_quantity) )
+                continue;
+
+            $clone_line = $line->replicate();
+
+            $clone->lines()->save($clone_line);
+
+            $clone->updateProductLine( $clone_line->id, [ 'quantity' => $bo_quantity[$line->id] ] );
+        }
+
+        // Save Customer document
+        $clone->push();
+
+        // Good boy:
+        $clone->confirm();
+
+
+        $document->backordered_at = \Carbon\Carbon::now();
+        $document->save();
+
+            // Document traceability
+            //     leftable  is this document
+            //     rightable is Customer Shipping Slip Document
+            $link_data = [
+                'leftable_id'    => $document->id,
+                'leftable_type'  => $document->getClassName(),
+
+                'rightable_id'   => $clone->id,
+                'rightable_type' => $document->getClassName(),
+
+                'type' => 'backorder',
+                ];
+
+            $link = DocumentAscription::create( $link_data );
+
+        }   // // Backorder stuff ENDS
 
 
 
@@ -1160,48 +1247,8 @@ class CustomerOrdersController extends BillableController
 
 
         return redirect('customershippingslips/'.$shippingslip->id.'/edit')
+                ->with('warning', l('This record has been successfully created &#58&#58 (:id) '.'[ '.l('Backorder').' ]', ['id' => $clone->id], 'layouts'))
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // ProductionSheetsController
-        $document_group = $request->input('document_group', []);
-
-        if ( count( $document_group ) == 0 ) 
-            return redirect()->route('customer.invoiceable.shippingslips', $request->input('customer_id'))
-                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
-        
-        // Dates (cuen)
-        $this->mergeFormDates( ['document_date'], $request );
-
-        $rules = $this->document::$rules_createinvoice;
-
-        $this->validate($request, $rules);
-
-        // Set params for group
-        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date');
-
-        // abi_r($params, true);
-
-        return $this->invoiceDocumentList( $document_group, $params );
     } 
 
 

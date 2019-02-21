@@ -11,6 +11,43 @@ trait BillableDocumentLinesTrait
     |--------------------------------------------------------------------------
     */
 
+
+    public function updateLine($line_id, $params = ['line_type' => 'comment'])
+    {
+        $line_type = $params['line_type'] ?: '';
+
+        $params = array_except($params, ['line_type']);
+
+        switch ( $line_type ) {
+            case 'product':
+                # code...
+                return $this->updateProductLine($line_id, $params);
+                break;
+            
+            case 'service':
+            case 'shipping':
+                # code...
+                return $this->updateServiceLine($line_id, $params);
+                break;
+            
+            case 'comment':
+                # code...
+                return $this->updateCommentLine($line_id, $params);
+                break;
+            
+            default:
+                # code...
+                // Document Line Type not supported
+                return NULL;
+                break;
+        }
+
+
+        // Good boy, bye then
+        return NULL;
+    }
+
+
     /**
      * Add Product to ShippingSlip
      *

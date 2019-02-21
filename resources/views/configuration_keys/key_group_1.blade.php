@@ -112,21 +112,21 @@
     </div>
 
     <div class="form-group">
-      <label class="col-lg-4 control-label">{!! l('ALLOW_CUSTOMER_RETRO_ORDERS.name') !!}</label>
+      <label class="col-lg-4 control-label">{!! l('ALLOW_CUSTOMER_BACKORDERS.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">
           <label>
-            <input name="ALLOW_CUSTOMER_RETRO_ORDERS" id="ALLOW_CUSTOMER_RETRO_ORDERS_on" value="1" @if( old('ALLOW_CUSTOMER_RETRO_ORDERS', $key_group['ALLOW_CUSTOMER_RETRO_ORDERS']) ) checked="checked" @endif type="radio">
+            <input name="ALLOW_CUSTOMER_BACKORDERS" id="ALLOW_CUSTOMER_BACKORDERS_on" value="1" @if( old('ALLOW_CUSTOMER_BACKORDERS', $key_group['ALLOW_CUSTOMER_BACKORDERS']) ) checked="checked" @endif type="radio">
             {!! l('Yes', [], 'layouts') !!}
           </label>
         </div>
         <div class="radio">
           <label>
-            <input name="ALLOW_CUSTOMER_RETRO_ORDERS" id="ALLOW_CUSTOMER_RETRO_ORDERS_off" value="0" @if( !old('ALLOW_CUSTOMER_RETRO_ORDERS', $key_group['ALLOW_CUSTOMER_RETRO_ORDERS']) ) checked="checked" @endif type="radio">
+            <input name="ALLOW_CUSTOMER_BACKORDERS" id="ALLOW_CUSTOMER_BACKORDERS_off" value="0" @if( !old('ALLOW_CUSTOMER_BACKORDERS', $key_group['ALLOW_CUSTOMER_BACKORDERS']) ) checked="checked" @endif type="radio">
             {!! l('No', [], 'layouts') !!}
           </label>
         </div>
-        <span class="help-block">{!! l('ALLOW_CUSTOMER_RETRO_ORDERS.help') !!}</span>
+        <span class="help-block">{!! l('ALLOW_CUSTOMER_BACKORDERS.help') !!}</span>
       </div>
     </div>
 

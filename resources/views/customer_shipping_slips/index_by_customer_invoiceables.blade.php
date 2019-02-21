@@ -222,6 +222,16 @@
 
 </div>
 
+<div class="row">
+
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('status') ? 'has-error' : '' }}">
+            {{ l('Status') }}
+            {!! Form::select('status', $statusList, null, array('class' => 'form-control', 'id' => 'status')) !!}
+            {!! $errors->first('status', '<span class="help-block">:message</span>') !!}
+         </div>
+
+</div>
+
                   </div>
 
                   <div class="panel-footer">
@@ -324,18 +334,21 @@ $("#document_lines").on("change", function () {
 <script type="text/javascript">
 
 $(document).ready(function() {
+
    $("#b_search_filter").click(function() {
       $('#search_status').val(1);
       $('#search_filter').show();
    });
 
 
-    $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
+    $('#document_date_form').val('{{ abi_date_form_short( "now" ) }}');
 
     $('#sequence_id').val('{{ $customer->getInvoiceSequenceId() }}');
     $('#template_id').val('{{ $customer->getInvoiceTemplateId() }}');
+    $('#status').val('confirmed');
 
 });
+
 
 </script>
 

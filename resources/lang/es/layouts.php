@@ -285,6 +285,7 @@ return [
 
 	'Draft'     => 'Borrador',
 	'DRAFT'     => 'BORRADOR',
+	'Pending'     => 'Pendiente',
 	'NOT Saved'     => 'NO se ha Guardado',
 
 

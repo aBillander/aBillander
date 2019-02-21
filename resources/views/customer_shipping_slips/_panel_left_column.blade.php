@@ -22,11 +22,13 @@
                           @if ($document->customerinvoice()->document_reference)
                             {{ $document->customerinvoice()->document_reference }}
                           @else
-                            <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
+                            <span class="btn btn-xs btn-grey">{{ l('Draft', 'layouts') }}</span>
                           @endif
 
                       </a> - {{ abi_date_short( $document->customerinvoice()->document_date ) }}
 
+                      @else
+                          <span class="btn btn-xs btn-grey">{{ l('Pending', 'layouts') }}</span>
                       @endif
                     
                   </li>

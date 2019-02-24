@@ -94,6 +94,20 @@
       </div>
     </div>
 
+    <div class="form-group {{ $errors->has('DEF_CUSTOMER_ORDER_TEMPLATE') ? 'has-error' : '' }}">
+      <label for="DEF_CUSTOMER_ORDER_TEMPLATE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_ORDER_TEMPLATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_CUSTOMER_ORDER_TEMPLATE', $orders_templateList, old('DEF_CUSTOMER_ORDER_TEMPLATE', $key_group['DEF_CUSTOMER_ORDER_TEMPLATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_CUSTOMER_ORDER_TEMPLATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_CUSTOMER_ORDER_TEMPLATE.help') !!}</span>
+      </div>
+    </div>
+
     <div class="form-group {{ $errors->has('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE') ? 'has-error' : '' }}">
       <label for="DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE.name') !!}</label>
       <div class="col-lg-8">

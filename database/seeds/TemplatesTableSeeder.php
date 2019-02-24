@@ -19,14 +19,24 @@ class TemplatesTableSeeder extends Seeder {
             'paper' => 'A4', 
             'orientation' => 'portrait',
         ] );
+  
+        $t = Template::create( [
+//            'id' => 1,
+            'name' => 'Plantilla Pedidos', 
+            'model_name' => 'CustomerOrderPdf', 
+            'folder' => 'templates::', 
+            'file_name' => 'default', 
+            'paper' => 'A4', 
+            'orientation' => 'portrait',
+        ] );
 
-//        Configuration::updateValue('DEF_CUSTOMER_ORDER_TEMPLATE', $t->id);
+        Configuration::updateValue('DEF_CUSTOMER_ORDER_TEMPLATE', $t->id);
   
         $t = Template::create( [
 //            'id' => 1,
             'name' => 'Plantilla Albaranes', 
             'model_name' => 'CustomerShippingSlipPdf', 
-            'folder' => 'customer_shipping_slips', 
+            'folder' => 'templates::', 
             'file_name' => 'default', 
             'paper' => 'A4', 
             'orientation' => 'portrait',

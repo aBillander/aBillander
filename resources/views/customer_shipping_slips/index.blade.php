@@ -52,7 +52,7 @@
             <td class="text-center">
 
 @if ($document->invoiced_at)
-                <a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{abi_date_short( $document->invoiced_at )}}"><i class="fa fa-money"></i></a>
+                <a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{ l('Invoiced at:') }} {{abi_date_short( $document->invoiced_at )}}"><i class="fa fa-money"></i></a>
 @else
     @if ( $document->status == 'closed' )
                 <a class="btn btn-xs alert-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>

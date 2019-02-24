@@ -145,6 +145,11 @@ class Billable extends Model
             foreach($document->lines as $line) {
                 $line->delete();
             }
+
+            // Delete Ascriptions - Poor man :: ToDo: delete ascripted documents && nullyfy some dates (i.e.: backordered_at, etc.) too
+            $document->rightAscriptions()->delete();
+            $document->leftAscriptions()->delete();
+
         });
 
     }
@@ -223,6 +228,23 @@ class Billable extends Model
 
 
         return $notes;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ascriptions
+    |--------------------------------------------------------------------------
+    */
+    
+    public function rightAscriptions()
+    {
+        return $this->morphMany('App\DocumentAscription', 'leftable')->orderBy('id', 'ASC');
+    }
+
+    public function leftAscriptions()
+    {
+        return $this->morphMany('App\DocumentAscription', 'rightable')->orderBy('id', 'ASC');
     }
 
 

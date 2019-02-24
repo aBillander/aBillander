@@ -60,7 +60,7 @@
 
 <p>- No se puede modificar la cabecera y tampoco las líneas del Documento.</p>
 
-<p>- los Albaranes cerrados son visibles por el Cliente en el Centro de Clientes.</p>
+<p>- Los Albaranes cerrados son visibles por el Cliente en el Centro de Clientes.</p>
 
 <div class="alert alert-danger">
     <p>El Documento puede abrirse de nuevo, es decir, volver al estado “Confirmado”. En este caso:</p>

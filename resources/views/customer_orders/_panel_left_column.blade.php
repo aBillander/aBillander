@@ -36,7 +36,7 @@
           </div>
           </div>
 
-    @if ($document->backordered_at)
+    @if ($document->backordered_at && $document->backorder)
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">

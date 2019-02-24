@@ -41,6 +41,9 @@ Route::get('/', 'WelcomeController@index');     // ->name('home');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('home/searchcustomer', 'HomeController@searchCustomer')->name('home.searchcustomer');
 Route::get('home/searchproduct' , 'HomeController@searchProduct' )->name('home.searchproduct' );
+Route::get('home/searchcustomerorder' , 'HomeController@searchCustomerOrder' )->name('home.searchcustomerorder' );
+Route::get('home/searchcustomershippingslip' , 'HomeController@searchCustomerShippingSlip' )->name('home.searchcustomershippingslip' );
+Route::get('home/searchcustomerinvoice' , 'HomeController@searchCustomerInvoice' )->name('home.searchcustomerinvoice' );
 
 
 // https://www.youtube.com/watch?v=Vb7G1Q2g66g&t=1931s
@@ -342,14 +345,14 @@ foreach ($pairs as $pair) {
         Route::get($path.'/customers/{id}',  $controller.'@indexByCustomer')->name('customer.'.str_replace('customer', '', $path));
 }
 
-        Route::get('customerorders/pending/today',  'CustomerOrdersController@getTodaysOrders')->name('orders.for.today');
+        Route::get('customerorders/pending/today',  'CustomerOrdersController@getTodaysOrders')->name('customerorders.for.today');
         Route::post('customerorders/create/shippingslip',  'CustomerOrdersController@createSingleShippingSlip')->name('customerorder.shippingslip');
 
         Route::get( 'customershippingslips/customers/{id}/invoiceables',  'CustomerShippingSlipsController@getInvoiceableShippingSlips')->name('customer.invoiceable.shippingslips');
         Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');
         Route::get('customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
 
-        Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('shippingslips.for.today');
+        Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('customershippingslips.for.today');
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');
         

@@ -18,7 +18,7 @@
             {{ csrf_field() }}
         </form>
 
-         <!-- a href="{{{ URL::to('auth/logout') }}}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Home') }}
+         <!-- a href="{{ URL::to('auth/logout') }}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Home') }}
     </h2>
 </div>
 
@@ -69,50 +69,6 @@
               </div>
             </div>
             </div>
-
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <h3 class="panel-title">Albaranes</h3>
-              </div>
-              <div class="panel-body">
-
-                  <div class="row">
-
-                     <div class="form-group col-lg-12 text-center">
-                        
-                        <a href="{{{ route('shippingslips.for.today') }}}" class="btn xbtn-sm btn-success" 
-                                title=" Albaranes de hoy "><i class="fa fa-truck"></i> Albaranes de hoy</a>
-
-                     </div>
-
-                  </div>
-                  
-              </div>
-            </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <h3 class="panel-title">Pedidos</h3>
-              </div>
-              <div class="panel-body">
-
-                  <div class="row">
-
-                     <div class="form-group col-lg-12 text-center">
-                        
-                        <a href="{{{ route('orders.for.today') }}}" class="btn xbtn-sm btn-success" 
-                                title=" Pedidos de hoy "><i class="fa fa-shopping-bag"></i> Pedidos de hoy</a>
-
-                     </div>
-
-                  </div>
-                  
-              </div>
-            </div>
-            </div>
 {{-- 
             <div class="col-lg-3 col-md-6">
             <div class="panel panel-danger">
@@ -149,6 +105,116 @@
 --}}
         </div>
     </div>
+
+
+    <div class="row">
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Pedidos</h3>
+              </div>
+              <div class="panel-body">
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12 text-center">
+                        
+                        <a href="{{ route('customerorders.for.today') }}" class="btn xbtn-sm btn-success" 
+                                title=" Pedidos de hoy "><i class="fa fa-shopping-bag"></i> Pedidos de hoy</a>
+
+                     </div>
+
+                  </div>
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12">
+
+                        <label for="autocustomerorder_name" class="control-label">Buscar</label>
+                        {!! Form::text('autocustomerorder_name', null, array('class' => 'form-control', 'id' => 'autocustomerorder_name')) !!}
+
+                        {!! Form::hidden('customerorder_id', null, array('id' => 'customerorder_id')) !!}
+
+                     </div>
+
+                  </div>
+                  
+              </div>
+            </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Albaranes</h3>
+              </div>
+              <div class="panel-body">
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12 text-center">
+                        
+                        <a href="{{ route('customershippingslips.for.today') }}" class="btn xbtn-sm btn-success" 
+                                title=" Albaranes de hoy "><i class="fa fa-truck"></i> Albaranes de hoy</a>
+
+                     </div>
+
+                  </div>
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12">
+
+                        <label for="autocustomershippingslip_name" class="control-label">Buscar</label>
+                        {!! Form::text('autocustomershippingslip_name', null, array('class' => 'form-control', 'id' => 'autocustomershippingslip_name')) !!}
+
+                        {!! Form::hidden('customershippingslip_id', null, array('id' => 'customershippingslip_id')) !!}
+
+                     </div>
+
+                  </div>
+                  
+              </div>
+            </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Facturas</h3>
+              </div>
+              <div class="panel-body">
+
+                  <!-- div class="row">
+
+                     <div class="form-group col-lg-12 text-center">
+                        
+                        <a href="{ { route('customerinvoices.for.today') } }" class="btn xbtn-sm btn-success" 
+                                title=" Albaranes de hoy "><i class="fa fa-truck"></i> Albaranes de hoy</a>
+
+                     </div>
+
+                  </div -->
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12">
+
+                        <label for="autocustomerinvoice_name" class="control-label">Buscar</label>
+                        {!! Form::text('autocustomerinvoice_name', null, array('class' => 'form-control', 'id' => 'autocustomerinvoice_name')) !!}
+
+                        {!! Form::hidden('customerinvoice_id', null, array('id' => 'customerinvoice_id')) !!}
+
+                     </div>
+
+                  </div>
+                  
+              </div>
+            </div>
+            </div>
+
+    </div><!-- div class="row" ENDS -->
 </div>
 
 
@@ -245,6 +311,9 @@
 
         $("#autocustomer_name").val('');
         $("#autoproduct_name").val('');
+        $("#autocustomerorder_name").val('');
+        $("#autocustomershippingslip_name").val('');
+        $("#autocustomerinvoice_name").val('');
 
         // To get focus;
         $("#autocustomer_name").focus();
@@ -290,6 +359,75 @@
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
                 .append( '<div>[' + item.reference+'] ' + item.name + "</div>" )
+                .appendTo( ul );
+            };
+
+
+
+        $("#autocustomerorder_name").autocomplete({
+            source : "{{ route('home.searchcustomerorder') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                customerorder_id = value.item.id;
+
+                redirect = "{{ URL::to('customerorders') }}/"+customerorder_id+"/edit";
+
+                window.location.href = redirect;
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>'+item.id+' / ' + (item.document_reference || "{{ l('Draft', 'layouts') }}") +' - ' + item.document_date.split(" ")[0] + ' - '+(item.reference_external || '')+'</div>' )
+                .appendTo( ul );
+            };
+
+
+
+        $("#autocustomershippingslip_name").autocomplete({
+            source : "{{ route('home.searchcustomershippingslip') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                customershippingslip_id = value.item.id;
+
+                redirect = "{{ URL::to('customershippingslips') }}/"+customershippingslip_id+"/edit";
+
+                window.location.href = redirect;
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>'+item.id+' / ' + (item.document_reference || "{{ l('Draft', 'layouts') }}") +' - ' + item.document_date.split(" ")[0] + ' - '+(item.reference_external || '')+'</div>' )
+                .appendTo( ul );
+            };
+
+
+
+        $("#autocustomerinvoice_name").autocomplete({
+            source : "{{ route('home.searchcustomerinvoice') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                customerinvoice_id = value.item.id;
+
+                redirect = "{{ URL::to('customerinvoices') }}/"+customerinvoice_id+"/edit";
+
+                window.location.href = redirect;
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>'+item.id+' / ' + (item.document_reference || "{{ l('Draft', 'layouts') }}") +' - ' + item.document_date.split(" ")[0] + ' - '+(item.reference_external || '')+'</div>' )
                 .appendTo( ul );
             };
 

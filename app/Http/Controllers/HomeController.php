@@ -93,4 +93,67 @@ class HomeController extends Controller
 
         return response( $products );
     }
+
+
+    public function searchCustomerOrder(Request $request)
+    {
+        $search = $request->term;
+
+        $documents = \App\CustomerOrder::select('id', 'document_reference', 'document_date', 'reference_external')
+                                ->where(   'id',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'document_date', 'LIKE', '%'.$search.'%' )
+                                ->orderBy('document_date', 'DESC')
+                                ->orderBy('id', 'ASC')
+//                                ->toSql();
+                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+
+
+//                                dd($products);
+
+        return response( $documents );
+    }
+
+
+    public function searchCustomerShippingSlip(Request $request)
+    {
+        $search = $request->term;
+
+        $documents = \App\CustomerShippingSlip::select('id', 'document_reference', 'document_date', 'reference_external')
+                                ->where(   'id',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'document_date', 'LIKE', '%'.$search.'%' )
+                                ->orderBy('document_date', 'DESC')
+                                ->orderBy('id', 'ASC')
+//                                ->toSql();
+                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+
+
+//                                dd($products);
+
+        return response( $documents );
+    }
+
+
+    public function searchCustomerInvoice(Request $request)
+    {
+        $search = $request->term;
+
+        $documents = \App\CustomerInvoice::select('id', 'document_reference', 'document_date', 'reference_external')
+                                ->where(   'id',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'document_date', 'LIKE', '%'.$search.'%' )
+                                ->orderBy('document_date', 'DESC')
+                                ->orderBy('id', 'ASC')
+//                                ->toSql();
+                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+
+
+//                                dd($products);
+
+        return response( $documents );
+    }
 }

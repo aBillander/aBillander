@@ -1237,17 +1237,16 @@ class CustomerOrdersController extends BillableController
 
             $link = DocumentAscription::create( $link_data );
 
+            
+            return redirect('customershippingslips/'.$shippingslip->id.'/edit')
+                    ->with('warning', l('This record has been successfully created &#58&#58 (:id) '.'[ '.l('Backorder').' ]', ['id' => $clone->id], 'layouts'))
+                    ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+
         }   // // Backorder stuff ENDS
 
 
-
-
-
-
-
-
         return redirect('customershippingslips/'.$shippingslip->id.'/edit')
-                ->with('warning', l('This record has been successfully created &#58&#58 (:id) '.'[ '.l('Backorder').' ]', ['id' => $clone->id], 'layouts'))
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     } 
 

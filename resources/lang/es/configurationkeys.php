@@ -85,6 +85,8 @@ return [
 	'DEF_CURRENCY.help' => 'Moneda por defecto.',
 	'DEF_CUSTOMER_ORDER_SEQUENCE.name' => 'Serie de Pedidos para Clientes',
 	'DEF_CUSTOMER_ORDER_SEQUENCE.help' => '',
+	'DEF_CUSTOMER_ORDER_TEMPLATE.name' => 'Plantilla de Pedidos para Clientes',
+	'DEF_CUSTOMER_ORDER_TEMPLATE.help' => '',
 	'DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE.name' => 'Serie de Albaranes para Clientes',
 	'DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE.help' => '',
 	'DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE.name' => 'Plantilla de Albaranes para Clientes',

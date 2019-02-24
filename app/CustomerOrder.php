@@ -54,7 +54,7 @@ class CustomerOrder extends Billable
     public function getDeletableAttribute()
     {
 //        return $this->status != 'closed' && !$this->->status != 'canceled';
-        return $this->status != 'closed' && !$this->close_date;
+        return $this->status != 'closed';
     }
 
     // Alias

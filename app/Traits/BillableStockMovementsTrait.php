@@ -14,6 +14,10 @@ trait BillableStockMovementsTrait
         // Let's rock!
         foreach ($this->lines as $line) {
             //
+            // Only products, please!!!
+            if ( ! ( $line->product_id > 0 ) ) continue;
+
+            //
             $data = [
                     'date' => \Carbon\Carbon::now(),
 
@@ -69,6 +73,10 @@ trait BillableStockMovementsTrait
     {
         // Let's rock!
         foreach ($this->lines as $line) {
+            //
+            // Only products, please!!!
+            if ( ! ( $line->product_id > 0 ) ) continue;
+
             //
             foreach ( $line->stockmovements as $mvt ) {
                 # code...

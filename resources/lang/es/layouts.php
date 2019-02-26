@@ -93,6 +93,7 @@ return [
 	'Orders'     => 'Pedidos',
 	'Shipping Slips'     => 'Albaranes',
 	'Invoices'     => 'Facturas',
+	'Quotations'     => 'Presupuestos',
 	'Stock Movements'     => 'Movimientos de Almacén',
 	'Inventory Count'     => 'Inventario de Almacén',
 	'Inventory Adjustments'     => 'Regularización de Almacén',

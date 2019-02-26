@@ -178,7 +178,7 @@ class CustomerUsersController extends Controller
 
         $vrules = array(
             'email'       => 'required|email',
-            'password'    => array('required', 'min:2', 'max:32'),
+            'password'    => array('required', 'min:6', 'max:32'),
         );
 
         if ( isset($vrules['email']) ) $vrules['email'] = 'email|unique:customer_users,email' . ','. $customeruser->id.',id';  // Unique

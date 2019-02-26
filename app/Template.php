@@ -12,6 +12,7 @@ class Template extends Model {
 //    use SoftDeletes;
 
     public static $types = array(
+            'CustomerQuotationPdf',
             'CustomerOrderPdf',
             'CustomerShippingSlipPdf',
             'CustomerInvoicePdf',
@@ -21,9 +22,10 @@ class Template extends Model {
 
     // Move this to config folder? Maybe yes...
     public static $models = array(
-            CustomerOrder::class   => 'CustomerOrderPdf', // Maybe string or array ???
-            CustomerShippingSlip::class   => 'CustomerShippingSlipPdf',
-            CustomerInvoice::class => 'CustomerInvoicePdf',
+            CustomerQuotation::class    => 'CustomerQuotationPdf',
+            CustomerOrder::class        => 'CustomerOrderPdf', // Maybe string or array ???
+            CustomerShippingSlip::class => 'CustomerShippingSlipPdf',
+            CustomerInvoice::class      => 'CustomerInvoicePdf',
         );
 
     protected $dates = ['deleted_at'];

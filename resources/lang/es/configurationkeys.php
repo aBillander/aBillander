@@ -83,6 +83,10 @@ return [
 	'DEF_COUNTRY.help' => '',
 	'DEF_CURRENCY.name' => 'Divisa',
 	'DEF_CURRENCY.help' => 'Moneda por defecto.',
+	'DEF_CUSTOMER_QUOTATION_SEQUENCE.name' => 'Serie de Presupuestos para Clientes',
+	'DEF_CUSTOMER_QUOTATION_SEQUENCE.help' => '',
+	'DEF_CUSTOMER_QUOTATION_TEMPLATE.name' => 'Plantilla de Presupuestos para Clientes',
+	'DEF_CUSTOMER_QUOTATION_TEMPLATE.help' => '',
 	'DEF_CUSTOMER_ORDER_SEQUENCE.name' => 'Serie de Pedidos para Clientes',
 	'DEF_CUSTOMER_ORDER_SEQUENCE.help' => '',
 	'DEF_CUSTOMER_ORDER_TEMPLATE.name' => 'Plantilla de Pedidos para Clientes',
@@ -196,6 +200,8 @@ return [
 	'ABCC_DEFAULT_ORDER_TEMPLATE.help' => 'Para visualizar los Pedidos en formato PDF desde el Centro de Clientes se usará esta Plantilla.',
 	'ABCC_ORDERS_SEQUENCE.name' => 'Serie de Pedidos para Clientes',
 	'ABCC_ORDERS_SEQUENCE.help' => 'Los Pedidos que se crean en el Centro de Clientes irán a esta Serie.',
+	'ABCC_QUOTATIONS_SEQUENCE.name' => 'Serie de Presupuestos para Clientes',
+	'ABCC_QUOTATIONS_SEQUENCE.help' => 'Los Presupuestos que se solicitan desde el Centro de Clientes irán a esta Serie.',
 
 
 	'All Keys' => 'Todas las Claves',

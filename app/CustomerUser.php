@@ -59,7 +59,7 @@ class CustomerUser extends Authenticatable
      */
     public static $rules = array(
         'email'       => 'required|email',
-        'password'    => array('required', 'min:2', 'max:32'),
+        'password'    => array('required', 'min:6', 'max:32'),
 //        'language_id' => 'exists:languages,id',
 //        'customer_id' => 'exists:customers,id',
     );

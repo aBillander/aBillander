@@ -34,7 +34,7 @@ class CreateCustomerInvoicesTable extends Migration {
 			// 'pending'   => Not performed
 			// 'completed' => Performed
 
-			$table->date('valid_until_date')->nullable();						// For Proposals!
+//			$table->date('valid_until_date')->nullable();						// For Proposals!
 
 			$table->date('next_due_date')->nullable();							// Next payment due date
 

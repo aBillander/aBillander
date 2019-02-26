@@ -401,6 +401,21 @@
     </div>
     
 
+    <div class="form-group {{ $errors->has('ABCC_QUOTATIONS_SEQUENCE') ? 'has-error' : '' }}">
+      <label for="ABCC_QUOTATIONS_SEQUENCE" class="col-lg-4 control-label">{!! l('ABCC_QUOTATIONS_SEQUENCE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('ABCC_QUOTATIONS_SEQUENCE', $quotations_sequenceList, old('ABCC_QUOTATIONS_SEQUENCE', $key_group['ABCC_QUOTATIONS_SEQUENCE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('ABCC_QUOTATIONS_SEQUENCE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_QUOTATIONS_SEQUENCE.help') !!}</span>
+      </div>
+    </div>
+    
+
 
     <div class="form-group">
       <div class="col-lg-8 col-lg-offset-4">

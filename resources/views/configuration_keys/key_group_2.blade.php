@@ -80,12 +80,40 @@
       </div>
     </div>
 
+    <div class="form-group {{ $errors->has('DEF_CUSTOMER_QUOTATION_SEQUENCE') ? 'has-error' : '' }}">
+      <label for="DEF_CUSTOMER_QUOTATION_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_QUOTATION_SEQUENCE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_CUSTOMER_QUOTATION_SEQUENCE', $quotations_sequenceList, old('DEF_CUSTOMER_QUOTATION_SEQUENCE', $key_group['DEF_CUSTOMER_QUOTATION_SEQUENCE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_CUSTOMER_QUOTATION_SEQUENCE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_CUSTOMER_QUOTATION_SEQUENCE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_CUSTOMER_QUOTATION_TEMPLATE') ? 'has-error' : '' }}">
+      <label for="DEF_CUSTOMER_QUOTATION_TEMPLATE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_QUOTATION_TEMPLATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_CUSTOMER_QUOTATION_TEMPLATE', $quotations_templateList, old('DEF_CUSTOMER_QUOTATION_TEMPLATE', $key_group['DEF_CUSTOMER_QUOTATION_TEMPLATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_CUSTOMER_QUOTATION_TEMPLATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_CUSTOMER_QUOTATION_TEMPLATE.help') !!}</span>
+      </div>
+    </div>
+
     <div class="form-group {{ $errors->has('DEF_CUSTOMER_ORDER_SEQUENCE') ? 'has-error' : '' }}">
       <label for="DEF_CUSTOMER_ORDER_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_CUSTOMER_ORDER_SEQUENCE.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-8">
-        {!! Form::select('DEF_CUSTOMER_ORDER_SEQUENCE', ['0' => l('-- Please, select --', [], 'layouts')] + $orders_sequenceList, old('DEF_CUSTOMER_ORDER_SEQUENCE', $key_group['DEF_CUSTOMER_ORDER_SEQUENCE']), array('class' => 'form-control')) !!}
+        {!! Form::select('DEF_CUSTOMER_ORDER_SEQUENCE', $orders_sequenceList, old('DEF_CUSTOMER_ORDER_SEQUENCE', $key_group['DEF_CUSTOMER_ORDER_SEQUENCE']), array('class' => 'form-control')) !!}
         {{ $errors->first('DEF_CUSTOMER_ORDER_SEQUENCE', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-4"> </div>

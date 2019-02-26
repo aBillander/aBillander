@@ -278,6 +278,10 @@ Route::group(['middleware' =>  ['auth']], function()
 
         $pairs = [
                 [
+                    'controller' => 'CustomerQuotationsController',
+                    'path' => 'customerquotations',
+                ],
+                [
                     'controller' => 'CustomerOrdersController',
                     'path' => 'customerorders',
                 ],

@@ -26,9 +26,11 @@ class Sequence extends Model {
     public static $models = array(
 //            Product::class         => 'Product', 
 //            Customer::class        => 'Customer', 
-            CustomerOrder::class   => 'CustomerOrder',
-            CustomerShippingSlip::class   => 'CustomerShippingSlip',
-            CustomerInvoice::class => 'CustomerInvoice',
+            CustomerQuotation::class    => 'CustomerQuotation',
+            CustomerOrder::class        => 'CustomerOrder',
+            CustomerShippingSlip::class => 'CustomerShippingSlip',
+            CustomerInvoice::class      => 'CustomerInvoice',
+            
             StockCount::class      => 'StockCount',
         );
 

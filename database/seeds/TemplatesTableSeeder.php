@@ -12,6 +12,18 @@ class TemplatesTableSeeder extends Seeder {
   
         $t = Template::create( [
 //            'id' => 1,
+            'name' => 'Plantilla Presupuestos', 
+            'model_name' => 'CustomerQuotationPdf', 
+            'folder' => 'templates::', 
+            'file_name' => 'default', 
+            'paper' => 'A4', 
+            'orientation' => 'portrait',
+        ] );
+
+        Configuration::updateValue('DEF_CUSTOMER_QUOTATION_TEMPLATE', $t->id);
+  
+        $t = Template::create( [
+//            'id' => 1,
             'name' => 'Plantilla Pedidos Customer Center', 
             'model_name' => 'CustomerOrderPdf', 
             'folder' => 'templates::abcc', 

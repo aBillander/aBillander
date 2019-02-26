@@ -54,6 +54,8 @@ class ConfigurationKeysController extends Controller {
                         'DEF_COMPANY',
                         'DEF_COUNTRY',
                         'DEF_CURRENCY',
+                        'DEF_CUSTOMER_QUOTATION_SEQUENCE',
+                        'DEF_CUSTOMER_QUOTATION_TEMPLATE',
                         'DEF_CUSTOMER_ORDER_SEQUENCE',
                         'DEF_CUSTOMER_ORDER_TEMPLATE',
                         'DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE',
@@ -126,6 +128,7 @@ class ConfigurationKeysController extends Controller {
                         'ABCC_CART_PERSISTANCE',
                         'ABCC_DEFAULT_ORDER_TEMPLATE',
                         'ABCC_ORDERS_SEQUENCE',
+                        'ABCC_QUOTATIONS_SEQUENCE',
 
                     ],
         ];

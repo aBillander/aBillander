@@ -46,7 +46,7 @@ class User extends Authenticatable
      */
     public static $rules = array(
         'email'       => array('required', 'email'),
-        'password'    => array('required', 'min:2', 'max:32'),
+        'password'    => array('required', 'min:6', 'max:32'),
         'language_id' => 'exists:languages,id',
     );
 

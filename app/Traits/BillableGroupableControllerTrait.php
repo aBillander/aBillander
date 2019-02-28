@@ -28,57 +28,7 @@ trait BillableGroupableControllerTrait
     /**
     * Temporary stuff. Waiting for final location
     */
-
-    public function createGroupShippingSlip( Request $request )
-    {
-        // ProductionSheetsController
-        $document_group = $request->input('document_group', []);
-
-        if ( count( $document_group ) == 0 ) 
-            return redirect()->route('customer.shippingslipable.orders', $request->input('customer_id'))
-                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
-        
-        // Dates (cuen)
-        $this->mergeFormDates( ['document_date'], $request );
-
-        $rules = $this->document::$rules_createshippingslip;
-
-        $this->validate($request, $rules);
-
-//        abi_r($request->all(), true);
-
-        // Set params for group
-        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status');
-
-        // abi_r($params, true);
-
-        return $this->shippingslipDocumentList( $document_group, $params );
-    } 
-
-    public function createShippingSlip($id)
-    {
-        $document = $this->document
-                            ->with('customer')
-                            ->findOrFail($id);
-        
-        $customer = $document->customer;
-
-        $params = [
-            'customer_id'   => $customer->id, 
-            'template_id'   => Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE'), 
-            'sequence_id'   => Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE'), 
-            'document_date' => \Carbon\Carbon::now()->toDateString(),
-
-            'status' => 'confirmed',
-        ];
-
-        // abi_r($params, true);
-        
-        return $this->shippingslipDocumentList( [$id], $params );
-    }
-
-    
-    public function shippingslipDocumentList( $list, $params )
+    public function aggregateDocumentList( $list, $params )
     {
 
 //        1.- Recuperar los documntos
@@ -109,21 +59,8 @@ trait BillableGroupableControllerTrait
             
         }
 
-//        3a.- Pre-procesar los pedidos para establecer:
-/*
-                - Dirección de entrega
-                - Almacén de salida
-                - Método de envío
 
-*/
-
-//        3b.- Agrupar pedidos para crear albaran(es) por:
-/*
-                - Dirección de entrega
-                - Almacén de salida
-                - Método de envío
-
-*/
+//        abi_r($list);die();
 
 //        4.- Cear cabecera
 
@@ -151,8 +88,8 @@ trait BillableGroupableControllerTrait
             'total_currency_tax_excl' => $documents->sum('total_currency_tax_excl'),
 //            'total_currency_paid' => $this->total_currency_paid,
 
-//            'total_tax_incl' => $documents->sum('total_tax_incl'),
-//            'total_tax_excl' => $documents->sum('total_tax_excl'),
+            'total_tax_incl' => $documents->sum('total_tax_incl'),
+            'total_tax_excl' => $documents->sum('total_tax_excl'),
 
 //            'commission_amount' => $this->commission_amount,
 
@@ -175,7 +112,6 @@ trait BillableGroupableControllerTrait
 
         // Model specific data
         $extradata = [
-//            'type' => 'invoice',
 //            'payment_status' => 'pending',
 //            'stock_status' => 'completed',
         ];
@@ -183,7 +119,7 @@ trait BillableGroupableControllerTrait
 
         // Let's get dirty
 //        CustomerInvoice::unguard();
-        $shippingslip = CustomerShippingSlip::create( $data + $extradata );
+        $order = Document::create( $data + $extradata );
 //        CustomerInvoice::reguard();
 
 
@@ -221,8 +157,8 @@ trait BillableGroupableControllerTrait
 //                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
 //                    'unit_final_price', 'unit_final_price_tax_inc', 
 //                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
-                'total_tax_incl' => 0, 
-                'total_tax_excl' => 0, 
+//                'total_tax_incl' => $document->total_currency_tax_incl, 
+//                'total_tax_excl' => $document->total_currency_tax_excl, 
 //                    'tax_percent', 'commission_percent', 
                 'notes' => '', 
                 'locked' => 0,
@@ -231,9 +167,9 @@ trait BillableGroupableControllerTrait
  //               'sales_rep_id'
             ];
 
-            $shippingslip_line = CustomerShippingSlipLine::create( $line_data );
+            $order_line = DocumentLine::create( $line_data );
 
-            $shippingslip->lines()->save($shippingslip_line);
+            $order->lines()->save($order_line);
 
             // Add current Shipping Slip lines to Invoice
             foreach ($document->lines as $line) {
@@ -270,11 +206,11 @@ trait BillableGroupableControllerTrait
 
 
                 // Let's get dirty
-                CustomerShippingSlipLine::unguard();
-                $shippingslip_line = CustomerShippingSlipLine::create( $data + $extradata );
-                CustomerShippingSlipLine::reguard();
+                DocumentLine::unguard();
+                $order_line = DocumentLine::create( $data + $extradata );
+                DocumentLine::reguard();
 
-                $shippingslip->lines()->save($shippingslip_line);
+                $order->lines()->save($order_line);
 
                 foreach ($line->taxes as $linetax) {
 
@@ -298,25 +234,21 @@ trait BillableGroupableControllerTrait
 
 
                     // Let's get dirty
-                    CustomerShippingSlipLineTax::unguard();
-                    $shippingslip_line_tax = CustomerShippingSlipLineTax::create( $data + $extradata );
-                    CustomerShippingSlipLineTax::reguard();
+                    DocumentLineTax::unguard();
+                    $order_line_tax = DocumentLineTax::create( $data + $extradata );
+                    DocumentLineTax::reguard();
 
-                    $shippingslip_line->taxes()->save($shippingslip_line_tax);
+                    $order_line->taxes()->save($order_line_tax);
 
                 }
             }
 
             // Not so fast, Sony Boy
 
-            // Confirm Invoice
-            $document->confirm();
-            
-            // Final touches
-            $document->shipping_slip_at = \Carbon\Carbon::now();
-            $document->save();      // Maybe not needed, because we are to close 
+            // Confirm Order
+            $document->confirm();       // if needed
 
-            // Close Invoice
+            // Close Order
             $document->close();
 
 
@@ -327,10 +259,10 @@ trait BillableGroupableControllerTrait
                 'leftable_id'    => $document->id,
                 'leftable_type'  => $document->getClassName(),
 
-                'rightable_id'   => $shippingslip->id,
-                'rightable_type' => CustomerShippingSlip::class,
+                'rightable_id'   => $order->id,
+                'rightable_type' => Document::class,
 
-                'type' => 'traceability',
+                'type' => 'aggregate',
                 ];
 
             $link = DocumentAscription::create( $link_data );
@@ -339,7 +271,7 @@ trait BillableGroupableControllerTrait
         // Good boy, so far
 
         if ( $params['status'] == 'confirmed' )
-            $shippingslip->confirm();
+            $order->confirm();
 
 
 
@@ -348,22 +280,8 @@ trait BillableGroupableControllerTrait
 
 
 
-        return redirect('customershippingslips/'.$shippingslip->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
-
-
-
-
-
-//        3.- Si algún documento tiene plantilla diferente, generar factura para él <= Tontá: el albarán NO tiene plantilla de Factura
-
-//        6.- Crear línea de texto con los albaranes ???
-
-//        7.- Crear líneas agrupadas ???
-
-//        8.- Manage estados de documento, pago y stock
-
-
+        return redirect('customerorders/'.$order->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $order->id], 'layouts'));
     }
 
 }

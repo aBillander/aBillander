@@ -40,6 +40,6 @@
 
                   <div class="panel-footer">
 
-                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customershippingslips.create.invoice' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-money"></i> {{l('Confirm', 'layouts')}}</a>
+                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customerorders.create.shippingslip' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-money"></i> {{l('Confirm', 'layouts')}}</a>
                   
                   </div>

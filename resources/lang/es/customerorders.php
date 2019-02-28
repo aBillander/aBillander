@@ -99,8 +99,6 @@ return [
 	'View Customer'     => 'Ir a la Ficha del Cliente',
 	'View Invoicing Address'     => 'Ver Dirección de Facturación',
 
-	'Group Orders'     => 'Agrupar Pedidos',
-
 
 	'Header'     => 'Cabecera',
 	'Lines'     => 'Líneas',
@@ -264,6 +262,9 @@ return [
 	'Backorder'     => 'Retro-Pedido',
 	'Backorder by'  => 'Retro-Pedido por',
 
+	'Aggregate Order'     => 'Pedido Agrupado',
+	'Aggregated by'     => 'Agrupado por',
+
 	'Customer Infos'     => 'Info del Cliente',
 	'Customer Risk'     => 'Riesgo alcanzado',
 	'Customer Group'     => 'Grupo de Clientes',
@@ -323,7 +324,12 @@ return [
 	''     => '',
 	''     => '',
 
+
+	'Group Orders'     => 'Agrupar Pedidos',
+//	'Create Shipping Slip'     => 'Crear Albarán',
 	'Create Invoice'     => 'Crear Factura',
 	'Order: :id [:date]'     => 'Pedido: :id [:date]',
+	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
+	'Invoice: :id [:date]'     => 'Factura: :id [:date]',
 
 ];

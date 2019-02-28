@@ -154,6 +154,16 @@ class Customer extends Model {
 
         return Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD');
     }
+    
+    public function getShippingMethodId() 
+    {
+        if (   $this->shipping_method_id
+            && \App\ShippingMethod::where('id', $this->shipping_method_id)->exists()
+            )
+            return $this->shipping_method_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD');
+    }
 
 
     /*

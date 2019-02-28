@@ -14,6 +14,9 @@ class CustomerOrder extends Billable
 
 
     protected $document_dates = [
+            'shipping_slip_at',
+            'invoiced_at',
+            'aggregated_at',
             'backordered_at'
     ];
 
@@ -45,9 +48,22 @@ class CustomerOrder extends Billable
 
     public static $rules_createshippingslip = [
                             'order_id' => 'exists:orders,id',
-                            'shippingslip_date' => 'required|date',
+                            'document_date' => 'required|date',
                             'sequence_id' => 'exists:sequences,id',
                             'template_id' => 'exists:templates,id',
+               ];
+
+    public static $rules_createorder = [
+                            'order_id' => 'exists:orders,id',
+                            'document_date' => 'required|date',
+                            'sequence_id' => 'exists:sequences,id',
+ //                           'template_id' => 'exists:templates,id',
+               ];
+
+    public static $rules_createaggregate = [
+                            'order_document_date' => 'required|date',
+                            'order_sequence_id' => 'exists:sequences,id',
+ //                           'template_id' => 'exists:templates,id',
                ];
 
 
@@ -73,6 +89,18 @@ class CustomerOrder extends Billable
     public function getBackordereeAttribute()
     {
         return $this->customerorder();
+    }
+
+    // Alias
+    public function getAggregateorderAttribute()
+    {
+        return $this->customeraggregateorder();
+    }
+
+    // Alias
+    public function getAggregateorderbyAttribute()
+    {
+        return $this->customeraggregateorderby();
     }
 
 
@@ -264,6 +292,46 @@ class CustomerOrder extends Billable
     public function customerorder()
     {
         return $this->leftOrders()->first();
+    }
+
+
+
+    public function rightAggregateOrderAscriptions( $model = '' )
+    {
+        return $this->rightAscriptions->where('type', 'aggregate')->where('rightable_type', 'App\CustomerOrder');
+    }
+
+    public function rightAggregateOrders()
+    {
+        // $ascriptions = $this->rightInvoiceAscriptions();
+
+        // abi_r($ascriptions->pluck('rightable_id')->all(), true);
+
+        return \App\CustomerOrder::find( $this->rightAggregateOrderAscriptions()->pluck('rightable_id') );
+    }
+
+    public function customeraggregateorder()
+    {
+        return $this->rightAggregateOrders()->first();
+    }
+
+
+
+    public function leftAggregateOrderAscriptions( $model = '' )
+    {
+        return $this->leftAscriptions->where('type', 'aggregate')->where('leftable_type', 'App\CustomerOrder');
+    }
+
+    public function leftAggregateOrders()
+    {
+        $ascriptions = $this->leftAggregateOrderAscriptions();
+
+        return \App\CustomerOrder::find( $ascriptions->pluck('leftable_id') );
+    }
+
+    public function customeraggregateorderby()
+    {
+        return $this->leftAggregateOrders()->first();
     }
     
 

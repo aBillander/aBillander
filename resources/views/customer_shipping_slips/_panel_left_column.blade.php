@@ -38,7 +38,7 @@
           </div>
           </div>
 
-@else
+@endif
 
 @if ( $document->created_via == 'aggregate_orders' )
 
@@ -120,5 +120,4 @@
 
           </div>
           </div>
-@endif
 @endif

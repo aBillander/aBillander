@@ -542,7 +542,7 @@ class CustomerShippingSlipsController extends BillableController
 
         // abi_r($this->model_path, true);
 
-        $documents->setPath($id);
+        $documents->setPath('invoiceables');
 
         return view($this->view_path.'.index_by_customer_invoiceables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page'));
     }
@@ -657,6 +657,7 @@ class CustomerShippingSlipsController extends BillableController
             // Skip notes
 
             'status' => 'draft',
+            'onhold' => 0,
             'locked' => 0,
 
             'invoicing_address_id' => $customer->invoicing_address_id,

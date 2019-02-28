@@ -350,7 +350,13 @@ foreach ($pairs as $pair) {
 }
 
         Route::get('customerorders/pending/today',  'CustomerOrdersController@getTodaysOrders')->name('customerorders.for.today');
-        Route::post('customerorders/create/shippingslip',  'CustomerOrdersController@createSingleShippingSlip')->name('customerorder.shippingslip');
+
+        Route::get('customerorders/customers/{id}/shippingslipables',  'CustomerOrdersController@getShippingSlipableOrders')->name('customer.shippingslipable.orders');
+        Route::post('customerorders/aggregate/orders',  'CustomerOrdersController@createAggregateOrder')->name('customerorders.aggregate.orders');
+        Route::post('customerorders/create/shippingslip',  'CustomerOrdersController@createGroupShippingSlip')->name('customerorders.create.shippingslip');
+        Route::get('customerorders/{id}/shippingslip'  , 'CustomerOrdersController@createShippingSlip')->name('customerorder.shippingslip');
+
+        Route::post('customerorders/create/shippingslip/single',  'CustomerOrdersController@createSingleShippingSlip')->name('customerorder.single.shippingslip');
 
         Route::get( 'customershippingslips/customers/{id}/invoiceables',  'CustomerShippingSlipsController@getInvoiceableShippingSlips')->name('customer.invoiceable.shippingslips');
         Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');

@@ -160,7 +160,7 @@
 
                   <div class="xpanel-footer pull-right" style="margin-top: 10px">
 
-                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-quantity-selector').attr('action', '{{ route( 'customerorder.shippingslip' )}}');$('#form-quantity-selector').submit();return false;"><i class="fa fa-truck"></i> &nbsp;{{l('Confirm', 'layouts')}}</a>
+                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-quantity-selector').attr('action', '{{ route( 'customerorder.single.shippingslip' )}}');$('#form-quantity-selector').submit();return false;"><i class="fa fa-truck"></i> &nbsp;{{l('Confirm', 'layouts')}}</a>
                   
                   </div>
 

@@ -60,6 +60,7 @@ return [
 	'Edit Customer'     => 'Modificar Cliente',
 
 	'Group Shipping Slips'     => 'Agrupar Albaranes',
+	'Group Orders'     => 'Agrupar Pedidos',
 
 	'Invoice'     => 'Factura',
 

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Customer;
 use App\CustomerOrder as Document;
 use App\CustomerOrderLine as DocumentLine;
+use App\CustomerOrderLineTax as DocumentLineTax;
 
 use App\CustomerInvoice;
 use App\CustomerInvoiceLine;
@@ -26,8 +27,12 @@ use App\Template;
 
 use App\Events\CustomerOrderConfirmed;
 
+use App\Traits\BillableShippingSlipableControllerTrait;
+
 class CustomerOrdersController extends BillableController
 {
+
+   use BillableShippingSlipableControllerTrait;
 
    public function __construct(Customer $customer, Document $document, DocumentLine $document_line)
    {
@@ -512,7 +517,7 @@ class CustomerOrdersController extends BillableController
     }
 
 
-    protected function getInvoiceableOrders($id, Request $request)
+    protected function getShippingSlipableOrders($id, Request $request)
     {
         $model_path = $this->model_path;
         $view_path = $this->view_path;
@@ -521,16 +526,25 @@ class CustomerOrdersController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+        $sequenceList       = Sequence::listFor( 'App\\CustomerShippingSlip' );
+        $order_sequenceList = Sequence::listFor( Document::class );
 
-        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+        $templateList = Template::listFor( 'App\\CustomerShippingSlip' );
+
+        $statusList = CustomerShippingSlip::getStatusList();
+        $order_statusList = Document::getStatusList();
+
+        // Make sense:
+        unset($statusList['closed']);
+        unset($statusList['canceled']);
+        unset($order_statusList['closed']);
+        unset($order_statusList['canceled']);
 
         $customer = $this->customer->findOrFail($id);
 
         $documents = $this->document
                             ->where('customer_id', $id)
-                            ->where('status', 'closed')
-                            ->where('invoiced_at', null)
+                            ->where('status', '<>', 'closed')
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
@@ -541,13 +555,42 @@ class CustomerOrdersController extends BillableController
 
         // abi_r($this->model_path, true);
 
-        $documents->setPath($id);
+        $documents->setPath('shippingslipables');
 
-        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
+        return view($this->view_path.'.index_by_customer_shippingslipables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'order_sequenceList', 'templateList', 'statusList', 'order_statusList', 'items_per_page'));
     }
 
 
-    public function createGroupInvoice( Request $request )
+    public function createAggregateOrder( Request $request )
+    {
+        // ProductionSheetsController
+        $document_group = $request->input('document_group', []);
+
+        if ( count( $document_group ) == 0 ) 
+            return redirect()->route('customer.shippingslipable.orders', $request->input('customer_id'))
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // Dates (cuen)
+        $this->mergeFormDates( ['order_document_date'], $request );
+
+        $rules = $this->document::$rules_createaggregate;
+
+        $this->validate($request, $rules);
+
+        // Set params for group
+        $params = [
+            'customer_id'   => $request->input('customer_id'),
+            'template_id'   => $request->input('order_template_id'),
+            'sequence_id'   => $request->input('order_sequence_id'),
+            'document_date' => $request->input('order_document_date'),
+            'status'        => $request->input('order_status'),
+        ];
+
+        return $this->aggregateDocumentList( $document_group, $params );
+    }
+
+
+    public function createGroupShippingSlip( Request $request )
     {
         // ProductionSheetsController
         $document_group = $request->input('document_group', []);
@@ -568,10 +611,10 @@ class CustomerOrdersController extends BillableController
 
         // abi_r($params, true);
 
-        return $this->invoiceDocumentList( $document_group, $params );
+        return $this->shippingslipDocumentList( $document_group, $params );
     } 
 
-    public function createInvoice($id)
+    public function createShippingSlip($id)
     {
         $document = $this->document
                             ->with('customer')
@@ -588,13 +631,18 @@ class CustomerOrdersController extends BillableController
 
         // abi_r($params, true);
         
-        return $this->invoiceDocumentList( [$id], $params );
+        return $this->shippingslipDocumentList( [$id], $params );
     }
 
 
 
+/*    
+*  public function aggregateDocumentList( $list, $params )
+*/
+
+
     
-    public function invoiceDocumentList( $list, $params )
+    public function shippingslipDocumentList( $list, $params )
     {
 
 //        1.- Recuperar los documntos
@@ -647,8 +695,8 @@ class CustomerOrdersController extends BillableController
             'total_currency_tax_excl' => $documents->sum('total_currency_tax_excl'),
 //            'total_currency_paid' => $this->total_currency_paid,
 
-            'total_tax_incl' => $documents->sum('total_tax_incl'),
-            'total_tax_excl' => $documents->sum('total_tax_excl'),
+//            'total_tax_incl' => $documents->sum('total_tax_incl'),
+//            'total_tax_excl' => $documents->sum('total_tax_excl'),
 
 //            'commission_amount' => $this->commission_amount,
 
@@ -806,6 +854,10 @@ class CustomerOrdersController extends BillableController
 
             // Confirm Invoice
             $document->confirm();
+            
+            // Final touches
+            $document->shipping_slip_at = \Carbon\Carbon::now();
+            $document->save();      // Maybe not needed, because we are to close 
 
             // Close Invoice
             $document->close();
@@ -930,8 +982,8 @@ class CustomerOrdersController extends BillableController
         // To do: check document status ???
 
         if ( count( $dispatch ) == 0 ) 
-            return redirect()->route($this->model_path.'/'.$document->id.'/edit')
-                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+            return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
         
         // Dates (cuen)
         $this->mergeFormDates( ['shippingslip_date'], $request );
@@ -952,6 +1004,12 @@ class CustomerOrdersController extends BillableController
         ];
 
         // Header
+        $shipping_method_id = $document->shipping_method_id ?? 
+                              $document->customer->getShippingMethodId();
+
+        $shipping_method = \App\ShippingMethod::find($shipping_method_id);
+        $carrier_id = $shipping_method ? $shipping_method->carrier_id : null;
+
         // Common data
         $data = [
 //            'company_id' => $this->company_id,
@@ -979,13 +1037,14 @@ class CustomerOrdersController extends BillableController
             // Skip notes
 
             'status' => 'draft',
+            'onhold' => 0,
             'locked' => 0,
 
             'invoicing_address_id' => $document->invoicing_address_id,
-//            'shipping_address_id' => $this->shipping_address_id,
-//            'warehouse_id' => $this->warehouse_id,
-//            'shipping_method_id' => $this->shipping_method_id ?? $this->customer->shipping_method_id ?? Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD'),
-//            'carrier_id' => $this->carrier_id,
+            'shipping_address_id' => $document->shipping_address_id,
+            'warehouse_id' => $document->warehouse_id,
+            'shipping_method_id' => $shipping_method_id,
+            'carrier_id' => $carrier_id,
             'sales_rep_id' => $document->sales_rep_id,
             'currency_id' => $document->currency->id,
             'payment_method_id' => $document->payment_method_id,
@@ -1040,8 +1099,8 @@ class CustomerOrdersController extends BillableController
 //                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
 //                    'unit_final_price', 'unit_final_price_tax_inc', 
 //                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
-                'total_tax_incl' => $document->total_currency_tax_incl, 
-                'total_tax_excl' => $document->total_currency_tax_excl, 
+                'total_tax_incl' => 0, 
+                'total_tax_excl' => 0, 
 //                    'tax_percent', 'commission_percent', 
                 'notes' => '', 
                 'locked' => 0,
@@ -1099,6 +1158,9 @@ class CustomerOrdersController extends BillableController
                 // abi_r($this->getParentModelSnakeCase().'_id');
                 // abi_r($data, true);
 
+                // We do not want zero-quantity lines:
+                if ( $data['quantity'] == 0 ) continue;
+
 
                 // Let's get dirty
                 CustomerShippingSlipLine::unguard();
@@ -1127,6 +1189,11 @@ class CustomerOrdersController extends BillableController
 
             // Close Order
             $document->confirm();
+            
+            // Final touches
+            $document->shipping_slip_at = \Carbon\Carbon::now();
+            $document->save();      // Maybe not needed, because we are to close 
+            
             $document->close();
 
 
@@ -1239,7 +1306,7 @@ class CustomerOrdersController extends BillableController
 
             
             return redirect('customershippingslips/'.$shippingslip->id.'/edit')
-                    ->with('warning', l('This record has been successfully created &#58&#58 (:id) '.'[ '.l('Backorder').' ]', ['id' => $clone->id], 'layouts'))
+                    ->with('warning', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $clone->id], 'layouts').'[ '.l('Backorder').' ]')
                     ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
 

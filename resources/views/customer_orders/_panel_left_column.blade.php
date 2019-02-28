@@ -1,6 +1,8 @@
 
 @if ( $document->status == 'closed' )
 
+    @if ($document->shipping_slip_at && $document->shippingslip)
+
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">
 
@@ -17,15 +19,15 @@
 
                       @if ( $document->close_date || 1)
 
-                      <a href="{{ URL::to('customershippingslips/' . optional($document->shippingslip)->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+                      <a href="{{ URL::to('customershippingslips/' . $document->shippingslip->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
-                          @if (optional($document->shippingslip)->document_reference)
-                            {{ optional($document->shippingslip)->document_reference }}
+                          @if ($document->shippingslip->document_reference)
+                            {{ $document->shippingslip->document_reference }}
                           @else
                             <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
                           @endif
 
-                      </a> - {{ abi_date_short( optional($document->shippingslip)->document_date ) }}
+                      </a> - {{ abi_date_short( $document->shippingslip->document_date ) }}
 
                       @endif
                     
@@ -35,6 +37,8 @@
 
           </div>
           </div>
+
+    @endif
 
     @if ($document->backordered_at && $document->backorder)
 
@@ -71,7 +75,42 @@
 
     @endif
 
-@else
+    @if ($document->aggregated_at && $document->aggregateorder)
+
+          <div class="xpanel xpanel-default">
+          <div class="xpanel-body">
+
+            <!-- h4>{{ l('Customer Risk') }}</h4>
+            <div class="progress progress-striped">
+                <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
+            </div -->
+            <ul class="list-group">
+              <li class="list-group-item" style="color: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
+                <h4>{{ l('Aggregate Order') }}</h4>
+              </li>
+              
+                  <li class="list-group-item">
+
+                      <a href="{{ URL::to('customerorders/' . $document->aggregateorder->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+
+                          @if ($document->aggregateorder->document_reference)
+                            {{ $document->aggregateorder->document_reference }}
+                          @else
+                            <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
+                          @endif
+
+                      </a> - {{ abi_date_short( $document->aggregateorder->document_date ) }}
+                    
+                  </li>
+
+            </ul>
+
+          </div>
+          </div>
+
+    @endif
+
+@endif
 
     @if ($document->created_via == 'backorder')
 
@@ -107,6 +146,43 @@
           </div>
 
     @endif
+
+    @if ($document->created_via == 'aggregate_orders')
+
+          <div class="xpanel xpanel-default">
+          <div class="xpanel-body">
+
+            <!-- h4>{{ l('Customer Risk') }}</h4>
+            <div class="progress progress-striped">
+                <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
+            </div -->
+            <ul class="list-group">
+              <li class="list-group-item" style="color: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
+                <h4>{{ l('Aggregated by') }}</h4>
+              </li>
+              
+                  <li class="list-group-item">
+
+                      <a href="{{ URL::to('customerorders/' . $document->aggregateorderby->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+
+                          @if ($document->aggregateorderby->document_reference)
+                            {{ $document->aggregateorderby->document_reference }}
+                          @else
+                            <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
+                          @endif
+
+                      </a> - {{ abi_date_short( $document->aggregateorderby->document_date ) }}
+                    
+                  </li>
+
+            </ul>
+
+          </div>
+          </div>
+
+    @endif
+    
+@if ( $document->status != 'closed' )
 
 
           <div class="xpanel xpanel-default">

@@ -275,6 +275,7 @@ class Billable extends Model
             $list = [];
             foreach (static::$statuses as $status) {
                 $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
+                // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
             return $list;

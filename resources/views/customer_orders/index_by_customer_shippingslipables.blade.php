@@ -9,7 +9,7 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <a href="{{ route('customershippingslips.create.withcustomer', $customer->id) }}" class="btn btn-sm btn-success" 
+        <a href="{{ route('customerorders.create.withcustomer', $customer->id) }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
     </div>
@@ -175,7 +175,7 @@
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
 <ul class="pagination" style="float:right;"><li xclass="active" style="float:right;"><span style="color:#333333;border-color:#ffffff"> <div class="input-group"><span class="input-group-addon" style="border: 0;background-color: #ffffff" title="{{l('Items per page', 'layouts')}}">{{l('Per page', 'layouts')}}</span><input id="items_per_page" name="items_per_page" class="form-control input-sm items_per_page" style="width: 50px !important;" type="text" value="{{ $items_per_page }}" onclick="this.select()">
     <span class="input-group-btn">
-      <button class="btn btn-info btn-sm" type="button" title="{{l('Refresh', 'layouts')}}" onclick="getCustomerShippingSlips(); return false;"><i class="fa fa-refresh"></i></button>
+      <button class="btn btn-info btn-sm" type="button" title="{{l('Refresh', 'layouts')}}" onclick="getCustomerOrders(); return false;"><i class="fa fa-refresh"></i></button>
     </span>
   </div></span></li></ul>
 
@@ -194,44 +194,23 @@
 
             <div class="panel panel-info">
               <div class="panel-heading">
-                <h3 class="panel-title">{{ l('Create Invoice') }}</h3>
+                <h3 class="panel-title">{{ l('Group Orders') }}</h3>
               </div>
-              <div class="panel-body">
 
-<div class="row">
-
-         <div class="col-lg-4 col-md-4 col-sm-4 {{ $errors->has('document_date') ? 'has-error' : '' }}">
-            <div class="form-group">
-               {{ l('Date') }}
-               {!! Form::text('document_date_form', null, array('class' => 'form-control', 'id' => 'document_date_form', 'autocomplete' => 'off')) !!}
-               {!! $errors->first('document_date', '<span class="help-block">:message</span>') !!}
-            </div>
-         </div>
-
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('template_id') ? 'has-error' : '' }}">
-            {{ l('Template') }}
-            {!! Form::select('template_id', $templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
-            {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
-         </div>
-
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
-            {{ l('Sequence') }}
-            {!! Form::select('sequence_id', $sequenceList, old('sequence_id'), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
-            {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
-         </div>
-
-</div>
-
-                  </div>
-
-                  <div class="panel-footer">
-
-                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customershippingslips.create.invoice' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-money"></i> {{l('Confirm', 'layouts')}}</a>
-                  
-                  </div>
+      @include($view_path.'.index_form_aggregate')
                   
               </div>
-            </div>
+
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{ l('Create Shipping Slip') }}</h3>
+              </div>
+
+      @include($view_path.'.index_form_group')
+                  
+              </div>
+
+    </div>
 
 @endif
 
@@ -301,21 +280,20 @@ $("#document_lines").on("change", function () {
       if (e.keyCode == 13) {
        // console.log("put function call here");
        e.preventDefault();
-       getCustomerShippingSlips();
+       getCustomerOrders();
        return false;
       }
 
     });
 
-    function getCustomerShippingSlips( items_per_page = 0 ){
+    function getCustomerOrders( items_per_page = 0 ){
       
-      window.location = "{{ route('customer.invoiceable.shippingslips', $customer->id) }}"+"?items_per_page="+$("#items_per_page").val();
+      window.location = "{{ route('customer.shippingslipable.orders', $customer->id) }}"+"?items_per_page="+$("#items_per_page").val();
 
       // 
       // $('#form-select-documents-per-page').submit();
 
     }
-
 
 
 </script>
@@ -324,6 +302,7 @@ $("#document_lines").on("change", function () {
 <script type="text/javascript">
 
 $(document).ready(function() {
+
    $("#b_search_filter").click(function() {
       $('#search_status').val(1);
       $('#search_filter').show();
@@ -331,9 +310,10 @@ $(document).ready(function() {
 
 
     $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
+    $('#order_document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
 
-    $('#sequence_id').val('{{ $customer->getInvoiceSequenceId() }}');
-    $('#template_id').val('{{ $customer->getInvoiceTemplateId() }}');
+//    $('#sequence_id').val('{{ $customer->getInvoiceSequenceId() }}');
+//    $('#template_id').val('{{ $customer->getInvoiceTemplateId() }}');
 
 });
 
@@ -361,7 +341,15 @@ $(document).ready(function() {
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
   });
-  
+
+  $(function() {
+    $( "#order_document_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+ /* 
   $(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
@@ -377,7 +365,7 @@ $(document).ready(function() {
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
   });
-  
+*/  
 </script>
 
 @endsection

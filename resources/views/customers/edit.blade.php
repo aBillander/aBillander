@@ -13,6 +13,8 @@
                   <i class="fa fa-plus"></i> Dirección
                 </button -->
 
+                <a href="{{ route('customer.shippingslipable.orders', [$customer->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Orders')}}</a>
+
                 <a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Shipping Slips')}}</a>
 
                 <div class="btn-group">

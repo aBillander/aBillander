@@ -201,10 +201,10 @@ return array(
 	|
 	*/
 
-	'customerOrder.draft' => 'Borrador',
-	'customerOrder.confirmed'    => 'Confirmado',
-	'customerOrder.closed'    => 'Cerrado',
-    'customerOrder.canceled' => 'Cancelado',
+	'App\CustomerOrder.draft' => 'Borrador',
+	'App\CustomerOrder.confirmed'    => 'Confirmado',
+	'App\CustomerOrder.closed'    => 'Cerrado',
+    'App\CustomerOrder.canceled' => 'Cancelado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -215,10 +215,10 @@ return array(
 	|
 	*/
 
-	'customerShippingSlip.draft' => 'Borrador',
-	'customerShippingSlip.confirmed'    => 'Confirmado',
-	'customerShippingSlip.closed'    => 'Cerrado',
-    'customerShippingSlip.canceled' => 'Cancelado',
+	'App\CustomerShippingSlip.draft' => 'Borrador',
+	'App\CustomerShippingSlip.confirmed'    => 'Confirmado',
+	'App\CustomerShippingSlip.closed'    => 'Cerrado',
+    'App\CustomerShippingSlip.canceled' => 'Cancelado',
 
 	/*
 	|--------------------------------------------------------------------------

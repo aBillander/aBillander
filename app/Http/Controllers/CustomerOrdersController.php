@@ -749,6 +749,9 @@ class CustomerOrdersController extends BillableController
         $shippingslip = CustomerShippingSlip::create( $data + $extradata );
 //        CustomerInvoice::reguard();
 
+        // Close Order (if needed)
+        $document->confirm();
+
 
 //        5a.- Añadir Albarán
 //        5b.- Crear enlaces para trazabilidad de documentos
@@ -871,9 +874,6 @@ class CustomerOrdersController extends BillableController
 
             // Confirm Shipping Slip
             $shippingslip->confirm();
-
-            // Close Order
-            $document->confirm();
             
             // Final touches
             $document->shipping_slip_at = \Carbon\Carbon::now();

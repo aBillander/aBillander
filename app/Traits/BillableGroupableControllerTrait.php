@@ -138,6 +138,10 @@ trait BillableGroupableControllerTrait
         $i = 0;
 
         foreach ($documents as $document) {
+
+            // Confirm Order
+            $document->confirm();       // if needed
+            
             # code...
             $i++;
 
@@ -244,9 +248,6 @@ trait BillableGroupableControllerTrait
             }
 
             // Not so fast, Sony Boy
-
-            // Confirm Order
-            $document->confirm();       // if needed
 
             // Close Order
             $document->close();

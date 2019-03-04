@@ -40,6 +40,7 @@ trait BillableShippingSlipableControllerTrait
         
         // Dates (cuen)
         $this->mergeFormDates( ['document_date'], $request );
+        $request->merge( ['shippingslip_date' => $request->input('document_date')] );   // According to $rules_createshippingslip
 
         $rules = $this->document::$rules_createshippingslip;
 
@@ -263,6 +264,10 @@ trait BillableShippingSlipableControllerTrait
         $i = 0;
 
         foreach ($documents as $document) {
+
+            // Confirm Order (if needed)
+            $document->confirm();
+
             # code...
             $i++;
 
@@ -369,9 +374,6 @@ trait BillableShippingSlipableControllerTrait
             }
 
             // Not so fast, Sony Boy
-
-            // Confirm Invoice
-            $document->confirm();
             
             // Final touches
             $document->shipping_slip_at = \Carbon\Carbon::now();

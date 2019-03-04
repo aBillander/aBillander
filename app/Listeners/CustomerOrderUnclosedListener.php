@@ -28,20 +28,15 @@ class CustomerOrderUnclosedListener
     {
         $document = $event->document;
 
-        // Update Customer Risk
-//        $customer = $document->customer;
-//        $customer->removeRisk($document->total_tax_incl);
+        // Reset some dates:
+        $document->shipping_slip_at = null;
+        $document->invoiced_at = null;
+        $document->aggregated_at = null;
+        $document->backordered_at = null;
 
-        // Revert Stock Movements
-        // Only if invoice has not "left document(s)", i.e., only if it is manually generated
-        // 'created_via' != 'aggregate_shipping_slips'
-/*        if ( $document->canRevertStockMovements() )
-        {
-            //
-            $document->revertStockMovements();
-        }
-*/
-        // Check / Perform Vouchers
+//        $document->production_sheet_id = null;
+
+        $document->save();
 
     }
 }

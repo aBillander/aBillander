@@ -10,15 +10,18 @@
             <div class="pull-right">
 
 @if ( $document->status == 'closed' )
-                    <button type="button" class="btn btn-sm alert-danger" title="{{l('Document closed', 'layouts')}}" style="margin-right: 16px">
-                        <i class="fa fa-lock"></i>
-                    </button>
+    @if ( $document->uncloseable )
 
-                <!-- a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-lock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a -->
+                <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-lock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
+    @else
+                <button type="button" class="btn btn-sm alert-danger" title="{{l('Document closed', 'layouts')}}" style="margin-right: 16px">
+                    <i class="fa fa-lock"></i>
+                </button>
+    @endif
 @else
-                    <button type="button" class="btn btn-sm alert-success" title="{{l('Document is not closed', 'layouts')}}" style="margin-right: 16px">
-                        <i class="fa fa-unlock"></i>
-                    </button>
+                <button type="button" class="btn btn-sm alert-success" title="{{l('Document is not closed', 'layouts')}}" style="margin-right: 16px">
+                    <i class="fa fa-unlock"></i>
+                </button>
                 <!-- a class="btn btn-sm alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a -->
 
                 <!-- a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/pdf?preview') }}" title="{{l('Show Preview', [], 'layouts')}}" target="_blank"><i class="fa fa-eye"></i></a -->

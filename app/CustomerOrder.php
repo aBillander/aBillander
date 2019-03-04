@@ -73,6 +73,15 @@ class CustomerOrder extends Billable
         return $this->status != 'closed';
     }
 
+    public function getUncloseableAttribute()
+    {
+        if ( $this->status != 'closed' ) return false;
+
+        if ( optional($this->rightAscriptions)->count() || optional($this->leftAscriptions)->count() ) return false;
+
+        return true;
+    }
+
     // Alias
     public function getShippingslipAttribute()
     {
@@ -184,6 +193,8 @@ class CustomerOrder extends Billable
 
     public function unclose( $status = null )
     {
+        if ( !$this->uncloseable ) return false;
+
         if ( ! parent::unclose() ) return false;
 
         // Dispatch event

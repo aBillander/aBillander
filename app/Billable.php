@@ -377,7 +377,7 @@ class Billable extends Model
     public function getShippingAddressId() 
     {
         if (   $this->shipping_address_id
-//            && \App\ShippingMethod::where('id', $this->shipping_method_id)->exists()
+            && $this->customer->addresses->contains('id', $this->shipping_address_id)
             )
             return $this->shipping_address_id;
 

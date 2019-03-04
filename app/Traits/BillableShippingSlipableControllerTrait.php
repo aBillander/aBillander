@@ -175,7 +175,7 @@ trait BillableShippingSlipableControllerTrait
 
 
         return redirect()
-                ->route('customer.shippingslips')
+                ->route('customer.shippingslips', [$customer->id])
                 ->with('success', $success);
 
     }

@@ -24,14 +24,14 @@
 
    });
 
-{{--
-   		/*
+
+
    		$(window).on('hashchange',function(){
 			page = window.location.hash.replace('#','');
-			getCustomerOrders(page);
+			if (page == 'inventory') getPendingMovements(page);
 		});
 
-		$(document).on('click','.pagination_pending_movements a', function(e){
+		$(document).on('click','.pagination_pendingmovements a', function(e){
 			e.preventDefault();
 			var stubs;
 			var page;
@@ -39,27 +39,27 @@
 			stubs = $(this).attr('href').split('page=');
 			page = stubs[ stubs.length - 1 ];	// Like a BOSS!!!!
 
-			getCustomerOrders(page);
+			getPendingMovements(page);
 			// location.hash = page;
 		});
 
-		$(document).on('keydown','.items_per_page', function(e)
+		$(document).on('keydown','.items_per_page_pendingmovements', function(e)
 		{
   
 		  if (e.keyCode == 13) {
 		   // console.log("put function call here");
 		   e.preventDefault();
-		   getCustomerOrders();
+		   getPendingMovements();
 		   return false;
 		  }
 
 		});
-		*/
 		
-		function getOrderProfit()
+
+		function getPendingMovements( page = 1 )
 		{
            var panel = $("#panel_pending_movements");
-           var url = "{{ route( 'customerorder.profit', [1] ) }}";
+           var url = '{{ route( 'products.pendingmovements', [$product->id] ) }}?page=' + page;
 
            panel.addClass('loading');
 
@@ -67,27 +67,23 @@
 				type: "GET",
 				url: url,
 				data: {
-					items_per_page: $("#items_per_page").val()
+					items_per_page_pendingmovements: $("#items_per_page_pendingmovements").val()
 				}
 			}).done(function(data){
 				panel.html(data);
 				panel.removeClass('loading');
+
+                $("[data-toggle=popover]").popover();
 			});
                  
 		}
---}}
 
 		// See: https://stackoverflow.com/questions/20705905/bootstrap-3-jquery-event-for-active-tab-change
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 		  var target = $(e.target).attr("href") // activated tab
-		  if (target == '#tab3default')
+		  if (target == '#tab3default_p')
 		  {
-		  		// getOrderProfit();
-
-           		var panel = $("#panel_pending_movements");
-
-				panel.html('Coming soon! Stay tunned.');
-				panel.removeClass('loading');
+		  		getPendingMovements();
 		  }
 		  /*
 		  if ($(target).is(':empty')) {

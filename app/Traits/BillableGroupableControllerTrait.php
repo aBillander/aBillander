@@ -101,7 +101,7 @@ trait BillableGroupableControllerTrait
 
             'invoicing_address_id' => $customer->invoicing_address_id,
             'shipping_address_id' => $customer->shipping_address_id,
-            'warehouse_id' => Configuration::getInt('DEF_WHAREHOUSE'),
+            'warehouse_id' => Configuration::getInt('DEF_WAREHOUSE'),
             'shipping_method_id' => $shipping_method_id,
             'carrier_id' => $carrier_id,
             'sales_rep_id' => $customer->sales_rep_id,
@@ -163,7 +163,7 @@ trait BillableGroupableControllerTrait
                 'notes' => '', 
                 'locked' => 0,
  //                 'customer_shipping_slip_id',
-                'tax_id' => Configuration::get('DEF_TAX'),  // Just convinient
+                'tax_id' => Configuration::get('DEF_TAX'),  // Just convenient
  //               'sales_rep_id'
             ];
 

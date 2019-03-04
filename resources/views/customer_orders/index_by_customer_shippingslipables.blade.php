@@ -51,7 +51,7 @@
 
 <div class="row">
 
-   <div class="col-lg-8 col-md-8">
+   <div class="col-lg-9 col-md-9">
    <div class="table-responsive">
 
 @if ($documents->count())
@@ -62,9 +62,15 @@
             <th class="text-left">{{ l('ID', 'layouts') }}</th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
+            <th class="text-left">{{ l('Warehouse') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}</th>
-            <th class="text-left">{{ l('Created via') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </a></th>
+            <th class="text-left">{{ l('Shipping Method') }}</th>
+            <!-- th class="text-left">{{ l('Created via') }}</th -->
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
@@ -74,14 +80,15 @@
         @foreach ($documents as $document)
         <tr>
             <td class="text-center warning">{!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}</td>
-            <td>{{ $document->id }} / 
-                @if ($document->document_id>0)
-                {{ $document->document_reference }}
-                @else
-                <a class="btn btn-xs btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
-                <span xclass="label label-default">{{ l('Draft') }}</span>
+            <td>
+                <a xclass="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_blank">
+                    @if ($document->document_id>0)
+                      {{ $document->document_reference }}
+                    @else
+                      <span class="btn btn-xs btn-grey xlabel xlabel-default">{{ l('Draft') }}</span>
+                    @endif
                 </a>
-                @endif</td>
+            </td>
             <td class="text-center">
 
 @if ( $document->status == 'closed' )
@@ -100,6 +107,7 @@
                 
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
+            <td>{{ optional($document->warehouse)->alias }}</td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
             <td>
                 @if ( $document->hasShippingAddress() )
@@ -116,8 +124,10 @@
 
                 @endif
             </td>
-            <td>{{ $document->created_via }}
+            <td>{{ optional($document->shippingmethod)->name }}
             </td>
+            <!-- td>{{ $document->created_via }}
+            </td -->
             <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
             <td class="text-center">@if ($document->all_notes)
                  <a href="javascript:void(0);">
@@ -133,6 +143,32 @@
                 <a class="btn btn-sm btn-blue"    href="{{ URL::to('customeror ders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
                 <a class="btn btn-sm btn-success" href="{ { URL::to('customer orders/' . $document->id) } }" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
                 -->
+
+@php
+
+$f = $document->stock_flag;
+
+switch ( $f ) {
+    case 1:
+        # code...
+        $class = 'btn-success';
+        break;
+
+    case 0:
+        # code...
+        $class = 'btn-warning';
+        break;
+    
+    case -1:
+    default:
+        # code...
+        $class = 'btn-danger';
+        break;
+}
+
+@endphp
+
+                <a class="btn btn-sm {{ $class }} show-stock-availability" data-id="{{$document->id}}" title="{{l('Stock Availability')}}"><i class="fa fa-th"></i></a>
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
@@ -190,9 +226,44 @@
 
 @if ($documents->count())
 
-   <div class="col-lg-4 col-md-4">
+   <div class="col-lg-3 col-md-3">
 
-            <div class="panel panel-info">
+<div class="with-nav-tabs panel panel-info" id="panel_forms"> 
+
+   <div class="panel-heading">
+
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#tab1default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Group Orders') }}</a></li>
+                            <li><a href="#tab2default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Create Shipping Slip') }}</a></li>
+                        </ul>
+
+   </div>
+
+  <div class="tab-content">
+      <div class="tab-pane fade in active" id="tab1default_s">
+                
+                @include($view_path.'.index_form_aggregate')
+
+      </div>
+      <div class="tab-pane fade" id="tab2default_s">
+                
+                @include($view_path.'.index_form_group')
+
+      </div>
+  </div>
+
+
+</div>
+
+
+    </div><!-- div class="col-lg-3 col-md-3" ENDS -->
+
+
+
+{{--
+   <div class="col-lg-3 col-md-3">
+
+            <div class="panel panel-success">
               <div class="panel-heading">
                 <h3 class="panel-title">{{ l('Group Orders') }}</h3>
               </div>
@@ -211,6 +282,7 @@
               </div>
 
     </div>
+--}}
 
 @endif
 
@@ -228,6 +300,8 @@
 @endsection
 
 @include('layouts/modal_delete')
+
+@include($view_path.'._modal_document_availability')
 
 
 {{-- *************************************** --}}
@@ -382,5 +456,10 @@ $(document).ready(function() {
 <style>
     .ui-datepicker { z-index: 10000 !important; }
 </style>
+
+
+{{-- Nav-tabs --}}
+
+<link href="{{ asset('assets/theme/css/nav-tabs.css') }}" rel="stylesheet" type="text/css"/>
 
 @endsection

@@ -423,6 +423,16 @@ class BillableController extends Controller
         return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document'));
     }
 
+    public function getDocumentAvailabilityModal($id, Request $request)
+    {
+        $document = $this->document
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->findOrFail($id);
+
+        return view($this->view_path.'._modal_document_availability_content', $this->modelVars() + compact('document'));
+    }
+
 
 
 

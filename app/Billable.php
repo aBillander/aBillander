@@ -24,6 +24,15 @@ class Billable extends Model
     use BillableTotalsTrait;
     use ViewFormatterTrait;
 
+
+    public static $billable_types = array(
+            'customer_quotation',
+            'customer_order',
+            'customer_shipping_slip',
+            'customer_invoice',
+        );
+
+
     protected $totals = [];
 
 
@@ -161,7 +170,35 @@ class Billable extends Model
         $currency->conversion_rate = $this->currency_conversion_rate;
 
         return $currency;
-    }  
+    }
+
+
+/*
+    Return values
+
+     1 : quantity_onhand is enough
+     0 : quantity_available is enough
+    -1 : not enough quantity to fullfill the order
+
+*/
+    public function getStockFlagAttribute()
+    {
+        // Just to make sure...
+        $this->load('lines.product');
+
+        $flag = 1;
+
+        foreach ($this->lines as $line) {
+            # code...
+            if ( $line->line_type != 'product') continue;
+
+            if ( $line->product->quantity_available < 0 ) $flag = 0;    // Too many orders. Maybe not stock for all
+
+            if ( $line->quantity > $line->product->quantity_onhand ) return $flag = -1;
+        }
+
+        return $flag;
+    }
 
     public function getTotalRevenueAttribute()
     {
@@ -254,6 +291,21 @@ class Billable extends Model
     |--------------------------------------------------------------------------
     */
 
+    public static function getBillableTypeList()
+    {
+            $list = [];
+            foreach (static::$billable_types as $billable_type) {
+                $list[$billable_type] = l(get_called_class().'.'.$billable_type, [], 'appmultilang');;
+            }
+
+            return $list;
+    }
+
+    public static function getBillableTypeName( $billable_type )
+    {
+            return l('BillableType.'.$billable_type, [], 'appmultilang');;
+    }
+
     public static function getTypeList()
     {
             $list = [];
@@ -307,6 +359,46 @@ class Billable extends Model
             return l(get_called_class().'.'.$created_via, [], 'appmultilang');
     }
 
+
+/*
+*   Convenient methods
+*/
+    
+    public function getShippingMethodId() 
+    {
+        if (   $this->shipping_method_id
+            && \App\ShippingMethod::where('id', $this->shipping_method_id)->exists()
+            )
+            return $this->shipping_method_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD');
+    }
+    
+    public function getShippingAddressId() 
+    {
+        if (   $this->shipping_address_id
+//            && \App\ShippingMethod::where('id', $this->shipping_method_id)->exists()
+            )
+            return $this->shipping_address_id;
+
+        return $this->customer->shipping_address_id > 0 ? $this->customer->shipping_address_id : $this->customer->invoicing_address_id;
+    }
+
+    public function getWarehouseId() 
+    {
+        if (   $this->warehouse_id
+            && \App\Warehouse::where('id', $this->warehouse_id)->exists()
+            )
+            return $this->warehouse_id;
+
+        return Configuration::getInt('DEF_WAREHOUSE');
+    }
+    
+
+/*
+*
+*/
+    
 
     public function confirm()
     {

@@ -109,29 +109,87 @@ trait BillableShippingSlipableControllerTrait
             
         }
 
-//        3a.- Pre-procesar los pedidos para establecer:
-/*
-                - Dirección de entrega
-                - Almacén de salida
-                - Método de envío
 
-*/
+//        3a.- Pre-process Orders
 
-//        3b.- Agrupar pedidos para crear albaran(es) por:
-/*
-                - Dirección de entrega
-                - Almacén de salida
-                - Método de envío
+        foreach ($documents as $document)
+        {
+            # code...
+            $document->warehouse_id        = $document->getWarehouseId();
+            $document->shipping_address_id = $document->getShippingAddressId();
+            $document->shipping_method_id  = $document->getShippingMethodId();
+        }
 
-*/
+
+//        3b.- Group Orders
+
+        $success =[];
+
+        // Warehouses
+        $warehouses = $documents->unique('warehouse_id')->pluck('warehouse_id')->all();
+
+        foreach ($warehouses as $warehouse_id) {
+            # code...
+            // Select Documents
+            $documents_by_ws = $documents->where('warehouse_id', $warehouse_id);
+
+            // Adresses
+            $addresses = $documents_by_ws->unique('shipping_address_id')->pluck('shipping_address_id')->all();
+
+            foreach ($addresses as $address_id) {
+                # code...
+                // Select Documents
+                $documents_by_ws_by_addrr = $documents_by_ws->where('shipping_address_id', $address_id);
+
+                // Shipping Method
+                $methods = $documents_by_ws_by_addrr->unique('shipping_method_id')->pluck('shipping_method_id')->all();
+
+                foreach ($methods as $method_id) {
+                    # code...
+                    // Select Documents
+                    $documents_by_ws_by_addrr_by_meth = $documents_by_ws_by_addrr->where('shipping_method_id', $method_id);
+
+                    // Do something at last...
+                    $extra_params = [
+                        'warehouse_id'        => $warehouse_id,
+                        'shipping_address_id' => $address_id,
+                        'shipping_method_id'  => $method_id,
+
+                        'customer'            => $customer,
+                    ];
+
+                    $shippingslip = $this->shippingslipDocuments( $documents_by_ws_by_addrr_by_meth, $params + $extra_params);
+
+                    $success[] = l('This record has been successfully created &#58&#58 (:id) ', ['id' => $shippingslip->id], 'layouts');
+
+                    // abi_r($documents_by_ws_by_addrr_by_meth->pluck('id')->all());
+                }
+            }
+        }
+
+
+//        abi_r($warehouses);
+//        die();
+
+
+
+        return redirect()
+                ->route('customer.shippingslips')
+                ->with('success', $success);
+
+    }
+
+    
+    public function shippingslipDocuments( $documents, $params )
+    {
+
+//        abi_r($params); return null;
+
+        $customer = $params['customer'];
 
 //        4.- Cear cabecera
 
         // Header
-        $shipping_method_id = $customer->getShippingMethodId();
-
-        $shipping_method = \App\ShippingMethod::find($shipping_method_id);
-        $carrier_id = $shipping_method ? $shipping_method->carrier_id : null;
         // Common data
         $data = [
 //            'company_id' => $this->company_id,
@@ -151,8 +209,8 @@ trait BillableShippingSlipableControllerTrait
             'total_currency_tax_excl' => $documents->sum('total_currency_tax_excl'),
 //            'total_currency_paid' => $this->total_currency_paid,
 
-//            'total_tax_incl' => $documents->sum('total_tax_incl'),
-//            'total_tax_excl' => $documents->sum('total_tax_excl'),
+            'total_tax_incl' => $documents->sum('total_tax_incl'),
+            'total_tax_excl' => $documents->sum('total_tax_excl'),
 
 //            'commission_amount' => $this->commission_amount,
 
@@ -163,10 +221,13 @@ trait BillableShippingSlipableControllerTrait
             'locked' => 0,
 
             'invoicing_address_id' => $customer->invoicing_address_id,
-            'shipping_address_id' => $customer->shipping_address_id,
-            'warehouse_id' => Configuration::getInt('DEF_WHAREHOUSE'),
-            'shipping_method_id' => $shipping_method_id,
-            'carrier_id' => $carrier_id,
+            'shipping_address_id' => $params['shipping_address_id'],
+            'warehouse_id' => $params['warehouse_id'],
+            'shipping_method_id' => $params['shipping_method_id'],
+//            'shipping_address_id' => $document->shipping_address_id,
+//            'warehouse_id' => $document->warehouse_id,
+//            'shipping_method_id' => $document->shipping_method_id,
+//            'carrier_id' => $carrier_id,              // Not needed: calculated al saving event
             'sales_rep_id' => $customer->sales_rep_id,
             'currency_id' => $customer->currency->id,
             'payment_method_id' => $customer->getPaymentMethodId(),
@@ -227,7 +288,7 @@ trait BillableShippingSlipableControllerTrait
                 'notes' => '', 
                 'locked' => 0,
  //                 'customer_shipping_slip_id',
-                'tax_id' => Configuration::get('DEF_TAX'),  // Just convinient
+                'tax_id' => Configuration::get('DEF_TAX'),  // Just convenient
  //               'sales_rep_id'
             ];
 
@@ -346,10 +407,7 @@ trait BillableShippingSlipableControllerTrait
 
         // abi_r($grouped_lines, true);
 
-
-
-        return redirect('customershippingslips/'.$shippingslip->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+        return $shippingslip;
 
 
 

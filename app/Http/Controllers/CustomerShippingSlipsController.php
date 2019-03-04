@@ -725,7 +725,7 @@ class CustomerShippingSlipsController extends BillableController
                 'notes' => '', 
                 'locked' => 0,
  //                 'customer_shipping_slip_id',
-                'tax_id' => Configuration::get('DEF_TAX'),  // Just convinient
+                'tax_id' => Configuration::get('DEF_TAX'),  // Just convenient
  //               'sales_rep_id'
             ];
 

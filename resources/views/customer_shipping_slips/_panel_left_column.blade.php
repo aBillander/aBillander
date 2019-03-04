@@ -54,18 +54,20 @@
                 <h4>{{ l('Order', 'layouts') }}</h4>
               </li>
 
+@foreach ($document->leftOrders() as $order)
                   <li class="list-group-item">
-                      <a href="{{ URL::to('customerorders/' . $document->order->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+                      <a href="{{ URL::to('customerorders/' . $order->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
-                          @if ($document->order->document_reference)
-                            {{ $document->order->document_reference }}
+                          @if ($order->document_reference)
+                            {{ $order->document_reference }}
                           @else
                             <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
                           @endif
 
-                      </a> - {{ abi_date_short( $document->order->document_date ) }}
+                      </a> - {{ abi_date_short( $order->document_date ) }}
                     
                   </li>
+@endforeach
 
             </ul>
 

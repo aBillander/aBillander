@@ -730,6 +730,33 @@ LIMIT 1
     }
 
 
+    public function getPendingMovements($id, Request $request)
+    {
+        $items_per_page_pendingmovements = intval($request->input('items_per_page_pendingmovements', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page_pendingmovements >= 0) ) 
+            $items_per_page_pendingmovements = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+
+        
+        $lines = CustomerOrderLine::where('product_id', $id)
+                            ->with('document')
+                            ->with('document.customer')
+//                            ->whereHas('document', function($q) use ($id) {
+//                                    $q->where('customer_id', $id);
+//                                })
+                            ->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
+                            ->select('customer_order_lines.*', 'customer_orders.document_date', \DB::raw('"customerorders" as route'))
+                            ->orderBy('customer_orders.document_date', 'desc');
+
+        $lines = $lines->paginate( $items_per_page_pendingmovements );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+
+        $lines->setPath('pendingmovements');
+
+        // return $items_per_page_stockmovements ;
+        
+        return view('products._panel_pending_movements', compact('lines', 'items_per_page_pendingmovements'));
+    }
+
+
     public function getStockSummary($id, Request $request)
     {
         

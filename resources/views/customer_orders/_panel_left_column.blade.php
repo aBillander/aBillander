@@ -160,20 +160,22 @@
               <li class="list-group-item" style="color: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
                 <h4>{{ l('Aggregated by') }}</h4>
               </li>
-              
+
+@foreach ($document->leftAggregateOrders() as $order)
                   <li class="list-group-item">
 
-                      <a href="{{ URL::to('customerorders/' . $document->aggregateorderby->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+                      <a href="{{ URL::to('customerorders/' . $order->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
-                          @if ($document->aggregateorderby->document_reference)
-                            {{ $document->aggregateorderby->document_reference }}
+                          @if ($order->document_reference)
+                            {{ $order->document_reference }}
                           @else
                             <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
                           @endif
 
-                      </a> - {{ abi_date_short( $document->aggregateorderby->document_date ) }}
+                      </a> - {{ abi_date_short( $order->document_date ) }}
                     
                   </li>
+@endforeach
 
             </ul>
 

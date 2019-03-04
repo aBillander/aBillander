@@ -127,8 +127,9 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::resource('workcenters', 'WorkCentersController');
 
         Route::resource('products', 'ProductsController');
-        Route::get('products/{id}/stockmovements', 'ProductsController@getStockMovements')->name('products.stockmovements');
-        Route::get('products/{id}/stocksummary', 'ProductsController@getStockSummary')->name('products.stocksummary');
+        Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
+        Route::get('products/{id}/pendingmovements', 'ProductsController@getPendingMovements')->name('products.pendingmovements');
+        Route::get('products/{id}/stocksummary',     'ProductsController@getStockSummary'    )->name('products.stocksummary');
 
         Route::get('products/{id}/recentsales',  'ProductsController@getRecentSales')->name('products.recentsales');
 
@@ -328,6 +329,8 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/duplicate',     $controller.'@duplicateDocument'   )->name($path.'.duplicate'  );
         Route::get($path.'/{id}/profit',        $controller.'@getDocumentProfit'   )->name($path.'.profit'     );
         Route::get($path.'/{id}/availability',  $controller.'@getDocumentAvailability' )->name($path.'.availability' );
+        
+        Route::get($path.'/{id}/availability/modal',  $controller.'@getDocumentAvailabilityModal' )->name($path.'.availability.modal' );
 
         Route::post($path.'/{id}/quickaddlines',    $controller.'@quickAddLines'   )->name($path.'.quickaddlines'  );
 

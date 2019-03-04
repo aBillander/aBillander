@@ -332,4 +332,6 @@ return [
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
 	'Invoice: :id [:date]'     => 'Factura: :id [:date]',
 
+	'Address is displayed if it is different from Customer Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Cliente',
+
 ];

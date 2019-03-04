@@ -8,7 +8,7 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab1default" data-toggle="tab">{{ l('Stocks') }}</a></li>
                             <li><a href="#tab2default_m" data-toggle="tab">{{ l('Stock Movements') }}</a></li>
-                            <li><a href="#tab3default" data-toggle="tab">{{ l('Pending Movements') }}</a></li>
+                            <li><a href="#tab3default_p" data-toggle="tab">{{ l('Pending Movements') }}</a></li>
 
                             <!-- li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
                             <li class="dropdown">
@@ -33,7 +33,7 @@
                 @include('products._tab_stock_movements')
 
       </div>
-      <div class="tab-pane fade" id="tab3default">
+      <div class="tab-pane fade" id="tab3default_p">
                 
                 @include('products._tab_pending_movements')
 

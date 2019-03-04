@@ -9,7 +9,7 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <a href="{{ route('customershippingslips.create.withcustomer', $customer->id) }}" class="btn btn-sm btn-success" 
+        <a href="{{ route('customerorders.create.withcustomer', $customer->id) }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
     </div>

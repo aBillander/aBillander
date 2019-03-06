@@ -23,6 +23,11 @@ class RedirectIfAuthenticated
             if ( $guard == 'customer' ) {
                 return redirect()->route('customer.dashboard');
             }
+            
+            // Sales Reps
+            if ( $guard == 'salesrep' ) {
+                return redirect()->route('salesrep.dashboard');
+            }
 
             // Regular Users
             if ( Auth::user()->home_page == '/' ) 

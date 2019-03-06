@@ -54,6 +54,16 @@ return [
             'driver' => 'token',
             'provider' => 'customer_users',
         ],
+
+        'salesrep' => [
+            'driver' => 'session',
+            'provider' => 'sales_rep_users',
+        ],
+
+        'salesrep-api' => [
+            'driver' => 'token',
+            'provider' => 'sales_rep_users',
+        ],
     ],
 
     /*
@@ -81,6 +91,11 @@ return [
         'customer_users' => [
             'driver' => 'eloquent',
             'model' => App\CustomerUser::class,
+        ],
+
+        'sales_rep_users' => [
+            'driver' => 'eloquent',
+            'model' => App\SalesRepUser::class,
         ],
 
         // 'users' => [
@@ -112,6 +127,12 @@ return [
         ],
         'customer_users' => [
             'provider' => 'customer_users',
+            'table' => 'password_resets',
+            'expire' => 60,                 // Minutes
+        ],
+        
+        'sales_rep_users' => [
+            'provider' => 'sales_rep_users',
             'table' => 'password_resets',
             'expire' => 60,                 // Minutes
         ],

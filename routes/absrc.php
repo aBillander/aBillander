@@ -16,6 +16,18 @@
 Route::group(['prefix' => 'absrc'], function ()
 {
     // Auth routes here
+    Route::get('/login', 'Auth\SalesRepLoginController@showLoginForm')->name('salesrep.login');
+    Route::post('/login', 'Auth\SalesRepLoginController@login')->name('salesrep.login.submit');
+    Route::post('/logout', 'Auth\SalesRepLoginController@salesrepLogout')->name('salesrep.logout');
+
+    Route::get('/register', 'Auth\SalesRepRegisterController@showRegistrationForm')->name('salesrep.register');
+    Route::post('/register', 'Auth\SalesRepRegisterController@register')->name('salesrep.register.submit');
+
+// Password Reset Routes...
+    Route::post('password/email', ['as' => 'salesrep.password.email', 'uses' => 'Auth\SalesRepForgotPasswordController@sendResetLinkEmail']);
+    Route::get('password/reset', ['as' => 'salesrep.password.request', 'uses' => 'Auth\SalesRepForgotPasswordController@showLinkRequestForm']);
+    Route::post('password/reset', ['uses' => 'Auth\SalesRepResetPasswordController@reset']);
+    Route::get('password/reset/{token}', ['as' => 'salesrep.password.reset', 'uses' => 'Auth\SalesRepResetPasswordController@showResetForm']);
 });
 
 
@@ -25,6 +37,13 @@ Route::group(['prefix' => 'absrc'], function ()
 Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function ()
 {
     // Sales Reps routes here
+
+    Route::group(['middleware' =>  ['auth:salesrep', 'absrccontext']], function()
+    {
+
+        Route::get('/', 'SalesRepHomeController@index')->name('salesrep.dashboard');
+
+    });
 });
 
 /* ********************************************************** */

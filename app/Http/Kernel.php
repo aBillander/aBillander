@@ -66,5 +66,7 @@ class Kernel extends HttpKernel
 //        'context'  => \App\Http\Middleware\SetContextMiddleware::class,
 
         'abcccontext'  => \App\Http\Middleware\CustomerCenter\SetAbccContextMiddleware::class,
+
+        'absrccontext'  => \App\Http\Middleware\SalesRepCenter\SetAbsrcContextMiddleware::class,
     ];
 }

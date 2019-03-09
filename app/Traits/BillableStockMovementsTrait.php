@@ -108,7 +108,7 @@ trait BillableStockMovementsTrait
                         'warehouse_id' => $mvt->warehouse_id,
     //                    'warehouse_counterpart_id' => $line->,
 
-                        'movement_type_id' => StockMovement::SALE_ORDER,
+                        'movement_type_id' => $mvt->movement_type_id,
 
     //                    'user_id' => $line->,
 

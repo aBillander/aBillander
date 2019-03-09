@@ -124,6 +124,11 @@ class SetContextMiddleware {
 				//
 				Context::getContext()->controller = 'abcc/'.$request->segment(2);
 
+			} else
+			if ( $dominion == 'absrc' ) {
+				//
+				Context::getContext()->controller = 'absrc/'.$request->segment(2);
+
 			} else {
 				//
 				Context::getContext()->controller = $dominion;

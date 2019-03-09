@@ -53,9 +53,22 @@
 
         <div class="row">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                      {{ l('Price input method') }} : {{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                      <strong>{{ l('Price input method') }}</strong> : {{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
                                                         l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                                         l('Prices are entered exclusive of tax', [], 'appmultilang') }}
+                  </div>
+        </div>
+
+        <div class="row">
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('recommended_retail_price') ? 'has-error' : '' }}">
+                     {{ l('Pecommended Retail Price') }}
+                     {!! Form::text('recommended_retail_price', null, array('class' => 'form-control', 'id' => 'recommended_retail_price')) !!}
+                     {!! $errors->first('recommended_retail_price', '<span class="help-block">:message</span>') !!}
+                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('available_for_sale_date') ? 'has-error' : '' }}">
+                     {{ l('Available for sale') }}
+                     {!! Form::text('available_for_sale_date_form', null, array('class' => 'form-control', 'id' => 'available_for_sale_date_form')) !!}
+                     {!! $errors->first('available_for_sale_date', '<span class="help-block">:message</span>') !!}
                   </div>
         </div>
 
@@ -180,7 +193,22 @@
  
 @include('products.js._calculator_js')
 
+
+{{-- Date Picker --}}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+
 <script type="text/javascript">
+
+  $(function() {
+    $( "#available_for_sale_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
 
 $(document).ready(function() {
    new_cost_price();
@@ -189,3 +217,24 @@ $(document).ready(function() {
 </script>
 
 @endsection
+
+
+
+{{-- *************************************** --}}
+
+
+
+@section('styles')    @parent
+
+
+{{-- Date Picker --}}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+    .ui-datepicker { z-index: 10000 !important; }
+</style>
+
+
+@endsection
+

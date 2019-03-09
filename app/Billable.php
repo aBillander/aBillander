@@ -466,6 +466,32 @@ class Billable extends Model
         return true;
     }
 
+    public function unConfirmDocument()
+    {
+        // Can I?
+        if ( $this->status != 'confirmed' ) return false;
+
+        // onhold? No problemo
+        // if ( $this->onhold ) return false;
+
+        // Not taking care of Secuence numbering
+
+        // Update Document
+        // Not fillable
+        $this->document_prefix    = NULL;
+        // Not fillable
+        $this->document_id        = 0;
+        // Not fillable. May come from external system ???
+        $this->document_reference = NULL;
+
+        $this->status = 'draft';
+        $this->validation_date = NULL;
+
+        $this->save();
+
+        return true;
+    }
+
     public function close()
     {
         // Can I ...?
@@ -729,6 +755,17 @@ class Billable extends Model
 
         // Not allow to see resource
         return $query->where('customer_id', 0)->where('status', '');
+    }
+
+    public function scopeOfSalesRep($query)
+    {
+//        return $query->where('customer_id', Auth::user()->customer_id);
+
+        if ( isset(Auth::user()->sales_rep_id) && ( Auth::user()->sales_rep_id != NULL ) )
+            return $query->where('sales_rep_id', Auth::user()->sales_rep_id);
+
+        // Not allow to see resource
+        return $query->where('sales_rep_id', 0);
     }
 
     public function scopeFindByToken($query, $token)

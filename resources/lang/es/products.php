@@ -39,6 +39,8 @@ return [
 	'Cost Price'     => 'Precio de Coste',
 	'Margin'     => 'Margen',
 	'Margin calculation method'     => 'Método de cálculo del Margen',
+	'Pecommended Retail Price'     => 'Precio de Venta Recomendado',
+	'Available for sale'     => 'Disponible para Venta',
 	'Price input method'     => 'Método de entrada de Precios',
 	'Save tax included?'     => '¿Guardar con IVA incluido?',
 	'Average Cost Price'     => 'Precio de Coste Promedio',

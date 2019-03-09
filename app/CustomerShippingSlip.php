@@ -155,6 +155,16 @@ class CustomerShippingSlip extends Billable
         return true;
     }
 
+    public function unConfirm()
+    {
+        if ( ! parent::unConfirmDocument() ) return false;
+
+        // Dispatch event
+        // event( new \App\Events\CustomerShippingSlipUnConfirmed($this) );
+
+        return true;
+    }
+
     public function close()
     {
         if ( ! parent::close() ) return false;

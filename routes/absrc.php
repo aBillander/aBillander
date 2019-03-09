@@ -43,6 +43,10 @@ Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function (
 
         Route::get('/', 'SalesRepHomeController@index')->name('salesrep.dashboard');
 
+        Route::resource('/orders',          'AbsrcSalesRepOrdersController')->names('absrc.orders');
+//        Route::get('orders/{id}/duplicate', 'AbccCustomerOrdersController@duplicateOrder')->name('abcc.order.duplicate'  );
+        Route::get('orders/{id}/pdf', 'AbsrcSalesRepOrdersController@showPdf')->name('absrc.order.pdf'  );
+
     });
 });
 

@@ -79,7 +79,7 @@ class Product extends Model {
     ];
 */
 
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'available_for_sale_date'];
 
     protected $appends = ['quantity_available'];
     
@@ -89,12 +89,14 @@ class Product extends Model {
 //                            'warranty_period', 
 
                             'reorder_point', 'maximum_stock', 'price', 'price_tax_inc', 'cost_price', 
+                            'recommended_retail_price', 'recommended_retail_price_tax_inc', 
+
                             'supplier_reference', 'supply_lead_time', 'manufacturer_id', 
 
                             'location', 'width', 'height', 'depth', 'weight', 
 
                             'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 
-                            'out_of_stock', 'out_of_stock_text',
+                            'out_of_stock', 'out_of_stock_text', 'available_for_sale_date',
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
 
@@ -138,6 +140,11 @@ class Product extends Model {
         'sales' => array(
                             'price'         => 'required|numeric|min:0',
                             'price_tax_inc' => 'required|numeric|min:0', 
+
+                            'recommended_retail_price'         => 'required|numeric|min:0',
+                            'recommended_retail_price_tax_inc' => 'required|numeric|min:0', 
+                            
+                            'available_for_sale_date' => 'nullable|date',
                     ),
         'inventory' => array(
                             

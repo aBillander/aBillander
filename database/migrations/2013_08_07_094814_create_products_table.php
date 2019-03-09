@@ -61,6 +61,8 @@ class CreateProductsTable extends Migration {
 			$table->decimal('last_purchase_price', 20, 6)->default(0.0);
 			$table->decimal('cost_price', 20, 6)->default(0.0);
 			$table->decimal('cost_average', 20, 6)->default(0.0);			// Should be on per warehouse base?
+			$table->decimal('recommended_retail_price', 20, 6)->default(0.0);
+			$table->decimal('recommended_retail_price_tax_inc', 20, 6)->default(0.0);
 
 			$table->string('supplier_reference', 32)->nullable();
 			$table->integer('supply_lead_time')->unsigned()->default(0);
@@ -82,14 +84,17 @@ class CreateProductsTable extends Migration {
 			
 			$table->tinyInteger('stock_control')->default(1);
 			$table->tinyInteger('phantom_assembly')->default(0);
-
-			$table->string('out_of_stock', 32)->nullable(false)->default('default');
-			$table->text('out_of_stock_text')->nullable();
 /* 
 			Phantom Assemblies: - A phantom assembly is a logical (rather than functional) grouping of materials.
 			
 			Dependent requirements for the superior assembly are passed directly down to the components of the phantom assembly, skipping the phantom assembly. Planned orders and purchase requisitions are also produced only for the components of the phantom assembly.
 */
+
+			$table->string('out_of_stock', 32)->nullable(false)->default('default');
+			$table->text('out_of_stock_text')->nullable();
+
+			$table->dateTime('available_for_sale_date')->nullable();
+			
 			$table->tinyInteger('publish_to_web')->default(0);
 			$table->tinyInteger('blocked')->default(0);							// Sales not allowed
 			$table->tinyInteger('active')->default(1);

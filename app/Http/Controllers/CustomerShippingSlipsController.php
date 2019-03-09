@@ -395,7 +395,7 @@ class CustomerShippingSlipsController extends BillableController
 
         // Confirm
         if ( $document->confirm() )
-            return redirect()->route($this->model_path.'.index')
+            return redirect()->back()           // ->route($this->model_path.'.index')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 
@@ -455,7 +455,7 @@ class CustomerShippingSlipsController extends BillableController
 
         // Close
         if ( $document->close() )
-            return redirect()->route($this->model_path.'.index')
+            return redirect()->back()           // ->route($this->model_path.'.index')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 

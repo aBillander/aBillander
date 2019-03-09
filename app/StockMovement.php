@@ -718,7 +718,7 @@ class StockMovement extends Model {
                 $product->warehouses()->detach($this->warehouse_id); }
         } else {
             if ($this->quantity != 0) 
-                $product->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
+                $product->warehouses()->attach($this->warehouse_id, array('quantity' => -$this->quantity));
         }
 
         $product->quantity_onhand = $product->getStock();

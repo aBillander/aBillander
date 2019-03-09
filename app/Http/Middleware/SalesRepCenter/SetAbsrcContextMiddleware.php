@@ -29,8 +29,6 @@ class SetAbsrcContextMiddleware {
 	public function handle($request, Closure $next, $guard = null)
 	{
 
-		return $next($request);
-
 		
 		// if ( !auth()->check() || !auth()->user()->isAdmin() ) // Not logged or not Admin
 //		if ( !$request->user() || !$request->user()->isActive() ) /** if not logged at all redirect to home. this is to prevent an error if the user is not logged in and tries to access the portal via the url **/
@@ -40,20 +38,20 @@ class SetAbsrcContextMiddleware {
             if ( !Auth::user()->isActive() )
             {
                 Auth::logout();
-                return redirect()->route('customer.login')->with('warning', l('Your session has expired because your account is deactivated.', 'abcc/layouts'));
+                return redirect()->route('salesrep.login')->with('warning', l('Your session has expired because your account is deactivated.', 'absrc/layouts'));
             }
         }
 //		}
 
 
-		$customer_user = Auth::user();
-        $customer      = Auth::user()->customer;
+		$salesrep_user = Auth::user();
+        $salesrep      = Auth::user()->salesrep;
 
-//        abi_r($customer_user, true);
+//        abi_r($salesrep_user, true);
 
-//		 abi_r($this->customer->name_fiscal);die();
+//		 abi_r($this->salesrep->name_fiscal);die();
 
-		$cart = \App\Cart::getCustomerCart();
+//		$cart = \App\Cart::getCustomerCart();
 /*
 			Context::getContext()->user       = $user;
 			Context::getContext()->language   = $language;
@@ -64,13 +62,13 @@ class SetAbsrcContextMiddleware {
 			Context::getContext()->currency   = $company->currency;
 */
 
-		// abi_r($cart->customer->name, true);
+		// abi_r($cart->salesrep->name, true);
 
-		Context::getContext()->customer_user = $customer_user;
-		Context::getContext()->customer      = $customer;
+		Context::getContext()->salesrep_user = $salesrep_user;
+		Context::getContext()->salesrep      = $salesrep;
 //		Context::getContext()->language      = $language;
-		Context::getContext()->currency      = $customer->currency;
-		Context::getContext()->cart          = $cart;
+//		Context::getContext()->currency      = $customer->currency;
+//		Context::getContext()->cart          = $cart;
 
 		return $next($request);
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Customer;
+use App\SalesRep;
 use App\SalesRepUser;
 use App\Configuration;
 use App\Language;
@@ -17,10 +17,10 @@ class SalesRepUsersController extends Controller
 
    protected $salesrepuser, $salesrep;
 
-   public function __construct(SalesRepUser $salesrepuser, Customer $customer)
+   public function __construct(SalesRepUser $salesrepuser, SalesRep $salesrep)
    {
         $this->salesrepuser = $salesrepuser;
-        $this->customer = $customer;
+        $this->salesrep = $salesrep;
    }
 
     /**
@@ -233,8 +233,8 @@ class SalesRepUsersController extends Controller
     public function impersonate($id)
     {
         
-        \Auth()->guard('customer')->loginUsingId($id);
+        \Auth()->guard('salesrep')->loginUsingId($id);
 
-        return redirect()->route('customer.dashboard');
+        return redirect()->route('salesrep.dashboard');
     }
 }

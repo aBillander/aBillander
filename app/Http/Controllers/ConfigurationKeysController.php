@@ -106,7 +106,7 @@ class ConfigurationKeysController extends Controller {
 
                     ],
 
-                5 => [  // Cusromer Center
+                5 => [  // Customer Center
 
                         'ABCC_HEADER_TITLE',
                         'ABCC_EMAIL',
@@ -129,6 +129,15 @@ class ConfigurationKeysController extends Controller {
                         'ABCC_DEFAULT_ORDER_TEMPLATE',
                         'ABCC_ORDERS_SEQUENCE',
                         'ABCC_QUOTATIONS_SEQUENCE',
+
+                    ],
+
+                6 => [  // Sales Representatives Center
+
+                        'ABSRC_HEADER_TITLE',
+                        'ABSRC_EMAIL',
+                        'ABSRC_EMAIL_NAME',
+                        'ABSRC_DEFAULT_PASSWORD',
 
                     ],
         ];

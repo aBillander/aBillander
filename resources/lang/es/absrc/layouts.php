@@ -33,7 +33,7 @@ return [
 
 	'My Account'     => 'Mi Cuenta',
 	'Contact'     => 'Contacto',
-	'Privacy Policy'     => 'Protección de Datos',
+	''     => '',
 
 	'Basic Data'     => 'Tablas Generales',
 	'Currencies' => 'Divisas',
@@ -69,6 +69,8 @@ return [
 	'Customer Vouchers'     => 'Recibos de Clientes',
 
 	'Reports'     => 'Informes',
+	
+	'Sales'     => 'Ventas',
 	''     => '',
 
 	'Login'     => 'Login',

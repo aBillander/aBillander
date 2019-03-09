@@ -6,7 +6,7 @@
 
 <button type="button" class="btn btn-sm alert-info" data-dismiss="modal">{{ $customer->name_regular }}</button>
 
-	    {{ l('Product consumption') }} :: <label class="label label-success">{{ $product->reference }}</label> {{ $product->name }} ({{ $product->product_id }})</h4>
+	    {{ l('Product consumption') }} :: <label class="label label-success">{{ $product->reference }}</label> {{ $product->name }} ({{ $product->id }})</h4>
 	 </div>
 
 	 <div class="modal-body">

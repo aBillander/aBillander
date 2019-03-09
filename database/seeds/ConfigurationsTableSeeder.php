@@ -43,6 +43,11 @@ $confs = [
 ['ABI_TIMEOUT_OFFSET', '3'],
 ['ABI_MAX_ROUNDCYCLES', '25'],
 
+['ABSRC_HEADER_TITLE', '<span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>'],
+['ABSRC_EMAIL', ''],
+['ABSRC_EMAIL_NAME', 'Customer Center'],
+['ABSRC_DEFAULT_PASSWORD', '12345678'],
+
 ['ALLOW_CUSTOMER_BACKORDERS', '0'],
 ['ALLOW_PRODUCT_SUBCATEGORIES', '1'],
 ['ALLOW_SALES_RISK_EXCEEDED', '0'],

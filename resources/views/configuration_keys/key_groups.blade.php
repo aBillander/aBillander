@@ -26,6 +26,13 @@
             </a>
 @endif
 
+@if (\App\Configuration::isTrue('ENABLE_SALESREP_CENTER') )
+            <a id="b_tab_index_5" href="{{ URL::to('configurationkeys?tab_index=6') }}" class="list-group-item @if ($tab_index==5) active @endif">
+               <i class="fa fa-briefcase"></i>
+               &nbsp; {{ l('Sales Representative Center') }}
+            </a>
+@endif
+
 @if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
             <a href="{{ route('fsxconfigurationkeys.index') }}" class="list-group-item">
                <i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>

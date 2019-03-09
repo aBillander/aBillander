@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
             </button>
 {{--
-            @auth('customer')
+            @auth('salesrep')
                 <a href="{{ URL::to( (Auth::user()->home_page ? '/absrc' : '/absrc') ) }}" class="navbar-brand" style="xposition: relative;">
 { {--
                 @if ( 0 )
@@ -30,7 +30,7 @@
                 <a href="{{ URL::to('/absrc') }}" class="navbar-brand">
 
                     @if ( \App\Configuration::isEmpty('ABCC_HEADER_TITLE') )
-                        <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> Customer Center</span>
+                        <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> Sales Representative Center</span>
                     @else
                         {!! \App\Configuration::get('ABCC_HEADER_TITLE') !!}
                     @endif
@@ -42,81 +42,55 @@
         <nav class="collapse navbar-collapse" role="navigation">
             <ul class="nav navbar-nav navbar-right">
 
-                @if( Auth::guard('salesrep')->check() && 0 )
+                @if( Auth::guard('salesrep')->check() )
 
                 <li class="dropdown">
-                    <a href="{{ route('abcc.customer.pricerules') }}" class="dropdown-toggle"><i class="fa fa-thumbs-o-up"></i> {{l('Price Rules', [], 'abcc/layouts')}} </a>
-                </li>
-
-@if( \App\Configuration::isTrue('ABCC_ENABLE_NEW_PRODUCTS') )
-                <li class="dropdown">
-                    <a href="{{ route('abcc.catalogue.newproducts') }}" class="dropdown-toggle"><i class="fa fa-bullhorn"></i> {{l('New Products', [], 'abcc/layouts')}} </a>
-                </li>
-@endif
-                <li class="dropdown">
-                    <a href="{{ route('abcc.cart') }}" class="dropdown-toggle"><i class="fa fa-shopping-cart"></i> {{l('Shopping Cart', [], 'abcc/layouts')}}  <span id="badge_cart_nbr_items" class="badge">
-                        {{ \App\Context::getContext()->cart->nbrItems() }}
-                    </span> </a>
-                </li>
-
-                <li class="dropdown">
-                    <a href="{{ route('abcc.catalogue') }}" class="dropdown-toggle"><i class="fa fa-book"></i> {{l('Catalogue', [], 'abcc/layouts')}} </a>
-                </li>
-
-@if ( \App\Configuration::isTrue('ABCC_ENABLE_SHIPPING_SLIPS') || \App\Configuration::isTrue('ABCC_ENABLE_INVOICES') )
-
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-history"></i> {{l('Order History', [], 'abcc/layouts')}} <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-bag"></i> {{l('Sales', [], 'absrc/layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
-                            <a href="{{ route('abcc.orders.index') }}">
-                                 {{l('Orders', [], 'abcc/layouts')}}
-                            </a>
-                        </li>
-
-@if ( \App\Configuration::isTrue('ABCC_ENABLE_SHIPPING_SLIPS') )
-
-                        <li class="divider"></li>
-                         <li>
-                            <a href="{{ route('abcc.shippingslips.index') }}">
-                                 {{l('Shipping Slips', [], 'abcc/layouts')}}
-                            </a>
-                        </li>
-@endif
-
-@if ( \App\Configuration::isTrue('ABCC_ENABLE_INVOICES') )
-
-                        <li class="divider"></li>
-                         <li>
-                            <a href="{{ route('abcc.invoices.index') }}">
-                                 {{l('Invoices', [], 'abcc/layouts')}}
+                            <a href="{{ route('absrc.orders.index') }}">
+                                 {{l('Orders', [], 'absrc/layouts')}}
                             </a>
                         </li>
                          <li>
-                            <a href="{{ route('abcc.vouchers.index') }}">
-                                 {{l('Vouchers', [], 'abcc/layouts')}}
+                            <a href="{ { route('absrc.orders.index') }}">
+                                 {{l('Shipping Slips', [], 'absrc/layouts')}}
                             </a>
                         </li>
-@endif
+                         <li>
+                            <a href="{ { route('absrc.orders.index') }}">
+                                 {{l('Invoices', [], 'absrc/layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{ { route('absrc.orders.index') }}">
+                                 {{l('Vouchers', [], 'absrc/layouts')}}
+                            </a>
+                        </li>
                         <!-- li class="divider"></li -->
                     </ul>
                 </li>
 
-@else
-
                 <li class="dropdown">
-                    <a href="{{ route('abcc.orders.index') }}" class="dropdown-toggle"><i class="fa fa-history"></i> {{l('Order History', [], 'abcc/layouts')}} </a>
+                    <a href="{ { route('absrc.catalogue') }}" class="dropdown-toggle"><i class="fa fa-user"></i> {{l('Customers', [], 'absrc/layouts')}} </a>
                 </li>
 
-@endif
+                <li class="dropdown">
+                    <a href="{ { route('absrc.catalogue') }}" class="dropdown-toggle"><i class="fa fa-book"></i> {{l('Catalogue', [], 'absrc/layouts')}} </a>
+                </li>
 
 
 
 {{--
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'abcc/layouts')}} <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'absrc/layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li class="divider"></li>
+                         <!-- li>
+                            <a href="https://abillander.gitbooks.io/abillander-tutorial-spanish/content/" target="_blank">
+                                 {{l('Documentation', [], 'absrc/layouts')}}
+                            </a>
+                        </li -->
                     </ul>
                 </li>
 --}}
@@ -124,25 +98,25 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ Auth::user()->getFullName() }} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                         <li>
-                            <a href="{{ route('abcc.account.edit') }}">
-                                 {{l('My Account', [], 'abcc/layouts')}}
+                         <!-- li>
+                            <a href="{ { route('absrc.account.edit') }}">
+                                 {{l('My Account', [], 'absrc/layouts')}}
                             </a>
                         </li>
-                        <li class="divider"></li>
+                        <li class="divider"></li -->
                          <!-- li>
                             <a href="https://abillander.gitbooks.io/abillander-tutorial-spanish/content/" target="_blank">
-                                 {{l('Documentation', [], 'abcc/layouts')}}
+                                 {{l('Documentation', [], 'absrc/layouts')}}
                             </a>
                         </li -->
-                         <li>
+                         <!-- li>
                             <a data-target="#contactForm" data-toggle="modal" onclick="return false;" href="">
-                                 {{l('Contact', [], 'abcc/layouts')}}
+                                 {{l('Contact', [], 'absrc/layouts')}}
                             </a>
-                        </li>
+                        </li -->
                          <!-- li>
                             <a data-target="#aboutLaraBillander" data-toggle="modal" onclick="return false;" href="">
-                                 {{l('About ...', [], 'abcc/layouts')}}
+                                 {{l('About ...', [], 'absrc/layouts')}}
                             </a>
                         </li -->
 
@@ -152,10 +126,10 @@
                             <a href="javascript:void(0);"
                                 onclick="event.preventDefault();
                                          document.getElementById('logout-form').submit();">
-                                <i class="fa fa-power-off"></i> {{l('Logout', [], 'abcc/layouts')}}
+                                <i class="fa fa-power-off"></i> {{l('Logout', [], 'absrc/layouts')}}
                             </a>
 
-                            <form id="logout-form" action="{{ route('customer.logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('salesrep.logout') }}" method="POST" style="display: none;">
                                 {{ csrf_field() }}
                             </form>
                         </li>

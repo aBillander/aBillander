@@ -20,7 +20,12 @@ use App\CustomerShippingSlipLine;
 
 use App\Events\ProductCreated;
 
-class ProductsController extends Controller {
+use App\Traits\DateFormFormatterTrait;
+
+class ProductsController extends Controller
+{
+   
+   use DateFormFormatterTrait;
 
 
    protected $product;
@@ -235,6 +240,9 @@ class ProductsController extends Controller {
             $groups = \App\OptionGroup::has('options')->orderby('position', 'asc')->pluck('name', 'id');
         }
 
+
+        // Dates (cuen)
+        $this->addFormDates( ['available_for_sale_date'], $product );
         
         // Price Lists
         // See: https://stackoverflow.com/questions/44029961/laravel-search-relation-including-null-in-wherehas
@@ -328,18 +336,28 @@ class ProductsController extends Controller {
                 unset( $vrules['reference'] );
         }
 
-        $this->validate($request, $vrules);
-
         if ($request->input('tab_name') == 'sales') {
+
+            // Dates (cuen)
+            $this->mergeFormDates( ['available_for_sale_date'], $request );
+            
             $tax = \App\Tax::find( $product->tax_id );
             if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ){
                 $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
                 $request->merge( ['price' => $price] );
+
+                $price = $request->input('recommended_retail_price_tax_inc')/(1.0+($tax->percent/100.0));
+                $request->merge( ['recommended_retail_price' => $price] );
             } else {
                 $price_tax_inc = $request->input('price')*(1.0+($tax->percent/100.0));
                 $request->merge( ['price_tax_inc' => $price_tax_inc] );
+                
+                $price_tax_inc = $request->input('recommended_retail_price')*(1.0+($tax->percent/100.0));
+                $request->merge( ['recommended_retail_price_tax_inc' => $price_tax_inc] );
             }
         }
+
+        $this->validate($request, $vrules);
 
         $product->update($request->all());
 

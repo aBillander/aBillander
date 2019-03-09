@@ -70,6 +70,15 @@ class BillableLine extends Model
             foreach($line->taxes as $linetax) {
                 $linetax->delete();
             }
+
+            // Unlink Stock Movements
+            foreach( $line->stockmovements as $mvt ) {
+                // $mvt->delete();
+
+                $mvt->stockmovementable_id   = 0;
+                $mvt->stockmovementable_type = '';
+                $mvt->save();
+            }
         });
     }
 

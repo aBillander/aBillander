@@ -148,6 +148,14 @@
 
                         <li class="divider"></li>
 
+                         <li>
+                            <a href="{{ asset('uploads/documents/Privacy_Policy.pdf') }}" target="_blank">
+                                 {{l('Privacy Policy', [], 'abcc/layouts')}}
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
                         <li>
                             <a href="javascript:void(0);"
                                 onclick="event.preventDefault();

@@ -202,6 +202,16 @@ return [
 	'ABCC_ORDERS_SEQUENCE.help' => 'Los Pedidos que se crean en el Centro de Clientes irán a esta Serie.',
 	'ABCC_QUOTATIONS_SEQUENCE.name' => 'Serie de Presupuestos para Clientes',
 	'ABCC_QUOTATIONS_SEQUENCE.help' => 'Los Presupuestos que se solicitan desde el Centro de Clientes irán a esta Serie.',
+	
+	'Sales Representative Center' => 'Centro de Agentes',
+	'ABSRC_HEADER_TITLE.name' => 'Texto de Cabecera',
+	'ABSRC_HEADER_TITLE.help' => 'Aparece en la esquina superior izquierda de cada página.',
+	'ABSRC_EMAIL.name' => 'Dirección de Correo',
+	'ABSRC_EMAIL.help' => 'Los Correos Electrónicos del Centro de Agentes serán enviados esta dirección.',
+	'ABSRC_EMAIL_NAME.name' => 'Nombre de la Dirección de Correo',
+	'ABSRC_EMAIL_NAME.help' => 'Este Nombre aparecerá en los Correos Electrónicos del Centro de Agentes.',
+	'ABSRC_DEFAULT_PASSWORD.name' => 'Contraseña por defecto',
+	'ABSRC_DEFAULT_PASSWORD.help' => 'Esta Contraseña será asignada cuando se permite a un Agente acceder al Centro de Agentes. Más adelante podrá cambiarse.',
 
 
 	'All Keys' => 'Todas las Claves',

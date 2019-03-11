@@ -31,6 +31,8 @@ class CreateSalesRepsTable extends Migration {
 			$table->string('fax', 32)->nullable();
 
 			$table->text('notes')->nullable();
+			
+            $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
 
 			$table->decimal('commission_percent', 8, 3)->default(0.0);			// Sales Representative commission amount
 			$table->decimal('max_discount_allowed', 20, 6)->default(0.0);		// Sales Representative max discount allowed

@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Auth;
+
 use App\Configuration;
 
 use App\Traits\ViewFormatterTrait;
@@ -244,6 +246,17 @@ class Customer extends Model {
         }
 
         return $query;
+    }
+
+    public function scopeOfSalesRep($query)
+    {
+//        return $query->where('customer_id', Auth::user()->customer_id);
+
+        if ( isset(Auth::user()->sales_rep_id) && ( Auth::user()->sales_rep_id != NULL ) )
+            return $query->where('sales_rep_id', Auth::user()->sales_rep_id);
+
+        // Not allow to see resource
+        return $query->where('sales_rep_id', 0);
     }
     
     
@@ -529,7 +542,7 @@ class Customer extends Model {
     
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerInvoice');
+        return $this->hasMany('App\CustomerOrder');
     }
 
     public function customerinvoices()

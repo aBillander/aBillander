@@ -32,6 +32,12 @@
                    </div>
                  </div>
                </div>
+
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('reference_external') ? 'has-error' : '' !!}">
+              {!! Form::label('reference_external', l('External Reference'), ['class' => 'control-label']) !!}
+              {!! Form::text('reference_external', null, array('class' => 'form-control', 'id' => 'reference_external')) !!}
+              {!! $errors->first('reference_external', '<span class="help-block">:message</span>') !!}
+            </div>
 	</div>
 
 	<div class="row">

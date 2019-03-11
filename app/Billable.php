@@ -50,6 +50,7 @@ class Billable extends Model
     public static $created_vias = array(
             'manual',
             'abcc',
+            'absrc',
             'aggregate_orders',
             'aggregate_shipping_slips',
         );

@@ -9,12 +9,12 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <a href="{{ route($model_path.'.create') }}" class="btn btn-sm btn-success" 
+        <a href="{{ URL::to($model_path.'/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
     </div>
     <h2>
-        {{ l('Documents') }}
+        <button type="button" class="btn xbtn-xs alert-info"><i class="fa fa-calendar"></i> <strong>{{ abi_date_form_short('now') }}</strong></button> <span style="color: #cccccc;">/</span> {{ l('Documents') }}
     </h2>        
 </div>
 
@@ -31,11 +31,7 @@
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}
-              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
-                    <i class="fa fa-question-circle abi-help"></i>
-              </th>
+            <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
@@ -55,17 +51,14 @@
                 @endif</td>
             <td class="text-center">
 
-@if ($document->invoiced_at)
-                <a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{abi_date_short( $document->invoiced_at )}}"><i class="fa fa-money"></i></a>
-@else
-    @if ( $document->status == 'closed' )
+@if ( $document->status == 'closed' )
                 <a class="btn btn-xs alert-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
-    @endif
-    @if ($document->onhold>0)
+@endif
+
+@if ($document->onhold>0)
                 <a class="btn btn-xs btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
-    @else
+@else
                 <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
-    @endif
 @endif
 
 @if ( $document->edocument_sent_at )
@@ -106,7 +99,7 @@
                  </a>
                 @endif
             </td>
-            <td class="text-right button-pad">
+            <td class="text-right">
                 <!--
                 <a class="btn btn-sm btn-blue"    href="{{ URL::to('customeror ders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
                 <a class="btn btn-sm btn-success" href="{ { URL::to('customer orders/' . $document->id) } }" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
@@ -130,21 +123,10 @@
 
                 <!-- a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a -->
 
-@if ($document->onhold>0 || 1)
-
-@else
-
-                @if ( $document->status == 'closed' && !$document->invoiced_at)
-                <a class="btn btn-sm btn-navy" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
-                </a>
-                @endif
-@endif
-
-                <a class="btn btn-sm btn-warning" href="{{ route($model_path.'.edit', [$document->id]) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-
+                <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 @if( $document->deletable )
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                    href="{{ route($model_path.'.destroy', [$document->id]) }}" 
+                    href="{{ URL::to($model_path.'/' . $document->id ) }}" 
                     data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
                     data-title="{{ l('Documents') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>

@@ -45,8 +45,9 @@ $confs = [
 
 ['ABSRC_HEADER_TITLE', '<span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>'],
 ['ABSRC_EMAIL', ''],
-['ABSRC_EMAIL_NAME', 'Customer Center'],
+['ABSRC_EMAIL_NAME', 'Sales Representative Center'],
 ['ABSRC_DEFAULT_PASSWORD', '12345678'],
+['ABSRC_ITEMS_PERPAGE', '8'],
 
 ['ALLOW_CUSTOMER_BACKORDERS', '0'],
 ['ALLOW_PRODUCT_SUBCATEGORIES', '1'],

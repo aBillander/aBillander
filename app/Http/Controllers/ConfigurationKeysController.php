@@ -139,6 +139,8 @@ class ConfigurationKeysController extends Controller {
                         'ABSRC_EMAIL_NAME',
                         'ABSRC_DEFAULT_PASSWORD',
 
+                        'ABSRC_ITEMS_PERPAGE',
+
                     ],
         ];
 

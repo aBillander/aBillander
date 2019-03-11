@@ -43,9 +43,73 @@ Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function (
 
         Route::get('/', 'SalesRepHomeController@index')->name('salesrep.dashboard');
 
-        Route::resource('/orders',          'AbsrcSalesRepOrdersController')->names('absrc.orders');
-//        Route::get('orders/{id}/duplicate', 'AbccCustomerOrdersController@duplicateOrder')->name('abcc.order.duplicate'  );
-        Route::get('orders/{id}/pdf', 'AbsrcSalesRepOrdersController@showPdf')->name('absrc.order.pdf'  );
+        Route::resource('customers', 'AbsrcCustomersController');
+
+
+        $pairs = [
+                [
+                    'controller' => 'AbsrcCustomerOrdersController',
+                    'path' => 'orders',
+                ],
+        ];
+
+
+foreach ($pairs as $pair) {
+
+        $controller = $pair['controller'];
+        $path = $pair['path'];
+        $routepath = 'absrc.'.$path;
+
+        Route::resource($path, $controller)->names($routepath);
+
+        Route::get($path.'/create/withcustomer/{customer_id}', $controller.'@createWithCustomer')->name($routepath.'.create.withcustomer');
+
+        Route::get($path.'/ajax/customer_lookup', $controller.'@ajaxCustomerSearch')->name($routepath.'.ajax.customerLookup');
+        Route::get($path.'/ajax/customer/{id}/adressbook_lookup', $controller.'@customerAdressBookLookup')->name($routepath.'.ajax.customer.AdressBookLookup');
+
+        Route::get($path.'/{id}/getlines',             $controller.'@getDocumentLines'  )->name($routepath.'.getlines' );
+        Route::get($path.'/{id}/getheader',            $controller.'@getDocumentHeader' )->name($routepath.'.getheader');
+        Route::get($path.'/line/productform/{action}', $controller.'@FormForProduct')->name($routepath.'.productform');
+        Route::get($path.'/line/serviceform/{action}', $controller.'@FormForService')->name($routepath.'.serviceform');
+        Route::get($path.'/line/commentform/{action}', $controller.'@FormForComment')->name($routepath.'.commentform');
+        Route::get($path.'/line/searchproduct',        $controller.'@searchProduct' )->name($routepath.'.searchproduct');
+        Route::get($path.'/line/searchservice',        $controller.'@searchService' )->name($routepath.'.searchservice');
+        Route::get($path.'/line/getproduct',           $controller.'@getProduct'    )->name($routepath.'.getproduct');
+
+        // ?? Maybe only for Invoices ??
+        Route::get($path.'/{id}/getpayments',          $controller.'@getDocumentPayments' )->name($routepath.'.getpayments');
+
+
+        Route::post($path.'/{id}/storeline',    $controller.'@storeDocumentLine'   )->name($routepath.'.storeline'  );
+        Route::post($path.'/{id}/updatetotal',  $controller.'@updateDocumentTotal' )->name($routepath.'.updatetotal');
+        Route::get($path.'/{id}/getline/{lid}', $controller.'@getDocumentLine'     )->name($routepath.'.getline'    );
+        Route::post($path.'/updateline/{lid}',  $controller.'@updateDocumentLine'  )->name($routepath.'.updateline' );
+        Route::post($path.'/deleteline/{lid}',  $controller.'@deleteDocumentLine'  )->name($routepath.'.deleteline' );
+        Route::get($path.'/{id}/duplicate',     $controller.'@duplicateDocument'   )->name($routepath.'.duplicate'  );
+        Route::get($path.'/{id}/profit',        $controller.'@getDocumentProfit'   )->name($routepath.'.profit'     );
+        Route::get($path.'/{id}/availability',  $controller.'@getDocumentAvailability' )->name($routepath.'.availability' );
+        
+        Route::get($path.'/{id}/availability/modal',  $controller.'@getDocumentAvailabilityModal' )->name($routepath.'.availability.modal' );
+
+        Route::post($path.'/{id}/quickaddlines',    $controller.'@quickAddLines'   )->name($routepath.'.quickaddlines'  );
+
+        Route::post($path.'/sortlines', $controller.'@sortLines')->name($routepath.'.sortlines');
+
+        Route::get($path.'/{document}/confirm',   $controller.'@confirm'  )->name($routepath.'.confirm'  );
+        Route::get($path.'/{document}/unconfirm', $controller.'@unConfirm')->name($routepath.'.unconfirm');
+
+        Route::get($path.'/{id}/pdf',         $controller.'@showPdf'       )->name($routepath.'.pdf'        );
+        Route::get($path.'/{id}/invoice/pdf', $controller.'@showPdfInvoice')->name($routepath.'.invoice.pdf');
+        Route::match(array('GET', 'POST'), 
+                   $path.'/{id}/email',       $controller.'@sendemail'     )->name($routepath.'.email'      );
+
+        Route::get($path.'/{document}/onhold/toggle', $controller.'@onholdToggle')->name($routepath.'.onhold.toggle');
+
+        Route::get($path.'/{document}/close',   $controller.'@close'  )->name($routepath.'.close'  );
+        Route::get($path.'/{document}/unclose', $controller.'@unclose')->name($routepath.'.unclose');
+
+        Route::get($path.'/customers/{id}',  $controller.'@indexByCustomer')->name('absrc.customer.'.str_replace('customer', '', $path));
+}
 
     });
 });

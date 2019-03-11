@@ -5,6 +5,10 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Auth;
+
+use App\Configuration;
+
 // See: https://www.salesforcesearch.com/blog/httpwww-salesforcesearch-combid185259the-difference-between-hiring-a-sales-rep-vs-a-sales-agent/
 
 class SalesRep extends Model {
@@ -13,7 +17,7 @@ class SalesRep extends Model {
 
     protected $dates = ['deleted_at'];
 	
-    protected $fillable = ['alias', 'identification', 'notes', 
+    protected $fillable = ['alias', 'identification', 'notes', 'reference_external', 
                            'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax',
     					   'commission_percent', 'max_discount_allowed', 'pitw', 'active'];
 
@@ -23,7 +27,7 @@ class SalesRep extends Model {
         'lasttname' => 'max:32',
         'phone' => 'max:32',
         'phone_mobile' => 'max:32',
-        'email' => 'max:128',
+        'email' => 'required|email|max:128',
         'fax'   => 'max:32',
 
         'commission_percent' => 'numeric|min:0', 
@@ -60,5 +64,23 @@ class SalesRep extends Model {
     public function address()
     {
         // return $this->hasOne('App\Address', 'owner_id')->where('model_name', '=', 'SalesRep');
+    }
+
+    public function customers()
+    {
+        return $this->hasMany('App\Customer');
+    }
+
+    public function customerorders()
+    {
+        return $this->hasMany('App\CustomerOrder');
+    }
+
+    /**
+     * Get the user record associated with the user.
+     */
+    public function user()
+    {
+        return $this->hasOne('App\SalesRepUser', 'sales_rep_id');
     }
 }

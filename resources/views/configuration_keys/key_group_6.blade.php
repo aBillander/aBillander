@@ -84,7 +84,7 @@
 
 
 
-    <div class="form-group {{ $errors->has('ABSRC_DEFAULT_PASSWORD') ? 'has-error' : '' }}" style="display: none;">
+    <div class="form-group {{ $errors->has('ABSRC_DEFAULT_PASSWORD') ? 'has-error' : '' }}">
       <label for="ABSRC_DEFAULT_PASSWORD" class="col-lg-4 control-label">{!! l('ABSRC_DEFAULT_PASSWORD.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
@@ -97,6 +97,23 @@
         <span class="help-block">{!! l('ABSRC_DEFAULT_PASSWORD.help') !!}</span>
       </div>
     </div>
+
+
+    <div class="form-group {{ $errors->has('ABSRC_ITEMS_PERPAGE') ? 'has-error' : '' }}">
+      <label for="ABSRC_ITEMS_PERPAGE" class="col-lg-4 control-label">{!! l('ABSRC_ITEMS_PERPAGE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABSRC_ITEMS_PERPAGE" name="ABSRC_ITEMS_PERPAGE" placeholder="" value="{{ old('ABSRC_ITEMS_PERPAGE', $key_group['ABSRC_ITEMS_PERPAGE']) }}" />
+        {{ $errors->first('ABSRC_ITEMS_PERPAGE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABSRC_ITEMS_PERPAGE.help') !!}</span>
+      </div>
+    </div>
+
+
     
 
 

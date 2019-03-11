@@ -112,6 +112,10 @@ Route::group(['middleware' =>  ['auth']], function()
         Route::get('customerusers/create/withcustomer/{customer}', 'CustomerUsersController@createWithCustomer')->name('customer.createuser');
         Route::get('customerusers/{customer}/impersonate', 'CustomerUsersController@impersonate')->name('customer.impersonate');
 
+        Route::resource('salesrepusers', 'SalesRepUsersController');
+        Route::get('salesrepusers/create/withsalesrep/{salesrep}', 'SalesRepUsersController@createWithSalesRep')->name('salesrep.createuser');
+        Route::get('salesrepusers/{salesrep}/impersonate', 'SalesRepUsersController@impersonate')->name('salesrep.impersonate');
+
         Route::resource('suppliers', 'SuppliersController');
 
         Route::resource('templates', 'TemplatesController');

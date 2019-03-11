@@ -236,7 +236,7 @@ class WooOrderImporter {
         	if ( !$customer_reference_external && $this->customer->reference_external ) {
 
         		// Update diccionario de fsxweb
-        		\aBillander\WooConnect\FSxTools::new_customers_entry($customer_webshop_id, $customer_reference_external);
+        		\aBillander\WooConnect\FSxTools::new_customers_entry($customer_webshop_id, $this->customer->reference_external);
         		
         	}
 

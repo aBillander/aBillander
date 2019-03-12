@@ -382,7 +382,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		
 
 		// Months
-		view()->composer(array('customers._panel_commercial'), function($view) {
+		view()->composer(array('customers._panel_commercial', 'absrc.customers._panel_commercial'), function($view) {
 		    
 		    $a=l('monthNames', [], 'appmultilang');
 

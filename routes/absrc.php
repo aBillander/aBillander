@@ -43,7 +43,21 @@ Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function (
 
         Route::get('/', 'SalesRepHomeController@index')->name('salesrep.dashboard');
 
-        Route::resource('customers', 'AbsrcCustomersController');
+        Route::get('catalogue', 'AbsrcCatalogueController@index')->name('absrc.catalogue');
+
+        Route::resource('customers', 'AbsrcCustomersController')->names('absrc.customers');
+
+/*        Route::resource('customers', 'CustomersController');
+        Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
+        Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup'));
+        Route::get('customers/{id}/getorders',             'CustomersController@getOrders'    )->name('customer.getorders');
+        Route::get('customers/{id}/getpricerules',         'CustomersController@getPriceRules')->name('customer.getpricerules');
+        Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
+
+        Route::get('customers/{id}/product/{productid}/consumption', 'CustomersController@productConsumption' )->name('customer.product.consumption');
+
+        Route::get('customers/{id}/recentsales',  'CustomersController@getRecentSales')->name('customer.recentsales');
+*/
 
 
         $pairs = [

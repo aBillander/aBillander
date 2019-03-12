@@ -1,42 +1,43 @@
 <nav class="navbar navbar-other" role="navigation" style="margin: 0px 0px 5px 0px;">
     <div class="container-fluid">
         <div class="navbar-header">
+
+            <!-- Collapsed Hamburger -->
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-{{--
-            @auth('salesrep')
-                <a href="{{ URL::to( (Auth::user()->home_page ? '/absrc' : '/absrc') ) }}" class="navbar-brand" style="xposition: relative;">
-{ {--
-                @if ( 0 )
-<!--                @ i f ($img = \App\Context::getContext()->company->company_logo)          -->
-                    <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
-                    <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>
---} }
-                @if ( \App\Configuration::isEmpty('ABCC_HEADER_TITLE') )
-                    <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>
-                @else
-                    {!! \App\Configuration::get('ABCC_HEADER_TITLE') !!}
-                @endif
-                </a>
-            @else
-                <a href="{{ URL::to('/absrc') }}" class="navbar-brand"><span style="color:#dddddd"><i class="fa fa-bolt"></i> a<span style="color:#fff">Billander</span></span></a>
-            @endauth
---}}
+            
+            <!-- Branding Image -->
+            <a class="navbar-brand" href="{{ url('/absrc') }}">
+                @if ( \App\Configuration::isEmpty('HEADER_TITLE') )
+                    <?php $img = \App\Context::getContext()->company->company_logo ?? ''; ?>
+                    @if ( $img )
 
+                        <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
+
+                        <!-- img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ asset('assets/theme/images/company_logo.png') }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;" -->
+                    @else
+                        <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>
+                    @endif
+                @else
+                    {!! \App\Configuration::get('HEADER_TITLE') !!}
+                    {{-- <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span> --}}
+                @endif
+            </a>
+{{--
                 <a href="{{ URL::to('/absrc') }}" class="navbar-brand">
 
-                    @if ( \App\Configuration::isEmpty('ABCC_HEADER_TITLE') )
+                    @if ( \App\Configuration::isEmpty('ABSRC_HEADER_TITLE') )
                         <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> Sales Representative Center</span>
                     @else
-                        {!! \App\Configuration::get('ABCC_HEADER_TITLE') !!}
+                        {!! \App\Configuration::get('ABSRC_HEADER_TITLE') !!}
                     @endif
 
                 </a>
-
+--}}
         </div>
         {{-- abi_r(Auth::user()) --}}
         <nav class="collapse navbar-collapse" role="navigation">
@@ -52,6 +53,7 @@
                                  {{l('Orders', [], 'absrc/layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
                          <li>
                             <a href="{ { route('absrc.orders.index') }}">
                                  {{l('Shipping Slips', [], 'absrc/layouts')}}
@@ -67,16 +69,17 @@
                                  {{l('Vouchers', [], 'absrc/layouts')}}
                             </a>
                         </li>
+@endif
                         <!-- li class="divider"></li -->
                     </ul>
                 </li>
 
                 <li class="dropdown">
-                    <a href="{ { route('absrc.catalogue') }}" class="dropdown-toggle"><i class="fa fa-user"></i> {{l('Customers', [], 'absrc/layouts')}} </a>
+                    <a href="{{ route('absrc.customers.index') }}" class="dropdown-toggle"><i class="fa fa-user"></i> {{l('Customers', [], 'absrc/layouts')}} </a>
                 </li>
 
                 <li class="dropdown">
-                    <a href="{ { route('absrc.catalogue') }}" class="dropdown-toggle"><i class="fa fa-book"></i> {{l('Catalogue', [], 'absrc/layouts')}} </a>
+                    <a href="{{ route('absrc.catalogue') }}" class="dropdown-toggle"><i class="fa fa-book"></i> {{l('Catalogue', [], 'absrc/layouts')}} </a>
                 </li>
 
 

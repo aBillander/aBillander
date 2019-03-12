@@ -166,6 +166,50 @@ class AbsrcCustomerOrdersController extends BillableController
     
 	}
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createWithCustomer($customer_id)
+    {
+        $salesrep = Auth::user()->salesrep;
+
+        $model_path = $this->model_path;
+        $view_path = $this->view_path;
+
+        // Some checks to start with:
+
+        $sequenceList = $this->document->sequenceList();
+
+        $templateList = $this->document->templateList();
+
+        if ( !count($sequenceList) )
+            return redirect($this->model_path)
+                ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
+
+
+        // Do the Mambo!!!
+        try {
+            $customer = Customer::with('addresses')
+                            ->ofSalesRep()
+                            ->findOrFail( $customer_id );
+
+        } catch(ModelNotFoundException $e) {
+            // No Customer available, ask for one
+            return redirect()->back()
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $customer_id], 'layouts'));
+        }
+
+        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
+        $salesrepList = \App\SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
+        $warehouseList =\App\Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
+        $shipping_methodList = \App\ShippingMethod::pluck('name', 'id')->toArray();
+        
+        return view($this->view_path.'.create', $this->modelVars() + compact('customer_id', 'sequenceList', 'templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'warehouseList', 'shipping_methodList'));
+    }
+
 	/**
 	 * Store a newly created resource in storage.
 	 * Get Cart content & push a Customer Order

@@ -40,6 +40,7 @@ return [
 	'Payment Methods'     => 'Formas de Pago',
 	'Taxes'     => 'Impuestos',
 	'Product Categories'     => 'Categorías de Productos',
+	'Categories'     => 'Categorías',
 	'Customer Groups'     => 'Grupos de Clientes',
 
 	'System'     => 'Sistema',

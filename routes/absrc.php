@@ -45,6 +45,27 @@ Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function (
 
         Route::get('catalogue', 'AbsrcCatalogueController@index')->name('absrc.catalogue');
 
+        Route::resource('products', 'AbsrcProductsController')->names('absrc.products');
+        Route::get('products/{id}/stockmovements',   'AbsrcProductsController@getStockMovements'  )->name('absrc.products.stockmovements');
+        Route::get('products/{id}/pendingmovements', 'AbsrcProductsController@getPendingMovements')->name('absrc.products.pendingmovements');
+        Route::get('products/{id}/stocksummary',     'AbsrcProductsController@getStockSummary'    )->name('absrc.products.stocksummary');
+
+        Route::get('products/{id}/recentsales',  'AbsrcProductsController@getRecentSales')->name('absrc.products.recentsales');
+
+        Route::resource('products.images', 'ProductImagesController');
+//        Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
+//        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
+
+//        Route::get('products/{id}/duplicate',     'ProductsController@duplicate'   )->name('product.duplicate'  );
+
+//        Route::post('products/{id}/combine', array('as' => 'products.combine', 'uses'=>'ProductsController@combine'));
+        Route::get('products/ajax/name_lookup'  , array('uses' => 'ProductsController@ajaxProductSearch', 
+                                                        'as'   => 'absrc.products.ajax.nameLookup' ));
+//        Route::post('products/ajax/options_lookup'  , array('uses' => 'ProductsController@ajaxProductOptionsSearch', 
+//                                                        'as'   => 'products.ajax.optionsLookup' ));
+//        Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
+//                                                        'as'   => 'products.ajax.combinationLookup' ));
+
         Route::resource('customers', 'AbsrcCustomersController')->names('absrc.customers');
 
 /*        Route::resource('customers', 'CustomersController');

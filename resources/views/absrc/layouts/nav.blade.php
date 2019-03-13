@@ -79,7 +79,20 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="{{ route('absrc.catalogue') }}" class="dropdown-toggle"><i class="fa fa-book"></i> {{l('Catalogue', [], 'absrc/layouts')}} </a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-book"></i> {{l('Catalogue', [], 'absrc/layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li>
+                            <a href="{{ route('absrc.catalogue') }}">
+                                 {{l('Categories', [], 'absrc/layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('absrc.products.index') }}">
+                                 {{l('Products', [], 'absrc/layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
                 </li>
 
 

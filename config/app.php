@@ -191,6 +191,7 @@ return [
         App\Providers\ViewComposerServiceProvider::class,
 //        App\Providers\AbccServiceProvider::class,
         App\Providers\AbccViewComposerServiceProvider::class,
+        App\Providers\AbsrcViewComposerServiceProvider::class,
 
         /*
          * aBillander Package Service Providers...

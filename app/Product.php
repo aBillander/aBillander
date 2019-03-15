@@ -272,6 +272,15 @@ class Product extends Model {
         return 'danger';
     }
 
+    public function getCostPriceAttribute($value)
+    {
+//        $value = $this->cost_price;
+
+        if( \Illuminate\Support\Facades\Auth::guard('salesrep')->check() ) return 0.0;
+
+        return $value;
+    }
+
 
     /*
     |--------------------------------------------------------------------------

@@ -8,13 +8,6 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
-                <a class="btn xbtn-sm btn-success" href="{{ URL::to('products/' . $product->id . '/duplicate') }}" title="{{l('Duplicate', [], 'layouts')}}"><i class="fa fa-copy"></i></a>
-
-                <a class="btn xbtn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                    href="{{ URL::to('products/' . $product->id ) }}" 
-                    data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Products') }} :: ({{$product->id}}) {{{ $product->name }}}" 
-                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 
                 <a href="{{ URL::to('products') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Products') }}</a>
             </div>
@@ -85,26 +78,26 @@
       
       <div class="col-lg-10 col-md-10 col-sm-9">
 
-          @include('products._panel_main_data')
+          @include('absrc.products._panel_main_data')
 
-          @include('products._panel_manufacturing')
+          @include('absrc.products._panel_manufacturing')
 
-          @include('products._panel_purchases')
+          @include('absrc.products._panel_purchases')
 
-          @include('products._panel_sales')
+          @include('absrc.products._panel_sales')
 
-          @include('products._panel_inventory')
+          @include('absrc.products._panel_inventory')
 
-          @include('products._panel_internet')
+          @include('absrc.products._panel_internet')
 
 
 @if ( ($product->product_type == 'simple') || ($product->product_type == 'combinable') )
 
-          @include('products._panel_combinations')
+          @include('absrc.products._panel_combinations')
 
 @endif
 
-          @include('products._panel_images')
+          @include('absrc.products._panel_images')
 
       </div>
 

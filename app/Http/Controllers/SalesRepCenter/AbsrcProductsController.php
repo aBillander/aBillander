@@ -89,7 +89,7 @@ class AbsrcProductsController extends Controller
                 $categoryList = \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray();
             }
 
-        $product_procurementtypeList = \App\Product::getProcurementTypeList();;
+        $product_procurementtypeList = \App\Product::getProcurementTypeList();
             
 
         return view('absrc.products.index', compact('products', 'categoryList', 'product_procurementtypeList'));
@@ -270,7 +270,34 @@ class AbsrcProductsController extends Controller
         // See: https://stackoverflow.com/questions/44029961/laravel-search-relation-including-null-in-wherehas
         $pricelists = $product->pricelists; //  \App\PriceList::with('currency')->orderBy('id', 'ASC')->get();
 
-        return view('absrc.products.edit', compact('product', 'bom', 'groups', 'pricelists'));
+        $ecotaxList = \App\Ecotax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $measure_unitList = \App\MeasureUnit::pluck('name', 'id')->toArray();
+        $product_procurementtypeList = \App\Product::getProcurementTypeList();
+        // $categoryList = 
+            if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
+                $tree = [];
+                $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+                
+                foreach($categories as $category) {
+                    $tree[$category->name] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+                    // foreach($category->children as $child) {
+                        // $tree[$category->name][$child->id] = $child->name;
+                    // }
+                }
+                // abi_r($tree, true);
+                $categoryList = $tree;
+
+            } else {
+                // abi_r(\App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
+                $categoryList = \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+            }
+        $work_centerList = \App\WorkCenter::pluck('name', 'id')->toArray();
+        $supplierList = \App\Supplier::pluck('name_fiscal', 'id')->toArray();
+        $manufacturerList = \App\Manufacturer::pluck('name', 'id')->toArray();
+        $taxpercentList = \Illuminate\Support\Arr::pluck(\App\Tax::all(), 'percent', 'id');
+
+        return view('absrc.products.edit', compact('product', 'bom', 'groups', 'pricelists', 'ecotaxList', 'taxList', 'measure_unitList', 'product_procurementtypeList', 'categoryList', 'work_centerList', 'supplierList', 'manufacturerList', 'taxpercentList'));
     }
 
     /**

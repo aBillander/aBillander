@@ -5,7 +5,7 @@
 
 <div id="panel_recent_sales" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('products._panel_recent_sales') --}}
+{{--  @ include('absrc.products._panel_recent_sales') --}}
 
 </div>
 
@@ -60,7 +60,7 @@
 		function getRecentSales( page = 1 )
 		{
            var panel = $("#panel_recent_sales");
-           var url = '{{ route( 'products.recentsales', [$product->id] ) }}?page=' + page;
+           var url = '{{ route( 'absrc.products.recentsales', [$product->id] ) }}?page=' + page;
 
            panel.addClass('loading');
 

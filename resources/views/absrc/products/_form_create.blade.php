@@ -258,7 +258,7 @@
 
 @section('scripts')    @parent
 
-@include('products.js._calculator_js')
+@include('absrc.products.js._calculator_js')
 
     <script type="text/javascript">
 

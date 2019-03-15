@@ -5,7 +5,7 @@
 
 <div id="panel_stock_movements" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('products._panel_stock_movements') --}}
+{{--  @ include('absrc.products._panel_stock_movements') --}}
 
 </div>
 
@@ -60,7 +60,7 @@
 		function getStockMovements( page = 1 )
 		{
            var panel = $("#panel_stock_movements");
-           var url = '{{ route( 'products.stockmovements', [$product->id] ) }}?page=' + page;
+           var url = '{{ route( 'absrc.products.stockmovements', [$product->id] ) }}?page=' + page;
 
            panel.addClass('loading');
 

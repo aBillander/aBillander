@@ -100,7 +100,7 @@
     </div>
 
     @if ( $product->quantity_onhand == 0)
-        @include('products._form_select_groups')
+        @include('absrc.products._form_select_groups')
     @else
         <div class="row">
           <div class="col-md-10 col-md-offset-1" style="margin-top: 10px;margin-bottom: 10px">

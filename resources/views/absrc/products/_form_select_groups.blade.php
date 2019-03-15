@@ -8,7 +8,7 @@
 
 				@include('errors.list')
 
-				{!! Form::model($product, array('route' => array('products.combine', $product->id))) !!}
+				{!! Form::model($product, array('route' => array('absrc.products.combine', $product->id))) !!}
 
 
         <div class="row">

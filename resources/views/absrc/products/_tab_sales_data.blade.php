@@ -1,7 +1,7 @@
 
 <div id="xpanel_sales"> 
 
-{!! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
+{!! Form::model($product, array('route' => array('absrc.products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
 <input type="hidden" value="sales" name="tab_name" id="tab_name">
 
 <div class="panel xpanel-info">
@@ -191,7 +191,7 @@
 
 @section('scripts')     @parent
  
-@include('products.js._calculator_js')
+@include('absrc.products.js._calculator_js')
 
 
 {{-- Date Picker --}}

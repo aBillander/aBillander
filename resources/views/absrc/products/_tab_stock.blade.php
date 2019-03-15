@@ -1,5 +1,5 @@
 
-{!! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
+{!! Form::model($product, array('route' => array('absrc.products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
 <input type="hidden" value="inventory" name="tab_name" id="tab_name">
 
    <div class="panel-body">
@@ -41,7 +41,7 @@
 
 <div id="panel_stock_summary" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
 
-{{--  @ include('products._panel_stock_summary') --}}
+{{--  @ include('absrc.products._panel_stock_summary') --}}
 
 </div>
 
@@ -114,7 +114,7 @@
     function getStockSummary()
     {
            var panel = $("#panel_stock_summary");
-           var url = '{{ route( 'products.stocksummary', [$product->id] ) }}';
+           var url = '{{ route( 'absrc.products.stocksummary', [$product->id] ) }}';
 
            panel.addClass('loading');
 

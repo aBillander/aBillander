@@ -24,22 +24,22 @@
   <div class="tab-content">
       <div class="tab-pane fade in active" id="tab1default_s">
                 
-                @include('products._tab_sales_data')
+                @include('absrc.products._tab_sales_data')
 
       </div>
       <div class="tab-pane fade" id="tab2default_s">
                 
-                @include('products._tab_recent_sales')
+                @include('absrc.products._tab_recent_sales')
 
       </div>
       <!-- div class="tab-pane fade" id="tab3default_s">
                 
-                @ include('products._tab_pending_movements')
+                @ include('absrc.products._tab_pending_movements')
 
       </div>
       <div class="tab-pane fade" id="tab4default_s">
                 
-                @ include('products._tab_availability')
+                @ include('absrc.products._tab_availability')
 
       </div>
       <div class="tab-pane fade" id="tab4default_s">

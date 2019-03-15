@@ -6,7 +6,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
 
-{!! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
+{!! Form::model($product, array('route' => array('absrc.products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
 <input type="hidden" value="bom_selector" name="tab_name">
 {{-- csrf_field() --}}
 <input type="hidden" name="_token" value="{{ csrf_token() }}">

@@ -15,7 +15,7 @@
 
 				{!! Form::model($image, array('method' => 'PATCH', 'route' => array('products.images.update', $product->id, $image->id))) !!}
 
-					@include('products.images._form')
+					@include('absrc.products.images._form')
 
 				{!! Form::close() !!}
 			</div>

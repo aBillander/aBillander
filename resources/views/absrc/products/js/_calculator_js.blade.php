@@ -7,7 +7,7 @@ function get_tax_percent_by_id(tax_id)
 {
    if (tax_id<=0) return 0.0;
    // http://stackoverflow.com/questions/18910939/how-to-get-json-key-and-value-in-javascript
-   // var taxes = $.parseJSON( '{{ json_encode( $taxpercentList ) }}' );
+   // var taxes = $.parseJSON( '{ { json_encode( $taxpercentList ) }}' );
    var taxes = {!! json_encode( $taxpercentList ) !!} ;
 
    if (typeof taxes[tax_id] == "undefined")   // or if (taxes[tax_id] === undefined) {

@@ -5,7 +5,7 @@
 
 <div id="panel_pending_movements" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('products._panel_pending_movements') --}}
+{{--  @ include('absrc.products._panel_pending_movements') --}}
 
 </div>
 
@@ -59,7 +59,7 @@
 		function getPendingMovements( page = 1 )
 		{
            var panel = $("#panel_pending_movements");
-           var url = '{{ route( 'products.pendingmovements', [$product->id] ) }}?page=' + page;
+           var url = '{{ route( 'absrc.products.pendingmovements', [$product->id] ) }}?page=' + page;
 
            panel.addClass('loading');
 

@@ -1,5 +1,5 @@
 
-{!! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
+{!! Form::model($product, array('route' => array('absrc.products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
 <input type="hidden" value="main_data" name="tab_name" id="tab_name">
 
                 {!! Form::hidden('product_type',     'simple',      array('id' => 'product_type')) !!}

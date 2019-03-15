@@ -134,7 +134,7 @@
 </div>
 
 
-@include('products._modal_bom_detach')
+@include('absrc.products._modal_bom_detach')
 
 
 @else
@@ -224,15 +224,15 @@
 
 </div>
 
-@include('products._modal_bom_select')
+@include('absrc.products._modal_bom_select')
 
-@include('products._modal_bom_create')
+@include('absrc.products._modal_bom_create')
 
 @endif
 
 
 
-{!! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
+{!! Form::model($product, array('route' => array('absrc.products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
 <input type="hidden" value="manufacturing" name="tab_name" id="tab_name">
 
 

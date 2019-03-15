@@ -1,5 +1,5 @@
 
-{!! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
+{!! Form::model($product, array('route' => array('absrc.products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
 <input type="hidden" value="internet" name="tab_name" id="tab_name">
 
 <div class="panel panel-primary" id="panel_internet">

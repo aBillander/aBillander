@@ -153,7 +153,7 @@ $(function() {
 @stop
 
 
-@include('products._modal_view_image')
+@include('absrc.products._modal_view_image')
 
 
 @include('layouts/modal_delete')

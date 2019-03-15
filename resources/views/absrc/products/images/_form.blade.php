@@ -42,5 +42,5 @@
 </div>
 
   {!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-  {!! link_to_route('products.edit', l('Cancel', [], 'layouts'), array($product->id,'#images'), array('class' => 'btn btn-warning')) !!}
+  {!! link_to_route('absrc.products.edit', l('Cancel', [], 'layouts'), array($product->id,'#images'), array('class' => 'btn btn-warning')) !!}
   

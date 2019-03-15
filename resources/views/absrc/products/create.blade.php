@@ -31,9 +31,9 @@
                <div class="panel-heading">
                   <h3 class="panel-title">{{ l('Main Data') }}</h3>
                </div>
-                {!! Form::open(array('route' => 'products.store', 'id' => 'create_product', 'name' => 'create_product', 'class' => 'form')) !!}
+                {!! Form::open(array('route' => 'absrc.products.store', 'id' => 'create_product', 'name' => 'create_product', 'class' => 'form')) !!}
 
-                    @include('products._form_create')
+                    @include('absrc.products._form_create')
 
                 {!! Form::close() !!}
             </div>

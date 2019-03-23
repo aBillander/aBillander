@@ -326,7 +326,7 @@ class FSxProductImporter {
 //        			'route_notes' => '',
         		];
 
-        		$p = Product::create( $data );
+        		$product = Product::create( $data );
 
                 // Stock Movement
                 $data = [
@@ -355,10 +355,10 @@ class FSxProductImporter {
 
                         $img_path = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CIACFG').$articulo->IMGART;
 
-                        $image = \App\Image::createForProductFromPath($img_path, ['caption' => $p->name, 'is_featured'=> 1]);
+                        $image = \App\Image::createForProductFromPath($img_path, ['caption' => $product->name, 'is_featured'=> 1]);
                         
                         if ( $image )
-                            $p->images()->save($image);
+                            $product->images()->save($image);
                         else
                             $this->logError('El Artículo [:codart] :desart NO se ha podido cargar la Imagen (:img_path), porque: :img_error ', ['codart' => $articulo->CODART, 'desart' => $articulo->DESART, 'img_path' => $img_path, 'img_error' => 'No se encontró la imagen '.$articulo->IMGART]);
                         

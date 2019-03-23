@@ -27,7 +27,7 @@
 @endif
 
 @if (\App\Configuration::isTrue('ENABLE_SALESREP_CENTER') )
-            <a id="b_tab_index_5" href="{{ URL::to('configurationkeys?tab_index=6') }}" class="list-group-item @if ($tab_index==5) active @endif">
+            <a id="b_tab_index_6" href="{{ URL::to('configurationkeys?tab_index=6') }}" class="list-group-item @if ($tab_index==6) active @endif">
                <i class="fa fa-briefcase"></i>
                &nbsp; {{ l('Sales Representative Center') }}
             </a>

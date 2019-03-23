@@ -224,6 +224,7 @@ class AbccCustomerCartController extends Controller
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'ean13',     'LIKE', '%'.$search.'%' )
                                 ->IsSaleable()
+                                ->IsAvailable()
                                 ->qualifyForCustomer( $customer_user->customer_id, $request->input('currency_id') )
 //                                ->with('measureunit')
 //                                ->toSql();

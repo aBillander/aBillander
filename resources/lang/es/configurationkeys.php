@@ -158,7 +158,7 @@ return [
 	'ABCC_EMAIL_NAME.name' => 'Nombre de la Dirección de Correo',
 	'ABCC_EMAIL_NAME.help' => 'Este Nombre aparecerá en los Correos Electrónicos del Centro de Clientes.',
 	'ABCC_DEFAULT_PASSWORD.name' => 'Contraseña por defecto',
-	'ABCC_DEFAULT_PASSWORD.help' => 'Esta Contraseña será asignada cuando se permite a un Cliente acceder al Centro de Clientes. Más adelante podrá cambiarse.',
+	'ABCC_DEFAULT_PASSWORD.help' => 'Esta Contraseña será asignada cuando se permite a un Cliente acceder al Centro de Clientes. Más adelante podrá cambiarse. Por seguridad, la Contraseña debe tener <strong>al menos ocho (8) caracteres</strong>.',
 	'ABCC_STOCK_SHOW.name' => 'Mostrar Stock',
 	'ABCC_STOCK_SHOW.option.none' => '<strong>none</strong>: No mostrar',
 	'ABCC_STOCK_SHOW.option.label' => '<strong>label</strong>: Código de color',

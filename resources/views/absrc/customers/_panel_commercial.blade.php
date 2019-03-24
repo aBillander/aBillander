@@ -54,7 +54,7 @@
 
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('outstanding_amount_allowed') ? 'has-error' : '' }}">
                      {{ l('Outstanding Amount Allowed') }}
-                     {!! Form::text('outstanding_amount_allowed', $customer->as_money('outstanding_amount_allowed', \App\Context::getContext()->language->currency), array('class' => 'form-control', 'id' => 'outstanding_amount_allowed')) !!}
+                     {!! Form::text('outstanding_amount_allowed', $customer->as_money('outstanding_amount_allowed', \App\Context::getContext()->language->currency), array('class' => 'form-control', 'id' => 'outstanding_amount_allowed', 'disabled' => "disabled")) !!}
                     {!! $errors->first('outstanding_amount_allowed', '<span class="help-block">:message</span>') !!}
                   </div>
 
@@ -101,11 +101,13 @@
                      {!! Form::select('price_list_id', array('0' => l('-- Please, select --', [], 'layouts')) + $price_listList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('price_list_id', '<span class="help-block">:message</span>') !!}
                   </div>
+{{--
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('sales_rep_id') ? 'has-error' : '' }}">
                      {{ l('Sales Representative') }}
                      {!! Form::select('sales_rep_id', array('0' => l('-- Please, select --', [], 'layouts')) + $salesrepList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('sales_rep_id', '<span class="help-block">:message</span>') !!}
                   </div>
+--}}
         </div>
 
         <div class="row">

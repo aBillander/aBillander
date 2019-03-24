@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('absrc.layouts.master')
 
 @section('title') {{ l('Addresses - Edit') }} @parent @stop
 
@@ -16,9 +16,9 @@
 
         		@include('errors.list')
 
-				{!! Form::model($address, array('method' => 'PATCH', 'route' => array('customers.addresses.update', $customer->id, $address->id), 'name' => 'update_address', 'class' => 'form')) !!}
+				{!! Form::model($address, array('method' => 'PATCH', 'route' => array('absrc.customers.addresses.update', $customer->id, $address->id), 'name' => 'update_address', 'class' => 'form')) !!}
 
-         			@include('addresses._form')
+         			@include('absrc.addresses._form')
 
 				{!! Form::close() !!}
 
@@ -27,4 +27,4 @@
 	</div>
 </div>
 
-@stop
+@endsection

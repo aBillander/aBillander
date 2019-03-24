@@ -1,16 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\SalesRepCenter;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use Mail;
 
 use App\Customer;
 use App\Address;
 
-class CustomerAddressesController extends  Controller
+class AbsrcCustomerAddressesController extends  Controller
 {
 
 
@@ -40,10 +44,10 @@ class CustomerAddressesController extends  Controller
      */
     public function create($customerId, Request $request)
     {
-        $customer = $this->customer->findOrFail($customerId);
+        $customer = $this->customer->ofSalesRep()->findOrFail($customerId);
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
-        return view('addresses.create', compact('customer', 'back_route'));
+        return view('absrc.addresses.create', compact('customer', 'back_route'));
     }
 
     /**
@@ -54,7 +58,7 @@ class CustomerAddressesController extends  Controller
      */
     public function store($customerId, Request $request)
     {
-        $customer = $this->customer->findOrFail($customerId);
+        $customer = $this->customer->ofSalesRep()->findOrFail($customerId);
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
         $this->validate($request, Address::$rules);
@@ -86,11 +90,12 @@ class CustomerAddressesController extends  Controller
      */
     public function edit($customerId, $id, Request $request)
     {
-        $customer = $this->customer->findOrFail($customerId);
+        $customer = $this->customer->ofSalesRep()->findOrFail($customerId);
+        // To do: Little checking: Address must by owned by customer, and customer by salesrep !!!
         $address = $this->address->findOrFail($id);
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
-        return view('addresses.edit', compact('customer', 'address', 'back_route'));
+        return view('absrc.addresses.edit', compact('customer', 'address', 'back_route'));
     }
 
     /**
@@ -124,6 +129,8 @@ class CustomerAddressesController extends  Controller
         $address = $this->address->findOrFail($id);
         $back_route = $request->input('back_route', '');
 
+        // To do: Little checking: Address must by owned by customer, and customer by salesrep !!!
+        
         $address->delete();
         
         return redirect( $back_route )

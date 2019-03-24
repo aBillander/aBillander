@@ -7,7 +7,7 @@
       <h3 class="panel-title">{{ l('Customer Center Access') }}
 
 @if ( \App\Configuration::isTrue('DEVELOPER_MODE') && $customer->user )
-      <a href="{{ route('customer.impersonate', [$customer->user->id]) }}" class="btn-success btn-link pull-right" target="_blank"><p class="text-success"><i class="fa fa-clock-o"></i> {{ l('Impersonate') }}</p></a>
+      <a href="{{ route('absrc.customer.impersonate', [$customer->user->id]) }}" class="btn-success btn-link pull-right" target="_blank"><p class="text-success"><i class="fa fa-clock-o"></i> {{ l('Impersonate') }}</p></a>
 
 @endif
 
@@ -17,10 +17,10 @@
 @if( optional($customer->user)->active )
 
 
-        {!! Form::model($customer->user, array('method' => 'PATCH', 'url' => route('customerusers.update', [$customer->user->id]).'#customeruser' )) !!}
+        {!! Form::model($customer->user, array('method' => 'PATCH', 'url' => route('absrc.customerusers.update', [$customer->user->id]).'#customeruser' )) !!}
         <input type="hidden" value="{{$customer->id}}" name="customer_id" id="customer_id">
 
-          @include('customers._form_customer_user')
+          @include('absrc.customers._form_customer_user')
 
         {!! Form::close() !!}
         
@@ -39,7 +39,7 @@
           </div>
     @else
 
-{!! Form::open(array('url' => route('customerusers.store').'#customeruser', 'id' => 'create_customeruser', 'name' => 'create_customeruser', 'class' => 'form')) !!}
+{!! Form::open(array('url' => route('absrc.customerusers.store').'#customeruser', 'id' => 'create_customeruser', 'name' => 'create_customeruser', 'class' => 'form')) !!}
 <input type="hidden" value="{{$customer->id}}" name="customer_id" id="customer_id">
 <input type="hidden" value="customeruser" name="tab_name" id="tab_name">
 
@@ -125,7 +125,7 @@
 
 @endphp
 
-@include('customers._panel_cart_lines')
+@include('absrc.customers._panel_cart_lines')
 
 @endif         
 </div>

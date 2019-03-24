@@ -88,6 +88,8 @@ class AbsrcCustomersController extends Controller {
      */
     public function store(Request $request)
     {
+        $salesrep = Auth::user()->salesrep;
+
         $action = $request->input('nextAction', '');
 
         // Prepare address data
@@ -116,6 +118,9 @@ class AbsrcCustomersController extends Controller {
 
         if ( !$request->has('payment_day') ) $request->merge( ['payment_day' => null] );
 
+        // Sales Rep
+        $request->merge( ['sales_rep_id' => $salesrep->id] );
+
         // ToDO: put default accept einvoice in a configuration key
         
         $customer = $this->customer->create($request->all());
@@ -130,10 +135,10 @@ class AbsrcCustomersController extends Controller {
         $customer->save();
 
         if ($action == 'completeCustomerData')
-            return redirect('absrc.customers/'.$customer->id.'/edit')
+            return redirect('absrc/customers/'.$customer->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customer->id], 'layouts') . $request->input('name_fiscal'));
         else
-            return redirect('absrc.customers')
+            return redirect('absrc/customers')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customer->id], 'layouts') . $request->input('name_fiscal'));
     }
 

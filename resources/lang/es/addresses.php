@@ -13,6 +13,7 @@ return [
 
 	'Addresses - Create' => 'Direcciones - Crear',
 	'New Address'     => 'Nueva Dirección',
+	'Owned by' => 'Pertenece a',
 
 
 	/*

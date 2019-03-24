@@ -96,11 +96,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-bar-chart"></i>
                &nbsp; {{ l('Statistics') }}
             </a -->
+--}}
             <a id="b_customeruser" href="#customeruser" class="list-group-item">
                <i class="fa fa-bolt"></i>
                &nbsp; {{ l('ABCC Access') }}
             </a>
---}}
          </div>
       </div>
       
@@ -126,13 +126,13 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
           @include('customers._panel_statistics')
 
+--}}
+
 @if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
           @include('customers._panel_customeruser')
 
 @endif
-
---}}
 
       </div><!-- div class="col-lg-10 col-md-10 col-sm-9" -->
 

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('absrc.layouts.master')
 
 @section('title') {{ l('Addresses - Create', 'addresses') }} @parent @stop
 
@@ -16,9 +16,9 @@
 
 				@include('errors.list')
 
-				{!! Form::open(array('route' => array('customers.addresses.store', $customer->id), 'name' => 'create_address', 'class' => 'form')) !!}
+				{!! Form::open(array('route' => array('absrc.customers.addresses.store', $customer->id), 'name' => 'create_address', 'class' => 'form')) !!}
 
-					@include('addresses._form')
+					@include('absrc.addresses._form')
 
 				{!! Form::close() !!}
 				
@@ -27,4 +27,4 @@
 	</div>
 </div>
 
-@stop
+@endsection

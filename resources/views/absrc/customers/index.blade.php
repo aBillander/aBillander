@@ -136,11 +136,11 @@
                 
                 <a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
                         xhref="{{ URL::to('absrc/customers/' . $customer->id) . '/mail' }}" 
-                        href="{{ URL::to('mail') }}" 
+                        href="{{ URL::to('absrc/mail') }}" 
                         data-to_name = "{{ $customer->address->firstname }} {{ $customer->address->lastname }}" 
                         data-to_email = "{{ $customer->address->email }}" 
-                        data-from_name = "{{ abi_mail_from_name() }}" 
-                        data-from_email = "{{ abi_mail_from_address() }}" 
+                        data-from_name = "{{ \Auth::user()->salesrep->name }}" 
+                        data-from_email = "{{ \Auth::user()->salesrep->email }}" 
                         onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
                 
                 <div class="btn-group">
@@ -215,9 +215,9 @@ line-height: 1.42857143;
 
 @endsection
 
-@include('layouts/modal_mail')
+@include('absrc.layouts.modal_mail')
 @include('layouts/modal_invite_customer')
-@include('layouts/modal_delete')
+@include('absrc.layouts.modal_delete')
 
 @include('absrc/customers/_modal_help')
 

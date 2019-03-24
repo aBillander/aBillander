@@ -28,6 +28,8 @@ Route::group(['prefix' => 'absrc'], function ()
     Route::get('password/reset', ['as' => 'salesrep.password.request', 'uses' => 'Auth\SalesRepForgotPasswordController@showLinkRequestForm']);
     Route::post('password/reset', ['uses' => 'Auth\SalesRepResetPasswordController@reset']);
     Route::get('password/reset/{token}', ['as' => 'salesrep.password.reset', 'uses' => 'Auth\SalesRepResetPasswordController@showResetForm']);
+
+    Route::post('mail', 'MailController@store');
 });
 
 
@@ -67,6 +69,11 @@ Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function (
 //                                                        'as'   => 'products.ajax.combinationLookup' ));
 
         Route::resource('customers', 'AbsrcCustomersController')->names('absrc.customers');
+        Route::resource('customers.addresses', 'AbsrcCustomerAddressesController')->names('absrc.customers.addresses');
+
+        Route::resource('customerusers', 'AbsrcCustomerUsersController');
+        Route::get('customerusers/create/withcustomer/{customer}', 'AbsrcCustomerUsersController@createWithCustomer')->name('absrc.customer.createuser');
+        Route::get('customerusers/{customer}/impersonate', 'AbsrcCustomerUsersController@impersonate')->name('absrc.customer.impersonate');
 
 /*        Route::resource('customers', 'CustomersController');
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');

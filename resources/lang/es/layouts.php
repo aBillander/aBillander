@@ -11,7 +11,7 @@ return [
 	|
 	*/
 
-	'Error 404 / Page not found'     => 'Error 404 / Página no encontada',
+	'Error 404 / Page not found'     => 'Error 404 / Página no encontrada',
 	'Coming soon...' => 'Próximamente...',
 
 	'Success' => 'Éxito',

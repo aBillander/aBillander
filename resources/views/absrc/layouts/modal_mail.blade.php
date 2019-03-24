@@ -126,7 +126,7 @@
            $("#f_sendEmail").on('submit', function(e){  // ToDo: check fields before submit
               e.preventDefault();
               $("#subject").addClass('loading');
-              $.post("{{ URL::to('mail') }}", $(this).serialize(), function(data){
+              $.post("{{ URL::to('absrc/mail') }}", $(this).serialize(), function(data){
                  $("#subject").removeClass('loading');
 
                   if($.isEmptyObject(data.error)){

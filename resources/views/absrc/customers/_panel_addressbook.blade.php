@@ -112,11 +112,11 @@
                     @if (  is_null($addr->deleted_at))
                     <a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
                             xhref="{{ URL::to('absrc/customers/' . $customer->id) . '/mail' }}" 
-                            href="{{ URL::to('mail') }}" 
+                            href="{{ URL::to('absrc/mail') }}" 
                             data-to_name = "{{ $addr->firstname }} {{ $addr->lastname }}" 
                             data-to_email = "{{ $addr->email }}" 
-                            data-from_name = "{{ abi_mail_from_name() }}" 
-                            data-from_email = "{{ abi_mail_from_address() }}" 
+                            data-from_name = "{{ \Auth::user()->salesrep->name }}" 
+                            data-from_email = "{{ \Auth::user()->salesrep->email }}" 
                             onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
                     <a class="btn btn-sm btn-warning" href="{{ URL::to( 'absrc/customers/'.$customer->id.'/addresses/' . $addr->id . '/edit?back_route=' . urlencode('absrc/customers/' . $customer->id . '/edit#addressbook') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
@@ -146,8 +146,8 @@
        </div>
     </div>
 
-@include('layouts/modal_mail')
-@include('layouts/modal_delete')
+@include('absrc.layouts.modal_mail')
+@include('absrc.layouts.modal_delete')
 
 </div>
 <!-- Address Book ENDS -->

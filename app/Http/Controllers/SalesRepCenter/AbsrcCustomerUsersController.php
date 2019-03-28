@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
+use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -12,7 +14,7 @@ use App\Language;
 
 use Mail;
 
-class AbsrCustomerUsersController extends Controller
+class AbsrcCustomerUsersController extends Controller
 {
     //
 

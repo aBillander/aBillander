@@ -19,8 +19,6 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
-
-        \App\Http\Middleware\SetContextMiddleware::class,
 //        \App\Http\Middleware\SetGuestContextMiddleware::class,
     ];
 
@@ -64,6 +62,8 @@ class Kernel extends HttpKernel
 //        'customer'  => \App\Http\Middleware\RedirectIfCustomer::class,
         'authAdmin'  => \App\Http\Middleware\RedirectIfNotAdmin::class,
 //        'context'  => \App\Http\Middleware\SetContextMiddleware::class,
+
+        'admincontext'  => \App\Http\Middleware\SetContextMiddleware::class,
 
         'abcccontext'  => \App\Http\Middleware\CustomerCenter\SetAbccContextMiddleware::class,
 

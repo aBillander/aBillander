@@ -28,6 +28,18 @@ class HomeController extends Controller
         return view('home.home');
     }
 
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function desktop()
+    {
+
+
+        return view('home.desktop');
+    }
+
 
 /* ********************************************************************************************* */  
 

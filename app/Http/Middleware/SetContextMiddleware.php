@@ -47,7 +47,8 @@ class SetContextMiddleware {
 			if( Auth::check() )
 				$user = User::with('language')->find( Auth::id() );		// $email = Auth::user()->email;
 			else
-				$user = User::with('language')->where('is_admin', 1)->first( );		// Gorrino sensible default
+				return $next($request);
+				// $user = User::with('language')->where('is_admin', 1)->first( );		// Gorrino sensible default
 	//			$user = new \stdClass();
 
 			// Set Language
@@ -102,6 +103,11 @@ class SetContextMiddleware {
 			Context::getContext()->company    = $company;
 			Context::getContext()->currency   = $company->currency;
 
+			// https://stackoverflow.com/questions/50597657/check-authuser-from-middleware
+			// https://laraveldaily.com/password-expired-force-change-password-every-30-days/
+
+			// abi_r(Auth::id(), true);
+
 
 	/*
 
@@ -141,6 +147,8 @@ class SetContextMiddleware {
 	//			Context::getContext()->action     = NULL;
 
 			}
+
+			// abi_r($request, true);
 
 
 	// abi_r(Context::getContext()->user);

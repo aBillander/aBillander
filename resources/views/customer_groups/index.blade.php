@@ -34,7 +34,7 @@
         <tr>
             <td>{{ $group->id }}</td>
             <td>{{ $group->name }}</td>
-            <td>{{ $group->pricelist->name }}</td>
+            <td>{{ optional($group->pricelist)->name }}</td>
             
             <td class="text-center">@if ($group->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

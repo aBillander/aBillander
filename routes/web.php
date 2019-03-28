@@ -38,7 +38,7 @@ if ( !env('ALLOW_USER_REGISTRATION', true) )
 
 Route::get('/', 'WelcomeController@index');     // ->name('home');
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 Route::get('home/searchcustomer', 'HomeController@searchCustomer')->name('home.searchcustomer');
 Route::get('home/searchproduct' , 'HomeController@searchProduct' )->name('home.searchproduct' );
 Route::get('home/searchcustomerorder' , 'HomeController@searchCustomerOrder' )->name('home.searchcustomerorder' );
@@ -72,7 +72,7 @@ Route::get('404', function()
 
 
 // Secure-Routes
-Route::group(['middleware' =>  ['auth']], function()
+Route::group(['middleware' =>  ['auth', 'admincontext']], function()
 {
     // Route::get( 'contact', 'ContactMessagesController@create');
     Route::post('contact', 'ContactMessagesController@store');
@@ -82,10 +82,15 @@ Route::group(['middleware' =>  ['auth']], function()
         return view('soon');
     });
     
-    Route::group(['middleware' => 'authAdmin'], function()
+    Route::group(['middleware' => ['authAdmin']], function()
     {
     });
         
+        // Home routes
+        Route::get('/home', 'HomeController@index')->name('home');
+        Route::get('/desktop', 'HomeController@desktop')->name('desktop');
+
+
         Route::resource('configurations',    'ConfigurationsController');
         Route::resource('configurationkeys', 'ConfigurationKeysController');
 

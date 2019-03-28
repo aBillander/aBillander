@@ -77,7 +77,7 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
     });
 */
 
-    Route::group(['middleware' =>  ['auth:customer', 'abcccontext']], function()
+    Route::group(['middleware' =>  ['auth:customer', 'context', 'abcccontext']], function()
     {
         Route::get('/', 'CustomerHomeController@index')->name('customer.dashboard');
 

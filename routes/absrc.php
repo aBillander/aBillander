@@ -36,7 +36,7 @@ Route::group(['prefix' => 'absrc'], function ()
 /* ********************************************************** */
 
 
-Route::group(['middleware' =>  ['auth:salesrep', 'absrccontext']], function()
+Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext']], function()
 {
     Route::resource('products.images', 'ProductImagesController');
 

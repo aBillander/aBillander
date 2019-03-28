@@ -47,7 +47,23 @@ class SetContextMiddleware {
 			if( Auth::check() )
 				$user = User::with('language')->find( Auth::id() );		// $email = Auth::user()->email;
 			else
+			{
+				// Be nice and set defaults
+				$language = Language::find( intval(Configuration::get('DEF_LANGUAGE')) );
+				$company = Company::with('currency')->findOrFail( intval(Configuration::get('DEF_COMPANY')) );
+
+//				Context::getContext()->user       = $user;
+				Context::getContext()->theme      = '';	// $user->getTheme();
+				Context::getContext()->language   = $language;
+
+//				Cookie::queue('user_language', $language->id, 30*24*60);
+
+				Context::getContext()->company    = $company;
+				Context::getContext()->currency   = $company->currency;
+
+
 				return $next($request);
+			}
 				// $user = User::with('language')->where('is_admin', 1)->first( );		// Gorrino sensible default
 	//			$user = new \stdClass();
 

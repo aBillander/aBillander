@@ -20,6 +20,8 @@ use App\CustomerShippingSlip;
 use App\CustomerShippingSlipLine;
 use App\PriceRule;
 
+use App\Configuration;
+
 class CustomersController extends Controller {
 
 
@@ -47,7 +49,7 @@ class CustomersController extends Controller {
 //                        ->orderBy('reference_external', 'asc');
 //                        ->get();
         
-        $customers = $customers->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $customers = $customers->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $customers->setPath('customers');     // Customize the URI used by the paginator
 
@@ -78,7 +80,7 @@ class CustomersController extends Controller {
         // Prepare address data
         $address = $request->input('address');
 
-        $request->merge( ['outstanding_amount_allowed' => \App\Configuration::get('DEF_OUTSTANDING_AMOUNT')] );
+        $request->merge( ['outstanding_amount_allowed' => Configuration::get('DEF_OUTSTANDING_AMOUNT')] );
 
         if ( !$request->input('address.name_commercial') ) {
 
@@ -97,9 +99,11 @@ class CustomersController extends Controller {
 
         $this->validate($request, Address::related_rules());
 
-        if ( !$request->has('currency_id') ) $request->merge( ['currency_id' => \App\Configuration::get('DEF_CURRENCY')] );
+        if ( !$request->has('currency_id') ) $request->merge( ['currency_id' => Configuration::get('DEF_CURRENCY')] );
 
         if ( !$request->has('payment_day') ) $request->merge( ['payment_day' => null] );
+
+        if ( !$request->has('language_id') ) $request->merge( ['language_id' => Configuration::get('DEF_LANGUAGE')] );
 
         // ToDO: put default accept einvoice in a configuration key
         
@@ -351,9 +355,9 @@ class CustomersController extends Controller {
      */
     public function getOrders($id, Request $request)
     {
-        $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page = intval($request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page >= 0) ) 
-            $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page = Configuration::get('DEF_ITEMS_PERPAGE');
 
         $customer_orders = CustomerOrder::where('customer_id', $id)
                             ->with('customer')
@@ -361,7 +365,7 @@ class CustomersController extends Controller {
                             ->with('paymentmethod')
                             ->orderBy('document_date', 'desc');        // ->get();
 
-        $customer_orders = $customer_orders->paginate( $items_per_page );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+        $customer_orders = $customer_orders->paginate( $items_per_page );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
 
         $customer_orders->setPath('customerorders');
 
@@ -377,9 +381,9 @@ class CustomersController extends Controller {
      */
     public function getPriceRules($id, Request $request)
     {
-        $items_per_page_pricerules = intval($request->input('items_per_page_pricerules', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page_pricerules = intval($request->input('items_per_page_pricerules', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page_pricerules >= 0) ) 
-            $items_per_page_pricerules = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page_pricerules = Configuration::get('DEF_ITEMS_PERPAGE');
 
         $customer_rules = PriceRule::where('customer_id', $id)
                                 ->with('category')
@@ -390,7 +394,7 @@ class CustomersController extends Controller {
                                 ->orderBy('customer_id', 'ASC')
                                 ->orderBy('from_quantity', 'ASC');
 
-        $customer_rules = $customer_rules->paginate( $items_per_page_pricerules );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+        $customer_rules = $customer_rules->paginate( $items_per_page_pricerules );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
 
         $customer_rules->setPath('customerpricerules');
 
@@ -410,9 +414,9 @@ class CustomersController extends Controller {
 
         $product = \App\Product::findOrFail($productid);
 
-        $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page = intval($request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page >= 0) ) 
-            $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page = Configuration::get('DEF_ITEMS_PERPAGE');
 
         // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
         $o_lines = CustomerOrderLine::where('product_id', $productid)
@@ -490,13 +494,13 @@ class CustomersController extends Controller {
 
         // return 'OK';
 
-        $items_per_page_products = intval($request->input('items_per_page_products', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page_products = intval($request->input('items_per_page_products', Configuration::get('DEF_ITEMS_PERPAGE')));
         // return $items_per_page_products;
 
 
 
         if ( !($items_per_page_products >= 0) ) 
-            $items_per_page_products = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page_products = Configuration::get('DEF_ITEMS_PERPAGE');
 
         // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
         $o_lines = CustomerOrderLine::

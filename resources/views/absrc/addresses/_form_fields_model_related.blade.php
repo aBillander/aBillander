@@ -126,7 +126,7 @@
 
     function populateStatesByCountryID( countryID, stateID = 0 )
     {
-        $.get('{{ url('/') }}/countries/' + countryID + '/getstates', function (states) {
+        $.get('{{ url('/') }}/absrc/countries/' + countryID + '/getstates', function (states) {
             
 
             $('select[name="state_selector"]').empty();

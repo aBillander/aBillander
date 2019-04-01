@@ -15,7 +15,7 @@
           @include('products._form_create_image')   
 
    <div class="panel-footer text-right">
-      <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
+      <button class="btn btn-sm btn-info hidden" type="submit" onclick="this.disabled=true;this.form.submit();">
          <i class="fa fa-hdd-o"></i>
          &nbsp; {{l('Save', [], 'layouts')}}
       </button>
@@ -66,8 +66,8 @@
 
                <td class="text-right">
 
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('products/' . $product->id.'/images/' . $img->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                <a class="btn btn-sm btn-warning hidden" href="{{ URL::to('products/' . $product->id.'/images/' . $img->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                <a class="btn btn-sm btn-danger delete-item hidden" data-html="false" data-toggle="modal" 
                      href="{{ URL::to('products/' . $product->id.'/images/' . $img->id ) }}" 
                      data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                      data-title="{{ l('Product Images') }} :: ({{$img->id}}) {{{ $img->caption }}} " 

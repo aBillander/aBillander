@@ -20,6 +20,7 @@ return [
 	'Error'   => 'Error',
 	
 	'Please check the form below for errors' => 'Por favor, compruebe los errores en el formulario más abajo',
+	'You are not allowed to do this'                                      =>  'No está autorizado',
 	'This record has been successfully created &#58&#58 (:id) '  =>  'El registro se ha creado correctamente &#58&#58 (:id) ',
 	'This record has been successfully updated &#58&#58 (:id) '  =>  'El registro se ha actualizado correctamente &#58&#58 (:id) ',
 	'This record has been updated with errors &#58&#58 (:id) Check the Log '  =>  'El registro se ha actualizado con errores &#58&#58 (:id) Consulte el Log. ',

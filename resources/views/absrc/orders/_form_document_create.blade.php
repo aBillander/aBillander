@@ -224,7 +224,7 @@ function get_currency_rate(currency_id)
 
    $.ajax({
       type: 'POST',
-      url: '{{ route('currencies.ajax.rateLookup') }}',
+      url: '{{ route('absrc.currencies.ajax.rateLookup') }}',
       dataType: 'html',
       data: pload,
       success: function(data) {

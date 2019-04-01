@@ -53,17 +53,17 @@
                                  {{l('Orders', [], 'absrc/layouts')}}
                             </a>
                         </li>
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
                          <li>
-                            <a href="{ { route('absrc.orders.index') }}">
+                            <a href="{{ route('absrc.shippingslips.index') }}">
                                  {{l('Shipping Slips', [], 'absrc/layouts')}}
                             </a>
                         </li>
                          <li>
-                            <a href="{ { route('absrc.orders.index') }}">
+                            <a href="{{ route('absrc.invoices.index') }}">
                                  {{l('Invoices', [], 'absrc/layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
                          <li>
                             <a href="{ { route('absrc.orders.index') }}">
                                  {{l('Vouchers', [], 'absrc/layouts')}}

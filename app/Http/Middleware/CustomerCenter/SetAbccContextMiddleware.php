@@ -31,19 +31,23 @@ class SetAbccContextMiddleware {
 		// if ( !auth()->check() || !auth()->user()->isAdmin() ) // Not logged or not Admin
 //		if ( !$request->user() || !$request->user()->isActive() ) /** if not logged at all redirect to home. this is to prevent an error if the user is not logged in and tries to access the portal via the url **/
 //		{
-        if (Auth::check())
+
+        if ($guard == "customer" && Auth::guard($guard)->check())
         {
-            if ( !Auth::user()->isActive() )
+            if ( !Auth::guard($guard)->user()->isActive() )
             {
                 Auth::logout();
                 return redirect()->route('customer.login')->with('warning', l('Your session has expired because your account is deactivated.', 'abcc/layouts'));
             }
+        } else {
+        	return $next($request);
         }
 //		}
 
 
-		$customer_user = Auth::user();
-        $customer      = Auth::user()->customer;
+		$customer_user = Auth::guard($guard)->user();
+        $customer      = Auth::guard($guard)->user()->customer;
+        $language      = $customer_user->language;
 
 //        abi_r($customer_user, true);
 
@@ -64,9 +68,11 @@ class SetAbccContextMiddleware {
 
 		Context::getContext()->customer_user = $customer_user;
 		Context::getContext()->customer      = $customer;
-//		Context::getContext()->language      = $language;
+		Context::getContext()->language      = $language;
 		Context::getContext()->currency      = $customer->currency;
 		Context::getContext()->cart          = $cart;
+
+		// abi_r($guard);die();
 
 		return $next($request);
 

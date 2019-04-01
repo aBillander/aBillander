@@ -118,6 +118,8 @@ class AbsrcCustomersController extends Controller {
 
         if ( !$request->has('payment_day') ) $request->merge( ['payment_day' => null] );
 
+        if ( !$request->has('language_id') ) $request->merge( ['language_id' => Configuration::get('DEF_LANGUAGE')] );
+
         // Sales Rep
         $request->merge( ['sales_rep_id' => $salesrep->id] );
 
@@ -344,10 +346,10 @@ class AbsrcCustomersController extends Controller {
 
 
         if ($action != 'completeCustomerData')
-            return redirect('absrc.customers/'.$customer->id.'/edit'.$section)
+            return redirect('absrc/customers/'.$customer->id.'/edit'.$section)
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name_commercial'));
         else
-            return redirect('absrc.customers')
+            return redirect('absrc/customers')
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name_commercial'));
 
     }
@@ -368,7 +370,7 @@ class AbsrcCustomersController extends Controller {
         // Customer
         $c->delete();
 
-        return redirect('absrc.customers')
+        return redirect('absrc/customers')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 

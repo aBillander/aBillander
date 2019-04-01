@@ -12,6 +12,8 @@ use App\CustomerUser;
 use App\Configuration;
 use App\Language;
 
+use Auth;
+
 use Mail;
 
 class AbsrcCustomerUsersController extends Controller
@@ -86,7 +88,7 @@ class AbsrcCustomerUsersController extends Controller
 				'firstname' => $customer->address->firstname, 
 				'lastname' => $customer->address->lastname, 
 				'active' => 1, 
-				'language_id' => $customer->language_id, 
+				'language_id' => $customer->language_id ?: Configuration::get('DEF_LANGUAGE'), 
 				'customer_id' => $customer->id,
 		];
 

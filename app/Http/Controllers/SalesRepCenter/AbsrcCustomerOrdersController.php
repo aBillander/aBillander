@@ -512,10 +512,63 @@ if (0) {
      * 
      */
 
+    protected function confirm(Document $document)
+    {
+        // Sorry, Sales Rep
+        // return redirect()->back()
+        //        ->with('error', l('You are not allowed to do this', 'layouts'));
+        
+
+        // Can I?
+        if ( $document->lines->count() == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Confirm
+        if ( $document->confirm() )
+            return redirect()->back()       //  ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+    protected function unConfirm(Document $document)
+    {
+        // Can I?
+        if ( $document->status != 'confirmed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: ');
+        }
+
+        // UnConfirm
+        if ( $document->unConfirm() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
 
 
     protected function onholdToggle(Document $document)
     {
+        // Sorry, Sales Rep
+        return redirect()->back()
+                ->with('error', l('You are not allowed to do this', 'layouts'));
+        
+
         // No checks. A closed document can be set to "onhold". Maybe usefull...
 
         // Toggle

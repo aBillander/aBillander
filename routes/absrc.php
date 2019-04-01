@@ -35,13 +35,30 @@ Route::group(['prefix' => 'absrc'], function ()
 
 /* ********************************************************** */
 
+// COMMON
 
-Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext']], function()
+Route::group(['middleware' =>  ['auth:web,salesrep', 'context', 'absrccontext:salesrep']], function()
 {
-    Route::resource('products.images', 'ProductImagesController');
 
-    Route::get('products/ajax/name_lookup'  , array('uses' => 'ProductsController@ajaxProductSearch', 
+        Route::get('countries/{countryId}/getstates',   'CountriesController@getStates')->name('countries.getstates');
+});
+
+
+/* ********************************************************** */
+
+
+Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesrep']], function()
+{
+//    Route::resource('products.images', 'ProductImagesController');
+
+    Route::get('absrc/products/ajax/name_lookup'  , array('uses' => 'ProductsController@ajaxProductSearch', 
                                                         'as'   => 'absrc.products.ajax.nameLookup' ));
+    
+    Route::get('absrc/countries/{countryId}/getstates',   array('uses'=>'CountriesController@getStates', 
+                                                                'as' => 'absrc.countries.getstates' ) );
+    
+    Route::post('absrc/currencies/ajax/rate_lookup', array('uses' => 'CurrenciesController@ajaxCurrencyRateSearch', 
+                                                        'as' => 'absrc.currencies.ajax.rateLookup'));
 
     // Sales Reps routes here
 
@@ -79,7 +96,7 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext']], fu
         Route::resource('customers', 'AbsrcCustomersController')->names('absrc.customers');
         Route::resource('customers.addresses', 'AbsrcCustomerAddressesController')->names('absrc.customers.addresses');
 
-        Route::resource('customerusers', 'AbsrcCustomerUsersController');
+        Route::resource('customerusers', 'AbsrcCustomerUsersController')->names('absrc.customerusers');
         Route::get('customerusers/create/withcustomer/{customer}', 'AbsrcCustomerUsersController@createWithCustomer')->name('absrc.customer.createuser');
         Route::get('customerusers/{customer}/impersonate', 'AbsrcCustomerUsersController@impersonate')->name('absrc.customer.impersonate');
 
@@ -160,6 +177,22 @@ foreach ($pairs as $pair) {
 
         Route::get($path.'/customers/{id}',  $controller.'@indexByCustomer')->name('absrc.customer.'.str_replace('customer', '', $path));
 }
+
+
+        Route::resource('/shippingslips', 'AbsrcCustomerShippingSlipsController')->names('absrc.shippingslips');
+        Route::get('shippingslips/{id}/pdf', 'AbsrcCustomerShippingSlipsController@showPdf')->name('absrc.shippingslip.pdf'  );
+
+        Route::resource('/invoices', 'AbsrcCustomerInvoicesController')->names('absrc.invoices');
+        Route::get('/invoices/{invoiceKey}/shippingslips', 'AbsrcCustomerInvoicesController@shippingslips')->name('absrc.invoices.shippingslips');
+//        Route::get('/invoices/{invoiceKey}/vouchers', 'AbsrcCustomerInvoicesController@vouchers')->name('absrc.invoices.vouchers');
+
+        Route::get('invoice/{invoiceKey}', ['uses' => 'AbsrcCustomerInvoicesController@show', 'as' => 'absrc.invoice.show']);
+
+//    Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbsrcCustomerInvoicesController@pdf', 'as' => 'customerCenter.public.invoice.pdf']);
+        Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbsrcCustomerInvoicesController@showPdf', 'as' => 'absrc.invoice.pdf']);
+
+
+//        Route::resource('/vouchers', 'AbsrcCustomerVouchersController')->names('absrc.vouchers');
 
     });
 });

@@ -130,7 +130,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
 @if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
-          @include('customers._panel_customeruser')
+          @include('absrc.customers._panel_customeruser')
 
 @endif
 

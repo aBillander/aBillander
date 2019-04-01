@@ -9,9 +9,9 @@
         <div class="page-header">
             <div class="pull-right">
                 
-                <a href="{{ URL::to('products') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Products') }}</a>
+                <a href="{{ URL::to('absrc/products') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Products') }}</a>
             </div>
-            <h2><a href="{{ URL::to('products') }}">{{ l('Products') }}</a> <span style="color: #cccccc;">/</span> {{ $product->name }}</h2>
+            <h2><a href="{{ URL::to('absrc/products') }}">{{ l('Products') }}</a> <span style="color: #cccccc;">/</span> {{ $product->name }}</h2>
         </div>
     </div>
 </div>

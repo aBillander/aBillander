@@ -58,7 +58,7 @@
     <tr>
       <!-- td>{{ $product->id }}</td -->
       <td title="{{ $product->id }}">@if ($product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
-                @else {{ $product->reference }}
+                @else <a href="{{ URL::to('absrc/products/' . $product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}">{{ $product->reference }}</a>
                 @endif</td>
 
       <td>{{ $product->ean13 }}</td>

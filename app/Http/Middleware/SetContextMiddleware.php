@@ -45,7 +45,8 @@ class SetContextMiddleware {
 			// Continue stuff
 
 			if( Auth::check() )
-				$user = User::with('language')->find( Auth::id() );		// $email = Auth::user()->email;
+				// $user = User::with('language')->find( Auth::id() );		// $email = Auth::user()->email;
+				$user = Auth::user();
 			else
 			{
 				// Be nice and set defaults

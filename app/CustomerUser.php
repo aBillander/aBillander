@@ -86,6 +86,21 @@ class CustomerUser extends Authenticatable
         return $this->firstname.' '.$this->lastname;
     }
 
+    public function getTheme()
+    {
+        if ( $this->theme )
+        {
+            return $this->theme;
+        }
+
+        if ( Configuration::isNotEmpty('USE_CUSTOM_THEME') )
+        {
+            return Configuration::get('USE_CUSTOM_THEME');
+        }
+
+        return '';
+    }
+
     public function isActive()
     {
         return $this->active;

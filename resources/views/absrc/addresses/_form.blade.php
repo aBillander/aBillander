@@ -209,7 +209,7 @@
           var stateID = {{ null !== old('state_id') ? old('state_id') : 
                 ( isset($address->state_id) ? $address->state_id : 0 ) }};
             
-            $.get('{{ url('/') }}/countries/' + countryID + '/getstates', function (states) {
+            $.get('{{ url('/') }}/absrc/countries/' + countryID + '/getstates', function (states) {
                 
 
                 $('select[name="state_id"]').empty();

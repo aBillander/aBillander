@@ -103,6 +103,11 @@ class AbsrcProductsController extends Controller
      */
     public function create()
     {
+        // Sorry, Sales Rep
+        return redirect()->back()
+                ->with('error', l('You are not allowed to do this', 'layouts'));
+        
+
         return view('absrc.products.create');
     }
 
@@ -113,6 +118,11 @@ class AbsrcProductsController extends Controller
      */
     public function store(Request $request)
     {
+        // Sorry, Sales Rep
+        return redirect()->back()
+                ->with('error', l('You are not allowed to do this', 'layouts'));
+        
+
         // if ( !( $request->input('cost_average') > 0 ) ) $request->merge( ['cost_average' => $request->input('cost_price')] );
 
         $action = $request->input('nextAction', '');
@@ -321,6 +331,11 @@ class AbsrcProductsController extends Controller
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     } */
     {
+        // Sorry, Sales Rep
+        return redirect()->back()
+                ->with('error', l('You are not allowed to do this', 'layouts'));
+        
+
         $product = Product::findOrFail($id);
 
         $rules_tab = $request->input('tab_name', 'main_data');
@@ -424,6 +439,11 @@ class AbsrcProductsController extends Controller
      */
     public function destroy($id)
     {
+        // Sorry, Sales Rep
+        return redirect()->back()
+                ->with('error', l('You are not allowed to do this', 'layouts'));
+        
+
         // Any Documents? If any, cannot delete, only disable
 
         // Delete Product & Combinations Warehouse lines
@@ -450,6 +470,11 @@ class AbsrcProductsController extends Controller
 
     public function duplicate($id)
     {
+        // Sorry, Sales Rep
+        return redirect()->back()
+                ->with('error', l('You are not allowed to do this', 'layouts'));
+        
+
         $product = $this->product->findOrFail($id);
 
         // Duplicate

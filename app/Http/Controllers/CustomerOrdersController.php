@@ -420,7 +420,7 @@ class CustomerOrdersController extends BillableController
         if ( $document->status != 'confirmed' )
         {
             return redirect()->back()
-                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: ');
         }
 
         // UnConfirm

@@ -12,9 +12,7 @@
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
-
-        <a href="{{ route('products.export') }}" class="btn btn-sm btn-grey" 
-                title="{{l('Export', [], 'layouts')}}" onclick="return false;"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+        
     </div>
     <h2>
         {{ l('Products') }}
@@ -118,7 +116,7 @@
 		<tr>
 			<td>{{ $product->id }}</td>
 			<td title="{{ $product->id }}">@if ($product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
-                @else {{ $product->reference }}
+                @else <a href="{{ URL::to('absrc/products/' . $product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}">{{ $product->reference }}</a>
                 @endif</td>
       <td>{{ $product->procurement_type }}</td>
 

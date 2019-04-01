@@ -33,19 +33,23 @@ class SetAbsrcContextMiddleware {
 		// if ( !auth()->check() || !auth()->user()->isAdmin() ) // Not logged or not Admin
 //		if ( !$request->user() || !$request->user()->isActive() ) /** if not logged at all redirect to home. this is to prevent an error if the user is not logged in and tries to access the portal via the url **/
 //		{
-        if (Auth::check())
+
+        if ($guard == "salesrep" && Auth::guard($guard)->check())
         {
-            if ( !Auth::user()->isActive() )
+            if ( !Auth::guard($guard)->user()->isActive() )
             {
                 Auth::logout();
                 return redirect()->route('salesrep.login')->with('warning', l('Your session has expired because your account is deactivated.', 'absrc/layouts'));
             }
+        } else {
+        	return $next($request);
         }
 //		}
 
 
-		$salesrep_user = Auth::user();
-        $salesrep      = Auth::user()->salesrep;
+		$salesrep_user = Auth::guard($guard)->user();
+        $salesrep      = Auth::guard($guard)->user()->salesrep;
+        $language      = $salesrep_user->language;
 
 //        abi_r($salesrep_user, true);
 
@@ -66,7 +70,7 @@ class SetAbsrcContextMiddleware {
 
 		Context::getContext()->salesrep_user = $salesrep_user;
 		Context::getContext()->salesrep      = $salesrep;
-//		Context::getContext()->language      = $language;
+		Context::getContext()->language      = $language;
 //		Context::getContext()->currency      = $customer->currency;
 //		Context::getContext()->cart          = $cart;
 

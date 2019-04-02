@@ -21,8 +21,10 @@
               <th>{{l('Date from')}}</th>
               <th>{{l('Date to')}}</th>
             <th>
+{{--
                 <a href="{{ URL::to('absrc/customers/'.$id.'/pricerules/create') }}" class="btn btn-sm btn-success create-pricerule" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+--}}
             </th>
         </tr>
     </thead>
@@ -76,13 +78,13 @@
             <td class="text-right button-pad">
 
                 <!-- a class="btn btn-sm btn-warning" href="{{ URL::to('pricerules/' . $rule->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
-
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                    href="{{ URL::to('pricerules/' . $rule->id ) }}" 
-                    data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Price Rules') }} :: ({{$rule->id}}) " 
-                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-            
+{{--
+               <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                   href="{{ URL::to('pricerules/' . $rule->id ) }}" 
+                   data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
+                   data-title="{{ l('Price Rules') }} :: ({{$rule->id}}) " 
+                   onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+--}}
       </td>
         </tr>
         @endforeach
@@ -105,11 +107,11 @@
 
 
 @else
-            <div class="modal-footer">
+            <!-- div class="modal-footer">
                 <a href="{{ URL::to('absrc/customers/'.$id.'/pricerules/create') }}" class="btn xbtn-sm btn-success create-pricerule pull-right" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
-            </div>
+            </div -->
 
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>

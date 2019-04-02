@@ -100,6 +100,8 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
         Route::get('customerusers/create/withcustomer/{customer}', 'AbsrcCustomerUsersController@createWithCustomer')->name('absrc.customer.createuser');
         Route::get('customerusers/{customer}/impersonate', 'AbsrcCustomerUsersController@impersonate')->name('absrc.customer.impersonate');
 
+        Route::get('customers/{id}/getpricerules',         'AbsrcCustomersController@getPriceRules')->name('absrc.customer.getpricerules');
+
 /*        Route::resource('customers', 'CustomersController');
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup'));
@@ -193,6 +195,8 @@ foreach ($pairs as $pair) {
 
 
 //        Route::resource('/vouchers', 'AbsrcCustomerVouchersController')->names('absrc.vouchers');
+
+//        Route::resource('pricerules', 'AbsrcPriceRulesController')->names('absrc.pricerules');
 
     });
 });

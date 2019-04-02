@@ -88,10 +88,12 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-th"></i>
                &nbsp; {{ l('Products') }}
             </a>
+--}}
             <a id="b_pricerules" href="#pricerules" class="list-group-item">
                <i class="fa fa-gavel"></i>
                &nbsp; {{ l('Price Rules') }}
             </a>
+{{--
             <!-- a id="b_statistics" href="#statistics" class="list-group-item">
                <i class="fa fa-bar-chart"></i>
                &nbsp; {{ l('Statistics') }}
@@ -121,9 +123,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
           @include('customers._panel_orders')
 
           @include('customers._panel_products')
+--}}
 
-          @include('customers._panel_pricerules')
+          @include('absrc.customers._panel_pricerules')
 
+{{--
           @include('customers._panel_statistics')
 
 --}}

@@ -8,19 +8,25 @@
                      {!! Form::text('name', null, array('class' => 'form-control', 'id' => 'name')) !!}
                      {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
                   </div>
-
+{{--
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('product_type') ? 'has-error' : '' }}">
                       {{ l('Product type') }}
                       {!! Form::select('product_type', $product_typeList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('product_type', '<span class="help-block">:message</span>') !!}
                   </div>
+--}}
+                  <input type="hidden" value="simple" name="product_type" id="product_type">
 
+{{--
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('procurement_type') ? 'has-error' : '' }}">
                       {{ l('Procurement type') }}
                       {!! Form::select('procurement_type', $product_procurementtypeList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('procurement_type', '<span class="help-block">:message</span>') !!}
                   </div>
+--}}
+                  <input type="hidden" value="purchase" name="procurement_type" id="procurement_type">
 
+{{--
                    <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-phantom_assembly">
                      {!! Form::label('phantom_assembly', l('Phantom Assembly?'), ['class' => 'control-label']) !!}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
@@ -42,6 +48,17 @@
                        </div>
                      </div>
                    </div>
+--}}
+                   <input type="hidden" value="0" name="phantom_assembly" id="phantom_assembly">
+        </div>
+               
+
+        <div class="row">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('name_en') ? 'has-error' : '' }}">
+                     {{ l('Product Name (English)') }}
+                     {!! Form::text('name_en', null, array('class' => 'form-control', 'id' => 'name_en')) !!}
+                     {!! $errors->first('name_en', '<span class="help-block">:message</span>') !!}
+                  </div>
         </div>
 
         <div class="row">
@@ -84,6 +101,7 @@
                       {!! $errors->first('quantity_decimal_places', '<span class="help-block">:message</span>') !!}
                   </div>
 
+{{--
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('manufacturing_batch_size') ? 'has-error' : '' }}">
                      {{ l('Manufacturing Batch Size') }}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
@@ -93,6 +111,8 @@
                      {!! Form::text('manufacturing_batch_size', null, array('class' => 'form-control', 'id' => 'manufacturing_batch_size')) !!}
                      {!! $errors->first('manufacturing_batch_size', '<span class="help-block">:message</span>') !!}
                   </div>
+--}}
+                  <input type="hidden" value="1" name="manufacturing_batch_size" id="manufacturing_batch_size">
 
                    <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-active">
                      {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}
@@ -111,6 +131,68 @@
                        </div>
                      </div>
                    </div>
+        </div>
+
+        <div class="row">
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('price_usd') ? 'has-error' : '' }}">
+                     {{ l('Cost Price (USD Dollar)') }}
+                     {!! Form::text('price_usd', null, array('class' => 'form-control', 'id' => 'price_usd', 'autocomplete' => 'off', 
+                                      'onclick' => 'this.select()')) !!}
+                     {!! $errors->first('price_usd', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('price_usd_conversion_rate') ? 'has-error' : '' }}">
+                     {{ l('Exchange rate') }}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('This rate is to be defined according to your Company\'s default currency. For example, if the default currency is the Euro, and this currency is Dollar, type "1.31", since 1€ usually is worth $1.31 (at the time of this writing). Use the converter here for help: http://www.xe.com/ucc/.') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a>
+                     {!! Form::text('price_usd_conversion_rate', null, array('class' => 'form-control', 'id' => 'price_usd_conversion_rate')) !!}
+                     {!! $errors->first('price_usd_conversion_rate', '<span class="help-block">:message</span>') !!}
+                  </div>
+        </div>
+
+        <div class="row">
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('cost_price') ? 'has-error' : '' }}">
+                     {{ l('Cost Price (EUR)') }}
+                     {!! Form::text('cost_price', null, array('class' => 'form-control', 'id' => 'cost_price', 'autocomplete' => 'off', 
+                                      'onclick' => 'this.select()', 'onkeyup' => 'new_cost_price()', 'onchange' => 'new_cost_price()')) !!}
+                     {!! $errors->first('cost_price', '<span class="help-block">:message</span>') !!}
+                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('margin') ? 'has-error' : '' }}">
+                     {{ l('Margin') }} (%)
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                                      data-content="{{ l('Given a Cost Price, changing the Margin, the Selling Price is recalculated. By changing the Sale Price the Margin is recalculated. The value of the Margin will not be saved, since it is calculated from the Sales Price and the Cost Price.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                     {!! Form::text('margin', null, array('class' => 'form-control', 'id' => 'margin', 'autocomplete' => 'off', 
+                                      'onclick' => 'this.select()', 'onkeyup' => 'new_margin()', 'onchange' => 'new_margin()')) !!}
+                     {!! $errors->first('margin', '<span class="help-block">:message</span>') !!}
+                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                     <label for="margin_method" class="control-label">{{ l('Margin calculation method') }}</label>
+                     <div class="form-control" id="margin_method">
+                      <strong>{{ \App\Configuration::get('MARGIN_METHOD') }}</strong> : 
+
+   @if ( \App\Configuration::get('MARGIN_METHOD') == 'CST' )  
+      {{ l('Margin calculation is based on Cost Price', [], 'layouts') }}.
+   @else
+      {{ l('Margin calculation is based on Sales Price', [], 'layouts') }}.
+   @endif
+                        {{-- l (\App\Configuration::get('MARGIN_METHOD'), [], 'appmultilang') --}}
+                      </div>
+                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                     <label for="prices_entered" class="control-label">{{ l('Price input method') }}</label>
+                     <div class="form-control" id="prices_entered">{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                                                        l('Prices are entered inclusive of tax', [], 'appmultilang') :
+                                                        l('Prices are entered exclusive of tax', [], 'appmultilang') }}</div>
+                  </div>
+                  <!-- div class="form-group col-lg-3 col-md-3 col-sm-3 { { $errors->has('cost_average') ? 'has-error' : '' } }">
+                     { { l('Average Cost Price') } }
+                     {! ! Form::text('cost_average', null, array('class' => 'form-control', 'id' => 'cost_average')) ! !}
+                     {! ! $errors->first('cost_average', '<span class="help-block">:message</span>') ! !}
+                  </div -->
         </div>
 
         <div class="row">
@@ -150,49 +232,6 @@
                        </div>
                      </div>
                    </div -->
-        </div>
-
-        <div class="row">
-                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('cost_price') ? 'has-error' : '' }}">
-                     {{ l('Cost Price') }}
-                     {!! Form::text('cost_price', null, array('class' => 'form-control', 'id' => 'cost_price', 'autocomplete' => 'off', 
-                                      'onclick' => 'this.select()', 'onkeyup' => 'new_cost_price()', 'onchange' => 'new_cost_price()')) !!}
-                     {!! $errors->first('cost_price', '<span class="help-block">:message</span>') !!}
-                  </div>
-                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('margin') ? 'has-error' : '' }}">
-                     {{ l('Margin') }} (%)
-                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                                      data-content="{{ l('Given a Cost Price, changing the Margin, the Selling Price is recalculated. By changing the Sale Price the Margin is recalculated. The value of the Margin will not be saved, since it is calculated from the Sales Price and the Cost Price.') }}">
-                                  <i class="fa fa-question-circle abi-help"></i>
-                           </a>
-                     {!! Form::text('margin', null, array('class' => 'form-control', 'id' => 'margin', 'autocomplete' => 'off', 
-                                      'onclick' => 'this.select()', 'onkeyup' => 'new_margin()', 'onchange' => 'new_margin()')) !!}
-                     {!! $errors->first('margin', '<span class="help-block">:message</span>') !!}
-                  </div>
-                  <div class="form-group col-lg-3 col-md-3 col-sm-3">
-                     <label for="margin_method" class="control-label">{{ l('Margin calculation method') }}</label>
-                     <div class="form-control" id="margin_method">
-                      <strong>{{ \App\Configuration::get('MARGIN_METHOD') }}</strong> : 
-
-   @if ( \App\Configuration::get('MARGIN_METHOD') == 'CST' )  
-      {{ l('Margin calculation is based on Cost Price', [], 'layouts') }}.
-   @else
-      {{ l('Margin calculation is based on Sales Price', [], 'layouts') }}.
-   @endif
-                        {{-- l (\App\Configuration::get('MARGIN_METHOD'), [], 'appmultilang') --}}
-                      </div>
-                  </div>
-                  <div class="form-group col-lg-3 col-md-3 col-sm-3">
-                     <label for="prices_entered" class="control-label">{{ l('Price input method') }}</label>
-                     <div class="form-control" id="prices_entered">{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
-                                                        l('Prices are entered inclusive of tax', [], 'appmultilang') :
-                                                        l('Prices are entered exclusive of tax', [], 'appmultilang') }}</div>
-                  </div>
-                  <!-- div class="form-group col-lg-3 col-md-3 col-sm-3 { { $errors->has('cost_average') ? 'has-error' : '' } }">
-                     { { l('Average Cost Price') } }
-                     {! ! Form::text('cost_average', null, array('class' => 'form-control', 'id' => 'cost_average')) ! !}
-                     {! ! $errors->first('cost_average', '<span class="help-block">:message</span>') ! !}
-                  </div -->
         </div>
 
         <div class="row">
@@ -264,6 +303,10 @@
 
         $(document).ready(function() {
            $("#cost_price").val({{ old('cost_price', 0.0) }});
+           $("#price").val({{ old('price', 0.0) }});
+           $("#price_tax_inc").val({{ old('price_tax_inc', 0.0) }});
+           $("#price_usd").val({{ old('price_usd', 0.0) }});
+           $("#price_usd_conversion_rate").val({{ old('price_usd', \App\Currency::findByIsoCode('USD')->conversion_rate) }});
            $("#measure_unit_id").val({{ old('measure_unit_id', \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')) }});
 //           $("#quantity_onhand").val( 0 );
           

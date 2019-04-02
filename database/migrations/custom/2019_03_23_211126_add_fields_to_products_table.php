@@ -31,6 +31,12 @@ class AddFieldsToProductsTable extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             //
+            $table->string('name_en', 128)->nullable(true)->after('active');
+
+            $table->decimal('price_usd', 20, 6)->default(0.0)->after('name_en');
+//            $table->decimal('price_usd_tax_inc', 20, 6)->default(0.0);
+
+            $table->decimal('price_usd_conversion_rate', 20, 6)->default(1.0)->after('price_usd');
         });
     }
 

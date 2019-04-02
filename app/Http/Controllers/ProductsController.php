@@ -95,6 +95,16 @@ class ProductsController extends Controller
 
         $action = $request->input('nextAction', '');
 
+
+        if ( \Auth::user()->language->iso_code == 'en' )
+        {
+            if ( !$request->input('name', '') )
+            {
+                $request->merge( ['name' => $request->input('name_en', '')] );
+            }
+        }
+
+
         $rules = Product::$rules['create'];
 
         if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )

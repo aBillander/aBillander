@@ -34,6 +34,18 @@
                     {!! Form::select('measure_unit_id', array('0' => l('-- Please, select --', [], 'layouts')) + $measure_unitList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
+        </div>
+               
+
+        <div class="row">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('name_en') ? 'has-error' : '' }}">
+                     {{ l('Product Name (English)') }}
+                     {!! Form::text('name_en', null, array('class' => 'form-control', 'id' => 'name_en')) !!}
+                     {!! $errors->first('name_en', '<span class="help-block">:message</span>') !!}
+                  </div>
+        </div>
+
+        <div class="row">
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('ean13') ? 'has-error' : '' }}">
                      {{ l('Ean13') }}
                      {!! Form::text('ean13', null, array('class' => 'form-control', 'id' => 'ean13') + $foo) !!}
@@ -51,6 +63,7 @@
                      {!! $errors->first('procurement_type', '<span class="help-block">:message</span>') !!}
                   </div>
 
+{{--
                    <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-phantom_assembly">
                      {!! Form::label('phantom_assembly', l('Phantom Assembly?'), ['class' => 'control-label']) !!}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
@@ -72,6 +85,8 @@
                        </div>
                      </div>
                    </div>
+--}}
+                   {!! Form::hidden('phantom_assembly', null, array('id' => 'phantom_assembly')) !!}
 
         </div>
 

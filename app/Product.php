@@ -101,11 +101,14 @@ class Product extends Model {
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
 
                             'measure_unit_id', 'work_center_id', 'route_notes',
+
+                            'name_en', 'price_usd', 'price_usd_conversion_rate',
                           ];
 
     public static $rules = array(
         'create' => array(
                             'name'         => 'required|min:2|max:128',
+                            'name_en'         => 'nullable|min:2|max:128',
                             'product_type'     => 'required|in:simple,virtual,combinable,grouped',
                             'procurement_type' => 'required|in:purchase,manufacture,none,assembly',
 
@@ -125,6 +128,7 @@ class Product extends Model {
                     ),
         'main_data' => array(
                             'name'        => 'required|min:2|max:128',
+                            'name_en'         => 'nullable|min:2|max:128',
 //                            'reference'   => 'sometimes|required|min:2|max:32|unique:products,reference,',     // https://laracasts.com/discuss/channels/requests/laravel-5-validation-request-how-to-handle-validation-on-update
                             // todo: ean13 unique on update
                             'ean13' => 'nullable|unique:products,ean13', // ,'. $userId.',id',
@@ -281,6 +285,15 @@ class Product extends Model {
         return $value;
     }
 
+    public function getCostAverageAttribute($value)
+    {
+//        $value = $this->cost_average;
+
+        if( \Illuminate\Support\Facades\Auth::guard('salesrep')->check() ) return 0.0;
+
+        return $value;
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -317,6 +330,11 @@ class Product extends Model {
         if ( isset($params['name']) && trim($params['name']) !== '' )
         {
             $query->where('name', 'LIKE', '%' . trim($params['name'] . '%'));
+
+            if ( \Auth::user()->language->iso_code == 'en' )
+            {
+                $query->orWhere('name_en', 'LIKE', '%' . trim($params['name'] . '%'));
+            }
         }
 
         if ( isset($params['stock']) )
@@ -952,6 +970,35 @@ class Product extends Model {
                             $query->where('quantity_onhand', '<=', 0);
                             $query->where('out_of_stock', '<>', 'default');
                             $query->where('out_of_stock', '<>', 'hide');
+                    });
+        });
+
+        return $query;
+    }
+
+
+
+    public function scopeIsOrderable($query) 
+    {
+        // Products with stock
+        $query->where('quantity_onhand', '>', 0);
+
+        $query->orWhere(function ($query) {
+                if ( Configuration::get('ABCC_OUT_OF_STOCK_PRODUCTS') == 'allow' )
+                {
+                    $query->where(function ($query) {
+                            $query->where('quantity_onhand', '<=', 0);
+                            $query->where('out_of_stock', '=', 'default');
+                    });
+                }
+        });
+
+        // return $query;
+
+        $query->orWhere(function ($query) {
+                    $query->where(function ($query) {
+                            $query->where('quantity_onhand', '<=', 0);
+                            $query->where('out_of_stock', 'allow');
                     });
         });
 

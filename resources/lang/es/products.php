@@ -52,6 +52,10 @@ return [
 	'Quantity decimals'     => 'Decimales',
 	'Manufacturing Batch Size'     => 'Lote de Fabricación',
 
+	'The quantity of the product is expressed with these number of decimals.'     => 'La cantidad del producto se expresa con estos decimales.',
+	'The quantity to be manufactured is calculated as a multiple of the Manufacturing Lot.'     => 'La cantidad a fabricar se calcula como múltiplo del Lote de Fabricación.',
+	'Given a Cost Price, changing the Margin, the Selling Price is recalculated. By changing the Sale Price the Margin is recalculated. The value of the Margin will not be saved, since it is calculated from the Sales Price and the Cost Price.'     => 'Dado un Precio de Coste, cambiando el Margen se recalcula el Precio de Venta. Cambiando el Precio de Venta se recalcula el Margen. El valor del Margen no se guardará, ya que se calcula a partir del Precio de Venta y del Precio de Coste.',
+
 
 	/*
 	|--------------------------------------------------------------------------

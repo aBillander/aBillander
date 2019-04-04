@@ -85,6 +85,7 @@ return [
 	'Width'     => 'Anchura',
 	'Height'     => 'Altura',
 	'Depth'     => 'Profundidad',
+	'Volume'     => 'Volumen',
 	'Weight'     => 'Peso',
 	'Warranty period'     => 'Período Garantía',
 	'Measure Unit'     => 'Unidad de Medida',

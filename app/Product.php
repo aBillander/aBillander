@@ -93,7 +93,7 @@ class Product extends Model {
 
                             'supplier_reference', 'supply_lead_time', 'manufacturer_id', 
 
-                            'location', 'width', 'height', 'depth', 'weight', 
+                            'location', 'width', 'height', 'depth', 'volume', 'weight',
 
                             'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 
                             'out_of_stock', 'out_of_stock_text', 'available_for_sale_date',

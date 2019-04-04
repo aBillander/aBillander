@@ -10,6 +10,11 @@ use Illuminate\Database\Migrations\Migration;
 
 // \Artisan::call('migrate', ['--path' => 'database/migrations/custom', '--force'  => true, '--pretend'  => true]);
 
+// Have a look at:
+// https://github.com/ironsharkde/laravel-extendable
+// https://github.com/hilaryosborne/laravel-meta-fields
+
+
               
     
     /**  Billable model

@@ -71,6 +71,7 @@ class CreateProductsTable extends Migration {
 			$table->decimal('width', 20, 6)->nullable()->default(0.0);   // cm
 			$table->decimal('height', 20, 6)->nullable()->default(0.0);
 			$table->decimal('depth', 20, 6)->nullable()->default(0.0);
+            $table->decimal('volume', 20, 6)->nullable()->default(0.0);
 			$table->decimal('weight', 20, 6)->nullable()->default(0.0);  // kg
 
 /*

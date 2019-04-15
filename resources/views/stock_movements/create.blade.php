@@ -76,13 +76,21 @@
         {!! Form::text('quantity', null, array('class' => 'form-control')) !!}
     </div>
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('price', l('Price')) !!}
-        {!! Form::text('price', null, array('class' => 'form-control')) !!}
+        {!! Form::label('price_currency', l('Price')) !!}
+        {!! Form::text('price_currency', null, array('class' => 'form-control')) !!}
     </div>
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('currency_id', l('Currency')) !!}
         {!! Form::select('currency_id', $currencyList, $currency_id, array('class' => 'form-control')) !!}
         {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
+    </div>
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+        {!! Form::label('conversion_rate', l('Exchange rate', 'currencies')) !!} 
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                            data-content="{{ l('This rate is to be defined according to your Company\'s default currency. For example, if the default currency is the Euro, and this currency is Dollar, type "1.31", since 1€ usually is worth $1.31 (at the time of this writing). Use the converter here for help: http://www.xe.com/ucc/.', 'currencies') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+        {!! Form::text('conversion_rate', null, array('class' => 'form-control')) !!}
     </div>
 </div>
         

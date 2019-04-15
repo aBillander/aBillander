@@ -58,6 +58,44 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
+        
+        $category_id = $request->input('category_id', 0);
+        // Not needed: $request->merge( ['category_id' => $category_id] );
+
+        $parentId=0;
+        $breadcrumb = [];
+
+        $categories = \App\Category::with('children')
+//          ->withCount('products')
+            ->where('parent_id', '=', intval($parentId))
+            ->orderBy('name', 'asc')->get();
+
+        if ($category_id>0 && !$request->input('search_status', 0)) {
+            //
+            // abi_r($categories, true);
+
+            $category = $categories->search(function ($item, $key) use ($category_id) {
+                
+                $cat = $item->children;
+
+                $c = $cat->search(function ($item, $key) use ($category_id) {
+                    // abi_r($item->id.' - '.$category_id);
+
+                    return $item->id == $category_id;
+                });
+
+                // Found?
+                return $c !== false;
+            });
+
+            $parent = $categories->slice($category, 1)->first();
+            $child = $parent->children->where('id', $category_id)->first();
+
+            $breadcrumb = [$parent, $child];
+
+            // abi_r($parent->name.' / '.$child->name, true);
+        }
+
         $products = $this->indexQueryRaw( $request )
 //                         ->isManufactured()
                         ;
@@ -70,7 +108,9 @@ class ProductsController extends Controller
 
         $products->setPath('products');     // Customize the URI used by the paginator
 
-        return view('products.index', compact('products'));
+        $bom = $categories;
+
+        return view('products.index', compact('category_id', 'products', 'bom', 'breadcrumb'));
         
     }
 

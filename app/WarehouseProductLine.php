@@ -1,5 +1,7 @@
 <?php
 
+// See: https://pineco.de/easy-role-management-pivot-models/
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;

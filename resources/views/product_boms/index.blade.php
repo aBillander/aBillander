@@ -25,7 +25,7 @@
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{ l('BOM Alias') }}</th>
             <th>{{ l('BOM Name') }}</th>
-            <th>{{ l('Quantity') }}</th>
+            <!-- th>{{ l('Quantity') }}</th -->
             <th>{{ l('Measure Unit') }}</th>
             <th>{{ l('Materials') }}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
@@ -38,7 +38,7 @@
 			<td>{{ $bom->id }}</td>
             <td>{{ $bom->alias }}</td>
             <td>{{ $bom->name }}</td>
-            <td>{{ $bom->as_quantity('quantity') }}</td>
+            <!-- td>{{ $bom->as_quantity('quantity') }}</td -->
             <td>{{ $bom->measureunit->name }}</td>
             <td class="text-center @if (!$bom->BOMlines->count()) {{ 'danger' }} @endif ">{{ $bom->BOMlines->count() }}</td>
             <td class="text-center">

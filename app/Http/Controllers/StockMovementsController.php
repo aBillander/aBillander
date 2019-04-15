@@ -103,7 +103,8 @@ class StockMovementsController extends Controller
 			$combination_id = null;
 		}
 
-		$conversion_rate = \App\Currency::find($request->input('currency_id'))->conversion_rate;
+		$conversion_rate = $request->input('conversion_rate', 0.0);
+		$conversion_rate = $conversion_rate ?: \App\Currency::find($request->input('currency_id'))->conversion_rate;
 
 		$date_raw = $request->input('date');
 		// https://styde.net/componente-carbon-fechas-laravel-5/
@@ -113,16 +114,21 @@ class StockMovementsController extends Controller
 //		abi_r($date_view->toDateTimeString());
 //		abi_r($date_view->toDateString(), true);
  
+		$data      = ['price' => $request->input('price_currency') / $conversion_rate,
+					  'conversion_rate' => $conversion_rate, 
+					  ];
+
+		$request->merge( $data );
+ 
 		$extradata = ['date' =>  $date_view->toDateString(), 
 					  'combination_id' => $combination_id, 
-					  'conversion_rate' => $conversion_rate, 
 //					  'user_id' => \Auth::id()
 					  ];
 
 		$rules = StockMovement::getRules( $request->input('movement_type_id') );
 		if ( !$combination_id ) unset( $rules['combination_id'] );
 
-		$this->validate($request, $rules);
+		$this->validate($request, $rules);	// abi_r($request->all(), true);
 
         // Product
         if ($combination_id>0) {
@@ -140,7 +146,13 @@ class StockMovementsController extends Controller
 
 //		$stockmovement = $this->stockmovement->create( array_merge( $request->all(), $extradata ) );
 //		$stockmovement = $this->stockmovement->createAndProcess( array_merge( $request->all(), $extradata ) );
-		$stockmovement = StockMovement::createAndProcess( array_merge( $request->all(), $extradata ) );
+		# $stockmovement = StockMovement::createAndProcess( array_merge( $request->all(), $extradata ) );
+
+        try {
+            $stockmovement = StockMovement::createAndProcess( array_merge( $request->all(), $extradata ) );
+        } catch (\App\Exceptions\StockMovementException $exception) {
+            return back()->with('error', $exception->getMessage())->withInput();
+        }
 
 
 		// Time savers

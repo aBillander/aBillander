@@ -174,14 +174,14 @@ class CustomerRegisterController extends Controller
             $request->merge( ['name_commercial' => $request->input('address.name_commercial')] );
         }
 
-//        $this->validate($request, Customer::$rules);
+        $this->validate($request, Customer::$rules);
 
         $address['alias'] = l('Main Address', [],'addresses');
         $address['email'] = $request->input('email');
 
         $request->merge( ['address' => $address] );
 
-//        $this->validate($request, Address::related_rules());
+        $this->validate($request, Address::related_rules());
 
         if ( !$request->has('language_id') ) $request->merge( ['language_id' => \App\Configuration::get('DEF_LANGUAGE')] );
 

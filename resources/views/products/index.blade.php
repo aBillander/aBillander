@@ -109,7 +109,7 @@
 </div>
 </div>
 
-
+{{--
 <div id="div_products">
    <div class="table-responsive">
 
@@ -214,8 +214,30 @@
 
    </div>
 </div>
+--}}
 
-@stop
+
+
+<div class="container-fluid">
+   <div class="row">
+
+      <div class="col-lg-3 col-md-3 col-sm-3">
+
+          @include('products._panel_block_category_tree')
+
+      </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
+      
+      <div class="col-lg-9 col-md-9 col-sm-9">
+
+          @include('products._panel_block_products')
+
+      </div><!-- div class="col-lg-8 col-md-8 col-sm-8" -->
+
+   </div>
+</div>
+
+
+@endsection
 
 @include('layouts/modal_delete')
 
@@ -232,7 +254,7 @@ $(document).ready(function() {
 
 </script>
 
-@stop
+@endsection
 
 
 @include('products._modal_view_image')

@@ -13,6 +13,7 @@ return [
 
 	'Products' => 'Productos',
 	'Combinations' => 'Combinaciones',
+	'Products in this Category' => 'Productos en esta Categoría',
 
 	/*
 	|--------------------------------------------------------------------------

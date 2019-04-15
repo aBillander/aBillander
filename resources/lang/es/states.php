@@ -15,6 +15,8 @@ return [
 	'Back to States'     => 'Volver a Estados',
 	'States' => 'Estados',
 
+	'Back to Countries' => 'Volver a Países',
+
 	/*
 	|--------------------------------------------------------------------------
 	| States Language Lines :: create

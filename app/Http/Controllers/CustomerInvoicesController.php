@@ -599,7 +599,7 @@ class CustomerInvoicesController extends BillableController
 
         $document->delete();
 
-        return redirect()->back()
+        return redirect($this->model_path)      // redirect()->back()
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 
@@ -628,7 +628,7 @@ class CustomerInvoicesController extends BillableController
 
         // Confirm
         if ( $document->confirm() )
-        	return redirect()->route($this->model_path.'.index')
+        	return redirect()->back()       // ->route($this->model_path.'.index')
                 	->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 
@@ -646,7 +646,7 @@ class CustomerInvoicesController extends BillableController
         }
 
         // UnConfirm
-        if ( $document->unConfirm() )
+        if ( $document->unConfirmDocument() )
         	return redirect()->back()
                 	->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
@@ -688,7 +688,7 @@ class CustomerInvoicesController extends BillableController
 
         // Close
         if ( $document->close() )
-	        return redirect()->route($this->model_path.'.index')
+	        return redirect()->back()       // ->route($this->model_path.'.index')
 	                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 

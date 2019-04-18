@@ -578,6 +578,8 @@
                         $('#line_combination_id').val(0)
     
                         getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
+    
+                        getProductPriceData( $('#line_product_id').val(), $('#line_combination_id').val(), $("#customer_id").val() );
                     }
 
                     return false;
@@ -669,6 +671,43 @@
                 }
             });
         }
+
+
+        function getProductPriceData( product_id, combination_id, customer_id ) {
+            var token = "{{ csrf_token() }}";
+           
+            var panel = $("#product_price_data");
+
+            panel.addClass('loading');
+
+            $.ajax({
+                url: "{{ route($model_path.'.getproduct.prices') }}",
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'GET',
+                dataType: 'html',
+                data: {
+                    product_id: product_id,
+                    combination_id: combination_id,
+                    customer_id: $("#customer_id").val(),
+                    currency_id: $("#currency_id").val(),
+                    conversion_rate: $("#currency_conversion_rate").val(),
+                    taxing_address_id: $("#taxing_address_id").val()
+                },
+                success: function (response) {
+                    
+                    // if ($.isEmptyObject(response)) alert('Producto vacío!!!');
+                    
+                   panel.html(response);
+                   panel.removeClass('loading');
+                   $("[data-toggle=popover]").popover();
+
+
+
+                    console.log(response);
+                }
+            });
+        }
+
 
 
     </script>

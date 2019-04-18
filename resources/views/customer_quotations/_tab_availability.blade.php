@@ -119,12 +119,12 @@ $(document).ready(function() {
       $('#search_filter').show();
    });
 
+{{--
+    $('#order_date_form').val('{{ abi_date_form_short( 'now' ) }}');
 
-    $('#shippingslip_date_form').val('{{ abi_date_form_short( 'now' ) }}');
-
-    $('#sequence_id').val('{{ $customer->getInvoiceSequenceId() }}');
-    $('#template_id').val('{{ $customer->getInvoiceTemplateId() }}');
-
+    $('#order_sequence_id').val('{{ Configuration::getInt('DEF_CUSTOMER_ORDER_SEQUENCE') }}');
+    $('#order_template_id').val('{{ Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE') }}');
+--}}
 });
 
 </script>

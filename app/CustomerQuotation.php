@@ -14,6 +14,8 @@ class CustomerQuotation extends Billable
 
 
     protected $document_dates = [
+            'valid_until_date',
+            'order_at',
     ];
 
     /**
@@ -24,7 +26,7 @@ class CustomerQuotation extends Billable
      * https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
      */
     protected $document_fillable = [
-            'production_sheet_id'
+            'valid_until_date'
     ];
 
 
@@ -32,6 +34,7 @@ class CustomerQuotation extends Billable
                             'document_date' => 'required|date',
 //                            'payment_date'  => 'date',
                             'delivery_date' => 'nullable|date|after_or_equal:document_date',
+                            'valid_until_date' => 'nullable|date|after_or_equal:document_date',
                             'customer_id' => 'exists:customers,id',
                             'invoicing_address_id' => '',
                             'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
@@ -42,11 +45,11 @@ class CustomerQuotation extends Billable
                             'payment_method_id' => 'nullable|exists:payment_methods,id',
                ];
 
-    public static $rules_createshippingslip = [
-                            'order_id' => 'exists:orders,id',
-                            'shippingslip_date' => 'required|date',
-                            'sequence_id' => 'exists:sequences,id',
-                            'template_id' => 'exists:templates,id',
+    public static $rules_createorder = [
+                            'document_id' => 'exists:customer_quotations,id',
+                            'order_date' => 'required|date',
+                            'order_sequence_id' => 'exists:sequences,id',
+                            'order_template_id' => 'exists:templates,id',
                ];
 
 
@@ -56,22 +59,19 @@ class CustomerQuotation extends Billable
         return $this->status != 'closed';
     }
 
-    // Alias
-    public function getShippingslipAttribute()
+    public function getUncloseableAttribute()
     {
-        return $this->customerShippingSlip();
+        if ( $this->status != 'closed' ) return false;
+
+//        if ( optional($this->rightAscriptions)->count() || optional($this->leftAscriptions)->count() ) return false;
+
+        return true;
     }
 
     // Alias
-    public function getBackorderAttribute()
+    public function getOrderAttribute()
     {
-        return $this->customerbackorder();
-    }
-
-    // Alias
-    public function getBackordereeAttribute()
-    {
-        return $this->customerorder();
+        return $this->customerOrder();
     }
 
 
@@ -155,6 +155,8 @@ class CustomerQuotation extends Billable
 
     public function unclose( $status = null )
     {
+        if ( !$this->uncloseable ) return false;
+        
         if ( ! parent::unclose() ) return false;
 
         // Dispatch event
@@ -201,69 +203,25 @@ class CustomerQuotation extends Billable
         return $this->morphMany('App\DocumentAscription', 'leftable')->orderBy('id', 'ASC');
     }
 
-    public function rightShippingSlipAscriptions( $model = '' )
+    public function rightOrderAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('type', 'traceability')->where('rightable_type', 'App\CustomerShippingSlip');
+        return $this->rightAscriptions->where('type', 'traceability')->where('rightable_type', 'App\CustomerOrder');
     }
 
-    public function rightShippingSlips()
-    {
-        // $ascriptions = $this->rightInvoiceAscriptions();
-
-        // abi_r($ascriptions->pluck('rightable_id')->all(), true);
-
-        return \App\CustomerShippingSlip::find( $this->rightShippingSlipAscriptions()->pluck('rightable_id') );
-    }
-
-    public function customerShippingSlip()
-    {
-        return $this->rightShippingSlips()->first();
-    }
-
-
-
-    public function rightQuotationAscriptions( $model = '' )
-    {
-        return $this->rightAscriptions->where('type', 'backorder')->where('rightable_type', 'App\CustomerQuotation');
-    }
-
-    public function rightQuotations()
+    public function rightOrders()
     {
         // $ascriptions = $this->rightInvoiceAscriptions();
 
         // abi_r($ascriptions->pluck('rightable_id')->all(), true);
 
-        return \App\CustomerQuotation::find( $this->rightQuotationAscriptions()->pluck('rightable_id') );
+        return \App\CustomerOrder::find( $this->rightOrderAscriptions()->pluck('rightable_id') );
     }
 
-    public function customerbackorder()
+    public function customerOrder()
     {
-        return $this->rightQuotations()->first();
+        return $this->rightOrders()->first();
     }
 
-
-
-    public function leftAscriptions()
-    {
-        return $this->morphMany('App\DocumentAscription', 'rightable')->orderBy('id', 'ASC');
-    }
-
-    public function leftQuotationAscriptions( $model = '' )
-    {
-        return $this->leftAscriptions->where('type', 'backorder')->where('leftable_type', 'App\CustomerQuotation');
-    }
-
-    public function leftQuotations()
-    {
-        $ascriptions = $this->leftQuotationAscriptions();
-
-        return \App\CustomerQuotation::find( $ascriptions->pluck('leftable_id') );
-    }
-
-    public function customerorder()
-    {
-        return $this->leftQuotations()->first();
-    }
     
 
 

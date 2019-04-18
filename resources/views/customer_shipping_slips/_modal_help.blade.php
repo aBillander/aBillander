@@ -20,9 +20,21 @@
 
 <p>2.- Modificar la cabecera, añadir / modificar / borrar líneas.</p>
 
-<p>3.- Confirmar el Albarán. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada. Aún es posible modificar la cabecera y las líneas.</p>
+<p>3.- Confirmar el Albarán. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada, y se hace la reserva de Stock. Aún es posible modificar la cabecera y las líneas.</p>
 
-<p>4.- Cerrar el Albarán. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock. Sólo los Albaranes cerrados son visibles por el Cliente en el Centro de Clientes.</p>
+<p>4.- Cerrar el Albarán. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock.</p>
+
+<div class="alert alert-warning">
+    <p><strong>Cómo afecta al Stock</strong></p>
+    <p></p>
+    <p>* Estado “Confirmado”: reserva de Stock.</p>
+    <p></p>
+    <p>* Estado “Cerrado”: se libera la reserva de Stock, y se disminuye el Stock Físico.</p>
+</div>
+
+<div class="alert alert-warning">
+  <p>Sólo los Albaranes cerrados son visibles por el Cliente en el Centro de Clientes.</p>
+</div>
 
 <h3>Estado “Borrador”</h3>
 
@@ -32,7 +44,7 @@
 
 <p>- No se puede enviar por email al Cliente.</p>
 
-<p>- Si el Albarán no tiene al menos una línea, no es posible pasar al estado “Confirmado”.
+<p>- Si el Albarán no tiene al menos una línea, no es posible pasar al estado “Confirmado”.</p>
 
 <p>- No es posible registrar pagos. Si fuera necesario, se hará como un Anticipo en la Cabecera del Albarán.</p>
 

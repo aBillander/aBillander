@@ -356,7 +356,7 @@ class CustomerShippingSlipsController extends BillableController
      * @param  \App\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         $document = $this->document->findOrFail($id);
 
@@ -364,9 +364,14 @@ class CustomerShippingSlipsController extends BillableController
             return redirect()->back()
                 ->with('error', l('This record cannot be deleted because its Status &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 
+        if ($request->input('open_parents', 0))
+        {
+            // Open parent Documents (Purchase orders)
+        }
+
         $document->delete();
 
-        return redirect()->back()
+        return redirect($this->model_path)      // redirect()->back()
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -413,7 +418,7 @@ class CustomerShippingSlipsController extends BillableController
         }
 
         // UnConfirm
-        if ( $document->unConfirm() )
+        if ( $document->unConfirmDocument() )
             return redirect()->back()
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         

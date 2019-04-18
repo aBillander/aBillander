@@ -307,6 +307,40 @@ class BillableController extends Controller
         return response()->json( $data );
     }
 
+    public function getProductPrices(Request $request)
+    {
+        
+        // Request data
+        $product_id      = $request->input('product_id');
+        $combination_id  = $request->input('combination_id');
+        $customer_id     = $request->input('customer_id');
+        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+//        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
+
+ //       return response()->json( [ $product_id, $combination_id, $customer_id, $currency_id ] );
+
+        // Do the Mambo!
+        // Product
+        if ($combination_id>0) {
+            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+        }
+
+        // Customer
+        $customer = \App\Customer::findOrFail(intval($customer_id));
+        
+        // Currency
+        $currency = \App\Currency::findOrFail(intval($currency_id));
+        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
+
+
+        return view($this->view_path.'._form_for_product_prices', $this->modelVars());
+    }
+
     public function getDocumentLine($document_id, $line_id)
     {
         $document_line = $this->document_line

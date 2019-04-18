@@ -36,7 +36,7 @@
 
 <p>- No se puede enviar por email al Cliente.</p>
 
-<p>- Si la Factura no tiene al menos una línea, no es posible pasar al estado “Confirmado”.
+<p>- Si la Factura no tiene al menos una línea, no es posible pasar al estado “Confirmado”.</p>
 
 <p>- No es posible registrar pagos. Si fuera necesario, se hará como un Anticipo en la Cabecera de la Factura.</p>
 

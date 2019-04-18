@@ -47,10 +47,10 @@ class CustomerOrder extends Billable
                ];
 
     public static $rules_createshippingslip = [
-                            'order_id' => 'exists:orders,id',
+                            'document_id' => 'exists:customer_orders,id',
                             'shippingslip_date' => 'required|date',
-                            'sequence_id' => 'exists:sequences,id',
-                            'template_id' => 'exists:templates,id',
+                            'shippingslip_sequence_id' => 'exists:sequences,id',
+                            'shippingslip_template_id' => 'exists:templates,id',
                ];
 
     public static $rules_createorder = [
@@ -110,6 +110,12 @@ class CustomerOrder extends Billable
     public function getAggregateorderbyAttribute()
     {
         return $this->customeraggregateorderby();
+    }
+
+    // Alias
+    public function getQuotationAttribute()
+    {
+        return $this->customerquotation();
     }
 
 
@@ -343,6 +349,26 @@ class CustomerOrder extends Billable
     public function customeraggregateorderby()
     {
         return $this->leftAggregateOrders()->first();
+    }
+
+
+
+
+    public function leftQuotationAscriptions( $model = '' )
+    {
+        return $this->leftAscriptions->where('type', 'traceability')->where('leftable_type', 'App\CustomerQuotation');
+    }
+
+    public function leftQuotations()
+    {
+        $ascriptions = $this->leftQuotationAscriptions();
+
+        return \App\CustomerQuotation::find( $ascriptions->pluck('leftable_id') );
+    }
+
+    public function customerquotation()
+    {
+        return $this->leftQuotations()->first();
     }
     
 

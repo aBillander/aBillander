@@ -22,6 +22,12 @@
             <div class="form-control">{{abi_date_short($document->edocument_sent_at)}}</div>
          </div>
 
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('valid_until_date') ? 'has-error' : '' }}">
+               <label for="valid_until_date_form">{{ l('Valid until') }}</label>
+               {!! Form::text('valid_until_date_form', null, array('class' => 'form-control', 'id' => 'valid_until_date_form', 'autocomplete' => 'off')) !!}
+               {!! $errors->first('valid_until_date', '<span class="help-block">:message</span>') !!}
+         </div>
+
       </div>
       <div class="row">
 

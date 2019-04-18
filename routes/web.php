@@ -324,7 +324,8 @@ foreach ($pairs as $pair) {
         Route::get($path.'/line/commentform/{action}', $controller.'@FormForComment')->name($path.'.commentform');
         Route::get($path.'/line/searchproduct',        $controller.'@searchProduct' )->name($path.'.searchproduct');
         Route::get($path.'/line/searchservice',        $controller.'@searchService' )->name($path.'.searchservice');
-        Route::get($path.'/line/getproduct',           $controller.'@getProduct'    )->name($path.'.getproduct');
+        Route::get($path.'/line/getproduct',           $controller.'@getProduct'      )->name($path.'.getproduct');
+        Route::get($path.'/line/getproduct/prices',    $controller.'@getProductPrices')->name($path.'.getproduct.prices');
 
         // ?? Maybe only for Invoices ??
         Route::get($path.'/{id}/getpayments',          $controller.'@getDocumentPayments' )->name($path.'.getpayments');
@@ -360,6 +361,8 @@ foreach ($pairs as $pair) {
 
         Route::get($path.'/customers/{id}',  $controller.'@indexByCustomer')->name('customer.'.str_replace('customer', '', $path));
 }
+
+        Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');
 
         Route::get('customerorders/pending/today',  'CustomerOrdersController@getTodaysOrders')->name('customerorders.for.today');
 

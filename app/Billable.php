@@ -475,7 +475,20 @@ class Billable extends Model
         // onhold? No problemo
         // if ( $this->onhold ) return false;
 
-        // Not taking care of Secuence numbering
+        // Not taking care of Secuence numbering, but try to save current number
+        // Can I "undo" last number in Sequence
+        $seq_id = $this->sequence_id;
+        $seq = \App\Sequence::find( $seq_id );
+        $next_id = $seq->next_id;
+        $doc_id = $this->document_id;
+
+        if ( ($next_id - $doc_id) == 1 ) {
+        
+                // Update Sequence
+                $seq->next_id = $doc_id;
+        // ???        $seq->last_date_used = \Carbon\Carbon::now();
+                $seq->save();
+        }
 
         // Update Document
         // Not fillable

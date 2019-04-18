@@ -377,7 +377,7 @@ class CustomerOrdersController extends BillableController
 
         $document->delete();
 
-        return redirect()->back()
+        return redirect($this->model_path)      // redirect()->back()
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -406,7 +406,7 @@ class CustomerOrdersController extends BillableController
 
         // Confirm
         if ( $document->confirm() )
-            return redirect()->route($this->model_path.'.index')
+            return redirect()->back()       // ->route($this->model_path.'.index')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 
@@ -424,7 +424,7 @@ class CustomerOrdersController extends BillableController
         }
 
         // UnConfirm
-        if ( $document->unConfirm() )
+        if ( $document->unConfirmDocument() )
             return redirect()->back()
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
@@ -466,7 +466,7 @@ class CustomerOrdersController extends BillableController
 
         // Close
         if ( $document->close() )
-            return redirect()->route($this->model_path.'.index')
+            return redirect()->back()       // ->route($this->model_path.'.index')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 
@@ -680,8 +680,8 @@ class CustomerOrdersController extends BillableController
         // Set params
         $params = [
             'customer_id'   => $customer->id, 
-            'template_id'   => $request->input('template_id'), 
-            'sequence_id'   => $request->input('sequence_id'), 
+            'template_id'   => $request->input('shippingslip_template_id'), 
+            'sequence_id'   => $request->input('shippingslip_sequence_id'), 
             'document_date' => $request->input('shippingslip_date'),
             'backorder'     => $request->input('backorder', Configuration::isTrue('ALLOW_CUSTOMER_BACKORDERS')),
 

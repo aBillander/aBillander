@@ -52,6 +52,8 @@
                   </div>
         </div>
 
+        @include('products._panel_custom_fields')
+
         <div class="row">
         </div>
 

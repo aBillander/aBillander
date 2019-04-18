@@ -364,9 +364,10 @@ class ProductsController extends Controller
 
         $vrules = Product::$rules[ $rules_tab ];
 
-        if ( $product->reference == $request->input('reference')) unset($vrules['reference']);
+//        if ( $product->reference == $request->input('reference')) unset($vrules['reference']);
 //        if ( isset($vrules['reference']) ) $vrules['reference'] .= $product->id;
-        if ( isset($vrules['ean13']) ) $vrules['ean13'] = $vrules['ean13'] . ','. $product->id.',id';  // Unique
+        if ( isset($vrules['reference']) ) $vrules['reference'] = $vrules['reference'] . ','. $product->id.',id,deleted_at,NULL';  // Unique
+        if ( isset($vrules['ean13']) )     $vrules['ean13']     = $vrules['ean13']     . ','. $product->id.',id,deleted_at,NULL';  // Unique
 
         if ($request->input('tab_name') == 'sales') {
             if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )

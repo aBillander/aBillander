@@ -34,7 +34,7 @@
 
 <p>- Se puede borrar el documento.</p>
 
-<p>- Si el Pedido no tiene al menos una línea, no es posible pasar al estado “Confirmado”.
+<p>- Si el Pedido no tiene al menos una línea, no es posible pasar al estado “Confirmado”.</p>
 
 <p>- No es posible registrar pagos. Si fuera necesario, se hará como un Anticipo en la Cabecera del Pedido.</p>
 

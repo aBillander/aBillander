@@ -116,7 +116,7 @@ class Product extends Model {
 
                             'reference'       => 'required|min:2|max:32|unique:products,reference,{$id},id,deleted_at,NULL', 
                             // See: https://wisdmlabs.com/blog/laravel-soft-delete-unique-validations/
-                            'ean13'       => 'nullable|unique:products,ean13',
+                            'ean13'                        => 'nullable|unique:products,ean13,{$id},id,deleted_at,NULL',
                             'measure_unit_id' => 'exists:measure_units,id',
                             'price'         => 'required|numeric|min:0',
                             'price_tax_inc' => 'required|numeric|min:0',
@@ -129,9 +129,9 @@ class Product extends Model {
         'main_data' => array(
                             'name'        => 'required|min:2|max:128',
                             'name_en'         => 'nullable|min:2|max:128',
-//                            'reference'   => 'sometimes|required|min:2|max:32|unique:products,reference,',     // https://laracasts.com/discuss/channels/requests/laravel-5-validation-request-how-to-handle-validation-on-update
-                            // todo: ean13 unique on update
-                            'ean13' => 'nullable|unique:products,ean13', // ,'. $userId.',id',
+                            'reference'   => 'sometimes|required|min:2|max:32|unique:products,reference',     // https://laracasts.com/discuss/channels/requests/laravel-5-validation-request-how-to-handle-validation-on-update
+                            // Reference & ean13 rules for uniqueness are completed on ProductController update method
+                            'ean13'                              => 'nullable|unique:products,ean13', // ,'. $userId.',id',
                             'measure_unit_id' => 'exists:measure_units,id',
                             'category_id' => 'exists:categories,id',
                     ),

@@ -117,16 +117,16 @@
             </div>
          </div>
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('template_id') ? 'has-error' : '' }}">
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shippingslip_template_id') ? 'has-error' : '' }}">
             {{ l('Template') }}
-            {!! Form::select('template_id', $templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
-            {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
+            {!! Form::select('shippingslip_template_id', $templateList, null, array('class' => 'form-control', 'id' => 'shippingslip_template_id')) !!}
+            {!! $errors->first('shippingslip_template_id', '<span class="help-block">:message</span>') !!}
          </div>
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shippingslip_sequence_id') ? 'has-error' : '' }}">
             {{ l('Sequence') }}
-            {!! Form::select('sequence_id', $sequenceList, old('sequence_id'), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
-            {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
+            {!! Form::select('shippingslip_sequence_id', $sequenceList, old('shippingslip_sequence_id'), array('class' => 'form-control', 'id' => 'shippingslip_sequence_id')) !!}
+            {!! $errors->first('shippingslip_sequence_id', '<span class="help-block">:message</span>') !!}
          </div>
 
 </div>

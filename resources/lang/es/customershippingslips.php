@@ -322,4 +322,6 @@ return [
 	'Create Invoice'     => 'Crear Factura',
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
 
+	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
+
 ];

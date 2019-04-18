@@ -34,6 +34,8 @@
                     <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', [], 'layouts')}}" style="background-color: #31b0d5;
 border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu pull-right">
+                      <li><a href="{{ route('customer.quotations', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Quotations', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
                       <li><a href="{{ route('customer.orders', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Orders', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('customer.shippingslips', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', [], 'layouts')}}</a></li>

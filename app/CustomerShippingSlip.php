@@ -69,7 +69,25 @@ class CustomerShippingSlip extends Billable
 
     public function getDeletableAttribute()
     {
-        return $this->status != 'closed' && !$this->invoiced_at;
+        return $this->status != 'closed' && !$this->invoiced_at && $this->rightAscriptions->isEmpty();
+    }
+
+    public function getUncloseableAttribute()
+    {
+        if ( $this->status != 'closed' ) return false;
+
+        if ( ! $this->rightAscriptions->isEmpty() ) return false;
+
+        return true;
+    }
+
+    public function getUnconfirmableAttribute()
+    {
+        if ( $this->status != 'confirmed' ) return false;
+
+        if ( optional($this->rightAscriptions)->count() || optional($this->leftAscriptions)->count() ) return false;
+
+        return true;
     }
 
     // Alias

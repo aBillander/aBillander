@@ -314,7 +314,11 @@ return [
 	''     => '',
 	''     => '',
 
-	'Create Invoice'     => 'Crear Factura',
-	'Order: :id [:date]'     => 'Presupuesto: :id [:date]',
+	'Create Order'     => 'Crear Pedido',
+	'Quotation: :id [:date]'     => 'Presupuesto: :id [:date]',
+
+	'Make Order' => 'Crear Pedido',
+
+	'Valid until' => 'Válido hasta',
 
 ];

@@ -22,6 +22,8 @@ class CreateCustomerQuotationsTable extends Migration
             }
             
             $table->date('valid_until_date')->nullable();
+            
+            $table->dateTime('order_at')->nullable();
 
 
             $table->tinyInteger('prices_entered_with_tax')->default(0);         // See: PRICES_ENTERED_WITH_TAX; Maybe not needed here (stored for every invoice)

@@ -1,5 +1,5 @@
 
-<div class="page-header">
+<div xclass="page-header">
     <div class="pull-right" xstyle="padding-top: 4px;">
 
     </div>

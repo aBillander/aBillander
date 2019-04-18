@@ -44,7 +44,7 @@
                     <ul class="dropdown-menu" role="menu">
                          <li>
                             <a href="{{ URL::to('customerquotations') }}">
-                                 <i class="fa fa-exclamation-triangle btn-xs btn-danger"></i> 
+                                 <!-- i class="fa fa-exclamation-triangle btn-xs btn-danger"></i --> 
                                  {{l('Quotations', [], 'layouts')}}
                             </a>
                         </li>

@@ -139,6 +139,12 @@
                  </div>
         </div>
 
+<div id="product_price_data">
+  
+{{-- Product price data here (Ajax loaded) --}}
+
+</div>
+
         <div class="row">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('line_notes') ? 'has-error' : '' }}">
                      {{ l('Notes', [], 'layouts') }}

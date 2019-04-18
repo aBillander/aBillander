@@ -10,7 +10,13 @@
             <div class="pull-right">
 
 @if ( $document->status == 'closed' )
-                <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-lock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
+                <button type="button" class="btn btn-sm alert-danger" title="{{l('Document closed', 'layouts')}}" style="margin-right: 16px">
+                    <i class="fa fa-lock"></i>
+                </button>
+
+    @if ( $document->uncloseable )
+                <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
+    @endif
 @else
                 <a class="btn btn-sm alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a>
 
@@ -23,22 +29,33 @@
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 
-@if ($document->onhold>0)
-                <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
+@if ( $document->status != 'closed' )
+    @if ($document->onhold>0)
+                    <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
+    @else
+                    <a class="btn btn-sm alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
+    @endif
 @else
-                <a class="btn btn-sm alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
 
-                @if ( $document->status == 'closed'&& !$document->invoiced_at)
-                <a class="btn btn-sm btn-navy" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
-                </a>
-                @endif
+                    @if ( $document->status == 'closed' && !$document->invoiced_at)
+                    <a class="btn btn-sm btn-navy" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
+                    </a>
+                    @endif
 @endif
+
+                @if( $document->deletable )
+                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                    href="{{ URL::to($model_path.'/' . $document->id ) }}" 
+                    data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
+                    data-title="{{ l('Documents') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
+                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+                @endif
 
 
                 <div class="btn-group">
                     <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Back to', 'layouts')}}"><i class="fa fa-mail-reply"></i> &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu  pull-right">
-                      <li><a href="{{ URL::to($model_path.'') }}">{{l('Back to Documents')}}</a></li>
+                      <li><a href="{{ URL::to($model_path.'') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
                       <li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Group Shipping Slips')}}</a></li>
                       <li><a href="{{ route('customer.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', 'layouts')}}</a></li>
                       <!-- li class="divider"></li -->
@@ -76,14 +93,14 @@
                    &nbsp; 
                     @if ($document->document_id>0)
                     {{ $document->document_reference }}
-                              @if ( $document->sequence )
-                              @if ( $document->status == 'confirmed' )
-                              @if ( ($document->sequence->next_id - $document->document_id) == 1 )
+
+                              @if ( $document->unconfirmable )
+
                                   <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unconfirm') }}" title="{{l('Undo Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
                                   </a>
+
                               @endif
-                              @endif
-                              @endif
+
                     @else
                     <a class="btn xbtn-xs alert-warning" href="{{ URL::to($model_path.'/' . $document->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
                     <span xclass="label label-default">{{ l('Draft', 'layouts') }}</span>
@@ -116,6 +133,8 @@
    </div>
 </div>
 @endsection
+
+@include($view_path.'._modal_delete')
 
 
 

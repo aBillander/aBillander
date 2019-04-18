@@ -5,7 +5,7 @@
 
 Route::group([
 
-	'middleware' =>  ['web', 'auth'],
+	'middleware' =>  ['web', 'auth', 'context'],
 	'namespace' => 'Queridiam\FSxConnector\Http\Controllers',
 	'prefix'    => 'fsx'
 

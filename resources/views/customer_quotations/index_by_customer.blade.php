@@ -9,7 +9,7 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <a href="{{ route('customershippingslips.create.withcustomer', $customer->id) }}" class="btn btn-sm btn-success" 
+        <a href="{{ route('customerquotations.create.withcustomer', $customer->id) }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
     </div>
@@ -62,7 +62,7 @@
             <th class="text-left">{{ l('ID', 'layouts') }}</th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
-            <th class="text-left">{{ l('Delivery Date') }}</th>
+            <th class="text-left">{{ l('Valid until') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
@@ -100,7 +100,7 @@
                 
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
-            <td>{{ abi_date_short($document->delivery_date) }}</td>
+            <td>{{ abi_date_short($document->valid_until_date) }}</td>
             <td>
                 @if ( $document->hasShippingAddress() )
 

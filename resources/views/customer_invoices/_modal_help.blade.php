@@ -20,13 +20,32 @@
 
 <p>2.- Modificar la cabecera, añadir / modificar / borrar líneas.</p>
 
-<p>3.- Confirmar la Factura. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada. Aún es posible modificar la cabecera y las líneas.</p>
+<p>3.- Confirmar la Factura. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada, y se hace la reserva de Stock. Aún es posible modificar la cabecera y las líneas.</p>
 
-<p>4.- Cerrar la Factura. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock, se calculan los vencimientos, según la forma de pago de la factura, y se actualiza el riesgo del Cliente. Sólo las Facturas cerradas son visibles por el Cliente en el Centro de Clientes.</p>
+<p>4.- Cerrar la Factura. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock, se calculan los vencimientos, según la forma de pago de la factura, y se actualiza el riesgo del Cliente.</p>
 
 <p>5.- Pagar completamente la Factura. El estado del Documento pasa a <strong>“Archivado”</strong>.</p>
 
 <p>6.- Impago de la Factura. El estado del Documento pasa a <strong>“Pago Dudoso”</strong>.</p>
+
+<div class="alert alert-warning">
+    <p><strong>Cómo afecta al Stock</strong></p>
+    <p></p>
+    <p>* Estado “Confirmado”: reserva de Stock.</p>
+    <p></p>
+    <p>* Estado “Cerrado”: se libera la reserva de Stock, y se disminuye el Stock Físico.</p>
+    <p></p>
+    <p></p>
+
+<div class="alert alert-danger">
+    <p>Si la Factura se creó a partir de uno o más Albaranes, entonces no tendrá incidencia sobre el Stock Físico, ni tampoco sobre el Stock Reservado, ya que estas acciones ya las realizaron los Albaranes.</p>
+</div>
+
+</div>
+
+<div class="alert alert-warning">
+  <p>Sólo las Facturas cerradas, así como sus Vencimientos correspondientes, son visibles por el Cliente en el Centro de Clientes.</p>
+</div>
 
 <h3>Estado “Borrador”</h3>
 
@@ -36,7 +55,7 @@
 
 <p>- No se puede enviar por email al Cliente.</p>
 
-<p>- Si la Factura no tiene al menos una línea, no es posible pasar al estado “Confirmado”.
+<p>- Si la Factura no tiene al menos una línea, no es posible pasar al estado “Confirmado”.</p>
 
 <p>- No es posible registrar pagos. Si fuera necesario, se hará como un Anticipo en la Cabecera de la Factura.</p>
 

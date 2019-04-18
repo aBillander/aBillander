@@ -8,7 +8,7 @@
     <div id="div_bom_tree">
        <div class="table-responsive">
 
-    <table id="bom_tree" class="table table-hover tree"  xclass="table table-hover tree tree-2 table-bordered table-striped table-condensed">
+    <table id="bom_tree" class="table table-hover tree hide"  xclass="table table-hover tree tree-2 table-bordered table-striped table-condensed">
         <thead>
             <tr>
                 <th class="text-left">{{-- l('Position', [], 'layouts') --}}</th>
@@ -81,6 +81,8 @@
 //        @ if ( count($breadcrumb) )
 //            $("treegrid-parent-" . $breadcrumb[0]->id).treegrid('expandRecursive');
 //        @ endif
+
+    $("#bom_tree").removeClass('hide');
     });
 
 </script>

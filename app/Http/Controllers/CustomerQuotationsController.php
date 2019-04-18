@@ -18,6 +18,10 @@ use App\CustomerInvoiceLineTax;
 use App\CustomerShippingSlip;
 use App\CustomerShippingSlipLine;
 use App\CustomerShippingSlipLineTax;
+
+use App\CustomerOrder;
+use App\CustomerOrderLine;
+use App\CustomerOrderLineTax;
 use App\DocumentAscription;
 
 use App\Configuration;
@@ -167,7 +171,7 @@ class CustomerQuotationsController extends BillableController
     public function store(Request $request)
     {
         // Dates (cuen)
-        $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
+        $this->mergeFormDates( ['document_date', 'delivery_date', 'valid_until_date'], $request );
 
         $rules = $this->document::$rules;
 
@@ -272,7 +276,7 @@ class CustomerQuotationsController extends BillableController
         }
 
         // Dates (cuen)
-        $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
+        $this->addFormDates( ['document_date', 'delivery_date', 'export_date', 'valid_until_date'], $document );
 
         return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList'));
     }
@@ -284,10 +288,10 @@ class CustomerQuotationsController extends BillableController
      * @param  \App\CustomerQuotation  $customerorder
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Document $customerorder)
+    public function update(Request $request, Document $customerquotation)
     {
         // Dates (cuen)
-        $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
+        $this->mergeFormDates( ['document_date', 'delivery_date', 'valid_until_date'], $request );
 
         $rules = $this->document::$rules;
 
@@ -313,7 +317,7 @@ class CustomerQuotationsController extends BillableController
 
         $request->merge( $extradata );
 */
-        $document = $customerorder;
+        $document = $customerquotation;
 
         $document->fill($request->all());
 
@@ -370,7 +374,7 @@ class CustomerQuotationsController extends BillableController
 
         $document->delete();
 
-        return redirect()->back()
+        return redirect($this->model_path)      // redirect()->back()
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -399,7 +403,7 @@ class CustomerQuotationsController extends BillableController
 
         // Confirm
         if ( $document->confirm() )
-            return redirect()->route($this->model_path.'.index')
+            return redirect()->back()       // ->route($this->model_path.'.index')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 
@@ -417,7 +421,7 @@ class CustomerQuotationsController extends BillableController
         }
 
         // UnConfirm
-        if ( $document->unConfirm() )
+        if ( $document->unConfirmDocument() )
             return redirect()->back()
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
@@ -459,7 +463,7 @@ class CustomerQuotationsController extends BillableController
 
         // Close
         if ( $document->close() )
-            return redirect()->route($this->model_path.'.index')
+            return redirect()->back()       // ->route($this->model_path.'.index')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         
 
@@ -888,15 +892,15 @@ class CustomerQuotationsController extends BillableController
                 $line->quantity_onhand = $line->quantity;
             }
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerShippingSlip' );
+        $sequenceList = Sequence::listFor( 'App\\CustomerOrder' );
 
-        $templateList = Template::listFor( 'App\\CustomerShippingSlip' );
+        $templateList = Template::listFor( 'App\\CustomerOrder' );
 
         return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document', 'sequenceList', 'templateList', 'onhand_only'));
     }
 
 
-    public function createSingleShippingSlip( Request $request )
+    public function createSingleOrder( Request $request )
     {
         $document = $this->document
                             ->with('customer')
@@ -904,45 +908,32 @@ class CustomerQuotationsController extends BillableController
                             ->findOrFail( $request->input('document_id') );
         
         $customer = $document->customer;
-
-        $dispatch = $request->input('dispatch', []);
-
-        // To do: check document status ???
-
-        if ( count( $dispatch ) == 0 ) 
-            return redirect()->route($this->model_path.'/'.$document->id.'/edit')
-                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
         
         // Dates (cuen)
-        $this->mergeFormDates( ['shippingslip_date'], $request );
+        $this->mergeFormDates( ['order_date'], $request );
 
-        $rules = $this->document::$rules_createshippingslip;
+        $rules = $this->document::$rules_createorder;
 
         $this->validate($request, $rules);
 
-        // Set params
-        $params = [
-            'customer_id'   => $customer->id, 
-            'template_id'   => $request->input('template_id'), 
-            'sequence_id'   => $request->input('sequence_id'), 
-            'document_date' => $request->input('shippingslip_date'),
-            'backorder'     => $request->input('backorder', Configuration::isTrue('ALLOW_CUSTOMER_BACKORDERS')),
-
-            'dispatch'      => $request->input('dispatch', []), 
-        ];
-
         // Header
+        $shipping_method_id = $document->shipping_method_id ?? 
+                              $customer->getShippingMethodId();
+
+        $shipping_method = \App\ShippingMethod::find($shipping_method_id);
+        $carrier_id = $shipping_method ? $shipping_method->carrier_id : null;
+
         // Common data
         $data = [
 //            'company_id' => $this->company_id,
             'customer_id' => $customer->id,
 //            'user_id' => $this->,
 
-            'sequence_id' => $params['sequence_id'],
+            'sequence_id' => $request->input('order_sequence_id') ?? Configuration::getInt('DEF_CUSTOMER_ORDER_SEQUENCE'),
 
-            'created_via' => 'aggregate_orders',
+            'created_via' => 'quotation',
 
-            'document_date' => $params['document_date'],
+            'document_date' => $request->input('order_date') ?? \Carbon\Carbon::now(),
 
             'currency_conversion_rate' => $document->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
@@ -959,17 +950,18 @@ class CustomerQuotationsController extends BillableController
             // Skip notes
 
             'status' => 'draft',
+            'onhold' => 0,
             'locked' => 0,
 
-            'invoicing_address_id' => $document->invoicing_address_id,
-//            'shipping_address_id' => $this->shipping_address_id,
-//            'warehouse_id' => $this->warehouse_id,
-//            'shipping_method_id' => $this->shipping_method_id ?? $this->customer->shipping_method_id ?? Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD'),
-//            'carrier_id' => $this->carrier_id,
+            'invoicing_address_id' => $document->invoicing_address_id ?? $customer->invoicing_address_id,
+            'shipping_address_id' => $document->shipping_address_id ?? $customer->shipping_address_id,
+            'warehouse_id' => $document->warehouse_id ?? Configuration::getInt('DEF_WAREHOUSE'),
+            'shipping_method_id' => $shipping_method_id,
+            'carrier_id' => $carrier_id,
             'sales_rep_id' => $document->sales_rep_id,
             'currency_id' => $document->currency->id,
             'payment_method_id' => $document->payment_method_id,
-            'template_id' => $params['template_id'],
+            'template_id' => $request->input('order_template_id') ?? Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE'),
         ];
 
         // Model specific data
@@ -982,7 +974,7 @@ class CustomerQuotationsController extends BillableController
 
         // Let's get dirty
 //        CustomerInvoice::unguard();
-        $shippingslip = CustomerShippingSlip::create( $data + $extradata );
+        $order = CustomerOrder::create( $data + $extradata );
 //        CustomerInvoice::reguard();
 
 
@@ -1008,7 +1000,7 @@ class CustomerQuotationsController extends BillableController
             $line_data = [
                 'line_sort_order' => $i*10, 
                 'line_type' => 'comment', 
-                'name' => l('Order: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]),
+                'name' => l('Quotation: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]),
 //                'product_id' => , 
 //                'combination_id' => , 
                 'reference' => $document->document_reference, 
@@ -1020,8 +1012,8 @@ class CustomerQuotationsController extends BillableController
 //                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
 //                    'unit_final_price', 'unit_final_price_tax_inc', 
 //                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
-                'total_tax_incl' => $document->total_currency_tax_incl, 
-                'total_tax_excl' => $document->total_currency_tax_excl, 
+                'total_tax_incl' => 0, 
+                'total_tax_excl' => 0, 
 //                    'tax_percent', 'commission_percent', 
                 'notes' => '', 
                 'locked' => 0,
@@ -1030,9 +1022,9 @@ class CustomerQuotationsController extends BillableController
  //               'sales_rep_id'
             ];
 
-            $shippingslip_line = CustomerShippingSlipLine::create( $line_data );
+            $order_line = CustomerOrderLine::create( $line_data );
 
-            $shippingslip->lines()->save($shippingslip_line);
+            $order->lines()->save($order_line);
 
             // Need Backorder? We'll see in a moment:
             $need_backorder = false;
@@ -1043,7 +1035,7 @@ class CustomerQuotationsController extends BillableController
                 # code...
                 $i++;
 
-                // $shippingslip_line = $line->toInvoiceLine();
+                // $order_line = $line->toInvoiceLine();
 
                 // Common data
                 $data = [
@@ -1062,13 +1054,7 @@ class CustomerQuotationsController extends BillableController
                 // Sort order
                 $data['line_sort_order'] = $i*10; 
                 // Quantity
-                if ( array_key_exists($line->id, $dispatch) && ( $dispatch[$line->id] < $line->quantity ) )
-                {
-                    $data['quantity'] = $dispatch[$line->id];
-
-                    $need_backorder = true;
-                    $bo_quantity[$line->id] = $line->quantity - $dispatch[$line->id];
-                }
+                // $data['quantity'] = $dispatch[$line->id];
                 // Locked 
                 $data['locked'] = 1; 
 
@@ -1081,29 +1067,33 @@ class CustomerQuotationsController extends BillableController
 
 
                 // Let's get dirty
-                CustomerShippingSlipLine::unguard();
-                $shippingslip_line = CustomerShippingSlipLine::create( $data + $extradata );
-                CustomerShippingSlipLine::reguard();
+                CustomerOrderLine::unguard();
+                $order_line = CustomerOrderLine::create( $data + $extradata );
+                CustomerOrderLine::reguard();
 
-                $shippingslip->lines()->save($shippingslip_line);
+                $order->lines()->save($order_line);
             }
 
             // Update lines
-            $shippingslip->load(['lines']);
+            $order->load(['lines']);
 
-            foreach ($shippingslip->lines as $line) {
+            foreach ($order->lines as $line) {
 
 //                if ($line->line_type == 'comment')                   continue;
 
-                $shippingslip->updateLine( $line->id, [ 'line_type' => $line->line_type, 'unit_customer_final_price' => $line->unit_customer_final_price ] );
+                $order->updateLine( $line->id, [ 'line_type' => $line->line_type, 'unit_customer_final_price' => $line->unit_customer_final_price ] );
             }
 
 
 
             // Not so fast, Sony Boy
 
-            // Confirm Shipping Slip
-            $shippingslip->confirm();
+            // Confirm Order
+            $order->confirm();
+
+            // Final touches
+            $document->order_at = \Carbon\Carbon::now();
+            $document->save();      // Maybe not needed, because we are to close 
 
             // Close Quotation
             $document->confirm();
@@ -1117,8 +1107,8 @@ class CustomerQuotationsController extends BillableController
                 'leftable_id'    => $document->id,
                 'leftable_type'  => $document->getClassName(),
 
-                'rightable_id'   => $shippingslip->id,
-                'rightable_type' => CustomerShippingSlip::class,
+                'rightable_id'   => $order->id,
+                'rightable_type' => CustomerOrder::class,
 
                 'type' => 'traceability',
                 ];
@@ -1128,105 +1118,9 @@ class CustomerQuotationsController extends BillableController
 
         // Good boy, so far
 
-        // Backorder stuff
-        if ( $need_backorder && $params['backorder'] )
-        {
-            // Create Backorder now!
-
-/*
-    Header
-*/
-
-        // Duplicate
-        $clone = $document->replicate();
-
-        // Extra data
-        $seq = Sequence::findOrFail( $document->sequence_id );
-
-        $clone->user_id              = \App\Context::getContext()->user->id;
-
-        $clone->document_reference = null;
-        $clone->reference = '';
-        $clone->reference_customer = '';
-        $clone->reference_external = '';
-
-        $clone->created_via          = 'backorder';
-        $clone->status               = 'draft';
-        $clone->locked               = 0;
-        
-        $clone->document_date = \Carbon\Carbon::now();
-        $clone->payment_date = null;
-        $clone->validation_date = null;
-        $clone->delivery_date = null;
-        $clone->delivery_date_real = null;
-        $clone->close_date = null;
-        
-        $clone->tracking_number = null;
-
-        $clone->parent_document_id = null;
-
-        $clone->production_sheet_id = null;
-        $clone->export_date = null;
-        
-        $clone->secure_key = null;
-        $clone->import_key = '';
 
 
-        $clone->save();
-
-/*
-    Backorder lines
-*/
-
-
-        // Duplicate Lines
-        foreach ($document->lines as $line) {
-
-            if ( !array_key_exists($line->id, $bo_quantity) )
-                continue;
-
-            $clone_line = $line->replicate();
-
-            $clone->lines()->save($clone_line);
-
-            $clone->updateProductLine( $clone_line->id, [ 'quantity' => $bo_quantity[$line->id] ] );
-        }
-
-        // Save Customer document
-        $clone->push();
-
-        // Good boy:
-        $clone->confirm();
-
-
-        $document->backordered_at = \Carbon\Carbon::now();
-        $document->save();
-
-            // Document traceability
-            //     leftable  is this document
-            //     rightable is Customer Shipping Slip Document
-            $link_data = [
-                'leftable_id'    => $document->id,
-                'leftable_type'  => $document->getClassName(),
-
-                'rightable_id'   => $clone->id,
-                'rightable_type' => $document->getClassName(),
-
-                'type' => 'backorder',
-                ];
-
-            $link = DocumentAscription::create( $link_data );
-
-            
-            return redirect('customershippingslips/'.$shippingslip->id.'/edit')
-                    ->with('warning', l('This record has been successfully created &#58&#58 (:id) '.'[ '.l('Backorder').' ]', ['id' => $clone->id], 'layouts'))
-                    ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
-
-
-        }   // // Backorder stuff ENDS
-
-
-        return redirect('customershippingslips/'.$shippingslip->id.'/edit')
+        return redirect('customerorders/'.$order->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     } 
 

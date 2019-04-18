@@ -17,7 +17,7 @@ Route::group([
 
 Route::group([
 
-	'middleware' =>  ['web', 'auth'],
+	'middleware' =>  ['web', 'auth', 'context'],
 	'namespace' => 'aBillander\WooConnect\Http\Controllers',
 	'prefix'    => 'wooc'
 

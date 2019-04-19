@@ -73,7 +73,7 @@
     </div>
 
 
-
+    @if ($document->lines->count())
 
 
 {!! Form::open( ['method' => 'POST', 'id' => 'form-quantity-selector'] ) !!}
@@ -153,4 +153,4 @@
 
 {!! Form::close() !!}
 
-
+    @endif

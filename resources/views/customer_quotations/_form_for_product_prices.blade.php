@@ -1,72 +1,50 @@
 
-<div class="xpanel-body well" style="margin-top: 10px">
-
-<div class="row">
-
-         <div class="col-lg-6 col-md-6 col-sm-6 ">
-
-                  <h4>
-                      <span style="color: #dd4814;">{{ l('Prices by Price List') }}</span> <!-- span style="color: #cccccc;">/</span>  -->
-                       
-                  </h4>
-
-					<div class="row">
-
-					         <div class="col-lg-4 col-md-4 col-sm-4 ">
-					            <div class="form-group">
-
-					        Info here
-					               
-					            </div>
-					         </div>
-
-					</div>
-            
-         </div>
-
-         <div class="col-lg-6 col-md-6 col-sm-6 ">
-
-                  <h4>
-                      <span style="color: #dd4814;">{{ l('Price Rules') }}</span> <!-- span style="color: #cccccc;">/</span>  -->
-                       
-                  </h4>
-
-					<div class="row">
-
-					         <div class="col-lg-4 col-md-4 col-sm-4 ">
-					            <div class="form-group">
-
-					        Info here
-					               
-					            </div>
-					         </div>
-
-					</div>
-            
-         </div>
-
-</div>
+<div class="xpanel-body well" style="margin-top: 10px;margin-bottom: 20px;">
 
 <div class="row">
 
          <div class="col-lg-12 col-md-12 col-sm-12 ">
 
-                  <h4>
-                      <span style="color: #dd4814;">{{ l('Last Sales') }}</span> <!-- span style="color: #cccccc;">/</span>  -->
+                  <!-- h4>
+                      <span style="color: #dd4814;">{{ l('Prices by Price List') }}</span> < ! - - span style="color: #cccccc;">/</span>  - - >
                        
-                  </h4>
+                  </h4 -->
 
-					<div class="row">
+					        @include('customer_quotations._chunck_prices_by_pricelist')
+            
+         </div>
+{{--
+         <div class="col-lg-6 col-md-6 col-sm-6 ">
 
-					         <div class="col-lg-4 col-md-4 col-sm-4 ">
-					            <div class="form-group">
+					        @include('customer_quotations._chunck_prices_rules')
+            
+         </div>
+--}}
+</div>
 
-					        Info here
-					               
-					            </div>
-					         </div>
 
-					</div>
+</div><!-- div class="xpanel-body well" style="margin-top: 10px" ENDS -->
+<div class="xpanel-body well" style="margin-top: 10px;margin-bottom: 20px;">
+
+<div class="row">
+
+         <div class="col-lg-12 col-md-12 col-sm-12 ">
+
+					        @include('customer_quotations._chunck_prices_rules')
+            
+         </div>
+
+</div>
+
+
+</div><!-- div class="xpanel-body well" style="margin-top: 10px" ENDS -->
+<div class="xpanel-body well" style="margin-top: 10px;margin-bottom: 20px;">
+
+<div class="row">
+
+         <div class="col-lg-12 col-md-12 col-sm-12 ">
+
+					        @include('customer_quotations._chunck_prices_recent_sales')
             
          </div>
 

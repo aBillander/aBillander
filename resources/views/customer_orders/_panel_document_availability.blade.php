@@ -99,6 +99,8 @@
     </div>
 
 
+    @if ($document->lines->count())
+    
 
               <div class="panel-body well" style="margin-top: 30px">
 
@@ -166,5 +168,6 @@
 
                   </div>
 
+    @endif
 
 {!! Form::close() !!}

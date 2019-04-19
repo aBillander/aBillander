@@ -330,15 +330,74 @@ class BillableController extends Controller
             $product = \App\Product::with('tax')->findOrFail(intval($product_id));
         }
 
+        $category_id = $product->category_id;
+
         // Customer
         $customer = \App\Customer::findOrFail(intval($customer_id));
+        $customer_group_id = $customer->customer_group_id;
         
         // Currency
         $currency = \App\Currency::findOrFail(intval($currency_id));
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
+        // Pricelists
+        $pricelists = $product->pricelists; //  \App\PriceList::with('currency')->orderBy('id', 'ASC')->get();
 
-        return view($this->view_path.'._form_for_product_prices', $this->modelVars());
+        // Price Rules
+
+        $customer_rules = \App\PriceRule::
+//                                  where('customer_id', $customer->id)
+                                  where(function($q) use ($customer_id, $customer_group_id) {
+
+                                    $q->where('customer_id', $customer_id);
+
+                                    $q->orWhere('customer_group_id', NULL);
+
+                                    $q->orWhere('customer_group_id', 0);
+
+                                    if ( $customer_group_id > 0 )
+                                    $q->orWhere('customer_group_id', $customer_group_id);
+
+                                })
+                                ->where(function($q) use ($product_id, $category_id) {
+
+                                    $q->where('product_id', $product_id);
+
+                                    // $q->orWhere('category_id', NULL);
+
+                                    // $q->orWhere('category_id', 0);
+
+                                    if ( $category_id > 0 )
+                                    $q->orWhere('category_id', $category_id);
+
+                                })
+                                ->with('category')
+                                ->with('product')
+                                ->with('combination')
+                                ->with('customergroup')
+                                ->with('currency')
+                                ->orderBy('product_id', 'ASC')
+                                ->orderBy('customer_id', 'ASC')
+                                ->orderBy('from_quantity', 'ASC')
+                                ->take(7)->get();
+
+        // Recent Sales
+        $lines = \App\CustomerOrderLine::where('product_id', $product->id)
+                            ->with(["document" => function($q){
+                                $q->where('customerorders.customer_id', $customer->id);
+                            }])
+                            ->with('document')
+                            ->with('document.customer')
+//                            ->whereHas('document', function($q) use ($id) {
+//                                    $q->where('customer_id', $id);
+//                                })
+                            ->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
+                            ->select('customer_order_lines.*', 'customer_orders.document_date', \DB::raw('"customerorders" as route'))
+                            ->orderBy('customer_orders.document_date', 'desc')
+                            ->take(7)->get();
+
+
+        return view($this->view_path.'._form_for_product_prices', $this->modelVars() + compact('product', 'pricelists', 'customer_rules', 'lines'));
     }
 
     public function getDocumentLine($document_id, $line_id)

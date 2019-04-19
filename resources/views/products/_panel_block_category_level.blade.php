@@ -24,10 +24,24 @@
                 <!-- td style="padding-left: {{$pad}}px;">{{ $parent_node_id }} - {{ $node_id }} - {{ $line->line_sort_order }}</td -->
 @if ($parent_node_id>0)
                 <td>
+@php
+
+$max=24;
+
+$l = strlen($line->name);
+if ($l>$max)
+{
+    $line_name = substr($line->name, 0, $max).'...';
+} else {
+    $line_name = $line->name;
+}
+
+@endphp
                     @if ( $line->id == $category_id )
-                        <i class="fa fa-mail-forward"></i> <a class="" href="{{ route('products.index', ['search_status' => 0, 'category_id' => $line->id]) }}" title="{{l('View', [], 'layouts')}}"> <em>{{ $line->name }}</em> </a>
+                        <i class="fa fa-mail-forward"></i> 
+                        <a class="" xstyle="display: inline-block;overflow: hidden;max-height: 16px !important; max-width: 182px !important;"  href="{{ route('products.index', ['search_status' => 0, 'category_id' => $line->id]) }}" title=""> <em>{{ $line_name }}</em> </a>
                     @else
-                        <a class="" href="{{ route('products.index', ['search_status' => 0, 'category_id' => $line->id]) }}" title="{{l('View', [], 'layouts')}}"> {{ $line->name }} </a>
+                        <a class="" xstyle="display: inline-block;overflow: hidden;max-height: 16px !important; max-width: 182px !important;" href="{{ route('products.index', ['search_status' => 0, 'category_id' => $line->id]) }}" title="{{l('Go to', [], 'layouts')}}: {{ $line->name }}"> {{ $line_name }} </a>
                     @endif
                      <span class="badge" title="{{l('Products in this Category')}}">{{ $line->products()->count() }}</span>
                 </td>

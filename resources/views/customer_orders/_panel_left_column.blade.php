@@ -16,7 +16,7 @@
 
                       @if ( $document->close_date || 1)
 
-                      <a href="{{ URL::to('quotations/' . $document->quotation->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+                      <a href="{{ URL::to('customerquotations/' . $document->quotation->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
                           @if ($document->quotation->document_reference)
                             {{ $document->quotation->document_reference }}

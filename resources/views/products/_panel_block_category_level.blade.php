@@ -31,7 +31,7 @@ $max=24;
 $l = strlen($line->name);
 if ($l>$max)
 {
-    $line_name = substr($line->name, 0, $max).'...';
+    $line_name = substr($line->name, 0, $max-2).'...';
 } else {
     $line_name = $line->name;
 }

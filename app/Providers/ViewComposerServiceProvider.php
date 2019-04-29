@@ -270,7 +270,12 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    	$categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
 		    	
 		    	foreach($categories as $category) {
-		    		$tree[$category->name] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+		    		$label = $category->name;
+
+		    		while ( array_key_exists($label, $tree))
+		    			$label .= ' ';
+
+		    		$tree[$label] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
 		    		// foreach($category->children as $child) {
 		    			// $tree[$category->name][$child->id] = $child->name;
 		    		// }

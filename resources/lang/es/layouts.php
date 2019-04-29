@@ -85,6 +85,7 @@ return [
 	'Warehouses'     => 'Almacenes',
 	'Product Options'     => 'Opciones de Productos',
 	'Products'     => 'Productos',
+	'Tools'     => 'Utillajes',
 	'Bills of Materials' => 'Listas de Materiales',
 
 	'Warehouse'     => 'Almacén',

@@ -17,7 +17,9 @@ class CustomerOrder extends Billable
             'shipping_slip_at',
             'invoiced_at',
             'aggregated_at',
-            'backordered_at'
+            'backordered_at',
+
+            'export_date',
     ];
 
     /**
@@ -234,6 +236,52 @@ class CustomerOrder extends Billable
     {
         return $this->belongsTo('App\ProductionSheet', 'production_sheet_id');
     }
+
+    
+    // Alias
+    public function customerorderlines()
+    {
+        return $this->documentlines();
+    }
+
+    // Alias
+    public function customerorderlinetaxes()      // http://advancedlaravel.com/eloquent-relationships-examples
+    {
+        return $this->documentlinetaxes();
+    }
+
+
+    // Deprecated? I dunno
+    public function customerordertaxes()
+    {
+        $taxes = [];
+        $tax_lines = $this->customerorderlinetaxes;
+
+
+        foreach ($tax_lines as $line) {
+
+            if ( isset($taxes[$line->tax_rule_id]) ) {
+                $taxes[$line->tax_rule_id]->taxable_base   += $line->taxable_base;
+                $taxes[$line->tax_rule_id]->total_line_tax += $line->total_line_tax;
+            } else {
+                $tax = new \App\CustomerOrderLineTax();
+                $tax->percent        = $line->percent;
+                $tax->taxable_base   = $line->taxable_base; 
+                $tax->total_line_tax = $line->total_line_tax;
+
+                $taxes[$line->tax_rule_id] = $tax;
+            }
+        }
+
+        return collect($taxes)->sortByDesc('percent')->values()->all();
+    }
+    
+    // Alias
+    public function documenttaxes()      // http://advancedlaravel.com/eloquent-relationships-examples
+    {
+        return $this->customerordertaxes();
+    }
+
 
 
     /*

@@ -191,7 +191,8 @@ class Billable extends Model
 
         foreach ($this->lines as $line) {
             # code...
-            if ( $line->line_type != 'product') continue;
+            if (  $line->line_type != 'product' ) continue;
+            if ( !$line->product                ) continue;     // Sometimes Product is deleted!!!
 
             if ( $line->product->quantity_available < 0 ) $flag = 0;    // Too many orders. Maybe not stock for all
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 // use App\Http\Requests;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Customer;
@@ -67,8 +68,28 @@ class CustomerOrdersController extends BillableController
         $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $documents->setPath($this->model_path);
+        
+        if ( Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+        {
+            //
+            $dest_clientes = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CCLCFG');
 
-        return view($this->view_path.'.index', $this->modelVars() + compact('documents'));
+            $dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG');
+            
+            // Calculate last minute stuff!
+            $anyClient = count(File::files( $dest_clientes ));
+            
+            $anyOrder  = count(File::files( $dest_pedidos ));
+
+            // The difference between files and allFiles is that allFiles will recursively search sub-directories unlike files. 
+        } else {
+
+            $anyClient = 0;
+            
+            $anyOrder  = 0;
+        }
+
+        return view($this->view_path.'.index', $this->modelVars() + compact('documents', 'anyClient', 'anyOrder'));
     }
 
     /**
@@ -325,7 +346,8 @@ class CustomerOrdersController extends BillableController
         $document->fill($request->all());
 
         // Reset Export date
-        // if ( $request->input('export_date_form') == '' ) $document->export_date = null;
+        if ( Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+        if ( $request->input('export_date_form', '') == '' ) $document->export_date = null;
 
         $document->save();
 

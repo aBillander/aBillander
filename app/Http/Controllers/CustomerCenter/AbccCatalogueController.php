@@ -41,8 +41,9 @@ class AbccCatalogueController extends Controller
 		$breadcrumb = [];
 
 		$categories = $this->category
-			->with('children')
+			->with('activechildren')
 //			->withCount('products')
+			->IsActive()
 			->where('parent_id', '=', intval($parentId))
 			->orderBy('name', 'asc')->get();
 
@@ -52,7 +53,7 @@ class AbccCatalogueController extends Controller
 
 			$category = $categories->search(function ($item, $key) use ($category_id) {
 			    
-			    $cat = $item->children;
+			    $cat = $item->activechildren;
 
 			    $c = $cat->search(function ($item, $key) use ($category_id) {
 				    // abi_r($item->id.' - '.$category_id);

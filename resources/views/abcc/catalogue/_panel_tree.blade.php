@@ -43,8 +43,8 @@
       </td>
     </tr>
 
-    @if ( \App\Configuration::isTrue('ALLOW_PRODUCT_SUBCATEGORIES') && $category->children->count())
-    @foreach ($category->children as $child)
+    @if ( \App\Configuration::isTrue('ALLOW_PRODUCT_SUBCATEGORIES') && $category->activechildren->count())
+    @foreach ($category->activechildren as $child)
 
     <tr class="child xwarning {{ $child->id == $category_id ? 'warning' : '' }}">
       <!--td><span class="treegrid-expander"></span>[{{ $child->id }}]</td -->

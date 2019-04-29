@@ -15,7 +15,7 @@
               
                   <li class="list-group-item">
 
-                      @if ( $document->close_date || 1)
+                      @if ( $document->order)
 
                       <a href="{{ URL::to('customerorders/' . optional($document->order)->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
@@ -26,6 +26,10 @@
                           @endif
 
                       </a> - {{ abi_date_short( optional($document->order)->document_date ) }}
+
+                      @else
+
+                      {{ l('None', 'layouts') }}
 
                       @endif
                     

@@ -28,9 +28,9 @@
       <th>{{ l('Reference') }}</th>
       <th>{{-- l('Procurement type') --}}</th>
       <th colspan="2">{{ l('Product Name') }}</th>
-			<!-- th>{{ l('Measure Unit') }}</th>
+			<!-- th>{{ l('Measure Unit') }}</th -->
             <th>{{ l('Stock') }}</th>
-            <th>{{ l('Cost Price') }}</th -->
+            <!-- th>{{ l('Cost Price') }}</th -->
             <th>{{ l('Customer Price') }}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                         data-content="{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
@@ -75,9 +75,9 @@
       </td>
 
       <td>{{ $product->name }}</td>
-			<!-- td>{{ $product->measureunit->name }}</td>
+			<!-- td>{{ $product->measureunit->name }}</td -->
             <td>{{ $product->as_quantity('quantity_onhand') }}</td>
-            <td>{{ $product->as_price('cost_price') }}</td -->
+            <!-- td>{{ $product->as_price('cost_price') }}</td -->
             <td>{{ $product->displayPrice }}</td>
             <!-- td>{{ $product->tax->name }}</td -->
             <!-- td>{{ $product->as_percentable($product->tax->percent) }}</td -->

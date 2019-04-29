@@ -175,7 +175,7 @@ class Cart extends Model
 
         $quantity = ($quantity > 0.0) ? $quantity : 1.0;
 
-        $cart =  \App\Context::getContext()->cart;
+        $cart =  $this; // \App\Context::getContext()->cart;
 
         // Get Customer Price
         $customer = $cart->customer;
@@ -368,6 +368,8 @@ class Cart extends Model
         $now = \Carbon\Carbon::now();
 
         $days = $this->date_prices_updated ? $persistance - $now->diffInDays($this->date_prices_updated) : $persistance;
+
+        // $days = 1;
 
         return $days;
     }

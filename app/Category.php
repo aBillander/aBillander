@@ -23,6 +23,20 @@ class Category extends Model {
     	);
     
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Data Factory :: Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopeIsActive($query)
+    {
+        return $query->where('active', '>', 0);
+    }
+
+    
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -32,6 +46,12 @@ class Category extends Model {
     public function children() {
 
         return $this->hasMany('App\Category','parent_id','id') ;
+
+    }
+    
+    public function activechildren() {
+
+        return $this->hasMany('App\Category','parent_id','id')->where('active', '>', 0);    // ->IsActive() ;
 
     }
 

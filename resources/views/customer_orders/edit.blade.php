@@ -61,6 +61,14 @@
                       <li><a href="{{ URL::to($model_path.'') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
                       <!-- li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Group Shipping Slips')}}</a></li -->
                       <li><a href="{{ route('customer.orders', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Orders', 'layouts')}}</a></li>
+
+@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+
+                      <li class="divider"></li>
+                      <li><a xclass="btn btn-sm btn-grey" href="{{ URL::route('fsxorders.export', [$document->id] ) }}" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Exportar a FactuSOL')}}</a></li>
+
+@endif
+
                       <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>

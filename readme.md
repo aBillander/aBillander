@@ -7,18 +7,19 @@ This project is currently in pre-alpha state. After SDGx will be ready for testi
 
 ## ab://ander/Status
 
-> Implemented Customer Order, Customer Shipping Slip, Customer Invoice, Customer Payment.
+> Implemented Customer Quotations, Customer Order, Customer Shipping Slip, Customer Invoice, Customer Payment, Stock Movements & More.
 
 > Implemented WooCommerce connect (get Orders via REST API).
 
 > Implemented FactuSOL Connector.
 
-> A real Company is heavily testing aBillander.
+> A bunch of three real Companies are heavily testing aBillander.
 
 
 ## ab://ander/Milestones
 
-> SDG0: **MVP ready** (heavily testing  :_> (ノಠ益ಠ)ノ彡┻━┻ )
+> SDG0: **MVP ready** . Current status: heavily testing  :_> (ノಠ益ಠ)ノ彡┻━┻ 
+
 
 A brand-new Schedule is brewing.
 

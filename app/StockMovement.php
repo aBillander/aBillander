@@ -316,9 +316,10 @@ class StockMovement extends Model {
         // warehouse_id or DEF_WAREHOUSE
         // movement type
         $list = self::stockmovementList();
-        $method = 'process_'.$this->movement_type_id;
+        $movement_type_id = $data['movement_type_id'];
+        $method = 'process_'.$movement_type_id;
         
-        if ( !( array_key_exists($this->movement_type_id, $list) && method_exists($this, $method) ) )
+        if ( !( $movement_type_id && array_key_exists($movement_type_id, $list) && method_exists(__CLASS__, $method) ) )
             throw new \App\Exceptions\StockMovementException('Stock Movement type not found');
 
 
@@ -350,6 +351,7 @@ class StockMovement extends Model {
         // Update Combination
         $this->load(['product', 'combination']);
         
+        $method = 'process_'.$this->movement_type_id;
         return $this->{$method}();
     }
 

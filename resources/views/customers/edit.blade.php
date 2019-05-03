@@ -65,10 +65,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-dashboard"></i>
                &nbsp; {{ l('Commercial') }}
             </a>
-            <!-- a id="b_bankaccounts" href="#bankaccounts" class="list-group-item">
+            <a id="b_bankaccounts" href="#bankaccounts" class="list-group-item">
                <i class="fa fa-briefcase"></i>
-               &nbsp; Bancos
-            </a -->
+               &nbsp; {{ l('Bank Accounts') }}
+            </a>
             <a id="b_addressbook" href="#addressbook" class="list-group-item">
                <i class="fa fa-address-book"></i>
                &nbsp; {{ l('Address Book') }}
@@ -114,6 +114,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
          {!! Form::close() !!}
 
+          @include('customers._panel_bankaccounts')
+
           @include('customers._panel_addressbook')
 
           @include('customers._panel_orders')
@@ -143,7 +145,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
    {
       $("#panel_main").hide();
       $("#panel_commercial").hide();
- //     $("#panel_bankaccounts").hide();
+      $("#panel_bankaccounts").hide();
       $("#panel_addressbook").hide();
  //     $("#panel_specialprices").hide();
  //     $("#panel_accounting").hide();
@@ -155,7 +157,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
       $("#b_main").removeClass('active');
       $("#b_commercial").removeClass('active');
- //     $("#b_bankaccounts").removeClass('active');
+      $("#b_bankaccounts").removeClass('active');
       $("#b_addressbook").removeClass('active');
  //     $("#b_specialprices").removeClass('active');
  //     $("#b_accounting").removeClass('active');
@@ -170,6 +172,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
          $("#panel_commercial").show();
          $("#b_commercial").addClass('active');
          // document.f_cliente.codgrupo.focus();
+      }
+      else if(window.location.hash.substring(1) == 'bankaccounts')
+      {
+         $("#panel_bankaccounts").show();
+         $("#b_bankaccounts").addClass('active');
       }
       else if(window.location.hash.substring(1) == 'addressbook')
       {

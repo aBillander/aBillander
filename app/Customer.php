@@ -25,7 +25,7 @@ class Customer extends Model {
     protected $appends = ['name_regular'];
 	
     protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'webshop_id', 'reference_external', 
-                           'website', 'payment_days', 'no_payment_month', 
+                           'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
                            'outstanding_amount_allowed', 'unresolved_amount', 
                            'notes', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
@@ -39,7 +39,8 @@ class Customer extends Model {
         'name_fiscal' => 'required',
         'currency_id' => 'exists:currencies,id',
         'no_payment_month' => 'numeric|min:0|max:12',
-    	);
+        );
+
 
     public static function boot()
     {
@@ -445,7 +446,14 @@ class Customer extends Model {
     {
         return $this->morphMany('App\BankAccount', 'bank_accountable');
     }
+
+    public function bankaccount()
+    {
+        return $this->hasOne('App\BankAccount', 'id', 'bank_account_id')
+                   ->where('bank_accountable_type', Customer::class);
+    }
     
+
     public function addresses()
     {
         return $this->morphMany('App\Address', 'addressable');

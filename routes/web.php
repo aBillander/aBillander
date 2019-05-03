@@ -201,6 +201,7 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup'));
         Route::get('customers/{id}/getorders',             'CustomersController@getOrders'    )->name('customer.getorders');
         Route::get('customers/{id}/getpricerules',         'CustomersController@getPriceRules')->name('customer.getpricerules');
+        Route::post('customers/{id}/bankaccount', 'CustomersController@updateBankAccount')->name('customers.bankaccount');
         Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
 
         Route::get('customers/{id}/product/{productid}/consumption', 'CustomersController@productConsumption' )->name('customer.product.consumption');

@@ -152,6 +152,26 @@
                      {!! Form::select('no_payment_month', array('0' => l('-- Please, select --', [], 'layouts')) + $monthList, null, array('class' => 'form-control', 'id' => 'no_payment_month')) !!}
                      {!! $errors->first('no_payment_month', '<span class="help-block">:message</span>') !!}
                   </div>
+
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('discount_percent') ? 'has-error' : '' }}">
+                     {{ l('Document Discount (%)') }}
+                         <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                            data-content="{{ l('Comma separated list of days, as in: 3,17') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a -->
+                     {!! Form::text('discount_percent', null, array('class' => 'form-control', 'id' => 'discount_percent')) !!}
+                     {!! $errors->first('discount_percent', '<span class="help-block">:message</span>') !!}
+                  </div>
+                  
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('discount_ppd_percent') ? 'has-error' : '' }}">
+                     {{ l('Prompt Payment Discount (%)') }}
+                         <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                            data-content="{{ l('Comma separated list of days, as in: 3,17') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a -->
+                     {!! Form::text('discount_ppd_percent', null, array('class' => 'form-control', 'id' => 'discount_ppd_percent')) !!}
+                     {!! $errors->first('discount_ppd_percent', '<span class="help-block">:message</span>') !!}
+                  </div>
         </div>
 
 <!-- Comercial ENDS -->

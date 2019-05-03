@@ -37,6 +37,9 @@ class CreateCustomersTable extends Migration {
             $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
 			$table->string('accounting_id', 32)->nullable();				// Customer's account code 
 
+            $table->decimal('discount_percent', 20, 6)->default(0.0); 		 // Order/Document discount 
+            $table->decimal('discount_ppd_percent', 20, 6)->default(0.0);    // Order/Document prompt payment discount Percent
+
 			$table->string('payment_days', 16)->nullable();					// Comma separated integuers!
 			$table->tinyInteger('no_payment_month')->default(0);
 			

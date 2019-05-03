@@ -12,6 +12,7 @@ use View, Mail;
 
 use App\Customer;
 use App\Address;
+use App\BankAccount;
 use App\CustomerOrder;
 use App\CustomerOrderLine;
 use App\CustomerInvoice;
@@ -310,6 +311,43 @@ class CustomersController extends Controller {
         else
             return redirect('customers')
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name_commercial'));
+
+    }
+
+    /**
+     * Update Bank Account in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function updateBankAccount($id, Request $request)
+    {
+
+        $section = '#bankaccounts';
+
+//        abi_r(Customer::$rules, true);
+
+        $customer = $this->customer->with('bankaccount')->findOrFail($id);
+
+        $bankaccount = $customer->bankaccount;
+
+        $this->validate($request, BankAccount::$rules);
+
+        if ( $bankaccount )
+        {
+            // Update
+            $bankaccount->update($request->all());
+        } else {
+            // Create
+            $bankaccount = BankAccount::create($request->all());
+            $customer->bankaccounts()->save($bankaccount);
+
+            $customer->bank_account_id = $bankaccount->id;
+            $customer->save();
+        }
+
+        return redirect('customers/'.$customer->id.'/edit'.$section)
+            ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $customer->name_commercial);
 
     }
 

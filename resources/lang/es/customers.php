@@ -94,6 +94,8 @@ return [
 	'Payment Day(s)'     => 'Día(s) de Pago',
 	'Comma separated list of days, as in: 3,17' => 'Lista separada por comas, como: 3,17',
 	'No Payment Month'     => 'Mes de No Pago',
+	'Document Discount (%)'     => 'Descuento en Documento (%)',
+	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 
 	'Special Addresses'     => 'Direcciones especiales',
 	'Fiscal (main) Address'     => 'Dirección Fiscal (principal)',
@@ -171,4 +173,7 @@ return [
 
 	'Product consumption' => 'Consumo del Producto',
 	'Customer Final Price'     => 'Precio Final',
+
+	'Bank Accounts'     => 'Cuentas Bancarias',
+	'Bank Name'     => 'Nombre del Banco',
 ];

@@ -43,6 +43,10 @@
             $table->decimal('document_discount_amount_tax_incl', 20, 6)->default(0.0);   // Order/Document discount Amount
             $table->decimal('document_discount_amount_tax_excl', 20, 6)->default(0.0);
 
+            $table->decimal('document_ppd_percent', 20, 6)->default(0.0);           // Order/Document prompt payment discount Percent
+            $table->decimal('document_ppd_amount_tax_incl', 20, 6)->default(0.0);   // Order/Document prompt payment discount Amount
+            $table->decimal('document_ppd_amount_tax_excl', 20, 6)->default(0.0);
+
             $table->smallInteger('number_of_packages')->unsigned()->default(1);
             $table->decimal('volume', 20, 6)->nullable()->default(0.0);  // m3
             $table->decimal('weight', 20, 6)->nullable()->default(0.0);  // kg

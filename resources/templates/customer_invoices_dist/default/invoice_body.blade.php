@@ -14,14 +14,6 @@
 
         @endif
 
-
-		<div class="banner">
-
-        	Haga su pedido en < b r />
-        	www.gmdistribuciones.es
-
-		</div>
-
 		</td>
 
 		<td class="shop-info">
@@ -31,8 +23,8 @@
 			<div class="shop-address">
                         {{ $company->address->address1 }} {{ $company->address->address2 }}<br />
                         {{ $company->address->postcode }} {{ $company->address->city }} ({{ $company->address->state->name }})<br />
-                        CIF: {{ $company->identification }} / Tel: {{ $company->address->phone }}<br />
-                        {{ $company->address->email }}<br />
+                        CIF: {{ $company->identification }}<br />
+                        {{ $company->address->phone }} / {{ $company->address->email }}<br />
 				
 			</div>
 
@@ -52,23 +44,19 @@
 
 		<td class="address billing-address">
 
-            <div class="shop-name"><h3>
+			<h3>Dirección de Facturación:</h3>
 
-			@if ( $document->customer->name_fiscal )
+            {{ $document->invoicingaddress->name_fiscal }}<br />
 
-				{{ $document->customer->name_fiscal }}
+			@if ( $document->invoicingaddress->contact_name != $document->invoicingaddress->name_fiscal )
 
-			@else
-
-            	{{ $document->invoicingaddress->contact_name }}
+            	{{ $document->invoicingaddress->contact_name }}<br />
 
 			@endif
 
-			</h3></div>
-
             {{ $document->invoicingaddress->address1 }} {{ $document->invoicingaddress->address2 }}<br />
 
-            {{ $document->invoicingaddress->postcode}} {{ $document->invoicingaddress->city }} <br />
+            {{ $document->invoicingaddress->postcode}} {{ $document->invoicingaddress->city }} 
 
             {{ $document->invoicingaddress->state->name }}
 
@@ -79,15 +67,11 @@
 
 			@endif
             
-            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="margin-left: 10mm">[{{ $document->customer->id }}]</span></div>
+            <div class="cif">CIF/NIF: {{ $document->customer->identification }}</div>
 
 			@if ( $document->invoicingaddress->phone )
 
 				<div class="billing-phone">Tel. {{ $document->invoicingaddress->phone }}</div>
-
-			@else
-
-				<div class="billing-phone">Tel. {{ $document->customer->phone }}</div>
 
 			@endif
 			
@@ -113,15 +97,7 @@
 
 					<th>Factura nº:</th>
 
-					<td style="font-size: 11pt;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
-
-				</tr>
-
-				<tr class="order-page">
-
-					<th>Página:</th>
-
-					<td> &nbsp; </td>
+					<td>{{ $document->document_reference }}</td>
 
 				</tr>
 
@@ -129,7 +105,7 @@
 
 					<th>Fecha de la Factura:</th>
 
-					<td><strong>{{ abi_date_short($document->document_date) }}</strong></td>
+					<td>{{ abi_date_short($document->document_date) }}</td>
 
 				</tr>
 
@@ -147,17 +123,17 @@
 
 				<tr class="order-number">
 
-					<th> </th>
+					<th>Albarán / Pedido nº:</th>
 
-					<td> </td>
+					<td>{{ $document->document_reference }}</td>
 
 				</tr>
 
 				<tr class="order-date">
 
-					<th>Agente:</th>
+					<th>Fecha del Albarán:</th>
 
-					<td>{{ optional($document->salesrep)->name }}</td>
+					<td>{{ abi_date_short($document->document_date) }}</td>
 
 				</tr>
 
@@ -183,34 +159,28 @@
             
 @if ($document->documentlines->count()>0)  
 
-<table class="order-details" width="100%" style="border: 1px #ccc solid">
+<table class="order-details">
 
 	<thead>
 
 		<tr>
 
-			<th class="sku first-column" width="10%" style="border: 1px #ccc solid">
+			<th class="sku first-column">
 				<span>Referencia</span>
 			</th>
-			<th class="description" width="35%" style="border: 1px #ccc solid">
+			<th class="description">
 				<span>Producto</span>
 			</th>
-			<th class="quantity last-column" width="8%" style="border: 1px #ccc solid">
+			<th class="quantity last-column">
 				<span>Cantidad</span>
 			</th>
-			<th class="barcode" width="14%" style="border: 1px #ccc solid">
-				<span>Cód. Barras</span>
-			</th>
-			<th class="price" width="8%" style="border: 1px #ccc solid">
+			<th class="price">
 				<span>Precio</span>
 			</th>
-			<th class="discount" width="6%" style="border: 1px #ccc solid">
-				<span>Dto.</span>
+			<th class="discount">
+				<span>Descuento</span>
 			</th>
-			<th class="tax" width="7%" style="border: 1px #ccc solid">
-				<span>IGIC</span>
-			</th>
-			<th class="total xlast-column" width="12%" style="border: 1px #ccc solid">
+			<th class="total xlast-column">
 				<span>Total</span>
 			</th>
 		</tr>
@@ -235,7 +205,7 @@
 			<td class="sku first-column">
 				<span>{{-- $line->reference --}}</span>
 			</td>
-			<td class="description" colspan="7">
+			<td class="description" colspan="5">
 				<span>
 					<span class="item-name"><strong>{{ $line->name }}</strong></span>
 					<span class="item-combination-options"></span>
@@ -243,11 +213,6 @@
 			</td>
 		</tr>
 @else
-	@if ( optional($line->product)->ecotax )
-
-		@include('templates::customer_invoices.default.line_rae')
-	
-	@else
 		<tr class="3655">
 			<td class="sku first-column">
 				<span>{{ $line->reference }}</span>
@@ -260,43 +225,28 @@
 			</td>
 			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
 			</td>
-			<td class="barcode">
-				<span>
-					<span class="item-name">{{ $line->ean13 }}</span>
-				</span>
-			</td>
 			<td class="price total last-column">
 				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_price('unit_customer_final_price') }}
+					<span class="abi-Price-amount amount">{{ $line->as_price('unit_final_price_tax_inc') }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>
 			</td>
 			<td class="discount total last-column">
-				@if ( $line->discount_percent > 0.0 )
 				<span>
 					<span class="abi-Price-amount amount">{{ $line->as_percent('discount_percent') }}
-							<!-- span class="abi-Price-currencySymbol">€</span -->
-					</span>
-				</span>
-				@endif
-			</td>
-			<td class="discount total last-column">
-				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_percent('tax_percent') }}
 							<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>
 			</td>
 			<td class="total last-column">
 				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_price('total_tax_excl') }}
+					<span class="abi-Price-amount amount">{{ $line->as_price('total_tax_incl') }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>
 			</td>
 		</tr>
-	@endif
 @endif
 
                 @endforeach
@@ -309,10 +259,6 @@
 
 
 
-@include('templates::customer_invoices.default.totals')
-
-
-
 <table class="notes-totals">
 
 	<tbody>
@@ -322,8 +268,6 @@
 			<td class="no-borders">
 
 				<div class="customer-notes">
-
-						<h3>Numero de cuenta: ES37 2038 7292 1860 0037 1777</h3>
 
 @if ($document->notes_to_customer)
 
@@ -386,7 +330,7 @@
 @endif
 								<tr class="total grand-total">
 
-									<th class="description" style="background-color: #f5f5f5;"><span>Total a pagar</span></th>
+									<th class="description"><span>Total a pagar</span></th>
 									<!-- p>The euro character:  €  &#0128;  &euro;  &#8364;   :: Not work: &#0128;  </p -->
 
 									<td class="price"><span class="totals-price"><span class="abi-Price-amount amount">{{ $document->as_price('total_currency_tax_incl') }}<span class="abi-Price-currencySymbol">{{ $document->currency->sign_printable }}</span></span></span></td>
@@ -403,14 +347,6 @@
 	</tbody>
 
 </table>
-
-
-
-
-@include('templates::customer_invoices.default.payments')
-
-
-
 
 
 {{--
@@ -453,6 +389,9 @@ https://codepen.io/Bhupinderkumar/pen/gKzKGw
 }
 </style>
 --}}
+
+
+@include('templates::customer_invoices.default.totals')
 
 
 {{--
@@ -503,35 +442,14 @@ https://codepen.io/Bhupinderkumar/pen/gKzKGw
 
 
 
-<div xclass="tax-summary-wrapper order-details tax-summary" id="footer">
+<div id="footer">
 {{--
 	< ? php $wpo_wcpdf->footer(); ?>
 --}}
 
-{{-- --} }
-	{{ $company->name_fiscal }} - {!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
-{ {-- --}}
-
-
-		<table  class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
-			<tbody>
-				<tr>
-					<td style="padding-right: 2mm">
-Según el Real Decreto 110/2015 tanto las lámparas led como bajo consumo están sometidas al RAE. Número de registro 6299.
-Sus datos se encuentran registrados en una base propiedad de GUSTAVO MEDINA RODRIGUEZ DISTRIBUCIONES S.L.U., inscrita en la Agencia Española de Protección
-de datos. Usted en cualquier momento puede ejercer sus derechos de acceso, rectificación, cancelación y/u oponerse a su tratamiento. Estos derechos
-pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº 20 – 35018 LAS PALMAS DE GRAN CANARIA (LAS PALMAS).
-					</td>
-					<td width="1.2cm" style="background: #f5f5f5; xborder: 0.2mm #ccc solid !important;"> 
-					</td>
-				</tr>
-			</tbody>
-		</table>
+{{ $company->name_fiscal }} - {!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
 
 	<!-- p><span class="pagenum"></span> / <span class="pagecount">{PAGE_COUNT}</span></p -->
-
-
-</div><!-- #letter-footer -->
 
 
 <script type="text/php">
@@ -540,24 +458,18 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
         // $pdf->page_text(30, ($pdf->get_height() - 26.89), "Impreso el: " . date('d M Y H:i:s'), null, 10);
         
-        if ( 1 || $PAGE_COUNT > 1 || \App\Configuration::isTrue('DEVELOPER_MODE') )
+        if ( $PAGE_COUNT > 1 || \App\Configuration::isTrue('DEVELOPER_MODE') )
         {
-			// $pdf->page_text(($pdf->get_width() - 82), ($pdf->get_height() - 26.89), "Página {PAGE_NUM} de {PAGE_COUNT}", null, 9);
-
-        	$pdf->page_text(($pdf->get_width() - 61), ($pdf->get_height() - 26.89 - 43), "Página", null, 9);
-
-        	$pdf->page_text(($pdf->get_width() - 54), ($pdf->get_height() - 26.89 - 31), "{PAGE_NUM} / {PAGE_COUNT}", null, 9);
-
-if ( $PAGE_NUM == 1 )
-{
-               $pdf->page_text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), "{PAGE_NUM} de {PAGE_COUNT}", null, 9);
-}
+               $pdf->page_text(($pdf->get_width() - 84), ($pdf->get_height() - 26.89), "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10);
         }
 
 
     }
 
 </script>
+
+
+</div><!-- #letter-footer -->
 
 {{-- 
 

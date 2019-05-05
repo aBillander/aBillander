@@ -80,7 +80,7 @@ class Billable extends Model
 //                            '_document_prefix', '_document_id', '_document_reference',
                             'document_date', 'payment_date', 'validation_date', 'delivery_date',
 
-                            'document_discount_percent', 'document_discount_amount',
+                            'document_discount_percent', 'document_discount_amount', 'document_ppd_percent',
                             'number_of_packages', 'volume', 'weight', 
                             'shipping_conditions', 'tracking_number',
 

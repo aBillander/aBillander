@@ -536,10 +536,12 @@ class BillableController extends Controller
 //                        ->with('customershippingsliplines.product')
                         ->findOrFail($document_id);
 
-        $discount_percent = $request->input('document_discount_percent', 0.0);
+        $document->document_discount_percent = $request->input('document_discount_percent', 0.0);
+
+        $document->save();
 
         // Now, update ShippingSlip Totals
-        $document->makeTotals( $discount_percent );
+        $document->makeTotals();
 
         $view_path = $this->view_path;
 

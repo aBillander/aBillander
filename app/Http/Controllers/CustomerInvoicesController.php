@@ -166,13 +166,21 @@ class CustomerInvoicesController extends BillableController
 
         $this->validate($request, $rules);
 
+        $customer = Customer::with('addresses')->findOrFail(  $request->input('customer_id') );
+
         // Extra data
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
 //        $doc_id = $seq->getNextDocumentId();
 
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
 
-        				'sequence_id'		   => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
+//        				'sequence_id'		   => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
+        				'sequence_id'		   => $request->input('sequence_id') ?? $customer->getInvoiceSequenceId(),
+
+        				'template_id'		   => $request->input('template_id') ?? $customer->getInvoiceTemplateId(),
+
+        				'document_discount_percent' => $customer->discount_percent,
+        				'document_ppd_percent'      => $customer->discount_ppd_percent,
 
                         'created_via'          => 'manual',
                         'status'               =>  'draft',

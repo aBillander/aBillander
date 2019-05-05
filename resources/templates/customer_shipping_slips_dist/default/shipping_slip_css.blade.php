@@ -31,8 +31,7 @@ extract( $wpo_wcpdf_templates->get_footer_height_page_bottom('2cm')); // $footer
 */
 
 $footer_height = '2cm';
-// $footer_height = '1.5cm';
-// $footer_height = '2.5cm';
+$footer_height = '1.5cm';
 
 			// calculate bottom page margin
 			$page_bottom = floatval($footer_height);
@@ -79,8 +78,8 @@ $footer_height = '2cm';
 @page {
 	margin-top: 1cm;
 	margin-bottom: {{ $page_bottom }};
-	margin-left: 1cm;
-	margin-right: 1cm;
+	margin-left: 2cm;
+	margin-right: 2cm;
 }
 body {
 	background: #fff;
@@ -154,13 +153,6 @@ table {
 	padding: 0;
 }
 
-/* 
-	See: https://stackoverflow.com/questions/35110591/how-to-avoid-splitting-an-html-table-across-pages
-*/
-table.print-friendly tr td, table.print-friendly tr th {
-    page-break-inside: avoid;
-}
-
 th, td {
 	vertical-align: top;
 	text-align: left;
@@ -195,24 +187,9 @@ td.header {
 	font-weight: 700;
 }
 
-div.banner {
-	font-size: 11pt;
-	font-weight: 700;
-	line-height: 105%;
-	xtext-align: center;
-	xwhite-space: nowrap;
-	xpadding-left: 2mm;
-	xpadding-right: 2mm;
-}
-
 td.shop-info {
 	width: 40%;
 }
-
-div.shop-name h3 {
-	font-size: 12pt;
-}
-
 .document-type-label {
 	text-transform: uppercase;
 }
@@ -246,10 +223,6 @@ table.notes-totals {
 	width:100%;
 	margin-bottom: 8mm;
 }
-table.order-details {
-	font-size: 8pt;
-	line-height: 100%;
-}
 
 .order-details .cb {
 	width: 3.5mm;
@@ -263,7 +236,7 @@ table.order-details {
 .order-details .discount,
 .order-details .tax_rate,
 .order-details .total {
-	xwidth: 10%;
+	width: 10%;
 }
 
 .order-details .position {
@@ -300,15 +273,9 @@ table.order-details {
 }
 
 .order-details thead th {
-
-/*	color: white;
+	color: white;
 	background-color: black;
 	border-color: black;
-*/
-	xcolor: white;
-	background-color: #f5f5f5;
-	xborder: 1px solid #e3e3e3;
-	border: 1px solid white;
 }
 
 /* product bundles compatibility */
@@ -373,10 +340,6 @@ table.totals td.price {
 	text-align: right;
 }
 
-table.order-details td.quantity {
-	text-align: center;
-}
-
 table.totals .grand-total td,
 table.totals .grand-total th {
 	border-top: 2px solid #000;
@@ -399,13 +362,6 @@ table.totals tr.payment_method {
 	border-top: 0.1mm solid gray;
 	margin-bottom: 0;
 	padding-top: 2mm;
-
-	font-size: 7pt;
-	font-weight: normal;
-}
-
-#footer td {
-	text-align: center;
 }
 
 /* page numbers */

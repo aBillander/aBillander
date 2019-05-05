@@ -29,7 +29,7 @@ $totals = $document->totals();
 
 {{-- Payments --}}
 
-<table class="notes-totals print-friendly">
+<table class="notes-totals print-friendly" xstyle="border: 1px #ccc solid">
 
 	<tbody>
 
@@ -78,12 +78,12 @@ $totals = $document->totals();
 			<td class="no-borders totals-cell" style="width:50%">
 
 
-@if( $document->paymentmethod && !$document->paymentmethod->payment_is_cash && $document->customer->bankaccount)
+@if( $document->paymentmethod && !$document->paymentmethod->payment_is_cash && $document->customer->bankaccount || 1)
 
 {{-- Bank Account --}}
 
-	<div xclass="tax-summary-wrapper">
-		<table class="order-details tax-summary">
+	<div xclass="tax-summary-wrapper" xstyle="border: 1px #ccc solid">
+		<table class="xorder-details tax-summary">
 			<thead>
 			</thead>
 			<tbody>

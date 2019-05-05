@@ -23,7 +23,7 @@ trait BillableDocumentControllerTrait
 //                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
                             ->with('currency')
                             ->with('paymentmethod')
-                            ->with('bankaccount')
+                            ->with('customer.bankaccount')
                             ->with('template')
                             ->findOrFail($id);
 

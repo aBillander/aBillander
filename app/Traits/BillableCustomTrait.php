@@ -145,10 +145,12 @@ trait BillableCustomTrait
 
 
 
-        if ($this->document_discount_percent>0) 
+        if ($this->document_discount_percent>0 || $this->document_ppd_percent>0) 
         {
-            $total_tax_incl = $this->total_lines_tax_incl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_incl;
-            $total_tax_excl = $this->total_lines_tax_excl * (1.0 - $this->document_discount_percent/100.0) - $this->document_discount_amount_tax_excl;
+            $reduction =  (1.0 - $this->document_discount_percent/100.0) * (1.0 - $this->document_ppd_percent/100.0);
+
+            $total_tax_incl = $this->total_lines_tax_incl * $reduction - $this->document_discount_amount_tax_incl - $this->document_ppd_amount_tax_incl;
+            $total_tax_excl = $this->total_lines_tax_excl * $reduction - $this->document_discount_amount_tax_excl - $this->document_ppd_amount_tax_excl;
 
             // Make a Price object for rounding
             $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $currency);

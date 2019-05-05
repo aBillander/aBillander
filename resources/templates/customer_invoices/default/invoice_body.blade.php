@@ -324,13 +324,7 @@
 				<div class="customer-notes">
 
 						<h3>Numero de cuenta: ES37 2038 7292 1860 0037 1777</h3>
-
-@if ($document->notes_to_customer)
-
-						<h3>Notas:</h3>
-
-						{{ $document->notes_to_customer }}
-@endif
+				
 				</div>	
 
 			</td>
@@ -368,7 +362,7 @@
 						?>
 --}}
 
-@if($document->document_discount_percent>0)								
+@if($document->document_discount_percent>0 && 0)								
 								<tr class="xtotal xgrand-total">
 
 									<th class="description"><span>Sub-Total</span></th>
@@ -410,6 +404,31 @@
 @include('templates::customer_invoices.default.payments')
 
 
+
+
+@if ($document->notes_to_customer)
+
+						<h3>OBSERVACIONES:</h3>
+
+<table class="order-details print-friendly" width="100%" style="border: 1px #ccc solid">
+
+	<tbody>
+
+		<tr xclass="no-borders">
+
+			<td xclass="no-borders" style="padding: 2mm;">
+
+						{{ $document->notes_to_customer }}
+
+			</td>
+
+		</tr>
+
+	</tbody>
+
+</table>
+
+@endif
 
 
 

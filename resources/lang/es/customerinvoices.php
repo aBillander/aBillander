@@ -316,5 +316,7 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
+	
+	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 
 ];

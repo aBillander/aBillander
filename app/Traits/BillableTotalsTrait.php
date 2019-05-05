@@ -379,30 +379,43 @@ trait BillableTotalsTrait
     public function applyDiscount()
     {
         $currency = $this->document_currency;
-        $totals = $this->totals;
-
-        if ($this->document_discount_percent==0) return $totals;
+        $totals   = $this->totals;
 
         $discount = $this->document_discount_percent;
+        $ppd      = $this->document_ppd_percent;
+
+        // if ($discount==0 && $ppd==0) return $totals;
 
         // Let' get (extra) dirty!
         // 
         $totals_discounted = collect([]);
 
-        $totals_discounted = $totals->map(function ($item, $key) use ($currency, $discount) {
+        $totals_discounted = $totals->map(function ($item, $key) use ($currency, $discount, $ppd) {
+            
+            $gross_amount    = $item['net_amount'];
+            $discount_amount = $item['net_amount'] * ($discount/100.0);
+            $ppd_amount      = $item['net_amount'] * (1.0 - $discount/100.0) * ($ppd/100.0);
+
             $new = [
                         'tax_id' => $item['tax_id'],
                         'tax_name' => $item['tax_name'],
-                        'net_amount' => $currency->round($item['net_amount'] * (1.0 - $discount/100.0)),    // $currency->round($item['net_amount']),
+
+                        'gross_amount'    => $currency->round($gross_amount), 
+                        'discount_amount' => $currency->round($discount_amount),
+                        'ppd_amount'      => $currency->round($ppd_amount),
+
+                        'net_amount' => 0.0,    // $currency->round($item['net_amount'] * (1.0 - $discount/100.0)),    // $currency->round($item['net_amount']),
                         'tax_amount' => 0.0,
-                        'tax_lines' => $item['tax_lines']->map(function ($item1, $key1) use ($currency, $discount) {
+                        'tax_lines' => $item['tax_lines']->map(function ($item1, $key1) use ($currency, $discount, $ppd) {
                             //
-                            $item1->taxable_base   =  $currency->round( $item1->taxable_base * (1.0 - $discount/100.0) ); // $currency->round($item1->taxable_base  );
-                            $item1->total_line_tax =  $currency->round( $item1->total_line_tax * (1.0 - $discount/100.0) );   // $currency->round($item1->total_line_tax);
+                            $item1->taxable_base   =  $currency->round( $item1->taxable_base   * (1.0 - $discount/100.0) * (1.0 - $ppd/100.0) ); // $currency->round($item1->taxable_base  );
+                            $item1->total_line_tax =  $currency->round( $item1->total_line_tax * (1.0 - $discount/100.0) * (1.0 - $ppd/100.0) );   // $currency->round($item1->total_line_tax);
 
                             return $item1;
                         }),
                     ];
+
+            $new['net_amount'] = $new['gross_amount'] - $new['discount_amount'] - $new['ppd_amount'];
 
             $new['tax_amount'] = $new['tax_lines']->sum('total_line_tax');
 

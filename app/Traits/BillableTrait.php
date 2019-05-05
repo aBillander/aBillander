@@ -9,7 +9,9 @@ use App\Configuration;
 
 // use ReflectionClass;
 
-trait BillableTrait
+// Seems not used anywhere...
+
+trait xBillableTrait
 {
     use BillableIntrospectorTrait;
     use BillableCustomTrait;

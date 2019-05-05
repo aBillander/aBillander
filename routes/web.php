@@ -61,6 +61,17 @@ Route::get('clear-cache', function()
     return '<h1>Cachés borradas</h1>';
 });
 
+
+Route::get('dbbackup', function()
+{
+    Artisan::call('db:backup');
+    // save it to the storage/backups/backup.sql file
+
+    abi_r( Artisan::output() );
+
+    return '<h1>Proceso terminado</h1><a class="navbar-brand" href="' .url('/'). '">Volver</a>';
+});
+
 Route::get('404', function()
 {
     return view('errors.404');

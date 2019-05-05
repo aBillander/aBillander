@@ -388,6 +388,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('dbbackup') }}">
+                                 <i class="fa fa-database text-danger"></i> {{l('DB Backup', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('users') }}">
                                  {{l('Users', [], 'layouts')}}
                             </a>

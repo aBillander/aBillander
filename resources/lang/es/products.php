@@ -150,16 +150,18 @@ return [
 	'Warehouses - qty'     => 'Almacenes - ud.',
 
 	'Bill of Materials'     => 'BOM :: Lista de Materiales',
+	'BOM tree' => 'Lista de Materiales completa',
 	'Create BOM' => 'Crear Lista de Materiales',
 	'Select BOM' => 'Seleccionar Lista de Materiales',
 	'Detach BOM' => 'Quitar Lista de Materiales',
 	'Detach' => 'Quitar',
 	'BOM Quantity'     => 'BOM Cantidad',
 	'BOM Name'     => 'Nombre de la Lista de Materiales',
-	'Materials'     => 'Materiales',
+	'Materials'     => 'Materiales (primer nivel)',
 	
 	'Manufacturing Route'     => 'Ruta de Fabricación',
 	'Work Center'     => 'Centro de Trabajo',
+	'Tool' => 'Utillaje',
 	'Product'     => 'Producto',
 
 	'Default?'     => '¿Principal?',
@@ -227,5 +229,22 @@ return [
 	'Price List'     => 'Tarifa',
 	
 	'Go to Product'     => 'Ir al Producto',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Measure Units
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Back to Product'     => 'Volver al Producto',
+	'Back to:'     => 'Volver a:',
+	'New Measure Unit' => 'Nueva Unidad de Medida',
+	'Conversion rate' => 'Factor de Conversión',
+	'Conversion rates are calculated from one unit of your main Measura Unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, the Conversion rate will be "6" (since a pack of six bottles will contain six bottles).' => 'El Factor de Conversión se calcula a partir de la Unidad de Medida principal. Por ejemplo, si la unidad principal es "botella" y la unidad alternativa es "paquete-de-seis", el Factor de Conversión será "6" (ya que un paquete de seis botellas contendrá seis botellas).',
+	'' => '',
 
 ];

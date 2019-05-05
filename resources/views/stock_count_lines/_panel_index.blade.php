@@ -82,7 +82,7 @@
 	@foreach ($lines as $line)
 		<tr>
 			<td>{{ $line->id }}</td>
-            <td><a href="{{ URL::to('products/' . $line->product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $line->reference }}</a></td>
+            <td><a href="{{ URL::to('products/' . optional($line->product)->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ optional($line->product)->reference }}</a></td>
             <td>{{ $line->name }}</td>
             <td>{{ $line->as_quantity('quantity') }}</td>
             <td>

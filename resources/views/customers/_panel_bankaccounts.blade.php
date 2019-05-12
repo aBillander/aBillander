@@ -51,7 +51,7 @@
         </div>
 
         <div class="row">
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('iban') ? 'has-error' : '' !!}">
+                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('iban') ? 'has-error' : '' !!}">
                     {{ l('Iban') }}
                     {!! Form::text('iban', null, array('class' => 'form-control', 'id' => 'iban')) !!}
                     {!! $errors->first('iban', '<span class="help-block">:message</span>') !!}

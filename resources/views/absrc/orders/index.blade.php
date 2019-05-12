@@ -55,7 +55,7 @@
                 @endif</td>
             <td class="text-center">
 
-@if ($document->invoiced_at)
+@if ( $document->invoiced_at )
                 <a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{abi_date_short( $document->invoiced_at )}}"><i class="fa fa-money"></i></a>
 @else
     @if ( $document->status == 'closed' )
@@ -75,8 +75,8 @@
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
-            <td><a class="" href="{{ URL::to('absrc/customers/' .$document->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
-            	{{ $document->customer->name_regular }}
+            <td><a class="" href="{{ URL::to('absrc/customers/' . optional($document->customer)->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
+            	{{ optional($document->customer)->name_regular }}
             	</a>
             </td>
             <td>

@@ -18,7 +18,7 @@ class BankAccount extends Model {
 	public static $rules = [
     	'bank_name'    			=> array('required', 'min:2', 'max:64'),
         'iban' => array('required', 'min:4', 'max:34'),
-        'swift' => array('min:8', 'max:11'),
+//        'swift' => array('min:8', 'max:11'),
 /*
         'bank_name'   => 'required|min:4|max:64',
         'ccc_entidad' => 'required|min:4|max:4',

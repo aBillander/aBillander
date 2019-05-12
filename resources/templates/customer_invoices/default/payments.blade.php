@@ -78,7 +78,7 @@ $totals = $document->totals();
 			<td class="no-borders totals-cell" style="width:50%">
 
 
-@if( $document->paymentmethod && !$document->paymentmethod->payment_is_cash && $document->customer->bankaccount || 1)
+@if( $document->paymentmethod && !$document->paymentmethod->payment_is_cash && $document->customer->bankaccount )
 
 {{-- Bank Account --}}
 

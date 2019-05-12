@@ -262,7 +262,7 @@
 			</td>
 			<td class="barcode">
 				<span>
-					<span class="item-name">{{ $line->ean13 }}</span>
+					<span class="item-name">{{ $line->product->ean13 }}</span>
 				</span>
 			</td>
 			<td class="price total last-column">

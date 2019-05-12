@@ -51,7 +51,7 @@
                 @endif</td>
             <td class="text-center">
 
-@if ($document->invoiced_at)
+@if ($document->invoiced_at && $document->customerinvoice())
                 <a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{ l('Invoiced at:') }} {{abi_date_short( $document->invoiced_at )}}"><i class="fa fa-money"></i></a>
 @else
     @if ( $document->status == 'closed' )

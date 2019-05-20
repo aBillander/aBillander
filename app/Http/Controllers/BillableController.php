@@ -314,6 +314,7 @@ class BillableController extends Controller
         $product_id      = $request->input('product_id');
         $combination_id  = $request->input('combination_id');
         $customer_id     = $request->input('customer_id');
+        $recent_sales_this_customer = $request->input('recent_sales_this_customer', 0);
         $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
 //        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
 
@@ -388,9 +389,10 @@ class BillableController extends Controller
                             }])
                             ->with('document')
                             ->with('document.customer')
-//                            ->whereHas('document', function($q) use ($id) {
-//                                    $q->where('customer_id', $id);
-//                                })
+                            ->whereHas('document', function($q) use ($customer_id, $recent_sales_this_customer) {
+                                    if ( $recent_sales_this_customer > 0 )
+                                        $q->where('customer_id', $customer_id);
+                                })
                             ->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
                             ->select('customer_order_lines.*', 'customer_orders.document_date', \DB::raw('"customerorders" as route'))
                             ->orderBy('customer_orders.document_date', 'desc')

@@ -1,4 +1,4 @@
-
+{{--
 @if ( $document->status == 'closed' )
 
     @if ($document->shipping_slip_at && $document->shippingslip)
@@ -183,7 +183,7 @@
           </div>
 
     @endif
-    
+--}}
 @if ( $document->status != 'closed' )
 
 

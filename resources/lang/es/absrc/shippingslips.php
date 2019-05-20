@@ -63,5 +63,7 @@ return [
 	
 	'View Image'     => 'Ver Imagen',
 	'Product Images'     => 'Imágenes de Productos',
+	
+	'Customer'     => 'Cliente',
 
 ];

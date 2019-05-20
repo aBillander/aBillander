@@ -28,7 +28,7 @@
 	@foreach ($document->shippingslips as $document)
         <tr>
             <td>
-                <a href="{{ route('abcc.shippingslip.pdf', [$document->id]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">
+                <a href="{{ route('absrc.shippingslip.pdf', [$document->id]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
                 @else
@@ -45,7 +45,7 @@
 
                 {{ $document->shippingaddress->alias }} 
                  <a href="javascript:void(0);">
-                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $document->shippingaddress->firstname }} {{ $document->shippingaddress->lastname }}<br />{{ $document->shippingaddress->address1 }}<br />{{ $document->shippingaddress->city }} - {{ $document->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $document->shippingaddress->phone }}</a>" data-original-title="" title="">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-html="true" data-placement="top" data-content="{{ $document->shippingaddress->firstname }} {{ $document->shippingaddress->lastname }}<br />{{ $document->shippingaddress->address1 }}<br />{{ $document->shippingaddress->city }} - {{ $document->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $document->shippingaddress->phone }}</a>" data-original-title="" title="">
                         <i class="fa fa-address-card-o"></i>
                     </button>
                  </a>

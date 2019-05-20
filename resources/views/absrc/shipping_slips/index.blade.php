@@ -21,6 +21,7 @@
             <th class="text-left">{{ l('Shipping Slip #') }}</th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
+            <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-right">{{ l('Items') }}</th>
             <th class="text-right">{{ l('Total') }}</th>
@@ -45,6 +46,10 @@
                 </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>{{ abi_date_short($document->delivery_date_real ?: $document->delivery_date) }}</td>
+            <td><a class="" href="{{ URL::to('absrc/customers/' . optional($document->customer)->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
+                {{ optional($document->customer)->name_regular }}
+                </a>
+            </td>
             <td>
                 @if ( $document->hasShippingAddress() )
 

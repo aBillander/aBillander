@@ -29,7 +29,7 @@
                var panel = $("#product_consumption");
                var id = $(this).attr('data-id');
                var customer_id = $("#customer_id").val();
-               var url = "{{ route('customer.product.consumption', [":customer_id", ":id"]) }}";
+               var url = "{{ route('absrc.customer.product.consumption', [":customer_id", ":id"]) }}";
 
                url = url.replace(":id", id);
                url = url.replace(":customer_id", customer_id);

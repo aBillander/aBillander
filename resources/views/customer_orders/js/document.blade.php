@@ -689,6 +689,7 @@
                     product_id: product_id,
                     combination_id: combination_id,
                     customer_id: $("#customer_id").val(),
+                    recent_sales_this_customer: 1,
                     currency_id: $("#currency_id").val(),
                     conversion_rate: $("#currency_conversion_rate").val(),
                     taxing_address_id: $("#taxing_address_id").val()
@@ -701,6 +702,8 @@
                    panel.removeClass('loading');
                    $("[data-toggle=popover]").popover();
 
+
+                   $("#convinient_buttons").show();
 
 
                     console.log(response);

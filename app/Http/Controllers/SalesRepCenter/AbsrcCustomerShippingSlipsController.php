@@ -52,7 +52,7 @@ class AbsrcCustomerShippingSlipsController extends Controller
                                     $q->orWhere('status', 'confirmed');
                                 } )
                             ->withCount('lines')
-//                            ->with('customer')
+                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
                             ->orderBy('document_date', 'desc')
@@ -100,14 +100,19 @@ class AbsrcCustomerShippingSlipsController extends Controller
 
     public function showPdf($id, Request $request)
     {
+        // PDF stuff
 
-        $customer      = Auth::user()->customer;
-
-        $document = $this->customerShippingSlip->where('id', $id)->where('customer_id', $customer->id)->first();
+        $document = $this->customerShippingSlip
+                            ->with('customer')
+                            ->with('currency')
+                            ->with('paymentmethod')
+                            ->with('customer.bankaccount')
+                            ->with('template')
+                            ->find($id);
 
         if (!$document) 
             return redirect()->route('absrc.shippingslips.index')
-                    ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts').$customer->id);
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
 
         $company = \App\Context::getContext()->company;
@@ -118,7 +123,7 @@ class AbsrcCustomerShippingSlipsController extends Controller
 
         if ( !$t )
             return redirect()->route('absrc.shippingslips.index', $id)
-                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
 
         $template = $t->getPath( 'CustomerShippingSlip' );
 
@@ -134,13 +139,13 @@ class AbsrcCustomerShippingSlipsController extends Controller
         }
         catch(\Exception $e){
 
-                return redirect()->route('absrc.invoices.index')
+                return redirect()->route('absrc.shippingslips.index')
                     ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
         }
 
         // PDF stuff ENDS
 
-        $pdfName    = 'Shippingslip_' . $document->secure_key . '_' . $document->document_date;
+        $pdfName    = 'shippingslip_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
         if ($request->has('screen')) return view($template, compact('document', 'company'));
         

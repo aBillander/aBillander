@@ -42,7 +42,7 @@ class AbsrcCustomerInvoicesController extends Controller
     {
         $customer_invoices = $this->customerInvoice
                             ->ofSalesRep()
-//                            ->with('customer')
+                            ->with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
                             ->orderBy('id', 'desc');
@@ -89,14 +89,14 @@ class AbsrcCustomerInvoicesController extends Controller
 
     public function showPdf($cinvoiceKey, Request $request)
     {
-
-        $customer      = Auth::user()->customer;
+        // PDF stuff
 
         $document = $this->customerInvoice
                             ->findByToken($cinvoiceKey)
-                            ->where('customer_id', $customer->id)
+                            ->with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
+                            ->with('customer.bankaccount')
                             ->with('template')
                             ->first();
 
@@ -116,7 +116,7 @@ class AbsrcCustomerInvoicesController extends Controller
 
         if ( !$t )
             return redirect()->route('absrc.invoices.index')
-                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->cinvoiceKey], 'layouts'));
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->cinvoiceKey], 'layouts').'Document template not found.');
 
         // $document->template = $t;
 

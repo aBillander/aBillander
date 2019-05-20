@@ -168,7 +168,7 @@ class AddressesController extends Controller {
 		$model_name = $address->model_name;
 		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
-        // $this->validate($request, Address::related_rules());
+        $this->validate($request, Address::$rules;
 		$address->update($request->all());
 
         return redirect($back_route)

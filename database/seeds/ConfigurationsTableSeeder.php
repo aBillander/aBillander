@@ -15,6 +15,8 @@ class ConfigurationsTableSeeder extends Seeder {
 		// DB::table('configurations')->truncate();
 		DB::table('configurations')->delete();
 
+		Configuration::loadConfiguration();
+
 $confs = [
 
 ['ABCC_HEADER_TITLE', '<span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>'],

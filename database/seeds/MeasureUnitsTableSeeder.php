@@ -22,6 +22,6 @@ class MeasureUnitsTableSeeder extends Seeder {
         Configuration::updateValue('DEF_MEASURE_UNIT_FOR_PRODUCTS', $munit->id);
         Configuration::updateValue('DEF_MEASURE_UNIT_FOR_BOMS'    , $munit->id);
         
-        Configuration::updateValue('DEF_QUANTITY_DECIMALS'        , $munit->decimalPlaces)
+        Configuration::updateValue('DEF_QUANTITY_DECIMALS'        , $munit->decimalPlaces);
     }
 }

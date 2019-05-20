@@ -621,10 +621,15 @@ if (0) {
 
 	public function showPdf($id, Request $request)
 	{
+        // PDF stuff
 
-        $customer      = Auth::user()->customer;
-
-        $document = $this->document->where('id', $id)->where('customer_id', $customer->id)->first();
+        $document = $this->document
+                            ->with('customer')
+                            ->with('currency')
+                            ->with('paymentmethod')
+                            ->with('customer.bankaccount')
+                            ->with('template')
+                            ->find($id);
 
         if (!$document) 
         	return redirect()->route('absrc.orders.index')
@@ -635,11 +640,11 @@ if (0) {
 
         // Get Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('ABCC_DEFAULT_ORDER_TEMPLATE') );
+             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE') );
 
         if ( !$t )
         	return redirect()->route('absrc.orders.show', $id)
-                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
 
         // $document->template = $t;
 
@@ -655,7 +660,7 @@ if (0) {
 		}
 		catch(\Exception $e){
 
-		    	return redirect()->route('absrc.orders.show', $id)
+		    	return redirect()->route('absrc.orders.index')
                 	->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
 		}
 

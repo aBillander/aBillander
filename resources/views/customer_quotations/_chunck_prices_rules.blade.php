@@ -95,18 +95,15 @@
     </tbody>
 </table>
 
-   </div><!-- div class="table-responsive" ENDS -->
-
-
-
 
 @else
+{{--
             <div class="modal-footer">
                 <a href="{{ URL::to('customers/'.$id.'/pricerules/create') }}" class="btn xbtn-sm btn-success create-pricerule pull-right" 
-                title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+                title="{{l('Add New Item', [], 'layouts')}}" target="_blank"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
             </div>
-
+--}}
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
     {{l('No records found', [], 'layouts')}}
@@ -114,6 +111,10 @@
 
 </div>
 @endif
+
+
+   </div><!-- div class="table-responsive" ENDS -->
+
 
 </div><!-- div id="div_customer_rules" ENDS -->
 

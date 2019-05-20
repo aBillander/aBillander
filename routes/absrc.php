@@ -102,6 +102,8 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
         Route::get('customers/{id}/getpricerules',         'AbsrcCustomersController@getPriceRules')->name('absrc.customer.getpricerules');
 
+        Route::get('customers/{id}/product/{productid}/consumption', 'AbsrcCustomersController@productConsumption' )->name('absrc.customer.product.consumption');
+
 /*        Route::resource('customers', 'CustomersController');
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup'));

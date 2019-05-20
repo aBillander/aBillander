@@ -20,7 +20,7 @@
         <tr>
             <th class="text-left">{{ l('Invoice #') }}</th>
             <th class="text-left">{{ l('Date') }}</th>
-            <!-- th class="text-left">{{ l('Customer') }}</th -->
+            <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Payment Method') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-right">{{ l('Open Balance') }}</th>
@@ -38,10 +38,10 @@
                 <span class="label label-default" title="{{ l('Draft') }}">{{ l('Draft') }}</span>
                 @endif</td>
             <td>{{ abi_date_short($invoice->document_date) }}</td>
-            <!-- td><a class="" href="{ { URL::to('customers/' .$invoice->customer->id . '/edit') } }" title="{ { l('Show Customer') } }">
-            	{ { $invoice->customer->name_fiscal } }
+            <td><a class="" href="{{ URL::to('absrc/customers/' .$invoice->customer->id . '/edit') }}" title="{{ l('Show Customer') }}">
+            	{{ optional($invoice->customer)->name_regular }}
             	</a>
-            </td -->
+            </td>
             <td>{{ $invoice->paymentmethod->name }}
             	<!-- a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $invoice->id) }}" title="{{ l('Show Payments') }}"><i class="fa fa-eye"></i></a -->
         	</td>

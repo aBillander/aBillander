@@ -5,13 +5,13 @@
 
 <div id="panel_sales_detail" style="padding-left: 15px; padding-right: 15px; padding-bottom: 20px;">
 
-    <div xclass="page-header">
+    <div xclass="page-header" onclick="$(this).next().toggle();">
         <h3>
             <span style="color: #dd4814;">{{ l('Price Lists', 'products') }}</span> {{-- <span style="color: #cccccc;">/</span> $product->name --}}
         </h3>        
     </div>
 
-    <div id="div_aBook">
+    <div id="div_aBook" style="display:none;">
        <div class="table-responsive">
 
     @if ($pricelists->count())

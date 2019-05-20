@@ -140,7 +140,7 @@
     $( "#product_query" ).autocomplete({
       source: "{{ route('products.ajax.nameLookup') }}",
       minLength: 1,
-      appendTo : "#price_rule",
+      appendTo : "#priceruleModal",
       select: function( event, ui ) {
       //  alert( ui.item ?
       //    "Selected: " + ui.item.value + " aka " + ui.item.id :

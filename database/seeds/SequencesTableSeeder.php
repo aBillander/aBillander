@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 
 use App\Sequence;
+use App\Configuration;
   
 class SequencesTableSeeder extends Seeder {
   

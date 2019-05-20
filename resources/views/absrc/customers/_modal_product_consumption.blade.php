@@ -35,7 +35,7 @@
 			<td>{{ $line->id }}</td>
 			<td>{{ abi_date_short( $line->document->document_date ) }}</td>
 			<td>
-        		<a href="{{ route($line->route.'.edit', [$line->document->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">
+        		<a href="{{ route('absrc.' . str_replace('customer', '', $line->route) . '.edit', [$line->document->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">
 						@if ( $line->document->document_reference )
 		                	{{ $line->document->document_reference}}
 		                @else

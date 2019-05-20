@@ -139,6 +139,15 @@
                  </div>
         </div>
 
+           <div class="modal-footer" style="display: none;" id="convinient_buttons">
+
+               <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
+               <button type="submit" class="btn btn-success" name="modal_document_line_productSubmit" id="modal_document_line_productSubmit">
+                <i class="fa fa-thumbs-up"></i>
+                &nbsp; {{l('Update', [], 'layouts')}}</button>
+
+           </div>
+
 <div id="product_price_data">
   
 {{-- Product price data here (Ajax loaded) --}}

@@ -67,6 +67,10 @@ class Price {
 
         $price = array_values( $price );
         sort( $price, SORT_NUMERIC );
+        // Allow negative prices
+        if ( $price[1] < 0.0 )
+            $price = array_reverse( $price );
+
 
         $priceObj = new self();
 

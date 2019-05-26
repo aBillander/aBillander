@@ -846,6 +846,58 @@ class Product extends Model {
 
         return $rules->sortBy('position');
     }
+
+    public function getQuantityPriceRules( \App\Customer $customer = null )
+    {
+        $product = $this;
+
+        $price_rules = PriceRule::
+                    // Currency
+                      where( function($query) use ($customer) {
+                            if ($customer)
+                            {
+                                $query->where('currency_id', $customer->currency_id);
+                            }
+                        } )
+                    // Customer range
+                    ->where( function($query) use ($customer) {
+                            if ($customer)
+                            {
+                                $query->where('customer_id', $customer->id);
+                                if ($customer->customer_group_id)
+                                    $query->orWhere('customer_group_id', $customer->customer_group_id);
+                            }
+                        } )
+                    // Product range
+                    ->where( function($query) use ($product) {
+                                $query->where('product_id', $product->id);
+                                if ($product->category_id)
+                                    $query->orWhere('category_id',  $product->category_id);
+                        } )
+                    // Quantity range
+                    ->where( 'from_quantity', '>', 1 )
+                    // Date range
+                    ->where( function($query){
+                                $now = \Carbon\Carbon::now()->startOfDay(); 
+                                $query->where( function($query) use ($now) {
+                                    $query->where('date_from', null);
+                                    $query->orWhere('date_from', '<=', $now);
+                                } );
+                                $query->where( function($query) use ($now) {
+                                    $query->where('date_to', null);
+                                    $query->orWhere('date_to', '>=', $now);
+                                } );
+                        } )
+                                ->orderBy('from_quantity', 'ASC')
+                                ->get();
+
+        return $price_rules;
+    }
+
+    public function hasQuantityPriceRules( \App\Customer $customer = null )
+    {
+        return $this->getQuantityPriceRules( $customer )->count();
+    }
     
 
     /*

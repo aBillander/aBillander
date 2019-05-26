@@ -54,6 +54,7 @@
     {{ l('Without Ecotax') }}</span>
 @endif</th>
       <th class="text-right"> </th>
+      <th class="text-right"> </th>
     </tr>
   </thead>
   <tbody>
@@ -133,6 +134,17 @@
               )->getPrice() - $product->getEcotax()
             ) }}</p>
 @endif
+      </td>
+      <td>
+
+@if ( $product->hasQuantityPriceRules( \Auth::user()->customer ) )
+
+          <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules' data-id="{{ $product->id }}" data-toggle="modal" onClick="return false;" title="{{ l('Show Special Prices') }} {{-- $product->hasQuantityPriceRules( \Auth::user()->customer ) --}}"><i class="fa fa-thumbs-o-up"></i></a>
+
+@endif
+
+
+
       </td>
 
       <td class="text-right xbutton-pad" style="white-space: nowrap;">
@@ -218,6 +230,8 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 @include('abcc.catalogue._modal_view_product')
 
 @include('abcc.catalogue._modal_out_of_stock')
+
+@include('abcc.catalogue._modal_pricerules')
 
 
 
@@ -316,5 +330,47 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
   
   
 </script>
+
+@endsection
+
+
+@section('styles')    @parent
+
+<style>
+  /* 
+  http://twitterbootstrap3buttons.w3masters.nl/?color=%232BA9E1
+  https://bootsnipp.com/snippets/M3x9
+
+  */
+.btn-custom {
+  color: #fff;
+  background-color: #ff0084;
+  border-color: #ff0084;
+}
+.btn-custom:hover,
+.btn-custom:focus,
+.btn-custom:active,
+.btn-custom.active {
+  background-color: #e60077;
+  border-color: #cc006a;
+}
+.btn-custom.disabled:hover,
+.btn-custom.disabled:focus,
+.btn-custom.disabled:active,
+.btn-custom.disabled.active,
+.btn-custom[disabled]:hover,
+.btn-custom[disabled]:focus,
+.btn-custom[disabled]:active,
+.btn-custom[disabled].active,
+fieldset[disabled] .btn-custom:hover,
+fieldset[disabled] .btn-custom:focus,
+fieldset[disabled] .btn-custom:active,
+fieldset[disabled] .btn-custom.active {
+  background-color: #ff0084;
+  border-color: #ff0084;
+}
+
+
+</style>
 
 @endsection

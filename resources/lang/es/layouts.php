@@ -267,6 +267,7 @@ return [
 	'-- Please, select --'     => '-- Seleccione --',
 	'-- Click to Select --'     => '-- Haga click para Seleccionar --',
 	'-- All --'     => '-- Todos --',
+	'-- None --'    => '-- Ninguno --',
 	'All'     => 'Todos',
 	'None'     => 'Ninguno',
 	'Loading...'     => 'Cargando...',

@@ -153,6 +153,8 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
 
         Route::get('products/{id}/recentsales',  'ProductsController@getRecentSales')->name('products.recentsales');
 
+        Route::get('products/{id}/getpricerules',         'ProductsController@getPriceRules')->name('product.getpricerules');
+
         Route::resource('products.images', 'ProductImagesController');
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
 //        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');

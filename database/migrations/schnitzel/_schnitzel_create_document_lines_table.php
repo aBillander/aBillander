@@ -45,6 +45,7 @@
             // mark rate or markup: margin on selling price
 
 			$table->decimal('tax_percent', 8, 3)->default(0.0);					// Tax percent
+			$table->decimal('ecotax_amount', 20, 6)->default(0.0);
 			$table->decimal('commission_percent', 8, 3)->default(0.0);			// Commission percent
 
 			$table->text('notes')->nullable();
@@ -53,6 +54,7 @@
 
 //			$table->integer('document_id')->unsigned()->nullable(false);
 			$table->integer('tax_id')->unsigned()->nullable(false);
+			$table->integer('ecotax_id')->unsigned()->nullable();
 			$table->integer('sales_rep_id')->unsigned()->nullable();             // Sales representative
 
 //            $table->string('import_key', 16)->nullable(false);

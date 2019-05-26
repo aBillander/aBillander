@@ -63,6 +63,10 @@
 
 @endif
 
+            <a id="b_pricerules" href="#pricerules" class="list-group-item">
+               <i class="fa fa-gavel"></i>
+               &nbsp; {{ l('Price Rules') }}
+            </a>
             <a id="b_images" href="#images" class="list-group-item">
                <i class="fa fa-picture-o"></i>
                &nbsp; {{ l('Images') }}
@@ -87,11 +91,18 @@
 
           @include('products._panel_main_data')
 
+
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+
           @include('products._panel_manufacturing')
+
+@endif
 
           @include('products._panel_purchases')
 
           @include('products._panel_sales')
+
+          @include('products._panel_pricerules')
 
           @include('products._panel_inventory')
 
@@ -119,6 +130,7 @@
       $("#panel_main_data").hide();
       $("#panel_purchases").hide();
       $("#panel_sales").hide();
+      $("#panel_pricerules").hide();
       $("#panel_inventory").hide();
       $("#panel_manufacturing").hide();
       $("#panel_internet").hide();
@@ -128,6 +140,7 @@
       $("#b_main_data").removeClass('active');
       $("#b_purchases").removeClass('active');
       $("#b_sales").removeClass('active');
+      $("#b_pricerules").removeClass('active');
       $("#b_inventory").removeClass('active');
       $("#b_manufacturing").removeClass('active');
       $("#b_internet").removeClass('active');
@@ -145,6 +158,13 @@
          $("#b_sales").addClass('active');
 
          getRecentSales();
+      }
+      else if(window.location.hash.substring(1) == 'pricerules')
+      {
+         $("#panel_pricerules").show();
+         $("#b_pricerules").addClass('active');
+
+         getProductPriceRules();
       }
       else if(window.location.hash.substring(1) == 'inventory')
       {

@@ -1,45 +1,41 @@
 
 
-<div id="div_customer_rules">
+<div id="div_product_rules">
 
 
 
    <div class="table-responsive">
 
-@if ($customer_rules->count())
-<table id="customer_rules" class="table table-hover">
+@if ($product_rules->count())
+<table id="product_rules" class="table table-hover">
     <thead>
         <tr>
             <th class="text-center">{{l('ID', [], 'layouts')}}</th>
-              <th>{{l('Category')}}</th>
-              <th colspan="2" class="text-center">{{l('Product')}}</th>
+              <th>{{l('Customer Group', 'pricerules')}}</th>
+              <th>{{l('Customer', 'pricerules')}}</th>
               <th>{{l('Currency')}}</th>
-              <th class="text-right">{{l('Price')}}</th>
-              <th class="text-right">{{l('Discount Percent')}}</th>
-              <th class="text-right">{{l('Discount Amount')}}</th>
-              <th class="text-center">{{l('From Quantity')}}</th>
-              <th>{{l('Date from')}}</th>
-              <th>{{l('Date to')}}</th>
+              <th class="text-right">{{l('Price', 'pricerules')}}</th>
+              <th class="text-right">{{l('Discount Percent', 'pricerules')}}</th>
+              <th class="text-right">{{l('Discount Amount', 'pricerules')}}</th>
+              <th class="text-center">{{l('From Quantity', 'pricerules')}}</th>
+              <th>{{l('Date from', 'pricerules')}}</th>
+              <th>{{l('Date to', 'pricerules')}}</th>
             <th>
-{{--
-                <a href="{{ URL::to('absrc/customers/'.$id.'/pricerules/create') }}" class="btn btn-sm btn-success create-pricerule" 
+                <a href="{{ URL::to('customers/'.$id.'/pricerules/create') }}" class="btn btn-sm btn-success create-pricerule" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
---}}
             </th>
         </tr>
     </thead>
     <tbody id="pricerule_lines">
-        @foreach ($customer_rules as $rule)
+        @foreach ($product_rules as $rule)
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
-      <td>{{ optional($rule->category)->name }}</td>
+      <td>{{ optional($rule->customergroup)->name }}</td>
       <td class="text-right">
-          @if($rule->product)
-            [{{ optional($rule->product)->reference }}]</td>
+          @if($rule->customer)
 
-            <td><a href="{{ URL::to('absrc/products/' . optional($rule->product)->id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ optional($rule->product)->name }}</a>
-          @else
-            </td><td>
+            <a href="{{ URL::to('customers/' . optional($rule->customer)->id . '/edit') }}" title="{{l('View Customer', 'pricerules')}}" target="_blank">{{ optional($rule->customer)->name_regular }}</a>
+
           @endif
       </td>
       <td>{{ optional($rule->currency)->name }}</td>
@@ -78,13 +74,13 @@
             <td class="text-right button-pad">
 
                 <!-- a class="btn btn-sm btn-warning" href="{{ URL::to('pricerules/' . $rule->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
-{{--
-               <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                   href="{{ URL::to('pricerules/' . $rule->id ) }}" 
-                   data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                   data-title="{{ l('Price Rules') }} :: ({{$rule->id}}) " 
-                   onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
---}}
+
+                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                    href="{{ URL::to('pricerules/' . $rule->id ) }}" 
+                    data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
+                    data-title="{{ l('Price Rules') }} :: ({{$rule->id}}) " 
+                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+            
       </td>
         </tr>
         @endforeach
@@ -94,9 +90,9 @@
    </div><!-- div class="table-responsive" ENDS -->
 
 <span class="pagination_pricerules">
-{{ $customer_rules->appends( Request::all() )->render() }}
+{{ $product_rules->appends( Request::all() )->render() }}
 </span>
-<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $customer_rules->total() ], 'layouts')}} </span></li></ul>
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $product_rules->total() ], 'layouts')}} </span></li></ul>
 <ul class="pagination" style="float:right;"><li xclass="active" style="float:right;"><span style="color:#333333;border-color:#ffffff"> <div class="input-group"><span class="input-group-addon" style="border: 0;background-color: #ffffff" title="{{l('Items per page', 'layouts')}}">{{l('Per page', 'layouts')}}</span><input id="items_per_page_pricerules" name="items_per_page_pricerules" class="form-control input-sm items_per_page_pricerules" style="width: 50px !important;" type="text" value="{{ $items_per_page_pricerules }}" onclick="this.select()">
     <span class="input-group-btn">
       <button class="btn btn-info btn-sm" type="button" title="{{l('Refresh', 'layouts')}}" onclick="getCustomerPriceRules(); return false;"><i class="fa fa-refresh"></i></button>
@@ -107,11 +103,11 @@
 
 
 @else
-            <!-- div class="modal-footer">
-                <a href="{{ URL::to('absrc/customers/'.$id.'/pricerules/create') }}" class="btn xbtn-sm btn-success create-pricerule pull-right" 
+            <div class="modal-footer">
+                <a href="{{ URL::to('customers/'.$id.'/pricerules/create') }}" class="btn xbtn-sm btn-success create-pricerule pull-right" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
-            </div -->
+            </div>
 
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
@@ -121,7 +117,7 @@
 </div>
 @endif
 
-</div><!-- div id="div_customer_rules" ENDS -->
+</div><!-- div id="div_product_rules" ENDS -->
 
 
 

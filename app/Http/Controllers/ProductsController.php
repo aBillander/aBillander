@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 use App\Product;
 use App\StockMovement;
+use App\PriceRule;
+
+use App\Configuration;
+
 use Form, DB;
 
 // use App\CustomerOrder;
@@ -102,7 +106,7 @@ class ProductsController extends Controller
 
 //        abi_r($products->toSql(), true);
 
-        $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $products = $products->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         // abi_r($products, true);
 
@@ -147,7 +151,7 @@ class ProductsController extends Controller
 
         $rules = Product::$rules['create'];
 
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+        if ( Configuration::get('PRICES_ENTERED_WITH_TAX') )
             unset($rules['price']);
         else 
             unset($rules['price_tax_inc']);
@@ -155,7 +159,7 @@ class ProductsController extends Controller
         $this->validate($request, $rules);
 
         $tax = \App\Tax::find( $request->input('tax_id') );
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ){
+        if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
             $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
             $request->merge( ['price' => $price] );
         } else {
@@ -370,7 +374,7 @@ class ProductsController extends Controller
         if ( isset($vrules['ean13']) )     $vrules['ean13']     = $vrules['ean13']     . ','. $product->id.',id,deleted_at,NULL';  // Unique
 
         if ($request->input('tab_name') == 'sales') {
-            if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+            if ( Configuration::get('PRICES_ENTERED_WITH_TAX') )
                 unset($vrules['price']);
             else 
                 unset($vrules['price_tax_inc']);
@@ -393,7 +397,7 @@ class ProductsController extends Controller
             $this->mergeFormDates( ['available_for_sale_date'], $request );
             
             $tax = \App\Tax::find( $product->tax_id );
-            if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ){
+            if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
                 $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
                 $request->merge( ['price' => $price] );
 
@@ -574,7 +578,7 @@ class ProductsController extends Controller
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'alias', 'LIKE', '%'.$search.'%' )
 //                                ->with('measureunit')
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
 /*
         $data = [];
 
@@ -778,9 +782,9 @@ LIMIT 1
      */
     public function getStockMovements($id, Request $request)
     {
-        $items_per_page_stockmovements = intval($request->input('items_per_page_stockmovements', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page_stockmovements = intval($request->input('items_per_page_stockmovements', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page_stockmovements >= 0) ) 
-            $items_per_page_stockmovements = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page_stockmovements = Configuration::get('DEF_ITEMS_PERPAGE');
 
         $mvts = StockMovement::where('product_id', $id)
                                 ->with('product')
@@ -789,7 +793,7 @@ LIMIT 1
                                 ->orderBy('created_at', 'DESC')
                                 ->orderBy('id', 'DESC');
 
-        $mvts = $mvts->paginate( $items_per_page_stockmovements );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+        $mvts = $mvts->paginate( $items_per_page_stockmovements );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
 
         $mvts->setPath('stockmovements');
 
@@ -801,9 +805,9 @@ LIMIT 1
 
     public function getPendingMovements($id, Request $request)
     {
-        $items_per_page_pendingmovements = intval($request->input('items_per_page_pendingmovements', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page_pendingmovements = intval($request->input('items_per_page_pendingmovements', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page_pendingmovements >= 0) ) 
-            $items_per_page_pendingmovements = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page_pendingmovements = Configuration::get('DEF_ITEMS_PERPAGE');
 
         
         $lines = CustomerOrderLine::where('product_id', $id)
@@ -816,7 +820,7 @@ LIMIT 1
                             ->select('customer_order_lines.*', 'customer_orders.document_date', \DB::raw('"customerorders" as route'))
                             ->orderBy('customer_orders.document_date', 'desc');
 
-        $lines = $lines->paginate( $items_per_page_pendingmovements );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+        $lines = $lines->paginate( $items_per_page_pendingmovements );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
 
         $lines->setPath('pendingmovements');
 
@@ -839,9 +843,9 @@ LIMIT 1
 
     public function getRecentSales($id, Request $request)
     {
-        $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page = intval($request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page >= 0) ) 
-            $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page = Configuration::get('DEF_ITEMS_PERPAGE');
 
         // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
         $o_lines = CustomerOrderLine::where('product_id', $id)
@@ -901,5 +905,29 @@ LIMIT 1
         
         return view('products._panel_recent_sales', compact('lines', 'items_per_page'));
     }
+
     
+    public function getPriceRules($id, Request $request)
+    {
+        $items_per_page_pricerules = intval($request->input('items_per_page_pricerules', Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page_pricerules >= 0) ) 
+            $items_per_page_pricerules = Configuration::get('DEF_ITEMS_PERPAGE');
+
+        $product_rules = PriceRule::where('product_id', $id)
+                                ->with('customergroup')
+                                ->with('customer')
+ //                               ->with('combination')
+                                ->with('currency')
+ //                               ->orderBy('product_id', 'ASC')
+                                ->orderBy('customer_id', 'ASC')
+                                ->orderBy('from_quantity', 'ASC');
+
+        $product_rules = $product_rules->paginate( $items_per_page_pricerules );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
+
+        $product_rules->setPath('customerpricerules');
+
+        //return $items_per_page ;
+        
+        return view('products._panel_pricerules_list', compact('id', 'product_rules', 'items_per_page_pricerules'));
+    }
 }

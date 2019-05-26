@@ -182,6 +182,8 @@ return [
 
 	'None'     => 'Ninguna',
 
+	'Price Rules' => 'Reglas de Precio',
+	'Create Price Rule' => 'Crear Regla de Precio',
 
 	/*
 	|--------------------------------------------------------------------------

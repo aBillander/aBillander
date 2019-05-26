@@ -43,7 +43,7 @@ return [
 	|
 	*/
 
-	''     => '',
+	'Show Special Prices'     => 'Mostrar Precios Especiales',
 	''     => '',
 	''     => '',
 

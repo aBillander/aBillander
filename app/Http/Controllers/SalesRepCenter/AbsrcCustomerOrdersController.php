@@ -592,6 +592,34 @@ if (0) {
      * 
      */
 
+    public function deleteDocumentLine($line_id)
+    {
+
+        $document_line = $this->document_line
+                        ->findOrFail($line_id);
+/*
+        $document = $this->customerOrder
+                        ->findOrFail($order_line->customer_order_id);
+*/
+
+        // $theID = $this->model_snake_case.'_id';
+        $theID = 'customer_'.$this->model_snake_case.'_id';
+        $document = $this->document
+                        ->findOrFail($document_line->{$theID});
+
+
+
+        $document_line->delete();
+
+        // Now, update Order Totals
+        $document->makeTotals();
+
+        return response()->json( [
+                'msg' => 'OK',
+                'data' => $line_id,
+        ] );
+    }
+
     public function duplicateOrder($id)
     {
 

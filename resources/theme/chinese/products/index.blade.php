@@ -17,8 +17,8 @@
 
 
 
-        <!-- a href="{{ route('products.export') }}" class="btn btn-sm btn-grey" 
-                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a -->
+        <a href="{{ route('products.export') }}" class="btn btn-sm btn-grey" 
+                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
     </div>
     <h2>
         {{ l('Products') }}

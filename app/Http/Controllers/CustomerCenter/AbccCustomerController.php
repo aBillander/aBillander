@@ -152,6 +152,14 @@ class AbccCustomerController extends Controller
                                     $query->orWhere('customer_group_id', $customer->customer_group_id);
                         } )
                     // Product range
+                    ->with('product')
+                    ->whereHas('product', function ($query) use ($customer) {
+                            $query
+                                      ->IsSaleable()
+                                      ->IsAvailable()
+                                      ->qualifyForCustomer( $customer->id, $customer->currency->id)
+                                      ->IsActive();
+                        })
                     // All Products
 //                    ->where( function($query) use ($product) {
 //                                $query->where('product_id', $product->id);

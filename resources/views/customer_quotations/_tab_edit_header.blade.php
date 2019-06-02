@@ -22,6 +22,19 @@
             <div class="form-control">{{abi_date_short($document->edocument_sent_at)}}</div>
          </div>
 
+         <div class="form-group col-lg-2 col-md-2 col-sm-2">
+         </div>
+                  
+        <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('document_ppd_percent') ? 'has-error' : '' }}">
+           {{ l('Prompt Payment Discount (%)') }}
+               <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                  data-content="{{ l('Comma separated list of days, as in: 3,17') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+               </a -->
+           {!! Form::text('document_ppd_percent', null, array('class' => 'form-control', 'id' => 'document_ppd_percent')) !!}
+           {!! $errors->first('document_ppd_percent', '<span class="help-block">:message</span>') !!}
+        </div>
+
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('valid_until_date') ? 'has-error' : '' }}">
                <label for="valid_until_date_form">{{ l('Valid until') }}</label>
                {!! Form::text('valid_until_date_form', null, array('class' => 'form-control', 'id' => 'valid_until_date_form', 'autocomplete' => 'off')) !!}

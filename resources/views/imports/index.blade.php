@@ -10,7 +10,7 @@
             <div class="pull-right" style="padding-right: 159px">
 
         <a href="{{ route('categories.import') }}" class="btn btn-success" 
-                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Categories', [], 'layouts')}}</a>
+                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Categories')}}</a>
 
 <a href="{{ route('products.import') }}" class="btn btn-success" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> &nbsp; {{l('Products', [], 'layouts')}}</a>
 

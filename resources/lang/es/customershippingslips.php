@@ -323,5 +323,7 @@ return [
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
 
 	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
+	
+	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 
 ];

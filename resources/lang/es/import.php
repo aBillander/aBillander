@@ -34,7 +34,7 @@ return [
 	'Delete existing Categories?'     => '¿Eliminar las Categorías existentes?',
 	''     => '',
 	''     => '',
-	''     => '',
+	'Categories'     => 'Categorías',
 
 
 	/*

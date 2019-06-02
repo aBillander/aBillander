@@ -320,5 +320,7 @@ return [
 	'Make Order' => 'Crear Pedido',
 
 	'Valid until' => 'Válido hasta',
+	
+	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 
 ];

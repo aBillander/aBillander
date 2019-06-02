@@ -246,11 +246,11 @@ class ImportProductPricesController extends Controller
                     // Prepare data
                     $data = $row->toArray();
 
-                    $item = '[<span class="log-showoff-format">'.($data['reference'] ?? $data['id'] ?? '').'</span>] <span class="log-showoff-format">'.$data['price_tax_inc'].' - '.$data['price'].'</span>';
+                    $item = '[<span class="log-showoff-format">'.($data['reference'] ?? $data['id'] ?? '').'</span>] <span class="log-showoff-format">'.( $data['price_tax_inc'] ?? '').' - '.($data['cost_price'] ?? '').' - '.($data['price'] ?? '').'</span>';
 
                     // Some Poor Man checks:
-                    $data['id'] = intval(trim( $data['id'] ));
-                    $data['reference'] = trim( $data['reference'] );
+                    $data['id'] = intval(trim( $data['id'] ?? 0 ));
+                    $data['reference'] = trim( $data['reference'] ?? '' );
 
                     // Product
                     $product = null;
@@ -274,6 +274,13 @@ class ImportProductPricesController extends Controller
     
                             unset($data['tax_id']);
                         }
+                        if ( $data['tax_id'] != $product->tax_id )
+                        {
+                            $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'tax_id' " . ($data['tax_id'] ?? '') . ' no se corresponde con el Producto: ' . $product->tax_id);
+    
+                            // Commenting this, you may change Productc Tax
+                            // unset($data['tax_id']);
+                        }
                     } else {
                         // Invalid, for sure!
                         unset($data['tax_id']);
@@ -290,14 +297,22 @@ class ImportProductPricesController extends Controller
                             // $product = $this->product->create( $data );
                             // $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
 
-                            $product->price_tax_inc = $data['price_tax_inc'];
-                            $product->price = $data['price'];
 
-                            if (array_key_exists('tax_id',     $data)) $product->tax_id     = $data['tax_id'];
+                            if (array_key_exists('tax_id', $data))
+                            {
+                                // 
+                                $data1['tax_id']        = $data['tax_id'];
+                                $data1['price_tax_inc'] = $data['price_tax_inc'];
+                                $data1['price']         = $data['price'];
+                            }
 
-                            if (array_key_exists('cost_price', $data)) $product->cost_price = $data['cost_price'];
+                            if (array_key_exists('cost_price', $data))
+                            {
+                                // 
+                                $data1['cost_price']    = $data['cost_price'];
+                            }
 
-                            $product->save();
+                            $product->update( $data1 );
                         }
 
                         $i_ok++;

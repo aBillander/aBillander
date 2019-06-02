@@ -43,11 +43,6 @@
             
 
             @foreach ($document->lines as $line)
-@php
-
-$ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
-
-@endphp
             <tr>
                 <td>{{$line->line_sort_order }}</td>
                 <td class="text-center">{{ $line->as_quantity('quantity') }}</td>
@@ -58,10 +53,10 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
                 <td>
                 {{ $line->name }}</td>
-                <td class="text-right" title="{{ $ecotax }}">{{ $line->as_priceable( $line->unit_final_price - $ecotax ) }}</td>
+                <td class="text-right">{{ $line->as_price('unit_final_price') }}</td>
                 <td class="text-right">{{ $line->as_price('cost_price') }}</td>
-                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price, $line->unit_final_price - $ecotax, $document->currency ) ) }}</td>
-                <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $ecotax - $line->cost_price )*$line->quantity ) }}</td>
+                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price, $line->unit_final_price, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $line->cost_price )*$line->quantity ) }}</td>
 
 
 
@@ -128,16 +123,10 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                     </thead>
 
         <tbody>
-@php
-
-$document_total_discount_percent = $document->document_discount_percent + $document->document_ppd_percent
-                                 - $document->document_discount_percent * $document->document_ppd_percent / 100.0;
-
-@endphp
 
             <tr>
                 <td>{{ $document->as_priceable($document->total_revenue) }}</td>
-                <td>{{ $document->as_percentable( $document_total_discount_percent ) }}</td>
+                <td>{{ $document->as_percent('document_discount_percent') }}</td>
                 <td>{{ $document->as_priceable($document->total_revenue_with_discount) }}</td>
                 <td class="text-right">{{ $document->as_priceable($document->total_cost_price) }}</td>
                 <td class="text-right">{{ $document->as_percentable( \App\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>

@@ -502,6 +502,7 @@ class BillableController extends Controller
         $document = $this->document
                         ->with('lines')
                         ->with('lines.product')
+                        ->with('lines.product.ecotax')
                         ->findOrFail($id);
 
         return view($this->view_path.'._panel_document_profitability', $this->modelVars() + compact('document'));

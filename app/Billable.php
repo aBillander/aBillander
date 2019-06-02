@@ -211,7 +211,13 @@ class Billable extends Model
 
                 if ( ($line->line_type == 'shipping') && $filter ) return 0.0;
 
-                return $line->quantity * $line->unit_final_price;
+                $ecotax = 0.0;
+                if ( $line->line_type == 'product' ) 
+                {
+                    $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
+                }
+
+                return $line->quantity * ( $line->unit_final_price - $ecotax );
 
             });
 
@@ -220,7 +226,7 @@ class Billable extends Model
 
     public function getTotalRevenueWithDiscountAttribute()
     {
-        return $this->total_revenue * ( 1.0 - $this->document_discount_percent / 100.0 );
+        return $this->total_revenue * ( 1.0 - $this->document_discount_percent / 100.0 ) * ( 1.0 - $this->document_ppd_percent / 100.0 );
     }
 
     public function getTotalCostPriceAttribute()

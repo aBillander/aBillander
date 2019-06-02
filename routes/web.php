@@ -101,6 +101,12 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::get('/home', 'HomeController@index')->name('home');
         Route::get('/desktop', 'HomeController@desktop')->name('desktop');
 
+        // Jennifer
+        Route::get('/jennifer/home', 'JenniferController@index')->name('jennifer.home');
+        Route::post('/jennifer/reports/invoices'  , 'JenniferController@reportInvoices'  )->name('jennifer.reports.invoices');
+        Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
+        Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
+
 
         Route::resource('configurations',    'ConfigurationsController');
         Route::resource('configurationkeys', 'ConfigurationKeysController');

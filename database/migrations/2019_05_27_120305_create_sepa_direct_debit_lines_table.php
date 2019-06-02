@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSepaDirectDebitsTable extends Migration
+class CreateSepaDirectDebitLinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateSepaDirectDebitsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('sepa_direct_debits');
+        Schema::dropIfExists('sepa_direct_debit_lines');
         
-        Schema::create('sepa_direct_debits', function (Blueprint $table) {
+        Schema::create('sepa_direct_debit_lines', function (Blueprint $table) {
 
             $table->increments('id');
             $table->string('name', 32);
@@ -47,6 +47,6 @@ class CreateSepaDirectDebitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sepa_direct_debits');
+        Schema::dropIfExists('sepa_direct_debit_lines');
     }
 }

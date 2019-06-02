@@ -372,8 +372,90 @@ class Product extends Model {
     }
     
 
+    public function getLastStockTakingByWarehouse( $warehouse = null )
+    {
+        if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
+
+        $wh_id = is_numeric($warehouse)
+                    ? $warehouse
+                    : $warehouse->id ;
+
+        // Retrieve movements
+        $mvt = \App\StockMovement::
+                      where('product_id', $this->id)
+                    ->where('warehouse_id', $wh_id)
+                    ->where( function($query){
+                                // $now = \Carbon\Carbon::now()->startOfDay(); 
+                                // 
+                                $query->where(  'movement_type_id', \App\StockMovement::INITIAL_STOCK);
+                                $query->orWhere('movement_type_id', \App\StockMovement::ADJUSTMENT);
+                        } )
+                    ->orderBy('date', 'desc')
+                    ->first();
+
+
+        $last_stock_taking_date = $mvt ? $mvt->date : '';
+
+        return $mvt;
+        return $last_stock_taking_date;
+    }
+
+    public function getStockToDateByWarehouse(  $warehouse = null, \Carbon\Carbon $date = null  )
+    {
+        if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
+        $wh_id = is_numeric($warehouse)
+                    ? $warehouse
+                    : $warehouse->id ;
+        
+        if ( $date      == null ) $date      = \Carbon\Carbon::now();   //->endOfDay();
+        else                      $date      = $date->endOfDay();
+
+        $last_stock_taking_mvt = $this->getLastStockTakingByWarehouse( $warehouse );
+
+        // Retrieve movements
+        $mvts = \App\StockMovement::
+                      where('product_id', $this->id)
+                    ->where('warehouse_id', $wh_id)
+                    ->where('date', '<', $date)
+                    ->where( function($query) use ($last_stock_taking_mvt) {
+                                if ( $last_stock_taking_mvt ) 
+                                    $query->where('date', '>', $last_stock_taking_mvt->date);
+                        } )
+                    ->where( function($query){
+                                // $now = \Carbon\Carbon::now()->startOfDay(); 
+                                // 
+                                $query->where('movement_type_id', '<>', \App\StockMovement::INITIAL_STOCK);
+                                $query->where('movement_type_id', '<>', \App\StockMovement::ADJUSTMENT);
+                        } )
+                    ->orderBy('date', 'desc')
+                    ->get();
+
+        // abi_r($mvts, true);
+
+        // abi_toSql(
+
+        return optional($last_stock_taking_mvt)->quantity_after_movement - ($mvts->sum('quantity_before_movement') - $mvts->sum('quantity_after_movement'));
+    }
+
+    public function getStockToDate(  \Carbon\Carbon $date = null  )
+    {
+        if ( $date      == null ) $date      = \Carbon\Carbon::now();   //->endOfDay();
+        else                      $date      = $date->endOfDay();
+
+        $warehouses = \App\Warehouse::get();
+        $count = 0;
+
+        foreach ($warehouses as $warehouse) {
+            # code...
+            $count += $this->getStockToDateByWarehouse( $warehouse->id, $date );
+        }
+
+        return $count;
+    }
+    
+
     public function getStockByWarehouse( $warehouse )
-    { 
+    {
         $wh_id = is_numeric($warehouse)
                     ? $warehouse
                     : $warehouse->id ;
@@ -395,7 +477,7 @@ class Product extends Model {
     }
     
     public function getStock()
-    { 
+    {
         $warehouses = \App\Warehouse::get();
         $count = 0;
 

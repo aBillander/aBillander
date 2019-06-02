@@ -23,6 +23,7 @@ class CartsController extends Controller
     public function index()
     {
         $carts = $this->cart
+                            ->whereHas('customer')
                             ->whereHas('cartlines')
                             ->with('customer')
                             ->with('currency')

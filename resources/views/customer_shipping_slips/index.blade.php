@@ -8,9 +8,26 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
+        
+        <div class="btn-group xopen">
+          <a href="{{ route($model_path.'.index') }}" class="btn btn-success btn-sm" title="{{l('Filter Records', [], 'layouts')}}"><i class="fa fa-filter"></i> &nbsp;{{l('All', [], 'layouts')}}</a>
+
+          <a href="#" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
+
+          <ul class="dropdown-menu">
+            <li><a href="{{ route($model_path.'.index', 'invoiced_not') }}"><i class="fa fa-exclamation-triangle text-danger"></i> &nbsp; {{l('Not Invoiced')}}</a>
+            </li>
+
+            <li><a href="{{ route($model_path.'.index', 'invoiced') }}"><i class="fa fa-money text-muted"></i> &nbsp; {{l('Invoiced')}}</a>
+            </li>
+
+            <li class="divider"></li>
+          </ul>
+        </div>
 
         <a href="{{ URL::to($model_path.'/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
 
     </div>
     <h2>
@@ -156,7 +173,11 @@
 
    </div><!-- div class="table-responsive" ENDS -->
 
-{{ $documents->appends( Request::all() )->render() }}
+{{ $documents->appends( collect(Request::all())
+                            ->map(function($item) {
+                                    // Take empty keys, otherwise skipped!
+                                    return is_null($item) ? 1 : $item;
+                            })->toArray() )->render() }}
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
 
 @else

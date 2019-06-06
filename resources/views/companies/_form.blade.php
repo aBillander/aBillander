@@ -47,7 +47,7 @@
                  </div>
             </div>
 
-           <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-apply_RE">
+           <div class="form-group col-lg-3 col-md-3 col-sm-3 hide" id="div-apply_RE">
              {!! Form::label('apply_RE', l('Applies Equalization Tax?'), ['class' => 'control-label']) !!}
              <div>
                <div class="radio-inline">

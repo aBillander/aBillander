@@ -326,4 +326,7 @@ return [
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 
+	'Not Invoiced'     => 'No Facturados',
+	'Invoiced'     => 'Facturados',
+
 ];

@@ -7,11 +7,12 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Company as Company;
-use App\Address as Address;
-use App\Country as Country;
-use App\Configuration as Configuration; 
-use \iImage as iImage;
+use App\Company;
+use App\Address;
+use App\BankAccount;
+use App\Country;
+use App\Configuration; 
+use \iImage;
 use View;
 
 class CompaniesController extends Controller {
@@ -175,6 +176,43 @@ class CompaniesController extends Controller {
 		return redirect('companies/'.$company->id.'/edit')
 				->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $company->id], 'layouts') . $request->input('name_fiscal'));
 	}
+
+    /**
+     * Update Bank Account in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function updateBankAccount($id, Request $request)
+    {
+
+        $section = '#bankaccounts';
+
+//        abi_r(Customer::$rules, true);
+
+        $company = $this->company->with('bankaccount')->findOrFail($id);
+
+        $bankaccount = $company->bankaccount;
+
+        $this->validate($request, BankAccount::$rules);
+
+        if ( $bankaccount )
+        {
+            // Update
+            $bankaccount->update($request->all());
+        } else {
+            // Create
+            $bankaccount = BankAccount::create($request->all());
+            $company->bankaccounts()->save($bankaccount);
+
+            $company->bank_account_id = $bankaccount->id;
+            $company->save();
+        }
+
+        return redirect('companies/'.$company->id.'/edit'.$section)
+            ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $customer->name_commercial);
+
+    }
 
 	/**
 	 * Remove the specified resource from storage.

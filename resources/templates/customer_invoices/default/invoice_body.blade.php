@@ -50,7 +50,7 @@
 
 	<tr>
 
-		<td class="address billing-address">
+		<td class="address billing-address" xstyle="background: red">
 
             <div class="shop-name"><h3>
 
@@ -79,17 +79,19 @@
 
 			@endif
             
-            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="margin-left: 10mm">[{{ $document->customer->id }}]</span></div>
+            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
 
 			@if ( $document->invoicingaddress->phone )
 
-				<div class="billing-phone">Tel. {{ $document->invoicingaddress->phone }}</div>
+				<div class="billing-phone">Tel. {{ $document->invoicingaddress->phone }}
 
 			@else
 
-				<div class="billing-phone">Tel. {{ $document->customer->phone }}</div>
+				<div class="billing-phone">Tel. {{ $document->customer->phone }}
 
 			@endif
+
+			<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div>
 			
 		</td>
 

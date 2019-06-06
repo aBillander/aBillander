@@ -53,12 +53,13 @@ class CustomerOrdersController extends BillableController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
         $documents = $this->document
+                            ->filter( $request->all() )
                             ->with('customer')
 //                            ->with('currency')
 //                            ->with('paymentmethod')

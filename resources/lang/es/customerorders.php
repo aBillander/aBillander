@@ -336,4 +336,7 @@ return [
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 
+	'Not Closed'     => 'No Cerrados',
+	'Closed'     => 'Cerrados',
+
 ];

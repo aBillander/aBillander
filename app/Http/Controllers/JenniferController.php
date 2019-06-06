@@ -41,15 +41,28 @@ class JenniferController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['invoices_date_from', 'invoices_date_to'], $request );
 
-        $date_from = \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_from'));
-        $date_to   = \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_to'  ));
+        $date_from = $request->input('invoices_date_from')
+                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_from'))
+                     : null;
+        
+        $date_to   = $request->input('invoices_date_to'  )
+                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_to'  ))
+                     : null;
 
         $documents = \App\CustomerInvoice::
                               with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
-                            ->where('document_date', '>=', $date_from->startOfDay())
-                            ->where('document_date', '<=', $date_to  ->endOfDay()  )
+                            ->where( function($query) use ($date_from){
+                                        if ( $date_from )
+                                        $query->where('document_date', '>=', $date_from->startOfDay());
+                                } )
+                            ->where( function($query) use ($date_to  ){
+                                        if ( $date_to   )
+                                        $query->where('document_date', '<=', $date_to  ->endOfDay()  );
+                                } )
+//                            ->where('document_date', '>=', $date_from->startOfDay())
+//                            ->where('document_date', '<=', $date_to  ->endOfDay()  )
                             ->where( function($query){
                                         $query->where(   'status', 'confirmed' );
                                         $query->orWhere( 'status', 'closed'    );
@@ -61,9 +74,33 @@ class JenniferController extends Controller
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
+        if ( $request->input('invoices_date_from_form') && $request->input('invoices_date_to_form') )
+        {
+            $ribbon = 'entre ' . $request->input('invoices_date_from_form') . ' y ' . $request->input('invoices_date_to_form');
+
+        } else
+
+        if ( !$request->input('invoices_date_from_form') && $request->input('invoices_date_to_form') )
+        {
+            $ribbon = 'hasta ' . $request->input('invoices_date_to_form');
+
+        } else
+
+        if ( $request->input('invoices_date_from_form') && !$request->input('invoices_date_to_form') )
+        {
+            $ribbon = 'desde ' . $request->input('invoices_date_from_form');
+
+        } else
+
+        if ( !$request->input('invoices_date_from_form') && !$request->input('invoices_date_to_form') )
+        {
+            $ribbon = 'todas';
+
+        } else
+
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Facturas de Clientes, entre ' . $request->input('invoices_date_from_form') . ' y ' . $request->input('invoices_date_to_form'), '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Facturas de Clientes, ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
 
@@ -76,6 +113,8 @@ class JenniferController extends Controller
         // and append it to the data array.
         $alltaxes = \App\Tax::get()->sortByDesc('percent');
         $alltax_rules = \App\TaxRule::get();
+
+        $sub_totals = [];
         
         foreach ($documents as $document) {
             $row = [];
@@ -94,7 +133,6 @@ class JenniferController extends Controller
 
             // Taxes breakout
             $totals = $document->totals();
-            $sub_totals = [];
 
             foreach ( $alltaxes as $alltax )
             {
@@ -131,10 +169,14 @@ class JenniferController extends Controller
                     $sub_totals[$alltax->id]['iva']     = $iva->total_line_tax;
                     $sub_totals[$alltax->id]['re']      = optional($re)->total_line_tax ?? 0.0;
                 }
+
+                // abi_r($sub_totals);
             }
 
-
+// abi_r('************************************');
         }
+
+//        die();
 
         // Totals
         $data[] = [''];
@@ -232,12 +274,17 @@ class JenniferController extends Controller
                           ->orderBy('reference', 'asc')
                           ->get();
 
+
+        $date = $request->input('inventory_date_to')
+                ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('inventory_date_to'))
+                : \Carbon\Carbon::now();
+
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Inventario histórico, hasta el ' . $request->input('inventory_date_to_form'), '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Inventario histórico, hasta el ' . abi_date_short( $date ), '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
 
@@ -248,8 +295,6 @@ class JenniferController extends Controller
 
         $data[] = $header_names;
         $total_cost = $total_price = 0.0;
-
-        $date = \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('inventory_date_to'));
 
         // Convert each member of the returned collection into an array,
         // and append it to the data array.
@@ -278,7 +323,7 @@ class JenniferController extends Controller
         $data[] = [''];
         $data[] = ['', 'Total:', $total_cost, $total_price, ''];
 
-        $sheetName = 'Inventario a ' . $request->input('inventory_date_to');
+        $sheetName = 'Inventario';
 
         // abi_r($data, true);
 
@@ -395,6 +440,7 @@ class JenniferController extends Controller
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
 //                                ->IsSaleable()
 //                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
+//                                ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
                                 ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );

@@ -104,8 +104,8 @@ class Cart extends Model
 
     public static function getCustomerCart()
     {
-        if ( !Auth::guard('customer')->check() )
-        	return null;
+        if ( Auth::guard('customer')->check() )
+        {
 
         // Get Customer Cart
         $customer = Auth::user()->customer;
@@ -148,6 +148,10 @@ class Cart extends Model
         }
 
         return $cart;
+        
+        }
+
+        return null;
     }
 
 

@@ -28,6 +28,21 @@ class Company extends Model {
     | Relationships
     |--------------------------------------------------------------------------
     */
+
+    /**
+     * Get all of the customer's Bank Accounts.
+     */
+    public function bankaccounts()
+    {
+        return $this->morphMany('App\BankAccount', 'bank_accountable');
+    }
+
+    public function bankaccount()
+    {
+        return $this->hasOne('App\BankAccount', 'id', 'bank_account_id')
+                   ->where('bank_accountable_type', Company::class);
+    }
+    
     
     public function address()
     {

@@ -96,6 +96,7 @@ class HomeController extends Controller
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
 //                                ->IsSaleable()
 //                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
+//                                ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
                                 ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );

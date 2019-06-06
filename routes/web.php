@@ -112,6 +112,7 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::resource('configurationkeys', 'ConfigurationKeysController');
 
         Route::resource('companies', 'CompaniesController');
+        Route::post('companies/{id}/bankaccount', 'CompaniesController@updateBankAccount')->name('companies.bankaccount');
 
         Route::resource('countries',        'CountriesController');
         Route::resource('countries.states', 'StatesController');

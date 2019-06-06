@@ -81,4 +81,7 @@ return [
 	''     => '',
 	''     => '',
 
+	'Bank Accounts'     => 'Cuentas Bancarias',
+	'Bank Name'     => 'Nombre del Banco',
+
 ];

@@ -196,6 +196,7 @@ return [
         /*
          * aBillander Package Service Providers...
          */
+        aBillander\SepaSpain\SepaSpainServiceProvider::class,
         aBillander\WooConnect\WooConnectServiceProvider::class,
         Queridiam\FSxConnector\FSxConnectorServiceProvider::class,
         Queridiam\FSxConnector\FSxViewComposerServiceProvider::class,

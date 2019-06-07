@@ -25,7 +25,7 @@ class CreateSepaDirectDebitLinesTable extends Migration
             $table->string('iban',  34);        // https://es.wikipedia.org/wiki/International_Bank_Account_Number
             $table->string('swift', 11)->nullable();        // ISO 9362, también conocido como código SWIFT o código BIC es un código de identificación bancaria más utilizado para realizar las transferencias internacionales de dinero
                                                 // https://es.wikipedia.org/wiki/ISO_9362
-            $table->string('creditorid', 30)->nullable(false)
+            $table->string('creditorid', 30)->nullable(false);
 
             $table->string('currency_iso_code', 3)->nullable(false);                     // ISO code (e.g. USD for Dollars, EUR for Euros, etc.)
             $table->decimal('currency_conversion_rate', 20, 6)->default(1.0);    // Exchange rates are calculated from one unit of your default currency. For example, if the default currency is euros and your chosen currency is dollars, type &quot;1.20&quot; (1&amp;euro; = $1.20)

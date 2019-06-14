@@ -61,7 +61,9 @@
         <a href="{{ route('chart.customerorders.monthly') }}" class="btn btn-sm btn-warning" 
                 title="{{l('Reports', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'layouts')}}</a>
 
-        <a class="btn btn-sm btn-grey" xstyle="margin-right: 152px" href="{{ route('fsxconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}} {{l('Enlace FactuSOL', 'layouts')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Configuration', [], 'layouts')}}</a> 
+@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+        <a class="btn btn-sm btn-grey" xstyle="margin-right: 152px" href="{{ route('fsxconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}} {{l('Enlace FactuSOL', 'layouts')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Configuration', [], 'layouts')}}</a>
+@endif
 
     </div>
     <h2>
@@ -88,7 +90,7 @@
                     <i class="fa fa-question-circle abi-help"></i>
               </th>
             <th class="text-left">{{ l('Created via') }}</th>
-            <th class="text-right"">{{ l('Total') }}</th>
+            <th class="text-right">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
@@ -196,11 +198,13 @@
                 @endif
 @endif
 
+@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
                 @if ($document->export_date)
                 <a class="btn btn-sm btn-default" style="display:none;" href="javascript:void(0);" title="{{$document->export_date}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
                 @else
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('fsxorders.export', [$document->id] ) }}" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
                 @endif
+@endif
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy Order')}}"><i class="fa fa-copy"></i></a>
 

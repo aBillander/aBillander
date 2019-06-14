@@ -7,6 +7,27 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
+
+{!! Form::model(Request::all(), array('route' => 'products.index', 'method' => 'GET', 
+"class"=>"navbar-form navbar-left", "role"=>"search", "style"=>"margin-top: 0px !important; margin-bottom: 0px !important;")) !!}
+           
+                      <div class="form-group">
+
+           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                  data-content="{{ l('Use terms of three (3) characters or more', 'layouts') }}">
+              <i class="fa fa-question-circle abi-help"></i>
+           </a>
+                        {!! Form::text('term', null, array('class' => 'form-control input-sm', "placeholder"=>l("Search terms", 'layouts'))) !!}
+                      </div>
+
+                <button class="btn btn-sm btn-default" xstyle="margin-right: 152px" type="submit" title="{{l('Search', [], 'layouts')}}">
+                   <i class="fa fa-search"></i>
+                   &nbsp; {{l('Search', [], 'layouts')}}
+                </button>
+     
+{!! Form::close() !!}
+
+
         <a href="{{ URL::to('products/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
         <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">

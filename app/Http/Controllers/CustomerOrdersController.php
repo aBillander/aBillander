@@ -30,12 +30,14 @@ use App\Events\CustomerOrderConfirmed;
 
 use App\Traits\BillableGroupableControllerTrait;
 use App\Traits\BillableShippingSlipableControllerTrait;
+use App\Traits\BillableProductionSheetableControllerTrait;
 
 class CustomerOrdersController extends BillableController
 {
 
    use BillableGroupableControllerTrait;
    use BillableShippingSlipableControllerTrait;
+   use BillableProductionSheetableControllerTrait;
 
    public function __construct(Customer $customer, Document $document, DocumentLine $document_line)
    {

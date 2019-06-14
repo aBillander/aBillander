@@ -9,7 +9,7 @@
 
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 
-               <h4 class="modal-title" id="modalBOMproductsLabel">{{ l('Products for this BOM') }}</h4>
+               <h4 class="modal-title" id="modalBOMproductsLabel">{{ l('Products with this BOM') }}</h4>
 
            </div>
 

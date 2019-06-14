@@ -31,7 +31,7 @@
         <div class="row" id="product-search-autocomplete">
 
                   <div class="form-group col-lg-10 col-md-10 col-sm-10">
-                     {{ l('Product name') }}
+                     {{ l('Product Name') }}
                      {!! Form::text('order_autoproduct_name', null, array('class' => 'form-control', 'id' => 'order_autoproduct_name')) !!}
                   </div>
 

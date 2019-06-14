@@ -102,7 +102,8 @@ return [
 	*/
 
 	'WOOC_DECIMAL_PLACES.name'     => 'Número de decimales',
-	'WOOC_DECIMAL_PLACES.help'     => 'Los Precios de WooCommerce se recuperan con este número de posiciones decimales. Para no perder precisión, poner un número superior al número de posiciones decimales con que se ha configurado WooCommerce (<span style="font-style: italic;">\'woocommerce_price_num_decimals\'</span>).',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
+//	'WOOC_DECIMAL_PLACES.help'     => 'Los Precios de WooCommerce se recuperan con este número de posiciones decimales. Para no perder precisión, poner un número superior al número de posiciones decimales con que se ha configurado WooCommerce (<span style="font-style: italic;">\'woocommerce_price_num_decimals\'</span>).',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
+	'WOOC_DECIMAL_PLACES.help'     => 'Número de posiciones decimales con que trabaja WooCommerce (<span style="font-style: italic;">\'woocommerce_price_num_decimals\'</span>).',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
 	'WOOC_DEF_CURRENCY.name'     => 'Divisa',
 	'WOOC_DEF_CURRENCY.help'     => 'Moneda de la Tienda WooCommerce.',
 	'WOOC_DEF_CUSTOMER_GROUP.name'     => 'Grupo de Clientes',

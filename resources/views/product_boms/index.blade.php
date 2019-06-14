@@ -7,11 +7,35 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
+
+{!! Form::model(Request::all(), array('route' => 'productboms.index', 'method' => 'GET', 
+"class"=>"navbar-form navbar-left", "role"=>"search", "style"=>"margin-top: 0px !important; margin-bottom: 0px !important;")) !!}
+           
+                      <div class="form-group">
+
+           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                  data-content="{{ l('Use terms of three (3) characters or more', 'layouts') }}">
+              <i class="fa fa-question-circle abi-help"></i>
+           </a>
+                        {!! Form::text('term', null, array('class' => 'form-control input-sm', "placeholder"=>l("Search terms", 'layouts'))) !!}
+                      </div>
+
+                <button class="btn btn-sm btn-default" xstyle="margin-right: 152px" type="submit" title="{{l('Search', [], 'layouts')}}">
+                   <i class="fa fa-search"></i>
+                   &nbsp; {{l('Search', [], 'layouts')}}
+                </button>
+     
+{!! Form::close() !!}
+
+
         <a href="{{ URL::to('productboms/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+
+                <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
     </div>
     <h2>
-        {{ l('BOMs') }}
+        {{ l('Bill of Materials (BOM)') }}
     </h2>        
 </div>
 
@@ -39,7 +63,7 @@
             <td>{{ $bom->alias }}</td>
             <td>{{ $bom->name }}</td>
             <!-- td>{{ $bom->as_quantity('quantity') }}</td -->
-            <td>{{ $bom->measureunit->name }}</td>
+            <td>{{ optional($bom->measureunit)->name }}</td>
             <td class="text-center @if (!$bom->BOMlines->count()) {{ 'danger' }} @endif ">{{ $bom->BOMlines->count() }}</td>
             <td class="text-center">
                 @if ($bom->notes)
@@ -69,16 +93,24 @@
 	@endforeach
 	</tbody>
 </table>
+
+{{ $productboms->appends( Request::all() )->render() }}
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $productboms->total() ], 'layouts')}} </span></li></ul>
+
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
     {{l('No records found', [], 'layouts')}}
 </div>
+
 @endif
 
-   </div>
+   </div><!-- div class="table-responsive" ENDS -->
+
 </div>
 
 @stop
+
+@include('product_boms._modal_help')
 
 @include('layouts/modal_delete')

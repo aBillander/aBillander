@@ -12,6 +12,7 @@
         <thead>
             <tr>
                 <!-- th class="text-left">{{l('Position', [], 'layouts')}}</th -->
+            <!-- th class="text-left">{{l('ID', [], 'layouts')}}</th -->
                 <th class="text-left">{{l('Product')}}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                       data-content="{{ l('Drag to Sort.', 'layouts') }}">
@@ -34,9 +35,10 @@
             @foreach ($bom->BOMlines as $line)
             <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
                 <!-- td>{{ $line->id }} - {{ $line->line_sort_order }}</td -->
-                <td>{{ '['.$line->product->reference.'] '.$line->product->name }}</td>
-                <td>{{ $line->as_quantity('quantity') }}</td>
-                <td>{{ $line->measureunit->name }}</td>
+                <!-- td>{{ $line->product->id }}</td -->
+                <td>[<a class="" href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View', [], 'layouts')}}" target="_blank"> {{ $line->product->reference }} </a>] {{ $line->product->name }}</td>
+                <td>{{ $line->quantity }}</td>
+                <td>{{ optional($line->measureunit)->name }}</td>
                 <td>{{ $line->as_percent('scrap') }}</td>
                 <td class="text-center">
                 @if ($line->notes)

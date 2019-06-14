@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 // use Illuminate\Validation\Rule;
 
-use  \App\Configuration;
+use App\Configuration;
+use App\MeasureUnit;
 
 use App\Traits\ViewFormatterTrait;
 use App\Traits\AutoSkuTrait;
@@ -81,7 +82,7 @@ class Product extends Model {
 
     protected $dates = ['deleted_at', 'available_for_sale_date'];
 
-    protected $appends = ['quantity_available'];
+    protected $appends = ['tool_id', 'quantity_available'];
     
     protected $fillable = [ 'product_type', 'procurement_type', 
                             'name', 'reference', 'ean13', 'description', 'description_short', 
@@ -194,6 +195,12 @@ class Product extends Model {
     |--------------------------------------------------------------------------
     */
 
+    public function getBomAttribute()
+    {
+        // Easy get BOM
+        return $this->certifiedboms()->first();
+    }
+
     public function getQuantityAllocatedAttribute()
     {
         // Allocated by Customer Orders
@@ -294,6 +301,46 @@ class Product extends Model {
         return $value;
     }
 
+    public function getParentCategoryIdAttribute()
+    {
+
+        return optional(optional($this->category)->parent)->id;
+    }
+
+    public function getIsPackagingAttribute()
+    {
+
+        return $this->category_id        == \App\Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY') ||
+               $this->parent_category_id == \App\Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY');
+    }
+
+    // Alias
+    public function getMeasureunitsAttribute()
+    {
+
+        return $this->measureunitsGet();
+    }
+
+    // Alias
+    public function getToolsAttribute()
+    {
+
+        return $this->toolsGet();
+    }
+
+    // Assumes only 1 Tool per product
+    public function getToolAttribute()
+    {
+
+        return $this->tools->first();
+    }
+
+    public function getToolIdAttribute()
+    {
+
+        return optional($this->tools->first())->id;
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -306,7 +353,9 @@ class Product extends Model {
     {
         if ( isset($params['term']) && trim($params['term']) !== '' )
         {
-            $query->search( trim($params['term']) );
+            // $query->search( trim($params['term']) );     // Original
+
+            $query->search( trim($params['term']), null, true, false );
         }
 
 
@@ -576,6 +625,15 @@ class Product extends Model {
             return l($status, [], 'appmultilang');;
     }
 
+
+    public function getMeasureUnitList()
+    {
+        if ( Configuration::isTrue('ENABLE_MANUFACTURING') && $this->measureunits->count() )
+            return $this->measureunits->pluck('name', 'id')->toArray();
+
+        return MeasureUnit::pluck('name', 'id')->toArray();
+    }
+
     
     /*
     |--------------------------------------------------------------------------
@@ -586,7 +644,47 @@ class Product extends Model {
     public function measureunit()
     {
         return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
-	}
+    }
+    
+    public function productmeasureunits()      // http://advancedlaravel.com/eloquent-relationships-examples
+    {
+        return $this->hasMany('App\ProductMeasureUnit', 'product_id')->with('measureunit');
+    }
+    
+    public function measureunitsGet()
+    // used by: public function getMeasureunitsAttribute()
+    {
+        if ( Configuration::isFalse('ENABLE_MANUFACTURING') )
+            return $this->measureunit;
+        
+        $list = $this->productmeasureunits;
+
+        $units = $list->map(function ($item, $key) {
+            return $item->measureunit;
+        });
+
+        return $units;  // ->pluck('name', 'id')->toArray();
+    }
+
+
+    
+    public function producttools()
+    {
+        return $this->hasMany('App\ProductTool', 'product_id')->with('tool');
+    }
+    
+    public function toolsGet()
+    // used by: public function getToolsAttribute()
+    {
+        $list = $this->producttools;
+
+        $tools = $list->map(function ($item, $key) {
+            return $item->tool;
+        });
+
+        return $tools;  // ->pluck('name', 'id')->toArray();
+    }
+
     
     public function bomitems()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
@@ -603,10 +701,17 @@ class Product extends Model {
         return $this->bomitems->first();
     }
     
-    public function bom()
+    public function certifiedboms()
     {
-        return $this->boms->first();
+        return $this->boms()->where('status', 'certified');
     }
+    
+
+    public function productBOMlines()
+    {
+        return $this->hasMany('App\ProductBOMline', 'product_id');
+    }
+    
 
     public function images()
     {

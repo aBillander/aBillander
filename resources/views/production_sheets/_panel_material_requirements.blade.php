@@ -21,6 +21,7 @@
   @php
     $product = \App\Product::with('measureunit')->find( $order['product_id'] );
   @endphp
+  @if ( $product->procurement_type != 'purchase' || $product->is_packaging) @continue @endif
     <tr>
       <td>{{ $order['product_id'] }}</td>
       <td>{{ $order['reference'] }}</td>

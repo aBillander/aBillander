@@ -127,6 +127,18 @@ class CustomerOrder extends Billable
     |--------------------------------------------------------------------------
     */
 
+    public function getAllNotesAttribute()
+    {
+        $notes = '';
+
+        if ($this->notes_from_customer && (strlen($this->notes_from_customer) > 4)) $notes .= $this->notes_from_customer."\n\n";
+        if ($this->notes               ) $notes .= $this->notes."\n\n";
+        if ($this->notes_to_customer   ) $notes .= $this->notes_to_customer."\n\n";
+
+
+        return $notes;
+    }
+
     
     public function customerCard()
     {

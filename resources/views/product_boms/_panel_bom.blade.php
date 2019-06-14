@@ -29,7 +29,7 @@
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('quantity') ? 'has-error' : '' }}">
                      {{ l('Quantity') }}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                      data-content="{{ l('La cantidad de los ingredientes son para esta cantidad de producto terminado.') }}">
+                                      data-content="{{ l('La cantidad de los Ingredientes son para esta cantidad de Elaborado, expresada en la unidad de medida de la Lista de Materiales.') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
                            </a>
                      {!! Form::text('quantity', null, array('class' => 'form-control', 'id' => 'quantity')) !!}
@@ -74,7 +74,14 @@
 
 <div id="msg-success" class="alert alert-success alert-block" style="display:none;">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <span id="msg-success-counter" class="badge"></span>
   <strong>Registro Actualizado Correctamente</strong>
+</div>
+
+<div id="msg-error" class="alert alert-danger alert-block" style="display:none;">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <span id="msg-error-counter" class="badge"></span>
+  <strong>No se ha podido añadir el Producto a la Lista</strong>
 </div>
 
 <div id="panel_bom_lines" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...') }}
@@ -130,6 +137,10 @@
                 $('#line_product_id').val('');
 
               $('#modalBOMline').modal({show: true});
+
+                // See: https://stackoverflow.com/questions/12190119/how-to-set-the-focus-for-a-particular-field-in-a-bootstrap-modal-once-it-appear
+                // $("#line_autoproduct_name").focus();
+                setTimeout(function() { $("#line_autoproduct_name").focus(); }, 500); 
               return false;
           });
 
@@ -139,14 +150,18 @@
               var label = '';
 
                $.get(url, function(result){
-                    label = '['+result.product.reference+'] '+result.product.name;
+                    label = '('+result.product_id+') ['+result.product.reference+'] '+result.product.name;
                     $('#modalBOMlineLabel').text(label);
 
                     $('#line_id').val(result.id);
                     $('#line_sort_order').val(result.line_sort_order);
                     $('#line_product_id').val(result.product_id);
                     $('#line_quantity').val(result.quantity);
+
+                populateMeasureUnitsByProductID( result.product_id, result.measure_unit_id );
+                    
                     $('#line_measure_unit_id').val(result.measure_unit_id);
+
                     $('#line_scrap').val(result.scrap);
                     $('#line_notes').val(result.notes);
 
@@ -156,6 +171,7 @@
               $('#product-search-autocomplete').hide();
               $("#line_autoproduct_name").val('');
               $('#modalBOMline').modal({show: true});
+              setTimeout(function() { $("#line_quantity").select(); }, 500);
               return false;
           });
 
@@ -259,13 +275,18 @@
                 dataType : 'json',
                 data : payload,
 
-                success: function(){
+                success: function(response){
                     loadBOMlines();
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
+console.log(response);
+
                     $('#modalBOMline').modal('toggle');
-                    $("#msg-success").fadeIn();
+                    if (response.msg=='OK')
+                      showAlertDivWithDelay("#msg-success");
+                    else
+                      showAlertDivWithDelay("#msg-error");
                 }
             });
 
@@ -288,7 +309,10 @@
                 $("#line_autoproduct_name").val(str);
                 $('#line_product_id').val(value.item.id);
 //                $('#pid').val(value.item.id);
-                $('#line_measure_unit_id').val(value.item.measure_unit_id);
+
+                populateMeasureUnitsByProductID( value.item.id, value.item.measure_unit_id );
+
+                // $('#line_measure_unit_id').val(value.item.measure_unit_id);
 
                 return false;
             }
@@ -298,7 +322,29 @@
                 .appendTo( ul );
             };
 
- //       alert('hhhhhhhh');
+
+
+    function populateMeasureUnitsByProductID( productID, unitID = 0 )
+    {
+        $.get('{{ url('/') }}/product/' + productID + '/getmeasureunits', function (units) {
+            
+
+            $('select[name="BOMline[measure_unit_id]"]').empty();
+//            $('select[name="measure_unit_id"]').append('<option value=0>{{ l('-- Please, select --', [], 'layouts') }}</option>');
+            $.each(units, function (key, value) {
+                $('select[name="BOMline[measure_unit_id]"]').append('<option value=' + value.id + '>' + value.name + '</option>');
+            });
+
+        }).done( function() { 
+
+        $('select[name="BOMline[measure_unit_id]').val(unitID);
+
+        $('#measure_unit_id').val(unitID);
+
+        // See: https://stackoverflow.com/questions/17863432/how-select-default-option-of-dynamically-added-dropdown-list
+
+      });
+    }
 
     </script>
 

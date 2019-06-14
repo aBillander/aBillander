@@ -58,7 +58,7 @@
 
                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('measure_unit_id') ? 'has-error' : '' }}">
                     {{ l('Measure Unit') }}
-                    {!! Form::select('BOMline[measure_unit_id]', array('0' => l('-- Please, select --', [], 'layouts')) + $measure_unitList, null, array('class' => 'form-control', 'id' => 'line_measure_unit_id', 'onFocus' => 'this.blur()')) !!}
+                    {!! Form::select('BOMline[measure_unit_id]', [], null, array('class' => 'form-control', 'id' => 'line_measure_unit_id', 'xonFocus' => 'this.blur()')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
 

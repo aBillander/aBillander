@@ -27,9 +27,15 @@ class ProductBOMsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request )
     {
-        $productboms = $this->bom->orderBy('id', 'asc')->get();
+        $productboms = $this->bom
+                        ->filter( $request->all() )
+                        ->orderBy('alias', 'asc');     // ->get();
+
+        $productboms = $productboms->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        $productboms->setPath('productboms');
 
         return view('product_boms.index', compact('productboms'));
     }
@@ -100,7 +106,11 @@ class ProductBOMsController extends Controller
     {
         $bom = $this->bom->findOrFail($id);
 
-        $this->validate($request, ProductBOM::$rules);
+        $vrules = ProductBOM::$rules;
+
+        if ( isset($vrules['alias']) ) $vrules['alias'] = $vrules['alias'] . ','. $bom->id.',id'; // ,deleted_at,NULL';  // Unique
+
+        $this->validate($request, $vrules);
 
         $bom->update($request->all());
 
@@ -206,9 +216,15 @@ class ProductBOMsController extends Controller
         $search = $request->term;
 
         $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
-                                ->where(   'name',      'LIKE', '%'.$search.'%' )
-                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
-                                ->isPurchased()
+                                ->where( function ($query) use ($search) {
+                                        $query->where(  'name',      'LIKE', '%'.$search.'%' )
+                                              ->OrWhere('reference', 'LIKE', '%'.$search.'%' );
+                                } )
+                                ->where( function ($query) {
+                                        $query->where(  'procurement_type', '=', 'purchase')
+                                              ->OrWhere('procurement_type', '=', 'assembly');
+                                } )
+//                                ->isPurchased()
 //                                ->with('measureunit')
                                 ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
 /*
@@ -228,7 +244,47 @@ class ProductBOMsController extends Controller
 
     public function storeBOMline(Request $request, $bom_id)
     {
-        $bom = $this->bom->findOrFail($bom_id);
+        $bom = $this->bom->with('products')->findOrFail($bom_id);
+
+        // Check to avoid infinite loops in BOM
+        // Products that owns this BOM:
+        $bomable = \App\Product::findOrFail( $request->input('product_id') );
+        $bomable_bom = $bomable->bom;
+        $products = $bom->products;   // Products that own this BOM
+
+        foreach ($products as $product) {
+          # code...
+          if ( !( ($product->procurement_type == 'manufacture') || ($product->procurement_type == 'assembly') ) ) continue;
+
+//            $bom1 = $product->bom;
+
+//            if ( $bom1 && $bom1->hasProduct( $request->input('product_id') ) )
+            if ( ($product->id==$bomable->id) || optional($bomable_bom)->hasProduct( $product->id ) )
+            {
+                return response()->json( [
+                        'msg' => 'ERROR',
+                        'data' => $request->all(),
+                        'products' => $products,
+                        'found' => $bom
+                ] );
+
+                return redirect('products/'.$id.'/edit'.'#'.'manufacturing')
+                        ->with('error', l('No se puede asociar esta Lista de materiales porque contiene al Producto &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
+            }
+
+
+        }
+/*
+        if ( $products->where( 'id', $request->input('product_id') )->count() )
+        {
+          return response()->json( [
+                  'msg' => 'ERROR',
+                  'data' => $request->all(),
+                  'products' => $products,
+                  'found' => $products->where( 'id', $request->input('product_id') )->count()
+          ] );
+        }
+*/
 
         $bom_line = $this->bom_line->create( $request->all() );
 
@@ -261,6 +317,16 @@ class ProductBOMsController extends Controller
                         ->findOrFail($id);
 
         return view('product_boms._panel_products', compact('bom'));
+    }
+
+    public function getproductBOMs($id)
+    {
+        $product = \App\Product
+                        ::with('productBOMlines')
+                        ->with('productBOMlines.productBOM')
+                        ->findOrFail($id);
+
+        return view('product_boms._panel_product_boms', compact('product'));
     }
 
     public function sortLines(Request $request)

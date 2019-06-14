@@ -42,7 +42,7 @@ class BackupDatabase extends Command
         $date = str_replace( [' ', ':'], '_', \Carbon\Carbon::now()->toDateTimeString() );
 
         $this->process = new Process(sprintf(
-            'mysqldump -u%s -p%s -h%s -P%s %s > %s',
+            'mysqldump -u%s -p"%s" -h%s -P%s %s > %s',
             config('database.connections.mysql.username'),
             config('database.connections.mysql.password'),
             config('database.connections.mysql.host'),

@@ -85,6 +85,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		// Tools
+		view()->composer(array('products._panel_manufacturing', 'production_sheets._modal_production_order_form', 'production_sheets._modal_production_order_edit'), function($view) {
+		    
+		    $view->with('toolList', \App\Tool::all()->pluck('full_name', 'id')->toArray());
+		    
+		});
+
 		// Suppliers
 		view()->composer(array('products._panel_purchases'), function($view) {
 		    
@@ -272,6 +279,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    	foreach($categories as $category) {
 		    		$label = $category->name;
 
+		    		// Prevent duplicate names
 		    		while ( array_key_exists($label, $tree))
 		    			$label .= ' ';
 

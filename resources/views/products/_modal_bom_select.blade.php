@@ -20,7 +20,7 @@
             <div class="modal-body">
 
         <div class="row" id="product-search-autocomplete">
-
+{{--
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('quantity') ? 'has-error' : '' }}">
                      {{ l('Quantity') }}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="bottom" 
@@ -31,6 +31,8 @@
                      {!! Form::text('quantity', null, array('class' => 'form-control', 'id' => 'bom_quantity')) !!}
                      {!! $errors->first('quantity', '<span class="help-block">:message</span>') !!}
                   </div>
+--}}
+                  <input type="hidden" value="1" name="quantity">
 
                   <div class="form-group col-lg-9 col-md-9 col-sm-9">
                      {{ l('BOM Name') }}
@@ -67,6 +69,9 @@
             $("#bom_quantity").val(1);
 
             $('#bom_selectorModal').modal({show: true});
+
+            // Gorrino style:
+            setTimeout(function() { $("#line_autobom_name").focus(); }, 700);
             return false;
         });
     });

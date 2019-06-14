@@ -1,6 +1,6 @@
 
 
-    <div id="div_bom_lines">
+    <div id="div_bom_products">
        <div class="table-responsive">
 
     <table id="bom_lines" class="table table-hover">

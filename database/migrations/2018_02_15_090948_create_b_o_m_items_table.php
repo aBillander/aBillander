@@ -20,6 +20,8 @@ class CreateBOMItemsTable extends Migration
 
             $table->integer('product_id')->unsigned()->nullable(false);
             $table->integer('product_bom_id')->unsigned()->nullable(false);
+
+            $table->tinyInteger('is_current')->default(1);
             
             $table->decimal('quantity', 20, 6)->default(1.0);
 

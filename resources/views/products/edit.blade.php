@@ -16,9 +16,17 @@
                     data-title="{{ l('Products') }} :: ({{$product->id}}) {{{ $product->name }}}" 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+
+                <a href="{{ route('products.measureunits.index', [$product->id]) }}" class="btn btn-success"><i class="fa fa-th-list"></i> {{ l('Measure Units', 'layouts') }}</a>
+
+                <a class="btn btn-warning show-product-boms" onClick="return false;"><i class="fa fa-link"></i> {{ l('BOMs') }}</a>
+
+@endif
+                
                 <a href="{{ URL::to('products') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Products') }}</a>
             </div>
-            <h2><a href="{{ URL::to('products') }}">{{ l('Products') }}</a> <span style="color: #cccccc;">/</span> {{ $product->name }}</h2>
+            <h2><a href="{{ URL::to('products') }}">{{ l('Products') }}</a> <span style="color: #cccccc;">/</span> <span class="lead well well-sm alert-warning"> {{ $product->reference }} </span> {{ $product->name }}</h2>
         </div>
     </div>
 </div>
@@ -46,12 +54,18 @@
             </a>
 
 @if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+
+    @if ( ($product->procurement_type == 'manufacture') || ($product->procurement_type == 'assembly') )
+
             <a id="b_manufacturing" href="#manufacturing" class="list-group-item">
                <i class="fa fa-cubes"></i>
                &nbsp; {{ l('Manufacturing') }}
             </a>
 
+    @endif
+
 @endif
+
 
 @if ( \App\Configuration::isTrue('ENABLE_COMBINATIONS') &&  
       ($product->product_type == 'simple') || ($product->product_type == 'combinable') )
@@ -121,7 +135,12 @@
 
    </div>
 </div>
-@stop
+
+
+@include('products._modal_product_boms')
+
+
+@endsection
 
 @section('scripts') 
 <script type="text/javascript">

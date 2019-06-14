@@ -3,7 +3,7 @@
    <div class="table-responsive">
 
 
-@if ($sheet->productionorders->count())
+@if ($sheet->productionorders->where('procurement_type', $procurement_type)->count())
 <table id="sheets" class="table table-hover">
     <thead>
         <tr>
@@ -14,15 +14,17 @@
       <th>{{l('Quantity')}}</th>
       <th>{{l('Work Center')}}</th>
       <th>{{l('Provenience')}}</th>
+      <th>{{l('Status', 'layouts')}}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
       <th class="text-right"> </th>
     </tr>
   </thead>
   <tbody>
-  @foreach ($sheet->productionorders as $order)
+  @foreach ($sheet->productionorders->where('procurement_type', $procurement_type) as $order)
   @php
     $product = \App\Product::find( $order->product_id );
   @endphp
+  
     <tr>
       <td>{{ $order->id }}</td>
       <!-- td>{{ $order->product_id }}</td -->
@@ -31,6 +33,7 @@
       <td>{{ $product->as_quantityable($order->planned_quantity) }}</td>
       <td>{{ $order->workcenter->name ?? '' }}</td>
       <td>{{ $order->created_via }}</td>
+      <td>{{ $order->status }}</td>
       <td class="text-center">
           @if ($order->notes)
            <a href="javascript:void(0);">
@@ -74,7 +77,7 @@
      &nbsp; {{ l('Add Production Order') }}
   </button -->
 
-  <a class="btn btn-sm btn-info create-production-order" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add Production Order')}}</a></th>
+  <a class="btn btn-sm btn-info create-production-order" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add Production Order')}}</a>
 </div>
 
 
@@ -105,7 +108,7 @@ $(document).ready(function() {
     $(document).on('click', '.create-production-order', function(evnt) {
         var url = "{ { route('productbom.storeline', [$bom->id]) } }";
         var next = $('#next_line_sort_order').val();
-        var label = "{{ l('Add new Production Order') }}";
+        var label = "{{ l('Add Production Order') }}";
 
               $('#modalProductionOrderLabel').text(label);
 

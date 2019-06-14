@@ -11,8 +11,8 @@ return [
 	|
 	*/
 
-	'Bill of Materials'     => 'Lista de Materiales',
-	'Option Groups' => 'Grupos de Opciones',
+	'Bill of Materials (BOM)'     => 'Listas de Materiales (BOM)',
+	'BOM Alias' => 'BOM Alias',
 	'BOM Name' => 'BOM Nombre',
 	'Quantity' => 'Cantidad',
 	'Measure Unit' => 'Unidad de Medida',
@@ -30,6 +30,7 @@ return [
 	*/
 
 	'Bill of Materials - Create' => 'BOM - Crear',
+	'New BOM' => 'Nueva Lista de Materiales',
 	'New Option'     => 'Nueva Opción',
 	'Option Name'     => 'Nombre de la Opción',
 	'Position'     => 'Posición',
@@ -56,6 +57,7 @@ return [
 	'Back to BOMs'     => 'Volver a Listas de Materiales',
 	'Add new Item to BOM'     => 'Añadir Producto a la Lista de Materiales',
 	'Product name'     => 'Nombre del Producto',
-	'Products for this BOM'     => 'Productos con esta Lista de Materiales',
+	'Products with this BOM'     => 'Productos con esta Lista de Materiales',
+	'BOMs with this Product'     => 'Listas de Materiales con este Producto',
 	
 ];

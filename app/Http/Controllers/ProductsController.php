@@ -6,6 +6,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 use App\Product;
 use App\StockMovement;
@@ -226,11 +227,27 @@ class ProductsController extends Controller
         }
 */
 
+        // Not so fast, son. What about Measure Units?
+        $data = [
+            'product_id' => $product->id,
+            'measure_unit_id' => $product->measure_unit_id,
+            'base_measure_unit_id' => $product->measure_unit_id,
+            'conversion_rate' => 1.0,
+            'active' => 1,
+        ];
+
+        $line = \App\ProductMeasureUnit::create( $data );
+
+        $product->productmeasureunits()->save($line);
+
+        // Th-th-th-that's all folks!
+
+
         if ($action == 'completeProductData')
         return redirect('products/'.$product->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $request->input('name'));
         else
-        return redirect('products')
+        return redirect()->back()       // redirect('products')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $request->input('name'));
     }
 
@@ -275,8 +292,12 @@ class ProductsController extends Controller
                         ->findOrFail($id);
 
         
+        // Measure Units
+        $product_measure_unitList = $product->getMeasureUnitList();
+
+
         // BOMs
-        $bom = $product->bom();
+        $bom = $product->bom;
 
         
         // Gather Attributte Groups
@@ -302,7 +323,7 @@ class ProductsController extends Controller
         // See: https://stackoverflow.com/questions/44029961/laravel-search-relation-including-null-in-wherehas
         $pricelists = $product->pricelists; //  \App\PriceList::with('currency')->orderBy('id', 'ASC')->get();
 
-        return view('products.edit', compact('product', 'bom', 'groups', 'pricelists'));
+        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists'));
     }
 
     /**
@@ -345,6 +366,15 @@ class ProductsController extends Controller
 //            abi_r($request->all(), true);
             $this->validate($request, \App\BOMItem::$rules);
 
+            // Check to avoid infinite loops in BOM
+            $bom = \App\ProductBOM::find( $request->input('product_bom_id') );
+
+            if ( $bom->hasProduct( $id ) )
+            {
+                return redirect('products/'.$id.'/edit'.'#'.'manufacturing')
+                        ->with('error', l('No se puede asociar esta Lista de materiales porque contiene al Producto &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
+            }
+
             \App\BOMItem::create($request->all() + ['product_id' => $id]);
 
             return redirect('products/'.$id.'/edit'.'#'.'manufacturing')
@@ -355,6 +385,8 @@ class ProductsController extends Controller
             //
 //            abi_r($request->all(), true);
 //            $this->validate($request, \App\BOMItem::$rules);
+
+            $this->validate($request, \App\ProductBOM::$rules);
 
             $bom = \App\ProductBOM::create($request->all());
 
@@ -415,6 +447,19 @@ class ProductsController extends Controller
         $this->validate($request, $vrules);
 
         $product->update($request->all());
+
+        // Product Tools
+        $tool_id = (int) $request->input('tool_id');
+
+        if ( $product->tool_id != $tool_id )
+        {
+            $product->producttools->each(function ($item, $key) {
+                                            $item->delete();
+                                        });
+
+            if ( $tool_id > 0 )
+                \App\ProductTool::create( ['product_id' => $id, 'tool_id' => $tool_id] );
+        }
 
         // ToDo: update combination fields, such as measure_unit, quantity_decimal_places, etc.
 
@@ -477,6 +522,25 @@ class ProductsController extends Controller
         $clone->cost_average = 0.0;
 
         $clone->save();
+
+
+        // Not so fast, son. What about Measure Units?
+        $data = [
+            'product_id' => $clone->id,
+            'measure_unit_id' => $clone->measure_unit_id,
+            'base_measure_unit_id' => $clone->measure_unit_id,
+            'conversion_rate' => 1.0,
+            'active' => 1,
+        ];
+
+        $line = \App\ProductMeasureUnit::create( $data );
+
+        $clone->productmeasureunits()->save($line);
+
+        // ToDo: Copy alternative Measure Units???
+
+        // Th-th-th-that's all folks!
+
 
 
         // Good boy:
@@ -592,6 +656,18 @@ class ProductsController extends Controller
         }
 */
         return response( $boms );
+    }
+
+    // Seems not used anywhere
+    public function getMeasureUnits($id, Request $request)
+    {
+        $product = $this->product->findOrFail($id);
+
+        $units = $product->measureunits;
+
+        return Response::json($units);
+
+//        return response( $boms );
     }
 
 
@@ -930,4 +1006,38 @@ LIMIT 1
         
         return view('products._panel_pricerules_list', compact('id', 'product_rules', 'items_per_page_pricerules'));
     }
+
+
+
+/* ********************************************************************************************* */    
+
+    /**
+     * PDF Stuff.
+     *
+     * 
+     */
+
+/* ********************************************************************************************* */    
+
+
+    public function getPdfBom(Request $request, $id)
+    {
+        $product = $this->product
+                        ->with('measureunit')
+                        ->findOrFail($id);
+
+
+        // BOMs
+        $bom = $product->bom;
+
+        //
+        //  return view('product_boms.reports.bom.bom', compact('product', 'bom'));
+
+        // PDF::setOptions(['dpi' => 150]);     // 'defaultFont' => 'sans-serif']);
+
+        $pdf = \PDF::loadView('product_boms.reports.bom.bom', compact('product', 'bom'))->setPaper('a4', 'vetical');
+
+        return $pdf->stream($product->reference.'-bom.pdf'); // $pdf->download('invoice.pdf');
+    }
+   
 }

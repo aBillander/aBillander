@@ -12,7 +12,7 @@
 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 <input type="hidden" name="product_id" value="{{ $product->id }}">
-<input type="hidden" name="measure_unit_id" value="{{ intval( \App\Configuration::get('DEF_MEASURE_UNIT_FOR_BOMS') ) }}">
+<input type="hidden" name="measure_unit_id" value="{{ $product->measure_unit_id }}">
 
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -21,7 +21,7 @@
             <div class="modal-body">
 
         <div class="row">
-
+{{--
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('quantity') ? 'has-error' : '' }}">
                      {{ l('Quantity') }}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="bottom" 
@@ -32,6 +32,8 @@
                      {!! Form::text('quantity', null, array('class' => 'form-control', 'id' => 'bom_create_quantity')) !!}
                      {!! $errors->first('quantity', '<span class="help-block">:message</span>') !!}
                   </div>
+--}}
+                  <input type="hidden" value="1" name="quantity">
 
         </div>
 
@@ -78,6 +80,9 @@
             $("#bom_create_quantity").val(1);
 
             $('#bom_createModal').modal({show: true});
+
+            // Gorrino style:
+            setTimeout(function() { $("#bom_create_alias").focus(); }, 700);
             return false;
         });
     });

@@ -22,4 +22,19 @@ return [
 	'Reference' => 'Referencia',
 	'' => '',
 	'' => '',
+
+	'Production Order' => 'Orden de Fabricación',
+	'Product ID'     => 'ID',
+	'Measure Unit'     => 'Unidad de Medida',
+	
+	'Edit Production Order' => 'Modificar Orden de Fabricación',
+	'' => '',
+	'' => '',
+	'' => '',
+	'' => '',
+	'' => '',
+	'' => '',
+	'' => '',
+	'' => '',
+	'' => '',
 ];

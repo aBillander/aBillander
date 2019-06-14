@@ -30,7 +30,8 @@ class ProductionOrdersController extends Controller
                       ->with('workcenter')
                       ->with('productionsheet')
                       ->join('production_sheets AS ps', 'production_orders.production_sheet_id', '=', 'ps.id')
-                      ->orderBy('ps.due_date', 'DESC');
+                      ->orderBy('ps.due_date', 'DESC')
+                      ->orderBy('poid', 'DESC');
 
 // See: https://laracasts.com/discuss/channels/eloquent/eager-loading-cant-orderby
 // See: https://stackoverflow.com/questions/18861186/eloquent-eager-load-order-by

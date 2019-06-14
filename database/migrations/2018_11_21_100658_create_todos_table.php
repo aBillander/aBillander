@@ -20,7 +20,7 @@ class CreateTodosTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('url')->nullable();
-            $table->date('due_date')->nullable();  // ->useCurrent();
+            $table->dateTime('due_date')->nullable();  // ->useCurrent();
             $table->tinyInteger('completed')->default(0);
 
             $table->integer('user_id')->unsigned()->default(0); 

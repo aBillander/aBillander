@@ -11,6 +11,7 @@
       <th>{{l('Product ID')}}</th>
       <th>{{l('Product Reference')}}</th>
       <th>{{l('Product Name')}}</th>
+      <th>{{l('Procurement Type')}}</th>
       <th>{{l('Lack')}}</th>
       <th>{{l('Excess')}}</th>
       <th class="text-right"> </th>
@@ -18,10 +19,14 @@
   </thead>
   <tbody>
   @foreach ($sheet->productsNotScheduled() as $order)
+  @php
+    $product = \App\Product::find( $order['product_id'] );
+  @endphp
     <tr>
       <td>{{ $order['product_id'] }}</td>
       <td>{{ $order['reference'] }}</td>
       <td>{{ $order['name'] }}</td>
+      <td>{{ $product->procurement_type }}</td>
 @if ($order['quantity']>0)
       <td>{{ $order['quantity'] }}</td><td></td>
 @else

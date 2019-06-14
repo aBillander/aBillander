@@ -265,4 +265,18 @@ class ProductionSheetsController extends Controller
 
         return view('production_sheets.ajax._panel_customer_order_lines', compact('order'));
     }
+
+
+/* ********************************************************************************************* */    
+
+    /**
+     * PDF Stuff.
+     *
+     * See: ProductionSheetsPdfController
+     * 
+     */
+
+/* ********************************************************************************************* */    
+
+
 }

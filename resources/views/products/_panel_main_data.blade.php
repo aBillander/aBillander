@@ -31,7 +31,7 @@
 
                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('measure_unit_id') ? 'has-error' : '' }}">
                     {{ l('Measure Unit') }}
-                    {!! Form::select('measure_unit_id', array('0' => l('-- Please, select --', [], 'layouts')) + $measure_unitList, null, array('class' => 'form-control')) !!}
+                    {!! Form::select('measure_unit_id', $product_measure_unitList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('ean13') ? 'has-error' : '' }}">

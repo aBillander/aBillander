@@ -29,7 +29,7 @@
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('quantity') ? 'has-error' : '' }}">
                      {{ l('Quantity') }}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                      data-content="{{ l('La cantidad de los ingredientes son para esta cantidad de producto terminado.') }}">
+                                      data-content="{{ l('La cantidad de los Ingredientes son para esta cantidad de Elaborado, expresada en la unidad de medida de la Lista de Materiales.') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
                            </a>
                      {!! Form::text('quantity', null, array('class' => 'form-control', 'id' => 'quantity')) !!}
@@ -38,7 +38,7 @@
 
                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('measure_unit_id') ? 'has-error' : '' }}">
                     {{ l('Measure Unit') }}
-                    {!! Form::select('measure_unit_id', array('0' => l('-- Please, select --', [], 'layouts')) + $measure_unitList, null, array('class' => 'form-control')) !!}
+                    {!! Form::select('measure_unit_id', $measure_unitList, old('measure_unit_id', \App\Configuration::getInt('DEF_MEASURE_UNIT_FOR_PRODUCTS')), array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
 

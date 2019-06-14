@@ -264,6 +264,10 @@
 
         $(document).ready(function() {
            $("#cost_price").val({{ old('cost_price', 0.0) }});
+
+           $("#price").val({{ old('price', 0.0) }});
+           $("#price_tax_inc").val({{ old('price_tax_inc', 0.0) }});
+           
            $("#measure_unit_id").val({{ old('measure_unit_id', \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')) }});
 //           $("#quantity_onhand").val( 0 );
           

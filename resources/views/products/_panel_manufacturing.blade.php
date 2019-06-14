@@ -20,6 +20,7 @@
             <th>{{ l('Measure Unit') }}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
             <th class="text-right"> </th>
+            <th style="border-bottom: 0px solid;"> &nbsp; </th>
     </tr>
   </thead>
   <tbody>
@@ -41,18 +42,19 @@
                 @endif</td>
            <td class="text-right" style="width:1px; white-space: nowrap;">
 
-                <a class="btn btn-success" href="{{ route( 'productboms.edit', [$bom->id] ) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
+                <a class="btn btn-warning" href="{{ route( 'productboms.edit', [$bom->id] ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
                 <a class="btn btn-danger detach-bom-item" title="{{l('Detach')}}" onClick="return false;"><i class="fa fa-unlink"></i></a>
 
             </td>
+            <td style="border-top: 0px solid;"> &nbsp; </th>
         </tr>
     </tbody>
 </table>
 
 
 
-    <div class="page-header">
+    <div class="page-header" style="border-bottom: 0px solid #eeeeee;">
         <h3>
             <span style="color: #dd4814;">{{ l('Materials') }}</span> <!-- span style="color: #cccccc;">/</span> {{ $bom->name }} -->
         </h3>        
@@ -85,7 +87,7 @@
                 <td>{{ $line->line_sort_order }}</td>
                 <td>{{ '['.$line->product->reference.'] '.$line->product->name }}</td>
                 <td>{{ $line->as_quantity('quantity') }}</td>
-                <td>{{ $line->measureunit->name }}</td>
+                <td>{{ optional($line->measureunit)->name }}</td>
                 <td>{{ $line->as_percent('scrap') }}</td>
                 <td class="text-center">
                 @if ($line->notes)
@@ -111,6 +113,7 @@
     </div>
     </td></tr>
     @endif
+    
 @endif
 
         </tbody>
@@ -119,6 +122,9 @@
        </div>
     </div>
 
+
+
+          @include('products._panel_bom_tree')
 
 
 
@@ -262,11 +268,17 @@
                  {!! $errors->first('manufacturing_batch_size', '<span class="help-block">:message</span>') !!}
               </div>
 
+             <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('tool_id') ? 'has-error' : '' }}">
+                {{ l('Tool') }}
+                {!! Form::select('tool_id', array('' => l('-- None --', [], 'layouts')) + $toolList, null, array('class' => 'form-control')) !!}
+                {!! $errors->first('tool_id', '<span class="help-block">:message</span>') !!}
+             </div>
+
         </div>
 
         <div class="row">
 
-              <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('route_notes') ? 'has-error' : '' }}">
+              <div class="form-group col-lg-9 col-md-9 col-sm-9{{ $errors->has('route_notes') ? 'has-error' : '' }}">
                  {{ l('Notes', [], 'layouts') }}
                  {!! Form::textarea('route_notes', null, array('class' => 'form-control', 'id' => 'route_notes', 'rows' => '2')) !!}
                  {!! $errors->first('route_notes', '<span class="help-block">:message</span>') !!}

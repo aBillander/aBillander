@@ -30,7 +30,7 @@ class CreateProductsTable extends Migration {
 			// 'grouped'    => a collection of related products clubbed together to form a single entity.  
 							// Consist of simple products that can be purchased individually. 
 
-			$table->string('procurement_type', 32)->nullable(false)->default('simple');
+			$table->string('procurement_type', 32)->nullable(false)->default('purchase');
 			// 'purchase'    => Via Purchase Order.
 			// 'manufacture' => Via Manufacturing Order.
 			// 'none'        => One that doesn’t require shipping or stock management (Services, downloads...).

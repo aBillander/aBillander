@@ -23,7 +23,7 @@ Auth::routes();
 // See:
 // https://stackoverflow.com/questions/29183348/how-to-disable-registration-new-user-in-laravel-5
 // https://stackoverflow.com/questions/42695917/laravel-5-4-disable-register-route/42700000
-if ( !env('ALLOW_USER_REGISTRATION', true) )
+if ( !env('ALLOW_USER_REGISTRATION', false) )
 {
     Route::get('register', function()
         {
@@ -153,6 +153,8 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
 
         Route::resource('workcenters', 'WorkCentersController');
 
+        Route::resource('tools', 'ToolsController');
+
         Route::resource('products', 'ProductsController');
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
         Route::get('products/{id}/pendingmovements', 'ProductsController@getPendingMovements')->name('products.pendingmovements');
@@ -162,9 +164,13 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
 
         Route::get('products/{id}/getpricerules',         'ProductsController@getPriceRules')->name('product.getpricerules');
 
+        Route::resource('products.measureunits', 'ProductMeasureUnitsController');
+        Route::get('product/{id}/getmeasureunits', 'ProductsController@getMeasureUnits')->name('product.measureunits');
+
         Route::resource('products.images', 'ProductImagesController');
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
 //        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
+        Route::get('products/{id}/bom/pdf', 'ProductsController@getPdfBom')->name('product.bom.pdf');
 
         Route::get('products/{id}/duplicate',     'ProductsController@duplicate'   )->name('product.duplicate'  );
 
@@ -181,6 +187,8 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::resource('productboms', 'ProductBOMsController');
         Route::get('productboms/{id}/getlines', 'ProductBOMsController@getBOMlines')->name('productbom.getlines');
         Route::get('productboms/{id}/getproducts', 'ProductBOMsController@getBOMproducts')->name('productbom.getproducts');
+        Route::get('products/{id}/getproductboms', 'ProductBOMsController@getproductBOMs')->name('product.getproductboms');
+        
         Route::post('productboms/{id}/storeline', 'ProductBOMsController@storeBOMline')->name('productbom.storeline');
         Route::get('productboms/{id}/getline/{lid}', 'ProductBOMsController@getBOMline')->name('productbom.getline');
         Route::post('productboms/updateline/{lid}', 'ProductBOMsController@updateBOMline')->name('productbom.updateline');
@@ -213,6 +221,10 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::get('productionsheets/{id}/pickinglist', 'ProductionSheetsController@pickinglist')->name('productionsheet.pickinglist');
         Route::get('productionsheets/{id}/products', 'ProductionSheetsController@getProducts')->name('productionsheet.products');
         Route::get('productionsheets/{id}/summary', 'ProductionSheetsController@getSummary')->name('productionsheet.summary');
+
+        Route::get('productionsheets/{id}/summary/pdf', 'ProductionSheetsPdfController@getPdfSummary')->name('productionsheet.summary.pdf');
+        Route::get('productionsheets/{id}/preassemblies/pdf', 'ProductionSheetsPdfController@getPdfPreassemblies')->name('productionsheet.preassemblies.pdf');
+        Route::get('productionsheets/{id}/manufacturing/pdf', 'ProductionSheetsPdfController@getPdfManufacturing')->name('productionsheet.manufacturing.pdf');
 
 
 

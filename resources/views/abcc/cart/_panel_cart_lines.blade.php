@@ -103,6 +103,13 @@
           {{ $line->as_price('unit_customer_price') }}
 
           <!-- p class="text-info">{{ $line->as_priceable($line->unit_customer_price + $line->product->getEcotax()) }}</p -->
+
+@if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
+
+          <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules' data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;" title="{{ l('Show Special Prices', 'abcc/catalogue') }} {{-- $line->product->hasQuantityPriceRules( \Auth::user()->customer ) --}}"><i class="fa fa-thumbs-o-up"></i></a>
+
+@endif
+
       </td>
 
       <td class="text-right">{{ $line->as_priceable($line->quantity * $line->unit_customer_price) }}</td>

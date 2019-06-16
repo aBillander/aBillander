@@ -65,7 +65,7 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') )
+
                          <li>
                             <a href="{{ URL::to('customershippingslips') }}">
                                  {{l('Shipping Slips', [], 'layouts')}}
@@ -84,7 +84,7 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-@endif
+
                          <li>
                             <a href="{{ URL::to('customers') }}">
                                  {{l('Customers', [], 'layouts')}}
@@ -145,7 +145,6 @@
 
 
 
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') )
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-th"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -174,7 +173,6 @@
                         </li>
                     </ul>
                 </li>
-@endif
 
 
 
@@ -202,6 +200,11 @@
                                  {{l('Bills of Materials', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ URL::to('tools') }}">
+                                 {{l('Tools', [], 'layouts')}}
+                            </a>
+                        </li>
 @endif
 @if ( \App\Configuration::isTrue('ENABLE_COMBINATIONS') )
                          <li>
@@ -213,6 +216,7 @@
 
                         <li class="divider"></li>
 
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
                          <li>
                             <a href="{{ URL::to('measureunits') }}">
                                  {{l('Measure Units', [], 'layouts')}}
@@ -223,6 +227,7 @@
                                  {{l('Work Centers', [], 'layouts')}}
                             </a>
                         </li>
+@endif
                          <li>
                             <a href="{{ URL::to('categories') }}">
                                  {{l('Product Categories', [], 'layouts')}}
@@ -275,39 +280,21 @@
                 </li>
 
 
-@if ( 0 )
+
+
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-file-text"></i> {{l('Invoicing', [], 'layouts')}} <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                         <li>
-                            <a href="{{ URL::to('wooc/worders') }}">
-                                 {{l('Sale Orders', [], 'layouts')}} [WooC]
-                            </a>
-                        <li class="divider"></li>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('customerinvoices') }}">
-                                 {{l('Customer Invoices', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('customervouchers') }}">
-                                 {{l('Customer Vouchers', [], 'layouts')}}
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                    </ul>
-                </li>
-@endif
-
-
-                <li class="dropdown" style="display:none;">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
                             <a href="{{ route('chart.customerorders.monthly') }}">
                                  {{l('Sales Orders', [], 'layouts')}}
                             </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('jennifer/home') }}">
+                                <i class="fa fa-user-secret text-success"></i> 
+                                {{l('Accounting', [], 'layouts')}}</a>
                         </li>
                         <li class="divider"></li>
                     </ul>

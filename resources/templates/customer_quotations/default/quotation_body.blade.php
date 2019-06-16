@@ -15,10 +15,10 @@
         @endif
 
 
-		<div class="banner" style="visibility:hidden">
+		<div class="banner" xstyle="visibility:hidden">
 
-        	Haga su pedido en < b r />
-        	www.gmdistribuciones.es
+        	Válido hasta: < b r />
+        	{{ abi_date_short($document->valid_until_date) }}
 
 		</div>
 
@@ -44,7 +44,7 @@
 
 
 
-<h1 class="document-type-label"> PEDIDO </h1>
+<h1 class="document-type-label"> PRESUPUESTO </h1>
 
 
 
@@ -117,7 +117,7 @@
 
 				<tr class="order-number">
 
-					<th>Pedido nº:</th>
+					<th>Presupuesto nº:</th>
 
 					<td style="font-size: 11pt;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
 
@@ -133,7 +133,7 @@
 
 				<tr class="order-date">
 
-					<th>Fecha del Pedido:</th>
+					<th>Fecha del Presupuesto:</th>
 
 					<td>{{ abi_date_short($document->document_date) }}</td>
 

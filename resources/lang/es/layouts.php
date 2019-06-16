@@ -105,7 +105,7 @@ return [
 	'Customer Vouchers'     => 'Recibos de Clientes',
 
 	'Reports'     => 'Informes',
-	''     => '',
+	'Accounting'     => 'Contabilidad',
 
 	'Login'     => 'Login',
 	'Documentation'     => 'Documentación',

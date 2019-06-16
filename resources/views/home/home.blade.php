@@ -6,7 +6,7 @@
 @section('content')
 
 <div class="page-header">
-    <div class="pull-right" style="padding-top: 4px;">
+    <div class="pull-right hide" style="padding-top: 4px;">
         <a href="{{ URL::to('jennifer/home') }}" class="btn btn-sm btn-success" 
             title="{{l('Jennifer', [], 'layouts')}}"><i class="fa fa-user-secret"></i> {{l('Jennifer', [], 'layouts')}}</a>
     </div>

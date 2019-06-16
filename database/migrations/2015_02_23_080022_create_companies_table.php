@@ -31,6 +31,7 @@ class CreateCompaniesTable extends Migration {
 
 			$table->integer('currency_id')->unsigned()->nullable(false); 
             $table->integer('language_id')->unsigned()->nullable(false); 
+            $table->integer('bank_account_id')->unsigned()->nullable(); 
 			
 			$table->timestamps();
 		});

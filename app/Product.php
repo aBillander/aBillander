@@ -101,7 +101,7 @@ class Product extends Model {
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
 
-                            'measure_unit_id', 'work_center_id', 'route_notes',
+                            'measure_unit_id', 'work_center_id', 'route_notes', 'machine_capacity', 'units_per_tray', 
 
                             'name_en', 'price_usd', 'price_usd_conversion_rate',
                           ];

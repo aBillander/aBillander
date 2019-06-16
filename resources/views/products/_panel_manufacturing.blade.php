@@ -278,6 +278,26 @@
 
         <div class="row">
 
+             <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('units_per_tray') ? 'has-error' : '' }}">
+                {{ l('Units per Tray') }}
+                {!! Form::text('units_per_tray', null, array('class' => 'form-control', 'id' => 'units_per_tray')) !!}
+                {!! $errors->first('units_per_tray', '<span class="help-block">:message</span>') !!}
+             </div>
+
+              <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('machine_capacity') ? 'has-error' : '' }}">
+                 {{ l('Machine Capacity') }}
+                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                  data-content="{{ l('Amount of Product this Machine can process in one load.') }}">
+                              <i class="fa fa-question-circle abi-help"></i>
+                       </a>
+                 {!! Form::text('machine_capacity', null, array('class' => 'form-control', 'id' => 'machine_capacity')) !!}
+                 {!! $errors->first('machine_capacity', '<span class="help-block">:message</span>') !!}
+              </div>
+
+        </div>
+
+        <div class="row">
+
               <div class="form-group col-lg-9 col-md-9 col-sm-9{{ $errors->has('route_notes') ? 'has-error' : '' }}">
                  {{ l('Notes', [], 'layouts') }}
                  {!! Form::textarea('route_notes', null, array('class' => 'form-control', 'id' => 'route_notes', 'rows' => '2')) !!}

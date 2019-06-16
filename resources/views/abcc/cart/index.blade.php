@@ -49,6 +49,55 @@
 @endsection
 
 
+
+@include('abcc.cart._modal_pricerules')
+
+
+
+@section('styles')    @parent
+
+<style>
+  /* 
+  http://twitterbootstrap3buttons.w3masters.nl/?color=%232BA9E1
+  https://bootsnipp.com/snippets/M3x9
+
+  */
+.btn-custom {
+  color: #fff;
+  background-color: #ff0084;
+  border-color: #ff0084;
+}
+.btn-custom:hover,
+.btn-custom:focus,
+.btn-custom:active,
+.btn-custom.active {
+  background-color: #e60077;
+  border-color: #cc006a;
+}
+.btn-custom.disabled:hover,
+.btn-custom.disabled:focus,
+.btn-custom.disabled:active,
+.btn-custom.disabled.active,
+.btn-custom[disabled]:hover,
+.btn-custom[disabled]:focus,
+.btn-custom[disabled]:active,
+.btn-custom[disabled].active,
+fieldset[disabled] .btn-custom:hover,
+fieldset[disabled] .btn-custom:focus,
+fieldset[disabled] .btn-custom:active,
+fieldset[disabled] .btn-custom.active {
+  background-color: #ff0084;
+  border-color: #ff0084;
+}
+
+
+</style>
+
+@endsection
+
+
+
+
 {{--
 @section('scripts')     @parent
 <script type="text/javascript">

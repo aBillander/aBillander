@@ -94,10 +94,15 @@
   $(document).ready(function() {
 
     // Jump to tab
-    var myurl = 'tab2default';
-    $("a[href$='"+myurl+"']:first")[0].click();
-//    $("a[href$='tab2default']").css("background-color", "yellow");
+    if(window.location.hash.substring(1) == 'payments')
+        $("a[href$='tab5default']:first")[0].click();
 
+    else
+    {
+        var myurl = 'tab2default';
+        $("a[href$='"+myurl+"']:first")[0].click();
+    //    $("a[href$='tab2default']").css("background-color", "yellow");
+    }
   });
   
 </script>

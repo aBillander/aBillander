@@ -28,11 +28,13 @@ return [
 	'This record has been successfully deleted &#58&#58 (:id) '  =>  'El registro se ha eliminado correctamente &#58&#58 (:id) ',
 	'This record cannot be deleted because it is in use &#58&#58 (:id) '  =>  'El registro no puede ser eliminado porque está en uso &#58&#58 (:id) ',
 	'This record cannot be deleted because its Status &#58&#58 (:id) '  =>  'El registro no puede ser eliminado por su Estado &#58&#58 (:id) ',
+	'This record cannot be deleted because its Quantity or Value &#58&#58 (:id) '  =>  'El registro no puede ser eliminado por su Cantidad o Valor &#58&#58 (:id) ',
 	'Unable to create this record &#58&#58 (:id) '               =>  'No se ha podido crear el registro solicitado &#58&#58 (:id) ',
 	'Unable to update this record &#58&#58 (:id) '               =>  'No se ha podido actualizar el registro solicitado &#58&#58 (:id) ',
 	'Document has no Lines'                                      =>  'El Documento no contiene Líneas',
 	'Document is on-hold'                                      =>  'El Documento está en espera',
 	'Document is not closed'                                      =>  'El Documento no está cerrado',
+	'Document has Payments'                                      =>  'El Documento tiene Pagos',
 	'Unable to delete this record &#58&#58 (:id) '               =>  'No se ha podido borrar el registro solicitado &#58&#58 (:id) ',
 	'Unable to load PDF Document &#58&#58 (:id) '                =>  'No se puede cargar el documento PDF &#58&#58 (:id) ',
 	'This record cannot be created because it already exists &#58&#58 (:id) '  =>  'El registro no puede ser creado porque ya existe &#58&#58 (:id) ',
@@ -177,6 +179,8 @@ return [
 
 	'Filter Records'     => 'Filtrar Registros',
 	'Search Records'     => 'Buscar Registros',
+	'Date from'     => 'Fecha desde',
+	'Date to'     => 'Fecha hasta',
 
 	'Filter'     => 'Filtrar',
 	'Search' => 'Buscar',

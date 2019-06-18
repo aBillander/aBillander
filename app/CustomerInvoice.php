@@ -77,6 +77,17 @@ class CustomerInvoice extends Billable
         return $this->status == 'draft';
     }
 
+    public function getUncloseableAttribute()
+    {
+        if ( $this->status != 'closed' ) return false;
+
+        if ( $this->payment_status != 'pending' ) return false;
+
+//        if ( ! $this->rightAscriptions->isEmpty() ) return false;
+
+        return true;
+    }
+
     // Alias
     public function getShippingslipsAttribute()
     {

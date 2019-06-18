@@ -7,9 +7,16 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Payment as Payment;
+use App\Payment;
 
-class CustomerVouchersController extends Controller {
+use App\Traits\DateFormFormatterTrait;
+
+use App\Events\CustomerPaymentReceived;
+
+class CustomerVouchersController extends Controller
+{
+   
+   use DateFormFormatterTrait;
 
 
    protected $payment;
@@ -24,13 +31,21 @@ class CustomerVouchersController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
 		$payments = $this->payment
+        			->filter( $request->all() )
 					->with('paymentable')
 					->with('paymentable.customer')
 					->where('payment_type', 'receivable')
-					->orderBy('due_date', 'asc')->get();
+					->orderBy('due_date', 'asc');		// ->get();
+
+        $payments = $payments->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+
+        $payments->setPath('customervouchers');
 
         return view('customer_vouchers.index', compact('payments'));
 	}
@@ -74,11 +89,30 @@ class CustomerVouchersController extends Controller {
 	 */
 	public function edit($id, Request $request)
 	{
+		$action = 'edit';
 		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 		
 		$payment = $this->payment->with('currency')->findOrFail($id);
+
+		// abi_r($payment, true);
+
+        // Dates (cuen)
+        $this->addFormDates( ['due_date'], $payment );
 		
-		return view('customer_vouchers.edit', compact('payment', 'back_route'));
+		return view('customer_vouchers.edit', compact('payment', 'action', 'back_route'));
+	}
+
+	public function pay($id, Request $request)
+	{
+		$action = 'pay';
+		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
+		
+		$payment = $this->payment->with('currency')->findOrFail($id);
+
+        // Dates (cuen)
+        $this->addFormDates( ['due_date'], $payment );
+		
+		return view('customer_vouchers.edit', compact('payment', 'action' , 'back_route'));
 	}
 
 	/**
@@ -89,87 +123,106 @@ class CustomerVouchersController extends Controller {
 	 */
 	public function update($id, Request $request)
 	{
+        // Dates (cuen)
+        $this->mergeFormDates( ['due_date', 'payment_date', 'due_date_next'], $request );
+
+
 		$back_route = ( $request->has('back_route') AND $request->input('back_route') ) ? urldecode($request->input('back_route')) : 'customervouchers' ;
+
+		$action = $request->input('action', '');
 
 		$payment = $this->payment->findOrFail($id);
 
-		if ( 1 ) {
+		if ( $action == 'edit' ) {
+			//
 
 			$rules = Payment::$rules;
-			if ( $request->input('action', '') == 'pay' ) $rules['payment_date']  = 'required';
-			if ( $request->input('amount_next', 0.0)    ) $rules['due_date_next'] = 'required';
+			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
 			$rules['amount'] .= $payment->amount;
 
 			$this->validate($request, $rules);
 
-			$diff = $payment->amount - $request->input('amount');
-
-			if ( !$request->input('payment_date') ) $request->merge( array('payment_date' => abi_date_short( \Carbon\Carbon::now() ) ) );
-
-			$payment->fill($request->all());
+			$diff = $payment->amount - $request->input('amount', $payment->amount);
 
 			// If amount is not fully paid, a new payment will be created for the difference
 			if ( $diff > 0 ) {
 				$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'amount'] );
 
-				$due_date = $request->input('due_date_next') ?
-						  \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $request->input('due_date_next') ) :
-						  \Carbon\Carbon::now();
+				$due_date = $request->input('due_date_next') ?: \Carbon\Carbon::now();
 
 				$new_payment->name = $payment->name . ' * ';
 				$new_payment->status = 'pending';
-				$new_payment->due_date = abi_date_short( $due_date );
+				$new_payment->due_date = $due_date;
 				$new_payment->payment_date = NULL;
 				$new_payment->amount = $diff;
 
 				$new_payment->save();
 
-				$payment->status = 'paid';
-			} else {
-				$payment->status = 'paid';
 			}
 
+			$payment->name     = $request->input('name',     $payment->name);
+			$payment->due_date = $request->input('due_date', $payment->due_date);
+			$payment->amount   = $request->input('amount',   $payment->amount);
+			$payment->notes    = $request->input('notes',    $payment->notes);
+
 			$payment->save();
+
+
+			return redirect($back_route)
+					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
+		
+		} else
+
+		if ( $action == 'pay' ) {
+
+			// if ( !$request->input('payment_date') ) $request->merge( array('payment_date' => abi_date_short( \Carbon\Carbon::now() ) ) );
+
+			$rules = Payment::$rules;
+			$rules['payment_date']  = 'required';
+			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
+			$rules['amount'] .= $payment->amount;
+
+			$this->validate($request, $rules);
+
+			$diff = $payment->amount - $request->input('amount', $payment->amount);
+
+			// If amount is not fully paid, a new payment will be created for the difference
+			if ( $diff > 0 ) {
+				$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'amount'] );
+
+				$due_date = $request->input('due_date_next') ?: \Carbon\Carbon::now();
+
+				$new_payment->name = $payment->name . ' * ';
+				$new_payment->status = 'pending';
+				$new_payment->due_date = $due_date;
+				$new_payment->payment_date = NULL;
+				$new_payment->amount = $diff;
+
+				$new_payment->save();
+
+			}
+
+			$payment->name     = $request->input('name',     $payment->name);
+//			$payment->due_date = $request->input('due_date', $payment->due_date);
+			$payment->payment_date = $request->input('payment_date');
+			$payment->amount   = $request->input('amount',   $payment->amount);
+			$payment->notes    = $request->input('notes',    $payment->notes);
+
+			$payment->status   = 'paid';
+			$payment->save();
+
+			// Update Customer Risk
+			event(new CustomerPaymentReceived($payment));
+
 
 			return redirect($back_route)
 					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
 		}
 
-		$this->validate($request, Payment::$rules);
 
-		$diff = $payment->amount - $request->input('amount');
-
-		if ( ($request->input('status') == 'paid') || ($diff == 0) ) {
-			$request->merge( ['amount' => $payment->amount] );
-			if ( !$request->input('payment_date') ) $request->merge( array('payment_date' => abi_date_short( \Carbon\Carbon::now() ) ) );
-		}
-
-		$payment->fill($request->all());
-
-		// If amount is not fully paid, a new payment will be created for the difference
-		if ( $diff > 0 ) {
-			$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'amount'] );
-
-			$new_payment->name = $payment->name . ' * ';
-			$new_payment->due_date = abi_date_short( \Carbon\Carbon::now() );
-			$new_payment->payment_date = NULL;
-			$new_payment->amount = $diff;
-
-			$new_payment->save();
-
-			$payment->status = 'paid';
-		} else {
-			$payment->status = 'paid';
-		}
-
-		$payment->save();
-
-			// ToDo: Update invoice balance & next due date
-
-			// ToDo: Update Customer risk
-
+		// No action to process
 		return redirect($back_route)
-				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
+				->with('info', l('No action is taken &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
 	}
 
 	/**
@@ -180,7 +233,16 @@ class CustomerVouchersController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+        $payment = $this->payment->findOrFail($id);
+
+        if ($payment->amount>0.0)
+	        return redirect()->back()
+	                ->with('error', l('This record cannot be deleted because its Quantity or Value &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+        $payment->delete();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 
 }

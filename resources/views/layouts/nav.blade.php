@@ -52,7 +52,7 @@
 @if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
                          <li>
                             <a href="{{ URL::to('wooc/worders') }}">
-                                 <i class="fa fa-cloud-download btn-xs btn-warning"></i> 
+                                 <i class="fa fa-cloud-download btn-xs alert-warning"></i> 
                                  {{l('Sale Orders', [], 'layouts')}} [WooC]
                             </a>
                         </li>
@@ -60,7 +60,7 @@
 @endif
                          <li>
                             <a href="{{ URL::to('customerorders') }}">
-                                 <i class="fa fa-keyboard-o btn-xs btn-success"></i> 
+                                 <i class="fa fa-keyboard-o btn-xs alert-success"></i> 
                                  {{l('Sale Orders', [], 'layouts')}}
                             </a>
                         </li>
@@ -79,7 +79,8 @@
                         </li>
                          <li>
                             <a href="{{ URL::to('customervouchers') }}">
-                                 <i class="fa fa-exclamation-triangle btn-xs btn-danger"></i> 
+                                 <!-- i class="fa fa-exclamation-triangle btn-xs btn-danger"></i --> 
+                                 <i class="fa fa-credit-card btn-xs alert-success"></i> 
                                  {{l('Customer Vouchers', [], 'layouts')}}
                             </a>
                         </li>

@@ -10,13 +10,27 @@
             <div class="pull-right">
 
 @if ( $document->status == 'closed' )
-                <button type="button" class="btn btn-sm alert-danger" title="{{l('Document closed', 'layouts')}}" style="margin-right: 16px">
-                    <i class="fa fa-lock"></i>
-                </button>
 
     @if ( $document->uncloseable )
 
-                <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
+            <div class="btn-group">
+              <a href="#" class="btn btn-sm alert-danger" title="{{l('Document closed', 'layouts')}}"><i class="fa fa-lock"></i></a>
+              <a href="#" class="btn btn-sm alert-danger dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li class="divider"></li>
+                <li>
+                    <a xclass="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" xtitle="{{l('Unclose Document', 'layouts')}}"><i class="fa fa-unlock text-danger"></i> &nbsp; {{l('Unclose', 'layouts')}}</a>
+                </li>
+                <li class="divider"></li>
+              </ul>
+            </div>
+
+    @else
+
+            <button type="button" class="btn btn-sm alert-danger" title="{{l('Document closed', 'layouts')}}" style="margin-right: 16px">
+                <i class="fa fa-lock"></i>
+            </button>
+
     @endif
 @else
                 <a class="btn btn-sm alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a>

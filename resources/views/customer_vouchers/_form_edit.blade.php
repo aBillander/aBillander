@@ -1,5 +1,5 @@
 
-        <input type="hidden" name="action" value="edit"/>
+        {!! Form::hidden('action', 'edit', array('id' => 'action')) !!}
 
 <div class="row">
 <div class="form-group col-lg-8 col-md-8 col-sm-8">
@@ -8,19 +8,19 @@
 </div>
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('status_name', l('Status', [], 'layouts')) !!}
-    {!! Form::text('status_name', \App\Payment::getStatusName($payment->status), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
+    <div class="form-control" style="background-color: #f9f9f9;">{{ \App\Payment::getStatusName($payment->status) }}</div>
     {!! Form::hidden('status', null, array('id' => 'status')) !!}
 </div>
 </div>
 
 <div class="row">
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
-    {!! Form::label('due_date', l('Due Date')) !!}
-    {!! Form::text('due_date', null, array('class' => 'form-control')) !!}
+    {!! Form::label('due_date_form', l('Due Date')) !!}
+    {!! Form::text('due_date_form', null, array('class' => 'form-control')) !!}
 </div>
 <!-- div class="form-group col-lg-4 col-md-4 col-sm-4">
-    {!! Form::label('payment_date', l('Payment Date')) !!}
-    {!! Form::text('payment_date', null, array('class' => 'form-control')) !!}
+    {!! Form::label('payment_date_form', l('Payment Date')) !!}
+    {!! Form::text('payment_date_form', null, array('class' => 'form-control')) !!}
 </div -->
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('amount', l('Amount')) !!}
@@ -31,8 +31,8 @@
 
 <div class="row" name="voucher_next" id="voucher_next" style="display: none;">
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
-    {!! Form::label('due_date_next', l('Next Due Date')) !!}
-    {!! Form::text('due_date_next', null, array('class' => 'form-control')) !!}
+    {!! Form::label('due_date_next_form', l('Next Due Date')) !!}
+    {!! Form::text('due_date_next_form', null, array('class' => 'form-control')) !!}
 </div>
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('amount_next', l('Amount')) !!}

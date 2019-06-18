@@ -40,11 +40,12 @@ class CustomerInvoiceUnclosedListener
             //
             $document->revertStockMovements();
             //
-            $this->stock_status = 'pending';
-            $this->save();
+            $document->stock_status = 'pending';
+            $document->save();
         }
 
         // Check / Perform Vouchers
+        $document->payments()->delete();
 
     }
 }

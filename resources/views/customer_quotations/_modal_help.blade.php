@@ -8,7 +8,7 @@
     <div class="modal-content">
       <div class="modal-header alert-info modal-header-help">
         <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title" id="myModalLabel">Presupuestos de Clientes</h3>
+        <h3 class="modal-title" id="_myModalLabel">Presupuestos de Clientes</h3>
       </div>
       <div class="modal-body">
 

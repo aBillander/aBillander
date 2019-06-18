@@ -27,6 +27,7 @@ class Payment extends Model {
 
     protected $dates = [
     					'due_date', 
+                        'due_date_next',
     					'payment_date'
     					];
 
@@ -38,7 +39,7 @@ class Payment extends Model {
 	// Add your validation rules here
 	public static $rules = [
 //            'due_date_next' => 'required_if:amount_next,true',
-//            'due_date' => 'required|date',
+            'due_date' => 'required|date',
 //            'payment_date' => 'date',
               'amount' => 'numeric|min:0|max:',
 	];
@@ -68,20 +69,27 @@ class Payment extends Model {
     {
             return l($status, [], 'appmultilang');;
     }
+
     
-    public function getDueDateAttribute($value)
+    public function getIsOverdueAttribute()
+    {
+        return $this->due_date < \Carbon\Carbon::now();
+    }
+
+    
+    public function xgetDueDateAttribute($value)
     {
         // See: https://laracasts.com/discuss/channels/general-discussion/how-to-carbonparse-in-ddmmyyyy-format
 
         return abi_date_short( \Carbon\Carbon::parse($value), \App\Context::getContext()->language->date_format_lite );
     }
 
-    public function setDueDateAttribute($value)
+    public function xsetDueDateAttribute($value)
     {
         $this->attributes['due_date'] = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $value );
     }
     
-    public function getPaymentDateAttribute($value)
+    public function xgetPaymentDateAttribute($value)
     {
         if ($value)
             return abi_date_short( \Carbon\Carbon::parse($value), \App\Context::getContext()->language->date_format_lite );
@@ -89,7 +97,7 @@ class Payment extends Model {
             return NULL;
     }
 
-    public function setPaymentDateAttribute($value)
+    public function xsetPaymentDateAttribute($value)
     {
         if ($value)
             $this->attributes['payment_date'] = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $value );
@@ -139,7 +147,13 @@ class Payment extends Model {
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer', 'owner_id');
+        return $this->belongsTo('App\Customer', 'paymentorable_id');
+    }
+
+    // Alias 
+    public function invoice()
+    {
+        return $this->paymentable;        // Only if it is a Customer Invoice...
     }
 
     public function currency()
@@ -167,6 +181,51 @@ class Payment extends Model {
         if ( isset(Auth::user()->customer_id) && ( Auth::user()->customer_id != NULL ) )
             return $query->where('paymentorable_id', Auth::user()->customer_id)->where('paymentorable_type', 'App\Customer');
 
+        return $query;
+    }
+
+
+    public function scopeFilter($query, $params)
+    {
+
+        if ($params['date_from'])
+            // if ( isset($params['date_to']) && trim($params['date_to']) != '' )
+        {
+            $query->where('due_date', '>=', $params['date_from'].' 00:00:00');
+        }
+
+        if ($params['date_to'])
+        {
+            $query->where('due_date', '<=', $params['date_to']  .' 23:59:59');
+        }
+
+/*
+        if ( isset($params['reference']) && trim($params['reference']) !== '' )
+        {
+            $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
+            // $query->orWhere('combinations.reference', 'LIKE', '%' . trim($params['reference'] . '%'));
+/ *
+            // Moved from controller
+            $reference = $params['reference'];
+            $query->orWhereHas('combinations', function($q) use ($reference)
+                                {
+                                    // http://stackoverflow.com/questions/20801859/laravel-eloquent-filter-by-column-of-relationship
+                                    $q->where('reference', 'LIKE', '%' . $reference . '%');
+                                }
+            );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
+* /
+        }
+
+        if ( isset($params['name']) && trim($params['name']) !== '' )
+        {
+            $query->where('name', 'LIKE', '%' . trim($params['name'] . '%'));
+        }
+
+        if ( isset($params['warehouse_id']) && $params['warehouse_id'] > 0 )
+        {
+            $query->where('warehouse_id', '=', $params['warehouse_id']);
+        }
+*/
         return $query;
     }
 

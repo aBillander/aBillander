@@ -46,10 +46,10 @@ trait CustomerInvoicePaymentsTrait
 
             // Create Voucher
             $data = [   'payment_type' => 'receivable', 
-                        'reference' => null, 
-                        'name' => ($i+1) . ' / ' . count($pmethod->deadlines), 
+                        'reference' => $this->document_reference . ' :: ' . ($i+1) . ' / ' . count($pmethod->deadlines), 
+                        'name' => $this->document_reference . ' :: ' . ($i+1) . ' / ' . count($pmethod->deadlines), 
 //                          'due_date' => \App\FP::date_short( \Carbon\Carbon::parse( $due_date ), \App\Context::getContext()->language->date_format_lite ), 
-                        'due_date' => abi_date_short( \Carbon\Carbon::parse( $due_date ) ), 
+                        'due_date' => $due_date, 
                         'payment_date' => null, 
                         'amount' => $installment, 
                         'currency_id' => $this->currency_id,
@@ -58,6 +58,8 @@ trait CustomerInvoicePaymentsTrait
                         'notes' => null,
                         'document_reference' => $this->document_reference,
                     ];
+
+            // abi_r( $data );die();
 
             $payment = \App\Payment::create( $data );
             $this->payments()->save($payment);
@@ -72,6 +74,10 @@ trait CustomerInvoicePaymentsTrait
 */
             // ToDo: update Invoice next due date
         }
+
+        $this->payment_status = 'pending';
+        $this->open_balance = $ototal;
+        $this->save();
 
 
         return true;

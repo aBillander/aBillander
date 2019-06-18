@@ -18,10 +18,10 @@
 
 				{!! Form::model($payment, array('method' => 'PATCH', 'route' => array('customervouchers.update', $payment->id), 'onsubmit' => 'return checkFields();')) !!}
 
-@if ( 0 )
-					@include('customer_vouchers._form_edit')
-@else
+@if ( $action == 'pay' )
           @include('customer_vouchers._form_pay')
+@else
+          @include('customer_vouchers._form_edit')
 @endif
 
 				{!! Form::close() !!}
@@ -45,7 +45,7 @@
 <script>
 
    $(document).ready(function() {
-
+/*
       checkFields();
 
       if ($("#action").val()=='pay') {
@@ -54,7 +54,8 @@
         $(".makepay").addClass("btn-success");
         $(".makepay").removeClass("btn-lightblue");
       }
-
+*/
+          $("#due_date_next_form").val( $("#due_date_form").val() );
    });
 
 function checkFields() 
@@ -69,7 +70,7 @@ function checkFields()
 
           $("#amount_next").val(0);
 
-   if ( (amount<=0.0) || (amount > amount_initial) ) 
+   if ( (amount<0.0) || (amount > amount_initial) ) 
    {
       $("#amount_check").show();
       return false;
@@ -114,7 +115,7 @@ function make_payment()
 <script>
 
   $(function() {
-    $( "#due_date" ).datepicker({
+    $( "#due_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
@@ -122,7 +123,7 @@ function make_payment()
   });
 
   $(function() {
-    $( "#due_date_next" ).datepicker({
+    $( "#due_date_next_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
@@ -130,7 +131,7 @@ function make_payment()
   });
 
   $(function() {
-    $( "#payment_date" ).datepicker({
+    $( "#payment_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"

@@ -1,48 +1,49 @@
 
-        {!! Form::hidden('action', null, array('id' => 'action')) !!}
+        {!! Form::hidden('action', 'pay', array('id' => 'action')) !!}
 
 <div class="row">
-<div class="form-group col-lg-8 col-md-8 col-sm-8">
+<div class="form-group col-lg-9 col-md-9 col-sm-9">
     {!! Form::label('name', l('Subject')) !!}
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
-<div class="form-group col-lg-4 col-md-4 col-sm-4">
+<div class="form-group col-lg-3 col-md-3 col-sm-3">
     {!! Form::label('status_name', l('Status', [], 'layouts')) !!}
-    {!! Form::text('status_name', \App\Payment::getStatusName($payment->status), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
+    <div class="form-control" style="background-color: #f9f9f9;">{{ \App\Payment::getStatusName($payment->status) }}</div>
     {!! Form::hidden('status', null, array('id' => 'status')) !!}
 </div>
 </div>
 
 <div class="row">
 <div class="form-group col-lg-3 col-md-3 col-sm-3">
-    {!! Form::label('due_date', l('Due Date')) !!}
-    {!! Form::text('due_date', null, array('class' => 'form-control')) !!}
+    {!! Form::label('due_date_form', l('Due Date')) !!}
+    <div class="form-control" style="background-color: #f9f9f9;">{{ abi_date_short($payment->due_date) }}</div>
+    {!! Form::hidden('due_date_form', null, array('class' => 'form-control')) !!}
 </div>
-<div class="form-group col-lg-6 col-md-6 col-sm-6">
-    {!! Form::label('amount', l('Amount')) !!}
-
-            <div  class="input-group">
-              {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control', 'onclick' => 'this.select()', 'onkeyup' => 'checkFields()', 'onchange' => 'checkFields()')) !!}
-
-              <span class="input-group-btn" title="{{ l('Make Payment') }}">
-              <button class="btn btn-md btn-lightblue makepay" type="button" onclick="make_payment();">
-                  <span class="fa fa-stack-overflow"></span> {{ l('Make Payment') }}
-              </button>
-              </span>
-            </div>
+<div class="form-group col-lg-3 col-md-3 col-sm-3">
+    {!! Form::label('amount_initial', l('Amount')) !!}
+    <div class="form-control" style="background-color: #f9f9f9;">{{ $payment->amount }}</div>
 
     {!! Form::hidden('amount_initial', $payment->amount, array('id' => 'amount_initial')) !!}
 </div>
-<div name="voucher_payment_date" id="voucher_payment_date" class="form-group col-lg-3 col-md-3 col-sm-3" style="display: none;">
-    {!! Form::label('payment_date', l('Payment Date')) !!}
-    {!! Form::text('payment_date', null, array('class' => 'form-control')) !!}
+
+<!-- div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {{-- Separator --}}
+</div -->
+
+<div class="form-group col-lg-3 col-md-3 col-sm-3">
+    {!! Form::label('amount', l('Amount Paid')) !!}
+    {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control', 'onclick' => 'this.select()', 'onkeyup' => 'checkFields()', 'onchange' => 'checkFields()')) !!}
+</div>
+<div name="voucher_payment_date" id="voucher_payment_date" class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('payment_date') ? 'has-error' : '' }}">
+    {!! Form::label('payment_date_form', l('Payment Date')) !!}
+    {!! Form::text('payment_date_form', null, array('class' => 'form-control')) !!}
 </div>
 </div>
 
 <div class="row" name="voucher_next" id="voucher_next" style="display: none;">
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
-    {!! Form::label('due_date_next', l('Next Due Date')) !!}
-    {!! Form::text('due_date_next', null, array('class' => 'form-control')) !!}
+    {!! Form::label('due_date_next_form', l('Next Due Date')) !!}
+    {!! Form::text('due_date_next_form', null, array('class' => 'form-control', 'style' => 'position: relative; z-index: 1000;')) !!}
 </div>
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('amount_next', l('Outstanding Amount')) !!}

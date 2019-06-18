@@ -31,9 +31,9 @@
 		<tr>
 			<td>{{ $payment->id }}</td>
 			<td>{{ $payment->name }}</td>
-			<td @if( !$payment->payment_date AND ( \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $payment->due_date) < \Carbon\Carbon::now() ) ) class="danger" @endif>
-				{{ $payment->due_date }}</td>
-			<td>{{ $payment->payment_date }}</td>
+			<td @if ( !$payment->payment_date AND $payment->is_overdue ) class="danger" @endif>
+				{{ abi_date_short($payment->due_date) }}</td>
+			<td>{{ abi_date_short($payment->payment_date) }}</td>
 			<td>{{ abi_money_amount($payment->amount, $document->currency) }}</td>
             <td class="text-center">
             	@if     ( $payment->status == 'pending' )
@@ -51,7 +51,20 @@
                 @if ( $payment->status == 'paid' )
                 	<!-- a class="btn btn-sm btn-danger" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
             	@else
-                	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
+                	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '/edit#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
+	                <a class="btn btn-sm btn-blue" href="{{ URL::to('customervouchers/' . $payment->id  . '/pay?back_route=' . urlencode('customerinvoices/' . $document->id . '/edit#payments') ) }}" title="{{l('Make Payment', 'customervouchers')}}"><i class="fa fa-money"></i>
+	                </a>
+
+	                @if($payment->amount==0.0)
+	                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+	                    href="{{ URL::to('customervouchers/' . $payment->id ) }}" 
+	                    data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
+	                    data-title="{{ l('Customer Voucher', 'customervouchers') }} :: {{ l('Invoice') }}: {{ $payment->paymentable->document_reference }} . {{ l('Due Date') }}: {{ $payment->due_date }}" 
+	                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+	                @endif
+
             	@endif
 			</td>
 		</tr>

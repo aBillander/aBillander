@@ -48,6 +48,8 @@ class SepaDirectDebitsController extends Controller
 	 */
 	public function create()
 	{
+		return 'Nothing here, so far. Stay tunned!';
+
 		return view('sepa_es::direct_debits.create');
 	}
 

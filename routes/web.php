@@ -413,6 +413,7 @@ foreach ($pairs as $pair) {
         Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('customershippingslips.for.today');
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');
+        Route::get('customervouchers/{id}/pay'  , 'CustomerVouchersController@pay');
         
 
         Route::resource('pricelists',           'PriceListsController');

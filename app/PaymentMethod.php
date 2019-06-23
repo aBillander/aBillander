@@ -27,11 +27,22 @@ class PaymentMethod extends Model {
         $this->attributes['deadlines'] = serialize($value);
     }
 
+    // Transient
+    public function getPaymentDocumentIdAttribute($value)
+    {
+        return $value ?: 1;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
     */
+
+    public function paymentdocument()
+    {
+        return $this->belongsTo('App\PaymentDocument');
+    }
     
     public function customerinvoices()
     {

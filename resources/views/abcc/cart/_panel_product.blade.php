@@ -22,7 +22,7 @@
                      {{ Form::hidden( 'line_measure_unit_id', null, ['id' => 'line_measure_unit_id'] ) }}
                   </div>
 
-                 <div class="form-group col-lg-4 col-md-2 col-sm-2 {{ $errors->has('line_quantity') ? 'has-error' : '' }}">
+                 <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('line_quantity') ? 'has-error' : '' }}">
                     {{ l('Quantity') }}
                        <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                               data-content="{{ l('Change Quantity and press [Enter] or click button below.') }}">

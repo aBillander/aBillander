@@ -216,13 +216,13 @@
 @endif
 
                         <li class="divider"></li>
-
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
                          <li>
                             <a href="{{ URL::to('measureunits') }}">
                                  {{l('Measure Units', [], 'layouts')}}
                             </a>
                         </li>
+
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
                          <li>
                             <a href="{{ URL::to('workcenters') }}">
                                  {{l('Work Centers', [], 'layouts')}}

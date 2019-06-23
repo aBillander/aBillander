@@ -47,7 +47,7 @@ trait CustomerInvoicePaymentsTrait
             // Create Voucher
             $data = [   'payment_type' => 'receivable', 
                         'reference' => $this->document_reference . ' :: ' . ($i+1) . ' / ' . count($pmethod->deadlines), 
-                        'name' => $this->document_reference . ' :: ' . ($i+1) . ' / ' . count($pmethod->deadlines), 
+                        'name' => ($i+1) . ' / ' . count($pmethod->deadlines), 
 //                          'due_date' => \App\FP::date_short( \Carbon\Carbon::parse( $due_date ), \App\Context::getContext()->language->date_format_lite ), 
                         'due_date' => $due_date, 
                         'payment_date' => null, 
@@ -57,6 +57,11 @@ trait CustomerInvoicePaymentsTrait
                         'status' => 'pending', 
                         'notes' => null,
                         'document_reference' => $this->document_reference,
+
+                        'payment_document_id' => $pmethod->payment_document_id,
+                        'payment_method_id' => $pmethod->id,
+                        'auto_direct_debit' => $pmethod->auto_direct_debit,
+                        'is_down_payment' => 0,
                     ];
 
             // abi_r( $data );die();
@@ -90,5 +95,17 @@ trait CustomerInvoicePaymentsTrait
     | Methods
     |--------------------------------------------------------------------------
     */
+
+    public function nextPayment()
+    {
+        //
+        return $this->payments()->where('status', 'pending')->orderBy('due_date', 'asc')->first();
+    }
+
+    public function getNextDueDateAttribute()
+    {
+        // 
+        return optional($this->nextPayment())->due_date;
+    }
 
 }

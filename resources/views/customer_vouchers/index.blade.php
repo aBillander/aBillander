@@ -12,13 +12,13 @@
     </div -->
     <div class="pull-right" style="padding-top: 4px;">
 
-        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}" style="margin-right: 22px;">
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ route('directdebits.index') }}" class="btn btn-sm btn-success" 
-        		title="{{l('Go to', [], 'layouts')}}"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', [], 'sepasp')}}</a>
+        <a href="{{ route('sepasp.directdebits.index') }}" class="btn btn-sm btn-success" 
+        		title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
     </div>
     <h2>
         {{ l('Customer Vouchers') }}
@@ -50,6 +50,34 @@
         {!! Form::label('date_to_form', l('Date to', 'layouts')) !!}
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-auto_direct_debit">
+     {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                        data-content="{{ l('Include in automatic payment remittances') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+     <div>
+       <div class="radio-inline">
+         <label>
+           {!! Form::radio('auto_direct_debit', '1', false, ['id' => 'auto_direct_debit_on']) !!}
+           {!! l('Yes', [], 'layouts') !!}
+         </label>
+       </div>
+       <div class="radio-inline">
+         <label>
+           {!! Form::radio('auto_direct_debit', '0', false, ['id' => 'auto_direct_debit_off']) !!}
+           {!! l('No', [], 'layouts') !!}
+         </label>
+       </div>
+       <div class="radio-inline">
+         <label>
+           {!! Form::radio('auto_direct_debit', '-1', true, ['id' => 'auto_direct_debit_all']) !!}
+           {!! l('All', [], 'layouts') !!}
+         </label>
+       </div>
+     </div>
+</div>
 
 {{--
 <div class="form-group col-lg-1 col-md-1 col-sm-1">
@@ -97,7 +125,13 @@
 			<th>{{l('Due Date')}}</th>
 			<th>{{l('Payment Date')}}</th>
 			<th>{{l('Amount')}}</th>
-            <th class="text-center">{{l('Status', [], 'layouts')}}</th>
+      <th style="text-transform: none;">{{l('Auto Direct Debit', 'customervouchers')}}
+               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Include in automatic payment remittances', 'customervouchers') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+               </a>
+          </th>
+      <th class="text-center">{{l('Status', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -112,6 +146,15 @@
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
 			<td>{{ $payment->as_money_amount('amount') }}</td>
+
+      <td class="text-center">
+        @if ($payment->auto_direct_debit) 
+          <i class="fa fa-check-square" style="color: #38b44a;"></i> 
+        @else 
+          <i class="fa fa-square-o" style="color: #df382c;"></i>
+        @endif
+      </td>
+
             <td class="text-center">
             	@if     ( $payment->status == 'pending' )
             		<span class="label label-info">

@@ -116,17 +116,24 @@ class MeasureUnitsController extends Controller {
 	{
         // check if measure unit is in use (short test)
         $in_use= false;
+        $msg = '';
 
         // Products
-        if ( \App\Product::where('measure_unit_id', $id)->get() ) {
+        if ( \App\Product::where('measure_unit_id', $id)->first() ) {
 
         	$in_use = true;
+        	$msg = 'Prod';
+
         } else 
 
         // ProductBOMLines
-        if ( \App\ProductBOMLine::where('measure_unit_id', $id)->get() ) {
+        if ( \App\ProductBOMLine::where('measure_unit_id', $id)->first() ) {
 
         	$in_use = true;
+        	$msg = 'BOM';
+
+        	// To do: Check alternative units
+
         } else 
 
         // Default measure unit
@@ -134,11 +141,12 @@ class MeasureUnitsController extends Controller {
         	|| (\App\Configuration::get('DEF_MEASURE_UNIT_FOR_BOMS'    ) == $id) ) {
 
         	$in_use = true;
+        	$msg = 'def';
         }
 
         if ( $in_use )
 	        return redirect('measureunits')
-					->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+					->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts') . ' [' . $msg . ']');
 
 
         // So far, so good

@@ -20,6 +20,8 @@ class Sequence extends Model {
             'CustomerShippingSlip',
             'CustomerInvoice',
             'StockCount',
+
+            'SepaDirectDebit',
         );
 
     // Move this to config folder? Maybe yes...
@@ -32,6 +34,8 @@ class Sequence extends Model {
             CustomerInvoice::class      => 'CustomerInvoice',
             
             StockCount::class      => 'StockCount',
+
+            \aBillander\SepaSpain\SepaDirectDebit::class      => 'SepaDirectDebit',
         );
 
     protected $dates = ['deleted_at', 'last_date_used'];

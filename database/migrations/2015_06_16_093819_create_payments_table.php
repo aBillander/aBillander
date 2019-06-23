@@ -25,6 +25,9 @@ class CreatePaymentsTable extends Migration {
 			$table->string('reference')->nullable();			// Creditor (usually Supplier) reference			
 			$table->string('name', 32)->nullable();				// Payment subject/detail
 
+			$table->tinyInteger('auto_direct_debit')->default(0); 	// Include in automatic payment remittances
+			$table->tinyInteger('is_down_payment')->default(0);        // Payment before issue any invoice
+
 			$table->date('due_date')->nullable(false);
 			$table->date('payment_date')->nullable();			// Real payment date
 			$table->decimal('amount', 20, 6)->nullable(false);
@@ -47,6 +50,15 @@ class CreatePaymentsTable extends Migration {
 			// Paymentor (creditor or debitor)
 			$table->integer('paymentorable_id');
 			$table->string('paymentorable_type');
+
+			// Money Order
+			$table->integer('bank_order_id')->nullable();	// For SEPA Direct Debit Bank Orders (remittances)
+
+			// Payment Document
+			$table->integer('payment_document_id')->nullable();		// Cash, cheque, bank transfer, etc.
+			$table->integer('payment_method_id')->unsigned()->nullable(false);		// Alternative to payment_document_id
+
+
 
 
 /*

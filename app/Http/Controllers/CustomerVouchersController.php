@@ -36,6 +36,8 @@ class CustomerVouchersController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
+        // dd($request->all());
+
 		$payments = $this->payment
         			->filter( $request->all() )
 					->with('paymentable')
@@ -165,6 +167,8 @@ class CustomerVouchersController extends Controller
 			$payment->amount   = $request->input('amount',   $payment->amount);
 			$payment->notes    = $request->input('notes',    $payment->notes);
 
+			$payment->auto_direct_debit = $request->input('auto_direct_debit',    $payment->auto_direct_debit);
+
 			$payment->save();
 
 
@@ -215,7 +219,8 @@ class CustomerVouchersController extends Controller
 			event(new CustomerPaymentReceived($payment));
 
 
-			return redirect($back_route)
+//			return redirect($back_route)
+			return redirect()->back()
 					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
 		}
 

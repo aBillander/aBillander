@@ -1,4 +1,21 @@
 
+
+@if ( $document->status == 'closed' )
+
+            <ul class="list-group">
+              <li class="list-group-item" style="color: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
+                <h4>{{ l('Payment status') }}</h4>
+              </li>
+
+                  <li class="list-group-item">
+                      {{ $document->getPaymentStatusName($document->payment_status) }}
+                    
+                  </li>
+
+            </ul>
+
+@endif
+
             <ul class="list-group">
               <li class="list-group-item" style="background-color: #fcf8e3;
 border-color: #fbeed5;

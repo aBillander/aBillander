@@ -9,6 +9,9 @@
     <div class="pull-right" style="padding-top: 4px;">
         <a href="{{ URL::to('sepasp/directdebits/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+        <a href="{{ route('customervouchers.index') }}" class="btn btn-sm btn-success" 
+            title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-money"></i> {{l('Customer Vouchers', 'customervouchers')}}</a>
     </div>
     <h2>
         {{ l('SEPA Direct Debits') }}
@@ -24,11 +27,13 @@
     <thead>
         <tr>
 			<th>{{l('ID', [], 'layouts')}}</th>
-			<th>{{ l('Due Date') }}</th>
-			<th>{{ l('Name') }}</th>
-      <!-- th class="text-center">{{l('Status', [], 'layouts')}}</th -->
-      <th>{{ l('Customer Orders') }}</th>
-      <th>{{ l('Production Orders') }}</th>
+      <th>{{ l('Date') }}</th>
+      <th>{{ l('Validation Date') }}</th>
+      <th>{{ l('Payment Date') }}</th>
+			<th>{{ l('Amount') }}</th>
+      <th class="text-center">{{l('Scheme')}}</th>
+      <th>{{ l('Bank') }}</th>
+      <th class="text-center">{{l('Status', [], 'layouts')}}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th class="text-right"> </th>
 		</tr>
@@ -36,21 +41,27 @@
 	<tbody>
 	@foreach ($sdds as $sdd)
 		<tr>
-			<td>{{ $sdd->id }}</td>
-      <td>{{ abi_date_form_short($sdd->due_date) }}</td>
-      <td>{{ $sdd->name }}</td>
-      <!-- td class="text-center">
-          @if ($sdd->is_dirty)
-              <button type="button" class="btn btn-xs btn-danger" title="{{l('Need Update')}}">
-                  <i class="fa fa-hand-stop-o"></i>
-              </button>
-          @else
-              <button type="button" class="btn btn-xs btn-success" title="{{l('OK')}}">
-                  <i class="fa fa-thumbs-o-up"></i>
-              </button>
-          @endif</td -->
-      <td>{{ $sdd->nbr_customerorders() }}</td>
-      <td>{{ $sdd->nbr_productionorders() }}</td>
+      <td>{{ $sdd->id }} / {{ $sdd->document_reference }}</td>
+      <td>{{ abi_date_short($sdd->document_date) }}</td>
+      <td>{{ abi_date_short($sdd->validation_date) }}</td>
+      <td>{{ abi_date_short($sdd->payment_date) }}</td>
+      <td>{{ $sdd->as_money_amount('total') }}</td>
+      <td class="text-center">{{ $sdd->scheme }}</td>
+      <td>{{ optional($sdd->bankaccount)->bank_name }}</td>
+
+            <td class="text-center">
+              @if     ( $sdd->status == 'pending' )
+                <span class="label label-danger">
+              @elseif ( $sdd->status == 'validated' )
+                <span class="label label-info">
+              @elseif ( $sdd->status == 'closed' )
+                <span class="label label-success">
+              @else
+                <span>
+              @endif
+              {{\App\Payment::getStatusName($sdd->status)}}</span>
+            </td>
+
       <td class="text-center">
           @if ($sdd->notes)
            <a href="javascript:void(0);">

@@ -28,6 +28,9 @@ class CreatePaymentMethodsTable extends Migration {
 			$table->tinyInteger('auto_direct_debit')->default(0); 	// Include invoices (with this method) in automatic payment remittances
 			$table->tinyInteger('active')->default(1);
 
+			// Payment Document
+			$table->integer('payment_document_id')->nullable();		// Cash, cheque, bank transfer, etc.
+
 			$table->timestamps();
 			$table->softDeletes();
 		});

@@ -34,7 +34,8 @@
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
-            <th class="text-center">{{ l('Notes', 'layouts') }}</th>
+            <th class="text-right""> </th>
+            <th class="text-center">{{ l('Next Due Date') }}</th>
             <th> </th>
         </tr>
     </thead>
@@ -48,7 +49,16 @@
                 <a class="btn btn-xs btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
                 <span xclass="label label-default">{{ l('Draft') }}</span>
                 </a>
-                @endif</td>
+                @endif
+                @if ($document->all_notes)
+                 <a href="javascript:void(0);">
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                            data-content="{!! nl2br($document->all_notes) !!}">
+                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                    </button>
+                 </a>
+                @endif
+            </td>
             <td class="text-center">
 
 @if ( $document->status == 'closed' )
@@ -90,14 +100,16 @@
             <td>{{ $document->created_via }}
             </td>
             <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
-            <td class="text-center">@if ($document->all_notes)
-                 <a href="javascript:void(0);">
-                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
-                            data-content="{!! nl2br($document->all_notes) !!}">
-                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
-                    </button>
-                 </a>
-                @endif
+            <td>
+@if ( $document->payment_status == 'pending' )
+                <a class="btn btn-xs btn-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
+@endif
+@if ( $document->payment_status == 'halfpaid' )
+                <a class="btn btn-xs alert-warning" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
+@endif
+            </td>
+            <td class="text-center @if ( optional($document->nextPayment())->is_overdue ) danger @endif ">
+                {{ abi_date_short($document->next_due_date) }}
             </td>
             <td class="text-right button-pad">
                 <!--

@@ -57,4 +57,9 @@ return [
 
 	'Amount must be greater than 0 and not greater than :value'     => 'La Cantidad debe ser mayor que 0 y menor que :value',
 
+
+
+	'Auto Direct Debit'     => 'Remesable',
+	'Include in automatic payment remittances'     => 'Incluir en remesas de pago automático',
+
 ];

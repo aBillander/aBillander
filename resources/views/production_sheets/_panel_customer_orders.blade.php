@@ -141,7 +141,7 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 
          <div class="col-lg-6 col-md-6 col-sm-6 text-right">
 
-                <!-- a class="btn btn-sm btn-grey" href="{{ URL::route('fsxorders.export', [$order->id] ) }}" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Exportar a FactuSOL')}}</a -->
+                <!-- a class="btn btn-sm btn-grey" href="{ { URL::route('fsxorders.export', [$order->id] ) } }" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Exportar a FactuSOL')}}</a -->
 
 
 

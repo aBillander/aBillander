@@ -34,9 +34,11 @@ class CreateSepaDirectDebitsTable extends Migration
             $table->string('currency_iso_code', 3)->nullable(false);                     // ISO code (e.g. USD for Dollars, EUR for Euros, etc.)
             $table->decimal('currency_conversion_rate', 20, 6)->default(1.0);    // Exchange rates are calculated from one unit of your default currency. For example, if the default currency is euros and your chosen currency is dollars, type &quot;1.20&quot; (1&amp;euro; = $1.20)
 
-            $table->string('local_instrument', 32)->nullable(false)->default('CORE');
+            $table->string('scheme', 32)->nullable(false)->default('CORE');
             // Values: CORE, B2B
             $table->string('status', 32)->nullable(false)->default('pending');
+
+            $table->text('notes')->nullable();
 
             $table->dateTime('document_date');
             $table->dateTime('validation_date')->nullable();    // When exported XML file
@@ -47,6 +49,8 @@ class CreateSepaDirectDebitsTable extends Migration
             $table->decimal('total', 20, 6)->default(0.0);
 
             $table->integer('bank_account_id')->unsigned()->nullable(false);
+
+            $table->timestamps();
 
         });
     }

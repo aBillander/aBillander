@@ -89,4 +89,6 @@
 @endif
 
 {{-- !! link_to_route('customervouchers.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !! --}}
-{!! link_to( ($back_route != '' ? $back_route : 'customervouchers'), l('Cancel', [], 'layouts'), array('class' => 'btn btn-warning')) !!}
+{{-- !! link_to( ($back_route != '' ? $back_route : 'customervouchers'), l('Cancel', [], 'layouts'), array('class' => 'btn btn-warning')) !! --}}
+
+<a href="{{ url()->previous() }}" class="btn btn-warning">{{ l('Cancel', [], 'layouts') }}</a>

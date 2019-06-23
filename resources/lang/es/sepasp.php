@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | SEPA Direct Debits Language Lines
+    | SEPA Direct Debit Language Lines
     |--------------------------------------------------------------------------
     |
     |
@@ -39,10 +39,8 @@ return [
 	'Provenience'     => 'Procedencia',
 	'Add Production Order'     => 'Añadir Orden de Fabricación',
 	'Measure Unit'     => 'Unidad de Medida',
-	'Update Sheet'     => 'Actualizar Remesa SEPA',
+	'Update SEPA Direct Debit'     => 'Actualizar Remesa SEPA',
 	'Customer Order Summary'     => 'Resumen de Pedidos de Cliente',
-	'Lack'     => 'Falta',
-	'Excess'     => 'Sobra',
 
 
 	'SEPA Direct Debits'     => 'Remesas SEPA',
@@ -50,10 +48,58 @@ return [
 	'SEPA Direct Debits - Create'     => 'Remesas SEPA - Crear',
 	'New SEPA Direct Debit'     => 'Nueva Remesa SEPA',
 
+	'Date'     => 'Fecha',
+	'Scheme'   => 'Normativa',
+	'Bank'     => 'Banco',
+	'Sequence' => 'Serie',
+
 
 	'SEPA Direct Debits - Edit'     => 'Remesas SEPA - Modificar',
 	'Edit SEPA Direct Debit'     => 'Modificar Remesa SEPA',
 
 	'Back to SEPA Direct Debits'     => 'Volver a Remesas SEPA',
 	'Back to SEPA Direct Debit'     => 'Volver a la Remesa SEPA',
+
+	'Vouchers from'  => 'Recibos desde',
+	'Vouchers to'    => 'Recibos hasta',
+	'voucher(s)'     => 'recibo(s)',
+
+	'Validation Date' => 'Fecha de Validación',
+	'Payment Date'    => 'Fecha de Pago',
+	'Amount'     => 'Importe',
+	'Amount Paid'     => 'Pagado',
+
+	'Customer Vouchers' => 'Recibos de Clientes',
+	'Invoice'     => 'Factura',
+	'Subject'     => 'Concepto',
+
+	'SEPA XML file' => 'Fichero SEPA XML',
+	'Set as Paid' => 'Pagar Remesa',
+
+	/*
+	|--------------------------------------------------------------------------
+	| SEPA Direct Debit Schemes
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'aBillander\SepaSpain\SepaDirectDebit.CORE' => 'CORE',
+	'aBillander\SepaSpain\SepaDirectDebit.B2B'  => 'B2B',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| SEPA Direct Debit Schemes
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'aBillander\SepaSpain\SepaDirectDebit.pending' => 'Pendiente',
+	'aBillander\SepaSpain\SepaDirectDebit.validated'  => 'En trámite',
+	'aBillander\SepaSpain\SepaDirectDebit.closed'  => 'Cargado en cuenta',
+
 ];

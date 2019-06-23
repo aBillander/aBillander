@@ -27,7 +27,7 @@ class CustomerPaymentReceivedListener
     public function handle(CustomerPaymentReceived $event)
     {
         $payment = $event->payment;
-        $document = $payment->invoice;
+        $document = $payment->customerinvoice;
 
         // Update Document
         $document->open_balance -= $payment->amount;

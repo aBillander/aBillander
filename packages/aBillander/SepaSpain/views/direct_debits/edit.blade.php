@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Production Sheets - Edit') }} @parent @stop
+@section('title') {{ l('SEPA Direct Debits - Edit') }} @parent @stop
 
 
 @section('content')
@@ -8,14 +8,14 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3" style="margin-top: 50px">
 		<div class="panel panel-info">
-			<div class="panel-heading"><h3 class="panel-title">{{ l('Edit Production Sheet') }} :: ({{$sheet->id}}) {{$sheet->name}}</h3></div>
+			<div class="panel-heading"><h3 class="panel-title">{{ l('Edit SEPA Direct Debit') }} :: <span class="label label-success">{{$directdebit->document_reference}}</span> - ({{$directdebit->id}}) </h3></div>
 			<div class="panel-body">
 
 				@include('errors.list')
 
-				{!! Form::model($sheet, array('method' => 'PATCH', 'route' => array('productionsheets.update', $sheet->id))) !!}
+				{!! Form::model($directdebit, array('method' => 'PATCH', 'route' => array('sepasp.directdebits.update', $directdebit->id))) !!}
 
-					@include('production_sheets._form')
+					@include('sepa_es::direct_debits._form_edit')
 
 				{!! Form::close() !!}
 			</div>
@@ -36,7 +36,7 @@
 <script>
 
   $(function() {
-    $( "#due_date" ).datepicker({
+    $( "#document_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"

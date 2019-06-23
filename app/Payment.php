@@ -33,7 +33,11 @@ class Payment extends Model {
 
     protected $fillable =  ['payment_type', 'reference', 'name', 'due_date', 'payment_date', 
                             'amount', 'currency_id', 'currency_conversion_rate', 'status', 
-                            'notes', 'document_reference'
+                            'notes', 'document_reference',
+
+                            'auto_direct_debit', 'bank_order_id',
+
+                            'down_payment', 'payment_document_id', 'payment_method_id',
                            ];
 
 	// Add your validation rules here
@@ -73,7 +77,10 @@ class Payment extends Model {
     
     public function getIsOverdueAttribute()
     {
-        return $this->due_date < \Carbon\Carbon::now();
+        if ($this->status == 'pending')
+            return $this->due_date < \Carbon\Carbon::now();
+
+        return false;
     }
 
     
@@ -136,12 +143,12 @@ class Payment extends Model {
 
     public function xcustomerInvoice()
     {
-        return $this->paymentable();
+        return $this->paymentable;
     }
 
-    public function getCustomerInvoiceAttribute()
+    public function xgetCustomerinvoiceAttribute()
     {
-        return $this->paymentable;        // Only if it is a Customer Invoice...
+        return $this->paymentable();        // Only if it is a Customer Invoice...
     }
 
 
@@ -150,15 +157,24 @@ class Payment extends Model {
         return $this->belongsTo('App\Customer', 'paymentorable_id');
     }
 
-    // Alias 
-    public function invoice()
+    public function customerinvoice()
     {
-        return $this->paymentable;        // Only if it is a Customer Invoice...
+        return $this->belongsTo('App\CustomerInvoice', 'paymentable_id');     // ->where('paymentable_type', 'App\CustomerInvoice');        // Only if it is a Customer Invoice...
     }
 
     public function currency()
     {
         return $this->belongsTo('App\Currency');
+    }
+
+    public function paymentdocument()
+    {
+        return $this->belongsTo('App\PaymentDocument');
+    }
+
+    public function paymentmethod()
+    {
+        return $this->belongsTo('App\PaymentMethod');
     }
 
 
@@ -197,6 +213,16 @@ class Payment extends Model {
         if ($params['date_to'])
         {
             $query->where('due_date', '<=', $params['date_to']  .' 23:59:59');
+        }
+
+        if (array_key_exists('auto_direct_debit', $params) && $params['auto_direct_debit'] > 0)
+        {
+            $query->where('auto_direct_debit', '>', 0);
+        }
+
+        if (array_key_exists('auto_direct_debit', $params) && $params['auto_direct_debit'] == 0)
+        {
+            $query->where('auto_direct_debit', 0);
         }
 
 /*

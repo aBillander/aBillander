@@ -28,7 +28,7 @@
          </div>
 
 </div>
-
+{{--
 <div class="row">
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
@@ -49,7 +49,7 @@
 
 
 </div>
-
+--}}
 <div class="row">
 
          <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('notes') ? 'has-error' : '' }}">
@@ -63,3 +63,5 @@
 
 {!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 {!! link_to_route('sepasp.directdebits.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+
+                <a class="btn xbtn-sm btn-blue pull-right" href="{{ URL::to('sepasp/directdebits/' . $directdebit->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-folder-open-o"></i> {{l('Show', [], 'layouts')}}</a>

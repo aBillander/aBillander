@@ -6,7 +6,14 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use \App\Configuration;
+use App\Configuration;
+use App\Sequence;
+use App\Currency;
+use App\Payment;
+
+use App\Traits\ViewFormatterTrait;
+use App\Traits\DateFormFormatterTrait;
+
 use aBillander\SepaSpain\SepaDirectDebit;
 
 use AbcAeffchen\SepaUtilities\SepaUtilities;
@@ -14,12 +21,18 @@ use AbcAeffchen\Sephpa\SephpaDirectDebit;
 
 class SepaDirectDebitsController extends Controller
 {
+    
+    use ViewFormatterTrait;
+    use DateFormFormatterTrait;
+
 
    protected $directdebit;
+   protected $payment;
 
-   public function __construct(SepaDirectDebit $directdebit)
+   public function __construct(SepaDirectDebit $directdebit, Payment $payment)
    {
         $this->directdebit = $directdebit;
+        $this->payment = $payment;
    }
 
     /**
@@ -31,7 +44,7 @@ class SepaDirectDebitsController extends Controller
 
     public function index()
     {
-        $sdds = $this->directdebit->orderBy('document_date', 'desc')->orderBy('id', 'desc');
+        $sdds = $this->directdebit->with('bankaccount')->orderBy('document_date', 'desc')->orderBy('id', 'desc');
 
         $sdds = $sdds->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
 
@@ -48,9 +61,20 @@ class SepaDirectDebitsController extends Controller
 	 */
 	public function create()
 	{
-		return 'Nothing here, so far. Stay tunned!';
 
-		return view('sepa_es::direct_debits.create');
+        $sequenceList = $this->directdebit->sequenceList();
+
+        if ( !(count($sequenceList)>0) )
+            return redirect()->route('sepasp.directdebits.index')
+                ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
+
+		$sepa_sp_schemeList = SepaDirectDebit::getSchemeList();
+
+		$bank_accountList = \App\Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
+
+        // $document_date = abi_date_short( \Carbon\Carbon::now() );
+
+		return view('sepa_es::direct_debits.create', compact('sepa_sp_schemeList', 'bank_accountList', 'sequenceList'));
 	}
 
 	/**
@@ -61,17 +85,82 @@ class SepaDirectDebitsController extends Controller
 	 */
 	public function store(Request $request)
 	{
-        // return $request->input('desc').' - OK - '.$request->input('cod');
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date', 'date_from', 'date_to'], $request );
 
-        $fsolpaymethods = FSxTools::getFormasDePagoList();
+        $rules = $this->directdebit::$rules;
 
-        $fsolpaymethods[$request->input('cod')] = $request->input('desc');
+        $this->validate($request, $rules);
 
-        // Save Payment Methods Cache
-        Configuration::updateValue('FSX_FORMAS_DE_PAGO_CACHE', json_encode($fsolpaymethods));
+        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
 
-		return redirect()->route('fsx.configuration.paymentmethods')
-				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $request->input('cod')], 'layouts') . $request->input('desc'));
+ //                       'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
+
+                        'created_via'          => 'manual',
+                        'status'               =>  'pending',
+                        'total'               => 0.0,
+                     ];
+
+        $request->merge( $extradata );
+
+
+        $sdds = $this->directdebit->create($request->all());
+
+        // Sequence
+        $seq_id = $sdds->sequence_id;
+        $seq = \App\Sequence::find( $seq_id );
+        $doc_id = $seq->getNextDocumentId();
+
+//        $sdds->sequence_id = $seq_id;
+        // Not fillable
+        $sdds->document_prefix    = $seq->prefix;
+        // Not fillable
+        $sdds->document_id        = $doc_id;
+        // Not fillable. May come from external system ???
+        $sdds->document_reference = $seq->getDocumentReference($doc_id);
+
+//        $sdds->validation_date = \Carbon\Carbon::now();
+
+        // Bank Account
+        $bankaccount = $sdds->bankaccount;
+        $sdds->iban  = $bankaccount->iban;
+        $sdds->swift = $bankaccount->swift;
+
+        // Currency
+        $currency = $bankaccount->currency ?: Currency::find( intval(Configuration::get('DEF_CURRENCY')) );
+        $sdds->currency_iso_code = $currency->iso_code;
+        $sdds->currency_conversion_rate = $currency->conversion_rate;
+
+        $sdds->save();
+
+        // Do add vouchers, now!
+        $date_from = $request->input('date_from', '');
+        $date_to   = $request->input('date_to', '');
+        $vouchers =  $this->payment
+                    ->when($date_from, function($query) use ($date_from) {
+
+                            $query->where('due_date', '>=', $date_from);
+                    })
+                    ->when($date_to, function($query) use ($date_to) {
+
+                            $query->where('due_date', '<=', $date_to);
+                    })
+                    ->where('auto_direct_debit', '>', 0)
+                    ->get();
+
+
+        foreach ($vouchers as $voucher) {
+            # code...
+            $voucher->update(['bank_order_id' => $sdds->id]);
+        }
+
+
+        return redirect()->route('sepasp.directdebits.index')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $sdds->id], 'layouts') . ' :: ' . $vouchers->count() . ' ' . l('voucher(s)'));
+
+
+        return redirect()->route('sepasp.directdebits.edit', $sdds->id)
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $sdds->id], 'layouts') . ' :: ' . $vouchers->count() . ' ' . l('voucher(s)'));
     }
 
 	/**
@@ -83,7 +172,9 @@ class SepaDirectDebitsController extends Controller
 	 */
 	public function show($id)
 	{
-		return $this->edit($id);
+        $directdebit = $this->directdebit->findOrFail($id);
+
+        return view('sepa_es::direct_debits.show', compact('directdebit'));
 	}
 
 	/**
@@ -95,7 +186,18 @@ class SepaDirectDebitsController extends Controller
 	 */
 	public function edit($id)
 	{
-		//
+        $directdebit = $this->directdebit->findOrFail($id);
+
+        // Dates (cuen)
+        $this->addFormDates( ['document_date'], $directdebit );
+
+        $sepa_sp_schemeList = SepaDirectDebit::getSchemeList();
+
+        $bank_accountList = \App\Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
+
+        // $document_date = abi_date_short( \Carbon\Carbon::now() );
+
+        return view('sepa_es::direct_debits.edit', compact('directdebit', 'sepa_sp_schemeList', 'bank_accountList', 'sequenceList'));
 	}
 
 	/**
@@ -105,19 +207,21 @@ class SepaDirectDebitsController extends Controller
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($cod, Request $request)
+	public function update($id, Request $request)
 	{
-        // return $request->input('desc').' - OK - '.$cod;
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date'], $request );
 
-        $fsolpaymethods = FSxTools::getFormasDePagoList();
+        $directdebit = $this->directdebit->findOrFail($id);
 
-        $fsolpaymethods[$request->input('cod')] = $request->input('desc');
+        $rules = $this->directdebit::$rules;
 
-        // Save Payment Methods Cache
-        Configuration::updateValue('FSX_FORMAS_DE_PAGO_CACHE', json_encode($fsolpaymethods));
+        $this->validate($request, $rules);
 
-		return redirect()->route('fsx.configuration.paymentmethods')
-				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $cod], 'layouts') . $request->input('desc'));
+        $directdebit->update($request->all());
+
+        return redirect()->route('sepasp.directdebits.show', $id)
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $directdebit->document_reference);
     }
 
 	/**

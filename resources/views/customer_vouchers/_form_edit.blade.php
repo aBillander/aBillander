@@ -14,6 +14,7 @@
 </div>
 
 <div class="row">
+
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('due_date_form', l('Due Date')) !!}
     {!! Form::text('due_date_form', null, array('class' => 'form-control')) !!}
@@ -27,6 +28,29 @@
     {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control', 'onclick' => 'this.select()', 'onkeyup' => 'checkFields()', 'onchange' => 'checkFields()')) !!}
     {!! Form::hidden('amount_initial', $payment->amount, array('id' => 'amount_initial')) !!}
 </div>
+
+<div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-auto_direct_debit">
+     {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                        data-content="{{ l('Include in automatic payment remittances') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+     <div>
+       <div class="radio-inline">
+         <label>
+           {!! Form::radio('auto_direct_debit', '1', true, ['id' => 'auto_direct_debit_on']) !!}
+           {!! l('Yes', [], 'layouts') !!}
+         </label>
+       </div>
+       <div class="radio-inline">
+         <label>
+           {!! Form::radio('auto_direct_debit', '0', false, ['id' => 'auto_direct_debit_off']) !!}
+           {!! l('No', [], 'layouts') !!}
+         </label>
+       </div>
+     </div>
+</div>
+
 </div>
 
 <div class="row" name="voucher_next" id="voucher_next" style="display: none;">
@@ -59,8 +83,8 @@
 
 <div class="row">
 
- <div class="form-group col-lg-12 col-md-12 col-sm-12 {{{ $errors->has('notes') ? 'has-error' : '' }}}">
-    {{ l('Notes', [], 'layouts') }}
+ <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('notes') ? 'has-error' : '' }}">
+    {!! Form::label('notes', l('Notes', [], 'layouts')) !!}
     {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}
     {{ $errors->first('notes', '<span class="help-block">:message</span>') }}
  </div>

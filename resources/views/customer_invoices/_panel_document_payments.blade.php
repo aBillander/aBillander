@@ -16,6 +16,12 @@
 			<th style="text-transform: none;">{{l('Due Date')}}</th>
 			<th style="text-transform: none;">{{l('Payment Date')}}</th>
 			<th style="text-transform: none;">{{l('Amount')}}</th>
+			<th style="text-transform: none;">{{l('Auto Direct Debit', 'customervouchers')}}
+               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Include in automatic payment remittances', 'customervouchers') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+               </a>
+        	</th>
             <th style="text-transform: none;" class="text-center">{{l('Status', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
@@ -35,6 +41,15 @@
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
 			<td>{{ abi_money_amount($payment->amount, $document->currency) }}</td>
+
+			<td class="text-center">
+				@if ($payment->auto_direct_debit) 
+					<i class="fa fa-check-square" style="color: #38b44a;"></i> 
+				@else 
+					<i class="fa fa-square-o" style="color: #df382c;"></i>
+				@endif
+			</td>
+
             <td class="text-center">
             	@if     ( $payment->status == 'pending' )
             		<span class="label label-info">

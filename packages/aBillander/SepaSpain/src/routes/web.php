@@ -14,7 +14,7 @@ Route::group([
 
 ], function () {
 
-    Route::resource('directdebits', 'SepaDirectDebitsController');
+    Route::resource('directdebits', 'SepaDirectDebitsController')->names('sepasp.directdebits');
 
 
 

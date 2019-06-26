@@ -553,6 +553,11 @@ class Customer extends Model {
         return $this->hasMany('App\CustomerOrder');
     }
 
+    public function customershippingslips()
+    {
+        return $this->hasMany('App\CustomerShippingSlip');
+    }
+
     public function customerinvoices()
     {
         return $this->hasMany('App\CustomerInvoice');
@@ -568,9 +573,21 @@ class Customer extends Model {
     /**
      * Get the user record associated with the user.
      */
+    public function xgetUserAttribute()
+    {
+        return $this->users()->where('id', Auth::user()->id)->first();
+        // return $this->hasOne('App\CustomerUser', 'customer_id');
+    }
+
     public function user()
     {
-        return $this->hasOne('App\CustomerUser', 'customer_id');
+        // return $this->users()->where()->first();
+        return $this->hasOne('App\CustomerUser', 'customer_id')->where('is_principal', 1);
+    }
+
+    public function users()
+    {
+        return $this->hasMany('App\CustomerUser', 'customer_id');
     }
 
     

@@ -147,4 +147,9 @@ class CustomerUser extends Authenticatable
     {
         return $this->belongsTo('App\Customer', 'customer_id');
     }
+
+    public function address()
+    {
+        return $this->belongsTo('App\Address', 'address_id');
+    }
 }

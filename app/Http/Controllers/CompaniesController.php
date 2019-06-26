@@ -210,7 +210,7 @@ class CompaniesController extends Controller {
         }
 
         return redirect('companies/'.$company->id.'/edit'.$section)
-            ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $customer->name_commercial);
+            ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $company->name_commercial);
 
     }
 

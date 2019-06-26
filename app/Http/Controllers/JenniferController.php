@@ -68,7 +68,7 @@ class JenniferController extends Controller
                                         $query->orWhere( 'status', 'closed'    );
                                 } )
                             ->orderBy('document_prefix', 'desc')
-                            ->orderBy('document_reference', 'desc')
+                            ->orderBy('document_reference', 'asc')
                             ->get();
 
         // Initialize the array which will be passed into the Excel generator.

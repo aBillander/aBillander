@@ -2,7 +2,7 @@
 
   {!! Form::model($company->bankaccount, array('route' => array('companies.bankaccount', $company->id), 'method' => 'POST', 'class' => 'form')) !!}
   <input type="hidden" value="{{$company->id}}" name="bank_company_id" id="bank_company_id">
-  <input type="hidden" value="{{$company->bankaccount->id}}" name="bank_account_id" id="bank_account_id">
+  <input type="hidden" value="{{optional($company->bankaccount)->id}}" name="bank_account_id" id="bank_account_id">
 
             <div class="panel panel-primary" id="panel_bankaccounts">
                <div class="panel-heading">

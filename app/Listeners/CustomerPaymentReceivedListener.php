@@ -28,7 +28,6 @@ class CustomerPaymentReceivedListener
     {
         $payment = $event->payment;
         $document = $payment->customerinvoice;
-        $bankorder = $payment->bankorder;
 
         // Update Document
         $document->checkPaymentStatus();
@@ -38,7 +37,8 @@ class CustomerPaymentReceivedListener
         $customer->removeRisk($payment->amount);
 
         // Update bankorder
-        $bankorder->checkStatus();
+        if ( $bankorder = $payment->bankorder )
+            $bankorder->checkStatus();
 
     }
 }

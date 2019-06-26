@@ -29,6 +29,7 @@ class CreateCustomerUsersTable extends Migration
             $table->rememberToken();
 
             $table->tinyInteger('active')->default(1);
+            $table->tinyInteger('is_principal')->default(0);
 
             $table->tinyInteger('enable_quotations')->default(-1);   // Use default Customer Center setting
             $table->tinyInteger('enable_min_order')->default(-1);   // Use default Customer Center setting
@@ -36,6 +37,7 @@ class CreateCustomerUsersTable extends Migration
 
             $table->integer('language_id')->unsigned()->nullable(false); 
             $table->integer('customer_id')->unsigned()->nullable(false); 
+            $table->integer('address_id')->unsigned()->nullable(); 
 
             $table->timestamps();
             $table->softDeletes();

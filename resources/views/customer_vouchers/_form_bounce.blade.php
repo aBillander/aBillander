@@ -1,5 +1,5 @@
 
-        {!! Form::hidden('action', 'pay', array('id' => 'action')) !!}
+        {!! Form::hidden('action', 'bounce', array('id' => 'action')) !!}
 
 <div class="row">
 <div class="form-group col-lg-9 col-md-9 col-sm-9">
@@ -31,11 +31,21 @@
 </div -->
 
 <div class="form-group col-lg-3 col-md-3 col-sm-3">
-    {!! Form::label('amount', l('Amount Paid')) !!}
-    {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control', 'onclick' => 'this.select()', 'onkeyup' => 'checkFields()', 'onchange' => 'checkFields()')) !!}
+    {!! Form::label('amount', l('Amount Bounced')) !!}
+    {{-- !! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control', 'onclick' => 'this.select()', 'onkeyup' => 'checkFields()', 'onchange' => 'checkFields()')) !! --}}
+    <div class="form-control" style="border-color: #b94a48;
+-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+background-color: #f9f9f9;">{{ $payment->amount }}</div>
+    
+    {!! Form::hidden('amount', $payment->amount, array('id' => 'amount')) !!}
 </div>
 <div name="voucher_payment_date" id="voucher_payment_date" class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('payment_date') ? 'has-error' : '' }}">
-    {!! Form::label('payment_date_form', l('Payment Date')) !!}
+    {!! Form::label('payment_date_form', l('Bounce Date')) !!}
+               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('A new Voucher will be created') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+               </a>
     {!! Form::text('payment_date_form', null, array('class' => 'form-control')) !!}
 </div>
 </div>
@@ -90,6 +100,5 @@
 
 {{-- !! link_to_route('customervouchers.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !! --}}
 {{-- !! link_to( ($back_route != '' ? $back_route : 'customervouchers'), l('Cancel', [], 'layouts'), array('class' => 'btn btn-warning')) !! --}}
-{!! link_to( ($back_route != '' ? $back_route : 'customervouchers'), l('Cancel', [], 'layouts'), array('class' => 'btn btn-warning')) !!}
 
-<!-- a href="{ { url()->previous() } }" class="btn btn-warning">{{ l('Cancel', [], 'layouts') }}</a -->
+<a href="{{ url()->previous() }}" class="btn btn-warning">{{ l('Cancel', [], 'layouts') }}</a>

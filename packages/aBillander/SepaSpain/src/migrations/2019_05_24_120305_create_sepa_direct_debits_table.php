@@ -37,6 +37,7 @@ class CreateSepaDirectDebitsTable extends Migration
             $table->string('scheme', 32)->nullable(false)->default('CORE');
             // Values: CORE, B2B
             $table->string('status', 32)->nullable(false)->default('pending');
+            $table->tinyInteger('onhold')->default(0);            // 0 -> NO; 1 -> Yes (Document cannot change status)
 
             $table->text('notes')->nullable();
 

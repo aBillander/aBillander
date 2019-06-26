@@ -21,6 +21,7 @@ class Payment extends Model {
             'pending', 
             'bounced', 
             'paid',
+            'uncollectible',     // irrecoverable
         );
 
  //   protected $guarded = array('id');
@@ -175,6 +176,11 @@ class Payment extends Model {
     public function paymentmethod()
     {
         return $this->belongsTo('App\PaymentMethod');
+    }
+
+    public function bankorder()
+    {
+        return $this->belongsTo('aBillander\SepaSpain\SepaDirectDebit', 'bank_order_id');
     }
 
 

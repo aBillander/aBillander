@@ -318,5 +318,6 @@ return [
 	''     => '',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
+	'Overdue Payment(s)!' => 'Hay Pago(s) vencido(s)!'
 
 ];

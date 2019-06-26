@@ -23,8 +23,10 @@
 	@foreach ($directdebit->vouchers as $payment)
 		<tr>
 			<td>{{ $payment->id }}</td>
-			<td>{{ $payment->customerInvoice->document_reference or '' }}</td>
-			<td>{{ $payment->customerInvoice->customer->name_regular or '' }}</td>
+			<td>
+          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference or '' }}</a></td>
+			<td>
+          <a href="{{ URL::to('customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular or '' }}</a></td>
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
@@ -44,26 +46,23 @@
             	{{\App\Payment::getStatusName($payment->status)}}</span></td>
 
 			<td class="text-right">
-                @if ( $payment->status == 'paid' )
+              @if ( $payment->status == 'pending' )
 
-            	@else
-
-                <a class="btn btn-sm btn-danger unlink-customer-voucher" href="{{ URL::to('customerorders/' . $payment->id . '/unlink') }}" title="{{l('Unlink')}}" data-oid="{{ $payment->id }}" data-oreference="{{ $payment->reference }}" onClick="return false;"><i class="fa fa-unlink"></i></a>
+                <a class="btn btn-sm btn-warning unlink-customer-voucher" href="{{ URL::to('customervouchers/' . $payment->id . '/unlink') }}" title="{{l('Unlink')}}" data-oid="{{ $payment->id }}" data-boid="{{ $payment->bank_order_id }}" data-oreference="{{ $payment->reference }}" onClick="return false;"><i class="fa fa-unlink"></i></a>
 
 
 
-                	<!-- a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit' ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
+              	<!-- a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit' ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
 
-	                <a class="btn btn-sm btn-blue xpay-customer-voucher" href="{{ URL::to('customervouchers/' . $payment->id  . '/pay' ) }}" title="{{l('Make Payment', 'customervouchers')}}"><i class="fa fa-money"></i>
-	                </a>
+                <a class="btn btn-sm btn-danger" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?action=bounce&back_route=' . urlencode('sepasp/directdebits/' . $directdebit->id) ) }}" title="{{l('Bounce', 'customervouchers')}}"><i class="fa fa-mail-reply-all"></i>
+                  </a>
 
-	                @if($payment->amount==0.0)
-	                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-	                    href="{{ URL::to('customervouchers/' . $payment->id ) }}" 
-	                    data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-	                    data-title="{{ l('Customer Voucher', 'customervouchers') }} :: {{ l('Invoice') }}: {{ $payment->paymentable->document_reference }} . {{ l('Due Date') }}: {{ $payment->due_date }}" 
-	                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-	                @endif
+                <a class="btn btn-sm btn-blue xpay-customer-voucher" href="{{ URL::to('customervouchers/' . $payment->id  . '/pay?back_route=' . urlencode('sepasp/directdebits/' . $directdebit->id) ) }}" title="{{l('Make Payment', 'customervouchers')}}"><i class="fa fa-money"></i>
+                  </a>
+
+              @elseif ( $payment->status == 'paid' )
+
+              @elseif ( $payment->status == 'bounced' )
 
             	@endif
 			</td>
@@ -89,14 +88,14 @@
      &nbsp; {{ l('Add Production Order') }}
   </button -->
 
-  <a class="btn xbtn btn-info create-production-order" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-money"></i> &nbsp;{{l('Set as Paid')}}</a>
+  <a class=" hide btn xbtn btn-info create-production-order" title="{{l('Set as Paid')}}"><i class="fa fa-money"></i> &nbsp;{{l('Set as Paid')}}</a>
 </div>
 
 {{--
 @include('sepa_es::direct_debits._modal_pay_customer_voucher')
+--}}
 
 @include('sepa_es::direct_debits._modal_unlink_customer_voucher')
---}}
 
 
 @section('scripts') @parent 

@@ -7,8 +7,19 @@
                 <h4>{{ l('Payment status') }}</h4>
               </li>
 
-                  <li class="list-group-item">
-                      {{ $document->getPaymentStatusName($document->payment_status) }}
+                  <li class="list-group-item text-center">
+@if ( $document->payment_status == 'pending' )
+                      <span class="label label-danger">
+@endif
+@if ( $document->payment_status == 'halfpaid' )
+                      <span class="label label-warning">
+@endif
+@if ( $document->payment_status == 'paid' )
+                      <span class="label label-success">
+@endif
+                      {{ $document->payment_status_name }}</span><br />
+                      {{ l('Open Balance') }}:<br />
+                      <p class="text-success">{{ $document->as_price('open_balance') }} / {{ $document->as_price('total_tax_incl') }} {{ $document->currency->iso_code }}</p>
                     
                   </li>
 

@@ -6,7 +6,7 @@ use App\Events\CustomerPaymentReceived;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class CustomerPaymentReceivedListener
+class CustomerPaymentBouncedListener
 {
     /**
      * Create the event listener.
@@ -29,16 +29,25 @@ class CustomerPaymentReceivedListener
         $payment = $event->payment;
         $document = $payment->customerinvoice;
         $bankorder = $payment->bankorder;
-
+/*
         // Update Document
-        $document->checkPaymentStatus();
+        $document->open_balance -= $payment->amount;
+
+        if ( abs($document->open_balance) < 0.0001 )
+        {
+            $document->open_balance = 0.0;
+            $document->payment_status = 'paid';
+        }
+        else
+            $document->payment_status = 'halfpaid';
+
+        $document->save();
 
         // Update Customer Risk
         $customer = $payment->customer;
         $customer->removeRisk($payment->amount);
-
+*/
         // Update bankorder
         $bankorder->checkStatus();
-
     }
 }

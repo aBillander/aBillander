@@ -56,7 +56,7 @@
                                  {{l('Sale Orders', [], 'layouts')}} [WooC]
                             </a>
                         </li>
-                        <li class="divider"></li>
+                        <!-- li class="divider"></li -->
 @endif
                          <li>
                             <a href="{{ URL::to('customerorders') }}">
@@ -80,7 +80,7 @@
                          <li>
                             <a href="{{ URL::to('customervouchers') }}">
                                  <!-- i class="fa fa-exclamation-triangle btn-xs btn-danger"></i --> 
-                                 <i class="fa fa-credit-card btn-xs alert-success"></i> 
+                                 <i class="fa fa-credit-card btn-xs alert-info"></i> 
                                  {{l('Customer Vouchers', [], 'layouts')}}
                             </a>
                         </li>

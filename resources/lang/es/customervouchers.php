@@ -56,8 +56,12 @@ return [
 	'This Voucher is paid and cannot be modified' => 'Este Recibo está pagado y no puede modificarse',
 
 	'Amount must be greater than 0 and not greater than :value'     => 'La Cantidad debe ser mayor que 0 y menor que :value',
-
-
+	'Bounce'     => 'Devolver Recibo',
+	'Amount Bounced'     => 'Cantidad Devuelta',
+	'Bounce Date'     => 'Devuelto el',
+	'A new Voucher will be created' => 'Se creará un nuevo Rcibo',
+	''     => '',
+	''     => '',
 
 	'Auto Direct Debit'     => 'Remesable',
 	'Include in automatic payment remittances'     => 'Incluir en remesas de pago automático',

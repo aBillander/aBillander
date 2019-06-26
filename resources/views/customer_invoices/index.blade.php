@@ -59,7 +59,7 @@
                  </a>
                 @endif
             </td>
-            <td class="text-center">
+            <td class="text-center button-pad">
 
 @if ( $document->status == 'closed' )
                 <a class="btn btn-xs alert-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
@@ -101,11 +101,16 @@
             </td>
             <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
             <td>
+@if ( $document->status == 'closed' )
 @if ( $document->payment_status == 'pending' )
-                <a class="btn btn-xs btn-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
+                <a class="btn btn-xs alert-danger" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-window-close"></i>&nbsp;</a>
 @endif
 @if ( $document->payment_status == 'halfpaid' )
-                <a class="btn btn-xs alert-warning" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
+                <a class="btn btn-xs alert-warning" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-star-half-o"></i>&nbsp;</a>
+@endif
+@if ( $document->payment_status == 'paid')
+                <a class="btn btn-xs alert-success" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-star"></i>&nbsp;</a>
+@endif
 @endif
             </td>
             <td class="text-center @if ( optional($document->nextPayment())->is_overdue ) danger @endif ">

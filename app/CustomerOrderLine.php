@@ -20,4 +20,22 @@ class CustomerOrderLine extends BillableLine
 //        'product_id'    => 'required',
     ];
     
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+    
+    public function customerorder()
+    {
+        return $this->belongsTo('App\CustomerOrder', 'customer_order_id');
+    }
+    
+    // Needed by /WooConnect/src/WooOrderImporter.php
+    public function customerorderlinetaxes()
+    {
+        return $this->hasMany('App\CustomerOrderLineTax', 'customer_order_line_id');
+    }
 }

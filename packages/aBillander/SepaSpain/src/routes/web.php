@@ -15,6 +15,7 @@ Route::group([
 ], function () {
 
     Route::resource('directdebits', 'SepaDirectDebitsController')->names('sepasp.directdebits');
+    Route::get('directdebits/{id}/xml', 'SepaDirectDebitsController@exportXml')->name('sepasp.directdebit.xml');
 
 
 

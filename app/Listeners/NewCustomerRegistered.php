@@ -47,7 +47,7 @@ class NewCustomerRegistered
             'url' => route('customers.edit', [$this->customeruser->id]) . '#customeruser', 
             'due_date' => null, 
             'completed' => 0, 
-            'user_id' => \App\Context::getContext()->user->id,
+            'user_id' => $this->customeruser->id,
         ];
 
         $this->todo = \App\Todo::create($data);

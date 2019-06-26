@@ -13,7 +13,12 @@
 
                             <li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
 
-                            <li><a href="#tab5default" data-toggle="tab">{{ l('Payments') }}</a></li>
+                            <li><a href="#tab5default" data-toggle="tab">{{ l('Payments') }}
+                              @if( $document->is_overdue )
+                                <i class="fa fa-exclamation-triangle btn-xs btn-danger" title="{{ l('Overdue Payment(s)!') }}"></i> 
+                              @endif
+                              </a>
+                            </li>
                             <!-- li class="dropdown">
                                 <a href="#" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">

@@ -44,7 +44,13 @@
 
 			<td class="text-center">
 				@if ($payment->auto_direct_debit) 
-					<i class="fa fa-check-square" style="color: #38b44a;"></i> 
+					@if ($payment->bankorder)
+						<a class="btn btn-xs btn-grey" href={{ route('sepasp.directdebits.show', $payment->bankorder->id) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-bank"></i>
+		                	<span xclass="label label-default">{{ $payment->bankorder->document_reference }}</span>
+		                </a>
+                	@else
+						<i class="fa fa-check-square" style="color: #38b44a;"></i>
+					@endif
 				@else 
 					<i class="fa fa-square-o" style="color: #df382c;"></i>
 				@endif
@@ -67,6 +73,10 @@
                 	<!-- a class="btn btn-sm btn-danger" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
             	@else
 
+                @if ( $payment->status == 'bounced' )
+
+            	@else
+
                 	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '/edit#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
 	                <a class="btn btn-sm btn-blue" href="{{ URL::to('customervouchers/' . $payment->id  . '/pay?back_route=' . urlencode('customerinvoices/' . $document->id . '/edit#payments') ) }}" title="{{l('Make Payment', 'customervouchers')}}"><i class="fa fa-money"></i>
@@ -80,6 +90,7 @@
 	                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
 	                @endif
 
+            	@endif
             	@endif
 			</td>
 		</tr>

@@ -11,9 +11,11 @@
 <div class="page-header">
     <div class="pull-right" xstyle="padding-top: 4px;">
 
-        <a href="{{ URL::to('productionsheets/'.$directdebit->id.'/calculate') }}" class="btn btn-magick"><i class="fa fa-file-code-o"></i> &nbsp;{{ l('SEPA XML file') }}</a>
-        
-        <a class="btn xbtn btn-info create-production-order" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-money"></i> &nbsp;{{l('Set as Paid')}}</a>
+@if ( $directdebit->status != "closed" )
+        <a href="{{ route('sepasp.directdebit.xml', $directdebit->id) }}" class="btn btn-success magick" style="margin-right: 22px;""><i class="fa fa-file-code-o"></i> &nbsp;{{ l('SEPA XML file') }}</a>
+@endif
+
+        <a class=" hide btn xbtn btn-info create-production-order" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-money"></i> &nbsp;{{l('Set as Paid')}}</a>
 
         <a href="{{ route('sepasp.directdebits.index') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to SEPA Direct Debits') }}</a>
     </div>
@@ -30,9 +32,22 @@
         <span style="color: #cccccc;">::</span> {{ abi_date_short($directdebit->document_date) }} 
 
 
-              <button type="button" class="btn btn-sm alert-danger" title="{{l('Need Update')}}">
-                  <i class="fa fa-hand-stop-o"></i> {{$directdebit->status}}
+@if ( $directdebit->status == "pending" )
+              <button type="button" class="btn btn-sm alert-danger" title="{{l('')}}">
+                  <i class="fa fa-hand-stop-o"></i> {{$directdebit->status_name}}
               </button>
+@endif
+@if ( $directdebit->status == "confirmed" )
+              <button type="button" class="btn btn-sm alert-warning" title="{{l('XML file at:')}} &nbsp;{{ abi_date_short($directdebit->validation_date) }}">
+                  <i class="fa fa-hand-spock-o"></i> {{$directdebit->status_name}}
+              </button>
+@endif
+@if ( $directdebit->status == "closed" )
+              <button type="button" class="btn btn-sm alert-success" title="{{l('')}}">
+                  <i class="fa fa-thumbs-o-up"></i> {{$directdebit->status_name}}
+              </button>
+@endif
+
 
         <span class="badge" style="background-color: #3a87ad;" title="">{{ $directdebit->scheme }}</span>
     </h2>        

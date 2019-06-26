@@ -63,6 +63,7 @@ return [
 	'Vouchers from'  => 'Recibos desde',
 	'Vouchers to'    => 'Recibos hasta',
 	'voucher(s)'     => 'recibo(s)',
+	'Vouchers'     => 'Recibos',
 
 	'Validation Date' => 'Fecha de Validación',
 	'Payment Date'    => 'Fecha de Pago',
@@ -74,7 +75,12 @@ return [
 	'Subject'     => 'Concepto',
 
 	'SEPA XML file' => 'Fichero SEPA XML',
+	'XML file at:' => 'Fichero XML generado el:',
 	'Set as Paid' => 'Pagar Remesa',
+
+	'Unlink'     => 'Quitar Recibo de la Remesa',
+	'Unlink Voucher'     => 'Quitar Recibo',
+	'You are going to unlink a Voucher from Bank Order: <b>:boid</b>. Are you sure?' => 'Está a punto de quitar un Recibo de la Remesa: <b>:boid</b>. ¿Está seguro?',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -99,7 +105,7 @@ return [
 	*/
 
 	'aBillander\SepaSpain\SepaDirectDebit.pending' => 'Pendiente',
-	'aBillander\SepaSpain\SepaDirectDebit.validated'  => 'En trámite',
+	'aBillander\SepaSpain\SepaDirectDebit.confirmed'  => 'En trámite',
 	'aBillander\SepaSpain\SepaDirectDebit.closed'  => 'Cargado en cuenta',
 
 ];

@@ -113,7 +113,12 @@ class CustomerInvoice extends Billable
 
     public static function getStockStatusName( $stock_status )
     {
-            return l(get_called_class().'.'.$stock_status, [], 'appmultilang');
+            return l(get_called_class().'.'.$stock_status, 'appmultilang');
+    }
+
+    public function getStockStatusNameAttribute()
+    {
+            return l(get_called_class().'.'.$this->stock_status, 'appmultilang');
     }
 
 
@@ -185,6 +190,49 @@ class CustomerInvoice extends Billable
     {
             return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
+
+    public function getPaymentStatusNameAttribute()
+    {
+            return l(get_called_class().'.'.$this->payment_status, 'appmultilang');
+    }
+
+    public function checkPaymentStatus()
+    {
+        
+        $open_balance = $this->payments()->where('status', 'pending')->sum('amount');
+        // Remember: 'down_payment' is a payment with status=paid
+
+        if ( $this->currency->round($this->total_tax_incl - $open_balance) == 0.0 )
+        {
+            $this->open_balance = $open_balance;
+            $this->payment_status = 'pending';
+        }
+        else
+        if ( $this->currency->round($open_balance) == 0.0 )
+        {
+            $this->open_balance = 0.0;
+            $this->payment_status = 'paid';
+        }
+        else
+        {
+            $this->open_balance = $open_balance;
+            $this->payment_status = 'halfpaid';
+        }
+
+        $this->save();
+
+        return true;
+    }
+
+    
+    public function getIsOverdueAttribute()
+    {
+        if ($this->status == 'closed')
+            return optional($this->nextPayment())->is_overdue;
+
+        return false;
+    }
+
 
 
 

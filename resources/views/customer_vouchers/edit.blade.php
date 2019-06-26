@@ -20,6 +20,8 @@
 
 @if ( $action == 'pay' )
           @include('customer_vouchers._form_pay')
+@elseif ( $action == 'bounce' )
+          @include('customer_vouchers._form_bounce')
 @else
           @include('customer_vouchers._form_edit')
 @endif

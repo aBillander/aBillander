@@ -346,6 +346,11 @@ class Billable extends Model
             return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
+    public function getStatusNameAttribute()
+    {
+            return l(get_called_class().'.'.$this->status, 'appmultilang');
+    }
+
     public static function getBadge( $name )
     {
             return array_key_exists( $name, static::$badges) ? static::$badges[$name] : '';

@@ -12,6 +12,7 @@ use App\Payment;
 use App\Traits\DateFormFormatterTrait;
 
 use App\Events\CustomerPaymentReceived;
+use App\Events\CustomerPaymentBounced;
 
 class CustomerVouchersController extends Controller
 {
@@ -91,8 +92,8 @@ class CustomerVouchersController extends Controller
 	 */
 	public function edit($id, Request $request)
 	{
-		$action = 'edit';
-		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
+		$action = $request->input('action', 'edit') ?: 'edit';
+		$back_route = ( $request->has('back_route') AND $request->input('back_route') ) ? urldecode($request->input('back_route')) : '' ;
 		
 		$payment = $this->payment->with('currency')->findOrFail($id);
 
@@ -107,7 +108,20 @@ class CustomerVouchersController extends Controller
 	public function pay($id, Request $request)
 	{
 		$action = 'pay';
-		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
+		$back_route = ( $request->has('back_route') AND $request->input('back_route') ) ? urldecode($request->input('back_route')) : 'customervouchers' ;
+		
+		$payment = $this->payment->with('currency')->findOrFail($id);
+
+        // Dates (cuen)
+        $this->addFormDates( ['due_date'], $payment );
+		
+		return view('customer_vouchers.edit', compact('payment', 'action' , 'back_route'));
+	}
+
+	public function bounce($id, Request $request)
+	{
+		$action = 'bounce';
+		$back_route = ( $request->has('back_route') AND $request->input('back_route') ) ? urldecode($request->input('back_route')) : 'customervouchers' ;
 		
 		$payment = $this->payment->with('currency')->findOrFail($id);
 
@@ -219,8 +233,57 @@ class CustomerVouchersController extends Controller
 			event(new CustomerPaymentReceived($payment));
 
 
-//			return redirect($back_route)
-			return redirect()->back()
+			return redirect($back_route)
+					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
+		} else
+
+		if ( $action == 'bounce' ) {
+			
+			// No action to process
+			// return redirect($back_route)					->with('info', 'Bounced!');
+
+			// if ( !$request->input('payment_date') ) $request->merge( array('payment_date' => abi_date_short( \Carbon\Carbon::now() ) ) );
+
+			$rules = Payment::$rules;
+			$rules['payment_date']  = 'required';
+//			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
+			$rules['amount'] .= $payment->amount;
+
+			$this->validate($request, $rules);
+
+			$diff = $payment->amount - $request->input('amount', $payment->amount);
+
+			// If amount is not fully paid, a new payment will be created for the difference
+			if ( 1 || $diff > 0 ) {
+				$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'bank_order_id'] );
+
+				$due_date = $request->input('due_date_next') ?: \Carbon\Carbon::now();
+
+				$new_payment->reference = $payment->reference . ' bounced ';
+				$new_payment->name = $payment->name . ' bounced ';
+				$new_payment->status = 'pending';
+				$new_payment->due_date = $due_date;
+				$new_payment->payment_date = NULL;
+//				$new_payment->amount = $diff;
+
+				$new_payment->save();
+
+			}
+
+//			$payment->name     = $request->input('name',     $payment->name);
+//			$payment->due_date = $request->input('due_date', $payment->due_date);
+			$payment->payment_date = $request->input('payment_date');
+//			$payment->amount   = $request->input('amount',   $payment->amount);
+			$payment->notes    = $request->input('notes',    $payment->notes);
+
+			$payment->status   = 'bounced';
+			$payment->save();
+
+			// Update Customer Risk
+			event(new CustomerPaymentBounced($payment));
+
+
+			return redirect($back_route)
 					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
 		}
 
@@ -249,5 +312,21 @@ class CustomerVouchersController extends Controller
         return redirect()->back()
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
+
+
+
+
+    public function unlink(Request $request, $id)
+    {
+		$payment = $this->payment->with('bankorder')->findOrFail($id);
+
+        $payment->update(['bank_order_id' => null]);
+
+        // Update bankorder
+        $payment->bankorder->checkStatus();
+
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
 
 }

@@ -30,7 +30,7 @@
       <th>{{ l('Date') }}</th>
       <th>{{ l('Validation Date') }}</th>
       <th>{{ l('Payment Date') }}</th>
-			<th>{{ l('Amount') }}</th>
+			<th>{{ l('Amount') }} / {{ l('Vouchers') }}</th>
       <th class="text-center">{{l('Scheme')}}</th>
       <th>{{ l('Bank') }}</th>
       <th class="text-center">{{l('Status', [], 'layouts')}}</th>
@@ -45,21 +45,21 @@
       <td>{{ abi_date_short($sdd->document_date) }}</td>
       <td>{{ abi_date_short($sdd->validation_date) }}</td>
       <td>{{ abi_date_short($sdd->payment_date) }}</td>
-      <td>{{ $sdd->as_money_amount('total') }}</td>
+      <td>{{ $sdd->as_money_amount('total') }} / {{ $sdd->nbrItems() }}</td>
       <td class="text-center">{{ $sdd->scheme }}</td>
       <td>{{ optional($sdd->bankaccount)->bank_name }}</td>
 
             <td class="text-center">
               @if     ( $sdd->status == 'pending' )
                 <span class="label label-danger">
-              @elseif ( $sdd->status == 'validated' )
-                <span class="label label-info">
+              @elseif ( $sdd->status == 'confirmed' )
+                <span class="label label-warning">
               @elseif ( $sdd->status == 'closed' )
                 <span class="label label-success">
               @else
                 <span>
               @endif
-              {{\App\Payment::getStatusName($sdd->status)}}</span>
+              {{ $sdd->status_name }}</span>
             </td>
 
       <td class="text-center">
@@ -78,11 +78,13 @@
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('sepasp/directdebits/' . $sdd->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
-                <!-- a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                    href="{{ URL::to('sdds/' . $sdd->id ) }}" 
+@if( $sdd->nbrItems() == 0 )
+                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                    href="{{ URL::to('sepasp/directdebits/' . $sdd->id ) }}" 
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Production Sheets') }} :: ({{$sdd->id}}) {{{ $sdd->name }}}" 
-                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a -->
+                    data-title="{{ l('SEPA Direct Debits') }} :: ({{$sdd->id}}) {{ $sdd->document_reference }}" 
+                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+@endif
 
             </td>
 		</tr>

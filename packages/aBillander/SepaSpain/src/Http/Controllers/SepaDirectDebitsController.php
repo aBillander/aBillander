@@ -154,6 +154,9 @@ class SepaDirectDebitsController extends Controller
             $voucher->update(['bank_order_id' => $sdds->id]);
         }
 
+        // Update bankorder
+        $sdds->updateTotal();
+
 
         return redirect()->route('sepasp.directdebits.index')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $sdds->id], 'layouts') . ' :: ' . $vouchers->count() . ' ' . l('voucher(s)'));
@@ -231,19 +234,38 @@ class SepaDirectDebitsController extends Controller
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($cod)
+	public function destroy($id)
 	{
+        $directdebit = $this->directdebit->findOrFail($id);
+
+        if ( $directdebit->nbrItems() > 0 )
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because its Quantity or Value &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+        $directdebit->delete();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
+    /**
+     * 
+     *
+     * @param  int  $id
+     * @return XML file
+     */
+    public function exportXml($id)
+    {
         // return 'OK - '.$cod;
 
-        $fsolpaymethods = FSxTools::getFormasDePagoList();
+        $directdebit = $this->directdebit->with('vouchers')->findOrFail($id);
 
-        unset($fsolpaymethods[$cod]);
+        $directDebitFile = $directdebit->toXML();
 
-        // Save Payment Methods Cache
-        Configuration::updateValue('FSX_FORMAS_DE_PAGO_CACHE', json_encode($fsolpaymethods));
+        $directdebit->confirm();
 
-		return redirect()->route('fsx.configuration.paymentmethods')
-				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $cod], 'layouts'));
+        return $directDebitFile->download();
     }
 
 }

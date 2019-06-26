@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Sequence;
 
+use AbcAeffchen\SepaUtilities\SepaUtilities;
+use AbcAeffchen\Sephpa\SephpaDirectDebit;
+
 use App\Traits\ViewFormatterTrait;
 
 // Direct Debit Bank Order or Remittance
@@ -21,7 +24,7 @@ class SepaDirectDebit extends Model
 
     public static $statuses = array(
             'pending',
-            'validated',        // Girada (en trámite)
+            'confirmed',        // Girada (en trámite)
             'closed',           // Cargado en Cuenta (realizada)
         );
 
@@ -51,6 +54,20 @@ class SepaDirectDebit extends Model
     | Methods
     |--------------------------------------------------------------------------
     */
+
+    public function updateTotal()
+    {
+         $total = $this->vouchers()->where('status', '<>', 'bounced')->sum('amount');
+
+         return $this->update( ['total' => $total] );
+    }
+
+    public function nbrItems()
+    {
+        return $this->vouchers()->count();
+    }
+
+
 
     public static function getSchemeList()
     {
@@ -82,6 +99,55 @@ class SepaDirectDebit extends Model
     public static function getStatusName( $status )
     {
             return l(get_called_class().'.'.$status);
+    }
+
+    public function getStatusNameAttribute()
+    {
+            return l(get_called_class().'.'.$this->status);
+    }
+
+    public function checkStatus()
+    {
+        if ( $this->vouchers()->where('status', 'pending')->count() == 0 )
+            $this->close();
+
+        $this->updateTotal();
+
+        return true;
+    }
+
+    public function confirm()
+    {
+        // Can I?
+        if ( $this->status == 'closed' ) return false;
+
+        // onhold?
+        if ( $this->onhold ) return false;
+
+
+        $this->status = 'confirmed';
+        $this->validation_date = \Carbon\Carbon::now();
+
+        $this->save();
+
+        return true;
+    }
+
+    public function close()
+    {
+        // Can I ...?
+        if ( $this->status == 'closed' ) return false;
+
+        // onhold?
+        if ( $this->onhold ) return false;
+
+        // Do stuf...
+        $this->status = 'closed';
+        $this->payment_date = \Carbon\Carbon::now();
+
+        $this->save();
+
+        return true;
     }
 
     
@@ -126,5 +192,202 @@ class SepaDirectDebit extends Model
     public function scopeIsOpen($query)
     {
         return $query->where( 'due_date', '>=', \Carbon\Carbon::now()->toDateString() );
+    }
+    
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEPA XML :: File
+    |--------------------------------------------------------------------------
+    */
+
+    // https://github.com/AbcAeffchen/Sephpa
+    // https://github.com/AbcAeffchen/SepaUtilities
+    // https://github.com/AbcAeffchen/SepaDocumentor
+
+    // http://www.clubdelphi.com/foros/showthread.php?p=491802
+    // http://www.sepaeditor.com/es/Gegenstand-von-SEPAeditor.html
+    // http://www.infosepa.es/utilidades.aspx
+
+    // https://www.mobilefish.com/services/sepa_xml_validation/sepa_xml_validation.php
+
+    public function toXML()
+    {
+        // Comprobar y sanear valores, permite evitar validación de IBAN, útil para pruebas con IBANs falsos
+        $checkAndSanitize = FALSE;
+
+        // generate a SepaDirectDebit object (pain.008.001.02).
+        $paymentInfoId = \App\Context::getContext()->company->identification . '_' . $this->document_reference;
+
+        /**
+         * normal direct debit : LOCAL_INSTRUMENT_CORE_DIRECT_DEBIT = 'CORE';
+         * urgent direct debit : LOCAL_INSTRUMENT_CORE_DIRECT_DEBIT_D_1 = 'COR1';
+         * business direct debit : LOCAL_INSTRUMENT_BUSINESS_2_BUSINESS = 'B2B';
+         */
+        switch ( $this->scheme ) {
+            case 'B2B':
+                # code...
+                $localInstrument = SepaUtilities::LOCAL_INSTRUMENT_BUSINESS_2_BUSINESS;
+                break;
+            
+            case 'CORE':
+                # code...
+                // break;
+            
+            default:
+                # code...
+                $localInstrument = SepaUtilities::LOCAL_INSTRUMENT_CORE_DIRECT_DEBIT;
+                break;
+        }
+
+        /**
+         * first direct debit : SEQUENCE_TYPE_FIRST = 'FRST';
+         * recurring direct debit : SEQUENCE_TYPE_RECURRING = 'RCUR';
+         * one time direct debit : SEQUENCE_TYPE_ONCE = 'OOFF';
+         * final direct debit : SEQUENCE_TYPE_FINAL = 'FNAL';
+         */
+        $sequenceType = SepaUtilities::SEQUENCE_TYPE_RECURRING;
+
+        // at least one in every SEPA file. No limit.
+        $collectionData = [
+            // needed information about the payer
+                'pmtInfId'      => $paymentInfoId,          // ID of the payment collection
+                'lclInstrm'     => $localInstrument,
+                'seqTp'         => $sequenceType,
+                'cdtr'          => $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),      // (max 70 characters)
+                'iban'          => $this->iban,            // IBAN of the Creditor
+                'bic'           => $this->swift,           // BIC of the Creditor
+                'ci'            => $this->calculateCreditorID( \App\Context::getContext()->company ),    // Creditor-Identifier
+            // optional
+                'ccy'           => $this->currency_iso_code ?: 'EUR',                   // Currency. Default is 'EUR'
+//                'btchBookg'     => 'true',                  // BatchBooking, only 'true' or 'false'
+                //'ctgyPurp'      => ,                      // Do not use this if you not know how. For further information read the SEPA documentation
+//                'ultmtCdtr'     => 'Ultimate Creditor Name',// just an information, this do not affect the payment (max 70 characters)
+//                'reqdColltnDt'  => '2013-11-25'             // Date: YYYY-MM-DD. Due date for ALL vouchers inside
+        ];
+
+        
+        $directDebitFile = new SephpaDirectDebit(
+                                         $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),
+                                         $paymentInfoId,        // Download file is named afther this value
+                                         SephpaDirectDebit::SEPA_PAIN_008_001_02,
+                                         $collectionData,
+                                         [],
+                                         $checkAndSanitize
+                                     );
+
+
+        // at least one in every DirectDebitCollection. No limit.
+        $collectables = $this->vouchers()->where('status', 'pending')->get();
+
+        foreach ( $collectables as $voucher ) {
+            # code...
+            $payment = [
+            // needed information about the 
+                'pmtId'         => $voucher->reference,     // ID of the payment (EndToEndId)
+                'instdAmt'      => $voucher->amount,                    // amount
+//                'mndtId'        => 'Mandate-Id',            // Mandate ID
+//                'dtOfSgntr'     => '2010-04-12',            // Date of signature
+                'mndtId'        => $voucher->reference,            // Mandate ID
+                'dtOfSgntr'     => $voucher->created_at->toDateString(),            // Date of signature
+//                'bic'           => $voucher->customer->bankaccount->swift,           // BIC of the Debtor
+                'dbtr'          => $this->sanitize_name( $voucher->customer->name_fiscal ),        // (max 70 characters)
+                'iban'          => $voucher->customer->bankaccount->iban,// IBAN of the Debtor
+            // optional
+//                'amdmntInd'     => 'false',                 // Did the mandate change
+                //'elctrncSgntr'  => 'tests',                  // do not use this if there is a paper-based mandate
+//                'ultmtDbtr'     => 'Ultimate Debtor Name',  // just an information, this do not affect the payment (max 70 characters)
+                //'purp'        => ,                        // Do not use this if you not know how. For further information read the SEPA documentation
+//                'rmtInf'        => 'Remittance Information',// unstructured information about the remittance (max 140 characters)
+                'rmtInf'        => $voucher->reference,
+                // only use this if 'amdmntInd' is 'true'. at least one must be used
+//                'orgnlMndtId'           => 'Original-Mandat-ID',
+//                'orgnlCdtrSchmeId_nm'   => 'Creditor-Identifier Name',
+//                'orgnlCdtrSchmeId_id'   => 'DE98AAA09999999999',
+//                'orgnlDbtrAcct_iban'    => 'DE87200500001234567890',// Original Debtor Account
+//                'orgnlDbtrAgt'          => 'SMNDA'          // only 'SMNDA' allowed if used
+            ];
+
+            if (!empty($voucher->fmandato)) {
+                $payment['dtOfSgntr'] = date('Y-m-d', strtotime($voucher->fmandato));
+            }
+
+            $directDebitFile->addPayment( $payment );
+
+            // abi_r($voucher);
+        }
+
+        // $directDebitFile->store(__DIR__);
+
+        // $directDebitFile->download();
+
+        
+        
+        
+
+
+        // abi_r($directDebitFile, true);
+
+        return $directDebitFile;
+    }
+
+    public function sanitize_name($name)
+    {
+        $from = ['&', 'ñ', 'Ñ', 'ç', 'Ç'];
+        $to = ['&amp;', 'n', 'N', 'c', 'C'];
+        return substr(str_replace($from, $to, $name), 0, 70);
+    }
+
+    public function calculateCreditorID( \App\Company $company = null )
+    {
+        if ($company == null)
+            $company = \App\Context::getContext()->company;
+
+        $creditorid = '';
+
+        if ($company == null)
+            return $creditorid;
+
+        // Country ISO Code
+        $country = $company->address->country;
+        $codiso = $country->iso_code;
+
+        // Company Identification
+        $identification = str_replace(array(' ', '-'), array('', ''), strtoupper($company->identification));
+
+        // Calculate Control Digits
+        $cif_aux = $this->letters2numbers($identification . $codiso . '00');
+        $total = 98 - ($cif_aux % 97);
+
+        $creditorid = $codiso . sprintf('%02s', $total) . '000' . $identification;
+
+        return $creditorid;
+    }
+
+    private function letters2numbers($txt)
+    {
+        $data = array(
+            'A' => 10, 'B' => 11, 'C' => 12, 'D' => 13, 'E' => 14, 'F' => 15, 'G' => 16, 'H' => 17,
+            'I' => 18, 'J' => 19, 'K' => 20, 'L' => 21, 'M' => 22, 'N' => 23, 'O' => 24, 'P' => 25,
+            'Q' => 26, 'R' => 27, 'S' => 28, 'T' => 29, 'U' => 30, 'V' => 31, 'W' => 32, 'X' => 33,
+            'Y' => 34, 'Z' => 35
+        );
+
+        $nuevo = '';
+        $i = 0;
+        while ($i < strlen($txt)) {
+            $t = substr($txt, $i, 1);
+
+            if (isset($data[$t])) {
+                $nuevo .= $data[$t];
+            } else {
+                $nuevo .= $t;
+            }
+
+            $i++;
+        }
+
+        return $nuevo;
     }
 }

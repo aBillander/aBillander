@@ -414,6 +414,7 @@ foreach ($pairs as $pair) {
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');
         Route::get('customervouchers/{id}/pay'  , 'CustomerVouchersController@pay');
+        Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('voucher.unlink');
         
 
         Route::resource('pricelists',           'PriceListsController');

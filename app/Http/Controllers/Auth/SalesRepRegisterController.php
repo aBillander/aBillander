@@ -187,7 +187,7 @@ class SalesRepRegisterController extends Controller
 
         if ( !$request->has('currency_id') ) $request->merge( ['currency_id' => \App\Configuration::get('DEF_CURRENCY')] );
 
-        if ( !$request->has('payment_day') ) $request->merge( ['payment_day' => null] );
+        if ( !$request->has('payment_days') ) $request->merge( ['payment_days' => null] );
 
         // ToDO: put default accept einvoice in a configuration key
         

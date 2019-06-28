@@ -97,13 +97,41 @@ class SepaDirectDebitsController extends Controller
  //                       'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
                         'created_via'          => 'manual',
-                        'status'               =>  'pending',
+                        'status'               => 'pending',
                         'total'               => 0.0,
                      ];
 
         $request->merge( $extradata );
 
 
+        $date_from = $request->input('date_from', '');
+        $date_to   = $request->input('date_to', '');
+        
+        // Lets see:
+        $vouchers =  $this->payment
+                    ->when($date_from, function($query) use ($date_from) {
+
+                            $query->where('due_date', '>=', $date_from);
+                    })
+                    ->when($date_to, function($query) use ($date_to) {
+
+                            $query->where('due_date', '<=', $date_to);
+                    })
+                    ->where('auto_direct_debit', '>', 0)
+                    ->doesnthave('bankorder')
+                    ->get();
+
+// abi_r($vouchers);die();
+
+        if ( $vouchers->count() == 0 )
+        {
+            return redirect()->route('sepasp.directdebits.index')
+                    ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . ' :: ' .  l('No records selected. ', 'layouts') . $request->input('date_from_form', '') . ' -> ' . $request->input('date_to_form', ''));
+        }
+
+
+
+        // create Direct Debit
         $sdds = $this->directdebit->create($request->all());
 
         // Sequence
@@ -133,32 +161,22 @@ class SepaDirectDebitsController extends Controller
 
         $sdds->save();
 
-        // Do add vouchers, now!
-        $date_from = $request->input('date_from', '');
-        $date_to   = $request->input('date_to', '');
-        $vouchers =  $this->payment
-                    ->when($date_from, function($query) use ($date_from) {
 
-                            $query->where('due_date', '>=', $date_from);
-                    })
-                    ->when($date_to, function($query) use ($date_to) {
-
-                            $query->where('due_date', '<=', $date_to);
-                    })
-                    ->where('auto_direct_debit', '>', 0)
-                    ->get();
-
-
+/*
         foreach ($vouchers as $voucher) {
             # code...
-            $voucher->update(['bank_order_id' => $sdds->id]);
+            // $voucher->update(['bank_order_id' => $sdds->id]);
+            $sdds->vouchers()->save($voucher);
         }
+*/
+        // Do add vouchers, now!
+        $sdds->vouchers()->saveMany($vouchers);
 
         // Update bankorder
         $sdds->updateTotal();
 
 
-        return redirect()->route('sepasp.directdebits.index')
+        return redirect()->route('sepasp.directdebits.show', $sdds->id)
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $sdds->id], 'layouts') . ' :: ' . $vouchers->count() . ' ' . l('voucher(s)'));
 
 
@@ -261,11 +279,24 @@ class SepaDirectDebitsController extends Controller
 
         $directdebit = $this->directdebit->with('vouchers')->findOrFail($id);
 
+        if ( $directdebit->nbrItems() == 0 )
+            return redirect()->back()
+                    ->with('error', l('Unable to create XML File &#58&#58 (:id) ', ['id' => $id]) . l('Document has no Lines'));
+
+        
         $directDebitFile = $directdebit->toXML();
+
+        if ( ! $directDebitFile )
+            return redirect()->back()
+                    ->with('error', l('Unable to create XML File &#58&#58 (:id) ', ['id' => $id]));
+
 
         $directdebit->confirm();
 
         return $directDebitFile->download();
+
+        return redirect()->route('sepasp.directdebits.show', $id)
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $directdebit->document_reference);
     }
 
 }

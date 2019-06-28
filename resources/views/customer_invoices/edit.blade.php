@@ -62,7 +62,19 @@
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @endif
                 
-                <a href="{{ URL::to($model_path.'') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to Documents')}}</a>
+                <!-- a href="{{ URL::to($model_path.'') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to Documents')}}</a -->
+
+                <div class="btn-group" style="margin-left: 22px;margin-right: 12px;">
+                    <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', [], 'layouts')}}" style="background-color: #31b0d5;
+border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
+
+                    <ul class="dropdown-menu pull-right">
+                      <li><a href="{{ route('customer.invoices', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Invoices', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{ URL::to($model_path.'') }}">{{ l('Back to Documents') }}</a></li>
+                    </ul>
+
+                </div>
 
                 <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
 

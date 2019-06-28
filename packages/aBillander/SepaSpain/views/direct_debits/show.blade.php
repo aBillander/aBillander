@@ -11,7 +11,7 @@
 <div class="page-header">
     <div class="pull-right" xstyle="padding-top: 4px;">
 
-@if ( $directdebit->status != "closed" )
+@if ( $directdebit->status != "closed" && ( $directdebit->nbrItems() != 0 ) )
         <a href="{{ route('sepasp.directdebit.xml', $directdebit->id) }}" class="btn btn-success magick" style="margin-right: 22px;""><i class="fa fa-file-code-o"></i> &nbsp;{{ l('SEPA XML file') }}</a>
 @endif
 

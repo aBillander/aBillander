@@ -680,7 +680,7 @@ class CustomerShippingSlipsController extends BillableController
         // Model specific data
         $extradata = [
             'type' => 'invoice',
-//            'payment_status' => 'pending',
+            'payment_status' => 'pending',
 //            'stock_status' => 'completed',
         ];
 

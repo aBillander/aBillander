@@ -263,9 +263,9 @@ class Customer extends Model {
     
     public function paymentDays() 
     {
-        if ( !trim($this->payment_day) ) return [];
+        if ( !trim($this->payment_days) ) return [];
 
-        $dstr = str_replace( [';', ':'], ',', $this->payment_day );
+        $dstr = str_replace( [';', ':'], ',', $this->payment_days );
         $days = array_map( 'intval', explode(',', $dstr) );
 
         sort( $days, SORT_NUMERIC );

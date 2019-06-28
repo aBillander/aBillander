@@ -42,6 +42,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                       <li class="divider"></li>
                       <li><a href="{{ route('customer.invoices', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Invoices', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
+                      <li><a href="{{ route('customer.vouchers', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Customer Vouchers', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
                       <li><a href="{{ URL::to('customers') }}">{{ l('Back to Customers') }}</a></li>
                     </ul>
                 </div>

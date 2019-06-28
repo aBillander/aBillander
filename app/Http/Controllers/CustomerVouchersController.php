@@ -7,7 +7,10 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
+use App\Customer;
+
 use App\Payment;
+use App\Configuration;
 
 use App\Traits\DateFormFormatterTrait;
 
@@ -20,10 +23,13 @@ class CustomerVouchersController extends Controller
    use DateFormFormatterTrait;
 
 
+   protected $customer;
    protected $payment;
 
-   public function __construct(Payment $payment)
+   public function __construct(Customer $customer, Payment $payment)
    {
+        $this->customer = $customer;
+
         $this->payment = $payment;
    }
 
@@ -43,15 +49,52 @@ class CustomerVouchersController extends Controller
         			->filter( $request->all() )
 					->with('paymentable')
 					->with('paymentable.customer')
+					->with('paymentable.customer.bankaccount')
 					->where('payment_type', 'receivable')
+					->with('bankorder')
 					->orderBy('due_date', 'asc');		// ->get();
 
-        $payments = $payments->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $payments = $payments->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $payments->setPath('customervouchers');
 
         return view('customer_vouchers.index', compact('payments'));
 	}
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function indexByCustomer($id, Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
+        $items_per_page = intval($request->input('items_per_page', Configuration::getInt('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
+
+        $customer = $this->customer->findOrFail($id);
+
+		$payments = $this->payment
+                    ->whereHas('customer', function ($query) use ($id) {
+                            $query->where('id', $id);
+                        })
+        			->filter( $request->all() )
+					->with('paymentable')
+					->with('paymentable.customer')
+					->with('paymentable.customer.bankaccount')
+					->where('payment_type', 'receivable')
+					->with('bankorder')
+					->orderBy('due_date', 'asc');
+
+        $payments = $payments->paginate( $items_per_page );
+
+        $payments->setPath($id);
+
+        return view('customer_vouchers.index_by_customer', compact('customer', 'payments', 'items_per_page'));
+    }
 
 	/**
 	 * Show the form for creating a new resource.

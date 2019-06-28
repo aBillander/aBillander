@@ -11,7 +11,7 @@ trait CustomerInvoicePaymentsTrait
     {
         // abi_r(( $this->status != 'confirmed' && $this->payment_status != 'pending' ), true);
 
-        if ( $this->status != 'confirmed' && $this->payment_status != 'pending' ) {
+        if ( ($this->status != 'closed') && ($this->payment_status != 'pending') ) {
 
             // Not allowed
 
@@ -21,7 +21,7 @@ trait CustomerInvoicePaymentsTrait
 
         $this->payments()->delete();
 
-        $ototal = $this->total_tax_incl - $this->down_payment;
+        $ototal = $this->as_priceable( $this->total_tax_incl - $this->down_payment );
         $ptotal = 0;
         $pmethod = $this->paymentmethod;
         $dlines = $pmethod->deadlines;

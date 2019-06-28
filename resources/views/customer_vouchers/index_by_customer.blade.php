@@ -21,7 +21,30 @@
         		title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
     </div>
     <h2>
-        {{ l('Customer Vouchers') }}
+        {{ l('Customer Vouchers') }} <span class="lead well well-sm">
+
+                  <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
+
+                 <a title=" {{l('View Invoicing Address')}} " href="javascript:void(0);">
+                    <button type="button" class="btn btn-xs btn-success" data-toggle="popover" data-placement="right" 
+                            title="{{l('Invoicing Address', 'customerinvoices')}}" data-content="
+                                  {{$customer->name_fiscal}}<br />
+                                  {{l('VAT ID')}}: {{$customer->identification}}<br />
+                                  {{ $customer->address->address1 }} {{ $customer->address->address2 }}<br />
+                                  {{ $customer->address->postcode }} {{ $customer->address->city }}, {{ $customer->address->state->name }}<br />
+                                  {{ $customer->address->country->name }}
+                                  <br />
+                            ">
+                        <i class="fa fa-info-circle"></i>
+                    </button>
+                 </a>
+                 @if($customer->sales_equalization)
+                  <span id="sales_equalization_badge" class="badge" title="{{l('Equalization Tax')}}"> RE </span>
+                 @endif
+                 </span>
+                   &nbsp; 
+                  <span class="badge" style="background-color: #3a87ad;" title="{{ $customer->currency->name }}">{{ $customer->currency->iso_code }}</span>
+                 {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
     </h2>        
 </div>
 
@@ -120,7 +143,7 @@
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
 			<th>{{l('Invoice')}}</th>
-			<th>{{l('Customer')}}</th>
+			<!-- th>{{l('Customer')}}</th -->
 			<th>{{l('Subject')}}</th>
 			<th>{{l('Due Date')}}</th>
 			<th>{{l('Payment Date')}}</th>
@@ -141,8 +164,8 @@
 			<td>{{ $payment->id }}</td>
 			<td>
           <a href="{{ URL::to('customerinvoices/' . optional($payment->customerInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference or '' }}</a></td>
-			<td>
-          <a href="{{ URL::to('customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular or '' }}</a></td>
+			<!-- td>
+          <a href="{{ URL::to('customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular or '' }}</a></td -->
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>

@@ -65,5 +65,6 @@ return [
 
 	'Auto Direct Debit'     => 'Remesable',
 	'Include in automatic payment remittances'     => 'Incluir en remesas de pago automático',
+	'Not a valid Bank Account!' => 'Cuenta Bancaria no válida!',
 
 ];

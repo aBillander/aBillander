@@ -31,7 +31,14 @@
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
-			<td>{{ $payment->as_money_amount('amount') }}</td>
+			<td>
+            @if ( !$payment->paymentable->customer->bankaccount )
+                <i class="fa fa-exclamation-triangle btn-xs alert-danger" title="{{ l('Not a valid Bank Account!', 'customervouchers') }}"></i>
+            @endif
+
+
+
+          {{ $payment->as_money_amount('amount') }}</td>
 
             <td class="text-center">
             	@if     ( $payment->status == 'pending' )
@@ -46,25 +53,32 @@
             	{{\App\Payment::getStatusName($payment->status)}}</span></td>
 
 			<td class="text-right">
-              @if ( $payment->status == 'pending' )
+              @if ( $directdebit->status == 'pending' )
 
                 <a class="btn btn-sm btn-warning unlink-customer-voucher" href="{{ URL::to('customervouchers/' . $payment->id . '/unlink') }}" title="{{l('Unlink')}}" data-oid="{{ $payment->id }}" data-boid="{{ $payment->bank_order_id }}" data-oreference="{{ $payment->reference }}" onClick="return false;"><i class="fa fa-unlink"></i></a>
 
 
+              @endif
 
+    @if ( $directdebit->status == 'confirmed' )
               	<!-- a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit' ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
 
+              @if ( $payment->status == 'pending' )
                 <a class="btn btn-sm btn-danger" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?action=bounce&back_route=' . urlencode('sepasp/directdebits/' . $directdebit->id) ) }}" title="{{l('Bounce', 'customervouchers')}}"><i class="fa fa-mail-reply-all"></i>
                   </a>
 
                 <a class="btn btn-sm btn-blue xpay-customer-voucher" href="{{ URL::to('customervouchers/' . $payment->id  . '/pay?back_route=' . urlencode('sepasp/directdebits/' . $directdebit->id) ) }}" title="{{l('Make Payment', 'customervouchers')}}"><i class="fa fa-money"></i>
                   </a>
+              @endif
 
-              @elseif ( $payment->status == 'paid' )
+              @if ( $payment->status == 'paid' )
+              @endif
 
-              @elseif ( $payment->status == 'bounced' )
-
+              @if ( $payment->status == 'bounced' )
             	@endif
+
+    @endif
+
 			</td>
 		</tr>
 	@endforeach

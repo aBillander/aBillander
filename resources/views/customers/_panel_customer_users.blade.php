@@ -51,7 +51,7 @@
                 <td class="text-center">@if ($user->is_principal) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
                 <td class="text-left">
 
-                    <a class="btn xbtn-sm alert-info" href="{{ route('customer.impersonate', [$customer->user->id]) }}" title="{{ l('Impersonate', 'customerusers') }}" target="_blank"><i class="fa fa-clock-o alert-success"></i> {{ l('Impersonate', 'customerusers') }}</a>
+                    <a class="btn xbtn-sm alert-info" href="{{ route('customer.impersonate', [$user->id]) }}" title="{{ l('Impersonate', 'customerusers') }}" target="_blank"><i class="fa fa-clock-o alert-success"></i> {{ l('Impersonate', 'customerusers') }}</a>
 {{--
                     @if (  is_null($user->deleted_at))
                     <a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 

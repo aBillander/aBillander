@@ -82,6 +82,10 @@ return [
 	'Unlink Voucher'     => 'Quitar Recibo',
 	'You are going to unlink a Voucher from Bank Order: <b>:boid</b>. Are you sure?' => 'Está a punto de quitar un Recibo de la Remesa: <b>:boid</b>. ¿Está seguro?',
 
+	'Unable to create XML File &#58&#58 (:id) ' => 'No se puede crear el Fichero XML &#58&#58 (:id) ',
+	'Document has no Lines'                     =>  'El Documento no contiene Líneas',
+
+
 	/*
 	|--------------------------------------------------------------------------
 	| SEPA Direct Debit Schemes

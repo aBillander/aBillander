@@ -605,6 +605,14 @@ class CustomerInvoicesController extends BillableController
             return redirect()->back()
                 ->with('error', l('This record cannot be deleted because its Status &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 
+        $shippingslips = $document->shippingslips;
+
+        foreach ($shippingslips as $shippingslip) {
+        	# code...
+        	$shippingslip->invoiced_at = null;
+        	$shippingslip->save();
+        }
+
         $document->delete();
 
         return redirect($this->model_path)      // redirect()->back()

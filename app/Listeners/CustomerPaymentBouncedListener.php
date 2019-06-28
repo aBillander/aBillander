@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\CustomerPaymentReceived;
+use App\Events\CustomerPaymentBounced;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -24,11 +24,10 @@ class CustomerPaymentBouncedListener
      * @param  CustomerInvoiceClosed  $event
      * @return void
      */
-    public function handle(CustomerPaymentReceived $event)
+    public function handle(CustomerPaymentBounced $event)
     {
         $payment = $event->payment;
         $document = $payment->customerinvoice;
-        $bankorder = $payment->bankorder;
 /*
         // Update Document
         $document->open_balance -= $payment->amount;
@@ -48,6 +47,7 @@ class CustomerPaymentBouncedListener
         $customer->removeRisk($payment->amount);
 */
         // Update bankorder
-        $bankorder->checkStatus();
+        if ( $bankorder = $payment->bankorder )
+            $bankorder->checkStatus();
     }
 }

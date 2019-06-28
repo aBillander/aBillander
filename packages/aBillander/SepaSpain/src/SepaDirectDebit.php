@@ -281,8 +281,19 @@ class SepaDirectDebit extends Model
         // at least one in every DirectDebitCollection. No limit.
         $collectables = $this->vouchers()->where('status', 'pending')->get();
 
+        // Maybe a waste of time? Lets see:
+        if ( $collectables->count() == 0 )
+            return false;
+
         foreach ( $collectables as $voucher ) {
             # code...
+
+            // Maybe a waste of time? Lets see:
+            if ( !optional($voucher->customer)->bankaccount )
+                return false;
+
+
+
             $payment = [
             // needed information about the 
                 'pmtId'         => $voucher->reference,     // ID of the payment (EndToEndId)

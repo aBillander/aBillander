@@ -52,6 +52,7 @@ return [
 	'Scheme'   => 'Normativa',
 	'Bank'     => 'Banco',
 	'Sequence' => 'Serie',
+	'All Voucher Due Dates will be set to this value' => 'La Fecha de Vencimiento de todos los Recibos se cambiará por este valor',
 
 
 	'SEPA Direct Debits - Edit'     => 'Remesas SEPA - Modificar',

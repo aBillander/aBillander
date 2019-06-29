@@ -80,9 +80,22 @@ class CustomerOrdersController extends BillableController
             $dest_pedidos  = Configuration::get('FSOL_CBDCFG').Configuration::get('FSOL_CPVCFG');
             
             // Calculate last minute stuff!
-            $anyClient = count(File::files( $dest_clientes ));
-            
-            $anyOrder  = count(File::files( $dest_pedidos ));
+            try {
+
+                $anyClient = count(File::files( $dest_clientes ));
+
+                $anyOrder  = count(File::files( $dest_pedidos ));
+
+            } catch (\Exception $e) {
+
+                $anyClient = 0;
+
+                $anyOrder  = 0;
+
+                // dd($e->getMessage());
+
+            }
+
 
             // The difference between files and allFiles is that allFiles will recursively search sub-directories unlike files. 
         } else {

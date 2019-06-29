@@ -86,7 +86,7 @@ class SepaDirectDebitsController extends Controller
 	public function store(Request $request)
 	{
         // Dates (cuen)
-        $this->mergeFormDates( ['document_date', 'date_from', 'date_to'], $request );
+        $this->mergeFormDates( ['document_date', 'date_from', 'date_to', 'document_due_date'], $request );
 
         $rules = $this->directdebit::$rules;
 
@@ -106,9 +106,21 @@ class SepaDirectDebitsController extends Controller
 
         $date_from = $request->input('date_from', '');
         $date_to   = $request->input('date_to', '');
+
+        if ( $request->input('autocustomer_name', '') )
+            $customer_id = $request->input('customer_id', '');
+        else
+            $customer_id = '';
+
+        $document_due_date = $request->input('document_due_date', '');
         
         // Lets see:
         $vouchers =  $this->payment
+                    ->whereHas('customer', function ($query) use ($customer_id) {
+
+                            if ( (int) $customer_id > 0 )
+                                $query->where('id', $customer_id);
+                    })
                     ->when($date_from, function($query) use ($date_from) {
 
                             $query->where('due_date', '>=', $date_from);
@@ -118,7 +130,7 @@ class SepaDirectDebitsController extends Controller
                             $query->where('due_date', '<=', $date_to);
                     })
                     ->where('auto_direct_debit', '>', 0)
-                    ->doesnthave('bankorder')
+                    ->doesntHave('bankorder')
                     ->get();
 
 // abi_r($vouchers);die();
@@ -126,7 +138,7 @@ class SepaDirectDebitsController extends Controller
         if ( $vouchers->count() == 0 )
         {
             return redirect()->route('sepasp.directdebits.index')
-                    ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . ' :: ' .  l('No records selected. ', 'layouts') . $request->input('date_from_form', '') . ' -> ' . $request->input('date_to_form', ''));
+                    ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . ' :: ' .  l('No records selected. ', 'layouts') . $request->input('date_from_form', '') . ' -> ' . $request->input('date_to_form', '') . ' :: ' . $request->input('autocustomer_name'));
         }
 
 
@@ -169,6 +181,14 @@ class SepaDirectDebitsController extends Controller
             $sdds->vouchers()->save($voucher);
         }
 */
+        // Need to set voucher due date?
+        if ( $document_due_date )
+        {
+                $vouchers->each(function ($item, $key) use ($document_due_date) {
+                    $item->due_date = $document_due_date;
+                });
+        }
+
         // Do add vouchers, now!
         $sdds->vouchers()->saveMany($vouchers);
 

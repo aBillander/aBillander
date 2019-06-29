@@ -1243,4 +1243,14 @@ class Product extends Model {
 
         return $query;
     }
+
+
+    public function scopeCheckStock($query)
+    {
+        // Products with stock
+        if ( Configuration::isTrue('ALLOW_SALES_WITHOUT_STOCK') ) 
+            return $query;
+
+        return $query->where('quantity_onhand', '>', 0);
+    }
 }

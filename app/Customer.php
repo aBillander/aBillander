@@ -81,7 +81,7 @@ class Customer extends Model {
     
     public function getNameRegularAttribute() 
     {
-        return $this->name_commercial;
+        return $this->name_commercial ?: $this->name_fiscal;
     }
 /*    
     public function getFirstnameAttribute() 

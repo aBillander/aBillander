@@ -12,7 +12,7 @@
     <div class="pull-right" xstyle="padding-top: 4px;">
 
 @if ( $directdebit->status != "closed" && ( $directdebit->nbrItems() != 0 ) )
-        <a href="{{ route('sepasp.directdebit.xml', $directdebit->id) }}" class="btn btn-success magick" style="margin-right: 22px;""><i class="fa fa-file-code-o"></i> &nbsp;{{ l('SEPA XML file') }}</a>
+        <a id="download_btn" href="{{ route('sepasp.directdebit.xml', $directdebit->id) }}" class="btn btn-success magick" style="margin-right: 22px;""><i class="fa fa-file-code-o"></i> &nbsp;{{ l('SEPA XML file') }}</a>
 @endif
 
         <a class=" hide btn xbtn btn-info create-production-order" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-money"></i> &nbsp;{{l('Set as Paid')}}</a>
@@ -83,15 +83,33 @@
 
 @section('scripts') @parent 
 
-<!-- script type="text/javascript">
+<script type="text/javascript">
 
 $(document).ready(function() {
-   $("#b_search_filter").click(function() {
-      $('#search_status').val(1);
-      $('#search_filter').show();
-   });
+
+      // Capture the "click" event of the link
+      $('#download_btn').click( function ( evt ) {
+            // Stop the link from doing what it would normally do.
+            evt.preventDefault();
+            // Open the file download in a new window. (It should just
+            // show a normal file dialog)
+            window.open(this.href, "_blank");
+
+            // Then redirect the page you are on to whatever page you
+            // want shown once the download has been triggered.
+            setTimeout(function(){
+                //do what you need here
+                window.location = "{{ route('sepasp.directdebits.show', $directdebit->id) }}";
+            }, 2500);
+
+            return false;
+      }).focusout (function(){
+          // window.location.href = '/thank_you.html';
+          // return false;
+      });
+
 });
 
-</script -->
+</script>
 
 @endsection

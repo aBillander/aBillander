@@ -17,7 +17,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ route('sepasp.directdebits.index') }}" class="btn btn-sm btn-success" 
+        <a href="{{ route('sepasp.directdebits.index') }}" class="btn xbtn-sm btn-navy" 
         		title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
     </div>
     <h2>

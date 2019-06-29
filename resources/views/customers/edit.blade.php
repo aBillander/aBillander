@@ -20,12 +20,13 @@
                 <div class="btn-group">
                     <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
+                      <li><a href="{{ route('customerquotations.create.withcustomer', $customer->id) }}">{{l('Quotation', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
                       <li><a href="{{ route('customerorders.create.withcustomer', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('customershippingslips.create.withcustomer', $customer->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('customerinvoices.create.withcustomer', $customer->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
-                      <li class="divider"></li>
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
                 </div>

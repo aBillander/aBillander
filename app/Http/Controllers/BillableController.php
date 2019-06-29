@@ -184,6 +184,7 @@ class BillableController extends Controller
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->IsSaleable()
                                 ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
+                                ->CheckStock()
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();

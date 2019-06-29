@@ -10,8 +10,8 @@
         <a href="{{ URL::to('sepasp/directdebits/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
-        <a href="{{ route('customervouchers.index') }}" class="btn btn-sm btn-success" 
-            title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-money"></i> {{l('Customer Vouchers', 'customervouchers')}}</a>
+        <a href="{{ route('customervouchers.index') }}" class="btn xbtn-sm alert-info" 
+            title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-credit-card"></i> {{l('Customer Vouchers', 'customervouchers')}}</a>
     </div>
     <h2>
         {{ l('SEPA Direct Debits') }}

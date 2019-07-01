@@ -11,6 +11,7 @@ return [
 	|
 	*/
 
+	'Customer Vouchers' => 'Recibos de Clientes',
 	'My Vouchers' => 'Mis Pagos',
 	'Invoice #'     => 'Número',
 	'Date'     => 'Fecha',

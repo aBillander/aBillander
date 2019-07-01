@@ -63,13 +63,11 @@
                                  {{l('Invoices', [], 'absrc/layouts')}}
                             </a>
                         </li>
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
                          <li>
-                            <a href="{ { route('absrc.orders.index') }}">
+                            <a href="{{ route('absrc.vouchers.index') }}">
                                  {{l('Vouchers', [], 'absrc/layouts')}}
                             </a>
                         </li>
-@endif
                         <!-- li class="divider"></li -->
                     </ul>
                 </li>

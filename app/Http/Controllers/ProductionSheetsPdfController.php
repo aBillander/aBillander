@@ -145,6 +145,6 @@ class ProductionSheetsPdfController extends Controller
 
         $pdf = \PDF::loadView('production_sheets.reports.production_orders.manufacturing', compact('sheet', 'work_center', 'family'))->setPaper('a4', 'vetical');
 
-        return $pdf->stream('manufacturing.pdf'); // $pdf->download('invoice.pdf');
+        return $pdf->stream('manufacturing_'.$key.'.pdf'); // $pdf->download('invoice.pdf');
     }
 }

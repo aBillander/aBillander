@@ -662,7 +662,7 @@ class CustomerInvoicesController extends BillableController
         }
 
         // UnConfirm
-        if ( $document->unConfirmDocument() )
+        if ( $document->unConfirm() )
         	return redirect()->back()
                 	->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         

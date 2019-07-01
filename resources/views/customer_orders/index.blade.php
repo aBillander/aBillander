@@ -157,7 +157,11 @@
             <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
             <td class="text-center">@if ($document->all_notes)
                  <a href="javascript:void(0);">
-                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                    <button type="button" 
+                        @if ($document->notes && 0)
+                            class="btn xbtn-sm xbtn-success alert-danger" xstyle="background-color: #f2dede;"
+                        @endif
+                         data-toggle="popover" data-placement="top" 
                             data-content="{!! nl2br($document->all_notes) !!}">
                         <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
                     </button>

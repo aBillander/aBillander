@@ -196,7 +196,7 @@ foreach ($pairs as $pair) {
         Route::get('invoice/{invoiceKey}/pdf', ['uses' => 'AbsrcCustomerInvoicesController@showPdf', 'as' => 'absrc.invoice.pdf']);
 
 
-//        Route::resource('/vouchers', 'AbsrcCustomerVouchersController')->names('absrc.vouchers');
+        Route::resource('/vouchers', 'AbsrcCustomerVouchersController')->names('absrc.vouchers');
 
 //        Route::resource('pricerules', 'AbsrcPriceRulesController')->names('absrc.pricerules');
 

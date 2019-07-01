@@ -207,6 +207,24 @@ class Payment extends Model {
     }
 
 
+    public function scopeOfSalesRep($query)
+    {
+//        return $query->where('customer_id', Auth::user()->customer_id);
+
+        if ( isset(Auth::user()->sales_rep_id) && ( Auth::user()->sales_rep_id != NULL ) )
+        {
+                $sales_rep_id = Auth::user()->sales_rep_id;
+
+                return $query->whereHas('customerinvoice', function ($query) use ($sales_rep_id) {
+                                    $query->where('sales_rep_id', $sales_rep_id);
+                                } );
+        }
+
+        // Not allow to see resource
+        return $query->where('sales_rep_id', 0);
+    }
+
+
     public function scopeFilter($query, $params)
     {
 

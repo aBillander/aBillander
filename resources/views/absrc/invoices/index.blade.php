@@ -50,7 +50,7 @@
             <td  @if( $invoice->next_due_date AND ( $invoice->next_due_date < \Carbon\Carbon::now() ) ) class="danger" @endif>
                 @if ($invoice->open_balance < pow( 10, -$invoice->currency->decimalPlaces ) AND 0 ) 
                 @else
-                    @if ($invoice->next_due_date) {{ \App\FP::date_short($invoice->next_due_date) }} @endif
+                    @if ($invoice->next_due_date) {{ abi_date_short($invoice->next_due_date) }} @endif
                 @endif</td>
             <td class="text-right">
 

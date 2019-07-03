@@ -14,6 +14,10 @@ class EventServiceProvider extends ServiceProvider
      */
     // php artisan event:generate
     protected $listen = [
+
+        'Illuminate\Mail\Events\MessageSent' => [
+            'App\Listeners\LogSentMessageListener',
+        ],
     
         'App\Events\CustomerInvoiceConfirmed' => [
             'App\Listeners\CustomerInvoiceConfirmedListener',

@@ -91,4 +91,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Language');
     }
+
+
+    public function emaillogs()
+    {
+        return $this->morphMany('App\EmailLog', 'userable');
+    }
 }

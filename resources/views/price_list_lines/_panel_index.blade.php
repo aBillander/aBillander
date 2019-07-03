@@ -101,19 +101,19 @@
 	@foreach ($lines as $line)
 		<tr>
 			<td>{{ $line->id }}</td>
-            <td><a href="{{ URL::to('products/' . $line->product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $line->product->reference }}</a></td>
-            <td>{{ $line->product->name }}</td>
+            <td><a href="{{ URL::to('products/' . optional($line->product)->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ optional($line->product)->reference }}</a></td>
+            <td>{{ optional($line->product)->name }}</td>
             <td>{{ $line->as_price('price') }}</td>
 
-            <td class="text-center"><span style="text-decoration: underline;">{{$line->as_priceable($line->price_tax_exc)}}</span><br />{{$line->as_priceable($line->product->price)}}</td>
+            <td class="text-center"><span style="text-decoration: underline;">{{$line->as_priceable($line->price_tax_exc)}}</span><br />{{$line->as_priceable(optional($line->product)->price)}}</td>
 
             <td>= <span class="btn btn-xs btn-grey" style="font-weight: bold;color: #c09853;
 background-color: #fcf8e3;
-border-color: #fbeed5;cursor: default">{{ $line->as_percentable( \App\Calculator::discount( $line->product->price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
-            <td>{{ $line->as_priceable($line->product->cost_price) }}</td>
+border-color: #fbeed5;cursor: default">{{ $line->as_percentable( \App\Calculator::discount( optional($line->product)->price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
+            <td>{{ $line->as_priceable(optional($line->product)->cost_price) }}</td>
             <td><span class="btn btn-xs btn-grey" style="font-weight: bold;color: #3a87ad;
 background-color: #d9edf7;
-border-color: #bce8f1;cursor: default">{{ $line->as_percentable( \App\Calculator::margin( $line->product->cost_price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
+border-color: #bce8f1;cursor: default">{{ $line->as_percentable( \App\Calculator::margin( optional($line->product)->cost_price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
 
 			<td class="text-right button-pad">
                 @if (  is_null($line->deleted_at))
@@ -121,7 +121,7 @@ border-color: #bce8f1;cursor: default">{{ $line->as_percentable( \App\Calculator
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('pricelists/' . $list->id.'/pricelistlines/' . $line->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Price List Lines') }} :: ({{$line->id}}) {{{ $line->product->name }}} " 
+                		data-title="{{ l('Price List Lines') }} :: ({{$line->id}}) {{{ optional($line->product)->name }}} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('pricelistlines/' . $line->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

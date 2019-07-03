@@ -319,7 +319,7 @@
                             </a>
                         </li>
                          <li>
-                            <a href="{{ URL::to('dbbackup') }}">
+                            <a href="{{ URL::to('dbbackups') }}">
                                  <i class="fa fa-database text-danger"></i> {{l('DB Backup', [], 'layouts')}}
                             </a>
                         </li>

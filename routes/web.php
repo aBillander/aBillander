@@ -278,6 +278,7 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::get('activityloggers/empty', ['uses' => 'ActivityLoggersController@empty', 
                          'as'   => 'activityloggers.empty'] );
 
+        Route::resource('emaillogs', 'EmailLogsController');
 
 
 
@@ -468,6 +469,10 @@ foreach ($pairs as $pair) {
             {
                 return view('imports.index');
             });
+
+
+        Route::get('dbbackups',         'DbBackupsController@index'  )->name('dbbackups.index');
+        Route::get('dbbackups/process', 'DbBackupsController@process')->name('dbbackups.process');
 
 
         /* ******************************************************************************************************** */

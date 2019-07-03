@@ -56,6 +56,8 @@ return array(
 
     'Product' => 'Producto', 
     'Customer' => 'Cliente', 
+
+    'CustomerQuotation' => 'Presupuesto de Cliente',
 	'CustomerOrder' => 'Pedido de Cliente',
 	'CustomerShippingSlip' => 'Albarán de Cliente',
 	'CustomerInvoice' => 'Factura de Cliente',

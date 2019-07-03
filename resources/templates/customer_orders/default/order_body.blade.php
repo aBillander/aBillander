@@ -83,7 +83,7 @@
 
 			@endif
             
-            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="margin-left: 10mm">[{{ $document->customer->id }}]</span></div>
+            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
 
 			@if ( $document->shippingaddress->phone )
 
@@ -95,7 +95,7 @@
 
 			@endif
 
-			<!-- span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div -->
+			<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div>
 			
 		</td>
 
@@ -267,7 +267,7 @@
 			</td>
 			<td class="barcode">
 				<span>
-					<span class="item-name">{{ $line->product->ean13 }}</span>
+					<span class="item-name">{{ optional($line->product)->ean13 }}</span>
 				</span>
 			</td>
 			<td class="price total last-column">

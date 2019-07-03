@@ -26,31 +26,37 @@
 @endphp
     <h3>
         <a href="#">{{ l('Documentos') }}</a> <span style="color: #cccccc;">::</span> {{ $work_center->name }}
+    </h3>
 
         <a href="{{ route('productionsheet.summary.pdf', [$sheet->id, 'work_center_id' => 
   $work_center_id]) }}" class="btn btn-success" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Resumen') }}</a>
 
         <a href="{{ route('productionsheet.preassemblies.pdf', [$sheet->id, 'work_center_id' => 
-  $work_center_id]) }}" class="btn btn-warning" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Semi-Elaborados') }}</a>
+  $work_center_id]) }}" class="btn btn-warning" style="margin-right: 32px" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Semi-Elaborados') }}</a>
 
         <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
   $work_center_id, 'key' => 'espelta']) }}" class="btn btn-custom" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Espelta') }}</a>
 
         <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
-  $work_center_id, 'key' => 'centeno']) }}" class="btn btn-custom" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Centeno') }}</a>
-
-        <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
   $work_center_id, 'key' => 'trigo']) }}" class="btn btn-custom" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Trigo') }}</a>
 
         <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
+  $work_center_id, 'key' => 'centeno']) }}" class="btn btn-custom" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Centeno') }}</a>
+
+        <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
   $work_center_id, 'key' => 'combi']) }}" class="btn btn-custom" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Combi') }}</a>
+
+        <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
+  $work_center_id, 'key' => 'hogazaychapata']) }}" class="btn btn-custom" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Hogazas y Chapatas') }}</a>
+
+        <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
+  $work_center_id, 'key' => 'pansingluten']) }}" class="btn btn-custom" target="_blank"><i class="fa fa-file-pdf-o"></i> {{ l('Panes sin Gluten') }}</a>
 
         @if ( 0 )
               <button type="button" class="btn btn-sm btn-danger" title="{{l('Need Update')}}">
                   <i class="fa fa-hand-stop-o"></i>
               </button>
-        @endif
-    </h3>        
+        @endif  
 </div>
 
       </div>

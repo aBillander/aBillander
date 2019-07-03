@@ -277,6 +277,13 @@
                             </a>
                         </li>
                         <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('emaillogs') }}">
+                                 <i class="fa fa-clipboard text-info"></i>
+                                 {{l('Email LOG', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
                     </ul>
                 </li>
 
@@ -376,8 +383,8 @@
                             </a>
                         </li>
                          <li>
-                            <a href="{{ URL::to('dbbackup') }}">
-                                 <i class="fa fa-database text-danger"></i> {{l('DB Backup', [], 'layouts')}}
+                            <a href="{{ URL::to('dbbackups') }}">
+                                 <i class="fa fa-database text-danger"></i> {{l('DB Backups', [], 'layouts')}}
                             </a>
                         </li>
                          <li>

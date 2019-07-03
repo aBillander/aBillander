@@ -166,6 +166,8 @@ line-height: 1.42857143;
                       <li class="divider"></li>
                       <li><a href="{{ route('customerinvoices.create.withcustomer', $customer->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
+                      <li><a href="{{ route('customerquotations.create.withcustomer', $customer->id) }}">{{l('Quotation', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
                 </div>

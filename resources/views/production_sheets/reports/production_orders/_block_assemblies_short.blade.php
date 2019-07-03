@@ -3,8 +3,29 @@
 
 @if ($sheet->productionorders->whereIn('product_reference', $family['assemblies'])->count())
 
+@php
 
-  @foreach ($sheet->productionorders->whereIn('product_reference', $family['assemblies']) as $order)
+/*
+// https://stackoverflow.com/questions/26176245/laravel-mysql-how-to-order-results-in-the-same-order-as-in-wherein-clause
+// https://stackoverflow.com/questions/41688648/how-to-make-laravel-wherein-not-sorted-automatically
+
+$temp = $family['assemblies'];
+$tempStr = implode(',', $temp);
+$robjeks = DB::table('objek')
+    ->whereIn('id', $temp)
+    ->orderByRaw(DB::raw("FIELD(id, $tempStr)"))
+    ->get();
+*/
+
+// 
+$order_by = $family['assemblies'];
+
+@endphp
+
+  @foreach ($sheet->productionorders->whereIn('product_reference', $family['assemblies'])->sortBy(
+      function($model) use ($order_by){
+          return array_search($model->product_reference, $order_by);
+      }) as $order)
   @php
     $product = \App\Product::find( $order->product_id );
   @endphp
@@ -16,18 +37,18 @@
         <tr>
           <th width="14%">{{l('Product Reference')}}</th>
           <th width="50%">{{l('Product Name')}}</th>
-          <th width="12%">{{l('Quantity')}}</th>
-          <th width="12%">{{l('Unit')}}</th>
           <th width="12%">{{l('Total')}}</th>
+          <th width="12%">{{l('Unit')}}</th>
+          <th width="12%">{{l('Quantity')}}</th>
         </tr>
 
 
     <tr style="font-weight: bold;">
       <td>{{ $order->product_reference }}</td>
       <td>{{ $order->product_name }}</td>
-      <td> </td>
+      <td>{{ niceQuantity($order->planned_quantity, $product->measureunit->decimalPlaces) }}</td>
       <td>{{ $product->measureunit->name }}</td>
-      <td>{{ niceQuantity($order->planned_quantity) }}</td>
+      <td> </td>
     </tr>
 
 {{-- Ingredients here: --}}
@@ -37,9 +58,9 @@
     <tr>
       <td style="padding-left: 16px">{{ $line->reference }}</td>
       <td>{{ $line->name }}</td>
-      <td style="padding-left: 16px">{{ niceQuantity($line->required_quantity / $order->planned_quantity, 3) }}</td>
+      <td class="text-right" style="padding-right: 16px">{{ niceQuantity($line->required_quantity, $line->product->measureunit->decimalPlaces) }}</td>
       <td>{{ $line->product->measureunit->name }}</td>
-      <td class="text-right" style="padding-left: 16px">{{ niceQuantity($line->required_quantity) }}</td>
+      <td style="padding-right: 16px">{{ niceQuantity($line->required_quantity / $order->planned_quantity, $line->product->measureunit->decimalPlaces) }}</td>
     </tr>
 
 @endforeach

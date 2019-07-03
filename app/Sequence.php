@@ -16,6 +16,7 @@ class Sequence extends Model {
     public static $types = array(
 //            'Product', 
 //            'Customer', 
+            'CustomerQuotation',
             'CustomerOrder',
             'CustomerShippingSlip',
             'CustomerInvoice',

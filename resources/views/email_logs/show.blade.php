@@ -1,0 +1,1 @@
+/opt/lampp/htdocs/aBillander/app/views/email_logs/show.blade.php

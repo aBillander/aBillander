@@ -90,6 +90,10 @@ return [
 	'Tools'     => 'Utillajes',
 	'Bills of Materials' => 'Listas de Materiales',
 
+	'aBillander LOG' => 'aBillander LOG',
+	'Email LOG' => 'Email LOG',
+	'DB Backups' => 'Copias de Seguridad',
+
 	'Warehouse'     => 'Almacén',
 	'Suppliers' => 'Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',

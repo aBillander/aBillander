@@ -173,6 +173,8 @@ class CustomerShippingSlipsController extends BillableController
 
         $this->validate($request, $rules);
 
+        $customer = Customer::with('addresses')->findOrFail(  $request->input('customer_id') );
+
         // Extra data
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
 //        $doc_id = $seq->getNextDocumentId();
@@ -180,6 +182,9 @@ class CustomerShippingSlipsController extends BillableController
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
+
+                        'document_discount_percent' => $customer->discount_percent,
+                        'document_ppd_percent'      => $customer->discount_ppd_percent,
 
                         'created_via'          => 'manual',
                         'status'               =>  'draft',
@@ -312,12 +317,18 @@ class CustomerShippingSlipsController extends BillableController
 */
         $document = $customershippingslip;
 
+        $need_update_totals = (
+            $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+        ) ? true : false;
+
         $document->fill($request->all());
 
         // Reset Export date
         // if ( $request->input('export_date_form') == '' ) $document->export_date = null;
 
         $document->save();
+
+        if ( $need_update_totals ) $document->makeTotals();
 
         // Move on
         if ($request->has('nextAction'))
@@ -490,6 +501,34 @@ class CustomerShippingSlipsController extends BillableController
     }
 
 
+    protected function deliver($id, Request $request)
+    {
+        $document = $this->document->findOrFail($id);
+
+        // Can I?
+        if ( $document->status != 'closed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Deliver
+        if ( $document->deliver() )
+            return redirect()->back()           // ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
 
 
     protected function getTodaysShippingSlips()
@@ -651,6 +690,9 @@ class CustomerShippingSlipsController extends BillableController
             'currency_conversion_rate' => $customer->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
 
+            'document_discount_percent' => $customer->discount_percent,
+            'document_ppd_percent'      => $customer->discount_ppd_percent,
+
             'total_currency_tax_incl' => $documents->sum('total_currency_tax_incl'),
             'total_currency_tax_excl' => $documents->sum('total_currency_tax_excl'),
 //            'total_currency_paid' => $this->total_currency_paid,
@@ -725,8 +767,8 @@ class CustomerShippingSlipsController extends BillableController
 //                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
 //                    'unit_final_price', 'unit_final_price_tax_inc', 
 //                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
-                'total_tax_incl' => $document->total_currency_tax_incl, 
-                'total_tax_excl' => $document->total_currency_tax_excl, 
+                'total_tax_incl' => 0,
+                'total_tax_excl' => 0,
 //                    'tax_percent', 'commission_percent', 
                 'notes' => '', 
                 'locked' => 0,
@@ -763,7 +805,7 @@ class CustomerShippingSlipsController extends BillableController
                 // Sort order
                 $data['line_sort_order'] = $i*10; 
                 // Locked 
-                $data['locked'] = 1; 
+                $data['locked'] = ( $line->line_type == 'comment' ? 0 : 1 ); 
 
                 // Model specific data
                 $extradata = [
@@ -812,6 +854,8 @@ class CustomerShippingSlipsController extends BillableController
             }
 
             // Not so fast, Sony Boy
+
+            $invoice->makeTotals();
 
             // Manage Invoice Status
             switch ( $params['status'] ) {

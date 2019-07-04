@@ -152,4 +152,10 @@ class CustomerUser extends Authenticatable
     {
         return $this->belongsTo('App\Address', 'address_id');
     }
+
+
+    public function emaillogs()
+    {
+        return $this->morphMany('App\EmailLog', 'userable');
+    }
 }

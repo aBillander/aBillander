@@ -51,6 +51,8 @@ class CustomerOrder extends Billable
     public static $rules_createshippingslip = [
                             'document_id' => 'exists:customer_orders,id',
                             'shippingslip_date' => 'required|date',
+                            'shippingslip_delivery_date' => 'nullable|date',
+                            
                             'shippingslip_sequence_id' => 'exists:sequences,id',
                             'shippingslip_template_id' => 'exists:templates,id',
                ];

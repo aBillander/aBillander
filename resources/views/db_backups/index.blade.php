@@ -11,8 +11,8 @@
                 title="{{l('Create Data Base Backup')}}"><i class="fa fa-database"></i> &nbsp;{{l('New DB Backup')}}</a>
     </div>
     <h2>
-        {{ l('DB Backups') }} <span style="color: #cccccc;">::</span> <span class="lead well well-sm alert-warning"> {{ $bk_folder }} </span>
-    </h2>        
+        {{ l('DB Backups') }} <span style="color: #cccccc;">::</span> <span class="lead well well-sm alert-warning"> {{ $bk_folder }} </span> <button class="btn btn-grey" style="margin-left: 36px">{{l('Found :nbr record(s)', [ 'nbr' => count($listing) ], 'layouts')}}</button>
+    </h2>
 </div>
 
 
@@ -20,6 +20,7 @@
    <div class="row">
 
       <div class="col-lg-3 col-md-3 col-sm-3">
+        {{-- Poor man offeset --}}
          <!-- div class="list-group">
             <a id="b_main_data" href="#" class="list-group-item active">
                <i class="fa fa-asterisk"></i>

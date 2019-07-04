@@ -46,6 +46,7 @@
             <th class="text-left">{{ l('ID', 'layouts') }}</th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
+            <th> </th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
@@ -88,6 +89,15 @@
                 
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
+            <td>
+    @if ( $document->shipment_status == 'delivered' )
+                <a class="btn btn-xs btn-blue" href="#" title="{{ l('Delivered at:') }} {{abi_date_short( $document->delivery_date_real )}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
+    @else
+        @if ($document->status == 'closed')
+                <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/deliver') }}" title="{{l('Set delivered')}}"><i class="fa fa-truck"></i></a>
+        @endif
+    @endif
+            </td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
             <td><a class="" href="{{ URL::to('customers/' . optional($document->customer)->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
             	{{ optional($document->customer)->name_regular }}

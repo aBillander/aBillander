@@ -21,6 +21,7 @@ return [
 	'Total'     => 'Total',
 	'Notes'     => 'Notas',
 	'Invoiced at'     => 'Facturado',
+	'Delivered at'     => 'Entregado',
 	''     => '',
 	''     => '',
 	''     => '',

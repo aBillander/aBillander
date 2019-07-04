@@ -31,6 +31,12 @@ class LogSentMessageListener
     {
         $message = $event->message;
 
+        // Attachments
+        $attachments = [];
+        foreach ($message->getChildren() as $child) {
+            $attachments[] = $child->getFilename();
+        }
+
         $emaillog = EmailLog::create([
             'from' => $this->formatAddressField($message, 'From'),
             'to' => $this->formatAddressField($message, 'To'),
@@ -39,7 +45,7 @@ class LogSentMessageListener
             'subject' => $message->getSubject(),
             'body' => $message->getBody(),
             'headers' => (string)$message->getHeaders(),
-            'attachments' => $message->getChildren() ? implode("\n\n", $message->getChildren()) : null,
+            'attachments' => count( $attachments ) ? implode("\n\n", $attachments) : null,
             'created_at' => Carbon::now(),
 
  //           'userable_id' => \Auth::id(),

@@ -520,7 +520,12 @@ class CustomerInvoicesController extends BillableController
 
         $request->merge( $extradata );
 */
+
         $document = $customerinvoice;
+
+        $need_update_totals = (
+            $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+        ) ? true : false;
 
         $document->fill($request->all());
 
@@ -528,6 +533,8 @@ class CustomerInvoicesController extends BillableController
         // if ( $request->input('export_date_form') == '' ) $document->export_date = null;
 
         $document->save();
+
+        if ( $need_update_totals ) $document->makeTotals();
 
 		// Move on
 		if ($request->has('nextAction'))

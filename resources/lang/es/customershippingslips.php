@@ -52,6 +52,8 @@ return [
 	'Date'     => 'Fecha',
 	'Created via'     => 'Creado por',
 	'Invoiced at:'     => 'Facturado el',
+	'Delivered at:'     => 'Entregado el:',
+	'Set delivered' => 'Click para entregado',
 
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Próx. Vencimiento',

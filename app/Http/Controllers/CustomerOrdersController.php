@@ -220,6 +220,8 @@ class CustomerOrdersController extends BillableController
 
         $this->validate($request, $rules);
 
+        $customer = Customer::with('addresses')->findOrFail(  $request->input('customer_id') );
+
         // Extra data
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
 //        $doc_id = $seq->getNextDocumentId();
@@ -227,6 +229,9 @@ class CustomerOrdersController extends BillableController
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
+
+                        'document_discount_percent' => $customer->discount_percent,
+                        'document_ppd_percent'      => $customer->discount_ppd_percent,
 
                         'created_via'          => 'manual',
                         'status'               =>  'draft',
@@ -359,6 +364,10 @@ class CustomerOrdersController extends BillableController
 */
         $document = $customerorder;
 
+        $need_update_totals = (
+            $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+        ) ? true : false;
+
         $document->fill($request->all());
 
         // Reset Export date
@@ -366,6 +375,8 @@ class CustomerOrdersController extends BillableController
         if ( $request->input('export_date_form', '') == '' ) $document->export_date = null;
 
         $document->save();
+
+        if ( $need_update_totals ) $document->makeTotals();
 
         // Move on
         if ($request->has('nextAction'))
@@ -748,6 +759,11 @@ class CustomerOrdersController extends BillableController
             'currency_conversion_rate' => $document->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
 
+            'document_discount_percent' => $document->document_discount_percent,
+            'document_ppd_percent'      => $document->document_ppd_percent,
+
+            'delivery_date' => $document->delivery_date,
+
 //            'total_currency_tax_incl' => $document->total_currency_tax_incl,
 //            'total_currency_tax_excl' => $document->total_currency_tax_excl,
 //            'total_currency_paid' => $this->total_currency_paid,
@@ -909,6 +925,8 @@ class CustomerOrdersController extends BillableController
 
 
             // Not so fast, Sony Boy
+
+            $shippingslip->makeTotals();
 
             // Confirm Shipping Slip
             $shippingslip->confirm();

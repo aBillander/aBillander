@@ -84,6 +84,9 @@ trait BillableGroupableControllerTrait
             'currency_conversion_rate' => $customer->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
 
+            'document_discount_percent' => $customer->discount_percent,
+            'document_ppd_percent'      => $customer->discount_ppd_percent,
+
             'total_currency_tax_incl' => $documents->sum('total_currency_tax_incl'),
             'total_currency_tax_excl' => $documents->sum('total_currency_tax_excl'),
 //            'total_currency_paid' => $this->total_currency_paid,
@@ -248,6 +251,8 @@ trait BillableGroupableControllerTrait
             }
 
             // Not so fast, Sony Boy
+
+            $document->makeTotals();
 
             // Close Order
             $document->close();

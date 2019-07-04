@@ -384,6 +384,7 @@ $(document).ready(function() {
 
 
     $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
+    $('#delivery_date_form').val('');
     $('#order_document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
 
 //    $('#sequence_id').val('{{ $customer->getInvoiceSequenceId() }}');
@@ -410,6 +411,14 @@ $(document).ready(function() {
 
   $(function() {
     $( "#document_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+  $(function() {
+    $( "#delivery_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"

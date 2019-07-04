@@ -39,8 +39,10 @@ trait BillableShippingSlipableControllerTrait
                 ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
         
         // Dates (cuen)
-        $this->mergeFormDates( ['document_date'], $request );
+        $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
         $request->merge( ['shippingslip_date' => $request->input('document_date')] );   // According to $rules_createshippingslip
+        
+        $request->merge( ['shippingslip_delivery_date' => $request->input('delivery_date')] );   // According to $rules_createshippingslip
 
         $rules = $this->document::$rules_createshippingslip;
 
@@ -49,7 +51,7 @@ trait BillableShippingSlipableControllerTrait
 //        abi_r($request->all(), true);
 
         // Set params for group
-        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status');
+        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'delivery_date', 'status');
 
         // abi_r($params, true);
 
@@ -69,6 +71,9 @@ trait BillableShippingSlipableControllerTrait
             'template_id'   => Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE'), 
             'sequence_id'   => Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE'), 
             'document_date' => \Carbon\Carbon::now()->toDateString(),
+
+            'document_discount_percent' => $document->document_discount_percent,
+            'document_ppd_percent'      => $document->document_ppd_percent,
 
             'status' => 'confirmed',
         ];
@@ -203,8 +208,16 @@ trait BillableShippingSlipableControllerTrait
 
             'document_date' => $params['document_date'],
 
+            'delivery_date' => $params['delivery_date'],
+
             'currency_conversion_rate' => $customer->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
+
+            'document_discount_percent' => array_key_exists('document_discount_percent', $params) ?
+                                                 $params['document_discount_percent'] : $customer->discount_percent,
+
+            'document_ppd_percent'      => array_key_exists('document_ppd_percent', $params) ?
+                                                 $params['document_ppd_percent']      : $customer->discount_ppd_percent,
 
             'total_currency_tax_incl' => $documents->sum('total_currency_tax_incl'),
             'total_currency_tax_excl' => $documents->sum('total_currency_tax_excl'),
@@ -400,6 +413,8 @@ trait BillableShippingSlipableControllerTrait
         }
 
         // Good boy, so far
+
+        $shippingslip->makeTotals();
 
         if ( $params['status'] == 'confirmed' )
             $shippingslip->confirm();

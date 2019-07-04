@@ -21,6 +21,8 @@ class CreateCustomerShippingSlipsTable extends Migration
                 include __DIR__.'/schnitzel/_schnitzel_create_documents_table.php';
             }
 
+            $table->string('shipment_status', 32)->nullable(false)->default('pending');
+
             $table->date('invoiced_at')->nullable();
 
             $table->date('printed_at')->nullable();                             // Printed at

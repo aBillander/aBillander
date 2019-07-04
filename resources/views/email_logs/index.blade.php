@@ -49,6 +49,16 @@
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
 
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('email_from', l('Email from')) !!}
+        {!! Form::text('email_from', null, array('id' => 'email_from', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('email_to', l('Email to')) !!}
+        {!! Form::text('email_to', null, array('id' => 'email_to', 'class' => 'form-control')) !!}
+    </div>
+
 <div class=" hide form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('reference', l('Reference')) !!}
     {!! Form::text('reference', null, array('class' => 'form-control')) !!}
@@ -68,6 +78,23 @@
 </div>
 
 </div>
+
+<div class="row">
+
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+        {!! Form::label('subject', l('Subject')) !!}
+        {!! Form::text('subject', null, array('id' => 'subject', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+        {!! Form::label('body', l('Body')) !!}
+        {!! Form::text('body', null, array('id' => 'body', 'class' => 'form-control')) !!}
+    </div>
+
+
+</div>
+
+
 
                 {!! Form::close() !!}
             </div>
@@ -109,13 +136,22 @@
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="auto" 
                             data-title="{!! $emaillog->subject !!}" data-content="{{ $emaillog->body }}" html="true" data-container="body">
-                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                        <i class="fa fa-paperclip" title="{{l('View', [], 'layouts')}}"></i>
                     </button>
                  </a>
                 @endif
       </td>
       <td>{{ $emaillog->from }}</td>
-      <td>{{ $emaillog->attachments }}</td>
+      <td>
+                @if ($emaillog->attachments)
+                 <a href="javascript:void(0);">
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="auto" 
+                            data-title="{!! $emaillog->subject !!}" data-content="{{ $emaillog->attachments }}" html="true" data-container="body">
+                        <i class="fa fa-file-o" title="{{l('View', [], 'layouts')}}"></i>
+                    </button>
+                 </a>
+                @endif
+      </td>
       <td>[{{ $emaillog->userable_id}}] {{ $emaillog->userable->getFullName() }}</td>
 
             <td class="text-right">

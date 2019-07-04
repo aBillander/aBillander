@@ -139,6 +139,9 @@ class AbccCustomerOrdersController extends Controller {
 			'currency_conversion_rate' => $cart->currency->conversion_rate,
 //			'down_payment' => $order[''],
 
+			'document_discount_percent' => $customer->discount_percent,
+			'document_ppd_percent'      => $customer->discount_ppd_percent,
+
 //			'total_discounts_tax_incl' => $order[''],
 //			'total_discounts_tax_excl' => $order[''],
 //			'total_products_tax_incl' => $order[''],

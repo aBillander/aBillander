@@ -154,6 +154,7 @@ trait BillableCustomTrait
 
             // Make a Price object for rounding
             $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $currency);
+            $p->applyRounding();        // But see: BillableTotalsTrait :: applyDiscount()
 
             // Improve this: Sum subtotals by tax type must match Order Totals
             // $p->applyRoundingWithoutTax( );

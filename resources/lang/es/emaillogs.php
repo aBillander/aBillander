@@ -12,6 +12,8 @@ return [
 	'Email Logs' => 'Emails Enviados',
 	'Date from' => 'Fecha desde',
 	'Date to' => 'Fecha hasta',
+	'Email from' => 'Email Emisor',
+	'Email to' => 'Email Destinatario',
 	'Reference' => 'Referencia',
 	'Product Name' => 'Nombre de Producto',
 	'Warehouse' => 'Almacén',

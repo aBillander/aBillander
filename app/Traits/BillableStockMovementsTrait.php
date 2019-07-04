@@ -15,7 +15,8 @@ trait BillableStockMovementsTrait
         foreach ($this->lines as $line) {
             //
             // Only products, please!!!
-            if ( ! ( $line->product_id > 0 ) ) continue;
+            if ( ! ( $line->line_type == 'product' ) ) continue;
+            if ( ! ( $line->product_id > 0 ) )         continue;
 
             //
             $data = [

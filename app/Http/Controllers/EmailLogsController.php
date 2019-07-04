@@ -34,8 +34,8 @@ class EmailLogsController extends Controller
         
 
         $emaillogs = $this->emaillog
-//                                ->filter( $request->all() )
-//                                ->with('user')
+                                ->filter( $request->all() )
+                                ->with('userable')
                                 ->orderBy('created_at', 'DESC');
 
 //         abi_r($mvts->toSql(), true);

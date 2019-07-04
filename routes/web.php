@@ -64,12 +64,18 @@ Route::get('clear-cache', function()
 
 Route::get('dbbackup', function()
 {
+    $security_token = request('security_token'); 
+
+    if ( $security_token != \App\Configuration::isNotEmpty('DB_BACKUP_SECURITY_TOKEN') )
+        die($security_token);
+
     Artisan::call('db:backup');
     // save it to the storage/backups/backup.sql file
 
     abi_r( Artisan::output() );
 
-    return '<h1>Proceso terminado</h1><a class="navbar-brand" href="' .url('/'). '">Volver</a>';
+    // return '<h1>Proceso terminado</h1>';    // <a class="navbar-brand" href="' .url('/'). '">Volver</a>';
+    return ;
 });
 
 Route::get('404', function()
@@ -473,8 +479,12 @@ foreach ($pairs as $pair) {
             });
 
 
-        Route::get('dbbackups',         'DbBackupsController@index'  )->name('dbbackups.index');
-        Route::get('dbbackups/process', 'DbBackupsController@process')->name('dbbackups.process');
+        Route::get('dbbackups',           'DbBackupsController@index'  )->name('dbbackups.index');
+
+        Route::get( 'dbbackups/job/edit',   'DbBackupsController@job'       )->name('dbbackups.job');
+        Route::post('dbbackups/job/update', 'DbBackupsController@jobUpdate' )->name('dbbackups.job.update');
+
+        Route::get('dbbackups/process',   'DbBackupsController@process')->name('dbbackups.process');
 
 
         /* ******************************************************************************************************** */

@@ -57,6 +57,7 @@ $confs = [
 ['ALLOW_SALES_WITHOUT_STOCK', '0'],
 ['CUSTOMER_INVOICE_CAPTION', 'Registered with the Commercial Registry of City.'],
 ['CUSTOMER_ORDERS_NEED_VALIDATION', '0'],
+['DB_BACKUP_SECURITY_TOKEN', 'XXXXXXXXXXXXXXXX'],
 ['DEF_CARRIER', ''],
 ['DEF_COMPANY', ''],
 ['DEF_COUNTRY', ''],

@@ -6,12 +6,15 @@
 @section('content')
 
 <div class="page-header">
-    <div class="pull-right" style="padding-top: 4px;">
+    <div class="pull-right" xstyle="padding-top: 4px;">
+        <a href="{{ URL::to('dbbackups/job/edit') }}" class="btn xbtn-sm btn-success" xstyle="margin-right: 32px;" 
+                title="{{l('DB Backup Job')}}"><i class="fa fa-cog"></i> &nbsp;{{l('Cron Job')}}</a>
+
         <a href="{{ URL::to('dbbackups/process') }}" class="btn xbtn-sm btn-primary" style="margin-right: 32px;" 
                 title="{{l('Create Data Base Backup')}}"><i class="fa fa-database"></i> &nbsp;{{l('New DB Backup')}}</a>
     </div>
     <h2>
-        {{ l('DB Backups') }} <span style="color: #cccccc;">::</span> <span class="lead well well-sm alert-warning"> {{ $bk_folder }} </span> <button class="btn btn-grey" style="margin-left: 36px">{{l('Found :nbr record(s)', [ 'nbr' => count($listing) ], 'layouts')}}</button>
+        {{ l('DB Backups') }} <span style="color: #cccccc;">::</span> <span class="lead well well-sm alert-warning"> {{ $bk_folder }} </span> <button class="btn btn-grey" style="margin-left: 22px">{{l('Found :nbr record(s)', [ 'nbr' => count($listing) ], 'layouts')}}</button>
     </h2>
 </div>
 

@@ -94,7 +94,7 @@
                 <a class="btn btn-xs btn-blue" href="#" title="{{ l('Delivered at:') }} {{abi_date_short( $document->delivery_date_real )}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
     @else
         @if ($document->status == 'closed')
-                <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/deliver') }}" title="{{l('Set delivered')}}"><i class="fa fa-truck"></i></a>
+                <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/deliver') }}" title="{{l('Set delivered')}}">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
         @endif
     @endif
             </td>

@@ -76,6 +76,9 @@ class CustomerShippingSlip extends Billable
     {
         if ( $this->status != 'closed' ) return false;
 
+        // On delivery
+        if ( $this->shipment_status != 'pending' ) return false;
+
         if ( ! $this->rightAscriptions->isEmpty() ) return false;
 
         return true;

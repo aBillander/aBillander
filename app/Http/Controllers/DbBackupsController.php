@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 use \Artisan;
 
 use App\Configuration;
+use App\Tools;
 
 class DbBackupsController extends Controller {
 
@@ -61,6 +62,42 @@ class DbBackupsController extends Controller {
 
 		return view('db_backups.index', compact('bk_folder', 'listing'));
 	}
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function job()
+    {
+        $job_url = url('/').'/dbbackup';
+        $security_token = Configuration::isNotEmpty('DB_BACKUP_SECURITY_TOKEN') ?
+        					Configuration::get('DB_BACKUP_SECURITY_TOKEN') :
+        					strtoupper( Tools::passwdGen(16) );
+        $cronUrl = $job_url.'?security_token='.$security_token;
+
+        Configuration::updateValue('DB_BACKUP_SECURITY_TOKEN', $security_token);
+
+        return view('db_backups.job_edit', compact('job_url', 'security_token', 'cronUrl'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function jobUpdate(Request $request)
+    {
+        $security_token = strtoupper( Tools::passwdGen(16) );
+
+        Configuration::updateValue('DB_BACKUP_SECURITY_TOKEN', $security_token);
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $security_token], 'layouts'));
+    }
+
 
 	/**
 	 * Process Backup.

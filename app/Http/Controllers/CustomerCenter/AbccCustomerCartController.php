@@ -53,7 +53,7 @@ class AbccCustomerCartController extends Controller
 
 //		 abi_r($this->customer->name_fiscal);die();
 
-		$cart = Cart::getCustomerCart();
+		$cart = Cart::getCustomerUserCart();
 
         return view('abcc.cart.index', compact('cart'));
 	}
@@ -133,7 +133,7 @@ class AbccCustomerCartController extends Controller
     // Deprecated
     public function addItem(Request $request, $id)
     {
-        $cart = Cart::getCustomerCart();
+        $cart = Cart::getCustomerUserCart();
 
         $product = $this->product->find($id);
 
@@ -340,12 +340,12 @@ class AbccCustomerCartController extends Controller
 
         $quantity = floatval( $request->input('quantity', 1.0) );
 
-        $cart = Cart::getCustomerCart();
+        $cart = Cart::getCustomerUserCart();
 
         $line = $cart->addLine($product_id, $combination_id, $quantity);
 
         // Refresh Cart
-        $cart = Cart::getCustomerCart();
+        $cart = Cart::getCustomerUserCart();
 
 
         if ($line)
@@ -412,7 +412,7 @@ class AbccCustomerCartController extends Controller
 
 //		 abi_r($this->customer->name_fiscal);die();
 
-//		$cart = Cart::getCustomerCart();
+//		$cart = Cart::getCustomerUserCart();
 		$cart = \App\Context::getContext()->cart;
 
         return view('abcc.cart._panel_cart_lines', compact('cart'));

@@ -64,4 +64,29 @@ return [
 	'Enable Quotations'     => 'Permitir Presupuestos',
 	'Enable minimum Order'     => 'Activar Pedido mínimo',
 	'Minimum Order Value'     => 'Importe Pedido mínimo',
+	'Display Prices tax inc?'     => '¿Mostrar Precios IVA inc?',
+	'Location / Address'     => 'Delegación / Dirección',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Users Language Lines :: cart
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Shopping Cart'     => 'Contenido del Carrito',
+
+	'Cart Items'     => 'Productos en el Carrito',
+
+	'Reference'     => 'Referencia',
+	'Product Name'     => 'Producto',
+	'Customer Price'     => 'Precio',
+	'Prices are exclusive of Tax'     => 'El Precio no incluye Impuestos',
+	'Quantity'     => 'Cantidad',
+	'Total'     => 'Total',
+
+	'View Image'     => 'Ver Imagen',
 ];

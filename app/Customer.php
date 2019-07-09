@@ -517,6 +517,7 @@ class Customer extends Model {
         return $this->belongsTo('App\Language');
     }
 
+    // Use CustomerUser->cart instead!!
     public function cart()
     {
         return $this->hasOne('App\Cart');

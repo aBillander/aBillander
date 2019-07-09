@@ -27,7 +27,13 @@
                 <a href="{{ URL::to('abcc/orders') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to History')}}</a>
             </div>
             <h2>
-            	<a href="{{ route('abcc.orders.index') }}">{{l('Order History', [], 'abcc/layouts')}}</a>  &nbsp; <span style="color: #cccccc;">/</span>  &nbsp; {{ $order->document_reference }} &nbsp; <span class="badge xpull-right" style="background-color: #3a87ad; margin-right: 72px; xmargin-top: 8px;" title="{{ '' }}">{{ $order->currency->iso_code }}</span></h2>
+            	<a href="{{ route('abcc.orders.index') }}">{{l('Order History', [], 'abcc/layouts')}}</a>  &nbsp; <span style="color: #cccccc;">/</span>
+                @if ($order->document_reference)
+                    &nbsp; {{ $order->document_reference }} &nbsp; 
+                @else
+                  <span class="btn btn-sm btn-grey">{{ l('Draft', 'layouts') }}</span> &nbsp; 
+                @endif
+                <span class="badge xpull-right" style="background-color: #3a87ad; margin-right: 72px; xmargin-top: 8px;" title="{{ '' }}">{{ $order->currency->iso_code }}</span></h2>
         </div>
     </div>
 </div>

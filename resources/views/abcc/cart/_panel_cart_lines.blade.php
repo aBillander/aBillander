@@ -125,21 +125,9 @@
             </tr>
   @endforeach
 
-{{-- Totals --}}
-<tr class="info">
-      <td></td>
 
-      <td>
-      </td>
+@include('abcc.cart._panel_cart_total')
 
-      <td colspan="2"><h3>
-            <span style="color: #dd4814;">{{ l('Total') }}</span>
-        </h3></td>
-
-        <td class="text-center lead"><h3>{{ $cart->quantity }}</h3></td>
-
-      <td  class="text-center lead" colspan="3"><h3>{{ $cart->as_priceable($cart->amount) }} {{ $cart->currency->sign }}</h3></td>
-</tr>
 
         </tbody>
     </table>

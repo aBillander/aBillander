@@ -196,14 +196,23 @@ class Payment extends Model {
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOfCustomer($query)
+    public function scopeOfLoggedCustomer($query)
     {
-//        abi_r(Auth::user()->customer_id, true);
+        if ( Auth::guard('customer')->check() && ( Auth::guard('customer')->user()->customer_id != NULL ) )
+        {
+            $user = Auth::guard('customer')->user();
 
-        if ( isset(Auth::user()->customer_id) && ( Auth::user()->customer_id != NULL ) )
-            return $query->where('paymentorable_id', Auth::user()->customer_id)->where('paymentorable_type', 'App\Customer');
+            return $query->whereHas('customerinvoice', function ($query) use ($user) {
+                                
+                                $query->where('customer_id', $user->customer_id);
 
-        return $query;
+                                if ( $user->address_id )
+                                    $query->where('shipping_address_id', $user->address_id);
+                            } );
+        }
+
+        // Not allow to see resource
+        return $query->where('customer_id', 0)->where('status', '');
     }
 
 

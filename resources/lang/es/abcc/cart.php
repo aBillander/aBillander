@@ -18,7 +18,10 @@ return [
 	'Customer Price'     => 'Precio',
 	'Prices are exclusive of Tax'     => 'El Precio no incluye Impuestos',
 	'Quantity'     => 'Cantidad',
+	'Products Total'     => 'Total Troductos',
 	'Total'     => 'Total',
+	'Document Discount'     => 'Descuento en Documento',
+	'Prompt Payment Discount'     => 'Descuento Pronto Pago',
 
 	'Change Quantity and press [Enter] or click button below.'     => 'Cambie la Cantidad y pulse [Enter] o click en el botón de más abajo.',
 

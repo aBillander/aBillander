@@ -44,8 +44,9 @@ class AbccCustomerShippingSlipsController extends Controller
     {
         $customer      = Auth::user()->customer;
 
-        $documents = $this->customerShippingSlip    //CustomerInvoice::ofCustomer()      // Of Logged in Customer (see scope on Customer Model)
-                            ->where('customer_id', $customer->id)
+        $documents = $this->customerShippingSlip
+                            ->ofLoggedCustomer()      // Of Logged in Customer (see scope on Billable 
+//                            ->where('customer_id', $customer->id)
                             ->where( function ($q) {
                                     $q->where('status', 'closed');
                                     $q->orWhere('status', 'confirmed');

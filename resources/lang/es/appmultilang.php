@@ -73,6 +73,7 @@ return array(
 	|
 	*/
 
+    'template.CustomerQuotationPdf'   => 'Presupuesto de Cliente (Pdf)',
     'template.CustomerOrderPdf'   => 'Pedido de Cliente (Pdf)',
     'template.CustomerShippingSlipPdf'   => 'Albarán de Cliente (Pdf)',
 	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',

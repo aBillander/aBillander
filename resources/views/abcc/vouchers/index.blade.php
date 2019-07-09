@@ -63,14 +63,18 @@
 	@endforeach
 	</tbody>
 </table>
+
+   </div><!-- div class="table-responsive" ENDS -->
+
+{{ $payments->appends( Request::all() )->render() }}
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $payments->total() ], 'layouts')}} </span></li></ul>
+
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
     {{l('No records found', [], 'layouts')}}
 </div>
 @endif
-
-   </div>
 </div>
 
 @stop

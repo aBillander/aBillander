@@ -32,11 +32,21 @@ class LogSentMessageListener
         $message = $event->message;
 
         // Attachments
+        $files = [];
+         /** @var \Swift_Mime_MimeEntity $child */
+         foreach ($message->getChildren() as $child) {
+             if (null !== ($disposition = $child->getHeaders()->get('content-disposition'))) {
+                 /** @var \Swift_Mime_Headers_ParameterizedHeader $disposition */
+                 $files[] = $disposition->getParameter('filename');
+             }
+         }
+
+/*
         $attachments = [];
         foreach ($message->getChildren() as $child) {
             $attachments[] = $child->getFilename();
         }
-
+*/
         $emaillog = EmailLog::create([
             'from' => $this->formatAddressField($message, 'From'),
             'to' => $this->formatAddressField($message, 'To'),
@@ -45,7 +55,7 @@ class LogSentMessageListener
             'subject' => $message->getSubject(),
             'body' => $message->getBody(),
             'headers' => (string)$message->getHeaders(),
-            'attachments' => count( $attachments ) ? implode("\n\n", $attachments) : null,
+            'attachments' => count( $files ) ? implode("\n\n", $files) : null,
             'created_at' => Carbon::now(),
 
  //           'userable_id' => \Auth::id(),

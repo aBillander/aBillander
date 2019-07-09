@@ -176,4 +176,9 @@ return [
 
 	'Bank Accounts'     => 'Cuentas Bancarias',
 	'Bank Name'     => 'Nombre del Banco',
+
+	'View Cart'     => 'Ver Carrito',
+	'Add New User' => 'Nuevo Usuario para este Cliente',
+	'Create User' => 'Crear Usuario',
+	'Update User' => 'Modificar Usuario',
 ];

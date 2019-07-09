@@ -1,105 +1,85 @@
 
-    <div class="page-header">
-        <h3>
-            <span style="color: #dd4814;">{{ l('Totals') }}</span> <!-- span style="color: #cccccc;">/</span> { { $order->name } } -->
-             {{-- include getSubtotals functions in billable trait --}}
-        </h3>        
-    </div>
+{{-- Totals --}}
 
-    <div id="div_customer_order_total">
-       <div class="table-responsive">
+<tr class="info">
+      <td></td>
 
-    <table id="order_total" class="table table-hover">
-        <thead>
-            <tr>
-               <th> </th>
-               <th class="text-left">
+      <td>
+      </td>
 
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-                    {{ l('Total Lines with Tax') }}
-                    @else
-                    {{ l('Total Lines') }}
-                    @endif
+      <td colspan="2"><h3>
+            <span style="color: #dd4814;">{{ l('Products Total') }}</span>
+        </h3></td>
 
-               </th>
+        <td class="text-center lead"><h3>{{ $cart->quantity }}</h3></td>
 
-               <th class="text-left" style="width:1px; white-space: nowrap;">{{l('Discount')}}</th>
+      <td  class="text-center lead" colspan="3"><h3>{{ $cart->as_priceable($cart->amount) }} {{ $cart->currency->sign }}</h3></td>
+</tr>
 
-               <th class="text-left">{{l('Taxable Base')}}</th>
-               <th class="text-left">{{l('Taxes')}}</th>
+@php
 
-               <th class="text-right">{{l('Total')}}</th>
-            </tr>
-        </thead>
-{{--
-        <tbody>
-            <tr>
-                <td class="text-center">
-                    <span class="badge" style="background-color: #3a87ad;">{{ $order->currency->iso_code }}</span>
-                </td>
-                <td style="vertical-align: middle;">
+$dis1 = $cart->amount * $cart->customer->discount_percent/100.0;
 
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-                    {{ $order->as_price('total_lines_tax_incl') }}
-                    @else
-                    {{ $order->as_price('total_lines_tax_excl') }}
-                    @endif
+$dis2 = ($cart->amount - $dis1) * $cart->customer->discount_ppd_percent/100.0;
 
-                </td>
-                <td style="width:1px; white-space: nowrap;vertical-align: middle;">
+$tot = ( $dis1 != 0 ) || ( $dis2 != 0 );
 
-                    <div xclass="form-group">
-                      @if ( $order->editable )
-                      <div class="input-group">
+$d1 = $cart->as_priceable($dis1);
+$d2 = $cart->as_priceable($dis2);
 
-                        <span class="input-group-addon input-sm"><strong>%</strong></span>
+$total = $cart->as_priceable($cart->amount) - $d1 - $d2;
 
-                        <input name="document_discount_percent" id="document_discount_percent" class="input-update-order-total form-control input-sm col-xs-2" type="text" size="5" maxlength="10" style="width: auto;" value="{{ $order->as_percent('document_discount_percent') }}" onclick="this.select()" xonchange="add_discount_to_order($('#order_id').val());">
+@endphp
 
-                        <span class="input-group-btn">
-                          <button class="update-order-total btn btn-sm btn-lightblue" type="button" title="{{l('Apply', [], 'layouts')}}" xonclick="add_discount_to_order($('#order_id').val());">
-                              <span class="fa fa-calculator"></span>
-                          </button>
-                        </span>
+{{-- Dicounts --}}
 
-                      </div>
-                      @else
-                        {{ $order->as_percent('document_discount_percent') }}
-                      @endif
-                    </div>
+@if( $d1 != 0 )
+<tr xclass="info">
+      <td></td>
 
-                </td>
-                <td style="vertical-align: middle;">{{ $order->as_price('total_currency_tax_excl', $order->currency) }}</td>
-                <td style="vertical-align: middle;">{{ $order->as_priceable($order->total_currency_tax_incl - $order->currency_total_tax_excl) }}</td>
-                <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $order->as_price('total_currency_tax_incl') }}</strong></td>
-            </tr>
+      <td>
+      </td>
 
-@if ( $order->currency_conversion_rate != 1.0 )
-            <tr>
-                <td class="text-center">
-                    <span class="badge" style="background-color: #3a87ad;">{{ \App\Context::getContext()->currency->iso_code }}</span>
-                </td>
-                <td style="vertical-align: middle;">
-<!--
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
-                    {{ $order->as_price('total_lines_tax_incl') }}
-                    @else
-                    {{ $order->as_price('total_lines_tax_excl') }}
-                    @endif
--->
-                </td>
-                <td>
+      <td colspan="2"><h4>
+            <span xstyle="color: #dd4814;">{{ l('Document Discount') }}: {{ $cart->customer->as_percent('discount_percent') }}%</span>
+        </h4></td>
 
-                </td>
-                <td style="vertical-align: middle;">{{ $order->as_price('total_tax_excl', $order->currency) }}</td>
-                <td style="vertical-align: middle;">{{ $order->as_priceable($order->total_tax_incl - $order->total_tax_excl) }}</td>
-                <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $order->as_price('total_tax_incl') }}</strong></td>
-            </tr>
+        <td class="text-center lead"><h3> </h3></td>
+
+      <td  class="text-center lead" colspan="3"><h4>-{{ $d1 }} {{ $cart->currency->sign }}</h4></td>
+</tr>
 @endif
 
-        </tbody>
---}}
-    </table>
+@if( $d2 != 0 )
+<tr xclass="info">
+      <td></td>
 
-       </div>
-    </div>
+      <td>
+      </td>
+
+      <td colspan="2"><h4>
+            <span xstyle="color: #dd4814;">{{ l('Prompt Payment Discount') }}: {{ $cart->customer->as_percent('discount_ppd_percent') }}%</span>
+        </h4></td>
+
+        <td class="text-center lead"><h3> </h3></td>
+
+      <td  class="text-center lead" colspan="3"><h4>-{{ $d2 }} {{ $cart->currency->sign }}</h4></td>
+</tr>
+@endif
+
+@if( $tot )
+<tr class="info">
+      <td></td>
+
+      <td>
+      </td>
+
+      <td colspan="2"><h3>
+            <span style="color: #dd4814;">{{ l('Total') }}</span>
+        </h3></td>
+
+        <td class="text-center lead"><h3> </h3></td>
+
+      <td  class="text-center lead" colspan="3"><h3>{{ $cart->as_priceable($total) }} {{ $cart->currency->sign }}</h3></td>
+</tr>
+@endif

@@ -27,9 +27,13 @@ class AbccCustomerVouchersController extends Controller {
 	 */
 	public function index()
 	{
-		$payments = Payment::ofCustomer()
+		$payments = Payment::ofLoggedCustomer()
 					->where('payment_type', 'receivable')
-					->orderBy('due_date', 'desc')->get();
+					->orderBy('due_date', 'desc');		// ->get();
+
+        $payments = $payments->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+
+        $payments->setPath('vouchers');
 
         return view('abcc.vouchers.index', compact('payments'));
 	}

@@ -98,6 +98,16 @@
                             </a>
                         </li>
 @endif
+
+@if ( \App\Configuration::isTrue('ABCC_ENABLE_QUOTATIONS') )
+
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ route('abcc.quotations.index') }}">
+                                 {{l('Quotations', [], 'abcc/layouts')}}
+                            </a>
+                        </li>
+@endif
                         <!-- li class="divider"></li -->
                     </ul>
                 </li>

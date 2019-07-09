@@ -110,6 +110,11 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::resource('/vouchers', 'AbccCustomerVouchersController')->names('abcc.vouchers');
 
 
+        Route::resource('/quotations', 'AbccCustomerQuotationsController')->names('abcc.quotations');
+        Route::get('quotations/{id}/duplicate', 'AbccCustomerQuotationsController@duplicateQuotation')->name('abcc.quotation.duplicate'  );
+        Route::get('quotations/{id}/pdf', 'AbccCustomerQuotationsController@showPdf')->name('abcc.quotation.pdf'  );
+
+
         Route::get('/cart', 'AbccCustomerCartController@index')->name('abcc.cart');
         Route::get('/cart/line/searchproduct',        'AbccCustomerCartController@searchProduct' )->name('cart.searchproduct');
         Route::get('/cart/line/getproduct',           'AbccCustomerCartController@getProduct'    )->name('cart.getproduct');

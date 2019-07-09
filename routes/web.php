@@ -140,6 +140,8 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::resource('customerusers', 'CustomerUsersController');
         Route::get('customerusers/create/withcustomer/{customer}', 'CustomerUsersController@createWithCustomer')->name('customer.createuser');
         Route::get('customerusers/{customer}/impersonate', 'CustomerUsersController@impersonate')->name('customer.impersonate');
+        Route::get('customerusers/{customer}/cart', 'CustomerUsersController@getCart')->name('customer.cart');
+        Route::get('customerusers/{customer}/getuser', 'CustomerUsersController@getUser')->name('customeruser.getuser');
 
         Route::resource('salesrepusers', 'SalesRepUsersController');
         Route::get('salesrepusers/create/withsalesrep/{salesrep}', 'SalesRepUsersController@createWithSalesRep')->name('salesrep.createuser');
@@ -239,6 +241,7 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup'));
         Route::get('customers/{id}/getorders',             'CustomersController@getOrders'    )->name('customer.getorders');
         Route::get('customers/{id}/getpricerules',         'CustomersController@getPriceRules')->name('customer.getpricerules');
+        Route::get('customers/{id}/getusers',         'CustomersController@getUsers')->name('customer.getusers');
         Route::post('customers/{id}/bankaccount', 'CustomersController@updateBankAccount')->name('customers.bankaccount');
         Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
 

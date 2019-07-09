@@ -102,14 +102,14 @@ class Cart extends Model
     |--------------------------------------------------------------------------
     */
 
-    public static function getCustomerCart()
+    public static function getCustomerUserCart()
     {
         if ( Auth::guard('customer')->check() )
         {
 
         // Get Customer Cart
         $customer = Auth::user()->customer;
-        $cart = Cart::where('customer_id', $customer->id)->with('cartlines')->first();
+        $cart = Cart::where('customer_id', $customer->id)->where('customer_user_id', Auth::user()->id)->with('cartlines')->first();
 
         if ( $cart ) 
         {

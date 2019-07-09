@@ -117,7 +117,7 @@
 
 </div><!-- div class="panel panel-info" -->
 
-    @include('customers._panel_customer_users')
+    @include('customers._panel_customer_users_0')
 
 
 @if( $customer->user )

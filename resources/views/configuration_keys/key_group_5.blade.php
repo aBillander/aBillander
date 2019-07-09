@@ -282,6 +282,29 @@
 
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_DISPLAY_PRICES_TAX_INC.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_DISPLAY_PRICES_TAX_INC" id="ABCC_DISPLAY_PRICES_TAX_INC_on" value="1" @if( old('ABCC_DISPLAY_PRICES_TAX_INC', $key_group['ABCC_DISPLAY_PRICES_TAX_INC']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_DISPLAY_PRICES_TAX_INC" id="ABCC_DISPLAY_PRICES_TAX_INC_off" value="0" @if( !old('ABCC_DISPLAY_PRICES_TAX_INC', $key_group['ABCC_DISPLAY_PRICES_TAX_INC']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_DISPLAY_PRICES_TAX_INC.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ABCC_ENABLE_NEW_PRODUCTS.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

@@ -20,7 +20,7 @@ use App\CustomerQuotationLine;
 
 use Mail;
 
-class AbccCustomerOrdersController extends Controller {
+class AbccCustomerQuotationsController extends Controller {
 
 
    protected $customer, $customer_user, $customerOrder, $customerOrderLine;
@@ -46,9 +46,13 @@ class AbccCustomerOrdersController extends Controller {
 	{
         $customer      = Auth::user()->customer;
 
-		$customer_orders = $this->customerOrder
+		$customer_orders = $this->customerQuotation
                             ->ofLoggedCustomer()      // Of Logged in Customer (see scope on Billable 
 //                            ->where('customer_id', $customer->id)
+                            ->where( function ($q) {
+                                    $q->where('status', 'closed');
+                                    $q->orWhere('status', 'confirmed');
+                                } )
                             ->withCount('lines')
 //                            ->with('customer')
                             ->with('currency')
@@ -58,9 +62,9 @@ class AbccCustomerOrdersController extends Controller {
 
         $customer_orders = $customer_orders->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
 
-        $customer_orders->setPath('orders');
+        $customer_orders->setPath('quotations');
 
-        return view('abcc.orders.index', compact('customer_orders'));
+        return view('abcc.quotations.index', compact('customer_orders'));
 	}
 
 	/**
@@ -75,7 +79,7 @@ class AbccCustomerOrdersController extends Controller {
 
 	/**
 	 * Store a newly created resource in storage.
-	 * Get Cart content & push a Customer Order
+	 * Get Cart content & push a Customer Quotation
 	 *
 	 * @return Response
 	 */
@@ -183,7 +187,7 @@ class AbccCustomerOrdersController extends Controller {
 //			'sales_rep_id' => $order[''],
 			'currency_id' => $cart->currency->id,
 			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_PAYMENT_METHOD'),
-			'template_id' => \App\Configuration::get('ABCC_DEFAULT_ORDER_TEMPLATE'),
+//			'template_id' => \App\Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE'),
 		];
 
 //        return 'OK';
@@ -367,7 +371,7 @@ class AbccCustomerOrdersController extends Controller {
 //			'sales_rep_id' => $order[''],
 			'currency_id' => $cart->currency->id,
 			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_PAYMENT_METHOD'),
-			'template_id' => \App\Configuration::get('DEF_CUSTOMER_QUOTATION_TEMPLATE'),
+//			'template_id' => \App\Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE'),
 		];
 
 //        return 'OK';
@@ -462,7 +466,7 @@ class AbccCustomerOrdersController extends Controller {
 
         $customer      = Auth::user()->customer;
 
-        $order = $this->customerOrder
+        $order = $this->customerQuotation
                             ->with('customer')
         					->with('lines')
         					->with('currency')
@@ -513,19 +517,19 @@ class AbccCustomerOrdersController extends Controller {
 
 
 
-    public function duplicateOrder($id)
+    public function duplicateQuotation($id)
     {
 
         $customer      = Auth::user()->customer;
 
-        $order = $this->customerOrder
+        $order = $this->customerQuotation
         					->where('id', $id)
         					->where('customer_id', $customer->id)
                             ->withCount('lines')
         					->first();
 
         if (!$order) 
-        	return redirect()->route('abcc.orders.index')
+        	return redirect()->route('abcc.quotations.index')
                 	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
         $cart = \App\Context::getContext()->cart;
@@ -545,10 +549,10 @@ class AbccCustomerOrdersController extends Controller {
 
         $customer      = Auth::user()->customer;
 
-        $document = $this->customerOrder->where('id', $id)->where('customer_id', $customer->id)->first();
+        $document = $this->customerQuotation->where('id', $id)->where('customer_id', $customer->id)->first();
 
         if (!$document) 
-        	return redirect()->route('abcc.orders.index')
+        	return redirect()->route('abcc.quotations.index')
                 	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
 
@@ -556,15 +560,15 @@ class AbccCustomerOrdersController extends Controller {
 
         // Get Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('ABCC_DEFAULT_ORDER_TEMPLATE') );
+             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_QUOTATION_TEMPLATE') );
 
         if ( !$t )
-        	return redirect()->route('abcc.orders.show', $id)
+        	return redirect()->route('abcc.quotations.index', $id)
                 ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 
         // $document->template = $t;
 
-        $template = $t->getPath( 'CustomerOrder' );
+        $template = $t->getPath( 'CustomerQuotation' );
 
         $paper = $t->paper;    // A4, letter
         $orientation = $t->orientation;    // 'portrait' or 'landscape'.
@@ -576,13 +580,13 @@ class AbccCustomerOrdersController extends Controller {
 		}
 		catch(\Exception $e){
 
-		    	return redirect()->route('abcc.orders.show', $id)
+		    	return redirect()->route('abcc.quotations.index', $id)
                 	->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
 		}
 
         // PDF stuff ENDS
 
-        $pdfName    = 'order_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
+        $pdfName    = 'quotation_' . $document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
         if ($request->has('screen')) return view($template, compact('document', 'company'));
         
@@ -590,7 +594,7 @@ class AbccCustomerOrdersController extends Controller {
         return  $pdf->download( $pdfName . '.pdf');
 
 
-        return redirect()->route('abcc.orders.index')
+        return redirect()->route('abcc.quotations.index')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
 	}
 }

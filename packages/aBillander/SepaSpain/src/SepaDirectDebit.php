@@ -256,7 +256,7 @@ class SepaDirectDebit extends Model
                 'lclInstrm'     => $localInstrument,
                 'seqTp'         => $sequenceType,
                 'cdtr'          => $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),      // (max 70 characters)
-                'iban'          => $this->iban,            // IBAN of the Creditor
+                'iban'          => $this->sanitize_iban( $this->iban ),            // IBAN of the Creditor
                 'bic'           => $this->swift,           // BIC of the Creditor
                 'ci'            => $this->calculateCreditorID( \App\Context::getContext()->company ),    // Creditor-Identifier
             // optional
@@ -304,7 +304,7 @@ class SepaDirectDebit extends Model
                 'dtOfSgntr'     => $voucher->created_at->toDateString(),            // Date of signature
 //                'bic'           => $voucher->customer->bankaccount->swift,           // BIC of the Debtor
                 'dbtr'          => $this->sanitize_name( $voucher->customer->name_fiscal ),        // (max 70 characters)
-                'iban'          => $voucher->customer->bankaccount->iban,// IBAN of the Debtor
+                'iban'          => $this->sanitize_iban( $voucher->customer->bankaccount->iban ),     // IBAN of the Debtor
             // optional
 //                'amdmntInd'     => 'false',                 // Did the mandate change
                 //'elctrncSgntr'  => 'tests',                  // do not use this if there is a paper-based mandate
@@ -400,5 +400,26 @@ class SepaDirectDebit extends Model
         }
 
         return $nuevo;
+    }
+
+    /**
+     * Get IBAN with or without blanks.
+     * @param type $blanks
+     * @return type
+     */
+    public function sanitize_iban($iban, $blanks = FALSE)
+    {
+        $iban = str_replace(' ', '', $iban);
+
+        if ($blanks) {
+            $txt = '';
+            
+            for ($i = 0; $i < strlen($iban); $i += 4) {
+                $txt .= substr($iban, $i, 4) . ' ';
+            }
+            return $txt;
+        }
+
+        return $iban;
     }
 }

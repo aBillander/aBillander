@@ -100,7 +100,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-bar-chart"></i>
                &nbsp; {{ l('Statistics') }}
             </a -->
-            <a id="b_customeruser" href="#customeruser" class="list-group-item">
+            <a id="b_customerusers" href="#customerusers" class="list-group-item">
                <i class="fa fa-bolt"></i>
                &nbsp; {{ l('ABCC Access') }}
             </a>
@@ -132,7 +132,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
 @if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
-          @include('customers._panel_customeruser')
+          @include('customers._panel_customer_users')
 
 @endif
 
@@ -156,7 +156,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#panel_products").hide();
       $("#panel_pricerules").hide();
  //     $("#panel_statistics").hide();
-      $("#panel_customeruser").hide();
+      $("#panel_customerusers").hide();
 
       $("#b_main").removeClass('active');
       $("#b_commercial").removeClass('active');
@@ -168,7 +168,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#b_products").removeClass('active');
       $("#b_pricerules").removeClass('active');
 //      $("#b_statistics").removeClass('active');
-      $("#b_customeruser").removeClass('active');
+      $("#b_customerusers").removeClass('active');
       
       if(window.location.hash.substring(1) == 'commercial')
       {
@@ -209,10 +209,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
          $("#panel_statistics").show();
          $("#b_statistics").addClass('active');
       }
-      else if(window.location.hash.substring(1) == 'customeruser')
+      else if(window.location.hash.substring(1) == 'customerusers')
       {
-         $("#panel_customeruser").show();
-         $("#b_customeruser").addClass('active');
+         $("#panel_customerusers").show();
+         $("#b_customerusers").addClass('active');
+         getCustomerUsers();
       }
       else  
       {

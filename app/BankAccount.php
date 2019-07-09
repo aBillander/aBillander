@@ -40,6 +40,7 @@ class BankAccount extends Model {
     |--------------------------------------------------------------------------
     */
 
+    // https://es.wikipedia.org/wiki/C%C3%B3digo_cuenta_cliente
     public function valcuenta_bancaria($cuenta1,$cuenta2,$cuenta3,$cuenta4)
     {
         if (strlen($cuenta1)!=4)  return false;
@@ -73,6 +74,27 @@ class BankAccount extends Model {
     }
     
     //////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Get IBAN with or without blanks.
+     * @param type $blanks
+     * @return type
+     */
+    public function iban_presenter($blanks = FALSE)
+    {
+        $iban = str_replace(' ', '', $this->iban);
+
+        if ($blanks) {
+            $txt = '';
+            
+            for ($i = 0; $i < strlen($iban); $i += 4) {
+                $txt .= substr($iban, $i, 4) . ' ';
+            }
+            return $txt;
+        }
+
+        return $iban;
+    }
 
     
     

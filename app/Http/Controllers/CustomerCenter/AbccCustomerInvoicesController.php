@@ -37,8 +37,13 @@ class AbccCustomerInvoicesController extends Controller
 
     public function index()
     {
-        $customer_invoices = $this->customerInvoice->ofCustomer()      // Of Logged in Customer (see scope on Billable Trait)
+        $customer_invoices = $this->customerInvoice
+                            ->ofLoggedCustomer()      // Of Logged in Customer (see scope on Billable 
 //                            ->with('customer')
+                            ->where( function ($q) {
+                                    $q->where('status', 'closed');
+                                    $q->orWhere('status', 'confirmed');
+                                } )
                             ->with('currency')
                             ->with('paymentmethod')
                             ->orderBy('id', 'desc');

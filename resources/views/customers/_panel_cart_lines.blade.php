@@ -1,8 +1,4 @@
-<div class="page-header">
-        <h3>
-            <span style="color: #dd4814;">{{ l('Shopping Cart') }}</span>
-        </h3>        
-</div>
+
 
 <div id="div_cart_lines">
           <div class="table-responsive">
@@ -77,7 +73,7 @@
   @endforeach
 
 {{-- Totals --}}
-<tr class="info">
+<tr class="success">
       <td></td>
 
       <td>
@@ -106,7 +102,4 @@
        </div>
 
 </div><!-- div id="div_cart_lines" -->
-
-
-@include('products._modal_view_image')
 

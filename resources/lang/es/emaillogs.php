@@ -23,7 +23,7 @@ return [
 	'Body' => 'Mensaje',
 	'From' => 'Enviado desde',
 	'Attachments' => 'Adjuntos',
-	'User' => 'Usurio',
+	'User' => 'Usuario',
 	'Stock Movements' => '',
 	'Type' => 'Tipo',
 	'Product' => 'Producto',

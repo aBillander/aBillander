@@ -11,7 +11,7 @@
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
             {{ l('Shipping Address') }}
-            {!! Form::select('shipping_address_id', Auth::user()->customer->getAddressList(), old('shipping_address_id', Auth::user()->customer->shipping_address_id), array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
+            {!! Form::select('shipping_address_id', Auth::user()->getAllowedAddressList(), old('shipping_address_id', Auth::user()->address_id ?: Auth::user()->customer->shipping_address_id), array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
             {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
          </div>
 

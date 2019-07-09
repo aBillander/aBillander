@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 use \App\Notifications\CustomerResetPasswordNotification;
 
 class CustomerUser extends Authenticatable
 {
     use Notifiable;
-    use SoftDeletes;
+//    use SoftDeletes;
 
     /**
      * Configure guard.
@@ -40,8 +40,8 @@ class CustomerUser extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password', 'firstname', 'lastname', 
 //        'home_page', 'is_admin', 
-        'active', 'enable_quotations', 'enable_min_order', 'min_order_value', 
-        'language_id', 'customer_id'
+        'active', 'enable_quotations', 'enable_min_order', 'min_order_value', 'display_prices_tax_inc',
+        'language_id', 'customer_id', 'address_id'
     ];
 
     /**
@@ -58,10 +58,12 @@ class CustomerUser extends Authenticatable
      * 
      */
     public static $rules = array(
-        'email'       => 'required|email',
-        'password'    => array('required', 'min:6', 'max:32'),
+        'customer_id' => 'exists:customers,id', 
+        'email' => 'required|email|unique:customer_users,email',
+        'password'    => 'required|min:6|max:32',
 //        'language_id' => 'exists:languages,id',
 //        'customer_id' => 'exists:customers,id',
+//        'address_id' => 'exists:addresses,id',
     );
 
     /**  trait CanResetPassword
@@ -84,6 +86,17 @@ class CustomerUser extends Authenticatable
     public function getFullName()
     {
         return $this->firstname.' '.$this->lastname;
+    }
+
+    public function getAllowedAddressList()
+    {
+
+        if ( $this->address_id )
+        {
+            return $this->customer->addresses()->where('id', $this->address_id)->pluck( 'alias', 'id' )->toArray();
+        }
+
+        return $this->customer->getAddressList();
     }
 
     public function getTheme()
@@ -131,6 +144,13 @@ class CustomerUser extends Authenticatable
         return $can;
     }
 
+    public function canDisplayPricesTaxInc()
+    {
+        $can = $this->display_prices_tax_inc >= 0 ? $this->display_prices_tax_inc : Configuration::getNumber('ABCC_DISPLAY_PRICES_TAX_INC') ; 
+
+        return $can;
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -157,5 +177,10 @@ class CustomerUser extends Authenticatable
     public function emaillogs()
     {
         return $this->morphMany('App\EmailLog', 'userable');
+    }
+
+    public function cart()
+    {
+        return $this->hasOne('App\Cart');
     }
 }

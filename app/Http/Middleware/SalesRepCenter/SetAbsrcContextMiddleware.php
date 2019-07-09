@@ -55,7 +55,7 @@ class SetAbsrcContextMiddleware {
 
 //		 abi_r($this->salesrep->name_fiscal);die();
 
-//		$cart = \App\Cart::getCustomerCart();
+//		$cart = \App\Cart::getCustomerUserCart();
 /*
 			Context::getContext()->user       = $user;
 			Context::getContext()->language   = $language;

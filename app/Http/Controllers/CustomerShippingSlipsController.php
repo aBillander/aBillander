@@ -630,6 +630,10 @@ class CustomerShippingSlipsController extends BillableController
             'template_id'   => $customer->getInvoiceTemplateId(), 
             'sequence_id'   => $customer->getInvoiceSequenceId(), 
             'document_date' => \Carbon\Carbon::now()->toDateString(),
+
+            'document_discount_percent' => $document->document_discount_percent,
+            'document_ppd_percent'      => $document->document_ppd_percent,
+            
             'status'        => 'closed', 
         ];
 
@@ -690,8 +694,12 @@ class CustomerShippingSlipsController extends BillableController
             'currency_conversion_rate' => $customer->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
 
-            'document_discount_percent' => $customer->discount_percent,
-            'document_ppd_percent'      => $customer->discount_ppd_percent,
+            'document_discount_percent' => array_key_exists('document_discount_percent', $params) ?
+                                                 $params['document_discount_percent'] : $customer->discount_percent,
+
+            'document_ppd_percent'      => array_key_exists('document_ppd_percent', $params) ?
+                                                 $params['document_ppd_percent']      : $customer->discount_ppd_percent,
+
 
             'total_currency_tax_incl' => $documents->sum('total_currency_tax_incl'),
             'total_currency_tax_excl' => $documents->sum('total_currency_tax_excl'),

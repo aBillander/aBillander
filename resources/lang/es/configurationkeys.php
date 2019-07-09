@@ -183,6 +183,10 @@ return [
 	'ABCC_ENABLE_MIN_ORDER.help' => '',
 	'ABCC_MIN_ORDER_VALUE.name' => 'Importe Pedido mínimo',
 	'ABCC_MIN_ORDER_VALUE.help' => '',
+
+	'ABCC_DISPLAY_PRICES_TAX_INC.name'     => '¿Mostrar los Precios con el Impuesto incluido?',
+	'ABCC_DISPLAY_PRICES_TAX_INC.help'     => '',
+
 	'ABCC_ENABLE_NEW_PRODUCTS.name' => 'Activar "Nuevos Productos"',
 	'ABCC_ENABLE_NEW_PRODUCTS.help' => 'El Cliente verá el enlace <strong><em>"Novedades"</em></strong> .',
 	'ABCC_NBR_DAYS_NEW_PRODUCT.name' => 'Número de días en los que el Producto es considerado una "novedad"',	// Number of days for which the Product is considered "new"',

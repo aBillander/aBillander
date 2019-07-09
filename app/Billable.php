@@ -860,12 +860,21 @@ class Billable extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOfCustomer($query)
+    public function scopeOfLoggedCustomer($query)
     {
 //        return $query->where('customer_id', Auth::user()->customer_id);
 
-        if ( isset(Auth::user()->customer_id) && ( Auth::user()->customer_id != NULL ) )
-            return $query->where('customer_id', Auth::user()->customer_id)->where('status', 'closed');
+        if ( Auth::guard('customer')->check() && ( Auth::guard('customer')->user()->customer_id != NULL ) )
+        {
+            $user = Auth::guard('customer')->user();
+
+            $query->where('customer_id', $user->customer_id);
+
+            if ( $user->address_id )
+                $query->where('shipping_address_id', $user->address_id);
+
+            return $query;
+        }
 
         // Not allow to see resource
         return $query->where('customer_id', 0)->where('status', '');

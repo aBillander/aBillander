@@ -63,6 +63,7 @@ return [
 	'Shipping Slips'     => 'Albaranes',
 	'Invoices'     => 'Facturas',
 	'Vouchers'     => 'Pagos',
+	'Quotations'     => 'Presupuestos',
 
 	'Invoicing'     => 'Facturación',
 	'Customer Invoices'     => 'Facturas de Clientes',

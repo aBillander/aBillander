@@ -124,4 +124,62 @@ class DbBackupsController extends Controller {
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') . Artisan::output());
 	}
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function delete($filename)
+    {
+		//
+		$bk_folder = storage_path().'/backups';
+
+		$file = $bk_folder.'/'.$filename;
+
+        if(is_file($file))
+		{
+		    // 1. possibility
+		    // use Illuminate\Support\Facades\Storage;
+		    // Storage::delete($file);
+		    // 2. possibility
+		    unlink( $file );
+		}
+		else
+		{
+		    // echo "File does not exist";
+		}
+
+        return redirect()->route(('dbbackups.index'))
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $filename], 'layouts'));
+    }
+
+
+
+    public function download($filename)
+    {
+		//
+		$bk_folder = storage_path().'/backups';
+
+		$file = $bk_folder.'/'.$filename;
+
+        if(is_file($file))
+		{
+		    $headers = [
+
+		              'Content-Type' => 'application/txt',
+
+		           ];
+
+		 
+
+		return response()->download($file, $filename, $headers);
+		}
+		else
+		{
+		    // echo "File does not exist";
+		}
+
+	}
+
 }

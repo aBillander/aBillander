@@ -43,12 +43,14 @@
 
                </div>
 
+@if( $customer_user->is_principal )
                <div class="panel-footer text-right">
                   <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
                      <i class="fa fa-hdd-o"></i>
                      &nbsp; {{ l('Save', [], 'layouts') }}
                   </button>
                </div>
+@endif
 
         {!! Form::close() !!}
 

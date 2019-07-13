@@ -60,7 +60,7 @@
 --}}
                     
 
-        			<a class="btn btn-sm btn-blue view-customeruser-cart" href="#" title="{{l('View Cart', [], 'layouts')}}" data-id="{{$user->id}}" data-name="{{ $user->getFullName() }}"><i class="fa fa-shopping-cart"></i></a>
+        			<a class="btn btn-sm btn-blue view-customeruser-cart" href="#" title="{{l('View Cart')}}" data-id="{{$user->id}}" data-name="{{ $user->getFullName() }}"><i class="fa fa-shopping-cart"></i></a>
 
                 	<a class="btn btn-sm btn-warning update-customeruser" href="#" title="{{l('Edit', [], 'layouts')}}" data-id="{{$user->id}}"><i class="fa fa-pencil"></i></a>
 

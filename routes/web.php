@@ -489,6 +489,9 @@ foreach ($pairs as $pair) {
 
         Route::get('dbbackups/process',   'DbBackupsController@process')->name('dbbackups.process');
 
+        Route::delete('dbbackups/{filename}/delete',   'DbBackupsController@delete'  )->name('dbbackups.delete'  );
+        Route::get('dbbackups/{filename}/download', 'DbBackupsController@download')->name('dbbackups.download');
+
 
         /* ******************************************************************************************************** */
 

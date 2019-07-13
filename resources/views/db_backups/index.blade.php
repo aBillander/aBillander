@@ -22,7 +22,7 @@
 <div class="container-fluid">
    <div class="row">
 
-      <div class="col-lg-3 col-md-3 col-sm-3">
+      <div class="col-lg-2 col-md-2 col-sm-2">
         {{-- Poor man offeset --}}
          <!-- div class="list-group">
             <a id="b_main_data" href="#" class="list-group-item active">
@@ -33,7 +33,7 @@
       </div>
 
       
-      <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="col-lg-8 col-md-8 col-sm-8">
 
 
 
@@ -48,6 +48,7 @@
             <th class="text-left">{{l('File Name')}}</th>
             <th class="text-left">{{l('Date')}}</th>
             <th class="text-left">{{l('Time')}}</th>
+            <th class="text-left">{{l('Size')}}</th>
             <th class="text-left"> </th>
         </tr>
     </thead>
@@ -60,15 +61,18 @@
 
             <td>{{ abi_date_short( \Carbon\Carbon::createFromTimestamp($line->getMTime()), 'H:i:s' ) }}</td>
 
+            <td class="text-right">{{  abi_formatBytes( $line->getSize() ) }}</td>
+
             <td class="text-right button-pad">
-{{--
-                      <a class="btn btn-sm btn-success" href="{{ URL::to('activityloggers/' . $logger->id) }}" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
+
+                      <a class="btn btn-sm alert-success" href="{{ URL::to('dbbackups/' . $line->getFilename() .  '/download') }}" title="{{l('Download')}}"><i class="fa fa-download"></i></a>
+
                       <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                          href="{{ URL::to('activityloggers/' . $logger->id ) }}" 
+                          href="{{ URL::to('dbbackups/' . $line->getFilename() . '/delete') }}" 
                           data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                          data-title="{{ l('aBillander LOG') }} :: ({{$logger->id}}) {{ $logger->name }}" 
+                          data-title="{{ l('DB Backup') }} :: {{$line->getFilename() }}" 
                           onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
---}}
+
             </td>
         </tr>
         @endforeach
@@ -97,7 +101,7 @@
 @endsection
 
 
-{{-- @include('layouts/modal_delete') --}}
+@include('layouts/modal_delete')
 
 
 @section('styles')    @parent

@@ -50,10 +50,16 @@
             <td><a class="" href="{{ URL::to('customers/' .$cart->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
                 {{ $cart->customer->name_regular }}
                 </a>
+@php
 
-                {{ $cart->customer->address->alias }} 
+$address = $cart->user->address_id
+            ? $cart->user->address
+            : $cart->customer->address
+
+@endphp
+                {{ $address->alias }} 
                  <a href="javascript:void(0);">
-                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $cart->customer->address->firstname }} {{ $cart->customer->address->lastname }}<br />{{ $cart->customer->address->address1 }}<br />{{ $cart->customer->address->city }} - {{ $cart->customer->address->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $cart->customer->address->phone }}</a>" data-original-title="" title="">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $address->firstname }} {{ $address->lastname }}<br />{{ $address->address1 }}<br />{{ $address->city }} - {{ $address->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $address->phone }}</a>" data-original-title="" title="">
                         <i class="fa fa-address-card-o"></i>
                     </button>
                  </a>

@@ -79,6 +79,17 @@ class CustomerUser extends Authenticatable
     }
 
 
+    public function getIsActiveAttribute()
+    {
+        return $this->active;
+    }
+
+    public function getIsPrincipalAttribute()
+    {
+        return !( $this->address_id > 0 );
+
+    }
+
     /**
      * Handy methods
      * 
@@ -114,9 +125,10 @@ class CustomerUser extends Authenticatable
         return '';
     }
 
+    // Alias
     public function isActive()
     {
-        return $this->active;
+        return $this->is_active;
 
         // See: https://pusher.com/tutorials/multiple-authentication-guards-laravel#modify-how-our-users-are-redirected-if-authenticated
     }

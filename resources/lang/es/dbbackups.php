@@ -22,6 +22,8 @@ return [
 	'File Name' => 'Fichero',
 	'Date' => 'Fecha',
 	'Time' => 'Hora',
+	'Size' => 'Tamaño',
+	'Download' => 'Descargar',
 	'aBillander LOG' => '',
 
 

@@ -24,6 +24,9 @@
                   </div>
                   <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
                       <label class="control-label">{{ l('Shipping Address') }}</label>
+
+@if( $customer_user->is_principal )
+
                     <select class="form-control" name="shipping_address_id" id="shipping_address_id" @if ( $aBook->count()<=1 ) disabled="disabled" @endif >
                         <option {{ $customer->shipping_address_id <= 0 ? 'selected="selected"' : '' }} value="0">{{ l('-- Please, select --', [], 'layouts') }}</option>
                         @foreach ($aBook as $country)
@@ -32,11 +35,28 @@
                     </select>
                     {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
                     <p>{{ l('Default Shipping Address') }}</p>
+
+@else
+
+                    <select class="form-control" name="shipping_address_id" id="shipping_address_id" @if ( $aBook->count()<=1 ) disabled="disabled" @endif >
+                        <option {{ $customer_user->address_id <= 0 ? 'selected="selected"' : '' }} value="0">{{ l('-- Please, select --', [], 'layouts') }}</option>
+                        @foreach ($aBook as $country)
+                        <option {{ $customer_user->address_id == $country->id ? 'selected="selected"' : '' }} value="{{ $country->id }}">{{ $country->alias }}</option>
+                        @endforeach
+                    </select>
+                    {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
+                    <p>{{ l('Default Shipping Address') }}</p>
+
+@endif
+
                   </div>
         </div>
 
 
                </div>
+
+@if( $customer_user->is_principal )
+
                   @if ( $aBook->count()>1 )
                <div class="panel-footer text-right">
                   <input type="hidden" value="addressbook" name="tab_name" id="tab_name">
@@ -46,6 +66,8 @@
                   </button>
                </div>
                   @endif
+@endif
+
             </div>
          {!! Form::close() !!}
 
@@ -55,10 +77,14 @@
 <div id="panel_addressbook_detail">
 
     <div class="page-header">
+
+@if( $customer_user->is_principal )
         <div class="pull-right" style="padding-top: 4px;">
             <a href="{{ route('abcc.customer.addresses.create') }}" class="btn btn-sm btn-success" 
                     title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
         </div>
+@endif
+
         <h3>
             <span style="color: #dd4814;">{{ l('Address Book') }}</span>
         </h3>        
@@ -108,7 +134,7 @@
                 </td>
 
                 <td class="text-left">
-                    @if (  is_null($addr->deleted_at))
+                    @if ( $customer_user->is_principal )
                     <!-- a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
                             xhref="{{ URL::to('customers/' . $customer->id) . '/mail' }}" 
                             href="{{ URL::to('mail') }}" 
@@ -126,9 +152,6 @@
                             data-title="{{ l('Address Book') }} :: ({{$addr->id}}) {{ $addr->alias }} " 
                             onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                       @endif
-                    @else
-                    <a class="btn btn-warning" href="{{ URL::to('customers/' . $customer->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
-                    <a class="btn btn-danger" href="{{ URL::to('customers/' . $customer->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
                     @endif
                 </td>
             </tr>

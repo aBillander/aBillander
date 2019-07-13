@@ -753,7 +753,7 @@ class Billable extends Model
 
     public function taxingaddress()
     {
-        return \App\Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') ? 
+        return ( \App\Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') && $this->shippingaddress )  ? 
             $this->shippingaddress()  : 
             $this->invoicingaddress() ;
     }

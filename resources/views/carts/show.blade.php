@@ -53,6 +53,24 @@
                   <span id="sales_equalization_badge" class="badge" title="{{l('Equalization Tax')}}"> RE </span>
                  @endif
                  </span> 
+@php
+
+$address = $cart->user->address_id
+            ? $cart->user->address
+            : null
+
+@endphp 
+                 <span class="lead well well-sm">
+                 {{ $cart->user->getFullName() }}
+                 @if(  $address )
+                 
+                 <a href="javascript:void(0);">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="right" data-title="{{ $address->alias }}" data-content="{{ $address->firstname }} {{ $address->lastname }}<br />{{ $address->address1 }}<br />{{ $address->city }} - {{ $address->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $address->phone }}</a>" data-original-title="" title="">
+                        <i class="fa fa-address-card-o"></i>
+                    </button>
+                 </a>
+                 @endif
+                 </span> 
             </h2>
         </div>
     </div>

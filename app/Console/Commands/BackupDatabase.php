@@ -48,7 +48,7 @@ class BackupDatabase extends Command
             config('database.connections.mysql.host'),
             config('database.connections.mysql.port'),
             config('database.connections.mysql.database'),
-            storage_path('backups/backup_'.$date.'.sql')
+            storage_path('backups/backup_'.config('database.connections.mysql.database').'_'.$date.'.sql')
         ));
     }
 

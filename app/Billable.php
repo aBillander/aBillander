@@ -346,6 +346,11 @@ class Billable extends Model
             return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
+    public static function isStatus( $status )
+    {
+            return in_array($status, self::$statuses);
+    }
+
     public function getStatusNameAttribute()
     {
             return l(get_called_class().'.'.$this->status, 'appmultilang');
@@ -778,6 +783,17 @@ class Billable extends Model
         {
             $query->where('invoiced_at', '<>', null);
         }
+        
+
+        if (array_key_exists('is_invoiced', $params) && $params['is_invoiced'] > 0)
+        {
+            $query->where('invoiced_at', '<>', null);
+        }
+
+        if (array_key_exists('is_invoiced', $params) && $params['is_invoiced'] == 0)
+        {
+            $query->where('invoiced_at', null);
+        }
 
 
         if ( array_key_exists('closed_not', $params) )
@@ -788,6 +804,33 @@ class Billable extends Model
         if ( array_key_exists('closed', $params) )
         {
             $query->where('status', 'closed');
+        }
+
+
+        if ($params['date_from'])
+            // if ( isset($params['date_to']) && trim($params['date_to']) != '' )
+        {
+            $query->where('document_date', '>=', $params['date_from'].' 00:00:00');
+        }
+
+        if ($params['date_to'])
+        {
+            $query->where('document_date', '<=', $params['date_to']  .' 23:59:59');
+        }
+
+        if (array_key_exists('status', $params) && $params['status'] && self::isStatus($params['status']))
+        {
+            $query->where('status', $params['status']);
+        }
+
+        if (array_key_exists('shipment_status', $params) && $params['shipment_status'])
+        {
+            $query->where('shipment_status', $params['shipment_status']);
+        }
+
+        if (array_key_exists('customer_id', $params) && $params['customer_id'])
+        {
+            $query->where('customer_id', $params['customer_id']);
         }
 
 

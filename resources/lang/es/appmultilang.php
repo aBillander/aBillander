@@ -223,6 +223,12 @@ return array(
 	'App\CustomerShippingSlip.closed'    => 'Cerrado',
     'App\CustomerShippingSlip.canceled' => 'Cancelado',
 
+    'App\CustomerShippingSlip.pending' => 'Pendiente',
+    'App\CustomerShippingSlip.processing' => 'Preparación',
+    'App\CustomerShippingSlip.transit' => 'Reparto',
+    'App\CustomerShippingSlip.exception' => 'Excepción',
+    'App\CustomerShippingSlip.delivered' => 'Entregado',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Customer Invoice Types
@@ -291,6 +297,7 @@ return array(
 	'pending' => 'Pendiente',
 	'bounced' => 'Devuelto',
 	'paid'    => 'Pagado',
+	'uncollectible' => 'Incobrable',
 
 	/*
 	|--------------------------------------------------------------------------

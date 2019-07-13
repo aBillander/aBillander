@@ -75,6 +75,11 @@ class Payment extends Model {
             return l($status, [], 'appmultilang');;
     }
 
+    public static function isStatus( $status )
+    {
+            return in_array($status, self::$statuses);
+    }
+
     
     public function getIsOverdueAttribute()
     {
@@ -256,6 +261,20 @@ class Payment extends Model {
         if (array_key_exists('auto_direct_debit', $params) && $params['auto_direct_debit'] == 0)
         {
             $query->where('auto_direct_debit', 0);
+        }
+
+        if (array_key_exists('status', $params) && $params['status'] && self::isStatus($params['status']))
+        {
+            $query->where('status', $params['status']);
+        }
+
+        if (array_key_exists('customer_id', $params) && $params['customer_id'])
+        {
+            $id = $params['customer_id'];
+
+            $query->whereHas('customer', function ($query) use ($id) {
+                    $query->where('id', $id);
+                });
         }
 
 /*

@@ -328,6 +328,8 @@ return [
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 
+	'Shipment Status'     => 'Estado de Envío',
+
 	'Not Invoiced'     => 'No Facturados',
 	'Invoiced'     => 'Facturados',
 

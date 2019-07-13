@@ -58,7 +58,9 @@ class CustomerVouchersController extends Controller
 
         $payments->setPath('customervouchers');
 
-        return view('customer_vouchers.index', compact('payments'));
+        $statusList = Payment::getStatusList();
+
+        return view('customer_vouchers.index', compact('payments', 'statusList'));
 	}
 
     /**

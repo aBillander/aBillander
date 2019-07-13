@@ -43,6 +43,9 @@ class CustomerShippingSlipsController extends BillableController
      */
     public function index(Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
@@ -58,7 +61,11 @@ class CustomerShippingSlipsController extends BillableController
 
         $documents->setPath($this->model_path);
 
-        return view($this->view_path.'.index', $this->modelVars() + compact('documents'));
+        $statusList = $this->model_class::getStatusList();
+
+        $shipment_statusList = $this->model_class::getShipmentStatusList();
+
+        return view($this->view_path.'.index', $this->modelVars() + compact('documents', 'statusList', 'shipment_statusList'));
     }
 
     /**

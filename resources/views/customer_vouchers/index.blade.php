@@ -34,7 +34,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => 'customervouchers.index', 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => 'customervouchers.index', 'method' => 'GET', 'id' => 'process')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -50,6 +50,18 @@
         {!! Form::label('date_to_form', l('Date to', 'layouts')) !!}
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('status', l('Status')) !!}
+    {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('autocustomer_name', l('Customer')) !!}
+    {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
+
+    {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+</div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-auto_direct_debit">
      {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}
@@ -222,7 +234,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')
 
@@ -239,6 +251,7 @@ $(document).ready(function() {
 
 </script>
 
+{{-- Auto Complete --}}
 {{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
@@ -246,21 +259,52 @@ $(document).ready(function() {
 {!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
 
 <script>
-  $(function() {
+  $(document).ready(function() {
+
+        $("#autocustomer_name").autocomplete({
+            source : "{{ route('home.searchcustomer') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                customer_id = value.item.id;
+
+                $("#autocustomer_name").val(value.item.name_regular);
+                $("#customer_id").val(value.item.id);
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .appendTo( ul );
+            };
+
+
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
-  });
 
-  $(function() {
+
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
   });
+
+
+   $('#process').submit(function(event) {
+
+     if ( $("#autocustomer_name").val() == '' ) $('#customer_id').val('');
+
+     return true;
+
+   });
+
 </script>
 
 @endsection

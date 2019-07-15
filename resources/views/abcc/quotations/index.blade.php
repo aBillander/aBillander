@@ -30,7 +30,7 @@
         <tr>
             <th class="text-left">{{ l('Quotation #') }}</th>
             <th class="text-left">{{ l('Date') }}</th>
-            <th class="text-left">{{ l('Delivery Date') }}</th>
+            <th class="text-left">{{ l('Valid until') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-right">{{ l('Items') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
@@ -52,7 +52,7 @@
                 @endif
                 </td>
             <td>{{ abi_date_short($order->document_date) }}</td>
-            <td>{{ abi_date_short($order->delivery_date_real ?: $order->delivery_date) }}</td>
+            <td>{{ abi_date_short($order->valid_until_date) }}</td>
             <td>
                 @if ( $order->hasShippingAddress() || 1)
 
@@ -88,6 +88,10 @@
                 <!-- a class="btn btn-sm btn-lightblue" href="{ { URL::to('customerorders/' . $order->id . '/shippingslip') }}" title="{{l('Shipping Slip', [], 'layouts')}}"><i class="fa fa-truck"></i></a -->
 
                 <a class="btn btn-sm btn-grey" href="{{ route('abcc.quotation.pdf', [$order->id]) }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+
+@if( $order->is_valid )
+                <a class="btn btn-sm btn-warning" href="{{ route('abcc.quotation.accept', [$order->id]) }}" title="{{l('Accept Quotation')}}"><i class="fa fa-handshake-o"></i></a>
+@endif
 
                 <a class=" hide btn btn-sm btn-warning" href="{{ route('abcc.quotation.duplicate', [$order->id]) }}" title="{{l('Copy Quotation to Cart')}}"><i class="fa fa-copy"></i></a>
 

@@ -25,6 +25,7 @@ class Customer extends Model {
     protected $appends = ['name_regular'];
 	
     protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'webshop_id', 'reference_external', 
+                           'accounting_id',
                            'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
                            'outstanding_amount_allowed', 'unresolved_amount', 
                            'notes', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
@@ -69,6 +70,9 @@ class Customer extends Model {
                         }
                     });
             */
+
+
+            $client->users()->delete();
         });
     }
 
@@ -94,6 +98,16 @@ class Customer extends Model {
         return $this->address->lastname;
     }
 */    
+
+    public function getReferenceAccountingAttribute()
+    {
+        if ( $this->reference_external ) return $this->reference_external;
+
+        if ( $this->accounting_id ) return $this->accounting_id;
+
+        return $this->id;
+    }
+
     public function getEmailAttribute() 
     {
         return $this->address->email;

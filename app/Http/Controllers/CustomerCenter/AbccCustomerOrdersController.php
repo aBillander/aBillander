@@ -441,7 +441,7 @@ class AbccCustomerOrdersController extends Controller {
 
 
 
-        return redirect()->route('abcc.orders.index')
+        return redirect()->route('abcc.quotations.index')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerOrder->id], 'layouts'));
 	}
 

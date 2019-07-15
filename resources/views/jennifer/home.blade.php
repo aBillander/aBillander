@@ -122,7 +122,7 @@
               </div>
 
                <div class="panel-footer text-right">
-                  <button class="btn btn-success" disabled="disabled" type="submit" onclick="this.disabled=true;this.form.submit();">
+                  <button class="btn btn-success" type="submit" onclick="this.disabled=true;this.form.submit();">
                      <i class="fa fa-file-text-o"></i>
                      &nbsp; Ver Listado
                   </button>

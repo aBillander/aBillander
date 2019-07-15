@@ -63,4 +63,9 @@ return [
 	'View Image'     => 'Ver Imagen',
 	'Product Images'     => 'Imágenes de Productos',
 
+
+	'Valid until' => 'Válido hasta',
+
+	'Accept Quotation' => 'Aceptar la Oferta',
+
 ];

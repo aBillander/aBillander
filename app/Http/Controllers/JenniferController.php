@@ -96,7 +96,7 @@ class JenniferController extends Controller
         {
             $ribbon = 'todas';
 
-        } else
+        }
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
@@ -120,7 +120,7 @@ class JenniferController extends Controller
             $row = [];
             $row[] = $document->document_reference;
             $row[] = abi_date_short($document->document_date);
-            $row[] = $document->customer->reference_external . '-' . $document->customer->name_fiscal;
+            $row[] = $document->customer->reference_accounting . '-' . $document->customer->name_fiscal;
             $row[] = $document->payment_status;
             $row[] = $document->paymentmethod->name;
             $row[] = $document->total_tax_excl * 1.0;
@@ -192,7 +192,7 @@ class JenniferController extends Controller
         $data[] = [''];
         $data[] = ['', '', '', '', 'Total:', $base * 1.0, $iva * 1.0, $re * 1.0, ($base + $iva + $re) * 1.0];
 
-        $sheetName = 'Facturas ' . $request->input('inventory_date_to');
+        $sheetName = 'Facturas ' . $request->input('invoices_date_from') . ' ' . $request->input('invoices_date_to');
 
         // Generate and return the spreadsheet
         Excel::create('Facturas', function($excel) use ($sheetName, $data) {
@@ -249,12 +249,196 @@ class JenniferController extends Controller
     public function reportBankOrders(Request $request)
     {
         // Dates (cuen)
-        $this->mergeFormDates( ['invoices_date_from', 'invoices_date_to'], $request );
+        $this->mergeFormDates( ['bank_order_date_from', 'bank_order_date_to'], $request );
 
-        abi_r($request->all(), true);
+        $date_from = $request->input('bank_order_date_from')
+                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('bank_order_date_from'))
+                     : null;
+        
+        $date_to   = $request->input('bank_order_date_to'  )
+                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('bank_order_date_to'  ))
+                     : null;
+
+        $bank_order_from = $request->input('bank_order_from', '')
+                    ? $request->input('bank_order_from', '') 
+                    : 0;
+        
+        $bank_order_to = $request->input('bank_order_to', '')
+                    ? $request->input('bank_order_to', '') 
+                    : 0;
+
+        $documents = \aBillander\SepaSpain\SepaDirectDebit::
+                              with('bankaccount')
+ //                           ->with('currency')
+                            ->with('vouchers')
+                            ->with('vouchers.customer')
+                            ->with('vouchers.customerinvoice')
+                            ->where( function($query) use ($date_from){
+                                        if ( $date_from )
+                                        $query->where('document_date', '>=', $date_from->startOfDay());
+                                } )
+                            ->where( function($query) use ($date_to  ){
+                                        if ( $date_to   )
+                                        $query->where('document_date', '<=', $date_to  ->endOfDay()  );
+                                } )
+                            ->where( function($query) use ($bank_order_from){
+                                        if ( $bank_order_from > 0 )
+                                        $query->where('document_reference', '>=', $bank_order_from);
+                                } )
+                            ->where( function($query) use ($bank_order_to  ){
+                                        if ( $bank_order_to   )
+                                        $query->where('document_reference', '<=', $bank_order_to  );
+                                } )
+//                            ->where('document_date', '>=', $date_from->startOfDay())
+//                            ->where('document_date', '<=', $date_to  ->endOfDay()  )
+                            ->where( function($query){
+                                        $query->where(   'status', 'confirmed' );
+                                        $query->orWhere( 'status', 'closed'    );
+                                } )
+                            ->orderBy('document_date', 'asc')
+                            ->orderBy('id', 'asc')
+                            ->get();
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = [];
+
+        if ( $request->input('bank_order_date_from_form') && $request->input('bank_order_date_to_form') )
+        {
+            $ribbon = 'entre ' . $request->input('bank_order_date_from_form') . ' y ' . $request->input('bank_order_date_to_form');
+
+        } else
+
+        if ( !$request->input('bank_order_date_from_form') && $request->input('bank_order_date_to_form') )
+        {
+            $ribbon = 'hasta ' . $request->input('bank_order_date_to_form');
+
+        } else
+
+        if ( $request->input('bank_order_date_from_form') && !$request->input('bank_order_date_to_form') )
+        {
+            $ribbon = 'desde ' . $request->input('bank_order_date_from_form');
+
+        } else
+
+        if ( !$request->input('bank_order_date_from_form') && !$request->input('bank_order_date_to_form') )
+        {
+            $ribbon = 'todas';
+
+        }
+
+        $ribbon = 'fecha de expedición ' . $ribbon;
+
+        $ribbon1  = ( $bank_order_from ? ' desde ' . $bank_order_from : '' );
+        $ribbon1 .= ( $bank_order_to   ? ' hasta ' . $bank_order_from : '' );
+
+        // Sheet Header Report Data
+        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = ['Remesas de Clientes' . $ribbon1 . ', y ' . $ribbon, '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = [''];
 
 
-        return view('jennifer.home');
+        // Define the Excel spreadsheet headers
+        $header_names = ['Número', 'Fecha', 'Fecha Vto.', 'Banco / Cliente', 'Factura', 'Estado', 'Importe', 'Norma'];
+
+        $data[] = $header_names;
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the data array.
+
+        $total = 0.0;
+        
+        foreach ($documents as $document) {
+            $row = [];
+            $row[] = $document->document_reference;
+            $row[] = abi_date_short($document->document_date);
+            $row[] = '';
+//            $row[] = $document->customer->reference_external . '-' . $document->customer->name_fiscal;
+            $row[] = optional($document->bankaccount)->bank_name;
+            $row[] = '';
+            $row[] = '';
+            $row[] = $document->total * 1.0;
+            $row[] = $document->scheme;
+
+            $total += $document->total;
+
+            $data[] = $row;
+
+            foreach ( $document->vouchers as $payment )
+            {
+                $row = [];
+                $row[] = '';
+                $row[] = '';
+                $row[] = abi_date_short($payment->due_date);
+                $row[] = $payment->customer->reference_accounting . ' ' . $payment->customer->name_fiscal;;
+                $row[] = $payment->customerinvoice->document_reference;
+                $row[] = $payment->status;
+                $row[] = $payment->amount * 1.0;
+                $row[] = '';
+    
+                $data[] = $row;
+
+                // abi_r($sub_totals);
+            }
+
+// abi_r('************************************');
+        }
+
+//        die();
+
+        // Totals
+        $data[] = [''];
+        $data[] = ['', '', '', '', 'Total:', '', $total * 1.0];
+
+//        $i = count($data);
+
+        $sheetName = 'Remesas ' . $request->input('bank_order_from') . ' ' . $request->input('bank_order_to');
+
+        // Generate and return the spreadsheet
+        Excel::create('Facturas', function($excel) use ($sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                
+                $sheet->getStyle('A4:I4')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->setColumnFormat(array(
+                    'B' => 'dd/mm/yyyy',
+                    'C' => 'dd/mm/yyyy',
+                    'G' => '0.00',
+//                    'F' => '@',
+                ));
+                
+                $n = count($data);
+                $m = $n;    //  - 3;
+                $sheet->getStyle("E$m:G$n")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');
+
+
+
+
+
+        // abi_r($request->all(), true);
+
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
     }
 
 

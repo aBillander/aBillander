@@ -53,6 +53,16 @@ class CustomerQuotation extends Billable
                ];
 
 
+    public function getIsValidAttribute()
+    {
+        if ( $this->status == 'draft' ) return false;
+
+        if ( $this->valid_until_date && ( $this->valid_until_date > \Carbon\Carbon::now()) ) return false;
+
+        return true;
+    }
+
+
     public function getDeletableAttribute()
     {
 //        return $this->status != 'closed' && !$this->->status != 'canceled';

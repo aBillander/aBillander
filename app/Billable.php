@@ -441,6 +441,7 @@ class Billable extends Model
 
         $this->status = 'confirmed';
         $this->validation_date = \Carbon\Carbon::now();
+//        $this->document_date = $this->validation_date;
 
         $this->save();
 
@@ -807,13 +808,13 @@ class Billable extends Model
         }
 
 
-        if ($params['date_from'])
+        if (array_key_exists('date_from', $params) && $params['date_from'])
             // if ( isset($params['date_to']) && trim($params['date_to']) != '' )
         {
             $query->where('document_date', '>=', $params['date_from'].' 00:00:00');
         }
 
-        if ($params['date_to'])
+        if (array_key_exists('date_to', $params) && $params['date_to'])
         {
             $query->where('document_date', '<=', $params['date_to']  .' 23:59:59');
         }

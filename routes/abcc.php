@@ -113,6 +113,7 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::resource('/quotations', 'AbccCustomerQuotationsController')->names('abcc.quotations');
         Route::get('quotations/{id}/duplicate', 'AbccCustomerQuotationsController@duplicateQuotation')->name('abcc.quotation.duplicate'  );
         Route::get('quotations/{id}/pdf', 'AbccCustomerQuotationsController@showPdf')->name('abcc.quotation.pdf'  );
+        Route::get('quotations/{id}/accept', 'AbccCustomerQuotationsController@accept')->name('abcc.quotation.accept'  );
 
 
         Route::get('/cart', 'AbccCustomerCartController@index')->name('abcc.cart');

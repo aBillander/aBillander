@@ -45,6 +45,8 @@ return [
 	'Your Document has been sent! &#58&#58 (:id) '     => 'Su Documento ¡ha sido enviado! &#58&#58 (:id) ',
 	'Your Document could not be sent &#58&#58 (:id) '     => 'Su Documento no ha podido ser enviado &#58&#58 (:id) ',
 
+	'This function is not available &#58&#58 (:id) ' => 'Esta función no está diosponible &#58&#58 (:id) ',
+
 	'No records selected. ' => 'No se han seleccionado registros. ',
 	'No action is taken &#58&#58 (:id) ' => 'No se ha realizado ninguna acción &#58&#58 (:id) ',
 

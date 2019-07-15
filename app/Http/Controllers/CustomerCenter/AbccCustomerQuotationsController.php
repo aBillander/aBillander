@@ -50,7 +50,8 @@ class AbccCustomerQuotationsController extends Controller {
                             ->ofLoggedCustomer()      // Of Logged in Customer (see scope on Billable 
 //                            ->where('customer_id', $customer->id)
                             ->where( function ($q) {
-                                    $q->where('status', 'closed');
+                                    $q->where('status', 'draft');
+                                    $q->orWhere('status', 'closed');
                                     $q->orWhere('status', 'confirmed');
                                 } )
                             ->withCount('lines')
@@ -596,5 +597,14 @@ class AbccCustomerQuotationsController extends Controller {
 
         return redirect()->route('abcc.quotations.index')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+	}
+
+
+	public function accept($id, Request $request)
+	{
+
+        return redirect()->route('abcc.quotations.index')
+                ->with('warning', [l('This function is not available &#58&#58 (:id) ', ['id' => $id], 'layouts') , l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts')]);
+
 	}
 }

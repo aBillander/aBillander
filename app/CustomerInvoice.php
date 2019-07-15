@@ -134,6 +134,8 @@ class CustomerInvoice extends Billable
 
     public function close()
     {
+        if ( $this->total_tax_incl == 0.0 ) return false;
+
         if ( ! parent::close() ) return false;
 
         // Dispatch event

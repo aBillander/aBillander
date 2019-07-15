@@ -26,7 +26,7 @@ class CreateStockCountLinesTable extends Migration
             // What happen with cost_average if cost_price is set???
 
             $table->integer('stock_count_id')->unsigned()->nullable(false);
-            $table->integer('product_id')->unsigned()->nullable(false);
+            $table->integer('product_id')->unsigned()->nullable();
             $table->integer('combination_id')->unsigned()->nullable();
             $table->string('reference', 32)->nullable();
             $table->string('name', 128)->nullable(false);

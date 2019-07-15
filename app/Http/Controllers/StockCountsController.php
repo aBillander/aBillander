@@ -244,7 +244,12 @@ class StockCountsController extends Controller
 
 
         // Let's get dirty!!!
-        $lines = $this->stockcountline->where('stock_count_id', $id)->where('id', '>=', $nextItem)->orderBy('id', 'asc')->get();
+        $lines = $this->stockcountline
+                        ->with('product')
+                        ->where('stock_count_id', $id)
+                        ->where('id', '>=', $nextItem)
+                        ->orderBy('id', 'asc')
+                        ->get();
 
         $count = $lines->count();
         if ($roundCycle==1)
@@ -284,7 +289,31 @@ class StockCountsController extends Controller
                 break;
             }
 
-            //
+            $product = $line->product;
+
+            // Alternative:
+            if ( !$product )
+            {
+                $product = \App\Product::where('reference', $line->reference)->first();
+
+                if ( !$product )
+                {
+                    // Product not found
+                    $logger->log("ERROR", 'NO se ha creado un Movimiento para la línea núm. <span class="log-ERROR-format">:id</span> del Recuento. El Producto NO existe', ['id' => $line->id]);
+                    $i++;
+                    continue;
+                }
+            }
+
+            // Update Cost Price
+            if ( $line->cost_price > 0.0 )
+            {
+                $product->cost_price = $line->cost_price;
+
+                $product->save();
+            }
+
+            // Let's move on:
             $data = [
 
                     'movement_type_id' => $movement_type_id,
@@ -298,16 +327,16 @@ class StockCountsController extends Controller
                     'quantity' => $line->quantity,
  //                   'quantity_after_movement' => ,
 
-                    'price' => $line->cost_price,
+                    'price' => $product->cost_price,
                     'currency_id' => \App\Context::getContext()->company->currency->id,
                     'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
 
                     'notes' => '',
 
-                    'product_id' => $line->product_id,
-                    'combination_id' => $line->combination_id,
-                    'reference' => $line->reference,
-                    'name' => $line->name,
+                    'product_id' => $product->id,
+                    'combination_id' => '', // $line->combination_id,
+                    'reference' => $product->reference,
+                    'name' => $product->name,
                     'warehouse_id' => $stockcount->warehouse_id,
  //                   'warehouse_counterpart_id' => ,
                     
@@ -326,7 +355,7 @@ class StockCountsController extends Controller
             } else {    
                 // Error
                 // When?
-                $logger->log("ERROR", 'NO se ha creado un Movimiento para la línea núm. <span class="log-ERROR-format">:id</span> del Recuento.', ['id' => $line->id]);
+                $logger->log("ERROR", 'NO se ha creado un Movimiento para la línea núm. <span class="log-ERROR-format">:id</span> del Recuento porque el Stock no ha variado.', ['id' => $line->id]);
             }
 
             $i++;

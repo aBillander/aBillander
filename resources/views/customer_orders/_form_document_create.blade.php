@@ -296,7 +296,7 @@ function get_currency_rate(currency_id)
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
-                .append( '<div>[' + item.identification+'] ' + item.name_fiscal + "</div>" )
+                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
                 .appendTo( ul );
             };
 

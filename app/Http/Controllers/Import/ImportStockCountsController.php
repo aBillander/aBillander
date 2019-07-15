@@ -461,7 +461,7 @@ class ImportStockCountsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $data[] = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'stock_count_id', 'stock_count_NAME' ];
+        $data[] = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'cost_price', 'stock_count_id', 'stock_count_NAME' ];
         // removed: , 'cost_price',
 
         // Convert each member of the returned collection into an array,
@@ -473,7 +473,7 @@ class ImportStockCountsController extends Controller
                             'reference' => $line->reference,
                             'NOMBRE' => $line->name,
                             'quantity'   => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->quantity  ),
-//                            'cost_price' => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->cost_price),
+                            'cost_price' => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->cost_price),
                             'stock_count_id' => $id,
                             'stock_count_NAME' => $stockcount->name,
             ];

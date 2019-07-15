@@ -152,7 +152,7 @@
                  </a>
                 @endif
       </td>
-      <td>[{{ $emaillog->userable_id}}] {{ $emaillog->userable->getFullName() }}</td>
+      <td>[{{ $emaillog->userable_id}}] {{ optional($emaillog->userable)->getFullName() }}</td>
 
             <td class="text-right">
                 @if (  is_null($emaillog->deleted_at))

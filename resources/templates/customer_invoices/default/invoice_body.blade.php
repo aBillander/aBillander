@@ -54,6 +54,20 @@
 
             <div class="shop-name"><h3>
 
+			@if ( $document->customer->name_commercial )
+
+				{{ $document->customer->name_commercial }}
+
+			@else
+
+            	{{ $document->invoicingaddress->contact_name }}
+
+			@endif
+
+			</h3></div>
+
+			<strong>
+
 			@if ( $document->customer->name_fiscal )
 
 				{{ $document->customer->name_fiscal }}
@@ -64,7 +78,7 @@
 
 			@endif
 
-			</h3></div>
+			</strong><br />
 
             {{ $document->invoicingaddress->address1 }} {{ $document->invoicingaddress->address2 }}<br />
 

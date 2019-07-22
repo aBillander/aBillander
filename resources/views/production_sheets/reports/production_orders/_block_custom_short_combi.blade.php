@@ -8,9 +8,10 @@
 $key_1005_1015 = '1005+1015';
 
 $qty_20100 = [];
+$qty_20003 = [];
 // $key_1005_1015 = '1005+1015';
 
-$reference_20001 = $name_20001 = $reference_20100 ='';
+$reference_20001 = $name_20001 = $reference_20100 = $reference_20003 ='';
 
 @endphp
 
@@ -40,6 +41,20 @@ foreach ($lines_20100 as $line)
       $reference_20100 = $line->reference;
       $name_20100 = $line->name;
       $unit_20100 = $line->product->measureunit->sign;
+  }
+}
+
+$lines_20003 = $order->productionorderlines->where('reference', '20003');
+
+foreach ($lines_20003 as $line)
+{
+  if ( array_key_exists( $key_1005_1015, $qty_20003) )
+      $qty_20003[$key_1005_1015] += $line->required_quantity;
+  else {
+      $qty_20003[$key_1005_1015]  = $line->required_quantity;
+      $reference_20003 = $line->reference;
+      $name_20003 = $line->name;
+      $unit_20003 = $line->product->measureunit->sign;
   }
 }
 
@@ -77,7 +92,9 @@ foreach ($lines_20100 as $line)
           </th>
           <th width="5%"> </th>
           <th width="30%">
-
+@if( count($qty_20003) )
+            [{{ $reference_20003 }}] {{ $name_20003 }}
+@endif
           </th>
           <th width="5%"> </th>
           <th width="30%">
@@ -93,7 +110,9 @@ foreach ($lines_20100 as $line)
           </td>
           <td> </td>
           <td>
-
+@if( count($qty_20003) )
+            {{ $key_1005_1015 }}: {{ niceQuantity($qty_20003[$key_1005_1015]) }} {{ $unit_20003 }}
+@endif
           </td>
           <td> </td>
           <td>

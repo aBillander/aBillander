@@ -105,7 +105,19 @@ class CustomerOrdersController extends BillableController
             $anyOrder  = 0;
         }
 
-        return view($this->view_path.'.index', $this->modelVars() + compact('documents', 'anyClient', 'anyOrder'));
+        
+        if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+        {
+            //
+            $suffix = '_export_mfg';
+            
+        } else {
+
+            //
+            $suffix = '';
+        }
+
+        return view($this->view_path.'.index'.$suffix, $this->modelVars() + compact('documents', 'anyClient', 'anyOrder'));
     }
 
     /**

@@ -27,7 +27,8 @@ class CreateProductionOrderLinesTable extends Migration
             $table->string('reference', 32)->nullable();
             $table->string('name', 128)->nullable(false);
 
-            $table->decimal('base_quantity', 20, 6);            // According to BOM
+            $table->decimal('bom_line_quantity', 20, 6);        // According to BOM
+            $table->decimal('bom_quantity', 20, 6);             // According to BOM
             $table->decimal('required_quantity', 20, 6);        // According to Order Finished Product planned quantity
             $table->integer('measure_unit_id')->unsigned()->nullable(false);
             

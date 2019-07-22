@@ -172,8 +172,9 @@ class ProductionOrder extends Model
                     'reference' => $line_product->reference,
                     'name' => $line_product->name, 
 
-    //                'base_quantity', 
-                    'required_quantity' => $line_qty * $line->quantity * (1.0 + $line->scrap/100.0), 
+                    'bom_line_quantity' => $line->quantity * (1.0 + $line->scrap/100.0), 
+                    'bom_quantity' => $bom->quantity,
+                    'required_quantity' => $line_qty * $line->quantity * (1.0 + $line->scrap/100.0),
                     // Assume 1 product == 1 measure unit O_O
                     'measure_unit_id' => $line_product->measure_unit_id,
     //                'warehouse_id'

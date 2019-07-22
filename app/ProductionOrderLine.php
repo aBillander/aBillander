@@ -10,7 +10,7 @@ class ProductionOrderLine extends Model
 //    protected $dates = ['due_date'];
 	
     protected $fillable = [ 'type', 'product_id', 'reference', 'name', 
-    						'base_quantity', 'required_quantity', 'warehouse_id'
+    						'bom_line_quantity', 'bom_quantity', 'required_quantity', 'warehouse_id'
                           ];
 
     public static $rules = array(

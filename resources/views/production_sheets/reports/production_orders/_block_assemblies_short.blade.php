@@ -38,8 +38,8 @@ $order_by = $family['assemblies'];
           <th width="14%">{{l('Product Reference')}}</th>
           <th width="50%">{{l('Product Name')}}</th>
           <th width="12%">{{l('Total')}}</th>
-          <th width="12%">{{l('Unit')}}</th>
-          <th width="12%">{{l('Quantity')}}</th>
+          <th width="12%">{{l('Measure')}}</th>
+          <th width="12%">{{l('Per Unit')}}</th>
         </tr>
 
 
@@ -60,7 +60,7 @@ $order_by = $family['assemblies'];
       <td>{{ $line->name }}</td>
       <td class="text-right" style="padding-right: 16px">{{ niceQuantity($line->required_quantity, $line->product->measureunit->decimalPlaces) }}</td>
       <td>{{ $line->product->measureunit->name }}</td>
-      <td style="padding-right: 16px">{{ niceQuantity($line->required_quantity / $order->planned_quantity, $line->product->measureunit->decimalPlaces) }}</td>
+      <td class="text-right" style="padding-right: 16px">{{ niceQuantity($line->bom_line_quantity, $line->product->measureunit->decimalPlaces) }}</td>
     </tr>
 
 @endforeach

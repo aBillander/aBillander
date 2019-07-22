@@ -72,8 +72,9 @@ return [
 	'Tool Reference'     => 'Referencia',
 	'Tool Name'     => 'Nombre del Utillaje',
 	'Location'     => 'Ubicación',
-	'' => '',
-	'' => '',
+
+	'Measure' => 'Medida',
+	'Per Unit' => 'Unitario',
 	'' => '',
 	'' => '',
 ];

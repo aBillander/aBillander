@@ -239,6 +239,8 @@ class AbsrcCustomerOrdersController extends BillableController
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_CUSTOMER_ORDER_SEQUENCE'),
 
+                        'sales_rep_id'         => $salesrep->id,
+
                         'created_via'          => 'absrc',
                         'status'               =>  'draft',
                         'locked'               => 0,

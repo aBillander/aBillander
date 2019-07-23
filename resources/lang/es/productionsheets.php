@@ -75,6 +75,8 @@ return [
 
 	'Measure' => 'Medida',
 	'Per Unit' => 'Unitario',
+	'Carga Amasadoras' => 'Carga Amasadoras',
+	'Trays' => 'Bandejas',
 	'' => '',
 	'' => '',
 ];

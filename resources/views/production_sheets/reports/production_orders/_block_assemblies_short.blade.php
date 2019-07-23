@@ -51,20 +51,44 @@ $order_by = $family['assemblies'];
       <td> </td>
     </tr>
 
-{{-- Ingredients here: --}}
 
-@foreach ($order->productionorderlines as $line)
+{{-- Units per Tray --}}
+@if ($product->units_per_tray)
 
-    <tr>
-      <td style="padding-left: 16px">{{ $line->reference }}</td>
-      <td>{{ $line->name }}</td>
-      <td class="text-right" style="padding-right: 16px">{{ niceQuantity($line->required_quantity, $line->product->measureunit->decimalPlaces) }}</td>
-      <td>{{ $line->product->measureunit->name }}</td>
-      <td class="text-right" style="padding-right: 16px">{{ niceQuantity($line->bom_line_quantity, $line->product->measureunit->decimalPlaces) }}</td>
+    <tr xstyle="font-weight: bold;">
+      <td> </td>
+      <td class="text-right" style="padding-right: 16px; font-weight: bold;">{{ l('Trays') }}: </td>
+      <td style="padding-left: 16px">{{ $order->getTraysLabel($order->planned_quantity, $product->units_per_tray) }}</td>
+      <td style="padding-left: 16px">{{ '' }}</td>
+      <td> </td>
     </tr>
 
-@endforeach
+@endif
 
+
+{{-- Machine Capacity --}}
+@if ($order->machine_capacity)
+
+    @include('production_sheets.reports.production_orders._block_machine_capacities')
+
+@else
+
+
+    {{-- Ingredients here: --}}
+
+    @foreach ($order->productionorderlines as $line)
+
+        <tr>
+          <td style="padding-left: 16px">{{ $line->reference }}</td>
+          <td>{{ $line->name }}</td>
+          <td class="text-right" style="padding-right: 16px">{{ niceQuantity($line->required_quantity, $line->product->measureunit->decimalPlaces) }}</td>
+          <td>{{ $line->product->measureunit->name }}</td>
+          <td class="text-right" style="padding-right: 16px">{{ niceQuantity($line->bom_line_quantity, $line->product->measureunit->decimalPlaces) }}</td>
+        </tr>
+
+    @endforeach
+
+@endif
 
     </tbody>
 </table>

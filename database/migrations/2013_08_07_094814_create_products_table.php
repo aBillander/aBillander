@@ -109,7 +109,7 @@ class CreateProductsTable extends Migration {
 
 			// Route stuff
 			$table->integer('work_center_id')->unsigned()->nullable();
-			$table->decimal('machine_capacity', 20, 6)->nullable();
+			$table->string('machine_capacity', 16)->nullable();
 			$table->decimal('units_per_tray', 20, 6)->nullable();
 			$table->text('route_notes')->nullable();
 			

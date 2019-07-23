@@ -8,9 +8,10 @@
       <tbody>
         <tr>
           <th width="14%">{{l('Product Reference')}}</th>
-          <th width="62%">{{l('Product Name')}}</th>
+          <th width="50%">{{l('Product Name')}}</th>
           <th width="12%">{{l('Quantity')}}</th>
           <th width="12%">{{l('Unit')}}</th>
+          <th width="12%">{{l('Trays')}}</th>
         </tr>
     </tbody>
 </table>
@@ -36,9 +37,10 @@
 
     <tr xstyle="font-weight: bold;">
       <td width="14%">{{ $order->product_reference }}</td>
-      <td width="62%">{{ $order->product_name }}</td>
+      <td width="50%">{{ $order->product_name }}</td>
       <td width="12%" class="text-right" style="padding-right: 24px">{{ niceQuantity($order->planned_quantity) }}</td>
       <td width="12%">{{ $product->measureunit->name }}</td>
+      <td width="12%" class="text-right" style="padding-right: 16px">{{ $order->getTraysLabel($order->planned_quantity, $product->units_per_tray) }}</td>
     </tr>
 
 {{-- Ingredients here: --}}

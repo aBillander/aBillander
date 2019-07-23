@@ -44,7 +44,11 @@ class CreateProductionOrdersTable extends Migration
 
             $table->text('notes')->nullable();
 
+            // Route stuff
             $table->integer('work_center_id')->unsigned()->nullable();
+            $table->string('machine_capacity', 16)->nullable();
+            $table->decimal('units_per_tray', 20, 6)->nullable();
+
             $table->integer('warehouse_id')->unsigned()->nullable();
 
             $table->integer('production_sheet_id')->unsigned()->nullable();

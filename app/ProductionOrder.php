@@ -14,7 +14,8 @@ class ProductionOrder extends Model
     						'product_id', 'combination_id', 'product_reference', 'product_name', 
     						'planned_quantity', 'finished_quantity', 'product_bom_id', 
                             'due_date', 'schedule_sort_order', 'notes', 
-    						'work_center_id', 'warehouse_id', 'production_sheet_id'
+    						'work_center_id', 'machine_capacity', 'units_per_tray',
+                            'warehouse_id', 'production_sheet_id'
                           ];
 
     public static $rules = array(
@@ -28,11 +29,61 @@ class ProductionOrder extends Model
     |--------------------------------------------------------------------------
     */
     
+    public function getMachineCapacityList()
+    {
+        
+        if ( !trim($this->machine_capacity) ) return [];
+
+        $dstr = str_replace( [';', ':'], ',', $this->machine_capacity );
+        $list = array_map( 'floatval', explode(',', $dstr) );
+
+        sort( $list, SORT_NUMERIC );
+
+        return $list;
+    }
+    
+    public function getMachineLoads($quantity = 1.0, $capacity = 1.0)
+    {
+        //
+        if ( ($quantity <= 0) || ($capacity <= 0) ) return 1.0;
+
+        return ceil( ( $quantity / 1000.0 ) / $capacity );
+    }
+
+    
+    public function getMachineLoadsLabel($quantity = 1.0, $capacity = 1.0)
+    {
+        //
+
+        return '7 x 16';
+    }
+    
+
+    public function getTrays($quantity = 1.0, $capacity = 1.0)
+    {
+        //
+        if ( ($quantity <= 0) || ($capacity <= 0) ) return 0;
+
+        return ceil( $quantity / $capacity );
+    }
+    
+
+    public function getTraysLabel($quantity = 1.0, $capacity = 1.0)
+    {
+        //
+        if ( ($quantity <= 0) || ($capacity <= 0) ) return '';
+
+        return ceil( $quantity / $capacity ).' x ['.niceQuantity($capacity, 0).']';
+    }
+
+
+    
     public static function createPlannedMultiLevel($data = [])
     {
         $fields = [ 'created_via', 'status',
                     'product_id', 'planned_quantity', 'due_date', 'schedule_sort_order',
-                    'work_center_id', 'warehouse_id', 'production_sheet_id', 'notes'];
+                    'work_center_id', 'machine_capacity', 'units_per_tray', 
+                    'warehouse_id', 'production_sheet_id', 'notes'];
 
         $product = \App\Product::findOrFail( $data['product_id'] );
         $bom     = $product->bom;
@@ -64,6 +115,8 @@ class ProductionOrder extends Model
             'notes' => $data['notes'],
 
             'work_center_id' => $data['work_center_id'] ?? $product->work_center_id,
+            'machine_capacity' => $product->machine_capacity, 
+            'units_per_tray' => $product->units_per_tray,
 //            'warehouse_id' => '',
             'production_sheet_id' => $data['production_sheet_id'],
         ]);
@@ -118,7 +171,8 @@ class ProductionOrder extends Model
     {
         $fields = [ 'created_via', 'status', 'procurement_type',
                     'product_id', 'planned_quantity', 'due_date', 
-                    'work_center_id', 'warehouse_id', 'production_sheet_id', 'notes'];
+                    'work_center_id', 'machine_capacity', 'units_per_tray', 
+                    'warehouse_id', 'production_sheet_id', 'notes'];
 
         $product = \App\Product::with('bomitems')->with('boms')
                                 ->with('producttools')
@@ -151,6 +205,8 @@ class ProductionOrder extends Model
             'notes' => $data['notes'],
 
             'work_center_id' => $data['work_center_id'] ?? $product->work_center_id,
+            'machine_capacity' => $product->machine_capacity, 
+            'units_per_tray' => $product->units_per_tray,
 //            'warehouse_id' => '',
             'production_sheet_id' => $data['production_sheet_id'],
         ]);

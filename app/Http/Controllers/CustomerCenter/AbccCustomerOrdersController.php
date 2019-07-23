@@ -180,7 +180,7 @@ class AbccCustomerOrdersController extends Controller {
 
 			'warehouse_id' => Configuration::get('DEF_WAREHOUSE'),
 //			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
-//			'sales_rep_id' => $order[''],
+			'sales_rep_id' => $customer->sales_rep_id,
 			'currency_id' => $cart->currency->id,
 			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_PAYMENT_METHOD'),
 			'template_id' => \App\Configuration::get('ABCC_DEFAULT_ORDER_TEMPLATE'),
@@ -364,7 +364,7 @@ class AbccCustomerOrdersController extends Controller {
 
 			'warehouse_id' => Configuration::get('DEF_WAREHOUSE'),
 //			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
-//			'sales_rep_id' => $order[''],
+			'sales_rep_id' => $customer->sales_rep_id,
 			'currency_id' => $cart->currency->id,
 			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_PAYMENT_METHOD'),
 			'template_id' => \App\Configuration::get('DEF_CUSTOMER_QUOTATION_TEMPLATE'),

@@ -55,7 +55,7 @@ return [
 	'Manufacturing Batch Size'     => 'Lote de Fabricación',
 	'Units per Tray'     => 'Unidades por Bandeja',
 	'Machine Capacity'     => 'Capacidad de la Máquina',
-	'Amount of Product this Machine can process in one load.'     => 'Cantidad de Producto que esta Máquina puede procesar en una carga.',
+	'Amount of Product this Machine can process in one load.'     => 'Cantidad de Producto que esta Máquina puede procesar en una carga (en kilos). Si hay varias capacidades, use ":" o bien ";" como separador.',
 
 	'The quantity of the product is expressed with these number of decimals.'     => 'La cantidad del producto se expresa con estos decimales.',
 	'The quantity to be manufactured is calculated as a multiple of the Manufacturing Lot.'     => 'La cantidad a fabricar se calcula como múltiplo del Lote de Fabricación.',

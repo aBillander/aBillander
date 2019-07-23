@@ -84,6 +84,7 @@ class ConfigurationKeysController extends Controller {
                         'ABI_IMPERSONATE_TIMEOUT',
                         'ABI_TIMEOUT_OFFSET',
                         'ABI_MAX_ROUNDCYCLES',
+                        'ENABLE_CRAZY_IVAN',
 //                        'DEF_DIMENSION_UNIT',
 //                        'DEF_DISTANCE_UNIT',
 //                        'DEF_VOLUME_UNIT',

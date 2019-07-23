@@ -132,6 +132,8 @@ return [
 	'ABI_TIMEOUT_OFFSET.help' => '',
 	'ABI_MAX_ROUNDCYCLES.name' => 'ABI_MAX_ROUNDCYCLES',
 	'ABI_MAX_ROUNDCYCLES.help' => '',
+	'ENABLE_CRAZY_IVAN.name' => 'ENABLE_CRAZY_IVAN',
+	'ENABLE_CRAZY_IVAN.help' => '',
 	'TIMEZONE.name' => 'Zona Horaria',
 	'TIMEZONE.help' => 'Zona horaria admitida por PHP.',
 	'USE_CUSTOM_THEME.name' => 'Usar Tema presonalizado',

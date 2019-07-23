@@ -148,6 +148,26 @@
         <span class="help-block">{!! l('ABI_MAX_ROUNDCYCLES.help') !!}</span>
       </div>
     </div>
+    
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ENABLE_CRAZY_IVAN.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ENABLE_CRAZY_IVAN" id="ENABLE_CRAZY_IVAN_on" value="1" @if( old('ENABLE_CRAZY_IVAN', $key_group['ENABLE_CRAZY_IVAN']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ENABLE_CRAZY_IVAN" id="ENABLE_CRAZY_IVAN_off" value="0" @if( !old('ENABLE_CRAZY_IVAN', $key_group['ENABLE_CRAZY_IVAN']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ENABLE_CRAZY_IVAN.help') !!}</span>
+      </div>
+    </div>
 
 
 

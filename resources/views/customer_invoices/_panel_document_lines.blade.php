@@ -128,7 +128,7 @@
                       @if ( $document->editable )
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerdocumentlines();"><i class="fa fa-pencil"></i></a -->
                     
-                      @if ( !$line->locked )
+                      @if ( !$line->locked || \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
 
                     <a class="btn btn-sm btn-warning edit-document-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
                     

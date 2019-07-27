@@ -77,6 +77,7 @@ return [
 	'Per Unit' => 'Unitario',
 	'Carga Amasadoras' => 'Carga Amasadoras',
 	'Trays' => 'Bandejas',
+	'Products' => 'Productos',
 	'' => '',
 	'' => '',
 ];

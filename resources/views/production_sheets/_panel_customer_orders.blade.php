@@ -151,6 +151,19 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 
   <a href="{{ route('productionsheet.products', [$sheet->id]) }}" class="btn btn-sm btn-warning hidden" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Show Products')}}</a>
 
+  <div class="btn-group">
+    <a href="#" class="btn btn-sm xbtn-default btn-grey dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-file-pdf-o"></i> {{ l('Reports', 'layouts') }}</a>
+    <a href="#" class="btn btn-sm xbtn-default btn-grey dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+    <ul class="dropdown-menu" style="background-color: #ffffff;
+border: 1px solid rgba(0,0,0,0.15);">
+      <li><a href="{{ route('productionsheet.orders.pdf', [$sheet->id]) }}" target="_blank"><i class="fa fa-align-justify"></i> &nbsp;{{ l('Customer Orders') }}</a> </li>
+      <li><a href="{{ route('productionsheet.orders.pdf', [$sheet->id, 'extended']) }}" target="_blank"><i class="fa fa-th-list text-info"></i> &nbsp;{{ l('Customer Orders') }} Ext.</a> </li>
+      <li><a href="{{ route('productionsheet.products.pdf', [$sheet->id]) }}" target="_blank"><i class="fa fa-th-large"></i> &nbsp;{{ l('Products') }}</a> </li>
+      <li><a href="{{ route('productionsheet.products.pdf', [$sheet->id, 'extended']) }}" target="_blank"><i class="fa fa-th text-info"></i> &nbsp;{{ l('Products') }} Ext.</a> </li>
+      <li class="divider"></li>
+    </ul>
+  </div>
+
   <a class="btn btn-sm btn-success show-order-products-summary" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Show Order Summary')}}</a>
 
 
@@ -161,8 +174,8 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
     @foreach($work_centerList as $id => $name)
     <li><a href="{{ route('productionsheet.summary', [$sheet->id, 'work_center_id' => $id]) }}">{{ $name }}</a></li>
     @endforeach
-    <li class="divider"></li>
-    <li><a href="{{ route('productionsheet.summary', [$sheet->id, 'work_center_id' => 0]) }}">{{ l('All', 'layouts') }}</a></li>
+    <!-- li class="divider"></li>
+    <li><a href="{{ route('productionsheet.summary', [$sheet->id, 'work_center_id' => 0]) }}">{{ l('All', 'layouts') }}</a></li -->
   </ul>
 </div>
 

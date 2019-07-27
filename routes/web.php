@@ -234,6 +234,10 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::get('productionsheets/{id}/preassemblies/pdf', 'ProductionSheetsPdfController@getPdfPreassemblies')->name('productionsheet.preassemblies.pdf');
         Route::get('productionsheets/{id}/manufacturing/pdf', 'ProductionSheetsPdfController@getPdfManufacturing')->name('productionsheet.manufacturing.pdf');
 
+        Route::get('productionsheets/{id}/orders/pdf', 'ProductionSheetsPdfController@getPdfOrders')->name('productionsheet.orders.pdf');
+
+        Route::get('productionsheets/{id}/products/pdf', 'ProductionSheetsPdfController@getPdfProducts')->name('productionsheet.products.pdf');
+
 
 
         Route::resource('customers', 'CustomersController');

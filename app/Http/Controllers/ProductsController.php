@@ -1035,7 +1035,7 @@ LIMIT 1
 
         // PDF::setOptions(['dpi' => 150]);     // 'defaultFont' => 'sans-serif']);
 
-        $pdf = \PDF::loadView('product_boms.reports.bom.bom', compact('product', 'bom'))->setPaper('a4', 'vetical');
+        $pdf = \PDF::loadView('product_boms.reports.bom.bom', compact('product', 'bom'))->setPaper('a4', 'vertical');
 
         return $pdf->stream($product->reference.'-bom.pdf'); // $pdf->download('invoice.pdf');
     }

@@ -31,7 +31,7 @@
       @else
       <td class="text-center warning">{!! Form::checkbox('worders[]', $order->id, false, ['class' => 'case checkbox']) !!}</td>
       @endif
-      <td><a href="{{ URL::to('customerorders/' . $order->id . '/edit') }}" title="{{l('View Order')}}" target="_blank"> {{ $order->document_reference }} </a></td>
+      <td><a href="{{ URL::to('customerorders/' . $order->id . '/edit') }}" title="{{l('View Order')}}" target="_blank"> {{ $order->document_reference ?: $order->id}} </a></td>
       <td>{{ $order->customer->reference_external }}</td>
       <td title="{{ abi_date_form_full($order->created_at) }}">{{ abi_toLocale_date_short($order->created_at) }}</td>
       <td><a href="{{ URL::to('customers/' . $order->customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{!! $order->customerInfo() !!}</a>

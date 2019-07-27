@@ -201,6 +201,7 @@ class ProductionSheet extends Model
                         'reference' => $group->first()->reference,
                         'name' => $group->first()->name,
                         'quantity' => $group->sum('quantity'),
+                        'measureunit' => $group->first()->product->measureunit->name,
                       ]);
                     }, collect());
 
@@ -244,6 +245,7 @@ class ProductionSheet extends Model
                         'reference' => $group->first()->reference,
                         'name' => $group->first()->name,
                         'quantity' => $group->sum('quantity'),
+                        'measureunit' => $group->first()->product->measureunit->name,
                       ]);
                     }, collect());
 

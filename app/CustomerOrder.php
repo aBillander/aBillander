@@ -138,7 +138,7 @@ class CustomerOrder extends Billable
         if ($this->notes_to_customer   ) $notes .= $this->notes_to_customer."\n\n";
 
 
-        return $notes;
+        return rtrim($notes);
     }
 
     

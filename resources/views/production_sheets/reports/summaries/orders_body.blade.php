@@ -73,7 +73,7 @@
 
   @foreach ($sheet->customerorders as $order)
     <tr>
-      <td class="button-pad">{{ $order->document_reference }}</td>
+      <td class="button-pad">{{ $order->document_reference ?: $order->id }}</td>
       <td>{{ $order->customer->reference_external }}</td>
       <td title="{{ abi_date_form_full($order->created_at) }}">{{ abi_toLocale_date_short($order->created_at) }}</td>
       <td>{!! $order->customerInfo() !!}

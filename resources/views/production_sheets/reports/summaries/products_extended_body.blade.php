@@ -46,8 +46,7 @@
 
 @if ( $sheet->customerorderlinesGrouped()->count() )
 
-<div class="xtax-summary-wrapper xprint-friendly text-left">
-<table xclass="order-details tax-summary xprint-friendly" style="margin-bottom: 4mm;" xstyle="border: 1px #ccc solid">
+<table class="order-details xtax-summary x-print-friendly" style="margin-bottom: 4mm;" xstyle="border: 1px #ccc solid">
       <tbody>
 
 {{--
@@ -62,17 +61,21 @@
 
     <tr style="background-color: #f5f5f5;">
       <!-- th>{{l('Product ID')}}</th -->
-      <th>{{l('Product Reference')}}</th>
-      <th>{{l('Product Name')}}</th>
-      <th colspan="5">{{l('Quantity')}}</th>
+      <th width="10%">{{l('Product Reference')}}</th>
+      <th width="40%">{{l('Product Name')}}</th>
+      <th width="5%">{{l('Quantity')}}</th>
+      <th width="27%"> &nbsp; </th>
+      <th width="18%"> &nbsp; </th>
     </tr>
 
   @foreach ($sheet->customerorderlinesGrouped() as $item)
     <tr>
       <!-- td>{{ $item['product_id'] }}</td -->
-      <td><strong>{{ $item['reference'] }}</strong></td>
-      <td colspan="1"><strong>{{ $item['name'] }}</strong></td>
-      <td colspan="5" class="text-right" style="padding-right: 16px">{{ niceQuantity($item['quantity'], 0) }}</td>
+      <td width="10%"><strong>{{ $item['reference'] }}</strong></td>
+      <td width="40%"><strong>{{ $item['name'] }}</strong></td>
+      <td width="5%" class="text-right" style="padding-right: 16px"><strong>{{ niceQuantity($item['quantity'], 0) }}</strong></td>
+      <td width="27%"><strong>{{ $item['measureunit'] }}</strong></td>
+      <td width="18%"> &nbsp; </td>
 
     </tr>
 
@@ -91,57 +94,31 @@
 
   @foreach ($sheet->customerorders as $order)
     <tr>
-      <td class="button-pad">{{ $order->document_reference }}</td>
-      <td>{{ abi_toLocale_date_short($order->created_at) }}</td>
-      <td>{!! $order->customerInfo() !!}
-                 <!-- a href="javascript:void(0);">
-                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
-                            data-content="{{ $order->customerCardFull() }}">
-                        <i class="fa fa-address-card-o"></i>
-                    </button>
-                 </a -->
+      <td class="xbutton-pad text-right">{{ $order->document_reference ?: $order->id }}
+
+          @if ($order->reference)
+              <br />[{{ $order->reference }}
+          @endif
+
       </td>
-      <td>
+      <td xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
+      </td>
+      <td xstyle="border-bottom: 1px #ccc solid;">{{ niceQuantity($order->lines->where( 'reference', $reference)->first()->quantity) }}
+      </td>
+      <td xstyle="border-bottom: 1px #ccc solid;">
           @if ( $order->hasShippingAddress() )
 
-
-
-          {{ $order->shippingaddress->alias }} 
-           <!-- a href="javascript:void(0);">
-              <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $order->shippingaddress->firstname }} {{ $order->shippingaddress->lastname }}<br />{{ $order->shippingaddress->address1 }}<br />{{ $order->shippingaddress->city }} - {{ $order->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $order->shippingaddress->phone }}</a>" data-original-title="" title="">
-                  <i class="fa fa-address-card-o"></i>
-              </button>
-           </a -->
-
+              Entrega: {{ $order->shippingaddress->alias }} <br />
 
           @endif
-      </td>
-      <td>{{ $order->reference }}</td>
-      <td class="text-center">
-                @if ($order->notes_from_customer && 0)
-                 <a href="javascript:void(0);">
-                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
-                            data-content="{{ $order->notes_from_customer }}">
-                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
-                    </button>
-                 </a>
-                @endif
 
-                @if ($order->all_notes && 0)
-                 <a href="javascript:void(0);">
-                    <button type="button" style="padding: 3px 8px;
-font-size: 12px;
-line-height: 1.5;
-border: 1px solid #adadad;;
-border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
-                            data-content="{!! nl2br($order->all_notes) !!}">
-                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
-                    </button>
-                 </a>
-                @endif
-                {!! nl2br($order->all_notes) !!}
+          @if ($order->all_notes)
+              Notas: {!! nl2br($order->all_notes) !!} <br />
+          @endif
       </td>
-      <td title="{{ $order->carrier->name ?? '' }}">{{ $order->shippingmethod->name ?? '' }}</td>
+      <td>{{ $order->shippingmethod->name ?? '' }} 
+
+        {{-- {!! optional($order->carrier)->name ? '<br />' . $order->carrier->name : '' !!} --}}</td>
 
     </tr>
   @endforeach
@@ -151,7 +128,6 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 
     </tbody>
 </table>
-</div><!-- div ENDS -->
 
 
 @else

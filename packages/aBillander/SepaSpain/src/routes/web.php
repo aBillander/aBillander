@@ -17,6 +17,9 @@ Route::group([
     Route::resource('directdebits', 'SepaDirectDebitsController')->names('sepasp.directdebits');
     Route::get('directdebits/{id}/xml', 'SepaDirectDebitsController@exportXml')->name('sepasp.directdebit.xml');
 
+    Route::get( 'directdebits/voucher/{id}/add', 'SepaDirectDebitsController@addVoucherForm')->name('sepasp.directdebit.add.voucher.form');
+    Route::post('directdebits/voucher/add',      'SepaDirectDebitsController@addVoucher'    )->name('sepasp.directdebit.add.voucher'     );
+
 
 
 

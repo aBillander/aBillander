@@ -55,6 +55,8 @@
 			<td class="text-right">
               @if ( $directdebit->status == 'pending' )
 
+                <a class="btn btn-sm btn-success xcustomer-voucher-setduedate" href="{{ URL::to('customervouchers/' . $payment->id . '/setduedate?back_route=' . urlencode('sepasp/directdebits/' . $directdebit->id)) }}" title="{{l('Change Due Date')}}"><i class="fa fa-calendar"></i></a>
+
                 <a class="btn btn-sm btn-warning unlink-customer-voucher" href="{{ URL::to('customervouchers/' . $payment->id . '/unlink') }}" title="{{l('Unlink')}}" data-oid="{{ $payment->id }}" data-boid="{{ $payment->bank_order_id }}" data-oreference="{{ $payment->reference }}" onClick="return false;"><i class="fa fa-unlink"></i></a>
 
 

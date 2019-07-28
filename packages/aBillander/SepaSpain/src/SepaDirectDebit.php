@@ -108,7 +108,7 @@ class SepaDirectDebit extends Model
 
     public function checkStatus()
     {
-        if ( $this->vouchers()->where('status', 'pending')->count() == 0 )
+        if ( ( $this->vouchers()->count() > 0 ) && ( $this->vouchers()->where('status', 'pending')->count() == 0 ) )
             $this->close();
 
         $this->updateTotal();

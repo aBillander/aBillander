@@ -150,6 +150,19 @@ class CustomerVouchersController extends Controller
 		return view('customer_vouchers.edit', compact('payment', 'action', 'back_route'));
 	}
 
+	public function setduedate($id, Request $request)
+	{
+		$action = 'setduedate';
+		$back_route = ( $request->has('back_route') AND $request->input('back_route') ) ? urldecode($request->input('back_route')) : 'customervouchers' ;
+		
+		$payment = $this->payment->with('currency')->findOrFail($id);
+
+        // Dates (cuen)
+        $this->addFormDates( ['due_date'], $payment );
+		
+		return view('customer_vouchers.edit', compact('payment', 'action' , 'back_route'));
+	}
+
 	public function pay($id, Request $request)
 	{
 		$action = 'pay';
@@ -234,6 +247,24 @@ class CustomerVouchersController extends Controller
 			return redirect($back_route)
 					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
 		
+		} else
+
+		if ( $action == 'setduedate' ) {
+
+			$rules = [
+				'due_date' => 'required|date',
+			];
+
+			$this->validate($request, $rules);
+
+			$payment->due_date = $request->input('due_date', $payment->due_date);
+
+			$payment->save();
+
+
+			return redirect($back_route)
+					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $payment->name . ' / ' . $request->input('due_date'));
+			
 		} else
 
 		if ( $action == 'pay' ) {

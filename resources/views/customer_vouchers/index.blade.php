@@ -196,6 +196,12 @@
             	@else
 
                 	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit' ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
+      @if ($payment->auto_direct_debit && !$payment->bankorder)
+
+                  <a class="btn btn-sm btn-navy add-voucher-to-sdd" data-id="{{$payment->id}}" data-type=""  title="{{l('Add Voucher to SEPA Direct Debit', 'sepasp')}}" onClick="return false;"><i class="fa fa-bank"></i></a>
+      @endif
+
  
       @if ($payment->bankorder && ($payment->bankorder->status == 'pending'))
       @else
@@ -235,6 +241,8 @@
 </div>
 
 @endsection
+
+@include('sepa_es::customer_vouchers._modal_add_voucher')
 
 @include('layouts/modal_delete')
 

@@ -319,4 +319,38 @@ class SepaDirectDebitsController extends Controller
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $directdebit->document_reference);
     }
 
+
+    public function addVoucherForm($id, Request $request)
+    {
+        $voucher = $this->payment->findOrFail($id);
+
+        $sdds = $this->directdebit->with('bankaccount')->where('status', '=', 'pending')->orderBy('document_date', 'desc')->orderBy('id', 'desc')->get();
+
+        return view('sepa_es::customer_vouchers._form_add_voucher', compact('voucher', 'sdds'));
+    }
+
+
+    public function addVoucher(Request $request)
+    {
+        $voucher_id = (int) $request->input('voucher_id');
+        $sdd_id     = (int) $request->input('sdd_id');
+
+        $voucher = $this->payment->findOrFail($voucher_id);
+
+        $sdd = $this->directdebit->findOrFail($sdd_id);
+
+        // Do add vouchers, now!
+        $sdd->vouchers()->save($voucher);
+
+        // Update bankorder
+        $sdd->updateTotal();
+
+
+        return response()->json( [
+                'msg' => 'OK',
+                'sdd' => $sdd->id,
+                'voucher' => $voucher->id,
+ //               'currency' => $line[0]->currency,
+        ] );
+    }
 }

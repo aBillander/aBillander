@@ -86,6 +86,10 @@ return [
 	'Unable to create XML File &#58&#58 (:id) ' => 'No se puede crear el Fichero XML &#58&#58 (:id) ',
 	'Document has no Lines'                     =>  'El Documento no contiene Líneas',
 
+	'Add Voucher to SEPA Direct Debit' => 'Añadir Recibo a Remesa',
+
+	'Change Due Date' => 'Cambiar Fecha de Vencimiento',
+
 
 	/*
 	|--------------------------------------------------------------------------

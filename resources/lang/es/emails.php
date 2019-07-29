@@ -12,6 +12,7 @@ return [
 	*/
 
 	'customerinvoices.default.subject :num :date'     => ' :_> Su Factura: :num (:date)',
+	'customershippingslips.default.subject :num :date'     => ' :_> Su Albarán: :num (:date)',
 	''     => '',
 	''     => '',
 	''     => '',

@@ -4,10 +4,10 @@
 		<meta charset="utf-8">
 	</head>
 	<body>
-		<h2>Su Factura: {{ $invoice_num }} ({{ $invoice_date }})<br /> Total: {{ $invoice_total }}</h2>
+		<h2>Su Albarán: {{ $invoice_num }} ({{ $invoice_date }})<br /> Total: {{ $invoice_total }}</h2>
 
 		<div>
-			Adjunto les enviamos la factura de referencia.<br /><br />
+			Adjunto les enviamos el albarán de referencia.<br /><br />
 			{{ $custom_body }}<br /><br />
 			Sin otro particular, reciban un cordial saludo.
 		</div>

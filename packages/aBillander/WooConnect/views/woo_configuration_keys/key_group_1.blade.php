@@ -35,6 +35,53 @@
   <fieldset>
     <legend>{{ l('General') }}</legend>
 
+
+{{--
+    <div class="form-group {{ $errors->has('WOOC_STORE_URL') ? 'has-error' : '' }}">
+      <label for="WOOC_STORE_URL" class="col-lg-4 control-label">{!! l('WOOC_STORE_URL.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="WOOC_STORE_URL" name="WOOC_STORE_URL" placeholder="" value="{{ old('WOOC_STORE_URL', $key_group['WOOC_STORE_URL']) }}" />
+        {{ $errors->first('WOOC_STORE_URL', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('WOOC_STORE_URL.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('WOOC_CONSUMER_KEY') ? 'has-error' : '' }}">
+      <label for="WOOC_CONSUMER_KEY" class="col-lg-4 control-label">{!! l('WOOC_CONSUMER_KEY.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="WOOC_CONSUMER_KEY" name="WOOC_CONSUMER_KEY" placeholder="" value="{{ old('WOOC_CONSUMER_KEY', $key_group['WOOC_CONSUMER_KEY']) }}" />
+        {{ $errors->first('WOOC_CONSUMER_KEY', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('WOOC_CONSUMER_KEY.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('WOOC_CONSUMER_SECRET') ? 'has-error' : '' }}">
+      <label for="WOOC_CONSUMER_SECRET" class="col-lg-4 control-label">{!! l('WOOC_CONSUMER_SECRET.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="WOOC_CONSUMER_SECRET" name="WOOC_CONSUMER_SECRET" placeholder="" value="{{ old('WOOC_CONSUMER_SECRET', $key_group['WOOC_CONSUMER_SECRET']) }}" />
+        {{ $errors->first('WOOC_CONSUMER_SECRET', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('WOOC_CONSUMER_SECRET.help') !!}</span>
+      </div>
+    </div>
+--}}
+
+
+
     <div class="form-group {{ $errors->has('WOOC_DEF_LANGUAGE') ? 'has-error' : '' }}">
       <label for="WOOC_DEF_LANGUAGE" class="col-lg-4 control-label">{!! l('WOOC_DEF_LANGUAGE.name') !!}</label>
       <div class="col-lg-8">

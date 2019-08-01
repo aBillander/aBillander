@@ -5,10 +5,10 @@
 
 @php
 
-$qty_20102 = [];
-$key_4024 = '4024';
+$qty_20001 = [];
+$key_4021 = '4021';
 
-$reference_40104 = $name_40104 = $reference_20102 = $name_20102 = $reference_20102 = $name_20102 ='';
+$reference_40104 = $name_40104 = $reference_20001 = $name_20001 = $reference_20001 = $name_20001 ='';
 
 @endphp
 
@@ -24,21 +24,21 @@ $reference_40104 = $name_40104 = $reference_20102 = $name_20102 = $reference_201
 
 {{-- Ingredients here: --}}
 
-{{-- 20102 after 4024 --}}
+{{-- 20001 after 4021 --}}
 
 @php
 
-$lines_20102 = $order->productionorderlines->where('reference', '20102');
+$lines_20001 = $order->productionorderlines->where('reference', '20001');
 
-foreach ($lines_20102 as $line)
+foreach ($lines_20001 as $line)
 {
-  if ( array_key_exists( $key_4024, $qty_20102) )
-      $qty_20102[$key_4024] += $line->required_quantity;
+  if ( array_key_exists( $key_4021, $qty_20001) )
+      $qty_20001[$key_4021] += $line->required_quantity;
   else {
-      $qty_20102[$key_4024]  = $line->required_quantity;
-      $reference_20102 = $line->reference;
-      $name_20102 = $line->name;
-      $unit_20102 = $line->product->measureunit->sign;
+      $qty_20001[$key_4021]  = $line->required_quantity;
+      $reference_20001 = $line->reference;
+      $name_20001 = $line->name;
+      $unit_20001 = $line->product->measureunit->sign;
   }
 }
 
@@ -61,8 +61,8 @@ foreach ($lines_20102 as $line)
           </th>
           <th width="5%"> </th>
           <th width="30%">
-@if( count($qty_20102) )
-            [{{ $reference_20102 }}] {{ $name_20102 }}
+@if( count($qty_20001) )
+            [{{ $reference_20001 }}] {{ $name_20001 }}
 @endif
           </th>
         </tr>
@@ -77,8 +77,8 @@ foreach ($lines_20102 as $line)
           </td>
           <td> </td>
           <td>
-@if( count($qty_20102) )
-            {{ $key_4024 }}: {{ niceQuantity($qty_20102[$key_4024] ?? '') }} {{ $unit_20102 }}
+@if( count($qty_20001) )
+            {{ $key_4021 }}: {{ niceQuantity($qty_20001[$key_4021] ?? '') }} {{ $unit_20001 }}
 @endif
           </td>
         </tr>
@@ -99,8 +99,8 @@ foreach ($lines_20102 as $line)
 
 {{ abi_r($qty_40104) }}
 
-{{ abi_r($qty_20102) }}
+{{ abi_r($qty_20001) }}
 
-{{ abi_r($qty_20102) }}
+{{ abi_r($qty_20001) }}
 
 --}}

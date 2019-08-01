@@ -44,8 +44,9 @@ class CustomerInvoicesController extends BillableController
 							->with('customer')
 							->with('currency')
 							->with('paymentmethod')
-                            ->orderBy('document_date', 'desc')
-							->orderBy('id', 'desc');        // ->get();
+//                            ->orderBy('document_date', 'desc')
+							->orderBy('document_reference', 'desc');
+//							->orderBy('id', 'desc');        // ->get();
 
         $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 

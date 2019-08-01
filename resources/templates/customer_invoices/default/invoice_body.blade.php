@@ -235,7 +235,7 @@
 
 	<tbody>
 
-                @foreach ($document->documentlines->sortBy('line_order') as $line)
+                @foreach ($document->documentlines->sortBy('line_sort_order') as $line)
 
 			    @if ( 
 			    			( $line->line_type != 'product'  ) &&

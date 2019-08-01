@@ -101,6 +101,14 @@ return [
 	|
 	*/
 
+	'WOOC_STORE_URL.name'     => 'URL de la TIenda',
+	'WOOC_STORE_URL.help'     => 'Algo como: <i>https://www.mywoostore.com/</i>',
+	'WOOC_CONSUMER_KEY.name'     => 'Clave de cliente',
+	'WOOC_CONSUMER_KEY.help'     => '',
+	'WOOC_CONSUMER_SECRET.name'     => 'Clave secreta',
+	'WOOC_CONSUMER_SECRET.help'     => '',
+
+
 	'WOOC_DECIMAL_PLACES.name'     => 'Número de decimales',
 //	'WOOC_DECIMAL_PLACES.help'     => 'Los Precios de WooCommerce se recuperan con este número de posiciones decimales. Para no perder precisión, poner un número superior al número de posiciones decimales con que se ha configurado WooCommerce (<span style="font-style: italic;">\'woocommerce_price_num_decimals\'</span>).',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
 	'WOOC_DECIMAL_PLACES.help'     => 'Número de posiciones decimales con que trabaja WooCommerce (<span style="font-style: italic;">\'woocommerce_price_num_decimals\'</span>).',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',

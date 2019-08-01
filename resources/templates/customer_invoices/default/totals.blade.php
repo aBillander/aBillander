@@ -31,8 +31,8 @@ $totals = $document->totals();
 				<tr>
 					<th>Tipo</th>
 					<th>Importe</th>
-					<th>Descuento {{ $document->document_discount_percent > 0 ? '('.$document->as_percentable($document->document_discount_percent).'%)' : '' }}</th>
-					<th>Pronto Pago {{ $document->document_ppd_percent > 0 ? '('.$document->as_percentable($document->document_ppd_percent).'%)' : ''  }}</th>
+					<th>Descuento {{ $document->document_discount_percent != 0 ? '('.$document->as_percentable($document->document_discount_percent).'%)' : '' }}</th>
+					<th>Pronto Pago {{ $document->document_ppd_percent != 0 ? '('.$document->as_percentable($document->document_ppd_percent).'%)' : ''  }}</th>
 					<th>Base</th>
 					<th>IGIC</th>
 					<!-- th>Tipo</th -->
@@ -57,8 +57,8 @@ $re  = $total['tax_lines']->where('tax_rule_type', 'sales_equalization')->first(
 					<td>{{ $alltax->as_percentable( $alltax->percent ) }}</td>
 					<td>{{ $alltax->as_priceable($total['gross_amount']) }}</td>
 
-					<td>{{ $total['discount_amount'] > 0 ? $alltax->as_priceable($total['discount_amount']) : '' }}</td>
-					<td>{{ $total['ppd_amount']      > 0 ? $alltax->as_priceable($total['ppd_amount'])      : '' }}</td>
+					<td>{{ $total['discount_amount'] != 0 ? $alltax->as_priceable($total['discount_amount']) : '' }}</td>
+					<td>{{ $total['ppd_amount']      != 0 ? $alltax->as_priceable($total['ppd_amount'])      : '' }}</td>
 					
 					<td>{{ $alltax->as_priceable($iva->taxable_base) }}</td>
 					<td>{{ $alltax->as_priceable($iva->total_line_tax) }}</td>

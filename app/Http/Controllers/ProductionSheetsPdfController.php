@@ -270,14 +270,18 @@ class ProductionSheetsPdfController extends Controller
 
 
         $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
-        // $sheet->customerorders()->load(['customer', 'customerorderlines']);
+
+        
+        if ($request->has('extended'))
+        {
+            $pdf = \PDF::loadView('production_sheets.reports.summaries.orders_extended', compact('sheet', 'work_center'))->setPaper('a4', 'vertical');
+
+            if ($request->has('screen')) return view('production_sheets.reports.summaries.orders_extended', compact('sheet', 'work_center'));
+
+            return $pdf->stream('orders.pdf');
+        }
 
 
-
-        //
-        // return view('production_sheets.reports.production_sheets.summary', compact('sheet', 'work_center'));
-
-        // PDF::setOptions(['dpi' => 150]);     // 'defaultFont' => 'sans-serif']);
 
         $pdf = \PDF::loadView('production_sheets.reports.summaries.orders', compact('sheet', 'work_center'))->setPaper('a4', 'vertical');
 

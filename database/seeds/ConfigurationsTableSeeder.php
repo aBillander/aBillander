@@ -150,6 +150,9 @@ $confs = [
 ['TAX_BASED_ON_SHIPPING_ADDRESS', '0'],
 ['TIMEZONE', 'Europe/Madrid'],
 ['USE_CUSTOM_THEME', ''],
+['WOOC_STORE_URL', ''],			// https://www.mywoostore.com/
+['WOOC_CONSUMER_KEY', ''],
+['WOOC_CONSUMER_SECRET', ''],
 ['WOOC_CONFIGURATIONS_CACHE', '0'],
 ['WOOC_CURRENCY', 'EUR'],
 ['WOOC_DECIMAL_PLACES', '2'],

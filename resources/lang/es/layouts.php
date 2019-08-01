@@ -282,6 +282,7 @@ return [
 	'None'     => 'Ninguno',
 	'Loading...'     => 'Cargando...',
 	'Processing...'     => 'Procesando...',
+	'Updating...' => 'Actualizando...',
 
 	'You are going to PERMANENTLY delete a record. Are you sure?' => 'Está a punto de borrar PERMANENTEMENTE un registro. ¿Está seguro?',
 	'You are going to delete a record. Are you sure?' => 'Está a punto de borrar un registro. ¿Está seguro?',

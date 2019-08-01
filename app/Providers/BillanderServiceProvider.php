@@ -5,10 +5,17 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use Request;
-use App\Configuration as Configuration;
+use App\Configuration;
 
 class BillanderServiceProvider extends ServiceProvider
 {
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
+
     /**
      * Bootstrap the application services.
      *
@@ -45,6 +52,20 @@ class BillanderServiceProvider extends ServiceProvider
         abi_r( $this->app->request->segment(1), true );
         // $this->app->request->route('slug')   to get the slug in the url
         */
+
+        // https://www.qcode.in/save-laravel-app-settings-in-database/
+        // https://medium.com/@DarkGhostHunter/laravel-loading-the-settings-from-the-database-or-file-9b4a3df5db75
+/*
+        $keys = [ 'store_url', 'consumer_key', 'consumer_secret' ];
+
+        foreach ($keys as $key) {
+            # code...
+            $value = Configuration::get('WOOC_'.strtoupper( $key ));
+
+            if ( $value )
+                config( ['woocommerce.' . $key => $value] );
+        }
+*/
     }
 
     /**

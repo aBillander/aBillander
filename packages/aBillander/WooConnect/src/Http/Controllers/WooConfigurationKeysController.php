@@ -26,6 +26,10 @@ class WooConfigurationKeysController extends Controller {
 
                 1 => [
 
+                        'WOOC_STORE_URL',          // https://www.mywoostore.com/
+                        'WOOC_CONSUMER_KEY',
+                        'WOOC_CONSUMER_SECRET',
+
                         'WOOC_DECIMAL_PLACES',
 //                        'WOOC_DEF_CURRENCY',
                         'WOOC_DEF_CUSTOMER_GROUP',

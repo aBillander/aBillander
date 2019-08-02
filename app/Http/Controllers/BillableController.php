@@ -384,7 +384,7 @@ class BillableController extends Controller
                                 ->orderBy('customer_id', 'ASC')
                                 ->orderBy('from_quantity', 'ASC')
                                 ->take(7)->get();
-
+/*
         // Recent Sales
         $lines = \App\CustomerOrderLine::where('product_id', $product->id)
                             ->with(["document" => function($q){
@@ -399,6 +399,27 @@ class BillableController extends Controller
                             ->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
                             ->select('customer_order_lines.*', 'customer_orders.document_date', \DB::raw('"customerorders" as route'))
                             ->orderBy('customer_orders.document_date', 'desc')
+                            ->take(7)->get();
+*/
+        // Recent Sales
+        $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
+        $class = '\App\\'.$model.'Line';
+        $table = snake_case(str_plural($model));
+        $route = str_replace('_', '', $table);
+        $tableLines = snake_case($model).'_lines';
+        $lines = $class::where('product_id', $product->id)
+                            ->with(["document" => function($q){
+                                $q->where('customerorders.customer_id', $customer->id);
+                            }])
+                            ->with('document')
+                            ->with('document.customer')
+                            ->whereHas('document', function($q) use ($customer_id, $recent_sales_this_customer) {
+                                    if ( $recent_sales_this_customer > 0 )
+                                        $q->where('customer_id', $customer_id);
+                                })
+                            ->join($table, $tableLines.'.'.snake_case($model).'_id', '=', $table.'.id')
+                            ->select($tableLines.'.*', $table.'.document_date', \DB::raw('"'.$route.'" as route'))
+                            ->orderBy($table.'.document_date', 'desc')
                             ->take(7)->get();
 
 

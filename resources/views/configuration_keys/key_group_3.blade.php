@@ -107,6 +107,35 @@
       </div>
     </div>
 
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('RECENT_SALES_CLASS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="RECENT_SALES_CLASS" id="RECENT_SALES_CLASS_CustomerOrder" value="CustomerOrder" @if( old('RECENT_SALES_CLASS', $key_group['RECENT_SALES_CLASS']) == 'CustomerOrder' ) checked="checked" @endif type="radio">
+            {!! l('RECENT_SALES_CLASS.option.CustomerOrder') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="RECENT_SALES_CLASS" id="RECENT_SALES_CLASS_CustomerShippingSlip" value="CustomerShippingSlip" @if( old('RECENT_SALES_CLASS', $key_group['RECENT_SALES_CLASS']) == 'CustomerShippingSlip' ) checked="checked" @endif type="radio">
+            {!! l('RECENT_SALES_CLASS.option.CustomerShippingSlip') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="RECENT_SALES_CLASS" id="RECENT_SALES_CLASS_CustomerInvoice" value="CustomerInvoice" @if( old('RECENT_SALES_CLASS', $key_group['RECENT_SALES_CLASS']) == 'CustomerInvoice' ) checked="checked" @endif type="radio">
+            {!! l('RECENT_SALES_CLASS.option.CustomerInvoice') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('RECENT_SALES_CLASS.help') !!}</span>
+      </div>
+    </div>
+
+
+
     <div class="form-group {{ $errors->has('ABI_IMPERSONATE_TIMEOUT') ? 'has-error' : '' }}">
       <label for="ABI_IMPERSONATE_TIMEOUT" class="col-lg-4 control-label">{!! l('ABI_IMPERSONATE_TIMEOUT.name') !!}</label>
       <div class="col-lg-8">

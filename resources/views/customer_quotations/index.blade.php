@@ -166,6 +166,8 @@
 
 </div><!-- div id="div_documents" ENDS -->
 
+@include('layouts/back_to_top_button')
+
 @endsection
 
 @include('layouts/modal_delete')

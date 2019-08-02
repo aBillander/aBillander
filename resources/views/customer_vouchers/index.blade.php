@@ -240,6 +240,8 @@
    </div>
 </div>
 
+@include('layouts/back_to_top_button')
+
 @endsection
 
 @include('sepa_es::customer_vouchers._modal_add_voucher')

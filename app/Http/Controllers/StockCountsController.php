@@ -192,6 +192,32 @@ class StockCountsController extends Controller
                     ->findOrFail($id);
 
 
+        if ($stockcount->processed)
+        {
+            if ($request->ajax()) {
+
+                return response()->json([
+    //                'action' => $action, 
+    //                'current_task' => $current_task, 
+    //                'current_task_status' => $current_task_status, 
+                    'item_count' => 0, 
+                    'item_count_ok' => 0, 
+                    'item_total' => 0, 
+                    'roundCycle' => 0,
+                    'progress' => 100,
+                    'iamdone'  => 1, 
+                    'nextItem' => 0,
+                    'messages' => [],
+
+                    'url_to' => route('stockcounts.index'),
+                    'errors'   => 0,
+                    'warnings' => 0,
+                ]);
+            }
+
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        }
 
         $name = '['.$stockcount->id.'] '.$stockcount->name;
         $wsname = '['.$stockcount->warehouse->id.'] '.$stockcount->warehouse->name;

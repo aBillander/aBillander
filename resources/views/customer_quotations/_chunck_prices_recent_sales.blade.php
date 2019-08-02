@@ -2,7 +2,7 @@
 
 
                   <h4>
-                      <span style="color: #dd4814;">{{ l('Recent Sales', 'products') }}</span> <!-- span style="color: #cccccc;">/</span>  -->
+                      <span style="color: #dd4814;">{{ l('Recent Sales', 'products') }}</span>  &nbsp; <span style="color: #cccccc;"> [{{ \App\Configuration::get('RECENT_SALES_CLASS') }}]</span>
                        
                   </h4>
 

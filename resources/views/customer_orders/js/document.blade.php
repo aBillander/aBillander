@@ -707,6 +707,28 @@
 
 
                     console.log(response);
+                },
+                error: function(xhr, status) {
+                         panel.html( '' );
+
+                    // check if xhr.status is defined in $.ajax.statusCode
+                    // if true, return false to stop this function
+                    if (typeof this.statusCode[xhr.status] != 'undefined') {
+                        return false;
+                    }
+                    // else continue
+                    console.log('ajax.error');
+                },
+                statusCode: {
+                    404: function(response) {
+                        console.log('ajax.statusCode: 404');
+                    },
+                    500: function(response) {
+                        panel.html( JSON.parse(response.responseText).message );
+                        panel.removeClass('loading');
+                        console.log(response);
+                        console.log('ajax.statusCode: 500');
+                    }
                 }
             });
         }

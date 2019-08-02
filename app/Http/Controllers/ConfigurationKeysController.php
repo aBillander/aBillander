@@ -81,6 +81,7 @@ class ConfigurationKeysController extends Controller {
                         'DEF_LOGS_PERPAGE',
                         'DEF_PERCENT_DECIMALS',
                         'DEF_QUANTITY_DECIMALS',
+                        'RECENT_SALES_CLASS',
                         'ABI_IMPERSONATE_TIMEOUT',
                         'ABI_TIMEOUT_OFFSET',
                         'ABI_MAX_ROUNDCYCLES',

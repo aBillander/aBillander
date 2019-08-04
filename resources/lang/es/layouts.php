@@ -182,6 +182,7 @@ return [
 	'Default'      => 'Por defecto',
 	'Position'     => 'Posición',
 	'Notes'     => 'Notas',
+	'Alias'     => 'Alias',
 
 	'Filter Records'     => 'Filtrar Registros',
 	'Search Records'     => 'Buscar Registros',
@@ -202,6 +203,7 @@ return [
 	'View Document'     => 'Ver Documento',
 	'View more'     => 'Ver más',
 	'Edit'     => 'Modificar',
+	'Undo'     => 'Deshacer',
 	'Apply'     => 'Aplicar',
 	'Refresh'     => 'Refrescar',
 	'Show'     => 'Mostrar',

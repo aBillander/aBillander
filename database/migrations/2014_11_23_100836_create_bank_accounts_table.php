@@ -30,6 +30,9 @@ class CreateBankAccountsTable extends Migration {
 			$table->string('swift', 11)->nullable();		// ISO 9362, también conocido como código SWIFT o código BIC es un código de identificación bancaria más utilizado para realizar las transferencias internacionales de dinero
 												// https://es.wikipedia.org/wiki/ISO_9362
 
+			$table->string('suffix', 3)->default('000');
+			$table->string('creditorid', 30)->nullable();
+
 			$table->string('mandate_reference', 35)->nullable();
 			$table->date('mandate_date')->nullable();
 //			$table->date('first_recurring_date')->nullable();	// Not here. For recurring payments

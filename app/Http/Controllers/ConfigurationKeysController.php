@@ -62,6 +62,7 @@ class ConfigurationKeysController extends Controller {
                         'DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE',
                         'DEF_CUSTOMER_INVOICE_SEQUENCE',
                         'DEF_CUSTOMER_INVOICE_TEMPLATE',
+                        'CUSTOMER_INVOICE_BANNER',
                         'CUSTOMER_INVOICE_CAPTION',
                         'DEF_CUSTOMER_PAYMENT_METHOD',
                         'DEF_SHIPPING_METHOD',

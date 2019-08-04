@@ -16,6 +16,7 @@ class CreateCarriersTable extends Migration {
 		Schema::create('carriers', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->string('alias', 32)->nullable(false);
 			$table->string('name', 64)->nullable(false);
 			
 			$table->tinyInteger('active')->default(1);

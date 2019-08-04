@@ -23,6 +23,7 @@
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
+            <th class="text-left">{{l('Alias', 'layouts')}}</th>
 			<th>{{l('Carrier name')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
 			<th> </th>
@@ -31,7 +32,8 @@
 	<tbody>
 	@foreach ($carriers as $carrier)
 		<tr>
-			<td>{{ $carrier->id }}</td>
+            <td>{{ $carrier->id }}</td>
+            <td>{{ $carrier->alias }}</td>
 			<td>{{ $carrier->name }}</td>
 
             <td class="text-center">

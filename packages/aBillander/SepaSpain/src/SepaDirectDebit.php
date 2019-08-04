@@ -258,7 +258,7 @@ class SepaDirectDebit extends Model
                 'cdtr'          => $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),      // (max 70 characters)
                 'iban'          => $this->sanitize_iban( $this->iban ),            // IBAN of the Creditor
                 'bic'           => $this->swift,           // BIC of the Creditor
-                'ci'            => $this->calculateCreditorID( \App\Context::getContext()->company, '100' ),    // Creditor-Identifier
+                'ci'            => $this->calculateCreditorID( \App\Context::getContext()->company, $this->bankaccount ),    // Creditor-Identifier
             // optional
                 'ccy'           => $this->currency_iso_code ?: 'EUR',                   // Currency. Default is 'EUR'
 //                'btchBookg'     => 'true',                  // BatchBooking, only 'true' or 'false'
@@ -350,12 +350,21 @@ class SepaDirectDebit extends Model
         return substr(str_replace($from, $to, $name), 0, 70);
     }
 
-    public function calculateCreditorID( \App\Company $company = null, $suffix = '000' )
+    public function calculateCreditorID( \App\Company $company = null, $bankaccount = null )
     {
         // https://inza.wordpress.com/2013/10/25/como-preparar-los-mandatos-sepa-identificador-del-acreedor/
 
         if ($company == null)
             $company = \App\Context::getContext()->company;
+
+        if ($bankaccount == null)
+            $bankaccount = \App\Context::getContext()->company->bankaccount;
+
+        if ( $bankaccount->creditorid )
+            return $bankaccount->creditorid;
+
+
+        $suffix = $bankaccount->suffix ?: '000';
 
         $creditorid = '';
 

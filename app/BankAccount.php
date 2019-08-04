@@ -13,11 +13,14 @@ class BankAccount extends Model {
 
 	protected $fillable = ['iban', 'swift', 
                            'bank_name', 'ccc_entidad', 'ccc_oficina', 'ccc_control', 'ccc_cuenta',
+                           'suffix', 'creditorid',
 						   'mandate_reference', 'mandate_date', 'first_recurring_date'];
 
 	public static $rules = [
     	'bank_name'    			=> array('required', 'min:2', 'max:64'),
         'iban' => array('required', 'min:4', 'max:34'),
+
+        'suffix'   => 'sometimes|nullable|min:3|max:3',
 //        'swift' => array('min:8', 'max:11'),
 /*
         'bank_name'   => 'required|min:4|max:64',

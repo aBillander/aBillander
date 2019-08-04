@@ -227,6 +227,26 @@ class CustomerShippingSlip extends Billable
         $this->save();
 
         return true;
+    }
+
+    public function undeliver()
+    {
+        // if ( ! parent::close() ) return false;
+
+        // Dispatch event
+        // event( new \App\Events\CustomerShippingSlipDelivered($this) );
+
+        // Can I ...?
+        if ( $this->status != 'closed' ) return false;
+
+        // onhold?
+        // if ( $this->onhold ) return false;
+
+        // Do stuf...
+        $this->shipment_status = 'pending';
+        $this->delivery_date_real = null;
+
+        $this->save();
 
         return true;
     }

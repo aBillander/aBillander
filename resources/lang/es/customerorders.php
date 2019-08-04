@@ -225,8 +225,9 @@ return [
 	'Margin 2 (%)'     => 'Margen 2 (%)',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',
-	'Cost-Benefit Analysis'     => 'Análisis de Rentabiliad',
+	'Cost-Benefit Analysis'     => 'Análisis de Rentabilidad',
 	'Margin'     => 'Margen',
+	'Update Cost Prices'     => 'Actualizar Precios de Coste',
 
 	// Stock availability
 	'Stock Availability'     => 'Disponibilidad de Stock',

@@ -55,7 +55,9 @@ class CustomerShippingSlipsController extends BillableController
 //                            ->with('currency')
 //                            ->with('paymentmethod')
 //                            ->orderBy('document_date', 'desc')
-                            ->orderBy('document_reference', 'desc');
+                            // ->orderBy('document_reference', 'desc');
+// https://www.designcise.com/web/tutorial/how-to-order-null-values-first-or-last-in-mysql
+                            ->orderByRaw('document_reference IS NOT NULL, document_reference DESC');
 //                          ->orderBy('id', 'desc');        // ->get();
 
         $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
@@ -528,6 +530,33 @@ class CustomerShippingSlipsController extends BillableController
 
         // Deliver
         if ( $document->deliver() )
+            return redirect()->back()           // ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+    protected function undeliver($id, Request $request)
+    {
+        $document = $this->document->findOrFail($id);
+
+        // Can I?
+        if ( $document->status != 'closed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+        }
+/*
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+*/
+        // unDeliver
+        if ( $document->undeliver() )
             return redirect()->back()           // ->route($this->model_path.'.index')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
         

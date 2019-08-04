@@ -205,7 +205,19 @@
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>
     @if ( $document->shipment_status == 'delivered' )
+        @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+
+                <div class="btn-group">
+                  <a href="#" class="btn btn-xs btn-blue" title="{{ l('Delivered at:') }} {{abi_date_short( $document->delivery_date_real )}}">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
+                  <a href="#" class="btn btn-xs btn-blue dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                  <ul class="dropdown-menu" style="background-color: #ffffff; color: #333333;">
+                    <li><a href="{{ URL::to($model_path.'/' . $document->id . '/undeliver') }}" style="background-color: #ffffff; color: #333333;"><i class="fa fa-undo text-danger"></i> &nbsp; {{ l('Undo', 'layouts') }}</a></li>
+                  </ul>
+                </div>
+
+        @else
                 <a class="btn btn-xs btn-blue" href="#" title="{{ l('Delivered at:') }} {{abi_date_short( $document->delivery_date_real )}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
+        @endif
     @else
         @if ($document->status == 'closed')
                 <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/deliver') }}" title="{{l('Set delivered')}}">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>

@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,10 +11,11 @@ class Carrier extends Model {
 
     protected $dates = ['deleted_at'];
     
-	protected $fillable = [ 'name', 'active' ];
+	protected $fillable = [ 'name', 'alias', 'active' ];
 
     public static $rules = array(
-    	'name'    => array('required', 'min:2', 'max:64'),
+        'name'    => array('required', 'min:2', 'max:64'),
+        'alias'    => array('required', 'min:2', 'max:32'),
     	);
     
 

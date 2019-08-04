@@ -56,7 +56,8 @@ $confs = [
 ['ALLOW_PRODUCT_SUBCATEGORIES', '1'],
 ['ALLOW_SALES_RISK_EXCEEDED', '0'],
 ['ALLOW_SALES_WITHOUT_STOCK', '0'],
-['CUSTOMER_INVOICE_CAPTION', 'Registered with the Commercial Registry of City.'],
+['CUSTOMER_INVOICE_BANNER', 'Place your Order at www.mystore.com'],	// 'Haga su pedido en www.mitienda.es'
+['CUSTOMER_INVOICE_CAPTION', 'Registered with the Commercial Registry of City.'],	// 'Sociedad inscrita en el Registro Mercantil de Ciudad.'
 ['CUSTOMER_ORDERS_NEED_VALIDATION', '0'],
 ['DB_BACKUP_SECURITY_TOKEN', 'XXXXXXXXXXXXXXXX'],
 ['DEF_CARRIER', ''],

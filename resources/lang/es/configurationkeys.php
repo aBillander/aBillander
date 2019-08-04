@@ -99,6 +99,8 @@ return [
 	'DEF_CUSTOMER_INVOICE_SEQUENCE.help' => '',
 	'DEF_CUSTOMER_INVOICE_TEMPLATE.name' => 'Plantilla de Facturas para Clientes',
 	'DEF_CUSTOMER_INVOICE_TEMPLATE.help' => '',
+	'CUSTOMER_INVOICE_BANNER.name' => 'Banner en Factura',
+	'CUSTOMER_INVOICE_BANNER.help' => 'Este texto aparece en la Cabecera de las Facturas de Clientes.',
 	'CUSTOMER_INVOICE_CAPTION.name' => 'Pie de Factura',
 	'CUSTOMER_INVOICE_CAPTION.help' => 'Este texto aparece en el pie de las Facturas de Clientes.',
 	'DEF_CUSTOMER_PAYMENT_METHOD.name' => 'Forma de Pago para Clientes',

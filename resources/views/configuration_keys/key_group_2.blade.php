@@ -194,12 +194,26 @@
 
 
 
+    <div class="form-group {{ $errors->has('CUSTOMER_INVOICE_BANNER') ? 'has-error' : '' }}">
+      <label for="CUSTOMER_INVOICE_BANNER" class="col-lg-4 control-label">{!! l('CUSTOMER_INVOICE_BANNER.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        <textarea class="form-control" rows="1" id="CUSTOMER_INVOICE_BANNER" name="CUSTOMER_INVOICE_BANNER">{{ old('CUSTOMER_INVOICE_BANNER', $key_group['CUSTOMER_INVOICE_BANNER']) }}</textarea>
+        {{ $errors->first('CUSTOMER_INVOICE_BANNER', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('CUSTOMER_INVOICE_BANNER.help') !!}</span>
+      </div>
+    </div>
+
     <div class="form-group {{ $errors->has('CUSTOMER_INVOICE_CAPTION') ? 'has-error' : '' }}">
       <label for="CUSTOMER_INVOICE_CAPTION" class="col-lg-4 control-label">{!! l('CUSTOMER_INVOICE_CAPTION.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
-        <div class="col-lg-6">
-        <input class="form-control" type="text" id="CUSTOMER_INVOICE_CAPTION" name="CUSTOMER_INVOICE_CAPTION" placeholder="" value="{{ old('CUSTOMER_INVOICE_CAPTION', $key_group['CUSTOMER_INVOICE_CAPTION']) }}" />
+        <div class="col-lg-8">
+        <textarea class="form-control" rows="4" id="CUSTOMER_INVOICE_CAPTION" name="CUSTOMER_INVOICE_CAPTION">{{ old('CUSTOMER_INVOICE_CAPTION', $key_group['CUSTOMER_INVOICE_CAPTION']) }}</textarea>
         {{ $errors->first('CUSTOMER_INVOICE_CAPTION', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-6"> </div>

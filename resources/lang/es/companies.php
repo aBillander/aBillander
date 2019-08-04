@@ -83,5 +83,7 @@ return [
 
 	'Bank Accounts'     => 'Cuentas Bancarias',
 	'Bank Name'     => 'Nombre del Banco',
+	'Suffix'     => 'Sufijo',
+	'Creditor ID'     => 'Identificador del Acreedor',
 
 ];

@@ -1,9 +1,18 @@
 
 <div class="row">
-<div class="form-group col-lg-6 col-md-6 col-sm-6">
-    {!! Form::label('name', l('Shipping Method name')) !!}
-    {!! Form::text('name', null, array('class' => 'form-control')) !!}
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('alias') ? 'has-error' : '' }}">
+                      {!! Form::label('alias', l('Alias','layouts')) !!}
+                      {!! Form::text('alias', null, array('class' => 'form-control', 'id' => 'alias')) !!}
+                      {!! $errors->first('alias', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+      <div class="form-group col-lg-9 col-md-9 col-sm-9">
+          {!! Form::label('name', l('Shipping Method name')) !!}
+          {!! Form::text('name', null, array('class' => 'form-control')) !!}
+      </div>
+
 </div>
+<div class="row">
 
                   <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
                      {!! Form::label('carrier_id', l('Carrier')) !!}

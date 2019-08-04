@@ -17,8 +17,7 @@
 
 		<div class="banner" xstyle="visibility:hidden">
 
-        	Válido hasta: < b r />
-        	{{ abi_date_short($document->valid_until_date) }}
+			{!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
 
 		</div>
 
@@ -443,10 +442,15 @@ ________________________________________
 			<tbody>
 				<tr>
 					<td style="padding-right: 2mm">
+
+						{!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
+
+<!-- 
 Según el Real Decreto 110/2015 tanto las lámparas led como bajo consumo están sometidas al RAE. Número de registro 6299.
 Sus datos se encuentran registrados en una base propiedad de GUSTAVO MEDINA RODRIGUEZ DISTRIBUCIONES S.L.U., inscrita en la Agencia Española de Protección
 de datos. Usted en cualquier momento puede ejercer sus derechos de acceso, rectificación, cancelación y/u oponerse a su tratamiento. Estos derechos
 pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº 20 – 35018 LAS PALMAS DE GRAN CANARIA (LAS PALMAS).
+-->
 					</td>
 					<td width="1.2cm" style="background: #f5f5f5; xborder: 0.2mm #ccc solid !important;"> 
 					</td>

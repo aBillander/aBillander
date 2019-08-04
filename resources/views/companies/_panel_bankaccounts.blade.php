@@ -64,6 +64,27 @@
                   </div>
         </div>
 
+        <div class="row">
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('suffix') ? 'has-error' : '' !!}">
+                    {{ l('Suffix') }}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Por defecto es "000", o el valor que asigne el Banco.') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a>
+                    {!! Form::text('suffix', null, array('class' => 'form-control', 'id' => 'suffix')) !!}
+                    {!! $errors->first('suffix', '<span class="help-block">:message</span>') !!}
+                  </div>
+                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('creditorid') ? 'has-error' : '' !!}">
+                    {{ l('Creditor ID') }}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('El Identificador del Acreedor se calcula según la Norma SEPA, pero puede que su Banco requiera un valor diferente.') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a>
+                    {!! Form::text('creditorid', null, array('class' => 'form-control', 'id' => 'creditorid')) !!}
+                    {!! $errors->first('creditorid', '<span class="help-block">:message</span>') !!}
+                  </div>
+        </div>
+
 <!-- Datos generales ENDS -->
 
                </div>

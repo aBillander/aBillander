@@ -20,8 +20,9 @@ class CreateShippingMethodsTable extends Migration {
 			$table->increments('id');
             $table->integer('company_id')->unsigned()->default(0);         // For multi-Company setup
             $table->integer('user_id')->unsigned()->default(0);            // Maybe creator user, modifier user
-            
-			$table->string('name', 32)->nullable(false);
+
+            $table->string('alias', 16)->nullable(false);
+			$table->string('name', 64)->nullable(false);
 			$table->string('webshop_id', 16)->nullable();					// Customer's Web Shop id
 
 			$table->tinyInteger('active')->default(1);

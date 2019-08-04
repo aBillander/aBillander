@@ -45,7 +45,9 @@ class CustomerInvoicesController extends BillableController
 							->with('currency')
 							->with('paymentmethod')
 //                            ->orderBy('document_date', 'desc')
-							->orderBy('document_reference', 'desc');
+							// ->orderBy('document_reference', 'desc');
+// https://www.designcise.com/web/tutorial/how-to-order-null-values-first-or-last-in-mysql
+                            ->orderByRaw('document_reference IS NOT NULL, document_reference DESC');
 //							->orderBy('id', 'desc');        // ->get();
 
         $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );

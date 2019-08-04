@@ -23,6 +23,7 @@
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
+            <th class="text-left">{{l('Alias', 'layouts')}}</th>
             <th>{{l('Shipping Method name')}}</th>
             <th>{{l('Carrier')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
@@ -32,7 +33,8 @@
 	<tbody>
 	@foreach ($shippingmethods as $shippingmethod)
 		<tr>
-			<td>{{ $shippingmethod->id }}</td>
+            <td>{{ $shippingmethod->id }}</td>
+            <td>{{ $shippingmethod->alias }}</td>
             <td>{{ $shippingmethod->name }}</td>
             <td>{{ $shippingmethod->carrier ? $shippingmethod->carrier->name : '-' }}</td>
 

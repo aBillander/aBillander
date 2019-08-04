@@ -11,10 +11,11 @@ class ShippingMethod extends Model {
 
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['name', 'webshop_id', 'carrier_id', 'active'];
+    protected $fillable = ['name', 'alias', 'webshop_id', 'carrier_id', 'active'];
 
     public static $rules = array(
-        'name'         => 'required|min:2|max:128',
+        'name'         => 'required|min:2|max:64',
+        'alias'         => 'required|min:2|max:16',
         'carrier_id'   => 'sometimes|nullable|exists:carriers,id',
     	);
 

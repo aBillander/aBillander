@@ -12,6 +12,13 @@
                </div><!-- div class="panel-body" -->
 
 
+	   <div class="panel-footer text-right">
+
+	    	<a class="btn xbtn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/reload/costs') }}" title="{{l('Update Cost Prices')}}"><i class="fa fa-refresh"></i> {{l('Update Cost Prices')}}</a>
+
+	   </div>
+
+
 <!-- Profitability ENDS -->
 
 

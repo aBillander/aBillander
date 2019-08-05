@@ -113,7 +113,11 @@ return [
 	'Customer Vouchers'     => 'Recibos de Clientes',
 
 	'Reports'     => 'Informes',
+	'Sales Orders'     => 'Pedidos de Venta',
+	'Sales Shipping Slips'     => 'Albaranes de Venta',
+	'Sales Invoices'     => 'Facturas de Venta',
 	'Accounting'     => 'Contabilidad',
+	'Earns & Profit'     => 'Rentabilidad',
 
 	'Login'     => 'Login',
 	'Documentation'     => 'Documentación',
@@ -152,7 +156,6 @@ return [
 	'Work Centers'     => 'Centros de Trabajo',
 
 	'Sales'     => 'Ventas',
-	'Sales Orders'     => 'Pedidos de Venta',
 	'Online Shop'     => 'Tienda Online',
 	'Production Sheets'     => 'Hojas de Producción',
 	'Production Orders'     => 'Ordenes de Fabricación',

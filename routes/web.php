@@ -113,6 +113,10 @@ Route::group(['middleware' =>  ['auth', 'context']], function()
         Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
         Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
 
+        // Helferin
+        Route::get('/helferin/home', 'HelferinController@index')->name('helferin.home');
+        Route::post('/helferin/reports/sales'  , 'HelferinController@reportSales'  )->name('helferin.reports.sales');
+
 
         Route::resource('configurations',    'ConfigurationsController');
         Route::resource('configurationkeys', 'ConfigurationKeysController');
@@ -407,6 +411,8 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{document}/unclose', $controller.'@unclose')->name($path.'.unclose');
 
         Route::get($path.'/customers/{id}',  $controller.'@indexByCustomer')->name('customer.'.str_replace('customer', '', $path));
+
+        Route::get($path.'/{id}/reload/costs', $controller.'@reloadCosts')->name($path.'.reload.costs'        );
 }
 
         Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');
@@ -425,6 +431,8 @@ foreach ($pairs as $pair) {
         Route::get('customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
 
         Route::get('customershippingslips/{id}/deliver'  , 'CustomerShippingSlipsController@deliver')->name('customershippingslip.deliver');
+
+        Route::get('customershippingslips/{id}/undeliver'  , 'CustomerShippingSlipsController@undeliver')->name('customershippingslip.undeliver');
 
         Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('customershippingslips.for.today');
 
@@ -529,8 +537,8 @@ foreach ($pairs as $pair) {
         Route::group(['prefix' => 'chart', 'namespace' => '\Chart'], function ()
         {
 
-            Route::get('/get-monthly-sales',      'ChartCustomerOrdersController@getMonthlySales')->name('chart.customerorders.monthly');
-            Route::get('/get-monthly-sales-data', 'ChartCustomerOrdersController@getMonthlySalesData')->name('chart.customerorders.monthly.data');
+            Route::get('/get-monthly-sales',      'ChartCustomerSalesController@getMonthlySales')->name('chart.customerorders.monthly');
+            Route::get('/get-monthly-sales-data', 'ChartCustomerSalesController@getMonthlySalesData')->name('chart.customerorders.monthly.data');
 
             Route::get('r', function()
                 {

@@ -211,7 +211,7 @@
                   <a href="#" class="btn btn-xs btn-blue" title="{{ l('Delivered at:') }} {{abi_date_short( $document->delivery_date_real )}}">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
                   <a href="#" class="btn btn-xs btn-blue dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
                   <ul class="dropdown-menu" style="background-color: #ffffff; color: #333333;">
-                    <li><a href="{{ URL::to($model_path.'/' . $document->id . '/undeliver') }}" style="background-color: #ffffff; color: #333333;"><i class="fa fa-undo text-danger"></i> &nbsp; {{ l('Undo', 'layouts') }}</a></li>
+                    <li><a href="{{ URL::to($model_path.'/' . $document->id . '/undeliver') }}" class="hover-item" style="background-color: #ffffff; color: #333333;"><i class="fa fa-undo text-danger"></i> &nbsp; {{ l('Undo', 'layouts') }}</a></li>
                   </ul>
                 </div>
 
@@ -439,6 +439,13 @@ $(document).ready(function() {
             https://stackoverflow.com/questions/7033420/jquery-date-picker-z-index-issue
     --}}
   .ui-datepicker{ z-index: 9999 !important;}
+
+
+/* Undeliver dropdown effect */
+   .hover-item:hover {
+      background-color: #d3d3d3 !important;
+    }
+
 </style>
 
 @endsection

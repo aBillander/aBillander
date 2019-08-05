@@ -43,6 +43,10 @@
             
 
             @foreach ($document->lines as $line)
+
+            @if ($line->line_type == 'comment')
+                @continue
+            @endif
 @php
 
 $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
@@ -114,9 +118,11 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
     <table id="document_profit" class="table table-hover">
         <thead>
             <tr>
+                          <th class="text-left">{{l('Value')}}</th>
                           <th class="text-left">{{l('Total')}}</th>
                           <th class="text-left">{{l('Disc. %')}}</th>
                           <th class="text-left">{{l('Net')}}</th>
+                          <th class="text-left">{{l('Total Disc. %')}}</th>
                           <th class="text-right">{{l('Cost')}}</th>
                           <th class="text-right">{{l('Margin 1 (%)')}}</th>
                           <th class="text-right">{{l('Margin Amount')}}</th>
@@ -136,9 +142,13 @@ $document_total_discount_percent = $document->document_discount_percent + $docum
 @endphp
 
             <tr>
+                <td>{{ $document->as_priceable($document->total_target_revenue) }}</td>
                 <td>{{ $document->as_priceable($document->total_revenue) }}</td>
                 <td>{{ $document->as_percentable( $document_total_discount_percent ) }}</td>
                 <td>{{ $document->as_priceable($document->total_revenue_with_discount) }}</td>
+
+                <td>{{ $document->as_percentable( 100.0 * ($document->total_target_revenue - $document->total_revenue_with_discount) / $document->total_target_revenue ) }}</td>
+
                 <td class="text-right">{{ $document->as_priceable($document->total_cost_price) }}</td>
                 <td class="text-right">{{ $document->as_percentable( \App\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
                 <td class="text-right">{{ $document->as_priceable( $document->total_revenue_with_discount - $document->total_cost_price ) }}</td>

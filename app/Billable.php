@@ -202,6 +202,28 @@ class Billable extends Model
         return $flag;
     }
 
+    public function getTotalTargetRevenueAttribute()
+    {
+        $lines = $this->lines;
+        $filter = Configuration::isFalse('INCLUDE_SHIPPING_COST_IN_PROFIT');
+
+        $total_revenue = $lines->sum(function ($line) use ($filter) {
+
+                if ( ($line->line_type == 'shipping') && $filter ) return 0.0;
+
+                $ecotax = 0.0;
+                if ( $line->line_type == 'product' ) 
+                {
+                    $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
+                }
+
+                return $line->quantity * ( $line->unit_price - $ecotax );
+
+            });
+
+        return $total_revenue;
+    }
+
     public function getTotalRevenueAttribute()
     {
         $lines = $this->lines;
@@ -273,6 +295,11 @@ class Billable extends Model
 
 
         return $notes;
+    }
+
+    public function getNbrLinesAttribute()
+    {
+        return $this->lines()->count();
     }
 
 
@@ -604,6 +631,108 @@ class Billable extends Model
         if ( !$this->shipping_address_id ) return false;
 
         return $this->shipping_address_id !== $this->invoicing_address_id;
+    }
+    
+
+/*
+*
+*/
+  
+    
+    
+    public function loadLineCosts()
+    {
+        foreach ($this->lines as $line) {
+            # code...
+
+            if ( !($product = $line->product) ) continue;
+
+            $line->cost_price = $product->cost_price;
+
+            $line->save();
+        }
+
+        return true;
+    }
+
+    public function loadLineUnitPrices()
+    {
+        foreach ($this->lines as $line) {
+            # code...
+
+            if ( !($product = $line->product) ) continue;
+
+            $line->unit_price = $product->price;
+
+            $line->save();
+        }
+
+        return true;
+    }
+
+    public function loadLineEcotaxes()
+    {
+        foreach ($this->lines as $line) {
+            # code...
+
+            if ( !($product = $line->product) ) continue;
+            
+            if ($product->ecotax_id>0)
+            {
+                $line->ecotax_id = $product->ecotax_id;
+                $line->ecotax_amount = $product->ecotax->amount;
+            }
+            
+            $line->save();
+        }
+
+        return true;
+    }
+
+    public function calculateAgregates()
+    {
+        $lines = $this->lines()->where('line_type', 'product')->get();
+
+        $products_cost = $lines->sum(function ($line) {
+            return ($line->quantity * $line->cost_price );
+        });
+
+        abi_r( $products_cost);
+
+        $products_ecotax = $lines->sum(function ($line) {
+            return ($line->quantity * $line->ecotax_amount );
+        });
+
+        abi_r( $products_ecotax);
+
+        $products_price = $lines->sum(function ($line) {
+            return ($line->quantity * $line->unit_price );
+        });
+
+        abi_r( $products_price);
+
+        $products_final_price = $lines->sum(function ($line) {
+            return ($line->quantity * $line->unit_final_price );
+        });
+
+        abi_r( $products_final_price);
+
+        $discount = $this->document_discount_percent;
+        $ppd      = $this->document_ppd_percent;
+
+        $document_products_discount = $products_final_price * (1.0 - (1.0 - $discount/100.0) * (1.0 - $ppd/100.0));
+
+        abi_r( $document_products_discount);
+
+        $products_profit = $products_final_price - $products_ecotax - $document_products_discount - $products_cost;
+
+        abi_r( $products_profit);
+
+        $products_margin = $this->as_percentable( \App\Calculator::margin( $products_cost, $products_final_price - $products_ecotax - $document_products_discount, $this->currency ) );
+
+
+
+        return $products_margin;
     }
 
     

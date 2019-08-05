@@ -24,14 +24,20 @@ return [
 	|
 	*/
 
-	'Chart - Customer Orders' => 'Gráfico - Pedidos de Clientes',
+	'Chart - Customer Orders' => 'Gráfico - Documentos de Clientes',
 
 	'Back to Customer Orders'     => 'Volver a Pedidos de Clientes',
 	'Customer Orders' => 'Pedidos de Clientes',
 	'Sales' => 'Ventas',
 	'Sales'     => 'Ventas',
 	'Updated at :when'     => 'Actualizado el :when',
+
+	'CustomerOrder'   => 'Pedidos',
+	'CustomerShippingSlip'   => 'Albaranes',
+	'CustomerInvoice'   => 'Facturas',
+
 	''     => '',
+
 
 
 	/*

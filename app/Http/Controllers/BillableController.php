@@ -555,6 +555,21 @@ class BillableController extends Controller
 
 
 
+    public function reloadCosts($id, Request $request)
+    {
+        $document = $this->document
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->findOrFail($id);
+
+        $document->loadLineCosts();
+
+        return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+
 
     public function updateDocumentTotal(Request $request, $document_id)
     {

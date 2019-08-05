@@ -11,7 +11,7 @@
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a -->
     </div>
     <h2>
-        {{ l('Customer Orders') }} :: {{ l('Sales') }} (Albaranes)
+        {{ l('Sales') }} ::  {{ l($model) }}
     </h2>        
 </div>
 
@@ -87,7 +87,7 @@ var charts = {
         },
 
         ajaxGetPostMonthlyData: function () {
-            var urlPath =  "{{ route( 'chart.customerorders.monthly.data' ) }}";
+            var urlPath =  "{{ route( 'chart.customerorders.monthly.data', [$model] ) }}";
             var request = $.ajax( {
                 method: 'GET',
                 url: urlPath

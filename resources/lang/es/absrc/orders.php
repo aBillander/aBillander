@@ -217,7 +217,7 @@ return [
 	// create_profit_blade
 	'Profitability Analysis'     => 'Rentabilidad de la Venta',
 	'Sales Representative'     => 'Agente',
-	'Cost-benefit per line'     => 'Rentabiliad por Línea',
+	'Cost-benefit per line'     => 'Rentabilidad por Línea',
 	'Qty.'     => 'Ud.',
 	'Cost'     => 'Coste',
 	'Margin 1 (%)'     => 'Margen 1 (%)',

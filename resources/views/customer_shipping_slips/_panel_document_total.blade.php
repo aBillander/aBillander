@@ -12,6 +12,7 @@
     <table id="document_total" class="table table-hover">
         <thead>
             <tr>
+               <th class="text-center">{{ l('Lines') }}</th>
                <th> </th>
                <th class="text-left">
 
@@ -34,6 +35,9 @@
 
         <tbody>
             <tr>
+                <td class="text-center">
+                    {{ $document->nbr_lines }}
+                </td>
                 <td class="text-center">
                     <span class="badge" style="background-color: #3a87ad;">{{ $document->currency->iso_code }}</span>
                 </td>

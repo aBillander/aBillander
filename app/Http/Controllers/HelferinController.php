@@ -254,7 +254,7 @@ foreach ($customers as $customer) {
 
 //        $i = count($data);
 
-        $sheetName = 'Rentabilidad ' . $request->input('sales_date_from') . ' ' . $request->input('sales_date_to');
+        $sheetName = 'Rentabilidad ' . l($model);
 
         // Generate and return the spreadsheet
         Excel::create('Rentabilidad', function($excel) use ($sheetName, $data) {

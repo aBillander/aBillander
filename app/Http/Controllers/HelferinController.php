@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Configuration;
 
+use App\Customer;
 use App\CustomerOrder;
 use App\CustomerShippingSlip;
 use App\CustomerInvoice;
@@ -43,7 +44,7 @@ class HelferinController extends Controller
         $modelList = [];
         foreach ($models as $model) {
             # code...
-            $modelList[$model] = $model;
+            $modelList[$model] = l($model);
         }
 
         $default_model = Configuration::get('RECENT_SALES_CLASS');
@@ -77,12 +78,237 @@ class HelferinController extends Controller
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
         $class = '\App\\'.$model;
+        $table = snake_case(str_plural($model));
+        $route = str_replace('_', '', $table);
 
         $grouped = $request->input('sales_grouped', 1);
+        
+        // Customers who have purchases within filters. Lets see:
+        $customers =  Customer::when($customer_id>0, function ($query) use ($customer_id) {
 
-        abi_r($class::find(17));
+                            $query->where('id', $customer_id);
+                    })
+                    ->whereHas($route, function ($query) use ($date_from, $date_to, $sales_document_from, $sales_document_to) {
+
+                            if ( $date_from )
+                                $query->where('document_date', '>=', $date_from);
+
+                            if ( $date_to )
+                                $query->where('document_date', '<=', $date_to  );
+
+
+                            if ( (int) $sales_document_from > 0 )
+                                $query->where('id', '>=', $sales_document_from);
+
+                            if ( (int) $sales_document_to   > 0 )
+                                $query->where('id', '<=', $sales_document_to  );
+                    })
+                    ->get();
+
+
+// Nice! Lets move on and retrieve Documents
+foreach ($customers as $customer) {
+        # code...
+        // Initialize
+        $customer->model = $model;
+        $customer->nbr_documents   = 0.0;
+        $customer->products_cost   = 0.0;
+        $customer->products_ecotax = 0.0;
+        $customer->products_price  = 0.0;
+        $customer->products_final_price       = 0.0;
+        $customer->document_products_discount = 0.0;
+        $customer->products_total = 0.0;
+        $customer->products_profit = 0.0;
+//        $customer-> = 0.0;
+
+        $documents = $class::where('customer_id', $customer->id)
+                    ->where( function ($query) use ($date_from, $date_to, $sales_document_from, $sales_document_to) {
+
+                            if ( $date_from )
+                                $query->where('document_date', '>=', $date_from);
+
+                            if ( $date_to )
+                                $query->where('document_date', '<=', $date_to  );
+
+
+                            if ( (int) $sales_document_from > 0 )
+                                $query->where('id', '>=', $sales_document_from);
+
+                            if ( (int) $sales_document_to   > 0 )
+                                $query->where('id', '<=', $sales_document_to  );
+                    } )
+                    ->get();
+
+        $customer->nbr_documents = $documents->count();
+
+        // Lets peep under the hood:
+        foreach ($documents as $document) {
+            # code...
+            $document->calculateProfit();
+
+            $customer->products_cost   += $document->products_cost;
+            $customer->products_ecotax += $document->products_ecotax;
+            $customer->products_price  += $document->products_price;
+            $customer->products_final_price       += $document->products_final_price;
+            $customer->document_products_discount += $document->document_products_discount;
+            $customer->products_total += ($document->products_final_price - $document->products_ecotax - $document->document_products_discount);
+            $customer->products_profit += $document->products_profit;
+
+
+            /*
+            abi_r($document->id);
+            abi_r($document->products_cost.' - '.$customer->products_cost);
+            abi_r($document->products_ecotax.' - '.$customer->products_ecotax);
+            abi_r($document->products_price.' - '.$customer->products_price);
+            abi_r($document->products_final_price.' - '.$customer->products_final_price);
+            abi_r($document->document_products_discount.' - '.$customer->document_products_discount);
+            abi_r($document->products_profit.' - '.$customer->products_profit);
+
+            abi_r('*********');
+            */
+        }
+
+
+        // abi_r($documents->count());
+        // abi_r($customers, true);
+
+}
 
         // Lets get dirty!!
+        // See: https://laraveldaily.com/laravel-excel-export-formatting-and-styling-cells/
+
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = [];
+
+        if ( $request->input('sales_date_from_form') && $request->input('sales_date_to_form') )
+        {
+            $ribbon = 'entre ' . $request->input('sales_date_from_form') . ' y ' . $request->input('sales_date_to_form');
+
+        } else
+
+        if ( !$request->input('sales_date_from_form') && $request->input('sales_date_to_form') )
+        {
+            $ribbon = 'hasta ' . $request->input('sales_date_to_form');
+
+        } else
+
+        if ( $request->input('sales_date_from_form') && !$request->input('sales_date_to_form') )
+        {
+            $ribbon = 'desde ' . $request->input('sales_date_from_form');
+
+        } else
+
+        if ( !$request->input('sales_date_from_form') && !$request->input('sales_date_to_form') )
+        {
+            $ribbon = 'todas';
+
+        }
+
+        $ribbon = 'fecha ' . $ribbon;
+
+        $ribbon1  = ( $sales_document_from ? ' desde ' . $sales_document_from : '' );
+        $ribbon1 .= ( $sales_document_to   ? ' hasta ' . $sales_document_from : '' );
+
+        // Sheet Header Report Data
+        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = ['Rentabilidad de Clientes ('.l($model).') ' . $ribbon1 . ', y ' . $ribbon, '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = [''];
+
+
+        // Define the Excel spreadsheet headers
+        $header_names = ['Cliente', '', 'Operaciones', 'Valor', 'Ventas', '%Desc.', 'Coste', '%Rent', 'Beneficio', 'Ranking Vtas. %', 'Ranking Benef. %'];
+
+        $data[] = $header_names;
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the data array.
+
+        $total_price = $customers->sum('products_price');
+        $total_cost = $customers->sum('products_cost');
+        $total_profit = $customers->sum('products_profit');
+        $total =  $total_cost + $total_profit;
+
+        foreach ($customers as $customer) 
+        {
+                $row = [];
+                $row[] = (string) $customer->reference_accounting;
+                $row[] = $customer->name_regular;
+                $row[] = $customer->nbr_documents;
+                $row[] = $customer->products_price * 1.0;
+                $row[] = $customer->products_total * 1.0;
+                $row[] = 100.0 * ($customer->products_price - $customer->products_total) / $customer->products_price;
+                $row[] = $customer->products_cost * 1.0;
+                $row[] = \App\Calculator::margin( $customer->products_cost, $customer->products_total, $customer->currency ) * 1.0;
+                $row[] = $customer->products_profit * 1.0;
+                $row[] = (($customer->products_cost + $customer->products_profit) / $total) * 100.0;
+                $row[] = ($customer->products_profit / $total_profit) * 100.0;
+    
+                $data[] = $row;
+
+        }
+
+        // Totals
+        $data[] = [''];
+        $data[] = ['', '', 'Total:', $total_price * 1.0, $total * 1.0, 100.0 * ($total_price - $total) / $total_price, $total_cost * 1.00, \App\Calculator::margin( $total_cost, $total, $customer->currency ) * 1.0, $total_profit ];
+
+//        $i = count($data);
+
+        $sheetName = 'Rentabilidad ' . $request->input('sales_date_from') . ' ' . $request->input('sales_date_to');
+
+        // Generate and return the spreadsheet
+        Excel::create('Rentabilidad', function($excel) use ($sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                
+                $sheet->mergeCells('A1:F1');
+                $sheet->mergeCells('A2:F2');
+
+                $sheet->getStyle('A4:K4')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->setColumnFormat(array(
+//                    'B' => 'dd/mm/yyyy',
+//                    'C' => 'dd/mm/yyyy',
+                    'A' => '@',
+                    'C' => '0.00',
+                    'D' => '0.00',
+                    'E' => '0.00',
+                    'F' => '0.00',
+                    'G' => '0.00',
+                    'H' => '0.00',
+                    'I' => '0.00',
+                    'J' => '0.00',
+                    'K' => '0.00',
+
+                ));
+                
+                $n = count($data);
+                $m = $n;    //  - 3;
+                $sheet->getStyle("C$m:I$n")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');
+
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
     }
 
 

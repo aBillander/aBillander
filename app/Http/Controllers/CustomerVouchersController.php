@@ -405,4 +405,58 @@ class CustomerVouchersController extends Controller
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
+
+    public function expressPayVoucher(Request $request, $id)
+    {
+		$payment = $this->payment->with('bankorder')->findOrFail($id);
+
+        
+			$payment->payment_date = \Carbon\Carbon::now();
+			$payment->status   = 'paid';
+
+			$payment->save();
+
+			// Update Customer Risk
+			event(new CustomerPaymentReceived($payment));
+
+
+
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
+    public function unPayVoucher(Request $request, $id)
+    {
+		$payment = $this->payment->with('bankorder')->findOrFail($id);
+
+        
+			$payment->payment_date = null;
+			$payment->status   = 'pending';
+
+			$payment->save();
+
+			// Update Customer Risk
+			// event(new CustomerPaymentReceived($payment));
+			//
+			// See: CustomerPaymentReceivedListener
+        $document = $payment->customerinvoice;
+
+        // Update Document
+        $document->checkPaymentStatus();
+
+        // Update Customer Risk
+        $customer = $payment->customer;
+        $customer->addRisk($payment->amount);
+
+        // Update bankorder
+        if ( $bankorder = $payment->bankorder )
+            $bankorder->checkStatus();
+
+
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
 }

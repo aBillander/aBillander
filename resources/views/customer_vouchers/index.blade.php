@@ -144,6 +144,7 @@
                </a>
           </th>
       <th class="text-center">{{l('Status', [], 'layouts')}}</th>
+      <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -188,7 +189,30 @@
             	@else
             		<span>
             	@endif
-            	{{\App\Payment::getStatusName($payment->status)}}</span></td>
+            	{{\App\Payment::getStatusName($payment->status)}}</span>
+
+              @if ( $payment->status == 'paid' )
+                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+
+                    <a href="{{ route('voucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
+                    title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
+               
+                @endif
+              @endif
+
+            </td>
+
+
+      <td class="text-center">
+          @if ($payment->notes)
+           <a href="javascript:void(0);">
+              <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                      data-content="{{ $payment->notes }}">
+                  <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+              </button>
+           </a>
+          @endif
+      </td>
 
 			<td class="text-right">
               @if ( ( $payment->status == 'paid' ) || ( $payment->status == 'bounced' ) )

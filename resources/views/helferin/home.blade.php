@@ -70,11 +70,11 @@ border-color: #772953;">
     </div>
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('sales_model', 'Documento') !!}
+        {!! Form::label('sales_model', l('Document')) !!}
         {!! Form::select('sales_model', $modelList, null, array('id' => 'sales_model', 'class' => 'form-control')) !!}
     </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-sales_grouped">
+<div class="form-group col-lg-2 col-md-2 col-sm-2 hide" id="div-sales_grouped">
  {!! Form::label('sales_grouped', l('Agrupado?'), ['class' => 'control-label']) !!}
  <div>
    <div class="radio-inline">

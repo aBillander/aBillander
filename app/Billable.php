@@ -689,7 +689,7 @@ class Billable extends Model
         return true;
     }
 
-    public function calculateAgregates()
+    public function calculateProfit()
     {
         $lines = $this->lines()->where('line_type', 'product')->get();
 
@@ -697,36 +697,42 @@ class Billable extends Model
             return ($line->quantity * $line->cost_price );
         });
 
-        abi_r( $products_cost);
+        // abi_r( $products_cost);
+        $this->products_cost = $products_cost;
 
         $products_ecotax = $lines->sum(function ($line) {
             return ($line->quantity * $line->ecotax_amount );
         });
 
-        abi_r( $products_ecotax);
+        // abi_r( $products_ecotax);
+        $this->products_ecotax = $products_ecotax;
 
         $products_price = $lines->sum(function ($line) {
             return ($line->quantity * $line->unit_price );
         });
 
-        abi_r( $products_price);
+        // abi_r( $products_price);
+        $this->products_price = $products_price;        // Ecotax included? I think "Not Included" (allways???)
 
         $products_final_price = $lines->sum(function ($line) {
             return ($line->quantity * $line->unit_final_price );
         });
 
-        abi_r( $products_final_price);
+        // abi_r( $products_final_price);
+        $this->products_final_price = $products_final_price;
 
         $discount = $this->document_discount_percent;
         $ppd      = $this->document_ppd_percent;
 
         $document_products_discount = $products_final_price * (1.0 - (1.0 - $discount/100.0) * (1.0 - $ppd/100.0));
 
-        abi_r( $document_products_discount);
+        // abi_r( $document_products_discount);
+        $this->document_products_discount = $document_products_discount;
 
         $products_profit = $products_final_price - $products_ecotax - $document_products_discount - $products_cost;
 
-        abi_r( $products_profit);
+        // abi_r( $products_profit);
+        $this->products_profit = $products_profit;
 
         $products_margin = $this->as_percentable( \App\Calculator::margin( $products_cost, $products_final_price - $products_ecotax - $document_products_discount, $this->currency ) );
 

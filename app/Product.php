@@ -13,6 +13,8 @@ use App\MeasureUnit;
 use App\Traits\ViewFormatterTrait;
 use App\Traits\AutoSkuTrait;
 
+use App\Traits\StockableTrait;
+
 use App\Traits\SearchableTrait;
 // use App\Traits\FullTextSearchTrait;
 
@@ -21,6 +23,8 @@ class Product extends Model {
     use ViewFormatterTrait;
     use AutoSkuTrait;
     use SoftDeletes;
+
+    use StockableTrait;
 
     use SearchableTrait;
 //    use FullTextSearchTrait;
@@ -503,53 +507,6 @@ class Product extends Model {
     }
     
 
-    public function getStockByWarehouse( $warehouse )
-    {
-        $wh_id = is_numeric($warehouse)
-                    ? $warehouse
-                    : $warehouse->id ;
-
-        $this->load(['warehouses']);
-
-    //    $product = \App\Product::find($this->id);
-
-        $whs = $this->warehouses;
-        if ($whs->contains($wh_id)) {
-            $wh = $this->warehouses()->get();
-            $wh = $wh->find($wh_id);
-            $quantity = $wh->pivot->quantity;
-        } else {
-            $quantity = 0;
-        }
-
-        return $quantity;
-    }
-    
-    public function getStock()
-    {
-        $warehouses = \App\Warehouse::get();
-        $count = 0;
-
-        foreach ($warehouses as $warehouse) {
-            # code...
-            $count += $this->getStockByWarehouse( $warehouse->id );
-        }
-
-        return $count;
-    }
-    
-    public function getStockNew()
-    { 
-        $warehouses = \App\Warehouse::get();
-        $count = 0;
-
-        foreach ($warehouses as $warehouse) {
-            # code...
-            $count += $this->getStockByWarehouse( $warehouse->id );
-        }
-
-        return $count;
-    }
     
 
     public function getOutOfStock()

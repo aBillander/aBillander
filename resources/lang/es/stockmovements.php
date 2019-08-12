@@ -62,4 +62,17 @@ return [
 	''     => '',
 	''     => '',
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Stockmovements Language Lines :: StockMovementException messages
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Cannot set Initial Stock because Product has already stock' => 'No es posible fijar el Stock Inicial porque el Producto ya tiene stock',
+	'Cannot process Stock Movement because Quantity has not changed' => 'No se puede procesar el Movimiento de Stock porque la Cantidad no ha cambiado',
+
 ];

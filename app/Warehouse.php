@@ -42,7 +42,22 @@ class Warehouse extends Model {
 
     public function products()
     {
+/*
+
+    foreach ($ws->products as $product) {
+        # code...
+        abi_r('['.$product->pivot->product_id.'] ' .$product->pivot->quantity);
+    }
+
+*/
+        // Return collection of Products. Each one has a property "pivot" with a record from table 'product_warehouse'
         return $this->belongsToMany('App\Product')->withPivot('quantity')->withTimestamps();
+    }
+
+    // Better approach than Many to Many (Simpler, easy to understand and more flexible)
+    public function productlines()
+    {
+        return $this->hasMany('App\WarehouseProductLine');
     }
 
     public function combinations()

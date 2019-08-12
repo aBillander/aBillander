@@ -320,21 +320,56 @@ class StockMovement extends Model {
         $method = 'process_'.$movement_type_id;
         
         if ( !( $movement_type_id && array_key_exists($movement_type_id, $list) && method_exists(__CLASS__, $method) ) )
-            throw new \App\Exceptions\StockMovementException('Stock Movement type not found');
+            throw new StockMovementException('Stock Movement type not found');
 
 
         // Do the mambo!
+
+        // https://laraveldaily.com/how-to-catch-handle-create-laravel-exceptions/
+        // https://code.tutsplus.com/tutorials/exception-handling-in-laravel--cms-30210?ec_unit=translation-info-language
+        // https://fideloper.com/laravel-database-transactions
+
+        // Start transaction!
+        \DB::beginTransaction();
+
         $movement = StockMovement::create( $data );
 
         try {
-            if ( $movement->process() ) return $movement;   // ->refresh();   // ->fresh();  Need this??? Without fresh() won't work
-        } catch (\App\Exceptions\StockMovementException $exception) {
-            $movement->delete();
+
+            $movement->process();   // ->refresh();   // ->fresh();  Need this??? Without fresh() won't work
+
+            // Could do here: \DB::commit();
+
+        } catch (StockMovementException $exception) {
+            // Rollback 
+            \DB::rollback();
+
+            // Maybe redirect or so
+            // Throw exception instead
+            throw $exception;
+
+            // $movement->delete();
+//            report($exception);
+            // return back()->with('error', $exception->getMessage())->withInput();
+
+        } catch (\Exception $e) {
+            // Rollback 
+            \DB::rollback();
+
+            // I also catch a generic Exception, just in case any other exception other than a StockMovementException is thrown
+            throw $e;
+
+            // $movement->delete();
 //            report($exception);
             // return back()->with('error', $exception->getMessage())->withInput();
         }
 
-        return null;
+        // If we reach here, then
+        // data is valid and working.
+        // Commit the queries!
+        \DB::commit();
+
+        return $movement;
     }
 
     public function process()
@@ -342,9 +377,27 @@ class StockMovement extends Model {
         // throw new \App\Exceptions\StockMovementException('Something Went Wrong => pedo!');
 
 
-        // $price_in;
-        // Price 4 Cost average calculations
-        $this->price_in = $this->price/$this->conversion_rate;
+        // Deal with currency (enough to append sensible default currency, if not set)
+        if ( !($currency = \App\Currency::find($this->currency_id)) )
+        {
+            $currency = \App\Context::getContext()->company->currency;
+
+            $this->currency_id     = $currency->id;
+            $this->conversion_rate = $currency->conversion_rate;
+
+            $this->price_currency = $this->price;
+        }
+
+        if ( $this->currency_id == \App\Context::getContext()->company->currency->id )
+        {
+            $this->conversion_rate = \App\Context::getContext()->company->currency->conversion_rate;
+
+            $this->price_currency = $this->price;
+        }
+        else {
+            // Asume Currency vars (currency_id and conversion_rate) are set:
+            $this->price = $this->price_currency / $this->conversion_rate;
+        }
 
 
         // Product & Combination;
@@ -378,11 +431,10 @@ class StockMovement extends Model {
         if ($this->price === null) 
         {
             $this->price = ($this->combination_id > 0) ? $combination->cost_price : $product->cost_price;
-            $this->price_in = $this->price;
         }
 
         if ( $product->getStockByWarehouse( $this->warehouse_id ) > 0.0 ) 
-            throw new \App\Exceptions\StockMovementException('Cannot set Initial Stock because Product has already stock');
+            throw new StockMovementException( l('Cannot set Initial Stock because Product has already stock', 'stockmovements') );
         
         $quantity_onhand = $this->quantity;
         $this->quantity_before_movement = 0.0;
@@ -406,7 +458,7 @@ class StockMovement extends Model {
 //        }
 
         // All warehouses
-        $product->quantity_onhand += $quantity_onhand;
+        $product->quantity_onhand = $quantity_onhand;
         $product->save();
 
         // Update Combination
@@ -423,85 +475,10 @@ class StockMovement extends Model {
         }
 
         // Update Product-Warehouse relationship (quantity)
-        $whs = $product->warehouses;
-        if ($whs->contains($this->warehouse_id)) {
-            $wh = $product->warehouses()->get();
-            $wh = $wh->find($this->warehouse_id);
-            $quantity = $this->quantity;
-            
-            if ($quantity != 0) {
-                $wh->pivot->quantity = $quantity;
-                $wh->pivot->save(); }
-            else {
-                // Delete record ($quantity = 0)
-                $product->warehouses()->detach($this->warehouse_id); }
-        } else {
-            if ($this->quantity != 0) 
-                $product->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
-        }
+        $product->setStockByWarehouse( $this->warehouse_id, $this->quantity );
 
-        // Update Combination-Warehouse relationship (quantity)
-        if ($this->combination_id > 0) {
-            $whs = $combination->warehouses;
-            if ($whs->contains($this->warehouse_id)) {
-                $wh = $combination->warehouses()->get();
-                $wh = $wh->find($this->warehouse_id);
-                $quantity = $this->quantity;
-                
-                if ($quantity != 0) {
-                    $wh->pivot->quantity = $quantity;
-                    $wh->pivot->save(); }
-                else {
-                    // Delete record ($quantity = 0)
-                    $combination->warehouses()->detach($this->warehouse_id); }
-            } else {
-                if ($this->quantity != 0) 
-                    $combination->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
-            }
-        }
-
-        return $this;
-    }
-
-    // ADJUSTMENT
-    public function process_12()
-    {
-        // Update Product
-        $product = $this->product;
-
-        if ($this->price === null) 
-        {
-            $this->price = ($this->combination_id > 0) ? $combination->cost_average : $product->cost_average;
-            $this->price_in = $this->price;
-        }
-
-        $quantity_onhand = $this->quantity;
-        $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
-        $this->quantity_after_movement = $quantity_onhand;
-
-        if ($this->quantity_before_movement == $this->quantity_after_movement)
-        {
-            // Nothing said about cost price
-            // Nothing to do
-            // return false;
-            throw new \App\Exceptions\StockMovementException('Cannot process movement because Quantity has not changed');
-        }
-        $this->save();
-
-        // Average price stuff
-//        if ( !($this->combination_id > 0) ) {
-//            $product->cost_average = $this->price_in;
-//        }
-
-        // Update Combination
-        if ($this->combination_id > 0) {
-            $combination = $this->combination;
-            $quantity_onhand = $this->quantity;
-
-            // Average price stuff
-//            $combination->cost_average = $this->price_in;
-        }
-
+// Old stuff:
+/*
         // Update Product-Warehouse relationship (quantity)
         $whs = $product->warehouses;
         if ($whs->contains($this->warehouse_id)) {
@@ -519,10 +496,10 @@ class StockMovement extends Model {
             if ($this->quantity != 0) 
                 $product->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
         }
+*/
 
-        $product->quantity_onhand = $product->getStock();
-        $product->save();
-
+// Need refactor:
+/*
         // Update Combination-Warehouse relationship (quantity)
         if ($this->combination_id > 0) {
             $whs = $combination->warehouses;
@@ -541,10 +518,58 @@ class StockMovement extends Model {
                 if ($this->quantity != 0) 
                     $combination->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
             }
+        }
+*/
+        return $this;
+    }
 
-            $combination->quantity_onhand = $combination->getStock();
+    // ADJUSTMENT
+    public function process_12()
+    {
+        // Update Product
+        $product = $this->product;
+
+        if ($this->price === null) 
+        {
+            $this->price = ($this->combination_id > 0) ? $combination->cost_price : $product->cost_price;
+        }
+
+        $quantity_onhand = $this->quantity;
+        $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
+        $this->quantity_after_movement = $quantity_onhand;
+
+        if ($this->quantity_before_movement == $this->quantity_after_movement)
+        {
+            // Nothing said about cost price
+            // Nothing to do
+            // return false;
+            throw new StockMovementException( l('Cannot process Stock Movement because Quantity has not changed', 'stockmovements') );
+        }
+        $this->save();
+
+        // Average price stuff
+//        if ( !($this->combination_id > 0) ) {
+//            $product->cost_average = $this->price_in;
+//        }
+
+        // All warehouses
+        $product->quantity_onhand = $quantity_onhand;
+        $product->save();
+
+        // Update Combination
+        if ($this->combination_id > 0) {
+            $combination = $this->combination;
+            $quantity_onhand = $this->quantity;
+
+            // Average price stuff
+//            $combination->cost_average = $this->price_in;
+
+            $combination->quantity_onhand += $quantity_onhand;
             $combination->save();
         }
+
+        // Update Product-Warehouse relationship (quantity)
+        $product->setStockByWarehouse( $this->warehouse_id, $this->quantity );
 
         return $this;
     }
@@ -730,56 +755,10 @@ class StockMovement extends Model {
         // Average price stuff - Not needed!
 
         // Update Product-Warehouse relationship (quantity)
-        $whs = $product->warehouses;
-        if ($whs->contains($this->warehouse_id)) {
-            $wh = $product->warehouses()->get();
-            $wh = $wh->find($this->warehouse_id);
-            $quantity = $wh->pivot->quantity - $this->quantity;
-            
-            if ($quantity != 0) {
-                $wh->pivot->quantity = $quantity;
-                $wh->pivot->save(); }
-            else {
-                // Delete record ($quantity = 0)
-                $product->warehouses()->detach($this->warehouse_id); }
-        } else {
-            if ($this->quantity != 0) 
-                $product->warehouses()->attach($this->warehouse_id, array('quantity' => -$this->quantity));
-        }
+        $product->setStockByWarehouse( $this->warehouse_id, $this->quantity_after_movement );
 
-        $product->quantity_onhand = $product->getStock();
+        $product->quantity_onhand = $quantity_onhand;       // $product->getStock();
         $product->save();
-
-        // Update Combination-Warehouse relationship (quantity)
-        if ($this->combination_id > 0) {
-            $whs = $combination->warehouses;
-            if ($whs->contains($this->warehouse_id)) {
-                $wh = $combination->warehouses()->get();
-                $wh = $wh->find($this->warehouse_id);
-                $quantity = $wh->pivot->quantity - $this->quantity;
-                
-                if ($quantity != 0) {
-                    $wh->pivot->quantity = $quantity;
-                    $wh->pivot->save(); }
-                else {
-                    // Delete record ($quantity = 0)
-                    $combination->warehouses()->detach($this->warehouse_id); }
-            } else {
-                if ($this->quantity != 0) 
-                    $combination->warehouses()->attach($this->warehouse_id, array('quantity' => $this->quantity));
-            }
-        }
-
-        // Update Combination
-        if ($this->combination_id > 0) {
-            $combination = $this->combination;
-            $quantity_onhand = $combination->quantity_onhand - $this->quantity;
-
-            // Average price stuff - Not needed! (if Average Cost Calculation)
-
-            $combination->quantity_onhand = $combination->getStock();
-            $combination->save();
-        }
 
         return $this;
     }

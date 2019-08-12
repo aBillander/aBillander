@@ -478,10 +478,15 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
         	$pdf->page_text(($pdf->get_width() - 54), ($pdf->get_height() - 26.89 - 31), "{PAGE_NUM} / {PAGE_COUNT}", null, 9);
 
+
+// See: https://github.com/dompdf/dompdf/issues/347
+$pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
-               $pdf->page_text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), "{PAGE_NUM} de {PAGE_COUNT}", null, 9);
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
 }
+');
+
         }
 
 
@@ -494,7 +499,6 @@ if ( $PAGE_NUM == 1 )
 https://github.com/dompdf
 
 view-source:https://dompdf.net/test/print_header_footer.html
-
 https://groups.google.com/forum/#!forum/dompdf
 
 https://groups.google.com/forum/#!topic/dompdf/X9sl6KLYimM

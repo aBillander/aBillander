@@ -43,7 +43,7 @@ class CreateProductsTable extends Migration {
 			$table->text('description_short')->nullable();
 //			$table->string('measure_unit', 32)->nullable();
 			$table->tinyInteger('quantity_decimal_places')->unsigned()->default(0);
-			$table->tinyInteger('manufacturing_batch_size')->unsigned()->default(1);
+			$table->integer('manufacturing_batch_size')->unsigned()->default(1);
 
 			$table->decimal('quantity_onhand', 20, 6)->default(0);			// In Stock; on hand
 			$table->decimal('quantity_onorder', 20, 6)->default(0);			// On order; Quantity on Purchase Orders (pendiente de recibir)
@@ -110,7 +110,7 @@ class CreateProductsTable extends Migration {
 			// Route stuff
 			$table->integer('work_center_id')->unsigned()->nullable();
 			$table->string('machine_capacity', 16)->nullable();
-			$table->decimal('units_per_tray', 20, 6)->nullable();
+			$table->integer('units_per_tray')->unsigned()->nullable();
 			$table->text('route_notes')->nullable();
 			
 			$table->timestamps();

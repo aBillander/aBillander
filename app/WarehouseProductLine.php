@@ -15,6 +15,9 @@ class WarehouseProductLine extends Model
 
     protected $table = 'product_warehouse';
 
+    // The relationships which should be automatically eager loaded.
+    public $with = ['product'];
+
     protected $fillable = [
                     'product_id', 'quantity', 'warehouse_id',
     ];
@@ -42,6 +45,7 @@ class WarehouseProductLine extends Model
        return $this->belongsTo('App\Product');
     }
 
+    // Better: stock is kept in Product default Measure Unit
     public function measureunit()
     {
         return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');

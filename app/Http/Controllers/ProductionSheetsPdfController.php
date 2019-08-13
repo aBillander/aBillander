@@ -59,7 +59,7 @@ class ProductionSheetsPdfController extends Controller
                     'key'        => 'chapatayhogaza',
                     'label'      => 'Chapatas y Hogazas',
                     'references' => [ '1104', '1105', '1106', '1107', '1108', '1109', '1100', '1101', '1102'],
-                    'assemblies' => ['10700', '10703', '10704', '10705'],
+                    'assemblies' => ['10700', '10703', '10704', '10705', '10706', '10707', '10708'],
 
                     'work_center_id' => 1,
                 ],

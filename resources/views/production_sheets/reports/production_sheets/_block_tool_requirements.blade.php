@@ -1,16 +1,17 @@
 
-<div class="panel-body" id="div_tool_requirements">
-
 
 @if ($sheet->productionordertoollinesGrouped()->count())
-<table class="table">
-  <thead>
-    <tr>
-      <th>{{l('Tool Reference')}}</th>
-      <th>{{l('Tool Name')}}</th>
-      <th>{{l('Quantity')}}</th>
-      <th>{{l('Location')}}</th>
-    </tr>
+
+
+<div class="tax-summary-wrapper xprint-friendly text-left">
+<table class="order-details tax-summary xprint-friendly" style="margin-bottom: 0mm;" xstyle="border: 1px #ccc solid">
+      <tbody>
+        <tr>
+          <th>{{l('Tool Reference')}}</th>
+          <th>{{l('Tool Name')}}</th>
+          <th>{{l('Quantity')}}</th>
+          <th>{{l('Location')}}</th>
+        </tr>
   </thead>
   <tbody>
   @foreach ($sheet->productionordertoollinesGrouped() as $order)
@@ -24,6 +25,7 @@
   @endforeach
     </tbody>
 </table>
+</div>
 
 @else
 <div class="alert alert-warning alert-block">
@@ -32,7 +34,3 @@
 </div>
 @endif
 
-
-
-
-</div><!-- div class="panel-body" -->

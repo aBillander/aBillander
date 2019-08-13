@@ -10,18 +10,16 @@
     <!-- Bootstrap core CSS -->
     <!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" -->
 
-    <link href="{{ asset('assets/theme/css/bootstrap-united.min.css') }}" rel="stylesheet" type="text/css"/>
+    <!-- link href="{{ asset('assets/theme/css/bootstrap-united.min.css') }}" rel="stylesheet" type="text/css"/ -->
     <!-- link href="{{ asset('assets/theme/css/extra-buttons.css') }}" rel="stylesheet" type="text/css"/ -->
     <!-- link href="{{ asset('assets/theme/css/custom.css') }}" rel="stylesheet" type="text/css"/ -->
     <link href="{{ asset('assets/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css"/>
 
     <style>
-        ._text-right {
-            text-align: right;
-        }
-    </style>
 
         @yield('styles')
+        
+    </style>
 
 </head>
 <body class="login-page" style="background: white">

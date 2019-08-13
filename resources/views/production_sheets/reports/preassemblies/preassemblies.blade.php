@@ -16,13 +16,13 @@
 
 
 @section('styles') @parent
-{{--
-<style>
+	
+{{-- --}}
 
-	@include('production_sheets.reports.production_sheets.invoice_css')
+	@include('production_sheets.reports.preassemblies.styles_css')
 
-</style>
---}}
+{{-- --}}
+
 @endsection
 
 

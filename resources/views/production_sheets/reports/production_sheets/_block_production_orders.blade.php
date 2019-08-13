@@ -1,19 +1,19 @@
 
-<div class="panel-body" id="div_production_orders">
-
 
 @if ($sheet->productionorders->where('work_center_id', $work_center->id)->where('procurement_type', $procurement_type)->count())
-<table class="table" xstyle="border:0px #ffffff">
-  <thead>
-    <tr>
-      <th>{{l('Product Reference')}}</th>
-      <th>{{l('Product Name')}}</th>
-      <th>{{l('Quantity')}}</th>
-      <th>{{l('Unit')}}</th>
-      <th>{{l('Work Center')}}</th>
-    </tr>
-  </thead>
-  <tbody>
+
+
+<div class="tax-summary-wrapper xprint-friendly text-left">
+<table class="order-details tax-summary xprint-friendly" style="margin-bottom: 0mm;" xstyle="border: 1px #ccc solid">
+      <tbody>
+        <tr>
+          <th>{{l('Product Reference')}}</th>
+          <th>{{l('Product Name')}}</th>
+          <th>{{l('Quantity')}}</th>
+          <th>{{l('Unit')}}</th>
+          <th>{{l('Work Center')}}</th>
+        </tr>
+
   @foreach ($sheet->productionorders->where('procurement_type', $procurement_type) as $order)
   @php
     $product = \App\Product::find( $order->product_id );
@@ -36,7 +36,3 @@
     {{l('No records found', [], 'layouts')}}
 </div>
 @endif
-
-
-
-</div><!-- div class="panel-body" -->

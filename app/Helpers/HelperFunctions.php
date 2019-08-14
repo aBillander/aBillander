@@ -360,3 +360,32 @@ function checkRoute($route='') {
         }
     }
 
+
+
+/*
+|--------------------------------------------------------------------------
+| Helper functions - Multi-tenancy.
+|--------------------------------------------------------------------------
+|
+| Multi-tenancy 
+| .
+|
+*/
+
+if (! function_exists('abi_tenant_local_path')) {
+    /**
+     * Get the path to the public folder.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function abi_tenant_local_path($path = '')
+    {
+        $tenant = \App\Context::getContext()->tenant;
+
+        // return public_path( 'tenants/' , $tenant ).($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
+        return 'tenants/' . $tenant . ($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
+    }
+}
+
+

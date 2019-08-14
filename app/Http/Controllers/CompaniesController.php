@@ -154,10 +154,10 @@ class CompaniesController extends Controller {
 //			$filename = 'company_logo'.'.'.$file->getClientOriginalExtension();
 			$filename = time().'.'.$file->getClientOriginalExtension();
 //			iImage::make($file)->resize(300,300)->save( public_path('/uploads/company/'.$filename) );
-			iImage::make($file)->save( public_path( \App\Company::$company_path . $filename ) );
+			iImage::make($file)->save( public_path( \App\Company::imagesPath() . $filename ) );
 
 			// Delete old image
-			$old_file = public_path() . \App\Company::$company_path . \App\Context::getContext()->company->company_logo;
+			$old_file = public_path( \App\Company::imagesPath() . \App\Context::getContext()->company->company_logo );
 	        if ( \App\Context::getContext()->company->company_logo && file_exists( $old_file ) ) {
 	            unlink( $old_file );
       		}

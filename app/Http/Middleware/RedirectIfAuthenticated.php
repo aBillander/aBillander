@@ -41,6 +41,11 @@ class RedirectIfAuthenticated
             // return redirect('/home');
         }
 
+        \App\Context::getContext()->language = \App\Language::find( intval(\App\Configuration::get('DEF_LANGUAGE')) );
+
+        // Changing The Default Language At Runtime
+        \App::setLocale(\App\Context::getContext()->language->iso_code);
+
         return $next($request);
     }
 }

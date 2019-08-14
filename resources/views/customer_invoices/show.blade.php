@@ -155,7 +155,7 @@ table.border td {
 			<div class="col-md-6">
 				<h1 class="uppercase">
 				@if ($img = \App\Context::getContext()->company->company_logo)
-					<img src="{{ URL::to( \App\Company::$company_path . $img ) }}" class="img-responsive thumbnail">
+					<img src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" class="img-responsive thumbnail">
 				@endif
 				</h1>
 			</div>

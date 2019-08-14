@@ -21,7 +21,7 @@
 
         @if ($img = \App\Context::getContext()->company->company_logo)
 
-            <img class="ximg-rounded" height="45" style="float:right" src="{{ URL::to( \App\Company::$company_path . $img ) }}" >
+            <img class="ximg-rounded" height="45" style="float:right" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" >
 
         @endif
 

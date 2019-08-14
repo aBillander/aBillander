@@ -57,7 +57,7 @@ class ImportProductImagesController extends Controller
    {
         $this->product = $product;
 
-        $this->images_folder = public_path().'/uploads/products/images/';
+        $this->images_folder = public_path( abi_tenant_local_path( 'products/images/' ) );
    }
 
 

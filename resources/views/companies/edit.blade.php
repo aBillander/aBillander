@@ -31,9 +31,9 @@
 
          <div class="list-group" style="background-color: #d34615;"><?php $img = \App\Context::getContext()->company->company_logo ?>
 @if ( $img )
-            <img src="{{ URL::to( \App\Company::$company_path . $img ) }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+            <img src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
 @else
-            <img src="{{ URL::to( \App\Company::$company_path . 'default-medium_default.png' ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+            <img src="{{ URL::to( \App\Company::imagesPath() . 'default-medium_default.png' ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
             
 @endif
          </div>

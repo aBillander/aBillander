@@ -1,2 +1,7 @@
 company_icon.png
 xtracon.png
+
+!tenants
+tenants/*
+!tenants/localhost
+!tenants/index.php

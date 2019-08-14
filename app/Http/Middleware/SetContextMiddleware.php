@@ -62,6 +62,13 @@ class SetContextMiddleware {
 				Context::getContext()->company    = $company;
 				Context::getContext()->currency   = $company->currency;
 
+				// Included this to show 404 properly from WooCnnect. (Dont know why)
+				$subdomain = 'localhost';
+				Context::getContext()->tenant = $subdomain;
+
+				// Changing The Default Language At Runtime
+				App::setLocale(Context::getContext()->language->iso_code);
+
 
 				return $next($request);
 			}
@@ -102,6 +109,30 @@ class SetContextMiddleware {
 	    		//	return redirect()->route('installer');
 			}
 
+			if ( config('tenants.enable') )
+			{
+				// Extract the subdomain from URL.
+	        	list($subdomain) = explode('.', $request->getHost(), 2);
+	
+	        	$tenants = config('tenants.names');
+	
+	        	// abi_r($tenants, true);
+	
+	        	// die(in_array($subdomain, $tenants));
+	        	if ( !in_array($subdomain, $tenants) )
+	        	{
+	        		// Logout user
+	        		Auth::logout();
+
+	        		abort(500, 'Access denied');
+	        	}
+	        
+	        } else {
+
+	        	$subdomain = 'localhost';
+	        
+	        }
+
 	/*
 			$currency = Currency::find( intval(Configuration::get('DEF_CURRENCY')) );
 
@@ -119,6 +150,8 @@ class SetContextMiddleware {
 
 			Context::getContext()->company    = $company;
 			Context::getContext()->currency   = $company->currency;
+
+			Context::getContext()->tenant = $subdomain;
 
 			// https://stackoverflow.com/questions/50597657/check-authuser-from-middleware
 			// https://laraveldaily.com/password-expired-force-change-password-every-30-days/

@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Image extends Model {
 	
-    public static $products_path = '/uploads/images_p/';
     protected static $access_rights = 0775;   
     // See: https://laracasts.com/discuss/channels/general-discussion/where-do-you-set-public-directory-laravel-5
     
@@ -31,6 +30,16 @@ class Image extends Model {
         'image'    => 'required | mimes:jpeg,jpg,gif,png,svg | max:8000',
         // Seems Laravel cannot validate png if it is the last mime (?)
     	);
+
+    
+    /**
+     * Get Path for Product Images.
+     * public static $products_path = '/uploads/images_p/';
+     */
+    public static function pathProducts()
+    {
+        return abi_tenant_local_path( 'images_p/' );
+    }
     
 
     /*
@@ -47,7 +56,7 @@ class Image extends Model {
         $image_raw = self::create($request->all());
 
         $imageName = $image_raw->id;
-        $destinationFolder = self::$products_path . $image_raw->getImageFolder();
+        $destinationFolder = self::pathProducts() . $image_raw->getImageFolder();
         // Create Folder
         $image_raw->createImageFolder();
        
@@ -109,7 +118,7 @@ class Image extends Model {
         $image_raw = self::create($data);
 
         $imageName = $image_raw->id;
-        $destinationFolder = self::$products_path . $image_raw->getImageFolder();
+        $destinationFolder = self::pathProducts() . $image_raw->getImageFolder();
         // Create Folder
         $image_raw->createImageFolder();
 
@@ -160,7 +169,7 @@ class Image extends Model {
         $image_raw = self::create($data);
 
         $imageName = $image_raw->id;
-        $destinationFolder = self::$products_path . $image_raw->getImageFolder();
+        $destinationFolder = self::pathProducts() . $image_raw->getImageFolder();
         // Create Folder
         $image_raw->createImageFolder();
 
@@ -227,18 +236,18 @@ $file_data = file_get_contents( $img_url, false, stream_context_create( [
             return false;
         }
 
- //       echo_r(public_path() . self::$products_path . $this->getImageFolder()); die();
+ //       echo_r(public_path() . self::pathProducts() . $this->getImageFolder()); die();
 
-        if (!file_exists( public_path() . self::$products_path . $this->getImageFolder() )) {
+        if (!file_exists( public_path() . self::pathProducts() . $this->getImageFolder() )) {
             // Apparently sometimes mkdir cannot set the rights, and sometimes chmod can't. Trying both.
-            $success = @mkdir(public_path() . self::$products_path . $this->getImageFolder(), self::$access_rights, true);
-            $chmod = @chmod(public_path() . self::$products_path . $this->getImageFolder(), self::$access_rights);
+            $success = @mkdir(public_path() . self::pathProducts() . $this->getImageFolder(), self::$access_rights, true);
+            $chmod = @chmod(public_path() . self::pathProducts() . $this->getImageFolder(), self::$access_rights);
 
             // Create an index.php file in the new folder
             if (($success || $chmod)
-                && !file_exists(public_path() . self::$products_path . $this->getImageFolder().'index.php')
-                && file_exists(public_path() . self::$products_path .'index.php')) {
-                return @copy(public_path() . self::$products_path .'index.php', public_path() . self::$products_path . $this->getImageFolder().'index.php');
+                && !file_exists(public_path() . self::pathProducts() . $this->getImageFolder().'index.php')
+                && file_exists(public_path() . self::pathProducts() .'index.php')) {
+                return @copy(public_path() . self::pathProducts() .'index.php', public_path() . self::pathProducts() . $this->getImageFolder().'index.php');
             }
         }
         return true;
@@ -254,8 +263,8 @@ $file_data = file_get_contents( $img_url, false, stream_context_create( [
         }
 
         // Delete base image
-        if (file_exists(public_path() . self::$products_path . $this->getImageFolder() . $this->id . '.'.$this->extension)) {
-            unlink(public_path() . self::$products_path . $this->getImageFolder() . $this->id . '.'.$this->extension);
+        if (file_exists(public_path() . self::pathProducts() . $this->getImageFolder() . $this->id . '.'.$this->extension)) {
+            unlink(public_path() . self::pathProducts() . $this->getImageFolder() . $this->id . '.'.$this->extension);
         } else {
             return false;
         }
@@ -264,7 +273,7 @@ $file_data = file_get_contents( $img_url, false, stream_context_create( [
 
         // Delete auto-generated images
         foreach (self::$products_types as $type => $size) {
-            $files_to_delete[] = public_path() . self::$products_path . $this->getImageFolder() . $this->id .
+            $files_to_delete[] = public_path() . self::pathProducts() . $this->getImageFolder() . $this->id .
                                 '-'. $type . '.' . $this->extension;
         }
 
@@ -278,9 +287,9 @@ $file_data = file_get_contents( $img_url, false, stream_context_create( [
         }
 
         // Can we delete the image folder?
-        if (is_dir( public_path() . self::$products_path . $this->getImageFolder() )) {
+        if (is_dir( public_path() . self::pathProducts() . $this->getImageFolder() )) {
             $delete_folder = true;
-            foreach (scandir( public_path() . self::$products_path . $this->getImageFolder() ) as $file) {
+            foreach (scandir( public_path() . self::pathProducts() . $this->getImageFolder() ) as $file) {
                 if (($file != '.' && $file != '..')) {
                     $delete_folder = false;
                     break;
@@ -288,7 +297,7 @@ $file_data = file_get_contents( $img_url, false, stream_context_create( [
             }
         }
         if (isset($delete_folder) && $delete_folder) {
-            @rmdir( public_path() . self::$products_path . $this->getImageFolder() );
+            @rmdir( public_path() . self::pathProducts() . $this->getImageFolder() );
         }
 
         return true;

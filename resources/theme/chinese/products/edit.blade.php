@@ -75,9 +75,9 @@
 
          <div class="list-group"><?php $img = $product->getFeaturedImage() ?>
 @if ( $img )
-            <img src="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() .  $img->id . '-medium_default' . '.' .  $img->extension ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+            <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() .  $img->id . '-medium_default' . '.' .  $img->extension ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
 @else
-            <img src="{{ URL::to( \App\Image::$products_path . '/default-medium_default.png' ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+            <img src="{{ URL::to( \App\Image::pathProducts() . '/default-medium_default.png' ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
 @endif
          </div>
 

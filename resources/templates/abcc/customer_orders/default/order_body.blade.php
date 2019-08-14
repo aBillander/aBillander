@@ -10,7 +10,7 @@
 
         @if ($img = \App\Context::getContext()->company->company_logo)
 
-            <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}">
+            <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}">
 
         @endif
 

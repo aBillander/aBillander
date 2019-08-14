@@ -13,7 +13,7 @@
 { {--
                 @if ( 0 )
 <!--                @ i f ($img = \App\Context::getContext()->company->company_logo)          -->
-                    <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
+                    <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
                     <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>
 --} }
                 @if ( \App\Configuration::isEmpty('ABCC_HEADER_TITLE') )
@@ -151,7 +151,7 @@
                         <li class="divider"></li>
 
                          <li>
-                            <a href="{{ asset('uploads/documents/Privacy_Policy.pdf') }}" target="_blank">
+                            <a href="{{ asset(abi_tenant_local_path().'/documents/Privacy_Policy.pdf') }}" target="_blank">
                                  {{l('Privacy Policy', [], 'abcc/layouts')}}
                             </a>
                         </li>

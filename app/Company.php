@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model {
     
-    public static $company_path = '/uploads/company/';
     protected static $access_rights = 0775;
 
 	protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'apply_RE', 
@@ -21,6 +20,16 @@ class Company extends Model {
         'currency_id' => 'exists:currencies,id',
         'language_id' => 'exists:languages,id',
     	);
+
+    
+    /**
+     * Get Path for images.
+     * public static $company_path = '/tenants/localhost/company/';
+     */
+    public static function imagesPath()
+    {
+        return abi_tenant_local_path( 'company/' );
+    }
 
 
     /*

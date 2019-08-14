@@ -14,9 +14,9 @@
             <a class="navbar-brand" href="{{ url('/') }}">
                 @if ( \App\Configuration::isEmpty('HEADER_TITLE') )
                     <?php $img = \App\Context::getContext()->company->company_logo ?? ''; ?>
-                    @if ( $img )
+                    @if ( Auth::check() && $img )
 
-                        <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
+                        <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
 
                         <!-- img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ asset('assets/theme/images/company_logo.png') }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;" -->
                     @else

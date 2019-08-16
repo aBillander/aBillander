@@ -43,10 +43,15 @@
         {!! $errors->first('customer_id', '<span class="help-block">:message</span>') !!}
     </div>
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('reference', l('Product Reference')) !!}
+        {!! Form::label('customer_group_id', l('Customer Group')) !!}
+        {!! Form::select('customer_group_id', ['' => l('-- All --', 'layouts')] + $customer_groupList, null, array('class' => 'form-control', 'id' => 'customer_group_id')) !!}
+        {!! $errors->first('customer_group_id', '<span class="help-block">:message</span>') !!}
+    </div>
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('reference', l('Reference')) !!}
         {!! Form::text('reference', null, array('id' => 'reference', 'class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
     </div>
-    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+    <div class="form-group col-lg-4 col-md-4 col-sm-4">
         {!! Form::label('product_query', l('Product Name')) !!}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                           data-content="{{ l('Search by Product Reference or Name') }}">
@@ -104,6 +109,9 @@
 
     $(document).ready(function() {
 
+        $("#autocustomer_name").val('');
+        $('#customer_id').val('');
+
         // To get focus;
         $("#autocustomer_name").focus();
 
@@ -144,6 +152,8 @@
 
                     $("#autocustomer_name").val(str);
                     $('#customer_id').val(response.id);
+                    $('#customer_group_id').val('');
+
                     if (response.sales_equalization > 0) {
                         $('#sales_equalization').show();
                     } else {
@@ -197,6 +207,11 @@
         }
 
     });
+
+    $("#customer_group_id").change(function(){
+        $("#autocustomer_name").val('');
+        $('#customer_id').val('');
+    }); 
 
 </script> 
 

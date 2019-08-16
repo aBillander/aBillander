@@ -14,7 +14,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        
+{{--
         <div class="btn-group xopen">
           <a href="{{ route($model_path.'.index') }}" class="btn alert-success btn-sm" title="{{l('Filter Records', [], 'layouts')}}"><i class="fa fa-money"></i> &nbsp;{{l('All', [], 'layouts')}}</a>
 
@@ -30,6 +30,7 @@
             <li class="divider"></li>
           </ul>
         </div>
+--}}
 
         <a href="{{ URL::to($model_path.'/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
@@ -309,11 +310,12 @@
 
    </div><!-- div class="table-responsive" ENDS -->
 
-{{ $documents->appends( collect(Request::all())
+{{-- $documents->appends( collect(Request::all())
                             ->map(function($item) {
                                     // Take empty keys, otherwise skipped!
                                     return is_null($item) ? 1 : $item;
-                            })->toArray() )->render() }}
+                            })->toArray() )->render() --}}
+{!! $documents->appends( Request::all() )->render() !!}
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
 
 @else

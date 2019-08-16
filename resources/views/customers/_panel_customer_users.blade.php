@@ -1,5 +1,5 @@
 
-<div id="panel_customeruser">     
+<div id="panel_customerusers">     
 
 <div class="panel panel-info">
 

@@ -91,7 +91,7 @@ class PriceRule extends Model {
 
     public function customergroup()
     {
-        return $this->belongsTo('App\CustomerGroup');
+        return $this->belongsTo('App\CustomerGroup', 'customer_group_id');
     }
 
     public function currency()

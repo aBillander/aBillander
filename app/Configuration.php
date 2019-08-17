@@ -24,7 +24,17 @@ class Configuration extends Model
 		if (Installer::alreadyInstalled()) {
 			self::$_CONF = array();
 
-			$results = Configuration::All();
+			try {
+
+				$results = Configuration::All();
+				
+			} catch (\Illuminate\DataBase\QueryException $e) {
+
+				// Die (not so) silently:
+				echo 'Cannot stablish a database connection :: Configurations are not loaded.';
+				die();
+				
+			}
 
 			if ($results->count())
 				foreach ($results as $result)

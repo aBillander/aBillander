@@ -42,13 +42,14 @@ class BackupDatabase extends Command
         $date = str_replace( [' ', ':'], '_', \Carbon\Carbon::now()->toDateTimeString() );
 
         $this->process = new Process(sprintf(
-            'mysqldump -u%s -p"%s" -h%s -P%s %s > %s',
+            "mysqldump -u%s -p'%s' -h%s -P%s %s > %s",
             config('database.connections.mysql.username'),
             config('database.connections.mysql.password'),
             config('database.connections.mysql.host'),
             config('database.connections.mysql.port'),
             config('database.connections.mysql.database'),
-            storage_path('backups/backup_'.config('database.connections.mysql.database').'_'.$date.'.sql')
+//            storage_path('backups/backup_'.config('database.connections.mysql.database').'_'.$date.'.sql')
+            storage_path( abi_tenant_db_backups_path() ) . '/backup_'.config('database.connections.mysql.database').'_'.$date.'.sql'
         ));
     }
 

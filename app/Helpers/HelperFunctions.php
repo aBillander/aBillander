@@ -389,3 +389,20 @@ if (! function_exists('abi_tenant_local_path')) {
 }
 
 
+if (! function_exists('abi_tenant_db_backups_path')) {
+    /**
+     * Get the path to the public folder.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function abi_tenant_db_backups_path($path = '')
+    {
+        $tenant = \App\Context::getContext()->tenant;
+
+        // return public_path( 'tenants/' , $tenant ).($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
+        return 'db_backups/' . $tenant . ($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
+    }
+}
+
+

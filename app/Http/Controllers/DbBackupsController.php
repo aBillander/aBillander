@@ -42,7 +42,7 @@ class DbBackupsController extends Controller {
 	public function index()
 	{
 		//
-		$bk_folder = storage_path().'/backups';
+		$bk_folder = storage_path( abi_tenant_db_backups_path() );
 
 		$listing =  array_reverse( 
 			array_sort(File::files( $bk_folder ), function($file)
@@ -133,7 +133,7 @@ class DbBackupsController extends Controller {
     public function delete($filename)
     {
 		//
-		$bk_folder = storage_path().'/backups';
+		$bk_folder = storage_path( abi_tenant_db_backups_path() );
 
 		$file = $bk_folder.'/'.$filename;
 
@@ -159,7 +159,7 @@ class DbBackupsController extends Controller {
     public function download($filename)
     {
 		//
-		$bk_folder = storage_path().'/backups';
+		$bk_folder = storage_path( abi_tenant_db_backups_path() );
 
 		$file = $bk_folder.'/'.$filename;
 

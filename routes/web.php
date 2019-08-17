@@ -69,6 +69,31 @@ Route::get('dbbackup', function()
     if ( $security_token != \App\Configuration::isNotEmpty('DB_BACKUP_SECURITY_TOKEN') )
         die($security_token);
 
+
+            if ( config('tenants.enable') )
+            {
+                // Extract the subdomain from URL.
+                list($subdomain) = explode('.', request()->getHost(), 2);
+    
+                $tenants = config('tenants.names');
+    
+                // abi_r($tenants, true);
+    
+                // die(in_array($subdomain, $tenants));
+                if ( !in_array($subdomain, $tenants) )
+                {
+                    // Logout user
+                   die('Access denied');
+                }
+            
+            } else {
+
+                $subdomain = 'localhost';
+            
+            }
+
+    \App\Context::getContext()->tenant = $subdomain; 
+
     Artisan::call('db:backup');
     // save it to the storage/backups/backup.sql file
 

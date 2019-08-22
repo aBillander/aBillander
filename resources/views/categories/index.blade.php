@@ -28,7 +28,7 @@
     </div>
     <h2>
         @if ( $parentId>0 )
-        <a href="{{ URL::to('categories') }}">{{ l('Product Categories') }}</a> <span style="color: #cccccc;">/</span> {{ $parent->name }}
+        <a class="btn btn-sm alert-success" href="{{ URL::to('categories') }}" title="{{ l('Product Categories') }}"><i class="fa fa-list"></i></a> <span style="color: #cccccc;">/</span> {{ $parent->name }}
         @else
         {{ l('Product Categories') }}
         @endif
@@ -45,6 +45,7 @@
             <th class="text-left" style="width: 35px">{{l('ID', [], 'layouts')}}</th>
             <th class="text-left" style="width: 35px"> </th>
             <th class="text-left">{{l('Category Name')}}</th>
+            <th class="text-left">{{l('Webshop ID')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-right"> </th>
         </tr>
@@ -55,6 +56,8 @@
             <td>{{ $category->id }}</td>
             <td> </td>
             <td>{{ $category->name }}</td>
+            
+            <td>{{ $category->webshop_id }}</td>
             
             <td class="text-center">@if ($category->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

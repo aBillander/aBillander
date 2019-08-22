@@ -222,7 +222,8 @@ class ProductBOMsController extends Controller
                                 } )
                                 ->where( function ($query) {
                                         $query->where(  'procurement_type', '=', 'purchase')
-                                              ->OrWhere('procurement_type', '=', 'assembly');
+                                              ->OrWhere('procurement_type', '=', 'assembly')
+                                              ->OrWhere('procurement_type', '=', 'manufacture');
                                 } )
 //                                ->isPurchased()
 //                                ->with('measureunit')

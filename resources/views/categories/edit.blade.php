@@ -12,12 +12,12 @@
                 <a href="{{ URL::to('categories') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Product Categories') }}</a>
                 <a href="{{ URL::to('categories/'.$parent->id.'/subcategories') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to :name', ['name' => $parent->name]) }}</a>
             </div>
-            <h2><a href="{{ URL::to('categories') }}">{{ l('Product Categories') }}</a> <span style="color: #cccccc;">/</span> <a href="{{ URL::to('categories/'.$parent->id.'/subcategories') }}">{{ $parent->name }}</a> <span style="color: #cccccc;">/</span> {{ l('Edit Category') }}</h2>
+            <h2><a class="btn btn-sm alert-success" href="{{ URL::to('categories') }}" title="{{ l('Product Categories') }}"><i class="fa fa-list"></i></a> <span style="color: #cccccc;">/</span> <a href="{{ URL::to('categories/'.$parent->id.'/subcategories') }}">{{ $parent->name }}</a> <span style="color: #cccccc;">/</span> {{ $category->name }}</h2>
             @else
             <div class="pull-right">
                 <a href="{{ URL::to('categories') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Product Categories') }}</a>
             </div>
-            <h2><a href="{{ URL::to('categories') }}">{{ l('Product Categories') }}</a> <span style="color: #cccccc;">/</span> {{ l('Edit Category') }}</h2>
+            <h2><a class="btn btn-sm alert-success" href="{{ URL::to('categories') }}" title="{{ l('Product Categories') }}"><i class="fa fa-list"></i></a> <span style="color: #cccccc;">/</span> {{ $category->name }}</h2>
             @endif
         </div>
     </div>
@@ -31,18 +31,26 @@
                <i class="fa fa-asterisk"></i>
                &nbsp; {{ l('Main Data') }}
             </a>
+
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
             <a id="b_internet" href="#internet" class="list-group-item">
                <i class="fa fa-cloud"></i>
                &nbsp; {{ l('Internet') }}
             </a>
          </div>
       </div>
-      
+@endif
+
       <div class="col-lg-10 col-md-10 col-sm-9">
 
           @include('categories._panel_main_data')
 
+
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+
           @include('categories._panel_internet')
+
+@endif
 
       </div>
    </div>

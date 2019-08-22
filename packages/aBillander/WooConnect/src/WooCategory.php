@@ -7,7 +7,7 @@ namespace aBillander\WooConnect;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-class WooProduct // extends Model
+class WooCategory // extends Model
 {
 //    protected $dates = ['deleted_at', 'date_created', 'date_paid', 'date_abi_exported', 'date_invoiced'];
 	
@@ -28,31 +28,21 @@ class WooProduct // extends Model
     
     // See: https://github.com/laravel-enso/DataImport
 
-    public function __construct ($sku = null)
+    public function __construct ($id = null)
     {
 
         $this->run_status = true;
 
-        // Get product data (if product exists!)
+        // Get category data (if category exists!)
 
-        if ( $sku !== null ) {
-            
-            // Do the Mambo!!!
-            $params = [
+        if ( $id !== null ) {
 
-                'sku'   => $sku,
-
-            ];
-
-            // Get Product fromm WooCommerce Shop
+            // Get Category fromm WooCommerce Shop
             try {
 
-                $data = WooCommerce::get('products', $params); // Array
+                $data = WooCommerce::get('products/categories/' . $id); // Array
 
-                // get first item only
-                $this->data = count($data) > 0 ?
-                                $data[0]       :
-                                []             ;
+                $this->data = $data;
             }
 
             catch( WooHttpClientException $e ) {
@@ -66,13 +56,13 @@ class WooProduct // extends Model
                 */
 
                 $this->data = [];
-                // So far, we do not know if product_id does not exist, or connection fails. 
-                // does it matter? -> Anyway, no product is issued
+                // So far, we do not know if category_id does not exist, or connection fails. 
+                // does it matter? -> Anyway, no category is issued
 
             }
 
             if (!$this->data) {
-                $this->error[] = 'Se ha intentado recuperar el Producto <b>"'.$sku.'"</b> y no existe.';
+                $this->error[] = 'Se ha intentado recuperar la Categoría <b>"'.$sku.'"</b> y no existe.';
                 $this->run_status = false;
             }
 
@@ -80,52 +70,11 @@ class WooProduct // extends Model
 
     }
 
-    public static function fetch( $sku = null )
+    public static function fetch( $id = null )
     {
-        $product = new static($sku);
-        // if (!$product->tell_run_status()) 
-        return $product->data;
-    }
-
-    public static function fetchById( $id = null )
-    {
-        if ( $id != null ) {
-            
-            // Do the Mambo!!!
-            $params = [
-
-                'id'   => $id,
-
-            ];
-
-            // Get Product fromm WooCommerce Shop
-            try {
-
-                $product = WooCommerce::get('products/'.$id); // Array
-                
-            }
-
-            catch( WooHttpClientException $e ) {
-
-                /*
-                $e->getMessage(); // Error message.
-
-                $e->getRequest(); // Last request data.
-
-                $e->getResponse(); // Last response data.
-                */
-
-                $product = [];
-                // So far, we do not know if product_id does not exist, or connection fails. 
-                // does it matter? -> Anyway, no product is issued
-
-            }
-        
-            return $product;
-
-        }
-
-        return [];
+        $category = new static($id);
+        // if (!$category->tell_run_status()) 
+        return $category->data;
     }
 
 
@@ -149,7 +98,7 @@ class WooProduct // extends Model
     
     public function getRawData( )
     {
-        return $product->data;
+        return $category->data;
     }
     
     
@@ -158,7 +107,7 @@ class WooProduct // extends Model
     | Helpers
     |--------------------------------------------------------------------------
     */
-    
+/*    
     // Custom function
     public static function getProductReference( $product = [] )
     {
@@ -186,7 +135,7 @@ class WooProduct // extends Model
 		
 		return $vn;
     }
-    
+*/    
     
     /*
     |--------------------------------------------------------------------------
@@ -194,8 +143,7 @@ class WooProduct // extends Model
     |--------------------------------------------------------------------------
     */
     
-    public static function viewIndexTransformer( $product = [] )
-    {
+/*    {
         if ( !isset( $product['id'] ) ) return $product;
 
         list($product["date_created_date"], $product["date_created_time"]) = explode(' ', self::getDate( $product["date_created"] . ' ' ));
@@ -212,4 +160,5 @@ class WooProduct // extends Model
 
         return $product;
     }
+*/
 }

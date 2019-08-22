@@ -63,10 +63,18 @@ Route::group([
     Route::get('worders/{id}/invoice', array('uses' => 'WooOrdersController@invoice', 
                                                         'as'   => 'worders.invoice' ));
 
+    Route::resource('wproducts', 'WooProductsController');
+
     Route::get('wproducts/{id}/fetch' , array('uses' => 'WooProductsController@fetch', 
                                                         'as'   => 'wproducts.fetch' ));
     Route::get('wproducts/importProductImages' , array('uses' => 'WooProductsController@importProductImages', 
                                                         'as'   => 'wproducts.import.product.images' ));
+
+
+    Route::resource('wcategories', 'WooCategoriesController');
+
+    Route::get('wcategories/{id}/fetch' , array('uses' => 'WooCategoriesController@fetch', 
+                                                        'as'   => 'wcategories.fetch' ));
 
 });
 

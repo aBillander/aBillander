@@ -1,7 +1,9 @@
 
 <div id="panel_internet">
 
-{!! Form::model($category, array('route' => array('categories.update', $category->id), 'method' => 'PUT', 'class' => 'form')) !!}
+{{-- !! Form::model($category, array('route' => array('categories.update', $category->id), 'method' => 'PUT', 'class' => 'form')) !! --}}
+
+{!! Form::model($category, array('method' => 'PATCH', 'route' => array('categories.subcategories.update', $parentId, $category->id))) !!}
 <input type="hidden" value="internet" name="tab_name" id="tab_name">
 
 <div class="panel panel-primary">
@@ -11,10 +13,18 @@
    <div class="panel-body">
 
 <!-- Internet -->
-@if(!$category->webshop_id)
+@if( 1 || !$category->webshop_id )
         <div class="row">
 
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group {{ $errors->has('webshop_id') ? 'has-error' : '' }}">
+                          {!! Form::label('webshop_id', l('Webshop ID'), ['class' => 'control-label']) !!}
+                          {!! Form::text('webshop_id', null, array('class' => 'form-control', 'id' => 'webshop_id')) !!}
+                          {!! $errors->first('webshop_id', '<span class="help-block">:message</span>') !!}
+                      </div>
+                  </div>
+
+                   <div class=" hide form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
                      {!! Form::label('publish_to_web', l('Publish to web?'), ['class' => 'control-label']) !!}
                      <div>
                        <div class="radio-inline">
@@ -62,7 +72,7 @@
 
 <!-- webShop data -->
 
-@if($category->publish_to_web AND !$category->webshop_id)
+@if( 0 && $category->publish_to_web AND !$category->webshop_id )
 
 {!! Form::model($category, array('route' => array('categories.publish', $category->id), 'method' => 'POST', 'class' => 'form')) !!}
 <input type="hidden" value="internet" name="tab_name" id="tab_name">

@@ -174,4 +174,40 @@ return [
 	'-Billing'     => '-Principal',
 	'-Shipping'    => '-Envío',
 
+	/*
+	|--------------------------------------------------------------------------
+	| WooCommerce Categories Language Lines :: show
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Categories'     => 'Categorías',
+//	'ID'     => 'ID', from layouts
+	'Parent ID'     => 'ID del Padre',
+	'Category Name'     => 'Nombre de la Categoría',
+	'Display'     => 'Mostrar',
+	'Menu Order'     => 'Posición en el Menú',
+	'Products Count'     => 'Número de Productos',
+	'Slug'     => 'Slug',
+	'Local Category'     => 'Categoría Local',
+
+	/*
+	|--------------------------------------------------------------------------
+	| WooCommerce Products Language Lines :: show
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+
 ];

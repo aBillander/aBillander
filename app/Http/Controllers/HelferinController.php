@@ -59,12 +59,14 @@ class HelferinController extends Controller
         $this->mergeFormDates( ['sales_date_from', 'sales_date_to'], $request );
 
         $date_from = $request->input('sales_date_from')
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('sales_date_from'))
+                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('sales_date_from'))->startOfDay()
                      : null;
         
         $date_to   = $request->input('sales_date_to'  )
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('sales_date_to'  ))
+                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('sales_date_to'  ))->endOfDay()
                      : null;
+
+        //             abi_r($date_from.' - '.$date_to);die();
 
         $customer_id = $request->input('sales_customer_id', null);
 

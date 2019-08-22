@@ -214,6 +214,14 @@
                             </a>
                         </li>
 @endif
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+                         <li>
+                            <a href="{{ URL::to('wooc/wproducts') }}">
+                                 <i class="fa fa-cloud-upload btn-xs alert-info"></i> 
+                                 {{l('Products', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+@endif
 
                         <li class="divider"></li>
                          <li>

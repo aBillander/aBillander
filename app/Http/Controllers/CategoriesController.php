@@ -1,11 +1,14 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Category as Category;
+use App\Configuration;
+use App\Category;
 use View;
 
 class CategoriesController extends Controller {
@@ -53,6 +56,14 @@ class CategoriesController extends Controller {
      */
     public function store($parentId=0, Request $request)
     {
+
+/* ToDo: Validaion
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && ($request->has('webshop_id') )
+        {
+            // REST API Connect to shop & check ifor $request->input('webshop_id') existance
+        }
+*/
+
         $this->validate($request, Category::$rules['main_data']);
 
         $category = $this->category->create($request->all());

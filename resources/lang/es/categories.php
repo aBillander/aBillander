@@ -53,6 +53,7 @@ return [
 	'Edit Category'     => 'Modificar Categoría',
 
 	'Publish to web?'     => '¿Publicar en la web?',
+	'Webshop ID'     => 'Código en la Tienda Web',
 	'Web Shop Data'     => 'Datos para la Tienda Web',
 	'Name'     => 'Nombre',
 	'External Reference'     => 'Referencia Externa',

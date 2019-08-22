@@ -13,23 +13,24 @@ use Illuminate\Http\Request;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-use \App\Product;
-use \aBillander\WooConnect\WooProduct;
+use \App\Category;
+use \aBillander\WooConnect\WooCategory;
 
-class WooProductsController extends Controller 
+class WooCategoriesController extends Controller 
 {
 
 
-   protected $product;
+   protected $category;
 
-   public function __construct(WooProduct $product)
+   public function __construct(WooCategory $category, Category $abi_category)
    {
-         $this->product = $product;
+         $this->category = $category;
+         $this->abi_category = $abi_category;
    }
 
 	/**
 	 * Display a listing of the resource.
-	 * GET /wproducts
+	 * GET /wcategorys
 	 *
 	 * @return Response
 	 */
@@ -64,12 +65,11 @@ class WooProductsController extends Controller
 //	    	'before' => '2017-12-31T23:59:59',
 //	    	'after'  => $request->input('date_from', '') ? $request->input('date_from').' 00:00:00' : '',
 //	    	'before' => $request->input('date_to', '')   ? $request->input('date_to')  .' 23:59:59' : '',
-	    	'orderby' => 'id',		// Options: date, id, include, title and slug. Default is date.
+	    	'orderby' => 'name',		// Options: id, include, name, slug, term_group, description and count. Default is name. => seems that "name" order is by menu_order, in fact!
 	    	'order'   => 'asc',		// Options: asc and desc. Default is desc.
 		];
 
-		// status : any, draft, pending, private and publish. Default is any.
-		// type : simple, grouped, external and variable.
+		// display : Category archive display type. Options: default, products, subcategories and both. Default is default.
 
 		foreach ($columns as $column) {
 			if (request()->has($column) && request($column)) {
@@ -81,7 +81,7 @@ class WooProductsController extends Controller
 
         try {
 
-			$results = WooCommerce::get('products', $params);
+			$results = WooCommerce::get('products/categories', $params);
 
 		}
 
@@ -113,21 +113,37 @@ class WooProductsController extends Controller
 		// So far so good, then
 		$total = WooCommerce::totalResults();
 
-		$products = collect($results);
+		$categories = collect($results);
 
 		// Allready imported? Let's see deeply
-		$first = $products->first()["id"];
-		$last  = $products->last()["id"];
+		$first = $categories->first()["id"];
+		$last  = $categories->last()["id"];
 
 
-		$products = new LengthAwarePaginator($products, $total, $perPage, $page, ['path' => $request->url(), 'query' => $query]);
+		$categories = new LengthAwarePaginator($categories, $total, $perPage, $page, ['path' => $request->url(), 'query' => $query]);
 
-        return view('woo_connect::woo_products.index', compact('products', 'query'));
+		// Not so far, kawaii bunny
+		$ids = $categories->pluck('id')->toArray();
+
+		$abi_categories = $this->abi_category::whereIn('webshop_id', $ids)->get();
+
+		$categories->getCollection()->transform(function ($category) use ($abi_categories) {
+		    // Your code here
+			$abi_category = $abi_categories->where('webshop_id', $category["id"])->first();
+
+			$category["abi_category"] = $abi_category;
+
+		    return $category;
+		});
+
+		// abi_r($categories);die();
+
+        return view('woo_connect::woo_categories.index', compact('categories', 'abi_categories', 'query'));
 	}
 
 	/**
 	 * Show the form for creating a new resource.
-	 * GET /wproducts/create
+	 * GET /wcategories/create
 	 *
 	 * @return Response
 	 */
@@ -138,7 +154,7 @@ class WooProductsController extends Controller
 
 	/**
 	 * Store a newly created resource in storage.
-	 * POST /wproducts
+	 * POST /wcategories
 	 *
 	 * @return Response
 	 */
@@ -149,7 +165,7 @@ class WooProductsController extends Controller
 
 	/**
 	 * Display the specified resource.
-	 * GET /wproducts/{id}
+	 * GET /wcategories/{id}
 	 *
 	 * @param  int  $id
 	 * @return Response
@@ -161,7 +177,7 @@ class WooProductsController extends Controller
 
 	/**
 	 * Show the form for editing the specified resource.
-	 * GET /wproducts/{id}/edit
+	 * GET /wcategories/{id}/edit
 	 *
 	 * @param  int  $id
 	 * @return Response
@@ -173,7 +189,7 @@ class WooProductsController extends Controller
 
 	/**
 	 * Update the specified resource in storage.
-	 * PUT /wproducts/{id}
+	 * PUT /wcategories/{id}
 	 *
 	 * @param  int  $id
 	 * @return Response
@@ -185,7 +201,7 @@ class WooProductsController extends Controller
 
 	/**
 	 * Remove the specified resource from storage.
-	 * DELETE /wproducts/{id}
+	 * DELETE /wcategories/{id}
 	 *
 	 * @param  int  $id
 	 * @return Response
@@ -200,34 +216,30 @@ class WooProductsController extends Controller
 
 
 	
-	public function importProductList( $list )
+	public function importCategoryList( $list )
 	{
         // 
 	}
 
-	public function importProducts( Request $request )
+	public function importCategories( Request $request )
 	{
 
-        return $this->importProductList( $request->input('wproducts', []) );
+        return $this->importCategoryList( $request->input('wcategories', []) );
 	} 
 
 
 	public function import($id)
 	{
 		
-        return $this->importProductList( [$id] );
+        return $this->importCategoryList( [$id] );
 	}
 
 
-	// Fetch Product by SKU
 	public function fetch($id)
 	{
-		$product = WooProduct::fetch( $id );
+		$category = WooCategory::fetch( $id );
 
-		if ( !$product )
-			$product = WooProduct::fetchById( $id );
-
-		abi_r($product, true);
+		abi_r($category, true);
 	}
 
 

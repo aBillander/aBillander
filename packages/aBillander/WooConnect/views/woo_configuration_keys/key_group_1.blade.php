@@ -8,7 +8,7 @@
         <div class="page-header">
             <div class="pull-right">
             </div>
-            <h2>{{ l('WooCommerce link Settings') }}</h2>
+            <h2>{{ l('WooCommerce link Settings') }} <span style="color: #cccccc;">::</span> <a href="#">{{ config('woocommerce.store_url') }}</a></h2>
         </div>
     </div>
 </div>

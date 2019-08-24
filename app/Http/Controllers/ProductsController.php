@@ -152,6 +152,9 @@ class ProductsController extends Controller
 
         $rules = Product::$rules['create'];
 
+        if( Configuration::isTrue('ENABLE_MANUFACTURING') )
+            $rules += Product::$rules['manufacturing'];
+
         if ( Configuration::get('PRICES_ENTERED_WITH_TAX') )
             unset($rules['price']);
         else 
@@ -399,6 +402,11 @@ class ProductsController extends Controller
 //        if ( $rules_tab == 'main_data' ) $rules_tab = 'create';
 
         $vrules = Product::$rules[ $rules_tab ];
+
+        if (  $rules_tab == 'manufacturing' )
+        if( Configuration::isTrue('ENABLE_MANUFACTURING') )
+            $vrules += Product::$rules['manufacturing'];
+
 
 //        if ( $product->reference == $request->input('reference')) unset($vrules['reference']);
 //        if ( isset($vrules['reference']) ) $vrules['reference'] .= $product->id;

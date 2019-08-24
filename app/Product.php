@@ -144,6 +144,7 @@ class Product extends Model {
                             
                     ),
         'manufacturing' => array(
+                            'manufacturing_batch_size' => 'required|numeric|min:0|not_in:0',
                             
                     ),
         'sales' => array(

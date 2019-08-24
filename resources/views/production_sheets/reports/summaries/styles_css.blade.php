@@ -449,7 +449,7 @@ td.header img {
   page-break-after: avoid;
 }
 
-table, figure {
+xtable, figure {
   page-break-inside: avoid;
 }
 

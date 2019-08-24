@@ -228,6 +228,11 @@
     </div>
 
     
+@if ( config('tenants.enable') )
+
+        <input id="ENABLE_MANUFACTURING" name="ENABLE_MANUFACTURING" type="hidden" value="0">
+
+@else
 
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ENABLE_MANUFACTURING.name') !!}</label>
@@ -247,6 +252,9 @@
         <span class="help-block">{!! l('ENABLE_MANUFACTURING.help') !!}</span>
       </div>
     </div>
+
+@endif
+
 
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ENABLE_WEBSHOP_CONNECTOR.name') !!}</label>

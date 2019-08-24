@@ -45,8 +45,9 @@ class ProductionOrder extends Model
     public function getMachineLoads($quantity = 1.0, $capacity = 1.0)
     {
         //
-        if ( ($quantity <= 0) || ($capacity <= 0) ) return 1.0;
+        if ( ($quantity <= 0) || ($capacity <= 0) ) return 0.0;
 
+        // Just a convention: $quantity in gr., $capacity in kg.
         return ceil( ( $quantity / 1000.0 ) / $capacity );
     }
 
@@ -54,8 +55,9 @@ class ProductionOrder extends Model
     public function getMachineLoadsLabel($quantity = 1.0, $capacity = 1.0)
     {
         //
+        if ( ($quantity <= 0) || ($capacity <= 0) ) return '';
 
-        return '7 x 16';
+        return ceil( ( $quantity / 1000.0 ) / $capacity ).'x'.$capacity;
     }
     
 

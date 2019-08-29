@@ -24,6 +24,10 @@ return [
 	|
 	*/
 
+	'You have to create a Category first'     => 'Debe crear una Categoría primero',
+	'You have to create a Sub-Category first'     => 'Debe crear una Sub-Categoría primero',
+	''     => '',
+
 	'Products - Create' => 'Productos - Crear',
 	'Back to Products'     => 'Volver a Productos',
 	'New Product'     => 'Nuevo Producto',

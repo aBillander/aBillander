@@ -26,5 +26,13 @@ return [
 	'Download' => 'Descargar',
 	'aBillander LOG' => '',
 
+	'Configuration' => 'Configuración',
+	'Max Backups' => 'Número Máximo de Copias',
+	'Max Backups Action' => 'Si se alcanza el Número Máximo de Copias',
+	'Do nothing' => 'No hacer nada',
+	'Delete older Backups' => 'Borrar las más antiguas',
+	'Email warning' => 'Aviso por Email',
+
+	'Maximum number of Database Backups reached' => 'Se ha alcanzado el máximo permitido de copias de seguridad'
 
 ];

@@ -65,6 +65,36 @@ $lines_10703 = $order->productionorderlines->where('reference', '10703');
 @endforeach
 
 
+{{-- 10703 after 1101 [10704], 1102 [10705] --}}
+
+@php
+  $qty_10703p = [];
+
+  $orders = $sheet->productionorders->whereIn('product_reference', ['10704', '10705'])
+@endphp
+
+@foreach ($orders as $order)
+
+@php
+$lines_10703p = $order->productionorderlines->where('reference', '10703');
+
+    foreach ($lines_10703p as $line)
+    {
+      if ( array_key_exists( $order->product_reference, $qty_10703p) )
+          $qty_10703p[$order->product_reference] += $line->required_quantity;
+      else {
+          $qty_10703p[$order->product_reference]  = $line->required_quantity;
+          $reference_10703p = $line->reference;
+          $name_10703p = $line->name;
+          $unit_10703p = $line->product->measureunit->sign;
+      }
+    }
+@endphp
+
+@endforeach
+
+
+
 {{--  --}}
 
 
@@ -80,7 +110,9 @@ $lines_10703 = $order->productionorderlines->where('reference', '10703');
           </th>
           <th width="5%"> </th>
           <th width="30%">
-
+@if( count($qty_10703p) )
+            [{{ $reference_10703 }}] {{ $name_10703 }}
+@endif
           </th>
           <th width="5%"> </th>
           <th width="30%">
@@ -100,7 +132,31 @@ $lines_10703 = $order->productionorderlines->where('reference', '10703');
           </td>
           <td> </td>
           <td>
+@if( count($qty_10703p) )
+      @foreach ($qty_10703p as $key => $qty)
+          @php
 
+              switch ( $key ) {
+                  case '10704':
+                      # code...
+                      $keyp = '1101';
+                      break;
+                  
+                  case '10705':
+                      # code...
+                      $keyp = '1102';
+                      break;
+                  
+                  default:
+                      # code...
+                      $keyp = '';
+                      break;
+              }
+
+          @endphp
+            {{ $keyp }}: {{ niceQuantity($qty) }} {{ $unit_10703p }}<br />
+      @endforeach
+@endif
           </td>
           <td> </td>
           <td>

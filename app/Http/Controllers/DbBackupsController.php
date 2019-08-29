@@ -11,18 +11,12 @@ use \Artisan;
 use App\Configuration;
 use App\Tools;
 
-class DbBackupsController extends Controller {
+use App\Events\DatabaseBackup;
 
-	/*
-	|--------------------------------------------------------------------------
-	| Welcome Controller
-	|--------------------------------------------------------------------------
-	|
-	| This controller renders the "marketing page" for the application and
-	| is configured to only allow guests. Like most of the other sample
-	| controllers, you are free to modify or remove it as you desire.
-	|
-	*/
+class DbBackupsController extends Controller 
+{
+
+	public $default_MAX_DB_BACKUPS = 30;
 
 	/**
 	 * Create a new controller instance.
@@ -60,8 +54,48 @@ class DbBackupsController extends Controller {
 		abi_r($listing, true);
 */
 
-		return view('db_backups.index', compact('bk_folder', 'listing'));
+		$MAX_DB_BACKUPS = Configuration::get('MAX_DB_BACKUPS');
+		$MAX_DB_BACKUPS_ACTION = Configuration::get('MAX_DB_BACKUPS_ACTION');
+
+		$actions = [
+					''       => l('Do nothing'),
+					'delete' => l('Delete older Backups'),
+					'email'  => l('Email warning'),
+			];
+
+		return view('db_backups.index', compact('bk_folder', 'listing', 'MAX_DB_BACKUPS', 'MAX_DB_BACKUPS_ACTION', 'actions'));
 	}
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function configurations()
+    {
+        return redirect()->route('dbbackups.index');
+
+        // return view('db_backups.configurations');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function configurationsUpdate(Request $request)
+    {
+        // MAX_DB_BACKUPS_ACTION
+
+        Configuration::updateValue('MAX_DB_BACKUPS', $request->input('MAX_DB_BACKUPS', $this->default_MAX_DB_BACKUPS));
+
+        Configuration::updateValue('MAX_DB_BACKUPS_ACTION', $request->input('MAX_DB_BACKUPS_ACTION', ''));
+
+        return redirect()->route('dbbackups.index')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -118,7 +152,10 @@ class DbBackupsController extends Controller {
 
         }
 
-	    // abi_r( Artisan::output() );     // The backup has been proceed successfully.
+	    // abi_r( Artisan::output() );
+
+	    // The backup has been proceed successfully.
+	    event(new DatabaseBackup());
 	    
         return redirect()->back()	// '/dbbackups')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') . Artisan::output());

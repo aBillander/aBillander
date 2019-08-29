@@ -24,12 +24,53 @@
 
       <div class="col-lg-2 col-md-2 col-sm-2">
         {{-- Poor man offeset --}}
-         <!-- div class="list-group">
-            <a id="b_main_data" href="#" class="list-group-item active">
-               <i class="fa fa-asterisk"></i>
-               &nbsp; {{ l('Updates') }}
-            </a>
-         </div -->
+
+{!! Form::open(array('route' => 'dbbackups.configurations.update', 'class' => 'form')) !!}
+
+<div class="panel panel-info" id="panel_purchases">
+   <div class="panel-heading">
+      <h3 class="panel-title">{{ l('Configuration') }}</h3>
+   </div>
+   <div class="panel-body">
+
+<!-- Purchases Prices -->
+
+        <div class="row">
+                  <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('MAX_DB_BACKUPS') ? 'has-error' : '' }}">
+                     {{ l('Max Backups') }}
+                     {!! Form::text('MAX_DB_BACKUPS', old('MAX_DB_BACKUPS', $MAX_DB_BACKUPS), array('class' => 'form-control', 'id' => 'MAX_DB_BACKUPS')) !!}
+                     {!! $errors->first('MAX_DB_BACKUPS', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+        </div>
+
+        <div class="row">
+
+             <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('MAX_DB_BACKUPS_ACTION') ? 'has-error' : '' }}">
+                {{ l('Max Backups Action') }}
+                {!! Form::select('MAX_DB_BACKUPS_ACTION', $actions, old('MAX_DB_BACKUPS_ACTION', $MAX_DB_BACKUPS_ACTION), array('class' => 'form-control', 'id' => 'MAX_DB_BACKUPS_ACTION')) !!}
+                {!! $errors->first('MAX_DB_BACKUPS_ACTION', '<span class="help-block">:message</span>') !!}
+             </div>
+        </div>
+
+        <div class="row">
+        </div>
+
+<!-- Purchases Prices ENDS -->
+
+   </div>
+
+   <div class="panel-footer text-right">
+      <button class="btn btn-sm btn-info" type="submit" xonclick="this.disabled=true;$('#tab_name_purchases').val('purchases');this.form.submit();">
+         <i class="fa fa-hdd-o"></i>
+         &nbsp; {{l('Save', [], 'layouts')}}
+      </button>
+   </div>
+
+</div>
+
+{!! Form::close() !!}
+
       </div>
 
       

@@ -126,6 +126,22 @@ class ProductsController extends Controller
      */
     public function create()
     {
+        $categories = \App\Category::exists();
+
+        if ( !$categories )
+        {
+            return redirect()->back()       // redirect('products')
+                    ->with('error', l('You have to create a Category first'));
+        }
+
+        $sub_categories = \App\Category::where('parent_id', '>', 0)->exists();
+
+        if ( Configuration::isTrue('ALLOW_PRODUCT_SUBCATEGORIES') && !$sub_categories )
+        {
+            return redirect()->back()       // redirect('products')
+                    ->with('error', l('You have to create a Sub-Category first'));
+        }
+
         return view('products.create');
     }
 

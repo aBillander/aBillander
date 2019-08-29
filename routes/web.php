@@ -99,6 +99,9 @@ Route::get('dbbackup', function()
 
     abi_r( Artisan::output() );
 
+        // The backup has been proceed successfully.
+        event(new \App\Events\DatabaseBackup());
+
     // return '<h1>Proceso terminado</h1>';    // <a class="navbar-brand" href="' .url('/'). '">Volver</a>';
     return ;
 });
@@ -114,7 +117,7 @@ Route::get('404', function()
 
 
 // Secure-Routes
-Route::group(['middleware' =>  ['auth', 'context']], function()
+Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 {
     // Route::get( 'contact', 'ContactMessagesController@create');
     Route::post('contact', 'ContactMessagesController@store');
@@ -524,6 +527,9 @@ foreach ($pairs as $pair) {
 
 
         Route::get('dbbackups',           'DbBackupsController@index'  )->name('dbbackups.index');
+
+//        Route::get( 'dbbackups/configurations',        'DbBackupsController@configurations'       )->name('dbbackups.configurations');
+        Route::post('dbbackups/configurations/update', 'DbBackupsController@configurationsUpdate' )->name('dbbackups.configurations.update');
 
         Route::get( 'dbbackups/job/edit',   'DbBackupsController@job'       )->name('dbbackups.job');
         Route::post('dbbackups/job/update', 'DbBackupsController@jobUpdate' )->name('dbbackups.job.update');

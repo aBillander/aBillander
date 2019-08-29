@@ -91,8 +91,9 @@ class WooOrderImporter {
     public static function loggerSetup() 
     {
     	return \App\ActivityLogger::setup( 
-            self::loggerName(), 							//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
-            self::loggerSignature() );
+                self::loggerName(), 							//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+                self::loggerSignature() )
+            ->backTo( route('worders.index') );
     }
 
     public static function logger() 
@@ -167,7 +168,7 @@ class WooOrderImporter {
         {
         	$importer->logMessage("ERROR", l('Order number <span class="log-showoff-format">{oid}</span> could not be loaded.'), ['oid' => $order_id]);
 
-        	$importer->order->delete();
+        	optional($importer->order)->delete();
 
         	// Delete Customer as well -> No! Customer order is in place no matter import errors...
 

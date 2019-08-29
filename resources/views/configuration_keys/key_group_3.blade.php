@@ -108,6 +108,64 @@
     </div>
 
 
+    <div class="form-group {{ $errors->has('ALLOW_IP_ADDRESSES') ? 'has-error' : '' }}">
+      <label for="ALLOW_IP_ADDRESSES" class="col-lg-4 control-label">{!! l('ALLOW_IP_ADDRESSES.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-10">
+        <input class="form-control" type="text" id="ALLOW_IP_ADDRESSES" name="ALLOW_IP_ADDRESSES" placeholder="" value="{{ old('ALLOW_IP_ADDRESSES', $key_group['ALLOW_IP_ADDRESSES']) }}" />
+        {{ $errors->first('ALLOW_IP_ADDRESSES', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ALLOW_IP_ADDRESSES.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group {{ $errors->has('MAX_DB_BACKUPS') ? 'has-error' : '' }}">
+      <label for="MAX_DB_BACKUPS" class="col-lg-4 control-label">{!! l('MAX_DB_BACKUPS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="MAX_DB_BACKUPS" name="MAX_DB_BACKUPS" placeholder="" value="{{ old('MAX_DB_BACKUPS', $key_group['MAX_DB_BACKUPS']) }}" />
+        {{ $errors->first('MAX_DB_BACKUPS', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('MAX_DB_BACKUPS.help') !!}</span>
+      </div>
+    </div>
+
+    
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('MAX_DB_BACKUPS_ACTION.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="MAX_DB_BACKUPS_ACTION" id="MAX_DB_BACKUPS_ACTION_delete" value="delete" @if( old('MAX_DB_BACKUPS_ACTION', $key_group['MAX_DB_BACKUPS_ACTION']) == 'delete' ) checked="checked" @endif type="radio">
+            {!! l('MAX_DB_BACKUPS_ACTION.option.delete') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="MAX_DB_BACKUPS_ACTION" id="MAX_DB_BACKUPS_ACTION_email" value="email" @if( old('MAX_DB_BACKUPS_ACTION', $key_group['MAX_DB_BACKUPS_ACTION']) == 'email' ) checked="checked" @endif type="radio">
+            {!! l('MAX_DB_BACKUPS_ACTION.option.email') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="MAX_DB_BACKUPS_ACTION" id="MAX_DB_BACKUPS_ACTION_nothing" value="nothing" @if( old('MAX_DB_BACKUPS_ACTION', $key_group['MAX_DB_BACKUPS_ACTION']) == 'nothing' ) checked="checked" @endif type="radio">
+            {!! l('MAX_DB_BACKUPS_ACTION.option.nothing') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('MAX_DB_BACKUPS_ACTION.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
 
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('RECENT_SALES_CLASS.name') !!}</label>

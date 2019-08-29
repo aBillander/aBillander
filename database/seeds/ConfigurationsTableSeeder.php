@@ -53,10 +53,11 @@ $confs = [
 ['ABSRC_ITEMS_PERPAGE', '8'],
 
 ['ALLOW_CUSTOMER_BACKORDERS', '0'],
+['ALLOW_IP_ADDRESSES', ''],
 ['ALLOW_PRODUCT_SUBCATEGORIES', '1'],
 ['ALLOW_SALES_RISK_EXCEEDED', '0'],
 ['ALLOW_SALES_WITHOUT_STOCK', '0'],
-['CUSTOMER_INVOICE_BANNER', 'Place your Order at www.mystore.com'],	// 'Haga su pedido en www.mitienda.es'
+['CUSTOMER_INVOICE_BANNER', 'Place your Order at www.mystore.com'],	// 'Haga su pedido en www.mitienda.es' or &nbsp; (otherwise header pagenumber not well located)
 ['CUSTOMER_INVOICE_CAPTION', 'Registered with the Commercial Registry of City.'],	// 'Sociedad inscrita en el Registro Mercantil de Ciudad.'
 ['CUSTOMER_ORDERS_NEED_VALIDATION', '0'],
 ['DB_BACKUP_SECURITY_TOKEN', 'XXXXXXXXXXXXXXXX'],
@@ -131,6 +132,8 @@ $confs = [
 ['SELL_ONLY_MANUFACTURED', '0'],
 ['INCLUDE_SHIPPING_COST_IN_PROFIT', '0'],
 ['MARGIN_METHOD', 'PRC'],
+['MAX_DB_BACKUPS', '30'],
+['MAX_DB_BACKUPS_ACTION', 'delete'],
 ['NEW_PRICE_LIST_POPULATE', '0'],
 ['NEW_PRODUCT_TO_ALL_PRICELISTS', '0'],
 ['PRICES_ENTERED_WITH_TAX', '0'],

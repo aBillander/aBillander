@@ -70,5 +70,7 @@ class Kernel extends HttpKernel
         'abcccontext'  => \App\Http\Middleware\CustomerCenter\SetAbccContextMiddleware::class,
 
         'absrccontext'  => \App\Http\Middleware\SalesRepCenter\SetAbsrcContextMiddleware::class,
+
+        'restrictIp' => \App\Http\Middleware\AllowIpMiddleware::class,
     ];
 }

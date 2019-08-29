@@ -33,7 +33,8 @@ class ProductionSheet extends Model
         // Delete current Production Orders
         $porders = $this->productionorders()->get();
         foreach ($porders as $order) {
-            $order->deleteWithLines();
+//            if ( $order->created_via != 'manual' )
+                $order->deleteWithLines();
         }
 
         // $errors = [];

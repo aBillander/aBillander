@@ -71,6 +71,8 @@
         <a href="#">{{ l('Documentos') }}</a> <span style="color: #cccccc;">::</span> {{ $work_center->name }}
     </h3>
 
+<div class="row">
+
         <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
   $work_center_id, 'key' => 'pansingluten']) }}" class="btn btn-info" target="_blank" style="margin-top:16px;"><i class="fa fa-file-pdf-o"></i> {{ l('Panes sin Gluten') }}</a>
 
@@ -91,6 +93,18 @@
 
         <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
   $work_center_id, 'key' => 'sarraceno100']) }}" class="btn btn-custom" target="_blank" style="margin-top:16px;"><i class="fa fa-file-pdf-o"></i> {{ l('Sarraceno 100%') }}</a>
+
+</div>
+
+<div class="row">
+
+        <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
+  $work_center_id, 'key' => 'bizcocholimbrown']) }}" class="btn btn-custom" target="_blank" style="margin-top:16px;"><i class="fa fa-file-pdf-o"></i> {{ l('Bizcochos Limón y Brownies') }}</a>
+
+        <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
+  $work_center_id, 'key' => 'bizcocho']) }}" class="btn btn-custom" target="_blank" style="margin-top:16px;"><i class="fa fa-file-pdf-o"></i> {{ l('Bizcochos (Otros)') }}</a>
+
+</div>
 
         @if ( 0 )
               <button type="button" class="btn btn-sm btn-danger" title="{{l('Need Update')}}">

@@ -149,6 +149,44 @@ class ProductionSheetsPdfController extends Controller
 
                     'work_center_id' => 2,
                 ],
+
+
+                'bizcocholimbrown' => [
+                    'key'        => 'bizcocholimbrown',
+                    'label'      => 'Bizcochos Limón y Brownies',
+                    'references' => ['3020', '6020', '6000',
+                                     '3021', '6021', '6001',
+                                     '3022', '6022', '6002',
+                                     '3023', '6023', '6003',
+                                     '3040', '3041',
+                                     '3024', '6024', '6004', '3050', '6009'
+                                    ],
+                    'assemblies' => ['30100', '30200', '30101', '30201', '30102', '30202', '30103', '30203',
+                                     '30300',
+                                     '30104', '30204',
+                                    ],
+
+                    'work_center_id' => 2,
+                ],
+
+                'bizcocho' => [
+                    'key'        => 'bizcocho',
+                    'label'      => 'Bizcochos',
+                    'references' => ['3030', '6030', '6010', '3080',
+                                     '3031', '6031', '6011',
+                                     '3032', '6032', '6012',
+                                     '3033', '6033', '6013', '6019',
+                                     '3034', '6034', '6014'
+                                    ],
+                    'assemblies' => ['30105', '30205',
+                                     '30106', '30206',
+                                     '30107', '30207',
+                                     '30108', '30208',
+                                     '30109', '30209',
+                                    ],
+
+                    'work_center_id' => 2,
+                ],
     ];
 
    public function __construct(ProductionSheet $productionSheet)

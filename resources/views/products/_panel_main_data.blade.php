@@ -73,6 +73,19 @@
                      </div>
                    </div>
 
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+   <div class="panel-footer text-right" style="border-right: 1px solid #e95420;
+border-bottom: 1px solid #e95420;
+border-left:1px solid #e95420;">
+      <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;$('#tab_name_main_data').val('main_data');this.form.submit();">
+         <i class="fa fa-hdd-o"></i>
+         &nbsp; {{l('Save', [], 'layouts')}}
+      </button>
+   </div>
+
+                  </div>
+
         </div>
 
         <div class="row">

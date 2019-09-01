@@ -34,7 +34,7 @@
         @foreach ($loggers as $logger)
         <tr>
             <td>{{ $logger->id }}</td>
-            <td>{{ $logger->user_id }} [{{ $logger->user->getFullName() }}]</td>
+            <td>{{ $logger->user_id }} [{{ optional($logger->user)->getFullName() }}]</td>
             <td>{{ $logger->name }}</td>
             <td>{{ $logger->description }}</td>
             <td>{{ $logger->last_modified_at }}</td>

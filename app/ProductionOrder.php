@@ -14,7 +14,7 @@ class ProductionOrder extends Model
     						'product_id', 'combination_id', 'product_reference', 'product_name', 
     						'planned_quantity', 'finished_quantity', 'product_bom_id', 
                             'due_date', 'schedule_sort_order', 'notes', 
-    						'work_center_id', 'machine_capacity', 'units_per_tray',
+                            'work_center_id', 'manufacturing_batch_size', 'machine_capacity', 'units_per_tray',
                             'warehouse_id', 'production_sheet_id'
                           ];
 
@@ -84,7 +84,7 @@ class ProductionOrder extends Model
     {
         $fields = [ 'created_via', 'status',
                     'product_id', 'planned_quantity', 'due_date', 'schedule_sort_order',
-                    'work_center_id', 'machine_capacity', 'units_per_tray', 
+                    'work_center_id', 'manufacturing_batch_size', 'machine_capacity', 'units_per_tray', 
                     'warehouse_id', 'production_sheet_id', 'notes'];
 
         $product = \App\Product::findOrFail( $data['product_id'] );
@@ -99,6 +99,7 @@ class ProductionOrder extends Model
 //        $order_quantity = $nbt * $product->manufacturing_batch_size;
 
         $order_quantity = $data['planned_quantity'];
+        $order_manufacturing_batch_size = $data['manufacturing_batch_size'] ?? $product->manufacturing_batch_size;
 
         $order = \App\ProductionOrder::create([
             'created_via' => $data['created_via'] ?? 'manual',
@@ -117,6 +118,8 @@ class ProductionOrder extends Model
             'notes' => $data['notes'],
 
             'work_center_id' => $data['work_center_id'] ?? $product->work_center_id,
+
+            'manufacturing_batch_size' => $order_manufacturing_batch_size,
             'machine_capacity' => $product->machine_capacity, 
             'units_per_tray' => $product->units_per_tray,
 //            'warehouse_id' => '',
@@ -142,6 +145,14 @@ class ProductionOrder extends Model
                 ) ) continue;
 
 
+            // Calculate $mbs (manufacturing_batch_size) for line
+            // According to BOM parent: $mbs = $order_manufacturing_batch_size * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0)
+            // According to prodcut:    $mbs = $line_product->manufacturing_batch_size
+            // Then;
+            $parent_mbs = $order_manufacturing_batch_size * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
+            $current_mbs = $line_product->manufacturing_batch_size;
+            $mbs = ceil( $parent_mbs / $current_mbs ) * $current_mbs;
+
             $order = \App\ProductionOrder::createPlannedMultiLevel([
                 'created_via' => $data['created_via'] ?? 'manual',
                 'status'      => $data['status']      ?? 'planned',
@@ -159,6 +170,7 @@ class ProductionOrder extends Model
                 'notes' => $data['notes'],
 
 //                'work_center_id' => $data['work_center_id'] ?? $line_product->work_center_id,
+                'manufacturing_batch_size' => $mbs,
     //            'warehouse_id' => '',
                 'production_sheet_id' => $data['production_sheet_id'],
             ]);
@@ -187,8 +199,9 @@ class ProductionOrder extends Model
         // if (!$bom) return NULL;
 
         // Adjust Manufacturing batch size
-        $nbt = ceil($data['planned_quantity'] / $product->manufacturing_batch_size);
-        $order_quantity = $nbt * $product->manufacturing_batch_size;
+        $order_manufacturing_batch_size = $data['manufacturing_batch_size'] ?? $product->manufacturing_batch_size;
+        $nbt = ceil($data['planned_quantity'] / $order_manufacturing_batch_size);
+        $order_quantity = $nbt * $order_manufacturing_batch_size;
 
         $order = \App\ProductionOrder::create([
             'created_via' => $data['created_via'] ?? 'manual',
@@ -207,6 +220,8 @@ class ProductionOrder extends Model
             'notes' => $data['notes'],
 
             'work_center_id' => $data['work_center_id'] ?? $product->work_center_id,
+
+            'manufacturing_batch_size' => $order_manufacturing_batch_size,
             'machine_capacity' => $product->machine_capacity, 
             'units_per_tray' => $product->units_per_tray,
 //            'warehouse_id' => '',

@@ -56,4 +56,15 @@ return [
     |--------------------------------------------------------------------------
     */
     'timeout' => env('WC_WP_TIMEOUT', 15),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | WP Webhooks
+    |--------------------------------------------------------------------------
+    */
+    'webhooks' => [
+                        'order_created'   => env('WC_WEBHOOK_SECRET_ORDER_CREATED',   'order_created_secret_key'  ),
+                        'product_updated' => env('WC_WEBHOOK_SECRET_PRODUCT_UPDATED', 'product_updated_secret_key'),
+                ],
 ];

@@ -13,5 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
+        'wooc/webhook',		// <= For testing
+        'wooc/webhook/order/created',
     ];
 }

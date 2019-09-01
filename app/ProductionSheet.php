@@ -81,6 +81,7 @@ class ProductionSheet extends Model
                 'notes' => '',
 //                
 //                'work_center_id' => 2,
+                'manufacturing_batch_size' => $line['manufacturing_batch_size'],
 //                'warehouse_id' => 0,
                 'production_sheet_id' => $this->id,
             ]);
@@ -282,6 +283,8 @@ class ProductionSheet extends Model
                         'product_id' => $group->first()->product_id,
                         'procurement_type' => $group->first()->procurement_type,
                         'planned_quantity' => $group->sum('planned_quantity'),
+
+                        'manufacturing_batch_size' => $group->max('manufacturing_batch_size'),
                       ]));
                     }, collect());
 

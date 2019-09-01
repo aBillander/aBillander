@@ -54,7 +54,7 @@
 
 <div class="panel panel-info">
   <div class="panel-heading">
-    <h3 class="panel-title">{{ $activitylogger->name }} - [{{ $activitylogger->user->getFullName() }}]</h3>
+    <h3 class="panel-title">{{ $activitylogger->name }} - [{{ optional($activitylogger->user)->getFullName() }}]</h3>
   </div>
   <div class="panel-body">
 

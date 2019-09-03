@@ -61,7 +61,16 @@ class LogSentMessageListener
  //           'userable_id' => \Auth::id(),
         ]);
 
-        \Auth::user()->emaillogs()->save($emaillog);
+        if ( \Auth::user() )
+        {
+            \Auth::user()->emaillogs()->save($emaillog);
+
+        } else {
+            //
+            $emaillog->userable_id = 0;
+            $emaillog->userable_type = 'System';
+            $emaillog->save();
+        }
     }
     /**
      * Format address strings for sender, to, cc, bcc.

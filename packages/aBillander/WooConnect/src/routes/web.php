@@ -130,7 +130,7 @@ Route::post('wooc/webhook/order/created', function()
 
 	// Step 2: Email notification 
 	$notify_to = 'lidiamartinez@laextranatural.es';
-	$notify_to = 'sdg@abillander.com';
+//	$notify_to = 'sdg@abillander.com';
 	$notify_cc_to = 'dcomobject@hotmail.com';
 
 
@@ -146,6 +146,8 @@ Route::post('wooc/webhook/order/created', function()
                 'to'       => $notify_to,	// abi_mail_from_address(),
                 'toName'   => abi_mail_from_name(),
                 'subject'  => ' :_> [aBillander] ' . l('WooCommerce Order Created'),
+
+                'notify_cc_to' => $notify_cc_to,
                 );
 
             
@@ -154,7 +156,7 @@ Route::post('wooc/webhook/order/created', function()
             {
                 $message->from($data['from'], $data['fromName']);
 
-                $message->to( $data['to'], $data['toName'] )->bcc( $notify_cc_to )->subject( $data['subject'] );    // Will send blind copy to sender!
+                $message->to( $data['to'], $data['toName'] )->bcc( $data['notify_cc_to'] )->subject( $data['subject'] );    // Will send blind copy to sender!
 
             }); 
 

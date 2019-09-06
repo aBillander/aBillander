@@ -57,7 +57,7 @@ $totals = $document->totals();
 
 				<tr>
 					<td>{{ $payment->name }}</td>
-					<td>{{ $payment->due_date }}</td>
+					<td>{{ abi_date_short($payment->due_date) }}</td>
 					<td>{{ abi_money_amount($payment->amount, $document->currency) }}</td>
 				</tr>
 

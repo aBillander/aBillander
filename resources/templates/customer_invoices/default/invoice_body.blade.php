@@ -338,7 +338,7 @@
 
 				<div class="customer-notes">
 
-						<h3>Numero de cuenta: ES37 2038 7292 1860 0037 1777</h3>
+						<h3>Numero de cuenta: {{ optional(\App\Context::getContext()->company->bankaccount)->iban_presenter(true) }}</h3>
 				
 				</div>	
 

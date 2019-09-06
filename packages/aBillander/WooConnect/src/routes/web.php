@@ -129,7 +129,7 @@ Route::post('wooc/webhook/order/created', function()
     $logger->log("INFO", 'New WooCommerce Order :oID. Payload: :payLoad', ['payLoad' => $request_body, 'oID' => $payLoad['id']]);
 
 	// Step 2: Email notification 
-	$notify_to = 'lidiamartinez@laextranatural.es';
+	$notify_to = 'laextranatural@laextranatural.es';
 //	$notify_to = 'sdg@abillander.com';
 	$notify_cc_to = 'dcomobject@hotmail.com';
 
@@ -145,7 +145,7 @@ Route::post('wooc/webhook/order/created', function()
                 'fromName' => abi_mail_from_name(),             // config('mail.from.name'    ),
                 'to'       => $notify_to,	// abi_mail_from_address(),
                 'toName'   => abi_mail_from_name(),
-                'subject'  => ' :_> [aBillander] ' . l('WooCommerce Order Created'),
+                'subject'  => ' :_> [aBillander] - ' . $payLoad['id'] .' - '. l('WooCommerce Order Created'),
 
                 'notify_cc_to' => $notify_cc_to,
                 );

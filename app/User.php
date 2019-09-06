@@ -6,6 +6,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use \App\Notifications\ResetPasswordNotification;
+
 use App\Configuration;
 
 
@@ -50,6 +52,25 @@ class User extends Authenticatable
         'language_id' => 'exists:languages,id',
     );
 
+    /**  trait CanResetPassword
+     *
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
+
+    public function getFullNameAttribute()
+    {
+        return $this->firstname.' '.$this->lastname;
+
+    }
+    
 
     /**
      * Handy methods

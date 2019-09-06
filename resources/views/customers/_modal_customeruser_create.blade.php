@@ -178,7 +178,7 @@
                      <div>
                        <div class="radio-inline">
                          <label>
-                           {!! Form::radio('notify_customer', '1', true, ['id' => 'notify_customerb_on']) !!}
+                           {!! Form::radio('notify_customer', '1', true, ['id' => 'notify_customer_on']) !!}
                            {!! l('Yes', [], 'layouts') !!}
                          </label>
                        </div>
@@ -275,6 +275,8 @@
                               min_order_value   : $('#min_order_value').val(),
 
                               display_prices_tax_inc : $("input[name='display_prices_tax_inc']:checked").val(),
+
+                              notify_customer : $("input[name='notify_customer']:checked").val(),
                           };
 
             $.ajax({

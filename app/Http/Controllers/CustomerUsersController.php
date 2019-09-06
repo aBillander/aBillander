@@ -118,8 +118,8 @@ class CustomerUsersController extends Controller
             $data = array(
                 'from'     => Configuration::get('ABCC_EMAIL'),         // config('mail.from.address'  ),
                 'fromName' => Configuration::get('ABCC_EMAIL_NAME'),    // config('mail.from.name'    ),
-                'to'       => $customer->address->email,         // $cinvoice->customer->address->email,
-                'toName'   => $customer->name_fiscal,    // $cinvoice->customer->name_fiscal,
+                'to'       => $customeruser->email,         // $cinvoice->customer->address->email,
+                'toName'   => $customeruser->full_name,    // $cinvoice->customer->name_fiscal,
                 'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => \App\Context::getcontext()->company->name_fiscal]),
                 );
 

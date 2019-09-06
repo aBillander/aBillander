@@ -64,11 +64,11 @@
 							<div class="col-md-6 col-md-offset-4">
 								<button type="submit" class="btn btn-primary">{{l('Login', [], 'layouts')}}</button>
 
-@if (config('app.url') =='http://localhost/enatural')
+
 
 								<a class="btn btn-link" href="{{ route('password.request') }}">{{ l('Forgot Your Password?', [], 'layouts') }}</a>
 
-@endif
+
 
 							</div>
 						</div>

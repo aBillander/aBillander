@@ -396,10 +396,13 @@ class CustomerVouchersController extends Controller
     {
 		$payment = $this->payment->with('bankorder')->findOrFail($id);
 
+		$bankorder = $payment->bankorder;
+
         $payment->update(['bank_order_id' => null]);
 
         // Update bankorder
-        $payment->bankorder->checkStatus();
+        if ( $bankorder )
+        	$bankorder->checkStatus();
 
 		return redirect()->back()
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));

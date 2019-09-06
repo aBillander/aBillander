@@ -90,6 +90,12 @@ class CustomerUser extends Authenticatable
 
     }
 
+    public function getFullNameAttribute()
+    {
+        return $this->firstname.' '.$this->lastname;
+
+    }
+
     /**
      * Handy methods
      * 

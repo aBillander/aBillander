@@ -39,11 +39,11 @@ class SepaDirectDebit00800102 extends SepaDirectDebitCollection
         $this->checkAndSanitize = $checkAndSanitize;
         $this->sanitizeFlags = $flags;
 
+        if(!SepaUtilities::checkRequiredCollectionKeys($debitInfo, self::VERSION) )
+            throw new SephpaInputException('One of the required inputs \'pmtInfId\', \'lclInstrm\', \'seqTp\', \'cdtr\', \'iban\', \'ci\' is missing.');
+
         if($this->checkAndSanitize)
         {
-            if(!SepaUtilities::checkRequiredCollectionKeys($debitInfo, self::VERSION) )
-                throw new SephpaInputException('One of the required inputs \'pmtInfId\', \'lclInstrm\', \'seqTp\', \'cdtr\', \'iban\', \'ci\' is missing.');
-
             $checkResult = SepaUtilities::checkAndSanitizeAll($debitInfo, $this->sanitizeFlags, ['version' => self::VERSION]);
 
             if($checkResult !== true)

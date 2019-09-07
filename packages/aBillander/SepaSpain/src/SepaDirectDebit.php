@@ -267,6 +267,24 @@ class SepaDirectDebit extends Model
 //                'reqdColltnDt'  => '2013-11-25'             // Date: YYYY-MM-DD. Due date for ALL vouchers inside
         ];
 
+
+
+
+        
+        $directDebitFile = new SephpaDirectDebit(
+                                         $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),
+                                         $paymentInfoId,        // Download file is named afther this value
+                                         SephpaDirectDebit::SEPA_PAIN_008_001_02,
+                                         [],
+                                         [],
+                                         false
+                                     );
+
+die('OK');
+
+
+
+
         
         $directDebitFile = new SephpaDirectDebit(
                                          $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),

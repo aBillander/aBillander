@@ -35,6 +35,11 @@ class Category extends Model {
         return $query->where('active', '>', 0);
     }
 
+    public function scopeIsPublished($query)
+    {
+        return $query->where('publish_to_web', '>', 0);
+    }
+
     
 
     /*

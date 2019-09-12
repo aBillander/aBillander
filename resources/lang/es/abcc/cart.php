@@ -18,7 +18,7 @@ return [
 	'Customer Price'     => 'Precio',
 	'Prices are exclusive of Tax'     => 'El Precio no incluye Impuestos',
 	'Quantity'     => 'Cantidad',
-	'Products Total'     => 'Total Troductos',
+	'Products Total'     => 'Total Productos',
 	'Total'     => 'Total',
 	'Document Discount'     => 'Descuento en Documento',
 	'Prompt Payment Discount'     => 'Descuento Pronto Pago',
@@ -121,7 +121,7 @@ return [
 	// _invoice_header
 	'Invoice Sequence'     => 'Serie de Facturas',
 	'Invoice Number'     => 'Número de Factura',
-	'Reference / Project'     => 'Referencia / Proyecto',
+	'My Reference / Project'     => 'Mi Referencia / Proyecto',
 	'Invoice Date'     => 'Fecha Factura',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Template for Printing'     => 'Plantilla para Imprimir',

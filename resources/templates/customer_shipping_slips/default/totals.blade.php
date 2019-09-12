@@ -34,7 +34,7 @@ $totals = $document->totals();
 					<th>Descuento {{ $document->document_discount_percent != 0 ? '('.$document->as_percentable($document->document_discount_percent).'%)' : '' }}</th>
 					<th>Pronto Pago {{ $document->document_ppd_percent != 0 ? '('.$document->as_percentable($document->document_ppd_percent).'%)' : ''  }}</th>
 					<th>Base</th>
-					<th>IGIC</th>
+					<th>{!! \App\Configuration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</th>
 					<!-- th>Tipo</th -->
 					<th>Base</th>
 					<th>RE</th>

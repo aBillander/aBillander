@@ -92,7 +92,7 @@
 @endphp
 
 
-  @foreach ($sheet->customerorders as $order)
+  @foreach ($orders as $order)
     <tr>
       <td class="xbutton-pad text-right">{{ $order->document_reference ?: $order->id }}
 

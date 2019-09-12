@@ -515,7 +515,7 @@ class Customer extends Model {
             return $this->morphMany('App\Address', 'addressable')
                    ->where('addresses.id', $this->shipping_address_id)->first();
         else
-            return null;
+            return $this->invoicing_address();
         
 //        return $this->belongsTo('App\Address', 'shipping_address_id')
 //                   ->where('addresses.addressable_type', 'App\Customer');

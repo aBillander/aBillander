@@ -35,7 +35,8 @@ class CreateProductionOrdersTable extends Migration
             $table->string('product_name', 128)->nullable(false);
             $table->string('procurement_type', 32)->nullable(false)->default('manufacture');
 
-            $table->decimal('planned_quantity', 20, 6);
+            $table->decimal('required_quantity', 20, 6);
+            $table->decimal('planned_quantity', 20, 6);     // Planned quantity is required_quantity adjusted with batch size
             $table->decimal('finished_quantity', 20, 6);
             $table->integer('product_bom_id')->unsigned()->nullable();
 

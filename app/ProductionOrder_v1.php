@@ -12,7 +12,7 @@ class ProductionOrder extends Model
     protected $fillable = [ 'sequence_id', 'reference', 'created_via', 
     						'status', 'procurement_type',
     						'product_id', 'combination_id', 'product_reference', 'product_name', 
-    						'required_quantity', 'planned_quantity', 'finished_quantity', 'product_bom_id', 
+    						'planned_quantity', 'finished_quantity', 'product_bom_id', 
                             'due_date', 'schedule_sort_order', 'notes', 
                             'work_center_id', 'manufacturing_batch_size', 'machine_capacity', 'units_per_tray',
                             'warehouse_id', 'production_sheet_id'
@@ -83,7 +83,7 @@ class ProductionOrder extends Model
     public static function createPlannedMultiLevel($data = [])
     {
         $fields = [ 'created_via', 'status',
-                    'product_id', 'required_quantity', 'planned_quantity', 'due_date', 'schedule_sort_order',
+                    'product_id', 'planned_quantity', 'due_date', 'schedule_sort_order',
                     'work_center_id', 'manufacturing_batch_size', 'machine_capacity', 'units_per_tray', 
                     'warehouse_id', 'production_sheet_id', 'notes'];
 
@@ -99,7 +99,7 @@ class ProductionOrder extends Model
 //        $order_quantity = $nbt * $product->manufacturing_batch_size;
 
         $order_quantity = $data['planned_quantity'];
-//        + $order_manufacturing_batch_size = $data['manufacturing_batch_size'] ?? $product->manufacturing_batch_size;
+        $order_manufacturing_batch_size = $data['manufacturing_batch_size'] ?? $product->manufacturing_batch_size;
 
         $order = \App\ProductionOrder::create([
             'created_via' => $data['created_via'] ?? 'manual',
@@ -110,7 +110,6 @@ class ProductionOrder extends Model
             'product_name' => $product->name,
             'procurement_type' => $product->procurement_type,
 
-            'required_quantity' => $order_quantity,
             'planned_quantity' => $order_quantity,
             'product_bom_id' => $bom ? $bom->id : 0,
 
@@ -120,7 +119,7 @@ class ProductionOrder extends Model
 
             'work_center_id' => $data['work_center_id'] ?? $product->work_center_id,
 
-            'manufacturing_batch_size' => $product->manufacturing_batch_size,
+            'manufacturing_batch_size' => $order_manufacturing_batch_size,
             'machine_capacity' => $product->machine_capacity, 
             'units_per_tray' => $product->units_per_tray,
 //            'warehouse_id' => '',
@@ -145,7 +144,7 @@ class ProductionOrder extends Model
                     || ($line_product->procurement_type == 'assembly') 
                 ) ) continue;
 
-/*
+
             // Calculate $mbs (manufacturing_batch_size) for line
             // According to BOM parent: $mbs = $order_manufacturing_batch_size * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0)
             // According to prodcut:    $mbs = $line_product->manufacturing_batch_size
@@ -153,8 +152,6 @@ class ProductionOrder extends Model
             $parent_mbs = $order_manufacturing_batch_size * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
             $current_mbs = $line_product->manufacturing_batch_size;
             $mbs = ceil( $parent_mbs / $current_mbs ) * $current_mbs;
-*/
-            $quantity = $order_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
 
             $order = \App\ProductionOrder::createPlannedMultiLevel([
                 'created_via' => $data['created_via'] ?? 'manual',
@@ -165,8 +162,7 @@ class ProductionOrder extends Model
                 'product_name' => $line_product->name,
                 'procurement_type' => $line_product->procurement_type,
 
-                'required_quantity' => $quantity,
-                'planned_quantity' => $quantity,
+                'planned_quantity' => $order_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0),
                 'product_bom_id' => $line_product->bom ? $line_product->bom->id : 0,
 
                 'due_date' => $data['due_date'],
@@ -174,7 +170,7 @@ class ProductionOrder extends Model
                 'notes' => $data['notes'],
 
 //                'work_center_id' => $data['work_center_id'] ?? $line_product->work_center_id,
-                'manufacturing_batch_size' => $line_product->manufacturing_batch_size,  // $mbs,
+                'manufacturing_batch_size' => $mbs,
     //            'warehouse_id' => '',
                 'production_sheet_id' => $data['production_sheet_id'],
             ]);
@@ -202,9 +198,10 @@ class ProductionOrder extends Model
 
         // if (!$bom) return NULL;
 
-         $order_quantity = $data['planned_quantity'];
-         $order_required = $data['required_quantity'];
-         $order_manufacturing_batch_size =  $product->manufacturing_batch_size;
+        // Adjust Manufacturing batch size
+        $order_manufacturing_batch_size = $data['manufacturing_batch_size'] ?? $product->manufacturing_batch_size;
+        $nbt = ceil($data['planned_quantity'] / $order_manufacturing_batch_size);
+        $order_quantity = $nbt * $order_manufacturing_batch_size;
 
         $order = \App\ProductionOrder::create([
             'created_via' => $data['created_via'] ?? 'manual',
@@ -215,7 +212,6 @@ class ProductionOrder extends Model
             'product_reference' => $product->reference,
             'product_name' => $product->name,
 
-            'required_quantity' => $order_required,
             'planned_quantity' => $order_quantity,
             'product_bom_id' => $bom->id ?? 0,
 

@@ -43,6 +43,7 @@ class AbccCatalogueController extends Controller
 		$categories = $this->category
 			->with('activechildren')
 //			->withCount('products')
+//			->IsPublished()
 			->IsActive()
 			->where('parent_id', '=', intval($parentId))
 			->orderBy('name', 'asc')->get();

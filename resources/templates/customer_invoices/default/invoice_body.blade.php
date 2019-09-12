@@ -17,7 +17,7 @@
 
 		<div class="banner">
 
-			{!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
+			&nbsp; {!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
 
 		</div>
 
@@ -223,7 +223,7 @@
 				<span>Dto.</span>
 			</th>
 			<th class="tax" width="7%" style="border: 1px #ccc solid">
-				<span>IGIC</span>
+				<span>{!! \App\Configuration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</span>
 			</th>
 			<th class="total xlast-column" width="12%" style="border: 1px #ccc solid">
 				<span>Total</span>
@@ -338,8 +338,11 @@
 
 				<div class="customer-notes">
 
+@if( !optional($document->paymentmethod)->payment_is_cash )
+
 						<h3>Numero de cuenta: {{ optional(\App\Context::getContext()->company->bankaccount)->iban_presenter(true) }}</h3>
-				
+
+@endif				
 				</div>	
 
 			</td>
@@ -547,7 +550,7 @@ https://codepen.io/Bhupinderkumar/pen/gKzKGw
 { {-- --}}
 
 
-		<table  class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
+		<table  width="100%" style="height: 1.7cm;" class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
 			<tbody>
 				<tr>
 					<td style="padding-right: 2mm">

@@ -105,6 +105,17 @@ class CustomerUser extends Authenticatable
         return $this->firstname.' '.$this->lastname;
     }
 
+    public function getAllowedAddresses()
+    {
+
+        if ( $this->address_id )
+        {
+            return $this->customer->addresses->where('id', $this->address_id);
+        }
+
+        return $this->customer->addresses;
+    }
+
     public function getAllowedAddressList()
     {
 

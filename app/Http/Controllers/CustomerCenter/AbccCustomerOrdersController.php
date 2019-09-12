@@ -123,7 +123,7 @@ class AbccCustomerOrdersController extends Controller {
 //			'document_id' => $order[''],
 //			'document_reference' => $order[''],
 //			'reference' => WooOrder::getOrderReference( $order ),
-			'reference_customer' => '', 
+			'reference_customer' => $request->input('reference'), 
 //			'reference_external' => $order['id'],
 
 			'created_via' => 'abcc',

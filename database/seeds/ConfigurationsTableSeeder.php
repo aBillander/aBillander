@@ -59,6 +59,7 @@ $confs = [
 ['ALLOW_SALES_WITHOUT_STOCK', '0'],
 ['CUSTOMER_INVOICE_BANNER', 'Place your Order at www.mystore.com'],	// 'Haga su pedido en www.mitienda.es' or &nbsp; (otherwise header pagenumber not well located)
 ['CUSTOMER_INVOICE_CAPTION', 'Registered with the Commercial Registry of City.'],	// 'Sociedad inscrita en el Registro Mercantil de Ciudad.'
+['CUSTOMER_INVOICE_TAX_LABEL', 'VAT'],
 ['CUSTOMER_ORDERS_NEED_VALIDATION', '0'],
 ['DB_BACKUP_SECURITY_TOKEN', 'XXXXXXXXXXXXXXXX'],
 ['DEF_CARRIER', ''],

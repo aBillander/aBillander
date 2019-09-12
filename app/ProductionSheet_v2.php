@@ -4,15 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use \App\ProductionPlanner;
-
 use App\Traits\ViewFormatterTrait;
 
 class ProductionSheet extends Model
 {
     use ViewFormatterTrait;
-
-    public $sandbox;
 
 //    protected $dates = ['due_date'];
 	
@@ -42,7 +38,6 @@ class ProductionSheet extends Model
         }
 
         // $errors = [];
-        $this->sandbox = new ProductionPlanner();
 
         // Do the Mambo!
         // STEP 1
@@ -55,7 +50,7 @@ class ProductionSheet extends Model
 
 
             // Create Production Order
-            $orders = $this->sandbox->addPlannedMultiLevel([
+            $orders = \App\ProductionOrder::createPlannedMultiLevel([
                 'created_via' => 'manufacturing',
                 'status' => 'planned',
                 'product_id' => $pid,
@@ -73,82 +68,13 @@ class ProductionSheet extends Model
                 'production_sheet_id' => $this->id,
             ]);
 
+            // if (!$order) $errors[] = '<li>['.$line['reference'].'] '.$line['name'].'</li>';
         }
 
-        // STEP 2
-        // Group Planned Orders, 
+        // STEP 2-3
+        // Group Planned Orders, Adjust batch size & Release
 
-        // $this->sandbox->orders_planned = $this->sandbox->orders_planned->groupBy('product_id');
-
-        $lines_summary = $this->sandbox->orders_planned
-                ->where('manufacturing_batch_size', '>', 1)     // Take only if batch size must be checked
-                ->groupBy('product_id')->reduce(function ($result, $group) {
-                  return $result->put($group->first()->product_id, [
-                    'product_id' => $group->first()->product_id,
-                    'reference' => $group->first()->product_reference,
-                    'name' => $group->first()->product_name,
-                    'required_quantity' => $group->sum('required_quantity'),
-                    'planned_quantity' => $group->sum('planned_quantity'),
-
-                    'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
-                  ]);
-                }, collect());
-
-
-        // STEP 3
-        // Adjust batch size
-
-        foreach ($lines_summary as $pid => $line) {
-            //Batch size stuff
-            // Obviously: $line['planned_quantity'] >= $line['required_quantity']
-            $nbt = ceil($line['planned_quantity'] / $line['manufacturing_batch_size']);
-            $extra_quantity = $nbt * $line['manufacturing_batch_size'] - $line['planned_quantity'];
-
-
-            // Create Production Order
-            $order = $this->sandbox->addExtraPlannedMultiLevel([
-                'created_via' => 'manufacturing',
-                'status' => 'planned',
-                'product_id' => $pid,
-//                'product_reference' => $line['reference'],
-//                'product_name' => $line['name'],
-                'required_quantity' => 0,       // Not required for manufacturing, only to complete batch size
-                'planned_quantity' => $extra_quantity,
-//                'product_bom_id' => 1,
-                'due_date' => $this->due_date,
-                'notes' => '',
-//                
-//                'work_center_id' => 2,
-                'manufacturing_batch_size' => $line['manufacturing_batch_size'],
-//                'warehouse_id' => 0,
-                'production_sheet_id' => $this->id,
-            ]);
-
-        }
-
-// abi_r($lines_summary);
-
-// abi_r($this->sandbox->orders_planned, true);
-
-        // STEP 4
-        // Adjust Release
-        // Group Planned Orders
-        $lines_summary = $this->sandbox->orders_planned
-                ->groupBy('product_id')->reduce(function ($result, $group) {
-                  return $result->put($group->first()->product_id, [
-                    'product_id' => $group->first()->product_id,
-                    'reference' => $group->first()->product_reference,
-                    'name' => $group->first()->product_name,
-                    'required_quantity' => $group->sum('required_quantity'),
-                    'planned_quantity' => $group->sum('planned_quantity'),
-
-                    'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
-                  ]);
-                }, collect());
-
-
-
-        foreach ($lines_summary as $pid => $line) {
+        foreach ($this->productionordersGrouped('planned') as $pid => $line) {
             // Create Production Order
             $order = \App\ProductionOrder::createWithLines([
                 'created_via' => 'manufacturing',
@@ -171,14 +97,14 @@ class ProductionSheet extends Model
             // if (!$order) $errors[] = '<li>['.$line['reference'].'] '.$line['name'].'</li>';
         }
 
-        // STEP 5
+        // STEP 4
         // Some clean-up
 
         // Delete current -Planned- Production Orders
-        /* $porders = $this->productionorders->where('status', 'planned');
+        $porders = $this->productionorders->where('status', 'planned');
         foreach ($porders as $order) {
             $order->deleteWithLines();
-        } */
+        }
 
     }
     

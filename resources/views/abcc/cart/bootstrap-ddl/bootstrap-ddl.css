@@ -1,0 +1,74 @@
+/*!**********************************************************************
+ *
+ * Title:        Bootstrap-DDL
+ * Author:       Sam Nesbitt
+ * Project:      https://github.com/Swazimodo/bootstrap-ddl
+ * Dependancies: Bootstrap v3, jQuery
+ * Description:  Bootstrap-DDL gives you a replacement for the
+ *               select and option elements that is fully stylable
+ *
+ ***********************************************************************/
+
+.drop-down-list {
+    position: relative;
+}
+.drop-down-list .form-control + span.ddl-caret {
+    font-size: 8px;
+    xtop: 25px;
+    top: 0px;
+    position: absolute;
+    right: 0;
+    z-index: 2;
+    display: block;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    pointer-events: none;
+}
+/* Grant support for horizontal forms */
+.form-horizontal .drop-down-list .form-control + span.ddl-caret {
+    top: 0;
+    right: 15px;
+}
+.drop-down-list .form-control + span.ddl-caret:before {
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    content: "\e252";
+}
+.drop-down-list .form-control {
+    padding-right: 42.5px;
+}
+.drop-down-list .dropdown-menu {
+    max-height: 250px;
+    overflow: auto;
+}
+.form-horizontal .drop-down-list .dropdown-menu {
+    left: 15px;
+}
+.drop-down-list .dropdown-menu li.null a::before {
+    content: "[";
+}
+
+.drop-down-list .dropdown-menu li.null a::after {
+    content: "]";
+}
+
+.drop-down-list input.form-control:focus{
+    outline:0;
+}
+.drop-down-list input.form-control:focus,
+.drop-down-list input.form-control:hover {
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+.drop-down-list input.form-control:active,
+.drop-down-list input.form-control.open {
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+}
+.drop-down-list input.form-control:active:focus{
+    background-color: #d4d4d4;
+    border-color: #8c8c8c;
+    color: #333;
+}

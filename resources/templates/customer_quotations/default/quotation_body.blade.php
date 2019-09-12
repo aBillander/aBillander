@@ -213,7 +213,7 @@
 				<span>Dto.</span>
 			</th>
 			<th class="tax" width="7%" style="border: 1px #ccc solid">
-				<span>IGIC</span>
+				<span>{!! \App\Configuration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</span>
 			</th>
 			<th class="total xlast-column" width="12%" style="border: 1px #ccc solid">
 				<span>Total</span>

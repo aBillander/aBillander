@@ -16,15 +16,7 @@
 @if( 1 || !$category->webshop_id )
         <div class="row">
 
-                  <div class="col-lg-2 col-md-2 col-sm-2">
-                      <div class="form-group {{ $errors->has('webshop_id') ? 'has-error' : '' }}">
-                          {!! Form::label('webshop_id', l('Webshop ID'), ['class' => 'control-label']) !!}
-                          {!! Form::text('webshop_id', null, array('class' => 'form-control', 'id' => 'webshop_id')) !!}
-                          {!! $errors->first('webshop_id', '<span class="help-block">:message</span>') !!}
-                      </div>
-                  </div>
-
-                   <div class=" hide form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
                      {!! Form::label('publish_to_web', l('Publish to web?'), ['class' => 'control-label']) !!}
                      <div>
                        <div class="radio-inline">
@@ -41,6 +33,14 @@
                        </div>
                      </div>
                    </div>
+
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group {{ $errors->has('webshop_id') ? 'has-error' : '' }}">
+                          {!! Form::label('webshop_id', l('Webshop ID'), ['class' => 'control-label']) !!}
+                          {!! Form::text('webshop_id', null, array('class' => 'form-control', 'id' => 'webshop_id')) !!}
+                          {!! $errors->first('webshop_id', '<span class="help-block">:message</span>') !!}
+                      </div>
+                  </div>
         </div>
 
 <!-- Internet ENDS -->

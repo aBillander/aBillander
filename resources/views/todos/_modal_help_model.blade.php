@@ -8,10 +8,10 @@
     <div class="modal-content">
       <div class="modal-header alert-info modal-header-help">
         <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">{{ l('Todos') }}</h4>
+        <h4 class="modal-title" id="myModalLabel">Modal Title</h4>
       </div>
       <div class="modal-body">
-        {{ l('help-content') }}
+        Modal Body
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-grey" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>

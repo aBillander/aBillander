@@ -94,17 +94,21 @@
             
             <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
 
+			<div class="billing-phone">
 			@if ( $document->invoicingaddress->phone )
 
-				<div class="billing-phone">Tel. {{ $document->invoicingaddress->phone }}
+				Tel. {{ $document->invoicingaddress->phone }}
 
 			@else
 
-				<div class="billing-phone">Tel. {{ $document->customer->phone }}
+				Tel. {{ $document->customer->phone }}
 
 			@endif
 
-			<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div>
+			@if ( $document->customer->reference_external )
+				<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span>
+			@endif
+			</div>
 			
 		</td>
 
@@ -590,10 +594,15 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
         	$pdf->page_text(($pdf->get_width() - 54), ($pdf->get_height() - 26.89 - 31), "{PAGE_NUM} / {PAGE_COUNT}", null, 9);
 
+
+// See: https://github.com/dompdf/dompdf/issues/347
+$pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
-               $pdf->page_text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), "{PAGE_NUM} de {PAGE_COUNT}", null, 9);
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
 }
+');
+
         }
 
 

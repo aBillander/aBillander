@@ -48,4 +48,16 @@ return [
 	''     => '',
 	''     => '',
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Todos Language Lines :: help
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'help-content'     => 'Gestión de sus Tareas pendientes, con fecha límite y si está terminada.',
+
 ];

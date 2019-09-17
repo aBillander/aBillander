@@ -298,6 +298,54 @@ class WooProductsController extends Controller
                 ->with('success', l('Some Product Images has been retrieved from WooCommerce Shop.'));
 	}
 
+
+	public function importProductDescriptions()
+	{
+		// Route::get('wproducts/importProductDescriptions'
+		// <url>/wwoc/wproducts/importProductDescriptions
+
+		// En el Servidor se recuperaron las imagnes de la WooTienda, pero dió un gateway timeout => ¿Se podría hacer por partes (chuncks) para que no pase esto?
+
+		// abi_r('ok');
+
+		// Products
+		// $list = Product::select('id', 'reference', 'name')->where('reference', '!=', '')->get();
+		$list = Product::select('id', 'reference', 'name')->where('procurement_type', 'manufacture')->where('reference', '<>', '')->orderBy('reference', 'asc')->get();		// ->where('reference', '!=', '');	// ->pluck('reference');
+
+		$nbr_p = $list->count(); abi_r('> '.$nbr_p);
+		$i=0;
+
+		foreach( $list as $p )
+		{
+			//
+			$sku = $p->reference;
+
+			$wp = WooProduct::fetch( $sku );
+
+			// if ($wp) abi_r($sku);
+
+			if ( $wp )
+			{
+
+				$p->update([
+							'description' => $wp['description'],
+							'description_short' => $wp['short_description'],
+					]);
+
+			}
+			$i++;
+
+			abi_r($i.' - '.$sku.' - '.(!empty($wp) ? 'ok' : ''));
+
+			// abi_r($sku.' :: '.$img_src);
+		}
+
+		die();
+
+        return redirect('products')
+                ->with('success', l('Some Product Descriptions has been retrieved from WooCommerce Shop.'));
+	}
+
 }
 
 

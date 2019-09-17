@@ -76,7 +76,7 @@
                      href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
                      data-title="{{ $product->name }} " 
                      data-caption="({{$img->id}}) {{ $img->caption }} " 
-                     data-content="{{ nl2p($product->description) }} " 
+                     data-content="{{ nl2p($product->description_short) }} <br /> {{ nl2p($product->description) }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
                       <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
@@ -86,7 +86,7 @@
                      href="{{ URL::to( \App\Image::pathProducts() . 'default-large_default.png' ) }}"
                      data-title="{{ $product->name }} " 
                      data-caption="({{$product->id}}) {{ $product->name }} " 
-                     data-content="{{ nl2p($product->description) }} " 
+                     data-content="{{ nl2p($product->description_short) }} <br /> {{ nl2p($product->description) }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
                       <img src="{{ URL::to( \App\Image::pathProducts() . 'default-mini_default.png' ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">

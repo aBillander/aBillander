@@ -233,6 +233,7 @@
 <script src="{{ asset('vendor/unisharp/laravel-ckeditor/ckeditor.js') }}"></script>
 <script>
     CKEDITOR.replace( 'description' );
+    CKEDITOR.replace( 'description_short' );
     CKEDITOR.replace( 'route_notes' );
 </script>
 

@@ -60,16 +60,34 @@ class CustomerOrdersController extends BillableController
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
-        $documents = $this->document
-                            ->filter( $request->all() )
-                            ->with('customer')
-//                            ->with('currency')
-//                            ->with('paymentmethod')
-//                            ->orderBy('document_date', 'desc')
-                            // ->orderBy('document_reference', 'desc');
-// https://www.designcise.com/web/tutorial/how-to-order-null-values-first-or-last-in-mysql
-                            ->orderByRaw('document_reference IS NOT NULL, document_reference DESC');
-//                          ->orderBy('id', 'desc');        // ->get();
+
+        
+        if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+        {
+            $documents = $this->document
+                                ->filter( $request->all() )
+                                ->with('customer')
+    //                            ->with('currency')
+    //                            ->with('paymentmethod')
+    //                            ->orderBy('document_date', 'desc')
+                                // ->orderBy('document_reference', 'desc');
+    // https://www.designcise.com/web/tutorial/how-to-order-null-values-first-or-last-in-mysql
+                                ->orderByRaw('DATE(document_date) DESC, document_reference IS NOT NULL, document_reference DESC');
+    //                          ->orderBy('id', 'desc');        // ->get();
+            
+        } else {
+            $documents = $this->document
+                                ->filter( $request->all() )
+                                ->with('customer')
+    //                            ->with('currency')
+    //                            ->with('paymentmethod')
+    //                            ->orderBy('document_date', 'desc')
+                                // ->orderBy('document_reference', 'desc');
+    // https://www.designcise.com/web/tutorial/how-to-order-null-values-first-or-last-in-mysql
+                                ->orderByRaw('document_reference IS NOT NULL, document_reference DESC');
+    //                          ->orderBy('id', 'desc');        // ->get();
+
+        }
 
         $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 

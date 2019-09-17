@@ -67,8 +67,10 @@ Route::group([
 
     Route::get('wproducts/{id}/fetch' , array('uses' => 'WooProductsController@fetch', 
                                                         'as'   => 'wproducts.fetch' ));
-    Route::get('wproducts/importProductImages' , array('uses' => 'WooProductsController@importProductImages', 
+    Route::get('wproducts/import/ProductImages' , array('uses' => 'WooProductsController@importProductImages', 
                                                         'as'   => 'wproducts.import.product.images' ));
+    Route::get('wproducts/import/ProductDescriptions' , array('uses' => 'WooProductsController@importProductDescriptions', 
+                                                        'as'   => 'wproducts.import.product.descriptions' ));
 
 
     Route::resource('wcategories', 'WooCategoriesController');

@@ -243,6 +243,7 @@ class WooCategoriesController extends Controller
 	}
 
 
+	// Would be: importCategoryImages() or something alike
 	public function importProductImages()
 	{
 		// Route::get('wproducts/importProductImages'

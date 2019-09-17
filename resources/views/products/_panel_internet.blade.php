@@ -34,7 +34,7 @@
         <hr />
 
         <div class="row">
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('description_short') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('description_short') ? 'has-error' : '' }}">
                      {{ l('Short Description') }}
                      {!! Form::textarea('description_short', null, array('class' => 'form-control', 'id' => 'description_short', 'rows' => '3')) !!}
                      {!! $errors->first('description_short', '<span class="help-block">:message</span>') !!}

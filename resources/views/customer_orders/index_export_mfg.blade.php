@@ -105,7 +105,7 @@
             @else
               <td class="text-center warning">{!! Form::checkbox('corders[]', $document->id, false, ['class' => 'case checkbox']) !!}</td>
             @endif
-            <td>{{ $document->id }} / 
+            <td title="{{ $document->id }}">
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
                 @else

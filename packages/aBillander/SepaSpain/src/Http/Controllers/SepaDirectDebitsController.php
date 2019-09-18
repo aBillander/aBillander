@@ -313,7 +313,12 @@ class SepaDirectDebitsController extends Controller
 
         $directdebit->confirm();
 
-        return $directDebitFile->download();
+        // return $directDebitFile->download();
+        $creDtTm  = $directdebit->document_date->format('Y-m-d\TH:i:s');
+        $filename = 'Remesa_' . $directdebit->document_reference . '_' . $creDtTm . '_SEPA_' .$directdebit->scheme . '' . '.xml';
+        $creId    = $directdebit->calculateCreditorID( \App\Context::getContext()->company, $directdebit->bankaccount );
+
+        return $directDebitFile->downloadSepaFile( $filename, $creDtTm, $creId );
 
         return redirect()->route('sepasp.directdebits.show', $id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $directdebit->document_reference);

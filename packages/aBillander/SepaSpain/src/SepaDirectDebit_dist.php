@@ -249,29 +249,7 @@ class SepaDirectDebit extends Model
          */
         $sequenceType = SepaUtilities::SEQUENCE_TYPE_RECURRING;
 
-        // Start the whole thing
-        $collectables = $this->vouchers()->where('status', 'pending')->get();
-
-        // Maybe a waste of time? Lets see:
-        if ( $collectables->count() == 0 )
-            return false;
-        
-        // Let's do some sorting
-        $collectables = $collectables->groupBy(function ($item, $key) {
-            // does not like Carbon Object as a key, only strinfs, please:
-            return $item->due_date->format('Y-m-d');
-        });
-
-
-        // Lets rock
-        $directDebitFile = new SephpaDirectDebit(
-                                         $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),
-                                         $paymentInfoId,        // Download file is named afther this value
-                                         SephpaDirectDebit::SEPA_PAIN_008_001_02,
-                                         $checkAndSanitize
-                                     );
-
-        // $collectionData template
+        // at least one in every SEPA file. No limit.
         $collectionData = [
             // needed information about the payer
                 'pmtInfId'      => $paymentInfoId,          // ID of the payment collection
@@ -289,62 +267,25 @@ class SepaDirectDebit extends Model
 //                'reqdColltnDt'  => '2013-11-25'             // Date: YYYY-MM-DD. Due date for ALL vouchers inside
         ];
 
-        // Each group will be a Collection
-        foreach ($collectables as $key => $collection) 
-        {
-            // at least one in every SEPA file. No limit.
-            $collectionData['pmtInfId']     = $paymentInfoId.'-'.$key;
-            $collectionData['reqdColltnDt'] = $key;
-
-            $directDebitCollection = $directDebitFile->addCollection( $collectionData );
-
-            // Add Vouchers now
-            foreach ($collection as $voucher) {
-                # code...
-
-                // Maybe a waste of time? Lets see:
-                if ( !optional($voucher->customer)->bankaccount )
-                    return false;
 
 
 
-                $payment = [
-                // needed information about the 
-                    'pmtId'         => $voucher->reference,     // ID of the payment (EndToEndId)
-                    'instdAmt'      => $voucher->amount,                    // amount
-    //                'mndtId'        => 'Mandate-Id',            // Mandate ID
-    //                'dtOfSgntr'     => '2010-04-12',            // Date of signature
-                    'mndtId'        => $voucher->reference,            // Mandate ID
-                    'dtOfSgntr'     => $voucher->created_at->toDateString(),            // Date of signature
-    //                'bic'           => $voucher->customer->bankaccount->swift,           // BIC of the Debtor
-                    'dbtr'          => $this->sanitize_name( $voucher->customer->name_fiscal ),        // (max 70 characters)
-                    'iban'          => $this->sanitize_iban( $voucher->customer->bankaccount->iban ),     // IBAN of the Debtor
-                // optional
-    //                'amdmntInd'     => 'false',                 // Did the mandate change
-                    //'elctrncSgntr'  => 'tests',                  // do not use this if there is a paper-based mandate
-    //                'ultmtDbtr'     => 'Ultimate Debtor Name',  // just an information, this do not affect the payment (max 70 characters)
-                    //'purp'        => ,                        // Do not use this if you not know how. For further information read the SEPA documentation
-    //                'rmtInf'        => 'Remittance Information',// unstructured information about the remittance (max 140 characters)
-                    'rmtInf'        => $voucher->reference,
-                    // only use this if 'amdmntInd' is 'true'. at least one must be used
-    //                'orgnlMndtId'           => 'Original-Mandat-ID',
-    //                'orgnlCdtrSchmeId_nm'   => 'Creditor-Identifier Name',
-    //                'orgnlCdtrSchmeId_id'   => 'DE98AAA09999999999',
-    //                'orgnlDbtrAcct_iban'    => 'DE87200500001234567890',// Original Debtor Account
-    //                'orgnlDbtrAgt'          => 'SMNDA'          // only 'SMNDA' allowed if used
-                ];
+        
+        $directDebitFile = new SephpaDirectDebit(
+                                         $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),
+                                         $paymentInfoId,        // Download file is named afther this value
+                                         SephpaDirectDebit::SEPA_PAIN_008_001_02,
+                                         [],
+                                         [],
+                                         false
+                                     );
 
-                if (!empty($voucher->fmandato)) {
-                    // $payment['dtOfSgntr'] = date('Y-m-d', strtotime($voucher->fmandato));
-                }
+die('OK');
 
-                // So far, so good
-                $directDebitCollection->addPayment( $payment );
-            }
-        }
 
- 
- /* Old (not so good) stuff       
+
+
+        
         $directDebitFile = new SephpaDirectDebit(
                                          $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),
                                          $paymentInfoId,        // Download file is named afther this value
@@ -398,14 +339,14 @@ class SepaDirectDebit extends Model
             ];
 
             if (!empty($voucher->fmandato)) {
-                // $payment['dtOfSgntr'] = date('Y-m-d', strtotime($voucher->fmandato));
+                $payment['dtOfSgntr'] = date('Y-m-d', strtotime($voucher->fmandato));
             }
 
             $directDebitFile->addPayment( $payment );
 
             // abi_r($voucher);
         }
-*/
+
         // $directDebitFile->store(__DIR__);
 
         // $directDebitFile->download();

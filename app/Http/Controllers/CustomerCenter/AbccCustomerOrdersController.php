@@ -94,6 +94,7 @@ class AbccCustomerOrdersController extends Controller {
 			return $this->storeAsQuotation( $request );
 
 
+		// Should change: look for quotation controller
 		$reference_customer = $request->input('process_as', 'order') == 'quotation' ? 'QUOTATION' : '';
 
         // Cart Amount
@@ -191,7 +192,7 @@ class AbccCustomerOrdersController extends Controller {
         $customerOrder = $this->customerOrder->create($data);
 
 		// Good boy:
-		if ( $reference_customer && Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') ) 
+		if ( Configuration::isFalse('ABCC_ORDERS_NEED_VALIDATION') ) 
 		{
 			$customerOrder->confirm();
 		}
@@ -276,6 +277,8 @@ class AbccCustomerOrdersController extends Controller {
 	 *
 	 * @return Response
 	 */
+
+	// Maybe in AbccCustomerQuotationsController? I think so.
 	public function storeAsQuotation(Request $request)
 	{
         $customer_user = Auth::user();

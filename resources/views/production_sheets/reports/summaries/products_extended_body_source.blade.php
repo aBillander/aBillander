@@ -61,40 +61,23 @@
 
     <tr style="background-color: #f5f5f5;">
       <!-- th>{{l('Product ID')}}</th -->
-      <!-- th width="10%">{{l('Product Reference')}}</th>
+      <th width="10%">{{l('Product Reference')}}</th>
       <th width="40%">{{l('Product Name')}}</th>
       <th width="5%">{{l('Quantity')}}</th>
       <th width="27%"> &nbsp; </th>
-      <th width="18%"> &nbsp; </th-->
-      <th width="50%"> Producto </th>
-      <th width="50%"> Pedidos </th>
+      <th width="18%"> &nbsp; </th>
     </tr>
 
   @foreach ($sheet->customerorderlinesGrouped() as $item)
     <tr>
-      <td>
-
-{{-- https://stackoverflow.com/questions/47507279/dompdf-table-fixed-column-width-and-break-long-text
-     https://stackoverflow.com/questions/5239758/css-truncate-table-cells-but-fit-as-much-as-possible
---}}
-
-      <table width="100%"  style="table-layout:fixed;" xclass="order-details xtax-summary x-print-friendly" xstyle="margin-bottom: 4mm;" xstyle="border: 1px #ccc solid">
-        <tbody>
       <!-- td>{{ $item['product_id'] }}</td -->
-            <td width="10%"><strong>{{ $item['reference'] }}</strong></td>
-            <td width="72%"><div width="100%" style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; width:100%;">{{ $item['name'] }}</div></td>
-            <td width="8%" class="text-right" xstyle="padding-right: 16px"><strong>{{ niceQuantity($item['quantity'], 0) }}</strong></td>
-            <td width="10%" class="text-left"><strong>&nbsp; {{ $item['measureunit_sign'] }}</strong></td>
-          </tbody>
-      </table>
+      <td width="10%"><strong>{{ $item['reference'] }}</strong></td>
+      <td width="40%"><strong>{{ $item['name'] }}</strong></td>
+      <td width="5%" class="text-right" style="padding-right: 16px"><strong>{{ niceQuantity($item['quantity'], 0) }}</strong></td>
+      <td width="27%"><strong>{{ $item['measureunit'] }}</strong></td>
+      <td width="18%"> &nbsp; </td>
 
-      </td>
-
-      <td>
-
-      <table width="100%"  xclass="order-details xtax-summary x-print-friendly" xstyle="margin-bottom: 4mm;" xstyle="border: 1px #ccc solid">
-        <tbody>
-
+    </tr>
 
     {{-- Orders. Gorrino Way! --}}
 
@@ -110,44 +93,38 @@
 
 
   @foreach ($orders as $order)
-          <tr>
-            <td width="17%" class="xbutton-pad text-right">{{ $order->document_reference ?: 'Borrador' }}
+    <tr>
+      <td class="xbutton-pad text-right">{{ $order->document_reference ?: $order->id }}
 
-                @if (0 && $order->reference)
-                    <br />[{{ $order->reference }}
-                @endif
-
-            </td>
-            <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
-            </td>
-            <td width="10%" class="text-right" xstyle="border-right: 1px #ccc solid;"><strong>{{ niceQuantity($order->lines->where( 'reference', $reference)->first()->quantity) }}</strong>
-            </td>
-{{--            
-            <td xstyle="border-bottom: 1px #ccc solid;">
-                @if ( $order->hasShippingAddress() )
-
-                    Entrega: {{ $order->shippingaddress->alias }} <br />
-
-                @endif
-
-                @if ($order->all_notes)
-                    Notas: {!! nl2br($order->all_notes) !!} <br />
-                @endif
-            </td>
-            <td>{{ $order->shippingmethod->name ?? '' }} 
-
-              { {-- {!! optional($order->carrier)->name ? '<br />' . $order->carrier->name : '' !!} --} }</td>
---}}
-          </tr>
-  @endforeach {{-- Orders --}}
-
-          </tbody>
-      </table>
-
+          @if ($order->reference)
+              <br />[{{ $order->reference }}
+          @endif
 
       </td>
+      <td xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
+      </td>
+      <td xstyle="border-bottom: 1px #ccc solid;">{{ niceQuantity($order->lines->where( 'reference', $reference)->first()->quantity) }}
+      </td>
+      <td xstyle="border-bottom: 1px #ccc solid;">
+          @if ( $order->hasShippingAddress() )
+
+              Entrega: {{ $order->shippingaddress->alias }} <br />
+
+          @endif
+
+          @if ($order->all_notes)
+              Notas: {!! nl2br($order->all_notes) !!} <br />
+          @endif
+      </td>
+      <td>{{ $order->shippingmethod->name ?? '' }} 
+
+        {{-- {!! optional($order->carrier)->name ? '<br />' . $order->carrier->name : '' !!} --}}</td>
+
     </tr>
-  @endforeach {{-- Products --}}
+  @endforeach
+
+
+  @endforeach
 
     </tbody>
 </table>

@@ -286,6 +286,7 @@ class ProductionSheet extends Model
                         'name' => $group->first()->name,
                         'quantity' => $group->sum('quantity'),
                         'measureunit' => $group->first()->product->measureunit->name,
+                        'measureunit_sign' => $group->first()->product->measureunit->sign,
 
                         'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
                       ]);

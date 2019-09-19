@@ -184,6 +184,26 @@
 
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_ORDERS_NEED_VALIDATION.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_ORDERS_NEED_VALIDATION" id="ABCC_ORDERS_NEED_VALIDATION_on" value="1" @if( old('ABCC_ORDERS_NEED_VALIDATION', $key_group['ABCC_ORDERS_NEED_VALIDATION']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_ORDERS_NEED_VALIDATION" id="ABCC_ORDERS_NEED_VALIDATION_off" value="0" @if( !old('ABCC_ORDERS_NEED_VALIDATION', $key_group['ABCC_ORDERS_NEED_VALIDATION']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_ORDERS_NEED_VALIDATION.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ABCC_ENABLE_QUOTATIONS.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

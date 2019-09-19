@@ -60,72 +60,93 @@
 --}}
 
     <tr style="background-color: #f5f5f5;">
-      <th>{{l('ID', [], 'layouts')}}</th>
+      <!-- th>{{l('ID', [], 'layouts')}}</th>
       <th>{{l('Customer External Reference')}}</th>
       <th>{{l('Date')}}</th>
       <th>{{l('Customer')}}</th>
       <th class="text-left">{{ l('Deliver to') }}</th>
       <th class="text-left">{{l('Reference')}}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
-      <th>{{l('Shipping Method')}}</th>
+      <th>{{l('Shipping Method')}}</th-->
+      <th width="50%"> Pedidos </th>
+      <th width="50%"> Producto </th>
     </tr>
 
   @foreach ($sheet->customerorders as $order)
     <tr>
-      <td><strong>{{ $order->document_reference ?: $order->id }}</strong></td>
-      <td><strong>{{ $order->customer->reference_external }}</strong></td>
-      <td><strong>{{ abi_toLocale_date_short($order->created_at) }}</strong></td>
-      <td><strong>{!! $order->customerInfo() !!}</strong>
+      <td>
+
+{{-- https://stackoverflow.com/questions/47507279/dompdf-table-fixed-column-width-and-break-long-text
+     https://stackoverflow.com/questions/5239758/css-truncate-table-cells-but-fit-as-much-as-possible
+--}}
+
+      <table width="100%"  style="table-layout:fixed;" xclass="order-details xtax-summary x-print-friendly" xstyle="margin-bottom: 4mm;" xstyle="border: 1px #ccc solid">
+        <tbody>
+          <tr>
+            <td width="17%"><strong>{{ $order->document_reference ?: 'Borrador' }}</strong></td>
+            <!-- td><strong>{{ $order->customer->reference_external }}</strong></td -->
+            <!--td><strong>{{ abi_toLocale_date_short($order->created_at) }}</strong></td -->
+            <td width="73%">{!! $order->customerInfo() !!}
+                       <!-- a href="javascript:void(0);">
+                          <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
+                                  data-content="{{ $order->customerCardFull() }}">
+                              <i class="fa fa-address-card-o"></i>
+                          </button>
+                       </a -->
+            </td>
+            <td width="10%">
+                @if ( $order->hasShippingAddress() )
+
+
+
+                {{ $order->shippingaddress->alias }} 
                  <!-- a href="javascript:void(0);">
-                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
-                            data-content="{{ $order->customerCardFull() }}">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $order->shippingaddress->firstname }} {{ $order->shippingaddress->lastname }}<br />{{ $order->shippingaddress->address1 }}<br />{{ $order->shippingaddress->city }} - {{ $order->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $order->shippingaddress->phone }}</a>" data-original-title="" title="">
                         <i class="fa fa-address-card-o"></i>
                     </button>
                  </a -->
+
+
+                @endif
+            </td>
+{{--
+            <td class="text-center">
+                      @if ($order->notes_from_customer && 0)
+                       <a href="javascript:void(0);">
+                          <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                                  data-content="{{ $order->notes_from_customer }}">
+                              <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                          </button>
+                       </a>
+                      @endif
+
+                      @if ($order->all_notes && 0)
+                       <a href="javascript:void(0);">
+                          <button type="button" style="padding: 3px 8px;
+      font-size: 12px;
+      line-height: 1.5;
+      border: 1px solid #adadad;;
+      border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
+                                  data-content="{!! nl2br($order->all_notes) !!}">
+                              <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                          </button>
+                       </a>
+                      @endif
+                      {!! nl2br($order->all_notes) !!}
+            </td>
+            <td xtitle="{{ $order->carrier->name ?? '' }}">{{ $order->shippingmethod->name ?? '' }}</td>
+--}}
+          </tr>
+          </tbody>
+      </table>
+
       </td>
+
       <td>
-          @if ( $order->hasShippingAddress() )
 
+      <table width="100%"  style="table-layout:fixed;" xclass="order-details xtax-summary x-print-friendly" xstyle="margin-bottom: 4mm;" xstyle="border: 1px #ccc solid">
+        <tbody>
 
-
-          {{ $order->shippingaddress->alias }} 
-           <!-- a href="javascript:void(0);">
-              <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $order->shippingaddress->firstname }} {{ $order->shippingaddress->lastname }}<br />{{ $order->shippingaddress->address1 }}<br />{{ $order->shippingaddress->city }} - {{ $order->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $order->shippingaddress->phone }}</a>" data-original-title="" title="">
-                  <i class="fa fa-address-card-o"></i>
-              </button>
-           </a -->
-
-
-          @endif
-      </td>
-      <td>{{ $order->reference }}</td>
-      <td class="text-center">
-                @if ($order->notes_from_customer && 0)
-                 <a href="javascript:void(0);">
-                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
-                            data-content="{{ $order->notes_from_customer }}">
-                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
-                    </button>
-                 </a>
-                @endif
-
-                @if ($order->all_notes && 0)
-                 <a href="javascript:void(0);">
-                    <button type="button" style="padding: 3px 8px;
-font-size: 12px;
-line-height: 1.5;
-border: 1px solid #adadad;;
-border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
-                            data-content="{!! nl2br($order->all_notes) !!}">
-                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
-                    </button>
-                 </a>
-                @endif
-                {!! nl2br($order->all_notes) !!}
-      </td>
-      <td title="{{ $order->carrier->name ?? '' }}">{{ $order->shippingmethod->name ?? '' }}</td>
-
-    </tr>
 
     {{-- Order Lines. Not Gorrino Way! --}}
 
@@ -133,20 +154,23 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
   @foreach ($order->lines as $line)
     <tr>
       <!-- td>{ { $item['product_id'] } }</td -->
-      <td xwidth="18%"> &nbsp; </td>
-      <td xwidth="10%">{{ $line->reference }}</td>
-      <td xwidth="40%" colspan="3">{{ $line->name }}</td>
-      <td xwidth="5%" class="text-right" style="padding-right: 16px">{{ niceQuantity($line->quantity, 0) }}</td>
-      <td xwidth="27%">{{ $line->measureunit->name }}</td>
-      <td xwidth="18%"> &nbsp; </td>
+      <td width="10%"><strong>{{ $line->reference }}</strong></td>
+      <td width="72%"><div width="100%" style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; width:100%;">{{ $line->name }}</div></td>
+      <td width="8%" class="text-right" xstyle="padding-right: 16px"><strong>{{ niceQuantity($line->quantity, 0) }}</strong></td>
+      <td width="10%" class="text-left">{{ $line->measureunit->sign }}</td>
 
     </tr>
 
 
-  @endforeach
+  @endforeach {{-- Products --}}
+
+          </tbody>
+      </table>
 
 
-  @endforeach
+      </td>
+    </tr>
+  @endforeach {{-- Orders --}}
 
     </tbody>
 </table>

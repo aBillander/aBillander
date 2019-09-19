@@ -194,6 +194,8 @@ return [
 	'ABCC_OUT_OF_STOCK_PRODUCTS.help' => '',
 	'ABCC_OUT_OF_STOCK_TEXT.name' => 'Texto que se mostrará cuando se permiten Pedidos sin Stock',
 	'ABCC_OUT_OF_STOCK_TEXT.help' => '',
+	'ABCC_ORDERS_NEED_VALIDATION.name' => 'Los Pedidos de Clientes necesitan Validación',
+	'ABCC_ORDERS_NEED_VALIDATION.help' => '1: Los Pedidos de Clientes se crearán con Estado = "<strong>draft</strong>".<br />0: Los Pedidos de Clientes se crearán con Estado = "<strong>confirmed</strong>".',
 	'ABCC_ENABLE_QUOTATIONS.name' => 'Activar Presupuestos',
 	'ABCC_ENABLE_QUOTATIONS.help' => 'El Cliente podrá solicitar Presupuesto para el contenido del Carrito.',
 	'ABCC_ENABLE_SHIPPING_SLIPS.name' => 'Activar Albaranes',

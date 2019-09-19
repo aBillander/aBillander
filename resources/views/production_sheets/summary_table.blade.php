@@ -32,7 +32,8 @@
       <th> </th>
       <th> </th>
 			@foreach ($columns as $col)
-      <th>{{ $col['reference'] }} - {{ $col['name'] }}</th>
+      <!-- th>{{ $col['reference'] }} - {{ $col['name'] }}</th -->
+      <th>{{ $col['reference'] }}</th>
       @endforeach
 		</tr>
 	</thead>
@@ -104,7 +105,8 @@
       <th> </th>
       <th> </th>
       @foreach ($columns as $col)
-      <th>{{ $col['reference'] }} - {{ $col['name'] }}</th>
+      <!-- th>{{ $col['reference'] }} - {{ $col['name'] }}</th -->
+      <th>{{ $col['reference'] }}</th>
       @endforeach
     </tr>
 

@@ -115,16 +115,13 @@ class SetContextMiddleware {
 	        	list($subdomain) = explode('.', $request->getHost(), 2);
 	
 	        	$tenants = config('tenants.names');
-	
-	        	// abi_r($tenants, true);
-	
-	        	// die(in_array($subdomain, $tenants));
+
 	        	if ( !in_array($subdomain, $tenants) )
 	        	{
 	        		// Logout user
 	        		Auth::logout();
 
-	        		abort(500, 'Access denied');
+	        		abort(403, 'Access denied');
 	        	}
 	        
 	        } else {

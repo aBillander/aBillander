@@ -61,7 +61,7 @@
 
         <div class="row">
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('recommended_retail_price') ? 'has-error' : '' }}">
-                     {{ l('Pecommended Retail Price') }}
+                     {{ l('Recommended Retail Price') }}
                      {!! Form::text('recommended_retail_price', null, array('class' => 'form-control', 'id' => 'recommended_retail_price')) !!}
                      {!! $errors->first('recommended_retail_price', '<span class="help-block">:message</span>') !!}
                   </div>

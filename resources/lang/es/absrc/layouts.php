@@ -235,7 +235,7 @@ return [
 	*/
 
 	'Login'     => 'Login',
-	'Please, log-in'     => 'Por favor, idetifíquese',
+	'Please, log-in'     => 'Por favor, identifíquese',
 	'<strong>Whoops!</strong> There were some problems with your input.'     => '<strong>Whoops!</strong> Hay algunos problemas con sus datos.',
 	'E-Mail Address'     => 'Dirección de Correo',
 	'Password'     => 'Contraseña',

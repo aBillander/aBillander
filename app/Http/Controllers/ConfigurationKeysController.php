@@ -154,9 +154,11 @@ class ConfigurationKeysController extends Controller {
         ];
 
    }
+
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return Response
      */
     public function index(Request $request)
@@ -196,6 +198,7 @@ class ConfigurationKeysController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
+     * @param Request $request
      * @return Response
      */
     public function store(Request $request)
@@ -227,8 +230,6 @@ class ConfigurationKeysController extends Controller {
                 \App\Configuration::updateValue($key, $value);
             }
         }
-
-        // die();
 
         return redirect('configurationkeys?tab_index='.$tab_index)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $tab_index], 'layouts') );

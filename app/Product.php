@@ -920,7 +920,8 @@ class Product extends Model {
 
     public function getEcotax()
     {
-        if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax ) return $this->ecotax->amount;
+        if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+            return $this->ecotax->amount;
 
         return 0.0;
     }

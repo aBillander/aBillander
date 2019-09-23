@@ -686,16 +686,12 @@ class Customer extends Model {
         // Otherwise, use product price (initial or base price)
         $price = $product->getPrice();
 
-//            abi_r('$product');abi_r($price);
-
         if ($currency->id == $price->currency->id) {
             return $price;
         }
 
         // Convert price
-        $price = $price->convert( $currency );
-
-        return $price;
+        return $price->convert($currency);
     }
 
 

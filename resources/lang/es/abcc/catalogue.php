@@ -2,49 +2,51 @@
 
 return [
 
-	/*
-	|--------------------------------------------------------------------------
-	| Catalogue Language Lines :: index
-	|--------------------------------------------------------------------------
-	|
-	| .
-	|
-	*/
+    /*
+    |--------------------------------------------------------------------------
+    | Catalogue Language Lines :: index
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
 
-	'Catalogue'     => 'Catálogo',
-	'Category'     => 'Categoría',
-	'Categories'     => 'Categorías',
-	'Products in this Category'     => 'Productos en esta Categoría',
-	'Products'     => 'Productos',
-	'New Products' => 'Novedades',
+    'Catalogue'                 => 'Catálogo',
+    'Category'                  => 'Categoría',
+    'Categories'                => 'Categorías',
+    'Products in this Category' => 'Productos en esta Categoría',
+    'Products'                  => 'Productos',
+    'New Products'              => 'Novedades',
 
-	'Product Name'     => 'Nombre del Producto',
-	'Reference'     => 'Referencia',
-	'Customer Price'     => 'Precio',
-	'Prices are exclusive of Tax'     => 'El Precio no incluye Impuestos',
-	'Prices are inclusive of Ecotax'  => 'El Precio incluye la Ecotasa',
-	
-	'View Image'     => 'Ver Imagen',
-	'Product Images'     => 'Imágenes de Productos',
+    'Product Name'                   => 'Nombre del Producto',
+    'Reference'                      => 'Referencia',
+    'Customer Price'                 => 'PVP sin IVA',
+    'Customer Price (with Tax)'      => 'PVP recomendado',
+    'Tax'                            => 'IVA',
+    'Prices are exclusive of Tax'    => 'El Precio no incluye Impuestos',
+    'Prices are inclusive of Tax'    => 'El Precio incluye Impuestos',
+    'Prices are inclusive of Ecotax' => 'El Precio incluye la Ecotasa',
 
-	'EAN Code'     => 'Código EAN',
-	'Manufacturer'     => 'Marca',
-	'Stock'     => 'Stock',
+    'View Image'     => 'Ver Imagen',
+    'Product Images' => 'Imágenes de Productos',
 
-	'Ecotax: '     => 'Ecotasa: ',
-	'Without Ecotax'     => 'Sin Ecotasa',
+    'EAN Code'     => 'Código EAN',
+    'Manufacturer' => 'Marca',
+    'Stock'        => 'Stock',
 
-	/*
-	|--------------------------------------------------------------------------
-	| Catalogue Language Lines :: create
-	|--------------------------------------------------------------------------
-	|
-	| .
-	|
-	*/
+    'Ecotax: '       => 'Ecotasa: ',
+    'Without Ecotax' => 'Sin Ecotasa',
 
-	'Show Special Prices'     => 'Mostrar Precios Especiales',
-	''     => '',
-	''     => '',
+    /*
+    |--------------------------------------------------------------------------
+    | Catalogue Language Lines :: create
+    |--------------------------------------------------------------------------
+    |
+    | .
+    |
+    */
+
+    'Show Special Prices' => 'Mostrar Precios Especiales',
+    ''                    => '',
+    ''                    => '',
 
 ];

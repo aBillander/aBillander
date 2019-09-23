@@ -384,7 +384,7 @@ if (! function_exists('abi_tenant_local_path')) {
         $tenant = \App\Context::getContext()->tenant;
 
         // return public_path( 'tenants/' , $tenant ).($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
-        return 'tenants/' . $tenant . ($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
+        return '/tenants/' . $tenant . ($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
     }
 }
 

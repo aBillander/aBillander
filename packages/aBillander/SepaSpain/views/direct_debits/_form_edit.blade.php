@@ -52,6 +52,28 @@
 --}}
 <div class="row">
 
+           <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-group_vouchers">
+             {!! Form::label('group_vouchers', l('Group Vouchers?'), ['class' => 'control-label']) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('One Voucher for Customer and Date') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+             <div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('group_vouchers', '1', false, ['id' => 'group_vouchers_on']) !!}
+                   {!! l('Yes', [], 'layouts') !!}
+                 </label>
+               </div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('group_vouchers', '0', true, ['id' => 'group_vouchers_off']) !!}
+                   {!! l('No', [], 'layouts') !!}
+                 </label>
+               </div>
+             </div>
+           </div>
+
          <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('notes') ? 'has-error' : '' }}">
             {{ l('Notes', 'layouts') }}
             {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}

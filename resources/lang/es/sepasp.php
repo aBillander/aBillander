@@ -54,6 +54,9 @@ return [
 	'Sequence' => 'Serie',
 	'All Voucher Due Dates will be set to this value' => 'La Fecha de Vencimiento de todos los Recibos se cambiará por este valor',
 
+	'Group Vouchers?' => '¿Agrupar Recibos?',
+	'One Voucher for Customer and Date' => 'Agrupar Recibos del mismo Cliente en una línea',
+
 
 	'SEPA Direct Debits - Edit'     => 'Remesas SEPA - Modificar',
 	'Edit SEPA Direct Debit'     => 'Modificar Remesa SEPA',

@@ -239,6 +239,9 @@
 //            var url = "{{ route('customerusers.store') }}";
             var token = "{{ csrf_token() }}";
 
+            // Prevent double submit
+            $("#modal_customeruserSubmit").attr( {"disabled" : "disabled"} );
+
             switch( action ) {
               case 'create':
                 // code block
@@ -303,6 +306,9 @@
                         displayErrorMsg(data.error);
 
                     }
+                    // Re-enable
+                    // https://stackoverflow.com/questions/54376603/jquery-ajax-disable-submit-button-until-form-has-been-completed
+                    $("#modal_customeruserSubmit").prop( "disabled", false );
                 }
             });
 
@@ -313,11 +319,19 @@
 
             $("#msg-customeruser-error").find("ul").empty(  );
 
-            $.each( msg, function( key, value ) {
+            if (typeof msg === 'string' || msg instanceof String)
+            {
+                // it's a string
+                $("#msg-customeruser-error").find("ul").append('<li>'+msg+'</li>');
 
-                $("#msg-customeruser-error").find("ul").append('<li>'+value+'</li>');
+            } else {
+                // it's something else
+                $.each( msg, function( key, value ) {
 
-            });
+                    $("#msg-customeruser-error").find("ul").append('<li>'+value+'</li>');
+
+                });
+            }
 
             $("#msg-customeruser-error").css('display','block');
 

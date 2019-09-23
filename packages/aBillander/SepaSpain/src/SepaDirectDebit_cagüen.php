@@ -33,7 +33,7 @@ class SepaDirectDebit extends Model
     protected $fillable = [ 'sequence_id', 'iban', 'swift', 'creditorid', 
                             'currency_iso_code', 'currency_conversion_rate', 
 
-                            'scheme', 'status', 'onhold', 'group_vouchers', 'notes',
+                            'scheme', 'status', 'notes',
 
                             'document_date', 'validation_date', 'payment_date', 'posted_at',
 
@@ -292,38 +292,83 @@ class SepaDirectDebit extends Model
         // Each group will be a Collection (keyed with "due_date")
         foreach ($collectables as $key => $collection) 
         {
-            // Need to group vouchers?
-            if ( $this->group_vouchers > 0 )
-            {
-                // Let's do some sorting (by customer, this time)
-                $sorted_collection = $collection->groupBy(function ($item, $key) {
-                    return $item->paymentorable_id;
-                });
 
-                foreach ($sorted_collection as $key => $group) {
-                    # code...
-                    if ( $group->count() <= 1 )
-                        continue;
 
-                    // Group vouchers by Customer into one
-                    // https://stackoverflow.com/questions/54522098/group-collection-by-multiple-column-laravel
-                    $grouped = $group->reduce(function ($carry, $item) {
+        
+        // Let's do some sorting (by customer, this time)
+        $sorted_collection = $collection->groupBy(function ($item, $key) {
+            // does not like Carbon Object as a key, only strinfs, please:
+            return $item->paymentorable_id;
+        });
 
-                            if(empty($carry[$item->paymentorable_id])){ //Not on the final array
-                               //Create it
-                               $carry[$item->paymentorable_id] = $item;
-                            } else { //Exists, then update >paymentorable_id adding amount
-                               $carry[$item->paymentorable_id]->amount += $item->amount; 
-                            }
 
-                            return $carry;
-                    }, []);
+            abi_r($sorted_collection);
+            abi_r('************************+');
 
-                    $sorted_collection->put($key, collect($grouped));
-                }
 
-                $collection = $sorted_collection->flatten(1);
-            }
+        foreach ($sorted_collection as $key => $group) {
+            # code...
+            $group = $group->reduce(function ($carry, $item) {
+
+                    if(empty($carry[$item->paymentorable_id])){ //Not on the final array
+                       //Create it
+                       $carry[$item->paymentorable_id] = $item;
+                    } else { //Exists, then update C/D with maximum value
+                       $carry[$item->paymentorable_id]->amount += $item->amount; 
+                    } 
+
+                    return $carry;
+            }, []);
+
+            $sorted_collection->put($key, collect($group));
+
+            abi_r($sorted_collection);
+            abi_r('************************+');
+
+        }
+
+
+        $sorted_collection = $sorted_collection->flatten(1);
+
+
+abi_r($sorted_collection, true);
+
+
+        $sorted_collection = $sorted_collection->reduce(function ($carry, $item) {
+
+                if(empty($carry[$item->paymentorable_id])){ //Not on the final array
+                   //Create it
+                   $carry[$item->paymentorable_id] = $item;
+                } else { //Exists, then update C/D with maximum value
+                   $carry[$item->paymentorable_id]->amount = $item->amount; 
+                } 
+
+                return $carry;
+        }, [])->values();
+/*
+
+                  return $result->put($group->first()->product_id, [
+                    'product_id' => $group->first()->product_id,
+                    'reference' => $group->first()->product_reference,
+                    'name' => $group->first()->product_name,
+                    'required_quantity' => $group->sum('required_quantity'),
+                    'planned_quantity' => $group->sum('planned_quantity'),
+
+                    'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
+                  ]);
+              $reduced = $item->first();
+              $reduced->amount = $item->sum('amount');
+
+              return $result->put( $item->first()->paymentorable_id, $reduced );
+            }, collect([]));
+*/              
+
+
+abi_r($sorted_collection);die();
+
+
+
+
 
             // at least one in every SEPA file. No limit.
             $collectionData['pmtInfId']     = $paymentInfoId.'-'.$key;

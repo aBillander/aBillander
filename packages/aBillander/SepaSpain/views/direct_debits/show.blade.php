@@ -50,6 +50,13 @@
 
 
         <span class="badge" style="background-color: #3a87ad;" title="">{{ $directdebit->scheme }}</span>
+
+@if ( $directdebit->group_vouchers )
+              <button type="button" class="btn btn-xs btn-info" title="{{l('One Voucher for Customer and Date')}}">
+                  <i class="fa fa-object-group"></i>
+              </button>
+@endif
+
     </h2>        
 </div>
 

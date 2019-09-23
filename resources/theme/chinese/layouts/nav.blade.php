@@ -167,11 +167,11 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-                         <!-- li>
+                         <li>
                             <a href="{{ URL::to('suppliers') }}">
                                  {{l('Suppliers', [], 'layouts')}}
                             </a>
-                        </li -->
+                        </li>
                     </ul>
                 </li>
 @endif

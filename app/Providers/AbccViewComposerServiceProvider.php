@@ -32,7 +32,11 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		    
 		    if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
 		    	$tree = [];
-		    	$categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+		    	$categories =  \App\Category::where('parent_id', '=', '0')
+                                            ->IsPublished()
+                                            ->with('children')
+                                            ->orderby('name', 'asc')
+                                            ->get();
 		    	
 		    	foreach($categories as $category) {
 		    		$tree[$category->name] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();

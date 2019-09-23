@@ -191,7 +191,7 @@
 
                             <td class="text-right xbutton-pad" style="white-space: nowrap;">
 
-                                @if ($product->quantity_onhand > 0)
+                                @if ($product->quantity_onhand > 0 || $product->isManufactured())
                                     <div xclass="form-group">
                                         <div class="input-group" style="width: 72px;">
 
@@ -205,7 +205,6 @@
                                                   <span id="add-icon-{{$product->id}}" class="fa fa-cart-plus"></span>
                                               </button>
                                             </span>
-
                                         </div>
                                     </div>
                                 @else
@@ -218,7 +217,6 @@
                                        title="{{l('Click for more Information', 'abcc/layouts')}}"
                                        onClick="return false;"><i class="fa fa-exclamation-triangle"></i> {{l('More Info', 'abcc/layouts')}}</a>
                                 @endif
-
                             </td>
                         </tr>
                     @endforeach

@@ -24,14 +24,20 @@ class Image extends Model {
 	
     protected $fillable = [ 'extension', 'caption', 'position', 'is_featured', 'active' ];
 
-    public static $rules = array(
-    	'caption'  => array('max:128'),
-        'position' => array('min:0'),
+    public static $rules = [
+        'caption'  => ['max:128'],
+        'position' => ['min:0'],
+        // avoid error updating, image is only required when creating
         'image'    => 'required | mimes:jpeg,jpg,gif,png,svg | max:8000',
         // Seems Laravel cannot validate png if it is the last mime (?)
-    	);
+    ];
 
-    
+    public static $rules_updating = [
+        'caption'  => ['max:128'],
+        'position' => ['min:0'],
+    ];
+
+
     /**
      * Get Path for Product Images.
      * public static $products_path = '/uploads/images_p/';

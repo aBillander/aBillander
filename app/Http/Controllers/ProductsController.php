@@ -84,8 +84,6 @@ class ProductsController extends Controller
                 $cat = $item->children;
 
                 $c = $cat->search(function ($item, $key) use ($category_id) {
-                    // abi_r($item->id.' - '.$category_id);
-
                     return $item->id == $category_id;
                 });
 

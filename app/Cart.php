@@ -104,51 +104,47 @@ class Cart extends Model
 
     public static function getCustomerUserCart()
     {
-        if ( Auth::guard('customer')->check() )
-        {
+        if (Auth::guard('customer')->check()) {
 
-        // Get Customer Cart
-        $customer = Auth::user()->customer;
-        $cart = Cart::where('customer_id', $customer->id)->where('customer_user_id', Auth::user()->id)->with('cartlines')->first();
+            // Get Customer Cart
+            $customer = Auth::user()->customer;
+            $cart = Cart::where('customer_id', $customer->id)
+                        ->where('customer_user_id',
+                                Auth::user()->id)->with('cartlines')->first();
+            if ($cart) {
+                // Deletable lines
+                $deletables = CartLine::where('cart_id', $cart->id)
+                                      ->doesntHave('product')
+                                      ->get();
 
-        if ( $cart ) 
-        {
-        	// Deletable lines
-            $deletables = CartLine::where('cart_id', $cart->id)->doesntHave('product')->get();
+                if ($deletables->count() > 0) {
+                    $deletables->each(function ($deletable) {
+                        $deletable->delete();
+                    });
 
-            if ( $deletables->count() > 0 )
-            {
-                $deletables->each(function($deletable) {
-                    $deletable->delete();
-                });
+                    $cart = $cart->fresh();
+                }
 
-                $cart = $cart->fresh();
+                // Update some values if customer data have changed -> cart data & cart line prices & stock
+                if ($cart->persistance_left <= 0) {
+                    // Update Cart Prices
+                    $cart->updateLinePrices();
+                }
+            } else {
+                // Create instance
+                $cart = Cart::create(['customer_user_id'     => Auth::user()->id,
+                                      'customer_id'          => $customer->id,
+                                      'invoicing_address_id' => $customer->invoicing_address_id,
+                                      'shipping_address_id'  => $customer->shipping_address_id,
+                                      'shipping_method_id'   => $customer->shipping_method_id,
+                                      //       		'carrier_id',
+                                      'currency_id'          => $customer->currency_id,
+                                      'payment_method_id'    => $customer->payment_method_id,
+                                      //                'date_prices_updated',
+                                     ]);
             }
 
-            // Update some values if customer data have changed -> cart data & cart line prices & stock
-            if ( $cart->persistance_left <= 0 )
-            {
-                // Update Cart Prices
-                $cart->updateLinePrices();
-
-            }
-        } else {
-        	// Create instance
-        	$cart = Cart::create([
-        		'customer_user_id' => Auth::user()->id,
-        		'customer_id' => $customer->id,
-        		'invoicing_address_id' => $customer->invoicing_address_id,
-        		'shipping_address_id' => $customer->shipping_address_id,
-        		'shipping_method_id' => $customer->shipping_method_id,
- //       		'carrier_id',
-        		'currency_id' => $customer->currency_id,
-        		'payment_method_id' => $customer->payment_method_id,
-//                'date_prices_updated',
-        	]);
-        }
-
-        return $cart;
-        
+            return $cart;
         }
 
         return null;
@@ -300,20 +296,20 @@ class Cart extends Model
     {
         // Update prices or remove from cart
         foreach ($this->cartlines as $line) {
-            # code...
 
-            $product_id     = $line->product_id;
+            $product_id = $line->product_id;
             $combination_id = $line->combination_id;
-            $quantity       = $line->quantity;
+            $quantity = $line->quantity;
 
             // Remove line
             $line->delete();
 
             // Recreate
-            if ($byAdmin)
+            if ($byAdmin) {
                 $newline = $this->addLineByAdmin($product_id, $combination_id, $quantity);
-            else
+            } else {
                 $newline = $this->addLine($product_id, $combination_id, $quantity);
+            }
         }
 
         $this->date_prices_updated = \Carbon\Carbon::now();

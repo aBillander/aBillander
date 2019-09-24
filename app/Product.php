@@ -1,33 +1,21 @@
-<?php 
+<?php
 
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-// use Illuminate\Validation\Rule;
-
-use App\Configuration;
-use App\MeasureUnit;
-
 use App\Traits\ViewFormatterTrait;
 use App\Traits\AutoSkuTrait;
-
 use App\Traits\StockableTrait;
-
 use App\Traits\SearchableTrait;
-// use App\Traits\FullTextSearchTrait;
 
 class Product extends Model {
 
     use ViewFormatterTrait;
     use AutoSkuTrait;
     use SoftDeletes;
-
     use StockableTrait;
-
     use SearchableTrait;
-//    use FullTextSearchTrait;
 
     /**
      * Searchable rules.
@@ -59,17 +47,17 @@ class Product extends Model {
     public $sales_equalization = 0;         // Handy property not stored. Takes its value after Customer Order Line sales_equalization flag
 
     public static $types = array(
-            'simple', 
-            'virtual', 
-            'combinable', 
+            'simple',
+            'virtual',
+            'combinable',
             'grouped',
         );
 
     public static $procurement_types = array(
-            'purchase', 
-            'manufacture', 
+            'purchase',
+            'manufacture',
             'assembly',
-            'none', 
+            'none',
         );
 
 
@@ -77,9 +65,9 @@ class Product extends Model {
      * The columns of the full text index
      * /
     protected $searchable = [
-        'name', 
-        'reference', 
-        'ean13', 
+        'name',
+        'reference',
+        'ean13',
         'description'
     ];
 */
@@ -87,25 +75,25 @@ class Product extends Model {
     protected $dates = ['deleted_at', 'available_for_sale_date'];
 
     protected $appends = ['tool_id', 'quantity_available'];
-    
-    protected $fillable = [ 'product_type', 'procurement_type', 
-                            'name', 'reference', 'ean13', 'description', 'description_short', 
+
+    protected $fillable = [ 'product_type', 'procurement_type',
+                            'name', 'reference', 'ean13', 'description', 'description_short',
                             'quantity_decimal_places', 'manufacturing_batch_size',
-//                            'warranty_period', 
+//                            'warranty_period',
 
-                            'reorder_point', 'maximum_stock', 'price', 'price_tax_inc', 'cost_price', 
-                            'recommended_retail_price', 'recommended_retail_price_tax_inc', 
+                            'reorder_point', 'maximum_stock', 'price', 'price_tax_inc', 'cost_price',
+                            'recommended_retail_price', 'recommended_retail_price_tax_inc',
 
-                            'supplier_reference', 'supply_lead_time', 'manufacturer_id', 
+                            'supplier_reference', 'supply_lead_time', 'manufacturer_id',
 
                             'location', 'width', 'height', 'depth', 'volume', 'weight',
 
-                            'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 
+                            'notes', 'stock_control', 'publish_to_web', 'blocked', 'active',
                             'out_of_stock', 'out_of_stock_text', 'available_for_sale_date',
 
-                            'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
+                            'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id',
 
-                            'measure_unit_id', 'work_center_id', 'route_notes', 'machine_capacity', 'units_per_tray', 
+                            'measure_unit_id', 'work_center_id', 'route_notes', 'machine_capacity', 'units_per_tray',
 
                             'name_en', 'price_usd', 'price_usd_conversion_rate',
                           ];
@@ -119,7 +107,7 @@ class Product extends Model {
 
  //                           'manufacturing_batch_size' => 'required|min:1',
 
-                            'reference'       => 'required|min:2|max:32|unique:products,reference,{$id},id,deleted_at,NULL', 
+                            'reference'       => 'required|min:2|max:32|unique:products,reference,{$id},id,deleted_at,NULL',
                             // See: https://wisdmlabs.com/blog/laravel-soft-delete-unique-validations/
                             'ean13'                        => 'nullable|unique:products,ean13,{$id},id,deleted_at,NULL',
                             'measure_unit_id' => 'exists:measure_units,id',
@@ -141,29 +129,29 @@ class Product extends Model {
                             'category_id' => 'exists:categories,id',
                     ),
         'purchases' => array(
-                            
+
                     ),
         'manufacturing' => array(
                             'manufacturing_batch_size' => 'required|numeric|min:0|not_in:0',
-                            
+
                     ),
         'sales' => array(
                             'price'         => 'required|numeric|min:0',
-                            'price_tax_inc' => 'required|numeric|min:0', 
+                            'price_tax_inc' => 'required|numeric|min:0',
 
                             'recommended_retail_price'         => 'required|numeric|min:0',
-                            'recommended_retail_price_tax_inc' => 'required|numeric|min:0', 
-                            
+                            'recommended_retail_price_tax_inc' => 'required|numeric|min:0',
+
                             'available_for_sale_date' => 'nullable|date',
                     ),
         'inventory' => array(
-                            
+
                     ),
         'internet' => array(
-                            
+
                     ),
         );
-    
+
 
     public static function boot()
     {
@@ -193,7 +181,7 @@ class Product extends Model {
 
     }
 
-    
+
     /*
     |--------------------------------------------------------------------------
     | Accessors
@@ -249,20 +237,15 @@ class Product extends Model {
 
         $count3 = $lines3->sum('quantity');
 
-        
-
-
-        $count = $count1 + $count2 + $count3;
-
-        return $count;
+        return $count1 + $count2 + $count3;
     }
 
     public function getQuantityAvailableAttribute()
     {
-        $value =      $this->quantity_onhand  
-                    + $this->quantity_onorder 
-                    - $this->quantity_allocated 
-                    + $this->quantity_onorder_mfg 
+        $value =      $this->quantity_onhand
+                    + $this->quantity_onorder
+                    - $this->quantity_allocated
+                    + $this->quantity_onorder_mfg
                     - $this->quantity_allocated_mfg;
 
         return $value;
@@ -364,7 +347,6 @@ class Product extends Model {
         }
 
 
-
         if ( isset($params['reference']) && trim($params['reference']) !== '' )
         {
             $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
@@ -424,7 +406,7 @@ class Product extends Model {
 
         return $query;
     }
-    
+
 
     public function getLastStockTakingByWarehouse( $warehouse = null )
     {
@@ -439,8 +421,8 @@ class Product extends Model {
                       where('product_id', $this->id)
                     ->where('warehouse_id', $wh_id)
                     ->where( function($query){
-                                // $now = \Carbon\Carbon::now()->startOfDay(); 
-                                // 
+                                // $now = \Carbon\Carbon::now()->startOfDay();
+                                //
                                 $query->where(  'movement_type_id', \App\StockMovement::INITIAL_STOCK);
                                 $query->orWhere('movement_type_id', \App\StockMovement::ADJUSTMENT);
                         } )
@@ -460,7 +442,7 @@ class Product extends Model {
         $wh_id = is_numeric($warehouse)
                     ? $warehouse
                     : $warehouse->id ;
-        
+
         if ( $date      == null ) $date      = \Carbon\Carbon::now();   //->endOfDay();
         else                      $date      = $date->endOfDay();
 
@@ -472,21 +454,17 @@ class Product extends Model {
                     ->where('warehouse_id', $wh_id)
                     ->where('date', '<', $date)
                     ->where( function($query) use ($last_stock_taking_mvt) {
-                                if ( $last_stock_taking_mvt ) 
+                                if ( $last_stock_taking_mvt )
                                     $query->where('date', '>', $last_stock_taking_mvt->date);
                         } )
                     ->where( function($query){
-                                // $now = \Carbon\Carbon::now()->startOfDay(); 
-                                // 
+                                // $now = \Carbon\Carbon::now()->startOfDay();
+                                //
                                 $query->where('movement_type_id', '<>', \App\StockMovement::INITIAL_STOCK);
                                 $query->where('movement_type_id', '<>', \App\StockMovement::ADJUSTMENT);
                         } )
                     ->orderBy('date', 'desc')
                     ->get();
-
-        // abi_r($mvts, true);
-
-        // abi_toSql(
 
         return optional($last_stock_taking_mvt)->quantity_after_movement - ($mvts->sum('quantity_before_movement') - $mvts->sum('quantity_after_movement'));
     }
@@ -500,32 +478,29 @@ class Product extends Model {
         $count = 0;
 
         foreach ($warehouses as $warehouse) {
-            # code...
             $count += $this->getStockToDateByWarehouse( $warehouse->id, $date );
         }
 
         return $count;
     }
-    
 
-    
 
     public function getOutOfStock()
-    { 
+    {
         if ( $this->out_of_stock == 'default' ) return Configuration::get('ABCC_OUT_OF_STOCK_PRODUCTS');
 
         return $this->out_of_stock;
     }
-    
+
 
     public function getFeaturedImage()
-    { 
+    {
         // If no featured image, return one, anyway
         return $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
     }
 
     public function setFeaturedImage( \App\Image $image )
-    { 
+    {
         $featured = $image->id;
 
         $images = $this->images;
@@ -566,7 +541,6 @@ class Product extends Model {
             return l($status, [], 'appmultilang');;
     }
 
-            
 
     public static function getProcurementTypeList()
     {
@@ -592,7 +566,7 @@ class Product extends Model {
         return MeasureUnit::pluck('name', 'id')->toArray();
     }
 
-    
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -603,18 +577,18 @@ class Product extends Model {
     {
         return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
     }
-    
+
     public function productmeasureunits()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
         return $this->hasMany('App\ProductMeasureUnit', 'product_id')->with('measureunit');
     }
-    
+
     public function measureunitsGet()
     // used by: public function getMeasureunitsAttribute()
     {
         if ( Configuration::isFalse('ENABLE_MANUFACTURING') )
             return $this->measureunit;
-        
+
         $list = $this->productmeasureunits;
 
         $units = $list->map(function ($item, $key) {
@@ -625,12 +599,12 @@ class Product extends Model {
     }
 
 
-    
+
     public function producttools()
     {
         return $this->hasMany('App\ProductTool', 'product_id')->with('tool');
     }
-    
+
     public function toolsGet()
     // used by: public function getToolsAttribute()
     {
@@ -643,33 +617,33 @@ class Product extends Model {
         return $tools;  // ->pluck('name', 'id')->toArray();
     }
 
-    
+
     public function bomitems()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
         return $this->hasMany('App\BOMItem', 'product_id');
     }
-    
+
     public function boms()
     {
         return $this->hasManyThrough('App\ProductBOM', 'App\BOMItem', 'product_id', 'id', 'id', 'product_bom_id')->with('measureunit');
     }
-    
+
     public function bomitem()
     {
         return $this->bomitems->first();
     }
-    
+
     public function certifiedboms()
     {
         return $this->boms()->where('status', 'certified');
     }
-    
+
 
     public function productBOMlines()
     {
         return $this->hasMany('App\ProductBOMline', 'product_id');
     }
-    
+
 
     public function images()
     {
@@ -685,17 +659,17 @@ class Product extends Model {
     {
         return $this->belongsTo('App\Ecotax');
     }
-		
+
     public function category()
     {
         return $this->belongsTo('App\Category');
 	}
-    
+
     public function combinations()
     {
         return $this->hasMany('App\Combination');
     }
-    
+
     public function stockmovements()
     {
         return $this->hasMany('App\StockMovement');
@@ -710,7 +684,7 @@ class Product extends Model {
     {
         return $this->belongsTo('App\Manufacturer', 'manufacturer_id');
     }
-    
+
     public function warehouses()
     {
         return $this->belongsToMany('App\Warehouse')    //->as('warehouseline')
@@ -733,14 +707,14 @@ class Product extends Model {
 
 //        return $this->belongsToMany('App\PriceList', 'price_list_product', 'product_id', 'price_list_id')->withPivot('price')->withTimestamps();
     }
-    
-/*    
+
+/*
     public function pricelist( $list_id = null )
     {
         if ( $list_id > 0 )
             return $this->belongsToMany('App\PriceList')->where('price_list_id', '=', $list_id)->withPivot('price')->withTimestamps();
-    } 
-    
+    }
+
     public function prices()
     {
         return $this->hasMany('App\Price');
@@ -761,7 +735,7 @@ class Product extends Model {
      */
  /*   public static function searchByNameAutocomplete_dist($query, $onhand_only = 0)
     {
-        $q = Product::select('*', 'products.id as product_id', 'taxes.id as tax_id', 
+        $q = Product::select('*', 'products.id as product_id', 'taxes.id as tax_id',
                                   'products.name as product_name', 'taxes.name as tax_name')
                     ->leftjoin('taxes','taxes.id','=','products.tax_id')
                     ->orderBy('products.name')
@@ -782,10 +756,10 @@ class Product extends Model {
     public static function searchByNameAutocomplete($query, $onhand_only = 0)
     {
         $columns = [ 'id', 'product_type', 'name', 'reference',
- //                   'measure_unit', 'quantity_decimal_places', 
+ //                   'measure_unit', 'quantity_decimal_places',
                     'reorder_point', 'price', 'price_tax_inc',
-                    'quantity_onhand', 'quantity_onorder', 'quantity_allocated', 
-                    'blocked', 'active', 
+                    'quantity_onhand', 'quantity_onorder', 'quantity_allocated',
+                    'blocked', 'active',
  //                   'tax_id',
         ];
 
@@ -804,9 +778,9 @@ class Product extends Model {
          return json_encode( $products );
 //         return json_encode( array('query' => $query, 'suggestions' => $products) );
     }
-	
 
-    
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -828,18 +802,18 @@ class Product extends Model {
         $price = [ $this->price, $this->price_tax_inc ];        // These prices are in Company Currency
 
         $priceObject = \App\Price::create( $price, \App\Context::getContext()->company->currency );
-        
+
         // Add Ecotax
         if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
 //            $ecoprice = \App\Price::create([
-//                        $this->getEcotax(), 
-//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $this->getEcotax(),
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0),
 //                        $price->price_tax_inc
 //                ]);
 
-            $priceObject->add( $this->getEcotax() ); 
+            $priceObject->add( $this->getEcotax() );
         }
 
         return $priceObject;
@@ -854,21 +828,21 @@ class Product extends Model {
             $tax_percent = $this->tax->percent;
             $price->applyTaxPercent( $tax_percent );
         } else {
-            
+
             $price = $this->getPrice();
         }
-        
+
         // Add Ecotax
         if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
 //            $ecoprice = \App\Price::create([
-//                        $this->getEcotax(), 
-//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $this->getEcotax(),
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0),
 //                        $price->price_tax_inc
 //                ]);
 
-            $price->add( $this->getEcotax() ); 
+            $price->add( $this->getEcotax() );
         }
 
         return $price;
@@ -885,12 +859,12 @@ class Product extends Model {
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
 //            $ecoprice = \App\Price::create([
-//                        $this->getEcotax(), 
-//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $this->getEcotax(),
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0),
 //                        $price->price_tax_inc
 //                ]);
 
-            $price->add( $this->getEcotax() ); 
+            $price->add( $this->getEcotax() );
         }
 
         return $price;
@@ -906,17 +880,17 @@ class Product extends Model {
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
 //            $ecoprice = \App\Price::create([
-//                        $this->getEcotax(), 
-//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $this->getEcotax(),
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0),
 //                        $price->price_tax_inc
 //                ]);
 
-            $price->add( $this->getEcotax() ); 
+            $price->add( $this->getEcotax() );
         }
 
         return $price;
     }
-    
+
 
     public function getEcotax()
     {
@@ -948,7 +922,7 @@ class Product extends Model {
     {
         // Taxes depending on Product itself, such as recycle tax
         return collect([]);
-        
+
         // If no address, use default Company address
         if ( $address == null ) $address = \App\Context::getContext()->company->address;
 
@@ -1024,7 +998,7 @@ class Product extends Model {
                     ->where( 'from_quantity', '>', 1 )
                     // Date range
                     ->where( function($query){
-                                $now = \Carbon\Carbon::now()->startOfDay(); 
+                                $now = \Carbon\Carbon::now()->startOfDay();
                                 $query->where( function($query) use ($now) {
                                     $query->where('date_from', null);
                                     $query->orWhere('date_from', '<=', $now);
@@ -1044,7 +1018,7 @@ class Product extends Model {
     {
         return $this->getQuantityPriceRules( $customer )->count();
     }
-    
+
 
     /*
     |--------------------------------------------------------------------------
@@ -1071,7 +1045,7 @@ class Product extends Model {
     public function scopeIsSaleable($query)
     {
         // Apply filters here
-        if ( Configuration::isTrue('SELL_ONLY_MANUFACTURED') ) 
+        if ( Configuration::isTrue('SELL_ONLY_MANUFACTURED') )
             return $query->where('procurement_type', 'manufacture');
 
         return $query;
@@ -1101,14 +1075,14 @@ class Product extends Model {
         return $query;
     }
 
-    public function scopeQualifyForCustomer($query, $customer_id, $currency_id) 
+    public function scopeQualifyForCustomer($query, $customer_id, $currency_id)
     {
         // Filter Products by Customer
-        if ( Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' ) 
+        if ( Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' )
         {
             $customer = \App\Customer::with('customergroup')->findorfail($customer_id);
 
-            if ( !($currency_id) ) 
+            if ( !($currency_id) )
                 $currency_id = \App\Context::getContext()->currency->id;
 
             if ($customer->price_list_id)
@@ -1136,7 +1110,7 @@ class Product extends Model {
         return $query;
     }
 
-    public function scopeQualifyForPriceList($query, $price_list_id) 
+    public function scopeQualifyForPriceList($query, $price_list_id)
     {
         // Filter Products by Customer
         return $query->whereDoesntHave('pricelists', function($query) use ($price_list_id) {
@@ -1144,9 +1118,7 @@ class Product extends Model {
         });
     }
 
-
-
-    public function scopeIsAvailable($query) 
+    public function scopeIsAvailable($query)
     {
         // Products with stock
         $query->where('quantity_onhand', '>', 0);
@@ -1161,8 +1133,6 @@ class Product extends Model {
                 }
         });
 
-        // return $query;
-
         $query->orWhere(function ($query) {
                     $query->where(function ($query) {
                             $query->where('quantity_onhand', '<=', 0);
@@ -1174,9 +1144,7 @@ class Product extends Model {
         return $query;
     }
 
-
-
-    public function scopeIsOrderable($query) 
+    public function scopeIsOrderable($query)
     {
         // Products with stock
         $query->where('quantity_onhand', '>', 0);
@@ -1190,8 +1158,6 @@ class Product extends Model {
                     });
                 }
         });
-
-        // return $query;
 
         $query->orWhere(function ($query) {
                     $query->where(function ($query) {
@@ -1207,9 +1173,10 @@ class Product extends Model {
     public function scopeCheckStock($query)
     {
         // Products with stock
-        if ( Configuration::isTrue('ALLOW_SALES_WITHOUT_STOCK') ) 
+        if ( Configuration::isTrue('ALLOW_SALES_WITHOUT_STOCK') )
             return $query;
 
         return $query->where('quantity_onhand', '>', 0);
     }
+
 }

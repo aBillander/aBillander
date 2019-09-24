@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers\CustomerCenter;
 
+use App\Address;
+use App\Combination;
+use App\Context;
+use App\Currency;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 use App\Customer;
-use App\CustomerUser;
 use App\Product;
 use App\Cart;
 use App\CartLine;
-
 use App\Configuration;
-
 use App\Traits\BillableControllerTrait;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class AbccCustomerCartController extends Controller
 {
@@ -30,11 +35,6 @@ class AbccCustomerCartController extends Controller
         $this->middleware('auth:customer');
 
         // https://stackoverflow.com/questions/43000880/how-to-get-logged-in-user-in-a-laravel-controller-constructor
-
-        //       $this->customer_user = Auth::user();
-        //       $this->customer = Auth::user(); // ->customer;
-
-        //        abi_r($this->customer_user, true);
 
         $this->cart = $cart;
         $this->cartLine = $cartLine;
@@ -62,7 +62,7 @@ class AbccCustomerCartController extends Controller
      *
      * @param Request $request
      * @param         $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
 
     // Deprecated
@@ -83,7 +83,7 @@ class AbccCustomerCartController extends Controller
         // Get Customer Price
         $customer = $cart->customer;
         $currency = $cart->currency;
-        $customer_price = $product->getPriceByCustomer($customer, $quantity, $cart->currency);
+        $customer_price = $product->getPriceByCustomer($customer, $quantity, $currency);
 
         // Is there a Price for this Customer?
         if (!$customer_price) {
@@ -143,7 +143,8 @@ class AbccCustomerCartController extends Controller
     /**
      * AJAX Stuff.
      *
-     *
+     * @param Request $request
+     * @return ResponseFactory|Response
      */
     public function searchProduct(Request $request)
     {
@@ -155,32 +156,28 @@ class AbccCustomerCartController extends Controller
 
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
-                                ->where('name', 'LIKE', '%' . $search . '%')
-                                ->orWhere('reference', 'LIKE', '%' . $search . '%')
-                                ->orWhere('ean13', 'LIKE', '%' . $search . '%')
-                                ->IsSaleable()
-                                ->IsOrderable()
-                                ->qualifyForCustomer($customer_user->customer_id, $request->input('currency_id'))
-                                ->IsActive()
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
+                           ->where('name', 'LIKE', '%' . $search . '%')
+                           ->orWhere('reference', 'LIKE', '%' . $search . '%')
+                           ->orWhere('ean13', 'LIKE', '%' . $search . '%')
+                           ->IsSaleable()
+                           ->IsOrderable()
+                           ->qualifyForCustomer($customer_user->customer_id, $request->input('currency_id'))
+                           ->IsActive()
             //                                ->with('measureunit')
-            //                                ->toSql();
-                                ->get(intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')));
+                           ->get(intval(Configuration::get('DEF_ITEMS_PERAJAX')));
 
-
-        //                                dd($products);
 
         return response($products);
     }
 
     public function getProduct(Request $request)
     {
-
         // Request data
         $product_id = $request->input('product_id');
         $combination_id = $request->input('combination_id');
         $customer_id = $request->input('customer_id');
-        $currency_id = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id = $request->input('currency_id', Context::getContext()->currency->id);
         //        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
 
         //       return response()->json( [ $product_id, $combination_id, $customer_id, $currency_id ] );
@@ -188,24 +185,24 @@ class AbccCustomerCartController extends Controller
         // Do the Mambo!
         // Product
         if ($combination_id > 0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name . ' | ' . $combination->name;
         } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+            $product = Product::with('tax')->findOrFail(intval($product_id));
         }
 
         // Customer
-        $customer = \App\Customer::findOrFail(intval($customer_id));
+        $customer = Customer::findOrFail(intval($customer_id));
 
         // Currency
-        $currency = \App\Currency::findOrFail(intval($currency_id));
+        $currency = Currency::findOrFail(intval($currency_id));
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
         // Tax
         $tax = $product->tax;
-        $taxing_address = \App\Address::findOrFail($request->input('taxing_address_id'));
+        $taxing_address = Address::findOrFail($request->input('taxing_address_id'));
         $tax_percent = $tax->getTaxPercent($taxing_address);
 
         $price = $product->getPrice();
@@ -230,7 +227,7 @@ class AbccCustomerCartController extends Controller
                 'unit_price'     => [
                     'tax_exc'          => $price->getPrice(),
                     'tax_inc'          => $price->getPriceWithTax(),
-                    'display'          => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                    'display'          => Configuration::get('PRICES_ENTERED_WITH_TAX') ?
                         $price->getPriceWithTax() : $price->getPrice(),
                     'price_is_tax_inc' => $price->price_is_tax_inc,
                     //                            'price_obj' => $price,
@@ -239,7 +236,7 @@ class AbccCustomerCartController extends Controller
                 'unit_customer_price' => [
                     'tax_exc'          => $customer_price->getPrice(),
                     'tax_inc'          => $customer_price->getPriceWithTax(),
-                    'display'          => \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                    'display'          => Configuration::get('PRICES_ENTERED_WITH_TAX') ?
                         $customer_price->getPriceWithTax() : $customer_price->getPrice(),
                     'price_is_tax_inc' => $customer_price->price_is_tax_inc,
                     //                            'price_obj' => $customer_price,
@@ -283,92 +280,76 @@ class AbccCustomerCartController extends Controller
         // Refresh Cart
         $cart = Cart::getCustomerUserCart();
 
-
         if ($line) {
-            return response()->json([
-                                        'msg'            => 'OK',
-                                        'cart_nbr_items' => $cart->nbrItems(),
-                                        //               'data' => $cart_line->toArray()
-                                    ]);
+            $msg = ['msg'            => 'OK',
+                    'cart_nbr_items' => $cart->nbrItems()];
         } else {
-            return response()->json([
-                                        'msg' => 'ERROR',
-                                        //               'data' => $cart_line->toArray()
-                                    ]);
+            $msg = ['msg' => 'ERROR'];
         }
+
+        //$data['data'] = $line->toArray();
+        return response()->json($msg);
     }
 
 
+    /**
+     * abcc.cart.updateline Endpoint
+     *
+     * @param Request $request
+     * @return ResponseFactory|JsonResponse|Response
+     */
     public function updateLineQuantity(Request $request)
     {
-
         $line_id = $request->input('line_id', 0);
+        $customer_user = Auth::user();    // Don't trust: $request->input('customer_id')
 
-        if (!$line_id) {
+        if (!$line_id ||!$customer_user) {
             return response(null);
         }
 
         $quantity = floatval($request->input('quantity', 1.0));
         $quantity >= 0 ?: 1.0;
 
-        $customer_user = Auth::user();    // Don't trust: $request->input('customer_id')
-
-        if (!$customer_user) {
-            return response(null);
-        }
-
-        $cart = \App\Context::getContext()->cart;
+        $cart = Context::getContext()->cart;
 
         // Get line
         $line = $cart->cartlines()->where('id', $line_id)->first();
 
         if ($quantity > 0) {
             $line->update(['quantity' => $quantity]);
-            // $cart->touch(); //  protected $touches = ['cart']; 
         } else {
             $line->delete();
         }
 
-
-        // Now, update Order Totals
-        // $order->makeTotals();
-
-
-        return response()->json([
-                                    'msg'  => 'OK',
-                                    'data' => [$line_id, $quantity],
-                                ]);
+        return response()->json(['msg'  => 'OK',
+                                 'data' => [$line_id, $quantity]]);
     }
 
 
+    /**
+     * abcc.cart.getlines Endpoint
+     * Called via ajax after success Ajax call to add/update cart
+     *
+     * @return Factory|View
+     */
     public function getCartLines()
     {
         $this->customer_user = Auth::user();
         $this->customer = $this->customer_user->customer;
 
-        $cart = \App\Context::getContext()->cart;
+        $cart = Context::getContext()->cart;
 
-        $config['show_taxes'] = $this->customer_user->canDisplayPricesTaxInc();
+        $this->calculateCartTotals($cart);
+
+        $config['display_with_taxes'] = $this->customer_user->canDisplayPricesTaxInc();
 
         return view('abcc.cart._panel_cart_lines', compact('cart', 'config'));
-    }
-
-    public function getCartTotal()
-    {
-        $order = $this->customerOrder
-            //                        ->with('customerorderlines')
-            //                        ->with('customerorderlines.product')
-            ->findOrFail($id);
-
-        return view('customer_orders._panel_customer_order_total', compact('order'));
     }
 
 
     public function deleteCartLine($line_id)
     {
-
-        $order_line = $this->cartLine
-            ->findOrFail($line_id);
+        $order_line = $this->cartLine->findOrFail($line_id);
 
         $order_line->delete();
 
@@ -377,6 +358,35 @@ class AbccCustomerCartController extends Controller
 
         return response()->json(['msg'  => 'OK',
                                  'data' => $line_id]);
+    }
+
+    /**
+     * From the cart lines, calculate taxes total, discounts and order total
+     * @param $cart
+     */
+    public function calculateCartTotals($cart)
+    {
+        $taxes = 0;
+        $cart->cartlines->map(function ($line) use (&$taxes) {
+            $line->img = $line->product->getFeaturedImage();
+            $line->tax = $line->tax_percent / 100 *
+                   $line->unit_customer_price * $line->quantity;
+            $line->price_without_taxes = $line->unit_customer_price * $line->quantity;
+            $line->price_with_taxes = $line->tax + $line->price_without_taxes;
+            $taxes += $line->tax;
+        });
+        $cart->total_taxes = $cart->as_priceable($taxes);
+
+        $discount1 = $cart->amount * $cart->customer->discount_percent / 100.0;
+        $discount2 = ($cart->amount - $discount1) * $cart->customer->discount_ppd_percent / 100.0;
+
+        $cart->discounts_applied = $discount1 > 0 || $discount2 > 0;
+
+        $cart->discount1 = $cart->as_priceable($discount1);
+        $cart->discount2 = $cart->as_priceable($discount2);
+
+        $cart->total_products = $cart->as_priceable($cart->amount) - $cart->discount1 - $cart->discount2;
+        $cart->total_price = $cart->as_priceable($cart->amount + $cart->total_taxes) - $cart->discount1 - $cart->discount2;
     }
 
 }

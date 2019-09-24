@@ -175,7 +175,9 @@ class CustomerUser extends Authenticatable
 
     public function canDisplayPricesTaxInc()
     {
-        return $this->display_prices_tax_inc >= 0 ? $this->display_prices_tax_inc : Configuration::getNumber('ABCC_DISPLAY_PRICES_TAX_INC');
+        return $this->display_prices_tax_inc >= 0 ?
+            (bool)$this->display_prices_tax_inc :
+            (bool)Configuration::get('ABCC_DISPLAY_PRICES_TAX_INC');
     }
 
 

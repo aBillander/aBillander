@@ -36,11 +36,14 @@
                             @endif
                         </th>
                     <!-- th>{{ l('Measure Unit') }}</th -->
+
                         <th>
-                            <span class="button-pad">{{ l('Customer Price') }}
-                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
-                                   data-content="{{ l('Prices are exclusive of Tax') }}
-                                   @if( $config['enable_ecotaxes'] )
+                            <span class="button-pad">{{ l('Customer Price (with Tax)') }}
+                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top"
+                                   data-container="body" data-trigger="focus"
+                                   data-content="
+                                        {{ l('Prices are inclusive of Tax') }}
+                                   @if($config['enable_ecotaxes'] )
                                            <br/>{{ l('Prices are inclusive of Ecotax') }}
                                    @endif
                                            ">
@@ -53,16 +56,12 @@
                             @endif
                         </th>
 
-                        @if ($config['show_taxes'])
+                        @if (!$config['display_with_taxes'])
                             <th>
-                            <span class="button-pad">{{ l('Customer Price (with Tax)') }}
-                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
-                                   data-content="
-                                   @if( $config['show_taxes'] )
-                                   {{ l('Prices are inclusive of Tax') }}
-                                   @else
-                                   {{ l('Prices are exclusive of Tax') }}
-                                   @endif
+                            <span class="button-pad">{{ l('Customer Price') }}
+                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top"
+                                   data-container="body" data-trigger="focus"
+                                   data-content="{{ l('Prices are exclusive of Tax') }}
                                    @if( $config['enable_ecotaxes'] )
                                            <br/>{{ l('Prices are inclusive of Ecotax') }}
                                    @endif
@@ -70,7 +69,6 @@
                                 <i class="fa fa-question-circle abi-help"></i>
                                 </a>
                             </span>
-
                                 @if( $config['enable_ecotaxes'])
                                     <br/><span class="button-pad text-muted">{{ l('Without Ecotax') }}</span>
                                 @endif
@@ -163,19 +161,20 @@
                             </td>
 
                             <td>
-                                {{ $product->price }}
+                                {{ $product->price_tax_inc }}
                                 @if( $config['enable_ecotaxes'] && $product->ecotax)
-                                    <br/><p class="text-muted">{{ $product->price - $product->getEcotax() }}</p>
+                                    <br/><p class="text-muted">{{ $product->price_tax_inc - $product->getEcotax() }}</p>
                                 @endif
                             </td>
 
-                            @if($config['show_taxes'])
+                            @if(!$config['display_with_taxes'])
                                 <td>
-                                    {{ $product->price_tax_inc }}
+                                    {{ $product->price }}
                                     @if( $config['enable_ecotaxes'] && $product->ecotax)
-                                        <br/><p class="text-muted">{{ $product->price_tax_inc - $product->getEcotax() }}</p>
+                                        <br/><p class="text-muted">{{ $product->price - $product->getEcotax() }}</p>
                                     @endif
                                 </td>
+
                                 <td>{{$product->tax_percent }}</td>
                             @endif
 

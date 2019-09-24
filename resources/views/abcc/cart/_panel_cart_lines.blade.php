@@ -13,25 +13,44 @@
                     </th>
                     <th class="text-center button-pad">{{ l('Quantity') }}
                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                           data-trigger="focus"
                            data-content="{{ l('Change Quantity and press [Enter] or click button on the right.') }}">
                             <i class="fa fa-question-circle abi-help"></i>
                         </a></th>
-                    <th class="text-right">
-                      <span class="button-pad">{{ l('Customer Price') }}
-                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
-                          data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-                          @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-                                  . {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
-                          @endif
-                                  ">
-                          <i class="fa fa-question-circle abi-help"></i>
-                       </a></span>
-                    </th>
-                    @if($config['show_taxes'])
+
+                    @if($config['display_with_taxes'])
+                        <th class="text-right">
+                          <span class="button-pad">{{ l('Customer Price (with Tax)') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                              data-trigger="focus"
+                              data-content="{{ l('Prices are inclusive of Tax', 'abcc/catalogue') }}
+                              @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                                      . {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+                              @endif
+                                      ">
+                              <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                          </span>
+                        </th>
+                        <th class="text-right">{{ l('Total') }}</th>
+                    @else
+                        <th class="text-right">
+                          <span class="button-pad">{{ l('Customer Price') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                              data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+                              @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                                      . {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+                              @endif
+                                      ">
+                              <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                          </span>
+                        </th>
+
                         <th>{{ l('Customer Price (with Tax)') }}</th>
-                        <th>{{ l('Taxes') }}</th>
+                        <th>{{ l('Tax') }}</th>
+                        <th class="text-right">{{ l('Total') }}</th>
                     @endif
-                    <th class="text-right">{{ l('Total') }}</th>
                     <th class="text-right"></th>
                 </tr>
                 </thead>
@@ -48,19 +67,16 @@
                         </td>
 
                         <td>
-                            @php
-                                $img = $line->product->getFeaturedImage();
-                            @endphp
-                            @if ($img)
+                            @if ($line->img)
                                 <a class="view-image" data-html="false" data-toggle="modal"
-                                   href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
+                                   href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-large_default' . '.' . $line->img->extension ) }}"
                                    data-content="{{l('You are going to view a record. Are you sure?')}}"
-                                   data-title="{{ l('Product Images') }} :: {{ $line->product->name }} "
-                                   data-caption="({{$img->id}}) {{ $img->caption }} "
+                                   data-title="{{ l('Product Images') }} :: {{ $line->product->name }}"
+                                   data-caption="({{$line->img->id}}) {{ $line->img->caption }}"
                                    onClick="return false;" title="{{l('View Image')}}">
 
-                                    <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}"
-                                         style="border: 1px solid #dddddd;">
+                                    <img src="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-mini_default' . '.' . $line->img->extension ) . '?'. 'time='. time() }}"
+                                         alt="{{ $line->product->name }}" style="border: 1px solid #dddddd;">
                                 </a>
                             @endif
                         </td>
@@ -68,8 +84,8 @@
                         <td>{{ $line->product->name }}
                             @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $line->product->ecotax )
                                 <br/>
-                                {{ l('Ecotax: ', 'abcc/catalogue') }} {{ $line->product->ecotax->name }} ({{ abi_money( $line->product->getEcotax()
-                                )}})
+                                {{ l('Ecotax: ', 'abcc/catalogue') }}
+                                {{ $line->product->ecotax->name }} ({{ abi_money( $line->product->getEcotax())}})
                             @endif
                         </td>
 
@@ -96,7 +112,7 @@
 
                         <td style="width:1px; white-space: nowrap;vertical-align: top;">
                             <div xclass="form-group">
-                                <div class="input-group" style="width: 81px;">
+                                <div class="input-group" style="width: 81px">
 
                                     <input class="input-line-quantity form-control input-sm col-xs-2" data-id="{{$line->id}}"
                                            data-quantity="{{ (int) $line->quantity }}" type="text" size="5" maxlength="5" style="xwidth: auto;"
@@ -114,26 +130,47 @@
                             </div>
                         </td>
 
-                        <td class="text-right">
-                            {{ $line->as_price('unit_customer_price') }}
+                        @if($config['display_with_taxes'])
+
+                            <td class="text-right">
+                            {{ $line->as_priceable($line->unit_customer_price + $line->tax) }}{{ $cart->currency->sign }}
+
+                                @if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
+                                    <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules'
+                                       data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
+                                       title="{{ l('Show Special Prices', 'abcc/catalogue') }}">
+                                        <i class="fa fa-thumbs-o-up"></i>
+                                    </a>
+                                @endif
+                            </td>
+
+                            <td class="text-right">
+                                {{ $line->as_priceable($line->price_with_taxes) }}{{ $cart->currency->sign }}
+                            </td>
+                        @else
+                            <td class="text-right">
+                            {{ $line->as_price('unit_customer_price') }}{{ $cart->currency->sign }}
 
                             <!--p class="text-info">{{ $line->as_priceable($line->unit_customer_price + $line->product->getEcotax()) }}</p-->
 
-                            @if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
-                                <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules'
-                                   data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
-                                   title="{{ l('Show Special Prices', 'abcc/catalogue') }} {{-- $line->product->hasQuantityPriceRules( \Auth::user()->customer ) --}}"><i
-                                            class="fa fa-thumbs-o-up"></i></a>
-                            @endif
-                        </td>
+                                @if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
+                                    <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules'
+                                       data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
+                                       title="{{ l('Show Special Prices', 'abcc/catalogue') }}">
+                                        <i class="fa fa-thumbs-o-up"></i>
+                                    </a>
+                                @endif
+                            </td>
 
-                        @if($config['show_taxes'])
-                            <td>{{$line->as_priceable($line->unit_customer_price + $line->tax_percent/100 * $line->unit_customer_price)}}</td>
+                            <td class="text-right">
+                                {{ $line->as_priceable($line->price_with_taxes)}}{{ $cart->currency->sign }}
+                            </td>
                             <td class="text-right">{{(int)$line->tax_percent.'%'}}</td>
+
+                            <td class="text-right">
+                                {{ $line->as_priceable($line->price_without_taxes) }}{{ $cart->currency->sign }}
+                            </td>
                         @endif
-                        <td class="text-right">
-                            {{ $line->as_priceable($line->quantity * $line->unit_customer_price) }}
-                        </td>
 
                         <td class="text-right button-pad">
                             <!-- a class="btn btn-sm btn-info" title="XXXXXS" onClick="loadcustomerorderlines();"><i class="fa fa-pencil"></i></a -->

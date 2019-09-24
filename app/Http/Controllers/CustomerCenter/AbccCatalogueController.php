@@ -93,7 +93,7 @@ class AbccCatalogueController extends Controller
 
             $this->appendInfoToProduct($products);
 
-            $config['show_taxes'] = $customer_user->canDisplayPricesTaxInc();
+            $config['display_with_taxes'] = $customer_user->canDisplayPricesTaxInc();
             $config['enable_ecotaxes'] = Configuration::isTrue('ENABLE_ECOTAXES');
 
             $products->setPath('catalogue');     // Customize the URI used by the paginator

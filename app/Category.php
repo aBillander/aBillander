@@ -47,16 +47,12 @@ class Category extends Model
 
     public function parent()
     {
-
         return $this->belongsTo('App\Category', 'parent_id', 'id');
-
     }
 
     public function children()
     {
-
         return $this->hasMany('App\Category', 'parent_id', 'id');
-
     }
 
     public function activechildren()
@@ -69,7 +65,12 @@ class Category extends Model
         return $this->hasMany('App\Product');
     }
 
-    public function customerproducts($customer_id = null, $currency_id = null)
+    /**
+     * Used in catalog sidebar
+     *
+     * @return mixed
+     */
+    public function customerProducts()
     {
         $customer_user = Auth::user();
 

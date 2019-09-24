@@ -34,7 +34,7 @@ return [
 	'Date to' => 'Fecha hasta',
 	'Customer'     => 'Cliente',
 	'Customer Name'     => 'Nombre del Cliente',
-	'Seach by Name or Identification (VAT Number).'     => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
+	'Search by Name or Identification (VAT Number).'     => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
 	'Product' => 'Producto',
 	'Price' => 'Precio',
 	'Currency' => 'Divisa',

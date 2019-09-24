@@ -23,7 +23,7 @@
     <div class="form-group col-lg-6 col-md-6 col-sm-6">
         {!! Form::label('autocustomer_name', l('Customer Name', 'pricerules')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Seach by Name or Identification (VAT Number).', 'pricerules') }}">
+                                    data-content="{{ l('Search by Name or Identification (VAT Number).', 'pricerules') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
 

@@ -33,7 +33,7 @@
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('autocustomer_name', l('Customer Name')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Seach by Name or Identification (VAT Number).') }}">
+                                    data-content="{{ l('Search by Name or Identification (VAT Number).') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
         {!! Form::text('autocustomer_name', old('autocustomer_name'), array('class' => 'form-control', 'id' => 'autocustomer_name', 'onclick' => 'this.select()')) !!}

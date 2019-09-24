@@ -6,7 +6,7 @@
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('customer_id') ? 'has-error' : '' }}">
             {{ l('Customer Name') }} 
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Seach by Name or Identification (VAT Number).') }}">
+                                    data-content="{{ l('Search by Name or Identification (VAT Number).') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
             <span id="sales_equalization" class="label label-info" style="display: none;"> {{l('Equalization Tax')}} </span>

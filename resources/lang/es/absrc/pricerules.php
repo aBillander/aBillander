@@ -14,7 +14,7 @@ return [
 	'Date from' => 'Fecha desde',
 	'Date to' => 'Fecha hasta',
 	'Customer Name' => 'Nombre del Cliente',
-	'Seach by Name or Identification (VAT Number).' => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
+	'Search by Name or Identification (VAT Number).' => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
 	'Product Reference' => 'Referencia de Producto',
 	'Product Name' => 'Nombre de Producto',
 	'Search by Product Reference or Name' => 'Busque por Nombre o Referencia',

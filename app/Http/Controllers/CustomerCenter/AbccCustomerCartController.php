@@ -160,13 +160,10 @@ class AbccCustomerCartController extends Controller
                            ->where('name', 'LIKE', '%' . $search . '%')
                            ->orWhere('reference', 'LIKE', '%' . $search . '%')
                            ->orWhere('ean13', 'LIKE', '%' . $search . '%')
-                           ->IsSaleable()
                            ->IsOrderable()
                            ->qualifyForCustomer($customer_user->customer_id, $request->input('currency_id'))
                            ->IsActive()
-            //                                ->with('measureunit')
                            ->get(intval(Configuration::get('DEF_ITEMS_PERAJAX')));
-
 
         return response($products);
     }

@@ -72,7 +72,7 @@ class Payment extends Model {
 
     public static function getStatusName( $status )
     {
-            return l($status, [], 'appmultilang');;
+            return l($status, [], 'appmultilang');
     }
 
     public static function isStatus( $status )

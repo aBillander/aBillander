@@ -36,7 +36,7 @@ class Ecotax extends Model {
     {
             $list = [];
             foreach (self::$types as $type) {
-                $list[$type] = l($type, [], 'appmultilang');;
+                $list[$type] = l($type, [], 'appmultilang');
             }
 
             return $list;

@@ -254,7 +254,7 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 /*		    
 		    $list = [];
 		    foreach (\App\Product::$types as $type) {
-		    	$list[$type] = l($type, [], 'appmultilang');;
+		    	$list[$type] = l($type, [], 'appmultilang');
 		    }
 */
 		    $list = \App\Product::getTypeList();

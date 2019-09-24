@@ -318,7 +318,7 @@ class CustomerShippingSlip extends Billable
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));die();
 
         // abi_toSQL($relation->orderBy('id', 'ASC'));die();
 */
@@ -331,7 +331,7 @@ class CustomerShippingSlip extends Billable
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));die();
 
         // abi_toSQL($relation->orderBy('id', 'ASC'));die();\App\CustomerShippingSlip::class
 */

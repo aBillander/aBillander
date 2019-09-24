@@ -647,7 +647,7 @@ foreach ($customers as $customer) {
                 $row[] = '';
                 $row[] = '';
                 $row[] = abi_date_short($payment->due_date);
-                $row[] = $payment->customer->reference_accounting . ' ' . $payment->customer->name_fiscal;;
+                $row[] = $payment->customer->reference_accounting . ' ' . $payment->customer->name_fiscal;
                 $row[] = $payment->customerinvoice->document_reference;
                 $row[] = $payment->status;
                 $row[] = $payment->amount * 1.0;

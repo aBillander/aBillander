@@ -565,7 +565,7 @@ class AbsrcProductsController extends Controller
             );
             $product->combinations()->save($combination);
 
-            $combination->options()->attach($combo);;
+            $combination->options()->attach($combo);
         }
 
         // Combinations are created with stock = 0. 

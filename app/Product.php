@@ -530,7 +530,7 @@ class Product extends Model {
     {
             $list = [];
             foreach (self::$types as $type) {
-                $list[$type] = l($type, [], 'appmultilang');;
+                $list[$type] = l($type, [], 'appmultilang');
             }
 
             return $list;
@@ -538,7 +538,7 @@ class Product extends Model {
 
     public static function getTypeName( $status )
     {
-            return l($status, [], 'appmultilang');;
+            return l($status, [], 'appmultilang');
     }
 
 
@@ -546,7 +546,7 @@ class Product extends Model {
     {
             $list = [];
             foreach (self::$procurement_types as $type) {
-                $list[$type] = l($type, [], 'appmultilang');;
+                $list[$type] = l($type, [], 'appmultilang');
             }
 
             return $list;
@@ -554,7 +554,7 @@ class Product extends Model {
 
     public static function getProcurementTypeName( $status )
     {
-            return l($status, [], 'appmultilang');;
+            return l($status, [], 'appmultilang');
     }
 
 

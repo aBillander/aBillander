@@ -330,7 +330,7 @@ class Billable extends Model
     {
             $list = [];
             foreach (static::$billable_types as $billable_type) {
-                $list[$billable_type] = l(get_called_class().'.'.$billable_type, [], 'appmultilang');;
+                $list[$billable_type] = l(get_called_class().'.'.$billable_type, [], 'appmultilang');
             }
 
             return $list;
@@ -338,14 +338,14 @@ class Billable extends Model
 
     public static function getBillableTypeName( $billable_type )
     {
-            return l('BillableType.'.$billable_type, [], 'appmultilang');;
+            return l('BillableType.'.$billable_type, [], 'appmultilang');
     }
 
     public static function getTypeList()
     {
             $list = [];
             foreach (static::$types as $type) {
-                $list[$type] = l(get_called_class().'.'.$type, [], 'appmultilang');;
+                $list[$type] = l(get_called_class().'.'.$type, [], 'appmultilang');
             }
 
             return $list;
@@ -353,7 +353,7 @@ class Billable extends Model
 
     public static function getTypeName( $type )
     {
-            return l(get_called_class().'.'.$type, [], 'appmultilang');;
+            return l(get_called_class().'.'.$type, [], 'appmultilang');
     }
 
 

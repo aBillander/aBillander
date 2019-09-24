@@ -115,7 +115,7 @@ class Sequence extends Model {
 
     public static function getTypeName( $types )
     {
-            return l($types, [], 'appmultilang');;
+            return l($types, [], 'appmultilang');
     }
 
     public function getFormatAttribute()

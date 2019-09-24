@@ -115,7 +115,7 @@
                     <button type="button" style="padding: 3px 8px;
 font-size: 12px;
 line-height: 1.5;
-border: 1px solid #adadad;;
+border: 1px solid #adadad;
 border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" 
                             data-content="{!! nl2br($order->all_notes) !!}">
                         <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}

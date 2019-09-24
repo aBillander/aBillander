@@ -149,7 +149,7 @@
 
 <style>
   .log-showoff-format {
-      color: #3a87ad;;
+      color: #3a87ad;
       font-weight: bold;
       font-style: italic;
   }

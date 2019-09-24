@@ -93,7 +93,7 @@ class BillableLine extends Model
     {
             $list = [];
             foreach (self::$types as $type) {
-                $list[$type] = l($this->getClassName().'.'.$type, [], 'appmultilang');;
+                $list[$type] = l(get_called_class().'.'.$type, [], 'appmultilang');
             }
 
             return $list;
@@ -101,7 +101,7 @@ class BillableLine extends Model
 
     public static function getTypeName( $type )
     {
-            return l($this->getClassName().'.'.$type, [], 'appmultilang');;
+            return l(get_called_class().'.'.$type, [], 'appmultilang');
     }
 
 

@@ -61,9 +61,7 @@ class Category extends Model
 
     public function activechildren()
     {
-
         return $this->hasMany('App\Category', 'parent_id', 'id')->where('active', '>', 0);    // ->IsActive() ;
-
     }
 
     public function products()
@@ -75,7 +73,11 @@ class Category extends Model
     {
         $customer_user = Auth::user();
 
-        return $this->hasMany('App\Product')->qualifyForCustomer($customer_user->customer_id, $customer_user->customer->currency->id)->get();
+        return $this->hasMany('App\Product')
+                    ->IsSaleable()
+                    ->IsAvailable()
+                    ->qualifyForCustomer($customer_user->customer_id, $customer_user->customer->currency->id)
+                    ->get();
     }
 
 }

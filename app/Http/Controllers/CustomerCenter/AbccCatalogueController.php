@@ -44,11 +44,13 @@ class AbccCatalogueController extends Controller
         $categories = $this->category
             ->with('activechildren')
             //			->withCount('products')
-            //			->IsPublished()
+            ->IsPublished()
             ->IsActive()
             ->where('parent_id', '=', intval($parentId))
             ->orderBy('name', 'asc')
             ->get();
+
+        $categories_ids = $categories->pluck('activechildren')->flatten()->pluck('id');
 
         if ($category_id > 0 && !$request->input('search_status', 0)) {
 
@@ -82,6 +84,7 @@ class AbccCatalogueController extends Controller
                 //                             ->with('tax')
                 ->IsSaleable()
                 ->IsAvailable()
+                ->whereIn('category_id', $categories_ids)
                 ->qualifyForCustomer($customer_user->customer_id, $customer_user->customer->currency->id)
                 ->IsActive()
                 ->orderBy('reference', 'asc');

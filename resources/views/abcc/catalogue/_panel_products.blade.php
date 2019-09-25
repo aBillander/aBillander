@@ -109,7 +109,6 @@
                                         $caption = $product->id . ' ' . $product->name;
                                         $img_href = URL::to( \App\Image::pathProducts() . 'default-mini_default.png' ) . '?'. 'time='. time();
                                     }
-
                                 @endphp
 
                                 <a class="view-image" data-html="false" data-toggle="modal"
@@ -375,9 +374,6 @@
             background-color: #ff0084;
             border-color: #ff0084;
         }
-
-        .text-dark {color: #000;}
-
     </style>
 
 @endsection

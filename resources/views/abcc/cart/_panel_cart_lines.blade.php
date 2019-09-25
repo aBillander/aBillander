@@ -70,7 +70,6 @@
                             @if ($line->img)
                                 <a class="view-image" data-html="false" data-toggle="modal"
                                    href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-large_default' . '.' . $line->img->extension ) }}"
-                                   data-content="{{l('You are going to view a record. Are you sure?')}}"
                                    data-title="{{ l('Product Images') }} :: {{ $line->product->name }}"
                                    data-caption="({{$line->img->id}}) {{ $line->img->caption }}"
                                    onClick="return false;" title="{{l('View Image')}}">
@@ -81,7 +80,15 @@
                             @endif
                         </td>
 
-                        <td>{{ $line->product->name }}
+                        <td>
+                            <a class="view-image text-dark" data-html="false" data-toggle="modal"
+                               href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-large_default' . '.' . $line->img->extension ) }}"
+                               data-title="{{ l('Product Images') }} :: {{ $line->product->name }}"
+                               data-caption="({{$line->img->id}}) {{ $line->img->caption }}"
+                               onClick="return false;" title="{{l('View Image')}}">
+                                {{ $line->product->name }}
+                            </a>
+
                             @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $line->product->ecotax )
                                 <br/>
                                 {{ l('Ecotax: ', 'abcc/catalogue') }}
@@ -133,7 +140,7 @@
                         @if($config['display_with_taxes'])
 
                             <td class="text-right">
-                            {{ $line->as_priceable($line->unit_customer_price + $line->tax) }}{{ $cart->currency->sign }}
+                                {{ $line->as_priceable($line->unit_customer_price + $line->tax) }}{{ $cart->currency->sign }}
 
                                 @if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
                                     <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules'

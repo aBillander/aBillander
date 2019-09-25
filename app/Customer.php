@@ -2,14 +2,12 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 use Auth;
-
-use App\Configuration;
-
 use App\Traits\ViewFormatterTrait;
+use Illuminate\Support\Collection;
 
 class Customer extends Model {
 
@@ -23,16 +21,16 @@ class Customer extends Model {
 
 
     protected $appends = ['name_regular'];
-	
-    protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'webshop_id', 'reference_external', 
+
+    protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'webshop_id', 'reference_external',
                            'accounting_id',
                            'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
-                           'outstanding_amount_allowed', 'unresolved_amount', 
-                           'notes', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
-                           'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
-//                           'sequence_id', 
-                           'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id', 
-                           'invoicing_address_id', 'shipping_address_id', 
+                           'outstanding_amount_allowed', 'unresolved_amount',
+                           'notes', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active',
+                           'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id',
+//                           'sequence_id',
+                           'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id',
+                           'invoicing_address_id', 'shipping_address_id',
                 ];
 
 
@@ -77,27 +75,27 @@ class Customer extends Model {
     }
 
     // Get the full name of a User instance using Eloquent accessors
-    
-    public function getNameAttribute() 
+
+    public function getNameAttribute()
     {
         return $this->address->firstname . ' ' . $this->address->lastname;
     }
-    
-    public function getNameRegularAttribute() 
+
+    public function getNameRegularAttribute()
     {
         return $this->name_commercial ?: $this->name_fiscal;
     }
-/*    
-    public function getFirstnameAttribute() 
+/*
+    public function getFirstnameAttribute()
     {
         return $this->address->firstname;
     }
-    
-    public function getLastnameAttribute() 
+
+    public function getLastnameAttribute()
     {
         return $this->address->lastname;
     }
-*/    
+*/
 
     public function getReferenceAccountingAttribute()
     {
@@ -108,24 +106,24 @@ class Customer extends Model {
         return $this->id;
     }
 
-    public function getEmailAttribute() 
+    public function getEmailAttribute()
     {
         return $this->address->email;
     }
 
-    public function currentpricelist( \App\Currency $currency = null )
+    public function currentpricelist(Currency $currency = null )
     {
         if ( $currency == null )
         {
             if ($this->currency_id)
-                $currency = $this->currency ?? \App\Currency::findOrFail( Configuration::get('DEF_CURRENCY') );
+                $currency = $this->currency ?? Currency::findOrFail(Configuration::get('DEF_CURRENCY') );
         }
 
         // First: Customer has pricelist?
         if ( $this->pricelist && ($currency->id == $this->pricelist->currency_id) ) {
 
             return $this->pricelist;
-        } 
+        }
 
         // Second: Customer Group has pricelist?
         if ( $this->customergroup && $this->customergroup->pricelist && ($currency->id == $this->customergroup->pricelist->currency_id) ) {
@@ -136,46 +134,46 @@ class Customer extends Model {
         return null;
     }
 
-    public function currentPricesEnteredWithTax( \App\Currency $currency = null ) 
+    public function currentPricesEnteredWithTax(Currency $currency = null )
     {
         return $this->currentpricelist( $currency )->price_is_tax_inc ?? Configuration::get('PRICES_ENTERED_WITH_TAX');
     }
 
 
-    public function getInvoiceSequenceId() 
+    public function getInvoiceSequenceId()
     {
-        if (   $this->invoice_sequence_id
-            && \App\Sequence::where('id', $this->invoice_sequence_id)->exists()
+        if ($this->invoice_sequence_id
+            && Sequence::where('id', $this->invoice_sequence_id)->exists()
             )
             return $this->invoice_sequence_id;
 
         return Configuration::getInt('DEF_CUSTOMER_INVOICE_SEQUENCE');
     }
 
-    public function getInvoiceTemplateId() 
+    public function getInvoiceTemplateId()
     {
-        if (   $this->invoice_template_id
-            && \App\Template::where('id', $this->invoice_template_id)->exists()
+        if ($this->invoice_template_id
+            && Template::where('id', $this->invoice_template_id)->exists()
             )
             return $this->invoice_template_id;
 
         return Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE');
     }
-    
-    public function getPaymentMethodId() 
+
+    public function getPaymentMethodId()
     {
-        if (   $this->payment_method_id
-            && \App\PaymentMethod::where('id', $this->payment_method_id)->exists()
+        if ($this->payment_method_id
+            && PaymentMethod::where('id', $this->payment_method_id)->exists()
             )
             return $this->payment_method_id;
 
         return Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD');
     }
-    
-    public function getShippingMethodId() 
+
+    public function getShippingMethodId()
     {
-        if (   $this->shipping_method_id
-            && \App\ShippingMethod::where('id', $this->shipping_method_id)->exists()
+        if ($this->shipping_method_id
+            && ShippingMethod::where('id', $this->shipping_method_id)->exists()
             )
             return $this->shipping_method_id;
 
@@ -190,7 +188,7 @@ class Customer extends Model {
     */
 
 
-    public function addRisk( $amount, \App\Currency $currency = null ) 
+    public function addRisk($amount, Currency $currency = null )
     {
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
@@ -202,7 +200,7 @@ class Customer extends Model {
     }
 
 
-    public function removeRisk( $amount, \App\Currency $currency = null ) 
+    public function removeRisk($amount, Currency $currency = null )
     {
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
@@ -240,7 +238,7 @@ class Customer extends Model {
         {
             $email = $params['email'];
 
-            $query->whereHas('addresses', function($q) use ($email) 
+            $query->whereHas('addresses', function($q) use ($email)
             {
                 $q->where('email', 'LIKE', '%' . $email . '%');
 
@@ -273,9 +271,9 @@ class Customer extends Model {
         // Not allow to see resource
         return $query->where('sales_rep_id', 0);
     }
-    
-    
-    public function paymentDays() 
+
+
+    public function paymentDays()
     {
         if ( !trim($this->payment_days) ) return [];
 
@@ -290,7 +288,7 @@ class Customer extends Model {
     /**
      * Adjust date to Customer Payment Days
      */
-    public function paymentDate( \Carbon\Carbon $date ) 
+    public function paymentDate( Carbon $date )
     {
         $pdays = $this->paymentDays();
         $n = count($pdays);
@@ -329,7 +327,7 @@ class Customer extends Model {
         // Check No-Payment Month
         if ($month==$this->no_payment_month) $month++;
 
-        $payday = \Carbon\Carbon::createFromDate($year, $month, $day);
+        $payday = Carbon::createFromDate($year, $month, $day);
 
         // Check Saturday & Sunday
         if ( $payday->dayOfWeek == 6 ) $payday->addDays(2); // Saturday
@@ -343,9 +341,9 @@ class Customer extends Model {
     // Better use: https://github.com/amnesty/drupal-nif-nie-cif-validator/blob/master/includes/nif-nie-cif.php
 
     // http://da-software.blogspot.com/2011/12/comprobar-cif-nif-nie-con-php.html
-    public static function check_spanish_nif_cif_nie( $value ) 
+    public static function check_spanish_nif_cif_nie( $value )
     {
-         //Returns: 
+         //Returns:
 
          // 1 = NIF ok,
 
@@ -355,10 +353,10 @@ class Customer extends Model {
 
          //-1 = NIF bad,
 
-         //-2 = CIF bad, 
+         //-2 = CIF bad,
 
          //-3 = NIE bad, 0 = ??? bad
-        
+
         // Sanitize
         $nif = self::normalize_spanish_nif_cif_nie( $value );
 
@@ -399,7 +397,7 @@ class Customer extends Model {
             $n = 10 - substr( $suma, strlen( $suma ) - 1, 1 );
 
             // comprobacion de NIFs especiales (se calculan como CIFs)
-            if ( preg_match( '/^[KLM]{1}/', $nif ) ) { 
+            if ( preg_match( '/^[KLM]{1}/', $nif ) ) {
                 if ( $num[8] == chr( 64 + $n ) ) {
                           return 1;
                   } else {
@@ -409,8 +407,8 @@ class Customer extends Model {
 
             // comprobacion de CIFs
             if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $nif ) ) {
-                
-                if ( $num[8] == chr( 64 + $n ) || $num[8] == substr( $n, strlen( $n ) - 1, 1 ) ) { 
+
+                if ( $num[8] == chr( 64 + $n ) || $num[8] == substr( $n, strlen( $n ) - 1, 1 ) ) {
                         return 2;
                   } else {
                         return -2;
@@ -428,7 +426,7 @@ class Customer extends Model {
             }
 
             // NIE válido (XYZ)
-            if ( preg_match( '/^[XYZ]{1}/', $nif ) ) { 
+            if ( preg_match( '/^[XYZ]{1}/', $nif ) ) {
                 if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X','Y','Z' ), array( '0','1','2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
                         return 3;
                   } else {
@@ -466,7 +464,7 @@ class Customer extends Model {
         return $this->hasOne('App\BankAccount', 'id', 'bank_account_id')
                    ->where('bank_accountable_type', Customer::class);
     }
-    
+
 
     public function addresses()
     {
@@ -499,7 +497,7 @@ class Customer extends Model {
 //        return $this->morphMany('App\Address', 'addressable')
 //                   ->where('addresses.id', $this->invoicing_address_id);
     }
-    
+
     public function invoicing_address()
     {
         if ($this->invoicing_address_id>0)
@@ -508,7 +506,7 @@ class Customer extends Model {
         else
             return null;
     }
-    
+
     public function shipping_address()
     {
         if ($this->shipping_address_id>0)
@@ -516,7 +514,7 @@ class Customer extends Model {
                    ->where('addresses.id', $this->shipping_address_id)->first();
         else
             return $this->invoicing_address();
-        
+
 //        return $this->belongsTo('App\Address', 'shipping_address_id')
 //                   ->where('addresses.addressable_type', 'App\Customer');
     }
@@ -562,7 +560,7 @@ class Customer extends Model {
         return $this->belongsTo('App\CustomerGroup', 'customer_group_id');
     }
 
-    
+
     public function customerorders()
     {
         return $this->hasMany('App\CustomerOrder');
@@ -577,7 +575,7 @@ class Customer extends Model {
     {
         return $this->hasMany('App\CustomerInvoice');
     }
-    
+
     public function payments()
     {
         // return $this->hasMany('App\Payment', 'owner_id')->where('payment.owner_model_name', '=', 'Customer');
@@ -605,7 +603,7 @@ class Customer extends Model {
         return $this->hasMany('App\CustomerUser', 'customer_id');
     }
 
-    
+
     /*
     |--------------------------------------------------------------------------
     | Data Provider
@@ -622,7 +620,7 @@ class Customer extends Model {
         $clients = Customer::select('name_fiscal', 'name_commercial', 'id')->orderBy('name_fiscal')->where('name_fiscal', 'like', '%' . $query . '%');
         if ( isset($params['name_commercial']) AND ($params['name_commercial'] == 1) )
             $clients = $clients->orWhere('name_commercial', 'like', '%' . $query . '%');
-        
+
         $clients = $clients->get();
 
         $return = array();
@@ -640,7 +638,7 @@ class Customer extends Model {
 
         return json_encode( array('query' => $query, 'suggestions' => $return) );
     }
-    
+
 
     /*
     |--------------------------------------------------------------------------
@@ -648,7 +646,7 @@ class Customer extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public function getPrice( \App\Product $product, $quantity = 1, \App\Currency $currency = null )
+    public function getPrice(Product $product, $quantity = 1, Currency $currency = null )
     {
         // Fall back price (use it if Price for $currency is not set)
         $fallback = null;
@@ -657,7 +655,7 @@ class Customer extends Model {
             $currency = $this->currency;
 
         if (!$currency)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
 
 
         // Special prices have more priority
@@ -673,7 +671,7 @@ class Customer extends Model {
             $price = $this->pricelist->getPrice( $product );
 
             return $price;
-        } 
+        }
 
         // Fourth: Customer Group has pricelist?
         if ( $this->customergroup && $this->customergroup->pricelist && ($currency->id == $this->customergroup->pricelist->currency_id) ) {
@@ -695,31 +693,31 @@ class Customer extends Model {
     }
 
 
-    public function getPriceRules( \App\Product $product, \App\Currency $currency = null )
+    public function getPriceRules(Product $product, Currency $currency = null )
     {
 
         if (!$currency && $this->currency_id)
             $currency = $this->currency;
 
         if (!$currency)
-            $currency = \App\Context::getContext()->currency;
-        
-        $rules = \App\PriceRule::where('currency_id', $currency->id)
+            $currency = Context::getContext()->currency;
+
+        $rules = PriceRule::where('currency_id', $currency->id)
                     // Customer range
-                    ->where( function($query) {
+                          ->where( function($query) {
                                 $query->where('customer_id', $this->id);
                                 if ($this->customer_group_id)
                                     $query->orWhere('customer_group_id', $this->customer_group_id);
                         } )
                      // Product range
-                    ->where( function($query) use ($product) {
+                          ->where( function($query) use ($product) {
                                 $query->where('product_id', $product->id);
                                 if ($product->category_id)
                                     $query->orWhere('category_id',  $product->category_id);
                         } )
                     // Date range
-                    ->where( function($query){
-                                $now = \Carbon\Carbon::now()->startOfDay(); 
+                          ->where( function($query){
+                                $now = Carbon::now()->startOfDay();
                                 $query->where( function($query) use ($now) {
                                     $query->where('date_from', null);
                                     $query->orWhere('date_from', '<=', $now);
@@ -729,24 +727,24 @@ class Customer extends Model {
                                     $query->orWhere('date_to', '>=', $now);
                                 } );
                         } )
-                    ->get();
+                          ->get();
 
         return $rules;
     }
 
 
-    public function getQuantityPriceRules( \App\Currency $currency = null )
+    public function getQuantityPriceRules(Currency $currency = null )
     {
 
         if (!$currency && $this->currency_id)
             $currency = $this->currency;
 
         if (!$currency)
-            $currency = \App\Context::getContext()->currency;
-        
-        $rules = \App\PriceRule::where('currency_id', $currency->id)
+            $currency = Context::getContext()->currency;
+
+        $rules = PriceRule::where('currency_id', $currency->id)
                     // Customer range
-                    ->where( function($query) {
+                          ->where( function($query) {
                                 $query->where('customer_id', $this->id);
                                 if ($this->customer_group_id)
                                     $query->orWhere('customer_group_id', $this->customer_group_id);
@@ -759,10 +757,10 @@ class Customer extends Model {
 //                                    $query->orWhere('category_id',  $product->category_id);
 //                        } )
                     // Quantity range
-                    ->where( 'from_quantity', '>', 1 )
+                          ->where( 'from_quantity', '>', 1 )
                     // Date range
                     ->where( function($query){
-                                $now = \Carbon\Carbon::now()->startOfDay(); 
+                                $now = Carbon::now()->startOfDay();
                                 $query->where( function($query) use ($now) {
                                     $query->where('date_from', null);
                                     $query->orWhere('date_from', '<=', $now);
@@ -778,7 +776,7 @@ class Customer extends Model {
     }
 
 
-    public function getLastPrice( \App\Product $product = null, \App\Currency $currency = null )
+    public function getLastPrice(Product $product = null, Currency $currency = null )
     {
         // 
         if ( $product == null) return null;
@@ -789,7 +787,7 @@ class Customer extends Model {
 
         // https://stackoverflow.com/questions/41679771/eager-load-relationships-in-laravel-with-conditions-on-the-relation?rq=1
 
-        $line = \App\CustomerOrderLine::whereHas(
+        $line = CustomerOrderLine::whereHas(
 
                 'customerorder', function ($order) use ($customerId) {
                     return $order->where('customer_id', $customerId);
@@ -828,7 +826,12 @@ class Customer extends Model {
         else return null;
     }
 
-    public function getTaxRules( \App\Product $product, $address = null )
+    /**
+     * @param Product $product
+     * @param null    $address
+     * @return Collection
+     */
+    public function getTaxRules(Product $product, $address = null)
     {
         $rules = collect([]);
 
@@ -837,29 +840,32 @@ class Customer extends Model {
 
             $tax = $product->tax;
 
-
-            if ( $address == null ) 
+            if ($address == null) {
                 $address = $this->invoicing_address();
+            }
 
             $country_id = $address->country_id;
-            $state_id   = $address->state_id;
+            $state_id = $address->state_id;
 
-            $rules_re = $tax->taxrules()->where(function ($query) use ($country_id) {
-                $query->where(  'country_id', '=', 0)
-                      ->OrWhere('country_id', '=', $country_id);
-            })
-                                     ->where(function ($query) use ($state_id) {
-                $query->where(  'state_id', '=', 0)
-                      ->OrWhere('state_id', '=', $state_id);
-            })
-                                     ->where('rule_type', '=', 'sales_equalization')
-                                     ->get();
+            $rules_re = $tax->taxrules()
+                            ->where(function ($query) use ($country_id) {
+                                $query
+                                    ->where('country_id', '=', 0)
+                                    ->OrWhere('country_id', '=', $country_id);
+                            })
+                            ->where(function ($query) use ($state_id) {
+                                $query->where('state_id', '=', 0)
+                                      ->OrWhere('state_id', '=', $state_id);
+                            })
+                            ->where('rule_type', '=', 'sales_equalization')
+                            ->get();
 
-            if ( $rules_re->isNotEmpty() ) $rules = $rules->merge( $rules_re );
-
+            if ($rules_re->isNotEmpty()) {
+                $rules = $rules->merge($rules_re);
+            }
         }
 
         return $rules;
     }
-    
+
 }

@@ -2,6 +2,9 @@
 
 namespace App;
 
+use Auth;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\ViewFormatterTrait;
@@ -199,39 +202,39 @@ class Product extends Model
     {
         // Allocated by Customer Orders
         // Document status = 'confirmed'
-        $lines1 = \App\CustomerOrderLine::
+        $lines1 = CustomerOrderLine::
         where('product_id', $this->id)
-                                        ->whereHas('document', function ($q) {
+                                   ->whereHas('document', function ($q) {
                                             $q->where('status', 'confirmed');
                                         }
                                         )
-                                        ->get();
+                                   ->get();
 
         $count1 = $lines1->sum('quantity');
 
         // Allocated by Customer Shipping Slips
         // Document status = 'confirmed'
-        $lines2 = \App\CustomerShippingSlipLine::
+        $lines2 = CustomerShippingSlipLine::
         where('product_id', $this->id)
-                                               ->whereHas('document', function ($q) {
+                                          ->whereHas('document', function ($q) {
                                                    $q->where('status', 'confirmed');
                                                }
                                                )
-                                               ->get();
+                                          ->get();
 
         $count2 = $lines2->sum('quantity');
 
 
         // Allocated by Customer Invoices
         // Document status = 'confirmed' && created_via = 'manual'
-        $lines3 = \App\CustomerInvoiceLine::
+        $lines3 = CustomerInvoiceLine::
         where('product_id', $this->id)
-                                          ->whereHas('document', function ($q) {
+                                     ->whereHas('document', function ($q) {
                                               $q->where('status', 'confirmed');
                                               $q->where('created_via', 'manual');
                                           }
                                           )
-                                          ->get();
+                                     ->get();
 
         $count3 = $lines3->sum('quantity');
 
@@ -304,8 +307,8 @@ class Product extends Model
     public function getIsPackagingAttribute()
     {
 
-        return $this->category_id == \App\Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY') ||
-               $this->parent_category_id == \App\Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY');
+        return $this->category_id == Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY') ||
+               $this->parent_category_id == Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY');
     }
 
     // Alias
@@ -369,7 +372,7 @@ class Product extends Model
         if (isset($params['name']) && trim($params['name']) !== '') {
             $query->where('name', 'LIKE', '%' . trim($params['name'] . '%'));
 
-            if (\Auth::user()->language->iso_code == 'en') {
+            if (Auth::user()->language->iso_code == 'en') {
                 $query->orWhere('name_en', 'LIKE', '%' . trim($params['name'] . '%'));
             }
         }
@@ -419,17 +422,17 @@ class Product extends Model
             : $warehouse->id;
 
         // Retrieve movements
-        $mvt = \App\StockMovement::
+        $mvt = StockMovement::
         where('product_id', $this->id)
-                                 ->where('warehouse_id', $wh_id)
-                                 ->where(function ($query) {
+                            ->where('warehouse_id', $wh_id)
+                            ->where(function ($query) {
                                      // $now = \Carbon\Carbon::now()->startOfDay();
                                      //
-                                     $query->where('movement_type_id', \App\StockMovement::INITIAL_STOCK);
-                                     $query->orWhere('movement_type_id', \App\StockMovement::ADJUSTMENT);
+                                     $query->where('movement_type_id', StockMovement::INITIAL_STOCK);
+                                     $query->orWhere('movement_type_id', StockMovement::ADJUSTMENT);
                                  })
-                                 ->orderBy('date', 'desc')
-                                 ->first();
+                            ->orderBy('date', 'desc')
+                            ->first();
 
 
         $last_stock_taking_date = $mvt ? $mvt->date : '';
@@ -438,7 +441,7 @@ class Product extends Model
         return $last_stock_taking_date;
     }
 
-    public function getStockToDateByWarehouse($warehouse = null, \Carbon\Carbon $date = null)
+    public function getStockToDateByWarehouse($warehouse = null, Carbon $date = null)
     {
         if ($warehouse == null) {
             $warehouse = Configuration::getInt('DEF_WAREHOUSE');
@@ -448,7 +451,7 @@ class Product extends Model
             : $warehouse->id;
 
         if ($date == null) {
-            $date = \Carbon\Carbon::now();
+            $date = Carbon::now();
         }   //->endOfDay();
         else {
             $date = $date->endOfDay();
@@ -457,37 +460,37 @@ class Product extends Model
         $last_stock_taking_mvt = $this->getLastStockTakingByWarehouse($warehouse);
 
         // Retrieve movements
-        $mvts = \App\StockMovement::
+        $mvts = StockMovement::
         where('product_id', $this->id)
-                                  ->where('warehouse_id', $wh_id)
-                                  ->where('date', '<', $date)
-                                  ->where(function ($query) use ($last_stock_taking_mvt) {
+                             ->where('warehouse_id', $wh_id)
+                             ->where('date', '<', $date)
+                             ->where(function ($query) use ($last_stock_taking_mvt) {
                                       if ($last_stock_taking_mvt) {
                                           $query->where('date', '>', $last_stock_taking_mvt->date);
                                       }
                                   })
-                                  ->where(function ($query) {
+                             ->where(function ($query) {
                                       // $now = \Carbon\Carbon::now()->startOfDay();
                                       //
-                                      $query->where('movement_type_id', '<>', \App\StockMovement::INITIAL_STOCK);
-                                      $query->where('movement_type_id', '<>', \App\StockMovement::ADJUSTMENT);
+                                      $query->where('movement_type_id', '<>', StockMovement::INITIAL_STOCK);
+                                      $query->where('movement_type_id', '<>', StockMovement::ADJUSTMENT);
                                   })
-                                  ->orderBy('date', 'desc')
-                                  ->get();
+                             ->orderBy('date', 'desc')
+                             ->get();
 
         return optional($last_stock_taking_mvt)->quantity_after_movement - ($mvts->sum('quantity_before_movement') - $mvts->sum('quantity_after_movement'));
     }
 
-    public function getStockToDate(\Carbon\Carbon $date = null)
+    public function getStockToDate(Carbon $date = null)
     {
         if ($date == null) {
-            $date = \Carbon\Carbon::now();
+            $date = Carbon::now();
         }   //->endOfDay();
         else {
             $date = $date->endOfDay();
         }
 
-        $warehouses = \App\Warehouse::get();
+        $warehouses = Warehouse::get();
         $count = 0;
 
         foreach ($warehouses as $warehouse) {
@@ -514,7 +517,7 @@ class Product extends Model
         return $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
     }
 
-    public function setFeaturedImage(\App\Image $image)
+    public function setFeaturedImage(Image $image)
     {
         $featured = $image->id;
 
@@ -809,7 +812,7 @@ class Product extends Model
     {
         $price = [$this->price, $this->price_tax_inc];        // These prices are in Company Currency
 
-        $priceObject = \App\Price::create($price, \App\Context::getContext()->company->currency);
+        $priceObject = Price::create($price, Context::getContext()->company->currency);
 
         return $priceObject;
     }
@@ -818,7 +821,7 @@ class Product extends Model
     {
         $price = [$this->price, $this->price_tax_inc];        // These prices are in Company Currency
 
-        $priceObject = \App\Price::create($price, \App\Context::getContext()->company->currency);
+        $priceObject = Price::create($price, Context::getContext()->company->currency);
 
         // Add Ecotax
         if (Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax) {
@@ -835,7 +838,7 @@ class Product extends Model
         return $priceObject;
     }
 
-    public function getPriceByList(\App\PriceList $list = null)
+    public function getPriceByList(PriceList $list = null)
     {
         // Return \App\Price Object
         if ($list && ($price = $list->getPrice($this))) {
@@ -863,7 +866,7 @@ class Product extends Model
     }
 
     // Deprecated DO NOT USE
-    public function getPriceByListWithEcotax(\App\PriceList $list = null)
+    public function getPriceByListWithEcotax(PriceList $list = null)
     {
         // Return \App\Price Object
         $price = $this->getPriceByList($list);
@@ -883,7 +886,7 @@ class Product extends Model
         return $price;
     }
 
-    public function getPriceByCustomer(\App\Customer $customer, $quantity = 1, \App\Currency $currency = null)
+    public function getPriceByCustomer(Customer $customer, $quantity = 1, Currency $currency = null)
     {
         // Return \App\Price Object
         $price = $customer->getPrice($this, $quantity, $currency);
@@ -914,18 +917,18 @@ class Product extends Model
     }
 
 
-    public function getTaxRulesByAddress(\App\Address $address = null)
+    public function getTaxRulesByAddress(Address $address = null)
     {
         // Taxes depending on location
         // If no address, use default Company address
         if ($address == null) {
-            $address = \App\Context::getContext()->company->address;
+            $address = Context::getContext()->company->address;
         }
 
         return $address->getTaxRules($this->tax);
     }
 
-    public function getTaxRulesByCustomer(\App\Customer $customer = null)
+    public function getTaxRulesByCustomer(Customer $customer = null)
     {
         // Taxes depending on Customer, no matter of location
         if ($customer == null) {
@@ -935,14 +938,14 @@ class Product extends Model
         return $customer->getTaxRules($this);
     }
 
-    public function getTaxRulesByProduct(\App\Address $address = null)
+    public function getTaxRulesByProduct(Address $address = null)
     {
         // Taxes depending on Product itself, such as recycle tax
         return collect([]);
 
         // If no address, use default Company address
         if ($address == null) {
-            $address = \App\Context::getContext()->company->address;
+            $address = Context::getContext()->company->address;
         }
 
         $rules = collect([]);
@@ -975,7 +978,7 @@ class Product extends Model
         return $rules;
     }
 
-    public function getTaxRules(\App\Address $address = null, \App\Customer $customer = null)
+    public function getTaxRules(Address $address = null, Customer $customer = null)
     {
         $rules = $this->getTaxRulesByAddress($address)
                       ->merge($this->getTaxRulesByCustomer($customer))
@@ -988,7 +991,7 @@ class Product extends Model
         return $rules->sortBy('position');
     }
 
-    public function getQuantityPriceRules(\App\Customer $customer = null)
+    public function getQuantityPriceRules(Customer $customer = null)
     {
         $product = $this;
 
@@ -1019,7 +1022,7 @@ class Product extends Model
                                 ->where('from_quantity', '>', 1)
             // Date range
                                 ->where(function ($query) {
-                $now = \Carbon\Carbon::now()->startOfDay();
+                $now = Carbon::now()->startOfDay();
                 $query->where(function ($query) use ($now) {
                     $query->where('date_from', null);
                     $query->orWhere('date_from', '<=', $now);
@@ -1035,7 +1038,7 @@ class Product extends Model
         return $price_rules;
     }
 
-    public function hasQuantityPriceRules(\App\Customer $customer = null)
+    public function hasQuantityPriceRules(Customer $customer = null)
     {
         return $this->getQuantityPriceRules($customer)->count();
     }
@@ -1050,8 +1053,8 @@ class Product extends Model
     /**
      * Scope a query to only include finishe products.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeIsManufactured($query)
     {
@@ -1089,7 +1092,7 @@ class Product extends Model
             return $query;
         }
 
-        return $query->whereDate('created_at', '>=', \Carbon\Carbon::now()->subDays(Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT')));
+        return $query->whereDate('created_at', '>=', Carbon::now()->subDays(Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT')));
     }
 
     public function scopeManufacturer($query, $manufacturer_id)
@@ -1105,10 +1108,10 @@ class Product extends Model
     {
         // Filter Products by Customer
         if (Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block') {
-            $customer = \App\Customer::with('customergroup')->findorfail($customer_id);
+            $customer = Customer::with('customergroup')->findorfail($customer_id);
 
             if (!($currency_id)) {
-                $currency_id = \App\Context::getContext()->currency->id;
+                $currency_id = Context::getContext()->currency->id;
             }
 
             if ($customer->price_list_id) {

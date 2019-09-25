@@ -18,6 +18,20 @@
                             <i class="fa fa-question-circle abi-help"></i>
                         </a></th>
 
+
+                    <th class="text-right">
+                          <span class="button-pad">{{ l('Customer Price') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                              data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+                              @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                                      . {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+                              @endif
+                                      ">
+                              <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                          </span>
+                    </th>
+
                     @if($config['display_with_taxes'])
                         <th class="text-right">
                           <span class="button-pad">{{ l('Customer Price (with Tax)') }}
@@ -32,25 +46,11 @@
                            </a>
                           </span>
                         </th>
-                        <th class="text-right">{{ l('Total') }}</th>
-                    @else
-                        <th class="text-right">
-                          <span class="button-pad">{{ l('Customer Price') }}
-                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
-                              data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-                              @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-                                      . {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
-                              @endif
-                                      ">
-                              <i class="fa fa-question-circle abi-help"></i>
-                           </a>
-                          </span>
-                        </th>
 
-                        <th>{{ l('Customer Price (with Tax)') }}</th>
                         <th>{{ l('Tax') }}</th>
-                        <th class="text-right">{{ l('Total') }}</th>
                     @endif
+
+                    <th class="text-right">{{ l('Total') }}</th>
                     <th class="text-right"></th>
                 </tr>
                 </thead>
@@ -137,6 +137,21 @@
                             </div>
                         </td>
 
+
+                        <td class="text-right">
+                        {{ $line->as_price('unit_customer_price') }}{{ $cart->currency->sign }}
+
+                        <!--p class="text-info">{{ $line->as_priceable($line->unit_customer_price + $line->product->getEcotax()) }}</p-->
+
+                            @if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
+                                <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules'
+                                   data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
+                                   title="{{ l('Show Special Prices', 'abcc/catalogue') }}">
+                                    <i class="fa fa-thumbs-o-up"></i>
+                                </a>
+                            @endif
+                        </td>
+
                         @if($config['display_with_taxes'])
 
                             <td class="text-right">
@@ -151,33 +166,12 @@
                                 @endif
                             </td>
 
-                            <td class="text-right">
-                                {{ $line->as_priceable($line->price_with_taxes) }}{{ $cart->currency->sign }}
-                            </td>
-                        @else
-                            <td class="text-right">
-                            {{ $line->as_price('unit_customer_price') }}{{ $cart->currency->sign }}
-
-                            <!--p class="text-info">{{ $line->as_priceable($line->unit_customer_price + $line->product->getEcotax()) }}</p-->
-
-                                @if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
-                                    <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules'
-                                       data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
-                                       title="{{ l('Show Special Prices', 'abcc/catalogue') }}">
-                                        <i class="fa fa-thumbs-o-up"></i>
-                                    </a>
-                                @endif
-                            </td>
-
-                            <td class="text-right">
-                                {{ $line->as_priceable($line->price_with_taxes)}}{{ $cart->currency->sign }}
-                            </td>
                             <td class="text-right">{{(int)$line->tax_percent.'%'}}</td>
-
-                            <td class="text-right">
-                                {{ $line->as_priceable($line->price_without_taxes) }}{{ $cart->currency->sign }}
-                            </td>
                         @endif
+
+                        <td class="text-right">
+                            {{ $line->as_priceable($line->price_without_taxes) }}{{ $cart->currency->sign }}
+                        </td>
 
                         <td class="text-right button-pad">
                             <!-- a class="btn btn-sm btn-info" title="XXXXXS" onClick="loadcustomerorderlines();"><i class="fa fa-pencil"></i></a -->

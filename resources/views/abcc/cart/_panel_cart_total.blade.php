@@ -11,7 +11,7 @@
         <h4>{{ $cart->quantity }}</h4>
     </td>
 
-    @if(!$config['display_with_taxes'])
+    @if($config['display_with_taxes'])
         <td></td>
     @endif
 
@@ -32,7 +32,7 @@
             </h4>
         </td>
 
-        @if(!$config['display_with_taxes'])
+        @if($config['display_with_taxes'])
             <td></td>
         @endif
         <td class="text-center lead" colspan="3"><h4>-{{ $cart->discount1 }} {{ $cart->currency->sign }}</h4></td>
@@ -49,7 +49,7 @@
             </h4>
         </td>
 
-        @if(!$config['display_with_taxes'])
+        @if($config['display_with_taxes'])
             <td></td>
         @endif
         <td class="text-center lead" colspan="3"><h4>-{{ $cart->discount2 }} {{ $cart->currency->sign }}</h4></td>
@@ -64,7 +64,7 @@
             <h4><span style="color: #dd4814;">{{ l('Total after discounts') }}</span></h4>
         </td>
 
-        @if(!$config['display_with_taxes'])
+        @if($config['display_with_taxes'])
             <td></td>
         @endif
         <td class="text-center lead" colspan="3"><h4>{{ $cart->as_priceable($cart->total_products) }} {{ $cart->currency->sign }}</h4></td>
@@ -75,7 +75,7 @@
 <tr class="info">
     <td colspan="4"></td>
     <td colspan="2"><h4>{{ l('Taxes Total') }}</h4></td>
-    @if(!$config['display_with_taxes'])
+    @if($config['display_with_taxes'])
         <td></td>
     @endif
     <td class="text-center lead" colspan="3">
@@ -88,7 +88,7 @@
     <td colspan="4"></td>
     <td colspan="2"><h3>{{ l('Order Total') }}</h3></td>
 
-    @if(!$config['display_with_taxes'])
+    @if($config['display_with_taxes'])
         <td></td>
     @endif
     <td class="text-center lead" colspan="3">

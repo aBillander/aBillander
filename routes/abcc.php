@@ -139,7 +139,6 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::get('/customer/pricerules', 'AbccCustomerController@getQuantityPriceRules')->name('abcc.customer.pricerules');
 
         // Route::resource('customers.addresses', 'CustomerAddressesController');
-
     });
 });
 

@@ -104,6 +104,7 @@ class Cart extends Model
                         ->where('customer_user_id',
                                 Auth::user()->id)->with('cartlines')
                         ->first();
+
             if ($cart) {
                 // Deletable lines
                 $deletables = CartLine::where('cart_id', $cart->id)
@@ -146,7 +147,6 @@ class Cart extends Model
 
     public function addLine($product_id = null, $combination_id = null, $quantity = 1.0)
     {
-
         $customer_user = Auth::user();  // Don't trust: $request->input('customer_id')
 
         if (!$customer_user) {

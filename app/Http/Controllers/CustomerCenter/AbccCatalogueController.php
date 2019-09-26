@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\CustomerCenter;
 
 use App\Configuration;
+use App\Customer;
+use App\CustomerUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -91,7 +93,7 @@ class AbccCatalogueController extends Controller
 
             $products = $products->paginate(Configuration::get('ABCC_ITEMS_PERPAGE'));
 
-            $this->appendInfoToProduct($products);
+            $this->appendInfoToProduct($products, $customer_user->customer);
 
             $config['display_with_taxes'] = $customer_user->canDisplayPricesTaxInc();
             $config['enable_ecotaxes'] = Configuration::isTrue('ENABLE_ECOTAXES');
@@ -104,11 +106,13 @@ class AbccCatalogueController extends Controller
 
     /**
      * Append image info and price with and without taxes formatted
-     * @param $products
+     *
+     * @param              $products
+     * @param Customer     $customer
      */
-    private function appendInfoToProduct($products)
+    private function appendInfoToProduct($products, Customer $customer)
     {
-        $products->map(function ($product) {
+        $products->map(function (Product $product) use ($customer) {
             // add the product image to each product here instead of doing it in the view
             $product->img = $product->getFeaturedImage();
 
@@ -120,8 +124,10 @@ class AbccCatalogueController extends Controller
             );
 
             $product->price_tax_inc = $product->tax_percent = 0;
-            $tax = $product->getTaxRules();
+            $tax = $product->getTaxRules(null, $customer);
 
+            // TODO. Several tax lines are possible?
+            // should check if this is a rule_type sales tax?
             if ($tax_data = $tax->first()) {
                 $product->price_tax_inc = $product->as_priceable(
                     $tax_data->percent / 100 * $product->price +

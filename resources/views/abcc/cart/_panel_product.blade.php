@@ -83,7 +83,7 @@
 
                 success: function () {
 
-                    loadCartlines();
+                    loadCartLines();
 
                     $(function () {
                         $('[data-toggle="tooltip"]').tooltip()
@@ -211,7 +211,7 @@
             var id = $(this).attr('data-id');
             var quantity = $(this).parent().prev(".input-line-quantity").val();
 
-            updateCartlineQuantity(id, quantity);
+            updateCartLineQuantity(id, quantity);
             return false;
 
         });
@@ -224,7 +224,7 @@
             if (evnt.keyCode == 13) {
                 // console.log("put function call here");
                 evnt.preventDefault();
-                updateCartlineQuantity(id, quantity);
+                updateCartLineQuantity(id, quantity);
                 return false;
             }
 
@@ -244,7 +244,7 @@
 
         // Initialization stuff
 
-        loadCartlines();
+        loadCartLines();
 
         auto_product_line("#line_autoproduct_name");
 
@@ -256,19 +256,22 @@
     /* ******************************************************************************************************************************************** */
 
 
-    function updateCartlineQuantity(line_id = 0, quantity = 1) {
+    function updateCartLineQuantity(line_id = 0, quantity = 1) {
 
         if (line_id <= 0) return;
 
-        // alert(line_id+' - '+quantity);
+        const url = "{{ route('abcc.cart.updateline') }}";
+        const token = "{{ csrf_token() }}";
+        const panel = $('#panel_cart_lines');
 
-        var url = "{{ route('abcc.cart.updateline') }}";
-        var token = "{{ csrf_token() }}";
-
-        var payload = {
+        let payload = {
             line_id: line_id,
             quantity: quantity
         };
+
+        panel.find('*').not('#loading_text').remove();
+        panel.addClass('loading');
+        $('#loading_text').show();
 
         $.ajax({
             url: url,
@@ -279,42 +282,40 @@
 
             success: function (result) {
 
-                loadCartlines();
-
+                panel.removeClass('loading');
+                loadCartLines();
                 $(function () {
                     $('[data-toggle="tooltip"]').tooltip()
                 });
 
                 showAlertDivWithDelay("#msg-success-update");
 
-                console.log(result);
+                //console.log(result);
             }
         });
 
     }
 
 
-    function loadCartlines() {
+    function loadCartLines() {
 
-        var panel = $("#panel_cart_lines");
-        var url = "{{ route('abcc.cart.getlines') }}";
+        const panel = $("#panel_cart_lines");
+        const url = "{{ route('abcc.cart.getlines') }}";
 
         panel.addClass('loading');
 
         $.get(url, {}, function (result) {
-            panel.html(result);
+            $('#panel_cart_lines span').hide();
+            panel.append(result);
             panel.removeClass('loading');
             $("[data-toggle=popover]").popover();
-//                 sortableOrderlines();
 
-            $('#badge_cart_nbr_items').html($('#cart_nbr_items').val());// alert($('#cart_nbr_items').val());
+            $('#badge_cart_nbr_items').html($('#cart_nbr_items').val());
         }, 'html');
-
     }
 
 
     function resetSearchProduct() {
-
         $("#line_autoproduct_name").val('');
         $('#line_quantity').val(1);
         $('#line_measure_unit_id').val(0);
@@ -323,7 +324,6 @@
         $('#line_product_id').val('');
         $('#line_combination_id').val('');
         $("#line_autoproduct_name").focus();  // Focus won't work if console is open!!!
-
     }
 
 </script>

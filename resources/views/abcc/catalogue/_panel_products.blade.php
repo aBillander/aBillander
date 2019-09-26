@@ -177,13 +177,12 @@
                                 {{--<td>{{ (int)$product->tax->percent }}%</td>--}}
                             @endif
 
-
                             <td>
                                 @if ( $product->hasQuantityPriceRules( \Auth::user()->customer ) )
                                     <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules'
                                        data-id="{{ $product->id }}" data-toggle="modal" onClick="return false;"
-                                       title="{{ l('Show Special Prices') }} {{-- $product->hasQuantityPriceRules( \Auth::user()->customer ) --}}"><i
-                                                class="fa fa-thumbs-o-up"></i>
+                                       title="{{ l('Show Special Prices') }}">
+                                        <i class="fa fa-thumbs-o-up"></i>
                                     </a>
                                 @endif
                             </td>

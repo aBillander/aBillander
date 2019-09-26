@@ -29,7 +29,10 @@
                     <strong>{!!  l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
                 </div>
 
-                <div id="panel_cart_lines" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
+                <div id="panel_cart_lines" class="loading">
+                    <span id="loading_text">
+                        &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
+                    </span>
 
                     {{--  @ include('abcc.cart._panel_cart_lines.blade.php') --}}
 

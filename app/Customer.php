@@ -9,16 +9,13 @@ use Auth;
 use App\Traits\ViewFormatterTrait;
 use Illuminate\Support\Collection;
 
-class Customer extends Model {
+class Customer extends Model
+{
 
     use ViewFormatterTrait;
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
-
-//    protected $guarded = ['id', 'outstanding_amount', 'unresolved_amount', 'secure_key'
-//                ];
-
 
     protected $appends = ['name_regular'];
 
@@ -28,31 +25,29 @@ class Customer extends Model {
                            'outstanding_amount_allowed', 'unresolved_amount',
                            'notes', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active',
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id',
-//                           'sequence_id',
+                           //                           'sequence_id',
                            'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id',
                            'invoicing_address_id', 'shipping_address_id',
-                ];
+    ];
 
 
-    public static $rules = array(
-        'name_fiscal' => 'required',
-        'currency_id' => 'exists:currencies,id',
+    public static $rules = [
+        'name_fiscal'      => 'required',
+        'currency_id'      => 'exists:currencies,id',
         'no_payment_month' => 'numeric|min:0|max:12',
-        );
+    ];
 
 
     public static function boot()
     {
         parent::boot();
 
-        static::creating(function($client)
-        {
+        static::creating(function ($client) {
             $client->secure_key = md5(uniqid(rand(), true));
         });
 
         // cause a delete of a Customer to cascade to children so they are also deleted
-        static::deleted(function($client)
-        {
+        static::deleted(function ($client) {
             $client->addresses()->delete(); // Not calling the events on each child : http://laravel.io/forum/03-26-2014-delete-relationschild-relations-without-cascade
 
             // See:
@@ -85,23 +80,28 @@ class Customer extends Model {
     {
         return $this->name_commercial ?: $this->name_fiscal;
     }
-/*
-    public function getFirstnameAttribute()
-    {
-        return $this->address->firstname;
-    }
 
-    public function getLastnameAttribute()
-    {
-        return $this->address->lastname;
-    }
-*/
+    /*
+        public function getFirstnameAttribute()
+        {
+            return $this->address->firstname;
+        }
+
+        public function getLastnameAttribute()
+        {
+            return $this->address->lastname;
+        }
+    */
 
     public function getReferenceAccountingAttribute()
     {
-        if ( $this->reference_external ) return $this->reference_external;
+        if ($this->reference_external) {
+            return $this->reference_external;
+        }
 
-        if ( $this->accounting_id ) return $this->accounting_id;
+        if ($this->accounting_id) {
+            return $this->accounting_id;
+        }
 
         return $this->id;
     }
@@ -111,32 +111,32 @@ class Customer extends Model {
         return $this->address->email;
     }
 
-    public function currentpricelist(Currency $currency = null )
+    public function currentpricelist(Currency $currency = null)
     {
-        if ( $currency == null )
-        {
-            if ($this->currency_id)
-                $currency = $this->currency ?? Currency::findOrFail(Configuration::get('DEF_CURRENCY') );
+        if ($currency == null) {
+            if ($this->currency_id) {
+                $currency = $this->currency ?? Currency::findOrFail(Configuration::get('DEF_CURRENCY'));
+            }
         }
 
         // First: Customer has pricelist?
-        if ( $this->pricelist && ($currency->id == $this->pricelist->currency_id) ) {
+        if ($this->pricelist && ($currency->id == $this->pricelist->currency_id)) {
 
             return $this->pricelist;
         }
 
         // Second: Customer Group has pricelist?
-        if ( $this->customergroup && $this->customergroup->pricelist && ($currency->id == $this->customergroup->pricelist->currency_id) ) {
-
+        if ($this->customergroup && $this->customergroup->pricelist &&
+            ($currency->id == $this->customergroup->pricelist->currency_id)) {
             return $this->customergroup->pricelist;
         }
 
         return null;
     }
 
-    public function currentPricesEnteredWithTax(Currency $currency = null )
+    public function currentPricesEnteredWithTax(Currency $currency = null)
     {
-        return $this->currentpricelist( $currency )->price_is_tax_inc ?? Configuration::get('PRICES_ENTERED_WITH_TAX');
+        return $this->currentpricelist($currency)->price_is_tax_inc ?? Configuration::get('PRICES_ENTERED_WITH_TAX');
     }
 
 
@@ -144,8 +144,9 @@ class Customer extends Model {
     {
         if ($this->invoice_sequence_id
             && Sequence::where('id', $this->invoice_sequence_id)->exists()
-            )
+        ) {
             return $this->invoice_sequence_id;
+        }
 
         return Configuration::getInt('DEF_CUSTOMER_INVOICE_SEQUENCE');
     }
@@ -154,8 +155,9 @@ class Customer extends Model {
     {
         if ($this->invoice_template_id
             && Template::where('id', $this->invoice_template_id)->exists()
-            )
+        ) {
             return $this->invoice_template_id;
+        }
 
         return Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE');
     }
@@ -164,8 +166,9 @@ class Customer extends Model {
     {
         if ($this->payment_method_id
             && PaymentMethod::where('id', $this->payment_method_id)->exists()
-            )
+        ) {
             return $this->payment_method_id;
+        }
 
         return Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD');
     }
@@ -174,8 +177,9 @@ class Customer extends Model {
     {
         if ($this->shipping_method_id
             && ShippingMethod::where('id', $this->shipping_method_id)->exists()
-            )
+        ) {
             return $this->shipping_method_id;
+        }
 
         return Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD');
     }
@@ -188,10 +192,11 @@ class Customer extends Model {
     */
 
 
-    public function addRisk($amount, Currency $currency = null )
+    public function addRisk($amount, Currency $currency = null)
     {
-        if ($currency != null)
+        if ($currency != null) {
             $amount = $amount / $currency->conversion_rate;
+        }
 
         $this->outstanding_amount += $amount;
         $this->save();
@@ -200,10 +205,11 @@ class Customer extends Model {
     }
 
 
-    public function removeRisk($amount, Currency $currency = null )
+    public function removeRisk($amount, Currency $currency = null)
     {
-        if ($currency != null)
+        if ($currency != null) {
             $amount = $amount / $currency->conversion_rate;
+        }
 
         $this->outstanding_amount -= $amount;
         $this->save();
@@ -214,48 +220,43 @@ class Customer extends Model {
 
     public function scopeFilter($query, $params)
     {
-        if ( isset($params['name']) && $params['name'] != '' )
-        {
+        if (isset($params['name']) && $params['name'] != '') {
             $name = $params['name'];
 
-            $query->where( function ($query1) use ($name) {
-                $query1->where(  'name_fiscal',     'LIKE', '%' . $name . '%')
+            $query->where(function ($query1) use ($name) {
+                $query1->where('name_fiscal', 'LIKE', '%' . $name . '%')
                        ->OrWhere('name_commercial', 'LIKE', '%' . $name . '%');
-            } );
+            });
         }
 
-        if ( isset($params['reference_external']) && $params['reference_external'] != '' )
-        {
+        if (isset($params['reference_external']) && $params['reference_external'] != '') {
             $query->where('reference_external', 'LIKE', '%' . $params['reference_external'] . '%');
         }
 
-        if ( isset($params['identification']) && $params['identification'] != '' )
-        {
+        if (isset($params['identification']) && $params['identification'] != '') {
             $query->where('identification', 'LIKE', '%' . $params['identification'] . '%');
         }
 
-        if ( isset($params['email']) && $params['email'] != '' )
-        {
+        if (isset($params['email']) && $params['email'] != '') {
             $email = $params['email'];
 
-            $query->whereHas('addresses', function($q) use ($email)
-            {
+            $query->whereHas('addresses', function ($q) use ($email) {
                 $q->where('email', 'LIKE', '%' . $email . '%');
 
             });
         }
 
-        if ( isset($params['customer_group_id']) && $params['customer_group_id'] > 0 )
-        {
+        if (isset($params['customer_group_id']) && $params['customer_group_id'] > 0) {
             $query->where('customer_group_id', '=', $params['customer_group_id']);
         }
 
-        if ( isset($params['active']) )
-        {
-            if ( $params['active'] == 0 )
+        if (isset($params['active'])) {
+            if ($params['active'] == 0) {
                 $query->where('active', '=', 0);
-            if ( $params['active'] == 1 )
+            }
+            if ($params['active'] == 1) {
                 $query->where('active', '>', 0);
+            }
         }
 
         return $query;
@@ -263,10 +264,11 @@ class Customer extends Model {
 
     public function scopeOfSalesRep($query)
     {
-//        return $query->where('customer_id', Auth::user()->customer_id);
+        //        return $query->where('customer_id', Auth::user()->customer_id);
 
-        if ( isset(Auth::user()->sales_rep_id) && ( Auth::user()->sales_rep_id != NULL ) )
+        if (isset(Auth::user()->sales_rep_id) && (Auth::user()->sales_rep_id != null)) {
             return $query->where('sales_rep_id', Auth::user()->sales_rep_id);
+        }
 
         // Not allow to see resource
         return $query->where('sales_rep_id', 0);
@@ -275,12 +277,14 @@ class Customer extends Model {
 
     public function paymentDays()
     {
-        if ( !trim($this->payment_days) ) return [];
+        if (!trim($this->payment_days)) {
+            return [];
+        }
 
-        $dstr = str_replace( [';', ':'], ',', $this->payment_days );
-        $days = array_map( 'intval', explode(',', $dstr) );
+        $dstr = str_replace([';', ':'], ',', $this->payment_days);
+        $days = array_map('intval', explode(',', $dstr));
 
-        sort( $days, SORT_NUMERIC );
+        sort($days, SORT_NUMERIC);
 
         return $days;
     }
@@ -288,17 +292,19 @@ class Customer extends Model {
     /**
      * Adjust date to Customer Payment Days
      */
-    public function paymentDate( Carbon $date )
+    public function paymentDate(Carbon $date)
     {
         $pdays = $this->paymentDays();
         $n = count($pdays);
-        if ( !$n ) return $date;
+        if (!$n) {
+            return $date;
+        }
 
-        $day   = $date->day;
+        $day = $date->day;
         $month = $date->month;
-        $year  = $date->year;
+        $year = $date->year;
 
-        if ( $day > $pdays[$n-1] ) {
+        if ($day > $pdays[$n - 1]) {
 
             $day = $pdays[0];
 
@@ -325,13 +331,19 @@ class Customer extends Model {
         }
 
         // Check No-Payment Month
-        if ($month==$this->no_payment_month) $month++;
+        if ($month == $this->no_payment_month) {
+            $month++;
+        }
 
         $payday = Carbon::createFromDate($year, $month, $day);
 
         // Check Saturday & Sunday
-        if ( $payday->dayOfWeek == 6 ) $payday->addDays(2); // Saturday
-        if ( $payday->dayOfWeek == 0 ) $payday->addDays(1); // Sunday
+        if ($payday->dayOfWeek == 6) {
+            $payday->addDays(2);
+        } // Saturday
+        if ($payday->dayOfWeek == 0) {
+            $payday->addDays(1);
+        } // Sunday
 
         return $payday;
     }
@@ -341,97 +353,102 @@ class Customer extends Model {
     // Better use: https://github.com/amnesty/drupal-nif-nie-cif-validator/blob/master/includes/nif-nie-cif.php
 
     // http://da-software.blogspot.com/2011/12/comprobar-cif-nif-nie-con-php.html
-    public static function check_spanish_nif_cif_nie( $value )
+    public static function check_spanish_nif_cif_nie($value)
     {
-         //Returns:
+        //Returns:
 
-         // 1 = NIF ok,
+        // 1 = NIF ok,
 
-         // 2 = CIF ok,
+        // 2 = CIF ok,
 
-         // 3 = NIE ok,
+        // 3 = NIE ok,
 
-         //-1 = NIF bad,
+        //-1 = NIF bad,
 
-         //-2 = CIF bad,
+        //-2 = CIF bad,
 
-         //-3 = NIE bad, 0 = ??? bad
+        //-3 = NIE bad, 0 = ??? bad
 
         // Sanitize
-        $nif = self::normalize_spanish_nif_cif_nie( $value );
+        $nif = self::normalize_spanish_nif_cif_nie($value);
 
         // Poor man check
-        if ( strlen( $nif ) > 0 ) {
-            if ( ctype_alnum($nif) && (strlen($nif)==9 || strlen($nif)==8) ) return 1;
-            else return 0;
-        } else return 0;
+        if (strlen($nif) > 0) {
+            if (ctype_alnum($nif) && (strlen($nif) == 9 || strlen($nif) == 8)) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
 
 
-        if ( strlen( $nif ) == 9 ) {
-//            $nif = strtoupper( $value );
+        if (strlen($nif) == 9) {
+            //            $nif = strtoupper( $value );
 
-            for ( $i = 0; $i < 9; $i ++ ) {
-                $num[$i] = substr( $nif, $i, 1 );
+            for ($i = 0; $i < 9; $i++) {
+                $num[$i] = substr($nif, $i, 1);
             }
 
             // Check format :: Si no tiene un formato valido devuelve error
-            if ( !preg_match( '/((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)/', $nif ) ) {
+            if (!preg_match('/((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)/', $nif)) {
 
                 return 0;
             }
 
             // comprobacion de NIFs estandar
-            if ( preg_match( '/(^[0-9]{8}[A-Z]{1}$)/', $nif ) ) {
-                if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( $nif, 0, 8 ) % 23, 1 ) ) {
-                        return 1;
-                  } else {
-                        return -1;
-                  }
+            if (preg_match('/(^[0-9]{8}[A-Z]{1}$)/', $nif)) {
+                if ($num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr($nif, 0, 8) % 23, 1)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
             }
 
             // algoritmo para comprobacion de codigos tipo CIF
             $suma = $num[2] + $num[4] + $num[6];
-            for ( $i = 1; $i < 8; $i += 2 ) {
-                $suma += substr( ( 2 * $num[$i] ), 0, 1 ) + substr( ( 2 * $num[$i] ), 1, 1 );
+            for ($i = 1; $i < 8; $i += 2) {
+                $suma += substr((2 * $num[$i]), 0, 1) + substr((2 * $num[$i]), 1, 1);
             }
-            $n = 10 - substr( $suma, strlen( $suma ) - 1, 1 );
+            $n = 10 - substr($suma, strlen($suma) - 1, 1);
 
             // comprobacion de NIFs especiales (se calculan como CIFs)
-            if ( preg_match( '/^[KLM]{1}/', $nif ) ) {
-                if ( $num[8] == chr( 64 + $n ) ) {
-                          return 1;
-                  } else {
-                          return -1;
-                  }
+            if (preg_match('/^[KLM]{1}/', $nif)) {
+                if ($num[8] == chr(64 + $n)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
             }
 
             // comprobacion de CIFs
-            if ( preg_match( '/^[ABCDEFGHJNPQRSUVW]{1}/', $nif ) ) {
+            if (preg_match('/^[ABCDEFGHJNPQRSUVW]{1}/', $nif)) {
 
-                if ( $num[8] == chr( 64 + $n ) || $num[8] == substr( $n, strlen( $n ) - 1, 1 ) ) {
-                        return 2;
-                  } else {
-                        return -2;
-                  }
+                if ($num[8] == chr(64 + $n) || $num[8] == substr($n, strlen($n) - 1, 1)) {
+                    return 2;
+                } else {
+                    return -2;
+                }
             }
 
             // comprobacion de NIEs
             // T
-            if ( preg_match( '/^[T]{1}/', $nif ) ) {
-                if ( $num[8] == preg_match( '/^[T]{1}[A-Z0-9]{8}$/', $nif ) ) {
-                        return 3;
-                  } else {
-                        return -3;
-                  }
+            if (preg_match('/^[T]{1}/', $nif)) {
+                if ($num[8] == preg_match('/^[T]{1}[A-Z0-9]{8}$/', $nif)) {
+                    return 3;
+                } else {
+                    return -3;
+                }
             }
 
             // NIE válido (XYZ)
-            if ( preg_match( '/^[XYZ]{1}/', $nif ) ) {
-                if ( $num[8] == substr( 'TRWAGMYFPDXBNJZSQVHLCKE', substr( str_replace( array( 'X','Y','Z' ), array( '0','1','2' ), $nif ), 0, 8 ) % 23, 1 ) ) {
-                        return 3;
-                  } else {
-                        return -3;
-                  }
+            if (preg_match('/^[XYZ]{1}/', $nif)) {
+                if ($num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr(str_replace(['X', 'Y', 'Z'], ['0', '1', '2'], $nif), 0, 8) % 23, 1)) {
+                    return 3;
+                } else {
+                    return -3;
+                }
             }
         }
 
@@ -439,9 +456,9 @@ class Customer extends Model {
         return 0;
     }
 
-    public static function normalize_spanish_nif_cif_nie( $value )
+    public static function normalize_spanish_nif_cif_nie($value)
     {
-        return strtoupper( str_replace([' ', '-'], '', $value) );
+        return strtoupper(str_replace([' ', '-'], '', $value));
     }
 
 
@@ -462,21 +479,18 @@ class Customer extends Model {
     public function bankaccount()
     {
         return $this->hasOne('App\BankAccount', 'id', 'bank_account_id')
-                   ->where('bank_accountable_type', Customer::class);
+                    ->where('bank_accountable_type', Customer::class);
     }
-
 
     public function addresses()
     {
         return $this->morphMany('App\Address', 'addressable');
     }
 
-
     public function getAddressList()
     {
-        return $this->morphMany('App\Address', 'addressable')->pluck( 'alias', 'id' )->toArray();
+        return $this->morphMany('App\Address', 'addressable')->pluck('alias', 'id')->toArray();
     }
-
 
     public function xgetAddressAttribute()
     {
@@ -488,35 +502,32 @@ class Customer extends Model {
     public function address()
     {
         return $this->hasOne('App\Address', 'id', 'invoicing_address_id')
-                   ->where('addressable_type', Customer::class);
+                    ->where('addressable_type', Customer::class);
 
 
         // return $this->invoicing_address();
 
         // Chainable relationship to use in customer index & more
-//        return $this->morphMany('App\Address', 'addressable')
-//                   ->where('addresses.id', $this->invoicing_address_id);
+        //        return $this->morphMany('App\Address', 'addressable')
+        //                   ->where('addresses.id', $this->invoicing_address_id);
     }
 
     public function invoicing_address()
     {
-        if ($this->invoicing_address_id>0)
+        if ($this->invoicing_address_id > 0) {
             return $this->morphMany('App\Address', 'addressable')
-                   ->where('addresses.id', $this->invoicing_address_id)->first();
-        else
-            return null;
+                        ->where('addresses.id', $this->invoicing_address_id)->first();
+        }
+        return null;
     }
 
     public function shipping_address()
     {
-        if ($this->shipping_address_id>0)
+        if ($this->shipping_address_id > 0) {
             return $this->morphMany('App\Address', 'addressable')
-                   ->where('addresses.id', $this->shipping_address_id)->first();
-        else
-            return $this->invoicing_address();
-
-//        return $this->belongsTo('App\Address', 'shipping_address_id')
-//                   ->where('addresses.addressable_type', 'App\Customer');
+                        ->where('addresses.id', $this->shipping_address_id)->first();
+        }
+        return $this->invoicing_address();
     }
 
     public function currency()
@@ -560,7 +571,6 @@ class Customer extends Model {
         return $this->belongsTo('App\CustomerGroup', 'customer_group_id');
     }
 
-
     public function customerorders()
     {
         return $this->hasMany('App\CustomerOrder');
@@ -579,7 +589,6 @@ class Customer extends Model {
     public function payments()
     {
         // return $this->hasMany('App\Payment', 'owner_id')->where('payment.owner_model_name', '=', 'Customer');
-
         return $this->morphMany('App\Payment', 'paymentorable');
     }
 
@@ -612,31 +621,35 @@ class Customer extends Model {
 
     /**
      * Provides a json encoded array of matching client names
-     * @param  string $query
+     *
+     * @param string $query
+     * @param        $params
      * @return json
      */
     public static function searchByNameAutocomplete($query, $params)
     {
         $clients = Customer::select('name_fiscal', 'name_commercial', 'id')->orderBy('name_fiscal')->where('name_fiscal', 'like', '%' . $query . '%');
-        if ( isset($params['name_commercial']) AND ($params['name_commercial'] == 1) )
+        if (isset($params['name_commercial']) AND ($params['name_commercial'] == 1)) {
             $clients = $clients->orWhere('name_commercial', 'like', '%' . $query . '%');
+        }
 
         $clients = $clients->get();
 
-        $return = array();
+        $return = [];
 
-        if ( isset($params['name_commercial']) AND ($params['name_commercial'] == 1) ) {
+        if (isset($params['name_commercial']) AND ($params['name_commercial'] == 1)) {
             foreach ($clients as $client) {
-                $return[] = array ('value' => $client->name_fiscal.' - '.$client->name_commercial, 'data' => $client->id);
+                $return[] = ['value' => $client->name_fiscal . ' - ' . $client->name_commercial, 'data' => $client->id];
             }
 
         } else {
             foreach ($clients as $client) {
-                $return[] = array ('value' => $client->name_fiscal, 'data' => $client->id);
+                $return[] = ['value' => $client->name_fiscal, 'data' => $client->id];
             }
         }
 
-        return json_encode( array('query' => $query, 'suggestions' => $return) );
+        return json_encode(['query'       => $query,
+                            'suggestions' => $return]);
     }
 
 
@@ -646,39 +659,35 @@ class Customer extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public function getPrice(Product $product, $quantity = 1, Currency $currency = null )
+    public function getPrice(Product $product, $quantity = 1, Currency $currency = null)
     {
         // Fall back price (use it if Price for $currency is not set)
         $fallback = null;
 
-        if (!$currency && $this->currency_id)
+        if (!$currency && $this->currency_id) {
             $currency = $this->currency;
+        }
 
-        if (!$currency)
+        if (!$currency) {
             $currency = Context::getContext()->currency;
-
+        }
 
         // Special prices have more priority
-        $rules = $this->getPriceRules( $product, $currency );
+        $rules = $this->getPriceRules($product, $currency);
 
-        if ( $rules->count() )
-            return $product->getPrice()->applyPriceRules( $rules, $quantity );
-
+        if ($rules->count()) {
+            return $product->getPrice()->applyPriceRules($rules, $quantity);
+        }
 
         // Customer has pricelist?
-        if ( $this->pricelist && ($currency->id == $this->pricelist->currency_id) ) {
-
-            $price = $this->pricelist->getPrice( $product );
-
-            return $price;
+        if ($this->pricelist && ($currency->id == $this->pricelist->currency_id)) {
+            return $this->pricelist->getPrice($product);
         }
 
         // Fourth: Customer Group has pricelist?
-        if ( $this->customergroup && $this->customergroup->pricelist && ($currency->id == $this->customergroup->pricelist->currency_id) ) {
-
-            $price = $this->customergroup->pricelist->getPrice( $product );
-
-            return $price;
+        if ($this->customergroup && $this->customergroup->pricelist &&
+            ($currency->id == $this->customergroup->pricelist->currency_id)) {
+            return $this->customergroup->pricelist->getPrice($product);
         }
 
         // Otherwise, use product price (initial or base price)
@@ -693,137 +702,123 @@ class Customer extends Model {
     }
 
 
-    public function getPriceRules(Product $product, Currency $currency = null )
+    public function getPriceRules(Product $product, Currency $currency = null)
     {
-
-        if (!$currency && $this->currency_id)
+        if (!$currency && $this->currency_id) {
             $currency = $this->currency;
+        }
 
-        if (!$currency)
+        if (!$currency) {
             $currency = Context::getContext()->currency;
+        }
 
-        $rules = PriceRule::where('currency_id', $currency->id)
-                    // Customer range
-                          ->where( function($query) {
-                                $query->where('customer_id', $this->id);
-                                if ($this->customer_group_id)
-                                    $query->orWhere('customer_group_id', $this->customer_group_id);
-                        } )
-                     // Product range
-                          ->where( function($query) use ($product) {
-                                $query->where('product_id', $product->id);
-                                if ($product->category_id)
-                                    $query->orWhere('category_id',  $product->category_id);
-                        } )
-                    // Date range
-                          ->where( function($query){
-                                $now = Carbon::now()->startOfDay();
-                                $query->where( function($query) use ($now) {
-                                    $query->where('date_from', null);
-                                    $query->orWhere('date_from', '<=', $now);
-                                } );
-                                $query->where( function($query) use ($now) {
-                                    $query->where('date_to', null);
-                                    $query->orWhere('date_to', '>=', $now);
-                                } );
-                        } )
-                          ->get();
-
-        return $rules;
+        return PriceRule::where('currency_id', $currency->id)
+                        ->where(function ($query) { // Customer range
+                            $query->where('customer_id', $this->id);
+                            if ($this->customer_group_id) {
+                                $query->orWhere('customer_group_id', $this->customer_group_id);
+                            }
+                        })
+                        ->where(function ($query) use ($product) { // Product range
+                            $query->where('product_id', $product->id);
+                            if ($product->category_id) {
+                                $query->orWhere('category_id', $product->category_id);
+                            }
+                        })
+                        ->where(function ($query) { // Date range
+                            $now = Carbon::now()->startOfDay();
+                            $query->where(function ($query) use ($now) {
+                                $query->where('date_from', null);
+                                $query->orWhere('date_from', '<=', $now);
+                            });
+                            $query->where(function ($query) use ($now) {
+                                $query->where('date_to', null);
+                                $query->orWhere('date_to', '>=', $now);
+                            });
+                        })
+                        ->get();
     }
 
 
-    public function getQuantityPriceRules(Currency $currency = null )
+    public function getQuantityPriceRules(Currency $currency = null)
     {
-
-        if (!$currency && $this->currency_id)
+        if (!$currency && $this->currency_id) {
             $currency = $this->currency;
+        }
 
-        if (!$currency)
+        if (!$currency) {
             $currency = Context::getContext()->currency;
+        }
 
-        $rules = PriceRule::where('currency_id', $currency->id)
-                    // Customer range
-                          ->where( function($query) {
-                                $query->where('customer_id', $this->id);
-                                if ($this->customer_group_id)
-                                    $query->orWhere('customer_group_id', $this->customer_group_id);
-                        } )
-                    // Product range
-                    // All Products
-//                    ->where( function($query) use ($product) {
-//                                $query->where('product_id', $product->id);
-//                                if ($product->category_id)
-//                                    $query->orWhere('category_id',  $product->category_id);
-//                        } )
-                    // Quantity range
-                          ->where( 'from_quantity', '>', 1 )
-                    // Date range
-                    ->where( function($query){
-                                $now = Carbon::now()->startOfDay();
-                                $query->where( function($query) use ($now) {
-                                    $query->where('date_from', null);
-                                    $query->orWhere('date_from', '<=', $now);
-                                } );
-                                $query->where( function($query) use ($now) {
-                                    $query->where('date_to', null);
-                                    $query->orWhere('date_to', '>=', $now);
-                                } );
-                        } )
-                    ->get();
-
-        return $rules;
+        return PriceRule::where('currency_id', $currency->id)
+                        ->where(function ($query) { // Customer range
+                            $query->where('customer_id', $this->id);
+                            if ($this->customer_group_id) {
+                                $query->orWhere('customer_group_id', $this->customer_group_id);
+                            }
+                        })
+                        ->where('from_quantity', '>', 1)  // Quantity range
+                        ->where(function ($query) { // Date range
+                $now = Carbon::now()->startOfDay();
+                $query->where(function ($query) use ($now) {
+                    $query->where('date_from', null);
+                    $query->orWhere('date_from', '<=', $now);
+                });
+                $query->where(function ($query) use ($now) {
+                    $query->where('date_to', null);
+                    $query->orWhere('date_to', '>=', $now);
+                });
+            })
+                        ->get();
     }
 
 
-    public function getLastPrice(Product $product = null, Currency $currency = null )
+    public function getLastPrice(Product $product = null, Currency $currency = null)
     {
-        // 
-        if ( $product == null) return null;
+        if ($product == null) {
+            return null;
+        }
 
         $customerId = $this->id;
         $productId = $product->id;
 
-
         // https://stackoverflow.com/questions/41679771/eager-load-relationships-in-laravel-with-conditions-on-the-relation?rq=1
 
         $line = CustomerOrderLine::whereHas(
-
-                'customerorder', function ($order) use ($customerId) {
-                    return $order->where('customer_id', $customerId);
-                }
-
+            'customerorder', function ($order) use ($customerId) {
+            return $order->where('customer_id', $customerId);
+        }
 
         )->whereHas(
-
-                'product', function ($product) use ($productId) {
-                    return $product->where('id', $productId);
-                }
+            'product', function ($product) use ($productId) {
+            return $product->where('id', $productId);
+        }
 
         )->with([
-    //https://stackoverflow.com/questions/41679771/eager-load-relationships-in-laravel-with-conditions-on-the-relation?rq=1
-    // https://stackoverflow.com/questions/25700529/laravel-eloquent-how-to-order-results-of-related-models
-    // https://laracasts.com/discuss/channels/eloquent/order-by-on-relationship
-    // https://laracasts.com/discuss/channels/eloquent/eloquent-order-by-related-table
-    // https://stackoverflow.com/questions/40837690/laravel-eloquent-sort-by-relationship
-    /*
-                Won't work. Why?
-                'customerorder' => function ($order) {
-                    return $order->orderBy('document_date', 'desc');
-                }
-    */
-                'customerorder',
+                    //https://stackoverflow.com/questions/41679771/eager-load-relationships-in-laravel-with-conditions-on-the-relation?rq=1
+                    // https://stackoverflow.com/questions/25700529/laravel-eloquent-how-to-order-results-of-related-models
+                    // https://laracasts.com/discuss/channels/eloquent/order-by-on-relationship
+                    // https://laracasts.com/discuss/channels/eloquent/eloquent-order-by-related-table
+                    // https://stackoverflow.com/questions/40837690/laravel-eloquent-sort-by-relationship
+                    /*
+                                Won't work. Why?
+                                'customerorder' => function ($order) {
+                                    return $order->orderBy('document_date', 'desc');
+                                }
+                    */
+                    'customerorder',
 
-                'product'
+                    'product',
 
-        ])->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
-          ->orderBy('customer_orders.document_date', 'desc')
-          ->orderBy('customer_orders.id', 'desc')
-          ->select('customer_order_lines.*')->first();
+                ])->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
+                                 ->orderBy('customer_orders.document_date', 'desc')
+                                 ->orderBy('customer_orders.id', 'desc')
+                                 ->select('customer_order_lines.*')->first();
 
-        if ($line) return $line->getPrice();
-
-        else return null;
+        if ($line) {
+            return $line->getPrice();
+        }
+        return null;
     }
 
     /**
@@ -836,7 +831,7 @@ class Customer extends Model {
         $rules = collect([]);
 
         // Sales Equalization
-        if ( $this->sales_equalization && ($product->sales_equalization ?? 1) ) {
+        if ($this->sales_equalization && ($product->sales_equalization ?? 1)) {
 
             $tax = $product->tax;
 

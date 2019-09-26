@@ -205,9 +205,9 @@ class Product extends Model
         $lines1 = CustomerOrderLine::
         where('product_id', $this->id)
                                    ->whereHas('document', function ($q) {
-                                            $q->where('status', 'confirmed');
-                                        }
-                                        )
+                                       $q->where('status', 'confirmed');
+                                   }
+                                   )
                                    ->get();
 
         $count1 = $lines1->sum('quantity');
@@ -217,9 +217,9 @@ class Product extends Model
         $lines2 = CustomerShippingSlipLine::
         where('product_id', $this->id)
                                           ->whereHas('document', function ($q) {
-                                                   $q->where('status', 'confirmed');
-                                               }
-                                               )
+                                              $q->where('status', 'confirmed');
+                                          }
+                                          )
                                           ->get();
 
         $count2 = $lines2->sum('quantity');
@@ -230,10 +230,10 @@ class Product extends Model
         $lines3 = CustomerInvoiceLine::
         where('product_id', $this->id)
                                      ->whereHas('document', function ($q) {
-                                              $q->where('status', 'confirmed');
-                                              $q->where('created_via', 'manual');
-                                          }
-                                          )
+                                         $q->where('status', 'confirmed');
+                                         $q->where('created_via', 'manual');
+                                     }
+                                     )
                                      ->get();
 
         $count3 = $lines3->sum('quantity');
@@ -426,11 +426,11 @@ class Product extends Model
         where('product_id', $this->id)
                             ->where('warehouse_id', $wh_id)
                             ->where(function ($query) {
-                                     // $now = \Carbon\Carbon::now()->startOfDay();
-                                     //
-                                     $query->where('movement_type_id', StockMovement::INITIAL_STOCK);
-                                     $query->orWhere('movement_type_id', StockMovement::ADJUSTMENT);
-                                 })
+                                // $now = \Carbon\Carbon::now()->startOfDay();
+                                //
+                                $query->where('movement_type_id', StockMovement::INITIAL_STOCK);
+                                $query->orWhere('movement_type_id', StockMovement::ADJUSTMENT);
+                            })
                             ->orderBy('date', 'desc')
                             ->first();
 
@@ -465,16 +465,16 @@ class Product extends Model
                              ->where('warehouse_id', $wh_id)
                              ->where('date', '<', $date)
                              ->where(function ($query) use ($last_stock_taking_mvt) {
-                                      if ($last_stock_taking_mvt) {
-                                          $query->where('date', '>', $last_stock_taking_mvt->date);
-                                      }
-                                  })
+                                 if ($last_stock_taking_mvt) {
+                                     $query->where('date', '>', $last_stock_taking_mvt->date);
+                                 }
+                             })
                              ->where(function ($query) {
-                                      // $now = \Carbon\Carbon::now()->startOfDay();
-                                      //
-                                      $query->where('movement_type_id', '<>', StockMovement::INITIAL_STOCK);
-                                      $query->where('movement_type_id', '<>', StockMovement::ADJUSTMENT);
-                                  })
+                                 // $now = \Carbon\Carbon::now()->startOfDay();
+                                 //
+                                 $query->where('movement_type_id', '<>', StockMovement::INITIAL_STOCK);
+                                 $query->where('movement_type_id', '<>', StockMovement::ADJUSTMENT);
+                             })
                              ->orderBy('date', 'desc')
                              ->get();
 
@@ -995,33 +995,26 @@ class Product extends Model
     {
         $product = $this;
 
-        $price_rules = PriceRule::
-        // Currency
-        where(function ($query) use ($customer) {
+        return PriceRule::where(function ($query) use ($customer) { // Currency
             if ($customer) {
                 $query->where('currency_id', $customer->currency_id);
             }
+        })->where(function ($query) use ($customer) { // Customer range
+            if ($customer) {
+                $query->where('customer_id', $customer->id);
+                if ($customer->customer_group_id) {
+                    $query->orWhere('customer_group_id', $customer->customer_group_id);
+                }
+            }
+        })->where(function ($query) use ($product) { // Product range
+            $query->where('product_id', $product->id);
+            if ($product->category_id) {
+                $query->orWhere('category_id', $product->category_id);
+            }
         })
-            // Customer range
-                                ->where(function ($query) use ($customer) {
-                if ($customer) {
-                    $query->where('customer_id', $customer->id);
-                    if ($customer->customer_group_id) {
-                        $query->orWhere('customer_group_id', $customer->customer_group_id);
-                    }
-                }
-            })
-            // Product range
-                                ->where(function ($query) use ($product) {
-                $query->where('product_id', $product->id);
-                if ($product->category_id) {
-                    $query->orWhere('category_id', $product->category_id);
-                }
-            })
-            // Quantity range
-                                ->where('from_quantity', '>', 1)
-            // Date range
-                                ->where(function ($query) {
+                                ->where('from_quantity', '>', 1) // Quantity range
+
+                        ->where(function ($query) {  // Date range
                 $now = Carbon::now()->startOfDay();
                 $query->where(function ($query) use ($now) {
                     $query->where('date_from', null);
@@ -1032,15 +1025,32 @@ class Product extends Model
                     $query->orWhere('date_to', '>=', $now);
                 });
             })
-                                ->orderBy('from_quantity', 'ASC')
-                                ->get();
-
-        return $price_rules;
+                        ->orderBy('from_quantity', 'ASC')
+                        ->get();
     }
 
     public function hasQuantityPriceRules(Customer $customer = null)
     {
         return $this->getQuantityPriceRules($customer)->count();
+    }
+
+    /**
+     * Validate if a Price Rule still applies for a product in cart
+     * (in quantity and in date validity)
+     *
+     * @param               $qty_in_cart
+     * @param Customer|null $customer
+     * @return bool
+     */
+    public function hasQuantityPriceRulesApplicable($qty_in_cart, Customer $customer = null)
+    {
+        /** @var PriceRule $price_rule */
+        foreach ($this->getQuantityPriceRules($customer) as $price_rule) {
+            if ($price_rule->applies($qty_in_cart)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -34,8 +34,6 @@ class AbccCustomerCartController extends Controller
     {
         $this->middleware('auth:customer');
 
-        // https://stackoverflow.com/questions/43000880/how-to-get-logged-in-user-in-a-laravel-controller-constructor
-
         $this->cart = $cart;
         $this->cartLine = $cartLine;
         $this->product = $product;
@@ -58,14 +56,13 @@ class AbccCustomerCartController extends Controller
 
 
     /**
+     * Deprecated
      * Groovy Cart mechanism.
      *
      * @param Request $request
      * @param         $id
      * @return RedirectResponse
      */
-
-    // Deprecated
     public function addItem(Request $request, $id)
     {
         $cart = Cart::getCustomerUserCart();
@@ -116,29 +113,7 @@ class AbccCustomerCartController extends Controller
         Cart::update($rowId, $qty); // for update
         $cartItems = Cart::content(); // display all new data of cart
         return view('cart.upCart', compact('cartItems'))->with('status', 'cart updated');
-        /*  $products = products::find($proId);
-          $stock = $products->stock;
-          if($qty<$stock){
-              $msg = 'Cart is updated';
-             Cart::update($id,$request->qty);
-             return back()->with('status',$msg);
-          }else{
-               $msg = 'Please check your qty is more than product stock';
-                return back()->with('error',$msg);
-          }        */
-
     }
-
-
-
-    /* ********************************************************************************************* */
-
-
-    // https://stackoverflow.com/questions/39812203/cloning-model-with-hasmany-related-models-in-laravel-5-3
-
-
-    /* ********************************************************************************************* */
-
 
     /**
      * AJAX Stuff.
@@ -263,15 +238,11 @@ class AbccCustomerCartController extends Controller
 
     public function add(Request $request)
     {
-        // return response()->json(['order_id' => $order_id] + $request->all());
-
         $product_id = $request->input('product_id');
         $combination_id = $request->input('combination_id', 0);
-
         $quantity = floatval($request->input('quantity', 1.0));
 
         $cart = Cart::getCustomerUserCart();
-
         $line = $cart->addLine($product_id, $combination_id, $quantity);
 
         // Refresh Cart
@@ -300,7 +271,7 @@ class AbccCustomerCartController extends Controller
         $line_id = $request->input('line_id', 0);
         $customer_user = Auth::user();    // Don't trust: $request->input('customer_id')
 
-        if (!$line_id ||!$customer_user) {
+        if (!$line_id || !$customer_user) {
             return response(null);
         }
 
@@ -313,7 +284,11 @@ class AbccCustomerCartController extends Controller
         $line = $cart->cartlines()->where('id', $line_id)->first();
 
         if ($quantity > 0) {
-            $line->update(['quantity' => $quantity]);
+            $data = ['quantity' => $quantity];
+            if ($line->product->hasQuantityPriceRulesApplicable($customer_user->customer)) {
+                $data['unit_customer_price'] = $customer_user->customer->getPrice($line->product, $quantity)->price;
+            }
+            $line->update($data);
         } else {
             $line->delete();
         }
@@ -336,7 +311,7 @@ class AbccCustomerCartController extends Controller
 
         $cart = Context::getContext()->cart;
 
-        $this->calculateCartTotals($cart);
+        $this->calculateCartTotals($cart, $this->customer);
 
         $config['display_with_taxes'] = $this->customer_user->canDisplayPricesTaxInc();
 
@@ -359,17 +334,24 @@ class AbccCustomerCartController extends Controller
 
     /**
      * From the cart lines, calculate taxes total, discounts and order total
+     *
      * @param $cart
+     * @param $customer
      */
-    public function calculateCartTotals($cart)
+    public function calculateCartTotals($cart, $customer)
     {
         $taxes = 0;
-        $cart->cartlines->map(function ($line) use (&$taxes) {
+        $cart->cartlines->map(function ($line) use (&$taxes, $customer) {
             $line->img = $line->product->getFeaturedImage();
             $line->tax = $line->tax_percent / 100 *
-                   $line->unit_customer_price * $line->quantity;
+                         $line->unit_customer_price * $line->quantity;
             $line->price_without_taxes = $line->unit_customer_price * $line->quantity;
             $line->price_with_taxes = $line->tax + $line->price_without_taxes;
+
+            if ($line->product->hasQuantityPriceRulesApplicable($line->quantity, $customer)) {
+                $line->product->has_price_rule_applied = true;
+                $line->product->previous_price = $line->product->getPrice()->price;
+            }
             $taxes += $line->tax;
         });
         $cart->total_taxes = $cart->as_priceable($taxes);

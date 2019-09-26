@@ -90,3 +90,7 @@ footer {
 }
 
 .text-dark {color: #000;}
+
+#div_cart_lines .show-pricerules {margin-left:1em}
+#div_cart_lines td {vertical-align: middle}
+.crossed {text-decoration: line-through;}

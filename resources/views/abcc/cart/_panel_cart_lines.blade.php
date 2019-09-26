@@ -117,7 +117,7 @@
                             @endif
                         </td>
 
-                        <td style="width:1px; white-space: nowrap;vertical-align: top;">
+                        <td style="width:1px; white-space: nowrap;">
                             <div xclass="form-group">
                                 <div class="input-group" style="width: 81px">
 
@@ -139,31 +139,28 @@
 
 
                         <td class="text-right">
-                        {{ $line->as_price('unit_customer_price') }}{{ $cart->currency->sign }}
 
-                        <!--p class="text-info">{{ $line->as_priceable($line->unit_customer_price + $line->product->getEcotax()) }}</p-->
-
-                            @if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
-                                <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules'
+                            @if ( $line->product->has_price_rule_applied )
+                                <a class="btn btn-sm btn-custom show-pricerules pull-right" href="#" data-target='#myModalShowPriceRules'
                                    data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
                                    title="{{ l('Show Special Prices', 'abcc/catalogue') }}">
                                     <i class="fa fa-thumbs-o-up"></i>
                                 </a>
                             @endif
+
+                            <div class="pull-right">
+                                {{ $line->as_price('unit_customer_price') }}{{ $cart->currency->sign }}
+                                @if ( $line->product->has_price_rule_applied )
+                                    <p class="text-info crossed">
+                                        {{ $line->as_priceable($line->product->previous_price) }}{{ $cart->currency->sign }}
+                                    </p>
+                                @endif
+                            </div>
                         </td>
 
                         @if($config['display_with_taxes'])
-
                             <td class="text-right">
                                 {{ $line->as_priceable($line->unit_customer_price + $line->tax) }}{{ $cart->currency->sign }}
-
-                                @if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
-                                    <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules'
-                                       data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
-                                       title="{{ l('Show Special Prices', 'abcc/catalogue') }}">
-                                        <i class="fa fa-thumbs-o-up"></i>
-                                    </a>
-                                @endif
                             </td>
 
                             <td class="text-right">{{(int)$line->tax_percent.'%'}}</td>

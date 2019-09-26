@@ -39,6 +39,8 @@ class CreateSepaDirectDebitsTable extends Migration
             $table->string('status', 32)->nullable(false)->default('pending');
             $table->tinyInteger('onhold')->default(0);            // 0 -> NO; 1 -> Yes (Document cannot change status)
 
+            $table->tinyInteger('group_vouchers')->default(0);    // 0 -> NO; 1 -> Yes (Group customer vouchers into one for the same date. One voucher for customer and date)
+
             $table->text('notes')->nullable();
 
             $table->dateTime('document_date');

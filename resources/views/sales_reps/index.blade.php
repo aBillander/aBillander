@@ -9,6 +9,9 @@
     <div class="pull-right" style="padding-top: 4px;">
         <a href="{{ URL::to('salesreps/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+        <a href="{{ route('commissionsettlements.index') }}" class="btn xbtn-sm btn-navy" 
+                title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-flag-checkered"></i> {{l('Commission Settlements', 'commissionsettlements')}}</a>
     </div>
     <h2>
         {{ l('Sales Representatives') }}

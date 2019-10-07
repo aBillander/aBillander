@@ -179,6 +179,12 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('salesrepusers/create/withsalesrep/{salesrep}', 'SalesRepUsersController@createWithSalesRep')->name('salesrep.createuser');
         Route::get('salesrepusers/{salesrep}/impersonate', 'SalesRepUsersController@impersonate')->name('salesrep.impersonate');
 
+        Route::resource('commissionsettlements',          'CommissionSettlementsController');
+//        Route::resource('commissionsettlements.documents', 'CommissionSettlementLinesController');
+        Route::post('commissionsettlements/add/document', 'CommissionSettlementsController@addDocument')->name('commissionsettlements.add.document');
+        Route::get('commissionsettlements/{id}/calculate', 'CommissionSettlementsController@calculate')->name('commissionsettlements.calculate');
+        Route::post('commissionsettlementlines/{id}/unlink', 'CommissionSettlementLinesController@unlink')->name('commissionsettlementline.unlink');
+
         Route::resource('suppliers', 'SuppliersController');
 
         Route::resource('templates', 'TemplatesController');

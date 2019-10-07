@@ -136,7 +136,7 @@ Route::post('wooc/webhook/order/created', function()
 	$notify_cc_to = 'dcomobject@hotmail.com';
 
 
-    if ( $payLoad['status'] != 'pending' )
+    if ( $payLoad['status'] != 'processing' )
         return ;
 
 

@@ -46,7 +46,8 @@ class Payment extends Model {
 //            'due_date_next' => 'required_if:amount_next,true',
             'due_date' => 'required|date',
 //            'payment_date' => 'date',
-              'amount' => 'numeric|min:0|max:',
+//   Fuck yeah :=>           'amount' => 'numeric|min:0|max:',
+              'amount' => 'numeric',
 	];
 
 
@@ -275,6 +276,11 @@ class Payment extends Model {
             $query->whereHas('customer', function ($query) use ($id) {
                     $query->where('id', $id);
                 });
+        }
+
+        if (array_key_exists('amount', $params))
+        {
+            $query->where('amount', floatval( str_replace(',','.', $params['amount']) ));
         }
 
 /*

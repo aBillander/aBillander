@@ -59,6 +59,7 @@ return [
 
 
 	'SEPA Direct Debits - Edit'     => 'Remesas SEPA - Modificar',
+	'SEPA Direct Debits - Show'     => 'Remesas SEPA - Mostrar',
 	'Edit SEPA Direct Debit'     => 'Modificar Remesa SEPA',
 
 	'Back to SEPA Direct Debits'     => 'Volver a Remesas SEPA',

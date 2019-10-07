@@ -293,6 +293,13 @@ class CustomerInvoice extends Billable
     }
 
 
+    public function commissionsettlementline()
+    {
+        return $this->hasOne('App\CommissionSettlementLine', 'commissionable_id', 'id')
+                    ->where('commissionable_type', CustomerInvoice::class);
+    }
+
+
    /**
      * Get all of the WC Orders that are assigned this Invoice.
      */

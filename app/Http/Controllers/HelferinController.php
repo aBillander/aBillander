@@ -239,7 +239,9 @@ foreach ($customers as $customer) {
                 $row[] = $customer->nbr_documents;
                 $row[] = $customer->products_price * 1.0;
                 $row[] = $customer->products_total * 1.0;
-                $row[] = 100.0 * ($customer->products_price - $customer->products_total) / $customer->products_price;
+                $row[] = $customer->products_price != 0.0
+                            ? 100.0 * ($customer->products_price - $customer->products_total) / $customer->products_price
+                            : 0.0;
                 $row[] = $customer->products_cost * 1.0;
                 $row[] = \App\Calculator::margin( $customer->products_cost, $customer->products_total, $customer->currency ) * 1.0;
                 $row[] = $customer->products_profit * 1.0;

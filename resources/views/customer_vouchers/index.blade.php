@@ -51,7 +51,13 @@
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('amount', l('Amount')) !!}
+        {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control')) !!}
+    </div>
+
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('status', l('Status')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>

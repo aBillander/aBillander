@@ -45,14 +45,14 @@
     <h2>
         <a href="{{ route('commissionsettlements.index') }}">{{ l('Commission Settlements') }}</a> <span style="color: #cccccc;">/</span> {{$settlement->name}} 
 
-        <span class="lead well well-sm">
+        <span class=" hide lead well well-sm">
         <a title=" {{ l('Bank') }} " href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-success text-center" data-toggle="popover" data-placement="right" title="" data-content="{{ optional($settlement->bankaccount)->bank_name }}" xdata-original-title="Datos de Facturación">
                         <i class="fa fa-info-circle"></i>
                     </button>
                  </a> 
         </span>
-        <span style="color: #cccccc;">::</span> {{ abi_date_short($settlement->document_date) }} 
+        <!-- span style="color: #cccccc;">::</span --> {{ abi_date_short($settlement->document_date) }} 
 
 
 @if ( $settlement->status == "pending" )
@@ -79,16 +79,16 @@
 
 
     <h2>
-        <a href="{{ route('salesreps.edit', [$settlement->salesrep->id]) }}" target="_new">{{$settlement->salesrep->name}} </a> <span class="btn btn-xs btn-grey" title="{{l('Commission Percent')}}">{{ $settlement->as_percentable( $settlement->salesrep->commission_percent ) }}%</span>  <span style="color: #cccccc;">/</span> 
+        <a href="{{ route('salesreps.edit', [$settlement->salesrep->id]) }}" target="_new">{{$settlement->salesrep->name}} </a> <span class="btn btn-xs btn-grey" title="{{l('Commission Percent')}}">{{ $settlement->as_percentable( $settlement->salesrep->commission_percent ) }}%</span>  <span style="color: #cccccc;">::</span> 
 
-        <span class="lead well well-sm">
+        <span class=" hide lead well well-sm">
         <a title=" {{ l('Bank') }} " href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-success text-center" data-toggle="popover" data-placement="right" title="" data-content="{{ optional($settlement->bankaccount)->bank_name }}" xdata-original-title="Datos de Facturación">
                         <i class="fa fa-info-circle"></i>
                     </button>
                  </a> 
         </span>
-        <span style="color: #cccccc;"> :: </span> <span style="font-size: 24px; xfont-size: 18px;">{{ l('Settlements Period') }}:</span> {{ abi_date_short($settlement->date_from) }} - {{ abi_date_short($settlement->date_to) }} 
+        <!-- span style="color: #cccccc;"> :: </span --> <span style="font-size: 24px; xfont-size: 18px;">{{ l('Settlements Period') }}:</span> {{ abi_date_short($settlement->date_from) }} - {{ abi_date_short($settlement->date_to) }} 
 
 
         <span class="badge" style="background-color: #3a87ad;" title="">{{ $settlement->scheme }}</span>

@@ -342,7 +342,7 @@
 
 				<div class="customer-notes">
 
-@if( !optional($document->paymentmethod)->payment_is_cash )
+@if( !optional($document->paymentmethod)->payment_is_cash || 1 )
 
 						<h3>Numero de cuenta: {{ optional(\App\Context::getContext()->company->bankaccount)->iban_presenter(true) }}</h3>
 

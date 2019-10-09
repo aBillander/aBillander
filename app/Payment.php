@@ -47,7 +47,7 @@ class Payment extends Model {
             'due_date' => 'required|date',
 //            'payment_date' => 'date',
 //   Fuck yeah :=>           'amount' => 'numeric|min:0|max:',
-              'amount' => 'numeric',
+              'amount' => 'numeric|max:',
 	];
 
 
@@ -278,7 +278,7 @@ class Payment extends Model {
                 });
         }
 
-        if (array_key_exists('amount', $params))
+        if ( array_key_exists('amount', $params) && $params['amount']  != '' )
         {
             $query->where('amount', floatval( str_replace(',','.', $params['amount']) ));
         }

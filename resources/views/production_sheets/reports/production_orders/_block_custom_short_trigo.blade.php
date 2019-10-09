@@ -133,8 +133,13 @@ foreach ($lines_10709 as $line)
         <tr xstyle="font-weight: bold;">
           <td>
 @if( count($qty_10709) )
+
+    @if( array_key_exists($key_1003_1013, $qty_10709) )
             {{ $key_1003_1013 }}: {{ niceQuantity($qty_10709[$key_1003_1013]) }} {{ $unit_10709 }}<br />
+    @endif
+    @if( array_key_exists($key_1004_1014, $qty_10709) )
             {{ $key_1004_1014 }}: {{ niceQuantity($qty_10709[$key_1004_1014]) }} {{ $unit_10709 }}<br />
+    @endif
 @endif
           </td>
           <td> </td>

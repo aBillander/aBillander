@@ -71,7 +71,7 @@
 
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('commissionsettlements/' . $settlement->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-folder-open-o"></i></a>
 
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('commissionsettlementss/' . $settlement->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                <a class=" hide btn btn-sm btn-warning" href="{{ URL::to('commissionsettlementss/' . $settlement->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('commissionsettlements/' . $settlement->id ) }}" 

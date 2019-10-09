@@ -111,7 +111,7 @@ $lines_10703p = $order->productionorderlines->where('reference', '10703');
           <th width="5%"> </th>
           <th width="30%">
 @if( count($qty_10703p) )
-            [{{ $reference_10703 }}] {{ $name_10703 }}
+            [{{ $reference_10703p }}] {{ $name_10703p }}
 @endif
           </th>
           <th width="5%"> </th>

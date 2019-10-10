@@ -51,6 +51,7 @@ $confs = [
 ['ABSRC_EMAIL', ''],
 ['ABSRC_EMAIL_NAME', 'Sales Representative Center'],
 ['ABSRC_DEFAULT_PASSWORD', '12345678'],
+['ABSRC_ALLOW_ABCC_ACCESS', '0'],
 ['ABSRC_ITEMS_PERPAGE', '8'],
 
 ['ALLOW_CUSTOMER_BACKORDERS', '0'],

@@ -272,13 +272,52 @@ class CommissionSettlementsController extends Controller
     {
         $settlement = $this->settlement->findOrFail($id);
 
-        $msg = $settlement->calculateCommission();
+        // Recalculate document commissions
+        // $msg = $settlement->calculateCommission();
 
-        return redirect()->back()
-                ->with('error', $msg);
+        // Add new documents
+        $sales_rep_id = $settlement->sales_rep_id;
+        $date_from = optional($settlement->date_from)->startOfDay();
+        $date_to   = optional($settlement->date_to)  ->endOfDay()  ;
+        $paid_documents_only   = $settlement->paid_documents_only;
+        
+        // Lets see:
+        $documents =  CustomerInvoice::
+                      whereHas('salesrep', function ($query) use ($sales_rep_id) {
 
+                            if ( (int) $sales_rep_id > 0 )
+                                $query->where('id', $sales_rep_id);
+                    })
+                    ->when($date_from, function($query) use ($date_from) {
 
-        return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+                            $query->where('document_date', '>=', $date_from.' 00:00:00');
+                    })
+                    ->when($date_to, function($query) use ($date_to) {
+
+                            $query->where('document_date', '<=', $date_to.' 23:59:59');
+                    })
+                    ->where( function ($query) use ($paid_documents_only) {
+
+                            if ( (int) $paid_documents_only > 0 )
+                                $query->where('payment_status', 'paid');
+                    })
+                    ->whereDoesnthave('commissionsettlementline')
+                    ->get();
+
+ // abi_r($documents->count());die();
+
+        if ( $documents->count() == 0 )
+        {
+            return redirect()->back()
+                    ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . ' :: ' .  l('No records selected. ', 'layouts') . $date_from . ' -> ' . $date_to );
+        }
+
+        // Do add documents, now!
+        $settlement->addDocuments( $documents );
+
+        
+
+        return redirect()->route('commissionsettlements.show', $settlement->id)
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $settlement->id], 'layouts') . ' :: ' . $documents->count() . ' ' . l('document(s)'));
     }
 }

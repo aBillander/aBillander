@@ -35,7 +35,11 @@ class SalesRepLoginController extends Controller
     public function login(Request $request)
     {
       // Validate the form data
-      $this->validate($request, SalesRepUser::$rules);
+        $vrules = SalesRepUser::$rules;
+
+        if ( isset($vrules['email']) ) $vrules['email'] .= ','. $request->email.',email';  // Unique
+      
+      $this->validate($request, $vrules);
 
       // Attempt to log the user in
       if (Auth::guard('salesrep')->attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->remember)) {

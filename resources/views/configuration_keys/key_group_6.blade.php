@@ -99,6 +99,29 @@
     </div>
 
 
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABSRC_ALLOW_ABCC_ACCESS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABSRC_ALLOW_ABCC_ACCESS" id="ABSRC_ALLOW_ABCC_ACCESS_on" value="1" @if( old('ABSRC_ALLOW_ABCC_ACCESS', $key_group['ABSRC_ALLOW_ABCC_ACCESS']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABSRC_ALLOW_ABCC_ACCESS" id="ABSRC_ALLOW_ABCC_ACCESS_off" value="0" @if( !old('ABSRC_ALLOW_ABCC_ACCESS', $key_group['ABSRC_ALLOW_ABCC_ACCESS']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABSRC_ALLOW_ABCC_ACCESS.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
     <div class="form-group {{ $errors->has('ABSRC_ITEMS_PERPAGE') ? 'has-error' : '' }}">
       <label for="ABSRC_ITEMS_PERPAGE" class="col-lg-4 control-label">{!! l('ABSRC_ITEMS_PERPAGE.name') !!}</label>
       <div class="col-lg-8">

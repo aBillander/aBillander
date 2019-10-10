@@ -87,6 +87,11 @@ class SalesRep extends Model {
      */
     public function user()
     {
-        return $this->hasOne('App\SalesRepUser', 'sales_rep_id');
+        return $this->hasOne('App\SalesRepUser', 'sales_rep_id');   // ->where('is_principal', 1);
+    }
+
+    public function users()
+    {
+        return $this->hasMany('App\SalesRepUser', 'sales_rep_id');
     }
 }

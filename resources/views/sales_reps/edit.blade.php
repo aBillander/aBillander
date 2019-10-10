@@ -23,10 +23,15 @@
                <i class="fa fa-asterisk"></i>
                &nbsp; {{ l('Main Data') }}
             </a>
+
+@if (\App\Configuration::isTrue('ENABLE_SALESREP_CENTER') )
+
             <a id="b_salesrepuser" href="#salesrepuser" class="list-group-item">
                <i class="fa fa-bolt"></i>
                &nbsp; {{ l('ABSRC Access') }}
             </a>
+
+@endif
          </div>
       </div>
       
@@ -50,6 +55,11 @@
       </div>
    </div>
 </div>
+
+
+          @include('layouts/modal_delete')
+
+          
 @endsection
 
 @section('scripts')     @parent
@@ -118,6 +128,7 @@
       {
          $("#panel_salesrepuser").show();
          $("#b_salesrepuser").addClass('active');
+         getSalesRepUsers();
       }
       else  
       {

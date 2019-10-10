@@ -94,5 +94,7 @@ return [
 
 	'Type an ID or Document Number.' => 'Introduzca un ID o Número de Documento.',
 	'Update Settlement' => 'Recalcular',
+	'Add Documents between Settlement dates' => 'Añadir Documentos entre las fechas de la Liquidación',
+	'Paid Documents only' => 'Sólo Documentos pagados',
 
 ];

@@ -542,8 +542,8 @@ class StockMovement extends Model {
         {
             // Nothing said about cost price
             // Nothing to do
-            // return false;
-            throw new StockMovementException( l('Cannot process Stock Movement because Quantity has not changed', 'stockmovements') );
+            return false;
+            // throw new StockMovementException( l('Cannot process Stock Movement because Quantity has not changed', 'stockmovements') );
         }
         $this->save();
 

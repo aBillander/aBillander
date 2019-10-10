@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Validator;
 
 use App\SalesRep;
 use App\SalesRepUser;
@@ -57,66 +58,55 @@ class SalesRepUsersController extends Controller
     public function store(Request $request)
     {
         $section = '#salesrepuser';
-        $customer_id = $request->input('customer_id');
+        $salesrep_id = $request->input('salesrep_id');
 
-        if ( !$request->input('allow_abcc_access', 0) )
-        	return redirect(route('customers.edit', $customer_id) . $section)
-                ->with('warning', l('No action is taken &#58&#58 (:id) ', ['id' => $customer_id], 'layouts') );
+        $salesrep = $this->salesrep->find($salesrep_id);
 
-        $customer = $this->customer->with('address')->find($customer_id);
 
-        // Check unique
-        if ( $this->customeruser->where('email', $customer->address->email)->first() )
-            return redirect(route('customers.edit', $customer_id) . $section)
-                ->with('error', l('Duplicate email address &#58&#58 (:id) ', ['id' => $customer->address->email], 'layouts') );
+        $validator = Validator::make($request->all(), SalesRepUser::$rules);
 
-        $this->validate($request, ['customer_id' => 'exists:customers,id', 'email' => 'email|unique:customer_users,email']);
+    
 
-		$data = [
-				'name' => '', 
-				'email' => $customer->address->email, 
-				'password' => \Hash::make( Configuration::get('ABCC_DEFAULT_PASSWORD') ), 
-				'firstname' => $customer->address->firstname, 
-				'lastname' => $customer->address->lastname, 
-				'active' => 1, 
-				'language_id' => Configuration::get('DEF_LANGUAGE'), 
-				'customer_id' => $customer->id,
-		];
+        if ( !$validator->passes() ) {
 
-        // Check existence
-        if ( $customeruser = $this->customeruser->where('email', $customer->address->email)->withTrashed()->first() )
-        {
-            $customeruser->active=1;
-            $customeruser->deleted_at=null;    // or $customeruser->restore(); 
-            $customeruser->save();
+            return response()->json(['error'=>$validator->errors()->all()]);
+
         }
-		else
-            $customeruser = $this->customeruser->create($data);
+
+        // Do move on!
+        
+        $password = \Hash::make($request->input('password'));
+        $request->merge( ['password' => $password] );
+
+        // $request->merge( ['language_id' => Configuration::get('DEF_LANGUAGE')] );
+
+        $salesrepuser = $this->salesrepuser->create($request->all());
+
         // Notify SalesRep
         // 
-        // $customer = $this->customeruser->customer;
+        // $salesrep = $this->customeruser->salesrep;
 
 
         // MAIL stuff
-        if ( $request->input('notify_customer', 0) )
+        if ( $request->input('notify_salesrep', 0) )
         try {
 
             $template_vars = array(
-                'customer'   => $customer,
+                'salesrep'   => $salesrep,
 //                'custom_body'   => $request->input('email_body'),
                 );
 
             $data = array(
-                'from'     => \App\Configuration::get('ABCC_EMAIL'),         // config('mail.from.address'  ),
-                'fromName' => \App\Configuration::get('ABCC_EMAIL_NAME'),    // config('mail.from.name'    ),
-                'to'       => $customer->address->email,         // $cinvoice->customer->address->email,
-                'toName'   => $customer->name_fiscal,    // $cinvoice->customer->name_fiscal,
-                'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => \App\Context::getcontext()->company->name_fiscal]),
+                'from'     => config('mail.from.address'),  // \App\Configuration::get('ABCC_EMAIL'),
+                'fromName' => config('mail.from.name'   ),  // \App\Configuration::get('ABCC_EMAIL_NAME'),
+                'to'       => $salesrepuser->email,         // $cinvoice->customer->address->email,
+                'toName'   => $salesrepuser->getFullName(),    // $cinvoice->customer->name_fiscal,
+                'subject'  => l(' :_> Confirmación de acceso al Centro de Agentes de :company', ['company' => \App\Context::getcontext()->company->name_fiscal]),
                 );
 
             
 
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.invitation_confirmation', $template_vars, function($message) use ($data)
+            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.absrc_invitation_confirmation', $template_vars, function($message) use ($data)
             {
                 $message->from($data['from'], $data['fromName']);
 
@@ -126,7 +116,8 @@ class SalesRepUsersController extends Controller
 
         } catch(\Exception $e) {
 
-             abi_r($e->getMessage());
+            // abi_r($e->getMessage());
+            return response()->json([ 'error' => $e->getMessage() ]);
 
 /*            return redirect()->route('abcc.orders.index')
                     ->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
@@ -136,9 +127,20 @@ class SalesRepUsersController extends Controller
         }
         // MAIL stuff ENDS
 
+        if($request->ajax()){
 
-		return redirect(route('customers.edit', $customer_id) . $section)
-				->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customeruser->id], 'layouts') . $customeruser->getFullName());
+            return response()->json( [
+                'success' => 'OK',
+                'msg' => 'OK',
+                'data' => $salesrepuser->toArray()
+            ] );
+
+        }
+
+
+
+		return redirect(route('salesreps.edit', $salesrep_id) . $section)
+				->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $salesrepuser->id], 'layouts') . $salesrepuser->getFullName());
 
     }
 
@@ -171,39 +173,39 @@ class SalesRepUsersController extends Controller
      * @param  \App\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SalesRepUser $customeruser)
+    public function update(Request $request, SalesRepUser $salesrepuser)
     {
-        $section = '#customeruser';
-        $customer_id = $request->input('customer_id');
+        $section = '#salesrepuser';
+        $salesrep_id = $request->input('salesrep_id');
 
-        $vrules = array(
-            'email'       => 'required|email',
-            'password'    => array('required', 'min:6', 'max:32'),
-        );
+        $vrules = SalesRepUser::$rules;
 
-        if ( isset($vrules['email']) ) $vrules['email'] = 'email|unique:customer_users,email' . ','. $customeruser->id.',id';  // Unique
+        if ( isset($vrules['email']) ) $vrules['email'] .= ','. $salesrepuser->id.',id';  // Unique
 
 		if ( $request->input('password') != '' ) {
 			$this->validate( $request, $vrules );
 
 			$password = \Hash::make($request->input('password'));
 			$request->merge( ['password' => $password] );
-			$customeruser->update($request->all());
+			$salesrepuser->update($request->all());
 		} else {
 			$this->validate($request, array_except( $vrules, array('password')) );
-			$customeruser->update($request->except(['password']));
+			$salesrepuser->update($request->except(['password']));
 		}
 
-        if ( ! $request->input('active') )
-        {
-            $customeruser->delete();
 
-            return redirect(route('customers.edit', $customer_id) . $section)
-                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customer_id], 'layouts'));
+        if($request->ajax()){
+
+            return response()->json( [
+                'success' => 'OK',
+                'msg' => 'OK',
+                'data' => $salesrepuser->toArray()
+            ] );
+
         }
 
-		return redirect(route('customers.edit', $customer_id) . $section)
-				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customeruser->id], 'layouts') . $customeruser->getFullName());
+        return redirect(route('salesreps.edit', $salesrep_id) . $section)
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $salesrepuser->id], 'layouts') . $salesrepuser->getFullName());
 
     }
 
@@ -213,12 +215,15 @@ class SalesRepUsersController extends Controller
      * @param  \App\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SalesRepUser $customeruser)
+    public function destroy(SalesRepUser $salesrepuser)
     {
-        $customeruser->delete();
+        $section = '#salesrepuser';
+        $name = $salesrepuser->getFullName();
 
-        return redirect('customerorders')
-                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        $salesrepuser->delete();
+
+        return redirect(url()->previous() . $section) // redirect()->to( url()->previous() . $section )
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $name], 'layouts'));
     }
 
 
@@ -236,5 +241,13 @@ class SalesRepUsersController extends Controller
         \Auth()->guard('salesrep')->loginUsingId($id);
 
         return redirect()->route('salesrep.dashboard');
+    }
+
+
+    public function getUser($id, Request $request)
+    {
+        $salesrep_user = $this->salesrepuser->findOrFail($id);
+
+        return response()->json( ['user' => $salesrep_user] );
     }
 }

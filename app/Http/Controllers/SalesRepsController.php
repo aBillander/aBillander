@@ -92,8 +92,12 @@ class SalesRepsController extends Controller {
 	{
 		// $salesrep = $this->salesrep->with('address')->findOrFail($id);
 		$salesrep = $this->salesrep->findOrFail($id);
+
+		$languageList =  \App\Language::pluck('name', 'id')->toArray();
+
+		// abi_r($languageList);die();
 		
-		return view('sales_reps.edit', compact('salesrep'));
+		return view('sales_reps.edit', compact('salesrep', 'languageList'));
 	}
 
 	/**
@@ -137,4 +141,16 @@ class SalesRepsController extends Controller {
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getUsers($id, Request $request)
+    {
+        $salesrep_users = $this->salesrep->with('users')->findOrFail($id)->users;
+        
+        return view('sales_reps._panel_salesrep_users_list', compact('id', 'salesrep_users'));
+    }
 }

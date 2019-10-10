@@ -1,180 +1,145 @@
 
 <div id="panel_salesrepuser">     
 
-<div class="panel panel-info">
+    <div class="panel panel-info">
 
-   <div class="panel-heading">
-      <h3 class="panel-title">{{ l('Sales Representative Center Access') }}
+       <div class="panel-heading">
+          <h3 class="panel-title">{{ l('Sales Representative Center Access') }}</h3>
+       </div>
 
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && $salesrep->user )
-      <a href="{{ route('salesrep.impersonate', [$salesrep->user->id]) }}" class="btn-success btn-link pull-right" target="_blank"><p class="text-success"><i class="fa fa-clock-o"></i> {{ l('Impersonate') }}</p></a>
+       <div class="panel-body">
 
-@endif
-
-      </h3>
-   </div>
-
-{!! Form::open(array('url' => "route('salesrepusers.store')".'#salesrepuser', 'id' => 'create_salesrepuser', 'name' => 'create_salesrepuser', 'class' => 'form')) !!}
-<input type="hidden" value="{{$salesrep->id}}" name="salesrep_id" id="salesrep_id">
-<input type="hidden" value="salesrepuser" name="tab_name" id="tab_name">
-
-   <div class="panel-body">
-
-        <div class="row">
-
-                   <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-allow_absrc_access">
-                     {!! Form::label('allow_absrc_access', l('Allow Sales Representative Center access?'), ['class' => 'control-label']) !!}
-                     <div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('allow_absrc_access', '1', false, ['id' => 'allow_absrc_access_on']) !!}
-                           {!! l('Yes', [], 'layouts') !!}
-                         </label>
-                       </div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('allow_absrc_access', '0', true, ['id' => 'allow_absrc_access_off']) !!}
-                           {!! l('No', [], 'layouts') !!}
-                         </label>
-                       </div>
-                     </div>
-                   </div>
-
-                   <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-notify_salesrep">
-                     {!! Form::label('notify_salesrep', l('Notify Sales Representative? (by email)'), ['class' => 'control-label']) !!}
-                     <div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('notify_salesrep', '1', true, ['id' => 'notify_salesrepb_on']) !!}
-                           {!! l('Yes', [], 'layouts') !!}
-                         </label>
-                       </div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('notify_salesrep', '0', false, ['id' => 'notify_salesrep_off']) !!}
-                           {!! l('No', [], 'layouts') !!}
-                         </label>
-                       </div>
-                     </div>
-                   </div>
-        </div>
-
-   </div>
-
-   <div class="panel-footer text-right">
-      <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
-         <i class="fa fa-hdd-o"></i>
-         &nbsp; {{l('Save', [], 'layouts')}}
-      </button>
-   </div>
-
-{!! Form::close() !!}
-
-
-{{--
-@if( optional($salesrep->user)->active )
-
-
-        {!! Form::model($salesrep->user, array('method' => 'PATCH', 'url' => route('salesrepusers.update', [$salesrep->user->id]).'#salesrepuser' )) !!}
-        <input type="hidden" value="{{$salesrep->id}}" name="salesrep_id" id="salesrep_id">
-
-          @include('sales_reps._form_salesrep_user')
-
-        {!! Form::close() !!}
-        
-
-@else
-
-    @if ( !optional($salesrep->address)->email )
-          <div class="row">
-            <div class="col-md-10 col-md-offset-1" style="margin-top: 10px;margin-bottom: 10px">
-                <div class="alert alert-danger">
-                  <a href="#" class="close" data-dismiss="alert">&times;</a>
-                  {{l('Can not create a User for this Customer:')}}
-                  <ul><li class="error">{{l('This Customer has not a valid email address.')}}</li></ul>
-                </div>
+            <div id="msg-salesrepuser-success" class="alert alert-success alert-block" style="display:none;">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <span id="msg-salesrepuser-success-counter" class="badge"></span>
+                <strong>{!!  l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
             </div>
-          </div>
-    @else
 
-{!! Form::open(array('url' => route('salesrepusers.store').'#salesrepuser', 'id' => 'create_salesrepuser', 'name' => 'create_salesrepuser', 'class' => 'form')) !!}
-<input type="hidden" value="{{$salesrep->id}}" name="salesrep_id" id="salesrep_id">
-<input type="hidden" value="salesrepuser" name="tab_name" id="tab_name">
+            <!-- Sales Rep -->
 
-   <div class="panel-body">
+            <div class="content_salesrepusers"></div>
 
-        <div class="row">
+            <!-- Sales Rep ENDS -->
 
-                   <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-allow_abcc_access">
-                     {!! Form::label('allow_abcc_access', l('Allow Customer Center access?'), ['class' => 'control-label']) !!}
-                     <div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('allow_abcc_access', '1', false, ['id' => 'allow_abcc_access_on']) !!}
-                           {!! l('Yes', [], 'layouts') !!}
-                         </label>
-                       </div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('allow_abcc_access', '0', true, ['id' => 'allow_abcc_access_off']) !!}
-                           {!! l('No', [], 'layouts') !!}
-                         </label>
-                       </div>
-                     </div>
-                   </div>
+        </div><!-- div class="panel-body" -->
 
-                   <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-notify_salesrep">
-                     {!! Form::label('notify_salesrep', l('Notify Customer? (by email)'), ['class' => 'control-label']) !!}
-                     <div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('notify_salesrep', '1', true, ['id' => 'notify_salesrepb_on']) !!}
-                           {!! l('Yes', [], 'layouts') !!}
-                         </label>
-                       </div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('notify_salesrep', '0', false, ['id' => 'notify_salesrep_off']) !!}
-                           {!! l('No', [], 'layouts') !!}
-                         </label>
-                       </div>
-                     </div>
-                   </div>
-        </div>
-{ {--
-        <hr />
-
-        <div class="row">
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('description_short') ? 'has-error' : '' }}">
-                     {{ l('Short Description') }}
-                     {!! Form::textarea('description_short', null, array('class' => 'form-control', 'id' => 'description_short', 'rows' => '3')) !!}
-                     {!! $errors->first('description_short', '<span class="help-block">:message</span>') !!}
-                  </div>
-        </div>
-
-        <div class="row">
-        </div>
-
-        <div class="row">
-        </div>
---} }
-   </div>
-
-   <div class="panel-footer text-right">
-      <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
-         <i class="fa fa-hdd-o"></i>
-         &nbsp; {{l('Save', [], 'layouts')}}
-      </button>
-   </div>
-
-{!! Form::close() !!}
-
-    @endif
-
-@endif
---}}
-
-</div><!-- div class="panel panel-info" -->
+    </div><!-- div class="panel panel-info" -->
 
       
-</div>
+</div><!-- div id="panel_salesrepuser" -->
+
+
+@include('sales_reps/_modal_salesrepuser_create')
+
+
+@section('scripts')    @parent
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $(document).on('click', '.create-salesrepuser', function (evnt) {
+
+            var id = $(this).attr('data-id');
+
+            // Initialize
+            $('#salesrepuser_action').val('create');
+            $('#salesrepuser_id').val(id);
+
+            $('#salesrepuser_firstname').val('{{ $salesrep->firstname }}');
+            $('#salesrepuser_lastname').val('{{ $salesrep->lastname }}');
+            $('#salesrepuser_email').val('{{ $salesrep->email }}');
+            $('#password').val('{{ \App\Configuration::get('ABSRC_DEFAULT_PASSWORD') }}');
+
+            $('#salesrepuser_language_id').val('{{ \App\Configuration::get('DEF_LANGUAGE') }}');
+            // $('select[name="salesrepuser_language_id"]').val( {{ intval(\App\Configuration::get('DEF_LANGUAGE')) }} );
+
+            $("input[name='salesrepuser_active'][value='1']").prop('checked', true);
+            $("input[name='allow_abcc_access'][value='-1']").prop('checked', true);
+            $("input[name='notify_salesrep'][value='1']").prop('checked', true);
+
+            // Open popup
+            $('#salesrepuserModalTitle').html('{{ l('Create User') }} :: {{ $salesrep->name }}');
+            $("#msg-salesrepuser-error").find("ul").empty();
+            $("#msg-salesrepuser-error").css('display', 'none');
+
+            $('#salesrepuserModal').modal({show: true});
+            $("#salesrepuser_firstname").focus();
+
+
+            return false;
+        });
+
+
+        $(document).on('click', '.update-salesrepuser', function (evnt) {
+
+            var id = $(this).attr('data-id');
+
+            var data = getSalesRepUserData(id);
+
+            return false;
+        });
+
+
+    });
+
+    $(window).on('hashchange', function () {
+        page = window.location.hash.replace('#', '');
+        if (page == 'salesrepusers') getSalesRepUsers();
+    });
+
+
+    function getSalesRepUsers() {
+
+        $.ajax({
+            url: '{{ route( 'salesrep.getusers', [$salesrep->id] ) }}',
+            data: {}
+        }).done(function (data) {
+            $('.content_salesrepusers').html(data);
+        });
+    }
+
+
+    function getSalesRepUserData(id) {
+
+        var url = "{{ route('salesrepuser.getuser', ':id') }}";
+        url = url.replace(':id', id);
+
+        $.ajax({
+            url: url,
+            data: {}
+        }).done(function (data) {
+            //console.log(data);
+            user = data.user;
+
+            // Initialize
+            $('#salesrepuser_action').val('update');
+            $('#salesrepuser_id').val(user.id);
+
+            $('#salesrepuser_firstname').val(user.firstname);
+            $('#salesrepuser_lastname').val(user.lastname);
+            $('#salesrepuser_email').val(user.email);
+            $('#password').val('');
+
+            $('#salesrepuser_language_id').val(user.language_id);
+
+            $("input[name='salesrepuser_active'][value='" + user.active + "']").prop('checked', true);
+            $("input[name='allow_abcc_access'][value='" + user.allow_abcc_access + "']").prop('checked', true);
+//            $("input[name='notify_salesrep'][value='"+user.+"']").prop('checked', true);
+
+            $("#div-notify_salesrep").css('display', 'none');
+
+            // Open popup
+            $('#salesrepuserModalTitle').html('{{ l('Update User') }} :: {{ $salesrep->name_commercial }}');
+            $("#msg-salesrepuser-error").find("ul").empty();
+            $("#msg-salesrepuser-error").css('display', 'none');
+
+            $('#salesrepuserModal').modal({show: true});
+            $("#salesrepuser_firstname").focus();
+        });
+
+        // return false;
+    }
+
+</script>
+@endsection

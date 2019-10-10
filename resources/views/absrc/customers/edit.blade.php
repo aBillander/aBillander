@@ -99,10 +99,13 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                &nbsp; {{ l('Statistics') }}
             </a -->
 --}}
+
+@if( \App\Configuration::isTrue('ABSRC_ALLOW_ABCC_ACCESS') )
             <a id="b_customeruser" href="#customeruser" class="list-group-item">
                <i class="fa fa-bolt"></i>
                &nbsp; {{ l('ABCC Access') }}
             </a>
+@endif
          </div>
       </div>
       
@@ -133,9 +136,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 --}}
 
 @if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if( \App\Configuration::isTrue('ABSRC_ALLOW_ABCC_ACCESS') )
 
           @include('absrc.customers._panel_customeruser')
 
+@endif
 @endif
 
       </div><!-- div class="col-lg-10 col-md-10 col-sm-9" -->

@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Notifications\SalesRepResetPasswordNotification;
 
 class SalesRepUser extends Authenticatable
 {
     use Notifiable;
-    use SoftDeletes;
+//    use SoftDeletes;
 
     /**
      * Configure guard.
@@ -40,7 +40,7 @@ class SalesRepUser extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password', 'firstname', 'lastname', 
 //        'home_page', 'is_admin', 
-        'active', 'enable_quotations', 'enable_min_order', 'min_order_value', 
+        'active', 'allow_abcc_access', 
         'language_id', 'sales_rep_id'
     ];
 
@@ -58,10 +58,10 @@ class SalesRepUser extends Authenticatable
      * 
      */
     public static $rules = array(
-        'email'       => 'required|email',
+        'sales_rep_id' => 'exists:sales_reps,id', 
+        'email' => 'required|email|unique:sales_rep_users,email',
         'password'    => array('required', 'min:6', 'max:32'),
 //        'language_id' => 'exists:languages,id',
-//        'customer_id' => 'exists:customers,id',
     );
 
     /**  trait CanResetPassword
@@ -108,25 +108,9 @@ class SalesRepUser extends Authenticatable
         // See: https://pusher.com/tutorials/multiple-authentication-guards-laravel#modify-how-our-users-are-redirected-if-authenticated
     }
 
-    public function canQuotations()
+    public function canGiveAbccAccess()
     {
-        $can = $this->enable_quotations >= 0 ? $this->enable_quotations : Configuration::isTrue('ABCC_ENABLE_QUOTATIONS') ; 
-
-        return $can;
-    }
-
-    public function canMinOrder()
-    {
-        $can = $this->enable_min_order >= 0 ? $this->enable_min_order : Configuration::isTrue('ABCC_ENABLE_MIN_ORDER') ; 
-
-        return $can;
-    }
-
-    public function canMinOrderValue()
-    {
-        if( !$this->canMinOrder() ) return 0.0;
-
-        $can = $this->min_order_value > 0 ? $this->min_order_value : Configuration::getNumber('ABCC_MIN_ORDER_VALUE') ; 
+        $can = $this->allow_abcc_access >= 0 ? $this->allow_abcc_access : Configuration::isTrue('ABSRC_ALLOW_ABCC_ACCESS') ; 
 
         return $can;
     }

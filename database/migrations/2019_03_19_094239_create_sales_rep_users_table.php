@@ -28,6 +28,7 @@ class CreateSalesRepUsersTable extends Migration
 
             $table->rememberToken();
 
+            $table->tinyInteger('allow_abcc_access')->default(0);              // Sales Representative can give Customer access to Customer Center
             $table->tinyInteger('active')->default(1);
 
             $table->integer('language_id')->unsigned()->nullable(false); 

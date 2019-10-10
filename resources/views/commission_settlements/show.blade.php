@@ -38,7 +38,7 @@
 </div>
 
 
-        <a href="{{ URL::to('commissionsettlements/'.$settlement->id.'/calculate') }}" class=" hide btn btn-blue" xonclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Update Settlement') }}</a>
+        <a href="{{ URL::to('commissionsettlements/'.$settlement->id.'/calculate') }}" class="btn btn-blue" title="{{ l('Add Documents between Settlement dates') }}"><i class="fa fa-cog"></i> {{ l('Update Settlement') }}</a>
 
         <a href="{{ route('commissionsettlements.index') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Commission Settlements') }}</a>
     </div>
@@ -60,10 +60,8 @@
                   <i class="fa fa-hand-stop-o"></i> {{$settlement->status_name}}
               </button>
 @endif
-@if ( $settlement->status == "closed" )
-              <button type="button" class="btn btn-sm alert-success" title="{{l('')}}">
-                  <i class="fa fa-thumbs-o-up"></i> {{$settlement->status_name}}
-              </button>
+@if ( $settlement->paid_documents_only > 0 )
+              <span class="badge" style="background-color: #3a87ad;" title="{{l('Paid Documents only')}}"><i class="fa fa-money"></i></span>
 @endif
 
 

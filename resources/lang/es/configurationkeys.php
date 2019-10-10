@@ -240,6 +240,8 @@ return [
 	'ABSRC_DEFAULT_PASSWORD.name' => 'Contraseña por defecto',
 	'ABSRC_DEFAULT_PASSWORD.help' => 'Esta Contraseña será asignada cuando se permite a un Agente acceder al Centro de Agentes. Más adelante podrá cambiarse.',
 	
+	'ABSRC_ALLOW_ABCC_ACCESS.name' => 'Permitir dar acceso al Centro de Clientes',
+	'ABSRC_ALLOW_ABCC_ACCESS.help' => 'El Agente puede permitir a un Cliente que acceda al Centro de Clientes.',
 	'ABSRC_ITEMS_PERPAGE.name' => 'Items por página',
 	'ABSRC_ITEMS_PERPAGE.help' => 'Número de items (máximo) para resultados paginados.',
 

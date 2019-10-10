@@ -178,6 +178,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('salesrepusers', 'SalesRepUsersController');
         Route::get('salesrepusers/create/withsalesrep/{salesrep}', 'SalesRepUsersController@createWithSalesRep')->name('salesrep.createuser');
         Route::get('salesrepusers/{salesrep}/impersonate', 'SalesRepUsersController@impersonate')->name('salesrep.impersonate');
+        Route::get('salesrepusers/{salesrep}/getuser' , 'SalesRepUsersController@getUser' )->name('salesrepuser.getuser' );
+        Route::get('salesreps/{salesrep}/getusers', 'SalesRepsController@getUsers')->name('salesrep.getusers');
 
         Route::resource('commissionsettlements',          'CommissionSettlementsController');
 //        Route::resource('commissionsettlements.documents', 'CommissionSettlementLinesController');

@@ -40,7 +40,7 @@
                                     class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 
                         <td class="text-right button-pad">
-                            <a class=" hide btn btn-sm btn-grey" href="{ { route('salesrep.impersonate', [$user->id]) } }"
+                            <a class="btn btn-sm btn-grey" href="{{ route('salesrep.impersonate', [$user->id]) }}"
                                title="{{ l('Impersonate', 'salesrepusers') }}" target="_blank">&nbsp; <i class="fa fa-clock-o alert-success"></i>
                                 &nbsp;</a>
                             {{--

@@ -54,6 +54,8 @@ return [
 	'Users - Edit'     => 'Usuarios - Modificar',
 	'Edit User'     => 'Modificar Usuario',
 	
+	'Update User' => 'Modificar Usuario',
+	
 	'Allow Sales Representative Center access?'     => '¿Permitir acceso al Centro de Agentes?',
 	'Allow give Customers ABCC access?'     => '¿Permitir dar acceso a los Clientes al Centro de Clientes?',
 	''     => '',

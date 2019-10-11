@@ -130,7 +130,7 @@
             $("#div-notify_salesrep").css('display', 'none');
 
             // Open popup
-            $('#salesrepuserModalTitle').html('{{ l('Update User') }} :: {{ $salesrep->name_commercial }}');
+            $('#salesrepuserModalTitle').html('{{ l('Update User', 'salesrepusers') }} :: '+user.firstname+' '+user.lastname);
             $("#msg-salesrepuser-error").find("ul").empty();
             $("#msg-salesrepuser-error").css('display', 'none');
 

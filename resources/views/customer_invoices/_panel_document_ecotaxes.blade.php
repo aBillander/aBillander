@@ -26,7 +26,7 @@
       <tbody>
 @php
 
-$document->loadLineEcotaxes();
+// $document->loadLineEcotaxes();
 
 @endphp
 

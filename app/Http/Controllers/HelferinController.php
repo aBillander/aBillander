@@ -336,6 +336,8 @@ foreach ($customers as $customer) {
         $models = $this->models;
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
+        $document_model = $model;
+        $document_class = '\App\\'.$document_model;
         $model .= 'Line';
         $class = '\App\\'.$model;
         $table = snake_case(str_plural($model));
@@ -343,6 +345,7 @@ foreach ($customers as $customer) {
 
         // Lets see ecotaxes
         $all_ecotaxes = Ecotax::get()->sortByDesc('amount');
+        // $check=collect([]);
 
 
         // Lets get dirty!!
@@ -377,9 +380,34 @@ foreach ($customers as $customer) {
 
         $ribbon = 'fecha ' . $ribbon;
 
+        $nbr_documents = $document_class::
+                          whereHas('lines', function ($query) {
+
+                                $query->where('line_type', 'product');
+                                $query->where('ecotax_id', '>', 0);
+                        })
+                        ->when($date_from, function($query) use ($date_from) {
+
+                                $query->where('document_date', '>=', $date_from.' 00:00:00');
+                        })
+                        ->when($date_to, function($query) use ($date_to) {
+
+                                $query->where('document_date', '<=', $date_to.' 23:59:59');
+                        })
+//                        ->orderBy('document_date', 'asc')
+                        ->get()
+                        ->count();
+/*
+        foreach ($nbr_documents as $v) {
+            # code...
+            echo $v->id." &nbsp; ".$v->document_reference."<br />";
+        }
+            echo " &nbsp; Total Facturas: ".$nbr_documents->count()."<br />";die();
+*/
+
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Informe de RAEE ('.l(str_replace("Line","",$model)).') ' . $ribbon, '', '', date('d M Y H:i:s')];
+        $data[] = [\App\Context::getContext()->company->name_fiscal, '', '', date('d M Y H:i:s')];
+        $data[] = ['Informe de RAEE ('.$nbr_documents.' '.l(str_replace("Line","",$model)).') ' . $ribbon];
         $data[] = [''];
 
 
@@ -420,15 +448,22 @@ foreach ($customers as $customer) {
                         $row[] = (string) $all_ecotax->name;
                         $row[] = $all_ecotax->amount * 1.0;
                         $row[] = $total_lines = $lines->sum('ecotax_total_amount') * 1.0;
+                        $row[] = $lines->unique('customer_invoice_id')->count();
             
                         $data[] = $row;
 
                         $total += $total_lines;
+
+                        // $check = $check->merge( $lines->unique('customer_invoice_id') );
         }
 
         // Totals
         $data[] = [''];
         $data[] = ['', '', 'Total:', $total ];
+
+        // check
+        // $data[] = [''];
+        // $data[] = ['', '', 'Total:', $check->unique('customer_invoice_id')->count() ];
 
 //        $i = count($data);
 
@@ -445,8 +480,8 @@ foreach ($customers as $customer) {
             // Build the spreadsheet, passing in the data array
             $excel->sheet($sheetName, function($sheet) use ($data) {
                 
-                $sheet->mergeCells('A1:D1');
-                $sheet->mergeCells('A2:D2');
+                $sheet->mergeCells('A1:C1');
+                $sheet->mergeCells('A2:C2');
 
                 $sheet->getStyle('A4:D4')->applyFromArray([
                     'font' => [

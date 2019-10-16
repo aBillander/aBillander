@@ -144,6 +144,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         // Helferin
         Route::get('/helferin/home', 'HelferinController@index')->name('helferin.home');
         Route::post('/helferin/reports/sales'  , 'HelferinController@reportSales'  )->name('helferin.reports.sales');
+        Route::post('/helferin/reports/ecotaxes'  , 'HelferinController@reportEcotaxes'  )->name('helferin.reports.ecotaxes');
 
 
         Route::resource('configurations',    'ConfigurationsController');

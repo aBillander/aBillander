@@ -38,12 +38,21 @@ class DbBackupsController extends Controller
 		//
 		$bk_folder = storage_path( abi_tenant_db_backups_path() );
 
-		$listing =  array_reverse( 
-			array_sort(File::files( $bk_folder ), function($file)
-				{
-				    return $file->getMTime();
-				})
-		);
+		try {
+
+			$listing =  array_reverse(
+				array_sort(File::files( $bk_folder ), function($file)
+					{
+					    return $file->getMTime();
+					})
+			);
+
+		} catch (\Exception $e) {
+
+	        return redirect()->route('home')
+	                ->with('error', $e->getMessage());
+
+        }
 
 /*
 		foreach ($listing as $v) {

@@ -228,6 +228,14 @@ return [
 	'Margin'     => 'Margen',
 	'Update Cost Prices'     => 'Actualizar Precios de Coste',
 
+	// Ecotaxes
+	'Ecotaxes' => 'Eco-Impuestos',
+	'Ecotax Name'     => 'Nombre del Eco-Impuesto',
+	'Ecotax Type'     => 'Tipo',
+	'Ecotax Percent'     => 'Porcentaje ',
+	'Ecotax Amount'     => 'Cantidad del Impuesto',
+	'Ecotax Document Amount'     => 'Total Documento',
+
 	// Stock availability
 	'Stock Availability'     => 'Disponibilidad de Stock',
 	''     => '',

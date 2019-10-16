@@ -159,8 +159,6 @@ $document_total_discount_percent = $document->document_discount_percent + $docum
 
 
 
-
-               <br>
                <br>
 
                <b>{{l('Margin')}}</b>: 
@@ -168,7 +166,20 @@ $document_total_discount_percent = $document->document_discount_percent + $docum
                           l('Margin calculation is based on Cost Price', [], 'layouts') :
                           l('Margin calculation is based on Sales Price', [], 'layouts') }}
                <br>
+               <br>
+               <br>
 
 
+
+
+
+
+@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+<div id="panel_document_ecotaxes" class="">
+
+    @include($view_path.'._panel_document_ecotaxes')
+
+</div>
+@endif
 
 

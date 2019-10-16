@@ -46,6 +46,7 @@
 
 			$table->decimal('tax_percent', 8, 3)->default(0.0);					// Tax percent
 			$table->decimal('ecotax_amount', 20, 6)->default(0.0);
+			$table->decimal('ecotax_total_amount', 20, 6)->default(0.0);
 			$table->decimal('commission_percent', 8, 3)->default(0.0);			// Commission percent
 
 			$table->text('notes')->nullable();

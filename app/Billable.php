@@ -9,6 +9,7 @@ use Auth;
 use App\Traits\BillableIntrospectorTrait;
 use App\Traits\BillableCustomTrait;
 use App\Traits\BillableDocumentLinesTrait;
+use App\Traits\BillableEcotaxableTrait;
 use App\Traits\BillableTotalsTrait;
 use App\Traits\ViewFormatterTrait;
 
@@ -21,6 +22,7 @@ class Billable extends Model
     use BillableIntrospectorTrait;
     use BillableCustomTrait;
     use BillableDocumentLinesTrait;
+    use BillableEcotaxableTrait;
     use BillableTotalsTrait;
     use ViewFormatterTrait;
 
@@ -681,6 +683,7 @@ class Billable extends Model
             {
                 $line->ecotax_id = $product->ecotax_id;
                 $line->ecotax_amount = $product->ecotax->amount;
+                $line->ecotax_total_amount = $line->quantity * $line->ecotax_amount;
             }
             
             $line->save();

@@ -406,18 +406,19 @@ foreach ($customers as $customer) {
 */
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal, '', '', date('d M Y H:i:s')];
-        $data[] = ['Informe de RAEE ('.$nbr_documents.' '.l(str_replace("Line","",$model)).') ' . $ribbon];
+        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = ['Informe de RAEE ('.$nbr_documents.' '.l(str_replace("Line","",$model)).') ' . $ribbon, '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['ID', 'Nombre del Eco-Impuesto', 'Cantidad del Impuesto', 'Cantidad Total'];
+        $header_names = ['ID', 'Nombre del Eco-Impuesto', 'Cantidad del Impuesto', 'Unidades', 'Cantidad Total'];
 
         $data[] = $header_names;
 
         // Nice! Lets move on and retrieve Document Lines by Ecotax
         $total =  0.0;
+        $nbr = 0;
         
         foreach ($all_ecotaxes as $all_ecotax) {
             # code...
@@ -442,24 +443,29 @@ foreach ($customers as $customer) {
 
             // abi_r($lines->toArray());   // die();
 
+                        $total_lines = $lines->sum('ecotax_total_amount');
+                        $nbr_lines = round($total_lines / $all_ecotax->amount);
+
                         // Do populate
                         $row = [];
                         $row[] = $all_ecotax->id;
                         $row[] = (string) $all_ecotax->name;
                         $row[] = $all_ecotax->amount * 1.0;
-                        $row[] = $total_lines = $lines->sum('ecotax_total_amount') * 1.0;
+                        $row[] = $nbr_lines * 1.0;
+                        $row[] = $total_lines * 1.0;
                         $row[] = $lines->unique('customer_invoice_id')->count();
             
                         $data[] = $row;
 
                         $total += $total_lines;
+                        $nbr   += $nbr_lines;
 
                         // $check = $check->merge( $lines->unique('customer_invoice_id') );
         }
 
         // Totals
         $data[] = [''];
-        $data[] = ['', '', 'Total:', $total ];
+        $data[] = ['', '', 'Total:', $nbr, $total ];
 
         // check
         // $data[] = [''];
@@ -483,7 +489,7 @@ foreach ($customers as $customer) {
                 $sheet->mergeCells('A1:C1');
                 $sheet->mergeCells('A2:C2');
 
-                $sheet->getStyle('A4:D4')->applyFromArray([
+                $sheet->getStyle('A4:E4')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -494,13 +500,14 @@ foreach ($customers as $customer) {
 //                    'C' => 'dd/mm/yyyy',
                     'B' => '@',
                     'C' => '0.00',
-                    'D' => '0.00',
+                    'D' => '0',
+                    'E' => '0.00',
 
                 ));
                 
                 $n = count($data);
                 $m = $n;    //  - 3;
-                $sheet->getStyle("C$m:D$n")->applyFromArray([
+                $sheet->getStyle("C$m:E$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

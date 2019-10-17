@@ -68,7 +68,7 @@ trait BillableEcotaxableTrait
 //        $currency->conversion_rate = $this->conversion_rate;
         //
 
-        $document_lines      = $this->documentlines->where('line_type', 'product');
+        $document_lines      = $this->documentlines->where('line_type', 'product')->where('ecotax_id', '>', 0);
         // $line_taxes = $this->customerorderlinetaxes;
         
         // Let' get dirty!

@@ -116,6 +116,8 @@ class SepaDirectDebitsController extends Controller
         
         // Lets see:
         $vouchers =  $this->payment
+                    ->where('payment_type', 'receivable')
+                    ->where('status', 'pending')
                     ->whereHas('customer', function ($query) use ($customer_id) {
 
                             if ( (int) $customer_id > 0 )

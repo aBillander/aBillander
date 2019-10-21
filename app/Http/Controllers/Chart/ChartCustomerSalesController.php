@@ -43,7 +43,7 @@ class ChartCustomerSalesController extends Controller
 	function getMonthlyPostCount( $month, $model = 'CustomerOrder' ) {
 //		$monthly_order_count = CustomerShippingSlip::whereMonth( 'created_at', $month )->get()->count();
 		$class = 'App\\'.$model;
-		$monthly_order_count = $class::select('total_tax_excl')->whereMonth( 'created_at', $month )->get()->sum('total_tax_excl');
+		$monthly_order_count = $class::select('total_tax_excl')->whereMonth( 'document_date', $month )->get()->sum('total_tax_excl');
 		return round($monthly_order_count, 2);
 	}
 	

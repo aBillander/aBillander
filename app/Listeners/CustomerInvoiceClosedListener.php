@@ -6,6 +6,8 @@ use App\Events\CustomerInvoiceClosed;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use App\Configuration;
+
 class CustomerInvoiceClosedListener
 {
     /**
@@ -41,6 +43,15 @@ class CustomerInvoiceClosedListener
         //
         $document->stock_status = 'completed';
         $document->save();
+
+
+        // 
+        // Ecotaxes stuff
+        // 
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') )
+        {
+            $document->->loadLineEcotaxes();
+        }
 
 
         // 

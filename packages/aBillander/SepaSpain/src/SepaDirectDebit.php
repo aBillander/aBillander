@@ -300,7 +300,7 @@ class SepaDirectDebit extends Model
                     return $item->paymentorable_id;
                 });
 
-                foreach ($sorted_collection as $key => $group) {
+                foreach ($sorted_collection as $kkey => $group) {
                     # code...
                     if ( $group->count() <= 1 )
                         continue;
@@ -319,7 +319,7 @@ class SepaDirectDebit extends Model
                             return $carry;
                     }, []);
 
-                    $sorted_collection->put($key, collect($grouped));
+                    $sorted_collection->put($kkey, collect($grouped));
                 }
 
                 $collection = $sorted_collection->flatten(1);

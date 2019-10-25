@@ -62,6 +62,14 @@
 
 function checkFields() 
 {
+
+@if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+
+  // No checks at all
+  return true;
+
+@else
+
   var amount = parseFloat($("#amount").val());
   var amount_initial = parseFloat($("#amount_initial").val());
 
@@ -88,6 +96,9 @@ function checkFields()
 
   //    }
    }
+
+@endif
+
 }
 
 function make_payment()

@@ -37,9 +37,10 @@
                <i class="fa fa-cloud"></i>
                &nbsp; {{ l('Internet') }}
             </a>
+@endif
+
          </div>
       </div>
-@endif
 
       <div class="col-lg-10 col-md-10 col-sm-9">
 

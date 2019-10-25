@@ -303,6 +303,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('mail', 'MailController@store');
 
         Route::resource('paymentmethods', 'PaymentMethodsController');
+        Route::resource('paymenttypes', 'PaymentTypesController');
 
         Route::resource('shippingmethods', 'ShippingMethodsController');
 

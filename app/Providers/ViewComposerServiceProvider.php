@@ -113,6 +113,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		// PaymentTypes
+		view()->composer(array('payment_methods._form'), function($view) {
+		    
+		    $view->with('payment_typeList', \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray());
+		    
+		});
+
 		// Currencies
 		view()->composer(array('customers.edit', 'products.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_rules.create', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create', 'configuration_keys.key_group_2', 'suppliers._form'), function($view) {
 		    

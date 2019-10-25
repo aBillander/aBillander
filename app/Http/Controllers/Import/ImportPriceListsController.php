@@ -407,6 +407,8 @@ class ImportPriceListsController extends Controller
 
                 // Customer::reguard();
 
+                $pricelist->update(['last_imported_at' => \Carbon\Carbon::now()]);
+
 
             } else {
 

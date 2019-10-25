@@ -29,7 +29,7 @@ class CreatePaymentMethodsTable extends Migration {
 			$table->tinyInteger('active')->default(1);
 
 			// Payment Document
-			$table->integer('payment_document_id')->nullable();		// Cash, cheque, bank transfer, etc.
+			$table->integer('payment_type_id')->nullable();		// Cash, cheque, bank transfer, etc.
 
 			$table->timestamps();
 			$table->softDeletes();

@@ -1,0 +1,1 @@
+/opt/lampp/htdocs/aBillander/app/views/payment_types/show.blade.php

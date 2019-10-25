@@ -16,7 +16,7 @@ class CustomerGroup extends Model {
     // Add your validation rules here
     public static $rules = array(
         'name' => 'required',
-        'price_list_id' => 'exists:price_lists,id',
+        'price_list_id' => 'sometimes|nullable|exists:price_lists,id',
     	);
 
     /*

@@ -10,7 +10,7 @@
 
                   <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('price_list_id') ? 'has-error' : '' }}">
                      {{ l('Price List') }}
-                     {!! Form::select('price_list_id', array('0' => l('-- Please, select --', [], 'layouts')) + $price_listList, null, array('class' => 'form-control')) !!}
+                     {!! Form::select('price_list_id', array('' => l('-- Please, select --', [], 'layouts')) + $price_listList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('price_list_id', '<span class="help-block">:message</span>') !!}
                   </div>
 

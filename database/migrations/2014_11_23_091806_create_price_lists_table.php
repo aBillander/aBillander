@@ -29,6 +29,8 @@ class CreatePriceListsTable extends Migration {
 			$table->decimal('amount', 20, 6)->default(0.0);			// Amount if type = 1,2
 
 			$table->integer('currency_id')->unsigned()->nullable(false);
+
+			$table->timestamp('last_imported_at')->nullable();       // Last date when prices were imported
 			
 			$table->timestamps();
 		});

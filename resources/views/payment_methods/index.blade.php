@@ -9,6 +9,9 @@
     <div class="pull-right" style="padding-top: 4px;">
         <a href="{{ URL::to('paymentmethods/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+        <a href="{{ route('paymenttypes.index') }}" class="btn btn-sm btn-navy" 
+                title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-btc"></i> {{l('Payment Types')}}</a>
     </div>
     <h2>
         {{ l('Payment Methods') }}
@@ -23,7 +26,8 @@
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
-			<th>{{l('Payment Method name')}}</th>
+            <th>{{l('Payment Method name')}}</th>
+            <th>{{l('Payment Type')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
@@ -32,7 +36,8 @@
 	@foreach ($paymentmethods as $paymentmethod)
 		<tr>
 			<td>{{ $paymentmethod->id }}</td>
-			<td>{{ $paymentmethod->name }}</td>
+            <td>{{ $paymentmethod->name }}</td>
+            <td>{{ optional($paymentmethod->paymenttype)->name }}</td>
 
             <td class="text-center">@if ($paymentmethod->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

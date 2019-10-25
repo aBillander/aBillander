@@ -50,7 +50,7 @@ class CustomerInvoiceClosedListener
         // 
         if ( Configuration::isTrue('ENABLE_ECOTAXES') )
         {
-            $document->->loadLineEcotaxes();
+            $document->loadLineEcotaxes();
         }
 
 

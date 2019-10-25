@@ -10,7 +10,8 @@ class PaymentMethod extends Model {
     protected $dates = ['deleted_at'];
 
     protected $fillable = ['name', 'deadlines_by', 'deadlines', 
-                           'payment_is_cash', 'auto_direct_debit', 'active'];
+                           'payment_is_cash', 'auto_direct_debit', 'active',
+                           'payment_type_id'];
 
     public static $rules = array(
         'name'         => array('required', 'min:2', 'max:128'),
@@ -39,9 +40,9 @@ class PaymentMethod extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public function paymentdocument()
+    public function paymenttype()
     {
-        return $this->belongsTo('App\PaymentDocument');
+        return $this->belongsTo('App\PaymentType', 'payment_type_id');
     }
     
     public function customerinvoices()

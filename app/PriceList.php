@@ -12,7 +12,7 @@ class PriceList extends Model {
     use ViewFormatterTrait;
     //    use SoftDeletes;
 
-//    protected $dates = ['deleted_at'];
+    protected $dates = ['last_imported_at'];
 
     public static $types = array(
             'price', 
@@ -20,7 +20,7 @@ class PriceList extends Model {
             'margin',
         );
 
-	protected $fillable = ['name', 'type', 'price_is_tax_inc', 'amount', 'currency_id'];
+	protected $fillable = ['name', 'type', 'price_is_tax_inc', 'amount', 'currency_id', 'last_imported_at'];
 
 	public static $rules = array(
                                     'name' => 'required',

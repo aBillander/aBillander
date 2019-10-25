@@ -5,6 +5,10 @@
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
+    {!! Form::label('payment_type_id', l('Payment Type')) !!}
+    {!! Form::select('payment_type_id', ['' => l('-- None --', [], 'layouts')] + $payment_typeList, null, array('class' => 'form-control')) !!}
+</div>
+<div class="form-group col-lg-4 col-md-4 col-sm-4">
     {{-- !! Form::label('deadlines_by', l('Deadlines by')) !! }
     { !! Form::select('deadlines_by', array( 
                       '0' => l('-- Please, select --', [], 'layouts'),

@@ -254,7 +254,7 @@ class AbsrcProductsController extends Controller
 
         
         // BOMs
-        $bom = $product->bom();
+        $bom = $product->bom;
 
         
         // Gather Attributte Groups

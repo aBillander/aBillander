@@ -212,14 +212,17 @@ class CustomerVouchersController extends Controller
 
 			$rules = Payment::$rules;
 			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
-			$rules['amount'] .= $payment->amount;
+			if ( $payment->amount > 0.0 )
+				$rules['amount'] .= '|min:0.0|max:' . $payment->amount;
+			else
+				$rules['amount'] .= '|max:0.0|min:' . $payment->amount;
 
 			$this->validate($request, $rules);
 
 			$diff = $payment->amount - $request->input('amount', $payment->amount);
 
 			// If amount is not fully paid, a new payment will be created for the difference
-			if ( $diff > 0 ) {
+			if ( $diff != 0 ) {
 				$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'amount'] );
 
 				$due_date = $request->input('due_date_next') ?: \Carbon\Carbon::now();
@@ -274,14 +277,17 @@ class CustomerVouchersController extends Controller
 			$rules = Payment::$rules;
 			$rules['payment_date']  = 'required';
 			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
-			$rules['amount'] .= $payment->amount;
+			if ( $payment->amount > 0.0 )
+				$rules['amount'] .= '|min:0.0|max:' . $payment->amount;
+			else
+				$rules['amount'] .= '|max:0.0|min:' . $payment->amount;
 
 			$this->validate($request, $rules);
 
 			$diff = $payment->amount - $request->input('amount', $payment->amount);
 
 			// If amount is not fully paid, a new payment will be created for the difference
-			if ( $diff > 0 ) {
+			if ( $diff != 0 ) {
 				$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'amount'] );
 
 				$due_date = $request->input('due_date_next') ?: \Carbon\Carbon::now();
@@ -323,7 +329,7 @@ class CustomerVouchersController extends Controller
 			$rules = Payment::$rules;
 			$rules['payment_date']  = 'required';
 //			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
-			$rules['amount'] .= $payment->amount;
+			$rules['amount'] .= '|max:' . $payment->amount;
 
 			$this->validate($request, $rules);
 

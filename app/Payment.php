@@ -47,7 +47,7 @@ class Payment extends Model {
             'due_date' => 'required|date',
 //            'payment_date' => 'date',
 //   Fuck yeah :=>           'amount' => 'numeric|min:0|max:',
-              'amount' => 'numeric|max:',
+              'amount' => 'numeric',    // |max:',
 	];
 
 

@@ -33,7 +33,7 @@ RewriteRule ^blog/$ http://blog.website.com [L,NC,R=301]
 
 /* */
 
-Route::group(['prefix' => 'abcc'], function ()
+Route::group(['prefix' => 'abcc', 'middleware' => ['guestcontext']], function ()
 // Route::group(['domain' => env('ABCC_DOMAIN'), 'prefix' => 'abcc'], function ()
 {
     Route::get('/login', 'Auth\CustomerLoginController@showLoginForm')->name('customer.login');

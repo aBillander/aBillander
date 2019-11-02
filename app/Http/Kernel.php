@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
 
 //        'admincontext'  => \App\Http\Middleware\SetContextMiddleware::class,
         'context'  => \App\Http\Middleware\SetContextMiddleware::class,
+        'guestcontext'  => \App\Http\Middleware\SetGuestContextMiddleware::class,
 
         'abcccontext'  => \App\Http\Middleware\CustomerCenter\SetAbccContextMiddleware::class,
 

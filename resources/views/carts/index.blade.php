@@ -52,7 +52,7 @@
                 </a>
 @php
 
-$address = $cart->user->address_id
+$address = optional($cart->user)->address_id
             ? $cart->user->address
             : $cart->customer->address
 

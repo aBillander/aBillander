@@ -59,12 +59,41 @@ class CustomerUser extends Authenticatable
      */
     public static $rules = array(
         'customer_id' => 'exists:customers,id', 
+        'language_id' => 'exists:languages,id', 
         'email' => 'required|email|unique:customer_users,email',
         'password'    => 'required|min:6|max:32',
 //        'language_id' => 'exists:languages,id',
 //        'customer_id' => 'exists:customers,id',
 //        'address_id' => 'exists:addresses,id',
     );
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($cuser) {
+            // before delete() method call this
+
+            // Cart
+            if ( $cart = $cuser->cart )
+                $cart->delete();
+
+            // emaillogs
+            foreach ($cuser->emaillogs as $line) {
+                $line->delete();
+            }
+        });
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
 
     /**  trait CanResetPassword
      *

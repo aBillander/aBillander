@@ -46,5 +46,8 @@ return [
 	'Price Rules - Edit' => 'Regla de Precio - Modificar',
 	'Edit Price Rule' => 'Modificar Regla de Precio',
 
+	'Extra Items' => 'Unidades sin Coste',
+	'If you fill this field, the value in "Price" will not take efect.' => 'Si rellena esta campo, el valor en "Precio" no será tenido en cuenta.',
+
 
 ];

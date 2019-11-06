@@ -66,7 +66,7 @@
 </div>
 
 <div class="row">
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('from_quantity', l('From Quantity')) !!}
         {!! Form::text('from_quantity', old('from_quantity', 1), array('class' => 'form-control')) !!}
     </div>
@@ -79,13 +79,25 @@
         {!! Form::select('currency_id', ['' => l('-- All --', 'layouts')] + $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id')) !!}
         {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
     </div>
+
+</div>
+
+<div class="row">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+        {!! Form::label('extra_items', l('Extra Items')) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('If you fill this field, the value in "Price" will not take efect.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+        {!! Form::text('extra_items', old('extra_items', ''), array('class' => 'form-control')) !!}
+    </div>
 </div>
 
                </div><!-- div class="panel-body" -->
 
                <div class="panel-footer text-right">
                   <a class="btn btn-link" data-dismiss="modal" href="{{ URL::to('pricerules') }}">{{l('Cancel', [], 'layouts')}}</a>
-                  <button class="btn btn-success" type="submit" onclick="this.disabled=true;this.form.submit();">
+                  <button class="btn btn-success" type="submit" onclick="this.disabled=true;sanitize_data();this.form.submit();">
                      <i class="fa fa-floppy-o"></i>
                      &nbsp; {{l('Save', [], 'layouts')}}
                   </button>
@@ -212,6 +224,14 @@
         $("#autocustomer_name").val('');
         $('#customer_id').val('');
     }); 
+
+    function sanitize_data()
+    {
+        if ( $("#price").val() == '' )
+        {
+            $("#price").val('0.0');
+        }
+    }
 
 </script> 
 

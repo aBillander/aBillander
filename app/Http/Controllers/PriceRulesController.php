@@ -79,7 +79,12 @@ class PriceRulesController extends Controller
 
 		$this->validate($request, PriceRule::$rules);
 
-		$pricerule = $this->pricerule->create($request->all() + ['rule_type' => 'price']);
+		$rule_type = $request->input('extra_items', 0) > 0 ? 'promo' : 'price';
+
+		// If rule_type = 'promo', price maybe null
+		$request->merge( ['rule_type' => $rule_type, 'price' => (float) $request->input('price', 0)] );
+
+		$pricerule = $this->pricerule->create($request->all());
 
 		if($request->ajax()){
 

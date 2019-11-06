@@ -99,6 +99,7 @@
       <th class="text-right">{{l('Discount Percent')}}</th>
       <th class="text-right">{{l('Discount Amount')}}</th>
       <th class="text-center">{{l('From Quantity')}}</th>
+      <th class="text-center">{{l('Extra Items')}}</th>
       <th>{{l('Date from')}}</th>
       <th>{{l('Date to')}}</th>
 			<th> </th>
@@ -148,6 +149,8 @@
 @endif
 
       <td class="text-center">{{ $rule->as_quantity('from_quantity') }}</td>
+
+      <td class="text-center">{{ $rule->as_quantity('extra_items') ?: '' }}</td>
 
       <td>{{ abi_date_short( $rule->date_from ) }}</td>
 			<td>{{ abi_date_short( $rule->date_to   ) }}</td>

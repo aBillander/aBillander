@@ -192,7 +192,7 @@ class AbccCustomerOrdersController extends Controller {
         $customerOrder = $this->customerOrder->create($data);
 
 		// Good boy:
-		if ( Configuration::isFalse('ABCC_ORDERS_NEED_VALIDATION') ) 
+		if ( $reference_customer && Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') ) 
 		{
 			$customerOrder->confirm();
 		}

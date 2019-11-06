@@ -275,48 +275,48 @@ class Price {
 
     /**
      * @param Collection of \App\PriceRule $rules
-     * @param int $quantity
-     * @return Price
      */
-    public function applyPriceRules($rules, $quantity = 1)
+    public function applyPriceRules( $rules, $quantity = 1 )
     {
-        if (!$rules) {
-            return $this;
-        }
+        if ( !$rules ) return $this;
 
         $initial_price = clone $this;
 
         // Apply rules now!
         foreach ($rules as $rule) {
-            if ($rule->rule_type == 'price') {
-                if ($quantity < $rule->from_quantity) {
+            # code...
+            if ($rule->rule_type=='price')
+            {
+                if ($quantity < $rule->from_quantity)
                     $rule->best_price = $this->getPrice();
-                } else {
+
+                else
                     $rule->best_price = $rule->price;
-                }
-
+                
                 continue;
             }
-            if ($rule->discount_type == 'percentage') {
-                if ($quantity < $rule->from_quantity) {
+            if ($rule->discount_type=='percentage')
+            {
+                if ($quantity < $rule->from_quantity)
                     $rule->best_price = $this->getPrice();
-                } else {
-                    $rule->best_price = $initial_price->getPrice() * (1.0 - $rule->discount_percent / 100.0);
-                }
 
+                else
+                    $rule->best_price = $initial_price->getPrice() * (1.0 - $rule->discount_percent/100.0);
+                
                 continue;
             }
-            if ($rule->discount_type == 'amount') {
-                if ($quantity < $rule->from_quantity) {
+            if ($rule->discount_type=='amount')
+            {
+                if ($quantity < $rule->from_quantity)
                     $rule->best_price = $this->getPrice();
-                } else {
+
+                else
                     ;
-                }
 
                 // Not implemented so far
                 continue;
             }
-
+            
             // Just in case...
             $rule->best_price = $initial_price->getPrice();
         }
@@ -337,7 +337,7 @@ class Price {
             $this->price_tax_inc = null;
         }
 
-        $this->applyTaxPercent($this->tax_percent);
+        $this->applyTaxPercent( $this->tax_percent );
 
         return $this;
     }

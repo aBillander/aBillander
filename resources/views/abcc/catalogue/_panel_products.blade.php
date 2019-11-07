@@ -39,20 +39,42 @@
 @endif
       </th>
       <!-- th>{{ l('Measure Unit') }}</th -->
-      <th><span class="button-pad">{{ l('Customer Price') }}
+      <th>
+        <span class="button-pad">{{ l('Customer Price') }}
            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                   data-content="{{ l('Prices are exclusive of Tax') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-    <br />
-    {{ l('Prices are inclusive of Ecotax') }}
-@endif
-          ">
+                  @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                      <br />
+                      {{ l('Prices are inclusive of Ecotax') }}
+                  @endif
+                          ">
               <i class="fa fa-question-circle abi-help"></i>
-           </a></span>
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES'))
-    <br /><span class="button-pad text-muted">
-    {{ l('Without Ecotax') }}</span>
-@endif</th>
+           </a>
+         </span>
+        @if( $config['enable_ecotaxes'])
+            <br/><span class="button-pad text-muted">{{ l('Without Ecotax') }}</span>
+        @endif
+      </th>
+
+                        @if ($config['display_with_taxes'])
+                            <th>
+                            <span class="button-pad">{{ l('Customer Price (with Tax)') }}
+                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top"
+                                   data-container="body" xdata-trigger="focus"
+                                   data-content="
+                                        {{ l('Prices are inclusive of Tax') }}
+                                   @if($config['enable_ecotaxes'] )
+                                           <br/>{{ l('Prices are inclusive of Ecotax') }}
+                                   @endif
+                                           ">
+                                <i class="fa fa-question-circle abi-help"></i>
+                                </a>
+                            </span>
+                            </th>
+
+                            <th>{{ l('Tax') }}</th>
+                        @endif
+ 
       <th class="text-right"> </th>
       <th class="text-right"> </th>
     </tr>
@@ -117,24 +139,21 @@
             @endif
 @endif
       </td>
-      <td>{{ $product->as_priceable( 
-              $product->getPriceByCustomer( 
-                  \Auth::user()->customer,
-                  1,
-                  \Auth::user()->customer->currency
-              )->getPrice()
-            ) }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax)
-    <br /><p class="text-muted">
-    {{ $product->as_priceable( 
-              $product->getPriceByCustomer( 
-                  \Auth::user()->customer,
-                  1,
-                  \Auth::user()->customer->currency
-              )->getPrice() - $product->getEcotax()
-            ) }}</p>
-@endif
+      <td>{{ $product->as_priceable( $product->price ) }}
+          @if( $config['enable_ecotaxes'] && $product->ecotax)
+              <br /><p class="text-muted">
+              {{ $product->as_priceable( $product->price - $product->getEcotax() ) }}</p>
+          @endif
       </td>
+
+      @if($config['display_with_taxes'])
+          <td>
+              {{ $product->as_priceable( $product->price_tax_inc ) }}
+          </td>
+          <td>{{$product->tax_percent }}%</td>
+          {{--<td>{{ (int)$product->tax->percent }}%</td>--}}
+      @endif
+
       <td>
 
 @if ( $product->hasQuantityPriceRules( \Auth::user()->customer ) )
@@ -219,9 +238,6 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 
    </div>
 </div>
-
-
-{{-- abi_r(Request::all()) --}}
 
 
 </div>
@@ -316,7 +332,9 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 
               // loadCartlines();
 
-              $(function () {  $('[data-toggle="tooltip"]').tooltip()});
+              $(function () {
+                  $('[data-toggle="tooltip"]').tooltip();
+              });
 
               $('#badge_cart_nbr_items').html(result.cart_nbr_items);
 

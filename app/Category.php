@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -62,7 +62,7 @@ class Category extends Model {
     
     public function activechildren() {
 
-        return $this->hasMany('App\Category','parent_id','id')->where('active', '>', 0);    // ->IsActive() ;
+        return $this->hasMany('App\Category','parent_id','id')->where('active', '>', 0)->IsPublished();    // ->IsActive() ;
 
     }
 

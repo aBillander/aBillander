@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use App\Configuration;
+use App\Customer;
 use App\Category;
 use App\Product;
 
@@ -99,12 +101,54 @@ class AbccCatalogueController extends Controller
 
                                     //  abi_r($products->get());
 
-                $products = $products->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+                $products = $products->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
+
+	            $this->appendInfosToProducts($products, $customer_user->customer);
+
+	            $config['display_with_taxes'] = $customer_user->canDisplayPricesTaxInc();
+	            $config['enable_ecotaxes'] = Configuration::isTrue('ENABLE_ECOTAXES');
 
                 $products->setPath('catalogue');     // Customize the URI used by the paginator
         }        
-        return view('abcc.catalogue.index', compact('category_id', 'categories', 'products', 'breadcrumb'));
+        return view('abcc.catalogue.index', compact('category_id', 'categories', 'products', 'breadcrumb', 'config'));
 	}
+
+
+    /**
+     * Append image info and price with and without taxes formatted
+     *
+     * @param              $products
+     * @param Customer     $customer
+     */
+    private function appendInfosToProducts($products, Customer $customer)
+    {
+        $products->map(function (Product $product) use ($customer) {
+            // add the product image to each product here instead of doing it in the view
+            $product->img = $product->getFeaturedImage();
+
+            $product->price =
+                $product->getPriceByCustomer(
+                    \Auth::user()->customer, 1,
+                    \Auth::user()->customer->currency
+                )->getPrice()
+            ;
+
+            $product->price_tax_inc = 0;
+            $product->tax_percent = 0;
+            $tax = $product->getTaxRules($customer->address, $customer);
+
+            // TODO. Several tax lines are possible?
+            // should check if this is a rule_type sales tax?
+            if ($tax_data = $tax->first()) {
+                $product->price_tax_inc = $product->as_priceable(
+                    $tax_data->percent / 100 * $product->price +
+                    $product->price
+                );
+
+                $product->tax_percent = $product->as_percentable($tax_data->percent, 1);
+            }
+        });
+    }
 
 	/**
 	 * Show the form for creating a new resource.
@@ -186,7 +230,7 @@ class AbccCatalogueController extends Controller
 	 */
 	public function newProducts(Request $request)
 	{
-    	if( \App\Configuration::isFalse('ABCC_ENABLE_NEW_PRODUCTS') )
+    	if( Configuration::isFalse('ABCC_ENABLE_NEW_PRODUCTS') )
     		return $this->index($request);
 
 
@@ -246,7 +290,7 @@ class AbccCatalogueController extends Controller
                                       ->IsNew()
                                       ->orderBy('reference', 'asc');
 
-                $products = $products->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+                $products = $products->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
 
                 $products->setPath('newproducts');     // Customize the URI used by the paginator
         }        

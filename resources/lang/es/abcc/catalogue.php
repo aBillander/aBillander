@@ -20,7 +20,7 @@ return [
     'Product Name'                   => 'Nombre del Producto',
     'Reference'                      => 'Referencia',
     'Customer Price'                 => 'PVP sin IVA',
-    'Customer Price (with Tax)'      => 'PVP recomendado',
+    'Customer Price (with Tax)'      => 'PVP con IVA',
     'Tax'                            => 'IVA',
     'Prices are exclusive of Tax'    => 'El Precio no incluye Impuestos',
     'Prices are inclusive of Tax'    => 'El Precio incluye Impuestos',

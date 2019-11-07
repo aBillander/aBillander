@@ -178,7 +178,7 @@ https://stackoverflow.com/questions/25424163/bootstrap-button-dropdown-with-cust
 https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-group-with-an-html-form
 --}}
 
-@if ($product->quantity_onhand > 0)
+@if ($product->quantity_onhand > 0 || $product->isManufactured())
             <div xclass="form-group">
               <div class="input-group" style="width: 72px;">
 

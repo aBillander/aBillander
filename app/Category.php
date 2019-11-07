@@ -71,11 +71,26 @@ class Category extends Model {
         return $this->hasMany('App\Product');
     }
 
+    /**
+     * Used in catalog sidebar
+     *
+     * Should accept a customer_id or Customer object (for a wider usage)
+     *
+     * @return mixed
+     */
     public function customerproducts($customer_id=null, $currency_id=null)
     {
         $customer_user = Auth::user();
 
-        return $this->hasMany('App\Product')->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id )->get();
+        if ( !$customer_user ) return collect([]);
+
+        return $this->hasMany('App\Product')
+                    ->IsSaleable()  // Is for sale or not
+                    // ???
+                    // ->IsAvailable() // Has stock
+                    // This filter would "filter" products a customer is allowed
+                    ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id )
+                    ->get();
     }
 	
 }

@@ -1,4 +1,4 @@
-@extends('abcc.layouts.master')
+@extends('abcc.layouts.master_login')
 
 @section('title') {{ l('Customer Center :: Login', [], 'layouts') }} @parent @stop
 

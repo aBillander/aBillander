@@ -406,3 +406,19 @@ if (! function_exists('abi_tenant_db_backups_path')) {
 }
 
 
+if (! function_exists('abi_safe_division')) {
+    /**
+     * Safe division for statistice & profitability.
+     *
+     * @param  
+     * @return 
+     */
+    function abi_safe_division($a = 0.0, $b = 0.0)
+    {
+        if ( $b == 0.0 ) return 0.0;
+
+        return $a / $b;
+    }
+}
+
+

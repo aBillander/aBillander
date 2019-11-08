@@ -247,8 +247,8 @@ foreach ($customers as $customer) {
                 $row[] = $customer->products_cost * 1.0;
                 $row[] = \App\Calculator::margin( $customer->products_cost, $customer->products_total, $customer->currency ) * 1.0;
                 $row[] = $customer->products_profit * 1.0;
-                $row[] = (($customer->products_cost + $customer->products_profit) / $total) * 100.0;
-                $row[] = ($customer->products_profit / $total_profit) * 100.0;
+                $row[] = abi_safe_division( $customer->products_cost + $customer->products_profit, $total ) * 100.0;
+                $row[] = abi_safe_division($customer->products_profit, $total_profit) * 100.0;
     
                 $data[] = $row;
 

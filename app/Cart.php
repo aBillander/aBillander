@@ -506,4 +506,96 @@ class Cart extends Model
         return $this->customerordertaxes();
     }
 */
+
+
+    /**
+     * @param      $product
+     * @param      $customer
+     * @return mixed
+     */
+    public function getTaxPercent($product, $customer)
+    {
+        // get the tax percent checking the taxing address,
+        // while using product tax as backup data
+        $address = $this->taxingaddress;
+
+        // if the customer has que sales_equalization enabled,
+        // we need to set the product's sales_equalization to 1 to use it
+        if ($product->procurement_type != 'none') {
+            $product->sales_equalization = 1;
+        } else {
+            // Case “Product” is a service, and  Sales Equalization does not apply
+            $product->sales_equalization = 0;
+        }
+
+        $tax = $product->getTaxRules($address, $customer);
+
+        if (empty($tax)) {
+            return $product->tax->percent;
+        }
+        // get the sum of the percents in case there are more than one
+        return $tax->sum('percent');
+    }
+
+    /**
+     * From the cart lines, calculate taxes total, discounts and order total
+     *
+     */
+    public function calculateTotals()
+    {
+        $customer = $this->customer;
+        $taxes = 0;
+        $this->cartlines->map(function ($line) use (&$taxes, $customer) {
+            $line->img = $line->product->getFeaturedImage();
+            $line->tax = $line->tax_percent / 100 *
+                         $line->unit_customer_price * $line->quantity;
+            $line->price_without_taxes = $line->unit_customer_price * $line->quantity;
+            $line->price_with_taxes = $line->tax + $line->price_without_taxes;
+
+            if ($line->product->hasApplicableQuantityPriceRules($line->quantity, $customer)) {
+
+                $rule = $line->product->getQuantityPriceRules($customer)->first();
+
+                if ($rule->rule_type === 'promo') {
+                    $line->product->has_extra_item_applied = true;
+                    $line->product->extra_item_qty = $rule->extra_items;
+                } else {
+                    $line->product->has_price_rule_applied = true;
+                    $line->product->previous_price = $line->product->getPrice()->price;
+                }
+            }
+
+            $taxes += $line->tax;
+        });
+
+
+        if ($customer->sales_equalization) {
+            $taxes_se = 0;
+            foreach ($this->cartlines as $line) {
+                $line->product->sales_equalization = 1;
+                $rules = $customer->getTaxRules($line->product);
+                $se_percent = $rules->sum('percent');
+
+                $taxes_se += $se_percent / 100 * $line->unit_customer_price * $line->quantity;
+            }
+            $this->taxes_se = $this->as_priceable($taxes_se);
+            $this->total_taxes = $this->as_priceable($taxes - $taxes_se);
+        } else {
+            $this->total_taxes = $this->as_priceable($taxes);
+        }
+
+        $amount_with_taxes = $this->amount + $this->total_taxes;
+
+        $discount1 = $amount_with_taxes * $this->customer->discount_percent / 100.0;
+        $discount2 = ($amount_with_taxes - $discount1) * $this->customer->discount_ppd_percent / 100.0;
+
+        $this->discounts_applied = $discount1 > 0 || $discount2 > 0;
+
+        // Re-thinking needed after this point:
+        $this->discount1 = $this->as_priceable($discount1);
+        $this->discount2 = $this->as_priceable($discount2);
+
+        $this->total_products = $this->as_priceable($this->amount) - $this->discount1 - $this->discount2;
+        $this->total_price = $this->as_priceable($amount_with_taxes) - $this->discount1 - $this->discount2;
+    }
 }

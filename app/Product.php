@@ -1043,6 +1043,30 @@ class Product extends Model {
     {
         return $this->getQuantityPriceRules( $customer )->count();
     }
+
+    public function hasExtraItemsPriceRules( \App\Customer $customer = null )
+    {
+        return $this->getQuantityPriceRules($customer)->contains('rule_type', 'promo');
+    }
+
+    /**
+     * Validate if a Price Rule still applies for a product in cart
+     * (in quantity and in date validity)
+     *
+     * @param               $qty
+     * @param Customer|null $customer
+     * @return bool
+     */
+    public function hasApplicableQuantityPriceRules($qty, Customer $customer = null)
+    {
+        /** @var PriceRule $price_rule */
+        foreach ($this->getQuantityPriceRules($customer) as $price_rule) {
+            if ($price_rule->applies($qty)) {
+                return true;
+            }
+        }
+        return false;
+    }
     
 
     /*
@@ -1177,8 +1201,15 @@ class Product extends Model {
 
     public function scopeIsOrderable($query) 
     {
-        // Products with stock
-        $query->where('quantity_onhand', '>', 0);
+        if (Configuration::isTrue('SELL_ONLY_MANUFACTURED')) {
+            $query->where('procurement_type', 'manufacture');
+
+            // Products with stock
+            $query->orWhere('quantity_onhand', '>', 0);
+        } else {
+            // Products with stock
+            $query->where('quantity_onhand', '>', 0);
+        }
 
         $query->orWhere(function ($query) {
                 if ( Configuration::get('ABCC_OUT_OF_STOCK_PRODUCTS') == 'allow' )

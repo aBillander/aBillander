@@ -15,7 +15,7 @@ return [
     'Search Product'              => 'Buscar Producto',
     'Product Name'                => 'Producto',
     'Customer Price'              => 'PVP sin IVA',
-    'Customer Price (with Tax)'   => 'PVP recomendado',
+    'Customer Price (with Tax)'   => 'PVP con IVA',
     'Prices are exclusive of Tax' => 'El Precio no incluye Impuestos',
     'Quantity'                    => 'Cantidad',
     'Products Total'              => 'Total Productos',

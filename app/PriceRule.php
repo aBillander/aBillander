@@ -10,6 +10,11 @@ class PriceRule extends Model
 {
     use ViewFormatterTrait;
 
+    public static $types = [
+                'price', 
+                'promo',
+            ];
+
     protected $dates = [
         'date_from',
         'date_to',

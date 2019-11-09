@@ -191,7 +191,7 @@
   @endforeach
 
 
-@include('abcc.cart._panel_cart_total')
+@include('abcc.cart._panel_cart_total_with_taxes')
 
 
         </tbody>

@@ -90,14 +90,15 @@
 	<thead>
 		<tr>
 			<th class="text-center">{{l('ID', [], 'layouts')}}</th>
-      <th>{{l('Category')}}</th>
+      <th>{{l('Rule Name')}}</th>
+      <!-- th>{{l('Category')}}</th -->
       <th>{{l('Product')}}</th>
       <th>{{l('Customer')}}</th>
       <th>{{l('Customer Group')}}</th>
       <th>{{l('Currency')}}</th>
       <th class="text-right">{{l('Price')}}</th>
-      <th class="text-right">{{l('Discount Percent')}}</th>
-      <th class="text-right">{{l('Discount Amount')}}</th>
+      <!-- th class="text-right">{{l('Discount Percent')}}</th>
+      <th class="text-right">{{l('Discount Amount')}}</th -->
       <th class="text-center">{{l('From Quantity')}}</th>
       <th class="text-center">{{l('Extra Items')}}</th>
       <th>{{l('Date from')}}</th>
@@ -110,7 +111,8 @@
 	@foreach ($rules as $rule)
 		<tr>
       <td class="text-center">{{ $rule->id }}</td>
-      <td>{{ optional($rule->category)->name }}</td>
+      <td>{{ $rule->name }}</td>
+      <!-- td>{{ optional($rule->category)->name }}</td -->
       <td>
           @if($rule->product)
             [{{ optional($rule->product)->reference }}] <a href="{{ URL::to('products/' . optional($rule->product)->id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ optional($rule->product)->name }}</a>
@@ -130,6 +132,7 @@
       <td class="text-right"> </td>
 @endif
 
+{{--
 @if($rule->rule_type=='discount')
       @if($rule->discount_type=='percentage')
             <td class="text-right">{{ $rule->as_percent('discount_percent') }}</td>
@@ -147,10 +150,11 @@
       <td class="text-right"> </td>
       <td class="text-right"> </td>
 @endif
+--}}
 
       <td class="text-center">{{ $rule->as_quantity('from_quantity') }}</td>
 
-      <td class="text-center">{{ $rule->as_quantity('extra_items') ?: '' }}</td>
+      <td class="text-center">{{ $rule->as_quantity('extra_quantity') ?: '' }}</td>
 
       <td>{{ abi_date_short( $rule->date_from ) }}</td>
 			<td>{{ abi_date_short( $rule->date_to   ) }}</td>

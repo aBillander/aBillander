@@ -11,8 +11,10 @@ return [
 
 	'Price Rules - Create' => 'Regla de Precio - Crear',
 	'New Price Rule' => 'Nueva Regla de Precio',
+	'New Quantity Rule' => 'Nueva Regla de Cantidad',
 	'Date from' => 'Fecha desde',
 	'Date to' => 'Fecha hasta',
+	'Rule Name' => 'Nombre de la Regla',
 	'Customer Name' => 'Nombre del Cliente',
 	'Search by Name or Identification (VAT Number).' => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
 	'Product Reference' => 'Referencia de Producto',

@@ -5,109 +5,25 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col-md-8 col-md-offset-2" style="margin-top: 50px">
-        <div class="panel panel-info">
-            <div class="panel-heading"><h3 class="panel-title">{{ l('New Price Rule') }}</h3></div>
-            <div class="panel-body" id="price_rule">
+<div class="container-fluid" style="margin-top: 50px">
+   <div class="row">
+      <div class="col-lg-2 col-md-2 col-sm-3">
 
-                @include('errors.list')
+          {{-- Poor man offset --}}
 
-				{!! Form::open(array('route' => 'pricerules.store')) !!}
-    
-<div class="row">
-    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date_from') ? 'has-error' : '' }}">
-        {!! Form::label('date_from_form', l('Date from')) !!}
-        {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
-               {!! $errors->first('date_from', '<span class="help-block">:message</span>') !!}
-    </div>
-    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date_to') ? 'has-error' : '' }}">
-        {!! Form::label('date_to_form', l('Date to')) !!}
-        {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
-               {!! $errors->first('date_to', '<span class="help-block">:message</span>') !!}
-    </div>
+      </div>
+      
+      <div class="col-lg-8 col-md-8 col-sm-8">
+
+          @include('price_rules._panel_create_rule')
+
+      </div>
+   </div>
 </div>
 
-    
-<div class="row">
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('autocustomer_name', l('Customer Name')) !!}
-                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Search by Name or Identification (VAT Number).') }}">
-                        <i class="fa fa-question-circle abi-help"></i>
-                 </a>
-        {!! Form::text('autocustomer_name', old('autocustomer_name'), array('class' => 'form-control', 'id' => 'autocustomer_name', 'onclick' => 'this.select()')) !!}
 
-        {!! Form::hidden('customer_id', old('customer_id'), array('id' => 'customer_id')) !!}
 
-        {!! $errors->first('customer_id', '<span class="help-block">:message</span>') !!}
-    </div>
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('customer_group_id', l('Customer Group')) !!}
-        {!! Form::select('customer_group_id', ['' => l('-- All --', 'layouts')] + $customer_groupList, null, array('class' => 'form-control', 'id' => 'customer_group_id')) !!}
-        {!! $errors->first('customer_group_id', '<span class="help-block">:message</span>') !!}
-    </div>
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('reference', l('Reference')) !!}
-        {!! Form::text('reference', null, array('id' => 'reference', 'class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
-    </div>
-    <div class="form-group col-lg-4 col-md-4 col-sm-4">
-        {!! Form::label('product_query', l('Product Name')) !!}
-                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                          data-content="{{ l('Search by Product Reference or Name') }}">
-                      <i class="fa fa-question-circle abi-help"></i>
-                   </a>
 
-        {!! Form::hidden('product_id', null, array('id' => 'product_id')) !!}
-
-        {!! Form::text('product_query', null, array('id' => 'product_query', 'autocomplete' => 'off', 'class' => 'form-control', 'onclick' => 'this.select()')) !!}
-    </div>
-
-</div>
-
-<div class="row">
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('from_quantity', l('From Quantity')) !!}
-        {!! Form::text('from_quantity', old('from_quantity', 1), array('class' => 'form-control')) !!}
-    </div>
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('price', l('Price')) !!}
-        {!! Form::text('price', null, array('id' => 'price', 'class' => 'form-control')) !!}
-    </div>
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('currency_id', l('Currency')) !!}
-        {!! Form::select('currency_id', ['' => l('-- All --', 'layouts')] + $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id')) !!}
-        {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
-    </div>
-
-</div>
-
-<div class="row">
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('extra_items', l('Extra Items')) !!}
-                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('If you fill this field, the value in "Price" will not take efect.') }}">
-                        <i class="fa fa-question-circle abi-help"></i>
-                 </a>
-        {!! Form::text('extra_items', old('extra_items', ''), array('class' => 'form-control')) !!}
-    </div>
-</div>
-
-               </div><!-- div class="panel-body" -->
-
-               <div class="panel-footer text-right">
-                  <a class="btn btn-link" data-dismiss="modal" href="{{ URL::to('pricerules') }}">{{l('Cancel', [], 'layouts')}}</a>
-                  <button class="btn btn-success" type="submit" onclick="this.disabled=true;sanitize_data();this.form.submit();">
-                     <i class="fa fa-floppy-o"></i>
-                     &nbsp; {{l('Save', [], 'layouts')}}
-                  </button>
-               </div>
-
-				{!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-</div>
 
 @endsection
 

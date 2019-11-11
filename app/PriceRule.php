@@ -20,11 +20,11 @@ class PriceRule extends Model
         'date_to',
     ];
 
-    protected $fillable = ['category_id', 'product_id', 'combination_id',
+    protected $fillable = ['name', 'category_id', 'product_id', 'combination_id',
                            'customer_id', 'customer_group_id',
                            'currency_id', 'rule_type', 'discount_type',
                            'price', 'discount_percent', 'discount_amount', 'discount_amount_is_tax_incl',
-                           'from_quantity',
+                           'from_quantity', 'extra_quantity',
                            'date_from', 'date_to',
     ];
 
@@ -37,6 +37,8 @@ class PriceRule extends Model
         'currency_id'       => 'nullable|exists:currencies,id',
         'date_from'         => 'nullable|date',
         'date_to'           => 'nullable|date',
+        'from_quantity'     => 'numeric|min:0',
+        'extra_quantity'    => 'numeric|min:0',
     ];
 
     /**
@@ -51,15 +53,15 @@ class PriceRule extends Model
     }
 
     /**
-     * Return true or false if a rule applies to a product in cart right now
+     * Return true or false if a rule applies to a product right now
      *
-     * @param $qty_in_cart
+     * @param $qty
      * @return bool
      */
-    public function applies($qty_in_cart)
+    public function applies($qty)
     {
         $now = Carbon::now();
-        if ($this->from_quantity <= $qty_in_cart &&
+        if ($this->from_quantity <= $qty &&
             (is_null($this->date_from) || $this->date_from <= $now) &&
             (is_null($this->date_to) || $this->date_to >= $now)) {
 

@@ -203,7 +203,7 @@ class AbccCustomerOrdersController extends Controller {
         foreach ($cart->cartlines as $cartline) {
         	# code...
         	//abi_r($line->quantity);
-        	$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price] );
+        	$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price, 'line_sort_order' => $cartline->line_sort_order] );
         }
 		
         // At last: empty cart ( delete lines & initialize )

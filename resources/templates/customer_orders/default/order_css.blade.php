@@ -77,7 +77,8 @@ $footer_height = '2cm';
 }
 
 @page {
-	margin-top: 1cm;
+	xmargin-top: 1cm;
+	margin-top: 1.5cm;
 	margin-bottom: {{ $page_bottom }};
 	margin-left: 1cm;
 	margin-right: 1cm;

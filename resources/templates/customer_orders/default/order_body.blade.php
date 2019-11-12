@@ -1,7 +1,7 @@
 
 
 
-<table class="head container">
+<table class="head container" style="margin-top: -0.5cm !important">
 
 	<tr>
 
@@ -463,6 +463,12 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
 </div><!-- #letter-footer -->
 
+@php
+
+$GLOBALS['var'] = $document->document_reference;
+
+@endphp
+
 
 <script type="text/php">
 
@@ -481,6 +487,8 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 if ( $PAGE_NUM == 1 )
 {
                $pdf->page_text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), "{PAGE_NUM} de {PAGE_COUNT}", null, 9);
+
+               $pdf->page_text(($pdf->get_width() - 260), ($pdf->get_height() - 26.89 - 788.0), $GLOBALS['var'], null, 9);
 }
         }
 

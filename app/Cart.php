@@ -5,10 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use Auth;
-
-use App\CartLine;
-use App\Currency;
-use App\Product;
+use Carbon\Carbon;
 
 use App\Traits\ViewFormatterTrait;
 
@@ -81,7 +78,7 @@ class Cart extends Model
                 'customer_user_id' => Auth::user()->id,
                 'customer_id' => $customer->id,
                 'invoicing_address_id' => $customer->invoicing_address_id,
-                'shipping_address_id' => $customer->shipping_address_id,
+                'shipping_address_id' => Auth::user()->shippingaddress->id,
                 'shipping_method_id' => $customer->shipping_method_id,
  //             'carrier_id',
                 'currency_id' => $customer->currency_id,
@@ -89,7 +86,7 @@ class Cart extends Model
 //                'date_prices_updated',
             ]);
 
-            \App\Context::getContext()->cart = $cart;
+            Context::getContext()->cart = $cart;
 
         });
 
@@ -125,6 +122,17 @@ class Cart extends Model
                 $cart = $cart->fresh();
             }
 
+            // Check Shipping Address
+
+            // To Do: Please: check if $shipping_address_id is within Auth::user()->getAllowedAddresses()
+            // See CustomerCartController
+            if ( $cart->cartlines->count() == 0 )
+            {
+                //
+                $cart->update(['shipping_address_id' => Auth::user()->shippingaddress->id]);
+            }
+
+
             // Update some values if customer data have changed -> cart data & cart line prices & stock
             if ( $cart->persistance_left <= 0 )
             {
@@ -138,7 +146,8 @@ class Cart extends Model
         		'customer_user_id' => Auth::user()->id,
         		'customer_id' => $customer->id,
         		'invoicing_address_id' => $customer->invoicing_address_id,
-        		'shipping_address_id' => $customer->shipping_address_id,
+                // Boot method takes care of this:
+//        		'shipping_address_id' => $customer->shipping_address_id,
         		'shipping_method_id' => $customer->shipping_method_id,
  //       		'carrier_id',
         		'currency_id' => $customer->currency_id,
@@ -166,35 +175,114 @@ class Cart extends Model
         // Do the Mambo!
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->find(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->find(intval($product_id));
+            $product = Product::with('tax')->find(intval($product_id));
         }
 
         // Is there a Price for this Customer?
         if (!$product) return false;    // redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no se encontró.');
 
+        // Let's check quantity
         $quantity = ($quantity > 0.0) ? $quantity : 1.0;
 
-        $cart =  $this; // \App\Context::getContext()->cart;
+        // Product allready in Cart?
+        $line = $this->cartlines()->where('product_id', $product->id)->first();
+        if ( $line )
+        {
+            // Need this to apply price rules properly
 
-        // Get Customer Price
+            // Quantity
+            $quantity += $line->quantity;
+
+            // Remove line (we dont need it, as we are going to add a new one)
+            $line->delete();
+
+            if ( $quantity <= 0 )
+                return null;       // No point to continue here
+        }
+
+        // Tax percent (sum of all applicable tax rules)
+        $tax_rates = $this->getTaxPercent($product);    // Array
+
+        // Tax percent (sum of all applicable tax rules)
+        $tax_percent = $tax_rates['all'];
+        // Tax percent (sum of all 'sales_equalization' applicable tax rules)
+        $tax_se_percent = $tax_rates['sales_equalization'];
+
+        $cart =  $this; // Context::getContext()->cart;
+
+        // Get Customer Price based on Price List
         $customer = $cart->customer;
         $currency = $cart->currency;
-        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+        $customer_price = $product->getPriceByCustomerPriceList( $customer, $quantity, $currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
 
-        $tax_percent = $product->tax->percent;
+        // Still with me? Lets check Price rules with type='price'
+        $customer_final_price = $product->getPriceByCustomerRules( $customer, $quantity, $currency );
+        if ( !$customer_final_price )
+            $customer_final_price = clone $customer_price;  // No price Rules available
 
-        $customer_price->applyTaxPercent( $tax_percent );
-        $unit_customer_price = $customer_price->getPrice();
+        $unit_customer_price       = $customer_price->getPrice();
+        $unit_customer_final_price = $customer_final_price->getPrice();
 
-        return $cart->add($product, $unit_customer_price, $quantity);
+
+        // Still one thing left: rule_type = 'promo'
+        $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
+
+        // abi_r($customer->getPriceRules( $product, $currency ), true);
+
+        $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
+        $extra_quantity_label = $promo_rule->name;
+
+        // Totals
+        $total_tax_excl = $quantity * $unit_customer_final_price;
+        $total_tax_incl = $total_tax_excl * (1.0+$tax_percent/100.0);
+
+
+        // Yearning to being here? Me too!
+
+        // New line
+        if( $this->isEmpty() ) 
+        {
+            $this->date_prices_updated = Carbon::now();
+            $this->save();
+        }
+
+        $line = CartLine::create([
+            'line_sort_order' => 0,
+            'line_type' => 'product',
+
+            'product_id' => $product->id,
+//              'combination_id' => $product->,
+            'reference' => $product->reference, 
+            'name' => $product->name, 
+
+            'quantity' => $quantity, 
+            'extra_quantity' => $extra_quantity,
+            'extra_quantity_label' => $extra_quantity_label,
+            'measure_unit_id' => $product->measure_unit_id,
+
+            'unit_customer_price'       => $unit_customer_price,
+            'unit_customer_final_price' => $unit_customer_final_price,
+            'sales_equalization' => $customer->sales_equalization,
+            'total_tax_incl' => $total_tax_incl,
+            'total_tax_excl' => $total_tax_excl, 
+
+            'tax_percent'         => $tax_percent,
+            'tax_se_percent'      => $tax_se_percent,
+//             'cart_id' => $product->,
+            'tax_id' => $product->tax_id,
+        ]);
+
+        $this->cartlines()->save($line);
+
+        return $line;
     }
 
 
@@ -203,12 +291,12 @@ class Cart extends Model
         // Do the Mambo!
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->find(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->find(intval($product_id));
+            $product = Product::with('tax')->find(intval($product_id));
         }
 
         // Is there a Price for this Customer?
@@ -235,7 +323,7 @@ class Cart extends Model
     }
 
 
-    public function add($product = null, $price = null, $quantity = 1.0)
+    public function add($product = null, Price $price = null, $quantity = 1.0)
     {
         // If $product is a 'prodduct_id', instantiate product, please.
         if ( is_numeric($product) ) 
@@ -244,17 +332,27 @@ class Cart extends Model
         if ($product == null) 
         	return null;
 
-        if ($price === null) // Price can be 0.0!!!
-        	$price = $product->price;
+        if ($price === null) { // Price can be 0.0!!!
+            $unit_customer_price = $product->price;
+            $tax_percent         = $product->tax->percent;
+        } else {
+            $unit_customer_price = $price->getPrice();
+            $tax_percent         = $price->tax_percent;
+        }
 
         // Allready in Cart?
         $line = $this->cartlines()->where('product_id', $product->id)->first();
         if ( $line )
         {
         	// Keep line price
+            #
+            # Not so fast, boy. If quantity changes, a price rule based on quantity may apply
+            #
 
             // Quantity
             $line->quantity += $quantity;
+            // update tax in case the customer data has changed (not needed, I think)
+            $line->tax_percent = $tax_percent;
 
         	if ( $line->quantity <= 0 )
         	{
@@ -271,7 +369,7 @@ class Cart extends Model
         		// New line
                 if( $this->isEmpty() ) 
                 {
-                    $this->date_prices_updated = \Carbon\Carbon::now();
+                    $this->date_prices_updated = Carbon::now();
                     $this->save();
                 }
 
@@ -283,8 +381,8 @@ class Cart extends Model
 	        		'name' => $product->name, 
 	        		'quantity' => $quantity, 
 	        		'measure_unit_id' => $product->measure_unit_id,
-	        		'unit_customer_price' => $price, 
-	        		'tax_percent' => $product->tax->percent, 
+                    'unit_customer_price' => $unit_customer_price,
+                    'tax_percent'         => $tax_percent,
 	 //       		'cart_id' => $product->,
 	        		'tax_id' => $product->tax_id,
 	        	]);
@@ -316,7 +414,7 @@ class Cart extends Model
                 $newline = $this->addLine($product_id, $combination_id, $quantity);
         }
 
-        $this->date_prices_updated = \Carbon\Carbon::now();
+        $this->date_prices_updated = Carbon::now();
         $this->save();
 
         return true;
@@ -331,7 +429,7 @@ class Cart extends Model
 
     public function nbrItems()
     {
-        switch ( \App\Configuration::get('ABCC_NBR_ITEMS_IS_QUANTITY') )
+        switch ( Configuration::get('ABCC_NBR_ITEMS_IS_QUANTITY') )
         {
             case 'quantity':
                 # code...
@@ -354,7 +452,7 @@ class Cart extends Model
                 break;
         }
 
-        if ( \App\Configuration::isTrue('ABCC_NBR_ITEMS_IS_QUANTITY') ) 
+        if ( Configuration::isTrue('ABCC_NBR_ITEMS_IS_QUANTITY') ) 
             return $this->quantity;
 
         else
@@ -368,8 +466,8 @@ class Cart extends Model
 
     public function getPersistanceLeftAttribute()
     {
-        $persistance = \App\Configuration::getInt('ABCC_CART_PERSISTANCE');
-        $now = \Carbon\Carbon::now();
+        $persistance = Configuration::getInt('ABCC_CART_PERSISTANCE');
+        $now = Carbon::now();
 
         $days = $this->date_prices_updated ? $persistance - $now->diffInDays($this->date_prices_updated) : $persistance;
 
@@ -454,9 +552,9 @@ class Cart extends Model
 
     public function taxingaddress()
     {
-        return \App\Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') ? 
-            $this->shippingaddress()  : 
-            $this->invoicingaddress() ;
+        return Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') ? 
+            $this->shippingaddress  : 
+            $this->invoicingaddress ;
     }
 
     
@@ -488,7 +586,7 @@ class Cart extends Model
                 $taxes[$line->tax_rule_id]->taxable_base   += $line->taxable_base;
                 $taxes[$line->tax_rule_id]->total_line_tax += $line->total_line_tax;
             } else {
-                $tax = new \App\CustomerOrderLineTax();
+                $tax = new CustomerOrderLineTax();
                 $tax->percent        = $line->percent;
                 $tax->taxable_base   = $line->taxable_base; 
                 $tax->total_line_tax = $line->total_line_tax;
@@ -513,11 +611,11 @@ class Cart extends Model
      * @param      $customer
      * @return mixed
      */
-    public function getTaxPercent($product, $customer)
+    public function getTaxPercent($product)
     {
         // get the tax percent checking the taxing address,
         // while using product tax as backup data
-        $address = $this->taxingaddress;
+        $address = $this->taxingaddress();
 
         // if the customer has que sales_equalization enabled,
         // we need to set the product's sales_equalization to 1 to use it
@@ -528,13 +626,19 @@ class Cart extends Model
             $product->sales_equalization = 0;
         }
 
-        $tax = $product->getTaxRules($address, $customer);
+        $tax = $product->getTaxRules($address, $this->customer);
 
         if (empty($tax)) {
+            // Kind of "wied", isnt it?
             return $product->tax->percent;
         }
+
         // get the sum of the percents in case there are more than one
-        return $tax->sum('percent');
+        return [
+            'all'                => $tax->sum('percent'),
+            'sales'              => $tax->where('rule_type', '=', 'sales')->sum('percent'),
+            'sales_equalization' => $tax->where('rule_type', '=', 'sales_equalization')->sum('percent'),
+        ];
     }
 
     /**
@@ -545,6 +649,7 @@ class Cart extends Model
     {
         $customer = $this->customer;
         $taxes = 0;
+        
         $this->cartlines->map(function ($line) use (&$taxes, $customer) {
             $line->img = $line->product->getFeaturedImage();
             $line->tax = $line->tax_percent / 100 *
@@ -558,7 +663,7 @@ class Cart extends Model
 
                 if ($rule->rule_type === 'promo') {
                     $line->product->has_extra_item_applied = true;
-                    $line->product->extra_item_qty = $rule->extra_items;
+                    $line->product->extra_item_qty = $rule->extra_quantity;
                 } else {
                     $line->product->has_price_rule_applied = true;
                     $line->product->previous_price = $line->product->getPrice()->price;

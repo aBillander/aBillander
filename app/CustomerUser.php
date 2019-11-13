@@ -125,6 +125,15 @@ class CustomerUser extends Authenticatable
 
     }
 
+    // Default Shipping Address for CustomerUser
+    public function getShippingaddressAttribute()
+    {
+        return $this->address_id > 0
+                    ? $this->address
+                    : $this->customer->shipping_address();
+
+    }
+
     /**
      * Handy methods
      * 
@@ -228,7 +237,9 @@ class CustomerUser extends Authenticatable
 
     public function address()
     {
-        return $this->belongsTo('App\Address', 'address_id');
+        // Makes sense when CustomerUser is allowed to only one address
+        return $this->hasOne('App\Address', 'id', 'address_id')
+                   ->where('addressable_type', Customer::class);
     }
 
 

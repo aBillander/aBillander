@@ -34,6 +34,8 @@
 
           @include('abcc.cart._panel_product')
 
+          @include('abcc.cart._panel_shipping_address')
+
           @include('abcc.cart._panel_confirm')
 
       </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
@@ -89,6 +91,12 @@ fieldset[disabled] .btn-custom.active {
   background-color: #ff0084;
   border-color: #ff0084;
 }
+
+
+/* Cart Stuff */
+#div_cart_lines .show-pricerules {margin-left:1em}
+/* #div_cart_lines td {vertical-align: middle} */
+.crossed {text-decoration: line-through;}
 
 
 </style>

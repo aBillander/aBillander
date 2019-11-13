@@ -127,6 +127,37 @@ class AbccCustomerCartController extends Controller
 	}
 
 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @return Response
+     */
+    public function updateShippingAddress(Request $request)
+    {
+        $shipping_address_id = $request->input('shipping_address_id');
+
+        $cart = Cart::getCustomerUserCart();
+        $customer = $cart->customer;
+
+        // abi_r($shipping_address_id);
+
+        // Check if $shipping_address_id is within Auth::user()->getAllowedAddresses()
+        if ( ! Auth::user()->getAllowedAddresses()->contains('id', $shipping_address_id) )
+        {
+            //
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $shipping_address_id], 'layouts').' :: '.l('Address not allowed'));
+        }
+
+        $cart->update(['shipping_address_id' => $shipping_address_id]);
+
+        // abi_r($cart);die();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $shipping_address_id], 'layouts'));
+    }
+
+
 
 	/**
 	 * Groovy Cart mechanism.
@@ -231,6 +262,7 @@ class AbccCustomerCartController extends Controller
                                 ->IsOrderable()
                                 ->qualifyForCustomer( $customer_user->customer_id, $request->input('currency_id') )
                                 ->IsActive()
+                                ->IsPublished()
 //                                ->with('measureunit')
 //                                ->toSql();
                                 ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );

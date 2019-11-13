@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 // use Illuminate\Validation\Rule;
 
+use Auth;
+use Carbon\Carbon;
+
 use App\Configuration;
 use App\MeasureUnit;
 
@@ -210,7 +213,7 @@ class Product extends Model {
     {
         // Allocated by Customer Orders
         // Document status = 'confirmed'
-        $lines1 = \App\CustomerOrderLine::
+        $lines1 = CustomerOrderLine::
                       where('product_id', $this->id)
                     ->whereHas('document', function($q)
                             {
@@ -223,7 +226,7 @@ class Product extends Model {
 
         // Allocated by Customer Shipping Slips
         // Document status = 'confirmed'
-        $lines2 = \App\CustomerShippingSlipLine::
+        $lines2 = CustomerShippingSlipLine::
                       where('product_id', $this->id)
                     ->whereHas('document', function($q)
                             {
@@ -237,7 +240,7 @@ class Product extends Model {
 
         // Allocated by Customer Invoices
         // Document status = 'confirmed' && created_via = 'manual'
-        $lines3 = \App\CustomerInvoiceLine::
+        $lines3 = CustomerInvoiceLine::
                       where('product_id', $this->id)
                     ->whereHas('document', function($q)
                             {
@@ -315,8 +318,8 @@ class Product extends Model {
     public function getIsPackagingAttribute()
     {
 
-        return $this->category_id        == \App\Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY') ||
-               $this->parent_category_id == \App\Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY');
+        return $this->category_id        == Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY') ||
+               $this->parent_category_id == Configuration::getInt('PACKAGING_PRODUCTS_CATEGORY');
     }
 
     // Alias
@@ -385,7 +388,7 @@ class Product extends Model {
         {
             $query->where('name', 'LIKE', '%' . trim($params['name'] . '%'));
 
-            if ( \Auth::user()->language->iso_code == 'en' )
+            if ( Auth::user()->language->iso_code == 'en' )
             {
                 $query->orWhere('name_en', 'LIKE', '%' . trim($params['name'] . '%'));
             }
@@ -435,14 +438,14 @@ class Product extends Model {
                     : $warehouse->id ;
 
         // Retrieve movements
-        $mvt = \App\StockMovement::
+        $mvt = StockMovement::
                       where('product_id', $this->id)
                     ->where('warehouse_id', $wh_id)
                     ->where( function($query){
-                                // $now = \Carbon\Carbon::now()->startOfDay(); 
+                                // $now = Carbon::now()->startOfDay(); 
                                 // 
-                                $query->where(  'movement_type_id', \App\StockMovement::INITIAL_STOCK);
-                                $query->orWhere('movement_type_id', \App\StockMovement::ADJUSTMENT);
+                                $query->where(  'movement_type_id', StockMovement::INITIAL_STOCK);
+                                $query->orWhere('movement_type_id', StockMovement::ADJUSTMENT);
                         } )
                     ->orderBy('date', 'desc')
                     ->first();
@@ -454,20 +457,20 @@ class Product extends Model {
         return $last_stock_taking_date;
     }
 
-    public function getStockToDateByWarehouse(  $warehouse = null, \Carbon\Carbon $date = null  )
+    public function getStockToDateByWarehouse(  $warehouse = null, Carbon $date = null  )
     {
         if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
         $wh_id = is_numeric($warehouse)
                     ? $warehouse
                     : $warehouse->id ;
         
-        if ( $date      == null ) $date      = \Carbon\Carbon::now();   //->endOfDay();
+        if ( $date      == null ) $date      = Carbon::now();   //->endOfDay();
         else                      $date      = $date->endOfDay();
 
         $last_stock_taking_mvt = $this->getLastStockTakingByWarehouse( $warehouse );
 
         // Retrieve movements
-        $mvts = \App\StockMovement::
+        $mvts = StockMovement::
                       where('product_id', $this->id)
                     ->where('warehouse_id', $wh_id)
                     ->where('date', '<', $date)
@@ -476,10 +479,10 @@ class Product extends Model {
                                     $query->where('date', '>', $last_stock_taking_mvt->date);
                         } )
                     ->where( function($query){
-                                // $now = \Carbon\Carbon::now()->startOfDay(); 
+                                // $now = Carbon::now()->startOfDay(); 
                                 // 
-                                $query->where('movement_type_id', '<>', \App\StockMovement::INITIAL_STOCK);
-                                $query->where('movement_type_id', '<>', \App\StockMovement::ADJUSTMENT);
+                                $query->where('movement_type_id', '<>', StockMovement::INITIAL_STOCK);
+                                $query->where('movement_type_id', '<>', StockMovement::ADJUSTMENT);
                         } )
                     ->orderBy('date', 'desc')
                     ->get();
@@ -491,12 +494,12 @@ class Product extends Model {
         return optional($last_stock_taking_mvt)->quantity_after_movement - ($mvts->sum('quantity_before_movement') - $mvts->sum('quantity_after_movement'));
     }
 
-    public function getStockToDate(  \Carbon\Carbon $date = null  )
+    public function getStockToDate(  Carbon $date = null  )
     {
-        if ( $date      == null ) $date      = \Carbon\Carbon::now();   //->endOfDay();
+        if ( $date      == null ) $date      = Carbon::now();   //->endOfDay();
         else                      $date      = $date->endOfDay();
 
-        $warehouses = \App\Warehouse::get();
+        $warehouses = Warehouse::get();
         $count = 0;
 
         foreach ($warehouses as $warehouse) {
@@ -524,7 +527,7 @@ class Product extends Model {
         return $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
     }
 
-    public function setFeaturedImage( \App\Image $image )
+    public function setFeaturedImage( Image $image )
     { 
         $featured = $image->id;
 
@@ -818,7 +821,7 @@ class Product extends Model {
     {
         $price = [ $this->price, $this->price_tax_inc ];        // These prices are in Company Currency
 
-        $priceObject = \App\Price::create( $price, \App\Context::getContext()->company->currency );
+        $priceObject = Price::create( $price, Context::getContext()->company->currency );
 
         return $priceObject;
     }
@@ -827,13 +830,13 @@ class Product extends Model {
     {
         $price = [ $this->price, $this->price_tax_inc ];        // These prices are in Company Currency
 
-        $priceObject = \App\Price::create( $price, \App\Context::getContext()->company->currency );
+        $priceObject = Price::create( $price, Context::getContext()->company->currency );
         
         // Add Ecotax
         if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
-//            $ecoprice = \App\Price::create([
+//            $ecoprice = Price::create([
 //                        $this->getEcotax(), 
 //                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
 //                        $price->price_tax_inc
@@ -845,9 +848,9 @@ class Product extends Model {
         return $priceObject;
     }
 
-    public function getPriceByList( \App\PriceList $list = null )
+    public function getPriceByList( PriceList $list = null )
     {
-        // Return \App\Price Object
+        // Return Price Object
         if ($list && ( $price = $list->getPrice( $this ) ))
         {
             // Apply taxes
@@ -862,7 +865,7 @@ class Product extends Model {
         if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
-//            $ecoprice = \App\Price::create([
+//            $ecoprice = Price::create([
 //                        $this->getEcotax(), 
 //                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
 //                        $price->price_tax_inc
@@ -875,16 +878,16 @@ class Product extends Model {
     }
 
     // Deprecated DO NOT USE
-    public function getPriceByListWithEcotax( \App\PriceList $list = null )
+    public function getPriceByListWithEcotax( PriceList $list = null )
     {
-        // Return \App\Price Object
+        // Return Price Object
         $price = $this->getPriceByList( $list );
 
         // Add Ecotax
         if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
-//            $ecoprice = \App\Price::create([
+//            $ecoprice = Price::create([
 //                        $this->getEcotax(), 
 //                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
 //                        $price->price_tax_inc
@@ -896,21 +899,50 @@ class Product extends Model {
         return $price;
     }
 
-    public function getPriceByCustomer( \App\Customer $customer, $quantity = 1, \App\Currency $currency = null )
+    public function getPriceByCustomer( Customer $customer, $quantity = 1, Currency $currency = null )
     {
-        // Return \App\Price Object
+        // Return Price Object
         $price = $customer->getPrice( $this, $quantity, $currency );
 
         // Add Ecotax
         if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
-//            $ecoprice = \App\Price::create([
+//            $ecoprice = Price::create([
 //                        $this->getEcotax(), 
 //                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
 //                        $price->price_tax_inc
 //                ]);
 
+            $price->add( $this->getEcotax() ); 
+        }
+
+        return $price;
+    }
+
+    public function getPriceByCustomerRules( Customer $customer, $quantity = 1, Currency $currency = null )
+    {
+        // Return Price Object
+        $price = $customer->getPriceByRules( $this, $quantity, $currency );
+
+        // Add Ecotax
+        // Price may be null if no rule applies
+        if ( $price && Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        {
+            $price->add( $this->getEcotax() ); 
+        }
+
+        return $price;
+    }
+
+    public function getPriceByCustomerPriceList( Customer $customer, $quantity = 1, Currency $currency = null )
+    {
+        // Return Price Object (Never null!!!)
+        $price = $customer->getPriceByPriceList( $this, $quantity, $currency );
+
+        // Add Ecotax
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        {
             $price->add( $this->getEcotax() ); 
         }
 
@@ -926,16 +958,16 @@ class Product extends Model {
     }
 
 
-    public function getTaxRulesByAddress( \App\Address $address = null )
+    public function getTaxRulesByAddress( Address $address = null )
     {
         // Taxes depending on location
         // If no address, use default Company address
-        if ( $address == null ) $address = \App\Context::getContext()->company->address;
+        if ( $address == null ) $address = Context::getContext()->company->address;
 
         return $address->getTaxRules( $this->tax );
     }
 
-    public function getTaxRulesByCustomer( \App\Customer $customer = null )
+    public function getTaxRulesByCustomer( Customer $customer = null )
     {
         // Taxes depending on Customer, no matter of location
         if ( $customer == null ) return collect([]);
@@ -943,13 +975,13 @@ class Product extends Model {
         return $customer->getTaxRules( $this );
     }
 
-    public function getTaxRulesByProduct( \App\Address $address = null )
+    public function getTaxRulesByProduct( Address $address = null )
     {
         // Taxes depending on Product itself, such as recycle tax
         return collect([]);
         
         // If no address, use default Company address
-        if ( $address == null ) $address = \App\Context::getContext()->company->address;
+        if ( $address == null ) $address = Context::getContext()->company->address;
 
         $rules = collect([]);
 
@@ -979,7 +1011,7 @@ class Product extends Model {
         return $rules;
     }
 
-    public function getTaxRules( \App\Address $address = null, \App\Customer $customer = null )
+    public function getTaxRules( Address $address = null, Customer $customer = null )
     {
         $rules =         $this->getTaxRulesByAddress(  $address  )
                 ->merge( $this->getTaxRulesByCustomer( $customer ) )
@@ -992,7 +1024,7 @@ class Product extends Model {
         return $rules->sortBy('position');
     }
 
-    public function getQuantityPriceRules( \App\Customer $customer = null )
+    public function getQuantityPriceRules( Customer $customer = null )
     {
         $product = $this;
 
@@ -1023,7 +1055,7 @@ class Product extends Model {
                     ->where( 'from_quantity', '>', 1 )
                     // Date range
                     ->where( function($query){
-                                $now = \Carbon\Carbon::now()->startOfDay(); 
+                                $now = Carbon::now()->startOfDay(); 
                                 $query->where( function($query) use ($now) {
                                     $query->where('date_from', null);
                                     $query->orWhere('date_from', '<=', $now);
@@ -1039,12 +1071,12 @@ class Product extends Model {
         return $price_rules;
     }
 
-    public function hasQuantityPriceRules( \App\Customer $customer = null )
+    public function hasQuantityPriceRules( Customer $customer = null )
     {
         return $this->getQuantityPriceRules( $customer )->count();
     }
 
-    public function hasExtraItemsPriceRules( \App\Customer $customer = null )
+    public function hasExtraItemsPriceRules( Customer $customer = null )
     {
         return $this->getQuantityPriceRules($customer)->contains('rule_type', 'promo');
     }
@@ -1110,11 +1142,16 @@ class Product extends Model {
         return $query->where('active', '>', 0);
     }
 
+    public function scopeIsPublished($query)
+    {
+        return $query->where('publish_to_web', '>', 0);
+    }
+
     public function scopeIsNew($query, $apply = true)
     {
         if ( !$apply ) return $query;
 
-        return $query->whereDate('created_at', '>=', \Carbon\Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
+        return $query->whereDate('created_at', '>=', Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
     }
 
     public function scopeManufacturer($query, $manufacturer_id)
@@ -1129,10 +1166,10 @@ class Product extends Model {
         // Filter Products by Customer
         if ( Configuration::get('PRODUCT_NOT_IN_PRICELIST') == 'block' ) 
         {
-            $customer = \App\Customer::with('customergroup')->findorfail($customer_id);
+            $customer = Customer::with('customergroup')->findorfail($customer_id);
 
             if ( !($currency_id) ) 
-                $currency_id = \App\Context::getContext()->currency->id;
+                $currency_id = Context::getContext()->currency->id;
 
             if ($customer->price_list_id)
             {

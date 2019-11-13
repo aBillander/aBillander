@@ -95,6 +95,7 @@ class AbccCatalogueController extends Controller
 	                                  ->whereIn('category_id', $categories_ids)
 	                                  ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id)
                                       ->IsActive()
+                                      ->IsPublished()
                                       ->orderBy('reference', 'asc');
 
                 // abi_toSQL($products);
@@ -287,6 +288,7 @@ class AbccCatalogueController extends Controller
 	                                  ->IsSaleable()
 	                                  ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id)
                                       ->IsActive()
+                                      ->IsPublished()
                                       ->IsNew()
                                       ->orderBy('reference', 'asc');
 
@@ -309,6 +311,7 @@ class AbccCatalogueController extends Controller
                               ->IsAvailable()
                               ->qualifyForCustomer( $customer->id, $customer->currency_id)
                               ->IsActive()
+                              ->IsPublished()
                               ->find($i);
         // abi_r($product, true);
 

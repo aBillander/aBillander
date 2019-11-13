@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Auth;
-
-use App\Configuration;
+use Carbon\Carbon;
 
 use App\Traits\ViewFormatterTrait;
 
@@ -113,12 +112,12 @@ class Customer extends Model {
         return $this->address->email;
     }
 
-    public function currentpricelist( \App\Currency $currency = null )
+    public function currentpricelist( Currency $currency = null )
     {
         if ( $currency == null )
         {
             if ($this->currency_id)
-                $currency = $this->currency ?? \App\Currency::findOrFail( Configuration::get('DEF_CURRENCY') );
+                $currency = $this->currency ?? Currency::findOrFail( Configuration::get('DEF_CURRENCY') );
         }
 
         // First: Customer has pricelist?
@@ -136,7 +135,7 @@ class Customer extends Model {
         return null;
     }
 
-    public function currentPricesEnteredWithTax( \App\Currency $currency = null ) 
+    public function currentPricesEnteredWithTax( Currency $currency = null ) 
     {
         return $this->currentpricelist( $currency )->price_is_tax_inc ?? Configuration::get('PRICES_ENTERED_WITH_TAX');
     }
@@ -145,7 +144,7 @@ class Customer extends Model {
     public function getInvoiceSequenceId() 
     {
         if (   $this->invoice_sequence_id
-            && \App\Sequence::where('id', $this->invoice_sequence_id)->exists()
+            && Sequence::where('id', $this->invoice_sequence_id)->exists()
             )
             return $this->invoice_sequence_id;
 
@@ -155,7 +154,7 @@ class Customer extends Model {
     public function getInvoiceTemplateId() 
     {
         if (   $this->invoice_template_id
-            && \App\Template::where('id', $this->invoice_template_id)->exists()
+            && Template::where('id', $this->invoice_template_id)->exists()
             )
             return $this->invoice_template_id;
 
@@ -165,7 +164,7 @@ class Customer extends Model {
     public function getPaymentMethodId() 
     {
         if (   $this->payment_method_id
-            && \App\PaymentMethod::where('id', $this->payment_method_id)->exists()
+            && PaymentMethod::where('id', $this->payment_method_id)->exists()
             )
             return $this->payment_method_id;
 
@@ -175,7 +174,7 @@ class Customer extends Model {
     public function getShippingMethodId() 
     {
         if (   $this->shipping_method_id
-            && \App\ShippingMethod::where('id', $this->shipping_method_id)->exists()
+            && ShippingMethod::where('id', $this->shipping_method_id)->exists()
             )
             return $this->shipping_method_id;
 
@@ -190,7 +189,7 @@ class Customer extends Model {
     */
 
 
-    public function addRisk( $amount, \App\Currency $currency = null ) 
+    public function addRisk( $amount, Currency $currency = null ) 
     {
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
@@ -202,7 +201,7 @@ class Customer extends Model {
     }
 
 
-    public function removeRisk( $amount, \App\Currency $currency = null ) 
+    public function removeRisk( $amount, Currency $currency = null ) 
     {
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
@@ -290,7 +289,7 @@ class Customer extends Model {
     /**
      * Adjust date to Customer Payment Days
      */
-    public function paymentDate( \Carbon\Carbon $date ) 
+    public function paymentDate( Carbon $date ) 
     {
         $pdays = $this->paymentDays();
         $n = count($pdays);
@@ -329,7 +328,7 @@ class Customer extends Model {
         // Check No-Payment Month
         if ($month==$this->no_payment_month) $month++;
 
-        $payday = \Carbon\Carbon::createFromDate($year, $month, $day);
+        $payday = Carbon::createFromDate($year, $month, $day);
 
         // Check Saturday & Sunday
         if ( $payday->dayOfWeek == 6 ) $payday->addDays(2); // Saturday
@@ -648,7 +647,20 @@ class Customer extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public function getPrice( \App\Product $product, $quantity = 1, \App\Currency $currency = null )
+    public function getPrice( Product $product, $quantity = 1, Currency $currency = null )
+    {
+
+        // Special prices have more priority
+        $price = $this->getPriceByRules( $product, $quantity, $currency );
+
+        if ( $price ) return $price;
+
+
+        // Customer has pricelist?
+        return $this->getPriceByPriceList( $product, $quantity, $currency );
+    }
+
+    public function getPriceByRules( Product $product, $quantity = 1, Currency $currency = null )
     {
         // Fall back price (use it if Price for $currency is not set)
         $fallback = null;
@@ -657,14 +669,40 @@ class Customer extends Model {
             $currency = $this->currency;
 
         if (!$currency)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
 
 
         // Special prices have more priority
-        $rules = $this->getPriceRules( $product, $currency );
+        $rules = $this->getPriceRules( $product, $currency )->where('rule_type', 'price');
 
         if ( $rules->count() )
             return $product->getPrice()->applyPriceRules( $rules, $quantity );
+
+
+        // No rules found:
+        return null;
+    }
+
+    public function getPriceByPriceList( Product $product, $quantity = 1, Currency $currency = null )
+    {
+        // Fall back price (use it if Price for $currency is not set)
+        $fallback = null;
+
+        if (!$currency && $this->currency_id)
+            $currency = $this->currency;
+
+        if (!$currency)
+            $currency = Context::getContext()->currency;
+
+
+        // Skip this:
+/*
+        //Special prices have more priority
+        $rules = $this->getPriceRules( $product, $currency )->where('rule_type', 'price');
+
+        if ( $rules->count() )
+            return $product->getPrice()->applyPriceRules( $rules, $quantity );
+*/
 
 
         // Customer has pricelist?
@@ -698,20 +736,36 @@ class Customer extends Model {
         return $price;
     }
 
-
-    public function getPriceRules( \App\Product $product, \App\Currency $currency = null )
+    public function getExtraQuantityRule( Product $product, Currency $currency = null )
     {
 
         if (!$currency && $this->currency_id)
             $currency = $this->currency;
 
         if (!$currency)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
+
+
+        $rule = $this->getPriceRules( $product, $currency )->where('rule_type', 'promo')->sortBy('from_quantity')->first();
+
+        return $rule;
+    }
+
+
+    public function getPriceRules( Product $product, Currency $currency = null )
+    {
+
+        if (!$currency && $this->currency_id)
+            $currency = $this->currency;
+
+        if (!$currency)
+            $currency = Context::getContext()->currency;
         
-        $rules = \App\PriceRule::where('currency_id', $currency->id)
+        $rules = PriceRule::where('currency_id', $currency->id)
                     // Customer range
                     ->where( function($query) {
                                 $query->where('customer_id', $this->id);
+                                $query->orWhere('customer_id', null);
                                 if ($this->customer_group_id)
                                     $query->orWhere('customer_group_id', $this->customer_group_id);
                         } )
@@ -723,7 +777,7 @@ class Customer extends Model {
                         } )
                     // Date range
                     ->where( function($query){
-                                $now = \Carbon\Carbon::now()->startOfDay(); 
+                                $now = Carbon::now()->startOfDay(); 
                                 $query->where( function($query) use ($now) {
                                     $query->where('date_from', null);
                                     $query->orWhere('date_from', '<=', $now);
@@ -739,16 +793,16 @@ class Customer extends Model {
     }
 
 
-    public function getQuantityPriceRules( \App\Currency $currency = null )
+    public function getQuantityPriceRules( Currency $currency = null )
     {
 
         if (!$currency && $this->currency_id)
             $currency = $this->currency;
 
         if (!$currency)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
         
-        $rules = \App\PriceRule::where('currency_id', $currency->id)
+        $rules = PriceRule::where('currency_id', $currency->id)
                     // Customer range
                     ->where( function($query) {
                                 $query->where('customer_id', $this->id);
@@ -766,7 +820,7 @@ class Customer extends Model {
                     ->where( 'from_quantity', '>', 1 )
                     // Date range
                     ->where( function($query){
-                                $now = \Carbon\Carbon::now()->startOfDay(); 
+                                $now = Carbon::now()->startOfDay(); 
                                 $query->where( function($query) use ($now) {
                                     $query->where('date_from', null);
                                     $query->orWhere('date_from', '<=', $now);
@@ -782,7 +836,7 @@ class Customer extends Model {
     }
 
 
-    public function getLastPrice( \App\Product $product = null, \App\Currency $currency = null )
+    public function getLastPrice( Product $product = null, Currency $currency = null )
     {
         // 
         if ( $product == null) return null;
@@ -793,7 +847,7 @@ class Customer extends Model {
 
         // https://stackoverflow.com/questions/41679771/eager-load-relationships-in-laravel-with-conditions-on-the-relation?rq=1
 
-        $line = \App\CustomerOrderLine::whereHas(
+        $line = CustomerOrderLine::whereHas(
 
                 'customerorder', function ($order) use ($customerId) {
                     return $order->where('customer_id', $customerId);
@@ -832,7 +886,7 @@ class Customer extends Model {
         else return null;
     }
 
-    public function getTaxRules( \App\Product $product, $address = null )
+    public function getTaxRules( Product $product, $address = null )
     {
         $rules = collect([]);
 

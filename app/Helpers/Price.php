@@ -275,6 +275,8 @@ class Price {
 
     /**
      * @param Collection of \App\PriceRule $rules
+     * @param int $quantity
+     * @return Price
      */
     public function applyPriceRules( $rules, $quantity = 1 )
     {

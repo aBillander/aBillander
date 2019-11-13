@@ -29,7 +29,7 @@ return [
 
 	'Price Rules - Create' => 'Regla de Precio - Crear',
 	'New Price Rule' => 'Nueva Regla de Precio',
-	'Price Rules take precedence over Price Lists.' => 'Las Regals de Precio tienen prioridad sobre las Tarifas',
+	'Price Rules take precedence over Price Lists.' => 'Las Reglas de Precio tienen prioridad sobre las Tarifas',
 	'Date from' => 'Fecha desde',
 	'Date to' => 'Fecha hasta',
 	'Customer'     => 'Cliente',

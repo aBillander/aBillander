@@ -236,4 +236,6 @@ return [
 
     'Cart amount should be more than: ' => 'El importe del Pedido debe ser al menos de: ',
 
+    'Address not allowed' => 'Dirección no permitida',
+
 ];

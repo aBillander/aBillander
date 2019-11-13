@@ -91,6 +91,8 @@ return [
 	'Carrier'     => 'Transportista',
 	'Shipping Method'     => 'Método de Envío',
 	'Webshop ID'     => 'Código en la Tienda Web',
+	'Longitude'     => 'Longitud',
+	'Latitude'     => 'Latitud',
 	'Payment Day(s)'     => 'Día(s) de Pago',
 	'Comma separated list of days, as in: 3,17' => 'Lista separada por comas, como: 3,17',
 	'No Payment Month'     => 'Mes de No Pago',

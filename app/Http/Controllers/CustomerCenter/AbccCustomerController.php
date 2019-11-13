@@ -158,7 +158,8 @@ class AbccCustomerController extends Controller
                                       ->IsSaleable()
                                       ->IsAvailable()
                                       ->qualifyForCustomer( $customer->id, $customer->currency->id)
-                                      ->IsActive();
+                                      ->IsActive()
+                                      ->IsPublished();
                         })
                     // All Products
 //                    ->where( function($query) use ($product) {

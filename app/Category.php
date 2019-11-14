@@ -86,10 +86,11 @@ class Category extends Model {
 
         return $this->hasMany('App\Product')
                     ->IsSaleable()  // Is for sale or not
-                    // ???
-                    // ->IsAvailable() // Has stock
+                    ->IsAvailable() // Has stock
                     // This filter would "filter" products a customer is allowed
                     ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id )
+                                      ->IsActive()
+                                      ->IsPublished()
                     ->get();
     }
 	

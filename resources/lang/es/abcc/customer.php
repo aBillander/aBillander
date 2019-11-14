@@ -64,6 +64,7 @@ return [
 
 	
 	'Customer Price Rules'     => 'Precios Especiales',
+	'Extra Items' => 'Unidades sin Coste',
 	''     => '',
 	''     => '',
 	''     => '',

@@ -177,7 +177,7 @@ class AbccCustomerOrdersController extends Controller {
 			'locked' => 0,
 
 			'invoicing_address_id' => $customer->invoicing_address_id,
-			'shipping_address_id'  => $request->input('shipping_address_id'),
+			'shipping_address_id'  => $cart->shipping_address_id,
 
 			'warehouse_id' => Configuration::get('DEF_WAREHOUSE'),
 //			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
@@ -203,7 +203,8 @@ class AbccCustomerOrdersController extends Controller {
         foreach ($cart->cartlines as $cartline) {
         	# code...
         	//abi_r($line->quantity);
-        	$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price, 'line_sort_order' => $cartline->line_sort_order] );
+        	$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price] );
+        	// $line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price, 'line_sort_order' => $cartline->line_sort_order] );
         }
 		
         // At last: empty cart ( delete lines & initialize )

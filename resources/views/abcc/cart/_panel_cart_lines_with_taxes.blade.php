@@ -5,6 +5,7 @@
     <table id="cart_lines" class="table table-hover">
         <thead>
             <tr>
+              <th class="text-right">ID</th>
               <th>{{ l('Reference') }}</th>
               <th colspan="2">{{ l('Product Name') }}</th>
               <th>
@@ -46,7 +47,8 @@
 
 
 
-               <th class="text-right">{{ l('Total') }}</th>
+               <th class="text-right">{{ l('Total') }}
+                        <br/><span class="button-pad text-muted">{{ l('Without Tax') }}</span></th>
               <th class="text-right"> </th>
             </tr>
         </thead>
@@ -54,7 +56,7 @@
         <tbody class="sortable ui-sortable">
   @foreach ($cart->cartlines as $line)
     <tr>
-      <!-- td>{{ $line->id }}</td -->
+      <td title="{{ $line->line_sort_order }}">{{ $line->id }}</td>
       <td title="{{ $line->product->id }}">@if ($line->product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
                 @else {{ $line->product->reference }}
                 @endif</td>
@@ -113,6 +115,24 @@
               </div>
             </div>
 
+                  @if ( $cart->customer->getExtraQuantityRule( $line->product, $cart->customer->currency ) )
+                      <div class="pull-left">
+                          <p class="text-center text-info">
+                              +{{ $line->as_quantity('extra_quantity') }}{{ l(' extra') }}
+
+                               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                                  xdata-trigger="focus"
+                                  data-html="true" 
+                                  data-content="{{ $line->extra_quantity_label }}<br />
+                                                {{ l('Promo: You pay :npay and get :nget',
+                                                ['npay' => (int)$line->quantity ,
+                                                 'nget' => (int)($line->quantity + $line->extra_quantity) ]) }}">
+                                  <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                               </a>
+                          </p>
+                      </div>
+                  @endif
+
       </td>
 
       <td class="text-right">
@@ -130,7 +150,7 @@
 --}}
 
 
-                            @if ($line->product->has_price_rule_applied || $line->product->has_extra_item_applied)
+                            @if ( $line->product->getPriceRulesByCustomer( \Auth::user()->customer )->count() )
                                 <a class="btn btn-sm btn-custom show-pricerules pull-right" href="#" data-target='#myModalShowPriceRules'
                                    data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
                                    title="{{ l('Show Special Prices', 'abcc/catalogue') }}">
@@ -139,14 +159,14 @@
                             @endif
 
                             <div class="pull-right">
-                                {{ $line->as_price('unit_customer_price') }}{{ $cart->currency->sign }}
-                                @if ($line->product->has_price_rule_applied)
+                                {{ $line->as_price('unit_customer_final_price') }}{{ $cart->currency->sign }}
+                                @if ($line->unit_customer_final_price != $line->unit_customer_price)
                                     <p class="text-info crossed">
-                                        {{ $line->as_priceable($line->product->previous_price) }}{{ $cart->currency->sign }}
+                                        {{ $line->as_priceable($line->unit_customer_price) }}{{-- $cart->currency->sign --}}
                                     </p>
                                 @endif
                             </div>
-
+{{--
                             @if ($line->product->has_extra_item_applied)
                                 <div class="pull-left">
                                     <p class="text-info">
@@ -154,19 +174,29 @@
                                     </p>
                                 </div>
                             @endif
-
-
+--}}
+{{--
+                            @if ($line->extra_quantity)
+                                <div class="pull-left">
+                                    <p class="text-info">
+                                        {{ $line->extra_quantity_label }}
+                                    </p>
+                                </div>
+                            @endif
+--}}
       </td>
 
                         @if($config['display_with_taxes'])
                             <td class="text-right">
-                                {{ $line->as_priceable($line->unit_customer_price + $line->tax) }}{{ $cart->currency->sign }}
+                                {{ $line->as_priceable($line->unit_customer_final_price * ( 1.0 + $line->tax_percent / 100.0 )) }}
                             </td>
 
                             <td class="text-right">{{$line->as_percent('tax_percent', 1)}}%</td>
                         @endif
 
-      <td class="text-right">{{ $line->as_priceable($line->quantity * $line->unit_customer_price) }} - {{ $line->as_priceable($line->price_with_taxes) }}{{ $cart->currency->sign }}</td>
+      <td class="text-right">{{ $line->as_priceable($line->total_tax_incl) }}
+            <br/><span class="button-pad text-muted">{{ $line->as_priceable($line->quantity * $line->unit_customer_final_price) }}</span>
+      </td>
 
                 <td class="text-right button-pad">
                     <!-- a class="btn btn-sm btn-info" title="XXXXXS" onClick="loadcustomerorderlines();"><i class="fa fa-pencil"></i></a -->
@@ -178,13 +208,14 @@
                 </td>
             </tr>
 
-                    @if ($line->product->has_extra_item_applied)
+                    @if (0 && $line->extra_quantity)
                         <tr>
-                            <td colspan="3"></td>
-                            <td colspan="5">
-                                {{ l(' Promo: You pay :npay and get :nget',
+                            <td colspan="5"></td>
+                            <td colspan="6">
+                                {{ $line->extra_quantity_label }}<br />
+                                {{ l('Promo: You pay :npay and get :nget',
                                 ['npay' => (int)$line->quantity ,
-                                 'nget' => (int)($line->quantity + $line->product->extra_item_qty) ]) }}
+                                 'nget' => (int)($line->quantity + $line->extra_quantity) ]) }}
                             </td>
                         </tr>
                     @endif

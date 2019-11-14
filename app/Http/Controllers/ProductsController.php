@@ -455,8 +455,8 @@ class ProductsController extends Controller
                 $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
                 $request->merge( ['price' => $price] );
 
-                $price = $request->input('recommended_retail_price_tax_inc')/(1.0+($tax->percent/100.0));
-                $request->merge( ['recommended_retail_price' => $price] );
+                $price = $request->input('recommended_retail_price')/(1.0+($tax->percent/100.0));
+                $request->merge( ['recommended_retail_price' => $price, 'recommended_retail_price_tax_inc' => $request->input('recommended_retail_price')] );
             } else {
                 $price_tax_inc = $request->input('price')*(1.0+($tax->percent/100.0));
                 $request->merge( ['price_tax_inc' => $price_tax_inc] );

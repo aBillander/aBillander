@@ -4,7 +4,7 @@
       <h3 class="panel-title">{{ l('Shipping Address') }} [{{ $cart->shipping_address_id }}]</h3>
    </div>
 
-{!! Form::open(array('route' => 'abcc.cart.shippingaddress.store', 'id' => 'create_customer_order', 'name' => 'create_customer_order', 'class' => 'form')) !!}
+{!! Form::open(array('route' => 'abcc.cart.shippingaddress.store', 'id' => 'update_shipping_address', 'name' => 'update_shipping_address', 'class' => 'form')) !!}
 
    <div class="panel-body">
       <div xclass="row">

@@ -21,8 +21,11 @@ class Cart extends Model
                         ];
 
     protected $fillable = [
-    						'customer_user_id', 'customer_id', 'notes_from_customer', 
-    						'total_items', 'total_currency_tax_excl', 'total_tax_excl', 
+    						'customer_user_id', 'customer_id', 'notes_from_customer', 'total_items', 
+                            'total_products_tax_incl', 'total_products_tax_excl', 'total_shipping_tax_incl', 'total_shipping_tax_excl', 
+                            'document_discount_percent', 'document_discount_amount_tax_incl', 'document_discount_amount_tax_excl', 
+                            'document_ppd_percent', 'document_ppd_amount_tax_incl', 'document_ppd_amount_tax_excl', 
+                            'total_currency_tax_incl', 'total_currency_tax_excl', 'total_tax_incl', 'total_tax_excl', 
     						'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'carrier_id',
     						'currency_id', 'payment_method_id',
     ];
@@ -84,6 +87,8 @@ class Cart extends Model
                 'currency_id' => $customer->currency_id,
                 'payment_method_id' => $customer->payment_method_id,
 //                'date_prices_updated',
+                'document_discount_percent' => (float) $customer->document_percent,
+                'document_ppd_percent' => (float) $customer->document_ppd_percent,
             ]);
 
             Context::getContext()->cart = $cart;
@@ -153,6 +158,8 @@ class Cart extends Model
         		'currency_id' => $customer->currency_id,
         		'payment_method_id' => $customer->payment_method_id,
 //                'date_prices_updated',
+                'document_discount_percent' => (float) $customer->document_percent,
+                'document_ppd_percent' => (float) $customer->document_ppd_percent,
         	]);
         }
 
@@ -224,7 +231,7 @@ class Cart extends Model
         if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
 
         // Still with me? Lets check Price rules with type='price'
-        $customer_final_price = $product->getPriceByCustomerRules( $customer, $quantity, $currency );
+        $customer_final_price = $product->getPriceByCustomerPriceRules( $customer, $quantity, $currency );
         if ( !$customer_final_price )
             $customer_final_price = clone $customer_price;  // No price Rules available
 
@@ -237,8 +244,14 @@ class Cart extends Model
 
         // abi_r($customer->getPriceRules( $product, $currency ), true);
 
-        $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
-        $extra_quantity_label = $promo_rule->name;
+        if ($promo_rule)
+        {
+            $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
+            $extra_quantity_label = $promo_rule->name;
+        } else {
+            $extra_quantity = 0.0;
+            $extra_quantity_label = '';
+        }
 
         // Totals
         $total_tax_excl = $quantity * $unit_customer_final_price;
@@ -282,10 +295,13 @@ class Cart extends Model
 
         $this->cartlines()->save($line);
 
+        $this->makeTotals();
+
         return $line;
     }
 
 
+    // Need update according to public function addLine($product_id = null, $combination_id = null, $quantity = 1.0)
     public function addLineByAdmin($product_id = null, $combination_id = null, $quantity = 1.0)
     {
         // Do the Mambo!
@@ -490,6 +506,55 @@ class Cart extends Model
             });
 
         return $s;
+    }
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Calculations
+    |--------------------------------------------------------------------------
+    */
+
+    public function makeTotals()
+    {
+        $cart = Cart::getCustomerUserCart();
+
+        $line_products = $cart->cartlines->where('line_type', 'product');
+        $line_shipping = $cart->cartlines->where('line_type', 'shipping')->first();
+
+        if ( !$line_products ) return ;
+
+        $total_products_tax_excl = $line_products->sum('total_tax_excl');
+        $total_products_tax_incl = $line_products->sum('total_tax_incl');
+
+        if ( $line_shipping )
+        {
+            $total_shipping_tax_excl = $line_shipping->total_tax_excl;
+            $total_shipping_tax_incl = $line_shipping->total_tax_incl;
+        } else {
+            $total_shipping_tax_excl = 0.0;
+            $total_shipping_tax_incl = 0.0;
+        }
+
+        $sub_tax_excl = $total_products_tax_excl + $total_shipping_tax_excl;
+        $sub_tax_incl = $total_products_tax_incl + $total_shipping_tax_incl;
+
+        $document_discount_amount_tax_excl = $sub_tax_excl * $cart->document_discount_percent / 100.0;
+        $document_discount_amount_tax_incl = $sub_tax_incl * $cart->document_discount_percent / 100.0;
+
+        $document_ppd_amount_tax_excl = ($sub_tax_excl - $document_discount_amount_tax_excl) * $cart->document_ppd_percent / 100.0;
+        $document_ppd_amount_tax_incl = ($sub_tax_incl - $document_discount_amount_tax_incl) * $cart->document_ppd_percent / 100.0;
+
+        $total_tax_excl = $sub_tax_excl - $document_discount_amount_tax_excl - $document_ppd_amount_tax_excl;
+        $total_tax_incl = $sub_tax_incl - $document_discount_amount_tax_incl - $document_ppd_amount_tax_incl;
+
+        $this->update( compact('total_products_tax_excl', 'total_products_tax_incl', 
+                               'total_shipping_tax_excl', 'total_shipping_tax_incl', 
+                               'document_discount_amount_tax_excl', 'document_discount_amount_tax_incl', 
+                               'document_ppd_amount_tax_excl', 'document_ppd_amount_tax_incl', 
+                               'total_tax_excl', 'total_tax_incl') );
+
+        return $cart;
     }
     
 

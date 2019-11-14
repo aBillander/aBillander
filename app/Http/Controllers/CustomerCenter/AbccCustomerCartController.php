@@ -403,8 +403,15 @@ class AbccCustomerCartController extends Controller
 
         $line_id = $request->input('line_id', 0);
 
-    	if ( !$line_id ) 
-    		return response( null );
+        // Get line
+        $cart = Cart::getCustomerUserCart();
+        $line = $cart->cartlines()->where('id', $line_id)->first();
+
+        if ( !$line ) 
+            return response( null );
+
+        $product_id      = $line->product_id;
+        $combination_id  = $line->combination_id;
 
         $quantity = floatval( $request->input('quantity', 1.0) );
         $quantity >= 0 ?: 1.0;
@@ -414,22 +421,22 @@ class AbccCustomerCartController extends Controller
     	if ( !$customer_user ) 
     		return response( null );
 
-        $cart =  Context::getContext()->cart;
-
-        // Get line
-        $line = $cart->cartlines()->where('id', $line_id)->first();
-
         if ($quantity>0)
         {
-            $line->update(['quantity' => $quantity]);
-            // $cart->touch(); //  protected $touches = ['cart']; 
+            $line->delete();
+            $line = $cart->addLine($product_id, $combination_id, $quantity);
         }
         else
+        {
         	$line->delete();
+        }
 
 
         // Now, update Order Totals
-        // $order->makeTotals();
+        $cart->makeTotals();
+
+        // Refresh Cart
+        $cart = Cart::getCustomerUserCart();
 
 
 

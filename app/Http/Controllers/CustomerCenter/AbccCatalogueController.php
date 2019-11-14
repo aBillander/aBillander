@@ -360,7 +360,7 @@ class AbccCatalogueController extends Controller
         
         // abi_r($customer_rules, true);
 */
-        $customer_rules = $product ? $product->getQuantityPriceRules( $customer ) : collect([]);
+        $customer_rules = $product ? $product->getPriceRulesByCustomer( $customer ) : collect([]);
 
         return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules'));
     }

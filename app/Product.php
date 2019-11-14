@@ -920,7 +920,7 @@ class Product extends Model {
         return $price;
     }
 
-    public function getPriceByCustomerRules( Customer $customer, $quantity = 1, Currency $currency = null )
+    public function getPriceByCustomerPriceRules( Customer $customer, $quantity = 1, Currency $currency = null )
     {
         // Return Price Object
         $price = $customer->getPriceByRules( $this, $quantity, $currency );
@@ -1070,6 +1070,17 @@ class Product extends Model {
 
         return $price_rules;
     }
+
+    public function getPriceRulesByCustomer( Customer $customer, Currency $currency = null )
+    {
+        $rules = $customer->getPriceRules( $this, $currency );
+
+        return $rules;
+    }
+
+
+
+
 
     public function hasQuantityPriceRules( Customer $customer = null )
     {

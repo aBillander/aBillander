@@ -16,9 +16,10 @@
               <th>{{l('Category', 'abcc/customer')}}</th>
               <th>{{l('Currency', 'abcc/customer')}}</th>
               <th class="text-right">{{l('Price', 'abcc/customer')}}</th>
-              <th class="text-right">{{l('Discount Percent', 'abcc/customer')}}</th>
+              <!-- th class="text-right">{{l('Discount Percent', 'abcc/customer')}}</th -->
               <!-- th class="text-right">{{l('Discount Amount')}}</th -->
               <th class="text-center">{{l('From Quantity', 'abcc/customer')}}</th>
+              <th class="text-center">{{l('Extra Items', 'abcc/customer')}}</th>
               <th>{{l('Date from', 'abcc/customer')}}</th>
               <th>{{l('Date to', 'abcc/customer')}}</th>
         </tr>
@@ -40,6 +41,7 @@
       <td class="text-right"> </td>
 @endif
 
+{{--
 @if($rule->rule_type=='discount')
       @if($rule->discount_type=='percentage')
             <td class="text-right">{{ $rule->as_percent('discount_percent') }}</td>
@@ -57,8 +59,11 @@
       <td class="text-right"> </td>
       <!-- td class="text-right"> </td -->
 @endif
+--}}
 
       <td class="text-center">{{ $rule->as_quantity('from_quantity') }}</td>
+
+      <td class="text-center">{{ $rule->as_quantity('extra_quantity') ?: '' }}</td>
 
       <td>{{ abi_date_short( $rule->date_from ) }}</td>
             <td>{{ abi_date_short( $rule->date_to   ) }}</td>

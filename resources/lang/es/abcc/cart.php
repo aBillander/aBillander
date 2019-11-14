@@ -16,9 +16,11 @@ return [
     'Product Name'                => 'Producto',
     'Customer Price'              => 'PVP sin IVA',
     'Customer Price (with Tax)'   => 'PVP con IVA',
+    'Without Tax'                 => 'Sin IVA',
     'Prices are exclusive of Tax' => 'El Precio no incluye Impuestos',
     'Quantity'                    => 'Cantidad',
     'Products Total'              => 'Total Productos',
+    'Shipping Cost'               => 'Envío',
     'Total'                       => 'Total',
     'Total (without tax)'         => 'Total sin IVA',
     'Document Discount'           => 'Descuento en Documento',
@@ -237,5 +239,9 @@ return [
     'Cart amount should be more than: ' => 'El importe del Pedido debe ser al menos de: ',
 
     'Address not allowed' => 'Dirección no permitida',
+
+    'Promo: You pay :npay and get :nget' => 'Promoción: Paga :npay y lleva :nget',
+
+    'Equalization Tax' => 'Recargo Equivalencia',
 
 ];

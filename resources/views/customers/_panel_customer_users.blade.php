@@ -55,6 +55,7 @@
             $("input[name='customeruser_active'][value='1']").prop('checked', true);
             $("input[name='enable_quotations'][value='-1']").prop('checked', true);
             $("input[name='enable_min_order'][value='-1']").prop('checked', true);
+            $("input[name='use_default_min_order_value'][value='1']").prop('checked', true);
             $("input[name='allow_abcc_access'][value='1']").prop('checked', true);
             $("input[name='display_prices_tax_inc'][value='-1']").prop('checked', true);
             $("input[name='notify_customer'][value='1']").prop('checked', true);
@@ -127,10 +128,11 @@
             $("input[name='customeruser_active'][value='" + user.active + "']").prop('checked', true);
             $("input[name='enable_quotations'][value='" + user.enable_quotations + "']").prop('checked', true);
             $("input[name='enable_min_order'][value='" + user.enable_min_order + "']").prop('checked', true);
+            $("input[name='use_default_min_order_value'][value='" + user.use_default_min_order_value + "']").prop('checked', true);
             $("input[name='allow_abcc_access'][value='" + user.allow_abcc_access + "']").prop('checked', true);
             $("input[name='display_prices_tax_inc'][value='" + user.display_prices_tax_inc + "']").prop('checked', true);
-//            $("input[name='notify_customer'][value='"+user.+"']").prop('checked', true);
-            $("#div-notify_customer").css('display', 'none');
+            $("input[name='notify_customer'][value='0']").prop('checked', true);
+//            $("#div-notify_customer").css('display', 'none');
 
             // Open popup
             $('#customeruserModalTitle').html('{{ l('Update User') }} :: {{ $customer->name_commercial }}');

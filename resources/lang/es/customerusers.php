@@ -63,6 +63,7 @@ return [
 
 	'Enable Quotations'     => 'Permitir Presupuestos',
 	'Enable minimum Order'     => 'Activar Pedido mínimo',
+	'Use default minimum Order' => 'Usar Pedido mínimo por defecto',
 	'Minimum Order Value'     => 'Importe Pedido mínimo',
 	'Display Prices tax inc?'     => '¿Mostrar Precios IVA inc?',
 	'Location / Address'     => 'Delegación / Dirección',

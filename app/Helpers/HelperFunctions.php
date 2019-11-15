@@ -37,6 +37,16 @@ function l($string = NULL, $data = [], $langfile = NULL)
 	}
 
 
+function abi_yn_label($foo=true)
+  {
+    if ( (bool) $foo ) return l('Yes', [], 'layouts');
+
+    return l('No', [], 'layouts');
+  }
+
+
+
+
 function abi_r($foo, $exit=false)
   {
     echo '<pre>';

@@ -93,30 +93,6 @@
 <div class="row" style="border-top: 1px solid #dddddd; padding-top: 15px;">
 
       <div class="form-group col-lg-4 col-md-4 col-sm-4">
-          {!! Form::label('enable_quotations', l('Enable Quotations', 'customerusers'), ['class' => 'control-label']) !!}
-             <div>
-               <div class="radio-inline">
-                 <label>
-                   {!! Form::radio('enable_quotations', '1', NULL, ['id' => 'enable_quotations_on']) !!}
-                   {!! l('Yes', [], 'layouts') !!}
-                 </label>
-               </div>
-               <div class="radio-inline">
-                 <label>
-                   {!! Form::radio('enable_quotations', '0', NULL, ['id' => 'enable_quotations_off']) !!}
-                   {!! l('No', [], 'layouts') !!}
-                 </label>
-               </div>
-               <div class="radio-inline">
-                 <label>
-                   {!! Form::radio('enable_quotations', '-1', NULL, ['id' => 'enable_quotations_default']) !!}
-                   {!! l('Default', [], 'layouts') !!}
-                 </label>
-               </div>
-             </div>
-      </div>
-
-      <div class="form-group col-lg-4 col-md-4 col-sm-4">
           {!! Form::label('enable_min_order', l('Enable minimum Order', 'customerusers')) !!}
              <div>
                <div class="radio-inline">
@@ -134,20 +110,64 @@
                <div class="radio-inline">
                  <label>
                    {!! Form::radio('enable_min_order', '-1', NULL, ['id' => 'enable_min_order_default']) !!}
-                   {!! l('Default', [], 'layouts') !!}
+                   {!! l('Default', [], 'layouts') !!} ({{ abi_yn_label ( \App\Configuration::get('ABCC_ENABLE_MIN_ORDER') ) }})
                  </label>
                </div>
              </div>
       </div>
 
       <div class="form-group col-lg-4 col-md-4 col-sm-4">
+          {!! Form::label('use_default_min_order_value', l('Use default minimum Order', 'customerusers')) !!}
+             <div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('use_default_min_order_value', '1', NULL, ['id' => 'use_default_min_order_value_on']) !!}
+                   {!! l('Yes', [], 'layouts') !!} ({{ abi_money( \App\Configuration::get('ABCC_MIN_ORDER_VALUE') ) }})
+                 </label>
+               </div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('use_default_min_order_value', '0', NULL, ['id' => 'use_default_min_order_value_off']) !!}
+                   {!! l('No', [], 'layouts') !!}
+                 </label>
+               </div>
+             </div>
+      </div>
+
+      <div class="form-group col-lg-3 col-md-3 col-sm-3">
           {!! Form::label('min_order_value', l('Minimum Order Value', 'customerusers')) !!}
-          {!! Form::text('min_order_value', null, array('class' => 'form-control')) !!}
+          {!! Form::text('min_order_value', null, array('class' => 'form-control', 'id' => 'min_order_value')) !!}
+
+          <!-- div class="form-control" id="min_order_value_default">{{ \App\Configuration::get('ABCC_MIN_ORDER_VALUE') }}</div -->
       </div>
 
 </div>
 
         <div class="row">
+
+      <div class="form-group col-lg-4 col-md-4 col-sm-4">
+          {!! Form::label('enable_quotations', l('Enable Quotations', 'customerusers'), ['class' => 'control-label']) !!}
+             <div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('enable_quotations', '1', NULL, ['id' => 'enable_quotations_on']) !!}
+                   {!! l('Yes', [], 'layouts') !!}
+                 </label>
+               </div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('enable_quotations', '0', NULL, ['id' => 'enable_quotations_off']) !!}
+                   {!! l('No', [], 'layouts') !!}
+                 </label>
+               </div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('enable_quotations', '-1', NULL, ['id' => 'enable_quotations_default']) !!}
+                   {!! l('Default', [], 'layouts') !!} ({{ abi_yn_label ( \App\Configuration::get('ABCC_ENABLE_QUOTATIONS') ) }})
+                 </label>
+               </div>
+             </div>
+      </div>
 
                    <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-display_prices_tax_inc">
                      {!! Form::label('display_prices_tax_inc', l('Display Prices tax inc?', 'customerusers'), ['class' => 'control-label']) !!}
@@ -167,7 +187,7 @@
                <div class="radio-inline">
                  <label>
                    {!! Form::radio('display_prices_tax_inc', '-1', NULL, ['id' => 'display_prices_tax_inc_default']) !!}
-                   {!! l('Default', [], 'layouts') !!}
+                   {!! l('Default', [], 'layouts') !!} ({{ abi_yn_label ( \App\Configuration::get('ABCC_DISPLAY_PRICES_TAX_INC') ) }})
                  </label>
                </div>
                      </div>
@@ -275,6 +295,7 @@
                               active : $("input[name='customeruser_active']:checked").val(),
                               enable_quotations : $("input[name='enable_quotations']:checked").val(),
                               enable_min_order  : $("input[name='enable_min_order']:checked").val(),
+                              use_default_min_order_value  : $("input[name='use_default_min_order_value']:checked").val(),
                               min_order_value   : $('#min_order_value').val(),
 
                               display_prices_tax_inc : $("input[name='display_prices_tax_inc']:checked").val(),

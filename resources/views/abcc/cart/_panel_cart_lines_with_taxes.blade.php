@@ -150,7 +150,7 @@
 --}}
 
 
-                            @if ( $line->product->getPriceRulesByCustomer( \Auth::user()->customer )->count() )
+                            @if ( $line->product->getPriceRulesByCustomer( \Auth::user()->customer )->count() > 0 )
                                 <a class="btn btn-sm btn-custom show-pricerules pull-right" href="#" data-target='#myModalShowPriceRules'
                                    data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
                                    title="{{ l('Show Special Prices', 'abcc/catalogue') }}">

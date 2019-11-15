@@ -77,6 +77,9 @@ class PriceRulesController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
+        // Force Currency
+        $request->merge( [ 'currency_id' => \App\Context::getContext()->currency->id ] );
+
 		$this->validate($request, PriceRule::$rules);
 
 		$rule_type = $request->input('rule_type');

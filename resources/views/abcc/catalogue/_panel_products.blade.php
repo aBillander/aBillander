@@ -75,6 +75,7 @@
                             <th>{{ l('Tax') }}</th>
                         @endif
  
+      <th>{{ l('Recommended Retail Price') }}</th>
       <th class="text-right"> </th>
       <th class="text-right"> </th>
     </tr>
@@ -155,8 +156,12 @@
       @endif
 
       <td>
+          {{ $product->as_priceable( $product->recommended_retail_price ) }}
+      </td>
 
-@if ( $product->hasQuantityPriceRules( \Auth::user()->customer ) )
+      <td>
+
+@if ( $product->getPriceRulesByCustomer( \Auth::user()->customer )->count() )
 
           <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules' data-id="{{ $product->id }}" data-toggle="modal" onClick="return false;" title="{{ l('Show Special Prices') }} {{-- $product->hasQuantityPriceRules( \Auth::user()->customer ) --}}"><i class="fa fa-thumbs-o-up"></i></a>
 

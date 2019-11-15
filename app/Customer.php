@@ -761,13 +761,19 @@ class Customer extends Model {
         if (!$currency)
             $currency = Context::getContext()->currency;
         
-        $rules = PriceRule::where('currency_id', $currency->id)
+        $customer = Auth::user()->customer;
+
+        $rules = PriceRule::
+                      where('currency_id', $currency->id)
                     // Customer range
-                    ->where( function($query) {
-                                $query->where('customer_id', $this->id);
-                                $query->orWhere('customer_id', null);
-                                if ($this->customer_group_id)
-                                    $query->orWhere('customer_group_id', $this->customer_group_id);
+                    ->where( function($query) use ($customer){
+                                $query->where('customer_id', $customer->id);
+                                // $query->orWhere('customer_id', null);
+                                $query->orWhere( function($query1) {
+                                        $query1->whereDoesntHave('customer');
+                                    } );
+                                if ($customer->customer_group_id)
+                                    $query->orWhere('customer_group_id', $customer->customer_group_id);
                         } )
                      // Product range
                     ->where( function($query) use ($product) {

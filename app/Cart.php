@@ -236,6 +236,11 @@ class Cart extends Model
             $customer_final_price = clone $customer_price;  // No price Rules available
 
         $unit_customer_price       = $customer_price->getPrice();
+        // Better price?
+        if ( $customer_final_price->getPrice() > $unit_customer_price )
+        {
+            $customer_final_price = clone $customer_price;
+        }
         $unit_customer_final_price = $customer_final_price->getPrice();
 
 

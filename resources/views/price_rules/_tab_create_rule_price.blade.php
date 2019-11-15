@@ -9,7 +9,7 @@
         {!! Form::label('price', l('Price')) !!}
         {!! Form::text('price', null, array('id' => 'price', 'class' => 'form-control')) !!}
     </div>
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+    <div class=" hide form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('currency_id', l('Currency')) !!}
         {!! Form::select('currency_id', ['' => l('-- All --', 'layouts')] + $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id')) !!}
         {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}

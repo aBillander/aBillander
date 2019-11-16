@@ -39,6 +39,8 @@ class PriceRule extends Model
         'date_to'           => 'nullable|date',
         'from_quantity'     => 'numeric|min:0',
         'extra_quantity'    => 'numeric|min:0',
+
+        'price'    => 'numeric|min:0',
     ];
 
     /**

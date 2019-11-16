@@ -78,7 +78,7 @@ class PriceRulesController extends Controller
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
         // Force Currency
-        $request->merge( [ 'currency_id' => \App\Context::getContext()->currency->id ] );
+        $request->merge( [ 'currency_id' => \App\Context::getContext()->currency->id, 'price' => (float) $request->input('price', 0) ] );
 
 		$this->validate($request, PriceRule::$rules);
 
@@ -87,7 +87,7 @@ class PriceRulesController extends Controller
 		if ($rule_type == 'promo') 
 		{
 			// If rule_type = 'promo', price maybe null
-			$request->merge( ['from_quantity' => $request->input('from_quantity_promo'), 'price' => (float) $request->input('price', 0)] );
+			$request->merge( ['from_quantity' => $request->input('from_quantity_promo')] );
 		}
 		
 		$pricerule = $this->pricerule->create($request->all());

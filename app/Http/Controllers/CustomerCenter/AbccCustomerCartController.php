@@ -403,40 +403,17 @@ class AbccCustomerCartController extends Controller
 
         $line_id = $request->input('line_id', 0);
 
-        // Get line
+        $quantity = floatval( $request->input('quantity', 0.0) );
+
         $cart = Cart::getCustomerUserCart();
-        $line = $cart->cartlines()->where('id', $line_id)->first();
 
-        if ( !$line ) 
-            return response( null );
-
-        $product_id      = $line->product_id;
-        $combination_id  = $line->combination_id;
-
-        $quantity = floatval( $request->input('quantity', 1.0) );
-        $quantity >= 0 ?: 1.0;
-
-    	$customer_user = Auth::user();	// Don't trust: $request->input('customer_id')
-
-    	if ( !$customer_user ) 
-    		return response( null );
-
-        if ($quantity>0)
-        {
-            $line->delete();
-            $line = $cart->addLine($product_id, $combination_id, $quantity);
-        }
-        else
-        {
-        	$line->delete();
-        }
-
-
-        // Now, update Order Totals
-        $cart->makeTotals();
+        $line = $cart->updateLineQuantity( $line_id, $quantity );
 
         // Refresh Cart
         $cart = Cart::getCustomerUserCart();
+
+        if ( !$line ) 
+            return response( null );
 
 
 

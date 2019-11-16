@@ -38,7 +38,7 @@ class CreateCartLinesTable extends Migration
             $table->decimal('total_tax_incl', 20, 6)->default(0.0);
             $table->decimal('total_tax_excl', 20, 6)->default(0.0);
 
-            $table->decimal('tax_percent', 8, 3)->default(0.0);                 // Tax percent (includes Sales equalization percent)
+            $table->decimal('tax_percent', 8, 3)->default(0.0);                 // Tax percent
             $table->decimal('tax_se_percent', 8, 3)->default(0.0);              // Sales equalization percent
 
             $table->integer('cart_id')->unsigned()->nullable(false);

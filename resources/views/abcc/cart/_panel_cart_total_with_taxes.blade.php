@@ -122,18 +122,50 @@
     </tr>
 @endif
 
-@if (0 && $cart->taxes_se)
+@if ($cart->customer->sales_equalization)
+
+<tr class="info">
+    <td colspan="6"></td>
+
+    <td  colspan="2">
+        <h4>{{ l('Taxes Total') }}</h4>
+    </td>
+
+    <!-- td class="text-center lead">
+        <h4>{{ $cart->quantity }}</h4>
+    </td -->
+
+    @if(0 && $config['display_with_taxes'])
+        <td></td>
+        <td></td>
+    @endif
+
+    <td class="text-center lead" colspan="3">
+        <h4>{{ $cart->as_price('total_tax_incl') - $cart->as_price('total_tax_excl') - $cart->as_priceable($cart->total_se_tax) }}{{ $cart->currency->sign }}</h4>
+    </td>
+</tr>
+
     <tr class="info">
-        <td colspan="4"></td>
-        <td xcolspan="2"><h4>{{ l('Total Sales equivalency') }}</h4></td>
-        @if($config['display_with_taxes'])
+        <td colspan="6"></td>
+
+        <td  colspan="2">
+            <h4>{{ l('Sales Equalization Total') }}</h4>
+        </td>
+
+        <!-- td class="text-center lead">
+            <h4>{{ $cart->quantity }}</h4>
+        </td -->
+
+        @if(0 && $config['display_with_taxes'])
+            <td></td>
             <td></td>
         @endif
+
         <td class="text-center lead" colspan="3">
-            <h4>{{$cart->taxes_se}}{{ $cart->currency->sign }}</h4>
+            <h4>{{ $cart->as_priceable($cart->total_se_tax) }}{{ $cart->currency->sign }}</h4>
         </td>
     </tr>
-@endif
+@else
 
 <tr class="info">
     <td colspan="6"></td>
@@ -155,6 +187,8 @@
         <h4>{{ $cart->as_price('total_tax_incl') - $cart->as_price('total_tax_excl') }}{{ $cart->currency->sign }}</h4>
     </td>
 </tr>
+
+@endif
 
 
 <tr class="info">

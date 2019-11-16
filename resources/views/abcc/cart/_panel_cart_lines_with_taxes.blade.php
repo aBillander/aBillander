@@ -42,7 +42,12 @@
                           </span>
                         </th>
 
-                        <th>{{ l('Tax') }}</th>
+                        <th>{{ l('Tax') }}
+                          @if($cart->customer->sales_equalization)
+                              <br/><span class="button-pad text-muted">{{ l('SE') }}</span>
+                          @endif
+
+                        </th>
                     @endif
 
 
@@ -191,7 +196,12 @@
                                 {{ $line->as_priceable($line->unit_customer_final_price * ( 1.0 + $line->tax_percent / 100.0 )) }}
                             </td>
 
-                            <td class="text-right">{{$line->as_percent('tax_percent', 1)}}%</td>
+                            <td class="text-right">{{$line->as_percent('tax_percent', 1)}}%
+                                @if($cart->customer->sales_equalization)
+                                    <br/><span class="button-pad text-muted">{{$line->as_percent('tax_se_percent', 1)}}%</span>
+                                @endif
+
+                            </td>
                         @endif
 
       <td class="text-right">{{ $line->as_priceable($line->total_tax_incl) }}

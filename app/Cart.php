@@ -96,6 +96,31 @@ class Cart extends Model
         });
 
     }
+
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sales Equalization
+    |--------------------------------------------------------------------------
+    */
+
+    public function getTotalSeTaxAttribute()
+    {
+        // Spain is different (for sure is!)
+        $total_se_tax = 0.0;
+        if ($this->customer->sales_equalization)
+        {
+            $total_se_tax = $this->cartlines->sum( function ($line) {
+                return $line->total_tax_excl * $line->tax_se_percent/100.0;
+            });
+        }
+        
+        return $total_se_tax;
+        // Spain stuff ends here
+    }
+
+
     
 
     /*
@@ -169,6 +194,24 @@ class Cart extends Model
 
         return null;
     }
+    
+    public function getMaxLineSortOrder()
+    {
+        if ( $this->cartlines->count() )
+            return $this->cartlines->max('line_sort_order');
+
+        return 0;           // Or: return intval( $this->customershippingsliplines->max('line_sort_order') );
+    }
+    
+    public function getNextLineSortOrder()
+    {
+        $inc = 10;
+
+        if ( $this->cartlines->count() )
+            return $this->cartlines->max('line_sort_order') + $inc;
+
+        return $inc;           // Or: return intval( $this->customershippingsliplines->max('line_sort_order') );
+    }
 
 
     public function addLine($product_id = null, $combination_id = null, $quantity = 1.0)
@@ -215,8 +258,8 @@ class Cart extends Model
         // Tax percent (sum of all applicable tax rules)
         $tax_rates = $this->getTaxPercent($product);    // Array
 
-        // Tax percent (sum of all applicable tax rules)
-        $tax_percent = $tax_rates['all'];
+        // Tax percent
+        $tax_percent = $tax_rates['sales'];
         // Tax percent (sum of all 'sales_equalization' applicable tax rules)
         $tax_se_percent = $tax_rates['sales_equalization'];
 
@@ -260,7 +303,10 @@ class Cart extends Model
 
         // Totals
         $total_tax_excl = $quantity * $unit_customer_final_price;
-        $total_tax_incl = $total_tax_excl * (1.0+$tax_percent/100.0);
+        $total_tax_incl = $total_tax_excl * (1.0+($tax_percent+$tax_se_percent)/100.0);
+
+        // Line sort order
+        $line_sort_order = $this->getNextLineSortOrder();
 
 
         // Yearning to being here? Me too!
@@ -273,7 +319,7 @@ class Cart extends Model
         }
 
         $line = CartLine::create([
-            'line_sort_order' => 0,
+            'line_sort_order' => $line_sort_order,
             'line_type' => 'product',
 
             'product_id' => $product->id,
@@ -342,6 +388,137 @@ class Cart extends Model
 
         return $cart->add($product, $unit_customer_price, $quantity);
     }
+
+
+    public function updateLineQuantity( $line_id = null, $quantity = 1.0 )
+    {
+        $customer_user = Auth::user();
+
+        if ( !$customer_user ) 
+            return response( null );
+
+        // Get line
+        $cart = Cart::getCustomerUserCart();
+        $line = $cart->cartlines()->where('id', $line_id)->first();
+
+        if ( !$line ) 
+            return response( null );
+
+        $product_id      = $line->product_id;
+        $combination_id  = $line->combination_id;
+
+        $quantity = floatval( $quantity );
+        // $quantity >= 0 ?: 1.0;
+        if ( $quantity <= 0.0 )
+        {
+            $line->delete();
+
+            return null;
+        }
+
+        // Do the Mambo!
+        // Product
+        if ($combination_id>0) {
+            $combination = Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = Product::with('tax')->find(intval($product_id));
+        }
+
+        // Is there a Price for this Customer?
+        if (!$product) return false;    // redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no se encontró.');
+
+        // Let's check quantity
+        // $quantity = ($quantity > 0.0) ? $quantity : 1.0;
+
+        // Tax percent (sum of all applicable tax rules)
+        $tax_rates = $this->getTaxPercent($product);    // Array
+
+        // Tax percent
+        $tax_percent = $tax_rates['sales'];
+        // Tax percent (sum of all 'sales_equalization' applicable tax rules)
+        $tax_se_percent = $tax_rates['sales_equalization'];
+
+        $cart =  $this; // Context::getContext()->cart;
+
+        // Get Customer Price based on Price List
+        $customer = $cart->customer;
+        $currency = $cart->currency;
+        $customer_price = $product->getPriceByCustomerPriceList( $customer, $quantity, $currency );
+
+        // Is there a Price for this Customer?
+        if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
+
+        // Still with me? Lets check Price rules with type='price'
+        $customer_final_price = $product->getPriceByCustomerPriceRules( $customer, $quantity, $currency );
+        if ( !$customer_final_price )
+            $customer_final_price = clone $customer_price;  // No price Rules available
+
+        $unit_customer_price       = $customer_price->getPrice();
+        // Better price?
+        if ( $customer_final_price->getPrice() > $unit_customer_price )
+        {
+            $customer_final_price = clone $customer_price;
+        }
+        $unit_customer_final_price = $customer_final_price->getPrice();
+
+
+        // Still one thing left: rule_type = 'promo'
+        $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
+
+        // abi_r($customer->getPriceRules( $product, $currency ), true);
+
+        if ($promo_rule)
+        {
+            $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
+            $extra_quantity_label = $promo_rule->name;
+        } else {
+            $extra_quantity = 0.0;
+            $extra_quantity_label = '';
+        }
+
+        // Totals
+        $total_tax_excl = $quantity * $unit_customer_final_price;
+        $total_tax_incl = $total_tax_excl * (1.0+($tax_percent+$tax_se_percent)/100.0);
+
+        // Line sort order
+        // $line_sort_order = $this->getNextLineSortOrder();
+
+
+        // Yearning to being here? Me too!
+
+        // New line
+        if( $this->isEmpty() ) 
+        {
+            $this->date_prices_updated = Carbon::now();
+            $this->save();
+        }
+
+        $line->update([
+
+            'quantity' => $quantity, 
+            'extra_quantity' => $extra_quantity,
+            'extra_quantity_label' => $extra_quantity_label,
+
+            'unit_customer_price'       => $unit_customer_price,
+            'unit_customer_final_price' => $unit_customer_final_price,
+//            'sales_equalization' => $customer->sales_equalization,
+            'total_tax_incl' => $total_tax_incl,
+            'total_tax_excl' => $total_tax_excl, 
+
+            'tax_percent'         => $tax_percent,
+            'tax_se_percent'      => $tax_se_percent,
+//             'cart_id' => $product->,
+            'tax_id' => $product->tax_id,
+        ]);
+
+        $this->makeTotals();
+
+        return $line;
+    }
+
 
 
     public function add($product = null, Price $price = null, $quantity = 1.0)

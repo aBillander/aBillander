@@ -12,6 +12,7 @@ return [
 
     'Customer - Shopping Cart'    => 'Cliente - Carrito',
     'Shopping Cart'               => 'Carrito',
+    'SE'                          => 'RE',
     'Search Product'              => 'Buscar Producto',
     'Product Name'                => 'Producto',
     'Customer Price'              => 'PVP sin IVA',
@@ -27,6 +28,7 @@ return [
     'Prompt Payment Discount'     => 'Descuento Pronto Pago',
     'Total after discounts'       => 'Total con descuento',
     'Taxes Total'                 => 'Total IVA',
+    'Sales Equalization Total'    => 'Total RE',
     'Order Total'                 => 'Total Pedido',
 
     'Change Quantity and press [Enter] or click button below.' => 'Cambie la Cantidad y pulse [Enter] o click en el botón de más abajo.',

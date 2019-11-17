@@ -20,11 +20,11 @@
     <thead>
         <tr>
             <th class="text-center">{{l('ID', [], 'layouts')}}</th>
-              <th>{{l('Category')}}</th>
+              <!-- th>{{l('Category')}}</th -->
               <th>{{l('Product')}}</th>
               <th>{{l('Currency')}}</th>
               <th class="text-right">{{l('Price')}}</th>
-              <th class="text-right">{{l('Discount Percent')}}</th>
+              <!-- th class="text-right">{{l('Discount Percent')}}</th -->
               <!-- th class="text-right">{{l('Discount Amount')}}</th -->
               <th class="text-center">{{l('From Quantity')}}</th>
               <th>{{l('Date from')}}</th>
@@ -36,18 +36,18 @@
         @foreach ($customer_rules as $rule)
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
-      <td>{{ optional($rule->category)->name }}</td>
+      <!-- td>{{ optional($rule->category)->name }}</td -->
       <td>
             <!-- a href="{{ URL::to('products/' . optional($rule->product)->name . '/edit') }}" title="{{l('View Product')}}" target="_blank" -->{{ optional($rule->product)->name }}<!-- /a -->
       </td>
       <td>{{ optional($rule->currency)->name }}</td>
 
 @if($rule->rule_type=='price')
-      <td class="text-right">{{ $rule->as_price('price') }}</td>
+      <td class="text-right">{{ $rule->as_price('price') }}<br /><span class="text-info crossed">{{ $rule->as_priceable(optional(optional($rule->product)->getPriceByCustomerPriceList( $customer, 1, $customer->currency ))->getPrice()) }}</span></td>
 @else
       <td class="text-right"> </td>
 @endif
-
+{{--
 @if($rule->rule_type=='discount')
       @if($rule->discount_type=='percentage')
             <td class="text-right">{{ $rule->as_percent('discount_percent') }}</td>
@@ -65,7 +65,7 @@
       <td class="text-right"> </td>
       <!-- td class="text-right"> </td -->
 @endif
-
+--}}
       <td class="text-center">{{ $rule->as_quantity('from_quantity') }}</td>
 
       <td>{{ abi_date_short( $rule->date_from ) }}</td>

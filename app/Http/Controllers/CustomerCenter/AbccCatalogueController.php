@@ -303,8 +303,7 @@ class AbccCatalogueController extends Controller
     public function getProductQuantityPricerules($i, Request $request)
     {
         $customer = Auth::user()->customer;
-
-        // abi_r($customer, true);
+        $currency = $customer->currency;
 
         $product = $this->product
                               ->IsSaleable()
@@ -316,52 +315,10 @@ class AbccCatalogueController extends Controller
         // abi_r($product, true);
 
         // Check if Customer is allowed (Product is in Customer's price List)
-        // here:: (todo)
+        $customer_price = $product ? $product->getPriceByCustomerPriceList( $customer, 1, $customer->currency ) : null;
 
+        $customer_rules = ($product && $customer_price) ? $product->getPriceRulesByCustomer( $customer ) : collect([]);
 
-/*
-        $customer_rules = \App\PriceRule::
-                    // Currency
-                      where( function($query) use ($customer) {
-                            if ($customer)
-                            {
-                                $query->where('currency_id', $customer->currency_id);
-                            }
-                        } )
-                    // Customer range
-                    ->where( function($query) use ($customer) {
-                                $query->where('customer_id', $customer->id);
-                                if ($customer->customer_group_id)
-                                    $query->orWhere('customer_group_id', $customer->customer_group_id);
-                        } )
-                    // Product range
-                    ->where( function($query) use ($product) {
-                                $query->where('product_id', $product->id);
-                                if ($product->category_id)
-                                    $query->orWhere('category_id',  $product->category_id);
-                        } )
-                    // Quantity range
-                    ->where( 'from_quantity', '>', 1 )
-                    // Date range
-                    ->where( function($query){
-                                $now = \Carbon\Carbon::now()->startOfDay(); 
-                                $query->where( function($query) use ($now) {
-                                    $query->where('date_from', null);
-                                    $query->orWhere('date_from', '<=', $now);
-                                } );
-                                $query->where( function($query) use ($now) {
-                                    $query->where('date_to', null);
-                                    $query->orWhere('date_to', '>=', $now);
-                                } );
-                        } )
-                                ->orderBy('from_quantity', 'ASC')
-                                ->get();
-
-        
-        // abi_r($customer_rules, true);
-*/
-        $customer_rules = $product ? $product->getPriceRulesByCustomer( $customer ) : collect([]);
-
-        return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules'));
+        return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules', 'customer_price', 'currency'));
     }
 }

@@ -148,6 +148,9 @@ class AbccCustomerController extends Controller
                     // Customer range
                     ->where( function($query) use ($customer) {
                                 $query->where('customer_id', $customer->id);
+                                $query->orWhere( function($query1) {
+                                        $query1->whereDoesntHave('customer');
+                                    } );
                                 if ($customer->customer_group_id)
                                     $query->orWhere('customer_group_id', $customer->customer_group_id);
                         } )
@@ -168,7 +171,7 @@ class AbccCustomerController extends Controller
 //                                    $query->orWhere('category_id',  $product->category_id);
 //                        } )
                     // Quantity range
-                    ->where( 'from_quantity', '>', 1 )
+                    ->where( 'from_quantity', '>=', 1 )
                     // Date range
                     ->where( function($query){
                                 $now = \Carbon\Carbon::now()->startOfDay(); 
@@ -187,9 +190,17 @@ class AbccCustomerController extends Controller
         $customer_rules = $customer_rules->paginate( $items_per_page_pricerules );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
 
         $customer_rules->setPath('customerpricerules');
+/*
+        $customer_rules1 = $customer_rules->map(function ($item, $key) use ($customer) {
+                            if ($item->product_id > 0)
+                            {
+                                //
+                                $item->customer_price = $item->product->getPriceByCustomerPriceList( $customer, 1, $customer->currency );
+                            }
 
-        //return $items_per_page ;
-        
-        return view('abcc.customer.pricerules_list', compact('id', 'customer_rules', 'items_per_page_pricerules'));
+                            return $item;
+                        });
+*/        
+        return view('abcc.customer.pricerules_list', compact('id', 'customer_rules', 'items_per_page_pricerules', 'customer'));
     }
 }

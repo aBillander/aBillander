@@ -47,7 +47,7 @@ return [
     */
 
     'Show Special Prices' => 'Mostrar Precios Especiales',
-    ''                    => '',
+    'Regular Price (per unit)'       => 'Precio normal unitario',
     ''                    => '',
 
 ];

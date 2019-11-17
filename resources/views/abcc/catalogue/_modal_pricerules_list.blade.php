@@ -2,7 +2,7 @@
 
 	 <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	    <h4 class="modal-title">{{ l('Show Special Prices') }} :: <label class="label label-default">{{ optional($product)->reference }}</label> {{ optional($product)->name }}</h4>
+	    <h4 class="modal-title">{{ l('Show Special Prices') }} :: <label class="label label-default">{{ optional($product)->reference }}</label> {{ optional($product)->name }} - <label class="label alert-success">{{ l('Regular Price (per unit)') }}: {{ rtrim($customer_price->getPrice(), '0') }}{{ $currency->sign }}</label></h4>
 	 </div>
 
 	 <div class="modal-body">
@@ -36,7 +36,7 @@
       <td>{{ optional($rule->currency)->name }}</td>
 
 @if($rule->rule_type=='price')
-      <td class="text-right">{{ $rule->as_price('price') }}</td>
+      <td class="text-right">{{ $rule->as_price('price') }}<br /><span class="text-info crossed">{{ $rule->as_priceable($customer_price->getPrice()) }}</span></td>
 @else
       <td class="text-right"> </td>
 @endif

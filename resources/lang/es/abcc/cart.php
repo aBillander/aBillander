@@ -30,6 +30,7 @@ return [
     'Taxes Total'                 => 'Total IVA',
     'Sales Equalization Total'    => 'Total RE',
     'Order Total'                 => 'Total Pedido',
+    'Total to Pay'                => 'Total a Pagar',
 
     'Change Quantity and press [Enter] or click button below.' => 'Cambie la Cantidad y pulse [Enter] o click en el botón de más abajo.',
 

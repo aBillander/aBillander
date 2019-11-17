@@ -1,7 +1,7 @@
 
 {{-- Totals --}}
 
-<tr class="info">
+<tr class="warning xinfo">
     <td colspan="6"></td>
 
     <td  colspan="2">
@@ -25,7 +25,7 @@
 
 {{-- Shipping --}}
 
-<tr class="info">
+<tr class="warning xinfo">
     <td colspan="6"></td>
 
     <td  colspan="2">
@@ -47,59 +47,7 @@
 </tr>
 
 
-{{-- Discounts --}}
-
-@if( $cart->document_discount_percent != 0 )
-
-<tr class="info">
-    <td colspan="6"></td>
-
-    <td  colspan="2">
-            <h4>
-                <span xstyle="color: #dd4814;">{{ l('Document Discount') }}: {{ $cart->as_percent('document_discount_percent') }}%</span>
-            </h4>
-    </td>
-
-    <!-- td class="text-center lead">
-        <h4>{{ $cart->quantity }}</h4>
-    </td -->
-
-    @if(0 && $config['display_with_taxes'])
-        <td></td>
-        <td></td>
-    @endif
-
-    <td class="text-center lead" colspan="3">
-        <h4>-{{ $cart->document_discount_amount_tax_excl }} {{ $cart->currency->sign }}</h4></td>
-    </tr>
-@endif
-
-@if( $cart->document_ppd_percent != 0 )
-
-<tr class="info">
-    <td colspan="6"></td>
-
-    <td  colspan="2">
-            <h4>
-                <span xstyle="color: #dd4814;">{{ l('Prompt Payment Discount') }}: {{ $cart->as_percent('document_ppd_percent') }}%</span>
-            </h4>
-    </td>
-
-    <!-- td class="text-center lead">
-        <h4>{{ $cart->quantity }}</h4>
-    </td -->
-
-    @if(0 && $config['display_with_taxes'])
-        <td></td>
-        <td></td>
-    @endif
-
-    <td class="text-center lead" colspan="3">
-        <h4>-{{ $cart->document_ppd_amount_tax_excl }} {{ $cart->currency->sign }}</h4></td>
-    </tr>
-@endif
-
-@if( $cart->document_discount_percent != 0 || $cart->document_ppd_percent != 0 )
+@if( 0 && $cart->document_discount_percent != 0 || $cart->document_ppd_percent != 0 )
 
 <tr class="info">
     <td colspan="6"></td>
@@ -124,7 +72,7 @@
 
 @if ($cart->customer->sales_equalization)
 
-<tr class="info">
+<tr class="active xinfo">
     <td colspan="6"></td>
 
     <td  colspan="2">
@@ -145,7 +93,7 @@
     </td>
 </tr>
 
-    <tr class="info">
+    <tr class="active xinfo">
         <td colspan="6"></td>
 
         <td  colspan="2">
@@ -167,7 +115,7 @@
     </tr>
 @else
 
-<tr class="info">
+<tr class="active xinfo">
     <td colspan="6"></td>
 
     <td  colspan="2">
@@ -211,3 +159,91 @@
         <h3>{{ $cart->as_price('total_tax_incl') }}{{ $cart->currency->sign }}</h3>
     </td>
 </tr>
+
+
+{{-- Discounts --}}
+
+@php
+
+$document_discount = $cart->total_tax_incl * $cart->customer->discount_percent / 100.0;
+
+$document_ppd_discount = ($cart->total_tax_incl-$document_discount) * $cart->customer->discount_ppd_percent / 100.0;
+
+$has_discount = $document_discount != 0.0 || $document_ppd_discount != 0.0;
+
+@endphp
+
+@if( $document_discount != 0 )
+
+<tr class="active xinfo">
+    <td colspan="6"></td>
+
+    <td  colspan="2">
+            <h4>
+                <span xstyle="color: #dd4814;">{{ l('Document Discount') }}: {{ $cart->as_percentable($cart->customer->discount_percent) }}%</span>
+            </h4>
+    </td>
+
+    <!-- td class="text-center lead">
+        <h4>{{ $cart->quantity }}</h4>
+    </td -->
+
+    @if(0 && $config['display_with_taxes'])
+        <td></td>
+        <td></td>
+    @endif
+
+    <td class="text-center lead" colspan="3">
+        <h4>-{{ $cart->as_priceable( $document_discount ) }} {{ $cart->currency->sign }}</h4></td>
+    </tr>
+@endif
+
+@if( $document_ppd_discount != 0 )
+
+<tr class="active xinfo">
+    <td colspan="6"></td>
+
+    <td  colspan="2">
+            <h4>
+                <span xstyle="color: #dd4814;">{{ l('Prompt Payment Discount') }}: {{ $cart->as_percentable($cart->customer->discount_ppd_percent) }}%</span>
+            </h4>
+    </td>
+
+    <!-- td class="text-center lead">
+        <h4>{{ $cart->quantity }}</h4>
+    </td -->
+
+    @if(0 && $config['display_with_taxes'])
+        <td></td>
+        <td></td>
+    @endif
+
+    <td class="text-center lead" colspan="3">
+        <h4>-{{ $cart->as_priceable( $document_ppd_discount ) }} {{ $cart->currency->sign }}</h4></td>
+    </tr>
+@endif
+
+
+@if($has_discount)
+
+<tr class="info">
+    <td colspan="6"></td>
+
+    <td  colspan="2">
+        <h3>{{ l('Total to Pay') }}</h3>
+    </td>
+
+    <!-- td class="text-center lead">
+        <h4>{{ $cart->quantity }}</h4>
+    </td -->
+
+    @if(0 && $config['display_with_taxes'])
+        <td></td>
+        <td></td>
+    @endif
+
+    <td class="text-center lead" colspan="3">
+        <h3>{{ $cart->as_price('total_tax_incl') - $cart->as_priceable( $document_discount ) - $cart->as_priceable( $document_ppd_discount ) }}{{ $cart->currency->sign }}</h3>
+    </td>
+</tr>
+@endif

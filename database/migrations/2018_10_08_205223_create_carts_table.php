@@ -35,6 +35,9 @@ class CreateCartsTable extends Migration
 
             $table->decimal('total_shipping_tax_incl', 20, 6)->default(0.0);
             $table->decimal('total_shipping_tax_excl', 20, 6)->default(0.0);
+            
+            $table->decimal('sub_tax_incl', 20, 6)->default(0.0);    // Sub-Totals (before discounts)
+            $table->decimal('sub_tax_excl', 20, 6)->default(0.0);
 
             $table->decimal('document_discount_percent', 20, 6)->default(0.0);  // Order/Document discount Percent
             $table->decimal('document_discount_amount_tax_incl', 20, 6)->default(0.0);   // Order/Document discount Amount

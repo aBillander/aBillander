@@ -23,6 +23,7 @@ class Cart extends Model
     protected $fillable = [
     						'customer_user_id', 'customer_id', 'notes_from_customer', 'total_items', 
                             'total_products_tax_incl', 'total_products_tax_excl', 'total_shipping_tax_incl', 'total_shipping_tax_excl', 
+                            'sub_tax_incl', 'sub_tax_excl', 
                             'document_discount_percent', 'document_discount_amount_tax_incl', 'document_discount_amount_tax_excl', 
                             'document_ppd_percent', 'document_ppd_amount_tax_incl', 'document_ppd_amount_tax_excl', 
                             'total_currency_tax_incl', 'total_currency_tax_excl', 'total_tax_incl', 'total_tax_excl', 
@@ -636,7 +637,7 @@ class Cart extends Model
             
             case 'items':
                 # code...
-                return $this->cartlines()->count(); // . ' - ' . $this->persistance_left;
+                return $this->cartlines()->where('line_type', 'product')->count(); // . ' - ' . $this->persistance_left;
                 break;
             
             case 'value':
@@ -676,18 +677,14 @@ class Cart extends Model
 
     public function getQuantityAttribute() 
     {
-        return (int) $this->cartlines->sum('quantity');
+        return (int) $this->cartlines->where('line_type', 'product')->sum('quantity');
     }
 
     public function getAmountAttribute() 
     {
-        $a = $this->cartlines;
-
-        $s = $a->sum(function ($line) {
-                return $line->quantity * $line->unit_customer_price;
-            });
-
-        return $s;
+        return $this->user->canDisplayPricesTaxInc()
+                    ? $this->total_tax_incl
+                    : $this->total_tax_excl;
     }
     
 
@@ -723,17 +720,18 @@ class Cart extends Model
         $sub_tax_excl = $total_products_tax_excl + $total_shipping_tax_excl;
         $sub_tax_incl = $total_products_tax_incl + $total_shipping_tax_incl;
 
-        $document_discount_amount_tax_excl = $sub_tax_excl * $cart->document_discount_percent / 100.0;
-        $document_discount_amount_tax_incl = $sub_tax_incl * $cart->document_discount_percent / 100.0;
+        $document_discount_amount_tax_excl = $sub_tax_excl * $cart->customer->discount_percent / 100.0;
+        $document_discount_amount_tax_incl = $sub_tax_incl * $cart->customer->discount_percent / 100.0;
 
-        $document_ppd_amount_tax_excl = ($sub_tax_excl - $document_discount_amount_tax_excl) * $cart->document_ppd_percent / 100.0;
-        $document_ppd_amount_tax_incl = ($sub_tax_incl - $document_discount_amount_tax_incl) * $cart->document_ppd_percent / 100.0;
+        $document_ppd_amount_tax_excl = ($sub_tax_excl - $document_discount_amount_tax_excl) * $cart->customer->discount_ppd_percent / 100.0;
+        $document_ppd_amount_tax_incl = ($sub_tax_incl - $document_discount_amount_tax_incl) * $cart->customer->discount_ppd_percent / 100.0;
 
         $total_tax_excl = $sub_tax_excl - $document_discount_amount_tax_excl - $document_ppd_amount_tax_excl;
         $total_tax_incl = $sub_tax_incl - $document_discount_amount_tax_incl - $document_ppd_amount_tax_incl;
-
+        
         $this->update( compact('total_products_tax_excl', 'total_products_tax_incl', 
                                'total_shipping_tax_excl', 'total_shipping_tax_incl', 
+                               'sub_tax_incl', 'sub_tax_excl', 
                                'document_discount_amount_tax_excl', 'document_discount_amount_tax_incl', 
                                'document_ppd_amount_tax_excl', 'document_ppd_amount_tax_incl', 
                                'total_tax_excl', 'total_tax_incl') );

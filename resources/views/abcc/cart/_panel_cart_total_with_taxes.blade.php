@@ -89,7 +89,7 @@
     @endif
 
     <td class="text-center lead" colspan="3">
-        <h4>{{ $cart->as_price('total_tax_incl') - $cart->as_price('total_tax_excl') - $cart->as_priceable($cart->total_se_tax) }}{{ $cart->currency->sign }}</h4>
+        <h4>{{ $cart->as_price('sub_tax_incl') - $cart->as_price('sub_tax_excl') - $cart->as_priceable($cart->total_se_tax) }}{{ $cart->currency->sign }}</h4>
     </td>
 </tr>
 
@@ -132,7 +132,7 @@
     @endif
 
     <td class="text-center lead" colspan="3">
-        <h4>{{ $cart->as_price('total_tax_incl') - $cart->as_price('total_tax_excl') }}{{ $cart->currency->sign }}</h4>
+        <h4>{{ $cart->as_price('sub_tax_incl') - $cart->as_price('sub_tax_excl') }}{{ $cart->currency->sign }}</h4>
     </td>
 </tr>
 
@@ -156,7 +156,7 @@
     @endif
 
     <td class="text-center lead" colspan="3">
-        <h3>{{ $cart->as_price('total_tax_incl') }}{{ $cart->currency->sign }}</h3>
+        <h3>{{ $cart->as_price('sub_tax_incl') }}{{ $cart->currency->sign }}</h3>
     </td>
 </tr>
 
@@ -165,9 +165,9 @@
 
 @php
 
-$document_discount = $cart->total_tax_incl * $cart->customer->discount_percent / 100.0;
+$document_discount = $cart->sub_tax_incl * $cart->customer->discount_percent / 100.0;
 
-$document_ppd_discount = ($cart->total_tax_incl-$document_discount) * $cart->customer->discount_ppd_percent / 100.0;
+$document_ppd_discount = ($cart->sub_tax_incl-$document_discount) * $cart->customer->discount_ppd_percent / 100.0;
 
 $has_discount = $document_discount != 0.0 || $document_ppd_discount != 0.0;
 
@@ -243,7 +243,7 @@ $has_discount = $document_discount != 0.0 || $document_ppd_discount != 0.0;
     @endif
 
     <td class="text-center lead" colspan="3">
-        <h3>{{ $cart->as_price('total_tax_incl') - $cart->as_priceable( $document_discount ) - $cart->as_priceable( $document_ppd_discount ) }}{{ $cart->currency->sign }}</h3>
+        <h3>{{ $cart->as_price('total_tax_incl') - 0*$cart->as_priceable( $document_discount ) - 0*$cart->as_priceable( $document_ppd_discount ) }}{{ $cart->currency->sign }}</h3>
     </td>
 </tr>
 @endif

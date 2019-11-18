@@ -709,6 +709,8 @@ class Cart extends Model
         $total_products_tax_excl = $line_products->sum('total_tax_excl');
         $total_products_tax_incl = $line_products->sum('total_tax_incl');
 
+        // Calculate Shipping
+        $line_shipping = $cart->makeShipping();
         if ( $line_shipping )
         {
             $total_shipping_tax_excl = $line_shipping->total_tax_excl;
@@ -737,6 +739,86 @@ class Cart extends Model
                                'total_tax_excl', 'total_tax_incl') );
 
         return $cart;
+    }
+
+    public function makeShipping()
+    {
+        $cart = $this;
+
+        // Load parameters to aply rules
+        $shipping_label = Configuration::get('ABCC_SHIPPING_LABEL');
+        $shipping_label = 'Coste del Envío';
+        $free_shipping = Configuration::get('ABCC_FREE_SHIPPING_PRICE');
+        $state_42      = Configuration::get('ABCC_STATE_42_SHIPPING');
+        $country_1     = Configuration::get('ABCC_COUNTRY_1_SHIPPING');
+        $tax_id        = Configuration::get('ABCC_SHIPPING_TAX');
+
+        $tax = Tax::find($tax_id);
+        $tax_percent = $tax->percent;   // Naughty boy! Should consider cart invoicing address!
+
+        $line_products = $cart->cartlines->where('line_type', 'product');
+        $line_shipping = $cart->cartlines->where('line_type', 'shipping')->first();
+        
+        if ( !$line_shipping )
+        {
+            // Create one
+            $line_shipping = CartLine::create([
+                'line_sort_order' => 0,     // Convention
+                'line_type' => 'shipping',
+
+                'product_id' => null,
+                'combination_id' => null,
+                'reference' => '', 
+                'name' => $shipping_label, 
+
+                'quantity' => 1, 
+                'extra_quantity' =>0,
+                'extra_quantity_label' => '',
+                'measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+
+                'unit_customer_price'       => 0.0,
+                'unit_customer_final_price' => 0.0,
+                'sales_equalization' => 0,      // $customer->sales_equalization, (is a "service")
+                'total_tax_incl' => 0.0,
+                'total_tax_excl' => 0.0, 
+
+                'tax_percent'         => $tax_percent,
+                'tax_se_percent'      => 0.0,
+                'tax_id' => $tax_id,
+            ]);
+
+            $this->cartlines()->save($line_shipping);
+        }
+
+        $total_products_tax_excl = $line_products->sum('total_tax_excl');
+
+        // Now, perform calculations
+        // To Do: Improve this procedure
+        $address = $cart->shippingaddress;
+
+        $cost = $country_1; // Start here. No Country other than Spain
+
+        if ( $address->state_id == 42 ) $cost = $state_42;      // Sevilla
+
+        // Free Shipping
+        if ( $total_products_tax_excl >= $free_shipping ) $cost = 0.0;
+
+        // Update line
+        $line_shipping->update([
+            'name' => $shipping_label, 
+
+            'unit_customer_price'       => $cost,
+            'unit_customer_final_price' => $cost,
+            'total_tax_incl' => $cost * (1.0+$tax_percent/100.0),
+            'total_tax_excl' => $cost, 
+
+            'tax_percent'         => $tax_percent,
+            'tax_id' => $tax_id,
+        ]);
+
+
+
+        return $line_shipping;
     }
     
 

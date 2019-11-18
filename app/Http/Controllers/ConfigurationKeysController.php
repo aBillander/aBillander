@@ -141,6 +141,15 @@ class ConfigurationKeysController extends Controller {
 
                     ],
 
+                51 => [  // Customer Center :: Shipping
+
+                        'ABCC_FREE_SHIPPING_PRICE',
+                        'ABCC_STATE_42_SHIPPING',
+                        'ABCC_COUNTRY_1_SHIPPING',
+                        'ABCC_SHIPPING_TAX',
+
+                    ],
+
                 6 => [  // Sales Representatives Center
 
                         'ABSRC_HEADER_TITLE',
@@ -179,6 +188,11 @@ class ConfigurationKeysController extends Controller {
         foreach ($this->conf_keys[$tab_index] as $key)
             $key_group[$key]= Configuration::get($key);
 
+        // Temporarily
+        if ($tab_index==5)
+        foreach ($this->conf_keys[51] as $key)
+            $key_group[$key]= Configuration::get($key);
+
         return view( $tab_view, compact('tab_index', 'key_group') );
 
         // https://bootsnipp.com/snippets/M27e3
@@ -204,7 +218,8 @@ class ConfigurationKeysController extends Controller {
      */
     public function store(Request $request)
     {
-        // die($request->input('tab_index'));
+         // abi_r($request->all());
+         // die($request->input('tab_index'));
 
         $tab_index =   $request->has('tab_index')
                         ? intval($request->input('tab_index'))
@@ -231,6 +246,9 @@ class ConfigurationKeysController extends Controller {
                 \App\Configuration::updateValue($key, $value);
             }
         }
+
+        // Temporarily
+        if ($tab_index==51) $tab_index=5;
 
         return redirect('configurationkeys?tab_index='.$tab_index)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $tab_index], 'layouts') );

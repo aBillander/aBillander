@@ -20,18 +20,32 @@
                    </a></th>
                <th class="text-right">
                   <span class="button-pad">{{ l('Customer Price') }}
-                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                          data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-    . 
-    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
-@endif
-                  ">
-                      <i class="fa fa-question-circle abi-help"></i>
-                   </a></span></th>
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                                data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+      @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+          . 
+          {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+      @endif
+                        ">
+                            <i class="fa fa-question-circle abi-help"></i>
+                         </a></span>
+                 </th>
+
+                      <th>{!! str_replace(' ', '<br />', l('Recommended Retail Price')) !!}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                                data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+      @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+          . 
+          {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+      @endif
+                        ">
+                            <i class="fa fa-question-circle abi-help"></i>
+                         </a></span>
+                      </th>
 
 
                     @if($config['display_with_taxes'])
+{{--
                         <th class="text-right">
                           <span class="button-pad">{{ l('Customer Price (with Tax)') }}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
@@ -41,7 +55,7 @@
                            </a>
                           </span>
                         </th>
-
+--}}
                         <th>{{ l('Tax') }}
                           @if($cart->customer->sales_equalization)
                               <br/><span class="button-pad text-muted">{{ l('SE') }}</span>
@@ -67,20 +81,31 @@
                 @endif</td>
 
       <td>
-                            @if ($line->img)
-                                <a class="view-image" data-html="false" data-toggle="modal"
-                                   href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-large_default' . '.' . $line->img->extension ) }}"
-                                   data-title="{{ l('Product Images') }} :: {{ $line->product->name }}"
-                                   data-caption="({{$line->img->id}}) {{ $line->img->caption }}"
-                                   onClick="return false;" title="{{l('View Image')}}">
+                @if ($line->img)
+                    <a class="view-image" data-html="false" data-toggle="modal"
+                       href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-large_default' . '.' . $line->img->extension ) }}"
+                       data-title="{{ l('Product Images') }} :: {{ $line->product->name }}"
+                       data-caption="({{$line->img->id}}) {{ $line->img->caption }}"
+                       data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
+                       onClick="return false;" title="{{l('View Image')}}">
 
-                                    <img src="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-mini_default' . '.' . $line->img->extension ) . '?'. 'time='. time() }}"
-                                         alt="{{ $line->product->name }}" style="border: 1px solid #dddddd;">
-                                </a>
-                            @endif
+                        <img src="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-mini_default' . '.' . $line->img->extension ) . '?'. 'time='. time() }}"
+                             alt="{{ $line->product->name }}" style="border: 1px solid #dddddd;">
+                    </a>
+                @else
+                    <a class="view-image" data-html="false" data-toggle="modal" 
+                           href="{{ URL::to( \App\Image::pathProducts() . 'default-large_default.png' ) }}"
+                           data-title="{{ l('Product Images') }} :: {{ $line->product->name }}" 
+                           data-caption="({{$line->product->id}}) {{ $line->product->name }} " 
+                           data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
+                           onClick="return false;" title="{{l('View Image')}}">
+
+                            <img src="{{ URL::to( \App\Image::pathProducts() . 'default-mini_default.png' ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                    </a>
+                @endif
       </td>
 
-      <td>{{ $line->product->name }}
+      <td class="text-left view-image">{{ $line->product->name }}
           @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $line->product->ecotax )
               <br />
               {{ l('Ecotax: ', 'abcc/catalogue') }} {{ $line->product->ecotax->name }} ({{ abi_money( $line->product->getEcotax() ) }})
@@ -190,12 +215,16 @@
                             @endif
 --}}
       </td>
-
-                        @if($config['display_with_taxes'])
-                            <td class="text-right">
-                                {{ $line->as_priceable($line->unit_customer_final_price * ( 1.0 + $line->tax_percent / 100.0 )) }}
+                            <td class="text-center">
+                                {{ $line->as_priceable($line->product->recommended_retail_price) }}
                             </td>
 
+                        @if($config['display_with_taxes'])
+{{--
+                            <td class="text-right">
+                                {{ $line->as_priceable($line->unit_customer_final_price * ( 1.0 + ($line->tax_percent+$line->tax_se_percent) / 100.0 )) }}
+                            </td>
+--}}
                             <td class="text-right">{{$line->as_percent('tax_percent', 1)}}%
                                 @if($cart->customer->sales_equalization)
                                     <br/><span class="button-pad text-muted">{{$line->as_percent('tax_se_percent', 1)}}%</span>

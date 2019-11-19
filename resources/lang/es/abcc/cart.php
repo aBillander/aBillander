@@ -15,8 +15,8 @@ return [
     'SE'                          => 'RE',
     'Search Product'              => 'Buscar Producto',
     'Product Name'                => 'Producto',
-    'Customer Price'              => 'PVP sin IVA',
-    'Customer Price (with Tax)'   => 'PVP con IVA',
+    'Customer Price'              => 'Precio',
+    'Customer Price (with Tax)'   => 'Precio con IVA',
     'Without Tax'                 => 'Sin IVA',
     'Prices are exclusive of Tax' => 'El Precio no incluye Impuestos',
     'Quantity'                    => 'Cantidad',
@@ -246,5 +246,7 @@ return [
     'Promo: You pay :npay and get :nget' => 'Promoción: Paga :npay y lleva :nget',
 
     'Equalization Tax' => 'Recargo Equivalencia',
+
+    'Recommended Retail Price'     => 'PVP Recomendado',
 
 ];

@@ -54,6 +54,9 @@
 
    </div>
 </div>
+
+@include('layouts/back_to_top_button')
+
 @endsection
 
 

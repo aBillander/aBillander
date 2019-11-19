@@ -66,7 +66,7 @@
 </div>
 
 
-@include('products._modal_view_image')
+@include('abcc.catalogue._modal_view_product')
 
 @include('abcc.cart._modal_cart_line_delete')
 

@@ -231,7 +231,7 @@ return [
 	'Available'     => 'Disponible',
 //	'Cost Price'     => 'Precio de Coste',
 	'Customer Margin'     => 'Margen Cliente',
-	'Customer Price'     => 'PVP Cliente',
+//	'Customer Price'     => 'PVP Cliente',	<= Duplicated
 	'Customer With Tax'     => 'PVP+IVA Cliente',
 
 	'Customer'     => 'Cliente',

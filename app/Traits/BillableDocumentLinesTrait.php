@@ -80,7 +80,9 @@ trait BillableDocumentLinesTrait
                             ? $params['name'] 
                             : $product->name;
 
-        $cost_price = $product->cost_price;
+        // $cost_price = $product->cost_price;
+        // Do this ( because of getCostPriceAttribute($value) ):
+        $cost_price = $product->getOriginal('cost_price');
 
         // Tax
         $tax = $product->tax;

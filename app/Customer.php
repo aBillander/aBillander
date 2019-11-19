@@ -761,7 +761,8 @@ class Customer extends Model {
         if (!$currency)
             $currency = Context::getContext()->currency;
         
-        $customer = Auth::user()->customer;
+        // $customer = Auth::user()->customer;
+        $customer = $this;
 
         $rules = PriceRule::
                       where('currency_id', $currency->id)

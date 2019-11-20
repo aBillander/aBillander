@@ -197,7 +197,7 @@
       //    "Nothing selected, input was " + this.value );
 
         $( "#product_query" ).val(ui.item.name);
-        $( "#reference" ).val( ui.item.reference );
+        $( "#reference" ).html( '<div class="form-control">'+ui.item.reference+'</div>' );
         $( "#product_id" ).val( ui.item.id );
 
         // Product has combinations?

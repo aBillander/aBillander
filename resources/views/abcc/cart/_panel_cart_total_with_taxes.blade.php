@@ -29,7 +29,17 @@
     <td colspan="6"></td>
 
     <td  colspan="2">
-        <h4><span style="color: #dd4814;">{{ l('Shipping Cost') }}</span></h4>
+        <h4><span style="color: #dd4814;">{{ l('Shipping Cost') }}</span>
+
+                               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                                  xdata-trigger="focus"
+                                  data-html="true" 
+                                  data-content="{!! l('Free Shipping for Orders greater than: :amount',
+                                                ['amount' => abi_money( \App\Configuration::get('ABCC_FREE_SHIPPING_PRICE'), $cart->currency )] ) !!}
+                                    ">
+                                  <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                               </a>
+        </h4>
     </td>
 
     <!-- td class="text-center lead">

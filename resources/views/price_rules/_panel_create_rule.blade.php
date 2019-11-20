@@ -63,7 +63,7 @@
     </div>
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('reference', l('Reference')) !!}
-        {!! Form::text('reference', null, array('id' => 'reference', 'class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
+        <div id="reference"></div>
     </div>
     <div class="form-group col-lg-4 col-md-4 col-sm-4">
         {!! Form::label('product_query', l('Product Name')) !!}

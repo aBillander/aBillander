@@ -24,7 +24,7 @@ return [
     'Shipping Cost'               => 'Envío',
     'Total'                       => 'Total',
     'Total (without tax)'         => 'Total sin IVA',
-    'Document Discount'           => 'Descuento en Documento',
+    'Document Discount'           => 'Descuento Cliente',
     'Prompt Payment Discount'     => 'Descuento Pronto Pago',
     'Total after discounts'       => 'Total con descuento',
     'Taxes Total'                 => 'Total IVA',
@@ -142,7 +142,7 @@ return [
     'Notes to Customer'             => 'Notas para el Cliente',
 
     // _invoice_lines
-    'Reference'                     => 'Referencia',
+    'Reference'                     => 'Ref.',
     'Description'                   => 'Descripción',
     'Price'                         => 'Precio',
     'Disc. %'                       => 'Dto. %',
@@ -247,6 +247,9 @@ return [
 
     'Equalization Tax' => 'Recargo Equivalencia',
 
-    'Recommended Retail Price'     => 'PVP Recomendado',
+    'Recommended Retail Price'     => 'PVR',
+    'Recommended Retail Price, taxes included'     => 'Precio de Venta Recomendado, IVA incluido',
+
+    'Free Shipping for Orders greater than: :amount' => 'Envío Gratis para Pedido superior a: :amount',
 
 ];

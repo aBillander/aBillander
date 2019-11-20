@@ -18,7 +18,7 @@
                           data-content="{{ l('Change Quantity and press [Enter] or click button on the right.') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                    </a></th>
-               <th class="text-right">
+               <th class="text-left">
                   <span class="button-pad">{{ l('Customer Price') }}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                                 data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
@@ -31,14 +31,9 @@
                          </a></span>
                  </th>
 
-                      <th>{!! str_replace(' ', '<br />', l('Recommended Retail Price')) !!}
+                      <th>{!! l('Recommended Retail Price') !!}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                                data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-      @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-          . 
-          {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
-      @endif
-                        ">
+                                data-content="{{ l('Recommended Retail Price, taxes included') }}">
                             <i class="fa fa-question-circle abi-help"></i>
                          </a></span>
                       </th>
@@ -57,7 +52,7 @@
                         </th>
 --}}
                         <th>{{ l('Tax') }}
-                          @if($cart->customer->sales_equalization)
+                          @if(0 && $cart->customer->sales_equalization)
                               <br/><span class="button-pad text-muted">{{ l('SE') }}</span>
                           @endif
 
@@ -66,8 +61,19 @@
 
 
 
-               <th class="text-right">{{ l('Total') }}
-                        <br/><span class="button-pad text-muted">{{ l('Without Tax') }}</span></th>
+               <th class="text-right button-pad">{{ l('Total') }}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                                data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+      @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+          . 
+          {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+      @endif
+                        ">
+                            <i class="fa fa-question-circle abi-help"></i>
+                         </a></span>
+
+{{--                        <br/><span class="button-pad text-muted">{{ l('Without Tax') }}</span></th>       --}}
+
               <th class="text-right"> </th>
             </tr>
         </thead>
@@ -154,9 +160,13 @@
                                   xdata-trigger="focus"
                                   data-html="true" 
                                   data-content="{{ $line->extra_quantity_label }}<br />
-                                                {{ l('Promo: You pay :npay and get :nget',
+
+                                  @if( $line->extra_quantity > 0 )
+                                                {!! l('Promo: You pay :npay and get :nget',
                                                 ['npay' => (int)$line->quantity ,
-                                                 'nget' => (int)($line->quantity + $line->extra_quantity) ]) }}">
+                                                 'nget' => (int)($line->quantity + $line->extra_quantity) ]) !!}
+                                  @endif
+                                                 ">
                                   <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
                                </a>
                           </p>
@@ -165,7 +175,7 @@
 
       </td>
 
-      <td class="text-right">
+      <td class="text-right xbutton-pad">
 
 {{--
           {{ $line->as_price('unit_customer_price') }}
@@ -188,14 +198,21 @@
                                 </a>
                             @endif
 
-                            <div class="pull-right">
-                                {{ $line->as_price('unit_customer_final_price') }}{{ $cart->currency->sign }}
-                                @if ($line->unit_customer_final_price != $line->unit_customer_price)
-                                    <p class="text-info crossed">
-                                        {{ $line->as_priceable($line->unit_customer_price) }}{{-- $cart->currency->sign --}}
-                                    </p>
-                                @endif
-                            </div>
+                            @if ($line->unit_customer_final_price != $line->unit_customer_price)
+                                <div xclass="pull-right" style="vertical-align: middle; margin-right: 36px;">
+                                    {{ $line->as_price('unit_customer_final_price') }}{{-- $cart->currency->sign --}}
+                                    
+                                        <p class="text-info crossed">
+                                            {{ $line->as_priceable($line->unit_customer_price) }}{{-- $cart->currency->sign --}}
+                                        </p>
+                                    
+                                </div>
+                            @else
+                                <div xclass="pull-right" style="vertical-align: middle;">
+                                    {{ $line->as_price('unit_customer_final_price') }}{{-- $cart->currency->sign --}}
+                                </div>
+                            @endif
+
 {{--
                             @if ($line->product->has_extra_item_applied)
                                 <div class="pull-left">
@@ -216,7 +233,7 @@
 --}}
       </td>
                             <td class="text-center">
-                                {{ $line->as_priceable($line->product->recommended_retail_price) }}
+                                {{ $line->as_priceable($line->product->recommended_retail_price_tax_inc) }}
                             </td>
 
                         @if($config['display_with_taxes'])
@@ -226,15 +243,17 @@
                             </td>
 --}}
                             <td class="text-right">{{$line->as_percent('tax_percent', 1)}}%
-                                @if($cart->customer->sales_equalization)
+                                @if(0 && $cart->customer->sales_equalization)
                                     <br/><span class="button-pad text-muted">{{$line->as_percent('tax_se_percent', 1)}}%</span>
                                 @endif
 
                             </td>
                         @endif
 
-      <td class="text-right">{{ $line->as_priceable($line->total_tax_incl) }}
-            <br/><span class="button-pad text-muted">{{ $line->as_priceable($line->quantity * $line->unit_customer_final_price) }}</span>
+      <td class="text-right">{{ $line->as_priceable($line->total_tax_excl) }}
+
+{{--            <br/><span class="button-pad text-muted">{{ $line->as_priceable($line->quantity * $line->unit_customer_final_price) }}</span>           --}}
+
       </td>
 
                 <td class="text-right button-pad">

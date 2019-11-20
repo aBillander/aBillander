@@ -15,9 +15,9 @@
         @endif
 
 
-		<div class="banner" style="visibility:hidden">
+		<div class="banner">
 
-			{!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
+			&nbsp; {!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
 
 		</div>
 
@@ -43,7 +43,7 @@
 
 
 
-<h1 class="document-type-label"> PEDIDO </h1>
+<h1 class="document-type-label"> ALBARAN </h1>
 
 
 
@@ -84,17 +84,21 @@
             
             <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
 
+			<div class="billing-phone">
 			@if ( $document->shippingaddress->phone )
 
-				<div class="billing-phone">Tel. {{ $document->shippingaddress->phone }}</div>
+				Tel. {{ $document->shippingaddress->phone }}
 
 			@else
 
-				<div class="billing-phone">Tel. {{ $document->customer->phone }}</div>
+				Tel. {{ $document->customer->phone }}
 
 			@endif
 
-			<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div>
+			@if ( $document->customer->reference_external )
+				<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span>
+			@endif
+			</div>
 			
 		</td>
 
@@ -116,7 +120,7 @@
 
 				<tr class="order-number">
 
-					<th>Pedido nº:</th>
+					<th>Albarán nº:</th>
 
 					<td style="font-size: 11pt;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
 
@@ -132,7 +136,7 @@
 
 				<tr class="order-date">
 
-					<th>Fecha del Pedido:</th>
+					<th>Fecha del Albarán:</th>
 
 					<td>{{ abi_date_short($document->document_date) }}</td>
 
@@ -184,6 +188,7 @@
 
 
 
+
             
 @if ($document->documentlines->count()>0)  
 
@@ -223,7 +228,6 @@
 
 	<tbody>
 
-@foreach ([1,2,3,4,5,6,7] as $k)
                 @foreach ($document->documentlines->sortBy('line_sort_order') as $line)
 
 			    @if ( 
@@ -249,7 +253,7 @@
 @else
 	@if ( optional($line->product)->ecotax )
 
-		@include('templates::customer_orders.default.line_rae')
+		@include('templates::customer_shipping_slips.gmdis.line_rae')
 	
 	@else
 		<tr class="3655">
@@ -304,7 +308,6 @@
 @endif
 
                 @endforeach
-@endforeach
 
 	</tbody>
 
@@ -312,11 +315,11 @@
 
 @endif
 
-{{--
 
-@include('templates::customer_orders.default.totals')
 
---}}
+@include('templates::customer_shipping_slips.gmdis.totals')
+
+
 
 <table class="notes-totals">
 
@@ -439,7 +442,7 @@ ________________________________________
 { {-- --}}
 
 
-		<table  class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
+		<table  width="100%" style="height: 1.7cm;" class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
 			<tbody>
 				<tr>
 					<td style="padding-right: 2mm">
@@ -466,7 +469,7 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
 @php
 
-$GLOBALS['var'] = 'Pedido nº: ' . ($document->document_reference ?: 'BORRADOR');
+$GLOBALS['var'] = 'Albarán nº:   ' . ($document->document_reference ?: 'BORRADOR');
 
 @endphp
 
@@ -490,15 +493,14 @@ $GLOBALS['var'] = 'Pedido nº: ' . ($document->document_reference ?: 'BORRADOR')
 $pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
-               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
-
-               // $pdf->text(($pdf->get_width() - 260), ($pdf->get_height() - 26.89 - 790.0), $GLOBALS["var"], null, 9);
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 + 15.3), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
 }
 if ( $PAGE_NUM > 1 )
 {
-               // $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), PAGE_NUM." de ".$PAGE_COUNT, null, 9);
-
-               $pdf->text(($pdf->get_width() - 180), ($pdf->get_height() - 26.89 - 790.0), $GLOBALS["var"], null, 9);
+               // https://hotexamples.com/examples/-/Font_Metrics/-/php-font_metrics-class-examples.html
+               // $fontBold = \PDF\Font_Metrics::get_font("defaultFont", "bold");
+               $fontBold = null;
+               $pdf->text(($pdf->get_width() - 180), ($pdf->get_height() - 26.89 - 790.0), $GLOBALS["var"], $fontBold, 9);
 }
 ');
 
@@ -514,7 +516,6 @@ if ( $PAGE_NUM > 1 )
 https://github.com/dompdf
 
 view-source:https://dompdf.net/test/print_header_footer.html
-
 https://groups.google.com/forum/#!forum/dompdf
 
 https://groups.google.com/forum/#!topic/dompdf/X9sl6KLYimM

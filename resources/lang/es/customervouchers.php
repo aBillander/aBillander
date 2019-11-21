@@ -67,4 +67,6 @@ return [
 	'Include in automatic payment remittances'     => 'Incluir en remesas de pago automático',
 	'Not a valid Bank Account!' => 'Cuenta Bancaria no válida!',
 
+	'Status is not "paid"' => 'El Recibo no está Pagado',
+
 ];

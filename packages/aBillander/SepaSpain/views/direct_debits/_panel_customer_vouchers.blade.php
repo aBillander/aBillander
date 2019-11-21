@@ -52,7 +52,7 @@
             	@endif
             	{{\App\Payment::getStatusName($payment->status)}}</span></td>
 
-			<td class="text-right">
+			<td class="text-right button-pad">
               @if ( $directdebit->status == 'pending' )
 
                 <a class="btn btn-sm btn-success xcustomer-voucher-setduedate" href="{{ URL::to('customervouchers/' . $payment->id . '/setduedate?back_route=' . urlencode('sepasp/directdebits/' . $directdebit->id)) }}" title="{{l('Change Due Date')}}"><i class="fa fa-calendar"></i></a>

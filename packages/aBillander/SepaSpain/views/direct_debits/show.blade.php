@@ -57,6 +57,12 @@
               </button>
 @endif
 
+@if ( $directdebit->discount_dd )
+              <button type="button" class="btn btn-xs alert-danger" title="{{l('Financed Remittance')}}">
+                  <i class="fa fa-calendar"></i>
+              </button>
+@endif
+
     </h2>        
 </div>
 

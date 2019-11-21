@@ -33,7 +33,7 @@ class SepaDirectDebit extends Model
     protected $fillable = [ 'sequence_id', 'iban', 'swift', 'creditorid', 
                             'currency_iso_code', 'currency_conversion_rate', 
 
-                            'scheme', 'status', 'onhold', 'group_vouchers', 'notes',
+                            'scheme', 'status', 'onhold', 'group_vouchers', 'discount_dd', 'notes',
 
                             'document_date', 'validation_date', 'payment_date', 'posted_at',
 
@@ -219,6 +219,9 @@ class SepaDirectDebit extends Model
 
         // generate a SepaDirectDebit object (pain.008.001.02).
         $paymentInfoId = \App\Context::getContext()->company->identification . '_' . $this->document_reference;
+
+        if ( $this->discount_dd > 0 )
+            $paymentInfoId = 'FSDD' . $paymentInfoId;
 
         /**
          * normal direct debit : LOCAL_INSTRUMENT_CORE_DIRECT_DEBIT = 'CORE';

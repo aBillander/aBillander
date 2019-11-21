@@ -439,6 +439,12 @@ class CustomerVouchersController extends Controller
     {
 		$payment = $this->payment->with('bankorder')->findOrFail($id);
 
+		if ( $payment->status != 'paid' )
+		{
+			return redirect()->back()
+					->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts').' :: '.l('Status is not "paid"'));
+		}
+
         
 			$payment->payment_date = null;
 			$payment->status   = 'pending';
@@ -460,8 +466,36 @@ class CustomerVouchersController extends Controller
 
         // Update bankorder
         if ( $bankorder = $payment->bankorder )
-            $bankorder->checkStatus();
+        {
+            // Not needed (will be done in event thrown):
+            // $bankorder->checkStatus();
 
+            // Voucher is bounced
+			$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'bank_order_id'] );
+
+			$due_date = \Carbon\Carbon::now();
+
+			$new_payment->reference = $payment->reference . ' bounced ';
+			$new_payment->name = $payment->name . ' bounced ';
+			$new_payment->status = 'pending';
+			$new_payment->due_date = $due_date;
+			$new_payment->payment_date = NULL;
+//				$new_payment->amount = $diff;
+
+			$new_payment->save();
+
+//			$payment->name     = $request->input('name',     $payment->name);
+//			$payment->due_date = $request->input('due_date', $payment->due_date);
+//			$payment->payment_date = $request->input('payment_date');
+//			$payment->amount   = $request->input('amount',   $payment->amount);
+//			$payment->notes    = $request->input('notes',    $payment->notes);
+
+			$payment->status   = 'bounced';
+			$payment->save();
+
+			// Update Customer Risk
+			event(new CustomerPaymentBounced($payment));
+        }
 
 		return redirect()->back()
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));

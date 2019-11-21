@@ -1,7 +1,7 @@
 
 
 
-<table class="head container">
+<table class="head container" style="margin-top: -0.7cm !important">
 
 	<tr>
 
@@ -579,6 +579,12 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
 </div><!-- #letter-footer -->
 
+@php
+
+$GLOBALS['var'] = 'Factura nº: ' . ($document->document_reference ?: 'BORRADOR');
+
+@endphp
+
 
 <script type="text/php">
 
@@ -600,6 +606,13 @@ $pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
                $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 + 15.3), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
+}
+if ( $PAGE_NUM > 1 )
+{
+               // https://hotexamples.com/examples/-/Font_Metrics/-/php-font_metrics-class-examples.html
+               // $fontBold = \PDF\Font_Metrics::get_font("defaultFont", "bold");
+               $fontBold = null;
+               $pdf->text(($pdf->get_width() - 180), ($pdf->get_height() - 26.89 - 790.0), $GLOBALS["var"], $fontBold, 9);
 }
 ');
 

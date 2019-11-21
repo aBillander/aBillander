@@ -320,6 +320,8 @@ class SepaDirectDebitsController extends Controller
         $filename = 'Remesa_' . $directdebit->document_reference . '_' . $creDtTm . '_SEPA_' .$directdebit->scheme . '' . '.xml';
         $creId    = $directdebit->calculateCreditorID( \App\Context::getContext()->company, $directdebit->bankaccount );
 
+        // Play nice with barryvdh/laravel-DebugBar
+        // https://github.com/barryvdh/laravel-debugbar/issues/621
         return $directDebitFile->downloadSepaFile( $filename, $creDtTm, $creId );
 
         return redirect()->route('sepasp.directdebits.show', $id)

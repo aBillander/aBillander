@@ -223,7 +223,6 @@
 
 	<tbody>
 
-@foreach ([1,2,3,4,5,6,7] as $k)
                 @foreach ($document->documentlines->sortBy('line_sort_order') as $line)
 
 			    @if ( 
@@ -304,7 +303,6 @@
 @endif
 
                 @endforeach
-@endforeach
 
 	</tbody>
 

@@ -142,7 +142,7 @@ class Cart extends Model
         if ( $cart ) 
         {
         	// Deletable lines
-            $deletables = CartLine::where('cart_id', $cart->id)->doesntHave('product')->get();
+            $deletables = CartLine::where('cart_id', $cart->id)->where('line_type', 'product')->doesntHave('product')->get();
 
             if ( $deletables->count() > 0 )
             {
@@ -682,9 +682,18 @@ class Cart extends Model
 
     public function getAmountAttribute() 
     {
-        return $this->user->canDisplayPricesTaxInc()
-                    ? $this->total_tax_incl
-                    : $this->total_tax_excl;
+        $line_products = $this->cartlines->where('line_type', 'product');
+
+        $total_products_tax_excl = $line_products->sum('total_tax_excl');
+
+        return $total_products_tax_excl;
+    }
+
+    public function isBillable() 
+    {
+        $min_order_value = $this->customeruser->canMinOrderValue();
+
+        return ( $this->amount > 0.0 ) && ( $this->amount > $min_order_value );
     }
     
 
@@ -745,11 +754,11 @@ class Cart extends Model
 
         // Load parameters to aply rules
         $shipping_label = Configuration::get('ABCC_SHIPPING_LABEL');
-        $shipping_label = 'Coste del Envío';
-        $free_shipping = Configuration::get('ABCC_FREE_SHIPPING_PRICE');
-        $state_42      = Configuration::get('ABCC_STATE_42_SHIPPING');
-        $country_1     = Configuration::get('ABCC_COUNTRY_1_SHIPPING');
-        $tax_id        = Configuration::get('ABCC_SHIPPING_TAX');
+        // $shipping_label = 'Coste del Envío';
+        $free_shipping  = Configuration::get('ABCC_FREE_SHIPPING_PRICE');
+        $state_42       = Configuration::get('ABCC_STATE_42_SHIPPING');
+        $country_1      = Configuration::get('ABCC_COUNTRY_1_SHIPPING');
+        $tax_id         = Configuration::get('ABCC_SHIPPING_TAX');
 
         $tax = Tax::find($tax_id);
         $tax_percent = $tax->percent;   // Naughty boy! Should consider cart invoicing address!
@@ -788,7 +797,7 @@ class Cart extends Model
             $this->cartlines()->save($line_shipping);
         }
 
-        $total_products_tax_excl = $line_products->sum('total_tax_excl');
+        $total_products_tax_excl = $this->amount;   // $line_products->sum('total_tax_excl');
 
         // Now, perform calculations
         // To Do: Improve this procedure
@@ -826,14 +835,15 @@ class Cart extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function user()
-//    {
-//        return $this->belongsTo('App\User');
-//    }
-
-//    public function customeruser()
+    public function customeruser()
     {
         return $this->belongsTo('App\CustomerUser', 'customer_user_id');
+    }
+
+    // Alias
+    public function user()
+    {
+        return $this->customeruser();
     }
 
     public function customer()
@@ -888,6 +898,16 @@ class Cart extends Model
     public function cartlines()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
         return $this->hasMany('App\CartLine')->orderBy('line_sort_order', 'ASC');
+    }
+
+    public function cartproductlines()
+    {
+        return $this->hasMany('App\CartLine')->where('line_type', 'product')->orderBy('line_sort_order', 'ASC');
+    }
+
+    public function cartshippingline()
+    {
+        return $this->hasMany('App\CartLine')->where('line_type', 'shipping')->first();
     }
 
     // Alias
@@ -977,7 +997,7 @@ class Cart extends Model
         $customer = $this->customer;
         $taxes = 0;
         
-        $this->cartlines->map(function ($line) use (&$taxes, $customer) {
+        $this->cartlines->where('line_type', 'product')->map(function ($line) use (&$taxes, $customer) {
             $line->img = $line->product->getFeaturedImage();
             $line->tax = $line->tax_percent / 100 *
                          $line->unit_customer_price * $line->quantity;
@@ -1003,7 +1023,7 @@ class Cart extends Model
 
         if ($customer->sales_equalization) {
             $taxes_se = 0;
-            foreach ($this->cartlines as $line) {
+            foreach ($this->cartlines->where('line_type', 'product') as $line) {
                 $line->product->sales_equalization = 1;
                 $rules = $customer->getTaxRules($line->product);
                 $se_percent = $rules->sum('percent');

@@ -155,6 +155,14 @@ trait BillableDocumentLinesTrait
                             ? $params['line_sort_order'] 
                             : $this->getMaxLineSortOrder() + 10;
 
+        $extra_quantity = array_key_exists('extra_quantity', $params) 
+                            ? $params['extra_quantity'] 
+                            : 0.0;
+
+        $extra_quantity_label = array_key_exists('extra_quantity_label', $params) 
+                            ? $params['extra_quantity_label'] 
+                            : '';
+
         $notes = array_key_exists('notes', $params) 
                             ? $params['notes'] 
                             : '';
@@ -170,6 +178,8 @@ trait BillableDocumentLinesTrait
             'name' => $name,
             'quantity' => $quantity,
             'measure_unit_id' => $measure_unit_id,
+            'extra_quantity'       => $extra_quantity,
+            'extra_quantity_label' => $extra_quantity_label,
 
             'prices_entered_with_tax' => $pricetaxPolicy,
     

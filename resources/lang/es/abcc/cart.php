@@ -239,7 +239,7 @@ return [
     'Order Confirmation'                                 => 'Confirmación de Pedido',
     'You are going to Confirm your Order. Are you sure?' => 'Está a punto de confirmar su Pedido. ¿Está seguro?',
 
-    'Cart amount should be more than: ' => 'El importe del Pedido debe ser al menos de: ',
+    'Cart amount should be more than: :amount (Products Value)' => 'El importe del Pedido debe ser al menos de: :amount (Valor de los Productos )',
 
     'Address not allowed' => 'Dirección no permitida',
 
@@ -250,6 +250,6 @@ return [
     'Recommended Retail Price'     => 'PVR',
     'Recommended Retail Price, taxes included'     => 'Precio de Venta Recomendado, IVA incluido',
 
-    'Free Shipping for Orders greater than: :amount' => 'Envío Gratis para Pedido superior a: :amount',
+    'Free Shipping for Orders greater than: :amount (Products Value)' => 'Envío Gratis para Pedido superior a: :amount (Valor de los Productos )',
 
 ];

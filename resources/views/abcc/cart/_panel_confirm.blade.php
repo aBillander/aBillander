@@ -72,7 +72,7 @@
 
                <div class="panel-footer text-right">
 
-@if( \App\Configuration::isTrue('ABCC_ENABLE_QUOTATIONS') && Auth::user()->enable_quotations != 0 )
+@if( Auth::user()->canQuotations() )
                   <button class="btn btn-warning pull-left confirm-" type="button" data-content="{{l('You are going to Ask for Quotation. Are you sure?')}}" data-title="{{ l('Quotation Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" onclick="$('#process_as').val('quotation');">
                      <i class="fa fa-handshake-o"></i>
                      &nbsp; {{ l('Place Quotation') }}
@@ -94,11 +94,15 @@
 
 @if( Auth::user()->canMinOrderValue() > 0.0 )
 
+@php
+        $severity = $cart->isBillable() ? 'warning' : 'danger';
+@endphp
+
       <div class="panel-body">
 
-         <div class="alert alert-warning alert-block">
+         <div class="alert alert-{{ $severity }} alert-block">
              <i class="fa fa-warning"></i>
-            {{ l('Cart amount should be more than: ') . abi_money( Auth::user()->canMinOrderValue(), $cart->currency ) }}
+            {{ l('Cart amount should be more than: :amount (Products Value)', ['amount' =>  abi_money( Auth::user()->canMinOrderValue(), $cart->currency )]) }}
          </div>
          
       </div>

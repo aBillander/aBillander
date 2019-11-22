@@ -34,7 +34,7 @@
                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
                                   xdata-trigger="focus"
                                   data-html="true" 
-                                  data-content="{!! l('Free Shipping for Orders greater than: :amount',
+                                  data-content="{!! l('Free Shipping for Orders greater than: :amount (Products Value)',
                                                 ['amount' => abi_money( \App\Configuration::get('ABCC_FREE_SHIPPING_PRICE'), $cart->currency )] ) !!}
                                     ">
                                   <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>

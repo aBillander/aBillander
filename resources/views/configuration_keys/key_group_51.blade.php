@@ -16,6 +16,22 @@
     
 
 
+    <div class="form-group {{ $errors->has('ABCC_SHIPPING_LABEL') ? 'has-error' : '' }}">
+      <label for="ABCC_SHIPPING_LABEL" class="col-lg-4 control-label">{!! l('Etiqueta para los Costes de Envío') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_SHIPPING_LABEL" name="ABCC_SHIPPING_LABEL" placeholder="" value="{{ old('ABCC_SHIPPING_LABEL', $key_group['ABCC_SHIPPING_LABEL']) }}" />
+        {{ $errors->first('ABCC_SHIPPING_LABEL', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('Esta etiqueta será el nombre de la línea del Pedido correspondiente al Coste de Envío') !!}</span>
+      </div>
+    </div>
+    
+
+
     <div class="form-group {{ $errors->has('ABCC_FREE_SHIPPING_PRICE') ? 'has-error' : '' }}">
       <label for="ABCC_FREE_SHIPPING_PRICE" class="col-lg-4 control-label">{!! l('Envío gratis a partir de') !!}</label>
       <div class="col-lg-8">

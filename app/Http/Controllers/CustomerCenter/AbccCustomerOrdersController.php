@@ -11,6 +11,8 @@ use App\Configuration;
 use App\Currency;
 use App\Todo;
 
+use App\Cart;
+
 use App\CustomerUser;
 use App\Customer;
 use App\CustomerOrder;
@@ -83,9 +85,10 @@ class AbccCustomerOrdersController extends Controller {
 	{
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
-        $cart = \App\Context::getcontext()->cart;
+        // $cart = \App\Context::getcontext()->cart;
+        $cart = Cart::getCustomerUserCart();
 
-        if ( $cart->cartlines->count() == 0 )
+        if ( $cart->cartlines->where('line_type', 'product')->count() == 0 )
         	return redirect()->back()
                 ->with('error', l('Document has no Lines', 'layouts'));
 
@@ -94,26 +97,23 @@ class AbccCustomerOrdersController extends Controller {
 			return $this->storeAsQuotation( $request );
 
 
-		// Should change: look for quotation controller
-		$reference_customer = $request->input('process_as', 'order') == 'quotation' ? 'QUOTATION' : '';
-
         // Cart Amount
-        if( Auth::user()->canMinOrderValue() )
+        if( !$cart->isBillable() )
         {
-        	if( $cart->amount < Auth::user()->canMinOrderValue() )
 	        	return redirect()->back()
-	                ->with('error', l('Document amount should be more than: ', 'layouts').abi_money( Auth::user()->canMinOrderValue(), $cart->currency ));
+	                ->with('error', l('Document amount should be more than: :amount', ['amount' => abi_money( Auth::user()->canMinOrderValue(), $cart->currency )], 'layouts'));
         }
 		
 
-		// Check
+		// Check. What check?
+/*
 		$rules = CustomerOrder::$rules;
 		$cartrules['shipping_address_id'] = str_replace('{customer_id}', $customer->id, $rules['shipping_address_id']);
 
         $this->validate($request, $cartrules);
 
 		// Let's rock!
-
+*/
         // Header stuff here in
 
 		$data = [
@@ -180,32 +180,89 @@ class AbccCustomerOrdersController extends Controller {
 			'shipping_address_id'  => $cart->shipping_address_id,
 
 			'warehouse_id' => Configuration::get('DEF_WAREHOUSE'),
-//			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
+			'shipping_method_id' => $customer->shipping_method_id,	// Do not apply company default, since maybe a Shipping Method for Customer Center
 			'sales_rep_id' => $customer->sales_rep_id,
 			'currency_id' => $cart->currency->id,
 			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_PAYMENT_METHOD'),
 			'template_id' => \App\Configuration::get('ABCC_DEFAULT_ORDER_TEMPLATE'),
 		];
 
-//        return 'OK';
 
         $customerOrder = $this->customerOrder->create($data);
-
-		// Good boy:
-		if ( $reference_customer && Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') ) 
-		{
-			$customerOrder->confirm();
-		}
 		
 
         // Lines stuff here in
 
         foreach ($cart->cartlines as $cartline) {
         	# code...
-        	//abi_r($line->quantity);
-        	$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price] );
-        	// $line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price, 'line_sort_order' => $cartline->line_sort_order] );
+        	// $line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price] );
+        	$line_data = [
+        			'line_type' => $cartline->line_type,
+
+        			'prices_entered_with_tax'   => 0, 
+        			'unit_customer_final_price' => $cartline->unit_customer_final_price, 
+        			'line_sort_order'           => $cartline->line_sort_order,
+
+        			'extra_quantity'       => $cartline->extra_quantity, 
+        			'extra_quantity_label' => $cartline->extra_quantity_label,
+
+        			'sales_equalization' =>  $customer->sales_equalization,
+        			'sales_rep_id' =>  $customer->sales_rep_id,
+        			'commission_percent' =>  $customer->salesrep->commission_percent,
+        	];
+        	
+        	// Not all lines are the same type...
+        	switch ($cartline->line_type) {
+        		case 'shipping':
+        			# code...
+        			if ( $cartline->unit_customer_final_price > 0.0 )
+        			{
+        				$line_data['name'] = $cartline->name;
+        				$line_data['line_sort_order'] = $cart->getNextLineSortOrder();	// Move at the end of the list
+        				$line_data['sales_equalization'] = 0;
+	        			$line = $customerOrder->addServiceLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, $line_data );
+	        		}
+        			break;
+        		
+        		case 'product':
+        		default:
+        			# code...
+        			$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, $line_data );
+        			break;
+        	}
+
+        	
         }
+/*
+Bah!
+        // OK. So far, so good. Lets end with shipping cost!
+    	$shipping_data = [
+    			'line_type' => 'shipping',
+
+	            'cost_price' => 0.0,
+	            'unit_price' => $cart->total_shipping_tax_excl,
+	            'discount_percent' => 0.0,
+	            'unit_customer_final_price' => $cart->total_shipping_tax_excl,
+	            'tax_id' => Configuration::get('ABCC_SHIPPING_TAX'),
+
+    			'prices_entered_with_tax'   => 0, 
+    			'unit_customer_final_price' => $cart->total_shipping_tax_excl, 
+    			'line_sort_order'           => $cart->getNextLineSortOrder(),	// Move at the end of the list
+
+ //   			'extra_quantity'       => $cartline->extra_quantity, 
+ //   			'extra_quantity_label' => $cartline->extra_quantity_label,
+
+    			'sales_equalization' =>  0,
+    			'sales_rep_id' =>  $customer->sales_rep_id,
+    			'commission_percent' =>  $customer->salesrep->commission_percent,
+    	];
+*/
+
+		// Good boy:
+		if ( Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') ) 
+		{
+			$customerOrder->confirm();
+		}
 		
         // At last: empty cart ( delete lines & initialize )
         $cart->delete();
@@ -220,7 +277,7 @@ class AbccCustomerOrdersController extends Controller {
             'url' => route('customerorders.edit', [$customerOrder->id]), 
             'due_date' => null, 
             'completed' => 0, 
-            'user_id' => \App\Context::getContext()->user->id,
+            'user_id' => $customer_user->id,
         ];
 
 //        $todo = Todo::create($data);

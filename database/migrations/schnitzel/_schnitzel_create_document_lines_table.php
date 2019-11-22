@@ -16,6 +16,8 @@
 			$table->string('name', 128)->nullable(false);
 
 			$table->decimal('quantity', 20, 6);
+            $table->decimal('extra_quantity', 20, 6)->nullable()->default(0.0);
+            $table->string('extra_quantity_label', 128)->nullable();
             $table->integer('measure_unit_id')->unsigned()->nullable(false);
 
             $table->tinyInteger('prices_entered_with_tax')->default(0);

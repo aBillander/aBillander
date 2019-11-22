@@ -1,7 +1,7 @@
 <div id="div_cart_lines">
           <div class="table-responsive">
 
-@if ($cart->cartlines->count())
+@if ($cart->cartproductlines->count())
     <table id="cart_lines" class="table table-hover">
         <thead>
             <tr>
@@ -79,7 +79,7 @@
         </thead>
 
         <tbody class="sortable ui-sortable">
-  @foreach ($cart->cartlines as $line)
+  @foreach ($cart->cartproductlines as $line)
     <tr>
       <td title="{{ $line->line_sort_order }}">{{ $line->id }}</td>
       <td title="{{ $line->product->id }}">@if ($line->product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>

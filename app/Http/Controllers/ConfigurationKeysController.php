@@ -143,6 +143,7 @@ class ConfigurationKeysController extends Controller {
 
                 51 => [  // Customer Center :: Shipping
 
+                        'ABCC_SHIPPING_LABEL',
                         'ABCC_FREE_SHIPPING_PRICE',
                         'ABCC_STATE_42_SHIPPING',
                         'ABCC_COUNTRY_1_SHIPPING',

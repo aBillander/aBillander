@@ -116,7 +116,7 @@
              </div>
       </div>
 
-      <div class="form-group col-lg-4 col-md-4 col-sm-4">
+      <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-use_default_min_order_value">
           {!! Form::label('use_default_min_order_value', l('Use default minimum Order', 'customerusers')) !!}
              <div>
                <div class="radio-inline">
@@ -134,7 +134,7 @@
              </div>
       </div>
 
-      <div class="form-group col-lg-3 col-md-3 col-sm-3">
+      <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-min_order_value">
           {!! Form::label('min_order_value', l('Minimum Order Value', 'customerusers')) !!}
           {!! Form::text('min_order_value', null, array('class' => 'form-control', 'id' => 'min_order_value')) !!}
 
@@ -241,13 +241,55 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function() {
+
+    var enable_min_order_default = {{ \App\Configuration::get('ABCC_ENABLE_MIN_ORDER')}};
+
+    $(document).ready(function() 
+    {
 
         // To get focus;
         $( "#firstname" ).focus();
 
 
     });
+
+
+          $("body").on('change', "input[type=radio][name=enable_min_order]", function() 
+          {
+              // https://www.anerbarrena.com/value-radio-button-jquery-checked-1580/
+              // alert($(this).val()+' '+enable_min_order_default);
+              var emo = $(this).val();
+              if (emo <0) emo = enable_min_order_default;
+
+              if ( emo>0 )
+              {
+                // Show elements
+                $("input[name='use_default_min_order_value'][value='1']").prop('checked', true);
+                $('#div-use_default_min_order_value').fadeIn();
+                // $('#div-min_order_value').fadeIn();
+              } else {
+                //Hide elements
+                $('#div-min_order_value').fadeOut();
+                $('#div-use_default_min_order_value').fadeOut();
+              }
+
+          });
+
+
+          $("body").on('change', "input[type=radio][name=use_default_min_order_value]", function() 
+          {
+              var emo = $(this).val();
+
+              if ( emo<=0 )
+              {
+                // Show elements
+                $('#div-min_order_value').fadeIn();
+              } else {
+                //Hide elements
+                $('#div-min_order_value').fadeOut();
+              }
+
+          });
 
 
 

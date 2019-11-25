@@ -208,7 +208,7 @@ class AbccCustomerOrdersController extends Controller {
 
         			'sales_equalization' =>  $customer->sales_equalization,
         			'sales_rep_id' =>  $customer->sales_rep_id,
-        			'commission_percent' =>  $customer->salesrep->commission_percent,
+        			'commission_percent' =>  (float) optional($customer->salesrep)->commission_percent,	// Maybe no Sales Rep for this Customer!
         	];
         	
         	// Not all lines are the same type...

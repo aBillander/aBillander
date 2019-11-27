@@ -746,7 +746,13 @@ class Customer extends Model {
             $currency = Context::getContext()->currency;
 
 
-        $rule = $this->getPriceRules( $product, $currency )->where('rule_type', 'promo')->sortBy('from_quantity')->first();
+        $rule = $this->getPriceRules( $product, $currency )
+                    ->where('rule_type', 'promo')
+//                    ->sortBy('from_quantity')
+                    ->sortByDesc(function ($item, $key) {   // Best Rule for Customer
+                        return $item->extra_quantity / $item->from_quantity;
+                    })
+                    ->first();
 
         return $rule;
     }

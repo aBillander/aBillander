@@ -18,7 +18,7 @@ class CreateCartLinesTable extends Migration
         Schema::create('cart_lines', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('line_sort_order')->nullable();         // To sort lines 
-            $table->string('line_type', 32)->nullable(false);       // product, service, shipping, discount, comment
+            $table->string('line_type', 32)->nullable(false)->default('product');       // product, service, shipping, discount, comment
 
             $table->integer('product_id')->unsigned()->nullable();
             $table->integer('combination_id')->unsigned()->nullable();

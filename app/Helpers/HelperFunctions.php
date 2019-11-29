@@ -225,6 +225,18 @@ function abi_money_amount($amount, \App\Currency $currency = null)
 }
 
 
+function abi_amount( $val = 0.0, $decimalPlaces = 0 )
+{
+    $data = floatval( $val );
+
+    // Do formatting
+
+    $data = number_format($data, $decimalPlaces, ',', '.');
+
+    return $data;
+}
+
+
 
 
 /**

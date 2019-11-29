@@ -208,7 +208,7 @@ class AbccCustomerOrdersController extends Controller {
 
         			'sales_equalization' =>  $customer->sales_equalization,
         			'sales_rep_id' =>  $customer->sales_rep_id,
-        			'commission_percent' =>  $customer->salesrep->commission_percent,
+        			'commission_percent' =>  (float) optional($customer->salesrep)->commission_percent,	// Maybe no Sales Rep for this Customer!
         	];
         	
         	// Not all lines are the same type...
@@ -220,6 +220,7 @@ class AbccCustomerOrdersController extends Controller {
         				$line_data['name'] = $cartline->name;
         				$line_data['line_sort_order'] = $cart->getNextLineSortOrder();	// Move at the end of the list
         				$line_data['sales_equalization'] = 0;
+        				$line_data['tax_id'] = $cartline->tax_id;	// Otherwise default tax will be taken
 	        			$line = $customerOrder->addServiceLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, $line_data );
 	        		}
         			break;

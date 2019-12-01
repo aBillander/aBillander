@@ -680,18 +680,6 @@ class ProductsController extends Controller
         return response( $boms );
     }
 
-    // Seems not used anywhere
-    public function getMeasureUnits($id, Request $request)
-    {
-        $product = $this->product->findOrFail($id);
-
-        $units = $product->measureunits;
-
-        return Response::json($units);
-
-//        return response( $boms );
-    }
-
 
 
 /* ********************************************************************************************* */    

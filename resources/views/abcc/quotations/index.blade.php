@@ -33,7 +33,7 @@
             <th class="text-left">{{ l('Valid until') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-right">{{ l('Items') }}</th>
-            <th class="text-right"">{{ l('Total') }}</th>
+            <th class="text-right">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes') }}</th>
             <th> </th>
         </tr>

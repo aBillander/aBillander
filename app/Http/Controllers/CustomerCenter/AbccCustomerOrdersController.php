@@ -83,6 +83,12 @@ class AbccCustomerOrdersController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+
+		$process_as = $request->input('process_as', 'order');
+		if ($process_as == 'quotation')
+			return $this->storeAsQuotation( $request );
+        
+
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
         // $cart = \App\Context::getcontext()->cart;
@@ -91,10 +97,6 @@ class AbccCustomerOrdersController extends Controller {
         if ( $cart->cartlines->where('line_type', 'product')->count() == 0 )
         	return redirect()->back()
                 ->with('error', l('Document has no Lines', 'layouts'));
-
-		$process_as = $request->input('process_as', 'order');
-		if ($process_as == 'quotation')
-			return $this->storeAsQuotation( $request );
 
 
         // Cart Amount
@@ -111,9 +113,9 @@ class AbccCustomerOrdersController extends Controller {
 		$cartrules['shipping_address_id'] = str_replace('{customer_id}', $customer->id, $rules['shipping_address_id']);
 
         $this->validate($request, $cartrules);
+*/
 
 		// Let's rock!
-*/
         // Header stuff here in
 
 		$data = [
@@ -342,20 +344,23 @@ Bah!
 	{
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
-        $cart = \App\Context::getcontext()->cart;
+        // $cart = \App\Context::getcontext()->cart;
+        $cart = Cart::getCustomerUserCart();
 
-        if ( $cart->cartlines->count() == 0 )
+        if ( $cart->cartlines->where('line_type', 'product')->count() == 0 )
         	return redirect()->back()
                 ->with('error', l('Document has no Lines', 'layouts'));
 
 		$reference_customer = $request->input('process_as', 'order') == 'quotation' ? 'QUOTATION' : '';
 		
 
-		// Check
+		// Check. What check?
+/*
 		$rules = CustomerOrder::$rules;
 		$cartrules['shipping_address_id'] = str_replace('{customer_id}', $customer->id, $rules['shipping_address_id']);
 
         $this->validate($request, $cartrules);
+*/
 
 		// Let's rock!
 
@@ -422,7 +427,7 @@ Bah!
 			'locked' => 0,
 
 			'invoicing_address_id' => $customer->invoicing_address_id,
-			'shipping_address_id'  => $request->input('shipping_address_id'),
+			'shipping_address_id'  => $cart->shipping_address_id,
 
 			'warehouse_id' => Configuration::get('DEF_WAREHOUSE'),
 //			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
@@ -442,7 +447,42 @@ Bah!
         foreach ($cart->cartlines as $cartline) {
         	# code...
         	//abi_r($line->quantity);
-        	$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price] );
+        	// $line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price] );
+        	$line_data = [
+        			'line_type' => $cartline->line_type,
+
+        			'prices_entered_with_tax'   => 0, 
+        			'unit_customer_final_price' => $cartline->unit_customer_final_price, 
+        			'line_sort_order'           => $cartline->line_sort_order,
+
+        			'extra_quantity'       => $cartline->extra_quantity, 
+        			'extra_quantity_label' => $cartline->extra_quantity_label,
+
+        			'sales_equalization' =>  $customer->sales_equalization,
+        			'sales_rep_id' =>  $customer->sales_rep_id,
+        			'commission_percent' =>  (float) optional($customer->salesrep)->commission_percent,	// Maybe no Sales Rep for this Customer!
+        	];
+        	
+        	// Not all lines are the same type...
+        	switch ($cartline->line_type) {
+        		case 'shipping':
+        			# code...
+        			if ( $cartline->unit_customer_final_price > 0.0 )
+        			{
+        				$line_data['name'] = $cartline->name;
+        				$line_data['line_sort_order'] = $cart->getNextLineSortOrder();	// Move at the end of the list
+        				$line_data['sales_equalization'] = 0;
+        				$line_data['tax_id'] = $cartline->tax_id;	// Otherwise default tax will be taken
+	        			$line = $customerOrder->addServiceLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, $line_data );
+	        		}
+        			break;
+        		
+        		case 'product':
+        		default:
+        			# code...
+        			$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, $line_data );
+        			break;
+        	}
         }
 		
         // At last: empty cart ( delete lines & initialize )
@@ -495,7 +535,7 @@ Bah!
 
         } catch(\Exception $e) {
 
-            return redirect()->route('abcc.orders.index')
+            return redirect()->route('abcc.quotations.index')
                 	->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
 		    			$e->getMessage());
         }

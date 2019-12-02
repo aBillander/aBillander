@@ -46,6 +46,7 @@
             <th class="text-left" style="width: 35px"> </th>
             <th class="text-left">{{l('Category Name')}}</th>
             <th class="text-left">{{l('Webshop ID')}}</th>
+            <th class="text-center">{{l('Publish to web?')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-right"> </th>
         </tr>
@@ -58,6 +59,8 @@
             <td>{{ $category->name }}</td>
             
             <td>{{ $category->webshop_id }}</td>
+            
+            <td class="text-center">@if ($category->publish_to_web) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
             
             <td class="text-center">@if ($category->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

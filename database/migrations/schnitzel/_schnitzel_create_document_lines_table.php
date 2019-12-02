@@ -20,6 +20,9 @@
             $table->string('extra_quantity_label', 128)->nullable();
             $table->integer('measure_unit_id')->unsigned()->nullable(false);
 
+			$table->integer('stock_measure_unit_id')->unsigned()->nullable();
+			$table->decimal('smu_conversion_rate', 20, 6)->nullable()->default(1.0);	// Conversion rates are calculated from one unit of your main measura unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, type "6" (since a pack of six bottles will contain six bottles)
+
             $table->tinyInteger('prices_entered_with_tax')->default(0);
 
 			$table->decimal('cost_price', 20, 6)->default(0.0);

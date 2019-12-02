@@ -248,7 +248,7 @@ class ProductsController extends Controller
         $data = [
             'product_id' => $product->id,
             'measure_unit_id' => $product->measure_unit_id,
-            'base_measure_unit_id' => $product->measure_unit_id,
+            'stock_measure_unit_id' => $product->measure_unit_id,
             'conversion_rate' => 1.0,
             'active' => 1,
         ];
@@ -550,7 +550,7 @@ class ProductsController extends Controller
         $data = [
             'product_id' => $clone->id,
             'measure_unit_id' => $clone->measure_unit_id,
-            'base_measure_unit_id' => $clone->measure_unit_id,
+            'stock_measure_unit_id' => $clone->measure_unit_id,
             'conversion_rate' => 1.0,
             'active' => 1,
         ];

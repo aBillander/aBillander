@@ -16,13 +16,13 @@ class ProductMeasureUnit extends Model {
 
 //    protected $dates = ['deleted_at'];
     
-    protected $fillable = [ 'product_id', 'measure_unit_id', 'base_measure_unit_id', 
+    protected $fillable = [ 'product_id', 'measure_unit_id', 'stock_measure_unit_id', 
                             'conversion_rate', 'active' ];
 
     public static $rules = [
 //        'product_id' => 'required|exists:products,id',
         'measure_unit_id' => 'required|exists:measure_units,id',
-//        'base_measure_unit_id' => 'required|exists:measure_units,id',
+//        'stock_measure_unit_id' => 'required|exists:measure_units,id',
         'conversion_rate'      => 'required|numeric|min:0',
     	];
     
@@ -52,6 +52,6 @@ class ProductMeasureUnit extends Model {
 
     public function mainmeasureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'base_measure_unit_id');
+        return $this->belongsTo('App\MeasureUnit', 'stock_measure_unit_id');
     }
 }

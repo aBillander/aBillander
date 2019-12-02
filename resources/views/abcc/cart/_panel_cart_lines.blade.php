@@ -17,6 +17,7 @@
                           data-content="{{ l('Change Quantity and press [Enter] or click button on the right.') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                    </a></th>
+               <th> </th>
                <th class="text-right">
                   <span class="button-pad">{{ l('Customer Price') }}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
@@ -96,6 +97,53 @@
 
               </div>
             </div>
+
+      </td>
+      <td class="button-pad">
+
+@if ( $line->product->measureunits->count() > 1 )   {{-- Has extra measure units! --}}
+                {{-- {!! Form::select('measure_unit_id', $line->product->measureunits->pluck('name', 'id')->toArray(), $line->product->measure_unit_id, array('class' => 'form-control form-control-sm')) !!} --}}
+@else
+
+<!-- div class="btn-group">
+  <a href="#" class="btn btn-warning">Default</a>
+  <a href="#" data-toggle="dropdown" class="btn btn-warning dropdown-toggle"><span class="caret"></span></a>
+  <ul class="dropdown-menu" style="background-color: white">
+    <li><a href="#">Action</a></li>
+    <li><a href="#">Another action</a></li>
+    <li><a href="#">Something else here</a></li>
+    <li class="divider"></li>
+    <li><a href="#">Separated link</a></li>
+  </ul>
+</div -->
+
+
+                   <span class="pull-right" style="position: absolute;" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Prices per Units!', 'abcc/catalogue') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </span>
+
+
+<ul class="nav nav-pills pull-left" style="border: 1px solid #dddddd;border-radius: 3px;">
+  <li class="dropdown" xstyle="float: left;position: relative;
+
+display: inline-block;">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" style="padding: 5px 7px;">
+      {{ $line->product->measureunit->sign }} <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li><a href="#">Action</a></li>
+      <li><a href="#">Another action</a></li>
+      <li><a href="#">Something else here</a></li>
+      <li class="divider"></li>
+      <li><a href="#">Separated link</a></li>
+    </ul>
+  </li>
+</ul>
+
+<!-- p>Por unidad: 12,00€</p -->
+
+@endif
 
       </td>
 

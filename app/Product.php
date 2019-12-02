@@ -329,6 +329,12 @@ class Product extends Model {
         return $this->measureunitsGet();
     }
 
+    public function getExtraMeasureunitsAttribute()
+    {
+
+        return $this->extra_measureunitsGet();
+    }
+
     // Alias
     public function getToolsAttribute()
     {
@@ -612,11 +618,37 @@ class Product extends Model {
         return $this->hasMany('App\ProductMeasureUnit', 'product_id')->with('measureunit');
     }
     
+    
+    /**
+     * Returns ALL measure units for product
+     * @param 
+     * @return type
+     */
     public function measureunitsGet()
     // used by: public function getMeasureunitsAttribute()
     {
         if ( Configuration::isFalse('ENABLE_MANUFACTURING') )
             return $this->measureunit;
+        
+        $list = $this->productmeasureunits;
+
+        $units = $list->map(function ($item, $key) {
+            return $item->measureunit;
+        });
+
+        return $units->prepend( $this->measureunit );  // ->pluck('name', 'id')->toArray();
+    }
+    
+    
+    /**
+     * Returns EXTRA measure units for product
+     * @param 
+     * @return type
+     */
+    public function extra_measureunitsGet()
+    {
+        if ( Configuration::isFalse('ENABLE_MANUFACTURING') )
+            return collect([]);
         
         $list = $this->productmeasureunits;
 

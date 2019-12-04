@@ -15,10 +15,10 @@
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                     data-title="{{ l('Products') }} :: ({{$product->id}}) {{{ $product->name }}}" 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-                
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
 
                 <a href="{{ route('products.measureunits.index', [$product->id]) }}" class="btn btn-success"><i class="fa fa-th-list"></i> {{ l('Measure Units', 'layouts') }}</a>
+                
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
 
                 <a class="btn btn-warning show-product-boms" onClick="return false;"><i class="fa fa-link"></i> {{ l('BOMs') }}</a>
 

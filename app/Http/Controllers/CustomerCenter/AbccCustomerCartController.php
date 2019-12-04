@@ -407,10 +407,11 @@ class AbccCustomerCartController extends Controller
         $line_id = $request->input('line_id', 0);
 
         $quantity = floatval( $request->input('quantity', 0.0) );
+        $measureunit_id = $request->input('measureunit', 0.0);
 
         $cart = Cart::getCustomerUserCart();
 
-        $line = $cart->updateLineQuantity( $line_id, $quantity );
+        $line = $cart->updateLineQuantity( $line_id, $quantity, $measureunit_id );
 
         // Refresh Cart
         $cart = Cart::getCustomerUserCart();
@@ -423,6 +424,34 @@ class AbccCustomerCartController extends Controller
         return response()->json( [
                 'msg' => 'OK',
                 'data' => [$line_id, $quantity]
+        ] );
+    }
+
+
+    // Deprecated ??? :: I think so.
+    public function updateLineMeasureUnit(Request $request)
+    {
+
+        $line_id = $request->input('line_id', 0);
+
+        $quantity = $request->input('quantity', 0.0);
+        $measureunit = $request->input('measureunit', 0.0);
+
+        $cart = Cart::getCustomerUserCart();
+
+        $line = $cart->updateLineMeasureUnit( $line_id, $quantity, $measureunit );
+
+        // Refresh Cart
+        $cart = Cart::getCustomerUserCart();
+
+        if ( !$line ) 
+            return response( null );
+
+
+
+        return response()->json( [
+                'msg' => 'OK',
+                'data' => [$line_id, $measureunit]
         ] );
     }
 

@@ -3,7 +3,14 @@
 <div class="panel panel-primary" id="panel_cart">
 
    <div class="panel-heading">
-      <h3 class="panel-title">{{ l('') }}{{ l('Cart Items') }}</h3>
+      <h3 class="panel-title">{{ l('') }}{{ l('Cart Items') }}
+
+        <span class="badge pull-right" style="background-color: #3a87ad; color: #ffffff;" title="{{ $cart->currency->name }}">{{ $cart->currency->iso_code }}</span> &nbsp; 
+
+         @if($cart->customer->sales_equalization)
+            <span id="sales_equalization_badge" class="badge pull-right" style="xbackground-color: #3a87ad; margin-right: 18px;" title="{{ l('Equalization Tax') }}"> {{ l('SE') }} </span>
+         @endif
+      </h3>
    </div>
 
    <div id="header_data" style="">

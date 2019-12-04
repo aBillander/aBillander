@@ -19,7 +19,7 @@ class CreateProductMeasureUnitsTable extends Migration {
 			$table->integer('product_id')->unsigned()->nullable(false);
 
 			$table->integer('measure_unit_id')->unsigned()->nullable(false);
-			$table->integer('stock_measure_unit_id')->unsigned()->nullable(false);
+			$table->integer('stock_measure_unit_id')->unsigned()->nullable(false);	// As seen on products table
 
 			$table->decimal('conversion_rate', 20, 6)->default(1.0);	// Conversion rates are calculated from one unit of your main measura unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, type "6" (since a pack of six bottles will contain six bottles)
 			

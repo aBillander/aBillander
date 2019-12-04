@@ -331,7 +331,10 @@ class Cart extends Model
             'quantity' => $quantity, 
             'extra_quantity' => $extra_quantity,
             'extra_quantity_label' => $extra_quantity_label,
-            'measure_unit_id' => $product->measure_unit_id,
+            'measure_unit_id' => $product->measure_unit_id,            
+
+            'package_measure_unit_id' => $product->measure_unit_id,
+            'pmu_conversion_rate' => 1.0,
 
             'unit_customer_price'       => $unit_customer_price,
             'unit_customer_final_price' => $unit_customer_final_price,
@@ -391,7 +394,7 @@ class Cart extends Model
     }
 
 
-    public function updateLineQuantity( $line_id = null, $quantity = 1.0 )
+    public function updateLineQuantity( $line_id = null, $quantity = 1.0, $measureunit_id = null )
     {
         $customer_user = Auth::user();
 
@@ -434,6 +437,12 @@ class Cart extends Model
         // Let's check quantity
         // $quantity = ($quantity > 0.0) ? $quantity : 1.0;
 
+        $measureunit_id = intval( $measureunit_id );
+        $package_measure_unit_id = $measureunit_id  > 0 ? $measureunit_id  : $line->package_measure_unit_id;
+        $pmu_conversion_rate     = $line->pmu_conversion_rate;
+
+        $hasPackage = ( $package_measure_unit_id != $product->measure_unit_id );
+
         // Tax percent (sum of all applicable tax rules)
         $tax_rates = $this->getTaxPercent($product);    // Array
 
@@ -453,28 +462,67 @@ class Cart extends Model
         if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
 
         // Still with me? Lets check Price rules with type='price'
-        $customer_final_price = $product->getPriceByCustomerPriceRules( $customer, $quantity, $currency );
-        if ( !$customer_final_price )
-            $customer_final_price = clone $customer_price;  // No price Rules available
-
-        $unit_customer_price       = $customer_price->getPrice();
-        // Better price?
-        if ( $customer_final_price->getPrice() > $unit_customer_price )
+        if ($hasPackage)
         {
-            $customer_final_price = clone $customer_price;
+        
+                //Do check: rule_type = 'pack'
+                $pack_rule = $customer->getPackageRule( $product, $package_measure_unit_id, $currency );
+
+                // Calculate quantity conversion
+//                $pmu_conversion_rate = $product->extra_measureunits->where('id', $package_measure_unit_id)->first()->conversion_rate;
+                $pmu_conversion_rate = $pack_rule->conversion_rate;
+
+                // Assumes $pack_rule is not null
+                $package_price = $pack_rule->price;
+
+                $unit_customer_price       = $customer_price->getPrice();
+                $unit_customer_final_price = $package_price / $pmu_conversion_rate;
+
+                // abi_r($unit_customer_price);abi_r($unit_customer_final_price);die();
+
+                // Better price?
+                if ( $unit_customer_final_price > $unit_customer_price )
+                {
+                    $unit_customer_final_price = $unit_customer_price;
+                }
+
+                // Finishing touches: tune up quantity
+                $quantity *= $pmu_conversion_rate;
+
+                // abi_r($pack_rule->conversion_rate);die();
+        
+        
+                // Still one thing left: rule_type = 'promo'
+                $promo_rule = null;
+        
+        } else {
+                
+                $pmu_conversion_rate = 1.0;
+        
+                $customer_final_price = $product->getPriceByCustomerPriceRules( $customer, $quantity, $currency );
+                if ( !$customer_final_price )
+                    $customer_final_price = clone $customer_price;  // No price Rules available
+        
+                $unit_customer_price       = $customer_price->getPrice();
+
+                // Better price?
+                if ( $customer_final_price->getPrice() > $unit_customer_price )
+                {
+                    $customer_final_price = clone $customer_price;
+                }
+                $unit_customer_final_price = $customer_final_price->getPrice();
+        
+        
+                // Still one thing left: rule_type = 'promo'
+                $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
         }
-        $unit_customer_final_price = $customer_final_price->getPrice();
-
-
-        // Still one thing left: rule_type = 'promo'
-        $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
 
         // abi_r($customer->getPriceRules( $product, $currency ), true);
 
         if ($promo_rule)
         {
             $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
-            $extra_quantity_label = $promo_rule->name;
+            $extra_quantity_label = $extra_quantity > 0 ? $promo_rule->name : '';
         } else {
             $extra_quantity = 0.0;
             $extra_quantity_label = '';
@@ -502,6 +550,9 @@ class Cart extends Model
             'quantity' => $quantity, 
             'extra_quantity' => $extra_quantity,
             'extra_quantity_label' => $extra_quantity_label,
+
+            'package_measure_unit_id' => $package_measure_unit_id,
+            'pmu_conversion_rate' => $pmu_conversion_rate,
 
             'unit_customer_price'       => $unit_customer_price,
             'unit_customer_final_price' => $unit_customer_final_price,
@@ -579,7 +630,11 @@ class Cart extends Model
 	        		'reference' => $product->reference, 
 	        		'name' => $product->name, 
 	        		'quantity' => $quantity, 
-	        		'measure_unit_id' => $product->measure_unit_id,
+	        		'measure_unit_id' => $product->measure_unit_id,            
+
+                    'package_measure_unit_id' => $product->measure_unit_id,
+                    'pmu_conversion_rate' => 1.0,
+
                     'unit_customer_price' => $unit_customer_price,
                     'tax_percent'         => $tax_percent,
 	 //       		'cart_id' => $product->,
@@ -781,7 +836,10 @@ class Cart extends Model
                 'quantity' => 1, 
                 'extra_quantity' =>0,
                 'extra_quantity_label' => '',
-                'measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+                'measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),            
+
+                'package_measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+                'pmu_conversion_rate' => 1.0,
 
                 'unit_customer_price'       => 0.0,
                 'unit_customer_final_price' => 0.0,

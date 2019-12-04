@@ -22,13 +22,8 @@
                 </div>
                 <a href="{{ URL::to('customers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a -->
             </div>
-            <h2><!-- a href="{{ URL::to('customers') }}">{{ l('Shopping Cart') }}</a> <span style="color: #cccccc;">/</span --> {{ l('Shopping Cart') }} [{{ $cart->id }}] &nbsp; <span class="badge pull-right" style="background-color: #3a87ad; margin-right: 72px; margin-top: 8px;" title="{{ '' }}">{{ $cart->currency->iso_code }}</span> &nbsp; 
-
-                 @if($cart->customer->sales_equalization)
-                    <span id="sales_equalization_badge" class="badge pull-right" style="xbackground-color: #3a87ad; margin-right: 18px; margin-top: 8px;" title="{{ l('Equalization Tax') }}"> {{ l('SE') }} </span>
-                 @endif
-
-              </h2>
+            <h2><!-- a href="{{ URL::to('customers') }}">{{ l('Shopping Cart') }}</a> <span style="color: #cccccc;">/</span --> {{  l('Shopping Cart') }} [{{ $cart->id }}] &nbsp;
+            </h2>
         </div>
     </div>
 </div>

@@ -626,17 +626,23 @@ class Product extends Model {
      */
     public function measureunitsGet()
     // used by: public function getMeasureunitsAttribute()
-    {
-        if ( Configuration::isFalse('ENABLE_MANUFACTURING') )
-            return $this->measureunit;
-        
+    {        
         $list = $this->productmeasureunits;
 
+        // Would be better a hasmanythrou relation...
         $units = $list->map(function ($item, $key) {
-            return $item->measureunit;
+            $unit = $item->measureunit;
+            $unit->conversion_rate = $item->conversion_rate;
+            return $unit;
         });
 
-        return $units->prepend( $this->measureunit );  // ->pluck('name', 'id')->toArray();
+        // Not sure if Product (default or stock) Measure Unit is in database, so remove (if present) and add
+        $extra_units = $units->reject(function ($value, $key) {
+            return $value->id == $this->measure_unit_id;
+        });
+
+        // Deault unit first
+        return $extra_units->prepend( $this->measureunit );  // ->pluck('name', 'id')->toArray();
     }
     
     
@@ -647,16 +653,21 @@ class Product extends Model {
      */
     public function extra_measureunitsGet()
     {
-        if ( Configuration::isFalse('ENABLE_MANUFACTURING') )
-            return collect([]);
-        
         $list = $this->productmeasureunits;
 
+        // Would be better a hasmanythrou relation...
         $units = $list->map(function ($item, $key) {
-            return $item->measureunit;
+            $unit = $item->measureunit;
+            $unit->conversion_rate = $item->conversion_rate;
+            return $unit;
         });
 
-        return $units;  // ->pluck('name', 'id')->toArray();
+        // Not sure if Product (default or stock) Measure Unit is in database, so remove (if present) and add
+        $extra_units = $units->reject(function ($value, $key) {
+            return $value->id == $this->measure_unit_id;
+        });
+
+        return $extra_units;  // ->pluck('name', 'id')->toArray();
     }
 
 
@@ -1076,6 +1087,10 @@ class Product extends Model {
                                 if ($customer->customer_group_id)
                                     $query->orWhere('customer_group_id', $customer->customer_group_id);
                             }
+
+                            $query->orWhere( function($query1) {
+                                    $query1->whereDoesntHave('customer');
+                                } );
                         } )
                     // Product range
                     ->where( function($query) use ($product) {
@@ -1084,7 +1099,7 @@ class Product extends Model {
                                     $query->orWhere('category_id',  $product->category_id);
                         } )
                     // Quantity range
-                    ->where( 'from_quantity', '>', 1 )
+//                    ->where( 'from_quantity', '>=', 1 )
                     // Date range
                     ->where( function($query){
                                 $now = Carbon::now()->startOfDay(); 
@@ -1122,6 +1137,56 @@ class Product extends Model {
     public function hasExtraItemsPriceRules( Customer $customer = null )
     {
         return $this->getQuantityPriceRules($customer)->contains('rule_type', 'promo');
+    }
+
+    public function hasPackagePriceRules( Customer $customer = null )
+    {
+        $munits = $this->extra_measureunits->pluck('id');
+
+        return $this->getQuantityPriceRules($customer)->whereIn('measure_unit_id', $munits)->contains('rule_type', 'pack');
+
+        $rules = $this->getQuantityPriceRules($customer)->contains('rule_type', 'pack');
+
+        if ( !$rules )
+            return collect([]);
+
+       
+
+        abi_r($rules);die();
+
+         // Hummm! Let's check measure units
+        $munits = $this->extra_measureunits;
+        foreach ($rules as $key => $rule) {
+            # code...
+            $rmu = $rule->measure_unit_id;
+            if ( !$munits->contains('id', $rmu) )
+            {
+                // Discard rule
+                $rules->forget($key);
+            }
+        }
+
+        return $rules;
+    }
+
+    public function getPackagesWithPriceRules( Customer $customer = null )
+    {
+        $packages = null;
+
+        $munits = $this->extra_measureunits->pluck('id');
+
+        $rules =  $this->getQuantityPriceRules($customer)->whereIn('measure_unit_id', $munits)->where('rule_type', 'pack');
+
+        if ( $rules->count() > 0 )
+        {
+            $packages = $rules->map(function ($item, $key) {
+                            return $item->measureunit;
+                        })
+                        ->unique()
+                        ->prepend( $this->measureunit );
+        }
+
+        return $packages;
     }
 
     /**

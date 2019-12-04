@@ -216,6 +216,17 @@
             return false;
 
         });
+
+
+        $(document).on('click', '.update-line-measureunit', function(evnt) {
+            var id          = $(this).attr('data-id');
+            var quantity    = $("#"+id+"_quantity").val();
+            var measureunit = $(this).attr('data-measureunit');
+
+            updateCartlineMeasureUnit(id, quantity, measureunit);
+            return false;
+
+        });
         
 
         $(document).on('keydown','.input-line-quantity', function(evnt){
@@ -270,6 +281,43 @@
       var payload = { 
                         line_id : line_id,
                         quantity : quantity
+                    };
+
+      $.ajax({
+          url : url,
+          headers : {'X-CSRF-TOKEN' : token},
+          type : 'POST',
+          dataType : 'json',
+          data : payload,
+
+          success: function(result){
+
+              loadCartlines();
+
+              $(function () {  $('[data-toggle="tooltip"]').tooltip()});
+
+              showAlertDivWithDelay("#msg-success-update");
+
+              console.log(result);
+          }
+      });
+
+  }
+  
+
+  function updateCartlineMeasureUnit(line_id=0, quantity=0, measureunit=0) {
+     
+     if (line_id<=0) return ;
+
+     // alert(line_id+' - '+quantity);
+
+      var url = "{{ route('abcc.cart.updateline') }}";
+      var token = "{{ csrf_token() }}";
+
+      var payload = { 
+                        line_id : line_id,
+                        quantity : quantity,
+                        measureunit : measureunit
                     };
 
       $.ajax({

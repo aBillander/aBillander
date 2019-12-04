@@ -95,7 +95,8 @@
       <th>{{l('Product')}}</th>
       <th>{{l('Customer')}}</th>
       <th>{{l('Customer Group')}}</th>
-      <th>{{l('Currency')}}</th>
+      <th>{{-- l('Measure Unit') --}}</th>
+      <!-- th>{{l('Currency')}}</th -->
       <th class="text-right">{{l('Price')}}</th>
       <!-- th class="text-right">{{l('Discount Percent')}}</th>
       <th class="text-right">{{l('Discount Amount')}}</th -->
@@ -124,9 +125,10 @@
           @endif
         </td>
       <td>{{ optional($rule->customergroup)->name }}</td>
-      <td>{{ optional($rule->currency)->name }}</td>
+      <td>{{ optional($rule->measureunit)->name }}</td>
+      <!-- td>{{ optional($rule->currency)->name }}</td -->
 
-@if($rule->rule_type=='price')
+@if($rule->rule_type!='promo')
       <td class="text-right">{{ $rule->as_price('price') }}</td>
 @else
       <td class="text-right"> </td>

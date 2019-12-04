@@ -12,7 +12,8 @@ class PriceRule extends Model
 
     public static $types = [
                 'price', 
-                'promo',
+                'promo',       // Extra units free of charge
+                'pack',        // Price for different measure unit than default / stock measure unit
             ];
 
     protected $dates = [
@@ -26,6 +27,7 @@ class PriceRule extends Model
                            'price', 'discount_percent', 'discount_amount', 'discount_amount_is_tax_incl',
                            'from_quantity', 'extra_quantity',
                            'date_from', 'date_to',
+                           'measure_unit_id', 'conversion_rate',
     ];
 
     public static $rules = [
@@ -107,6 +109,11 @@ class PriceRule extends Model
     public function currency()
     {
         return $this->belongsTo('App\Currency');
+    }
+
+    public function measureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
     }
 
 

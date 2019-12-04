@@ -757,6 +757,31 @@ class Customer extends Model {
         return $rule;
     }
 
+    public function getPackageRule( Product $product, $package_measure_unit_id = 0, Currency $currency = null )
+    {
+
+        if ( !$package_measure_unit_id ) 
+            return null;
+
+        if (!$currency && $this->currency_id)
+            $currency = $this->currency;
+
+        if (!$currency)
+            $currency = Context::getContext()->currency;
+
+
+        $rule = $this->getPriceRules( $product, $currency )
+                    ->where('rule_type', 'pack')
+                    ->where('measure_unit_id', $package_measure_unit_id)
+//                    ->sortBy('from_quantity')
+                    ->sortBy(function ($item, $key) {   // Best Rule for Customer
+                        return $item->price / $item->conversion_rate;
+                    })
+                    ->first();
+
+        return $rule;
+    }
+
 
     public function getPriceRules( Product $product, Currency $currency = null )
     {

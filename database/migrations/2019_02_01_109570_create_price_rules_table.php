@@ -50,6 +50,9 @@ class CreatePriceRulesTable extends Migration {
 			$table->dateTime('date_from')->nullable();
 			$table->dateTime('date_to')->nullable();
 
+            $table->integer('measure_unit_id')->unsigned()->nullable();
+            $table->decimal('conversion_rate', 20, 6)->default(1.0);
+
 
 
 			$table->timestamps();

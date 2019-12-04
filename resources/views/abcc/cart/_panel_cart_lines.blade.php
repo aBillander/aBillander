@@ -18,7 +18,7 @@
                       <i class="fa fa-question-circle abi-help"></i>
                    </a></th>
                <th> </th>
-               <th class="text-right">
+               <th class="text-center">
                   <span class="button-pad">{{ l('Customer Price') }}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                           data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
@@ -87,7 +87,7 @@
             <div xclass="form-group">
               <div class="input-group" style="width: 81px;">
 
-                <input class="input-line-quantity form-control input-sm col-xs-2" data-id="{{$line->id}}" data-quantity="{{ (int) $line->quantity }}" type="text" size="5" maxlength="5" style="xwidth: auto;" value="{{ (int) $line->quantity }}" onclick="this.select()" >
+                <input class="input-line-quantity form-control input-sm col-xs-2" data-id="{{$line->id}}" data-quantity="{{ (int) $line->quantity }}" type="text" size="5" maxlength="5" style="xwidth: auto;" value="{{ (int) $line->quantity / $line->pmu_conversion_rate }}" onclick="this.select()" id="{{$line->id}}_quantity">
 
                 <span class="input-group-btn">
                   <button class="update-line-quantity btn btn-sm btn-lightblue" data-id="{{$line->id}}" data-quantity="{{ (int) $line->quantity }}" type="button" title="{{l('Apply', [], 'layouts')}}" xonclick="add_discount_to_order($('#order_id').val());">
@@ -101,8 +101,38 @@
       </td>
       <td class="button-pad">
 
-@if ( $line->product->measureunits->count() > 1 )   {{-- Has extra measure units! --}}
+@if ( $line->product->getPackagesWithPriceRules( \Auth::user()->customer ) )   {{-- Has extra measure units! --}}
                 {{-- {!! Form::select('measure_unit_id', $line->product->measureunits->pluck('name', 'id')->toArray(), $line->product->measure_unit_id, array('class' => 'form-control form-control-sm')) !!} --}}
+
+                {{-- $line->product->hasPackagePriceRules( \Auth::user()->customer ) --}}
+
+
+                   <span class="pull-right" style="position: absolute; padding-right: 7px" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Prices per Units!', 'abcc/catalogue') }}">
+                      <i class="fa fa-info-circle abi-help" style="color: #ff0084;"></i>
+                   </span>
+
+
+<ul class="nav nav-pills pull-left" style="border: 1px solid #dddddd;border-radius: 3px;">
+  <li class="dropdown" xstyle="float: left;position: relative;
+
+display: inline-block;">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" style="padding: 5px 7px;">
+      {{ $line->package_measureunit->sign }} <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-right">
+
+@foreach( $line->product->getPackagesWithPriceRules( \Auth::user()->customer ) as $unit )
+
+      <li><a href="#" class="update-line-measureunit" data-id="{{$line->id}}" data-measureunit="{{ $unit->id }}">{{ $unit->name }}</a></li>
+
+@endforeach
+
+    </ul>
+  </li>
+</ul>
+
+
 @else
 
 <!-- div class="btn-group">
@@ -116,6 +146,7 @@
     <li><a href="#">Separated link</a></li>
   </ul>
 </div -->
+{{--
 
 
                    <span class="pull-right" style="position: absolute;" data-toggle="popover" data-placement="top" data-container="body" 
@@ -140,15 +171,19 @@ display: inline-block;">
     </ul>
   </li>
 </ul>
-
+--}}
 <!-- p>Por unidad: 12,00€</p -->
 
 @endif
 
       </td>
-
-      <td class="text-right">
-          {{ $line->as_price('unit_customer_price') }}
+{{--
+  https://stackoverflow.com/questions/25732320/bootstrap-grid-inside-a-td
+  http://jsfiddle.net/9jeyyfdL/
+--}}
+      <td class="text-right" style="white-space:nowrap">
+        <div style="display:inline-block; float: none; padding-left: 7px">
+          {{ $line->as_priceable( $line->unit_customer_final_price * $line->pmu_conversion_rate ) }}
 
           <!-- p class="text-info">{{ $line->as_priceable($line->unit_customer_price + $line->product->getEcotax()) }}</p -->
 
@@ -157,10 +192,10 @@ display: inline-block;">
           <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules' data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;" title="{{ l('Show Special Prices', 'abcc/catalogue') }} {{-- $line->product->hasQuantityPriceRules( \Auth::user()->customer ) --}}"><i class="fa fa-thumbs-o-up"></i></a>
 
 @endif
-
+        </div>
       </td>
 
-      <td class="text-right">{{ $line->as_priceable($line->quantity * $line->unit_customer_price) }}</td>
+      <td class="text-right">{{ $line->as_priceable($line->quantity * $line->unit_customer_final_price) }}</td>
 
                 <td class="text-right button-pad">
                     <!-- a class="btn btn-sm btn-info" title="XXXXXS" onClick="loadcustomerorderlines();"><i class="fa fa-pencil"></i></a -->

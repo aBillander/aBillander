@@ -441,7 +441,7 @@ class Cart extends Model
         $package_measure_unit_id = $measureunit_id  > 0 ? $measureunit_id  : $line->package_measure_unit_id;
         $pmu_conversion_rate     = $line->pmu_conversion_rate;
 
-        $hasPackage = ( $package_measure_unit_id != $product->measure_unit_id );
+        //  $hasPackage =  ( $package_measure_unit_id != $product->measure_unit_id );
 
         // Tax percent (sum of all applicable tax rules)
         $tax_rates = $this->getTaxPercent($product);    // Array
@@ -459,14 +459,17 @@ class Cart extends Model
         $customer_price = $product->getPriceByCustomerPriceList( $customer, $quantity, $currency );
 
         // Is there a Price for this Customer?
-        if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer
+        if (!$customer_price) return false;    // return redirect()->route('abcc.cart')->with('error', 'No se pudo añadir el producto porque no está en su tarifa.');      // Product not allowed for this Customer        
+
+        $hasPackage =  ( $package_measure_unit_id != $product->measure_unit_id )
+                    && ( $pack_rule = $customer->getPackageRule( $product, $package_measure_unit_id, $currency ) );
 
         // Still with me? Lets check Price rules with type='price'
         if ($hasPackage)
         {
         
                 //Do check: rule_type = 'pack'
-                $pack_rule = $customer->getPackageRule( $product, $package_measure_unit_id, $currency );
+                // $pack_rule = $customer->getPackageRule( $product, $package_measure_unit_id, $currency );
 
                 // Calculate quantity conversion
 //                $pmu_conversion_rate = $product->extra_measureunits->where('id', $package_measure_unit_id)->first()->conversion_rate;
@@ -809,10 +812,21 @@ class Cart extends Model
 
         // Load parameters to aply rules
         $shipping_label = Configuration::get('ABCC_SHIPPING_LABEL');
-        // $shipping_label = 'Coste del Envío';
-        $free_shipping  = Configuration::get('ABCC_FREE_SHIPPING_PRICE');
-        $state_42       = Configuration::get('ABCC_STATE_42_SHIPPING');
-        $country_1      = Configuration::get('ABCC_COUNTRY_1_SHIPPING');
+
+        $shipping_method_id = $cart->customer->getShippingMethodId();
+
+        if ( $shipping_method_id == 4 )
+        {
+            $free_shipping  = Configuration::get('ABCC_FREE_SHIPPING_PRICE');
+            $state_42       = Configuration::get('ABCC_STATE_42_SHIPPING');
+            $country_1      = Configuration::get('ABCC_COUNTRY_1_SHIPPING');
+
+        } else {
+            $free_shipping  = 0.0;
+            $state_42       = 0.0;
+            $country_1      = 0.0;
+        }
+
         $tax_id         = Configuration::get('ABCC_SHIPPING_TAX');
 
         $tax = Tax::find($tax_id);

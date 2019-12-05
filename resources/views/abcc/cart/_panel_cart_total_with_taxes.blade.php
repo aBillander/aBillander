@@ -31,6 +31,7 @@
     <td  colspan="2">
         <h4><span style="color: #dd4814;">{{ l('Shipping Cost') }}</span>
 
+                        @if ( $cart->total_shipping_tax_excl > 0.0 && \App\Configuration::get('ABCC_FREE_SHIPPING_PRICE') > 0.0 )
                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
                                   xdata-trigger="focus"
                                   data-html="true" 
@@ -39,7 +40,12 @@
                                     ">
                                   <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
                                </a>
+                        @endif
         </h4>
+        {{ optional($cart->customer->shippingmethod)->name }}
+        @if ( optional($cart->customer->shippingmethod)->carrier )
+            :: {{ $cart->customer->shippingmethod->carrier->name}}
+        @endif
     </td>
 
     <!-- td class="text-center lead">

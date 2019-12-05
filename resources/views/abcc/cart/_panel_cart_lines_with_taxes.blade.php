@@ -87,6 +87,9 @@
                 @endif</td>
 
       <td>
+@php
+  $line->img = $line->product->getFeaturedImage();
+@endphp
                 @if ($line->img)
                     <a class="view-image" data-html="false" data-toggle="modal"
                        href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-large_default' . '.' . $line->img->extension ) }}"

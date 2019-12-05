@@ -36,6 +36,15 @@ class CustomerShippingSlipClosedListener
             //
             $document->makeStockMovements();
         }
+
+
+        // 
+        // Ecotaxes stuff
+        // 
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') )
+        {
+            $document->loadLineEcotaxes();
+        }
         
     }
 }

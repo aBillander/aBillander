@@ -178,7 +178,7 @@ class Customer extends Model {
             )
             return $this->shipping_method_id;
 
-        return Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD');
+        return Configuration::getInt('DEF_SHIPPING_METHOD');
     }
 
 

@@ -622,10 +622,19 @@ class Billable extends Model
 
     public function getMaxLineSortOrder()
     {
+        // $this->load(['lines']);
+
         if ( $this->lines->count() )
             return $this->lines->max('line_sort_order');
 
         return 0;           // Or: return intval( $this->customershippingsliplines->max('line_sort_order') );
+    }
+    
+    public function getNextLineSortOrder()
+    {
+        $inc = 10;
+
+        return $this->getMaxLineSortOrder() + $inc;
     }
     
     public function hasShippingAddress()

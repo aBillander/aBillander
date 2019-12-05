@@ -153,7 +153,7 @@ trait BillableDocumentLinesTrait
 
         $line_sort_order = array_key_exists('line_sort_order', $params) 
                             ? $params['line_sort_order'] 
-                            : $this->getMaxLineSortOrder() + 10;
+                            : $this->getNextLineSortOrder();
 
         $extra_quantity = array_key_exists('extra_quantity', $params) 
                             ? $params['extra_quantity'] 
@@ -221,6 +221,37 @@ trait BillableDocumentLinesTrait
         $rules = $product->getTaxRules( $this->taxingaddress,  $this->customer );
 
         $document_line->applyTaxRules( $rules );
+
+        // Hummm! What about extra units (quantity at no cost)?
+        if ( $extra_quantity > 0.0 )
+        {
+            // Re-Build OrderLine Object
+            $data['line_sort_order'] = $line_sort_order + 1;    // Stay close to previous line, because this line "is a child of" previous line
+            $data['quantity'] = $extra_quantity;
+
+            $data['extra_quantity'] = 0.0;
+            $data['extra_quantity_label'] = '';
+
+            $data['unit_customer_final_price'] = 0.0;
+            $data['unit_customer_final_price_tax_inc'] = 0.0;
+
+            $data['unit_final_price'] = 0.0;
+            $data['unit_final_price_tax_inc'] = 0.0;
+
+            $data['total_tax_incl'] = 0.0;
+            $data['total_tax_excl'] = 0.0;
+
+            $data['notes'] = $extra_quantity_label;
+
+            // Add extra line
+            $document_extra_line = ( new $lineClass() )->create( $data );
+
+            $this->lines()->save($document_extra_line);
+
+
+            // Let's deal with taxes
+            $document_extra_line->applyTaxRules( $rules );
+        }
 
 
         // Now, update Document Totals
@@ -534,7 +565,7 @@ trait BillableDocumentLinesTrait
 
         $line_sort_order = array_key_exists('line_sort_order', $params) 
                             ? $params['line_sort_order'] 
-                            : $this->getMaxLineSortOrder() + 10;
+                            : $this->getNextLineSortOrder();
 
         $notes = array_key_exists('notes', $params) 
                             ? $params['notes'] 

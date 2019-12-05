@@ -6,6 +6,8 @@ use App\Events\CustomerShippingSlipClosed;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use App\Configuration;
+
 class CustomerShippingSlipClosedListener
 {
     /**

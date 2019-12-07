@@ -1182,10 +1182,13 @@ class Product extends Model {
         if ( $rules->count() > 0 )
         {
             $packages = $rules->map(function ($item, $key) {
-                            return $item->measureunit;
+                            $unit = $item->measureunit;
+                            $unit->conversion_rate = $item->conversion_rate;
+                            return $unit;
                         })
                         ->unique()
-                        ->prepend( $this->measureunit );
+//                        ->prepend( $this->measureunit )
+                        ;
         }
 
         return $packages;

@@ -58,7 +58,7 @@ trait BillableInvoiceableTrait
             'invoicing_address_id' => $this->invoicing_address_id,
             'shipping_address_id' => $this->shipping_address_id,
             'warehouse_id' => $this->warehouse_id,
-            'shipping_method_id' => $this->shipping_method_id ?? $this->customer->shipping_method_id ?? Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD'),
+            'shipping_method_id' => $this->shipping_method_id ?? $this->customer->getShippingMethodId(),
 //            'carrier_id' => $this->carrier_id,
             'sales_rep_id' => $this->sales_rep_id,
             'currency_id' => $this->currency_id,

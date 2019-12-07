@@ -182,10 +182,10 @@ class AbccCustomerOrdersController extends Controller {
 			'shipping_address_id'  => $cart->shipping_address_id,
 
 			'warehouse_id' => Configuration::get('DEF_WAREHOUSE'),
-			'shipping_method_id' => $customer->shipping_method_id,	// Do not apply company default, since maybe a Shipping Method for Customer Center
+			'shipping_method_id' => $cart->shipping_method_id,	// Do not apply company default, since maybe a Shipping Method for Customer Center
 			'sales_rep_id' => $customer->sales_rep_id,
 			'currency_id' => $cart->currency->id,
-			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_PAYMENT_METHOD'),
+			'payment_method_id' => $cart->payment_method_id,
 			'template_id' => \App\Configuration::get('ABCC_DEFAULT_ORDER_TEMPLATE'),
 		];
 

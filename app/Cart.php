@@ -83,10 +83,10 @@ class Cart extends Model
                 'customer_id' => $customer->id,
                 'invoicing_address_id' => $customer->invoicing_address_id,
                 'shipping_address_id' => Auth::user()->shippingaddress->id,
-                'shipping_method_id' => $customer->shipping_method_id,
+                'shipping_method_id' => $customer->getShippingMethodId(),
  //             'carrier_id',
                 'currency_id' => $customer->currency_id,
-                'payment_method_id' => $customer->payment_method_id,
+                'payment_method_id' => $customer->getPaymentMethodId(),
 //                'date_prices_updated',
                 'document_discount_percent' => (float) $customer->document_percent,
                 'document_ppd_percent' => (float) $customer->document_ppd_percent,
@@ -157,10 +157,21 @@ class Cart extends Model
 
             // To Do: Please: check if $shipping_address_id is within Auth::user()->getAllowedAddresses()
             // See CustomerCartController
-            if ( $cart->cartlines->count() == 0 )
+            if ( $cart->cartproductlines->count() == 0 )
             {
                 //
-                $cart->update(['shipping_address_id' => Auth::user()->shippingaddress->id]);
+                $cart->update([
+                                'shipping_address_id' => Auth::user()->shippingaddress->id,
+                                'shipping_method_id' => $customer->getShippingMethodId(),
+                                'payment_method_id' => $customer->getPaymentMethodId(),
+                            ]);
+            } else {
+                //
+                $cart->update([
+//                                'shipping_address_id' => Auth::user()->shippingaddress->id,
+//                                'shipping_method_id' => $customer->getShippingMethodId(),
+                                'payment_method_id' => $customer->getPaymentMethodId(),
+                            ]);
             }
 
 
@@ -179,10 +190,10 @@ class Cart extends Model
         		'invoicing_address_id' => $customer->invoicing_address_id,
                 // Boot method takes care of this:
 //        		'shipping_address_id' => $customer->shipping_address_id,
-        		'shipping_method_id' => $customer->shipping_method_id,
+        		'shipping_method_id' => $customer->getShippingMethodId(),
  //       		'carrier_id',
         		'currency_id' => $customer->currency_id,
-        		'payment_method_id' => $customer->payment_method_id,
+        		'payment_method_id' => $customer->getPaymentMethodId(),
 //                'date_prices_updated',
                 'document_discount_percent' => (float) $customer->document_percent,
                 'document_ppd_percent' => (float) $customer->document_ppd_percent,
@@ -813,7 +824,7 @@ class Cart extends Model
         // Load parameters to aply rules
         $shipping_label = Configuration::get('ABCC_SHIPPING_LABEL');
 
-        $shipping_method_id = $cart->customer->getShippingMethodId();
+        $shipping_method_id = $cart->shipping_method_id;
 
         if ( $shipping_method_id == 4 )
         {

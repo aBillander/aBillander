@@ -122,9 +122,11 @@ display: inline-block;">
     </a>
     <ul class="dropdown-menu dropdown-menu-right">
 
+      <li><a href="#" class="update-line-measureunit" data-id="{{$line->id}}" data-measureunit="{{ $line->product->measureunit->id }}">{{ $line->product->measureunit->name }}</a></li>
+
 @foreach( $line->product->getPackagesWithPriceRules( \Auth::user()->customer ) as $unit )
 
-      <li><a href="#" class="update-line-measureunit" data-id="{{$line->id}}" data-measureunit="{{ $unit->id }}">{{ $unit->name }}</a></li>
+      <li><a href="#" class="update-line-measureunit" data-id="{{$line->id}}" data-measureunit="{{ $unit->id }}">{{ $unit->name }} - {{ round($unit->conversion_rate, 0) }} {{ $line->product->measureunit->name }}</a></li>
 
 @endforeach
 

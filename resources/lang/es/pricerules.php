@@ -11,7 +11,8 @@ return [
 
 	'Price Rules - Create' => 'Regla de Precio - Crear',
 	'New Price Rule' => 'Nueva Regla de Precio',
-	'New Quantity Rule' => 'Nueva Regla de Cantidad',
+	'New Package Rule' => 'Nueva Regla por Caja',
+	'New Promo Rule' => 'Nueva Regla de Promoción',
 	'Date from' => 'Fecha desde',
 	'Date to' => 'Fecha hasta',
 	'Rule Name' => 'Nombre de la Regla',
@@ -50,6 +51,10 @@ return [
 
 	'Extra Items' => 'Unidades sin Coste',
 	'If you fill this field, the value in "Price" will not take efect.' => 'Si rellena esta campo, el valor en "Precio" no será tenido en cuenta.',
+
+	'Package' => 'Caja',
+	'Price per Package' => 'Precio por Caja',
+	'Unit Price' => 'Precio Unitario',
 
 
 ];

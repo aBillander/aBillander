@@ -95,7 +95,7 @@
                     if ( response.payment_method_id > 0 ) {
                       $('#payment_method_id').val(response.payment_method_id);
                     } else {
-                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
+                      $('#payment_method_id').val({{ \App\Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD') }});
                     }
 
                     $('#currency_id').val(response.currency_id);
@@ -123,7 +123,7 @@
 
                     shipping_method_id = response.shipping_method_id;
                     if (shipping_method_id == null) {
-                        shipping_method_id = "{{ intval(\App\Configuration::get('DEF_SHIPPING_METHOD'))}}";
+                        shipping_method_id = "{{ \App\Configuration::getInt('DEF_SHIPPING_METHOD') }}";
                     }
                     $('#shipping_method_id').val( shipping_method_id );
 
@@ -200,6 +200,10 @@
         $( "#reference" ).html( '<div class="form-control">'+ui.item.reference+'</div>' );
         $( "#product_id" ).val( ui.item.id );
 
+        // Cost & Price stuff (to be done)
+        // Measure Units
+        getProductData( ui.item.id );
+
         // Product has combinations?
         $("#product_options").addClass('loading');
 
@@ -241,6 +245,75 @@
             .appendTo(ul);
     };
   });
+
+
+
+
+
+        function getProductData( product_id )
+        {
+            var token = "{{ csrf_token() }}";
+
+            $.ajax({
+                url: "{{ route('products.ajax.nameLookup') }}",
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    product_id: product_id
+                },
+                success: function (response) {
+                    // var str = '[' + response.identification+'] ' + response.name_fiscal;
+                    var conversion;
+
+                    $('#measure_unit_id').empty();
+
+    //                $('#shipping_address_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
+
+                    $.each(response.product.extra_measureunits, function(index, element){
+                      conversion = ' - '+Math.round(element.conversion_rate)+' x '+response.product.measureunit.name;
+                      $('#measure_unit_id').append('<option value="'+ element.id +'">'+ element.name +conversion+'</option>');
+                    });
+
+                    if ( response.shipping_address_id > 0 ) {
+                      $('#shipping_address_id').val(response.shipping_address_id);
+                    } else {
+                      $('#shipping_address_id').val(response.invoicing_address_id);
+                    }
+
+                    console.log(response);
+                }
+            });
+        }
+
+    // See: https://stackoverflow.com/questions/20705905/bootstrap-3-jquery-event-for-active-tab-change
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href") // activated tab
+      if (target == '#tab3default')
+      {
+                    $('#measure_unit_id').empty();
+
+                    $('#measure_unit_id').append('<option value="0">{{ l('-- Please, select --', 'layouts') }}</option>');
+      }
+      /*
+      if ($(target).is(':empty')) {
+        $.ajax({
+          type: "GET",
+          url: "/article/",
+          error: function(data){
+            alert("There was a problem");
+          },
+          success: function(data){
+            $(target).html(data);
+          }
+      })
+     }
+     */
+    });
+
+
+
+
 </script>
 
 @endsection

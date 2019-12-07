@@ -6,7 +6,8 @@
 
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab1default" data-toggle="tab">{{ l('New Price Rule') }}</a></li>
-                            <li><a href="#tab2default" data-toggle="tab">{{ l('New Quantity Rule') }}</a></li>
+                            <li><a href="#tab2default" data-toggle="tab">{{ l('New Promo Rule') }}</a></li>
+                            <li><a href="#tab3default" data-toggle="tab">{{ l('New Package Rule') }}</a></li>
                         </ul>
 
    </div>
@@ -87,11 +88,16 @@
 		                @include('price_rules._tab_create_rule_price')
 
 		      </div>
-		      <div class="tab-pane fade" id="tab2default">
-		                
-		                @include('price_rules._tab_create_rule_promo')
+          <div class="tab-pane fade" id="tab2default">
+                    
+                    @include('price_rules._tab_create_rule_promo')
 
-		      </div>
+          </div>
+          <div class="tab-pane fade" id="tab3default">
+                    
+                    @include('price_rules._tab_create_rule_pack')
+
+          </div>
 
     	</div>
 

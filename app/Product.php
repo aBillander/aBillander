@@ -89,7 +89,7 @@ class Product extends Model {
 
     protected $dates = ['deleted_at', 'available_for_sale_date'];
 
-    protected $appends = ['tool_id', 'quantity_available'];
+    protected $appends = ['extra_measureunits', 'tool_id', 'quantity_available'];
     
     protected $fillable = [ 'product_type', 'procurement_type', 
                             'name', 'reference', 'ean13', 'description', 'description_short', 
@@ -630,6 +630,7 @@ class Product extends Model {
         $list = $this->productmeasureunits;
 
         // Would be better a hasmanythrou relation...
+        // but, how to attach the right value of conversion_rate?
         $units = $list->map(function ($item, $key) {
             $unit = $item->measureunit;
             $unit->conversion_rate = $item->conversion_rate;
@@ -656,6 +657,7 @@ class Product extends Model {
         $list = $this->productmeasureunits;
 
         // Would be better a hasmanythrou relation...
+        // but, how to attach the right value of conversion_rate?
         $units = $list->map(function ($item, $key) {
             $unit = $item->measureunit;
             $unit->conversion_rate = $item->conversion_rate;

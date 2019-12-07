@@ -51,7 +51,7 @@ class CreatePriceRulesTable extends Migration {
 			$table->dateTime('date_to')->nullable();
 
             $table->integer('measure_unit_id')->unsigned()->nullable();
-            $table->decimal('conversion_rate', 20, 6)->default(1.0);
+            $table->decimal('conversion_rate', 20, 6)->default(1.0);		// Conversion to stock (main) unit. Conversion rates are calculated from one unit of your main measura unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, type "6" (since a pack of six bottles will contain six bottles)
 
 
 

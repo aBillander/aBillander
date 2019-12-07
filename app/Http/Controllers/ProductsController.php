@@ -783,6 +783,20 @@ LIMIT 1
      */
     public function ajaxProductSearch(Request $request)
     {
+
+        if ($request->has('product_id'))
+        {
+            $search = $request->product_id;
+
+            $product = Product::
+
+            // select('id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
+                                      with('measureunit')
+                                    ->find( $search );
+
+            return response()->json( [ 'product' => $product ] );
+        }
+
         $term  = $request->has('term')  ? $request->input('term')  : null ;
         $query = $request->has('query') ? $request->input('query') : $term;
 

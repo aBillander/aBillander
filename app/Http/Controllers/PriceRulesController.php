@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\PriceRule;
+use App\Product;
 use App\Configuration;
 
 use App\Traits\DateFormFormatterTrait;
@@ -80,8 +81,6 @@ class PriceRulesController extends Controller
         // Force Currency
         $request->merge( [ 'currency_id' => \App\Context::getContext()->currency->id, 'price' => (float) $request->input('price', 0) ] );
 
-		$this->validate($request, PriceRule::$rules);
-
 		$rule_type = $request->input('rule_type');
 		
 		if ($rule_type == 'promo') 
@@ -89,6 +88,26 @@ class PriceRulesController extends Controller
 			// If rule_type = 'promo', price maybe null
 			$request->merge( ['from_quantity' => $request->input('from_quantity_promo')] );
 		}
+		
+		if ($rule_type == 'pack') 
+		{
+			// 
+			$product_id = $request->input('product_id');
+			$measure_unit_id = $request->input('measure_unit_id');
+
+			$product = Product::find($product_id);
+
+			$conversion_rate = $product->extra_measureunits->where('id', $measure_unit_id)->first()->conversion_rate;
+
+
+			$request->merge( [
+								'from_quantity'   => $request->input('from_quantity_pack'),
+								'price'           => $request->input('price_pack'),
+								'conversion_rate' => $conversion_rate,
+							] );
+		}
+
+		$this->validate($request, PriceRule::$rules);
 		
 		$pricerule = $this->pricerule->create($request->all());
 

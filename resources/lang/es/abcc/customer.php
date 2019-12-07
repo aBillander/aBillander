@@ -70,4 +70,16 @@ return [
 	''     => '',
 	''     => '',
 
+	'Price by Product' => 'Precio por Producto',
+	'Free Units Promotion' => 'Promoción Unidades sin Coste',
+	'Price by Package' => 'Precio por Caja',
+
+	'Description' => 'Descripción',
+	'Quantity' => 'Cantidad',
+	'Free Quantity' => 'Cantidad sin Coste',
+	'Package' => 'Caja',
+	'Price per Package' => 'Precio por Caja',
+	'Unit Price' => 'Precio Unitario',
+
+
 ];

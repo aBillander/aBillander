@@ -185,11 +185,13 @@ class AbccCustomerController extends Controller
                                 } );
                         } )
                                 ->orderBy('product_id', 'ASC')
-                                ->orderBy('from_quantity', 'ASC');
-
+                                ->orderBy('from_quantity', 'ASC')
+                                ->get();
+/* Skip paginator
         $customer_rules = $customer_rules->paginate( $items_per_page_pricerules );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
 
         $customer_rules->setPath('customerpricerules');
+*/
 /*
         $customer_rules1 = $customer_rules->map(function ($item, $key) use ($customer) {
                             if ($item->product_id > 0)

@@ -125,6 +125,7 @@ foreach ($customers as $customer) {
         $customer->document_products_discount = 0.0;
         $customer->products_total = 0.0;
         $customer->products_profit = 0.0;
+        $customer->grand_total = 0.0;       // Including taxes && RAEE
 //        $customer-> = 0.0;
 
         $documents = $class::where('customer_id', $customer->id)
@@ -159,6 +160,8 @@ foreach ($customers as $customer) {
             $customer->document_products_discount += $document->document_products_discount;
             $customer->products_total += ($document->products_final_price - $document->products_ecotax - $document->document_products_discount);
             $customer->products_profit += $document->products_profit;
+
+            $customer->grand_total += $document->total_tax_incl;
 
 
             /*
@@ -223,7 +226,7 @@ foreach ($customers as $customer) {
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['Cliente', '', 'Operaciones', 'Valor', 'Ventas', '%Desc.', 'Coste', '%Rent', 'Beneficio', 'Ranking Vtas. %', 'Ranking Benef. %'];
+        $header_names = ['Cliente', '', 'Operaciones', 'Valor', 'Ventas', '%Desc.', 'Coste', '%Rent', 'Beneficio', 'Ranking Vtas. %', 'Ranking Benef. %', 'Ventas con Impuestos'];
 
         $data[] = $header_names;
 
@@ -251,6 +254,8 @@ foreach ($customers as $customer) {
                 $row[] = $customer->products_profit * 1.0;
                 $row[] = abi_safe_division( $customer->products_cost + $customer->products_profit, $total ) * 100.0;
                 $row[] = abi_safe_division($customer->products_profit, $total_profit) * 100.0;
+
+                $row[] = $customer->grand_total * 1.0;
     
                 $data[] = $row;
 
@@ -278,7 +283,7 @@ foreach ($customers as $customer) {
                 $sheet->mergeCells('A1:F1');
                 $sheet->mergeCells('A2:F2');
 
-                $sheet->getStyle('A4:K4')->applyFromArray([
+                $sheet->getStyle('A4:L4')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -297,6 +302,7 @@ foreach ($customers as $customer) {
                     'I' => '0.00',
                     'J' => '0.00',
                     'K' => '0.00',
+                    'L' => '0.00',
 
                 ));
                 

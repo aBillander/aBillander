@@ -29,7 +29,8 @@
                     </button>
                  </a> 
         </span>
-        <span style="color: #cccccc;">::</span> {{ abi_date_short($directdebit->document_date) }} 
+        <span style="color: #cccccc;">::</span> 
+        <a xclass="btn btn-sm btn-warning" href="{{ URL::to('sepasp/directdebits/' . $directdebit->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}">{{ abi_date_short($directdebit->document_date) }}</a> 
 
 
 @if ( $directdebit->status == "pending" )

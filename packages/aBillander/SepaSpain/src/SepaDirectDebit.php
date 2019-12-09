@@ -17,6 +17,9 @@ class SepaDirectDebit extends Model
 
     use ViewFormatterTrait;
 
+    protected $error_code    =  0;
+    protected $error_message = '';
+
     public static $schemes = [
             'CORE',
             'B2B',
@@ -73,7 +76,7 @@ class SepaDirectDebit extends Model
     {
             $list = [];
             foreach (static::$schemes as $scheme) {
-                $list[$scheme] = l(get_called_class().'.'.$scheme);
+                $list[$scheme] = l(get_called_class().'.'.$scheme, 'sepasp');
             }
 
             return $list;
@@ -81,7 +84,7 @@ class SepaDirectDebit extends Model
 
     public static function getSchemeName( $scheme )
     {
-            return l(get_called_class().'.'.$scheme);
+            return l(get_called_class().'.'.$scheme, 'sepasp');
     }
 
 
@@ -89,7 +92,7 @@ class SepaDirectDebit extends Model
     {
             $list = [];
             foreach (static::$statuses as $status) {
-                $list[$status] = l(get_called_class().'.'.$status);
+                $list[$status] = l(get_called_class().'.'.$status, 'sepasp');
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -98,12 +101,12 @@ class SepaDirectDebit extends Model
 
     public static function getStatusName( $status )
     {
-            return l(get_called_class().'.'.$status);
+            return l(get_called_class().'.'.$status, 'sepasp');
     }
 
     public function getStatusNameAttribute()
     {
-            return l(get_called_class().'.'.$this->status);
+            return l(get_called_class().'.'.$this->status, 'sepasp');
     }
 
     public function checkStatus()
@@ -257,7 +260,14 @@ class SepaDirectDebit extends Model
 
         // Maybe a waste of time? Lets see:
         if ( $collectables->count() == 0 )
+        {
+            $code = 10;
+            $message = 'No se han encontrado recibos pendientes de pago';
+
+            $this->setError($code, $message);
+
             return false;
+        }
         
         // Let's do some sorting
         $collectables = $collectables->groupBy(function ($item, $key) {
@@ -340,7 +350,25 @@ class SepaDirectDebit extends Model
 
                 // Maybe a waste of time? Lets see:
                 if ( !optional($voucher->customer)->bankaccount )
+                {
+                    $code = 20;
+                    $message = 'El Cliente ['.$voucher->customer->id.'] '.$voucher->customer->name_fiscal.' no tiene cuenta bancaria asociada';
+
+                    $this->setError($code, $message);
+
                     return false;
+                }
+
+
+                if ( $voucher->amount <= 0.0 )
+                {
+                    $code = 20;
+                    $message = 'El subtotal para el Cliente ['.$voucher->customer->id.'] '.$voucher->customer->name_fiscal.' es negativo';
+
+                    $this->setError($code, $message);
+
+                    return false;
+                }
 
 
 
@@ -545,5 +573,22 @@ class SepaDirectDebit extends Model
         }
 
         return $iban;
+    }
+
+
+/* *********************************************************************************************** */
+
+    private function setError($code, $message)
+    {
+        $this->error_code    = $code;
+        $this->error_message = $message;
+    }
+
+
+    public function getErrorMessage()
+    {
+        $message = $this->error_message ?? 'Unknown';
+
+        return  $message;
     }
 }

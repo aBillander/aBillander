@@ -179,6 +179,40 @@
             @if ( !$payment->paymentable->customer->bankaccount )
                 <i class="fa fa-exclamation-triangle btn-xs alert-danger" title="{{ l('Not a valid Bank Account!') }}"></i>
             @endif
+
+
+{{-- Alternative add voucher to SEPA direct debit
+<!-- Single button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-xs btn-success dropdown-toggle" data-toggle="dropdown">
+    <i class="fa fa-bank"></i> &nbsp; </a> <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    {!! Form::open(array('route' => 'sepasp.directdebit.add.voucher', 'id' => 'add_voucher_form_'.$payment->id)) !!}
+       {!! Form::hidden('voucher_id['. $payment->id .']', $payment->id, array('id' => 'voucher_id_'.$payment->id)) !!}
+       <div class="form-group">
+         {!! Form::select('sdd_id['. $payment->id .']', $sddList, null, ['class' => 'form-control', 'id' => 'sdd_id_'.$payment->id]) !!}
+       </div>
+       <!-- div class="form-group">
+         {!! Form::text('document_reference', null, ['class' => 'form-control', 'id' => 'document_reference',  'placeholder' => l('Reference')]) !!}
+       </div -->
+       <div class="form-group">
+         <button type="submit" class="btn alert-success">{{l('Add', 'layouts')}}</button>
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Add Voucher to automatic payment remittance.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+       </div>
+    {!! Form::close() !!}
+  </ul>
+</div>
+--}}
+
+
+
+
+
+
           @endif
         @else 
           <i class="fa fa-square-o" style="color: #df382c;"></i>
@@ -367,3 +401,35 @@ $(document).ready(function() {
 </style>
 
 @endsection
+
+
+@section('scripts') @parent 
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+      // Capture the "click" event of the link
+      // https://www.bootply.com/WAkbhdKmeb
+      $('.dropdown-menu>form').click(function(e){
+        e.stopPropagation();
+      });
+
+});
+
+</script>
+
+@endsection
+
+@section('styles')    @parent
+
+<style>
+
+  .dropdown-menu form {
+    padding:10px;
+  }
+
+</style>
+
+@endsection
+

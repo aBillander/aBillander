@@ -480,6 +480,8 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/pay'  , 'CustomerVouchersController@pay');
         Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('voucher.unlink');
 
+        Route::post('customervouchers/payvouchers'  , 'CustomerVouchersController@payVouchers')->name('customervouchers.payvouchers');
+
         Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('voucher.expresspay');
         Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('voucher.unpay');
 

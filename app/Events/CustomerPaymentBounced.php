@@ -23,9 +23,10 @@ class CustomerPaymentBounced
      *
      * @return void
      */
-    public function __construct( Payment $payment )
+    public function __construct( Payment $payment, $from_status = 'pending' )
     {
-        $this->payment = $payment;
+        $this->payment     = $payment;
+        $this->from_status = $from_status;
     }
 
     /**

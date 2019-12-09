@@ -12,6 +12,8 @@ use App\Customer;
 use App\Payment;
 use App\Configuration;
 
+use aBillander\SepaSpain\SepaDirectDebit;
+
 use App\Traits\DateFormFormatterTrait;
 
 use App\Events\CustomerPaymentReceived;
@@ -60,7 +62,21 @@ class CustomerVouchersController extends Controller
 
         $statusList = Payment::getStatusList();
 
-        return view('customer_vouchers.index', compact('payments', 'statusList'));
+        $sdds = SepaDirectDebit::where('status', 'pending')->orWhere('status', 'confirmed')
+        						->orderBy('document_date', 'desc')->orderBy('id', 'desc')
+        						->get();
+
+        // abi_r($sdds->pluck('document_reference', 'id')->toArray()); 
+
+        $sddList = [];
+        foreach ($sdds as $sdd) {
+        	# code...
+        	$sddList[$sdd->id] = $sdd->document_reference.' :: '.$sdd->status_name.' :: '.abi_date_short($sdd->document_date);
+        }
+
+        // abi_r($sddList);die();
+
+        return view('customer_vouchers.index', compact('payments', 'statusList', 'sddList'));
 	}
 
     /**
@@ -163,6 +179,7 @@ class CustomerVouchersController extends Controller
 		return view('customer_vouchers.edit', compact('payment', 'action' , 'back_route'));
 	}
 
+
 	public function pay($id, Request $request)
 	{
 		$action = 'pay';
@@ -175,6 +192,46 @@ class CustomerVouchersController extends Controller
 		
 		return view('customer_vouchers.edit', compact('payment', 'action' , 'back_route'));
 	}
+
+	public function payVouchers(Request $request)
+	{
+        // Dates (cuen)
+        $this->mergeFormDates( ['payment_date'], $request );
+		
+		// Validate input (to do)
+		$rules = [
+            'payment_date' => 'required|date',
+		];
+        $this->validate($request, $rules);
+
+		// $payment_date = ;
+
+		$list = $request->input('vouchers', []);
+
+        if ( count( $list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts') . l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+
+		// abi_r($list);die();
+        $payments = $this->payment->whereIn('id', $list)->where('status', 'pending')->get();
+
+        // Do the Mambo!
+        foreach ( $payments as $payment ) 
+        {
+        	$payment->payment_date = $request->input('payment_date');
+
+			$payment->status   = 'paid';
+			$payment->save();
+
+			// Update Customer Risk
+			event(new CustomerPaymentReceived($payment));
+        }
+
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') .  $request->input('payment_date_form'));
+	}
+
 
 	public function bounce($id, Request $request)
 	{
@@ -352,6 +409,8 @@ class CustomerVouchersController extends Controller
 
 			}
 
+			// 'pending' and / or 'paid' vouchers can be bounced
+			$from_status = $payment->status;
 //			$payment->name     = $request->input('name',     $payment->name);
 //			$payment->due_date = $request->input('due_date', $payment->due_date);
 			$payment->payment_date = $request->input('payment_date');
@@ -362,7 +421,7 @@ class CustomerVouchersController extends Controller
 			$payment->save();
 
 			// Update Customer Risk
-			event(new CustomerPaymentBounced($payment));
+			event(new CustomerPaymentBounced($payment, $from_status));
 
 
 			return redirect($back_route)

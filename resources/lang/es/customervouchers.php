@@ -46,6 +46,7 @@ return [
 	'Amount'     => 'Cantidad',
 	'Amount Paid'     => 'Pagado',
 	'Make Payment'     => 'Realizar Pago',
+	'Make Payment of selected Vouchers' => 'Realizar Pago de los Recibos seleccionados',
 	'Outstanding Amount'     => 'Cantidad Pendiente',
 	'Subject'     => 'Concepto',
 	'Status'     => 'Estado',
@@ -66,6 +67,7 @@ return [
 	'Auto Direct Debit'     => 'Remesable',
 	'Include in automatic payment remittances'     => 'Incluir en remesas de pago automático',
 	'Not a valid Bank Account!' => 'Cuenta Bancaria no válida!',
+	'Add Voucher to automatic payment remittance.' => 'Añadir Recibo a Remesa.',
 
 	'Status is not "paid"' => 'El Recibo no está Pagado',
 

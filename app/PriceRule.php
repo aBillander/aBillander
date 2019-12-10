@@ -46,6 +46,19 @@ class PriceRule extends Model
         'price'    => 'numeric|min:0',
     ];
 
+
+    public static function getRuleTypeList()
+    {
+            $list = [];
+            foreach (static::$types as $type) {
+                // $list[$scheme] = l(get_called_class().'.'.$scheme, 'sepasp');
+                $list[$type] = $type;
+            }
+
+            return $list;
+    }
+
+
     /**
      * Handy method
      *
@@ -127,8 +140,6 @@ class PriceRule extends Model
     public function scopeFilter($query, $params)
     {
 
-        return $query;
-
         if ($params['date_from']) // if ( isset($params['date_to']) && trim($params['date_to']) != '' )
         {
             $query->where('date', '>=', $params['date_from'] . ' 00:00:00');
@@ -139,27 +150,30 @@ class PriceRule extends Model
         }
 
 
-        if (isset($params['reference']) && trim($params['reference']) !== '') {
-            $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
-            // $query->orWhere('combinations.reference', 'LIKE', '%' . trim($params['reference'] . '%'));
-            /*
-                        // Moved from controller
-                        $reference = $params['reference'];
-                        $query->orWhereHas('combinations', function($q) use ($reference)
-                                            {
-                                                // http://stackoverflow.com/questions/20801859/laravel-eloquent-filter-by-column-of-relationship
-                                                $q->where('reference', 'LIKE', '%' . $reference . '%');
-                                            }
-                        );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
-            */
+        if (isset($params['reference']) && trim($params['reference']) !== '')
+        {
+            $stub = $params['reference'];
+
+            $query->whereHas('product', function($q) use ($stub) 
+            {
+                $q->where('reference', 'LIKE', '%' . $stub . '%');
+
+            });
         }
 
-        if (isset($params['name']) && trim($params['name']) !== '') {
-            $query->where('name', 'LIKE', '%' . trim($params['name'] . '%'));
+        if (isset($params['name']) && trim($params['name']) !== '')
+        {
+            $stub = $params['name'];
+
+            $query->whereHas('product', function($q) use ($stub) 
+            {
+                $q->where('name', 'LIKE', '%' . $stub . '%');
+
+            });
         }
 
-        if (isset($params['warehouse_id']) && $params['warehouse_id'] > 0) {
-            $query->where('warehouse_id', '=', $params['warehouse_id']);
+        if (isset($params['rule_type']) && in_array($params['rule_type'], static::$types)) {
+            $query->where('rule_type', '=', $params['rule_type']);
         }
 
         return $query;

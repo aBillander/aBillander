@@ -12,10 +12,10 @@
         <a href="{{ URL::to('pricerules/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
-        <!-- button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
-        </button -->
+        </button>
 
     </div>
     <h2>
@@ -42,7 +42,7 @@
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
 
 <div class="row">
-
+{{--
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('date_from_form', l('Date from')) !!}
         {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
@@ -52,7 +52,7 @@
         {!! Form::label('date_to_form', l('Date to')) !!}
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
-
+--}}
 <div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('reference', l('Reference')) !!}
     {!! Form::text('reference', null, array('class' => 'form-control')) !!}
@@ -62,8 +62,8 @@
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {!! Form::label('warehouse_id', l('Warehouse')) !!}
-    {!! Form::select('warehouse_id', array('0' => l('All', [], 'layouts')) + ($warehouseList=[]), null, array('class' => 'form-control')) !!}
+    {!! Form::label('rule_type', l('Rule Type')) !!}
+    {!! Form::select('rule_type', ['' => l('All', [], 'layouts')] + $rule_typeList, null, array('class' => 'form-control')) !!}
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
@@ -101,7 +101,7 @@
       <!-- th class="text-right">{{l('Discount Percent')}}</th>
       <th class="text-right">{{l('Discount Amount')}}</th -->
       <th class="text-center">{{l('From Quantity')}}</th>
-      <th class="text-center">{{l('Extra Items')}}</th>
+      <th class="text-center">{{l('Free Quantity')}}</th>
       <th>{{l('Date from')}}</th>
       <th>{{l('Date to')}}</th>
 			<th> </th>
@@ -112,7 +112,9 @@
 	@foreach ($rules as $rule)
 		<tr>
       <td class="text-center">{{ $rule->id }}</td>
-      <td>{{ $rule->name }}</td>
+      <td>{{ $rule->name }}
+          <br /><span class="text-warning">[{{ $rule->rule_type }}]</span>
+      </td>
       <!-- td>{{ optional($rule->category)->name }}</td -->
       <td>
           @if($rule->product)
@@ -125,13 +127,32 @@
           @endif
         </td>
       <td>{{ optional($rule->customergroup)->name }}</td>
-      <td>{{ optional($rule->measureunit)->name }}</td>
+      <td>
+
+@if($rule->rule_type == 'pack')
+        {{ $rule->measureunit->name }}<br />
+        <span class="text-danger">{{ $rule->as_quantity('conversion_rate') }}&nbsp;{{ optional(optional($rule->product)->measureunit)->name }}</span>
+@endif
+
+      </td>
       <!-- td>{{ optional($rule->currency)->name }}</td -->
 
-@if($rule->rule_type!='promo')
-      <td class="text-right">{{ $rule->as_price('price') }}</td>
+@if($rule->rule_type == 'promo')
+      <td class="text-right">
+                <span class="text-success">{{ $rule->as_priceable( ( ($rule->extra_quantity+$rule->from_quantity) / $rule->from_quantity ) * $rule->product->price ) }}</span>
+
+                <br /><span class="text-info crossed">{{ $rule->product->as_price('price') }}</span>
+      </td>
 @else
-      <td class="text-right"> </td>
+      <td class="text-right">{{ $rule->as_price('price') }}
+
+        @if($rule->rule_type == 'pack')
+                <br /><span class="text-success">{{ $rule->as_priceable( $rule->price / $rule->conversion_rate ) }}</span>
+        @endif
+
+                <br /><span class="text-info crossed">{{ $rule->product->as_price('price') }}</span>
+
+      </td>
 @endif
 
 {{--

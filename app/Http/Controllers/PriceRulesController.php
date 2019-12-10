@@ -54,7 +54,9 @@ class PriceRulesController extends Controller
 
         $rules->setPath('pricerules');     // Customize the URI used by the paginator
 
-        return view('price_rules.index', compact('rules'));
+        $rule_typeList = PriceRule::getRuleTypeList();
+
+        return view('price_rules.index', compact('rules', 'rule_typeList'));
 	}
 
 	/**

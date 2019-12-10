@@ -120,7 +120,15 @@
 
 </div>    <!-- div class="panel panel-info" ENDS -->
 
+
+<div id="product_infos">
+  
+
 </div>
+
+
+
+</div>  <!-- div id="panel_document" ENDS --> 
 
 
 

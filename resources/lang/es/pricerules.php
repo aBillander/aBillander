@@ -55,6 +55,10 @@ return [
 	'Package' => 'Caja',
 	'Price per Package' => 'Precio por Caja',
 	'Unit Price' => 'Precio Unitario',
+	
+	'Free Quantity' => 'Cantidad sin Coste',
+
+	'Rule Type' => 'Tipo de Regla',
 
 
 ];

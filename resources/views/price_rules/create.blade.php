@@ -254,6 +254,8 @@
         {
             var token = "{{ csrf_token() }}";
 
+            $("#product_infos").fadeOut();
+
             $.ajax({
                 url: "{{ route('products.ajax.nameLookup') }}",
                 headers : {'X-CSRF-TOKEN' : token},
@@ -275,11 +277,9 @@
                       $('#measure_unit_id').append('<option value="'+ element.id +'">'+ element.name +conversion+'</option>');
                     });
 
-                    if ( response.shipping_address_id > 0 ) {
-                      $('#shipping_address_id').val(response.shipping_address_id);
-                    } else {
-                      $('#shipping_address_id').val(response.invoicing_address_id);
-                    }
+                    // Nice transition (Ihope!)
+                    $("#product_infos").html(response.infos);
+                    $("#product_infos").fadeIn();
 
                     console.log(response);
                 }
@@ -291,9 +291,9 @@
       var target = $(e.target).attr("href") // activated tab
       if (target == '#tab3default')
       {
-                    $('#measure_unit_id').empty();
+                    // $('#measure_unit_id').empty();
 
-                    $('#measure_unit_id').append('<option value="0">{{ l('-- Please, select --', 'layouts') }}</option>');
+                    // $('#measure_unit_id').append('<option value="0">{{ l('-- Please, select --', 'layouts') }}</option>');
       }
       /*
       if ($(target).is(':empty')) {

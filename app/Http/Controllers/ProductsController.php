@@ -788,13 +788,19 @@ LIMIT 1
         {
             $search = $request->product_id;
 
-            $product = Product::
+//            $product = Product::
 
             // select('id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
-                                      with('measureunit')
-                                    ->find( $search );
+//                                      with('measureunit')
+//                                    ->find( $search );
 
-            return response()->json( [ 'product' => $product ] );
+            $product = $this->editQueryRaw()->findOrFail( $search );
+
+            $pricelists = $product->pricelists;
+
+            $infos = view('products.ajax.product_infos', compact('product', 'pricelists'))->render();
+
+            return response()->json( [ 'product' => $product, 'infos' => $infos ] );
         }
 
         $term  = $request->has('term')  ? $request->input('term')  : null ;

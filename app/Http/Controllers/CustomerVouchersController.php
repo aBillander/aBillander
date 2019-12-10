@@ -426,6 +426,43 @@ class CustomerVouchersController extends Controller
 
 			return redirect($back_route)
 					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
+		
+		} else
+
+		if ( $action == 'uncollectible' ) {
+			//
+
+			$rules = Payment::$rules;
+			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
+			if ( $payment->amount > 0.0 )
+				$rules['amount'] .= '|min:0.0|max:' . $payment->amount;
+			else
+				$rules['amount'] .= '|max:0.0|min:' . $payment->amount;
+
+			$this->validate($request, $rules);
+
+			// Check bankorder
+			if ( $bankorder = $payment->bankorder )
+        	{
+        		return redirect($back_route)
+						->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . l('There is a Bank Order with this Voucher: :bo', ['bo' => $bankorder->document_reference]));
+        	}
+
+			$payment->name     = $request->input('name',     $payment->name);
+			$payment->due_date = $request->input('due_date', $payment->due_date);
+//			$payment->amount   = $request->input('amount',   $payment->amount);
+			$payment->notes    = $request->input('notes',    $payment->notes);
+
+			$payment->auto_direct_debit = $request->input('auto_direct_debit',    $payment->auto_direct_debit);
+
+			$payment->status = 'uncollectible';
+
+			$payment->save();
+
+
+			return redirect($back_route)
+					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . 'uncollectible');
+		
 		}
 
 
@@ -505,23 +542,10 @@ class CustomerVouchersController extends Controller
 		}
 
         
-			$payment->payment_date = null;
-			$payment->status   = 'pending';
+		$payment->payment_date = null;
+		$payment->status   = 'pending';
 
-			$payment->save();
-
-			// Update Customer Risk
-			// event(new CustomerPaymentReceived($payment));
-			//
-			// See: CustomerPaymentReceivedListener
-        $document = $payment->customerinvoice;
-
-        // Update Document
-        $document->checkPaymentStatus();
-
-        // Update Customer Risk
-        $customer = $payment->customer;
-        $customer->addRisk($payment->amount);
+		$payment->save();
 
         // Update bankorder
         if ( $bankorder = $payment->bankorder )
@@ -552,9 +576,31 @@ class CustomerVouchersController extends Controller
 			$payment->status   = 'bounced';
 			$payment->save();
 
-			// Update Customer Risk
-			event(new CustomerPaymentBounced($payment));
         }
+
+		// Update Customer Risk
+		event(new CustomerPaymentBounced($payment, 'paid'));
+
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
+    public function collectibleVoucher(Request $request, $id)
+    {
+		$payment = $this->payment->with('bankorder')->findOrFail($id);
+
+		if ( $payment->status != 'uncollectible' )
+		{
+			return redirect()->back()
+					->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts').' :: '.l('Status is not "paid"'));
+		}
+
+        
+		$payment->payment_date = null;
+		$payment->status   = 'pending';
+
+		$payment->save();
 
 		return redirect()->back()
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));

@@ -71,4 +71,8 @@ return [
 
 	'Status is not "paid"' => 'El Recibo no está Pagado',
 
+	'Set as Uncollectible' => 'Guardar como Incobrable',
+
+	'There is a Bank Order with this Voucher: :bo' => 'Hay una Remesa que incluye este Recibo: :bo',
+
 ];

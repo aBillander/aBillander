@@ -224,8 +224,10 @@
             		<span class="label label-info">
             	@elseif ( $payment->status == 'bounced' )
             		<span class="label label-danger">
-            	@elseif ( $payment->status == 'paid' )
-            		<span class="label label-success">
+              @elseif ( $payment->status == 'paid' )
+                <span class="label label-success">
+              @elseif ( $payment->status == 'uncollectible' )
+                <span class="label alert-danger">
             	@else
             		<span>
             	@endif
@@ -235,6 +237,15 @@
                 @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
 
                     <a href="{{ route('voucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
+                    title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
+               
+                @endif
+              @endif
+
+              @if ( $payment->status == 'uncollectible' )
+                @if ( 1 )
+
+                    <a href="{{ route('voucher.collectible', [$payment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
                
                 @endif
@@ -254,7 +265,11 @@
           @endif
       </td>
 
-			<td class="text-right">
+@if ( $payment->status == 'uncollectible' )
+			<td class=" hide text-right">
+@else
+      <td class="text-right">
+@endif
               @if ( ( $payment->status == 'paid' ) || ( $payment->status == 'bounced' ) )
 
             	@else

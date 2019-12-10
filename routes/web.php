@@ -484,6 +484,8 @@ foreach ($pairs as $pair) {
 
         Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('voucher.expresspay');
         Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('voucher.unpay');
+        
+        Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('voucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
         

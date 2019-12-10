@@ -267,6 +267,10 @@ class Payment extends Model {
         if (array_key_exists('status', $params) && $params['status'] && self::isStatus($params['status']))
         {
             $query->where('status', $params['status']);
+
+        } else {
+
+            $query->where('status', '<>', 'uncollectible');
         }
 
         if (array_key_exists('customer_id', $params) && $params['customer_id'])

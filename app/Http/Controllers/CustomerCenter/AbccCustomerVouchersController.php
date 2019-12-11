@@ -29,6 +29,7 @@ class AbccCustomerVouchersController extends Controller {
 	{
 		$payments = Payment::ofLoggedCustomer()
 					->where('payment_type', 'receivable')
+					->with('bankorder')
 					->orderBy('due_date', 'desc');		// ->get();
 
         $payments = $payments->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );

@@ -213,13 +213,7 @@ return [
 	'Customer Invoice id=:id does not exist.'     => 'La Factura de Cliente id=:id no existe.',
 	''     => '',
 	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
+
+	'This Voucher will be included in automatic payment remittances'     => 'Pago domiciliado',
 
 ];

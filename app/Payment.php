@@ -125,10 +125,31 @@ class Payment extends Model {
         return $value;
     }
 
-//    public function setAmountAttribute($value)
-//    {
-//        $this->attributes['amount'] = ;
-//    }
+
+    public function getAbiccPaymentDateAttribute($value)
+    {
+        if ($this->bankorder && $this->bankorder->discount_dd)  // Remitance is financed
+        {
+            if ( $this->payment_date < $this->due_date && $this->due_date > \Carbon\Carbon::now() )
+                return null;
+            
+            if ( $this->due_date < \Carbon\Carbon::now() )
+                return $this->due_date;
+        }
+
+        return $this->payment_date;
+    }
+
+    public function getAbiccStatusAttribute($value)
+    {
+        if ($this->bankorder && $this->bankorder->discount_dd)  // Remitance is financed
+        {
+            if ( $this->payment_date < $this->due_date && $this->due_date > \Carbon\Carbon::now() )
+                return 'pending';
+        }
+
+        return $this->status;
+    }
 
 
 

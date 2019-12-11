@@ -213,6 +213,30 @@ class Customer extends Model {
     }
 
 
+    public function addUnresolved( $amount, Currency $currency = null ) 
+    {
+        if ($currency != null)
+            $amount = $amount / $currency->conversion_rate;
+
+        $this->unresolved_amount += $amount;
+        $this->save();
+
+        return true;
+    }
+
+
+    public function removeUnresolved( $amount, Currency $currency = null ) 
+    {
+        if ($currency != null)
+            $amount = $amount / $currency->conversion_rate;
+
+        $this->unresolved_amount -= $amount;
+        $this->save();
+
+        return true;
+    }
+
+
     public function scopeFilter($query, $params)
     {
         if ( isset($params['name']) && $params['name'] != '' )

@@ -459,6 +459,9 @@ class CustomerVouchersController extends Controller
 
 			$payment->save();
 
+			// Update customer unresolved amount
+			$payment->customer->addUnresolved($payment->amount);
+
 
 			return redirect($back_route)
 					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . 'uncollectible');
@@ -601,6 +604,9 @@ class CustomerVouchersController extends Controller
 		$payment->status   = 'pending';
 
 		$payment->save();
+
+		// Update customer unresolved amount
+		$payment->customer->removeUnresolved($payment->amount);
 
 		return redirect()->back()
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));

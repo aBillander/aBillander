@@ -92,11 +92,7 @@ background-color: #f9f9f9;">{{ $payment->amount }}</div>
         <?php if (!isset($back_route)) $back_route = ''; ?>
         <input type="hidden" name="back_route" value="{{$back_route}}"/>
 
-@if($payment->status == 'paid')
-<a href="#" class="btn btn-danger btn-sm">{{ l('This Voucher is paid and cannot be modified') }}</a>
-@else
-{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-@endif
+{!! Form::submit(l('Bounce'), array('class' => 'btn btn-danger')) !!}
 
 {{-- !! link_to_route('customervouchers.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !! --}}
 {{-- !! link_to( ($back_route != '' ? $back_route : 'customervouchers'), l('Cancel', [], 'layouts'), array('class' => 'btn btn-warning')) !! --}}

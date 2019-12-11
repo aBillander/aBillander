@@ -63,8 +63,10 @@
             		<span class="label label-danger">
             	@elseif ( $payment->status == 'paid' )
             		<span class="label label-success">
+            	@elseif ( $payment->status == 'uncollectible' )
+                	<span class="label alert-danger">
             	@else
-            		<span>
+            		<span class="label">
             	@endif
             	{{l( $payment->status, [], 'appmultilang' )}}</span></td>
 

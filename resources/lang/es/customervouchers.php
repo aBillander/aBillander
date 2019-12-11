@@ -60,7 +60,7 @@ return [
 	'Bounce'     => 'Devolver Recibo',
 	'Amount Bounced'     => 'Cantidad Devuelta',
 	'Bounce Date'     => 'Devuelto el',
-	'A new Voucher will be created' => 'Se creará un nuevo Rcibo',
+	'A new Voucher will be created' => 'Se creará un nuevo Recibo',
 	''     => '',
 	''     => '',
 

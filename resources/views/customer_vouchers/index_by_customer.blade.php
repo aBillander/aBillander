@@ -228,7 +228,7 @@
 	                </a>
       @endif
 
-	                @if($payment->amount==0.0)
+	                @if(0 && $payment->amount==0.0)
  
       @if ($payment->bankorder && ($payment->bankorder->status != 'pending'))
       @else

@@ -274,7 +274,8 @@ class CustomerVouchersController extends Controller
 			else
 				$rules['amount'] .= '|max:0.0|min:' . $payment->amount;
 
-			$this->validate($request, $rules);
+			if ( $payment->status == 'pending' )			// Other statuses: only field notes is allowed for update
+				$this->validate($request, $rules);
 
 			$diff = $payment->amount - $request->input('amount', $payment->amount);
 

@@ -23,7 +23,11 @@
 @elseif ( $action == 'bounce' )
           @include('customer_vouchers._form_bounce')
 @else
-          @include('customer_vouchers._form_edit')
+          @if ( $payment->status == 'pending' )
+              @include('customer_vouchers._form_edit')
+          @else
+              @include('customer_vouchers._form_edit_notes')
+          @endif
 @endif
 
 				{!! Form::close() !!}
@@ -32,7 +36,7 @@
 	</div>
 </div>
 
-@stop
+@endsection
 
 @section('styles')
 
@@ -40,7 +44,7 @@
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
-@stop
+@endsection
 
 @section('scripts')
 
@@ -173,4 +177,4 @@ function make_payment()
 </script>
 
 
-@stop
+@endsection

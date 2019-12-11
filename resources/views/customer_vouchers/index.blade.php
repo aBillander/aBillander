@@ -265,12 +265,13 @@
           @endif
       </td>
 
-@if ( $payment->status == 'uncollectible' )
-			<td class=" hide text-right">
-@else
       <td class="text-right">
-@endif
-              @if ( ( $payment->status == 'paid' ) || ( $payment->status == 'bounced' ) )
+
+              @if (  ( $payment->status == 'paid' ) 
+                  || ( $payment->status == 'bounced' ) 
+                  || ( $payment->status == 'uncollectible' ) )
+
+                  <a class="btn btn-xs btn-grey" href="{{ URL::to('customervouchers/' . $payment->id . '/edit' ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
             	@else
 

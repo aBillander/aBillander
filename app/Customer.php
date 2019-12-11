@@ -29,7 +29,7 @@ class Customer extends Model {
                            'outstanding_amount_allowed', 'unresolved_amount', 
                            'notes', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
-//                           'sequence_id', 
+                           'invoice_sequence_id', 
                            'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id', 
                            'invoicing_address_id', 'shipping_address_id', 
                 ];

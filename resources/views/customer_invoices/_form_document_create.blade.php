@@ -331,7 +331,7 @@ function get_currency_rate(currency_id)
                         $('#sales_equalization').hide();
                     }
 
-    //                $('#sequence_id').val(response.work_center_id);
+                    $('#sequence_id').val(response.invoice_sequence_id);
                     $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
                     $('#delivery_date_form').val('');
 

@@ -28,6 +28,10 @@ class CreateStockMovementsTable extends Migration {
 			$table->decimal('quantity_before_movement', 20, 6);
 			$table->decimal('quantity', 20, 6);
 			$table->decimal('quantity_after_movement', 20, 6);
+
+			// For tracking
+			$table->decimal('cost_price_before_movement', 20, 6)->nullable();
+			$table->decimal('cost_price_after_movement', 20, 6)->nullable();
 			
 			// Unit price
 			$table->decimal('price', 20, 6)->nullable();				// Company Currency

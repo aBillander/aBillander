@@ -161,7 +161,8 @@ return [
 	'Production Sheets'     => 'Hojas de Producción',
 	'Production Orders'     => 'Ordenes de Fabricación',
 	'Manufacturing'     => 'Fabricación',
-	''     => '',
+	'Delivery Routes'     => 'Rutas de Reparto',
+	'Delivery Sheets'     => 'Hojas de Reparto',
 	''     => '',
 	
 

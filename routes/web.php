@@ -506,6 +506,17 @@ foreach ($pairs as $pair) {
         Route::resource('images', 'ImagesController');
 
 
+        // Delivery Routes
+        Route::resource('deliveryroutes',                    'DeliveryRoutesController'    );
+        Route::resource('deliveryroutes.deliveryroutelines', 'DeliveryRouteLinesController');
+        Route::post('deliveryroutes/sortlines', 'DeliveryRoutesController@sortLines')->name('deliveryroute.sortlines');
+        
+        Route::resource('deliverysheets',                    'DeliverySheetsController'    );
+        Route::resource('deliverysheets.deliverysheetlines', 'DeliverySheetLinesController');
+        Route::post('deliverysheets/sortlines', 'DeliverySheetsController@sortLines')->name('deliverysheet.sortlines');
+
+
+
         // Import / Export to Database
         Route::get( 'import/pricelists/{id}', 'Import\ImportPriceListsController@import' )->name('pricelists.import');
         Route::post('import/pricelists/{id}', 'Import\ImportPriceListsController@process')->name('pricelists.import.process');

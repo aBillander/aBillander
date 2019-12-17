@@ -16,12 +16,14 @@ use App\Ecotax;
 
 use Excel;
 
+use App\Http\Controllers\HelferinTraits\HelferinProductReorderTrait;
 use App\Traits\DateFormFormatterTrait;
 
 class HelferinController extends Controller
 {
    
    use HelferinProductConsumptionTrait;
+   use HelferinProductReorderTrait;
    use DateFormFormatterTrait;
 
    protected $models = ['CustomerOrder', 'CustomerShippingSlip', 'CustomerInvoice'];

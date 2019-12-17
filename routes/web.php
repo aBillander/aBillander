@@ -147,6 +147,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/helferin/reports/ecotaxes'  , 'HelferinController@reportEcotaxes'  )->name('helferin.reports.ecotaxes');
         Route::post('/helferin/reports/consumption'  , 'HelferinController@reportConsumption'  )->name('helferin.reports.consumption');
 
+        Route::get('/helferin/home/mfg', 'HelferinController@mfgIndex')->name('helferin.home.mfg');
+        Route::post('/helferin/reports/reorder'  , 'HelferinController@reportProductReorder'  )->name('helferin.reports.reorder');
+
 
         Route::resource('configurations',    'ConfigurationsController');
         Route::resource('configurationkeys', 'ConfigurationKeysController');

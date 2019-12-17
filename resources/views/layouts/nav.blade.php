@@ -141,6 +141,14 @@
                         <li class="divider"></li>
 
                          <li>
+                            <a href="{{ URL::to('/helferin/home/mfg') }}">
+                                 <i class="fa fa-cubes text-success"></i>
+                                 {{l('Reports', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+
+                         <li>
                             <a href="{{ URL::to('deliverysheets') }}">
                                  <i class="fa fa-truck text-info"></i> 
                                  {{l('Delivery Sheets', [], 'layouts')}}

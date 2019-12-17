@@ -75,6 +75,12 @@ class Product extends Model {
             'none', 
         );
 
+    public static $mrp_types = array(
+            'onorder',  //  => manufactured or purchased on order
+            'reorder',  //  => Reorder Point Planning
+            // 'forecast' => Forecast Based Planning
+            // 'phased'   => Time-phased Planning (planning cycles)
+        );
 
     /**
      * The columns of the full text index
@@ -91,7 +97,7 @@ class Product extends Model {
 
     protected $appends = ['extra_measureunits', 'tool_id', 'quantity_available'];
     
-    protected $fillable = [ 'product_type', 'procurement_type', 
+    protected $fillable = [ 'product_type', 'procurement_type', 'mrp_type', 
                             'name', 'reference', 'ean13', 'description', 'description_short', 
                             'quantity_decimal_places', 'manufacturing_batch_size',
 //                            'warranty_period', 
@@ -590,6 +596,23 @@ class Product extends Model {
     public static function getProcurementTypeName( $status )
     {
             return l($status, [], 'appmultilang');;
+    }
+
+            
+
+    public static function getMrpTypeList()
+    {
+            $list = [];
+            foreach (self::$mrp_types as $type) {
+                $list[$type] = l('App\\Product.'.$type, [], 'appmultilang');;
+            }
+
+            return $list;
+    }
+
+    public static function getMrpTypeName( $status )
+    {
+            return l('App\\Product.'.$status, [], 'appmultilang');;
     }
 
 

@@ -276,6 +276,15 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
+		// Product MRP types
+		view()->composer(array('products.index', 'products._form_create', 'products._panel_inventory'), function($view) {
+
+		    $list1 = \App\Product::getMrpTypeList();
+
+		    $view->with('product_mrptypeList', $list1);
+		    
+		});
+
 		// Categories
 		view()->composer(array('products.index', 'products.create', 'products._panel_main_data'), function($view) {
 		    

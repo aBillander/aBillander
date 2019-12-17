@@ -35,7 +35,14 @@ return [
 	'Product Name'     => 'Nombre del Producto',
 	'Product type'     => 'Tipo',
 	'Procurement type'     => 'Aprovisionamiento',
+	'MRP type' => 'Planificación',
+
+//	'Leave empty if manufactured or purchased on order.' => 'Dejar vacío si se fabrica o compra bajo pedido.',
+
 	'Phantom Assembly?'     => '¿Es fantasma?',
+
+	'A phantom assembly is a logical (rather than functional) grouping of materials.'     => 'Un semi-elaborado fantasma es una agrupación lógica (más que funcional) de materiales.',
+
 	'Reference'     => 'Referencia',
 	'Customer Price'     => 'Precio de Venta',
 	'Tax'     => 'Impuesto',

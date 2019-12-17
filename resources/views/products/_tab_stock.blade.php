@@ -26,6 +26,12 @@
                      </div>
                    </div>
 
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('mrp_type') ? 'has-error' : '' }}"">
+                      {!! Form::label('mrp_type', l('MRP type'), ['class' => 'control-label']) !!}
+                      {!! Form::select('mrp_type', $product_mrptypeList, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('mrp_type', '<span class="help-block">:message</span>') !!}
+                  </div>
+
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('reorder_point') ? 'has-error' : '' }}">
                      {{ l('Reorder point') }}
                      {!! Form::text('reorder_point', null, array('class' => 'form-control', 'id' => 'reorder_point')) !!}

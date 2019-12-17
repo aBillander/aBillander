@@ -34,6 +34,21 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Product MRP Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'App\Product.onorder' => 'Bajo Pedido',  //  => manufactured or purchased on order
+    'App\Product.reorder' => 'Por Punto de Pedido',  //  => Reorder Point Planning
+    // 'forecast' => Forecast Based Planning
+    // 'phased'   => Time-phased Planning (planning cycles)
+
+
+	/*
+	|--------------------------------------------------------------------------
 	| Tax Rule Types
 	|--------------------------------------------------------------------------
 	|

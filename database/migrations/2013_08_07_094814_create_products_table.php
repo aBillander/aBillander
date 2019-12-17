@@ -36,6 +36,12 @@ class CreateProductsTable extends Migration {
 			// 'none'        => One that doesn’t require shipping or stock management (Services, downloads...).
 			// 'assembly'    => Intermediate Product.
 
+			$table->string('mrp_type', 32)->nullable(false)->default('onorder');
+			// 'onorder'  => manufactured or purchased on order
+			// 'reorder'  => Reorder Point Planning
+			// 'forecast' => Forecast Based Planning
+			// 'phased'   => Time-phased Planning (planning cycles)
+
 			$table->string('name', 128)->nullable(false);
 			$table->string('reference', 32)->nullable();
 			$table->string('ean13', 13)->nullable();

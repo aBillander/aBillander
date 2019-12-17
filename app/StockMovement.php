@@ -1423,6 +1423,11 @@ class StockMovement extends Model {
             $query->where('warehouse_id', '=', $params['warehouse_id']);
         }
 
+        if ( isset($params['movement_type_id']) && $params['movement_type_id'] > 0 )
+        {
+            $query->where('movement_type_id', '=', $params['movement_type_id']);
+        }
+
         return $query;
     }
 }

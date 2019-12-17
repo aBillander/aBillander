@@ -54,7 +54,7 @@ class CustomerVouchersController extends Controller
 					->with('paymentable.customer.bankaccount')
 					->where('payment_type', 'receivable')
 					->with('bankorder')
-					->orderBy('due_date', 'asc');		// ->get();
+					->orderBy('due_date', 'desc');		// ->get();
 
         $payments = $payments->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 

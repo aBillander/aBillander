@@ -3,7 +3,7 @@
 namespace App\StockMovements;
 
 use App\StockMovement;
-use App\WarehouseProductLine
+use App\WarehouseProductLine;
 
 class PurchaseOrderStockMovement extends StockMovement implements StockMovementInterface
 {

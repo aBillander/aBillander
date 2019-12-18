@@ -86,6 +86,10 @@ return [
 	'Delete existing Customers?'     => '¿Eliminar los Clientes existentes?',
 	'Simulation Mode?'     => '¿Modo Simulación?',
 
+	'ABCC Users' => 'Usuarios ABCC',
+	'Import ABCC Users File'     => 'Importar Fichero de Usuarios ABCC',
+	'Delete existing ABCC Users?'     => '¿Eliminar los Usuarios ABC existentes?',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Price List

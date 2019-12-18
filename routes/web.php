@@ -544,6 +544,10 @@ foreach ($pairs as $pair) {
         Route::post('import/customers', 'Import\ImportCustomersController@process')->name('customers.import.process');
         Route::get( 'export/customers', 'Import\ImportCustomersController@export' )->name('customers.export');
 
+        Route::get( 'import/customerusers', 'Import\ImportCustomerUsersController@import' )->name('customerusers.import');
+        Route::post('import/customerusers', 'Import\ImportCustomerUsersController@process')->name('customerusers.import.process');
+        Route::get( 'export/customerusers', 'Import\ImportCustomerUsersController@export' )->name('customerusers.export');
+
         Route::get( 'import/stockcounts/{id}', 'Import\ImportStockCountsController@import' )->name('stockcounts.import');
         Route::post('import/stockcounts/{id}', 'Import\ImportStockCountsController@process')->name('stockcounts.import.process');
         Route::get( 'export/stockcounts/{id}', 'Import\ImportStockCountsController@export' )->name('stockcounts.export');

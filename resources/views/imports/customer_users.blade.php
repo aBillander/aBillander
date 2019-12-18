@@ -8,9 +8,13 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
+
+                <a href="{{ route('customerusers.export') }}" class="btn xbtn-sm btn-grey" style="margin-right: 32px;" 
+                        title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
                 <a href="{{ URL::to('customers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a>
             </div>
-            <h2><a href="{{ URL::to('customers') }}">{{ l('Customers') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }}</h2>
+            <h2><a href="{{ URL::to('customers') }}">{{ l('ABCC Users') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }}</h2>
         </div>
     </div>
 </div>
@@ -20,11 +24,11 @@
 
       <div class="col-lg-2 col-md-2 col-sm-3">
          <div class="list-group">
-            <a id="b_main_data" href="{{ route('customers.import') }}" class="list-group-item active">
+            <a id="b_main_data" href="{{ route('customers.import') }}" class="list-group-item">
                <i class="fa fa-asterisk"></i>
                &nbsp; {{ l('Customers') }}
             </a>
-            <a id="b_purchases" href="{{ route('customerusers.import') }}" class="list-group-item">
+            <a id="b_purchases" href="{{ route('customerusers.import') }}" class="list-group-item active">
                <i class="fa fa-shopping-cart"></i>
                &nbsp; {{ l('ABCC Users') }}
             </a>
@@ -59,7 +63,7 @@
       
       <div class="col-lg-8 col-md-8 col-sm-8">
 
-          @include('imports._panel_customers')
+          @include('imports._panel_customer_users')
 
       </div>
 

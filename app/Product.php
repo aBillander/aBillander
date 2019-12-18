@@ -76,6 +76,7 @@ class Product extends Model {
         );
 
     public static $mrp_types = array(
+            'manual',  //  => manualy place manufacture or purchase orders
             'onorder',  //  => manufactured or purchased on order
             'reorder',  //  => Reorder Point Planning
             // 'forecast' => Forecast Based Planning

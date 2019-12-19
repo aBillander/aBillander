@@ -262,7 +262,7 @@ Bah!
 */
 
 		// Good boy:
-		if ( Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') ) 
+		if ( Configuration::isFalse('ABCC_ORDERS_NEED_VALIDATION') ) 
 		{
 			$customerOrder->confirm();
 		}

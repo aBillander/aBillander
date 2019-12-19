@@ -32,6 +32,10 @@
 
               </div>
 
+            <div class="alert alert-info">
+        Stock Disponible: [Stock físico] + [Pedios a Proveedores] - [Pedidos de Clientes] + [Ordenes de Fabricación] - [Reservas de Ordenes de Fabricación]
+            </div>
+
                <div class="panel-footer text-right">
                   <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
                      <i class="fa fa-file-text-o"></i>

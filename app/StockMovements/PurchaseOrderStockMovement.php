@@ -18,8 +18,8 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
         $this->prepareToProcess();
 
         // Price 4 Cost average calculations
-        $this->price_currency_in = $this->price_currency;	// Priece in Stock Movement Currency
-        $this->price_in = $this->price;						// Priece in Company's Currency
+        $price_currency_in = $this->price_currency;	// Price in Stock Movement Currency
+        $price_in = $this->price;						// Price in Company's Currency
 
         // Update Product
         $product = $this->product;							// Relation loaded in prepareToProcess()
@@ -35,11 +35,11 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
             	&& $quantity_onhand > 0		// if = 0 : division by 0 error
             	)
             {
-            	$cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $this->price_in) / $quantity_onhand;
+            	$cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $price_in) / $quantity_onhand;
             
                 $product->cost_average = $cost_average;
                 $product->cost_price   = $cost_average;
-                $product->last_purchase_price = $this->price_in;
+                $product->last_purchase_price = $price_in;
             }
 
             $this->cost_price_after_movement = $product->cost_price;
@@ -56,10 +56,10 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
 
             // Average price stuff
             // $cost = $combination->cost_average;
-            $cost_average = ($combination->quantity_onhand * $combination->cost_average + $this->quantity * $this->price_in) / ($combination->quantity_onhand + $this->quantity);
+            $cost_average = ($combination->quantity_onhand * $combination->cost_average + $this->quantity * $price_in) / ($combination->quantity_onhand + $this->quantity);
             
             $combination->cost_average = $cost_average;
-            $combination->last_purchase_price = $this->price_in;
+            $combination->last_purchase_price = $price_in;
 
             $combination->quantity_onhand = $quantity_onhand;
             $combination->save();

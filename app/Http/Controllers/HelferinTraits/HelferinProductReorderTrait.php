@@ -29,7 +29,7 @@ trait HelferinProductReorderTrait
         $mrp_type = $request->input('mrp_type', null);
         
         // Products 
-        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id', 'stock_control', 'mrp_type', 'reorder_point', 'maximum_stock', 'quantity_onhand')
                             ->when($mrp_type, function ($query, $mrp_type) {
                                 return $query->where('mrp_type', $mrp_type);
                             })
@@ -37,80 +37,25 @@ trait HelferinProductReorderTrait
                             ->orderBy('reference', 'asc')
                             ->get();
 
-        abi_r($products->count());die();
-
-
-        foreach ($products as $product) {
-        	# code...
-        	$product->consumption = CustomerShippingSlipLine::
-	                      where('line_type', 'product')
-	                    ->where('product_id', $product->id)
-	                    ->whereHas('document', function ($query) use ($customer_id, $date_from, $date_to, $document_reference_date) {
-
-	                            // Closed Documents only
-	                    		$query->where($document_reference_date, '!=', null);
-
-	                            if ( $customer_id )
-	                                $query->where('customer_id', $customer_id);
-
-	                            if ( $date_from )
-	                                $query->where($document_reference_date, '>=', $date_from);
-	                            
-	                            if ( $date_to )
-	                                $query->where($document_reference_date, '<=', $date_to);
-	                    })
-	                    ->sum('quantity');
-        }
-        
-        // https://github.com/Maatwebsite/Laravel-Excel/issues/2161
-
-
-
         // Lets get dirty!!
 
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
-        if ( $request->input('consumption_date_from_form') && $request->input('consumption_date_to_form') )
-        {
-            $ribbon = 'entre ' . $request->input('consumption_date_from_form') . ' y ' . $request->input('consumption_date_to_form');
-
-        } else
-
-        if ( !$request->input('consumption_date_from_form') && $request->input('consumption_date_to_form') )
-        {
-            $ribbon = 'hasta ' . $request->input('consumption_date_to_form');
-
-        } else
-
-        if ( $request->input('consumption_date_from_form') && !$request->input('consumption_date_to_form') )
-        {
-            $ribbon = 'desde ' . $request->input('consumption_date_from_form');
-
-        } else
-
-        if ( !$request->input('consumption_date_from_form') && !$request->input('consumption_date_to_form') )
-        {
-            $ribbon = 'todas';
-
-        }
-
-        $ribbon = 'fecha ' . $ribbon;
-
-        $customer_label = (int) $customer_id > 0
-        				? Customer::findOrFail($customer_id)->name_regular
-        				: '';
+        $ribbon = 'Planificación: ' . ($mrp_type == '' ? 'todos' : $mrp_type);
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Consumo de Productos ' . $ribbon, '', '', date('d M Y H:i:s')];
-        $data[] = [''];
-        $data[] = ['Cliente:', $customer_label];
+        $data[] = ['Re-Aprovisionamiento de Productos :: ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['Referencia', 'Nombre', 'Consumo', 'Unidad'];
+        $header_names = ['Referencia', 'Nombre', 
+                        '¿Control de Stock?', 'Planificación', 'Stock reaprovisionamiento', 'Stock máximo', 
+                        'Stock', 'Disponible', 'Unidad',
+
+    ];
 
         $data[] = $header_names;
 
@@ -122,17 +67,22 @@ trait HelferinProductReorderTrait
                 $row = [];
                 $row[] = (string) $product->reference;
                 $row[] = $product->name;
-                $row[] = $product->consumption * 1.0;	// abi_amount($product->consumption, $product->measureunit->decimalPlaces) * 1;
+                $row[] = $product->stock_control;
+                $row[] = $product->mrp_type;
+                $row[] = $product->reorder_point * 1.0;
+                $row[] = $product->maximum_stock * 1.0;
+                $row[] = $product->quantity_onhand *1.0;
+                $row[] = $product->quantity_available *1.0;
                 $row[] = $product->measureunit->sign;
     
                 $data[] = $row;
 
         }
 
-        $sheetName = 'Consumo';
+        $sheetName = 'Re-Aprovisionamiento';
 
         // Generate and return the spreadsheet
-        Excel::create('Consumo entre Fechas', function($excel) use ($sheetName, $data) {
+        Excel::create(' Re-Aprovisionamiento de Productos', function($excel) use ($sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');
@@ -142,10 +92,10 @@ trait HelferinProductReorderTrait
             // Build the spreadsheet, passing in the data array
             $excel->sheet($sheetName, function($sheet) use ($data) {
                 
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
+                $sheet->mergeCells('A1:B1');
+                $sheet->mergeCells('A2:B2');
 
-                $sheet->getStyle('A6:D6')->applyFromArray([
+                $sheet->getStyle('A4:I4')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -157,6 +107,10 @@ trait HelferinProductReorderTrait
                     'A' => '@',
 //                    'C' => '0.00',
                     'C' => '0',
+                    'D' => '0.00',
+                    'E' => '0.00',
+                    'F' => '0.00',
+                    'G' => '0.00',
 
                 ));
 

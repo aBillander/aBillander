@@ -19,7 +19,7 @@
         </form>
 
          <!-- a href="{{ URL::to('auth/logout') }}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Reports', [], 'layouts') }} 
-         <span style="color: #cccccc;">/</span> {{ l('Sales', [], 'layouts') }}
+         <span style="color: #cccccc;">/</span> {{ l('Manufacturing', [], 'layouts') }}
     </h2>
 </div>
 

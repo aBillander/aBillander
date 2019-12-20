@@ -57,9 +57,9 @@ class StockMovement extends Model {
                     ),
             '20' => array(
                     'date' => 'required',
-                    'price' => 'required|min:0|not_in:0',
+                    'price' => 'required|numeric|min:0|not_in:0',
                     'currency_id' => 'exists:currencies,id',
-                    'quantity' => 'required',                   //|not_in:0',
+                    'quantity' => 'required|numeric',                   //|not_in:0',
                     'product_id' => 'exists:products,id',
 //                    'combination_id' => 'sometimes|exists:combinations,id',       // In fact, combination_id is CALCULATED in Controller
                     'warehouse_id' => 'exists:warehouses,id',

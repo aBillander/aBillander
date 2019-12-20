@@ -200,6 +200,7 @@ return [
 	'Use terms of three (3) characters or more' => 'Use palabras de tres (3) caracteres o más',
 	'Actions'     => 'Acciones',
 	'Export'     => 'Exportar',
+	'Export Headers'     => 'Exportar Encabezados',
 	'Import'     => 'Importar',
 	'File'     => 'Fichero',
 	'Load'     => 'Cargar',

@@ -37,6 +37,10 @@
             </div>
 
                <div class="panel-footer text-right">
+
+                <a href="{{ route('helferin.reports.reorder.headers') }}" class="pull-left btn xbtn-sm btn-grey" style="margin-right: 32px;" 
+                        title="{{l('Export Headers', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export Headers', [], 'layouts')}}</a>
+
                   <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
                      <i class="fa fa-file-text-o"></i>
                      &nbsp; {!! l('Export', [], 'layouts') !!}

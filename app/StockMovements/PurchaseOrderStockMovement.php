@@ -24,6 +24,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
         // Update Product
         $product = $this->product;							// Relation loaded in prepareToProcess()
         $quantity_onhand = $product->quantity_onhand + $this->quantity;
+        $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
 
         // Mean Average calculation
         // More at: https://www.linnworks.com/support/inventory-management-and-stock-control/inventory-management-and-stock-control-key-concepts/calculating-stock-value#mean
@@ -35,7 +36,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
             	&& $quantity_onhand > 0		// if = 0 : division by 0 error
             	)
             {
-            	$cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $price_in) / $quantity_onhand;
+            	$cost_average = ($product->quantity_onhand * $product->cost_price + $this->quantity * $price_in) / $quantity_onhand;
             
                 $product->cost_average = $cost_average;
                 $product->cost_price   = $cost_average;

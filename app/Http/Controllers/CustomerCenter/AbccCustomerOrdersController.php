@@ -311,7 +311,8 @@ Bah!
 			{
 				$message->from($data['from'], $data['fromName']);
 
-				$message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );	// Will send blind copy to sender!
+				// $message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );	// Will send blind copy to sender!
+				$message->to( $data['to'], $data['toName'] )->bcc( 'laextranatural@laextranatural.es' )->subject( $data['subject'] );
 
 			});	
 

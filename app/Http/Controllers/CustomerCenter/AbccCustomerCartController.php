@@ -504,7 +504,9 @@ class AbccCustomerCartController extends Controller
         $order_line->delete();
 
         // Now, update Order Totals
-        // $order->makeTotals();
+
+        $cart = Cart::getCustomerUserCart();
+        $cart->makeTotals();
 
         return response()->json( [
                 'msg' => 'OK',

@@ -355,7 +355,20 @@
            $("[data-toggle=popover]").popover();
 //                 sortableOrderlines();
           
-          $('#badge_cart_nbr_items').html( $('#cart_nbr_items').val() );// alert($('#cart_nbr_items').val());
+          $('#badge_cart_nbr_items').html( $('#cart_nbr_items').val() );
+          $('#is_billable').val( $('#cart_is_billable').val() );
+
+          // 
+          if ( $('#cart_is_billable').val() != 0)
+          {
+                $("#can_min_order").addClass("alert-success").removeClass("alert-danger");
+
+          } else {
+
+               $("#can_min_order").addClass("alert-danger").removeClass("alert-success");
+
+          }
+
      }, 'html');
 
   }

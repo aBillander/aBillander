@@ -299,6 +299,8 @@
 
 <input id="cart_nbr_items" name="cart_nbr_items" type="hidden" value="{{ $cart->nbrItems() }}">
 
+<input id="cart_is_billable" name="cart_is_billable" type="hidden" value="" />
+
        </div>
 
 </div><!-- div id="div_cart_lines" -->

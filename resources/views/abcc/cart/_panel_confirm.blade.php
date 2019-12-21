@@ -81,10 +81,12 @@
 
                   <input type="hidden" id="process_as" name="process_as" value="order" />
                   
-                  <button class="btn btn-info confirm-" type="button" data-content="{{l('You are going to Confirm your Order. Are you sure?')}}" data-title="{{ l('Order Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" xonclick="this.disabled=true;this.form.submit();">
+                  <button class="btn btn-info confirm-" type="button" data-content="" data-title="{{ l('Order Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" xonclick="this.disabled=true;this.form.submit();">
                      <i class="fa fa-check-circle"></i>
                      &nbsp; {{ l('Place Order') }}
                   </button>
+
+                  <input type="hidden" id="is_billable" name="is_billable" value="" />
 
                </div>
 
@@ -94,13 +96,9 @@
 
 @if( Auth::user()->canMinOrderValue() > 0.0 )
 
-@php
-        $severity = $cart->isBillable() ? 'warning' : 'danger';
-@endphp
-
       <div class="panel-body">
 
-         <div class="alert alert-{{ $severity }} alert-block">
+         <div class="alert alert-block" id="can_min_order">
              <i class="fa fa-warning"></i>
             {{ l('Cart amount should be more than: :amount (Products Value)', ['amount' =>  abi_money( Auth::user()->canMinOrderValue(), $cart->currency )]) }}
          </div>

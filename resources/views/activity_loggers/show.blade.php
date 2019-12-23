@@ -8,13 +8,20 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
         @if( $logger_errors )
-        <a href="javascript:void(0);" class="btn btn-xs btn-danger" onclick="return false;" 
-                title="{{l('ERRORS')}}"><span class="badge">{{ $logger_errors }}</span> {{l('ERROR(S)')}}</a>
+        <a href="{{ route('activityloggers.show', [$activitylogger->id, 'level'=>'ERROR']) }}" class="btn btn-xs btn-danger" xonclick="return false;" 
+                title="{{l('Go to', 'layouts')}}: {{l('ERRORS')}}"><span class="badge">{{ $logger_errors }}</span> {{l('ERROR(S)')}}</a>
         @endif
         @if( $logger_warnings )
-        <a href="javascript:void(0);" class="btn btn-xs btn-warning" onclick="return false;" 
-                title="{{l('WARNINGS')}}"><span class="badge">{{ $logger_warnings }}</span> {{l('WARNING(S)')}}</a>
+        <a href="{{ route('activityloggers.show', [$activitylogger->id, 'level'=>'WARNING']) }}" class="btn btn-xs btn-warning" xonclick="return false;" 
+                title="{{l('Go to', 'layouts')}}: {{l('WARNINGS')}}"><span class="badge">{{ $logger_warnings }}</span> {{l('WARNING(S)')}}</a>
         @endif
+        @if( $logger_errors || $logger_warnings )
+        <a href="{{ route('activityloggers.show', [$activitylogger->id]) }}" class="btn btn-xs btn-grey" xonclick="return false;" 
+                title="{{l('Go to', 'layouts')}}: {{l('ALL')}}"><span class="badge">{{  $logger_all }}</span> {{l('ALL')}}</a>
+        @endif
+
+                <a href="{{ route('activityloggers.export', [$activitylogger->id]) }}" class="btn xbtn-sm btn-grey" style="margin-left: 16px;margin-right: 16px;" 
+                        title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
         <a class="btn btn-danger delete-item" data-html="false" data-toggle="modal" 
             href="{{ URL::to('activityloggers/' . $activitylogger->id ) }}" 

@@ -337,6 +337,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 //                         'as'   => 'activityloggers.index'] );
         Route::get('activityloggers/empty', ['uses' => 'ActivityLoggersController@empty', 
                          'as'   => 'activityloggers.empty'] );
+        
+        Route::get( 'export/activityloggers/{activitylogger}', 'ActivityLoggersController@export' )->name('activityloggers.export');
 
         Route::resource('emaillogs', 'EmailLogsController');
 

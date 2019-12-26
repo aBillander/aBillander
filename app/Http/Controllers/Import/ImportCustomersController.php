@@ -259,6 +259,8 @@ class ImportCustomersController extends Controller
                 $logger->log("WARNING", "Modo SIMULACION. Se mostrarán errores, pero no se cargará nada en la base de datos.");
 
             $i = 0;
+            $i_created = 0;
+            $i_updated = 0;
             $i_ok = 0;
             $max_id = 2000;
 
@@ -302,6 +304,12 @@ class ImportCustomersController extends Controller
                         // if ( Customer::check_spanish_nif_cif_nie( $data['identification'] ) <= 0 )
                         //    $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'identification' es inválido. ".$data['identification']);
                     }
+
+                    $data['sales_equalization'] = (int) $data['sales_equalization'] > 0 ? 1 : 0;
+
+                    $data['allow_login'] = (int) $data['allow_login'] > 0 ? 1 : 0;
+
+                    $data['blocked'] = (int) $data['blocked'] > 0 ? 1 : 0;
 
 
                     // Precedence
@@ -513,9 +521,13 @@ if ($country) {
                                  $mini_data[$field] =  $data[$field];
                             }
 
+                            $mini_data['blocked'] =  (int) $mini_data['blocked'];
+
                             $customer->update( $mini_data );
 
                             // $logger->log("INFO", "El Cliente ".$data['reference_external'] ." se ha actualizado (".$customer->id.")");
+
+                            $i_updated++;
 
                         } else
 
@@ -539,9 +551,9 @@ if ($country) {
                             //     'reference_external' => $data['reference_external'] 
                             // ], $data );
 
-                            else
+                            // else
 
-                            $customer->update( $data );
+                            // $customer->update( $data );
 
 
                             // $logger->log("TIMER", " Se ha creado el Cliente: ".$item." - " . $customer->id);
@@ -566,6 +578,8 @@ if ($country) {
                             }
 
                             $logger->log("INFO", "El Cliente ".$data['reference_external'] ." se ha creado (".$customer->id.")");
+
+                            $i_created++;
 
                         } else {
 
@@ -606,6 +620,10 @@ if ($country) {
                 // No data in file
                 $logger->log('WARNING', 'No se encontraton datos de Clientes en el fichero.');
             }
+
+            $logger->log('INFO', 'Se han creado {i} Clientes.', ['i' => $i_created]);
+
+            $logger->log('INFO', 'Se han actualizado {i} Clientes.', ['i' => $i_updated]);
 
             $logger->log('INFO', 'Se han creado / actualizado {i} Clientes.', ['i' => $i_ok]);
 

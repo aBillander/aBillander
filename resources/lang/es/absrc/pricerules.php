@@ -22,7 +22,7 @@ return [
 	'Price' => 'Precio',
 	'Currency' => 'Divisa',
 	'Price Rules' => 'Reglas de Precio',
-	'Price Rules take precedence over Price Lists.' => 'Las Regals de Precio tienen prioridad sobre las Tarifas',
+	'Price Rules take precedence over Price Lists.' => 'Las Reglas de Precio tienen prioridad sobre las Tarifas',
 	'Reference' => 'Referencia',
 	'Warehouse' => 'Almacén',
 	'Category' => 'Categoría',

@@ -16,7 +16,7 @@
             {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
          </div>
 --}}
-
+{{--
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
             {{ l('Shipping Address') }}
             <div class="form-group drop-down-list">
@@ -40,12 +40,16 @@
                 <input type="hidden" id="shipping_address_id" name="shipping_address_id" value="{{  old('shipping_address_id', Auth::user()->address_id ?: Auth::user()->customer->shipping_address_id)  }}" class="form-control-id">
             </div>
          </div>
-
+--}}
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('reference') ? 'has-error' : '' }}">
             {{ l('My Reference / Project') }}
             {!! Form::text('reference', old('reference'), array('class' => 'form-control', 'id' => 'reference')) !!}
             {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
+         </div>
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
+            {{ l('Shipping Address') }}
+            <div class="form-control">{{ $cart->shippingaddress->alias }}</div>
          </div>
 
 
@@ -68,7 +72,7 @@
 
                <div class="panel-footer text-right">
 
-@if( \App\Configuration::isTrue('ABCC_ENABLE_QUOTATIONS') && Auth::user()->enable_quotations != 0 )
+@if( Auth::user()->canQuotations() )
                   <button class="btn btn-warning pull-left confirm-" type="button" data-content="{{l('You are going to Ask for Quotation. Are you sure?')}}" data-title="{{ l('Quotation Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" onclick="$('#process_as').val('quotation');">
                      <i class="fa fa-handshake-o"></i>
                      &nbsp; {{ l('Place Quotation') }}
@@ -77,10 +81,12 @@
 
                   <input type="hidden" id="process_as" name="process_as" value="order" />
                   
-                  <button class="btn btn-info confirm-" type="button" data-content="{{l('You are going to Confirm your Order. Are you sure?')}}" data-title="{{ l('Order Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" xonclick="this.disabled=true;this.form.submit();">
+                  <button class="btn btn-info confirm-" type="button" data-content="" data-title="{{ l('Order Confirmation') }}" data-toggle="modal" data-target="#modal-confirm-submit" xonclick="this.disabled=true;this.form.submit();">
                      <i class="fa fa-check-circle"></i>
                      &nbsp; {{ l('Place Order') }}
                   </button>
+
+                  <input type="hidden" id="is_billable" name="is_billable" value="" />
 
                </div>
 
@@ -92,37 +98,11 @@
 
       <div class="panel-body">
 
-         <div class="alert alert-warning alert-block">
+         <div class="alert alert-block" id="can_min_order">
              <i class="fa fa-warning"></i>
-            {{ l('Cart amount should be more than: ') . abi_money( Auth::user()->canMinOrderValue(), $cart->currency ) }}
+            {{ l('Cart amount should be more than: :amount (Products Value)', ['amount' =>  abi_money( Auth::user()->canMinOrderValue(), $cart->currency )]) }}
          </div>
          
       </div>
 
 @endif
-
-
-
-{{-- Bootstrap Dropdown Select Replacement Plugin - DDL
-   https://www.jqueryscript.net/form/Bootstrap-Dropdown-Replacement-Plugin-DDL.html
---}}
-
-@section('scripts')     @parent
-<script type="text/javascript">
-   
-   {{-- Gorrino Include --}}
-   {!! file_get_contents( resource_path() . '/views/abcc/cart/bootstrap-ddl/bootstrap-ddl.js'); !!}
-
-</script>
-@endsection
-
-
-@section('styles')    @parent
-
-<style>
-   
-   {!! file_get_contents( resource_path() . '/views/abcc/cart/bootstrap-ddl/bootstrap-ddl.css'); !!}
-
-</style>
-
-@endsection

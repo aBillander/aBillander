@@ -10,17 +10,24 @@ class PriceRule extends Model
 {
     use ViewFormatterTrait;
 
+    public static $types = [
+                'price', 
+                'promo',       // Extra units free of charge
+                'pack',        // Price for different measure unit than default / stock measure unit
+            ];
+
     protected $dates = [
         'date_from',
         'date_to',
     ];
 
-    protected $fillable = ['category_id', 'product_id', 'combination_id',
+    protected $fillable = ['name', 'category_id', 'product_id', 'combination_id',
                            'customer_id', 'customer_group_id',
                            'currency_id', 'rule_type', 'discount_type',
                            'price', 'discount_percent', 'discount_amount', 'discount_amount_is_tax_incl',
-                           'from_quantity',
+                           'from_quantity', 'extra_quantity',
                            'date_from', 'date_to',
+                           'measure_unit_id', 'conversion_rate',
     ];
 
     public static $rules = [
@@ -30,9 +37,27 @@ class PriceRule extends Model
         'customer_id'       => 'nullable|exists:customers,id',
         'customer_group_id' => 'nullable|exists:customer_groups,id',
         'currency_id'       => 'nullable|exists:currencies,id',
+//        'measure_unit_id'   => 'nullable|exists:measureunits,id',
         'date_from'         => 'nullable|date',
         'date_to'           => 'nullable|date',
+        'from_quantity'     => 'numeric|min:0',
+        'extra_quantity'    => 'numeric|min:0',
+
+        'price'    => 'numeric|min:0',
     ];
+
+
+    public static function getRuleTypeList()
+    {
+            $list = [];
+            foreach (static::$types as $type) {
+                // $list[$scheme] = l(get_called_class().'.'.$scheme, 'sepasp');
+                $list[$type] = $type;
+            }
+
+            return $list;
+    }
+
 
     /**
      * Handy method
@@ -46,15 +71,15 @@ class PriceRule extends Model
     }
 
     /**
-     * Return true or false if a rule applies to a product in cart right now
+     * Return true or false if a rule applies to a product right now
      *
-     * @param $qty_in_cart
+     * @param $qty
      * @return bool
      */
-    public function applies($qty_in_cart)
+    public function applies($qty)
     {
         $now = Carbon::now();
-        if ($this->from_quantity <= $qty_in_cart &&
+        if ($this->from_quantity <= $qty &&
             (is_null($this->date_from) || $this->date_from <= $now) &&
             (is_null($this->date_to) || $this->date_to >= $now)) {
 
@@ -100,6 +125,11 @@ class PriceRule extends Model
         return $this->belongsTo('App\Currency');
     }
 
+    public function measureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -109,8 +139,6 @@ class PriceRule extends Model
 
     public function scopeFilter($query, $params)
     {
-
-        return $query;
 
         if ($params['date_from']) // if ( isset($params['date_to']) && trim($params['date_to']) != '' )
         {
@@ -122,27 +150,30 @@ class PriceRule extends Model
         }
 
 
-        if (isset($params['reference']) && trim($params['reference']) !== '') {
-            $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
-            // $query->orWhere('combinations.reference', 'LIKE', '%' . trim($params['reference'] . '%'));
-            /*
-                        // Moved from controller
-                        $reference = $params['reference'];
-                        $query->orWhereHas('combinations', function($q) use ($reference)
-                                            {
-                                                // http://stackoverflow.com/questions/20801859/laravel-eloquent-filter-by-column-of-relationship
-                                                $q->where('reference', 'LIKE', '%' . $reference . '%');
-                                            }
-                        );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
-            */
+        if (isset($params['reference']) && trim($params['reference']) !== '')
+        {
+            $stub = $params['reference'];
+
+            $query->whereHas('product', function($q) use ($stub) 
+            {
+                $q->where('reference', 'LIKE', '%' . $stub . '%');
+
+            });
         }
 
-        if (isset($params['name']) && trim($params['name']) !== '') {
-            $query->where('name', 'LIKE', '%' . trim($params['name'] . '%'));
+        if (isset($params['name']) && trim($params['name']) !== '')
+        {
+            $stub = $params['name'];
+
+            $query->whereHas('product', function($q) use ($stub) 
+            {
+                $q->where('name', 'LIKE', '%' . $stub . '%');
+
+            });
         }
 
-        if (isset($params['warehouse_id']) && $params['warehouse_id'] > 0) {
-            $query->where('warehouse_id', '=', $params['warehouse_id']);
+        if (isset($params['rule_type']) && in_array($params['rule_type'], static::$types)) {
+            $query->where('rule_type', '=', $params['rule_type']);
         }
 
         return $query;

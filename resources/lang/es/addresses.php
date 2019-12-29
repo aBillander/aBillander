@@ -27,6 +27,7 @@ return [
 
 	'Addresses - Edit'     => 'Direcciones - Modificar',
 	'Edit Address'     => 'Modificar Dirección',
+	'Other' => 'Otros',
 
 	/*
 	|--------------------------------------------------------------------------

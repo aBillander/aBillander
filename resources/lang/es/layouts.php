@@ -32,6 +32,7 @@ return [
 	'Unable to create this record &#58&#58 (:id) '               =>  'No se ha podido crear el registro solicitado &#58&#58 (:id) ',
 	'Unable to update this record &#58&#58 (:id) '               =>  'No se ha podido actualizar el registro solicitado &#58&#58 (:id) ',
 	'Document has no Lines'                                      =>  'El Documento no contiene Líneas',
+	'Document amount should be more than: :amount'               =>  'El Importe del Documento debe ser superior a: :amount',
 	'Document is on-hold'                                      =>  'El Documento está en espera',
 	'Document is not closed'                                      =>  'El Documento no está cerrado',
 	'Document has Payments'                                      =>  'El Documento tiene Pagos',
@@ -160,7 +161,8 @@ return [
 	'Production Sheets'     => 'Hojas de Producción',
 	'Production Orders'     => 'Ordenes de Fabricación',
 	'Manufacturing'     => 'Fabricación',
-	''     => '',
+	'Delivery Routes'     => 'Rutas de Reparto',
+	'Delivery Sheets'     => 'Hojas de Reparto',
 	''     => '',
 	
 
@@ -198,6 +200,7 @@ return [
 	'Use terms of three (3) characters or more' => 'Use palabras de tres (3) caracteres o más',
 	'Actions'     => 'Acciones',
 	'Export'     => 'Exportar',
+	'Export Headers'     => 'Exportar Encabezados',
 	'Import'     => 'Importar',
 	'File'     => 'Fichero',
 	'Load'     => 'Cargar',

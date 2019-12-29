@@ -39,7 +39,7 @@ text-decoration: none;"> {{ $product->measureunit->name }} </span>
 	</thead>
 	<tbody>
 	@foreach ($product->productmeasureunits as $line)
-                @if ( $product->measure_unit_id != $line->measureunit->id )
+                @if ( 1 || $product->measure_unit_id != $line->measureunit->id )
                     @continue
                 @endif
 		<tr class="info">
@@ -75,6 +75,7 @@ text-decoration: none;"> {{ $product->measureunit->name }} </span>
 
     @foreach ($product->productmeasureunits as $line)
                 @if ( $product->measure_unit_id == $line->measureunit->id )
+                    {{-- Skip default measure unit --}}
                     @continue
                 @endif
         <tr>

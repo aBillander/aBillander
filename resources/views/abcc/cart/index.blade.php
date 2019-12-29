@@ -22,7 +22,8 @@
                 </div>
                 <a href="{{ URL::to('customers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a -->
             </div>
-            <h2><!-- a href="{{ URL::to('customers') }}">{{ l('Shopping Cart') }}</a> <span style="color: #cccccc;">/</span --> {{ l('Shopping Cart') }} &nbsp; <span class="badge pull-right" style="background-color: #3a87ad; margin-right: 72px; margin-top: 8px;" title="{{ '' }}">{{ $cart->currency->iso_code }}</span></h2>
+            <h2><!-- a href="{{ URL::to('customers') }}">{{ l('Shopping Cart') }}</a> <span style="color: #cccccc;">/</span --> {{  l('Shopping Cart') }} [{{ $cart->id }}] &nbsp;
+            </h2>
         </div>
     </div>
 </div>
@@ -33,6 +34,8 @@
       <div class="col-lg-4 col-md-4 col-sm-4">
 
           @include('abcc.cart._panel_product')
+
+          @include('abcc.cart._panel_shipping_address')
 
           @include('abcc.cart._panel_confirm')
 
@@ -46,6 +49,9 @@
 
    </div>
 </div>
+
+@include('layouts/back_to_top_button')
+
 @endsection
 
 
@@ -89,6 +95,12 @@ fieldset[disabled] .btn-custom.active {
   background-color: #ff0084;
   border-color: #ff0084;
 }
+
+
+/* Cart Stuff */
+#div_cart_lines .show-pricerules {margin-left:1em}
+/* #div_cart_lines td {vertical-align: middle} */
+.crossed {text-decoration: line-through;}
 
 
 </style>

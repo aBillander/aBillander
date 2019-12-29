@@ -41,20 +41,30 @@
 			<!-- td>{{ $payment->customerInvoice->customer->name_fiscal or '' }}</td -->
 			<td>{{ $payment->name }}</td>
 			<td @if( !$payment->payment_date AND ( $payment->due_date < \Carbon\Carbon::now() ) ) class="danger" @endif>
-				{{ $payment->due_date }}</td>
-			<td>{{ $payment->payment_date }}</td>
+				{{ abi_date_short($payment->due_date) }}</td>
+			<td>{{ abi_date_short($payment->abicc_payment_date) }}</td>
 			<td>{{ abi_money_amount($payment->amount, $payment->currency) }}</td>
             <td class="text-center">
-            	@if     ( $payment->status == 'pending' )
+            	@if     ( $payment->abicc_status == 'pending' )
             		<span class="label label-info">
-            	@elseif ( $payment->status == 'bounced' )
+            	@elseif ( $payment->abicc_status == 'bounced' )
             		<span class="label label-danger">
-            	@elseif ( $payment->status == 'paid' )
+            	@elseif ( $payment->abicc_status == 'paid' )  {{-- Consider voucher is in a Remitance that is financed --}}
             		<span class="label label-success">
             	@else
             		<span>
             	@endif
-            	{{l( $payment->status, [], 'appmultilang' )}}</span></td>
+            	{{l( $payment->abicc_status, [], 'appmultilang' )}}</span>
+
+            	@if ( $payment->auto_direct_debit && $payment->abicc_status == 'pending')
+
+		            	<button class="btn btn-xs btn-navy" type="button" title="{{ l('This Voucher will be included in automatic payment remittances') }}">
+				           <i class="fa fa-bank"></i>
+				        </button>
+
+            	@endif
+
+            </td>
 
 			<td class="text-right">
                 <!-- a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->

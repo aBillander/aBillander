@@ -14,6 +14,7 @@ return [
 	'WARNINGS' => 'AVISO(S)',
 	'ERROR(S)' => 'ERROR(ES)',
 	'WARNING(S)' => 'AVISO(S)',
+	'ALL'=>'TODO',
 	'Empty LOG' => 'Vaciar el LOG',
 	'Delete LOG' => 'Eliminar LOG',
 	'User ID' => 'ID Usuario',

@@ -1,7 +1,7 @@
 
 
 
-<table class="head container">
+<table class="head container" style="margin-top: -0.7cm !important">
 
 	<tr>
 
@@ -181,7 +181,6 @@
 	</tr>
 
 </table>
-
 
 
 
@@ -463,6 +462,12 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
 </div><!-- #letter-footer -->
 
+@php
+
+$GLOBALS['var'] = 'Pedido nº: ' . ($document->document_reference ?: 'BORRADOR');
+
+@endphp
+
 
 <script type="text/php">
 
@@ -478,10 +483,23 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
         	$pdf->page_text(($pdf->get_width() - 54), ($pdf->get_height() - 26.89 - 31), "{PAGE_NUM} / {PAGE_COUNT}", null, 9);
 
+
+// See: https://github.com/dompdf/dompdf/issues/347
+$pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
-               $pdf->page_text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), "{PAGE_NUM} de {PAGE_COUNT}", null, 9);
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
+
+               // $pdf->text(($pdf->get_width() - 260), ($pdf->get_height() - 26.89 - 790.0), $GLOBALS["var"], null, 9);
 }
+if ( $PAGE_NUM > 1 )
+{
+               // $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), PAGE_NUM." de ".$PAGE_COUNT, null, 9);
+
+               $pdf->text(($pdf->get_width() - 180), ($pdf->get_height() - 26.89 - 790.0), $GLOBALS["var"], null, 9);
+}
+');
+
         }
 
 

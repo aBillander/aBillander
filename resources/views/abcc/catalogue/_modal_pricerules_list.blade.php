@@ -2,7 +2,7 @@
 
 	 <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	    <h4 class="modal-title">{{ l('Show Special Prices') }} :: <label class="label label-default">{{ optional($product)->reference }}</label> {{ optional($product)->name }}</h4>
+	    <h4 class="modal-title">{{ l('Show Special Prices') }} :: <label class="label label-default">{{ optional($product)->reference }}</label> {{ optional($product)->name }} - <label class="label alert-success">{{ l('Regular Price (per unit)') }}: {{ rtrim($customer_price->getPrice(), '0') }}{{ $currency->sign }}</label></h4>
 	 </div>
 
 	 <div class="modal-body">
@@ -16,9 +16,10 @@
               <th>{{l('Category', 'abcc/customer')}}</th>
               <th>{{l('Currency', 'abcc/customer')}}</th>
               <th class="text-right">{{l('Price', 'abcc/customer')}}</th>
-              <th class="text-right">{{l('Discount Percent', 'abcc/customer')}}</th>
+              <!-- th class="text-right">{{l('Discount Percent', 'abcc/customer')}}</th -->
               <!-- th class="text-right">{{l('Discount Amount')}}</th -->
               <th class="text-center">{{l('From Quantity', 'abcc/customer')}}</th>
+              <th class="text-center">{{l('Extra Items', 'abcc/customer')}}</th>
               <th>{{l('Date from', 'abcc/customer')}}</th>
               <th>{{l('Date to', 'abcc/customer')}}</th>
         </tr>
@@ -35,11 +36,12 @@
       <td>{{ optional($rule->currency)->name }}</td>
 
 @if($rule->rule_type=='price')
-      <td class="text-right">{{ $rule->as_price('price') }}</td>
+      <td class="text-right">{{ $rule->as_price('price') }}<br /><span class="text-info crossed">{{ $rule->as_priceable($customer_price->getPrice()) }}</span></td>
 @else
       <td class="text-right"> </td>
 @endif
 
+{{--
 @if($rule->rule_type=='discount')
       @if($rule->discount_type=='percentage')
             <td class="text-right">{{ $rule->as_percent('discount_percent') }}</td>
@@ -57,8 +59,11 @@
       <td class="text-right"> </td>
       <!-- td class="text-right"> </td -->
 @endif
+--}}
 
       <td class="text-center">{{ $rule->as_quantity('from_quantity') }}</td>
+
+      <td class="text-center">{{ $rule->as_quantity('extra_quantity') ?: '' }}</td>
 
       <td>{{ abi_date_short( $rule->date_from ) }}</td>
             <td>{{ abi_date_short( $rule->date_to   ) }}</td>

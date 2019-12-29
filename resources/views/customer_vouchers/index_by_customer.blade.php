@@ -155,6 +155,7 @@
                </a>
           </th>
       <th class="text-center">{{l('Status', [], 'layouts')}}</th>
+      <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -201,6 +202,19 @@
             	@endif
             	{{\App\Payment::getStatusName($payment->status)}}</span></td>
 
+
+      <td class="text-center">
+          @if ($payment->notes)
+           <a href="javascript:void(0);">
+              <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                      data-content="{{ $payment->notes }}">
+                  <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+              </button>
+           </a>
+          @endif
+      </td>
+
+
 			<td class="text-right">
               @if ( ( $payment->status == 'paid' ) || ( $payment->status == 'bounced' ) )
 
@@ -214,7 +228,7 @@
 	                </a>
       @endif
 
-	                @if($payment->amount==0.0)
+	                @if(0 && $payment->amount==0.0)
  
       @if ($payment->bankorder && ($payment->bankorder->status != 'pending'))
       @else

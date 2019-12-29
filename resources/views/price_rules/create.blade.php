@@ -5,97 +5,25 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col-md-8 col-md-offset-2" style="margin-top: 50px">
-        <div class="panel panel-info">
-            <div class="panel-heading"><h3 class="panel-title">{{ l('New Price Rule') }}</h3></div>
-            <div class="panel-body" id="price_rule">
+<div class="container-fluid" style="margin-top: 50px">
+   <div class="row">
+      <div class="col-lg-2 col-md-2 col-sm-3">
 
-                @include('errors.list')
+          {{-- Poor man offset --}}
 
-				{!! Form::open(array('route' => 'pricerules.store')) !!}
-    
-<div class="row">
-    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date_from') ? 'has-error' : '' }}">
-        {!! Form::label('date_from_form', l('Date from')) !!}
-        {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
-               {!! $errors->first('date_from', '<span class="help-block">:message</span>') !!}
-    </div>
-    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date_to') ? 'has-error' : '' }}">
-        {!! Form::label('date_to_form', l('Date to')) !!}
-        {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
-               {!! $errors->first('date_to', '<span class="help-block">:message</span>') !!}
-    </div>
+      </div>
+      
+      <div class="col-lg-8 col-md-8 col-sm-8">
+
+          @include('price_rules._panel_create_rule')
+
+      </div>
+   </div>
 </div>
 
-    
-<div class="row">
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('autocustomer_name', l('Customer Name')) !!}
-                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Search by Name or Identification (VAT Number).') }}">
-                        <i class="fa fa-question-circle abi-help"></i>
-                 </a>
-        {!! Form::text('autocustomer_name', old('autocustomer_name'), array('class' => 'form-control', 'id' => 'autocustomer_name', 'onclick' => 'this.select()')) !!}
 
-        {!! Form::hidden('customer_id', old('customer_id'), array('id' => 'customer_id')) !!}
 
-        {!! $errors->first('customer_id', '<span class="help-block">:message</span>') !!}
-    </div>
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('customer_group_id', l('Customer Group')) !!}
-        {!! Form::select('customer_group_id', ['' => l('-- All --', 'layouts')] + $customer_groupList, null, array('class' => 'form-control', 'id' => 'customer_group_id')) !!}
-        {!! $errors->first('customer_group_id', '<span class="help-block">:message</span>') !!}
-    </div>
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('reference', l('Reference')) !!}
-        {!! Form::text('reference', null, array('id' => 'reference', 'class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
-    </div>
-    <div class="form-group col-lg-4 col-md-4 col-sm-4">
-        {!! Form::label('product_query', l('Product Name')) !!}
-                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                          data-content="{{ l('Search by Product Reference or Name') }}">
-                      <i class="fa fa-question-circle abi-help"></i>
-                   </a>
 
-        {!! Form::hidden('product_id', null, array('id' => 'product_id')) !!}
-
-        {!! Form::text('product_query', null, array('id' => 'product_query', 'autocomplete' => 'off', 'class' => 'form-control', 'onclick' => 'this.select()')) !!}
-    </div>
-
-</div>
-
-<div class="row">
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('from_quantity', l('From Quantity')) !!}
-        {!! Form::text('from_quantity', old('from_quantity', 1), array('class' => 'form-control')) !!}
-    </div>
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('price', l('Price')) !!}
-        {!! Form::text('price', null, array('id' => 'price', 'class' => 'form-control')) !!}
-    </div>
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('currency_id', l('Currency')) !!}
-        {!! Form::select('currency_id', ['' => l('-- All --', 'layouts')] + $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id')) !!}
-        {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
-    </div>
-</div>
-
-               </div><!-- div class="panel-body" -->
-
-               <div class="panel-footer text-right">
-                  <a class="btn btn-link" data-dismiss="modal" href="{{ URL::to('pricerules') }}">{{l('Cancel', [], 'layouts')}}</a>
-                  <button class="btn btn-success" type="submit" onclick="this.disabled=true;this.form.submit();">
-                     <i class="fa fa-floppy-o"></i>
-                     &nbsp; {{l('Save', [], 'layouts')}}
-                  </button>
-               </div>
-
-				{!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-</div>
 
 @endsection
 
@@ -167,7 +95,7 @@
                     if ( response.payment_method_id > 0 ) {
                       $('#payment_method_id').val(response.payment_method_id);
                     } else {
-                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
+                      $('#payment_method_id').val({{ \App\Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD') }});
                     }
 
                     $('#currency_id').val(response.currency_id);
@@ -195,7 +123,7 @@
 
                     shipping_method_id = response.shipping_method_id;
                     if (shipping_method_id == null) {
-                        shipping_method_id = "{{ intval(\App\Configuration::get('DEF_SHIPPING_METHOD'))}}";
+                        shipping_method_id = "{{ \App\Configuration::getInt('DEF_SHIPPING_METHOD') }}";
                     }
                     $('#shipping_method_id').val( shipping_method_id );
 
@@ -212,6 +140,14 @@
         $("#autocustomer_name").val('');
         $('#customer_id').val('');
     }); 
+
+    function sanitize_data()
+    {
+        if ( $("#price").val() == '' )
+        {
+            $("#price").val('0.0');
+        }
+    }
 
 </script> 
 
@@ -261,8 +197,12 @@
       //    "Nothing selected, input was " + this.value );
 
         $( "#product_query" ).val(ui.item.name);
-        $( "#reference" ).val( ui.item.reference );
+        $( "#reference" ).html( '<div class="form-control">'+ui.item.reference+'</div>' );
         $( "#product_id" ).val( ui.item.id );
+
+        // Cost & Price stuff (to be done)
+        // Measure Units
+        getProductData( ui.item.id );
 
         // Product has combinations?
         $("#product_options").addClass('loading');
@@ -305,6 +245,75 @@
             .appendTo(ul);
     };
   });
+
+
+
+
+
+        function getProductData( product_id )
+        {
+            var token = "{{ csrf_token() }}";
+
+            $("#product_infos").fadeOut();
+
+            $.ajax({
+                url: "{{ route('products.ajax.nameLookup') }}",
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    product_id: product_id
+                },
+                success: function (response) {
+                    // var str = '[' + response.identification+'] ' + response.name_fiscal;
+                    var conversion;
+
+                    $('#measure_unit_id').empty();
+
+    //                $('#shipping_address_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
+
+                    $.each(response.product.extra_measureunits, function(index, element){
+                      conversion = ' - '+Math.round(element.conversion_rate)+' x '+response.product.measureunit.name;
+                      $('#measure_unit_id').append('<option value="'+ element.id +'">'+ element.name +conversion+'</option>');
+                    });
+
+                    // Nice transition (Ihope!)
+                    $("#product_infos").html(response.infos);
+                    $("#product_infos").fadeIn();
+
+                    console.log(response);
+                }
+            });
+        }
+
+    // See: https://stackoverflow.com/questions/20705905/bootstrap-3-jquery-event-for-active-tab-change
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href") // activated tab
+      if (target == '#tab3default')
+      {
+                    // $('#measure_unit_id').empty();
+
+                    // $('#measure_unit_id').append('<option value="0">{{ l('-- Please, select --', 'layouts') }}</option>');
+      }
+      /*
+      if ($(target).is(':empty')) {
+        $.ajax({
+          type: "GET",
+          url: "/article/",
+          error: function(data){
+            alert("There was a problem");
+          },
+          success: function(data){
+            $(target).html(data);
+          }
+      })
+     }
+     */
+    });
+
+
+
+
 </script>
 
 @endsection

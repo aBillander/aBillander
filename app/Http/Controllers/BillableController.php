@@ -60,10 +60,13 @@ class BillableController extends Controller
         {
             $search = $request->customer_id;
 
-            $customers = \App\Customer::select('id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
-                                    ->with('currency')
+            $customers = \App\Customer::
+                    // select('id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id', 'invoice_sequence_id')
+                                      with('currency')
                                     ->with('addresses')
                                     ->find( $search );
+
+            $customers->invoice_sequence_id = $customers->getInvoiceSequenceId();
 
 //            return $customers;
 //            return Product::searchByNameAutocomplete($query, $onhand_only);

@@ -8,7 +8,7 @@
    </div>
 
 
-        {!! Form::model($customer->user, array('xmethod' => 'PATCH', 'url' => route('abcc.account.update') )) !!}
+        {!! Form::model($customer_user, array('xmethod' => 'PATCH', 'url' => route('abcc.account.update') )) !!}
         {{-- <input type="hidden" value="{{$customer->id}}" name="customer_id" id="customer_id"> --}}
 
  
@@ -25,12 +25,12 @@
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('firstname', l('Name')) !!}
     {{-- {!! Form::text('firstname', null, array('class' => 'form-control')) !!} --}}
-    <div class="form-control">{{ $customer->user->firstname }}</div>
+    <div class="form-control">{{ $customer_user->firstname }}</div>
 </div>
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('lastname', l('Surname')) !!}
     {{-- {!! Form::text('lastname', null, array('class' => 'form-control')) !!} --}}
-    <div class="form-control">{{ $customer->user->lastname }}</div>
+    <div class="form-control">{{ $customer_user->lastname }}</div>
 </div>
 </div>
 
@@ -38,8 +38,8 @@
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('email', l('Email')) !!}
     {{-- {!! Form::text('email', null, array('placeholder' => l('your@email.com'), 'class' => 'form-control', 'required' => 'required')) !!} --}}
-    <input type="hidden" value="{{$customer->email}}" name="email" id="email">
-    <div class="form-control">{{ $customer->user->email }}</div>
+    <input type="hidden" value="{{$customer_user->email}}" name="email" id="email">
+    <div class="form-control">{{ $customer_user->email }}</div>
 </div>
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('password', l('Password')) !!}

@@ -8,10 +8,10 @@
 <!-- Comercial -->
 
         <div class="row">
-                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('invoice_sequence_id') ? 'has-error' : '' }}">
                      {{ l('Sequence for Invoices') }}
-                     {!! Form::select('sequence_id', array('' => l('-- Please, select --', [], 'layouts')) + $sequenceList, null, array('class' => 'form-control')) !!}
-                     {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
+                     {!! Form::select('invoice_sequence_id', array('' => l('-- Please, select --', [], 'layouts')) + $sequenceList, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('invoice_sequence_id', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('invoice_template_id') ? 'has-error' : '' }}">
                      

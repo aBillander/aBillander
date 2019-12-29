@@ -12,20 +12,25 @@ return [
 
     'Customer - Shopping Cart'    => 'Cliente - Carrito',
     'Shopping Cart'               => 'Carrito',
+    'SE'                          => 'RE',
     'Search Product'              => 'Buscar Producto',
     'Product Name'                => 'Producto',
-    'Customer Price'              => 'PVP sin IVA',
-    'Customer Price (with Tax)'   => 'PVP recomendado',
+    'Customer Price'              => 'Precio',
+    'Customer Price (with Tax)'   => 'Precio con IVA',
+    'Without Tax'                 => 'Sin IVA',
     'Prices are exclusive of Tax' => 'El Precio no incluye Impuestos',
     'Quantity'                    => 'Cantidad',
     'Products Total'              => 'Total Productos',
+    'Shipping Cost'               => 'Envío',
     'Total'                       => 'Total',
     'Total (without tax)'         => 'Total sin IVA',
-    'Document Discount'           => 'Descuento en Documento',
+    'Document Discount'           => 'Descuento Cliente',
     'Prompt Payment Discount'     => 'Descuento Pronto Pago',
     'Total after discounts'       => 'Total con descuento',
     'Taxes Total'                 => 'Total IVA',
+    'Sales Equalization Total'    => 'Total RE',
     'Order Total'                 => 'Total Pedido',
+    'Total to Pay'                => 'Total a Pagar',
 
     'Change Quantity and press [Enter] or click button below.' => 'Cambie la Cantidad y pulse [Enter] o click en el botón de más abajo.',
 
@@ -137,7 +142,7 @@ return [
     'Notes to Customer'             => 'Notas para el Cliente',
 
     // _invoice_lines
-    'Reference'                     => 'Referencia',
+    'Reference'                     => 'Ref.',
     'Description'                   => 'Descripción',
     'Price'                         => 'Precio',
     'Disc. %'                       => 'Dto. %',
@@ -233,7 +238,19 @@ return [
     'You are going to Ask for Quotation. Are you sure?'  => 'Está a punto de confirmar su petición de Presupuesto. ¿Está seguro?',
     'Order Confirmation'                                 => 'Confirmación de Pedido',
     'You are going to Confirm your Order. Are you sure?' => 'Está a punto de confirmar su Pedido. ¿Está seguro?',
+    'You can not Confirm your Order at this moment.'     => 'No puede confirmar su Pedido en este momento.',
 
-    'Cart amount should be more than: ' => 'El importe del Pedido debe ser al menos de: ',
+    'Cart amount should be more than: :amount (Products Value)' => 'El importe del Pedido debe ser al menos de: :amount (Valor de los Productos )',
+
+    'Address not allowed' => 'Dirección no permitida',
+
+    'Promo: You pay :npay and get :nget' => 'Promoción: Paga :npay y lleva :nget',
+
+    'Equalization Tax' => 'Recargo Equivalencia',
+
+    'Recommended Retail Price'     => 'PVR',
+    'Recommended Retail Price, taxes included'     => 'Precio de Venta Recomendado, IVA incluido',
+
+    'Free Shipping for Orders greater than: :amount (Products Value)' => 'Envío Gratis para Pedido superior a: :amount (Valor de los Productos )',
 
 ];

@@ -20,8 +20,9 @@ return [
     'Product Name'                   => 'Nombre del Producto',
     'Reference'                      => 'Referencia',
     'Customer Price'                 => 'PVP sin IVA',
-    'Customer Price (with Tax)'      => 'PVP recomendado',
+    'Customer Price (with Tax)'      => 'PVP con IVA',
     'Tax'                            => 'IVA',
+    'Recommended Retail Price'     => 'PVP Recomendado',
     'Prices are exclusive of Tax'    => 'El Precio no incluye Impuestos',
     'Prices are inclusive of Tax'    => 'El Precio incluye Impuestos',
     'Prices are inclusive of Ecotax' => 'El Precio incluye la Ecotasa',
@@ -46,7 +47,7 @@ return [
     */
 
     'Show Special Prices' => 'Mostrar Precios Especiales',
-    ''                    => '',
+    'Regular Price (per unit)'       => 'Precio normal unitario',
     ''                    => '',
 
 ];

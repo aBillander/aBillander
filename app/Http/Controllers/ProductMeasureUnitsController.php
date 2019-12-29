@@ -75,7 +75,7 @@ class ProductMeasureUnitsController extends Controller {
 
 		$data = [
 			'product_id' => $product->id,
-			'base_measure_unit_id' => $product->measure_unit_id,
+			'stock_measure_unit_id' => $product->measure_unit_id,
 		];
 
 		$line = $this->productmeasureunit->create($request->all() + $data);

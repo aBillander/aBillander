@@ -292,8 +292,8 @@ class CustomerOrdersController extends BillableController
         }
 
         // Maybe...
-//        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
-//            $customerOrder->confirm();
+        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
+            $document->confirm();
 
         return redirect($this->model_path.'/'.$document->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));

@@ -20,6 +20,7 @@ class CreatePriceRulesTable extends Migration {
 		Schema::create('price_rules', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->string('name', 128)->nullable();
 
 			$table->integer('category_id')->unsigned()->nullable();
 
@@ -44,9 +45,13 @@ class CreatePriceRulesTable extends Migration {
 			$table->tinyInteger('discount_amount_is_tax_incl')->default(0);
 
 			$table->decimal('from_quantity', 20, 6);
+			$table->decimal('extra_quantity', 20, 6)->default(0.0);
 
 			$table->dateTime('date_from')->nullable();
 			$table->dateTime('date_to')->nullable();
+
+            $table->integer('measure_unit_id')->unsigned()->nullable();
+            $table->decimal('conversion_rate', 20, 6)->default(1.0);		// Conversion to stock (main) unit. Conversion rates are calculated from one unit of your main measura unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, type "6" (since a pack of six bottles will contain six bottles)
 
 
 

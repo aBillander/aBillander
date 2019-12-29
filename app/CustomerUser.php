@@ -40,7 +40,7 @@ class CustomerUser extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password', 'firstname', 'lastname', 
 //        'home_page', 'is_admin', 
-        'active', 'enable_quotations', 'enable_min_order', 'min_order_value', 'display_prices_tax_inc',
+        'active', 'enable_quotations', 'enable_min_order', 'use_default_min_order_value', 'min_order_value', 'display_prices_tax_inc',
         'language_id', 'customer_id', 'address_id'
     ];
 
@@ -87,6 +87,37 @@ class CustomerUser extends Authenticatable
 
     }
 
+/* Use "can" functions instead
+    public function getCustomEnableQuotationsAttribute()
+    {
+        if ( $this->enable_quotations < 0 ) return \App\Configuration::get('ABCC_ENABLE_QUOTATIONS');
+
+        return $this->enable_quotations;
+    }
+
+    public function getCustomEnableMinOrderAttribute()
+    {
+        if ( $this->enable_min_order < 0 ) return \App\Configuration::get('ABCC_ENABLE_MIN_ORDER');
+
+        return $this->enable_min_order;
+    }
+
+    public function getCustomMinOrderValueAttribute()
+    {
+        if ( $this->use_default_min_order_value > 0 ) return \App\Configuration::get('ABCC_MIN_ORDER_VALUE');
+
+        return $this->min_order_value;
+    }
+
+    public function getCustomDisplayPricesTaxIncAttribute()
+    {
+        if ( $this->display_prices_tax_inc < 0 ) return \App\Configuration::get('ABCC_DISPLAY_PRICES_TAX_INC');
+
+        return $this->display_prices_tax_inc;
+    }
+*/
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -122,6 +153,15 @@ class CustomerUser extends Authenticatable
     public function getFullNameAttribute()
     {
         return $this->firstname.' '.$this->lastname;
+
+    }
+
+    // Default Shipping Address for CustomerUser
+    public function getShippingaddressAttribute()
+    {
+        return $this->address_id > 0
+                    ? $this->address
+                    : $this->customer->shipping_address();
 
     }
 
@@ -197,7 +237,9 @@ class CustomerUser extends Authenticatable
     {
         if( !$this->canMinOrder() ) return 0.0;
 
-        $can = $this->min_order_value > 0 ? $this->min_order_value : Configuration::getNumber('ABCC_MIN_ORDER_VALUE') ; 
+        $can = $this->use_default_min_order_value > 0 ? Configuration::get('ABCC_MIN_ORDER_VALUE') : $this->min_order_value;
+
+        // $can = $this->min_order_value > 0 ? $this->min_order_value : Configuration::getNumber('ABCC_MIN_ORDER_VALUE') ; 
 
         return $can;
     }
@@ -228,7 +270,9 @@ class CustomerUser extends Authenticatable
 
     public function address()
     {
-        return $this->belongsTo('App\Address', 'address_id');
+        // Makes sense when CustomerUser is allowed to only one address
+        return $this->hasOne('App\Address', 'id', 'address_id')
+                   ->where('addressable_type', Customer::class);
     }
 
 

@@ -47,7 +47,7 @@ class Payment extends Model {
             'due_date' => 'required|date',
 //            'payment_date' => 'date',
 //   Fuck yeah :=>           'amount' => 'numeric|min:0|max:',
-              'amount' => 'numeric|max:',
+              'amount' => 'numeric',    // |max:',
 	];
 
 
@@ -125,10 +125,31 @@ class Payment extends Model {
         return $value;
     }
 
-//    public function setAmountAttribute($value)
-//    {
-//        $this->attributes['amount'] = ;
-//    }
+
+    public function getAbiccPaymentDateAttribute($value)
+    {
+        if ($this->bankorder && $this->bankorder->discount_dd)  // Remitance is financed
+        {
+            if ( $this->payment_date < $this->due_date && $this->due_date > \Carbon\Carbon::now() )
+                return null;
+            
+            if ( $this->due_date < \Carbon\Carbon::now() )
+                return $this->due_date;
+        }
+
+        return $this->payment_date;
+    }
+
+    public function getAbiccStatusAttribute($value)
+    {
+        if ($this->bankorder && $this->bankorder->discount_dd)  // Remitance is financed
+        {
+            if ( $this->payment_date < $this->due_date && $this->due_date > \Carbon\Carbon::now() )
+                return 'pending';
+        }
+
+        return $this->status;
+    }
 
 
 
@@ -267,6 +288,10 @@ class Payment extends Model {
         if (array_key_exists('status', $params) && $params['status'] && self::isStatus($params['status']))
         {
             $query->where('status', $params['status']);
+
+        } else {
+
+            $query->where('status', '<>', 'uncollectible');
         }
 
         if (array_key_exists('customer_id', $params) && $params['customer_id'])
@@ -276,6 +301,18 @@ class Payment extends Model {
             $query->whereHas('customer', function ($query) use ($id) {
                     $query->where('id', $id);
                 });
+        }
+
+        if (isset($params['name']) && $params['name'] != '') {
+            $name = $params['name'];
+
+            $query->whereHas('customer', function ($query) use ($name) {
+                    $query->where(function ($query1) use ($name) {
+                        $query1->where('name_fiscal', 'LIKE', '%' . $name . '%')
+                               ->OrWhere('name_commercial', 'LIKE', '%' . $name . '%');
+                });
+
+            });
         }
 
         if ( array_key_exists('amount', $params) && $params['amount']  != '' )

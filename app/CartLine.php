@@ -23,9 +23,12 @@ class CartLine extends Model
     protected $touches = ['cart'];
 
     protected $fillable = [
-    						'line_sort_order', 'product_id', 'combination_id', 'reference', 'name', 
-    						'quantity', 'measure_unit_id', 
-    						'unit_customer_price', 'tax_percent', 'tax_id', 
+    						'line_type', 'line_sort_order', 'product_id', 'combination_id', 'reference', 'name', 
+    						'quantity', 'extra_quantity', 'extra_quantity_label', 'measure_unit_id', 
+                            'package_measure_unit_id', 'pmu_conversion_rate', 
+    						'unit_customer_price', 'unit_customer_final_price', 'sales_equalization', 
+                            'total_tax_incl', 'total_tax_excl',
+                            'tax_percent', 'tax_se_percent', 'tax_id', 
     ];
 
     public static $rules = [
@@ -60,6 +63,11 @@ class CartLine extends Model
     public function measureunit()
     {
         return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+    }
+
+    public function package_measureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'package_measure_unit_id');
     }
 
     public function tax()

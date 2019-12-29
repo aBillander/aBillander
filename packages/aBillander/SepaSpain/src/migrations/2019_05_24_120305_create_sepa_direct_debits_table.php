@@ -40,6 +40,7 @@ class CreateSepaDirectDebitsTable extends Migration
             $table->tinyInteger('onhold')->default(0);            // 0 -> NO; 1 -> Yes (Document cannot change status)
 
             $table->tinyInteger('group_vouchers')->default(0);    // 0 -> NO; 1 -> Yes (Group customer vouchers into one for the same date. One voucher for customer and date)
+            $table->tinyInteger('discount_dd')->default(0);    // 0 -> NO; 1 -> Yes (Remitance is financed)
 
             $table->text('notes')->nullable();
 

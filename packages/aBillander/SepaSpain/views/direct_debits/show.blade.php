@@ -29,7 +29,8 @@
                     </button>
                  </a> 
         </span>
-        <span style="color: #cccccc;">::</span> {{ abi_date_short($directdebit->document_date) }} 
+        <span style="color: #cccccc;">::</span> 
+        <a xclass="btn btn-sm btn-warning" href="{{ URL::to('sepasp/directdebits/' . $directdebit->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}">{{ abi_date_short($directdebit->document_date) }}</a> 
 
 
 @if ( $directdebit->status == "pending" )
@@ -54,6 +55,12 @@
 @if ( $directdebit->group_vouchers )
               <button type="button" class="btn btn-xs btn-info" title="{{l('One Voucher for Customer and Date')}}">
                   <i class="fa fa-object-group"></i>
+              </button>
+@endif
+
+@if ( $directdebit->discount_dd )
+              <button type="button" class="btn btn-xs alert-danger" title="{{l('Financed Remittance')}}">
+                  <i class="fa fa-calendar"></i>
               </button>
 @endif
 

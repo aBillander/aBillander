@@ -248,7 +248,7 @@ class ProductsController extends Controller
         $data = [
             'product_id' => $product->id,
             'measure_unit_id' => $product->measure_unit_id,
-            'base_measure_unit_id' => $product->measure_unit_id,
+            'stock_measure_unit_id' => $product->measure_unit_id,
             'conversion_rate' => 1.0,
             'active' => 1,
         ];
@@ -455,8 +455,8 @@ class ProductsController extends Controller
                 $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
                 $request->merge( ['price' => $price] );
 
-                $price = $request->input('recommended_retail_price_tax_inc')/(1.0+($tax->percent/100.0));
-                $request->merge( ['recommended_retail_price' => $price] );
+                $price = $request->input('recommended_retail_price')/(1.0+($tax->percent/100.0));
+                $request->merge( ['recommended_retail_price' => $price, 'recommended_retail_price_tax_inc' => $request->input('recommended_retail_price')] );
             } else {
                 $price_tax_inc = $request->input('price')*(1.0+($tax->percent/100.0));
                 $request->merge( ['price_tax_inc' => $price_tax_inc] );
@@ -550,7 +550,7 @@ class ProductsController extends Controller
         $data = [
             'product_id' => $clone->id,
             'measure_unit_id' => $clone->measure_unit_id,
-            'base_measure_unit_id' => $clone->measure_unit_id,
+            'stock_measure_unit_id' => $clone->measure_unit_id,
             'conversion_rate' => 1.0,
             'active' => 1,
         ];
@@ -680,18 +680,6 @@ class ProductsController extends Controller
         return response( $boms );
     }
 
-    // Seems not used anywhere
-    public function getMeasureUnits($id, Request $request)
-    {
-        $product = $this->product->findOrFail($id);
-
-        $units = $product->measureunits;
-
-        return Response::json($units);
-
-//        return response( $boms );
-    }
-
 
 
 /* ********************************************************************************************* */    
@@ -795,6 +783,26 @@ LIMIT 1
      */
     public function ajaxProductSearch(Request $request)
     {
+
+        if ($request->has('product_id'))
+        {
+            $search = $request->product_id;
+
+//            $product = Product::
+
+            // select('id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
+//                                      with('measureunit')
+//                                    ->find( $search );
+
+            $product = $this->editQueryRaw()->findOrFail( $search );
+
+            $pricelists = $product->pricelists;
+
+            $infos = view('products.ajax.product_infos', compact('product', 'pricelists'))->render();
+
+            return response()->json( [ 'product' => $product, 'infos' => $infos ] );
+        }
+
         $term  = $request->has('term')  ? $request->input('term')  : null ;
         $query = $request->has('query') ? $request->input('query') : $term;
 

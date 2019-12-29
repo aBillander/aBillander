@@ -11,7 +11,7 @@ class ShippingMethod extends Model {
 
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['name', 'alias', 'webshop_id', 'carrier_id', 'active'];
+    protected $fillable = ['name', 'alias', 'webshop_id', 'class_name', 'carrier_id', 'active'];
 
     public static $rules = array(
         'name'         => 'required|min:2|max:64',
@@ -34,4 +34,48 @@ class ShippingMethod extends Model {
     {
         return $this->hasMany('App\CustomerOrder');
     }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cos Calculationss
+    |--------------------------------------------------------------------------
+    */
+
+    public static function costPriceCalculator( $method, $shippable )
+    {
+        // $shippable is either a Cart or Document (Quotation, Order, Slip or Invoice) object
+
+        // laravel helper class_basename:
+        $baseClass = class_basename(get_class( $shippable ));
+
+        if ( $baseClass == 'Cart' )
+            return $method->calculateCartCostPrice( $shippable );
+
+        // Return Price Object
+        return $price = $method->calculateCartCostPrice( $shippable );
+    }
+    
+    public function calculateCartCostPrice( \App\Cart $cart )
+    {
+        // Instantiate calculator
+        $class = $this->class_name;
+
+        if ( !class_exists($class) )
+        {
+            return [
+                        'shipping_label' => $class,
+                        'cost'           => 0.0,
+                        'tax'            => Tax::find( Configuration::get('DEF_TAX') ),
+                ];
+        }
+
+        $calculator = new $class ();
+
+        return $calculator->calculateCartCostPrice( $cart );
+
+    }
+
+
 }

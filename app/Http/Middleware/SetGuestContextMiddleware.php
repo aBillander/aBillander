@@ -1,14 +1,16 @@
-<?php namespace App\Http\Middleware;
+<?php
+
+namespace App\Http\Middleware;
 
 use Closure;
 
-use App\Configuration as Configuration;
-use App\Company as Company;
-use App\Context as Context;
-use App\Language as Language;
-use Illuminate\Support\Str as Str;
+use App\Configuration;
+use App\Company;
+use App\Context;
+use App\Language;
+use Illuminate\Support\Str;
 use Auth;
-use App\User as User;
+use App\User;
 use Config, App;
 use Request, Cookie;
 
@@ -37,8 +39,9 @@ class SetGuestContextMiddleware {
 		
 		$language = null;
 		
-		if (Cookie::get('user_language') !== null) 
-			$language = Language::find( intval( \Crypt::decrypt(Cookie::get('user_language')) ) );
+		// Todo: make this work
+		// if (Cookie::get('user_language') !== null) 
+		//	$language = Language::find( intval( \Crypt::decrypt(Cookie::get('user_language')) ) );
 		
 		if ( !$language )
 			$language = Language::find( intval(Configuration::get('DEF_LANGUAGE')) );
@@ -53,6 +56,11 @@ class SetGuestContextMiddleware {
 		
 
 		Context::getContext()->user       = $user;
+
+        if ( Configuration::isNotEmpty('USE_CUSTOM_THEME') )
+        {
+            Context::getContext()->theme = Configuration::get('USE_CUSTOM_THEME');
+        }
 		Context::getContext()->language   = $language;
 
 		// Not really "the controller", but enough to retrieve translation files
@@ -68,6 +76,21 @@ class SetGuestContextMiddleware {
 
 		// Changing The Default Language At Runtime
 		App::setLocale(Context::getContext()->language->iso_code); 
+
+		// Changing theme
+			if ( Context::getContext()->theme ) 		// ToDo: Move this to a ServiceProvider
+			{
+	/*			$paths = \Config::get('view.paths');
+				array_unshift($paths, realpath(base_path('resources/views')).'/../theme');
+				$finder = new \Illuminate\View\FileViewFinder(app()['files'], $paths);
+		//		abi_r($finder, true);
+				\View::setFinder($finder);
+	*/
+				\View::getFinder()->prependLocation( realpath(base_path('resources/views')).'/../theme/'.Context::getContext()->theme );
+			}
+			// https://eoghanobrien.com/posts/building-a-theme-system-in-laravel
+			// https://laracasts.com/discuss/channels/code-review/dynamic-view-folder-destination-in-laravel-53?page=0
+
 
 		return $next($request);
 	}

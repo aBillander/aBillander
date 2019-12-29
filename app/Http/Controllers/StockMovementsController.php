@@ -128,6 +128,9 @@ class StockMovementsController extends Controller
 		$rules = StockMovement::getRules( $request->input('movement_type_id') );
 		if ( !$combination_id ) unset( $rules['combination_id'] );
 
+//		if ( $request->input('movement_type_id') == 20 )
+//			$rules['quantity'][] = new \App\Rules\Decimal();
+
 		$this->validate($request, $rules);	// abi_r($request->all(), true);
 
         // Product

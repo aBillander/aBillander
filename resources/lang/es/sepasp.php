@@ -56,6 +56,8 @@ return [
 
 	'Group Vouchers?' => '¿Agrupar Recibos?',
 	'One Voucher for Customer and Date' => 'Agrupar Recibos del mismo Cliente en una línea',
+	'Discount Remittance?' => '¿Descontar Remesa?',
+	'Financed Remittance' => 'Remesa Financiada',
 
 
 	'SEPA Direct Debits - Edit'     => 'Remesas SEPA - Modificar',

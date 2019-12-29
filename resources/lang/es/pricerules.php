@@ -11,8 +11,11 @@ return [
 
 	'Price Rules - Create' => 'Regla de Precio - Crear',
 	'New Price Rule' => 'Nueva Regla de Precio',
+	'New Package Rule' => 'Nueva Regla por Caja',
+	'New Promo Rule' => 'Nueva Regla de Promoción',
 	'Date from' => 'Fecha desde',
 	'Date to' => 'Fecha hasta',
+	'Rule Name' => 'Nombre de la Regla',
 	'Customer Name' => 'Nombre del Cliente',
 	'Search by Name or Identification (VAT Number).' => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
 	'Product Reference' => 'Referencia de Producto',
@@ -22,7 +25,7 @@ return [
 	'Price' => 'Precio',
 	'Currency' => 'Divisa',
 	'Price Rules' => 'Reglas de Precio',
-	'Price Rules take precedence over Price Lists.' => 'Las Regals de Precio tienen prioridad sobre las Tarifas',
+	'Price Rules take precedence over Price Lists.' => 'Las Reglas de Precio tienen prioridad sobre las Tarifas',
 	'Reference' => 'Referencia',
 	'Warehouse' => 'Almacén',
 	'Category' => 'Categoría',
@@ -45,6 +48,17 @@ return [
 	'Product Options' => 'Opciones de Producto',
 	'Price Rules - Edit' => 'Regla de Precio - Modificar',
 	'Edit Price Rule' => 'Modificar Regla de Precio',
+
+	'Extra Items' => 'Unidades sin Coste',
+	'If you fill this field, the value in "Price" will not take efect.' => 'Si rellena esta campo, el valor en "Precio" no será tenido en cuenta.',
+
+	'Package' => 'Caja',
+	'Price per Package' => 'Precio por Caja',
+	'Unit Price' => 'Precio Unitario',
+	
+	'Free Quantity' => 'Cantidad sin Coste',
+
+	'Rule Type' => 'Tipo de Regla',
 
 
 ];

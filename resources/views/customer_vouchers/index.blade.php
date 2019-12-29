@@ -179,6 +179,40 @@
             @if ( !$payment->paymentable->customer->bankaccount )
                 <i class="fa fa-exclamation-triangle btn-xs alert-danger" title="{{ l('Not a valid Bank Account!') }}"></i>
             @endif
+
+
+{{-- Alternative add voucher to SEPA direct debit
+<!-- Single button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-xs btn-success dropdown-toggle" data-toggle="dropdown">
+    <i class="fa fa-bank"></i> &nbsp; </a> <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    {!! Form::open(array('route' => 'sepasp.directdebit.add.voucher', 'id' => 'add_voucher_form_'.$payment->id)) !!}
+       {!! Form::hidden('voucher_id['. $payment->id .']', $payment->id, array('id' => 'voucher_id_'.$payment->id)) !!}
+       <div class="form-group">
+         {!! Form::select('sdd_id['. $payment->id .']', $sddList, null, ['class' => 'form-control', 'id' => 'sdd_id_'.$payment->id]) !!}
+       </div>
+       <!-- div class="form-group">
+         {!! Form::text('document_reference', null, ['class' => 'form-control', 'id' => 'document_reference',  'placeholder' => l('Reference')]) !!}
+       </div -->
+       <div class="form-group">
+         <button type="submit" class="btn alert-success">{{l('Add', 'layouts')}}</button>
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Add Voucher to automatic payment remittance.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+       </div>
+    {!! Form::close() !!}
+  </ul>
+</div>
+--}}
+
+
+
+
+
+
           @endif
         @else 
           <i class="fa fa-square-o" style="color: #df382c;"></i>
@@ -190,10 +224,12 @@
             		<span class="label label-info">
             	@elseif ( $payment->status == 'bounced' )
             		<span class="label label-danger">
-            	@elseif ( $payment->status == 'paid' )
-            		<span class="label label-success">
+              @elseif ( $payment->status == 'paid' )
+                <span class="label label-success">
+              @elseif ( $payment->status == 'uncollectible' )
+                <span class="label alert-danger">
             	@else
-            		<span>
+            		<span class="label">
             	@endif
             	{{\App\Payment::getStatusName($payment->status)}}</span>
 
@@ -201,6 +237,15 @@
                 @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
 
                     <a href="{{ route('voucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
+                    title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
+               
+                @endif
+              @endif
+
+              @if ( $payment->status == 'uncollectible' )
+                @if ( 1 )
+
+                    <a href="{{ route('voucher.collectible', [$payment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
                
                 @endif
@@ -220,8 +265,13 @@
           @endif
       </td>
 
-			<td class="text-right">
-              @if ( ( $payment->status == 'paid' ) || ( $payment->status == 'bounced' ) )
+      <td class="text-right">
+
+              @if (  ( $payment->status == 'paid' ) 
+                  || ( $payment->status == 'bounced' ) 
+                  || ( $payment->status == 'uncollectible' ) )
+
+                  <a class="btn btn-xs btn-grey" href="{{ URL::to('customervouchers/' . $payment->id . '/edit' ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
             	@else
 
@@ -239,7 +289,7 @@
 	                </a>
       @endif
 
-	                @if($payment->amount==0.0)
+	                @if(0 && $payment->amount==0.0)
  
       @if ($payment->bankorder && ($payment->bankorder->status != 'pending'))
       @else
@@ -367,3 +417,35 @@ $(document).ready(function() {
 </style>
 
 @endsection
+
+
+@section('scripts') @parent 
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+      // Capture the "click" event of the link
+      // https://www.bootply.com/WAkbhdKmeb
+      $('.dropdown-menu>form').click(function(e){
+        e.stopPropagation();
+      });
+
+});
+
+</script>
+
+@endsection
+
+@section('styles')    @parent
+
+<style>
+
+  .dropdown-menu form {
+    padding:10px;
+  }
+
+</style>
+
+@endsection
+

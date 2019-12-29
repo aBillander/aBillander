@@ -46,6 +46,7 @@ return [
 	'Amount'     => 'Cantidad',
 	'Amount Paid'     => 'Pagado',
 	'Make Payment'     => 'Realizar Pago',
+	'Make Payment of selected Vouchers' => 'Realizar Pago de los Recibos seleccionados',
 	'Outstanding Amount'     => 'Cantidad Pendiente',
 	'Subject'     => 'Concepto',
 	'Status'     => 'Estado',
@@ -55,16 +56,23 @@ return [
 	'Conversion Rate'     => 'Tipo de Cambio',
 	'This Voucher is paid and cannot be modified' => 'Este Recibo está pagado y no puede modificarse',
 
-	'Amount must be greater than 0 and not greater than :value'     => 'La Cantidad debe ser mayor que 0 y menor que :value',
+	'Amount must be greater than :min and not greater than :max'     => 'La Cantidad debe ser mayor que :min y menor que :max',
 	'Bounce'     => 'Devolver Recibo',
 	'Amount Bounced'     => 'Cantidad Devuelta',
 	'Bounce Date'     => 'Devuelto el',
-	'A new Voucher will be created' => 'Se creará un nuevo Rcibo',
+	'A new Voucher will be created' => 'Se creará un nuevo Recibo',
 	''     => '',
 	''     => '',
 
 	'Auto Direct Debit'     => 'Remesable',
 	'Include in automatic payment remittances'     => 'Incluir en remesas de pago automático',
 	'Not a valid Bank Account!' => 'Cuenta Bancaria no válida!',
+	'Add Voucher to automatic payment remittance.' => 'Añadir Recibo a Remesa.',
+
+	'Status is not "paid"' => 'El Recibo no está Pagado',
+
+	'Set as Uncollectible' => 'Guardar como Incobrable',
+
+	'There is a Bank Order with this Voucher: :bo' => 'Hay una Remesa que incluye este Recibo: :bo',
 
 ];

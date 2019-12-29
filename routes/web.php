@@ -145,6 +145,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('/helferin/home', 'HelferinController@index')->name('helferin.home');
         Route::post('/helferin/reports/sales'  , 'HelferinController@reportSales'  )->name('helferin.reports.sales');
         Route::post('/helferin/reports/ecotaxes'  , 'HelferinController@reportEcotaxes'  )->name('helferin.reports.ecotaxes');
+        Route::post('/helferin/reports/consumption'  , 'HelferinController@reportConsumption'  )->name('helferin.reports.consumption');
+
+        Route::get('/helferin/home/mfg', 'HelferinController@mfgIndex')->name('helferin.home.mfg');
+        Route::post('/helferin/reports/reorder'       , 'HelferinController@reportProductReorder'       )->name('helferin.reports.reorder');
+        Route::get( '/helferin/reports/reorder/headers', 'HelferinController@reportProductReorderHeaders' )->name('helferin.reports.reorder.headers');
 
 
         Route::resource('configurations',    'ConfigurationsController');
@@ -332,6 +337,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 //                         'as'   => 'activityloggers.index'] );
         Route::get('activityloggers/empty', ['uses' => 'ActivityLoggersController@empty', 
                          'as'   => 'activityloggers.empty'] );
+        
+        Route::get( 'export/activityloggers/{activitylogger}', 'ActivityLoggersController@export' )->name('activityloggers.export');
 
         Route::resource('emaillogs', 'EmailLogsController');
 
@@ -479,8 +486,12 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/pay'  , 'CustomerVouchersController@pay');
         Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('voucher.unlink');
 
+        Route::post('customervouchers/payvouchers'  , 'CustomerVouchersController@payVouchers')->name('customervouchers.payvouchers');
+
         Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('voucher.expresspay');
         Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('voucher.unpay');
+        
+        Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('voucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
         
@@ -499,6 +510,17 @@ foreach ($pairs as $pair) {
         Route::resource('combinations', 'CombinationsController');
 
         Route::resource('images', 'ImagesController');
+
+
+        // Delivery Routes
+        Route::resource('deliveryroutes',                    'DeliveryRoutesController'    );
+        Route::resource('deliveryroutes.deliveryroutelines', 'DeliveryRouteLinesController');
+        Route::post('deliveryroutes/sortlines', 'DeliveryRoutesController@sortLines')->name('deliveryroute.sortlines');
+        
+        Route::resource('deliverysheets',                    'DeliverySheetsController'    );
+        Route::resource('deliverysheets.deliverysheetlines', 'DeliverySheetLinesController');
+        Route::post('deliverysheets/sortlines', 'DeliverySheetsController@sortLines')->name('deliverysheet.sortlines');
+
 
 
         // Import / Export to Database
@@ -524,6 +546,10 @@ foreach ($pairs as $pair) {
         Route::get( 'import/customers', 'Import\ImportCustomersController@import' )->name('customers.import');
         Route::post('import/customers', 'Import\ImportCustomersController@process')->name('customers.import.process');
         Route::get( 'export/customers', 'Import\ImportCustomersController@export' )->name('customers.export');
+
+        Route::get( 'import/customerusers', 'Import\ImportCustomerUsersController@import' )->name('customerusers.import');
+        Route::post('import/customerusers', 'Import\ImportCustomerUsersController@process')->name('customerusers.import.process');
+        Route::get( 'export/customerusers', 'Import\ImportCustomerUsersController@export' )->name('customerusers.export');
 
         Route::get( 'import/stockcounts/{id}', 'Import\ImportStockCountsController@import' )->name('stockcounts.import');
         Route::post('import/stockcounts/{id}', 'Import\ImportStockCountsController@process')->name('stockcounts.import.process');

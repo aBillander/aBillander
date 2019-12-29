@@ -37,6 +37,16 @@ function l($string = NULL, $data = [], $langfile = NULL)
 	}
 
 
+function abi_yn_label($foo=true)
+  {
+    if ( (bool) $foo ) return l('Yes', [], 'layouts');
+
+    return l('No', [], 'layouts');
+  }
+
+
+
+
 function abi_r($foo, $exit=false)
   {
     echo '<pre>';
@@ -212,6 +222,18 @@ function abi_money_amount($amount, \App\Currency $currency = null)
     // NOTE: negative amounts may require additional formatting for negative sign: -100 / 100- / (100)
 
     return $number;
+}
+
+
+function abi_amount( $val = 0.0, $decimalPlaces = 0 )
+{
+    $data = floatval( $val );
+
+    // Do formatting
+
+    $data = number_format($data, $decimalPlaces, ',', '.');
+
+    return $data;
 }
 
 
@@ -402,6 +424,22 @@ if (! function_exists('abi_tenant_db_backups_path')) {
 
         // return public_path( 'tenants/' , $tenant ).($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
         return 'db_backups/' . $tenant . ($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
+    }
+}
+
+
+if (! function_exists('abi_safe_division')) {
+    /**
+     * Safe division for statistice & profitability.
+     *
+     * @param  
+     * @return 
+     */
+    function abi_safe_division($a = 0.0, $b = 0.0)
+    {
+        if ( $b == 0.0 ) return 0.0;
+
+        return $a / $b;
     }
 }
 

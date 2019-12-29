@@ -478,6 +478,11 @@
 
                </div>
 
+
+        {{-- Temporarily --}}
+        @include('configuration_keys.key_group_51')
+
+
                <!-- div class="panel-footer text-right">
                </div>
 

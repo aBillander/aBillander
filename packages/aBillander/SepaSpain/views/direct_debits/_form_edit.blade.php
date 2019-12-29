@@ -74,6 +74,27 @@
              </div>
            </div>
 
+           <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-discount_dd">
+             {!! Form::label('discount_dd', l('Discount Remittance?'), ['class' => 'control-label']) !!}
+             <div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('discount_dd', '1', false, ['id' => 'discount_dd_on']) !!}
+                   {!! l('Yes', [], 'layouts') !!}
+                 </label>
+               </div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('discount_dd', '0', true, ['id' => 'discount_dd_off']) !!}
+                   {!! l('No', [], 'layouts') !!}
+                 </label>
+               </div>
+             </div>
+           </div>
+</div>
+
+<div class="row">
+
          <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('notes') ? 'has-error' : '' }}">
             {{ l('Notes', 'layouts') }}
             {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}

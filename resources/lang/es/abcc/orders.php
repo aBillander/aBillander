@@ -13,6 +13,7 @@ return [
 
 	'My Orders'     => 'Mis Pedidos',
 	'Order #'     => 'Pedido #',
+	'Draft'    => 'En Proceso',
 	'Date'     => 'Fecha',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Deliver to'     => 'Entregar en',

@@ -26,6 +26,7 @@
             <th class="text-left">{{l('Alias', 'layouts')}}</th>
             <th>{{l('Shipping Method name')}}</th>
             <th>{{l('Carrier')}}</th>
+            <th>{{l('Class name')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
@@ -37,6 +38,7 @@
             <td>{{ $shippingmethod->alias }}</td>
             <td>{{ $shippingmethod->name }}</td>
             <td>{{ $shippingmethod->carrier ? $shippingmethod->carrier->name : '-' }}</td>
+            <td>{{ $shippingmethod->class_name }}</td>
 
             <td class="text-center">@if ($shippingmethod->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

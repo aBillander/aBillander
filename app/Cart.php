@@ -817,7 +817,7 @@ class Cart extends Model
         return $cart;
     }
 
-    public function makeShipping()
+    public function makeShipping_tested()
     {
         $cart = $this;
 
@@ -892,6 +892,71 @@ class Cart extends Model
 
         // Free Shipping
         if ( $total_products_tax_excl >= $free_shipping ) $cost = 0.0;
+
+        // Update line
+        $line_shipping->update([
+            'name' => $shipping_label, 
+
+            'unit_customer_price'       => $cost,
+            'unit_customer_final_price' => $cost,
+            'total_tax_incl' => $cost * (1.0+$tax_percent/100.0),
+            'total_tax_excl' => $cost, 
+
+            'tax_percent'         => $tax_percent,
+            'tax_id' => $tax_id,
+        ]);
+
+
+
+        return $line_shipping;
+    }
+
+    public function makeShipping()
+    {
+        $cart = $this;
+        $method = $cart->shippingmethod;
+
+        list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $cart ));
+
+        $tax_id      = $tax->id;
+        $tax_percent = $tax->percent;   // Naughty boy! Should consider cart invoicing address!
+
+
+        $line_shipping = $cart->cartlines->where('line_type', 'shipping')->first();
+        
+        if ( !$line_shipping )
+        {
+            // Create one
+            $line_shipping = CartLine::create([
+                'line_sort_order' => 0,     // Convention
+                'line_type' => 'shipping',
+
+                'product_id' => null,
+                'combination_id' => null,
+                'reference' => '', 
+                'name' => $shipping_label, 
+
+                'quantity' => 1, 
+                'extra_quantity' =>0,
+                'extra_quantity_label' => '',
+                'measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),            
+
+                'package_measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+                'pmu_conversion_rate' => 1.0,
+
+                'unit_customer_price'       => 0.0,
+                'unit_customer_final_price' => 0.0,
+                'sales_equalization' => 0,      // $customer->sales_equalization, (is a "service")
+                'total_tax_incl' => 0.0,
+                'total_tax_excl' => 0.0, 
+
+                'tax_percent'         => $tax_percent,
+                'tax_se_percent'      => 0.0,
+                'tax_id' => $tax_id,
+            ]);
+
+            $this->cartlines()->save($line_shipping);
+        }
 
         // Update line
         $line_shipping->update([

@@ -17,5 +17,7 @@ return [
 	'Edit Shipping Method' => 'Modificar Método de Envío',
 	'Shipping Methods' => 'Métodos de Envío',
 
+	'Class name' => 'Nombre de la Clase',
+	'Class fully qualified name' => 'Nombre completo de la Clase, incluyendo el NameSpace',
 
 ];

@@ -25,6 +25,8 @@ class CreateShippingMethodsTable extends Migration {
 			$table->string('name', 64)->nullable(false);
 			$table->string('webshop_id', 16)->nullable();					// Customer's Web Shop id
 
+			$table->string('class_name', 64)->nullable();
+
 			$table->tinyInteger('active')->default(1);
 
 			$table->integer('carrier_id')->unsigned()->nullable();

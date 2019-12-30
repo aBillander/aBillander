@@ -2,7 +2,7 @@
 @include('errors.list')
 --}}
 
-{!! Form::open(array('route' => array('customers.import.process'), 'files' => true)) !!}
+{!! Form::open(array('route' => array('customerusers.import.process'), 'files' => true)) !!}
 
 <div class="panel panel-info" id="panel_import_customers">
    <div class="panel-heading">
@@ -15,7 +15,7 @@
 
    </div>
 
-   <div class=" hide panel-footer text-right">
+   <div class="panel-footer text-right">
       <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
          <i class="fa fa-upload"></i>
          &nbsp; {{l('Import', [], 'layouts')}}

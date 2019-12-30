@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
+use App\Configuration;
 use App\Customer;
 use App\CustomerUser;
 use App\Address;
@@ -139,7 +140,7 @@ class ImportCustomerUsersController extends Controller
 
         // Start Logger
         $logger = \App\ActivityLogger::setup( 'Import Customer Users', __METHOD__ )
-                    ->backTo( route('customers.import') );        // 'Import Customer Users :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+                    ->backTo( route('customerusers.import') );        // 'Import Customer Users :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         $logger->empty();
@@ -147,7 +148,7 @@ class ImportCustomerUsersController extends Controller
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
 
-        $logger->log("INFO", 'Se cargarán los Clientes desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $file]);
+        $logger->log("INFO", 'Se cargarán los Usuarios CC desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $file]);
 
 
 
@@ -161,21 +162,7 @@ class ImportCustomerUsersController extends Controller
             
             CustomerUser::truncate();
 
-            // SELECT * FROM `addresses` where `addressable_type`='App\\Customer'
-
-            // Soft-deleting...We dont want thies here!
-            // $this->address->where('addressable_type', 'App\\Customer')->delete();
-
-            // $collection = Address::where('addressable_type', "App\\Customer")->get(['id']);
-            // Address::destroy($collection->toArray());
-
-            \DB::table('addresses')->where('addressable_type', "App\\Customer")->delete();
-
-            // Note: This solution is for resetting the auto_increment of the table without truncating the table itself
-            $max = \DB::table('addresses')->max('id') + 1; 
-            \DB::statement("ALTER TABLE addresses AUTO_INCREMENT = $max");
-
-            $logger->log("INFO", "Se han borrado todos los Clientes antes de la Importación. En total {nbr} Clientes.", ['nbr' => $nbr]);
+            $logger->log("INFO", "Se han borrado todos los Usuarios CC antes de la Importación. En total {nbr} Usuarios CC.", ['nbr' => $nbr]);
         }
 
 
@@ -195,7 +182,7 @@ class ImportCustomerUsersController extends Controller
 
 
         return redirect('activityloggers/'.$logger->id)
-                ->with('success', l('Se han cargado los Clientes desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
+                ->with('success', l('Se han cargado los Usuarios CC desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
 
 
 //        abi_r('Se han cargado: '.$i.' productos');
@@ -265,12 +252,6 @@ class ImportCustomerUsersController extends Controller
             $i_ok = 0;
             $max_id = 2000;
 
-            // Custom
-            $state_names = [];
-            if (file_exists(__DIR__.'/FSOL_provincias.php')) {
-                $state_names = include __DIR__.'/FSOL_provincias.php';
-            }
-
 
             if(!empty($reader) && $reader->count()) {
 
@@ -286,184 +267,70 @@ class ImportCustomerUsersController extends Controller
                     // Prepare data
                     $data = $row->toArray();
 
-                    $item = '[<span class="log-showoff-format">'.$data['reference_external'].'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
+                    // abi_r($data);die();
+
+                    $item = '[<span class="log-showoff-format">'.$data['email'].'</span>] <span class="log-showoff-format">'.$data['customer_id'].'</span>';
 
                     // Some Poor Man checks:
-                    if ( ! $data['name_fiscal'] )
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'name_fiscal' está vacío");
+                    $data['CUSTOMER_REFERENCE_EXTERNAL'] = $data['customer_reference_external'];
 
-                    if ( strlen( $data['name_fiscal'] ) > 128 )
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'name_fiscal' es demasiado largo (128). ".$data['name_fiscal']);
+                    // Some fields
+                    $data['name'] = '';
+                    $data['min_order_value'] = (float) $data['min_order_value'] > 0 ? (float) $data['min_order_value'] : 0.0;
+                    $data['display_prices_tax_inc'] = (int) $data['display_prices_tax_inc'] > 0 ? 1 : 0;
 
-                    if ( strlen( $data['name_commercial'] ) > 64 )
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'name_commercial' es demasiado largo (64). ".$data['name_commercial']);
-
-                    if ( $data['identification'] )
+                    // Customer
+                    if ( array_key_exists('CUSTOMER_REFERENCE_EXTERNAL', $data ) )
                     {
-                        $data['identification'] = CustomerUser::normalize_spanish_nif_cif_nie( $data['identification'] );
-                        
-                        // if ( Customer::check_spanish_nif_cif_nie( $data['identification'] ) <= 0 )
-                        //    $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'identification' es inválido. ".$data['identification']);
+                        $customer = $this->customer->where( 'reference_external', $data['CUSTOMER_REFERENCE_EXTERNAL'] )
+                                                    ->with('addresses')
+                                                    ->first();
+                    } else {
+                        $customer = $this->customer->where( 'id', $data['id'] )
+                                                    ->with('addresses')
+                                                    ->first();
                     }
-/*
-                    $data['reference_external'] = intval( $data['reference_external'] );
-                    $data['id'] = $data['reference_external'];
-                    if ( $data['reference_external'] <= 0 ) {
-                        $data['reference_external'] = '';
-                        unset( $data['id'] );
-                    }
-*/
-                    // 'webshop_id'
-                    $data['webshop_id'] = '';
-                    $reference_external = intval( $data['reference_external'] );
-                    if ( $reference_external > 50000 ) 
-                        $data['webshop_id'] = $reference_external - 50000;
 
-                    $data['notes'] = $data['notes'] ?? '';
-
-                    if ( strlen( $data['address1'] ) > 128 )
+                    if ( !$customer )
                     {
-                            $data['notes'] .= "\n" . $data['address1'];
+                        $logger->log("ERROR", "Ususario ".$item.":<br />" . "El Cliente NO existe. ".$data['id'].' / '.$data['CUSTOMER_REFERENCE_EXTERNAL']);
 
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'address1' es demasiado largo (128). ".$data['address1']);
+                        continue;
                     }
 
-                    if ( strlen( $data['firstname'] ) > 32 )
+                    // Address
+                    if (  $data['address_id'] )
                     {
-                            $data['notes'] .= "\n" . $data['firstname'];
+                        $address = $customer->addresses->firstWhere('id', $data['address_id']);
 
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'firstname' es demasiado largo (32). ".$data['firstname']);
+                        $logger->log("ERROR", "Ususario ".$item.":<br />" . "La Dirección NO existe. ".$data['id'].' / '.$data['CUSTOMER_REFERENCE_EXTERNAL'].' / '.$data['address_id'].' / ');
+
+                        continue;
                     }
 
-                    if ( strlen( $data['lastname'] ) > 32 )
+                    // Customer User
+                    if ( $this->customeruser->where('email', $data['email'])->exists() )
                     {
-                            $data['notes'] .= "\n" . $data['lastname'];
+                        if ( !$data['password'] )
+                            unset( $data['password'] );
+                        else
+                            $data['password'] = \Hash::make( $data['password'] );
 
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'lastname' es demasiado largo (32). ".$data['lastname']);
+                    } else {
+
+                        if ( !$data['password'] )
+                            $data['password'] = Configuration::get('ABCC_DEFAULT_PASSWORD');
+
+                        $data['password'] = \Hash::make( $data['password'] );
                     }
-
-                    if ( strlen( $data['email'] ) > 128 )
-                    {
-                            $data['notes'] .= "\n" . $data['email'];
-
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'email' es demasiado largo (128). ".$data['email']);
-                    }
-
-                    if ( strlen( $data['phone'] ) > 32 )
-                    {
-                            $data['notes'] .= "\n" . $data['phone'];
-
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'phone' es demasiado largo (32). ".$data['phone']);
-                    }
-
-                    if ( strlen( $data['phone_mobile'] ) > 32 )
-                    {
-                            $data['notes'] .= "\n" . $data['phone_mobile'];
-
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'phone_mobile' es demasiado largo (32). ".$data['phone_mobile']);
-                    }
-
-
-                    // Country
-                    if ( !array_key_exists('country_id', $data) || intval($data['country_id']) == 0 ) 
-                    {
-                        $data['country_id'] = \App\Configuration::get('DEF_COUNTRY');
-                    }
-                    $country = Country::find($data['country_id']);
-
-if ($country) {                    
-
-                    // State
-                    if ( !array_key_exists('state_id', $data) ) 
-                    {
-                        // Guess
-                        $data['state_id'] = 0;
-                        if ( array_key_exists('STATE_NAME', $data) ) 
-                        {
-                        
-                            if ( array_key_exists($data['STATE_NAME'], $state_names) )
-                                $data['state_id'] = $state_names[$data['STATE_NAME']];
-                            else
-                                if ( array_key_exists(strtoupper($data['STATE_NAME']), $state_names) )
-                                    $data['state_id'] = strtoupper($state_names[$data['STATE_NAME']]);
-                        }
-                    }
-                    if ( !$country->hasState( $data['state_id'] ) )
-                        $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'state_id' es inválido o no corresponde con el país: " . ($data['state_id'] ?? $data['STATE_NAME'] ?? ''));
-
-                    // VAT ID 'identification'
-                    if ( array_key_exists('identification', $data) && trim($data['identification'])) 
-                    {
-                        // Check
-                        if ( !$country->checkIdentification( $data['identification'] ) ) 
-                        {
-                        
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'identification' es inválido o no corresponde con el país: " . $data['identification']);
-                        }
-                    }
-
-} else {
-
-                    // No Country
-                    $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'country_id' es inválido: " . ($data['country_id'] ?? ''));
-
-}
-
-                    $data['alias'] = l('Main Address', [],'addresses');
-
-                    $data['outstanding_amount_allowed'] = \App\Configuration::get('DEF_OUTSTANDING_AMOUNT');
-
-
-                    if ( $data['notes'] )
-                    {
-                        $data['notes'] = trim( $data['notes'] );
-
-                        // $logger->log("WARNING", "Cliente ".$item.":<br />" . "El campo 'notes' es: " . $data['notes']);
-                    }
-
-
-                    // http://fideloper.com/laravel-database-transactions
-                    // https://stackoverflow.com/questions/45231810/how-can-i-use-db-transaction-in-laravel
-
 
                     \DB::beginTransaction();
                     try {
                         if ( !($params['simulate'] > 0) ) 
                         {
-                            // Create Customer
-                            // $product = $this->product->create( $data );
-    //                        $customer = $this->customer->storeOrUpdate( [ 'reference_external' => $data['reference_external'] ], $data );
-/*
-                            $customer = new Customer;
-                            $customer = $customer->fill($data);
-                            if ( isset($data['id']) ) $customer->id = $data['id'];
-                            else unset( $customer->id );
-                            $customer->save();
-*/
-                            $customer = $this->customer->updateOrCreate( [ 
-                                'reference_external' => $data['reference_external'] 
+                            $cuser = $this->customeruser->updateOrCreate( [ 
+                                 'email' => $data['email'] 
                             ], $data );
-
-                            // $logger->log("TIMER", " Se ha creado el Cliente: ".$item." - " . $customer->id);
-
-                            unset( $data['webshop_id'] );
-
-                            $address = $customer->address;
-
-                            if ( $address )
-                            {
-
-                                $address->fill($data);
-                                $address->save();
-
-                            } else {
-
-                                $address = $this->address->create($data);
-                                $customer->addresses()->save($address);
-
-                                $customer->update(['invoicing_address_id' => $address->id, 'shipping_address_id' => $address->id]);
-                                
-                            }
                         }
 
                         $i_ok++;
@@ -473,9 +340,7 @@ if ($country) {
 
                             \DB::rollback();
 
-                            $item = '[<span class="log-showoff-format">'.$data['reference_external'].'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
-
-                            $logger->log("ERROR", "Se ha producido un error al procesar el Cliente ".$item.":<br />" . $e->getMessage());
+                            $logger->log("ERROR", "Se ha producido un error al procesar el Ususario ".$item.":<br />" . $e->getMessage());
 
                     }
 
@@ -495,12 +360,12 @@ if ($country) {
             } else {
 
                 // No data in file
-                $logger->log('WARNING', 'No se encontraton datos de Clientes en el fichero.');
+                $logger->log('WARNING', 'No se encontraton datos de Usuarios CC en el fichero.');
             }
 
-            $logger->log('INFO', 'Se han creado / actualizado {i} Clientes.', ['i' => $i_ok]);
+            $logger->log('INFO', 'Se han creado / actualizado {i} Usuarios CC.', ['i' => $i_ok]);
 
-            $logger->log('INFO', 'Se han procesado {i} Clientes.', ['i' => $i]);
+            $logger->log('INFO', 'Se han procesado {i} Usuarios CC.', ['i' => $i]);
 
 // Process reader          
     

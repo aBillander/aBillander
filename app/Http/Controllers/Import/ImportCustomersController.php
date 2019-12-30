@@ -503,12 +503,40 @@ if ($country) {
                     \DB::beginTransaction();
                     try {
 
-                        $customer = $this->customer->where( 'reference_external', $data['reference_external'] )->first();
+                        $customer = $this->customer->where( 'reference_external', $data['reference_external'] )
+                                                    ->with('address')
+                                                    ->first();
 
                         if ( !($params['simulate'] > 0) && $customer ) 
                         {
 
                             $logger->log("INFO", "El Cliente ".$data['reference_external'] ." existe y se actualizará");
+
+                            $address = $customer->address;
+
+                            $customer->update( $data );
+
+                            unset( $data['webshop_id'] );       // Address has a 'webshop_id' field
+
+                            if ( $address )
+                            {
+
+                                $address->fill($data);
+                                $address->save();
+
+                            } else {
+
+                                $address = $this->address->create($data);
+                                $customer->addresses()->save($address);
+
+                                $customer->update(['invoicing_address_id' => $address->id, 'shipping_address_id' => $address->id]);
+                                
+                            }
+
+
+
+
+/*      Old implementation, update some fields only
 
                             $fields = [
                                 'sales_equalization',  'customer_group_id',   'price_list_id',    'payment_method_id',    'shipping_method_id',  'outstanding_amount_allowed',  'allow_login', 'blocked', 'email'
@@ -524,7 +552,7 @@ if ($country) {
                             $mini_data['blocked'] =  (int) $mini_data['blocked'];
 
                             $customer->update( $mini_data );
-
+*/
                             // $logger->log("INFO", "El Cliente ".$data['reference_external'] ." se ha actualizado (".$customer->id.")");
 
                             $i_updated++;

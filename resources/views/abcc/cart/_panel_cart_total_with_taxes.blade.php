@@ -29,7 +29,7 @@
     <td colspan="6"></td>
 
     <td  colspan="2">
-        <h4><span style="color: #dd4814;">{{ l('Shipping Cost') }}</span>
+        <h4 title="{{ optional( $cart->cartshippingline() )->name }}"><span style="color: #dd4814;">{{ l('Shipping Cost') }}</span>
 
                         @if ( $cart->total_shipping_tax_excl > 0.0 && \App\Configuration::get('ABCC_FREE_SHIPPING_PRICE') > 0.0 )
                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"

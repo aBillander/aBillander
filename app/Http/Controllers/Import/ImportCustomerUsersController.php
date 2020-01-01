@@ -286,7 +286,7 @@ class ImportCustomerUsersController extends Controller
                                                     ->with('addresses')
                                                     ->first();
                     } else {
-                        $customer = $this->customer->where( 'id', $data['id'] )
+                        $customer = $this->customer->where( 'id', $data['customer_id'] ?? 0 )
                                                     ->with('addresses')
                                                     ->first();
                     }
@@ -297,6 +297,8 @@ class ImportCustomerUsersController extends Controller
 
                         continue;
                     }
+
+                    $data['customer_id'] = $customer->id;
 
                     // Address
                     if (  $data['address_id'] )

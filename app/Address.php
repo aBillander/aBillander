@@ -17,6 +17,7 @@ class Address extends Model {
                             'firstname', 'lastname', 'email', 
                             'phone', 'phone_mobile', 'fax', 'notes', 'active', 
                             'latitude', 'longitude',
+                            'shipping_method_id',
                           ];
 
     public static $rules = array(
@@ -74,6 +75,20 @@ class Address extends Model {
     public function state()
     {
         return $this->belongsTo('App\State');
+    }
+
+    public function shippingmethod()
+    {
+        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+    }
+
+    public function getShippingMethod()
+    {
+        if ( (int) $this->shipping_method_id > 0 ) return $this->shippingmethod;
+
+        if ( (int) $this->addressable->shipping_method_id > 0 ) return $this->addressable->shippingmethod;
+
+        return ShippingMethod::find( Configuration::getInt('DEF_SHIPPING_METHOD') );
     }
     
 

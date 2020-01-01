@@ -42,9 +42,9 @@
                                </a>
                         @endif
         </h4>
-        {{ optional($cart->shippingmethod)->name }}
-        @if ( optional($cart->shippingmethod)->carrier )
-            :: {{ $cart->shippingmethod->carrier->name}}
+        {{ optional($cart->shippingaddress->getShippingMethod())->name }}
+        @if ( optional($cart->shippingaddress->getShippingMethod())->carrier )
+            :: {{ $cart->shippingaddress->getShippingMethod()->carrier->name}}
         @endif
     </td>
 

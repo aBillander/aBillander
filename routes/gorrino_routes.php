@@ -26,6 +26,19 @@
 /* ********************************************************** */
 
 
+Route::get('nanocart', function( )
+{
+	$d =  \App\Cart::find(8);
+
+	abi_r($d->shippingaddress->getShippingMethod());
+});
+
+
+
+
+/* ********************************************************** */
+
+
 Route::get('nano', function( )
 {
 	$d =  \App\Customer::where( 'reference_external', '<>', '' )->first();
@@ -1340,11 +1353,11 @@ Route::get('seq', function()
 
 Route::get('migratethis', function()
 {
-	// 2019-12-11
+	// 2020-01-01
 		Illuminate\Support\Facades\DB::statement("ALTER TABLE `addresses` ADD `shipping_method_id` INT(10) UNSIGNED NULL AFTER `country_id`;");
 
 
-	die('OK');
+	// die('OK');
 
 
 	// 2019-12-27

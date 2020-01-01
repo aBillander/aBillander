@@ -1353,6 +1353,7 @@ Route::get('seq', function()
 
 Route::get('migratethis', function()
 {
+
 	// 2020-01-01
 		Illuminate\Support\Facades\DB::statement("ALTER TABLE `addresses` ADD `shipping_method_id` INT(10) UNSIGNED NULL AFTER `country_id`;");
 

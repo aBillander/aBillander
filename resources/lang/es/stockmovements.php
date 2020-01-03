@@ -31,6 +31,7 @@ return [
 	'Stock Movements - Create' => 'Movimientos de Stock - Crear',
 	'New Stock Movement'     => 'Nuevo Movimiento de Stock',
 	'Date'     => 'Fecha',
+	'Time' => 'Hora',
 	'Warehouse'     => 'Almacén',
 	'Document'     => 'Documento',
 	'Product Reference'     => 'Referencia de Producto',

@@ -26,6 +26,30 @@
 /* ********************************************************** */
 
 
+Route::get('gnano', function( )
+{
+	$dt = \Carbon\Carbon::createSafe(2019, 12, 20, 0, 0, 0);
+
+	abi_r($dt);
+
+	$mvts = \App\StockMovement::where('movement_type_id', \App\StockMovement::PURCHASE_ORDER)
+                     ->orderBy('date', 'desc')
+                     ->get();
+
+    foreach ($mvts as $mvt){
+
+          abi_r($mvt->date.' - '.$mvt->created_at.' - '.$mvt->product_id.' - '.$mvt->movement_type_id.' - '.$mvt->quantity_before_movement.' - '.$mvt->quantity.' - '.$mvt->quantity_after_movement.'<br>');
+        }
+
+
+});
+
+
+
+
+/* ********************************************************** */
+
+
 Route::get('nano', function( )
 {
 	$d =  \App\Customer::where( 'reference_external', '<>', '' )->first();

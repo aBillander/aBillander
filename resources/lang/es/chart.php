@@ -36,6 +36,10 @@ return [
 	'CustomerShippingSlip'   => 'Albaranes',
 	'CustomerInvoice'   => 'Facturas',
 
+	'Chart - Customer Vouchers' => 'Gráfico - Recibos de Clientes',
+	'Customer Vouchers' => 'Recibos de Clientes',
+	'Pending Vouchers' => 'Recibos Pendientes',
+
 	''     => '',
 
 

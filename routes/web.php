@@ -58,6 +58,9 @@ Route::get('clear-cache', function()
     // Artisan::call('storage:link');
     // Or create simlink manually
 
+    // php artisan clear-compiled       // https://stillat.com/blog/2016/12/07/laravel-artisan-general-command-the-clear-compiled-command
+    // composer dump-autoload
+
     return '<h1>Cachés borradas</h1>';
 });
 
@@ -146,6 +149,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/helferin/reports/sales'  , 'HelferinController@reportSales'  )->name('helferin.reports.sales');
         Route::post('/helferin/reports/ecotaxes'  , 'HelferinController@reportEcotaxes'  )->name('helferin.reports.ecotaxes');
         Route::post('/helferin/reports/consumption'  , 'HelferinController@reportConsumption'  )->name('helferin.reports.consumption');
+        Route::post('/helferin/reports/customer/vouchers'  , 'HelferinController@reportCustomerVouchers'  )->name('helferin.reports.customer.vouchers');
 
         Route::get('/helferin/home/mfg', 'HelferinController@mfgIndex')->name('helferin.home.mfg');
         Route::post('/helferin/reports/reorder'       , 'HelferinController@reportProductReorder'       )->name('helferin.reports.reorder');
@@ -609,6 +613,9 @@ foreach ($pairs as $pair) {
 
             Route::get('/get-monthly-sales',      'ChartCustomerSalesController@getMonthlySales')->name('chart.customerorders.monthly');
             Route::get('/get-monthly-sales-data', 'ChartCustomerSalesController@getMonthlySalesData')->name('chart.customerorders.monthly.data');
+
+            Route::get('/get-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('chart.customervouchers.monthly');
+            Route::get('/get-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('chart.customervouchers.monthly.data');
 
             Route::get('r', function()
                 {

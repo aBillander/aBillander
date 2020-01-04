@@ -76,6 +76,11 @@ class Payment extends Model {
             return l($status, [], 'appmultilang');
     }
 
+    public function getStatusNameAttribute()
+    {
+        return l($this->status, 'appmultilang');
+    }
+
     public static function isStatus( $status )
     {
             return in_array($status, self::$statuses);

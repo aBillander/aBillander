@@ -339,6 +339,11 @@
                                  {{l('Sales Invoices', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ route('chart.customervouchers.monthly') }}">
+                                 {{l('Customer Vouchers', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('jennifer/home') }}">

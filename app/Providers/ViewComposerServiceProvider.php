@@ -161,7 +161,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Shipping Methods
-		view()->composer(array('customers.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('customers.edit', 'addresses._form', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('shipping_methodList', \App\ShippingMethod::pluck('name', 'id')->toArray());
 		    

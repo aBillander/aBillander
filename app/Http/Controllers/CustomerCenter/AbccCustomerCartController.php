@@ -151,6 +151,8 @@ class AbccCustomerCartController extends Controller
 
         $cart->update(['shipping_address_id' => $shipping_address_id]);
 
+        $cart->load(['shippingaddress']);
+
         // Update Shipping Cost & totals
         $cart->makeTotals();
 

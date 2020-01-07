@@ -914,7 +914,10 @@ class Cart extends Model
     public function makeShipping()
     {
         $cart = $this;
-        $method = $cart->shippingmethod;
+        // $method = $cart->shippingmethod;
+        $method = $cart->shippingaddress->getShippingMethod();
+
+        // abi_r($method, true);
 
         list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $cart ));
 

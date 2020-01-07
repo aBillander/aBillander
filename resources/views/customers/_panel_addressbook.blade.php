@@ -75,6 +75,7 @@
                 <th class="text-left">{{ l('Alias') }}</th>
                 <th class="text-left">{{ l('Address') }}</th>
                 <th class="text-left">{{ l('Contact') }}</th>
+                <th class="text-left">{{ l('Shipping Method') }}</th>
                 <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
                 <th class="text-center">{{l('Active', [], 'layouts')}}</th>
                 <th class="text-right"> </th>
@@ -97,6 +98,7 @@
                     {{ $addr->phone }} &nbsp; {{ $addr->phone_mobile }}<br />
                     {{ $addr->email }}
                 </td>
+                <td>{{ optional($addr->shippingmethod)->name }}<br />{{-- optional($addr->getShippingMethod())->name --}}</td>
                 <td class="text-center">
                     @if ($addr->notes) 
                          <a href="javascript:void(0);">

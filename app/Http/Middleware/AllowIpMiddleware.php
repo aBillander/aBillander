@@ -24,6 +24,13 @@ class AllowIpMiddleware
 
         // abi_r($ipsAllow); die();
 
+        // Allow (allways) localhost
+        if( in_array(request()->ip(), ['127.0.0.1', '::1', 'localhost']) )
+        {
+            return $next($request);
+
+        } 
+
         if(count($ipsAllow) >= 1 )
         {
             if(in_array(request()->ip(), $ipsAllow))
@@ -32,7 +39,7 @@ class AllowIpMiddleware
 
             } else {
 
-                \Log::warning("Unauthorized access, IP address was => ".request()->ip);
+                \Log::warning("Unauthorized access, IP address was => ".request()->ip());
                 
                 return abort(404);
                 // return response()->json(['Unauthorized!'],400);

@@ -88,7 +88,7 @@ return [
 
 	'ABCC Users' => 'Usuarios ABCC',
 	'Import ABCC Users File'     => 'Importar Fichero de Usuarios ABCC',
-	'Delete existing ABCC Users?'     => '¿Eliminar los Usuarios ABC existentes?',
+	'Delete existing ABCC Users?'     => '¿Eliminar los Usuarios ABCC existentes?',
 
 	/*
 	|--------------------------------------------------------------------------

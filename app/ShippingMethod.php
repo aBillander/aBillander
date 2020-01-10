@@ -57,7 +57,7 @@ class ShippingMethod extends Model {
         return $price = $method->calculateCartCostPrice( $shippable );
     }
     
-    public function calculateCartCostPrice( \App\Cart $cart )
+    public function calculateCartCostPrice( Cart $cart )
     {
         // Instantiate calculator
         $class = $this->class_name;

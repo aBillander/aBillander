@@ -68,7 +68,7 @@ class LogSentMessageListener
         } else {
             //
             $emaillog->userable_id = 0;
-            $emaillog->userable_type = 'System';
+            $emaillog->userable_type = 'App\User';
             $emaillog->save();
         }
     }

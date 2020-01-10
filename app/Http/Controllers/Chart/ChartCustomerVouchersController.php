@@ -21,6 +21,23 @@ class ChartCustomerVouchersController extends Controller
 
 
 	function getAllMonths( ){
+		// 12 months (maximum) range
+		$last = Payment::
+							  where('payment_type', 'receivable')
+                            ->where( function($query) {
+
+                                    $query->where(  'status', 'pending');
+                                    $query->orWhere('status', 'paid');
+                            } )
+							->orderBy( 'due_date', 'DESC' )
+							->first()
+							->due_date;
+		
+		$first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
+
+		// abi_r( $date );
+		// abi_r( $first, true );
+
 		$month_array = array();
 		$orders_dates = Payment::
 							  where('payment_type', 'receivable')
@@ -29,6 +46,7 @@ class ChartCustomerVouchersController extends Controller
                                     $query->where(  'status', 'pending');
                                     $query->orWhere('status', 'paid');
                             } )
+                            ->where( 'due_date', '>=', $first )
 							->orderBy( 'due_date', 'ASC' )
 							->pluck( 'due_date' );
 		// abi_r($orders_dates[0]);abi_r('*********************');

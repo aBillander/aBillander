@@ -31,24 +31,12 @@ Route::get('migratethis_confluence', function()
 
 // Illuminate\Support\Facades\DB::statement("CREATE TABLE `payment_documents` (
 
-
-		Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_users` ADD `address_id` INT(10) UNSIGNED NULL AFTER `customer_id`;");
-
+/* */
 
 	// 2019-11-15
 		Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_users` ADD `use_default_min_order_value` INT(10) NOT NULL DEFAULT '1' AFTER `enable_min_order`;");
 
-
-	// create table `email_logs`
-
-
-		Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_users` ADD `display_prices_tax_inc` INT(10) NOT NULL DEFAULT '0' AFTER `min_order_value`;");
-
-		// Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_users` CHANGE `display_prices_tax_inc` `display_prices_tax_inc` INT(10) NOT NULL DEFAULT '0';");
-
-
-
-
+/* */
 
 
 		\App\Configuration::updateValue('ABCC_ORDERS_NEED_VALIDATION', \App\Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION'));

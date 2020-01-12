@@ -2543,3 +2543,15 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
 /* ********************************************************** */
 
+
+if (file_exists(__DIR__.'/confluence_gus.php')) {
+    include __DIR__.'/confluence_gus.php';
+}
+
+/* ********************************************************** */
+
+
+
+
+/* ********************************************************** */
+

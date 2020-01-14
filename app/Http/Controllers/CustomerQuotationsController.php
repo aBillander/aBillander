@@ -949,6 +949,9 @@ class CustomerQuotationsController extends BillableController
             'currency_conversion_rate' => $document->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
 
+            'document_discount_percent' => $document->document_discount_percent,
+            'document_ppd_percent'      => $document->document_ppd_percent,
+
 //            'total_currency_tax_incl' => $document->total_currency_tax_incl,
 //            'total_currency_tax_excl' => $document->total_currency_tax_excl,
 //            'total_currency_paid' => $this->total_currency_paid,

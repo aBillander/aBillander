@@ -66,6 +66,10 @@ class CreateCustomersTable extends Migration {
             $table->integer('bank_account_id')->unsigned()->nullable();
 			$table->integer('invoice_sequence_id')->unsigned()->nullable();
 			$table->integer('invoice_template_id')->unsigned()->nullable();
+
+			$table->integer('order_template_id')->unsigned()->nullable();
+			$table->integer('shipping_slip_template_id')->unsigned()->nullable();
+
 //			$table->integer('carrier_id')->unsigned()->nullable();
 			$table->integer('shipping_method_id')->unsigned()->nullable();
 			$table->integer('price_list_id')->unsigned()->nullable();

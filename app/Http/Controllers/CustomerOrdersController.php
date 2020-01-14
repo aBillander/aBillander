@@ -262,6 +262,8 @@ class CustomerOrdersController extends BillableController
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
+                        
+                        'template_id'          => $request->input('template_id') ?? $customer->getOrderTemplateId(),
 
                         'document_discount_percent' => $customer->discount_percent,
                         'document_ppd_percent'      => $customer->discount_ppd_percent,

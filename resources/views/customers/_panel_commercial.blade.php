@@ -173,6 +173,23 @@
                   
         </div>
 
+        <div class="row">
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('order_template_id') ? 'has-error' : '' }}">
+                     
+                     {{ l('Template for Orders') }}
+                     {!! Form::select('order_template_id', array('' => l('-- Please, select --', [], 'layouts')) + $orders_templateList, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('order_template_id', '<span class="help-block">:message</span>') !!}
+                     
+                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('shipping_slip_template_id') ? 'has-error' : '' }}">
+                     
+                     {{ l('Template for Shipping Slips') }}
+                     {!! Form::select('shipping_slip_template_id', array('' => l('-- Please, select --', [], 'layouts')) + $shipping_slips_templateList, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('shipping_slip_template_id', '<span class="help-block">:message</span>') !!}
+                     
+                  </div>
+        </div>
+
 <!-- Comercial ENDS -->
 
                </div>

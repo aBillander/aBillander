@@ -31,6 +31,7 @@ class Customer extends Model {
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
                            'invoice_sequence_id', 
                            'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id', 
+                           'order_template_id', 'shipping_slip_template_id',
                            'invoicing_address_id', 'shipping_address_id', 
                 ];
 
@@ -159,6 +160,26 @@ class Customer extends Model {
             return $this->invoice_template_id;
 
         return Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE');
+    }
+
+    public function getOrderTemplateId() 
+    {
+        if (   $this->order_template_id
+            && Template::where('id', $this->order_template_id)->exists()
+            )
+            return $this->order_template_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE');
+    }
+
+    public function getShippingSlipTemplateId() 
+    {
+        if (   $this->shipping_slip_template_id
+            && Template::where('id', $this->shipping_slip_template_id)->exists()
+            )
+            return $this->shipping_slip_template_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE');
     }
     
     public function getPaymentMethodId() 

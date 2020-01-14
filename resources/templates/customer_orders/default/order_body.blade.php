@@ -17,7 +17,7 @@
 
 		<div class="banner" style="visibility:hidden">
 
-			{!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
+			&nbsp; {!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
 
 		</div>
 
@@ -84,17 +84,21 @@
             
             <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
 
+			<div class="billing-phone">
 			@if ( $document->shippingaddress->phone )
 
-				<div class="billing-phone">Tel. {{ $document->shippingaddress->phone }}</div>
+				Tel. {{ $document->shippingaddress->phone }}
 
 			@else
 
-				<div class="billing-phone">Tel. {{ $document->customer->phone }}</div>
+				Tel. {{ $document->customer->phone }}
 
 			@endif
 
-			<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div>
+			@if ( $document->customer->reference_external )
+				<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span>
+			@endif
+			</div>
 			
 		</td>
 
@@ -310,11 +314,11 @@
 
 @endif
 
-{{--
+
 
 @include('templates::customer_orders.default.totals')
 
---}}
+
 
 <table class="notes-totals">
 
@@ -437,7 +441,7 @@ ________________________________________
 { {-- --}}
 
 
-		<table  class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
+		<table  width="100%" style="height: 1.7cm;" class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
 			<tbody>
 				<tr>
 					<td style="padding-right: 2mm">

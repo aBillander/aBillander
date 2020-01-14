@@ -28,6 +28,9 @@
 
 Route::get('migratethis_confluence', function()
 {
+		
+		
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `mrp_type` varchar(32) NOT NULL DEFAULT 'onorder' AFTER `procurement_type`;");
 
 // Illuminate\Support\Facades\DB::statement("CREATE TABLE `payment_documents` (
 

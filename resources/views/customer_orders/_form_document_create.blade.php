@@ -296,7 +296,7 @@ function get_currency_rate(currency_id)
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
-                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .append( '<div>[' + (item.identification ? item.identification : '--')+'] ' + item.name_regular + ' [' + (item.reference_external ? item.reference_external : '--') +']' + "</div>" )
                 .appendTo( ul );
             };
 
@@ -314,7 +314,7 @@ function get_currency_rate(currency_id)
                     customer_id: customer_id
                 },
                 success: function (response) {
-                    var str = '[' + response.identification+'] ' + response.name_fiscal;
+                    var str = '[' + response.identification+'] ' + response.name_fiscal + ' [' + response.reference_external +']';
                     var shipping_method_id;
 
                     $("#document_autocustomer_name").val(str);

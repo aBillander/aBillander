@@ -80,7 +80,7 @@ class BillableController extends Controller
         {
             $search = $request->term;
 
-            $customers = \App\Customer::select('id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
+            $customers = \App\Customer::select('id', 'name_fiscal', 'name_commercial', 'identification', 'reference_external', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
                                     ->where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )

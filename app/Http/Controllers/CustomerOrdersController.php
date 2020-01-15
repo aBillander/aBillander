@@ -72,7 +72,8 @@ class CustomerOrdersController extends BillableController
     //                            ->orderBy('document_date', 'desc')
                                 // ->orderBy('document_reference', 'desc');
     // https://www.designcise.com/web/tutorial/how-to-order-null-values-first-or-last-in-mysql
-                                ->orderByRaw('DATE(document_date) DESC, document_reference IS NOT NULL, document_reference DESC');
+                                // ->orderByRaw('DATE(document_date) DESC, document_reference IS NOT NULL, document_reference DESC');
+                                ->orderByRaw('document_reference IS NOT NULL, document_reference DESC, id DESC');
     //                          ->orderBy('id', 'desc');        // ->get();
             
         } else {

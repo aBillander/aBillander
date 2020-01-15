@@ -286,6 +286,21 @@ class Customer extends Model {
         return $query;
     }
 
+    public function scopeIsActive($query)
+    {
+        return $query->where('active', '>', 0);
+    }
+
+    public function scopeIsBlocked($query)
+    {
+        return $query->where('blocked', '>', 0);
+    }
+
+    public function scopeIsNotBlocked($query)
+    {
+        return $query->where('blocked', 0);
+    }
+
     public function scopeOfSalesRep($query)
     {
 //        return $query->where('customer_id', Auth::user()->customer_id);

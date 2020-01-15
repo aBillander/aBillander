@@ -59,6 +59,8 @@ return [
 	'Customers - Edit'     => 'Clientes - Modificar',
 	'Edit Customer'     => 'Modificar Cliente',
 
+	'This Customer is BLOCKED' => 'Este Cliente está BLOQUEADO',
+
 	'Group Shipping Slips'     => 'Agrupar Albaranes',
 	'Group Orders'     => 'Agrupar Pedidos',
 

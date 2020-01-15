@@ -452,6 +452,9 @@ class Billable extends Model
         // Already confirmed?
         if ( $this->document_reference || ( $this->status != 'draft' ) ) return false;
 
+        // Customer blocked?
+        if ( $this->customer->blocked > 0 ) return false;
+
         // onhold?
         if ( $this->onhold ) return false;
 
@@ -559,6 +562,9 @@ class Billable extends Model
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
         
         if ( $this->status == 'closed' ) return false;
+        
+        // Customer blocked?
+        if ( $this->customer->blocked > 0 ) return false;
 
         // onhold?
         if ( $this->onhold ) return false;

@@ -389,10 +389,10 @@ class ImportCustomersController extends Controller
                     }
 */
                     // 'webshop_id'
-                    $data['webshop_id'] = '';
-                    $reference_external = intval( $data['reference_external'] );
-                    if ( $reference_external > 50000 ) 
-                        $data['webshop_id'] = $reference_external - 50000;
+//                    $data['webshop_id'] = '';
+//                    $reference_external = intval( $data['reference_external'] );
+//                    if ( $reference_external > 50000 ) 
+//                        $data['webshop_id'] = $reference_external - 50000;
 
 
                     if ( strlen( $data['address1'] ) > 128 )
@@ -516,7 +516,7 @@ if ($country) {
 
                             $customer->update( $data );
 
-                            unset( $data['webshop_id'] );       // Address has a 'webshop_id' field
+//                            unset( $data['webshop_id'] );       // Address has a 'webshop_id' field
 
                             if ( $address )
                             {
@@ -586,7 +586,7 @@ if ($country) {
 
                             // $logger->log("TIMER", " Se ha creado el Cliente: ".$item." - " . $customer->id);
 
-                            unset( $data['webshop_id'] );
+//                            unset( $data['webshop_id'] );
 
                             $address = $customer->address;
 

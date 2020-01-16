@@ -94,7 +94,7 @@
 
 			@endif
 
-			<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div>
+			<!-- span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div -->
 			
 		</td>
 
@@ -202,20 +202,11 @@
 			<th class="quantity last-column" width="8%" style="border: 1px #ccc solid">
 				<span>Cantidad</span>
 			</th>
-			<th class="barcode" width="14%" style="border: 1px #ccc solid">
-				<span>Cód. Barras</span>
-			</th>
-			<th class="price" width="8%" style="border: 1px #ccc solid">
-				<span>Precio</span>
-			</th>
-			<th class="discount" width="6%" style="border: 1px #ccc solid">
-				<span>Dto.</span>
-			</th>
-			<th class="tax" width="7%" style="border: 1px #ccc solid">
-				<span>{!! \App\Configuration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</span>
+			<th class="notes" width="35%" style="border: 1px #ccc solid">
+				<span>Notas</span>
 			</th>
 			<th class="total xlast-column" width="12%" style="border: 1px #ccc solid">
-				<span>Total</span>
+				<span>PVP recomendado</span>
 			</th>
 		</tr>
 
@@ -260,7 +251,7 @@
 					<span class="item-name">{{ $line->name }}</span>
 					<span class="item-combination-options"></span>
 {{-- Juicy comments here --}}
-@if ( $line->notes )
+@if ( 0 && $line->notes )
 					<br />
 					<span class="item-notes" style="display:block; margin-left: 12px; font-style: italic;">{!! $line->notes !!}</span>
 @endif
@@ -268,37 +259,18 @@
 			</td>
 			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
 			</td>
-			<td class="barcode">
+			<td xclass="discount total last-column">
 				<span>
-					<span class="item-name">{{ optional($line->product)->ean13 }}</span>
-				</span>
-			</td>
-			<td class="price total last-column">
-				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_price('unit_customer_final_price') }}
-						<!-- span class="abi-Price-currencySymbol">€</span -->
-					</span>
-				</span>
-			</td>
-			<td class="discount total last-column">
-				@if ( $line->discount_percent > 0.0 )
-				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_percent('discount_percent') }}
-							<!-- span class="abi-Price-currencySymbol">€</span -->
-					</span>
-				</span>
-				@endif
-			</td>
-			<td class="discount total last-column">
-				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_percent('tax_percent') }}
-							<!-- span class="abi-Price-currencySymbol">€</span -->
+					<span class="abi-Price-amount amount">
+						<span class="item-notes" style="display:block; margin-left: 12px; font-style: italic;">
+							{!! $line->notes !!}
+						</span>
 					</span>
 				</span>
 			</td>
 			<td class="total last-column">
 				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_price('total_tax_excl') }}
+					<span class="abi-Price-amount amount">{{ $line->product->as_price('recommended_retail_price_tax_inc') }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>

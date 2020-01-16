@@ -221,7 +221,8 @@ div.shop-name h3 {
 /* Recipient addressses & order data */
 table.order-data-addresses {
 	width: 100%;
-	margin-bottom: 10mm;
+/*	margin-bottom: 10mm;	*/
+	margin-bottom: 5mm;
 }
 
 td.order-data {

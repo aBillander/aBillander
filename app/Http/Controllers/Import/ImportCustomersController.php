@@ -516,7 +516,7 @@ if ($country) {
 
                             $customer->update( $data );
 
-//                            unset( $data['webshop_id'] );       // Address has a 'webshop_id' field
+                            unset( $data['webshop_id'] );       // Address has a 'webshop_id' field
 
                             if ( $address )
                             {
@@ -586,7 +586,7 @@ if ($country) {
 
                             // $logger->log("TIMER", " Se ha creado el Cliente: ".$item." - " . $customer->id);
 
-//                            unset( $data['webshop_id'] );
+                            unset( $data['webshop_id'] );
 
                             $address = $customer->address;
 
@@ -689,7 +689,7 @@ if ($country) {
         $data = [];  
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference_external', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
+        $headers = [ 'id', 'reference_external', 'webshop_id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
                     'customer_group_id', 'CUSTOMER_GROUP_NAME', 'price_list_id', 'PRICE_LIST_NAME', 
                     'payment_method_id', 'PAYMENT_METHOD_NAME', 'shipping_method_id', 'SHIPPING_METHOD_NAME', 
                     'outstanding_amount_allowed', 'notes', 'allow_login', 'blocked', 'active', 

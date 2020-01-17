@@ -60,7 +60,8 @@ class SepaDirectDebit extends Model
 
     public function updateTotal()
     {
-         $total = $this->vouchers()->where('status', '<>', 'bounced')->sum('amount');
+         // $total = $this->vouchers()->where('status', '<>', 'bounced')->sum('amount');
+         $total = $this->vouchers()->sum('amount');
 
          return $this->update( ['total' => $total] );
     }

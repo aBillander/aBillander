@@ -139,9 +139,9 @@
 
 @if($rule->rule_type == 'promo')
       <td class="text-right">
-                <span class="text-success">{{ $rule->as_priceable( ( ($rule->extra_quantity+$rule->from_quantity) / $rule->from_quantity ) * $rule->product->price ) }}</span>
+                <span class="text-success">{{ $rule->as_priceable( ( ($rule->extra_quantity+$rule->from_quantity) / $rule->from_quantity ) * optional($rule->product)->price ) }}</span>
 
-                <br /><span class="text-info crossed">{{ $rule->product->as_price('price') }}</span>
+                <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
       </td>
 @else
       <td class="text-right">{{ $rule->as_price('price') }}
@@ -150,7 +150,7 @@
                 <br /><span class="text-success">{{ $rule->as_priceable( $rule->price / $rule->conversion_rate ) }}</span>
         @endif
 
-                <br /><span class="text-info crossed">{{ $rule->product->as_price('price') }}</span>
+                <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
 
       </td>
 @endif

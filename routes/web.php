@@ -293,10 +293,12 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheetorder.create.shippingslips');
 
-        // Production Sheet Orders
+        // Production Sheet Shipping Slips
         Route::get('productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
 
-        Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourline@export' )->name('productionsheet.tourline');
+        Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
+
+        Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourlineController@export' )->name('productionsheet.tourline');
 
 
 
@@ -530,6 +532,8 @@ foreach ($pairs as $pair) {
         Route::resource('deliveryroutes',                    'DeliveryRoutesController'    );
         Route::resource('deliveryroutes.deliveryroutelines', 'DeliveryRouteLinesController');
         Route::post('deliveryroutes/sortlines', 'DeliveryRoutesController@sortLines')->name('deliveryroute.sortlines');
+
+        Route::get( 'deliveryroutes/{deliveryroute}/pdf', 'DeliveryRoutesController@showPdf' )->name('deliveryroutes.pdf');
         
         Route::resource('deliverysheets',                    'DeliverySheetsController'    );
         Route::resource('deliverysheets.deliverysheetlines', 'DeliverySheetLinesController');

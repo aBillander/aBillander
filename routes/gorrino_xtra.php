@@ -29,6 +29,12 @@
 Route::get('migratethis_xtra', function()
 {
 
+	// 2020-01-20
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `delivery_routes` ADD `carrier_id` INT(10) UNSIGNED NOT NULL AFTER `notes`;");
+
+
+	die('OK');
+
 	// 2020-01-17
 		Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_shipping_slips` ADD `production_sheet_id` INT(10) UNSIGNED NULL AFTER `customer_viewed_at`;");
 

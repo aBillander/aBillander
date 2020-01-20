@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class DeliveryRoute extends Model
 {
 
-    protected $fillable = ['alias', 'name', 'driver_name', 'active', 'notes'];
+    protected $fillable = ['alias', 'name', 'driver_name', 'active', 'notes', 'carrier_id'];
 
     public static $rules = array(
         'alias'        => array('required', 'min:2', 'max:32'),
         'name'         => array('required', 'min:2', 'max:64'),
+        'carrier_id'   => 'required|exists:carriers,id',
     	);
 	
     
@@ -20,6 +21,11 @@ class DeliveryRoute extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
+
+    public function carrier()
+    {
+        return $this->belongsTo('App\Carrier', 'carrier_id');
+    }
     
     public function deliveryroutelines()
     {

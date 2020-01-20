@@ -28,6 +28,7 @@ return [
 	'New Delivery Route'     => 'Nueva Ruta de Reparto',
 	'Delivery Route name'     => 'Nombre de la Ruta de Reparto',
 	'Alias'     => 'Alias',
+	'Carrier' => 'Transportista',
 	'Driver name' => 'Nombre del Conductor',
 
 
@@ -49,5 +50,11 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
+
+
+	
+
+	'Customer' => 'Cliente',
+	'Address' => 'Dirección',
 
 ];

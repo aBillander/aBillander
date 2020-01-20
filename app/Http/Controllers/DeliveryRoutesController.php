@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\DeliveryRoute;
 use App\DeliveryRouteLine;
 
+use App\Carrier;
+
 class DeliveryRoutesController extends Controller
 {
     /**
@@ -28,7 +30,9 @@ class DeliveryRoutesController extends Controller
      */
     public function create()
     {
-        return view('delivery_routes.create');
+        $carrierList = Carrier::pluck('name', 'id')->toArray();
+
+        return view('delivery_routes.create', compact('carrierList'));
     }
 
     /**
@@ -66,7 +70,9 @@ class DeliveryRoutesController extends Controller
      */
     public function edit(DeliveryRoute $deliveryroute)
     {
-        return view('delivery_routes.edit', compact('deliveryroute'));
+        $carrierList = Carrier::pluck('name', 'id')->toArray();
+
+        return view('delivery_routes.edit', compact('deliveryroute', 'carrierList'));
     }
 
     /**
@@ -119,5 +125,76 @@ class DeliveryRoutesController extends Controller
         });
 
         return response()->json($positions);
+    }
+
+
+
+
+    public function showPdf(DeliveryRoute $deliveryroute, Request $request)
+    {
+        $deliveryroute->load(['deliveryroutelines', 'carrier']);
+        $deliveryroutelines = $deliveryroute->deliveryroutelines;
+
+        // return view('delivery_route_lines.show_pdf', compact('deliveryroute', 'deliveryroutelines'));
+
+
+
+        $pdf = \PDF::loadView('delivery_routes.reports.delivery_route.delivery_route', compact('deliveryroute', 'deliveryroutelines'))->setPaper('a4', 'vertical');
+
+        if ($request->has('screen')) return view('delivery_routes.reports.delivery_route.delivery_route', compact('deliveryroute', 'deliveryroutelines'));
+
+        return $pdf->stream('delivery_route_'.$deliveryroute->alias.'.pdf'); // $pdf->download('invoice.pdf');
+
+
+
+
+
+        die($id);
+
+        $customer      = Auth::user()->customer;
+
+        $document = $this->customerShippingSlip->where('id', $id)->where('customer_id', $customer->id)->first();
+
+        if (!$document) 
+            return redirect()->route('abcc.shippingslips.index')
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts').$customer->id);
+        
+
+        $company = \App\Context::getContext()->company;
+
+        // Get Template
+        $t = $document->template ?? 
+             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE') );
+
+        if ( !$t )
+            return redirect()->route('abcc.shippingslips.index', $id)
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+        $template = $t->getPath( 'CustomerShippingSlip' );
+
+
+//        $template = 'customer_invoices.templates.' . $cinvoice->template->file_name;  // . '_dist';
+        $paper = $t->paper;    // A4, letter
+        $orientation = $t->orientation;    // 'portrait' or 'landscape'.
+
+        // PDF stuff
+        try{
+                $pdf        = \PDF::loadView( $template, compact('document', 'company') )
+                            ->setPaper( $paper, $orientation );
+        }
+        catch(\Exception $e){
+
+                return redirect()->route('abcc.invoices.index')
+                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+        }
+
+        // PDF stuff ENDS
+
+        $pdfName    = 'Shippingslip_' . $document->secure_key . '_' . $document->document_date;
+
+        if ($request->has('screen')) return view($template, compact('document', 'company'));
+        
+        return  $pdf->stream();
+        return  $pdf->download( $pdfName . '.pdf');
     }
 }

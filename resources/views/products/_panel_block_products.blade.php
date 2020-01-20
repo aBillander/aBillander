@@ -44,7 +44,8 @@
             <!-- th>{{ l('Quantity decimals') }}</th>
             <th>{{ l('Manufacturing Batch Size') }}</th -->
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
-			<th class="text-center">{{l('Active', [], 'layouts')}}</th>
+            <th class="text-center">{{l('Active', [], 'layouts')}}</th>
+            <th class="text-center">{{l('Publish to web?')}}</th>
 			<th class="text-right"> </th>
 		</tr>
 	</thead>
@@ -97,7 +98,8 @@
                     </button>
                  </a>
                 @endif</td>
-			<td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
+            <td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
+            <td class="text-center">@if ($product->publish_to_web) <i class="fa fa-check-square" style="color: #2780e3;"></i> @else <i class="fa fa-square-o" style="color: #2780e3;"></i> @endif</td>
            <td class="text-right button-pad">
                 @if (  is_null($product->deleted_at))
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>

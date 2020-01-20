@@ -288,6 +288,16 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('productionsheets/{id}/products/pdf', 'ProductionSheetsPdfController@getPdfProducts')->name('productionsheet.products.pdf');
 
+        // Production Sheet Orders
+        Route::get('productionsheetorders/{id}',  'ProductionSheetOrdersController@ordersIndex')->name('productionsheet.orders');
+
+        Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheetorder.create.shippingslips');
+
+        // Production Sheet Orders
+        Route::get('productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+
+        Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourline@export' )->name('productionsheet.tourline');
+
 
 
         Route::resource('customers', 'CustomersController');

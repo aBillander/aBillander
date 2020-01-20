@@ -29,6 +29,12 @@
 Route::get('migratethis_xtra', function()
 {
 
+	// 2020-01-17
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_shipping_slips` ADD `production_sheet_id` INT(10) UNSIGNED NULL AFTER `customer_viewed_at`;");
+
+
+	die('OK');
+
 	// 2019-12-11
 		Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `invoice_sequence_id` INT(10) UNSIGNED NULL AFTER `bank_account_id`;");
 

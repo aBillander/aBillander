@@ -50,6 +50,8 @@
 
         <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}" class="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
 
+        <a href="{{ route('productionsheet.orders', [$sheet->id]) }}" class="btn btn-blue" stile="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a>
+
         <a href="{{ URL::to('productionsheets') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Production Sheets') }}</a>
     </div>
     <h2>

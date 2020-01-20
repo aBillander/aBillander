@@ -2,8 +2,8 @@
 
 return [
 
-	'Shipping Slip #'     => 'Número',
-	'Shipping Slip'     => 'Albarán',
+	'Order #'     => 'Número',
+	'Order'     => 'Pedido',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -47,20 +47,17 @@ return [
 	|
 	*/
 
-	'Documents' => 'Albaranes de Clientes',
+	'Documents' => 'Pedidos de Clientes',
 	'Document #'     => 'Número',
 	'Date'     => 'Fecha',
 	'Created via'     => 'Creado por',
-	'Invoiced at:'     => 'Facturado el',
-	'Delivered at:'     => 'Entregado el:',
-	'Set delivered' => 'Click para entregado',
 
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Próx. Vencimiento',
 	'Show Customer'     => 'Ver Cliente',
 	'Show Payments'     => 'Ver Pagos',
 	'Draft'     => 'Borrador',
-	'D'         => 'B',
+	'D'     => 'B',
 	'Pending: Send by eMail'     => 'Pendiente: Enviar por eMail',
 	'eM'     => 'eM',
 	'Pending: Print and Send'     => 'Pendiente: Imprimir y Enviar',
@@ -82,8 +79,8 @@ return [
 	|
 	*/
 
-	'Documents - Create'     => 'Albaranes de Clientes - Crear',
-	'New Document'     => 'Nuevo Albarán de Cliente',
+	'Documents - Create'     => 'Pedidos de Clientes - Crear',
+	'New Document'     => 'Nuevo Pedido de Cliente',
 	
 	// modal_customer_search
 	'Customer Search'     => 'Buscar Cliente',
@@ -93,16 +90,14 @@ return [
 	'New Customer'     => 'Nuevo Cliente',
 	'You should choose a Customer'     => 'Debe seleccionar un Cliente',
 
-	'Documents'     => 'Albaranes de Clientes',
-	'Document to'     => 'Albarán a',
-	'Back to Documents'     => 'Volver a Albaranes de Clientes',
+	'Documents'     => 'Pedidos de Clientes',
+	'Document to'     => 'Pedido a',
+	'Back to Documents'     => 'Volver a Pedidos de Clientes',
 	'Back to Customers'     => 'Volver a Clientes',
 	'Invoicing Address'     => 'Datos de Facturación',
 	'VAT ID'     => 'NIF',
 	'View Customer'     => 'Ir a la Ficha del Cliente',
 	'View Invoicing Address'     => 'Ver Dirección de Facturación',
-
-	'Group Shipping Slips'     => 'Agrupar Albaranes',
 
 
 	'Header'     => 'Cabecera',
@@ -134,8 +129,8 @@ return [
 	// _invoice_header
 	'Type'     => 'Tipo',
 	'Template'     => 'Plantilla',
-	'Sequence'     => 'Serie',	// 'Serie de Albaranes',
-	'Document Number'     => 'Número de Albarán',
+	'Sequence'     => 'Serie',	// 'Serie de Pedidos',
+	'Document Number'     => 'Número de Pedido',
 	'Reference / Project'     => 'Referencia / Proyecto',
 // 	'Invoice Date'     => 'Fecha Factura',
 	'Document Date'     => 'Fecha del Documento',
@@ -151,7 +146,6 @@ return [
 	'Sales Representative'     => 'Agente Comercial',
 	'Down Payment'     => 'Anticipo',
 	'Number of Packages'     => 'Número de Bultos',
-	'Weight'     => 'Peso',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',
@@ -237,8 +231,11 @@ return [
 
 	// Stock availability
 	'Stock Availability'     => 'Disponibilidad de Stock',
-	''     => '',
-	''     => '',
+	'Full quantity'     => 'Servir todo',
+	'Quantity on-hand only'     => 'Servir sólo stock disponible',
+	'Create Shipping Slip'     => 'Crear Albarán',
+	'Create Back-Order?'     => '¿Crear un retro-Pedido?',
+	'A new Customer Order will be created if Quantity on-hand is less than Order Quantity.'     => 'Se creará un nuevo Pedido si la Cantidad disponible es inferior a la Cantidad del Pedido.',
 
 	'Finish Up'     => 'Emitir',
 	'Invoice This'  => 'Albaranar',
@@ -259,10 +256,15 @@ return [
 	|
 	*/
 
-	'Documents - Edit'     => 'Albaranes de Clientes - Modificar',
-	'Edit Document'     => 'Modificar Albarán de Cliente',
+	'Documents - Edit'     => 'Pedidos de Clientes - Modificar',
+	'Edit Document'     => 'Modificar Pedido de Cliente',
 
 
+	'Backorder'     => 'Retro-Pedido',
+	'Backorder by'  => 'Retro-Pedido por',
+
+	'Aggregate Order'     => 'Pedido Agrupado',
+	'Aggregated by'     => 'Agrupado por',
 
 	'Customer Infos'     => 'Info del Cliente',
 	'Customer Risk'     => 'Riesgo alcanzado',
@@ -294,16 +296,16 @@ return [
 	|
 	*/
 
-	'Documents - Show'     => 'Albaranes de Clientes - Mostrar',
+	'Documents - Show'     => 'Pedidos de Clientes - Mostrar',
 	''     => '',
 	''     => '',
 
 	''     => '',
 	'Show Customer'     => 'Ver Cliente',
-	'Your Document :num from :name'     => 'Su Albarán :num de :name',
+	'Your Document :num from :name'     => 'Su Pedido :num de :name',
 
 	'Payment Schedule'     => 'Vencimientos',
-	'Document'     => 'Albarán',
+	'Document'     => 'Pedido',
 	'Customer'     => 'Cliente',
 	'Due Date'     => 'Fecha Vencimiento',
 	'Payment Date'     => 'Fecha de Pago',
@@ -311,7 +313,7 @@ return [
 	'Subject'     => 'Concepto',
 	'Status'     => 'Estado',
 
-	'Document id=:id does not exist.'     => 'El Albarán de Cliente id=:id no existe.',
+	'Document id=:id does not exist.'     => 'El Pedido de Cliente id=:id no existe.',
 	''     => '',
 	''     => '',
 	''     => '',
@@ -323,16 +325,41 @@ return [
 	''     => '',
 	''     => '',
 
+
+	'Group Orders'     => 'Agrupar Pedidos',
+//	'Create Shipping Slip'     => 'Crear Albarán',
 	'Create Invoice'     => 'Crear Factura',
+	'Order: :id [:date]'     => 'Pedido: :id [:date]',
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
+	'Invoice: :id [:date]'     => 'Factura: :id [:date]',
 
-	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
+	'Address is displayed if it is different from Customer Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Cliente',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 
-	'Shipment Status'     => 'Estado de Envío',
+	'Not Closed'     => 'No Cerrados',
+	'Closed'     => 'Cerrados',
 
-	'Not Invoiced'     => 'No Facturados',
-	'Invoiced'     => 'Facturados',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Production Sheet orders Language Lines :: index 
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Production Sheet'     => 'Hoja de Producción',
+	'Back to Production Sheet'     => 'Volver a la Hoja de Producción',
+	'Shipping Slip'     => 'Albarán',
+	'Shipping Slips'     => 'Albaranes',
+	'Create Shipping Slips'     => 'Crear Albaranes',
+	'Should group?'     => '¿Agrupar?',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
 
 ];

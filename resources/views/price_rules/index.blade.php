@@ -66,6 +66,18 @@
     {!! Form::select('rule_type', ['' => l('All', [], 'layouts')] + $rule_typeList, null, array('class' => 'form-control')) !!}
 </div>
 
+     <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('autocustomer_name', l('Customer')) !!}
+        {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name', 'onClick' => 'this.select()')) !!}
+
+        {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+     </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('customer_group_id', l('Customer Group')) !!}
+        {!! Form::select('customer_group_id', ['' => l('-- All --', 'layouts')] + $customer_groupList, null, array('class' => 'form-control', 'id' => 'customer_group_id')) !!}
+    </div>
+
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 {!! link_to_route('pricerules.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
@@ -232,6 +244,116 @@ $(document).ready(function() {
 });
 
 </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+          // $('#date_from_form').val( '' );
+          // $('#date_to_form'  ).val( '' );
+
+
+        // $("#autocustomer_name").val('');
+
+        // To get focus;
+        // $("#autocustomer_name").focus();
+
+        $("#autocustomer_name").autocomplete({
+            source : "{{ route('customerinvoices.ajax.customerLookup') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                getCustomerData( value.item.id );
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .appendTo( ul );
+            };
+
+
+        });
+
+
+        function getCustomerData( customer_id )
+        {
+            var token = "{{ csrf_token() }}";
+
+            $.ajax({
+                url: "{{ route('customerinvoices.ajax.customerLookup') }}",
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    customer_id: customer_id
+                },
+                success: function (response) {
+                    var str = '[' + response.identification+'] ' + response.name_regular;
+                    var shipping_method_id;
+
+                    $("#autocustomer_name").val(str);
+                    $('#customer_id').val(response.id);
+/*
+                    if (response.sales_equalization > 0) {
+                        $('#sales_equalization').show();
+                    } else {
+                        $('#sales_equalization').hide();
+                    }
+
+    //                $('#sequence_id').val(response.work_center_id);
+                    $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
+                    $('#delivery_date_form').val('');
+
+                    if ( response.payment_method_id > 0 ) {
+                      $('#payment_method_id').val(response.payment_method_id);
+                    } else {
+                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
+                    }
+
+                    $('#currency_id').val(response.currency_id);
+                    $('#currency_conversion_rate').val(response.currency.conversion_rate);
+                    $('#down_payment').val('0.0');
+
+                    $('#invoicing_address_id').val(response.invoicing_address_id);
+
+                    // https://www.youtube.com/watch?v=FHQh-IGT7KQ
+                    $('#shipping_address_id').empty();
+
+    //                $('#shipping_address_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
+
+                    $.each(response.addresses, function(index, element){
+                      $('#shipping_address_id').append('<option value="'+ element.id +'">'+ element.alias +'</option>');
+                    });
+
+                    if ( response.shipping_address_id > 0 ) {
+                      $('#shipping_address_id').val(response.shipping_address_id);
+                    } else {
+                      $('#shipping_address_id').val(response.invoicing_address_id);
+                    }
+
+                    $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
+
+                    shipping_method_id = response.shipping_method_id;
+                    if (shipping_method_id == null) {
+                        shipping_method_id = "{{ intval(\App\Configuration::get('DEF_SHIPPING_METHOD'))}}";
+                    }
+                    $('#shipping_method_id').val( shipping_method_id );
+
+                    $('#sales_rep_id').val(response.sales_rep_id);
+*/
+                    console.log(response);
+                }
+            });
+        }
+
+
+
+    </script> 
+
 
 {{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
 

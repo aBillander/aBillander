@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\PriceRule;
 use App\Product;
+use App\Customer;
 use App\Configuration;
 
 use App\Traits\DateFormFormatterTrait;
@@ -35,6 +36,9 @@ class PriceRulesController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
+        $customer_id = $request->input('customer_id', null);
+        $customer_group_id = $request->input('customer_group_id', null);
+
         $rules = $this->pricerule
         						->filter( $request->all() )
         						->with('category')
@@ -43,6 +47,33 @@ class PriceRulesController extends Controller
         						->with('customer')
         						->with('customergroup')
         						->with('currency')
+	                            ->when($customer_id, function($query) use ($customer_id) {
+
+	                                    $customer_group_id = Customer::find($customer_id)->customer_group_id;
+
+	                                    $query->whereHas('customer', function ($query) use ($customer_id) {
+
+					                            $query->where('id', $customer_id);
+					                    });
+
+	                                    $query->orWhereHas('customergroup', function ($query) use ($customer_group_id) {
+
+					                            $query->where('id', $customer_group_id);
+					                    });
+	                            })
+	                            ->when($customer_group_id, function($query) use ($customer_group_id) {
+
+	                                    $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
+
+					                            $query->where('id', $customer_group_id);
+					                    });
+	                            })
+	                            ->orWhere(function ($query) {
+
+			                            $query->whereDoesntHave('customer');
+
+			                            $query->whereDoesntHave('customergroup');
+			                    })
 //        						->orderBy('product_id', 'ASC')
 
                             ->join('products', 'price_rules.product_id', '=', 'products.id')

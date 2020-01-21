@@ -32,7 +32,7 @@ class PriceRule extends Model
 
     public static $rules = [
         'category_id'       => 'nullable|exists:categories,id',
-        'product_id'        => 'nullable|exists:products,id',
+        'product_id'        => 'exists:products,id',
         'combination_id'    => 'nullable|exists:combinations,id',
         'customer_id'       => 'nullable|exists:customers,id',
         'customer_group_id' => 'nullable|exists:customer_groups,id',
@@ -51,11 +51,17 @@ class PriceRule extends Model
     {
             $list = [];
             foreach (static::$types as $type) {
-                // $list[$scheme] = l(get_called_class().'.'.$scheme, 'sepasp');
+                // $list[$type] = l('App\\PriceRule.'.$type, [], 'appmultilang');
                 $list[$type] = $type;
             }
 
             return $list;
+    }
+
+    public static function getRuleTypeName( $type )
+    {
+            return $type;
+            //return l('App\\PriceRule.'.$type, [], 'appmultilang');
     }
 
 

@@ -43,9 +43,14 @@ class PriceRulesController extends Controller
         						->with('customer')
         						->with('customergroup')
         						->with('currency')
-        						->orderBy('product_id', 'ASC')
-        						->orderBy('customer_id', 'ASC')
-        						->orderBy('from_quantity', 'ASC');
+//        						->orderBy('product_id', 'ASC')
+
+                            ->join('products', 'price_rules.product_id', '=', 'products.id')
+                            ->select('price_rules.*', 'products.reference')
+                            ->orderBy('products.reference', 'asc')
+
+//        						->orderBy('customer_id', 'ASC')
+        						->orderBy('created_at', 'ASC');
 
 //         abi_r($mvts->toSql(), true);
 

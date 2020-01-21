@@ -12,6 +12,10 @@
     </div>
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('price_pack', l('Price')) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Price is WITHOUT Taxes.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
         {!! Form::text('price_pack', null, array('id' => 'price_pack', 'class' => 'form-control')) !!}
     </div>
 </div>

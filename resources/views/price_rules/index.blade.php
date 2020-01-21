@@ -97,7 +97,11 @@
       <th>{{l('Customer Group')}}</th>
       <th>{{-- l('Measure Unit') --}}</th>
       <!-- th>{{l('Currency')}}</th -->
-      <th class="text-right">{{l('Price')}}</th>
+      <th class="text-right">{{l('Price')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Prices shown: Rule Price (or Unit Price, if there are Extra Items), Unit Price (when applies, i.e. Price Rule is per Pack), Product Price (as seen on Product record).') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
       <!-- th class="text-right">{{l('Discount Percent')}}</th>
       <th class="text-right">{{l('Discount Amount')}}</th -->
       <th class="text-center">{{l('From Quantity')}}</th>
@@ -113,7 +117,7 @@
 		<tr>
       <td class="text-center">{{ $rule->id }}</td>
       <td>{{ $rule->name }}
-          <br /><span class="text-warning">[{{ $rule->rule_type }}]</span>
+          <br /><span class="text-warning">[{{ \App\PriceRule::getRuleTypeName($rule->rule_type) }}]</span> <span title="{{l('Creation date')}}">{{ abi_date_short( $rule->created_at ) }}</span>
       </td>
       <!-- td>{{ optional($rule->category)->name }}</td -->
       <td>
@@ -139,7 +143,7 @@
 
 @if($rule->rule_type == 'promo')
       <td class="text-right">
-                <span class="text-success">{{ $rule->as_priceable( ( ($rule->extra_quantity+$rule->from_quantity) / $rule->from_quantity ) * optional($rule->product)->price ) }}</span>
+                <span class="text-success">{{ $rule->as_priceable( ( $rule->from_quantity / ($rule->extra_quantity+$rule->from_quantity) ) * optional($rule->product)->price ) }}</span>
 
                 <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
       </td>

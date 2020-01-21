@@ -47,7 +47,7 @@
           @include('categories._panel_main_data')
 
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( 1 || \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
           @include('categories._panel_internet')
 

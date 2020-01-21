@@ -9,7 +9,7 @@
     <div class="pull-right" style="padding-top: 4px;">
 
         <a href="{{ route('deliveryroutes.pdf', $deliveryroute->id) }}" class="btn xbtn-sm btn-grey" style="margin-right: 32px" 
-                title="{{l('Export', 'layouts')}}"><i class="fa fa-file-pdf-o"></i> {{l('Export', 'layouts')}}</a>
+                title="{{l('Export', 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i> {{l('Export', 'layouts')}}</a>
 
         <a href="{{ URL::to('deliveryroutes/'.$deliveryroute->id.'/deliveryroutelines/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>

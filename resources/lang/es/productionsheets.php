@@ -80,4 +80,7 @@ return [
 	'Products' => 'Productos',
 	'' => '',
 	'' => '',
+
+
+	'Address'     => 'Dirección',
 ];

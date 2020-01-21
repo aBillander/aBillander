@@ -362,4 +362,6 @@ return [
 	''     => '',
 	''     => '',
 
+	'Delivery Routes' => 'Rutas de Reparto',
+
 ];

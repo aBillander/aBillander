@@ -11,6 +11,16 @@
 
         <a href="{{ route('productionsheet.tourline', [$productionSheet->id]) }}" class="btn xbtn-sm btn-blue" title="{{l('Hoja Tourline :: Excel')}}" xstyle="margin-right: 32px;"><img src="https://www.tourlineexpress.com/images/logoh.gif" height="20" /> &nbsp;<i><b>{{l('Hoja Albaranes')}}</b></i></a>
 
+
+<div class="btn-group" style="margin-left: 32px; ">
+  <a href="{{ route('productionsheet.deliveryroute', [$productionSheet->id, 1]) }}" class="btn btn-info">{{ l('Delivery Routes')}}</a>
+  <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+  <ul class="dropdown-menu">
+    <li><a href="{{ route('productionsheet.deliveryroute', [$productionSheet->id, 1]) }}">Sevilla</a></li>
+    <li class="divider"></li>
+  </ul>
+</div>
+
         <a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}" class="btn btn-success" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a>
 
         <a href="{{ route('productionsheets.show', [$productionSheet->id]) }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheet') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>

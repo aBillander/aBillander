@@ -11,7 +11,7 @@ use App\TourlineExcel;
 
 use Excel;
 
-class ProductionSheetsTourline extends Controller
+class ProductionSheetsTourlineController extends Controller
 {
    protected $productionSheet;
 

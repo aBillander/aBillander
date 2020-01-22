@@ -140,6 +140,7 @@
       <td>
           @if($rule->customer)
             <a href="{{ URL::to('customers/' . optional($rule->customer)->id . '/edit') }}" title="{{l('View Customer')}}" target="_blank">{{ optional($rule->customer)->name_commercial }}</a>
+            <br />{{ optional($rule->customer->customergroup)->name }}
           @endif
         </td>
       <td>{{ optional($rule->customergroup)->name }}</td>

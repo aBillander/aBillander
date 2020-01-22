@@ -36,7 +36,13 @@ class PriceRulesController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
+        $autocustomer_name = $request->input('autocustomer_name', null);
+        if ( !$autocustomer_name )
+        	$request->merge(['customer_id' => null]);
         $customer_id = $request->input('customer_id', null);
+        // If Customer is selected, discard group
+        if ( $customer_id )
+        	$request->merge(['customer_group_id' => null]);
         $customer_group_id = $request->input('customer_group_id', null);
 
         $rules = $this->pricerule
@@ -45,22 +51,86 @@ class PriceRulesController extends Controller
         						->with('product')
         						->with('combination')
         						->with('customer')
+        						->with('customer.customergroup')
         						->with('customergroup')
         						->with('currency')
+/* */
 	                            ->when($customer_id, function($query) use ($customer_id) {
 
 	                                    $customer_group_id = Customer::find($customer_id)->customer_group_id;
 
+
+			                            $query->where(function ($query) use ($customer_id) {
+
+					                            $query->whereHas('customer', function ($query) use ($customer_id) {
+
+							                            $query->where('id', $customer_id);
+							                    });
+					                    });
+
+	                                    $query->orWhere(function ($query) use ($customer_group_id) {
+
+					                            $query->whereDoesntHave('customer');
+
+					                            $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
+
+							                            $query->where('id', $customer_group_id);
+							                    });
+					                    });
+
+	                                    $query->orWhere(function ($query) {
+
+					                            $query->whereDoesntHave('customer');
+
+					                            $query->whereDoesntHave('customergroup');
+					                    });
+
+
+
+
+
+/*
 	                                    $query->whereHas('customer', function ($query) use ($customer_id) {
 
 					                            $query->where('id', $customer_id);
 					                    });
 
+/ *
 	                                    $query->orWhereHas('customergroup', function ($query) use ($customer_group_id) {
 
 					                            $query->where('id', $customer_group_id);
 					                    });
+* / 
+*/
 	                            })
+	                            ->when($customer_group_id, function($query) use ($customer_group_id) {
+
+			                            $query->where(function ($query) use ($customer_group_id) {
+
+					                            $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
+
+							                            $query->where('id', $customer_group_id);
+							                    });
+					                    });
+
+	                                    $query->orWhere(function ($query) {
+
+					                            $query->whereDoesntHave('customer');
+
+					                            $query->whereDoesntHave('customergroup');
+					                    });
+	                            })
+
+
+
+
+
+
+
+
+
+
+/*
 	                            ->when($customer_group_id, function($query) use ($customer_group_id) {
 
 	                                    $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
@@ -68,12 +138,15 @@ class PriceRulesController extends Controller
 					                            $query->where('id', $customer_group_id);
 					                    });
 	                            })
+/ *
 	                            ->orWhere(function ($query) {
 
 			                            $query->whereDoesntHave('customer');
 
 			                            $query->whereDoesntHave('customergroup');
 			                    })
+* /
+*/
 //        						->orderBy('product_id', 'ASC')
 
                             ->join('products', 'price_rules.product_id', '=', 'products.id')

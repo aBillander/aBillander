@@ -29,6 +29,19 @@
 Route::get('migratethis_xtra', function()
 {
 
+	// 2020-01-23
+		
+		$o = \App\CustomerOrder::find(716);
+
+		$o->document_prefix = null;
+
+		$o->document_id= 0;
+		$o->save();
+
+
+	die('OK');
+
+
 	// 2020-01-20
 		Illuminate\Support\Facades\DB::statement("ALTER TABLE `delivery_routes` ADD `carrier_id` INT(10) UNSIGNED NOT NULL AFTER `notes`;");
 

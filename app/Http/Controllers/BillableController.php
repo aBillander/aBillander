@@ -628,6 +628,9 @@ class BillableController extends Controller
         $clone->reference_customer = '';
         $clone->reference_external = '';
 
+        $clone->document_prefix      = null;
+        $clone->document_id          = 0;
+
         $clone->created_via          = 'manual';
         $clone->status               = 'draft';
         $clone->locked               = 0;

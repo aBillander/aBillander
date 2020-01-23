@@ -319,6 +319,6 @@ class AbccCatalogueController extends Controller
 
         $customer_rules = ($product && $customer_price) ? $product->getPriceRulesByCustomer( $customer ) : collect([]);
 
-        return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules', 'customer_price', 'currency'));
+        return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules', 'customer_price', 'currency', 'customer'));
     }
 }

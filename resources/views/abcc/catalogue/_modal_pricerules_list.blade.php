@@ -7,86 +7,24 @@
 
 	 <div class="modal-body">
 
-       <div class="table-responsive">
 
-<table id="customer_rules" class="table table-hover">
-    <thead>
-        <tr>
-            <th class="text-center">{{l('ID', [], 'layouts')}}</th>
-              <th>{{l('Category', 'abcc/customer')}}</th>
-              <th>{{l('Currency', 'abcc/customer')}}</th>
-              <th class="text-right">{{l('Price', 'abcc/customer')}}</th>
-              <!-- th class="text-right">{{l('Discount Percent', 'abcc/customer')}}</th -->
-              <!-- th class="text-right">{{l('Discount Amount')}}</th -->
-              <th class="text-center">{{l('From Quantity', 'abcc/customer')}}</th>
-              <th class="text-center">{{l('Extra Items', 'abcc/customer')}}</th>
-              <th>{{l('Date from', 'abcc/customer')}}</th>
-              <th>{{l('Date to', 'abcc/customer')}}</th>
-        </tr>
-    </thead>
-	<tbody id="pricerule_lines">
 @if ($customer_rules->count())
 
+      @include('abcc.catalogue._block_pricerules_price')
 
-	@foreach ($customer_rules as $rule)
-        <tr>
+      @include('abcc.catalogue._block_pricerules_promo')
 
-      <td class="text-center">{{ $rule->id }}</td>
-      <td>{{ optional($rule->category)->name }}</td>
-      <td>{{ optional($rule->currency)->name }}</td>
+      @include('abcc.catalogue._block_pricerules_pack')
 
-@if($rule->rule_type=='price')
-      <td class="text-right">{{ $rule->as_price('price') }}<br /><span class="text-info crossed">{{ $rule->as_priceable($customer_price->getPrice()) }}</span></td>
-@else
-      <td class="text-right"> </td>
-@endif
-
-{{--
-@if($rule->rule_type=='discount')
-      @if($rule->discount_type=='percentage')
-            <td class="text-right">{{ $rule->as_percent('discount_percent') }}</td>
-      @else
-            <td class="text-right"> </td>
-      @endif
-      @if($rule->discount_type=='amount')
-            <td class="text-right">{{ $rule->as_price('discount_amount') }} 
-              ({{ $rule->discount_amount_is_tax_incl > 0 ? l('tax inc.') : l('tax exc.') }})
-            </td>
-      @else
-            <!-- td class="text-right"> </td -->
-      @endif
-@else
-      <td class="text-right"> </td>
-      <!-- td class="text-right"> </td -->
-@endif
---}}
-
-      <td class="text-center">{{ $rule->as_quantity('from_quantity') }}</td>
-
-      <td class="text-center">{{ $rule->as_quantity('extra_quantity') ?: '' }}</td>
-
-      <td>{{ abi_date_short( $rule->date_from ) }}</td>
-            <td>{{ abi_date_short( $rule->date_to   ) }}</td>
-        
-        </tr>
-	@endforeach
 
 @else
-    <tr><td colspan="10">
-	<div class="alert alert-warning alert-block">
-	    <i class="fa fa-warning"></i>
-	    {{l('No records found', [], 'layouts')}}
-	</div>
-    </td>
-    <td></td></tr>
+
+  <div class="alert alert-warning alert-block">
+      <i class="fa fa-warning"></i>
+      {{l('No records found', [], 'layouts')}}
+  </div>
+
 @endif
-
-	</tbody>
-</table>
-
-
-
-		</div>	 
 
 
 

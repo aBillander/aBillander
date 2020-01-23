@@ -300,6 +300,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourlineController@export' )->name('productionsheet.tourline');
 
+        // Production Sheet Production Orders
+        Route::get('productionsheetproductionorders/{id}',  'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
+
 
 
         Route::resource('customers', 'CustomersController');

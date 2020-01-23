@@ -62,7 +62,7 @@
                       <li><a href="{{ route('productionsheet.deliveryroute', [$sheet->id, 1]) }}"><i class="fa fa-map-o"></i> {{l('Hoja de Reparto')}}: Sevilla</a></li>
 
                       <li class="divider"></li>
-                      <li><a href="{{ route('productionsheet.productionorders', [$sheet->id]) }}"><i class="fa fa-cubes"></i> {{l('Production Orders')}}</a></li>
+                      <li><a href="{{ route('productionsheet.productionorders', [$sheet->id, 1]) }}"><i class="fa fa-cubes"></i> {{l('Production Orders')}}</a></li>
                     </ul>
                 </div>
 

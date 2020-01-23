@@ -83,4 +83,6 @@ return [
 
 
 	'Address'     => 'Dirección',
+
+	'Customer Shipping Slips' => 'Albaranes de Clientes',
 ];

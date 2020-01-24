@@ -201,7 +201,7 @@ class FSxOrderExporter {
                       'vat_id' => $customer->identification,
                       'email_address' => $addressInvoice->email,
                       
-                      'company' => $addressInvoice->name_commercial,
+                      'company' => $addressInvoice->name_fiscal,
                       'street_address' => $addressInvoice->address1 . ' ' . $addressInvoice->address2,
                       'city' => $addressInvoice->city,
                       'postcode' => $addressInvoice->postcode,

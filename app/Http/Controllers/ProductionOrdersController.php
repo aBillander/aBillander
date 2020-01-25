@@ -122,16 +122,20 @@ class ProductionOrdersController extends Controller
 
 //        abi_r($order->planned_quantity. '==' .$request->input('planned_quantity'), true);
 
+//        abi_r( $request->all() );die();
+
         $order->update( $request->all() );
 
         if ($need_update) $order->updateLines();
-
+/*
         if ( $request->input('stay_current_sheet', 1) )
             $sheet_id = $request->input('current_production_sheet_id');
         else
             $sheet_id = $request->input('production_sheet_id');
+*/
+        $sheet_id = $request->input('current_production_sheet_id');
 
-        return redirect('productionsheets/'.$sheet_id)
+        return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $sheet_id], 'layouts') . $request->input('name', ''));
     }
 

@@ -7,7 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class ProductionOrder extends Model
 {
 
-//    protected $dates = ['due_date'];
+    public static $statuses = array(
+            'simulated', 
+            'planned', 
+            'firmplanned', 
+            'released', 
+            'finished',
+        );
 	
     protected $fillable = [ 'sequence_id', 'reference', 'created_via', 
     						'status', 'procurement_type',
@@ -25,9 +31,36 @@ class ProductionOrder extends Model
 
     /*
     |--------------------------------------------------------------------------
-    | Methodss
+    | Methods
     |--------------------------------------------------------------------------
     */
+
+    public static function getStatusList()
+    {
+            $list = [];
+            foreach (static::$statuses as $status) {
+                $list[$status] = l($status, [], 'appmultilang');
+                // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
+            }
+
+            return $list;
+    }
+
+    public static function getStatusName( $status )
+    {
+            return l($status, [], 'appmultilang');
+    }
+
+    public static function isStatus( $status )
+    {
+            return in_array($status, self::$statuses);
+    }
+
+    public function getStatusNameAttribute()
+    {
+            return l($this->status, 'appmultilang');
+    }
+
     
     public function getMachineCapacityList()
     {

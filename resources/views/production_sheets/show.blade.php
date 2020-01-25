@@ -241,6 +241,8 @@
 
 </div>
 
+@include('layouts/back_to_top_button')
+
 
 @include('production_sheets._modal_production_order_form')
 

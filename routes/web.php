@@ -289,9 +289,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('productionsheets/{id}/products/pdf', 'ProductionSheetsPdfController@getPdfProducts')->name('productionsheet.products.pdf');
 
         // Production Sheet Orders
-        Route::get('productionsheetorders/{id}',  'ProductionSheetOrdersController@ordersIndex')->name('productionsheet.orders');
+        Route::get( 'productionsheetorders/{id}',  'ProductionSheetOrdersController@ordersIndex')->name('productionsheet.orders');
 
-        Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheetorder.create.shippingslips');
+        Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
 
         // Production Sheet Shipping Slips
         Route::get('productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
@@ -301,7 +301,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourlineController@export' )->name('productionsheet.tourline');
 
         // Production Sheet Production Orders
-        Route::get('productionsheetproductionorders/{id}',  'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
+        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
+
+        Route::post('productionsheetproductionorders/finish', 'ProductionSheetProductionOrdersController@finishProductionOrders')->name('productionsheet.productionorders.finish');
 
 
 

@@ -99,10 +99,11 @@ class CategoriesController extends Controller {
      */
     public function edit($parentId=0, $id)
     {
+        $category = $this->category->findOrFail($id);
+        if ($parentId<0) $parentId=$category->parent_id;
+        
         $parent=null;
         if ($parentId>0) $parent=$this->category->findOrFail($parentId);
-
-        $category = $this->category->findOrFail($id);
 
         return view('categories.edit', compact('parentId', 'parent', 'category'));
     }

@@ -48,7 +48,7 @@ class AbccCatalogueController extends Controller
 			->IsPublished()
 			->IsActive()
 			->where('parent_id', '=', intval($parentId))
-			->orderBy('name', 'asc')->get();
+			->orderBy('position', 'asc')->get();
 
 		$categories_ids = $categories->pluck('activechildren')->flatten()->pluck('id');
 		// Would be better? ->
@@ -247,7 +247,7 @@ class AbccCatalogueController extends Controller
 			->with('children')
 //			->withCount('products')
 			->where('parent_id', '=', intval($parentId))
-			->orderBy('name', 'asc')->get();
+			->orderBy('position', 'asc')->get();
 
 		if ($category_id>0 && !$request->input('search_status', 0)) {
 			//

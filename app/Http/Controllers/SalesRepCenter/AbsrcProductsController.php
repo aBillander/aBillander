@@ -73,10 +73,10 @@ class AbsrcProductsController extends Controller
         // $categoryList = 
             if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
                 $tree = [];
-                $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+                $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('position', 'asc')->get();
                 
                 foreach($categories as $category) {
-                    $tree[$category->name] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+                    $tree[$category->name] = $category->children()->orderby('position', 'asc')->pluck('name', 'id')->toArray();
                     // foreach($category->children as $child) {
                         // $tree[$category->name][$child->id] = $child->name;
                     // }
@@ -85,8 +85,8 @@ class AbsrcProductsController extends Controller
                 $categoryList = $tree;
 
             } else {
-                // abi_r(\App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
-                $categoryList = \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+                // abi_r(\App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray(), true);
+                $categoryList = \App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray();
             }
 
         $product_procurementtypeList = \App\Product::getProcurementTypeList();
@@ -287,10 +287,10 @@ class AbsrcProductsController extends Controller
         // $categoryList = 
             if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
                 $tree = [];
-                $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+                $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('position', 'asc')->get();
                 
                 foreach($categories as $category) {
-                    $tree[$category->name] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+                    $tree[$category->name] = $category->children()->orderby('position', 'asc')->pluck('name', 'id')->toArray();
                     // foreach($category->children as $child) {
                         // $tree[$category->name][$child->id] = $child->name;
                     // }
@@ -299,8 +299,8 @@ class AbsrcProductsController extends Controller
                 $categoryList = $tree;
 
             } else {
-                // abi_r(\App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
-                $categoryList = \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+                // abi_r(\App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray(), true);
+                $categoryList = \App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray();
             }
         $work_centerList = \App\WorkCenter::pluck('name', 'id')->toArray();
         $supplierList = \App\Supplier::pluck('name_fiscal', 'id')->toArray();

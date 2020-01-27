@@ -32,7 +32,7 @@
                &nbsp; {{ l('Main Data') }}
             </a>
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( 1 || \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
             <a id="b_internet" href="#internet" class="list-group-item">
                <i class="fa fa-cloud"></i>
                &nbsp; {{ l('Internet') }}

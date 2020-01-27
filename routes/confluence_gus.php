@@ -28,7 +28,19 @@
 
 Route::get('migratethis_confluence', function()
 {
-		
+
+	// 2019-11-15
+	$cs = \App\Category::get();
+
+	foreach ($cs as $c) {
+		# code...
+		$c->position = $c->id;
+		$c->save();
+	}
+
+
+	die('OK');
+
 		
 		Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `mrp_type` varchar(32) NOT NULL DEFAULT 'onorder' AFTER `procurement_type`;");
 

@@ -5,7 +5,8 @@ namespace App\StockMovements;
 use App\StockMovement;
 use App\WarehouseProductLine;
 
-class PurchaseOrderStockMovement extends StockMovement implements StockMovementInterface
+// 55
+class ManufacturingOutputStockMovement extends StockMovement implements StockMovementInterface
 {
 
     public function prepareToProcess()
@@ -32,16 +33,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
             // $cost = $product->cost_average;
             $this->cost_price_before_movement = $product->cost_price;
 
-            if (   $this->quantity  > 0 	// if < 0 : This is not a purchase. Maybe a return??
-            	&& $quantity_onhand > 0		// if = 0 : division by 0 error
-            	)
-            {
-            	$cost_average = ($product->quantity_onhand * $product->cost_price + $this->quantity * $price_in) / $quantity_onhand;
-            
-                $product->cost_average = $cost_average;
-                $product->cost_price   = $cost_average;
-                $product->last_purchase_price = $price_in;
-            }
+            // Recalculate Cost Average if needed
 
             $this->cost_price_after_movement = $product->cost_price;
         }

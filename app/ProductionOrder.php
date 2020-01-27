@@ -4,8 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\ViewFormatterTrait;
+
 class ProductionOrder extends Model
 {
+    use ViewFormatterTrait;
 
     public static $statuses = array(
             'simulated', 
@@ -14,12 +17,16 @@ class ProductionOrder extends Model
             'released', 
             'finished',
         );
+
+    protected $dates = [
+                        'finish_date'
+                       ];
 	
     protected $fillable = [ 'sequence_id', 'reference', 'created_via', 
     						'status', 'procurement_type',
     						'product_id', 'combination_id', 'product_reference', 'product_name', 
-    						'required_quantity', 'planned_quantity', 'finished_quantity', 'product_bom_id', 
-                            'due_date', 'schedule_sort_order', 'notes', 
+    						'required_quantity', 'planned_quantity', 'finished_quantity', 'measure_unit_id', 'product_bom_id', 
+                            'due_date', 'schedule_sort_order', 'finish_date', 'notes', 
                             'work_center_id', 'manufacturing_batch_size', 'machine_capacity', 'units_per_tray',
                             'warehouse_id', 'production_sheet_id'
                           ];
@@ -464,6 +471,53 @@ if ( $bomitem )
 
     /*
     |--------------------------------------------------------------------------
+    | Statuss changes & actions
+    |--------------------------------------------------------------------------
+    */
+    
+    public function finish()
+    {
+        // Can I ...?
+        if ( ($this->status == 'finished') ) return false;
+
+        // onhold?
+        // if ( $this->onhold ) return false;
+
+        // Do stuf...
+        $this->document_reference = $this->id;      // <= No sequences used!
+        $this->finished_quantity = $this->planned_quantity;     // By now... (need inteface to inform *real* finished quantity)
+        if ( $this->warehouse_id <= 0 ) $this->warehouse_id = Configuration::getInt('DEF_WAREHOUSE');
+        $this->status = 'finished';
+        $this->finish_date = \Carbon\Carbon::now();
+
+        $this->save();
+
+        // Dispatch event
+        event( new \App\Events\ProductionOrderFinished($this) );
+
+        return true;
+    }
+
+    public function unfinish( $status = null )
+    {
+        // Can I ...?
+        if ( $this->status != 'finished' ) return false;
+
+        // Do stuf...
+        $this->status = $status ?: 'released';
+        $this->finish_date =null;
+
+        $this->save();
+
+        // Dispatch event
+        event( new \App\Events\ProductionOrderUnfinished($this) );
+
+        return true;
+    }
+    
+
+    /*
+    |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
     */
@@ -488,9 +542,28 @@ if ( $bomitem )
         return $this->hasMany('App\ProductionOrderLine', 'production_order_id');
     }
     
+    // Alias
+    public function lines()
+    {
+        return $this->productionorderlines();
+    }
+    
     public function productionordertoollines()
     {
         return $this->hasMany('App\ProductionOrderLine', 'production_order_id');
+    }
+
+    /**
+     * Get all of the Production Order Header's Stock Movements.
+     */
+    public function stockmovements()
+    {
+        return $this->morphMany( StockMovement::class, 'stockmovementable' );
+    }
+
+    public function document()
+    {
+       return $this->belongsTo(ProductionOrder::class, 'id');
     }
 
 
@@ -509,4 +582,212 @@ if ( $bomitem )
     {
         return $query->where( 'created_via', 'webshop' );
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stock Movements
+    |--------------------------------------------------------------------------
+    */
+
+    public function makeStockMovements()
+    {
+        // Let's rock!
+        // Production Order Header
+            $data = [
+                    'date' => \Carbon\Carbon::now(),
+
+//                    'stockmovementable_id' => $this->,
+//                    'stockmovementable_type' => $this->,
+
+                    'document_reference' => $this->document_reference,
+
+//                    'quantity_before_movement' => $this->,
+                    'quantity' => $this->finished_quantity,
+                    'measure_unit_id' => $this->measure_unit_id,
+//                    'quantity_after_movement' => $this->,
+
+                    'price' => $this->product->cost_price,
+                    'price_currency' => $this->product->cost_price,
+//                    'currency_id' => $this->currency_id,
+//                    'conversion_rate' => $this->currency_conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $this->product_id,
+                    'combination_id' => $this->combination_id,
+                    'reference' => $this->product_reference,
+                    'name' => $this->product_name,
+
+                    'warehouse_id' => $this->warehouse_id,
+//                    'warehouse_counterpart_id' => $this->,
+
+                    'movement_type_id' => StockMovement::MANUFACTURING_OUTPUT,
+
+//                    'user_id' => $this->,
+
+//                    'inventorycode'
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+
+            if ( $stockmovement )
+            {
+                //
+                $this->stockmovements()->save( $stockmovement );
+            }
+
+        //
+
+        // Production Order Lines
+        foreach ($this->lines as $line) {
+            //
+            // Only products, please!!!
+            if ( ! ( $line->product_id > 0 ) )         continue;
+
+            //
+            $data = [
+                    'date' => \Carbon\Carbon::now(),
+
+//                    'stockmovementable_id' => $line->,
+//                    'stockmovementable_type' => $line->,
+
+                    'document_reference' => $this->document_reference,
+
+//                    'quantity_before_movement' => $line->,
+                    'quantity' => $line->required_quantity,
+                    'measure_unit_id' => $line->measure_unit_id,
+//                    'quantity_after_movement' => $line->,
+
+                    'price' => $line->product->cost_price,
+                    'price_currency' => $line->product->cost_price,
+//                    'currency_id' => $this->currency_id,
+//                    'conversion_rate' => $this->currency_conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $line->product_id,
+                    'combination_id' => $line->combination_id,
+                    'reference' => $line->reference,
+                    'name' => $line->name,
+
+                    'warehouse_id' => $this->warehouse_id,
+//                    'warehouse_counterpart_id' => $line->,
+
+                    'movement_type_id' => StockMovement::MANUFACTURING_INPUT,
+
+//                    'user_id' => $line->,
+
+//                    'inventorycode'
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+
+            if ( $stockmovement )
+            {
+                //
+                $line->stockmovements()->save( $stockmovement );
+            }
+        }
+
+        // $this->stock_status = 'completed';
+        $this->save();
+
+        return true;
+    }
+
+
+    public function shouldPerformStockMovements()
+    {
+        return true;
+
+        if ( $this->created_via == 'manual' && $this->stock_status == 'pending' ) return true;
+/*
+        if ($this->stock_status == 'pending') return true;
+
+        if ($this->stock_status == 'completed') return false;
+
+        if ($this->created_via == 'aggregate_shipping_slips') return false;
+*/
+        return false;
+    }
+
+
+    public function canRevertStockMovements()
+    {
+        if ( $this->status == 'finished' ) return true;
+
+        return false;
+/*
+        if ($this->created_via == 'manual' && $this->stock_status == 'completed' ) return true;
+
+        return false;
+*/
+    }
+
+    
+    public function revertStockMovements()
+    {
+        // Let's rock!
+        foreach ($this->lines as $line) {
+            //
+            // Only products, please!!!
+            if ( ! ( $line->product_id > 0 ) ) continue;
+
+            //
+            foreach ( $line->stockmovements as $mvt ) {
+                # code...
+                $data = [
+                        'date' => \Carbon\Carbon::now(),
+
+    //                    'stockmovementable_id' => $line->,
+    //                    'stockmovementable_type' => $line->,
+
+                        'document_reference' => $mvt->document_reference,
+
+    //                    'quantity_before_movement' => $line->,
+                        'quantity' => -$mvt->quantity,
+                        'measure_unit_id' => $mvt->measure_unit_id,
+    //                    'quantity_after_movement' => $line->,
+
+                        'price' => $mvt->price,
+                        'price_currency' => $mvt->price_currency,
+                        'currency_id' => $mvt->currency_id,
+                        'conversion_rate' => $mvt->conversion_rate,
+
+                        'notes' => '',
+
+                        'product_id' => $mvt->product_id,
+                        'combination_id' => $mvt->combination_id,
+                        'reference' => $mvt->reference,
+                        'name' => $mvt->name,
+
+                        'warehouse_id' => $mvt->warehouse_id,
+    //                    'warehouse_counterpart_id' => $line->,
+
+                        'movement_type_id' => $mvt->movement_type_id,
+
+    //                    'user_id' => $line->,
+
+    //                    'inventorycode'
+                ];
+
+                $stockmovement = StockMovement::createAndProcess( $data );
+
+                if ( $stockmovement )
+                {
+                    //
+                    $line->stockmovements()->save( $stockmovement );
+                }
+
+            }   // Movements loop ENDS
+
+        }   // Lines loop ENDS
+
+        // $this->stock_status = 'pending';
+        $this->save();
+
+        return true;
+    }
+
 }

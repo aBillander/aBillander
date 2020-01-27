@@ -30,6 +30,7 @@ class CreateProductionOrderLinesTable extends Migration
             $table->decimal('bom_line_quantity', 20, 6);        // According to BOM
             $table->decimal('bom_quantity', 20, 6);             // According to BOM
             $table->decimal('required_quantity', 20, 6);        // According to Order Finished Product planned quantity
+            $table->decimal('real_quantity', 20, 6);            // Real consumption
             $table->integer('measure_unit_id')->unsigned()->nullable(false);
             
             $table->integer('warehouse_id')->unsigned()->nullable();

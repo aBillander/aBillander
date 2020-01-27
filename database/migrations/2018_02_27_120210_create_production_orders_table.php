@@ -38,10 +38,15 @@ class CreateProductionOrdersTable extends Migration
             $table->decimal('required_quantity', 20, 6);
             $table->decimal('planned_quantity', 20, 6);     // Planned quantity is required_quantity adjusted with batch size
             $table->decimal('finished_quantity', 20, 6);
+
+            $table->integer('measure_unit_id')->unsigned()->nullable();
+
             $table->integer('product_bom_id')->unsigned()->nullable();
 
             $table->date('due_date');
             $table->integer('schedule_sort_order')->nullable();  // To schedule orders. Use multiple of 10. Lower value means higher priority (is manufactured first) 
+
+            $table->timestamp('finish_date')->nullable();        // When a Production order is finished, it cannot be modified.
 
             $table->text('notes')->nullable();
 

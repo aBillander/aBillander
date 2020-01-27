@@ -5,7 +5,8 @@ namespace App\StockMovements;
 use App\StockMovement;
 use App\WarehouseProductLine;
 
-class PurchaseOrderStockMovement extends StockMovement implements StockMovementInterface
+// 50
+class ManufacturingInputStockMovement extends StockMovement implements StockMovementInterface
 {
 
     public function prepareToProcess()
@@ -23,7 +24,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
 
         // Update Product
         $product = $this->product;							// Relation loaded in prepareToProcess()
-        $quantity_onhand = $product->quantity_onhand + $this->quantity;
+        $quantity_onhand = $product->quantity_onhand - $this->quantity;
         $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
 
         // Mean Average calculation
@@ -32,16 +33,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
             // $cost = $product->cost_average;
             $this->cost_price_before_movement = $product->cost_price;
 
-            if (   $this->quantity  > 0 	// if < 0 : This is not a purchase. Maybe a return??
-            	&& $quantity_onhand > 0		// if = 0 : division by 0 error
-            	)
-            {
-            	$cost_average = ($product->quantity_onhand * $product->cost_price + $this->quantity * $price_in) / $quantity_onhand;
-            
-                $product->cost_average = $cost_average;
-                $product->cost_price   = $cost_average;
-                $product->last_purchase_price = $price_in;
-            }
+            // Recalculate Cost Average if needed
 
             $this->cost_price_after_movement = $product->cost_price;
         }
@@ -67,7 +59,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
         }
 */
 
-        $this->quantity_after_movement = $this->quantity_before_movement + $this->quantity;
+        $this->quantity_after_movement = $this->quantity_before_movement - $this->quantity;
         $this->save();
 
         // Update Product-Warehouse relationship (quantity)
@@ -76,7 +68,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
         
         // Get a line even though product is not in wherhouse. In this case, quantityis 0.0
         $wline = $warehouse->productline( $product->id );
-        $quantity = $wline->quantity + $this->quantity;        
+        $quantity = $wline->quantity - $this->quantity;        
             
         if ($quantity != 0) {
             $wline->quantity = $quantity;

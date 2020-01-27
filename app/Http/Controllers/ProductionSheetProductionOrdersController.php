@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\ProductionSheet;
+use App\ProductionOrder;
 
 use App\Configuration;
 
@@ -13,10 +14,12 @@ class ProductionSheetProductionOrdersController extends Controller
 
 
    protected $productionSheet;
+   protected $productionOrder;
 
-   public function __construct(ProductionSheet $productionSheet)
+   public function __construct(ProductionSheet $productionSheet, ProductionOrder $productionOrder)
    {
         $this->productionSheet = $productionSheet;
+        $this->productionOrder = $productionOrder;
    }
    
     /**
@@ -36,12 +39,86 @@ class ProductionSheetProductionOrdersController extends Controller
      */
     public function productionordersIndex($id, Request $request)
     {
+        $work_center_id = $request->input('work_center_id', '');
+        $category_id    = $request->input('category_id',    '');
+
+        $work_centerList = \App\WorkCenter::pluck('name', 'id')->toArray();
+
+        // Category Tree
+        if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
+            $tree = [];
+            $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+            
+            foreach($categories as $category) {
+                $label = $category->name;
+
+                // Prevent duplicate names
+                while ( array_key_exists($label, $tree))
+                    $label .= ' ';
+
+                $tree[$label] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+                // foreach($category->children as $child) {
+                    // $tree[$category->name][$child->id] = $child->name;
+                // }
+            }
+
+            $categoryList = $tree;
+
+        } else {
+            
+            $categoryList =  \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+        }
+
+// \DB::enableQueryLog();
+
         $sheet = $this->productionSheet
-                        ->with('productionorders')
-                        ->with('productionorders.product')
+                        ->with(['productionorders' => function($query) use ($work_center_id, $category_id) {
+
+                                    $query->when($work_center_id, function($query1) use ($work_center_id) {
+                 
+                                             $query1->where('work_center_id', $work_center_id);
+                                    });
+                                    $query->when($category_id,    function($query1) use ($category_id) {
+                 
+                                             $query1->where('schedule_sort_order', $category_id);
+                                    });
+
+                                    $query->with('product');
+                          }])
+//                        ->with('productionorders')
+//                        ->with('productionorders.product')
                         ->findOrFail($id);
 
-        return view('production_sheet_production_orders.index', compact('sheet'));
+        // https://www.itsolutionstuff.com/post/how-to-get-last-executed-query-in-larave-5example.html
+
+        // DB::enableQueryLog();
+
+        // $user = User::get();
+
+ //       $query = \DB::getQueryLog();
+
+        // $query = end($query);
+
+        // abi_r($query); die();
+
+/* * /
+        abi_toSql($this->productionSheet
+                        ->whereHas('productionorders', function($query) use ($work_center_id, $category_id) {
+
+                                    $query->when($work_center_id, function($query1) use ($work_center_id) {
+                 
+                                             $query1->where('work_center_id', $work_center_id);
+                                    });
+                                    $query->when($category_id,    function($query1) use ($category_id) {
+                 
+                                             $query1->where('schedule_sort_order', $category_id);
+                                    });
+                          })
+                        ->with('productionorders')
+                        ->with('productionorders.product')
+                        ); // die();
+/ * */
+        return view('production_sheet_production_orders.index', compact('sheet', 'work_centerList', 'categoryList'));
     }
 
     /**
@@ -132,9 +209,9 @@ class ProductionSheetProductionOrdersController extends Controller
             return redirect()->back()
                 ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => $request->production_sheet_id], 'layouts'));
         
-        abi_r('You naughty, naughty!');
-        abi_r( $request->all() , true);
-
+        // abi_r('You naughty, naughty!');
+        // abi_r( $request->all() , true);
+/*
         // Dates (cuen)
         $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
         $request->merge( ['shippingslip_date' => $request->input('document_date')] );   // According to $rules_createshippingslip
@@ -149,6 +226,8 @@ class ProductionSheetProductionOrdersController extends Controller
 
         // Set params for group
         $params = $request->only('production_sheet_id', 'should_group', 'template_id', 'sequence_id', 'document_date', 'delivery_date', 'status');
+*/
+        $params = ['production_sheet_id' => $request->production_sheet_id];
 
         // abi_r($params, true);
 
@@ -172,17 +251,15 @@ class ProductionSheetProductionOrdersController extends Controller
             $productionSheet = $this->productionSheet
                                 ->findOrFail($params['production_sheet_id']);
 
-            $documents = $this->document
+            $documents = $this->productionOrder
                                 ->where('production_sheet_id', $params['production_sheet_id'])
-                                ->where('status', '<>', 'closed')
+                                ->where('status', '<>', 'finished')
                                 ->with('lines')
-                                ->with('lines.linetaxes')
-    //                            ->with('customer')
-    //                            ->with('currency')
-    //                            ->with('paymentmethod')
     //                            ->orderBy('document_date', 'asc')
     //                            ->orderBy('id', 'asc')
                                 ->findOrFail( $list );
+
+            // Check document->status == onhold ???
             
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 
@@ -197,9 +274,6 @@ class ProductionSheetProductionOrdersController extends Controller
         foreach ($documents as $document)
         {
             # code...
-            $document->warehouse_id        = $document->getWarehouseId();
-            $document->shipping_address_id = $document->getShippingAddressId();
-            $document->shipping_method_id  = $document->getShippingMethodId();
         }
 
 
@@ -207,77 +281,26 @@ class ProductionSheetProductionOrdersController extends Controller
 
         $success =[];
 
-        // Warehouses
-        $warehouses = $documents->unique('warehouse_id')->pluck('warehouse_id')->all();
+        // Do something at last...
+        $extra_params = [
+            // 
+        ];
 
-        foreach ($warehouses as $warehouse_id) {
+        foreach ($documents as $document) {
             # code...
-            // Select Documents
-            $documents_by_ws = $documents->where('warehouse_id', $warehouse_id);
+            $document->finish();
 
-            // Adresses
-            $addresses = $documents_by_ws->unique('shipping_address_id')->pluck('shipping_address_id')->all();
+            $success[] = l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts');
 
-            foreach ($addresses as $address_id) {
-                # code...
-                // Select Documents
-                $documents_by_ws_by_addrr = $documents_by_ws->where('shipping_address_id', $address_id);
-
-                // Shipping Method
-                $methods = $documents_by_ws_by_addrr->unique('shipping_method_id')->pluck('shipping_method_id')->all();
-
-                foreach ($methods as $method_id) {
-                    # code...
-                    // Select Documents
-                    $documents_by_ws_by_addrr_by_meth = $documents_by_ws_by_addrr->where('shipping_method_id', $method_id);
-
-                    $customers = $documents_by_ws_by_addrr_by_meth->unique('customer_id')->pluck('customer_id')->all();
-
-                    foreach ($customers as $customer_id) {
-                        # code...
-                        $documents_by_ws_by_addrr_by_meth_by_cust = $documents_by_ws_by_addrr_by_meth->where('customer_id', $customer_id);
-
-                        $customer = $this->customer->find($customer_id);
-
-                        // Do something at last...
-                        $extra_params = [
-                            'warehouse_id'        => $warehouse_id,
-                            'shipping_address_id' => $address_id,
-                            'shipping_method_id'  => $method_id,
-
-                            'customer'            => $customer,
-                        ];
-
-                        if ( $params['should_group'] > 0 )
-                        {
-                            $shippingslip = $this->shippingslipDocumentGroup( $documents_by_ws_by_addrr_by_meth_by_cust, $params + $extra_params);
-
-                            $success[] = l('This record has been successfully created &#58&#58 (:id) ', ['id' => $shippingslip->id], 'layouts');
-
-                            // abi_r($documents_by_ws_by_addrr_by_meth_by_cust->pluck('id')->all());
-
-                        } else {
-                            //
-                            $ids = $documents_by_ws_by_addrr_by_meth_by_cust->unique('id')->pluck('id')->all();
-
-                            foreach ($ids as $id) {
-                                # code...
-                                $docs = $documents_by_ws_by_addrr_by_meth_by_cust->where('id', $id);
-
-                                $shippingslip = $this->shippingslipDocumentGroup( $docs, $params + $extra_params);
-
-                                $success[] = l('This record has been successfully created &#58&#58 (:id) ', ['id' => $shippingslip->id], 'layouts');
-                            }
-                        }
-                    }
-                }
-            }
+            // Lazy debugger lines. Should delete these:
+            $document->status = 'released';
+            $document->save();
         }
 
         // die();
 
         return redirect()
-                ->route('productionsheet.orders', $params['production_sheet_id'])
+                ->route('productionsheet.productionorders', $params['production_sheet_id'])
                 ->with('success', $success);
 
     }

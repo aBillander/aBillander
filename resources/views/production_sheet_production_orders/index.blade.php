@@ -6,6 +6,11 @@
 @section('content')<div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
+        <button  name="b_search_filter" id="b_search_filter" class="btn xbtn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+           <i class="fa fa-filter"></i>
+           &nbsp; {{l('Filter', [], 'layouts')}}
+        </button>
+
         <!--a href="{{ route('productionsheet.orders', [$sheet->id]) }}" class="btn btn-success" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a -->
 
         <a href="{{ route('productionsheets.show', [$sheet->id]) }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheet') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
@@ -34,6 +39,45 @@
 
 
 
+<div name="search_filter" id="search_filter" @if( Request::has('search_status') AND (Request::input('search_status')==1) ) style="display:block" @else style="display:none" @endif>
+<div class="row" style="padding: 0 20px">
+    <div class="col-md-12 xcol-md-offset-3">
+        <div class="panel panel-info">
+            <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
+            <div class="panel-body">
+
+                {!! Form::model(Request::all(), array('route' => ['productionsheet.productionorders', $sheet->id], 'method' => 'GET')) !!}
+
+<!-- input type="hidden" value="0" name="search_status" id="search_status" -->
+{!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
+
+<div class="row">
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('work_center_id', l('Work Center')) !!}
+    {!! Form::select('work_center_id', array('' => l('All', [], 'layouts')) + $work_centerList, null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('category_id', l('Category')) !!}
+    {!! Form::select('category_id', array('' => l('All', [], 'layouts')) + $categoryList, null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
+{!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
+{!! link_to_route('productionsheet.productionorders', l('Reset', [], 'layouts'), [$sheet->id], array('class' => 'btn btn-warning')) !!}
+</div>
+
+</div>
+
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
 
 
 {!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents'] ) !!}
@@ -54,7 +98,7 @@
             <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
             <th>{{l('ID', [], 'layouts')}}</th>
             <!-- th>{{l('Product ID')}}</th -->
-            <th>{{l('Product Reference')}}<br />Categoría</th>
+            <th>{{l('Product Reference')}}&nbsp;/<br />{{l('Category')}}</th>
             <th>{{l('Product Name')}}</th>
             <th>{{l('Quantity')}}</th>
             <th>{{l('Work Center')}}</th>

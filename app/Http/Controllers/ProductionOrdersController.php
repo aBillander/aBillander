@@ -68,10 +68,10 @@ class ProductionOrdersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionOrder  $productionOrder
+     * @param  \App\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
-    public function show(ProductionOrder $productionOrder)
+    public function show(ProductionOrder $productionorder)
     {
         //
     }
@@ -79,22 +79,23 @@ class ProductionOrdersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ProductionOrder  $productionOrder
+     * @param  \App\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
-    public function edit(ProductionOrder $productionOrder)
+    public function edit(ProductionOrder $productionorder, Request $request)
     {
-        //
+        return redirect()->route('productionsheet.productionorders', [$productionorder->production_sheet_id])
+                ->with('info', l('Compruebe la Orden de Fabricación &#58&#58 (:id) ', ['id' => $productionorder->id]));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ProductionOrder  $productionOrder
+     * @param  \App\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProductionOrder $productionOrder)
+    public function update(Request $request, ProductionOrder $productionorder)
     {
         //
     }
@@ -102,10 +103,10 @@ class ProductionOrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ProductionOrder  $productionOrder
+     * @param  \App\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductionOrder $productionOrder)
+    public function destroy(ProductionOrder $productionorder)
     {
         //
     }

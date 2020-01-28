@@ -199,6 +199,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('commissionsettlementlines/{id}/unlink', 'CommissionSettlementLinesController@unlink')->name('commissionsettlementline.unlink');
 
         Route::resource('suppliers', 'SuppliersController');
+        Route::get('suppliers/ajax/name_lookup', array('uses' => 'SuppliersController@ajaxSupplierSearch', 'as' => 'supplier.ajax.nameLookup'));
+        Route::post('suppliers/{id}/bankaccount', 'SuppliersController@updateBankAccount')->name('suppliers.bankaccount');
+
+        Route::resource('suppliers.addresses', 'SupplierAddressesController');
 
         Route::resource('templates', 'TemplatesController');
 

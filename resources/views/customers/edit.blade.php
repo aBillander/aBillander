@@ -13,6 +13,11 @@
                   <i class="fa fa-plus"></i> Dirección
                 </button -->
 
+@if ( $customer->blocked )
+                <span class="alert alert-danger" style="margin-right: 72px;">{{l('This Customer is BLOCKED')}}</span>
+                
+                <a href="{{ URL::to('customers') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a>
+@else
                 <a href="{{ route('customer.shippingslipable.orders', [$customer->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Orders')}}</a>
 
                 <a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Shipping Slips')}}</a>

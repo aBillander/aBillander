@@ -107,7 +107,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Payment Methods
-		view()->composer(array('customers.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2', 'suppliers._form'), function($view) {
+		view()->composer(array('customers.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2', 'suppliers.edit'), function($view) {
 		    
 		    $view->with('payment_methodList', \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
@@ -121,7 +121,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Currencies
-		view()->composer(array('customers.edit', 'products.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_rules.create', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create', 'configuration_keys.key_group_2', 'suppliers._form'), function($view) {
+		view()->composer(array('customers.edit', 'products.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_rules.create', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create', 'configuration_keys.key_group_2', 'suppliers.edit'), function($view) {
 		    
 		    $view->with('currencyList', \App\Currency::pluck('name', 'id')->toArray());
 		    
@@ -182,7 +182,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Countries
-		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'addresses._form_fields_model_customer', 'tax_rules._form', 'ecotax_rules._form', 'configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('addresses._form', 'addresses._form_fields_model_related', 'addresses._form_fields_model_customer', 'addresses._form_fields_model_supplier', 'tax_rules._form', 'ecotax_rules._form', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('countryList', \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
 		    

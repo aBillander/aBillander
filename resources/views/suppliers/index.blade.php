@@ -34,7 +34,7 @@
         @foreach ($suppliers as $supplier)
         <tr>
             <td>{{ $supplier->id }}</td>
-            <td>{{ $supplier->name_commercial }}</td>
+            <td>{{ $supplier->name_fiscal }}</td>
             <td>{{ $supplier->identification }}</td>
 
             <td class="text-center">

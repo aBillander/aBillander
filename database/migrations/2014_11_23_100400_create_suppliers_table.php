@@ -49,6 +49,8 @@ class CreateSuppliersTable extends Migration {
 			$table->tinyInteger('sales_equalization')->default(0);				// Charge Sales equalization tax? (only Spain)
 		/* */
 
+			$table->tinyInteger('creditor')->default(0);					// This is a Creditor, not a Supplier
+
 			$table->tinyInteger('approved')->default(1);						// Approved (or ertified) Supplier
 			$table->tinyInteger('blocked')->default(0);							// Sales not allowed
 			$table->tinyInteger('active')->default(1);

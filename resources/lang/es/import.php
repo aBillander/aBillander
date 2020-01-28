@@ -113,7 +113,7 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Price List
+	| Stock Count
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -132,5 +132,25 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Suppliers
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Import - Suppliers' => 'Importar - Proveedores',
+
+	'Back to Suppliers'     => 'Volver a Proveedores',
+	'Suppliers' => 'Proveedores',
+	'Import Supplier File'     => 'Importar Fichero de Proveedores',
+	'First row should be the header row.'     => 'La primera línea del fichero contiene el nombre de los campos en las columnas.',
+	'File contains header row?'     => '¿Primera línea es encabezado?',
+	'Delete existing Suppliers?'     => '¿Eliminar los Proveedores existentes?',
+	'Simulation Mode?'     => '¿Modo Simulación?',
 
 ];

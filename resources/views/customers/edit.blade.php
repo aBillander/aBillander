@@ -15,8 +15,6 @@
 
 @if ( $customer->blocked )
                 <span class="alert alert-danger" style="margin-right: 72px;">{{l('This Customer is BLOCKED')}}</span>
-                
-                <a href="{{ URL::to('customers') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a>
 @else
                 <a href="{{ route('customer.shippingslipable.orders', [$customer->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Orders')}}</a>
 
@@ -35,6 +33,7 @@
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
                 </div>
+@endif
 
                 <div class="btn-group" style="margin-right: 36px;">
                     <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', [], 'layouts')}}" style="background-color: #31b0d5;

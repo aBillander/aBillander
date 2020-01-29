@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\ViewFormatterTrait;
 
+use App\Customer;
+
 class PriceRule extends Model
 {
     use ViewFormatterTrait;
@@ -142,6 +144,42 @@ class PriceRule extends Model
     | Scopes
     |--------------------------------------------------------------------------
     */
+
+    public function scopeApplyToCustomer($query, $customer_id)
+    {
+        // Be careful:
+        // If $customer_id = $customer->id, then: $customer_group_id = $customer->customer_group_id
+        return $query->when($customer_id, function($query) use ($customer_id) {
+
+                        $customer_group_id = Customer::find($customer_id)->customer_group_id;
+
+
+                        $query->where(function ($query) use ($customer_id) {
+
+                                $query->whereHas('customer', function ($query) use ($customer_id) {
+
+                                        $query->where('id', $customer_id);
+                                });
+                        });
+
+                        $query->orWhere(function ($query) use ($customer_group_id) {
+
+                                $query->whereDoesntHave('customer');
+
+                                $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
+
+                                        $query->where('id', $customer_group_id);
+                                });
+                        });
+
+                        $query->orWhere(function ($query) {
+
+                                $query->whereDoesntHave('customer');
+
+                                $query->whereDoesntHave('customergroup');
+                        });
+                });
+    }
 
     public function scopeFilter($query, $params)
     {

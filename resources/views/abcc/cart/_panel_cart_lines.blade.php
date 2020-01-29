@@ -108,7 +108,7 @@
 
 
                    <span class="pull-right" style="position: absolute; padding-right: 7px" data-toggle="popover" data-placement="top" data-container="body" 
-                          data-content="{{ l('Prices per Units!', 'abcc/catalogue') }}">
+                          data-content="{{ l('Buy a Pack and save money.') }}">
                       <i class="fa fa-info-circle abi-help" style="color: #ff0084;"></i>
                    </span>
 

@@ -270,6 +270,11 @@ class CustomerUser extends Authenticatable
 
     public function address()
     {
+        // Makes sense when CustomerUser is allowed to only one address
+        return $this->hasOne('App\Address', 'id', 'address_id')
+                   ->where('addressable_type', Customer::class);
+
+        
         // When CustomerUser is allowed to only one address (address_id>0) returns Address $address
         // When CustomerUser is allowed to all addresses (address_id=0) returns null (unless Customer has nly one address!!!)
         if ( $this->address_id > 0 )

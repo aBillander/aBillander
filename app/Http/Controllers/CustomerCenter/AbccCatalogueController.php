@@ -48,7 +48,7 @@ class AbccCatalogueController extends Controller
 			->IsPublished()
 			->IsActive()
 			->where('parent_id', '=', intval($parentId))
-			->orderBy('name', 'asc')->get();
+			->orderBy('position', 'asc')->get();
 
 		$categories_ids = $categories->pluck('activechildren')->flatten()->pluck('id');
 		// Would be better? ->
@@ -247,7 +247,7 @@ class AbccCatalogueController extends Controller
 			->with('children')
 //			->withCount('products')
 			->where('parent_id', '=', intval($parentId))
-			->orderBy('name', 'asc')->get();
+			->orderBy('position', 'asc')->get();
 
 		if ($category_id>0 && !$request->input('search_status', 0)) {
 			//
@@ -319,6 +319,6 @@ class AbccCatalogueController extends Controller
 
         $customer_rules = ($product && $customer_price) ? $product->getPriceRulesByCustomer( $customer ) : collect([]);
 
-        return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules', 'customer_price', 'currency'));
+        return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules', 'customer_price', 'currency', 'customer'));
     }
 }

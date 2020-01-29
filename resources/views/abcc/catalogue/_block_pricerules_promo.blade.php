@@ -3,7 +3,7 @@
 
     <h2>
         <span style="color: #cccccc;">/</span>
-        <span style="color: #dd4814;">{{ l('Free Units Promotion') }}</span>
+        <span style="color: #dd4814;">{{ l('Free Units Promotion', 'abcc/customer') }}</span>
     </h2>
 
 
@@ -14,15 +14,15 @@
     <thead>
         <tr>
             <th class="text-center">{{l('ID', [], 'layouts')}}</th>
-              <th>{{l('Description')}}</th>
+              <th>{{l('Description', 'abcc/customer')}}</th>
               <!-- th>{{l('Category')}}</th -->
-              <th>{{l('Product')}}</th>
+              <th>{{l('Product', 'abcc/customer')}}</th>
               <!-- th>{{l('Currency')}}</th -->
-              <th class="text-center">{{l('Quantity')}}</th>
-              <th class="text-center">{{l('Free Quantity')}}</th>
-              <th class="text-center">{{l('Price')}}</th>
-              <th>{{l('Date from')}}</th>
-              <th>{{l('Date to')}}</th>
+              <th class="text-center">{{l('Quantity', 'abcc/customer')}}</th>
+              <th class="text-center">{{l('Free Quantity', 'abcc/customer')}}</th>
+              <th class="text-center">{{l('Price', 'abcc/customer')}}</th>
+              <th>{{l('Date from', 'abcc/customer')}}</th>
+              <th>{{l('Date to', 'abcc/customer')}}</th>
             <th>  </th>
         </tr>
     </thead>
@@ -34,29 +34,7 @@
       <td class="text-leftr">{{ $rule->name }}</td>
       <!-- td>{{ optional($rule->category)->name }}</td -->
       <td>
-            @if($rule->product)
-@php
-  $img = $rule->product->getFeaturedImage();
-@endphp
-@if ($img)
-              [<a class="view-image" data-html="false" data-toggle="modal" 
-                       href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
-                       data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
-                       data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
-                       data-caption="({{$img->id}}) {{ $img->caption }} " 
-                       onClick="return false;" title="{{l('View Image', 'abcc/catalogue')}}">
-  
-                        {{ $rule->product->reference }}
-                </a>]
-  
-                <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
-
-                {{ $rule->product->name }}
-                </a>]
-
-                {{ $rule->product->name }}
-@endif
-            @endif
+            <!-- a href="{{ URL::to('products/' . optional($rule->product)->name . '/edit') }}" title="{{l('View Product')}}" target="_blank" -->{{ optional($rule->product)->name }}<!-- /a -->
       </td>
       <!-- td>{{ optional($rule->currency)->name }}</td -->
 

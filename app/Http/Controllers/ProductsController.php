@@ -73,7 +73,8 @@ class ProductsController extends Controller
         $categories = \App\Category::with('children')
 //          ->withCount('products')
             ->where('parent_id', '=', intval($parentId))
-            ->orderBy('name', 'asc')->get();
+            ->orderBy('position', 'asc')
+            ->get();
 
         if ($category_id>0 && !$request->input('search_status', 0)) {
             //

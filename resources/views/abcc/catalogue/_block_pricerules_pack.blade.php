@@ -3,7 +3,7 @@
 
     <h2>
         <span style="color: #cccccc;">/</span>
-        <span style="color: #dd4814;">{{ l('Price by Package') }}</span>
+        <span style="color: #dd4814;">{{ l('Price by Package', 'abcc/customer') }}</span>
     </h2>
 
 
@@ -14,15 +14,15 @@
     <thead>
         <tr>
             <th class="text-center">{{l('ID', [], 'layouts')}}</th>
-              <!-- th>{{l('Category')}}</th -->
-              <th>{{l('Product')}}</th>
-              <th class="text-center">{{l('Package')}}</th>
+              <!-- th>{{l('Category', 'abcc/customer')}}</th -->
+              <th>{{l('Product', 'abcc/customer')}}</th>
+              <th class="text-center">{{l('Package', 'abcc/customer')}}</th>
               <!-- th>{{l('Currency')}}</th -->
               <!-- th class="text-center">{{l('From Quantity')}}</th -->
-              <th class="text-center">{{l('Price per Package')}}</th>
-              <th class="text-center">{{l('Unit Price')}}</th>
-              <th>{{l('Date from')}}</th>
-              <th>{{l('Date to')}}</th>
+              <th class="text-center">{{l('Price per Package', 'abcc/customer')}}</th>
+              <th class="text-center">{{l('Unit Price', 'abcc/customer')}}</th>
+              <th>{{l('Date from', 'abcc/customer')}}</th>
+              <th>{{l('Date to', 'abcc/customer')}}</th>
             <th>  </th>
         </tr>
     </thead>
@@ -33,26 +33,7 @@
       <td class="text-center">{{ $rule->id }}</td>
       <!-- td>{{ optional($rule->category)->name }}</td -->
       <td>
-            @if($rule->product)
-@php
-  $img = $rule->product->getFeaturedImage();
-@endphp
-@if ($img)
-              [<a class="view-image" data-html="false" data-toggle="modal" 
-                       href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
-                       data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
-                       data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
-                       data-caption="({{$img->id}}) {{ $img->caption }} " 
-                       onClick="return false;" title="{{l('View Image', 'abcc/catalogue')}}">
-  
-                        {{ $rule->product->reference }}
-                </a>]
-  
-                <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
-
-                {{ $rule->product->name }}
-@endif
-            @endif
+            <!-- a href="{{ URL::to('products/' . optional($rule->product)->name . '/edit') }}" title="{{l('View Product')}}" target="_blank" -->{{ optional($rule->product)->name }}<!-- /a -->
       </td>
       <td class="text-center">{{ optional($rule->measureunit)->name }}<br />
       	<span class="text-danger">{{ $rule->as_quantity('conversion_rate') }}&nbsp;{{ optional(optional($rule->product)->measureunit)->name }}</span>

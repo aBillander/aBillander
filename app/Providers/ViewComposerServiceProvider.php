@@ -175,7 +175,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Customer Groups
-		view()->composer(array('customers.index', 'customers.edit', 'price_rules.create'), function($view) {
+		view()->composer(array('customers.index', 'customers.edit', 'price_rules.index', 'price_rules.create'), function($view) {
 		    
 		    $view->with('customer_groupList', \App\CustomerGroup::pluck('name', 'id')->toArray());
 		    
@@ -299,7 +299,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    		while ( array_key_exists($label, $tree))
 		    			$label .= ' ';
 
-		    		$tree[$label] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+		    		$tree[$label] = $category->children()->orderby('position', 'asc')->pluck('name', 'id')->toArray();
 		    		// foreach($category->children as $child) {
 		    			// $tree[$category->name][$child->id] = $child->name;
 		    		// }
@@ -309,7 +309,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 
 		    } else {
 		    	// abi_r(\App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
-		    	$view->with('categoryList', \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray());
+		    	$view->with('categoryList', \App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray());
 		    }
 		    
 		});

@@ -19,6 +19,9 @@
 @include('abcc.customer._block_pricerules_pack')
 
 
+@include('abcc.catalogue._modal_view_product')
+
+
 @endsection
 
 

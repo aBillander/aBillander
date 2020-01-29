@@ -6,7 +6,7 @@ use App\Configuration;
 use App\Tax;
 use App\ShippingMethod;
 
-class FreeShippingMethod extends ShippingMethod implements ShippingMethodCalculatorInterface
+class RegularDeliveryRouteShippingMethod extends ShippingMethod implements ShippingMethodCalculatorInterface
 {
 
     public function calculateCartCostPrice( \App\Cart $cart )

@@ -389,10 +389,10 @@ class ImportCustomersController extends Controller
                     }
 */
                     // 'webshop_id'
-                    $data['webshop_id'] = '';
-                    $reference_external = intval( $data['reference_external'] );
-                    if ( $reference_external > 50000 ) 
-                        $data['webshop_id'] = $reference_external - 50000;
+//                    $data['webshop_id'] = '';
+//                    $reference_external = intval( $data['reference_external'] );
+//                    if ( $reference_external > 50000 ) 
+//                        $data['webshop_id'] = $reference_external - 50000;
 
 
                     if ( strlen( $data['address1'] ) > 128 )
@@ -689,7 +689,7 @@ if ($country) {
         $data = [];  
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference_external', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
+        $headers = [ 'id', 'reference_external', 'webshop_id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
                     'customer_group_id', 'CUSTOMER_GROUP_NAME', 'price_list_id', 'PRICE_LIST_NAME', 
                     'payment_method_id', 'PAYMENT_METHOD_NAME', 'shipping_method_id', 'SHIPPING_METHOD_NAME', 
                     'outstanding_amount_allowed', 'notes', 'allow_login', 'blocked', 'active', 

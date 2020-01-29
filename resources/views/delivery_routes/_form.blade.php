@@ -13,6 +13,13 @@
 </div>
 
 <div class="row">
+
+    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
+       {!! Form::label('carrier_id', l('Carrier')) !!}
+       {!! Form::select('carrier_id', array('' => l('-- Please, select --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control')) !!}
+       {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !!}
+    </div>
+
     <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('driver_name') ? 'has-error' : '' }}">
         {!! Form::label('driver_name', l('Driver name')) !!}
         {!! Form::text('driver_name', null, array('class' => 'form-control', 'id' => 'driver_name')) !!}

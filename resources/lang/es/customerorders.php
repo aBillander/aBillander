@@ -341,4 +341,6 @@ return [
 	'Not Closed'     => 'No Cerrados',
 	'Closed'     => 'Cerrados',
 
+	'New Customer Order' => 'Nuevo Pedido de Cliente',
+
 ];

@@ -55,6 +55,7 @@ class Billable extends Model
             'absrc',
             'aggregate_orders',
             'aggregate_shipping_slips',
+            'production_sheet',
         );
 
     protected $dates = [
@@ -96,6 +97,8 @@ class Billable extends Model
 
                             'notes_from_customer', 'notes', 'notes_to_customer',
                             'status', 'locked',
+
+                            'production_sheet_id',
 
                             'invoicing_address_id', 'shipping_address_id', 
                             'warehouse_id', 'shipping_method_id', 'sales_rep_id', 'currency_id', 'payment_method_id', 

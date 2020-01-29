@@ -115,6 +115,7 @@ class FSxOrderExporter {
         if ( !$cid_customer ) $this->customer_download = true;
 
 		$addressInvoice  = $order->invoicingaddress;
+    $addressInvoice->name_fiscal = $customer->name_fiscal;
 		$addressDelivery = $order->shippingaddress;
 
 		if ($order->invoicing_address_id != $order->shipping_address_id) 
@@ -201,7 +202,7 @@ class FSxOrderExporter {
                       'vat_id' => $customer->identification,
                       'email_address' => $addressInvoice->email,
                       
-                      'company' => $addressInvoice->name_commercial,
+                      'company' => $addressInvoice->name_fiscal,
                       'street_address' => $addressInvoice->address1 . ' ' . $addressInvoice->address2,
                       'city' => $addressInvoice->city,
                       'postcode' => $addressInvoice->postcode,

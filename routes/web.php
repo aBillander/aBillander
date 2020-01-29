@@ -294,6 +294,23 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('productionsheets/{id}/products/pdf', 'ProductionSheetsPdfController@getPdfProducts')->name('productionsheet.products.pdf');
 
+        // Production Sheet Orders
+        Route::get( 'productionsheetorders/{id}',  'ProductionSheetOrdersController@ordersIndex')->name('productionsheet.orders');
+
+        Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
+
+        // Production Sheet Shipping Slips
+        Route::get('productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+
+        Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
+
+        Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourlineController@export' )->name('productionsheet.tourline');
+
+        // Production Sheet Production Orders
+        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
+
+        Route::post('productionsheetproductionorders/finish', 'ProductionSheetProductionOrdersController@finishProductionOrders')->name('productionsheet.productionorders.finish');
+
 
 
         Route::resource('customers', 'CustomersController');
@@ -526,6 +543,8 @@ foreach ($pairs as $pair) {
         Route::resource('deliveryroutes',                    'DeliveryRoutesController'    );
         Route::resource('deliveryroutes.deliveryroutelines', 'DeliveryRouteLinesController');
         Route::post('deliveryroutes/sortlines', 'DeliveryRoutesController@sortLines')->name('deliveryroute.sortlines');
+
+        Route::get( 'deliveryroutes/{deliveryroute}/pdf', 'DeliveryRoutesController@showPdf' )->name('deliveryroutes.pdf');
         
         Route::resource('deliverysheets',                    'DeliverySheetsController'    );
         Route::resource('deliverysheets.deliverysheetlines', 'DeliverySheetLinesController');

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\DeliveryRoute;
 use App\DeliveryRouteLine;
 
+use App\Carrier;
+
 class DeliveryRoutesController extends Controller
 {
     /**
@@ -28,7 +30,9 @@ class DeliveryRoutesController extends Controller
      */
     public function create()
     {
-        return view('delivery_routes.create');
+        $carrierList = Carrier::pluck('name', 'id')->toArray();
+
+        return view('delivery_routes.create', compact('carrierList'));
     }
 
     /**
@@ -66,7 +70,9 @@ class DeliveryRoutesController extends Controller
      */
     public function edit(DeliveryRoute $deliveryroute)
     {
-        return view('delivery_routes.edit', compact('deliveryroute'));
+        $carrierList = Carrier::pluck('name', 'id')->toArray();
+
+        return view('delivery_routes.edit', compact('deliveryroute', 'carrierList'));
     }
 
     /**
@@ -119,5 +125,21 @@ class DeliveryRoutesController extends Controller
         });
 
         return response()->json($positions);
+    }
+
+
+
+
+    public function showPdf(DeliveryRoute $deliveryroute, Request $request)
+    {
+        $deliveryroute->load(['deliveryroutelines', 'carrier']);
+        $deliveryroutelines = $deliveryroute->deliveryroutelines;
+        
+
+        $pdf = \PDF::loadView('delivery_routes.reports.delivery_route.delivery_route', compact('deliveryroute', 'deliveryroutelines'))->setPaper('a4', 'vertical');
+
+        if ($request->has('screen')) return view('delivery_routes.reports.delivery_route.delivery_route', compact('deliveryroute', 'deliveryroutelines'));
+
+        return $pdf->stream('delivery_route_'.$deliveryroute->alias.'.pdf'); // $pdf->download('invoice.pdf');
     }
 }

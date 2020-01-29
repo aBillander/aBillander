@@ -79,6 +79,10 @@ return [
 
 	'Sequence for Invoices'     => 'Serie de Facturas',
 	'Template for Invoices'     => 'Plantilla para Facturas',
+
+	'Template for Orders'             => 'Plantilla para Pedidos',
+	'Template for Shipping Slips'     => 'Plantilla para Albaranes',
+
 	'Payment Method'     => 'Forma de Pago',
 	'Payment Currency'     => 'Divisa de Pago',
 	'Accept e-Invoice?'     => '¿Admite Factura Electrónica?',

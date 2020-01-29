@@ -51,6 +51,18 @@
                 <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
 
                 {{ $rule->product->name }}
+@else
+              [<a class="view-image" data-html="false" data-toggle="modal" 
+                       href=""
+                       data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
+                       data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
+                       data-caption="" 
+                       onClick="return false;" title="{{l('View', 'layouts')}}">
+  
+                        {{ $rule->product->reference }}
+                </a>]
+
+                {{ $rule->product->name }}
 @endif
             @endif
       </td>

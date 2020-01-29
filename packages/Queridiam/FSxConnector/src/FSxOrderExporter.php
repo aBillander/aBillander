@@ -115,6 +115,7 @@ class FSxOrderExporter {
         if ( !$cid_customer ) $this->customer_download = true;
 
 		$addressInvoice  = $order->invoicingaddress;
+    $addressInvoice->name_fiscal = $customer->name_fiscal;
 		$addressDelivery = $order->shippingaddress;
 
 		if ($order->invoicing_address_id != $order->shipping_address_id) 

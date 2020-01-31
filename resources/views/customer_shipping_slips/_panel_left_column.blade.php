@@ -40,7 +40,7 @@
 
 @endif
 
-@if ( $document->created_via == 'aggregate_orders' )
+@if ( $document->created_via == 'aggregate_orders' || $document->created_via == 'production_sheet' )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">

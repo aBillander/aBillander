@@ -26,6 +26,36 @@
 /* ********************************************************** */
 
 
+Route::get('xtrame', function( )
+{
+	$f = \App\CustomerInvoice::with('template')->find(1);
+
+	abi_r($f->template);
+});
+
+
+
+
+/* ********************************************************** */
+
+
+
+
+Route::get('gmdisme', function( )
+{
+	
+
+	abi_r('OK');
+});
+
+
+
+
+/* ********************************************************** */
+
+
+
+
 Route::get('gnano', function( )
 {
 	$dt = \Carbon\Carbon::createSafe(2019, 12, 20, 0, 0, 0);
@@ -1393,7 +1423,7 @@ Route::get('migratethis', function()
 
 
 	die('OK');
-
+	
 
 
 	// 2010-01-09
@@ -2569,9 +2599,21 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 /* ********************************************************** */
 
 
+
 if (file_exists(__DIR__.'/confluence_gus.php')) {
     include __DIR__.'/confluence_gus.php';
 }
+
+
+if (file_exists(__DIR__.'/gorrino_xtra.php')) {
+    include __DIR__.'/gorrino_xtra.php';
+}
+
+if (file_exists(__DIR__.'/gorrino_gmdis.php')) {
+    include __DIR__.'/gorrino_gmdis.php';
+}
+
+
 
 /* ********************************************************** */
 

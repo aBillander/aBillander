@@ -387,14 +387,14 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Customer Orders Template
-		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('configuration_keys.key_group_2', 'customers.edit'), function($view) {
 		    
 		    $view->with('orders_templateList', \App\Template::listFor( \App\CustomerOrder::class ));
 		    
 		});
 
 		// Customer Shipping Slips Template
-		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('configuration_keys.key_group_2', 'customers.edit'), function($view) {
 		    
 		    $view->with('shipping_slips_templateList', \App\Template::listFor( \App\CustomerShippingSlip::class ));
 		    

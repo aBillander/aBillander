@@ -24,6 +24,8 @@ class CreateDeliveryRoutesTable extends Migration
             $table->tinyInteger('active')->default(1);
             
             $table->text('notes')->nullable();                  // Private notes ( notes to self ;) )
+
+            $table->integer('carrier_id')->unsigned()->nullable(false);
             
             $table->timestamps();
         });

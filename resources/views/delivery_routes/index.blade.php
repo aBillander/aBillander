@@ -31,6 +31,7 @@
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{ l('Alias') }}</th>
             <th>{{l('Delivery Route name')}}</th>
+            <th>{{l('Carrier')}}</th>
             <th>{{l('Driver name')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
@@ -42,7 +43,8 @@
 		<tr>
             <td>{{ $deliveryroute->id }}</td>
             <td>{{ $deliveryroute->alias }}</td>
-			<td>{{ $deliveryroute->name }}</td>
+			      <td>{{ $deliveryroute->name }}</td>
+            <td>{{ $deliveryroute->carrier->name }}</td>
             <td>{{ $deliveryroute->driver_name }}</td>
 
             <td class="text-center">@if ($deliveryroute->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>

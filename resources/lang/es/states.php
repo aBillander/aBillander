@@ -11,6 +11,8 @@ return [
 	|
 	*/
 
+	'Countries' => 'Países',
+
 	'States' => 'Estados',
 	'Back to States'     => 'Volver a Estados',
 	'States' => 'Estados',

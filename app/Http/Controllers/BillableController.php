@@ -14,6 +14,8 @@ use App\Traits\BillableControllerTrait;
 use App\Traits\BillableFormsControllerTrait;
 use App\Traits\BillableDocumentControllerTrait;
 
+use App\Traits\SupplierBillableControllerTrait;
+
 class BillableController extends Controller
 {
 
@@ -21,6 +23,8 @@ class BillableController extends Controller
    use BillableControllerTrait;
    use BillableFormsControllerTrait;
    use BillableDocumentControllerTrait;
+
+   use SupplierBillableControllerTrait;
 
    protected $model, $model_snake_case, $model_path, $view_path;
    
@@ -116,7 +120,7 @@ class BillableController extends Controller
         return json_encode( [] );
     }
 
-    
+
     public function getDocumentHeader($id)
     {
         // Some rework needed!!!

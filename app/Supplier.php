@@ -10,6 +10,8 @@ class Supplier extends Model {
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
+
+    protected $appends = ['name_regular'];
     
     protected $fillable = [ 'alias', 'name_fiscal', 'name_commercial', 
                             'website', 'customer_center_url', 'customer_center_user', 'customer_center_password', 
@@ -62,6 +64,126 @@ class Supplier extends Model {
     {
         return $this->name_commercial ?: $this->name_fiscal;
     }
+
+    public function getEmailAttribute() 
+    {
+        return $this->address->email;
+    }
+
+    public function currentPricesEnteredWithTax( Currency $currency = null ) 
+    {
+        return Configuration::get('PRICES_ENTERED_WITH_TAX');
+    }
+
+
+
+    public function getInvoiceSequenceId() 
+    {
+        if (   $this->invoice_sequence_id
+            && Sequence::where('id', $this->invoice_sequence_id)->exists()
+            )
+            return $this->invoice_sequence_id;
+
+        return Configuration::getInt('DEF_SUPPLIER_INVOICE_SEQUENCE');
+    }
+
+    public function getInvoiceTemplateId() 
+    {
+        if (   $this->invoice_template_id
+            && Template::where('id', $this->invoice_template_id)->exists()
+            )
+            return $this->invoice_template_id;
+
+        return Configuration::getInt('DEF_SUPPLIER_INVOICE_TEMPLATE');
+    }
+    
+    public function getPaymentMethodId() 
+    {
+        if (   $this->payment_method_id
+            && PaymentMethod::where('id', $this->payment_method_id)->exists()
+            )
+            return $this->payment_method_id;
+
+        return Configuration::getInt('DEF_SUPPLIER_PAYMENT_METHOD') ;
+    }
+    
+    public function getShippingMethodId() 
+    {
+        if (   $this->shipping_method_id
+            && ShippingMethod::where('id', $this->shipping_method_id)->exists()
+            )
+            return $this->shipping_method_id;
+
+        return Configuration::getInt('DEF_SHIPPING_METHOD');
+    }
+
+    
+    
+    
+    public function paymentDays() 
+    {
+        if ( !trim($this->payment_days) ) return [];
+
+        $dstr = str_replace( [';', ':'], ',', $this->payment_days );
+        $days = array_map( 'intval', explode(',', $dstr) );
+
+        sort( $days, SORT_NUMERIC );
+
+        return $days;
+    }
+
+    /**
+     * Adjust date to Customer Payment Days
+     */
+    public function paymentDate( Carbon $date ) 
+    {
+        $pdays = $this->paymentDays();
+        $n = count($pdays);
+        if ( !$n ) return $date;
+
+        $day   = $date->day;
+        $month = $date->month;
+        $year  = $date->year;
+
+        if ( $day > $pdays[$n-1] ) {
+
+            $day = $pdays[0];
+
+            if ($month == 12) {
+
+                $month = 1;
+                $year += 1;
+
+            } else {
+
+                $month += 1;
+
+            }
+
+        } else {
+
+            foreach ($pdays as $pday) {
+                if ($day <= $pday) {
+                    $day = $pday;
+                    break;
+                }
+            }
+
+        }
+
+        // Check No-Payment Month
+        if ($month==$this->no_payment_month) $month++;
+
+        $payday = Carbon::createFromDate($year, $month, $day);
+
+        // Check Saturday & Sunday
+        if ( $payday->dayOfWeek == 6 ) $payday->addDays(2); // Saturday
+        if ( $payday->dayOfWeek == 0 ) $payday->addDays(1); // Sunday
+
+        return $payday;
+    }
+
+
 
     
     /*
@@ -168,5 +290,79 @@ class Supplier extends Model {
 
         return json_encode( array('query' => $query, 'suggestions' => $return) );
     }
+    
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function scopeFilter($query, $params)
+    {
+        if ( isset($params['name']) && $params['name'] != '' )
+        {
+            $name = $params['name'];
+
+            $query->where( function ($query1) use ($name) {
+                $query1->where(  'name_fiscal',     'LIKE', '%' . $name . '%')
+                       ->OrWhere('name_commercial', 'LIKE', '%' . $name . '%');
+            } );
+        }
+
+        if ( isset($params['reference_external']) && $params['reference_external'] != '' )
+        {
+            $query->where('reference_external', 'LIKE', '%' . $params['reference_external'] . '%');
+        }
+
+        if ( isset($params['identification']) && $params['identification'] != '' )
+        {
+            $query->where('identification', 'LIKE', '%' . $params['identification'] . '%');
+        }
+
+        if ( isset($params['email']) && $params['email'] != '' )
+        {
+            $email = $params['email'];
+
+            $query->whereHas('addresses', function($q) use ($email) 
+            {
+                $q->where('email', 'LIKE', '%' . $email . '%');
+
+            });
+        }
+
+        if ( isset($params['customer_group_id']) && $params['customer_group_id'] > 0 )
+        {
+            $query->where('customer_group_id', '=', $params['customer_group_id']);
+        }
+
+        if ( isset($params['active']) )
+        {
+            if ( $params['active'] == 0 )
+                $query->where('active', '=', 0);
+            if ( $params['active'] == 1 )
+                $query->where('active', '>', 0);
+        }
+
+        return $query;
+    }
+
+    public function scopeIsActive($query)
+    {
+        return $query->where('active', '>', 0);
+    }
+
+    public function scopeIsBlocked($query)
+    {
+        return $query->where('blocked', '>', 0);
+    }
+
+    public function scopeIsNotBlocked($query)
+    {
+        return $query->where('blocked', 0);
+    }
+
 
 }

@@ -859,6 +859,11 @@ class Billable extends Model
         return $this->belongsTo('App\Customer');
     }
 
+    public function supplier()
+    {
+        return $this->belongsTo('App\Supplier');
+    }
+
     public function shippingmethod()
     {
         return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');

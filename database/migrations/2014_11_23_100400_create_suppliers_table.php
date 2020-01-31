@@ -41,6 +41,8 @@ class CreateSuppliersTable extends Migration {
 
 			$table->string('payment_days', 16)->nullable();					// Comma separated integuers!
 
+			$table->tinyInteger('delivery_time')->default(0);
+
 		/* */
 			$table->text('notes')->nullable();
 

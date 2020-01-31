@@ -26,6 +26,36 @@
 /* ********************************************************** */
 
 
+Route::get('xtrame', function( )
+{
+	$f = \App\CustomerInvoice::with('template')->find(1);
+
+	abi_r($f->template);
+});
+
+
+
+
+/* ********************************************************** */
+
+
+
+
+Route::get('gmdisme', function( )
+{
+	
+
+	abi_r('OK');
+});
+
+
+
+
+/* ********************************************************** */
+
+
+
+
 Route::get('gnano', function( )
 {
 	$dt = \Carbon\Carbon::createSafe(2019, 12, 20, 0, 0, 0);
@@ -1372,14 +1402,28 @@ Route::get('migratethis', function()
 {
 
 
+	// 2020-01-30
+		Illuminate\Support\Facades\DB::statement("drop table if exists `supplier_shipping_slips`");
+
+		Illuminate\Support\Facades\DB::statement("create table `supplier_shipping_slips` (`id` int unsigned not null auto_increment primary key, `company_id` int unsigned not null default '0', `supplier_id` int unsigned null, `user_id` int unsigned not null default '0', `sequence_id` int unsigned null, `document_prefix` varchar(8) null, `document_id` int unsigned not null default '0', `document_reference` varchar(64) null, `reference` varchar(191) null, `reference_customer` varchar(32) null, `reference_external` varchar(32) null, `created_via` varchar(32) null default 'manual', `document_date` datetime not null, `payment_date` datetime null, `validation_date` datetime null, `delivery_date` datetime null, `delivery_date_real` datetime null, `close_date` datetime null, `document_discount_percent` decimal(20, 6) not null default '0', `document_discount_amount_tax_incl` decimal(20, 6) not null default '0', `document_discount_amount_tax_excl` decimal(20, 6) not null default '0', `document_ppd_percent` decimal(20, 6) not null default '0', `document_ppd_amount_tax_incl` decimal(20, 6) not null default '0', `document_ppd_amount_tax_excl` decimal(20, 6) not null default '0', `number_of_packages` smallint unsigned not null default '1', `volume` decimal(20, 6) null default '0', `weight` decimal(20, 6) null default '0', `shipping_conditions` text null, `tracking_number` varchar(191) null, `currency_conversion_rate` decimal(20, 6) not null default '1', `down_payment` decimal(20, 6) not null default '0', `total_discounts_tax_incl` decimal(20, 6) not null default '0', `total_discounts_tax_excl` decimal(20, 6) not null default '0', `total_products_tax_incl` decimal(20, 6) not null default '0', `total_products_tax_excl` decimal(20, 6) not null default '0', `total_shipping_tax_incl` decimal(20, 6) not null default '0', `total_shipping_tax_excl` decimal(20, 6) not null default '0', `total_other_tax_incl` decimal(20, 6) not null default '0', `total_other_tax_excl` decimal(20, 6) not null default '0', `total_lines_tax_incl` decimal(20, 6) not null default '0', `total_lines_tax_excl` decimal(20, 6) not null default '0', `total_currency_tax_incl` decimal(20, 6) not null default '0', `total_currency_tax_excl` decimal(20, 6) not null default '0', `total_currency_paid` decimal(20, 6) not null default '0', `total_tax_incl` decimal(20, 6) not null default '0', `total_tax_excl` decimal(20, 6) not null default '0', `commission_amount` decimal(20, 6) not null default '0', `notes_from_customer` text null, `notes` text null, `notes_to_customer` text null, `status` varchar(32) not null default 'draft', `onhold` tinyint not null default '0', `locked` tinyint not null default '0', `invoicing_address_id` int unsigned not null, `shipping_address_id` int unsigned null, `warehouse_id` int unsigned null, `shipping_method_id` int unsigned null, `carrier_id` int unsigned null, `sales_rep_id` int unsigned null, `currency_id` int unsigned not null, `payment_method_id` int unsigned not null, `template_id` int null, `export_date` datetime null, `secure_key` varchar(32) not null, `import_key` varchar(16) null, `created_at` timestamp null, `updated_at` timestamp null, `shipment_status` varchar(32) not null default 'pending', `invoiced_at` date null, `prices_entered_with_tax` tinyint not null default '0', `round_prices_with_tax` tinyint not null default '0') default character set utf8mb4 collate utf8mb4_unicode_ci");
+
+		Illuminate\Support\Facades\DB::statement("drop table if exists `supplier_shipping_slip_lines`");
+
+		Illuminate\Support\Facades\DB::statement("create table `supplier_shipping_slip_lines` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `line_type` varchar(32) not null, `product_id` int unsigned null, `combination_id` int unsigned null, `reference` varchar(32) null, `name` varchar(128) not null, `quantity` decimal(20, 6) not null, `extra_quantity` decimal(20, 6) null default '0', `extra_quantity_label` varchar(128) null, `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `prices_entered_with_tax` tinyint not null default '0', `cost_price` decimal(20, 6) not null default '0', `unit_price` decimal(20, 6) not null default '0', `unit_customer_price` decimal(20, 6) not null default '0', `unit_customer_final_price` decimal(20, 6) not null default '0', `unit_customer_final_price_tax_inc` decimal(20, 6) not null default '0', `unit_final_price` decimal(20, 6) not null default '0', `unit_final_price_tax_inc` decimal(20, 6) not null default '0', `sales_equalization` tinyint not null default '0', `discount_percent` decimal(8, 3) not null default '0', `discount_amount_tax_incl` decimal(20, 6) not null default '0', `discount_amount_tax_excl` decimal(20, 6) not null default '0', `total_tax_incl` decimal(20, 6) not null default '0', `total_tax_excl` decimal(20, 6) not null default '0', `tax_percent` decimal(8, 3) not null default '0', `ecotax_amount` decimal(20, 6) not null default '0', `ecotax_total_amount` decimal(20, 6) not null default '0', `commission_percent` decimal(8, 3) not null default '0', `notes` text null, `locked` tinyint not null default '0', `tax_id` int unsigned not null, `ecotax_id` int unsigned null, `sales_rep_id` int unsigned null, `created_at` timestamp null, `updated_at` timestamp null, `supplier_shipping_slip_id` int unsigned not null) default character set utf8mb4 collate utf8mb4_unicode_ci");
+
+		Illuminate\Support\Facades\DB::statement("drop table if exists `supplier_shipping_slip_line_taxes`");
+
+		Illuminate\Support\Facades\DB::statement("create table `supplier_shipping_slip_line_taxes` (`id` int unsigned not null auto_increment primary key, `name` varchar(128) not null, `tax_rule_type` varchar(32) not null, `taxable_base` decimal(20, 6) not null default '0', `percent` decimal(8, 3) not null default '0', `amount` decimal(20, 6) not null default '0', `total_line_tax` decimal(20, 6) not null default '0', `position` int unsigned not null default '0', `tax_id` int unsigned not null, `tax_rule_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null, `supplier_shipping_slip_line_id` int unsigned not null) default character set utf8mb4 collate utf8mb4_unicode_ci");
+
+
 	// 2020-01-28
 		Illuminate\Support\Facades\DB::statement("drop table if exists `suppliers`;");
 
-		Illuminate\Support\Facades\DB::statement("create table `suppliers` (`id` int unsigned not null auto_increment primary key, `alias` varchar(32) null, `name_fiscal` varchar(128) not null, `name_commercial` varchar(64) null, `website` varchar(128) null, `customer_center_url` varchar(128) null, `customer_center_user` varchar(128) null, `customer_center_password` varchar(16) null, `identification` varchar(64) null, `reference_external` varchar(32) null, `accounting_id` varchar(32) null, `discount_percent` decimal(20, 6) not null default '0', `discount_ppd_percent` decimal(20, 6) not null default '0', `payment_days` varchar(16) null, `notes` text null, `customer_logo` varchar(128) null, `creditor` tinyint not null default '0', `sales_equalization` tinyint not null default '0', `approved` tinyint not null default '1', `blocked` tinyint not null default '0', `active` tinyint not null default '1', `customer_id` int unsigned null, `currency_id` int unsigned not null, `language_id` int unsigned not null, `payment_method_id` int unsigned null, `bank_account_id` int unsigned null, `invoice_sequence_id` int unsigned null, `invoicing_address_id` int unsigned not null, `secure_key` varchar(32) not null, `import_key` varchar(16) null, `created_at` timestamp null, `updated_at` timestamp null, `deleted_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+		Illuminate\Support\Facades\DB::statement("create table `suppliers` (`id` int unsigned not null auto_increment primary key, `alias` varchar(32) null, `name_fiscal` varchar(128) not null, `name_commercial` varchar(64) null, `website` varchar(128) null, `customer_center_url` varchar(128) null, `customer_center_user` varchar(128) null, `customer_center_password` varchar(16) null, `identification` varchar(64) null, `reference_external` varchar(32) null, `accounting_id` varchar(32) null, `discount_percent` decimal(20, 6) not null default '0', `discount_ppd_percent` decimal(20, 6) not null default '0', `payment_days` varchar(16) null, `delivery_time` tinyint not null default '0', `notes` text null, `customer_logo` varchar(128) null, `creditor` tinyint not null default '0', `sales_equalization` tinyint not null default '0', `approved` tinyint not null default '1', `blocked` tinyint not null default '0', `active` tinyint not null default '1', `customer_id` int unsigned null, `currency_id` int unsigned not null, `language_id` int unsigned not null, `payment_method_id` int unsigned null, `bank_account_id` int unsigned null, `invoice_sequence_id` int unsigned null, `invoicing_address_id` int unsigned not null, `secure_key` varchar(32) not null, `import_key` varchar(16) null, `created_at` timestamp null, `updated_at` timestamp null, `deleted_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 
 
 	die('OK');
-
+	
 
 
 	// 2010-01-09
@@ -2555,9 +2599,21 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 /* ********************************************************** */
 
 
+
 if (file_exists(__DIR__.'/confluence_gus.php')) {
     include __DIR__.'/confluence_gus.php';
 }
+
+
+if (file_exists(__DIR__.'/gorrino_xtra.php')) {
+    include __DIR__.'/gorrino_xtra.php';
+}
+
+if (file_exists(__DIR__.'/gorrino_gmdis.php')) {
+    include __DIR__.'/gorrino_gmdis.php';
+}
+
+
 
 /* ********************************************************** */
 

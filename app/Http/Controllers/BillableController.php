@@ -14,6 +14,8 @@ use App\Traits\BillableControllerTrait;
 use App\Traits\BillableFormsControllerTrait;
 use App\Traits\BillableDocumentControllerTrait;
 
+use App\Traits\SupplierBillableControllerTrait;
+
 class BillableController extends Controller
 {
 
@@ -21,6 +23,8 @@ class BillableController extends Controller
    use BillableControllerTrait;
    use BillableFormsControllerTrait;
    use BillableDocumentControllerTrait;
+
+   use SupplierBillableControllerTrait;
 
    protected $model, $model_snake_case, $model_path, $view_path;
    
@@ -80,7 +84,7 @@ class BillableController extends Controller
         {
             $search = $request->term;
 
-            $customers = \App\Customer::select('id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
+            $customers = \App\Customer::select('id', 'name_fiscal', 'name_commercial', 'identification', 'reference_external', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
                                     ->where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
@@ -116,7 +120,7 @@ class BillableController extends Controller
         return json_encode( [] );
     }
 
-    
+
     public function getDocumentHeader($id)
     {
         // Some rework needed!!!
@@ -628,6 +632,9 @@ class BillableController extends Controller
         $clone->reference = '';
         $clone->reference_customer = '';
         $clone->reference_external = '';
+
+        $clone->document_prefix      = null;
+        $clone->document_id          = 0;
 
         $clone->created_via          = 'manual';
         $clone->status               = 'draft';

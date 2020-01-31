@@ -80,4 +80,9 @@ return [
 	'Products' => 'Productos',
 	'' => '',
 	'' => '',
+
+
+	'Address'     => 'Dirección',
+
+	'Customer Shipping Slips' => 'Albaranes de Clientes',
 ];

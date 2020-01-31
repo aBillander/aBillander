@@ -199,7 +199,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('commissionsettlementlines/{id}/unlink', 'CommissionSettlementLinesController@unlink')->name('commissionsettlementline.unlink');
 
         Route::resource('suppliers', 'SuppliersController');
-        Route::get('suppliers/ajax/name_lookup', array('uses' => 'SuppliersController@ajaxSupplierSearch', 'as' => 'supplier.ajax.nameLookup'));
+        Route::get('suppliers/ajax/name_lookup', array('uses' => 'SuppliersController@ajaxSupplierSearch', 'as' => 'suppliers.ajax.nameLookup'));
         Route::post('suppliers/{id}/bankaccount', 'SuppliersController@updateBankAccount')->name('suppliers.bankaccount');
 
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
@@ -293,6 +293,23 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('productionsheets/{id}/orders/pdf', 'ProductionSheetsPdfController@getPdfOrders')->name('productionsheet.orders.pdf');
 
         Route::get('productionsheets/{id}/products/pdf', 'ProductionSheetsPdfController@getPdfProducts')->name('productionsheet.products.pdf');
+
+        // Production Sheet Orders
+        Route::get( 'productionsheetorders/{id}',  'ProductionSheetOrdersController@ordersIndex')->name('productionsheet.orders');
+
+        Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
+
+        // Production Sheet Shipping Slips
+        Route::get('productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+
+        Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
+
+        Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourlineController@export' )->name('productionsheet.tourline');
+
+        // Production Sheet Production Orders
+        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
+
+        Route::post('productionsheetproductionorders/finish', 'ProductionSheetProductionOrdersController@finishProductionOrders')->name('productionsheet.productionorders.finish');
 
 
 
@@ -526,6 +543,8 @@ foreach ($pairs as $pair) {
         Route::resource('deliveryroutes',                    'DeliveryRoutesController'    );
         Route::resource('deliveryroutes.deliveryroutelines', 'DeliveryRouteLinesController');
         Route::post('deliveryroutes/sortlines', 'DeliveryRoutesController@sortLines')->name('deliveryroute.sortlines');
+
+        Route::get( 'deliveryroutes/{deliveryroute}/pdf', 'DeliveryRoutesController@showPdf' )->name('deliveryroutes.pdf');
         
         Route::resource('deliverysheets',                    'DeliverySheetsController'    );
         Route::resource('deliverysheets.deliverysheetlines', 'DeliverySheetLinesController');
@@ -634,12 +653,25 @@ foreach ($pairs as $pair) {
 
         });
 
+                
+        /* ********************************************************** */
+
+        // Temporary Purchase Order routes
+
+        if (file_exists(__DIR__.'/web_po.php')) {
+            include __DIR__.'/web_po.php';
+        }
+
+
+
+        /* ********************************************************** */
+
+
 
 });
 
 
 /* ********************************************************** */
-
 // Customer's Center
 
 // Fast & dirty

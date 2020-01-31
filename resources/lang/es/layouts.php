@@ -99,6 +99,7 @@ return [
 
 	'Warehouse'     => 'Almacén',
 	'Suppliers' => 'Proveedores',
+	'Supplier Shipping Slips'     => 'Albaranes de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',
 	'Sale Orders'     => 'Pedidos de Venta',
 	'Orders'     => 'Pedidos',

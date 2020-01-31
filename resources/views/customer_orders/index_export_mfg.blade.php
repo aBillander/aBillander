@@ -157,7 +157,7 @@
               </td>
             
             <td><a class="" href="{{ URL::to('customers/' .$document->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
-            	{{ $document->customer->name_regular }}
+            	{{ $document->customer->name_fiscal }}
             	</a>
             </td>
             <td>

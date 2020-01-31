@@ -1,0 +1,504 @@
+
+
+
+<table class="head container" style="margin-top: -0.7cm !important">
+
+	<tr>
+
+		<td class="header">
+
+
+        @if ($img = \App\Context::getContext()->company->company_logo)
+
+            <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}">
+
+        @endif
+
+
+		<div class="banner" style="visibility:hidden">
+
+			{!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
+
+		</div>
+
+		</td>
+
+		<td class="shop-info">
+
+			<div class="shop-name"><h3>{{ $company->name_fiscal }}</h3></div>
+
+			<div class="shop-address">
+                        {{ $company->address->address1 }} {{ $company->address->address2 }}<br />
+                        {{ $company->address->postcode }} {{ $company->address->city }} ({{ $company->address->state->name }})<br />
+                        CIF: {{ $company->identification }} / Tel: {{ $company->address->phone }}<br />
+                        {{ $company->address->email }}<br />
+				
+			</div>
+
+		</td>
+
+	</tr>
+
+</table>
+
+
+
+<h1 class="document-type-label"> PEDIDO </h1>
+
+
+
+<table class="order-data-addresses">
+
+	<tr>
+
+		<td class="address shipping-address">
+
+			<!-- h3>Dirección de Entrega:</h3 -->
+
+            <div class="shop-name"><h3>
+
+			@if ( $document->shippingaddress->name_commercial )
+
+				{{ $document->shippingaddress->name_commercial }}
+
+			@else
+
+            	{{ $document->shippingaddress->contact_name }}
+
+			@endif
+
+			</h3></div>
+
+            {{ $document->shippingaddress->address1 }} {{ $document->shippingaddress->address2 }}<br />
+
+            {{ $document->shippingaddress->postcode}} {{ $document->shippingaddress->city }} <br />
+
+            {{ $document->shippingaddress->state->name }}
+
+
+			@if ( $document->shippingaddress->mail )
+
+				<div class="billing-email">{{ $document->shippingaddress->mail }}</div>
+
+			@endif
+            
+            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
+
+			@if ( $document->shippingaddress->phone )
+
+				<div class="billing-phone">Tel. {{ $document->shippingaddress->phone }}</div>
+
+			@else
+
+				<div class="billing-phone">Tel. {{ $document->customer->phone }}</div>
+
+			@endif
+
+			<!-- span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div -->
+			
+		</td>
+
+		<td xclass="address billing-address">
+{{--
+			< ? php if ( isset($wpo_wcpdf->settings->template_settings['packing_slip_billing_address']) && $wpo_wcpdf->ships_to_different_address() ) { ?>
+
+			<h3>< ? php _e( 'Billing Address:', 'wpo_wcpdf' ); ?></h3>
+
+			< ? php $wpo_wcpdf->billing_address(); ?>
+
+			< ? php } ?>
+--}}
+		</td>
+
+		<td class="order-data">
+
+			<table>
+
+				<tr class="order-number">
+
+					<th>Pedido nº:</th>
+
+					<td style="font-size: 11pt;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
+
+				</tr>
+
+				<tr class="order-page">
+
+					<th>Página:</th>
+
+					<td> &nbsp; </td>
+
+				</tr>
+
+				<tr class="order-date">
+
+					<th>Fecha del Pedido:</th>
+
+					<td>{{ abi_date_short($document->document_date) }}</td>
+
+				</tr>
+
+				<tr class="order-number">
+
+					<th> </th>
+
+					<td> </td>
+
+				</tr>
+
+				<tr class="order-date">
+
+					<th>Agente:</th>
+
+					<td>{{ optional($document->salesrep)->name }}</td>
+
+				</tr>
+
+				@if ( $document->shippingmethod && 0)
+
+				<tr class="shipping-method">
+
+					<th>Método de Envío:</th>
+
+					<td>{{ $document->shippingmethod->name }}</td>
+
+				</tr>
+
+				@endif
+
+				<!-- tr class="order-number">
+
+					<th>Albarán nº:</th>
+
+					<td>{{ $document->document_reference }}</td>
+
+				</tr -->
+
+			</table>			
+
+		</td>
+
+	</tr>
+
+</table>
+
+
+
+            
+@if ($document->documentlines->count()>0)  
+
+<table class="order-details" width="100%" style="border: 1px #ccc solid">
+
+	<thead>
+
+		<tr>
+
+			<th class="sku first-column" width="10%" style="border: 1px #ccc solid">
+				<span>Referencia</span>
+			</th>
+			<th class="description" width="35%" style="border: 1px #ccc solid">
+				<span>Producto</span>
+			</th>
+			<th class="quantity last-column" width="8%" style="border: 1px #ccc solid">
+				<span>Cantidad</span>
+			</th>
+			<th class="notes" width="35%" style="border: 1px #ccc solid">
+				<span>Notas</span>
+			</th>
+			<th class="total xlast-column" width="12%" style="border: 1px #ccc solid">
+				<span>PVP recomendado</span>
+			</th>
+		</tr>
+
+	</thead>
+
+	<tbody>
+
+                @foreach ($document->documentlines->sortBy('line_sort_order') as $line)
+
+			    @if ( 
+			    			( $line->line_type != 'product' ) &&
+			    			( $line->line_type != 'service' ) &&
+			    			( $line->line_type != 'comment' )
+			    )
+			        @continue
+			    @endif
+
+@if( $line->line_type == 'comment' )
+		<tr class="3655">
+			<td class="sku first-column">
+				<span>{{-- $line->reference --}}</span>
+			</td>
+			<td class="description" colspan="7">
+				<span>
+					<span class="item-name"><strong>{{ $line->name }}</strong></span>
+					<span class="item-combination-options"></span>
+				</span>
+			</td>
+		</tr>
+@else
+	@if ( optional($line->product)->ecotax )
+
+		@include('templates::customer_orders.cafeteria.line_rae')
+	
+	@else
+		<tr class="3655">
+			<td class="sku first-column">
+				<span>{{ $line->reference }}</span>
+			</td>
+			<td class="description">
+				<span>
+					<span class="item-name">{{ $line->name }}</span>
+					<span class="item-combination-options"></span>
+{{-- Juicy comments here --}}
+@if ( 0 && $line->notes )
+					<br />
+					<span class="item-notes" style="display:block; margin-left: 12px; font-style: italic;">{!! $line->notes !!}</span>
+@endif
+				</span>
+			</td>
+			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
+			</td>
+			<td xclass="discount total last-column">
+				<span>
+					<span class="abi-Price-amount amount">
+						<span class="item-notes" style="display:block; margin-left: 12px; font-style: italic;">
+							{!! $line->notes !!}
+						</span>
+					</span>
+				</span>
+			</td>
+			<td class="total last-column">
+				<span>
+					<span class="abi-Price-amount amount">{{ $line->product->as_price('recommended_retail_price_tax_inc') }}
+						<!-- span class="abi-Price-currencySymbol">€</span -->
+					</span>
+				</span>
+			</td>
+		</tr>
+		
+		{{-- Juicy comments here --}}
+		@if ( 0 && $line->notes )
+			<span class="item-notes">{!! $line->notes !!}</span>
+		@endif
+	@endif
+@endif
+
+                @endforeach
+
+	</tbody>
+
+</table>
+
+@endif
+
+{{--
+
+@include('templates::customer_orders.cafeteria.totals')
+
+--}}
+
+<table class="notes-totals">
+
+	<tbody>
+
+		<tr class="no-borders">
+
+			<td class="no-borders">
+
+				<div class="customer-notes">
+
+@if ($document->notes_from_customer && 0)
+
+						<h3>Notas:</h3>
+
+						{{ $document->notes_from_customer }}
+@endif
+				</div>	
+
+			</td>
+
+			<td class="no-borders totals-cell" style="width:40%">
+
+				<table class="totals">
+
+					<tfoot>
+{{--
+						< ? php
+
+						$totals = $wpo_wcpdf_templates->get_totals( $wpo_wcpdf->export->template_type );
+
+						if( sizeof( $totals ) > 0 ) {
+
+							foreach( $totals as $total_key => $total_data ) {
+
+								?>
+
+								<tr class="< ? php echo $total_data['class']; ?>">
+
+									<th class="description"><span>< ? php echo $total_data['label']; ?></span></th>
+
+									<td class="price"><span class="totals-price">< ? php echo $total_data['value']; ?></span></td>
+
+								</tr>
+
+								< ? php
+
+							}
+
+						}
+
+						?>
+--}}
+								<tr class="total grand-total">
+
+									<th class="description" style="background-color: #f5f5f5;"><span>Total a pagar</span></th>
+									<!-- p>The euro character:  €  &#0128;  &euro;  &#8364;   :: Not work: &#0128;  </p -->
+
+									<td class="price"><span class="totals-price"><span class="abi-Price-amount amount">{{ $document->as_price('total_currency_tax_incl') }}<span class="abi-Price-currencySymbol">{{ $document->currency->sign_printable }}</span></span></span></td>
+
+								</tr>
+					</tfoot>
+
+				</table>
+
+			</td>
+
+		</tr>
+
+	</tbody>
+
+</table>
+
+
+
+
+@if ($document->notes_to_customer)
+
+						<h3>OBSERVACIONES:</h3>
+
+<table class="order-details print-friendly" width="100%" style="border: 1px #ccc solid">
+
+	<tbody>
+
+		<tr xclass="no-borders">
+
+			<td xclass="no-borders" style="padding: 2mm;">
+
+						{{ $document->notes_to_customer }}
+
+			</td>
+
+		</tr>
+
+	</tbody>
+
+</table>
+
+@endif
+
+
+
+
+
+<!-- div>Firma del cliente<br>
+<br>
+<br>
+________________________________________
+</div -->
+
+
+
+<div xclass="tax-summary-wrapper order-details tax-summary" id="footer">
+{{--
+	< ? php $wpo_wcpdf->footer(); ?>
+--}}
+
+{{-- --} }
+	{{ $company->name_fiscal }} - {!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
+{ {-- --}}
+
+
+		<table  class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
+			<tbody>
+				<tr>
+					<td style="padding-right: 2mm">
+
+						{!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
+
+<!-- 
+Según el Real Decreto 110/2015 tanto las lámparas led como bajo consumo están sometidas al RAE. Número de registro 6299.
+Sus datos se encuentran registrados en una base propiedad de GUSTAVO MEDINA RODRIGUEZ DISTRIBUCIONES S.L.U., inscrita en la Agencia Española de Protección
+de datos. Usted en cualquier momento puede ejercer sus derechos de acceso, rectificación, cancelación y/u oponerse a su tratamiento. Estos derechos
+pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº 20 – 35018 LAS PALMAS DE GRAN CANARIA (LAS PALMAS).
+-->
+					</td>
+					<td width="1.2cm" style="background: #f5f5f5; xborder: 0.2mm #ccc solid !important;"> 
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	<!-- p><span class="pagenum"></span> / <span class="pagecount">{PAGE_COUNT}</span></p -->
+
+
+</div><!-- #letter-footer -->
+
+@php
+
+$GLOBALS['var'] = 'Pedido nº: ' . ($document->document_reference ?: 'BORRADOR');
+
+@endphp
+
+
+<script type="text/php">
+
+    if ( isset($pdf) ) {
+
+        // $pdf->page_text(30, ($pdf->get_height() - 26.89), "Impreso el: " . date('d M Y H:i:s'), null, 10);
+        
+        if ( 1 || $PAGE_COUNT > 1 || \App\Configuration::isTrue('DEVELOPER_MODE') )
+        {
+			// $pdf->page_text(($pdf->get_width() - 82), ($pdf->get_height() - 26.89), "Página {PAGE_NUM} de {PAGE_COUNT}", null, 9);
+
+        	$pdf->page_text(($pdf->get_width() - 61), ($pdf->get_height() - 26.89 - 43), "Página", null, 9);
+
+        	$pdf->page_text(($pdf->get_width() - 54), ($pdf->get_height() - 26.89 - 31), "{PAGE_NUM} / {PAGE_COUNT}", null, 9);
+
+
+// See: https://github.com/dompdf/dompdf/issues/347
+$pdf->page_script('
+if ( $PAGE_NUM == 1 )
+{
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
+
+               // $pdf->text(($pdf->get_width() - 260), ($pdf->get_height() - 26.89 - 790.0), $GLOBALS["var"], null, 9);
+}
+if ( $PAGE_NUM > 1 )
+{
+               // $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), PAGE_NUM." de ".$PAGE_COUNT, null, 9);
+
+               $pdf->text(($pdf->get_width() - 180), ($pdf->get_height() - 26.89 - 790.0), $GLOBALS["var"], null, 9);
+}
+');
+
+        }
+
+
+    }
+
+</script>
+
+{{-- 
+
+https://github.com/dompdf
+
+view-source:https://dompdf.net/test/print_header_footer.html
+
+https://groups.google.com/forum/#!forum/dompdf
+
+https://groups.google.com/forum/#!topic/dompdf/X9sl6KLYimM
+
+https://github.com/samuelterra22/laravel-report-generator/blob/master/src/views/general-pdf-template.blade.php
+
+--}}

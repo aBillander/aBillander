@@ -67,7 +67,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
         }
 */
 
-        $this->quantity_after_movement = $quantity_onhand;
+        $this->quantity_after_movement = $this->quantity_before_movement + $this->quantity;
         $this->save();
 
         // Update Product-Warehouse relationship (quantity)

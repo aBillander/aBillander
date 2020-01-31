@@ -121,7 +121,7 @@
                 <td class="text-center">
                 @if ($line->notes)
                  <a href="javascript:void(0);">
-                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="left" 
                             data-content="{{ $line->notes }}">
                         <i class="fa fa-paperclip"></i> {{-- l('View', [], 'layouts') --}}
                     </button>

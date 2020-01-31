@@ -291,7 +291,9 @@ Bah!
 
 			$template_vars = array(
 //				'company'       => $company,
-				'document_num'   => $customerOrder->document_reference,
+				'customer'       => $customer,
+				'url' => route('customerorders.edit', [$customerOrder->id]),
+				'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
 				'document_date'  => abi_date_short($customerOrder->document_date),
 				'document_total' => $customerOrder->as_money('total_tax_excl'),
 //				'custom_body'   => $request->input('email_body'),

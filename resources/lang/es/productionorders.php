@@ -14,7 +14,7 @@ return [
 	'Production Orders' => 'Ordenes de Fabricación',
 	'Materials' => 'Ingredientes',
 	'Due Date' => 'Fecha de Fabricación',
-	'Product Reference' => 'Ingredientes',
+	'Product Reference' => 'Referencia',
 	'Product Name' => 'Nombre del Producto',
     'Quantity' => 'Cantidad',
 	'Work Center' => 'Centro de Trabajo',
@@ -24,7 +24,7 @@ return [
 	'' => '',
 
 	'Production Order' => 'Orden de Fabricación',
-	'Product ID'     => 'ID',
+	'Product ID' => 'ID del Producto',
 	'Measure Unit'     => 'Unidad de Medida',
 	
 	'Edit Production Order' => 'Modificar Orden de Fabricación',
@@ -37,4 +37,6 @@ return [
 	'' => '',
 	'' => '',
 	'' => '',
+	
+    'View Product' => 'Ir al Producto',
 ];

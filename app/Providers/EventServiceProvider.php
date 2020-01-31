@@ -87,6 +87,17 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\InitializeStock',
             'App\Listeners\AssignToPriceLists',
         ],
+
+        // MFG
+    
+        'App\Events\ProductionOrderFinished' => [
+            'App\Listeners\ProductionOrderFinishedListener',
+        ],
+    
+        'App\Events\ProductionOrderUnfinished' => [
+            'App\Listeners\ProductionOrderUnfinishedListener',
+        ],
+
 /*
         'App\Events\CustomerInvoiceViewed' => [
             'App\Listeners\CustomerInvoiceSetDates',

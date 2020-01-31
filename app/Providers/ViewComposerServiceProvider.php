@@ -107,7 +107,8 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Payment Methods
-		view()->composer(array('customers.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2', 'suppliers.edit'), function($view) {
+		view()->composer(array('customers.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2', 
+			'suppliers.edit', 'supplier_quotations.create', 'supplier_quotations.edit', 'supplier_orders.create', 'supplier_orders.edit', 'supplier_shipping_slips.create', 'supplier_shipping_slips.edit', 'supplier_invoices.create', 'supplier_invoices.edit'), function($view) {
 		    
 		    $view->with('payment_methodList', \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
@@ -121,7 +122,8 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Currencies
-		view()->composer(array('customers.edit', 'products.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_rules.create', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create', 'configuration_keys.key_group_2', 'suppliers.edit'), function($view) {
+		view()->composer(array('customers.edit', 'products.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_rules.create', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create', 'configuration_keys.key_group_2', 
+			'suppliers.edit', 'supplier_quotations.create', 'supplier_quotations.edit', 'supplier_orders.create', 'supplier_orders.edit', 'supplier_shipping_slips.create', 'supplier_shipping_slips.edit', 'supplier_invoices.create', 'supplier_invoices.edit'), function($view) {
 		    
 		    $view->with('currencyList', \App\Currency::pluck('name', 'id')->toArray());
 		    
@@ -135,7 +137,8 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Warehouses
-		view()->composer(array('products.create', 'stock_movements.index', 'stock_movements.create', 'stock_counts._form', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
+		view()->composer(array('products.create', 'stock_movements.index', 'stock_movements.create', 'stock_counts._form', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 
+			'supplier_quotations.create', 'supplier_quotations.edit', 'supplier_orders.create', 'supplier_orders.edit', 'supplier_shipping_slips.create', 'supplier_shipping_slips.edit', 'supplier_invoices.create', 'supplier_invoices.edit'), function($view) {
 /*		    
 		    $whList = \App\Warehouse::with('address')->get();
 
@@ -161,7 +164,8 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Shipping Methods
-		view()->composer(array('customers.edit', 'addresses._form', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('customers.edit', 'addresses._form', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 'configuration_keys.key_group_2', 
+			'supplier_quotations.create', 'supplier_quotations.edit', 'supplier_orders.create', 'supplier_orders.edit', 'supplier_shipping_slips.create', 'supplier_shipping_slips.edit', 'supplier_invoices.create', 'supplier_invoices.edit'), function($view) {
 		    
 		    $view->with('shipping_methodList', \App\ShippingMethod::pluck('name', 'id')->toArray());
 		    
@@ -195,7 +199,8 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 
-		view()->composer(array('products.create', 'products.edit', 'price_list_lines.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
+		view()->composer(array('products.create', 'products.edit', 'price_list_lines.edit', 'customer_quotations.create', 'customer_quotations.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_shipping_slips.create', 'customer_shipping_slips.edit', 'customer_invoices.create', 'customer_invoices.edit', 
+			'supplier_quotations.create', 'supplier_quotations.edit', 'supplier_orders.create', 'supplier_orders.edit', 'supplier_shipping_slips.create', 'supplier_shipping_slips.edit', 'supplier_invoices.create', 'supplier_invoices.edit'), function($view) {
 
 		    // https://laracasts.com/discuss/channels/eloquent/eloquent-model-lists-id-and-a-custom-accessor-field
 		    $view->with('taxpercentList', Arr::pluck(\App\Tax::all(), 'percent', 'id'));
@@ -382,14 +387,14 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Customer Orders Template
-		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('configuration_keys.key_group_2', 'customers.edit'), function($view) {
 		    
 		    $view->with('orders_templateList', \App\Template::listFor( \App\CustomerOrder::class ));
 		    
 		});
 
 		// Customer Shipping Slips Template
-		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		view()->composer(array('configuration_keys.key_group_2', 'customers.edit'), function($view) {
 		    
 		    $view->with('shipping_slips_templateList', \App\Template::listFor( \App\CustomerShippingSlip::class ));
 		    

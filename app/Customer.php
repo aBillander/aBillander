@@ -307,6 +307,21 @@ class Customer extends Model {
         return $query;
     }
 
+    public function scopeIsActive($query)
+    {
+        return $query->where('active', '>', 0);
+    }
+
+    public function scopeIsBlocked($query)
+    {
+        return $query->where('blocked', '>', 0);
+    }
+
+    public function scopeIsNotBlocked($query)
+    {
+        return $query->where('blocked', 0);
+    }
+
     public function scopeOfSalesRep($query)
     {
 //        return $query->where('customer_id', Auth::user()->customer_id);
@@ -839,10 +854,13 @@ class Customer extends Model {
         
         // $customer = Auth::user()->customer;
         $customer = $this;
+        $id = $customer->id;
 
         $rules = PriceRule::
                       where('currency_id', $currency->id)
                     // Customer range
+                    ->applyToCustomer($id)
+                    /*
                     ->where( function($query) use ($customer){
                                 $query->where('customer_id', $customer->id);
                                 // $query->orWhere('customer_id', null);
@@ -852,6 +870,7 @@ class Customer extends Model {
                                 if ($customer->customer_group_id)
                                     $query->orWhere('customer_group_id', $customer->customer_group_id);
                         } )
+                    */
                      // Product range
                     ->where( function($query) use ($product) {
                                 $query->where('product_id', $product->id);

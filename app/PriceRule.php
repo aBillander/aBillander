@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\ViewFormatterTrait;
 
+use App\Customer;
+
 class PriceRule extends Model
 {
     use ViewFormatterTrait;
@@ -32,7 +34,7 @@ class PriceRule extends Model
 
     public static $rules = [
         'category_id'       => 'nullable|exists:categories,id',
-        'product_id'        => 'nullable|exists:products,id',
+        'product_id'        => 'exists:products,id',
         'combination_id'    => 'nullable|exists:combinations,id',
         'customer_id'       => 'nullable|exists:customers,id',
         'customer_group_id' => 'nullable|exists:customer_groups,id',
@@ -51,11 +53,17 @@ class PriceRule extends Model
     {
             $list = [];
             foreach (static::$types as $type) {
-                // $list[$scheme] = l(get_called_class().'.'.$scheme, 'sepasp');
+                // $list[$type] = l('App\\PriceRule.'.$type, [], 'appmultilang');
                 $list[$type] = $type;
             }
 
             return $list;
+    }
+
+    public static function getRuleTypeName( $type )
+    {
+            return $type;
+            //return l('App\\PriceRule.'.$type, [], 'appmultilang');
     }
 
 
@@ -136,6 +144,42 @@ class PriceRule extends Model
     | Scopes
     |--------------------------------------------------------------------------
     */
+
+    public function scopeApplyToCustomer($query, $customer_id)
+    {
+        // Be careful:
+        // If $customer_id = $customer->id, then: $customer_group_id = $customer->customer_group_id
+        return $query->when($customer_id, function($query) use ($customer_id) {
+
+                        $customer_group_id = Customer::find($customer_id)->customer_group_id;
+
+
+                        $query->where(function ($query) use ($customer_id) {
+
+                                $query->whereHas('customer', function ($query) use ($customer_id) {
+
+                                        $query->where('id', $customer_id);
+                                });
+                        });
+
+                        $query->orWhere(function ($query) use ($customer_group_id) {
+
+                                $query->whereDoesntHave('customer');
+
+                                $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
+
+                                        $query->where('id', $customer_group_id);
+                                });
+                        });
+
+                        $query->orWhere(function ($query) {
+
+                                $query->whereDoesntHave('customer');
+
+                                $query->whereDoesntHave('customergroup');
+                        });
+                });
+    }
 
     public function scopeFilter($query, $params)
     {

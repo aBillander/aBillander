@@ -60,5 +60,12 @@ return [
 
 	'Rule Type' => 'Tipo de Regla',
 
+	'Creation date' => 'Fecha de creación',
+
+	'Prices shown: Rule Price (or Unit Price, if there are Extra Items), Unit Price (when applies, i.e. Price Rule is per Pack), Product Price (as seen on Product record).' => 
+	'Precios mostrados: Precio de la Regla (o el Precio Unitario si hay Unidades sin Coste), Precio Unitario (si aplica, o sea, cuando el Precio de la Regla es por Caja), Precio del Producto (tal como aparece en la Ficha del Producto).',
+
+	'Price is WITHOUT Taxes.' => 'El Precio es SIN Impuestos.',
+
 
 ];

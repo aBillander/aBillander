@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Payment;
 use App\Customer;
 
-use App\CustomerShippingSlipLine;
-
 use Excel;
 
 trait HelferinCustomerVouchersTrait

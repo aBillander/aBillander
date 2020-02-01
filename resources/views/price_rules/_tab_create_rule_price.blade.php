@@ -7,6 +7,10 @@
     </div>
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('price', l('Price')) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Price is WITHOUT Taxes.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
         {!! Form::text('price', null, array('id' => 'price', 'class' => 'form-control')) !!}
     </div>
     <div class=" hide form-group col-lg-2 col-md-2 col-sm-2">

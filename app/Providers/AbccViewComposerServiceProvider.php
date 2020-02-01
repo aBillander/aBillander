@@ -39,7 +39,7 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
                                             ->get();
 		    	
 		    	foreach($categories as $category) {
-		    		$tree[$category->name] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+		    		$tree[$category->name] = $category->children()->orderby('position', 'asc')->pluck('name', 'id')->toArray();
 		    		// foreach($category->children as $child) {
 		    			// $tree[$category->name][$child->id] = $child->name;
 		    		// }
@@ -49,7 +49,7 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 
 		    } else {
 		    	// abi_r(\App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
-		    	$view->with('categoryList', \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray());
+		    	$view->with('categoryList', \App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray());
 		    }
 		    
 		});

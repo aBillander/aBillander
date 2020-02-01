@@ -17,7 +17,7 @@
 
 		<div class="banner" xstyle="visibility:hidden">
 
-			{!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
+			&nbsp; {!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
 
 		</div>
 
@@ -82,17 +82,24 @@
 
 			@endif
             
-            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="margin-left: 10mm">[{{ $document->customer->id }}]</span></div>
+            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
 
+			<div class="billing-phone">
 			@if ( $document->shippingaddress->phone )
 
-				<div class="billing-phone">Tel. {{ $document->shippingaddress->phone }}</div>
+				Tel. {{ $document->shippingaddress->phone }}
 
 			@else
 
-				<div class="billing-phone">Tel. {{ $document->customer->phone }}</div>
+				Tel. {{ $document->customer->phone }}
 
 			@endif
+
+			@if ( $document->customer->reference_external )
+				<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span>
+			@endif
+			</div>
+
 
 			<!-- span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div -->
 			
@@ -311,11 +318,11 @@
 
 @endif
 
-{{--
+
 
 @include('templates::customer_orders.default.totals')
 
---}}
+
 
 <table class="notes-totals">
 
@@ -438,7 +445,7 @@ ________________________________________
 { {-- --}}
 
 
-		<table  class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
+		<table  width="100%" style="height: 1.7cm;" class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
 			<tbody>
 				<tr>
 					<td style="padding-right: 2mm">
@@ -478,10 +485,15 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
         	$pdf->page_text(($pdf->get_width() - 54), ($pdf->get_height() - 26.89 - 31), "{PAGE_NUM} / {PAGE_COUNT}", null, 9);
 
+
+// See: https://github.com/dompdf/dompdf/issues/347
+$pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
-               $pdf->page_text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), "{PAGE_NUM} de {PAGE_COUNT}", null, 9);
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
 }
+');
+
         }
 
 

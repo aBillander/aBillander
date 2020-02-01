@@ -253,4 +253,6 @@ return [
 
     'Free Shipping for Orders greater than: :amount (Products Value)' => 'Envío Gratis para Pedido superior a: :amount (Valor de los Productos )',
 
+    'Buy a Pack and save money.' => 'Ahorre dinero comprando por Cajas.',
+
 ];

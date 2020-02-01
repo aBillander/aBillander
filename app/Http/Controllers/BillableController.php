@@ -84,6 +84,7 @@ class BillableController extends Controller
                                     ->where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
+                                    ->isNotBlocked()
                                     ->with('currency')
                                     ->with('addresses')
                                     ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );

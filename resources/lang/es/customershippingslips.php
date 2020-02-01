@@ -329,6 +329,7 @@ return [
 	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
+	'Prompt Payment'     => 'Pronto Pago',
 
 	'Shipment Status'     => 'Estado de Envío',
 

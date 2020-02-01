@@ -146,6 +146,8 @@ class AbccCustomerController extends Controller
 
         $customer_rules = PriceRule::where('currency_id', $customer->currency->id)
                     // Customer range
+                    ->applyToCustomer($id)
+                    /*
                     ->where( function($query) use ($customer) {
                                 $query->where('customer_id', $customer->id);
                                 $query->orWhere( function($query1) {
@@ -154,6 +156,7 @@ class AbccCustomerController extends Controller
                                 if ($customer->customer_group_id)
                                     $query->orWhere('customer_group_id', $customer->customer_group_id);
                         } )
+                        */
                     // Product range
                     ->with('product')
                     ->whereHas('product', function ($query) use ($customer) {

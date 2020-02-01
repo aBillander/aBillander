@@ -150,6 +150,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/helferin/reports/ecotaxes'  , 'HelferinController@reportEcotaxes'  )->name('helferin.reports.ecotaxes');
         Route::post('/helferin/reports/consumption'  , 'HelferinController@reportConsumption'  )->name('helferin.reports.consumption');
         Route::post('/helferin/reports/customer/vouchers'  , 'HelferinController@reportCustomerVouchers'  )->name('helferin.reports.customer.vouchers');
+        Route::post('/helferin/reports/customer/invoices'  , 'HelferinController@reportCustomerInvoices'  )->name('helferin.reports.customer.invoices');
 
         Route::get('/helferin/home/mfg', 'HelferinController@mfgIndex')->name('helferin.home.mfg');
         Route::post('/helferin/reports/reorder'       , 'HelferinController@reportProductReorder'       )->name('helferin.reports.reorder');
@@ -198,6 +199,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('commissionsettlementlines/{id}/unlink', 'CommissionSettlementLinesController@unlink')->name('commissionsettlementline.unlink');
 
         Route::resource('suppliers', 'SuppliersController');
+        Route::get('suppliers/ajax/name_lookup', array('uses' => 'SuppliersController@ajaxSupplierSearch', 'as' => 'supplier.ajax.nameLookup'));
+        Route::post('suppliers/{id}/bankaccount', 'SuppliersController@updateBankAccount')->name('suppliers.bankaccount');
+
+        Route::resource('suppliers.addresses', 'SupplierAddressesController');
 
         Route::resource('templates', 'TemplatesController');
 
@@ -265,6 +270,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('categories.subcategories', 'CategoriesController');
         Route::post('categories/{id}/publish', array('uses' => 'CategoriesController@publish', 
                                                         'as'   => 'categories.publish' ));
+        Route::post('categories/sortlines', 'CategoriesController@sortLines')->name('categories.sortlines');
 
         Route::get('productionorders/{id}/getorder', 'ProductionOrdersController@getOrder')->name('productionorder.getorder');
         Route::post('productionorders/{id}/productionsheetedit', 'ProductionOrdersController@productionsheetEdit')->name('productionorder.productionsheet.edit');
@@ -577,6 +583,10 @@ foreach ($pairs as $pair) {
         Route::get( 'import/stockcounts/{id}', 'Import\ImportStockCountsController@import' )->name('stockcounts.import');
         Route::post('import/stockcounts/{id}', 'Import\ImportStockCountsController@process')->name('stockcounts.import.process');
         Route::get( 'export/stockcounts/{id}', 'Import\ImportStockCountsController@export' )->name('stockcounts.export');
+
+        Route::get( 'import/suppliers', 'Import\ImportSuppliersController@import' )->name('suppliers.import');
+        Route::post('import/suppliers', 'Import\ImportSuppliersController@process')->name('suppliers.import.process');
+        Route::get( 'export/suppliers', 'Import\ImportSuppliersController@export' )->name('suppliers.export');
 
 
         Route::get('import', function()

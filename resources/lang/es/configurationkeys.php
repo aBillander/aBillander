@@ -130,6 +130,11 @@ return [
 	'DEF_PERCENT_DECIMALS.help' => 'Número de decimales para porcentajes.',
 	'DEF_QUANTITY_DECIMALS.name' => 'Decimales en Cantidades',
 	'DEF_QUANTITY_DECIMALS.help' => 'Número de decimales para cantidades (stock, etc.).',
+
+	'BUSINESS_NAME_TO_SHOW.name' => 'Nombre de Proveedores y Clientes que se mostrará ',
+	'BUSINESS_NAME_TO_SHOW.option.fiscal' => '<strong>fiscal</strong>: Mostrar el Nombre Fiscal (Razón Soial)',
+	'BUSINESS_NAME_TO_SHOW.option.commercial' => '<strong>commercial</strong>: Mostrar el Nombre Commercial',
+	'BUSINESS_NAME_TO_SHOW.help' => 'Este nombre se mostrará en informes y campos de búsqueda.',
 	'ALLOW_IP_ADDRESSES.name' => 'Acceso por Dirección IP',
 	'ALLOW_IP_ADDRESSES.help' => 'Sólo estas Direcciones IP tendrán acceso a aBillander. Lista separada por comas.',
 	'MAX_DB_BACKUPS.name' => 'Número Máximo de Copias de la Base de Datos en el Servidor',

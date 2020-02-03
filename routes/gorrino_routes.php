@@ -1401,6 +1401,12 @@ Route::get('seq', function()
 Route::get('migratethis', function()
 {
 
+	// 2020-01-31
+	 \App\Configuration::updateValue('BUSINESS_NAME_TO_SHOW', 'commercial');
+
+
+	die('OK');
+
 
 	// 2020-01-30
 		Illuminate\Support\Facades\DB::statement("drop table if exists `supplier_shipping_slips`");

@@ -11,6 +11,8 @@
             </div>
 
             <div class="shop-name"><h3 style="font-weight: normal;color: #dd4814;"><strong>Resumen de Productos</strong></h3></div>
+
+            <div class="shop-name"><h3 style="font-weight: normal;color: #dd4814;">Centro de Trabajo: <strong>{{ optional($work_center)->name }}</strong></div>
 {{--
             <div class="shop-address" style="margin-top: 2mm;">
                         <strong>Fecha:</strong> {{ abi_date_form_short($sheet->due_date) }} <br>
@@ -44,7 +46,7 @@
 
 
 
-@if ( $sheet->customerorderlinesGrouped()->count() )
+@if ( $sheet->customerorderlinesGroupedByWorkCenter( $work_center->id )->count() )
 
 <table class="order-details xtax-summary x-print-friendly" style="margin-bottom: 4mm;" xstyle="border: 1px #ccc solid">
       <tbody>
@@ -70,7 +72,7 @@
       <th width="50%"> Pedidos </th>
     </tr>
 
-  @foreach ($sheet->customerorderlinesGrouped() as $item)
+  @foreach ($sheet->customerorderlinesGroupedByWorkCenter( $work_center->id ) as $item)
     <tr>
       <td>
 
@@ -120,7 +122,7 @@
             </td>
             <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
             </td>
-            <td width="10%" class="text-right" xstyle="border-right: 1px #ccc solid;"><strong>{{ niceQuantity($order->lines->where( 'reference', $reference)->first()->quantity) }}</strong>
+            <td width="10%" class="text-right" xstyle="border-right: 1px #ccc solid;"><strong>{{ niceQuantity($order->lines->where( 'reference', $reference)->sum('quantity')) }}</strong>
             </td>
 {{--            
             <td xstyle="border-bottom: 1px #ccc solid;">

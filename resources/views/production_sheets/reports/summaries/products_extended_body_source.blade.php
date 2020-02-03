@@ -103,7 +103,7 @@
       </td>
       <td xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
       </td>
-      <td xstyle="border-bottom: 1px #ccc solid;">{{ niceQuantity($order->lines->where( 'reference', $reference)->first()->quantity) }}
+      <td xstyle="border-bottom: 1px #ccc solid;">{{ niceQuantity($order->lines->where( 'reference', $reference)->sum('quantity')) }}
       </td>
       <td xstyle="border-bottom: 1px #ccc solid;">
           @if ( $order->hasShippingAddress() )

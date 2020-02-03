@@ -160,6 +160,16 @@ border: 1px solid rgba(0,0,0,0.15);">
       <li><a href="{{ route('productionsheet.orders.pdf', [$sheet->id, 'extended']) }}" target="_blank"><i class="fa fa-th-list text-info"></i> &nbsp;{{ l('Customer Orders') }} Ext.</a> </li>
       <li><a href="{{ route('productionsheet.products.pdf', [$sheet->id]) }}" target="_blank"><i class="fa fa-th-large"></i> &nbsp;{{ l('Products') }}</a> </li>
       <li><a href="{{ route('productionsheet.products.pdf', [$sheet->id, 'extended']) }}" target="_blank"><i class="fa fa-th text-info"></i> &nbsp;{{ l('Products') }} Ext.</a> </li>
+      <li >
+        
+              <ul class="-dropdown-menu" style="margin-left:16px;">
+                @foreach($work_centerList as $id => $name)
+                <li><a href="{{ route('productionsheet.products.pdf', [$sheet->id, 'extended', 'work_center_id' => $id]) }}" target="_blank">{{ $name }}</a></li>
+                @endforeach
+                <li><a href="{{ route('productionsheet.products.pdf', [$sheet->id, 'extended', 'work_center_id' => 0]) }}" target="_blank">{{ 'Todos' }}</a></li>
+              </ul>
+
+      </li>
       <li class="divider"></li>
     </ul>
   </div>

@@ -1017,6 +1017,29 @@ class Product extends Model {
 
         return $price;
     }
+
+
+
+    public function getPriceBySupplier( Supplier $supplier, $quantity = 1, Currency $currency = null )
+    {
+        // Return Price Object
+        $price = $supplier->getPrice( $this, $quantity, $currency );
+
+        // Add Ecotax
+        if (  Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        {
+            // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
+//            $ecoprice = Price::create([
+//                        $this->getEcotax(), 
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $price->price_tax_inc
+//                ]);
+
+            $price->add( $this->getEcotax() ); 
+        }
+
+        return $price;
+    }
     
 
     public function getEcotax()
@@ -1084,6 +1107,19 @@ class Product extends Model {
     {
         $rules =         $this->getTaxRulesByAddress(  $address  )
                 ->merge( $this->getTaxRulesByCustomer( $customer ) )
+                ->merge( $this->getTaxRulesByProduct(  $address  ) );
+
+        // Higher Tax first
+        // return $rules->sortByDesc('percent');
+        // Not needed: use rule 'position' for precedence
+
+        return $rules->sortBy('position');
+    }
+
+    public function getSupplierTaxRules( Address $address = null, Supplier $supplier = null )
+    {
+        $rules =         $this->getTaxRulesByAddress(  $address  )
+//                ->merge( $this->getTaxRulesBySupplier( $supplier ) )
                 ->merge( $this->getTaxRulesByProduct(  $address  ) );
 
         // Higher Tax first
@@ -1269,6 +1305,15 @@ class Product extends Model {
         return $query;
     }
 
+    public function scopeIsPurchaseable($query, $all = false)
+    {
+        // Apply filters here
+        if ( $all ) 
+            return $query;
+
+        return $query->where('procurement_type', 'purchase');
+    }
+
     public function scopeIsService($query)
     {
         return $query->where('procurement_type', 'none');
@@ -1341,6 +1386,13 @@ class Product extends Model {
         });
     }
 
+
+    public function scopeQualifyForSupplier($query, $supplier_id, $currency_id) 
+    {
+        // Filter Products by Supplier
+
+        return $query;
+    }
 
 
     public function scopeIsAvailable($query) 

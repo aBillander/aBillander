@@ -4,11 +4,10 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
-trait BillableFormsControllerTrait
+trait SupplierBillableFormsControllerTrait
 {
-   use SupplierBillableFormsControllerTrait;
 
-    public function FormForProduct( $action )
+    public function SupplierFormForProduct( $action )
     {
 
         switch ( $action ) {
@@ -34,7 +33,7 @@ trait BillableFormsControllerTrait
         
     }
 
-    public function FormForService( $action )
+    public function SupplierFormForService( $action )
     {
 
         switch ( $action ) {
@@ -60,7 +59,7 @@ trait BillableFormsControllerTrait
         
     }
 
-    public function FormForComment( $action )
+    public function SupplierFormForComment( $action )
     {
 
         switch ( $action ) {
@@ -86,28 +85,24 @@ trait BillableFormsControllerTrait
         
     }
 
-    public function storeDocumentLine(Request $request, $document_id)
+    public function storeSupplierDocumentLine(Request $request, $document_id)
     {
-        if ( $request->has('supplier_id') )
-            return $this->storeSupplierDocumentLine($request, $document_id);
-        
-        
         $line_type = $request->input('line_type', '');
 
         switch ( $line_type ) {
             case 'product':
                 # code...
-                return $this->storeDocumentLineProduct($request, $document_id);
+                return $this->storeSupplierDocumentLineProduct($request, $document_id);
                 break;
             
             case 'service':
                 # code...
-                return $this->storeDocumentLineService($request, $document_id);
+                return $this->storeSupplierDocumentLineService($request, $document_id);
                 break;
             
             case 'comment':
                 # code...
-                return $this->storeDocumentLineComment($request, $document_id);
+                return $this->storeSupplierDocumentLineComment($request, $document_id);
                 break;
             
             default:
@@ -121,14 +116,13 @@ trait BillableFormsControllerTrait
         }
     }
 
-    public function storeDocumentLineProduct(Request $request, $document_id)
+    public function storeSupplierDocumentLineProduct(Request $request, $document_id)
     {
-        // return response()->json(['order_id' => $order_id] + $request->all());
+        // return response()->json(['order_id' => $document_id] + $request->all());
 
         $document = $this->document
-                        ->with('customer')
+                        ->with('supplier')
                         ->with('taxingaddress')
-                        ->with('salesrep')
                         ->with('currency')
                         ->find($document_id);
 
@@ -143,7 +137,7 @@ trait BillableFormsControllerTrait
         $combination_id = $request->input('combination_id', null);
         $quantity       = $request->input('quantity', 1.0);
 
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', $document->customer->currentPricesEnteredWithTax( $document->document_currency )) );
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', $document->supplier->currentPricesEnteredWithTax( $document->document_currency )) );
 
         $params = [
             'prices_entered_with_tax' => $pricetaxPolicy,
@@ -164,16 +158,10 @@ trait BillableFormsControllerTrait
         if ($request->has('measure_unit_id')) 
             $params['measure_unit_id'] = $request->input('measure_unit_id');
 
-        if ($request->has('sales_rep_id')) 
-            $params['sales_rep_id'] = $request->input('sales_rep_id');
-
-        if ($request->has('commission_percent')) 
-            $params['commission_percent'] = $request->input('commission_percent');
-
 
         // Let's Rock!
 
-        $document_line = $document->addProductLine( $product_id, $combination_id, $quantity, $params );
+        $document_line = $document->addSupplierProductLine( $product_id, $combination_id, $quantity, $params );
 
 
         return response()->json( [
@@ -183,7 +171,7 @@ trait BillableFormsControllerTrait
     }
 
 
-    public function storeDocumentLineService(Request $request, $document_id)
+    public function storeSupplierDocumentLineService(Request $request, $document_id)
     {
         $document = $this->document
                         ->with('customer')
@@ -247,7 +235,7 @@ trait BillableFormsControllerTrait
     }
 
 
-    public function storeDocumentLineComment(Request $request, $document_id)
+    public function storeSupplierDocumentLineComment(Request $request, $document_id)
     {
         $document = $this->document
                         ->with('customer')
@@ -311,6 +299,7 @@ trait BillableFormsControllerTrait
     }
 
 
+/*
     public function updateDocumentLine(Request $request, $line_id)
     {
         $line_type = $request->input('line_type', '');
@@ -586,4 +575,6 @@ trait BillableFormsControllerTrait
                 'data' => $document_line->toArray()
         ] );
     }
+
+*/
 }

@@ -13,6 +13,7 @@ class SupplierShippingSlipLine extends BillableLine
      * 
      */
     protected $line_fillable = [
+        'unit_supplier_price', 'unit_supplier_final_price', 'unit_customer_final_price_tax_inc',
     ];
     
 

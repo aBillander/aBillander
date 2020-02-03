@@ -55,6 +55,22 @@ trait BillableIntrospectorTrait
 
         return $segment = studly_case($segments[0]);
     }
+    
+    public function getClassFirstSegment()
+    {
+        // Cusromer
+        // Supplier
+        static $segment;
+
+        if ($segment) return $segment;
+
+        // http://otroblogmas.com/parsear-strings-formato-camelcase-php/
+        $str = snake_case($this->getClass());
+
+        $segments = explode('_', $str);
+
+        return $segment = studly_case($segments[0]);
+    }
 
     public function getParentClass()
     {

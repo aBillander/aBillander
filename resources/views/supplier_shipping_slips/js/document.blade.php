@@ -430,6 +430,7 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
+                              supplier_id : {{ $document->supplier_id }},
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),

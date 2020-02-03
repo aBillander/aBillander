@@ -23,6 +23,12 @@ class CreateSupplierShippingSlipLinesTable extends Migration
             // Parent Document
             $table->integer('supplier_shipping_slip_id')->unsigned()->nullable(false);
         });
+
+        Schema::table('supplier_shipping_slip_lines', function ($table) {
+            $table->renameColumn('unit_customer_price',               'unit_supplier_price');
+            $table->renameColumn('unit_customer_final_price',         'unit_supplier_final_price');
+            $table->renameColumn('unit_customer_final_price_tax_inc', 'unit_supplier_final_price_tax_inc');
+        });
     }
 
     /**

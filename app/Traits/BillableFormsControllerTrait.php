@@ -313,6 +313,9 @@ trait BillableFormsControllerTrait
 
     public function updateDocumentLine(Request $request, $line_id)
     {
+        if ( $request->has('supplier_id') )
+            return $this->updateSupplierDocumentLine($request, $line_id);
+        
         $line_type = $request->input('line_type', '');
 
         switch ( $line_type ) {

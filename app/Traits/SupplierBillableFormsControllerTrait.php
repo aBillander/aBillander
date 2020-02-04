@@ -299,31 +299,30 @@ trait SupplierBillableFormsControllerTrait
     }
 
 
-/*
-    public function updateDocumentLine(Request $request, $line_id)
+    public function updateSupplierDocumentLine(Request $request, $line_id)
     {
         $line_type = $request->input('line_type', '');
 
         switch ( $line_type ) {
             case 'product':
                 # code...
-                return $this->updateDocumentLineProduct($request, $line_id);
+                return $this->updateSupplierDocumentLineProduct($request, $line_id);
                 break;
             
             case 'service':
             case 'shipping':
                 # code...
-                return $this->updateDocumentLineService($request, $line_id);
+                return $this->updateSupplierDocumentLineService($request, $line_id);
                 break;
             
             case 'comment':
                 # code...
-                return $this->updateDocumentLineComment($request, $line_id);
+                return $this->updateSupplierDocumentLineComment($request, $line_id);
                 break;
             
             default:
                 # code...
-                // Document Line Type not supported
+                // SupplierDocument Line Type not supported
                 return response()->json( [
                             'msg' => 'ERROR',
                             'data' => $request->all()
@@ -332,7 +331,7 @@ trait SupplierBillableFormsControllerTrait
         }
     }
 
-    public function updateDocumentLineProduct(Request $request, $line_id)
+    public function updateSupplierDocumentLineProduct(Request $request, $line_id)
     {
 
         $params = [
@@ -373,12 +372,6 @@ trait SupplierBillableFormsControllerTrait
         if ($request->has('measure_unit_id')) 
             $params['measure_unit_id'] = $request->input('measure_unit_id');
 
-        if ($request->has('sales_rep_id')) 
-            $params['sales_rep_id'] = $request->input('sales_rep_id');
-
-        if ($request->has('commission_percent')) 
-            $params['commission_percent'] = $request->input('commission_percent');
-
 
         // Let's Rock!
         $document_line = $this->document_line
@@ -395,7 +388,7 @@ trait SupplierBillableFormsControllerTrait
         $document = $document_line->document;
 //        $document = $this->document->where('id', $this->model_snake_case.'_id')->first();
 
-        $document_line = $document->updateProductLine( $line_id, $params );
+        $document_line = $document->updateSupplierProductLine( $line_id, $params );
 
 
         return response()->json( [
@@ -405,7 +398,7 @@ trait SupplierBillableFormsControllerTrait
     }
 
 
-    public function updateDocumentLineService(Request $request, $line_id)
+    public function updateSupplierDocumentLineService(Request $request, $line_id)
     {
 
         $params = [
@@ -491,7 +484,7 @@ trait SupplierBillableFormsControllerTrait
     }
 
 
-    public function updateDocumentLineComment(Request $request, $line_id)
+    public function updateSupplierDocumentLineComment(Request $request, $line_id)
     {
 
         $params = [
@@ -576,5 +569,4 @@ trait SupplierBillableFormsControllerTrait
         ] );
     }
 
-*/
 }

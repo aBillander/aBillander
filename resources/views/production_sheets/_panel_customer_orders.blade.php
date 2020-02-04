@@ -162,11 +162,7 @@ border: 1px solid rgba(0,0,0,0.15);">
       <li><a href="{{ route('productionsheet.products.pdf', [$sheet->id, 'extended']) }}" target="_blank"><i class="fa fa-th text-info"></i> &nbsp;{{ l('Products') }} Ext.</a> </li>
       <li >
         
-<<<<<<< HEAD
               <ul class="-dropdown-menu" style="margin-left:16px;">
-=======
-              <ul class="-dropdown-menu" style="margin-right:162px;">
->>>>>>> _mQ_
                 @foreach($work_centerList as $id => $name)
                 <li><a href="{{ route('productionsheet.products.pdf', [$sheet->id, 'extended', 'work_center_id' => $id]) }}" target="_blank">{{ $name }}</a></li>
                 @endforeach

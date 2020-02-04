@@ -1401,6 +1401,14 @@ Route::get('seq', function()
 Route::get('migratethis', function()
 {
 
+	// 2020-02-04
+		Illuminate\Support\Facades\DB::statement("create table `supplier_price_list_lines` (`id` int unsigned not null auto_increment primary key, `supplier_id` int unsigned not null, `product_id` int unsigned not null, `currency_id` int unsigned null, `price` decimal(20, 6) not null default '0', `from_quantity` decimal(20, 6) not null default '1', `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+
+	die('OK');
+
+
+
 	// 2020-01-31
 	 \App\Configuration::updateValue('BUSINESS_NAME_TO_SHOW', 'commercial');
 
@@ -1411,11 +1419,136 @@ Route::get('migratethis', function()
 	// 2020-01-30
 		Illuminate\Support\Facades\DB::statement("drop table if exists `supplier_shipping_slips`");
 
-		Illuminate\Support\Facades\DB::statement("create table `supplier_shipping_slips` (`id` int unsigned not null auto_increment primary key, `company_id` int unsigned not null default '0', `supplier_id` int unsigned null, `user_id` int unsigned not null default '0', `sequence_id` int unsigned null, `document_prefix` varchar(8) null, `document_id` int unsigned not null default '0', `document_reference` varchar(64) null, `reference` varchar(191) null, `reference_customer` varchar(32) null, `reference_external` varchar(32) null, `created_via` varchar(32) null default 'manual', `document_date` datetime not null, `payment_date` datetime null, `validation_date` datetime null, `delivery_date` datetime null, `delivery_date_real` datetime null, `close_date` datetime null, `document_discount_percent` decimal(20, 6) not null default '0', `document_discount_amount_tax_incl` decimal(20, 6) not null default '0', `document_discount_amount_tax_excl` decimal(20, 6) not null default '0', `document_ppd_percent` decimal(20, 6) not null default '0', `document_ppd_amount_tax_incl` decimal(20, 6) not null default '0', `document_ppd_amount_tax_excl` decimal(20, 6) not null default '0', `number_of_packages` smallint unsigned not null default '1', `volume` decimal(20, 6) null default '0', `weight` decimal(20, 6) null default '0', `shipping_conditions` text null, `tracking_number` varchar(191) null, `currency_conversion_rate` decimal(20, 6) not null default '1', `down_payment` decimal(20, 6) not null default '0', `total_discounts_tax_incl` decimal(20, 6) not null default '0', `total_discounts_tax_excl` decimal(20, 6) not null default '0', `total_products_tax_incl` decimal(20, 6) not null default '0', `total_products_tax_excl` decimal(20, 6) not null default '0', `total_shipping_tax_incl` decimal(20, 6) not null default '0', `total_shipping_tax_excl` decimal(20, 6) not null default '0', `total_other_tax_incl` decimal(20, 6) not null default '0', `total_other_tax_excl` decimal(20, 6) not null default '0', `total_lines_tax_incl` decimal(20, 6) not null default '0', `total_lines_tax_excl` decimal(20, 6) not null default '0', `total_currency_tax_incl` decimal(20, 6) not null default '0', `total_currency_tax_excl` decimal(20, 6) not null default '0', `total_currency_paid` decimal(20, 6) not null default '0', `total_tax_incl` decimal(20, 6) not null default '0', `total_tax_excl` decimal(20, 6) not null default '0', `commission_amount` decimal(20, 6) not null default '0', `notes_from_customer` text null, `notes` text null, `notes_to_customer` text null, `status` varchar(32) not null default 'draft', `onhold` tinyint not null default '0', `locked` tinyint not null default '0', `invoicing_address_id` int unsigned not null, `shipping_address_id` int unsigned null, `warehouse_id` int unsigned null, `shipping_method_id` int unsigned null, `carrier_id` int unsigned null, `sales_rep_id` int unsigned null, `currency_id` int unsigned not null, `payment_method_id` int unsigned not null, `template_id` int null, `export_date` datetime null, `secure_key` varchar(32) not null, `import_key` varchar(16) null, `created_at` timestamp null, `updated_at` timestamp null, `shipment_status` varchar(32) not null default 'pending', `invoiced_at` date null, `prices_entered_with_tax` tinyint not null default '0', `round_prices_with_tax` tinyint not null default '0') default character set utf8mb4 collate utf8mb4_unicode_ci");
+		Illuminate\Support\Facades\DB::statement("CREATE TABLE `supplier_shipping_slips` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `company_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `supplier_id` int(10) UNSIGNED DEFAULT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `sequence_id` int(10) UNSIGNED DEFAULT NULL,
+  `document_prefix` varchar(8) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `document_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `document_reference` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reference` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reference_customer` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reference_external` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_via` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT 'manual',
+  `document_date` datetime NOT NULL,
+  `payment_date` datetime DEFAULT NULL,
+  `validation_date` datetime DEFAULT NULL,
+  `delivery_date` datetime DEFAULT NULL,
+  `delivery_date_real` datetime DEFAULT NULL,
+  `close_date` datetime DEFAULT NULL,
+  `document_discount_percent` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `document_discount_amount_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `document_discount_amount_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `document_ppd_percent` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `document_ppd_amount_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `document_ppd_amount_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `number_of_packages` smallint(5) UNSIGNED NOT NULL DEFAULT '1',
+  `volume` decimal(20,6) DEFAULT '0.000000',
+  `weight` decimal(20,6) DEFAULT '0.000000',
+  `shipping_conditions` text COLLATE utf8mb4_unicode_ci,
+  `tracking_number` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `currency_conversion_rate` decimal(20,6) NOT NULL DEFAULT '1.000000',
+  `down_payment` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_discounts_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_discounts_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_products_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_products_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_shipping_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_shipping_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_other_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_other_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_lines_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_lines_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_currency_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_currency_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_currency_paid` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `commission_amount` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `notes_from_customer` text COLLATE utf8mb4_unicode_ci,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `notes_to_supplier` text COLLATE utf8mb4_unicode_ci,
+  `status` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'draft',
+  `onhold` tinyint(4) NOT NULL DEFAULT '0',
+  `locked` tinyint(4) NOT NULL DEFAULT '0',
+  `invoicing_address_id` int(10) UNSIGNED NOT NULL,
+  `shipping_address_id` int(10) UNSIGNED DEFAULT NULL,
+  `warehouse_id` int(10) UNSIGNED DEFAULT NULL,
+  `shipping_method_id` int(10) UNSIGNED DEFAULT NULL,
+  `carrier_id` int(10) UNSIGNED DEFAULT NULL,
+  `sales_rep_id` int(10) UNSIGNED DEFAULT NULL,
+  `currency_id` int(10) UNSIGNED NOT NULL,
+  `payment_method_id` int(10) UNSIGNED NOT NULL,
+  `template_id` int(11) DEFAULT NULL,
+  `export_date` datetime DEFAULT NULL,
+  `secure_key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `import_key` varchar(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `shipment_status` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `invoiced_at` date DEFAULT NULL,
+  `prices_entered_with_tax` tinyint(4) NOT NULL DEFAULT '0',
+  `round_prices_with_tax` tinyint(4) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_shipping_slips`
+  ADD PRIMARY KEY (`id`);");
+
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_shipping_slips`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;");
 
 		Illuminate\Support\Facades\DB::statement("drop table if exists `supplier_shipping_slip_lines`");
 
-		Illuminate\Support\Facades\DB::statement("create table `supplier_shipping_slip_lines` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `line_type` varchar(32) not null, `product_id` int unsigned null, `combination_id` int unsigned null, `reference` varchar(32) null, `name` varchar(128) not null, `quantity` decimal(20, 6) not null, `extra_quantity` decimal(20, 6) null default '0', `extra_quantity_label` varchar(128) null, `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `prices_entered_with_tax` tinyint not null default '0', `cost_price` decimal(20, 6) not null default '0', `unit_price` decimal(20, 6) not null default '0', `unit_customer_price` decimal(20, 6) not null default '0', `unit_customer_final_price` decimal(20, 6) not null default '0', `unit_customer_final_price_tax_inc` decimal(20, 6) not null default '0', `unit_final_price` decimal(20, 6) not null default '0', `unit_final_price_tax_inc` decimal(20, 6) not null default '0', `sales_equalization` tinyint not null default '0', `discount_percent` decimal(8, 3) not null default '0', `discount_amount_tax_incl` decimal(20, 6) not null default '0', `discount_amount_tax_excl` decimal(20, 6) not null default '0', `total_tax_incl` decimal(20, 6) not null default '0', `total_tax_excl` decimal(20, 6) not null default '0', `tax_percent` decimal(8, 3) not null default '0', `ecotax_amount` decimal(20, 6) not null default '0', `ecotax_total_amount` decimal(20, 6) not null default '0', `commission_percent` decimal(8, 3) not null default '0', `notes` text null, `locked` tinyint not null default '0', `tax_id` int unsigned not null, `ecotax_id` int unsigned null, `sales_rep_id` int unsigned null, `created_at` timestamp null, `updated_at` timestamp null, `supplier_shipping_slip_id` int unsigned not null) default character set utf8mb4 collate utf8mb4_unicode_ci");
+		Illuminate\Support\Facades\DB::statement("CREATE TABLE `supplier_shipping_slip_lines` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `line_sort_order` int(11) DEFAULT NULL,
+  `line_type` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_id` int(10) UNSIGNED DEFAULT NULL,
+  `combination_id` int(10) UNSIGNED DEFAULT NULL,
+  `reference` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `quantity` decimal(20,6) NOT NULL,
+  `extra_quantity` decimal(20,6) DEFAULT '0.000000',
+  `extra_quantity_label` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `measure_unit_id` int(10) UNSIGNED NOT NULL,
+  `package_measure_unit_id` int(10) UNSIGNED DEFAULT NULL,
+  `pmu_conversion_rate` decimal(20,6) DEFAULT '1.000000',
+  `prices_entered_with_tax` tinyint(4) NOT NULL DEFAULT '0',
+  `cost_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `unit_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `unit_supplier_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `unit_supplier_final_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `unit_supplier_final_price_tax_inc` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `unit_final_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `unit_final_price_tax_inc` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `sales_equalization` tinyint(4) NOT NULL DEFAULT '0',
+  `discount_percent` decimal(8,3) NOT NULL DEFAULT '0.000',
+  `discount_amount_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `discount_amount_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_tax_incl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `total_tax_excl` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `tax_percent` decimal(8,3) NOT NULL DEFAULT '0.000',
+  `ecotax_amount` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `ecotax_total_amount` decimal(20,6) NOT NULL DEFAULT '0.000000',
+  `commission_percent` decimal(8,3) NOT NULL DEFAULT '0.000',
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `locked` tinyint(4) NOT NULL DEFAULT '0',
+  `tax_id` int(10) UNSIGNED NOT NULL,
+  `ecotax_id` int(10) UNSIGNED DEFAULT NULL,
+  `sales_rep_id` int(10) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `supplier_shipping_slip_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_shipping_slip_lines`
+  ADD PRIMARY KEY (`id`);");
+
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_shipping_slip_lines`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;");
+		
 
 		Illuminate\Support\Facades\DB::statement("drop table if exists `supplier_shipping_slip_line_taxes`");
 

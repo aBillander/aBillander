@@ -303,52 +303,34 @@ class Supplier extends Model {
     public function getPrice( Product $product, $quantity = 1, Currency $currency = null )
     {
 
-        // Temporarily:
-        // Use product price (initial or base price)
-        $price = $product->getPrice();
-
-        if ($currency->id == $price->currency->id) {
-            return $price;
-        }
-
-        // Convert price
-        $price = $price->convert( $currency );
-
-        return $price;
-
-
-
-        // Special prices have more priority
-        $price = $this->getPriceByRules( $product, $quantity, $currency );
-
-        if ( $price ) return $price;
-
-
-        // Customer has pricelist?
-        return $this->getPriceByPriceList( $product, $quantity, $currency );
-    }
-
-    public function getPriceByRules( Product $product, $quantity = 1, Currency $currency = null )
-    {
-        // Fall back price (use it if Price for $currency is not set)
-        $fallback = null;
-
         if (!$currency && $this->currency_id)
             $currency = $this->currency;
 
         if (!$currency)
             $currency = Context::getContext()->currency;
 
+        $line = SupplierPriceListLine::
+                              where('supplier_id', $this->id)
+                            ->where('product_id', $product->id)
+                            ->where('currency_id', $this->currency_id)
+                            ->where('from_quantity', '<=', $quantity)
+                            ->orderBy('from_quantity', 'desc')
+                            ->first();
 
-        // Special prices have more priority
-        $rules = $this->getPriceRules( $product, $currency )->where('rule_type', 'price');
 
-        if ( $rules->count() )
-            return $product->getPrice()->applyPriceRules( $rules, $quantity );
+        if ( $line )
+        {
+            $thePrice = $line->price;
+
+        } else {
+
+            $thePrice = $product->last_purchase_price;
+        }
+        
+        $price = new Price( $thePrice, 0, $this->currency);
 
 
-        // No rules found:
-        return null;
+        return $price;
     }
 
     

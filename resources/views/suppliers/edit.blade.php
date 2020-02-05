@@ -74,6 +74,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-dashboard"></i>
                &nbsp; {{ l('Commercial') }}
             </a>
+            <a id="" href="{{ route('suppliers.supplierpricelistlines.index', $supplier->id) }}" class="list-group-item">
+               <i class="fa fa-gavel text-success"></i>
+               &nbsp; {{ l('Price List') }}
+            </a>
             <a id="b_bankaccounts" href="#bankaccounts" class="list-group-item">
                <i class="fa fa-briefcase"></i>
                &nbsp; {{ l('Bank Accounts') }}
@@ -98,10 +102,6 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
             <a id="b_products" href="#products" class="list-group-item">
                <i class="fa fa-th"></i>
                &nbsp; {{ l('Products') }}
-            </a>
-            <a id="b_pricerules" href="#pricerules" class="list-group-item">
-               <i class="fa fa-gavel"></i>
-               &nbsp; {{ l('Price Rules') }}
             </a>
 --}}
             <!-- a id="b_statistics" href="#statistics" class="list-group-item">

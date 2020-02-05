@@ -17,9 +17,10 @@ class SupplierPriceListLine extends Model {
     protected $fillable = [ 'supplier_id', 'product_id', 'price', 'currency_id', 'from_quantity' ];
 
     public static $rules = array(
-        'supplier_id' => 'required|exists:suppliers,id',
-        'product_id'  => 'required|exists:products,id',
-        'price'       => 'required|numeric|min:0', 
+        'supplier_id'  => 'required|exists:suppliers,id',
+        'product_id'   => 'required|exists:products,id',
+        'currency_id'  => 'required|exists:currencies,id',
+        'price'        => 'required|numeric|min:0', 
     	);
 
 
@@ -28,6 +29,14 @@ class SupplierPriceListLine extends Model {
     | Methods
     |--------------------------------------------------------------------------
     */
+
+    public function getPriceLocalCurrencyAttribute() 
+    {
+        if ( $this->currency_id == Context::getContext()->currency->id )
+            return $this->price;
+
+        return Currency::convertAmount($this->price, $this->currency, Context::getContext()->currency);
+    }
 
 
     public function scopeFilter($query, $params)

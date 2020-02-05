@@ -204,6 +204,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
 
+        Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
+
+        Route::get('suppliers/{id}/supplierpricelistline/searchproduct', 'SupplierPriceListLinesController@searchProduct')->name('supplier.pricelistline.searchproduct');
+
         Route::resource('templates', 'TemplatesController');
 
         Route::resource('currencies', 'CurrenciesController');

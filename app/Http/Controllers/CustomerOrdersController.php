@@ -598,7 +598,7 @@ class CustomerOrdersController extends BillableController
 
         $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
-        $documents->setPath($this->model_path);
+        $documents->setPath('today');
 
         return view($this->view_path.'.index_for_today', $this->modelVars() + compact('documents'));
     }

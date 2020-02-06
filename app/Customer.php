@@ -85,6 +85,8 @@ class Customer extends Model {
     
     public function getNameRegularAttribute() 
     {
+        if ( Configuration::get('BUSINESS_NAME_TO_SHOW') == 'fiscal' ) return $this->name_fiscal;
+
         return $this->name_commercial ?: $this->name_fiscal;
     }
 /*    

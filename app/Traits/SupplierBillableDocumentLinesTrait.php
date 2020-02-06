@@ -2,9 +2,8 @@
 
 namespace App\Traits;
 
-trait BillableDocumentLinesTrait
+trait SupplierBillableDocumentLinesTrait
 {
-   use SupplierBillableDocumentLinesTrait;
 
     /*
     |--------------------------------------------------------------------------
@@ -13,7 +12,7 @@ trait BillableDocumentLinesTrait
     */
 
 
-    public function updateLine($line_id, $params = ['line_type' => 'comment'])
+    public function updateSupplierLine($line_id, $params = ['line_type' => 'comment'])
     {
         $line_type = $params['line_type'] ?: '';
 
@@ -22,18 +21,18 @@ trait BillableDocumentLinesTrait
         switch ( $line_type ) {
             case 'product':
                 # code...
-                return $this->updateProductLine($line_id, $params);
+                return $this->updateSupplierProductLine($line_id, $params);
                 break;
             
             case 'service':
             case 'shipping':
                 # code...
-                return $this->updateServiceLine($line_id, $params);
+                return $this->updateSupplierServiceLine($line_id, $params);
                 break;
             
             case 'comment':
                 # code...
-                return $this->updateCommentLine($line_id, $params);
+                return $this->updateSupplierCommentLine($line_id, $params);
                 break;
             
             default:
@@ -52,16 +51,15 @@ trait BillableDocumentLinesTrait
     /**
      * Add Product to ShippingSlip
      *
-     *     'prices_entered_with_tax', 'unit_customer_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
+     *     'prices_entered_with_tax', 'unit_supplier_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
      */
-    public function addProductLine( $product_id, $combination_id = null, $quantity = 1.0, $params = [] )
+    public function addSupplierProductLine( $product_id, $combination_id = null, $quantity = 1.0, $params = [] )
     {
         // Do the Mambo!
         $line_type = 'product';
 
-        // Customer
-        $customer = $this->customer;
-        $salesrep = $customer->salesrep;
+        // Supplier
+        $supplier = $this->supplier;
         
         // Currency
         $currency = $this->document_currency;
@@ -91,7 +89,7 @@ trait BillableDocumentLinesTrait
         $tax_percent = $tax->getTaxPercent( $taxing_address );
         $sales_equalization = array_key_exists('sales_equalization', $params) 
                             ? $params['sales_equalization'] 
-                            : $customer->sales_equalization;
+                            : $supplier->sales_equalization;
 
         // Product Price
         $price = $product->getPrice();
@@ -100,30 +98,30 @@ trait BillableDocumentLinesTrait
 //        }
         $unit_price = $price->getPrice();
 
-        // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+        // Calculate price per $supplier_id now!
+        $supplier_price = $product->getPriceBySupplier( $supplier, $quantity, $currency );
 
-        // Is there a Price for this Customer?
-        if (!$customer_price) return null;      // Product not allowed for this Customer
+        // Is there a Price for this Supplier?
+        if (!$supplier_price) return null;      // Product not allowed for this Supplier
 
-        $customer_price->applyTaxPercent( $tax_percent );
-        $unit_customer_price = $customer_price->getPrice();
+        $supplier_price->applyTaxPercent( $tax_percent );
+        $unit_supplier_price = $supplier_price->getPrice();
 
         // Price Policy
         $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
                             ? $params['prices_entered_with_tax'] 
-                            : $customer_price->price_is_tax_inc;
+                            : $supplier_price->price_is_tax_inc;
 
-        // Customer Final Price
-        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
+        // Supplier Final Price
+        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
 
-            $unit_customer_final_price->applyTaxPercent( $tax_percent );
+            $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 
         } else {
 
-            $unit_customer_final_price = clone $customer_price;
+            $unit_supplier_final_price = clone $supplier_price;
         }
 
         // Discount
@@ -132,18 +130,9 @@ trait BillableDocumentLinesTrait
                             : 0.0;
 
         // Final Price
-        $unit_final_price = clone $unit_customer_final_price;
+        $unit_final_price = clone $unit_supplier_final_price;
         if ( $discount_percent ) 
             $unit_final_price->applyDiscountPercent( $discount_percent );
-
-        // Sales Rep
-        $sales_rep_id = array_key_exists('sales_rep_id', $params) 
-                            ? $params['sales_rep_id'] 
-                            : optional($salesrep)->id;
-        
-        $commission_percent = array_key_exists('sales_rep_id', $params) && array_key_exists('commission_percent', $params) 
-                            ? $params['commission_percent'] 
-                            : optional($salesrep)->getCommision( $product, $customer ) ?? 0.0;
 
 
 
@@ -186,9 +175,9 @@ trait BillableDocumentLinesTrait
     
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price->getPrice(),
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price->getPriceWithTax(),
+            'unit_supplier_price' => $unit_supplier_price,
+            'unit_supplier_final_price' => $unit_supplier_final_price->getPrice(),
+            'unit_supplier_final_price_tax_inc' => $unit_supplier_final_price->getPriceWithTax(),
             'unit_final_price' => $unit_final_price->getPrice(),
             'unit_final_price_tax_inc' => $unit_final_price->getPriceWithTax(), 
             'sales_equalization' => $sales_equalization,
@@ -200,13 +189,11 @@ trait BillableDocumentLinesTrait
             'total_tax_excl' => $quantity * $unit_final_price->getPrice(),
 
             'tax_percent' => $tax_percent,
-            'commission_percent' => $commission_percent,
             'notes' => $notes,
             'locked' => 0,
     
-    //        'customer_order_id',
+    //        'supplier_order_id',
             'tax_id' => $tax->id,
-            'sales_rep_id' => $sales_rep_id,
         ];
 
 
@@ -219,7 +206,7 @@ trait BillableDocumentLinesTrait
 
         // Let's deal with taxes
         $product->sales_equalization = $sales_equalization;
-        $rules = $product->getTaxRules( $this->taxingaddress,  $this->customer );
+        $rules = $product->getSupplierTaxRules( $this->taxingaddress,  $this->supplier );
 
         $document_line->applyTaxRules( $rules );
 
@@ -233,8 +220,8 @@ trait BillableDocumentLinesTrait
             $data['extra_quantity'] = 0.0;
             $data['extra_quantity_label'] = '';
 
-            $data['unit_customer_final_price'] = 0.0;
-            $data['unit_customer_final_price_tax_inc'] = 0.0;
+            $data['unit_supplier_final_price'] = 0.0;
+            $data['unit_supplier_final_price_tax_inc'] = 0.0;
 
             $data['unit_final_price'] = 0.0;
             $data['unit_final_price_tax_inc'] = 0.0;
@@ -267,9 +254,9 @@ trait BillableDocumentLinesTrait
     /**
      * Add Product to Order
      *
-     *     'prices_entered_with_tax', 'unit_customer_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
+     *     'prices_entered_with_tax', 'unit_supplier_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
      */
-    public function updateProductLine( $line_id, $params = [] )
+    public function updateSupplierProductLine( $line_id, $params = [] )
     {
         // Do the Mambo!
         $lineClass = $this->getClassName().'Line';
@@ -277,14 +264,14 @@ trait BillableDocumentLinesTrait
 
         $document_line = ( new $lineClass() )->where($this->getClassSnakeCase().'_id', $this->id)
                         ->with($relation)
-                        ->with($relation.'.customer')
+                        ->with($relation.'.supplier')
                         ->with('product')
                         ->with('combination')
                         ->findOrFail($line_id);
 
 
-        // Customer
-        $customer = $this->customer;
+        // Supplier
+        $supplier = $this->supplier;
         $salesrep = $this->salesrep;
         
         // Currency
@@ -318,31 +305,31 @@ trait BillableDocumentLinesTrait
         else
             $quantity = $document_line->quantity;
 
-        // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+        // Calculate price per $supplier_id now!
+        $supplier_price = $product->getPriceBySupplier( $supplier, $quantity, $currency );
 
-        // Is there a Price for this Customer?
-        if (!$customer_price) return null;      // Product not allowed for this Customer
+        // Is there a Price for this Supplier?
+        if (!$supplier_price) return null;      // Product not allowed for this Supplier
         // What to do???
 
-        $customer_price->applyTaxPercent( $tax_percent );
-        $unit_customer_price = $customer_price->getPrice();
+        $supplier_price->applyTaxPercent( $tax_percent );
+        $unit_supplier_price = $supplier_price->getPrice();
 
         // Price Policy
         $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
                             ? $params['prices_entered_with_tax'] 
                             : $document_line->price_is_tax_inc;
 
-        // Customer Final Price
-        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
+        // Supplier Final Price
+        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
 
-            $unit_customer_final_price->applyTaxPercent( $tax_percent );
+            $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 
         } else {
 
-            $unit_customer_final_price = \App\Price::create([$document_line->unit_final_price, $document_line->unit_final_price_tax_inc, $pricetaxPolicy], $currency);
+            $unit_supplier_final_price = \App\Price::create([$document_line->unit_final_price, $document_line->unit_final_price_tax_inc, $pricetaxPolicy], $currency);
         }
 
         // Discount
@@ -351,18 +338,9 @@ trait BillableDocumentLinesTrait
                             : 0.0;
 
         // Final Price
-        $unit_final_price = clone $unit_customer_final_price;
+        $unit_final_price = clone $unit_supplier_final_price;
         if ( $discount_percent ) 
             $unit_final_price->applyDiscountPercent( $discount_percent );
-
-        // Sales Rep
-        $sales_rep_id = array_key_exists('sales_rep_id', $params) 
-                            ? $params['sales_rep_id'] 
-                            : $document_line->sales_rep_id;
-        
-        $commission_percent = array_key_exists('sales_rep_id', $params) && array_key_exists('commission_percent', $params) 
-                            ? $params['commission_percent'] 
-                            : $document_line->commission_percent;
 
         // Misc
         $notes = array_key_exists('notes', $params) 
@@ -385,9 +363,9 @@ trait BillableDocumentLinesTrait
     
 //            'cost_price' => $cost_price,
 //            'unit_price' => $unit_price,
-//            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price->getPrice(),
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price->getPriceWithTax(),
+//            'unit_supplier_price' => $unit_supplier_price,
+            'unit_supplier_final_price' => $unit_supplier_final_price->getPrice(),
+            'unit_supplier_final_price_tax_inc' => $unit_supplier_final_price->getPriceWithTax(),
             'unit_final_price' => $unit_final_price->getPrice(),
             'unit_final_price_tax_inc' => $unit_final_price->getPriceWithTax(), 
   //          'sales_equalization' => $sales_equalization,
@@ -399,13 +377,11 @@ trait BillableDocumentLinesTrait
   //          'total_tax_excl' => $quantity * $unit_final_price->getPrice(),
 
             'tax_percent' => $tax_percent,
-            'commission_percent' => $commission_percent,
             'notes' => $notes,
     //        'locked' => 0,
     
-    //        'customer_order_id',
+    //        'supplier_order_id',
     //        'tax_id' => $tax->id,
-            'sales_rep_id' => $sales_rep_id,
         ];
 
         // More stuff
@@ -442,7 +418,7 @@ trait BillableDocumentLinesTrait
 
         // Let's deal with taxes
         $product->sales_equalization = $sales_equalization;
-        $rules = $product->getTaxRules( $this->taxingaddress,  $this->customer );
+        $rules = $product->getSupplierTaxRules( $this->taxingaddress,  $this->supplier );
 
         $document_line->applyTaxRules( $rules );
 
@@ -460,7 +436,7 @@ trait BillableDocumentLinesTrait
     /**
      * Add Service to ShippingSlip
      *
-     *     'prices_entered_with_tax', 'unit_customer_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
+     *     'prices_entered_with_tax', 'unit_supplier_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
      */
     public function addServiceLine( $product_id = null, $combination_id = null, $quantity = 1.0, $params = [] )
     {
@@ -469,9 +445,9 @@ trait BillableDocumentLinesTrait
                             ? $params['line_type'] 
                             : 'service';
 
-        // Customer
-        $customer = $this->customer;
-        $salesrep = $customer->salesrep;
+        // Supplier
+        $supplier = $this->supplier;
+        $salesrep = $supplier->salesrep;
         
         // Currency
         $currency = $this->document_currency;
@@ -509,33 +485,33 @@ trait BillableDocumentLinesTrait
                             : \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
 
         // Service Price
-        $price = new \App\Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
+        $price = new \App\Price($params['unit_supplier_final_price'], $pricetaxPolicy, $currency);
         $price->applyTaxPercent( $tax_percent );
 //        if ( $price->currency->id != $currency->id ) {
 //            $price = $price->convert( $currency );
 //        }
         $unit_price = $price->getPrice();
 
-        // Calculate price per $customer_id now!
-        // $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
-        $customer_price = clone $price;
+        // Calculate price per $supplier_id now!
+        // $supplier_price = $product->getPriceBySupplier( $supplier, $quantity, $currency );
+        $supplier_price = clone $price;
 
-        // Is there a Price for this Customer?
-        if (!$customer_price) return null;      // Product not allowed for this Customer
+        // Is there a Price for this Supplier?
+        if (!$supplier_price) return null;      // Product not allowed for this Supplier
 
-        // $customer_price->applyTaxPercent( $tax_percent );
-        $unit_customer_price = $customer_price->getPrice();
+        // $supplier_price->applyTaxPercent( $tax_percent );
+        $unit_supplier_price = $supplier_price->getPrice();
 
-        // Customer Final Price
-        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
+        // Supplier Final Price
+        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
 
-            $unit_customer_final_price->applyTaxPercent( $tax_percent );
+            $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 
         } else {
 
-            $unit_customer_final_price = clone $customer_price;
+            $unit_supplier_final_price = clone $supplier_price;
         }
 
         // Discount
@@ -544,7 +520,7 @@ trait BillableDocumentLinesTrait
                             : 0.0;
 
         // Final Price
-        $unit_final_price = clone $unit_customer_final_price;
+        $unit_final_price = clone $unit_supplier_final_price;
         if ( $discount_percent ) 
             $unit_final_price->applyDiscountPercent( $discount_percent );
 
@@ -588,9 +564,9 @@ trait BillableDocumentLinesTrait
     
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price->getPrice(),
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price->getPriceWithTax(),
+            'unit_supplier_price' => $unit_supplier_price,
+            'unit_supplier_final_price' => $unit_supplier_final_price->getPrice(),
+            'unit_supplier_final_price_tax_inc' => $unit_supplier_final_price->getPriceWithTax(),
             'unit_final_price' => $unit_final_price->getPrice(),
             'unit_final_price_tax_inc' => $unit_final_price->getPriceWithTax(), 
             'sales_equalization' => $sales_equalization,
@@ -606,7 +582,7 @@ trait BillableDocumentLinesTrait
             'notes' => $notes,
             'locked' => 0,
     
-    //        'customer_order_id',
+    //        'supplier_order_id',
             'tax_id' => $tax->id,
             'sales_rep_id' => $sales_rep_id,
         ];
@@ -622,7 +598,7 @@ trait BillableDocumentLinesTrait
         // Let's deal with taxes
         $product = new \App\Product(['tax_id' => $tax->id]);
         $product->sales_equalization = $sales_equalization;
-        $rules = $product->getTaxRules( $this->taxingaddress,  $this->customer );
+        $rules = $product->getTaxRules( $this->taxingaddress,  $this->supplier );
 
         $document_line->applyTaxRules( $rules );
 
@@ -638,9 +614,9 @@ trait BillableDocumentLinesTrait
     /**
      * Add Product to Order
      *
-     *     'prices_entered_with_tax', 'unit_customer_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
+     *     'prices_entered_with_tax', 'unit_supplier_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
      */
-    public function updateServiceLine( $line_id, $params = [] )
+    public function updateSupplierServiceLine( $line_id, $params = [] )
     {
         // Do the Mambo!
         $lineClass = $this->getClassName().'Line';
@@ -648,14 +624,14 @@ trait BillableDocumentLinesTrait
 
         $document_line = ( new $lineClass() )->where($this->getClassSnakeCase().'_id', $this->id)
                         ->with($relation)
-                        ->with($relation.'.customer')
+                        ->with($relation.'.supplier')
 //                        ->with('product')
 //                        ->with('combination')
                         ->findOrFail($line_id);
 
 
-        // Customer
-        $customer = $this->customer;
+        // Supplier
+        $supplier = $this->supplier;
         $salesrep = $this->salesrep;
         
         // Currency
@@ -703,34 +679,34 @@ trait BillableDocumentLinesTrait
 //        $unit_price = $price->getPrice();
 
         // Service Price
-        $price = new \App\Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
+        $price = new \App\Price($params['unit_supplier_final_price'], $pricetaxPolicy, $currency);
         $price->applyTaxPercent( $tax_percent );
 //        if ( $price->currency->id != $currency->id ) {
 //            $price = $price->convert( $currency );
 //        }
         $unit_price = $price->getPrice();
 
-        // Calculate price per $customer_id now!
-        // $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
-        $customer_price = clone $price;
+        // Calculate price per $supplier_id now!
+        // $supplier_price = $product->getPriceBySupplier( $supplier, $quantity, $currency );
+        $supplier_price = clone $price;
 
-        // Is there a Price for this Customer?
-        if (!$customer_price) return null;      // Product not allowed for this Customer
+        // Is there a Price for this Supplier?
+        if (!$supplier_price) return null;      // Product not allowed for this Supplier
         // What to do???
 
-        // $customer_price->applyTaxPercent( $tax_percent );
-        $unit_customer_price = $customer_price->getPrice();
+        // $supplier_price->applyTaxPercent( $tax_percent );
+        $unit_supplier_price = $supplier_price->getPrice();
 
-        // Customer Final Price
-        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
+        // Supplier Final Price
+        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
 
-            $unit_customer_final_price->applyTaxPercent( $tax_percent );
+            $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 
         } else {
 
-            $unit_customer_final_price = clone $customer_price;
+            $unit_supplier_final_price = clone $supplier_price;
         }
 
         // Discount
@@ -739,7 +715,7 @@ trait BillableDocumentLinesTrait
                             : $document_line->discount_percent;
 
         // Final Price
-        $unit_final_price = clone $unit_customer_final_price;
+        $unit_final_price = clone $unit_supplier_final_price;
         if ( $discount_percent ) 
             $unit_final_price->applyDiscountPercent( $discount_percent );
 
@@ -773,9 +749,9 @@ trait BillableDocumentLinesTrait
     
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price->getPrice(),
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price->getPriceWithTax(),
+            'unit_supplier_price' => $unit_supplier_price,
+            'unit_supplier_final_price' => $unit_supplier_final_price->getPrice(),
+            'unit_supplier_final_price_tax_inc' => $unit_supplier_final_price->getPriceWithTax(),
             'unit_final_price' => $unit_final_price->getPrice(),
             'unit_final_price_tax_inc' => $unit_final_price->getPriceWithTax(), 
   //          'sales_equalization' => $sales_equalization,
@@ -791,7 +767,7 @@ trait BillableDocumentLinesTrait
             'notes' => $notes,
     //        'locked' => 0,
     
-    //        'customer_order_id',
+    //        'supplier_order_id',
             'tax_id' => $tax->id,
             'sales_rep_id' => $sales_rep_id,
         ];
@@ -831,7 +807,7 @@ trait BillableDocumentLinesTrait
         // Let's deal with taxes
         $product = new \App\Product(['tax_id' => $tax->id]);
         $product->sales_equalization = $sales_equalization;
-        $rules = $product->getTaxRules( $this->taxingaddress,  $this->customer );
+        $rules = $product->getTaxRules( $this->taxingaddress,  $this->supplier );
 
         $document_line->applyTaxRules( $rules );
 
@@ -848,7 +824,7 @@ trait BillableDocumentLinesTrait
     /**
      * Add Comment to ShippingSlip
      *
-     *     'prices_entered_with_tax', 'unit_customer_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
+     *     'prices_entered_with_tax', 'unit_supplier_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
      */
     public function addCommentLine( $product_id = null, $combination_id = null, $quantity = 1.0, $params = [] )
     {
@@ -857,9 +833,9 @@ trait BillableDocumentLinesTrait
                             ? $params['line_type'] 
                             : 'comment';
 
-        // Customer
-        $customer = $this->customer;
-        $salesrep = $customer->salesrep;
+        // Supplier
+        $supplier = $this->supplier;
+        $salesrep = $supplier->salesrep;
         
         // Currency
         $currency = $this->document_currency;
@@ -897,33 +873,33 @@ trait BillableDocumentLinesTrait
                             : \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
 
         // Service Price
-        $price = new \App\Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
+        $price = new \App\Price($params['unit_supplier_final_price'], $pricetaxPolicy, $currency);
         $price->applyTaxPercent( $tax_percent );
 //        if ( $price->currency->id != $currency->id ) {
 //            $price = $price->convert( $currency );
 //        }
         $unit_price = $price->getPrice();
 
-        // Calculate price per $customer_id now!
-        // $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
-        $customer_price = clone $price;
+        // Calculate price per $supplier_id now!
+        // $supplier_price = $product->getPriceBySupplier( $supplier, $quantity, $currency );
+        $supplier_price = clone $price;
 
-        // Is there a Price for this Customer?
-        if (!$customer_price) return null;      // Product not allowed for this Customer
+        // Is there a Price for this Supplier?
+        if (!$supplier_price) return null;      // Product not allowed for this Supplier
 
-        // $customer_price->applyTaxPercent( $tax_percent );
-        $unit_customer_price = $customer_price->getPrice();
+        // $supplier_price->applyTaxPercent( $tax_percent );
+        $unit_supplier_price = $supplier_price->getPrice();
 
-        // Customer Final Price
-        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
+        // Supplier Final Price
+        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
 
-            $unit_customer_final_price->applyTaxPercent( $tax_percent );
+            $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 
         } else {
 
-            $unit_customer_final_price = clone $customer_price;
+            $unit_supplier_final_price = clone $supplier_price;
         }
 
         // Discount
@@ -932,7 +908,7 @@ trait BillableDocumentLinesTrait
                             : 0.0;
 
         // Final Price
-        $unit_final_price = clone $unit_customer_final_price;
+        $unit_final_price = clone $unit_supplier_final_price;
         if ( $discount_percent ) 
             $unit_final_price->applyDiscountPercent( $discount_percent );
 
@@ -976,9 +952,9 @@ trait BillableDocumentLinesTrait
     
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price->getPrice(),
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price->getPriceWithTax(),
+            'unit_supplier_price' => $unit_supplier_price,
+            'unit_supplier_final_price' => $unit_supplier_final_price->getPrice(),
+            'unit_supplier_final_price_tax_inc' => $unit_supplier_final_price->getPriceWithTax(),
             'unit_final_price' => $unit_final_price->getPrice(),
             'unit_final_price_tax_inc' => $unit_final_price->getPriceWithTax(), 
             'sales_equalization' => $sales_equalization,
@@ -994,7 +970,7 @@ trait BillableDocumentLinesTrait
             'notes' => $notes,
             'locked' => 0,
     
-    //        'customer_order_id',
+    //        'supplier_order_id',
             'tax_id' => $tax->id,
             'sales_rep_id' => $sales_rep_id,
         ];
@@ -1014,9 +990,9 @@ trait BillableDocumentLinesTrait
     /**
      * Add Product to Order
      *
-     *     'prices_entered_with_tax', 'unit_customer_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
+     *     'prices_entered_with_tax', 'unit_supplier_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
      */
-    public function updateCommentLine( $line_id, $params = [] )
+    public function updateSupplierCommentLine( $line_id, $params = [] )
     {
         // Do the Mambo!
         $lineClass = $this->getClassName().'Line';
@@ -1024,14 +1000,14 @@ trait BillableDocumentLinesTrait
 
         $document_line = ( new $lineClass() )->where($this->getClassSnakeCase().'_id', $this->id)
                         ->with($relation)
-                        ->with($relation.'.customer')
+                        ->with($relation.'.supplier')
 //                        ->with('product')
 //                        ->with('combination')
                         ->findOrFail($line_id);
 
 
-        // Customer
-        $customer = $this->customer;
+        // Supplier
+        $supplier = $this->supplier;
         $salesrep = $this->salesrep;
         
         // Currency
@@ -1079,34 +1055,34 @@ trait BillableDocumentLinesTrait
 //        $unit_price = $price->getPrice();
 
         // Service Price
-        $price = new \App\Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
+        $price = new \App\Price($params['unit_supplier_final_price'], $pricetaxPolicy, $currency);
         $price->applyTaxPercent( $tax_percent );
 //        if ( $price->currency->id != $currency->id ) {
 //            $price = $price->convert( $currency );
 //        }
         $unit_price = $price->getPrice();
 
-        // Calculate price per $customer_id now!
-        // $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
-        $customer_price = clone $price;
+        // Calculate price per $supplier_id now!
+        // $supplier_price = $product->getPriceBySupplier( $supplier, $quantity, $currency );
+        $supplier_price = clone $price;
 
-        // Is there a Price for this Customer?
-        if (!$customer_price) return null;      // Product not allowed for this Customer
+        // Is there a Price for this Supplier?
+        if (!$supplier_price) return null;      // Product not allowed for this Supplier
         // What to do???
 
-        // $customer_price->applyTaxPercent( $tax_percent );
-        $unit_customer_price = $customer_price->getPrice();
+        // $supplier_price->applyTaxPercent( $tax_percent );
+        $unit_supplier_price = $supplier_price->getPrice();
 
-        // Customer Final Price
-        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
+        // Supplier Final Price
+        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
 
-            $unit_customer_final_price->applyTaxPercent( $tax_percent );
+            $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 
         } else {
 
-            $unit_customer_final_price = clone $customer_price;
+            $unit_supplier_final_price = clone $supplier_price;
         }
 
         // Discount
@@ -1115,7 +1091,7 @@ trait BillableDocumentLinesTrait
                             : $document_line->discount_percent;
 
         // Final Price
-        $unit_final_price = clone $unit_customer_final_price;
+        $unit_final_price = clone $unit_supplier_final_price;
         if ( $discount_percent ) 
             $unit_final_price->applyDiscountPercent( $discount_percent );
 
@@ -1149,9 +1125,9 @@ trait BillableDocumentLinesTrait
     
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price->getPrice(),
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price->getPriceWithTax(),
+            'unit_supplier_price' => $unit_supplier_price,
+            'unit_supplier_final_price' => $unit_supplier_final_price->getPrice(),
+            'unit_supplier_final_price_tax_inc' => $unit_supplier_final_price->getPriceWithTax(),
             'unit_final_price' => $unit_final_price->getPrice(),
             'unit_final_price_tax_inc' => $unit_final_price->getPriceWithTax(), 
   //          'sales_equalization' => $sales_equalization,
@@ -1167,7 +1143,7 @@ trait BillableDocumentLinesTrait
             'notes' => $notes,
     //        'locked' => 0,
     
-    //        'customer_order_id',
+    //        'supplier_order_id',
             'tax_id' => $tax->id,
             'sales_rep_id' => $sales_rep_id,
         ];

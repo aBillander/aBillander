@@ -185,6 +185,9 @@ class BillableController extends Controller
 
     public function searchProduct(Request $request)
     {
+        if ( $request->has('supplier_id') )
+            return $this->searchSupplierProduct($request);
+
         $search = $request->term;
 
         $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
@@ -226,6 +229,8 @@ class BillableController extends Controller
 
     public function getProduct(Request $request)
     {
+        if ( $request->has('supplier_id') )
+            return $this->getSupplierProduct($request);
         
         // Request data
         $product_id      = $request->input('product_id');

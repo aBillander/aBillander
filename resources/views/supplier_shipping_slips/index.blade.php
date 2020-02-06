@@ -227,7 +227,7 @@
             </td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
             <td><a class="" href="{{ URL::to('suppliers/' . optional($document->supplier)->id . '/edit') }}" title="{{ l('Show Supplier') }}" target="_new">
-            	{{ optional($document->supplier)->name_regular }}
+            	{{ optional($document->transactor)->name_regular }}
             	</a>
             </td>
             <td>

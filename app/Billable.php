@@ -867,6 +867,14 @@ class Billable extends Model
         return $this->belongsTo('App\Supplier');
     }
 
+    public function transactor()
+    {
+        $transactor = $this->getClassFirstSegment();
+        $transactor_id = strtolower($transactor).'_id';
+
+        return $this->belongsTo('App\\'.$transactor, $transactor_id);
+    }
+
     public function shippingmethod()
     {
         return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');

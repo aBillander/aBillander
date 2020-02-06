@@ -185,4 +185,30 @@ return [
 	'Add New User' => 'Nuevo Usuario para este Proveedor',
 	'Create User' => 'Crear Usuario',
 	'Update User' => 'Modificar Usuario',
+
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Suppliers Price List Lines :: index
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Back to Supplier'     => 'Volver al Proveedor',
+
+
+	'Price List Lines - Create' => 'Líneas de Tarifa - Crear',
+	'New Price List Line'     => 'Nueva Línea de Tarifa',
+	'Product Name'     => 'Producto',
+	'Cost Price'     => 'Precio de Coste',
+	'Currency' => 'Divisa',
+	'From Quantity' => 'Desde Cantidad',
+	'Last Purchase Price'     => 'Precio última Compra',
+
+	'Price is WITHOUT Taxes.' => 'El Precio es SIN Impuestos.',
+	''     => '',
+	''     => '',
 ];

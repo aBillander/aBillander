@@ -108,6 +108,28 @@
     </div>
 
 
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('BUSINESS_NAME_TO_SHOW.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="BUSINESS_NAME_TO_SHOW" id="BUSINESS_NAME_TO_SHOW_fiscal" value="fiscal" @if( old('BUSINESS_NAME_TO_SHOW', $key_group['BUSINESS_NAME_TO_SHOW']) == 'fiscal' ) checked="checked" @endif type="radio">
+            {!! l('BUSINESS_NAME_TO_SHOW.option.fiscal') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="BUSINESS_NAME_TO_SHOW" id="BUSINESS_NAME_TO_SHOW_commercial" value="commercial" @if( old('BUSINESS_NAME_TO_SHOW', $key_group['BUSINESS_NAME_TO_SHOW']) == 'commercial' ) checked="checked" @endif type="radio">
+            {!! l('BUSINESS_NAME_TO_SHOW.option.commercial') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('BUSINESS_NAME_TO_SHOW.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
     <div class="form-group {{ $errors->has('ALLOW_IP_ADDRESSES') ? 'has-error' : '' }}">
       <label for="ALLOW_IP_ADDRESSES" class="col-lg-4 control-label">{!! l('ALLOW_IP_ADDRESSES.name') !!}</label>
       <div class="col-lg-8">

@@ -62,6 +62,8 @@ class Supplier extends Model {
     
     public function getNameRegularAttribute() 
     {
+        if ( Configuration::get('BUSINESS_NAME_TO_SHOW') == 'fiscal' ) return $this->name_fiscal;
+
         return $this->name_commercial ?: $this->name_fiscal;
     }
 
@@ -290,6 +292,47 @@ class Supplier extends Model {
 
         return json_encode( array('query' => $query, 'suggestions' => $return) );
     }
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Price calculations
+    |--------------------------------------------------------------------------
+    */
+
+    public function getPrice( Product $product, $quantity = 1, Currency $currency = null )
+    {
+
+        if (!$currency && $this->currency_id)
+            $currency = $this->currency;
+
+        if (!$currency)
+            $currency = Context::getContext()->currency;
+
+        $line = SupplierPriceListLine::
+                              where('supplier_id', $this->id)
+                            ->where('product_id', $product->id)
+                            ->where('currency_id', $this->currency_id)
+                            ->where('from_quantity', '<=', $quantity)
+                            ->orderBy('from_quantity', 'desc')
+                            ->first();
+
+
+        if ( $line )
+        {
+            $thePrice = $line->price;
+
+        } else {
+
+            $thePrice = $product->last_purchase_price;
+        }
+        
+        $price = new Price( $thePrice, 0, $this->currency);
+
+
+        return $price;
+    }
+
     
 
     

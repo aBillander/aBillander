@@ -202,6 +202,8 @@ return [
 
 	'Price List Lines - Create' => 'Líneas de Tarifa - Crear',
 	'New Price List Line'     => 'Nueva Línea de Tarifa',
+	'Discount (%)'     => 'Descuento (%)',
+	'Supplier Reference'     => 'Referencia del Proveedor',
 	'Product Name'     => 'Producto',
 	'Cost Price'     => 'Precio de Coste',
 	'Currency' => 'Divisa',
@@ -209,6 +211,7 @@ return [
 	'Last Purchase Price'     => 'Precio última Compra',
 
 	'Price is WITHOUT Taxes.' => 'El Precio es SIN Impuestos.',
+
 	''     => '',
 	''     => '',
 ];

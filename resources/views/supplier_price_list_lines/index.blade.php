@@ -19,7 +19,10 @@
     </div>
     <h2><a class="btn btn-sm btn-grey" href="#" title="{{ l('Price List') }}"><i class="fa fa-user"></i></a> <span style="color: #cccccc;">/</span> 
 
-        <a href="{{ route('suppliers.edit', $supplier->id) }}">{{ $supplier->name_regular }}</a> <span style="color: #cccccc;">/</span> {{ l('Price List') }} &nbsp; <a href="javascript:void(0);" class="btn btn-lightblue btn-xs"><span class="badge">{{$lines->count()}}</span> {{l('product(s)')}}</a>
+        <a href="{{ route('suppliers.edit', $supplier->id) }}">{{ $supplier->name_regular }}</a> 
+        <span class="badge" style="background-color: #3a87ad;" title="{{ $supplier->currency->name }}">{{ $supplier->currency->iso_code }}</span>
+        <span style="color: #cccccc;">/</span> 
+        {{ l('Price List') }} &nbsp; <a href="javascript:void(0);" class="btn btn-lightblue btn-xs"><span class="badge">{{$lines_total}}</span> {{l('product(s)')}}</a>
     </h2>        
 </div>
 
@@ -27,17 +30,23 @@
 
 <div class="container-fluid">
    <div class="row">
-      <div class="col-lg-2 col-md-2 col-sm-3">
+
 {{--
+      <div class="col-lg-2 col-md-2 col-sm-2">
+
           @include('price_list_lines._panel_infos')
---}}
+
       </div>
       
-      <div class="col-lg-9 col-md-9 col-sm-9">
+      <div class="col-lg-10 col-md-10 col-sm-10">
 
           @include('supplier_price_list_lines._panel_index')
 
       </div>
+--}}
+
+          @include('supplier_price_list_lines._panel_index')
+
    </div>
 </div>
 

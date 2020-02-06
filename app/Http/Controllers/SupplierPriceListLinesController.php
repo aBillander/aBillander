@@ -31,24 +31,29 @@ class SupplierPriceListLinesController extends Controller
      *
      * @return Response
      */
-    public function index($supplierId)
+    public function index($supplierId, Request $request)
     {
         $supplier = $this->supplier->find($supplierId);
+        
+        $lines_total = $this->line->where('supplier_id', $supplier->id)->count();
+
         $lines = $this->line
+                        ->where('supplier_id', $supplier->id)
                         ->with('product')
                         ->with('currency')
+                        ->filter( $request->all() )
 
                             ->join('products', 'supplier_price_list_lines.product_id', '=', 'products.id')
                             ->select('supplier_price_list_lines.*', 'products.reference')
                             ->orderBy('products.reference', 'asc')
 
                         ->orderBy('from_quantity', 'asc');
-        
+
         $lines = $lines->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $lines->setPath('supplierpricelistlines');
 
-        return view('supplier_price_list_lines.index', compact('supplier', 'lines'));
+        return view('supplier_price_list_lines.index', compact('supplier', 'lines', 'lines_total'));
     }
 
     /**

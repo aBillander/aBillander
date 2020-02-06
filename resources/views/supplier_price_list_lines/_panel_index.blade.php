@@ -8,7 +8,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => array('pricelists.pricelistlines.index',$supplier->id), 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => array('suppliers.supplierpricelistlines.index', $supplier->id), 'method' => 'GET')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -50,7 +50,7 @@
 --}}
 <div class="form-group col-lg-4 col-md-4 col-sm-4" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route('pricelists.pricelistlines.index', l('Reset', [], 'layouts'), [$supplier->id], array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('suppliers.supplierpricelistlines.index', l('Reset', [], 'layouts'), [$supplier->id], array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>
@@ -73,6 +73,7 @@
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{l('Reference')}}</th>
             <th>{{l('Product Name')}}</th>
+            <th>{{l('Supplier Reference')}}</th>
             <th>{{l('Currency')}}</th>
             <th class="text-center">{{l('From Quantity')}}</th>
             <th>{{l('Price')}}
@@ -81,6 +82,7 @@
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
             </th>
+            <th>{{l('Discount (%)')}}</th>
             <th class="text-left">{{l('Cost Price')}}</th>
             <th class="text-left">{{l('Last Purchase Price')}}</th>
 			<th> </th>
@@ -92,6 +94,7 @@
 			<td>{{ $line->id }} {{-- $line->product->getPriceBySupplier( $supplier, 1, $supplier->currency )->getPrice() --}}</td>
             <td><a href="{{ URL::to('products/' . optional($line->product)->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ optional($line->product)->reference }}</a></td>
             <td>{{ optional($line->product)->name }}</td>
+            <td>{{ $line->supplier_reference }}</td>
             <td>{{ $line->currency->name }}</td>
             <td class="text-center">{{ $line->as_quantity('from_quantity') }}</td>
             <td>{{ $line->as_price('price') }}
@@ -100,6 +103,8 @@
                 {{ $line->as_priceable( $line->price_local_currency ) }} {{ \App\Context::getContext()->currency->sign }}
 @endif
             </td>
+
+            <td>{{ $line->as_percent('discount_percent') }}</td>
 
             <td>{{ $line->as_priceable(optional($line->product)->cost_price) }}</td>
 

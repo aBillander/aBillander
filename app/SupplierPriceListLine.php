@@ -14,7 +14,9 @@ class SupplierPriceListLine extends Model {
 
 //    protected $dates = ['deleted_at'];
     
-    protected $fillable = [ 'supplier_id', 'product_id', 'price', 'currency_id', 'from_quantity' ];
+    protected $fillable = [ 'supplier_id', 'product_id','supplier_reference', 
+                            'price', 'currency_id', 'discount_percent', 'discount_amount', 'from_quantity', 
+                        ];
 
     public static $rules = array(
         'supplier_id'  => 'required|exists:suppliers,id',

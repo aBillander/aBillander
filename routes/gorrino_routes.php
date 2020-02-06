@@ -1402,7 +1402,9 @@ Route::get('migratethis', function()
 {
 
 	// 2020-02-04
-		Illuminate\Support\Facades\DB::statement("create table `supplier_price_list_lines` (`id` int unsigned not null auto_increment primary key, `supplier_id` int unsigned not null, `product_id` int unsigned not null, `currency_id` int unsigned null, `price` decimal(20, 6) not null default '0', `from_quantity` decimal(20, 6) not null default '1', `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+		Illuminate\Support\Facades\DB::statement("drop table if exists `supplier_price_list_lines`;");
+
+		Illuminate\Support\Facades\DB::statement("create table `supplier_price_list_lines` (`id` int unsigned not null auto_increment primary key, `supplier_id` int unsigned not null, `product_id` int unsigned not null, `supplier_reference` varchar(32) null, `currency_id` int unsigned null, `price` decimal(20, 6) not null default '0', `discount_percent` decimal(8, 3) not null default '0', `discount_amount` decimal(20, 6) not null default '0', `from_quantity` decimal(20, 6) not null default '1', `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 
 
 	die('OK');

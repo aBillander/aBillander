@@ -18,10 +18,15 @@ class CreateSupplierPriceListLinesTable extends Migration {
 			$table->increments('id');
 
 			$table->integer('supplier_id')->unsigned()->nullable(false);
+
 			$table->integer('product_id')->unsigned()->nullable(false);
+			$table->string('supplier_reference', 32)->nullable();
 
 			$table->integer('currency_id')->unsigned()->nullable();
 			$table->decimal('price', 20, 6)->default(0.0);
+			
+			$table->decimal('discount_percent', 8, 3)->default(0.0);
+			$table->decimal('discount_amount', 20, 6)->default(0.0);
 
 			$table->decimal('from_quantity', 20, 6)->default(1.0);
 			

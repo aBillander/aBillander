@@ -51,6 +51,16 @@
 
 
         <div class="row">
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('delivery_time') ? 'has-error' : '' }}">
+                     {{ l('Delivery Time') }}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                            data-content="{{ l('Delivery Time in business days.') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a>
+                     {!! Form::text('delivery_time', null, array('class' => 'form-control', 'id' => 'delivery_time')) !!}
+                     {!! $errors->first('delivery_time', '<span class="help-block">:message</span>') !!}
+                  </div>
+
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('payment_days') ? 'has-error' : '' }}">
                      {{ l('Payment Day(s)') }}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 

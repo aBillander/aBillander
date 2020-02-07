@@ -188,6 +188,10 @@ return [
 
 
 
+	'Delivery Time'     => 'Plazo de entrega',
+	'Delivery Time in business days.'     => 'Plazo de entrega en días laborables.',
+
+
 	/*
 	|--------------------------------------------------------------------------
 	| Suppliers Price List Lines :: index
@@ -211,6 +215,9 @@ return [
 	'Last Purchase Price'     => 'Precio última Compra',
 
 	'Price is WITHOUT Taxes.' => 'El Precio es SIN Impuestos.',
+
+	'Price List Lines - Edit'     => 'Líneas de Tarifa - Modificar',
+	'Edit Price List Line'     => 'Modificar Línea de Tarifa',
 
 	''     => '',
 	''     => '',

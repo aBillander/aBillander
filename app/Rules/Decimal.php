@@ -68,7 +68,7 @@ class Decimal implements Rule
     {
         return l(
             'The :attribute must be an appropriately formatted decimal e.g. ',
-            'rules'
+            'validationrules'
         ) . $this->example();
     }
 

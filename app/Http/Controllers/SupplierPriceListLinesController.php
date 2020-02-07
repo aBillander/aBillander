@@ -80,7 +80,24 @@ class SupplierPriceListLinesController extends Controller
     {
         $supplier = $this->supplier->findOrFail($supplierId);
 
-        $this->validate($request, SupplierPriceListLine::$rules);
+        $q_rule = [
+
+        'from_quantity' => [
+                                new \App\Rules\SupplierPriceListLineQuantity(
+                                        $request->input('supplier_id'), 
+                                        $request->input('product_id'), 
+                                        $request->input('currency_id', null)
+                                ),
+
+                                new \App\Rules\SupplierPriceListLineDuplicated(
+                                        $request->input('supplier_id'), 
+                                        $request->input('product_id'), 
+                                        $request->input('currency_id', null)
+                                ),
+                            ]
+        ];
+
+        $this->validate($request, SupplierPriceListLine::$rules + $q_rule);
 
         // Handy conversions
         if ( !$request->input('percent') )  $request->merge( ['percent'  => 0.0] );

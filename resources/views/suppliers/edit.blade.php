@@ -20,41 +20,49 @@
 @else
                 <!-- a href="{ { route('supplier.shippingslipable.orders', [$supplier->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Orders')}}</a -->
 
-                <a href="{ { route('supplier.invoiceable.shippingslips', [$supplier->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Shipping Slips')}}</a>
+                <a href="{ { route('supplier.invoiceable.shippingslips', [$supplier->id]) }}" class="btn btn-navy" style="margin-right: 72px;" onclick="alert('You naughty, naughty!!');return false;"><i class="fa fa-object-group"></i> {{l('Group Shipping Slips')}}</a>
 
                 <div class="btn-group">
                     <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
+{{--
                       <li><a href="{ { route('supplierquotations.create.withsupplier', $supplier->id) }}">{{l('Quotation', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{ { route('supplierorders.create.withsupplier', $supplier->id) }}">{{l('Order', [], 'layouts')}}</a></li>
+--}}
                       <li class="divider"></li>
-                      <li><a href="{ { route('suppliershippingslips.create.withsupplier', $supplier->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
+                      <li><a href="{{ route('suppliershippingslips.create.withsupplier', $supplier->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
+{{--
                       <li><a href="{ { route('supplierinvoices.create.withsupplier', $supplier->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
                       <!-- li><a href="#">Separated link</a></li -->
+--}}
                     </ul>
                 </div>
 @endif
-{{--
+
                 <div class="btn-group" style="margin-right: 36px;">
                     <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', [], 'layouts')}}" style="background-color: #31b0d5;
 border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu pull-right">
+{{--
                       <li><a href="{{ route('supplier.quotations', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Quotations', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('supplier.orders', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Orders', [], 'layouts')}}</a></li>
+--}}
                       <li class="divider"></li>
                       <li><a href="{{ route('supplier.shippingslips', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
+{{--
                       <li><a href="{{ route('supplier.invoices', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Invoices', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('supplier.vouchers', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Supplier Vouchers', [], 'layouts')}}</a></li>
+--}}
                       <li class="divider"></li>
                       <li><a href="{{ URL::to('suppliers') }}">{{ l('Back to Suppliers') }}</a></li>
                     </ul>
                 </div>
---}}
+
             </div>
             <h2><a href="{{ URL::to('suppliers') }}">{{ l('Suppliers') }}</a> <span style="color: #cccccc;">/</span> {{ $supplier->name_regular }}</h2>
         </div>

@@ -159,14 +159,62 @@ class SuppliersController extends Controller {
 	 */
 	public function update($id, Request $request)
 	{
-		$supplier = Supplier::findOrFail($id);
+        $action = $request->input('nextAction', '');
 
-		$this->validate($request, Supplier::$rules);
+        $section =  $request->input('tab_name')     ? 
+                    '#'.$request->input('tab_name') :
+                    '';
 
-		$supplier->update($request->all());
+        if ($section == '#addressbook')
+        {
+            $input = [];
+            $input['invoicing_address_id'] = $request->input('invoicing_address_id', 0); // Should be in address Book
+            $input['shipping_address_id']  = $request->input('shipping_address_id', 0);  // Should be in address Book or 0
 
-		return redirect('suppliers')
-				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
+            $rules['invoicing_address_id'] = 'exists:addresses,id,addressable_id,'.intval($id);
+            if ($input['shipping_address_id']>0)
+//                $rules['shipping_address_id'] = 'exists:addresses,id,addressable_type,\\App\\Supplier|exists:addresses,id,addressable_id,'.intval($id);
+                $rules['shipping_address_id'] = 'exists:addresses,id,addressable_id,'.intval($id);
+            else
+                $input['shipping_address_id'] = 0;
+
+             $this->validate($request, $rules);
+
+                $supplier = $this->supplier->find($id);
+                $supplier->update($input);
+
+                return redirect(route('suppliers.edit', $id) . $section)
+                    ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name_commercial'));
+
+        }
+
+        
+        $supplier = $this->supplier->with('address')->findOrFail($id);
+        $address = $supplier->address;
+
+//        abi_r(Supplier::$rules, true);
+
+        $this->validate($request, Supplier::$rules);
+        
+//        $this->validate($request, Address::related_rules());
+
+        $request->merge( ['name_commercial' => $request->input('address.name_commercial')] );
+
+        // $supplier->update( array_merge($request->all(), ['name_commercial' => $request->input('address.name_commercial')] ) );
+        $supplier->update( $request->all() );
+        if ( !$request->input('address.name_commercial') ) $request->merge( ['address.name_commercial' => $request->input('name_fiscal')] );
+        // $data = $request->input('address');
+        $data = $request->input('address') + ['country_id' => $address->country_id];     // Gorrino fix: field is disabled in view, so cero value is got in request (although address is not modified)
+        $address->update($data);
+
+
+        if ($action != 'completeSupplierData')
+            return redirect('suppliers/'.$supplier->id.'/edit'.$section)
+                ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name_commercial'));
+        else
+            return redirect('suppliers')
+                ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name_commercial'));
+                
     }
 
     /**
@@ -180,7 +228,7 @@ class SuppliersController extends Controller {
 
         $section = '#bankaccounts';
 
-//        abi_r(Customer::$rules, true);
+//        abi_r(Supplier::$rules, true);
 
         $supplier = $this->supplier->with('bankaccount')->findOrFail($id);
 

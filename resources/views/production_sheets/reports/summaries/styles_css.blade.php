@@ -426,6 +426,9 @@ table.totals tr.payment_method {
 .text-right {
 	text-align: right;
 }
+.text-center {
+	text-align: center !important;
+}
 /*
 .totals-cell {
 	width: 50% !important

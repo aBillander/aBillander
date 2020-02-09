@@ -329,6 +329,35 @@ class ProductionSheetsPdfController extends Controller
     }
 
 
+    public function getPdfShippingslips(Request $request, $id)
+    {
+        $sheet = $this->productionSheet->findOrFail($id);
+        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+
+
+        $sheet->load(['customershippingslips', 'customershippingslips.customer', 'customershippingslips.lines']);
+
+ /*       
+        if ($request->has('extended'))
+        {
+            $pdf = \PDF::loadView('production_sheets.reports.summaries.orders_extended', compact('sheet', 'work_center'))->setPaper('a4', 'vertical');
+
+            if ($request->has('screen')) return view('production_sheets.reports.summaries.orders_extended', compact('sheet', 'work_center'));
+
+            return $pdf->stream('orders.pdf');
+        }
+*/
+
+
+        $pdf = \PDF::loadView('production_sheets.reports.summaries.shippingslips', compact('sheet', 'work_center'))->setPaper('a4', 'vertical');
+
+        if ($request->has('screen')) return view('production_sheets.reports.summaries.shippingslips', compact('sheet', 'work_center'));
+
+        return $pdf->stream('shippingslips.pdf'); // $pdf->download('invoice.pdf');
+    }
+
+
     public function getPdfProducts(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);

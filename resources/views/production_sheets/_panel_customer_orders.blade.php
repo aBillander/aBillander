@@ -171,6 +171,8 @@ border: 1px solid rgba(0,0,0,0.15);">
 
       </li>
       <li class="divider"></li>
+      <li><a href="{{ route('productionsheet.shippingslips.pdf', [$sheet->id]) }}" target="_blank"><i class="fa fa-truck"></i> &nbsp;{{ l('Customer Shipping Slips') }}</a> </li>
+      <li class="divider"></li>
     </ul>
   </div>
 

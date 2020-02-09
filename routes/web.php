@@ -296,6 +296,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('productionsheets/{id}/orders/pdf', 'ProductionSheetsPdfController@getPdfOrders')->name('productionsheet.orders.pdf');
 
+        Route::get('productionsheets/{id}/shippingslips/pdf', 'ProductionSheetsPdfController@getPdfShippingslips')->name('productionsheet.shippingslips.pdf');
+
         Route::get('productionsheets/{id}/products/pdf', 'ProductionSheetsPdfController@getPdfProducts')->name('productionsheet.products.pdf');
 
         // Production Sheet Orders

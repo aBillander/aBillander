@@ -274,6 +274,7 @@ class CustomerUser extends Authenticatable
         return $this->hasOne('App\Address', 'id', 'address_id')
                    ->where('addressable_type', Customer::class);
 
+
         // Won't work: should return ALWAYS a relation instance
         // When CustomerUser is allowed to only one address (address_id>0) returns Address $address
         // When CustomerUser is allowed to all addresses (address_id=0) returns null (unless Customer has nly one address!!!)

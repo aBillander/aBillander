@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 trait BillableFormsControllerTrait
 {
+   use SupplierBillableFormsControllerTrait;
 
     public function FormForProduct( $action )
     {
@@ -87,6 +88,10 @@ trait BillableFormsControllerTrait
 
     public function storeDocumentLine(Request $request, $document_id)
     {
+        if ( $request->has('supplier_id') )
+            return $this->storeSupplierDocumentLine($request, $document_id);
+        
+        
         $line_type = $request->input('line_type', '');
 
         switch ( $line_type ) {
@@ -308,6 +313,9 @@ trait BillableFormsControllerTrait
 
     public function updateDocumentLine(Request $request, $line_id)
     {
+        if ( $request->has('supplier_id') )
+            return $this->updateSupplierDocumentLine($request, $line_id);
+        
         $line_type = $request->input('line_type', '');
 
         switch ( $line_type ) {

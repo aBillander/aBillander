@@ -14,6 +14,8 @@ use App\Traits\BillableControllerTrait;
 use App\Traits\BillableFormsControllerTrait;
 use App\Traits\BillableDocumentControllerTrait;
 
+use App\Traits\SupplierBillableControllerTrait;
+
 class BillableController extends Controller
 {
 
@@ -21,6 +23,8 @@ class BillableController extends Controller
    use BillableControllerTrait;
    use BillableFormsControllerTrait;
    use BillableDocumentControllerTrait;
+
+   use SupplierBillableControllerTrait;
 
    protected $model, $model_snake_case, $model_path, $view_path;
    
@@ -116,7 +120,7 @@ class BillableController extends Controller
         return json_encode( [] );
     }
 
-    
+
     public function getDocumentHeader($id)
     {
         // Some rework needed!!!
@@ -181,6 +185,9 @@ class BillableController extends Controller
 
     public function searchProduct(Request $request)
     {
+        if ( $request->has('supplier_id') )
+            return $this->searchSupplierProduct($request);
+
         $search = $request->term;
 
         $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
@@ -222,6 +229,8 @@ class BillableController extends Controller
 
     public function getProduct(Request $request)
     {
+        if ( $request->has('supplier_id') )
+            return $this->getSupplierProduct($request);
         
         // Request data
         $product_id      = $request->input('product_id');

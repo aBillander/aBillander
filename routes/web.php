@@ -199,10 +199,14 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('commissionsettlementlines/{id}/unlink', 'CommissionSettlementLinesController@unlink')->name('commissionsettlementline.unlink');
 
         Route::resource('suppliers', 'SuppliersController');
-        Route::get('suppliers/ajax/name_lookup', array('uses' => 'SuppliersController@ajaxSupplierSearch', 'as' => 'supplier.ajax.nameLookup'));
+        Route::get('suppliers/ajax/name_lookup', array('uses' => 'SuppliersController@ajaxSupplierSearch', 'as' => 'suppliers.ajax.nameLookup'));
         Route::post('suppliers/{id}/bankaccount', 'SuppliersController@updateBankAccount')->name('suppliers.bankaccount');
 
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
+
+        Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
+
+        Route::get('suppliers/{id}/supplierpricelistline/searchproduct', 'SupplierPriceListLinesController@searchProduct')->name('supplier.pricelistline.searchproduct');
 
         Route::resource('templates', 'TemplatesController');
 
@@ -653,12 +657,25 @@ foreach ($pairs as $pair) {
 
         });
 
+                
+        /* ********************************************************** */
+
+        // Temporary Purchase Order routes
+
+        if (file_exists(__DIR__.'/web_po.php')) {
+            include __DIR__.'/web_po.php';
+        }
+
+
+
+        /* ********************************************************** */
+
+
 
 });
 
 
 /* ********************************************************** */
-
 // Customer's Center
 
 // Fast & dirty

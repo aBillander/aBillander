@@ -287,7 +287,7 @@
 @else
 
                 @if ( $document->status == 'closed' && !$document->invoiced_at)
-                <a class="btn btn-sm btn-navy" href="{{ route('suppliershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
+                <a class="btn btn-sm btn-navy" href="{ { route('suppliershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
                 </a>
                 @endif
 @endif

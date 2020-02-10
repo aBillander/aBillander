@@ -6,11 +6,10 @@ use App\StockMovement;
 
 use App\Configuration;
 
-trait BillableStockMovementsTrait
+trait SupplierBillableStockMovementsTrait
 {
-    use SupplierBillableStockMovementsTrait;
     
-    public function makeStockMovements()
+    public function makeSupplierStockMovements()
     {
         // Let's rock!
         foreach ($this->lines as $line) {
@@ -48,7 +47,7 @@ trait BillableStockMovementsTrait
                     'warehouse_id' => $this->warehouse_id,
 //                    'warehouse_counterpart_id' => $line->,
 
-                    'movement_type_id' => StockMovement::SALE_ORDER,
+                    'movement_type_id' => StockMovement::PURCHASE_ORDER,
 
 //                    'user_id' => $line->,
 
@@ -71,7 +70,7 @@ trait BillableStockMovementsTrait
     }
 
     
-    public function revertStockMovements()
+    public function revertSupplierStockMovements()
     {
         // Let's rock!
         foreach ($this->lines as $line) {

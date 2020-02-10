@@ -29,6 +29,10 @@
 Route::get('migratethis_gmdis', function()
 {
 
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `measure_unit_id` INT(10) UNSIGNED NULL AFTER `quantity`;");
+
+	die('OK');
+
 });
 
 

@@ -97,10 +97,13 @@
             <td>{{ $line->supplier_reference }}</td>
             <td>{{ $line->currency->name }}</td>
             <td class="text-center">{{ $line->as_quantity('from_quantity') }}</td>
-            <td>{{ $line->as_price('price') }}
+            <td>{{ $line->as_priceable( $line->price * (1.0 - $line->discount_percent / 100.0 ) ) }}
+@if ( $line->discount_percent != 0 )
+                <span class="crossed text-info">{{ $line->as_price('price') }}</span>
+@endif
 @if ( $line->currency_id != \App\Context::getContext()->currency->id )
                 <br />
-                {{ $line->as_priceable( $line->price_local_currency ) }} {{ \App\Context::getContext()->currency->sign }}
+                {{ $line->as_priceable( $line->price_local_currency * (1.0 - $line->discount_percent / 100.0 ) ) }} {{ \App\Context::getContext()->currency->sign }}
 @endif
             </td>
 

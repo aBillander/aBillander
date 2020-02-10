@@ -142,7 +142,7 @@ trait SupplierBillableFormsControllerTrait
         $params = [
             'prices_entered_with_tax' => $pricetaxPolicy,
             'discount_percent' => $request->input('discount_percent', 0.0),
-            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
+            'unit_supplier_final_price' => $request->input('unit_supplier_final_price'),
 
             'line_sort_order' => $request->input('line_sort_order'),
             'notes' => $request->input('notes', ''),
@@ -174,7 +174,7 @@ trait SupplierBillableFormsControllerTrait
     public function storeSupplierDocumentLineService(Request $request, $document_id)
     {
         $document = $this->document
-                        ->with('customer')
+                        ->with('supplier')
                         ->with('taxingaddress')
                         ->with('salesrep')
                         ->with('currency')
@@ -191,7 +191,7 @@ trait SupplierBillableFormsControllerTrait
         $combination_id = $request->input('combination_id', null);
         $quantity       = $request->input('quantity', 1.0);
 
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', $document->customer->currentPricesEnteredWithTax( $document->document_currency )) );
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', $document->supplier->currentPricesEnteredWithTax( $document->document_currency )) );
 
         $params = [
             'line_type' => $request->input('is_shipping', 0) ? 'shipping' : $request->input('line_type', 'service'),
@@ -199,7 +199,7 @@ trait SupplierBillableFormsControllerTrait
             'cost_price' => $request->input('cost_price', 0.0),
             'unit_price' => $request->input('unit_price', 0.0),
             'discount_percent' => $request->input('discount_percent', 0.0),
-            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
+            'unit_supplier_final_price' => $request->input('unit_supplier_final_price'),
             'tax_id' => $request->input('tax_id', \App\Configuration::get('DEF_TAX')),
 
             'line_sort_order' => $request->input('line_sort_order'),
@@ -225,7 +225,7 @@ trait SupplierBillableFormsControllerTrait
 
         // Let's Rock!
 
-        $document_line = $document->addServiceLine( $product_id, $combination_id, $quantity, $params );
+        $document_line = $document->addSupplierServiceLine( $product_id, $combination_id, $quantity, $params );
 
 
         return response()->json( [
@@ -238,7 +238,7 @@ trait SupplierBillableFormsControllerTrait
     public function storeSupplierDocumentLineComment(Request $request, $document_id)
     {
         $document = $this->document
-                        ->with('customer')
+                        ->with('supplier')
                         ->with('taxingaddress')
                         ->with('salesrep')
                         ->with('currency')
@@ -255,7 +255,7 @@ trait SupplierBillableFormsControllerTrait
         $combination_id = $request->input('combination_id', null);
         $quantity       = $request->input('quantity', 1.0);
 
-        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', $document->customer->currentPricesEnteredWithTax( $document->document_currency )) );
+        $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', $document->supplier->currentPricesEnteredWithTax( $document->document_currency )) );
 
         $params = [
             'line_type' => 'comment',
@@ -263,7 +263,7 @@ trait SupplierBillableFormsControllerTrait
             'cost_price' => $request->input('cost_price', 0.0),
             'unit_price' => $request->input('unit_price', 0.0),
             'discount_percent' => $request->input('discount_percent', 0.0),
-            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
+            'unit_supplier_final_price' => $request->input('unit_supplier_final_price'),
             'tax_id' => $request->input('tax_id', \App\Configuration::get('DEF_TAX')),
 
             'line_sort_order' => $request->input('line_sort_order'),
@@ -289,7 +289,7 @@ trait SupplierBillableFormsControllerTrait
 
         // Let's Rock!
 
-        $document_line = $document->addCommentLine( $product_id, $combination_id, $quantity, $params );
+        $document_line = $document->addSupplierCommentLine( $product_id, $combination_id, $quantity, $params );
 
 
         return response()->json( [
@@ -337,7 +337,7 @@ trait SupplierBillableFormsControllerTrait
         $params = [
 //            'prices_entered_with_tax' => $pricetaxPolicy,
 //            'discount_percent' => $request->input('discount_percent', 0.0),
-//            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
+//            'unit_supplier_final_price' => $request->input('unit_supplier_final_price'),
 
 //            'line_sort_order' => $request->input('line_sort_order'),
 //            'notes' => $request->input('notes'),
@@ -353,8 +353,8 @@ trait SupplierBillableFormsControllerTrait
         if ($request->has('discount_percent')) 
             $params['discount_percent'] = $request->input('discount_percent');
 
-        if ($request->has('unit_customer_final_price')) 
-            $params['unit_customer_final_price'] = $request->input('unit_customer_final_price');
+        if ($request->has('unit_supplier_final_price')) 
+            $params['unit_supplier_final_price'] = $request->input('unit_supplier_final_price');
 
         if ($request->has('line_sort_order')) 
             $params['line_sort_order'] = $request->input('line_sort_order');
@@ -405,7 +405,7 @@ trait SupplierBillableFormsControllerTrait
 //            'line_type' => $request->input('is_shipping', 0) ? 'shipping' : $request->input('line_type', 'service'),
 //            'prices_entered_with_tax' => $pricetaxPolicy,
 //            'discount_percent' => $request->input('discount_percent', 0.0),
-//            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
+//            'unit_supplier_final_price' => $request->input('unit_supplier_final_price'),
 
 //            'line_sort_order' => $request->input('line_sort_order'),
 //            'notes' => $request->input('notes'),
@@ -433,8 +433,8 @@ trait SupplierBillableFormsControllerTrait
         if ($request->has('unit_price')) 
             $params['unit_price'] = $request->input('unit_price');
 
-        if ($request->has('unit_customer_final_price')) 
-            $params['unit_customer_final_price'] = $request->input('unit_customer_final_price');
+        if ($request->has('unit_supplier_final_price')) 
+            $params['unit_supplier_final_price'] = $request->input('unit_supplier_final_price');
 
         if ($request->has('line_sort_order')) 
             $params['line_sort_order'] = $request->input('line_sort_order');
@@ -474,7 +474,7 @@ trait SupplierBillableFormsControllerTrait
         $document = $document_line->document;
 //        $document = $this->document->where('id', $this->model_snake_case.'_id')->first();
 
-        $document_line = $document->updateServiceLine( $line_id, $params );
+        $document_line = $document->updateSupplierServiceLine( $line_id, $params );
 
 
         return response()->json( [
@@ -491,7 +491,7 @@ trait SupplierBillableFormsControllerTrait
 //            'line_type' => $request->input('is_shipping', 0) ? 'shipping' : $request->input('line_type', 'service'),
 //            'prices_entered_with_tax' => $pricetaxPolicy,
 //            'discount_percent' => $request->input('discount_percent', 0.0),
-//            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
+//            'unit_supplier_final_price' => $request->input('unit_supplier_final_price'),
 
 //            'line_sort_order' => $request->input('line_sort_order'),
 //            'notes' => $request->input('notes'),
@@ -519,8 +519,8 @@ trait SupplierBillableFormsControllerTrait
         if ($request->has('unit_price')) 
             $params['unit_price'] = $request->input('unit_price');
 
-        if ($request->has('unit_customer_final_price')) 
-            $params['unit_customer_final_price'] = $request->input('unit_customer_final_price');
+        if ($request->has('unit_supplier_final_price')) 
+            $params['unit_supplier_final_price'] = $request->input('unit_supplier_final_price');
 
         if ($request->has('line_sort_order')) 
             $params['line_sort_order'] = $request->input('line_sort_order');
@@ -560,7 +560,7 @@ trait SupplierBillableFormsControllerTrait
         $document = $document_line->document;
 //        $document = $this->document->where('id', $this->model_snake_case.'_id')->first();
 
-        $document_line = $document->updateCommentLine( $line_id, $params );
+        $document_line = $document->updateSupplierCommentLine( $line_id, $params );
 
 
         return response()->json( [

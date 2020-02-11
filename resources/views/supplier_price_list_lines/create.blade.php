@@ -71,6 +71,9 @@
 
                 $("#line_autoproduct_name").val(str);
                 $('#product_id').val(value.item.id);
+
+                // getSupplierProductReference( {{ $supplier->id }}, value.item.id );
+
                 $('#price').focus();
                 $('#price').select();
 
@@ -82,7 +85,17 @@
                 .appendTo( ul );
             };
 
- //       alert('hhhhhhhh');
+
+        getSupplierProductReference( supplier_id, product_id )
+        {            
+              var url = "{{ route('supplier.product.reference', [$supplier->id, '']) }}/"+product_id;
+              
+              $.get(url, function(result){
+                    var reference = result.reference;
+
+                    console.log(result);
+              });
+        }
 
     </script>
 

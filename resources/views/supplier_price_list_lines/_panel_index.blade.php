@@ -22,6 +22,10 @@
     {!! Form::label('name', l('Product Name')) !!}
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('supplier_reference', l('Supplier Reference')) !!}
+    {!! Form::text('supplier_reference', null, array('class' => 'form-control')) !!}
+</div>
 {{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('stock', l('Stock')) !!}
@@ -94,7 +98,11 @@
 			<td>{{ $line->id }} {{-- $line->product->getPriceBySupplier( $supplier, 1, $supplier->currency )->getPrice() --}}</td>
             <td><a href="{{ URL::to('products/' . optional($line->product)->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ optional($line->product)->reference }}</a></td>
             <td>{{ optional($line->product)->name }}</td>
-            <td>{{ $line->supplier_reference }}</td>
+            <td>
+
+                <a class="btn btn-xs btn-warning" href="{{ route('supplier.product.update.reference.edit', [$supplier->id, $line->product_id]) }}" title="{{l('Edit Supplier Reference')}}"><i class="fa fa-pencil"></i></a>
+
+                {{ $line->product->getReferenceBySupplier( $line->supplier ) }}</td>
             <td>{{ $line->currency->name }}</td>
             <td class="text-center">{{ $line->as_quantity('from_quantity') }}</td>
             <td>{{ $line->as_priceable( $line->price * (1.0 - $line->discount_percent / 100.0 ) ) }}
@@ -116,6 +124,9 @@
 			<td class="text-right button-pad">
                 @if (  is_null($line->deleted_at))
                 <a class="btn btn-sm btn-warning" href="{{ route('suppliers.supplierpricelistlines.edit', [$supplier->id, $line->id]) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
+                <a class=" hide btn btn-sm btn-blue" href="{{ route('supplier.product.update.reference.edit', [$supplier->id, $line->product_id]) }}" title="{{l('Edit Supplier Reference')}}"><i class="fa fa-file-code-o"></i></a>
+
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ route('suppliers.supplierpricelistlines.destroy', [$supplier->id, $line->id]) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 

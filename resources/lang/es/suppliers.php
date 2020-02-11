@@ -219,6 +219,8 @@ return [
 	'Price List Lines - Edit'     => 'Líneas de Tarifa - Modificar',
 	'Edit Price List Line'     => 'Modificar Línea de Tarifa',
 
+	'Edit Supplier Reference' => 'Modificar Referencia del Proveedor',
+
 	''     => '',
 	''     => '',
 ];

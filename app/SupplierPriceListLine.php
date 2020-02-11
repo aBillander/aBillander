@@ -60,6 +60,17 @@ class SupplierPriceListLine extends Model {
             */
         }
 
+        if ( isset($params['supplier_reference']) && trim($params['supplier_reference']) !== '' )
+        {
+            $reference = trim($params['supplier_reference']);
+
+            $query->where( function ($query1) use ($reference) {
+                $query1->where('supplier_price_list_lines.supplier_reference', 'LIKE', '%' . $reference . '%');
+ //                      ->OrWhere('supplier_reference', '');
+ //                      ->OrWhere('supplier_reference', null);
+            } );
+        }
+
         if ( isset($params['name']) && trim($params['name']) !== '' )
         {
             $query->where('products.name', 'LIKE', '%' . trim($params['name'] . '%'));

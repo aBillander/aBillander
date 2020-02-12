@@ -57,13 +57,15 @@ class ProductionSheetsTourlineController extends Controller
             $row = TourlineExcel::rowTemplate();
 
             $row['ClientReference'] = $document->document_reference;   // Document reference
+            if ( $document->shipment_service_type_tag != '' )
+                $row['ShippingTypeCode'] = $document->shipment_service_type_tag;
             $row['RecipientName'] = $document->customer->name_fiscal;     // Nombre destinatario
             $row['RecipientAddress'] = $document->shippingaddress->address1.' '.$document->shippingaddress->address2;
             $row['RecipientPhone'] = $document->shippingaddress->phone;
             $row['RecipientAddres2'] = $document->shippingaddress->city; // Población
             $row['DestinPostalCode'] = $document->shippingaddress->postcode;
-            $row['PackageCount'] =  $document->number_of_packages || 1;      // Número de paquetes
-            $row['WeightDeclared'] = $document->weight || 1;    // Peso
+            $row['PackageCount'] =  $document->number_of_packages != 0 ? $document->number_of_packages : 1;      // Número de paquetes
+            $row['WeightDeclared'] = $document->weight != 0 ? $document->weight : 1;    // Peso
             $row['ShippingComments'] = (string) ($document->notes_from_customer.' '.$document->notes);  // Observaciones
             $row['RecipientEmailNotifiyAddress'] = $document->shippingaddress->email;
 //          $row[''] = '';

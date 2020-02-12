@@ -28,6 +28,11 @@
 
 Route::get('migratethis_xtra', function()
 {
+  // 2020-02-09
+  Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_shipping_slips` ADD `shipment_service_type_tag` VARCHAR(32) NULL AFTER `shipment_status`;");
+
+
+  die('OK');
 
   // 2020-01-26
   Illuminate\Support\Facades\DB::statement("ALTER TABLE `production_orders` ADD `measure_unit_id` INT(10) UNSIGNED NULL AFTER `finished_quantity`;");

@@ -23,6 +23,8 @@ class CreateCustomerShippingSlipsTable extends Migration
 
             $table->string('shipment_status', 32)->nullable(false)->default('pending');
 
+            $table->string('shipment_service_type_tag', 32)->nullable();
+
             $table->date('invoiced_at')->nullable();
 
             $table->date('printed_at')->nullable();                             // Printed at

@@ -449,6 +449,18 @@ class AbsrcCustomersController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
+    public function getUsers($id, Request $request)
+    {
+        $customer_users = $this->customer->with('users')->findOrFail($id)->users;
+        
+        return view('absrc.customers._panel_customer_users_list', compact('id', 'customer_users'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function productConsumption($id, $productid, Request $request)
     {
         $customer = $this->customer::findOrFail($id);

@@ -206,7 +206,14 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
 
+        Route::get( 'suppliers/{id}/product/{pid}/reference/edit', 'SupplierPriceListLinesController@editReference')->name('supplier.product.update.reference.edit');
+        Route::post('suppliers/{id}/product/{pid}/reference', 'SupplierPriceListLinesController@updateReference')->name('supplier.product.update.reference');
+
         Route::get('suppliers/{id}/supplierpricelistline/searchproduct', 'SupplierPriceListLinesController@searchProduct')->name('supplier.pricelistline.searchproduct');
+
+        Route::get('suppliers/{id}/getreference/{pid}', 'SupplierPriceListLinesController@getSupplierProductReference')->name('supplier.product.reference');
+
+
 
         Route::resource('templates', 'TemplatesController');
 

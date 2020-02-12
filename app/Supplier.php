@@ -329,11 +329,45 @@ class Supplier extends Model {
         
         $price = new Price( $thePrice, 0, $this->currency);
 
+        // Bonus data:
+        $price->discount_percent = 0.0;
+        $price->discount_amount  = 0.0;
+
+        if ( $line )
+        {
+            $price->discount_percent = $line->discount_percent;
+            $price->discount_amount  = $line->discount_amount;
+        }
+
 
         return $price;
     }
 
     
+
+    public function getReference( Product $product )
+    {
+        $line = SupplierPriceListLine::
+                              where('supplier_id', $this->id)
+                            ->where('product_id', $product->id)
+                            ->where('supplier_reference', '<>', '')
+                            ->orderBy('from_quantity', 'asc')
+                            ->first();
+
+
+        if ( $line )
+        {
+            $reference = $line->supplier_reference;
+
+        } else {
+
+            $reference = null;
+        }
+
+        return $reference;
+    }
+
+
 
     
     /*

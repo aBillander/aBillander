@@ -438,7 +438,7 @@ trait SupplierBillableDocumentLinesTrait
      *
      *     'prices_entered_with_tax', 'unit_supplier_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
      */
-    public function addServiceLine( $product_id = null, $combination_id = null, $quantity = 1.0, $params = [] )
+    public function addSupplierServiceLine( $product_id = null, $combination_id = null, $quantity = 1.0, $params = [] )
     {
         // Do the Mambo!
         $line_type = array_key_exists('line_type', $params) 
@@ -447,7 +447,6 @@ trait SupplierBillableDocumentLinesTrait
 
         // Supplier
         $supplier = $this->supplier;
-        $salesrep = $supplier->salesrep;
         
         // Currency
         $currency = $this->document_currency;
@@ -524,15 +523,6 @@ trait SupplierBillableDocumentLinesTrait
         if ( $discount_percent ) 
             $unit_final_price->applyDiscountPercent( $discount_percent );
 
-        // Sales Rep
-        $sales_rep_id = array_key_exists('sales_rep_id', $params) 
-                            ? $params['sales_rep_id'] 
-                            : optional($salesrep)->id;
-        
-        $commission_percent = array_key_exists('sales_rep_id', $params) && array_key_exists('commission_percent', $params) 
-                            ? $params['commission_percent'] 
-                            : 0.0;
-
 
 
         // Misc
@@ -578,13 +568,11 @@ trait SupplierBillableDocumentLinesTrait
             'total_tax_excl' => $quantity * $unit_final_price->getPrice(),
 
             'tax_percent' => $tax_percent,
-            'commission_percent' => $commission_percent,
             'notes' => $notes,
             'locked' => 0,
     
     //        'supplier_order_id',
             'tax_id' => $tax->id,
-            'sales_rep_id' => $sales_rep_id,
         ];
 
 
@@ -598,7 +586,7 @@ trait SupplierBillableDocumentLinesTrait
         // Let's deal with taxes
         $product = new \App\Product(['tax_id' => $tax->id]);
         $product->sales_equalization = $sales_equalization;
-        $rules = $product->getTaxRules( $this->taxingaddress,  $this->supplier );
+        $rules = $product->getSupplierTaxRules( $this->taxingaddress,  $this->supplier );
 
         $document_line->applyTaxRules( $rules );
 
@@ -807,7 +795,7 @@ trait SupplierBillableDocumentLinesTrait
         // Let's deal with taxes
         $product = new \App\Product(['tax_id' => $tax->id]);
         $product->sales_equalization = $sales_equalization;
-        $rules = $product->getTaxRules( $this->taxingaddress,  $this->supplier );
+        $rules = $product->getSupplierTaxRules( $this->taxingaddress,  $this->supplier );
 
         $document_line->applyTaxRules( $rules );
 
@@ -826,7 +814,7 @@ trait SupplierBillableDocumentLinesTrait
      *
      *     'prices_entered_with_tax', 'unit_supplier_final_price', 'discount_percent', 'line_sort_order', 'sales_equalization', 'sales_rep_id', 'commission_percent'
      */
-    public function addCommentLine( $product_id = null, $combination_id = null, $quantity = 1.0, $params = [] )
+    public function addSupplierCommentLine( $product_id = null, $combination_id = null, $quantity = 1.0, $params = [] )
     {
         // Do the Mambo!
         $line_type = array_key_exists('line_type', $params) 

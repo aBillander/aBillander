@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SalesRepCenter;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Customer;
@@ -67,40 +68,53 @@ class AbsrcCustomerUsersController extends Controller
 
         $section = '#customeruser';
         $customer_id = $request->input('customer_id');
-
+/*
         if ( !$request->input('allow_abcc_access', 0) )
         	return redirect(route('absrc.customers.edit', $customer_id) . $section)
                 ->with('warning', l('No action is taken &#58&#58 (:id) ', ['id' => $customer_id], 'layouts') );
-
+*/
         $customer = $this->customer->with('address')->find($customer_id);
 
         // Check unique
+/*
         if ( $this->customeruser->where('email', $customer->address->email)->first() )
             return redirect(route('absrc.customers.edit', $customer_id) . $section)
                 ->with('error', l('Duplicate email address &#58&#58 (:id) ', ['id' => $customer->address->email], 'layouts') );
+*/
 
-        $this->validate($request, ['customer_id' => 'exists:customers,id', 'email' => 'email|unique:customer_users,email']);
 
-		$data = [
-				'name' => '', 
-				'email' => $customer->address->email, 
-				'password' => \Hash::make( Configuration::get('ABCC_DEFAULT_PASSWORD') ), 
-				'firstname' => $customer->address->firstname, 
-				'lastname' => $customer->address->lastname, 
-				'active' => 1, 
-				'language_id' => $customer->language_id ?: Configuration::get('DEF_LANGUAGE'), 
-				'customer_id' => $customer->id,
-		];
+        $def_lang = $customer->language_id > 0 ? $customer->language_id : Configuration::get('DEF_LANGUAGE');
+        $language_id = $request->input('language_id', $def_lang) > 0 ? $request->input('language_id', $def_lang) : $def_lang;
+        $request->merge( ['language_id' => $language_id] );
 
-        // Check existence
-        if ( $customeruser = $this->customeruser->where('email', $customer->address->email)->withTrashed()->first() )
-        {
-            $customeruser->active=1;
-            $customeruser->deleted_at=null;    // or $customeruser->restore(); 
-            $customeruser->save();
+        // $this->validate($request, ['customer_id' => 'exists:customers,id', 'email' => 'email|unique:customer_users,email']);                
+        $validator = Validator::make($request->all(), CustomerUser::$rules);
+
+    
+
+        if ( !$validator->passes() ) {
+
+            return response()->json(['error'=>$validator->errors()->all()]);
+
         }
-		else
-            $customeruser = $this->customeruser->create($data);
+
+        // Do move on!
+        
+        $password = \Hash::make($request->input('password'));
+        $request->merge( ['password' => $password] );
+        
+        // $request->merge( ['language_id' => $request->input('language_id', $customer->language_id)] );
+
+        if (
+                $request->input('enable_min_order') || 
+                (( $request->input('enable_min_order') == -1 ) && Configuration::isTrue('ABCC_ENABLE_MIN_ORDER'))
+        )
+            ;
+        else
+            $request->merge( ['min_order_value' => 0.0] );
+
+        $customeruser = $this->customeruser->create($request->all());
+
         // Notify Customer
         // 
         // $customer = $this->customeruser->customer;
@@ -116,10 +130,10 @@ class AbsrcCustomerUsersController extends Controller
                 );
 
             $data = array(
-                'from'     => \App\Configuration::get('ABCC_EMAIL'),         // config('mail.from.address'  ),
-                'fromName' => \App\Configuration::get('ABCC_EMAIL_NAME'),    // config('mail.from.name'    ),
-                'to'       => $customer->address->email,         // $cinvoice->customer->address->email,
-                'toName'   => $customer->name_fiscal,    // $cinvoice->customer->name_fiscal,
+                'from'     => config('mail.from.address'),         // Configuration::get('ABCC_EMAIL'),
+                'fromName' => config('mail.from.name'   ),    // Configuration::get('ABCC_EMAIL_NAME'),
+                'to'       => $customeruser->email,         // $cinvoice->customer->address->email,
+                'toName'   => $customeruser->full_name,    // $cinvoice->customer->name_fiscal,
                 'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => \App\Context::getcontext()->company->name_fiscal]),
                 );
 
@@ -135,7 +149,8 @@ class AbsrcCustomerUsersController extends Controller
 
         } catch(\Exception $e) {
 
-             abi_r($e->getMessage());
+             // abi_r($e->getMessage());
+            return response()->json([ 'error' => $e->getMessage() ]);
 
 /*            return redirect()->route('abcc.orders.index')
                     ->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
@@ -144,6 +159,16 @@ class AbsrcCustomerUsersController extends Controller
             // return false;
         }
         // MAIL stuff ENDS
+
+        if($request->ajax()){
+
+            return response()->json( [
+                'success' => 'OK',
+                'msg' => 'OK',
+                'data' => $customeruser->toArray()
+            ] );
+
+        }
 
 
 		return redirect(route('absrc.customers.edit', $customer_id) . $section)
@@ -187,30 +212,54 @@ class AbsrcCustomerUsersController extends Controller
         $section = '#customeruser';
         $customer_id = $request->input('customer_id');
 
-        $vrules = array(
-            'email'       => 'required|email',
-            'password'    => array('required', 'min:6', 'max:32'),
-        );
+        if (
+                $request->input('enable_min_order') || 
+                (( $request->input('enable_min_order') == -1 ) && Configuration::isTrue('ABCC_ENABLE_MIN_ORDER'))
+        )
+            ;
+        else
+            $request->merge( ['min_order_value' => 0.0] );
 
-        if ( isset($vrules['email']) ) $vrules['email'] = 'email|unique:customer_users,email' . ','. $customeruser->id.',id';  // Unique
+        
+        $vrules = CustomerUser::$rules;
 
-		if ( $request->input('password') != '' ) {
-			$this->validate( $request, $vrules );
+        if ( isset($vrules['email']) ) $vrules['email'] .= ','. $customeruser->id.',id';  // Unique
 
-			$password = \Hash::make($request->input('password'));
-			$request->merge( ['password' => $password] );
-			$customeruser->update($request->all());
-		} else {
-			$this->validate($request, array_except( $vrules, array('password')) );
-			$customeruser->update($request->except(['password']));
-		}
+        if ( $request->input('password') != '' ) {
 
-        if ( ! $request->input('active') )
-        {
-            $customeruser->delete();
+            $validator = Validator::make($request->all(), $vrules);
+            if ( !$validator->passes() ) {
 
-            return redirect(route('absrc.customers.edit', $customer_id) . $section)
-                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customer_id], 'layouts'));
+                return response()->json(['error'=>$validator->errors()->all()]);
+
+            }
+
+            $password = \Hash::make($request->input('password'));
+            $request->merge( ['password' => $password] );
+
+            $customeruser->update($request->all());
+
+        } else {
+
+            $validator = Validator::make($request->all(), array_except( $vrules, array('password')));
+            if ( !$validator->passes() ) {
+
+                return response()->json(['error'=>$validator->errors()->all()]);
+
+            }
+
+            $customeruser->update($request->except(['password']));
+        }
+
+
+        if($request->ajax()){
+
+            return response()->json( [
+                'success' => 'OK',
+                'msg' => 'OK',
+                'data' => $customeruser->toArray()
+            ] );
+
         }
 
 		return redirect(route('absrc.customers.edit', $customer_id) . $section)
@@ -226,10 +275,13 @@ class AbsrcCustomerUsersController extends Controller
      */
     public function destroy(CustomerUser $customeruser)
     {
+        $section = '#customerusers';
+        $name = $customeruser->getFullName();
+
         $customeruser->delete();
 
-        return redirect('absrc.customerorders')
-                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        return redirect(url()->previous() . $section)
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $name], 'layouts'));
     }
 
 
@@ -247,5 +299,22 @@ class AbsrcCustomerUsersController extends Controller
         \Auth()->guard('customer')->loginUsingId($id);
 
         return redirect()->route('customer.dashboard');
+    }
+
+
+    public function getCart($id)
+    {
+        // $salesrep = Auth::user()->salesrep;
+        
+        $customer_user = $this->customeruser->with('cart', 'cart.cartlines')->findOrFail($id);
+
+        return view('absrc.customers._panel_cart_lines', ['user' => $customer_user, 'cart' => $customer_user->cart]);
+    }
+
+    public function getUser($id, Request $request)
+    {
+        $customer_user = $this->customeruser->findOrFail($id);
+
+        return response()->json( ['user' => $customer_user] );
     }
 }

@@ -76,7 +76,7 @@ class TourlineExcel {
         $row = array_fill_keys($columns, '');
 
         // Prefill columns with fixed values
-        $row['ClientCode'] = '00XX';
+        $row['ClientCode'] = '10152';
         $row['ShippingDate'] = abi_date_form_short( 'now' );      
         $row['ShippingTypeCode'] = '13H';
         $row['SenderName'] = 'LA EXTRANATURAL S.L.';

@@ -336,4 +336,7 @@ return [
 	'Not Invoiced'     => 'No Facturados',
 	'Invoiced'     => 'Facturados',
 
+
+	'Shipment Service Type Tag' => 'Tipo de Envío',
+
 ];

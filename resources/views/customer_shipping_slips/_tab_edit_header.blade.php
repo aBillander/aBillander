@@ -205,6 +205,12 @@
                         {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !! --}}
          </div>
 
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipment_service_type_tag') ? 'has-error' : '' }}">
+            {{ l('Shipment Service Type Tag') }}
+            {!! Form::text('shipment_service_type_tag', null, array('class' => 'form-control', 'id' => 'shipment_service_type_tag')) !!}
+            {!! $errors->first('shipment_service_type_tag', '<span class="help-block">:message</span>') !!}
+         </div>
+
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('number_of_packages') ? 'has-error' : '' }}">
             {{ l('Number of Packages') }}
             {!! Form::text('number_of_packages', null, array('class' => 'form-control', 'id' => 'number_of_packages')) !!}

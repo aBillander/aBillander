@@ -317,7 +317,7 @@ $file_data = file_get_contents( $img_url, false, stream_context_create( [
     public function getImageFolder()
     {
         if (!$this->id) {
-            return false;
+            return '';
         }
 
         if (!is_numeric($this->id)) {
@@ -325,6 +325,24 @@ $file_data = file_get_contents( $img_url, false, stream_context_create( [
         }
         $folder = str_split((string)$this->id);
         return implode('/', $folder).'/';
+    }
+
+    public function getFilenameAttribute()
+    {
+        if (!$this->id) {
+            return 'default';
+        }
+
+        return (string) $this->id;
+    }
+
+    public function getExtensionAttribute( $value )
+    {
+        if (!$this->id) {
+            return 'png';
+        }
+
+        return $value;
     }
     
 

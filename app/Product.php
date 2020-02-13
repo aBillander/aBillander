@@ -536,8 +536,13 @@ class Product extends Model {
 
     public function getFeaturedImage()
     { 
-        // If no featured image, return one, anyway
-        return $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
+        // If no featured image, GET one, anyway
+        $img = $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
+
+        if ($img) return $img;
+
+        // If no featured image, RETURN one, anyway
+        return new \App\Image();
     }
 
     public function setFeaturedImage( Image $image )

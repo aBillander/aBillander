@@ -486,6 +486,19 @@ class AbccCustomerCartController extends Controller
             return view('abcc.cart._panel_cart_lines', compact('cart', 'config'));
     }
 
+    public function sortLines(Request $request)
+    {
+        $positions = $request->input('positions', []);
+
+        \DB::transaction(function () use ($positions) {
+            foreach ($positions as $position) {
+                $this->cartLine::where('id', '=', $position[0])->update(['line_sort_order' => $position[1]]);
+            }
+        });
+
+        return response()->json($positions);
+    }
+
     public function getCartTotal()
     {
         $order = $this->customerOrder

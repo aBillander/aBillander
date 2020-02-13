@@ -12,7 +12,7 @@
             {{ Form::hidden('line_product_id',     null, array('id' => 'line_product_id'    )) }}
             {{ Form::hidden('line_combination_id', null, array('id' => 'line_combination_id')) }}
 
-                  <div class="form-group col-lg-8 col-md-8 col-sm-8">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6">
                      {{ l('Product Name') }}
                      <!-- input class="form-control ui-autocomplete-input" id="line_autoproduct_name" onclick="this.select()" name="line_autoproduct_name" autocomplete="off" value="pan in" type="text" -->
 
@@ -22,7 +22,7 @@
                      {{ Form::hidden( 'line_measure_unit_id', null, ['id' => 'line_measure_unit_id'] ) }}
                   </div>
 
-                 <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('line_quantity') ? 'has-error' : '' }}">
+                 <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('line_quantity') ? 'has-error' : '' }}">
                     {{ l('Quantity') }}
                        <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                               data-content="{{ l('Change Quantity and press [Enter] or click button below.') }}">
@@ -35,14 +35,18 @@
                  </div>
 
 
-   </div><!-- div class="panel-body" -->
+                 <div class="form-group col-lg-3 col-md-3 col-sm-3">
 
-               <div class="panel-footer text-right">
-                  <button class="btn btn-success" type="submit" id="product_add_to_cart" xonclick="this.disabled=true;this.form.submit();">
-                     <i class="fa fa-plus"></i>
-                     &nbsp; {{ l('Add to Cart') }}
-                  </button>
-               </div>
+                   <br />
+                    <button class="btn btn-success" type="submit" id="product_add_to_cart" xonclick="this.disabled=true;this.form.submit();">
+                       <i class="fa fa-plus"></i>
+                       &nbsp; {{ l('Add to Cart') }}
+                    </button>
+
+                 </div>
+
+
+   </div><!-- div class="panel-body" -->
 </div>
 
 

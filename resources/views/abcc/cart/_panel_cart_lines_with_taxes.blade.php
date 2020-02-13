@@ -5,8 +5,11 @@
     <table id="cart_lines" class="table table-hover">
         <thead>
             <tr>
-              <th class="text-right">ID</th>
-              <th>{{ l('Reference') }}</th>
+              <th>{{ l('Reference') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('Drag to Sort.', 'layouts') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a></th>
               <th colspan="2">{{ l('Product Name') }}</th>
               <th>
 @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
@@ -80,41 +83,37 @@
 
         <tbody class="sortable ui-sortable">
   @foreach ($cart->cartproductlines as $line)
-    <tr>
-      <td title="{{ $line->line_sort_order }}">{{ $line->id }}</td>
-      <td title="{{ $line->product->id }}">@if ($line->product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
+    <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
+      <td title="[{{ $line->line_sort_order }}] - {{ $line->id }} - {{ $line->product->id }}">@if ($line->product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
                 @else {{ $line->product->reference }}
                 @endif</td>
 
-      <td>
+      <td class="button-pad">
 @php
   $line->img = $line->product->getFeaturedImage();
+  // $line->img = new \App\Image();
 @endphp
-                @if ($line->img)
+
                     <a class="view-image" data-html="false" data-toggle="modal"
-                       href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-large_default' . '.' . $line->img->extension ) }}"
-                       data-title="{{ l('Product Images') }} :: {{ $line->product->name }}"
-                       data-caption="({{$line->img->id}}) {{ $line->img->caption }}"
+                       href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->filename . '-large_default' . '.' . $line->img->extension ) }}"
+                       data-title="{{ $line->product->name }}"
+                       data-caption="{{ $line->img->caption }}"
                        data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
                        onClick="return false;" title="{{l('View Image')}}">
 
-                        <img src="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-mini_default' . '.' . $line->img->extension ) . '?'. 'time='. time() }}"
+                        <img src="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->filename . '-mini_default' . '.' . $line->img->extension ) . '?'. 'time='. time() }}"
                              alt="{{ $line->product->name }}" style="border: 1px solid #dddddd;">
                     </a>
-                @else
-                    <a class="view-image" data-html="false" data-toggle="modal" 
-                           href="{{ URL::to( \App\Image::pathProducts() . 'default-large_default.png' ) }}"
-                           data-title="{{ l('Product Images') }} :: {{ $line->product->name }}" 
-                           data-caption="({{$line->product->id}}) {{ $line->product->name }} " 
-                           data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
-                           onClick="return false;" title="{{l('View Image')}}">
 
-                            <img src="{{ URL::to( \App\Image::pathProducts() . 'default-mini_default.png' ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
-                    </a>
-                @endif
       </td>
 
-      <td class="text-left view-image">{{ $line->product->name }}
+      <td class="text-left view-image" data-html="false" data-toggle="modal"
+                       href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->filename . '-large_default' . '.' . $line->img->extension ) }}"
+                       data-title="{{ $line->product->name }}"
+                       data-caption="{{ $line->img->caption }}"
+                       data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
+                       onClick="return false;" title="{{l('View Product')}}">{{ $line->product->name }}
+
           @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $line->product->ecotax )
               <br />
               {{ l('Ecotax: ', 'abcc/catalogue') }} {{ $line->product->ecotax->name }} ({{ abi_money( $line->product->getEcotax() ) }})
@@ -281,6 +280,9 @@
                         </tr>
                     @endif
   @endforeach
+
+    </tbody>
+    <tbody>
 
 
 @include('abcc.cart._panel_cart_total_with_taxes')

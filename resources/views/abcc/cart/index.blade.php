@@ -31,23 +31,46 @@
 <div class="container-fluid">
    <div class="row">
 
-      <div class="col-lg-4 col-md-4 col-sm-4">
+      <div class="col-lg-6 col-md-6 col-sm-6">
 
-          @include('abcc.cart._panel_product')
-
-          @include('abcc.cart._panel_shipping_address')
-
-          @include('abcc.cart._panel_confirm')
+          @include('abcc.cart._panel_product_large')
 
       </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
+
+   </div>
+
+   <div class="row">
       
-      <div class="col-lg-8 col-md-8 col-sm-8">
+      <div class="col-lg-12 col-md-12 col-sm-12">
 
           @include('abcc.cart._panel_cart')
 
       </div><!-- div class="col-lg-8 col-md-8 col-sm-8" -->
 
    </div>
+
+   <div class="row">
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          
+
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          @include('abcc.cart._panel_shipping_address')
+
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          @include('abcc.cart._panel_confirm')
+
+      </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
+
+   </div>
+
 </div>
 
 @include('layouts/back_to_top_button')

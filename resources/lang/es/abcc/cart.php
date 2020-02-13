@@ -38,6 +38,7 @@ return [
     //	'Taxes are not included.'     => 'Impuestos no incluidos.',
 
     'View Image'     => 'Ver Imagen',
+    'View Product'     => 'Ver Producto',
     'Product Images' => 'Imágenes de Productos',
 
     'EAN Code'     => 'Código EAN',

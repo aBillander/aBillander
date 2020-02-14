@@ -41,11 +41,19 @@
 
    <div class="row">
       
-      <div class="col-lg-12 col-md-12 col-sm-12">
+      <div class="col-lg-1 col-md-1 col-sm-1">
+
+      </div>
+      
+      <div class="col-lg-10 col-md-10 col-sm-10">
 
           @include('abcc.cart._panel_cart')
 
       </div><!-- div class="col-lg-8 col-md-8 col-sm-8" -->
+      
+      <div class="col-lg-1 col-md-1 col-sm-1">
+
+      </div>
 
    </div>
 
@@ -121,8 +129,8 @@ fieldset[disabled] .btn-custom.active {
 
 
 /* Cart Stuff */
-#div_cart_lines .show-pricerules {margin-left:1em}
-/* #div_cart_lines td {vertical-align: middle} */
+/* #div_cart_lines .show-pricerules {margin-left:1em} */
+#div_cart_lines td {vertical-align: middle}
 .crossed {text-decoration: line-through;}
 
 

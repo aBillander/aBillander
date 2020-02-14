@@ -80,6 +80,18 @@ border-bottom-right-radius: 4px;height: 38px;"></span>
    {{-- Gorrino Include --}}
    {!! file_get_contents( resource_path() . '/views/abcc/cart/bootstrap-ddl/bootstrap-ddl.js'); !!}
 
+
+
+  $(document).ready(function() {
+
+        $(document).on('change', '#shipping_address_alias', function(evnt) {
+
+            $("#update_shipping_address").submit();
+
+        });
+
+  }); // $(document).ready
+
 </script>
 @endsection
 

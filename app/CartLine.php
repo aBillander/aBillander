@@ -38,6 +38,14 @@ class CartLine extends Model
                ];
     
 
+    
+    public function getImageAttribute()
+    {
+        if ($this->line_type == 'product') return $this->product->getFeaturedImage();
+
+        return new Image();
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Relationships

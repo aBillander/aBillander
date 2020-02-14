@@ -2,7 +2,7 @@
 {{-- Totals --}}
 
 <tr class="warning xinfo">
-    <td colspan="6"></td>
+    <td colspan="6" style="width: 50%"></td>
 
     <td  colspan="2">
         <h4><span style="color: #dd4814;">{{ l('Products Total') }}</span></h4>

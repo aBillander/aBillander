@@ -59,7 +59,9 @@ class AbccCustomerCartController extends Controller
 
 		$cart = Cart::getCustomerUserCart();
 
-        return view('abcc.cart.index', compact('cart'));
+        $config['display_with_taxes'] = $this->customer_user->canDisplayPricesTaxInc();
+
+        return view('abcc.cart.index', compact('cart', 'config'));
 	}
 
 	/**

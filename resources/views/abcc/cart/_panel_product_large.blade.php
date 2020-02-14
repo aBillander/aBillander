@@ -1,7 +1,9 @@
-<div class="panel panel-primary" id="panel_product">
+<div class="panel panel-default" id="panel_product">
 
    <div class="panel-heading">
-      <h3 class="panel-title">{{ l('Search Product') }}</h3>
+      <!-- h3 class="panel-title">{{ l('Search Product') }}</h3 -->
+            <h3 class="panel-title" style="font-size: 30px;" title="{{ $cart->id }}">{{  l('Shopping Cart') }} &nbsp;
+            </h3>
    </div>
 
    <div class="panel-body">
@@ -12,8 +14,8 @@
             {{ Form::hidden('line_product_id',     null, array('id' => 'line_product_id'    )) }}
             {{ Form::hidden('line_combination_id', null, array('id' => 'line_combination_id')) }}
 
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                     {{ l('Product Name') }}
+                  <div class="form-group col-lg-5 col-md-5 col-sm-">
+                     <strong>{{ l('Search Product') }}</strong>
                      <!-- input class="form-control ui-autocomplete-input" id="line_autoproduct_name" onclick="this.select()" name="line_autoproduct_name" autocomplete="off" value="pan in" type="text" -->
 
                      {!! Form::text('line_autoproduct_name', null, array('class' => 'form-control', 'id' => 'line_autoproduct_name', 'onclick' => 'this.select()')) !!}
@@ -35,7 +37,7 @@
                  </div>
 
 
-                 <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                 <div class="form-group col-lg-4 col-md-4 col-sm-4">
 
                    <br />
                     <button class="btn btn-success" type="submit" id="product_add_to_cart" xonclick="this.disabled=true;this.form.submit();">
@@ -367,9 +369,21 @@
           {
                 $("#can_min_order").addClass("alert-success").removeClass("alert-danger");
 
+                if ( !$("#min_order_on" ).hasClass("hide") ) $("#min_order_on").addClass("hide");
+                if (  $("#min_order_off").hasClass("hide") ) $("#min_order_off").removeClass("hide");
+
+                if (  $("#can_submit_yes").hasClass("hide") ) $("#can_submit_yes").removeClass("hide");
+                if ( !$("#can_submit_no" ).hasClass("hide") ) $("#can_submit_no" ).addClass("hide");
+
           } else {
 
                $("#can_min_order").addClass("alert-danger").removeClass("alert-success");
+
+                if (  $("#min_order_on" ).hasClass("hide") ) $("#min_order_on").removeClass("hide");
+                if ( !$("#min_order_off").hasClass("hide") ) $("#min_order_off").addClass("hide");
+
+                if ( !$("#can_submit_yes").hasClass("hide") ) $("#can_submit_yes").addClass("hide");
+                if (  $("#can_submit_no" ).hasClass("hide") ) $("#can_submit_no" ).removeClass("hide");
 
           }
 

@@ -280,7 +280,7 @@ display: inline-block;">
 
 
                             <td class="text-center">
-                                {{ $line->as_priceable($line->product->recommended_retail_price_tax_inc) }}
+                                {{ $line->product->recommended_retail_price_tax_inc > 0 ? $line->as_priceable($line->product->recommended_retail_price_tax_inc) : '-' }}
                             </td>
 
                         @if($config['display_with_taxes'])

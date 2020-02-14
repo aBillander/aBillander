@@ -13,7 +13,9 @@
 
 @if( Auth::user()->canMinOrderValue() > 0.0 )
 
-            <span id="" class="badge pull-right alert-danger" style="xbackground-color: #3a87ad; margin-right: 18px;" title="{{ l('Cart amount should be more than: :amount (Products Value)', ['amount' =>  abi_money( Auth::user()->canMinOrderValue(), $cart->currency )]) }}"><i class="fa fa-warning"></i> 
+            <span id="" class="badge pull-right" style="xbackground-color: #3a87ad; margin-right: 18px;" title="">
+                   <i id="min_order_on"  style="color: #b94a48" class="fa fa-warning   hide"></i> 
+                   <i id="min_order_off" style="color: #468847" class="fa fa-thumbs-up hide"></i> 
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                           data-content="{{ l('Cart amount should be more than: :amount (Products Value)', ['amount' =>  abi_money( Auth::user()->canMinOrderValue(), $cart->currency )]) }}">
                       <i class="fa fa-question-circle abi-help"></i>
@@ -73,13 +75,18 @@
 </div>
 
 
-    
+@if( Auth::user()->canMinOrderValue() > 0.0 )
 
-<!-- div id="panel_cart_total" class="">
-  
-    @ include('abcc.cart._panel_cart_total')
+      <div class="panel-body">
 
-</div -->
+         <div class="alert alert-block" id="can_min_order">
+             <i class="fa fa-warning"></i>
+            {{ l('Cart amount should be more than: :amount (Products Value)', ['amount' =>  abi_money( Auth::user()->canMinOrderValue(), $cart->currency )]) }}
+         </div>
+         
+      </div>
+
+@endif
 
 
 </div>

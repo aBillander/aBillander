@@ -4,6 +4,9 @@
 
 
 @section('content') 
+
+@if ( 1 || $config['display_with_taxes'] )
+@else
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
@@ -27,6 +30,7 @@
         </div>
     </div>
 </div>
+@endif
 
 <div class="container-fluid">
    <div class="row">
@@ -36,6 +40,18 @@
           @include('abcc.cart._panel_product_large')
 
       </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
+
+      <div class="col-lg-2 col-md-2 col-sm-2">
+
+          @include('abcc.cart._panel_shipping_address_header')
+
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          @include('abcc.cart._panel_confirm_header')
+
+      </div>
 
    </div>
 
@@ -56,7 +72,7 @@
       </div>
 
    </div>
-
+{{--
    <div class="row">
 
       <div class="col-lg-4 col-md-4 col-sm-4">
@@ -78,7 +94,7 @@
       </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
 
    </div>
-
+--}}
 </div>
 
 @include('layouts/back_to_top_button')

@@ -78,9 +78,15 @@ class ProductionSheet extends Model
         // STEP 2
         // Group Planned Orders, 
 
-        // $this->sandbox->orders_planned = $this->sandbox->orders_planned->groupBy('product_id');
+        // abi_r($this->sandbox->getPlannedOrders());
+        // abi_r('* *************************** *');
 
-        $lines_summary = $this->sandbox->orders_planned
+        $this->sandbox->groupPlannedOrders();
+
+        abi_r($this->sandbox->getPlannedOrders());
+        abi_r('* *************************** *');
+
+        $lines_summary = $this->sandbox->getPlannedOrders()
                 ->where('manufacturing_batch_size', '>', 1)     // Take only if batch size must be checked
                 ->groupBy('product_id')->reduce(function ($result, $group) {
                   return $result->put($group->first()->product_id, [
@@ -126,14 +132,18 @@ class ProductionSheet extends Model
 
         }
 
+
+        // abi_r($lines_summary);
+        // abi_r('* *************************** *');
+
 // abi_r($lines_summary);
 
-// abi_r($this->sandbox->orders_planned, true);
+// abi_r($this->sandbox->getPlannedOrders(), true);
 
         // STEP 4
         // Adjust Release
         // Group Planned Orders
-        $lines_summary = $this->sandbox->orders_planned
+        $lines_summary = $this->sandbox->getPlannedOrders()
                 ->groupBy('product_id')->reduce(function ($result, $group) {
                   return $result->put($group->first()->product_id, [
                     'product_id' => $group->first()->product_id,
@@ -145,6 +155,10 @@ class ProductionSheet extends Model
                     'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
                   ]);
                 }, collect());
+
+
+        // abi_r($lines_summary);
+        // abi_r('* *************************** *');die();
 
 
 

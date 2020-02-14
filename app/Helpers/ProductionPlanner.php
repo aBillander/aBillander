@@ -2,17 +2,22 @@
 
 namespace App;
 
-use \App\Product;
-use \App\ProductionOrder;
-
 class ProductionPlanner 
 {
     public $orders_planned;
+    public $products_planned;
 	
     public function __construct( )
     {
         //
         $this->orders_planned = collect([]);
+        $this->products_planned = collect([]);
+    }
+
+
+    public function getPlannedOrders()
+    {
+        return $this->orders_planned;
     }
 
 
@@ -24,6 +29,13 @@ class ProductionPlanner
                     'warehouse_id', 'production_sheet_id', 'notes'];
 
         $product = Product::findOrFail( $data['product_id'] );
+
+         if ( !( 
+                   ($product->procurement_type == 'manufacture') 
+                || ($product->procurement_type == 'assembly') 
+            ) )
+         return null;
+
         $bom     = $product->bom;
 
 //        $production_orders = collect([]);
@@ -130,6 +142,13 @@ class ProductionPlanner
                     'warehouse_id', 'production_sheet_id', 'notes'];
 
         $product = Product::findOrFail( $data['product_id'] );
+
+         if ( !( 
+                   ($product->procurement_type == 'manufacture') 
+                || ($product->procurement_type == 'assembly') 
+            ) )
+         return null;
+        
         $bom     = $product->bom;
 
 //        $production_orders = collect([]);
@@ -226,6 +245,42 @@ class ProductionPlanner
         }
 
         // return $production_orders;
+    }
+
+
+    public function groupPlannedOrders()
+    {
+        $this->orders_planned = $this->getPlannedOrders()
+                ->groupBy('product_id')->reduce(function ($result, $group) {
+                      $reduced = $group->first();
+
+                      $reduced->required_quantity = $group->sum('required_quantity');
+                      $reduced->planned_quantity  = $group->sum('planned_quantity');
+
+                      return $result->put($reduced->product_id, $reduced);
+
+                }, collect());
+
+        // Load Products in memory
+        $pIDs = $this->orders_planned->pluck('product_id');
+        $this->products_planned = Product::whereIn('id', $pIDs)->get();
+
+        $products_planned = &$this->products_planned;
+
+        // Stock adjustment
+        $this->orders_planned->transform(function($order, $key) use ($products_planned) {
+            $product_stock = $products_planned->firstWhere('id', $order->product_id)->quantity_onhand;
+            abi_r($order->product_id.' - '.$product_stock.' - '.$order->required_quantity);
+            $order->required_quantity = $order->required_quantity - $product_stock;
+            $order->planned_quantity  = $order->required_quantity;
+            return $order;
+        });
+
+
+        abi_r('* *************************** *');
+        abi_r($this->getPlannedOrders());
+
+        // die();
     }
 	
 }

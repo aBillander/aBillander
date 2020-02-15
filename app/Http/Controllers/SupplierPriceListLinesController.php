@@ -64,7 +64,7 @@ class SupplierPriceListLinesController extends Controller
      */
     public function create($supplierId)
     {
-        $supplier = $this->supplier->findOrFail($supplierId);
+        $supplier = $this->supplier->with('currency')->findOrFail($supplierId);
 
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $currencyDefault = Configuration::getInt('DEF_CURRENCY');

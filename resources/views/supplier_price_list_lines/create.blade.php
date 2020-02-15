@@ -53,7 +53,7 @@
 
             $("#discount_percent").val({{old('discount_percent', '0.0')}});
 
-            $("#currency_id").val({{ old('currency_id', $currencyDefault) }});
+            // $("#currency_id").val({{ old('currency_id', $currencyDefault) }});
 
         	$("#line_autoproduct_name").focus();
 

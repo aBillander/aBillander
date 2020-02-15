@@ -54,7 +54,7 @@ class SupplierPriceListLineDuplicated implements Rule
     public function message()
     {
         return l(
-            'This Price List Line already exists.',
+            'This Price List Line for the specified Currency already exists.',
             'validationrules'
         );
     }

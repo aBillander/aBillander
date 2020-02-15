@@ -16,7 +16,7 @@
                                     data-content="{{ l('Price is WITHOUT Taxes.') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
-        {!! Form::text('price_pack', null, array('id' => 'price_pack', 'class' => 'form-control')) !!}
+        {!! Form::text('price_pack', old('price_pack', 0.0), array('id' => 'price_pack', 'class' => 'form-control')) !!}
     </div>
 </div>
 

@@ -7,6 +7,7 @@
    </div>
 
    <div class="panel-body">
+      <div xclass="row">
 
             {!! Form::hidden('customer_id', \App\Context::getContext()->customer->id, array('id' => 'customer_id')) !!}
             {!! Form::hidden('currency_id', \App\Context::getContext()->cart->currency_id, array('id' => 'currency_id')) !!}
@@ -14,7 +15,7 @@
             {{ Form::hidden('line_product_id',     null, array('id' => 'line_product_id'    )) }}
             {{ Form::hidden('line_combination_id', null, array('id' => 'line_combination_id')) }}
 
-                  <div class="form-group col-lg-5 col-md-5 col-sm-">
+                  <div class="form-group col-lg-8 col-md-8 col-sm-8">
                      <strong>{{ l('Search Product') }}</strong>
                      <!-- input class="form-control ui-autocomplete-input" id="line_autoproduct_name" onclick="this.select()" name="line_autoproduct_name" autocomplete="off" value="pan in" type="text" -->
 
@@ -24,7 +25,8 @@
                      {{ Form::hidden( 'line_measure_unit_id', null, ['id' => 'line_measure_unit_id'] ) }}
                   </div>
 
-                 <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('line_quantity') ? 'has-error' : '' }}">
+                 <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('line_quantity') ? 'has-error' : '' }}">
+{{--
                     {{ l('Quantity') }}
                        <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                               data-content="{{ l('Change Quantity and press [Enter] or click button below.') }}">
@@ -34,9 +36,37 @@
                      {!! $errors->first('line_quantity', '<span class="help-block">:message</span>') !!}
 
                      {{ Form::hidden('line_quantity_decimal_places', null, array('id' => 'line_quantity_decimal_places')) }}
+--}}
+
+<div class="xform-group">
+  <!-- label class="control-label">{{ l('Quantity') }}</label -->{{ l('Quantity') }}
+                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                              data-content="{{ l('Change Quantity and press [Enter] or click button on the right.') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                       </a>
+  <div class="input-group">
+    <!-- span class="input-group-addon">$</span -->
+
+    {!! Form::text('line_quantity', null, array('class' => 'form-control', 'id' => 'line_quantity', 'xonkeyup' => 'calculate_line_product( )', 'xonchange' => 'calculate_line_product( )', 'onfocus' => 'this.select()', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
+
+    <span class="input-group-btn">
+                    <button class="btn btn-success" type="submit" id="product_add_to_cart" xonclick="this.disabled=true;this.form.submit();" title="{{ l('Add to Cart') }}">
+                       <i class="fa fa-cart-plus"></i>
+                       &nbsp; 
+                    </button>
+    </span>
+  </div>
+</div>
+                     {!! $errors->first('line_quantity', '<span class="help-block">:message</span>') !!}
+
+                     {{ Form::hidden('line_quantity_decimal_places', null, array('id' => 'line_quantity_decimal_places')) }}
+
+
+
+
                  </div>
 
-
+{{--
                  <div class="form-group col-lg-4 col-md-4 col-sm-4">
 
                    <br />
@@ -46,8 +76,9 @@
                     </button>
 
                  </div>
+--}}
 
-
+      </div>
    </div><!-- div class="panel-body" -->
 </div>
 

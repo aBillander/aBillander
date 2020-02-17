@@ -154,6 +154,7 @@
 
 @endif
 
+{{-- Order Total with taxes --}}
 
 <tr class="info">
     <td colspan="6"></td>

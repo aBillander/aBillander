@@ -1,7 +1,7 @@
-<div class="panel panel-success" id="panel_confirm">
+<div class="panel panel-success" id="panel_shipping_address">
 
    <div class="panel-heading">
-      <h3 class="panel-title" title="{{ $cart->shipping_address_id }}">{{ l('Shipping Address') }}</h3>
+      <h3 class="panel-title" title="{{ $cart->shipping_address_id }}"><span style="font-size: 30px;">&nbsp;</span>{{ l('Shipping Address') }}</h3>
    </div>
 
 {!! Form::open(array('route' => 'abcc.cart.shippingaddress.store', 'id' => 'update_shipping_address', 'name' => 'update_shipping_address', 'class' => 'form')) !!}
@@ -24,7 +24,7 @@
                 <input id="shipping_address_alias" readonly class="form-control" value="{{  old('shipping_address_alias', $cart->shippingaddress->alias)  }}" style="background-color: white;">
                 {{-- readonly prevents borowser autocomplete! --}}
                 <span class="ddl-caret" style="background-color: #e7e7e7;border-top-right-radius: 4px;
-border-bottom-right-radius: 4px;height: 38px;"></span>
+border-bottom-right-radius: 4px; border: 1px solid #cccccc; height: 38px;"></span>
                 <ul class="dropdown-menu">
 
 @foreach ( Auth::user()->getAllowedAddresses() as $address )

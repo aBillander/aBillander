@@ -250,7 +250,7 @@ display: inline-block;">
                                 </div>
     
     @elseif ($line->unit_customer_final_price != $line->unit_customer_price)
-                                <div xclass="pull-right" style="vertical-align: middle; margin-right: 36px;">
+                                <div xclass="pull-right" style="vertical-align: middle; xmargin-right: 36px;">
                                     {{ $line->as_price('unit_customer_final_price') }}{{-- $cart->currency->sign --}}
                                     
                                         <p class="text-info crossed">
@@ -258,11 +258,11 @@ display: inline-block;">
                                         </p>
                                     
                                 </div>
-                            @else
-                                <div xclass="pull-right" style="vertical-align: middle;">
-                                    {{ $line->as_price('unit_customer_final_price') }}{{-- $cart->currency->sign --}}
-                                </div>
-                            @endif
+                  @else
+                      <div xclass="pull-right" style="vertical-align: middle;">
+                          {{ $line->as_price('unit_customer_final_price') }}{{-- $cart->currency->sign --}}
+                      </div>
+                  @endif
         </div>
 
       </td>

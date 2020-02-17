@@ -212,6 +212,7 @@ class AbccCustomerCartController extends Controller
         return back(); // will keep same page
     }
 
+    // Where used???
     public function updateLine(Request $request, $id)
     {
         $qty = $request->qty;
@@ -501,6 +502,7 @@ class AbccCustomerCartController extends Controller
         return response()->json($positions);
     }
 
+    // Where used???
     public function getCartTotal()
     {
         $order = $this->customerOrder

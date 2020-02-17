@@ -15,7 +15,6 @@ return [
 	'Expand / Collapse'     => 'Ver / Ocultar',
 
 	'Show Sub-Categories' => 'Ver Sub-Categorías',
-	'Show Products' => 'Ver Productos',
 	'Categories' => 'Categorías',
 	''     => '',
 	''     => '',
@@ -43,26 +42,22 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Categories Language Lines :: edit
+	| Categories Language Lines :: Products
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Categories - Edit'     => 'Categorías - Modificar',
-	'Edit Category'     => 'Modificar Categoría',
+	'Categories - Products'     => 'Categorías - Productos',
+	'Products'     => 'Productos',
+
+	
+	'Product Name'     => 'Nombre del Producto',
+	'Reference'     => 'Referencia',
+	'Customer Price'     => 'Precio de Venta',
+	'Stock'     => 'Stock',
 
 	'Publish to web?'     => '¿Publicar en la web?',
-	'Webshop ID'     => 'Código en la Tienda Web',
-	'Web Shop Data'     => 'Datos para la Tienda Web',
-	'Name'     => 'Nombre',
-	'External Reference'     => 'Referencia Externa',
-	'Description'     => 'Descripción',
-	'Friendly URL'     => 'URL Amigable',
-	'META Title'     => 'META Título',
-	'META Description'     => 'META Descripción',
-	'META Keywords'     => 'META Palabras Clave',
-	'Internet'     => 'Internet',
-
+	'Product Images'     => 'Imágenes de Productos',
 ];

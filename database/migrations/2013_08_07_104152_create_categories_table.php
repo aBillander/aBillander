@@ -17,7 +17,7 @@ class CreateCategoriesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name', 128)->nullable(false);
-			$table->integer('position')->unsigned();
+			$table->integer('position')->unsigned()->default(0);;
 			
 			$table->tinyInteger('publish_to_web')->default(0);
 			$table->string('webshop_id', 16)->nullable();

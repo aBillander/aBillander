@@ -96,7 +96,8 @@ class AbccCatalogueController extends Controller
 	                                  ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id)
                                       ->IsActive()
                                       ->IsPublished()
-                                      ->orderBy('reference', 'asc');
+ //                                     ->orderBy('reference', 'asc')
+                                      ;
 
                 // abi_toSQL($products);
 

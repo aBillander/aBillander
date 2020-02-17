@@ -53,7 +53,8 @@ class ProductsController extends Controller
                               ->with('combinations')                                  
                               ->with('category')
                               ->with('tax')
-                              ->orderBy('reference', 'asc');
+ //                             ->orderBy('reference', 'asc')
+                              ;
     }
 
     /**

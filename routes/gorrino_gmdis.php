@@ -29,6 +29,31 @@
 Route::get('migratethis_gmdis', function()
 {
 
+  // 2020-02-17
+    
+    Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `position` INT(10) NOT NULL DEFAULT '0' AFTER `name`;");
+
+    
+  $cs = \App\Category::where('parent_id', '>', '0')
+                        ->with('products')
+                        ->get();
+
+  foreach ($cs as $c) {
+    # code...
+    $position = 10;
+    foreach ($c->products->sortBy('name') as $product) {
+      # code...
+      $product->position = $position;
+      $product->save();
+
+      $position += 10;
+    }
+  }
+
+ 
+
+  die('OK'); 
+
 
   Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `measure_unit_id` INT(10) UNSIGNED NULL AFTER `quantity`;");
  

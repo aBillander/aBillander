@@ -73,6 +73,9 @@
                 @if (  \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $parentId==0 )
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('categories/' . $category->id . '/subcategories') }}" title="{{l('Show Sub-Categories')}}"><i class="fa fa-folder-open-o"></i></a>
                 @endif
+                @if (  \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $parentId>0 )
+                <a class="btn btn-sm btn-lightblue" href="{{ route('category.products', $category->id) }}" title="{{l('Show Products')}}"><i class="fa fa-cubes"></i></a>
+                @endif
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('categories/' . $parentId . '/subcategories/' . $category->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 

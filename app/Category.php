@@ -68,7 +68,7 @@ class Category extends Model {
 
     public function products()
     {
-        return $this->hasMany('App\Product');
+        return $this->hasMany('App\Product')->orderBy('position', 'asc');
     }
 
     /**

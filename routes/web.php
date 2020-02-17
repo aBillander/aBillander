@@ -276,6 +276,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
                                                         'as'   => 'categories.publish' ));
         Route::post('categories/sortlines', 'CategoriesController@sortLines')->name('categories.sortlines');
 
+        Route::get('category/{id}/products', 'CategoryProductsController@index')->name('category.products');
+        Route::post('category/sortproducts', 'CategoryProductsController@sortProducts')->name('category.sortproducts');
+
+
         Route::get('productionorders/{id}/getorder', 'ProductionOrdersController@getOrder')->name('productionorder.getorder');
         Route::post('productionorders/{id}/productionsheetedit', 'ProductionOrdersController@productionsheetEdit')->name('productionorder.productionsheet.edit');
         Route::post('productionorders/{id}/productionsheetdelete', 'ProductionOrdersController@productionsheetDelete')->name('productionorder.productionsheet.delete');

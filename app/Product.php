@@ -99,7 +99,7 @@ class Product extends Model {
     protected $appends = ['extra_measureunits', 'tool_id', 'quantity_available'];
     
     protected $fillable = [ 'product_type', 'procurement_type', 'mrp_type', 
-                            'name', 'reference', 'ean13', 'description', 'description_short', 
+                            'name', 'position', 'reference', 'ean13', 'description', 'description_short', 
                             'quantity_decimal_places', 'manufacturing_batch_size',
 //                            'warranty_period', 
 
@@ -417,7 +417,10 @@ class Product extends Model {
 
         if ( isset($params['category_id']) && $params['category_id'] > 0 )
         {
-            $query->where('category_id', '=', $params['category_id']);
+            $query->where('category_id', '=', $params['category_id'])
+                  ->orderBy('position', 'asc');
+        } else {
+            $query->orderBy('reference', 'asc');
         }
 
         if ( isset($params['manufacturer_id']) && $params['manufacturer_id'] > 0 && 0)

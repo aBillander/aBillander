@@ -164,6 +164,18 @@ trait BillableDocumentLinesTrait
                             ? $params['extra_quantity_label'] 
                             : '';
 
+        $package_measure_unit_id = array_key_exists('package_measure_unit_id', $params) 
+                            ? $params['package_measure_unit_id'] 
+                            : $product->measure_unit_id;
+
+        $pmu_conversion_rate = array_key_exists('pmu_conversion_rate', $params) 
+                            ? $params['pmu_conversion_rate'] 
+                            : 1.0;
+
+        $pmu_label = array_key_exists('pmu_label', $params) 
+                            ? $params['pmu_label'] 
+                            : '';
+
         $notes = array_key_exists('notes', $params) 
                             ? $params['notes'] 
                             : '';
@@ -181,6 +193,10 @@ trait BillableDocumentLinesTrait
             'measure_unit_id' => $measure_unit_id,
             'extra_quantity'       => $extra_quantity,
             'extra_quantity_label' => $extra_quantity_label,
+
+            'package_measure_unit_id' => $package_measure_unit_id,
+            'pmu_conversion_rate'     => $pmu_conversion_rate,
+            'pmu_label'               => $pmu_label,
 
             'prices_entered_with_tax' => $pricetaxPolicy,
     

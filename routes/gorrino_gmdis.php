@@ -28,10 +28,27 @@
 
 Route::get('migratethis_gmdis', function()
 {
+  // 2020-02-18
+  Illuminate\Support\Facades\DB::statement("ALTER TABLE `cart_lines` ADD `pmu_label` varchar(128) null AFTER `pmu_conversion_rate`;");
+
+  $tables = ['customer_invoice', 'customer_shipping_slip', 'customer_quotation', 'customer_order'];
+
+  foreach ($tables as $table) {
+    # code...
+    Illuminate\Support\Facades\DB::statement("ALTER TABLE `".$table."_lines` ADD `pmu_label` varchar(128) null AFTER `pmu_conversion_rate`;");
+
+  }
+
+
+  die('OK'); 
+
 
   // 2020-02-17
     
     Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `position` INT(10) NOT NULL DEFAULT '0' AFTER `name`;");
+
+
+  // die('OK'); 
 
     
   $cs = \App\Category::where('parent_id', '>', '0')

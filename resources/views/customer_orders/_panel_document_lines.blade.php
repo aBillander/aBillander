@@ -94,7 +94,19 @@
                 @endif
                 {{ $line->name }}</td>
                 <td class="text-right">{{ $line->as_quantity('quantity') }}
-                        @if ($line->extra_quantity>0.0)
+                        @if ($line->package_measure_unit_id != $line->measure_unit_id && $line->pmu_label != '')
+                            <p class="text-right text-info">
+                                {{ optional($line->packagemeasureunit)->name }}
+
+                                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                                    xdata-trigger="focus"
+                                    data-html="true" 
+                                    data-content="{!! $line->pmu_label !!}">
+                                    <i class="fa fa-question-circle abi-help" style="color: #9a00cd;"></i>
+                                 </a>
+                            </p>
+                        @endif
+                        @if ($line->extra_quantity > 0.0 && $line->extra_quantity_label != '')
                             <p class="text-right text-info">
                                 +{{ $line->as_quantity('extra_quantity') }}{{ l(' extra') }}
 

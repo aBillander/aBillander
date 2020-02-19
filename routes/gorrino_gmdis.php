@@ -21,6 +21,23 @@
 */
 
 
+/* ********************************************************** */
+
+
+Route::get('notify', function( )
+{
+  // $user->notify(new InvoicePaid($invoice));
+
+  // Notification::send($users, new InvoicePaid($invoice));
+
+  $user = \App\User::findOrFail(6);
+
+  $user->notify(new \App\Notifications\AbccCustomerOrderPlacedNotification());
+
+  abi_r('Done.');
+
+
+});
 
 
 /* ********************************************************** */
@@ -28,6 +45,27 @@
 
 Route::get('migratethis_gmdis', function()
 {
+
+  // 2020-02-19
+
+  Illuminate\Support\Facades\DB::statement("CREATE TABLE `failed_jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+  Illuminate\Support\Facades\DB::statement("ALTER TABLE `failed_jobs`
+  ADD PRIMARY KEY (`id`);
+");
+
+  Illuminate\Support\Facades\DB::statement("ALTER TABLE `failed_jobs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  ");
+
+
 
 
   // die('OK');

@@ -18,5 +18,5 @@ return [
     | Allowed Tenants
     |--------------------------------------------------------------------------
     */
-    'names' => explode(',', env('TENANT_NAMES', ['localhost'])),
+    'names' => explode(',', env('TENANT_NAMES', 'localhost')),
 ];

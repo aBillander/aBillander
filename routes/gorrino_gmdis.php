@@ -28,6 +28,46 @@
 
 Route::get('migratethis_gmdis', function()
 {
+
+
+  // die('OK');
+
+  // 2020-01-13
+    Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `shipping_slip_template_id` INT(10) UNSIGNED NULL AFTER `invoice_template_id`;");
+
+    Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `order_template_id` INT(10) UNSIGNED NULL AFTER `invoice_template_id`;");
+
+
+  // 2019-12-11
+  //
+  //  Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `invoice_sequence_id` INT(10) UNSIGNED NULL AFTER `bank_account_id`;");
+
+  // 2020-02-19
+
+  Illuminate\Support\Facades\DB::statement("CREATE TABLE `jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `queue` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint(3) UNSIGNED NOT NULL,
+  `reserved_at` int(10) UNSIGNED DEFAULT NULL,
+  `available_at` int(10) UNSIGNED NOT NULL,
+  `created_at` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+  Illuminate\Support\Facades\DB::statement("ALTER TABLE `jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `jobs_queue_index` (`queue`);
+");
+
+  Illuminate\Support\Facades\DB::statement("ALTER TABLE `jobs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  ");
+
+
+
+  die('OK');
+
+
   // 2020-02-18
   Illuminate\Support\Facades\DB::statement("ALTER TABLE `cart_lines` ADD `pmu_label` varchar(128) null AFTER `pmu_conversion_rate`;");
 

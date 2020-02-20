@@ -18,6 +18,11 @@ class PriceRule extends Model
                 'pack',        // Price for different measure unit than default / stock measure unit
             ];
 
+    protected $discount_types = [
+        'percentage',
+        'amount',               // Not used, so far...
+    ];
+
     protected $dates = [
         'date_from',
         'date_to',

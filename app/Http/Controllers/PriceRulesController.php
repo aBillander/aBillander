@@ -196,6 +196,18 @@ class PriceRulesController extends Controller
 
 		$rule_type = $request->input('rule_type');
 		
+		if ($rule_type == 'price') 
+		{
+			if ($request->input('price_type', 'price') == 'discount')
+			{
+				$request->merge( [
+					'discount_percent' => $request->input('price'),
+					'discount_type' => 'percentage',
+					'price'         => 0.0,
+				] );
+			}
+		}
+		
 		if ($rule_type == 'promo') 
 		{
 			// If rule_type = 'promo', price maybe null
@@ -261,9 +273,9 @@ class PriceRulesController extends Controller
 	 */
 	public function show($id)
 	{
-		$stockmove = $this->pricerule->findOrFail($id);
+		$pricerule = $this->pricerule->findOrFail($id);
 
-		return view('price_rules.show', compact('stockmove'));
+		return view('price_rules.show', compact('pricerule'));
 	}
 
 	/**
@@ -274,7 +286,7 @@ class PriceRulesController extends Controller
 	 */
 	public function edit($id)
 	{
-		//
+		return $this->show($id);
 	}
 
 	/**

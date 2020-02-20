@@ -110,8 +110,9 @@
       <th>{{-- l('Measure Unit') --}}</th>
       <!-- th>{{l('Currency')}}</th -->
       <th class="text-right">{{l('Price')}}
-                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Prices shown: Rule Price (or Unit Price, if there are Extra Items), Unit Price (when applies, i.e. Price Rule is per Pack), Product Price (as seen on Product record).') }}">
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
+                                    data-content="{{ l('Prices shown: Rule Price (or Unit Price, if there are Extra Items), Unit Price (when applies, i.e. Price Rule is per Pack), Product Price (as seen on Product record).') }}
+                                    {{l('Price is WITHOUT Taxes.')}} {{l('Prices are exclusive of Ecotax.')}}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a></th>
       <!-- th class="text-right">{{l('Discount Percent')}}</th>
@@ -397,6 +398,11 @@ $(document).ready(function() {
             https://stackoverflow.com/questions/7033420/jquery-date-picker-z-index-issue
     --}}
   .ui-datepicker{ z-index: 9999 !important;}
+
+
+  .popover {
+     max-width: 570px;
+   }
 </style>
 
 @endsection

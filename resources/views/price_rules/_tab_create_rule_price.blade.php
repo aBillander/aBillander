@@ -6,13 +6,21 @@
         {!! Form::text('from_quantity', old('from_quantity', 1), array('class' => 'form-control')) !!}
     </div>
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
-        {!! Form::label('price', l('Price')) !!}
-                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Price is WITHOUT Taxes.') }}">
+        {!! Form::label('price_type', l('Type')) !!}
+        {!! Form::select('price_type', ['price' => l('Price'), 'discount' => l('Discount (%)')], old('price_type', 'price'), array('class' => 'form-control', 'id' => 'price_type')) !!}
+        {!! $errors->first('price_type', '<span class="help-block">:message</span>') !!}
+
+        {!! Form::hidden('discount_type', 'percentage') !!}
+    </div>
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+        {!! Form::label('price', l('Value')) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
+                                    data-content="{{ l('Price is WITHOUT Taxes.') }} <br /> {{l('Prices are exclusive of Ecotax.')}}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
         {!! Form::text('price', old('price', 0.0), array('id' => 'price', 'class' => 'form-control')) !!}
     </div>
+
     <div class=" hide form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('currency_id', l('Currency')) !!}
         {!! Form::select('currency_id', ['' => l('-- All --', 'layouts')] + $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id')) !!}

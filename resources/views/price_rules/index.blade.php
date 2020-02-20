@@ -115,6 +115,7 @@
                                     {{l('Price is WITHOUT Taxes.')}} {{l('Prices are exclusive of Ecotax.')}}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a></th>
+      <th> </th>
       <!-- th class="text-right">{{l('Discount Percent')}}</th>
       <th class="text-right">{{l('Discount Amount')}}</th -->
       <th class="text-center">{{l('From Quantity')}}</th>
@@ -161,16 +162,35 @@
 
                 <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
       </td>
-@else
+      <td></td>
+@endif
+@if($rule->rule_type == 'price')
       <td class="text-right">{{ $rule->as_price('price') }}
-
-        @if($rule->rule_type == 'pack')
-                <br /><span class="text-success">{{ $rule->as_priceable( $rule->price / $rule->conversion_rate ) }}</span>
-        @endif
 
                 <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
 
       </td>
+      <td></td>
+@endif
+@if($rule->rule_type == 'discount')
+      <td class="text-right">{{ $rule->as_priceable( $rule->product->price * (1.0 - $rule->discount_percent/100.0 ) ) }}
+
+                <br /><span class="text-success">-{{ $rule->as_percent('discount_percent') }} %</span>
+
+                <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
+
+      </td>
+      <td>%</td>
+@endif
+@if($rule->rule_type == 'pack')
+      <td class="text-right">{{ $rule->as_price('price') }}
+
+                <br /><span class="text-success">{{ $rule->as_priceable( $rule->price / $rule->conversion_rate ) }}</span>
+
+                <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
+
+      </td>
+      <td></td>
 @endif
 
 {{--

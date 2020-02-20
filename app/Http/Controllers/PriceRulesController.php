@@ -201,10 +201,13 @@ class PriceRulesController extends Controller
 			if ($request->input('price_type', 'price') == 'discount')
 			{
 				$request->merge( [
+					'rule_type' => 'discount',
 					'discount_percent' => $request->input('price'),
 					'discount_type' => 'percentage',
 					'price'         => 0.0,
 				] );
+
+				$rule_type = 'discount';
 			}
 		}
 		

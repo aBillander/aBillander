@@ -14,6 +14,7 @@ class PriceRule extends Model
 
     public static $types = [
                 'price', 
+                'discount', 
                 'promo',       // Extra units free of charge
                 'pack',        // Price for different measure unit than default / stock measure unit
             ];

@@ -112,7 +112,11 @@
       <th class="text-right">{{l('Price')}}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
                                     data-content="{{ l('Prices shown: Rule Price (or Unit Price, if there are Extra Items), Unit Price (when applies, i.e. Price Rule is per Pack), Product Price (as seen on Product record).') }}
-                                    {{l('Price is WITHOUT Taxes.')}} {{l('Prices are exclusive of Ecotax.')}}">
+                                    {{l('Price is WITHOUT Taxes.')}}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />{{l('Prices are exclusive of Ecotax.')}}
+@endif
+                  ">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a></th>
       <th> </th>

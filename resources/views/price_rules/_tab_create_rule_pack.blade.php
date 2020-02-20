@@ -13,7 +13,12 @@
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('price_pack', l('Price')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
-                                    data-content="{{ l('Price is WITHOUT Taxes.') }} <br /> {{l('Prices are exclusive of Ecotax.')}}">
+                                    data-content="{{ l('Price is WITHOUT Taxes.') }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
         {!! Form::text('price_pack', old('price_pack', 0.0), array('id' => 'price_pack', 'class' => 'form-control')) !!}

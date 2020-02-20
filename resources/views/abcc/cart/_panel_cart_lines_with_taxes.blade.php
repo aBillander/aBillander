@@ -69,11 +69,11 @@
                <th class="text-right button-pad">{{ l('Total') }}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                                 data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-      @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-          . 
-          {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
-      @endif
-                        ">
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
                             <i class="fa fa-question-circle abi-help"></i>
                          </a></span>
 

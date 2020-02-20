@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\ViewFormatterTrait;
 
-use App\Customer;
 
 class PriceRule extends Model
 {
@@ -78,11 +77,43 @@ class PriceRule extends Model
      *
      * @param Product $product
      */
-    public function removeLine(Product $product)
+    public function getUnitPrice( Currency $currency = null )
     {
-        $line = $this->pricelistlines()->where('product_id', '=', $product->id)->first();
-        $line->delete();
+/*
+        if (!$currency && $this->currency_id)
+            $currency = $this->currency;
+
+        if (!$currency)
+            $currency = Context::getContext()->currency;
+
+*/
+        // Welcome to the show:
+        if($this->rule_type=='price')
+        {
+            $price = $this->price;
+        }
+        elseif($this->rule_type=='discount')
+        {
+            $price = optional($this->product)->price * (1.0 - $this->discount_percent/100.0);
+        }
+        elseif($this->rule_type=='pack')
+        {
+            $price = $this->price / $this->conversion_rate;
+        }
+        elseif($this->rule_type=='promo')
+        {
+            $price = $this->price;
+        }
+
+        // Add Ecotax
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') )
+        {
+            $price += optional($this->product)->getEcotax(); 
+        }
+
+        return $price;
     }
+
 
     /**
      * Return true or false if a rule applies to a product right now

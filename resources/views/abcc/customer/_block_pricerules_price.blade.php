@@ -1,5 +1,5 @@
 
-@if ($customer_rules->where('rule_type', 'price')->count())
+@if ($customer_rules->whereIn('rule_type', ['price', 'discount'])->count())
 
     <h2>
         <span style="color: #cccccc;">/</span>
@@ -17,7 +17,17 @@
               <!-- th>{{l('Category')}}</th -->
               <th>{{l('Product')}}</th>
               <!-- th>{{l('Currency')}}</th -->
-              <th class="text-right">{{l('Price')}}</th>
+              <th class="text-right">{{l('Price')}}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a></span>
+              </th>
               <th class="text-center">{{l('From Quantity')}}</th>
               <th>{{l('Date from')}}</th>
               <th>{{l('Date to')}}</th>
@@ -26,7 +36,7 @@
     </thead>
     <tbody id="pricerule_lines">
 
-    @foreach ($customer_rules->where('rule_type', 'price') as $rule)
+    @foreach ($customer_rules->whereIn('rule_type', ['price', 'discount']) as $rule)
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
       <!-- td>{{ optional($rule->category)->name }}</td -->
@@ -35,39 +45,39 @@
 @php
   $img = $rule->product->getFeaturedImage();
 @endphp
-@if ($img)
+
               [<a class="view-image" data-html="false" data-toggle="modal" 
-                       href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
+                       href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
                        data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
                        data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
-                       data-caption="({{$img->id}}) {{ $img->caption }} " 
+                       data-caption="({{$img->filename}}) {{ $img->caption }} " 
                        onClick="return false;" title="{{l('View Image', 'abcc/catalogue')}}">
   
                         {{ $rule->product->reference }}
                 </a>]
   
-                <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
 
                 {{ $rule->product->name }}
-@else
-              [<a class="view-image" data-html="false" data-toggle="modal" 
-                       href=""
-                       data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
-                       data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
-                       data-caption="" 
-                       onClick="return false;" title="{{l('View', 'layouts')}}">
-  
-                        {{ $rule->product->reference }}
-                </a>]
-
-                {{ $rule->product->name }}
-@endif
             @endif
+
       </td>
       <!-- td>{{ optional($rule->currency)->name }}</td -->
+@php
+    $priceListPrice = optional(optional($rule->product)->getPriceByCustomerPriceList( $customer, 1, $customer->currency ))->getPrice();
+@endphp
 
 @if($rule->rule_type=='price')
-      <td class="text-right">{{ $rule->as_price('price') }}<br /><span class="text-info crossed">{{ $rule->as_priceable(optional(optional($rule->product)->getPriceByCustomerPriceList( $customer, 1, $customer->currency ))->getPrice()) }}</span></td>
+      <td class="text-right">
+        {{ $rule->as_priceable( $rule->getUnitPrice( $customer->currency ) ) }}
+        <br /><span class="text-info crossed">{{ $rule->as_priceable( $priceListPrice ) }}</span></td>
+
+@elseif($rule->rule_type=='discount')
+      <td class="text-right">
+        {{ $rule->as_priceable( $rule->getUnitPrice( $customer->currency ) ) }}
+        <br /><span class="text-success">-{{ $rule->as_percent('discount_percent') }} %</span>
+        <br /><span class="text-info crossed">{{ $rule->as_priceable( $priceListPrice ) }}</span></td>
+
 @else
       <td class="text-right"> </td>
 @endif

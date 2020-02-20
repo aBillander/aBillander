@@ -4,6 +4,9 @@
 
 
 @section('content') 
+
+@if ( 1 || $config['display_with_taxes'] )
+@else
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
@@ -27,27 +30,71 @@
         </div>
     </div>
 </div>
+@endif
 
 <div class="container-fluid">
    <div class="row">
 
-      <div class="col-lg-4 col-md-4 col-sm-4">
+      <div class="col-lg-5 col-md-5 col-sm-5">
 
-          @include('abcc.cart._panel_product')
-
-          @include('abcc.cart._panel_shipping_address')
-
-          @include('abcc.cart._panel_confirm')
+          @include('abcc.cart._panel_product_large')
 
       </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
+
+      <div class="col-lg-2 col-md-2 col-sm-2">
+
+          @include('abcc.cart._panel_shipping_address_header')
+
+      </div>
+
+      <div class="col-lg-5 col-md-5 col-sm-5">
+
+          @include('abcc.cart._panel_confirm_header')
+
+      </div>
+
+   </div>
+
+   <div class="row">
       
-      <div class="col-lg-8 col-md-8 col-sm-8">
+      <div class="col-lg-1 col-md-1 col-sm-1">
+
+      </div>
+      
+      <div class="col-lg-10 col-md-10 col-sm-10">
 
           @include('abcc.cart._panel_cart')
 
       </div><!-- div class="col-lg-8 col-md-8 col-sm-8" -->
+      
+      <div class="col-lg-1 col-md-1 col-sm-1">
+
+      </div>
 
    </div>
+{{--
+   <div class="row">
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          
+
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          @include('abcc.cart._panel_shipping_address')
+
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          @include('abcc.cart._panel_confirm')
+
+      </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
+
+   </div>
+--}}
 </div>
 
 @include('layouts/back_to_top_button')
@@ -98,8 +145,8 @@ fieldset[disabled] .btn-custom.active {
 
 
 /* Cart Stuff */
-#div_cart_lines .show-pricerules {margin-left:1em}
-/* #div_cart_lines td {vertical-align: middle} */
+/* #div_cart_lines .show-pricerules {margin-left:1em} */
+#div_cart_lines td {vertical-align: middle}
 .crossed {text-decoration: line-through;}
 
 

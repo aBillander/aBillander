@@ -1,7 +1,7 @@
-<div class="panel panel-success" id="panel_confirm">
+<div class="panel panel-success" id="panel_shipping_address">
 
    <div class="panel-heading">
-      <h3 class="panel-title">{{ l('Shipping Address') }} [{{ $cart->shipping_address_id }}]</h3>
+      <h3 class="panel-title" title="{{ $cart->shipping_address_id }}"><span style="font-size: 30px;">&nbsp;</span>{{ l('Shipping Address') }}</h3>
    </div>
 
 {!! Form::open(array('route' => 'abcc.cart.shippingaddress.store', 'id' => 'update_shipping_address', 'name' => 'update_shipping_address', 'class' => 'form')) !!}
@@ -17,7 +17,7 @@
          </div>
 --}}
 
-         <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
+         <div class="form-group {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
             {{ l('Shipping Address') }}
             <div class="form-group drop-down-list">
                 <!-- label for="test3">Select a value</label -->
@@ -51,7 +51,7 @@ border-bottom-right-radius: 4px; border: 1px solid #cccccc; height: 38px;"></spa
          </div -->
       </div>
    </div><!-- div class="panel-body" -->
-
+{{--
                <div class="panel-footer text-right">
 
 @if ( Auth::user()->getAllowedAddresses()->count() > 1 )
@@ -63,7 +63,7 @@ border-bottom-right-radius: 4px; border: 1px solid #cccccc; height: 38px;"></spa
 @endif
 
                </div>
-
+--}}
 {!! Form::close() !!}
 
 </div>

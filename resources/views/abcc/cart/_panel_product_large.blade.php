@@ -1,10 +1,13 @@
-<div class="panel panel-primary" id="panel_product">
+<div class="panel panel-default" id="panel_product">
 
    <div class="panel-heading">
-      <h3 class="panel-title">{{ l('Search Product') }}</h3>
+      <!-- h3 class="panel-title">{{ l('Search Product') }}</h3 -->
+            <h3 class="panel-title" style="font-size: 30px;" title="{{ $cart->id }}">{{  l('Shopping Cart') }} &nbsp;
+            </h3>
    </div>
 
    <div class="panel-body">
+      <div xclass="row">
 
             {!! Form::hidden('customer_id', \App\Context::getContext()->customer->id, array('id' => 'customer_id')) !!}
             {!! Form::hidden('currency_id', \App\Context::getContext()->cart->currency_id, array('id' => 'currency_id')) !!}
@@ -13,7 +16,7 @@
             {{ Form::hidden('line_combination_id', null, array('id' => 'line_combination_id')) }}
 
                   <div class="form-group col-lg-8 col-md-8 col-sm-8">
-                     {{ l('Product Name') }}
+                     <strong>{{ l('Search Product') }}</strong>
                      <!-- input class="form-control ui-autocomplete-input" id="line_autoproduct_name" onclick="this.select()" name="line_autoproduct_name" autocomplete="off" value="pan in" type="text" -->
 
                      {!! Form::text('line_autoproduct_name', null, array('class' => 'form-control', 'id' => 'line_autoproduct_name', 'onclick' => 'this.select()')) !!}
@@ -23,6 +26,7 @@
                   </div>
 
                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('line_quantity') ? 'has-error' : '' }}">
+{{--
                     {{ l('Quantity') }}
                        <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                               data-content="{{ l('Change Quantity and press [Enter] or click button below.') }}">
@@ -32,17 +36,50 @@
                      {!! $errors->first('line_quantity', '<span class="help-block">:message</span>') !!}
 
                      {{ Form::hidden('line_quantity_decimal_places', null, array('id' => 'line_quantity_decimal_places')) }}
+--}}
+
+<div class="xform-group">
+  <!-- label class="control-label">{{ l('Quantity') }}</label -->{{ l('Quantity') }}
+                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                              data-content="{{ l('Change Quantity and press [Enter] or click button on the right.') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                       </a>
+  <div class="input-group">
+    <!-- span class="input-group-addon">$</span -->
+
+    {!! Form::text('line_quantity', null, array('class' => 'form-control', 'id' => 'line_quantity', 'xonkeyup' => 'calculate_line_product( )', 'xonchange' => 'calculate_line_product( )', 'onfocus' => 'this.select()', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
+
+    <span class="input-group-btn">
+                    <button class="btn btn-success" type="submit" id="product_add_to_cart" xonclick="this.disabled=true;this.form.submit();" title="{{ l('Add to Cart') }}">
+                       <i class="fa fa-cart-plus"></i>
+                       &nbsp; 
+                    </button>
+    </span>
+  </div>
+</div>
+                     {!! $errors->first('line_quantity', '<span class="help-block">:message</span>') !!}
+
+                     {{ Form::hidden('line_quantity_decimal_places', null, array('id' => 'line_quantity_decimal_places')) }}
+
+
+
+
                  </div>
 
+{{--
+                 <div class="form-group col-lg-4 col-md-4 col-sm-4">
 
+                   <br />
+                    <button class="btn btn-success" type="submit" id="product_add_to_cart" xonclick="this.disabled=true;this.form.submit();">
+                       <i class="fa fa-plus"></i>
+                       &nbsp; {{ l('Add to Cart') }}
+                    </button>
+
+                 </div>
+--}}
+
+      </div>
    </div><!-- div class="panel-body" -->
-
-               <div class="panel-footer text-right">
-                  <button class="btn btn-success" type="submit" id="product_add_to_cart" xonclick="this.disabled=true;this.form.submit();">
-                     <i class="fa fa-plus"></i>
-                     &nbsp; {{ l('Add to Cart') }}
-                  </button>
-               </div>
 </div>
 
 
@@ -363,9 +400,21 @@
           {
                 $("#can_min_order").addClass("alert-success").removeClass("alert-danger");
 
+                if ( !$("#min_order_on" ).hasClass("hide") ) $("#min_order_on").addClass("hide");
+                if (  $("#min_order_off").hasClass("hide") ) $("#min_order_off").removeClass("hide");
+
+                if (  $("#can_submit_yes").hasClass("hide") ) $("#can_submit_yes").removeClass("hide");
+                if ( !$("#can_submit_no" ).hasClass("hide") ) $("#can_submit_no" ).addClass("hide");
+
           } else {
 
                $("#can_min_order").addClass("alert-danger").removeClass("alert-success");
+
+                if (  $("#min_order_on" ).hasClass("hide") ) $("#min_order_on").removeClass("hide");
+                if ( !$("#min_order_off").hasClass("hide") ) $("#min_order_off").addClass("hide");
+
+                if ( !$("#can_submit_yes").hasClass("hide") ) $("#can_submit_yes").addClass("hide");
+                if (  $("#can_submit_no" ).hasClass("hide") ) $("#can_submit_no" ).removeClass("hide");
 
           }
 

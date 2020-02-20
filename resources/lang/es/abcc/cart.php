@@ -31,6 +31,7 @@ return [
     'Sales Equalization Total'    => 'Total RE',
     'Order Total'                 => 'Total Pedido',
     'Total to Pay'                => 'Total a Pagar',
+    'Total (Tax included)' => 'Total (con Impuestos)',
 
     'Change Quantity and press [Enter] or click button below.' => 'Cambie la Cantidad y pulse [Enter] o click en el botón de más abajo.',
 
@@ -38,6 +39,7 @@ return [
     //	'Taxes are not included.'     => 'Impuestos no incluidos.',
 
     'View Image'     => 'Ver Imagen',
+    'View Product'     => 'Ver Producto',
     'Product Images' => 'Imágenes de Productos',
 
     'EAN Code'     => 'Código EAN',

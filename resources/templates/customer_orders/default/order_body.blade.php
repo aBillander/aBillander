@@ -264,6 +264,16 @@
 					<span class="item-name">{{ $line->name }}</span>
 					<span class="item-combination-options"></span>
 				</span>
+@if ( $line->package_measure_unit_id != $line->measure_unit_id && $line->pmu_label != '' )
+				<br />
+				<span class="abi-line-rule-label">{!! $line->pmu_label !!}
+				</span>
+@endif
+@if ( $line->extra_quantity > 0 && $line->extra_quantity_label != '' )
+				<br />
+				<span class="abi-line-rule-label">{!! $line->extra_quantity_label !!}
+				</span>
+@endif
 			</td>
 			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
 			</td>

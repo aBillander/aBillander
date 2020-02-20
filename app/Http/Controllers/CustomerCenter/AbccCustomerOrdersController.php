@@ -208,6 +208,10 @@ class AbccCustomerOrdersController extends Controller {
         			'extra_quantity'       => $cartline->extra_quantity, 
         			'extra_quantity_label' => $cartline->extra_quantity_label,
 
+        			'package_measure_unit_id' => $cartline->package_measure_unit_id,
+        			'pmu_conversion_rate'     => $cartline->pmu_conversion_rate,
+        			'pmu_label'               => $cartline->pmu_label,
+
         			'sales_equalization' =>  $customer->sales_equalization,
         			'sales_rep_id' =>  $customer->sales_rep_id,
         			'commission_percent' =>  (float) optional($customer->salesrep)->commission_percent,	// Maybe no Sales Rep for this Customer!
@@ -314,7 +318,7 @@ Bah!
 				$message->from($data['from'], $data['fromName']);
 
 				// $message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );	// Will send blind copy to sender!
-				$message->to( $data['to'], $data['toName'] )->bcc( 'laextranatural@laextranatural.es' )->subject( $data['subject'] );
+				$message->to( $data['to'], $data['toName'] )->bcc( $customer_user->email )->subject( $data['subject'] );
 
 			});	
 
@@ -460,6 +464,10 @@ Bah!
 
         			'extra_quantity'       => $cartline->extra_quantity, 
         			'extra_quantity_label' => $cartline->extra_quantity_label,
+
+        			'package_measure_unit_id' => $cartline->package_measure_unit_id,
+        			'pmu_conversion_rate'     => $cartline->pmu_conversion_rate,
+        			'pmu_label'               => $cartline->pmu_label,
 
         			'sales_equalization' =>  $customer->sales_equalization,
         			'sales_rep_id' =>  $customer->sales_rep_id,

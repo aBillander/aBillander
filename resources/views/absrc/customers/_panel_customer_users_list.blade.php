@@ -47,7 +47,7 @@
                 <td class="text-center">@if ($user->canMinOrder()) <i class="fa fa-check-square" style="color: #38b44a;"></i><br /> {{ abi_money($user->canMinOrderValue()) }} @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
                 <td class="text-right button-pad">
 
-                    <a class="btn btn-sm btn-grey" href="{{ route('customer.impersonate', [$user->id]) }}" title="{{ l('Impersonate', 'customerusers') }}" target="_blank">&nbsp; <i class="fa fa-clock-o alert-success"></i> &nbsp;</a>
+                    <a class="btn btn-sm btn-grey" href="{{ route('absrc.customer.impersonate', [$user->id]) }}" title="{{ l('Impersonate', 'customerusers') }}" target="_blank">&nbsp; <i class="fa fa-clock-o alert-success"></i> &nbsp;</a>
 {{--
                     <a class=" hide btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
                             xhref="{{ URL::to('customers/' . $customer->id) . '/mail' }}" 

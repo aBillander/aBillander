@@ -17,14 +17,14 @@
 @endif
                </th>
                <th class="text-center button-pad">{{ l('Quantity') }}
-                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                           data-content="{{ l('Change Quantity and press [Enter] or click button on the right.') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                    </a></th>
                <th> </th>
                <th class="text-right">
                   <span class="button-pad">{{ l('Customer Price') }}
-                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                           data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
 @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
     <br />
@@ -45,7 +45,7 @@
 
     <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
 
-      <td title="[{{ $line->line_sort_order }}] - {{ $line->id }} - {{ $line->product->id }}">
+      <td class="button-pad" title="[{{ $line->line_sort_order }}] - {{ $line->id }} - {{ $line->product->id }}">
         {{ $line->product->reference }}
       </td>
 

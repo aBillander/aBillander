@@ -20,7 +20,7 @@
               <!-- th>{{l('Currency')}}</th -->
               <!-- th class="text-center">{{l('From Quantity')}}</th -->
               <th class="text-center">{{l('Price per Package')}}
-                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                           data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
 @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
     <br />

@@ -18,7 +18,7 @@
                                     data-content="{{ l('Price is WITHOUT Taxes.') }}
 @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
     <br />
-    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+    {!! l('Prices are exclusive of Ecotax.') !!}
 @endif
                   ">
                         <i class="fa fa-question-circle abi-help"></i>

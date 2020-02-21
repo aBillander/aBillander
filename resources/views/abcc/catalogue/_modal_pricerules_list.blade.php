@@ -2,7 +2,17 @@
 
 	 <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	    <h4 class="modal-title">{{ l('Show Special Prices') }} :: <label class="label label-default">{{ optional($product)->reference }}</label> {{ optional($product)->name }} - <label class="label alert-success">{{ l('Regular Price (per unit)') }}: {{ rtrim($customer_price->getPrice(), '0') }}{{ $currency->sign }}</label></h4>
+	    <h4 class="modal-title">{{ l('Show Special Prices') }} :: <label class="label label-default">{{ optional($product)->reference }}</label> {{ optional($product)->name }} - <label class="label alert-success">{{ l('Regular Price (per unit)') }}: {{ rtrim($customer_price->getPrice(), '0') }}{{ $currency->sign }}</label>
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="bottom" data-html="true" data-container="body" 
+                          data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+        </h4>
 	 </div>
 
 	 <div class="modal-body">
@@ -12,9 +22,9 @@
 
       @include('abcc.catalogue._block_pricerules_price')
 
-      @include('abcc.catalogue._block_pricerules_promo')
-
       @include('abcc.catalogue._block_pricerules_pack')
+
+      @include('abcc.catalogue._block_pricerules_promo')
 
 
 @else

@@ -54,7 +54,7 @@
             <td>{{ abi_date_short($order->document_date) }}</td>
             <td>{{ abi_date_short($order->valid_until_date) }}</td>
             <td>
-                @if ( $order->hasShippingAddress() || 1)
+                @if ( $order->hasShippingAddress() || 0)
 
 
 

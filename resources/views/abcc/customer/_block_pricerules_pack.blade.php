@@ -31,7 +31,7 @@
                    </a></span>
               </th>
               <th class="text-center">{{l('Unit Price')}}
-                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                           data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
 @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
     <br />
@@ -39,7 +39,7 @@
 @endif
                   ">
                       <i class="fa fa-question-circle abi-help"></i>
-                   </a></span>
+                   </a>
               </th>
               <th>{{l('Date from')}}</th>
               <th>{{l('Date to')}}</th>

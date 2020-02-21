@@ -19,8 +19,28 @@
               <th class="text-center">{{l('Package', 'abcc/customer')}}</th>
               <!-- th>{{l('Currency')}}</th -->
               <!-- th class="text-center">{{l('From Quantity')}}</th -->
-              <th class="text-center">{{l('Price per Package', 'abcc/customer')}}</th>
-              <th class="text-center">{{l('Unit Price', 'abcc/customer')}}</th>
+              <th class="text-center">{{l('Price per Package', 'abcc/customer')}}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
+                          data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+              </th>
+              <th class="text-center">{{l('Unit Price', 'abcc/customer')}}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
+                          data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+              </th>
               <th>{{l('Date from', 'abcc/customer')}}</th>
               <th>{{l('Date to', 'abcc/customer')}}</th>
             <th>  </th>
@@ -42,13 +62,15 @@
 
 @php
 
-$regular_price = $rule->as_priceable(optional(optional($rule->product)->getPriceByCustomerPriceList( $customer, 1, $customer->currency ))->getPrice());
+$priceListPrice = $rule->as_priceable(optional(optional($rule->product)->getPriceByCustomerPriceList( $customer, 1, $customer->currency ))->getPrice());
+
+$priceRule = $rule->getUnitPrice( $customer->currency );
 
 @endphp
 
-      <td class="text-center">{{ $rule->as_price('price') }}</td>
+      <td class="text-center">{{ $rule->as_priceable($priceRule * $rule->conversion_rate) }}</td>
 
-      <td class="text-center">{{ $rule->as_priceable( $rule->price / $rule->conversion_rate ) }}<br /><span class="text-info crossed">{{ $regular_price }}</span></td>
+      <td class="text-center">{{ $rule->as_priceable( $priceRule ) }}<br /><span class="text-info crossed">{{ $priceListPrice }}</span></td>
 
       <td>{{ abi_date_short( $rule->date_from ) }}</td>
             <td>{{ abi_date_short( $rule->date_to   ) }}</td>

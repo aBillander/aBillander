@@ -300,17 +300,19 @@ class Cart extends Model
 
 
         // Still one thing left: rule_type = 'promo'
-        $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
+        $extra_quantity = 0.0;
+        $extra_quantity_label = '';
 
-        // abi_r($customer->getPriceRules( $product, $currency ), true);
+        $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
 
         if ($promo_rule)
         {
-            $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
-            $extra_quantity_label = $promo_rule->name;
-        } else {
-            $extra_quantity = 0.0;
-            $extra_quantity_label = '';
+            // First: Does it apply?
+            if ( $unit_customer_final_price == $unit_customer_price )   // No price rule has been applied
+            {
+                $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
+                $extra_quantity_label = $extra_quantity > 0 ? $promo_rule->name : '';
+            }
         }
 
         // Totals
@@ -368,6 +370,7 @@ class Cart extends Model
     }
 
 
+    // Seems thus funtion is not used anywhere
     // Need update according to public function addLine($product_id = null, $combination_id = null, $quantity = 1.0)
     public function addLineByAdmin($product_id = null, $combination_id = null, $quantity = 1.0)
     {
@@ -535,15 +538,19 @@ class Cart extends Model
                 $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
         }
 
-        // abi_r($customer->getPriceRules( $product, $currency ), true);
+
+        // Still one thing left: rule_type = 'promo'
+        $extra_quantity = 0.0;
+        $extra_quantity_label = '';
 
         if ($promo_rule)
         {
-            $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
-            $extra_quantity_label = $extra_quantity > 0 ? $promo_rule->name : '';
-        } else {
-            $extra_quantity = 0.0;
-            $extra_quantity_label = '';
+            // First: Does it apply?
+            if ( $unit_customer_final_price == $unit_customer_price )   // No price rule has been applied
+            {
+                $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
+                $extra_quantity_label = $extra_quantity > 0 ? $promo_rule->name : '';
+            }
         }
 
         // Totals

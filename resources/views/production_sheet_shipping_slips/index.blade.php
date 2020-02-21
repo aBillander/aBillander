@@ -39,12 +39,15 @@
 
                  </span>
 
-
          <span style="color: #cccccc;">/</span> 
+
+
+    </h2>        
+    <h2>     
                   {{ l('Documents') }} 
                    &nbsp; 
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
-    </h2>        
+    </h2>
 </div>
 
 
@@ -92,7 +95,7 @@
 @endif
 
             </td>
-            <td>
+            <td class="button-pad">
                 <a xclass="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_blank">
                     @if ($document->document_id>0)
                       {{ $document->document_reference }}

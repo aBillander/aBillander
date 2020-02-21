@@ -39,7 +39,7 @@
                 <th class="text-right button-pad"> 
                       @if ( $document->editable )
 
-                  <a class="btn btn-sm btn-magick xbtn-pressure xbtn-sensitive lines_quick_form" title="{{l('Quick Add Lines')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
+                  <a class=" hide btn btn-sm btn-magick xbtn-pressure xbtn-sensitive lines_quick_form" title="{{l('Quick Add Lines')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
 
                   <a class="btn btn-sm btn-success create-document-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-shopping-basket"></i> </a>
 
@@ -129,7 +129,7 @@
                       
                       @endif
                     
-                      @if ( $line->product_id )
+                      @if ( 0 && $line->product_id )
 
                     <a class="btn btn-sm btn-blue show-supplier-consumption" data-id="{{$line->product_id}}" title="{{l('Show Supplier consumption')}}" onClick="return false;"><i class="fa fa-dropbox"></i></a>
 

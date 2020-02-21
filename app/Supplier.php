@@ -15,7 +15,7 @@ class Supplier extends Model {
     
     protected $fillable = [ 'alias', 'name_fiscal', 'name_commercial', 
                             'website', 'customer_center_url', 'customer_center_user', 'customer_center_password', 
-                            'identification', 'reference_external', 'accounting_id', 'discount_percent', 'discount_ppd_percent', 'payment_days', 'notes', 
+                            'identification', 'reference_external', 'accounting_id', 'discount_percent', 'discount_ppd_percent', 'payment_days', 'delivery_time', 'notes', 
                             'customer_logo', 'sales_equalization', 'approved', 'blocked', 'active', 'customer_id', 
                             'currency_id', 'language_id', 'payment_method_id', 
                             'bank_account_id', 'invoice_sequence_id', 'invoicing_address_id'
@@ -329,11 +329,45 @@ class Supplier extends Model {
         
         $price = new Price( $thePrice, 0, $this->currency);
 
+        // Bonus data:
+        $price->discount_percent = 0.0;
+        $price->discount_amount  = 0.0;
+
+        if ( $line )
+        {
+            $price->discount_percent = $line->discount_percent;
+            $price->discount_amount  = $line->discount_amount;
+        }
+
 
         return $price;
     }
 
     
+
+    public function getReference( Product $product )
+    {
+        $line = SupplierPriceListLine::
+                              where('supplier_id', $this->id)
+                            ->where('product_id', $product->id)
+                            ->where('supplier_reference', '<>', '')
+                            ->orderBy('from_quantity', 'asc')
+                            ->first();
+
+
+        if ( $line )
+        {
+            $reference = $line->supplier_reference;
+
+        } else {
+
+            $reference = null;
+        }
+
+        return $reference;
+    }
+
+
 
     
     /*

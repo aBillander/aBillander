@@ -70,6 +70,25 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\CustomerShippingSlipEmailed' => [
             'App\Listeners\CustomerShippingSlipEmailedListener',
         ],
+
+
+
+
+        'App\Events\SupplierShippingSlipConfirmed' => [
+            'App\Listeners\SupplierShippingSlipConfirmedListener',
+        ],
+    
+        'App\Events\SupplierShippingSlipClosed' => [
+            'App\Listeners\SupplierShippingSlipClosedListener',
+        ],
+    
+        'App\Events\SupplierShippingSlipUnclosed' => [
+            'App\Listeners\SupplierShippingSlipUnclosedListener',
+        ],
+    
+
+
+        
         
 
         'App\Events\DatabaseBackup' => [

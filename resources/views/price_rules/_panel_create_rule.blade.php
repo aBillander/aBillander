@@ -115,7 +115,7 @@
                </div>
 --}}
 
-				{!! Form::hidden('rule_type', 'price', array('id' => 'rule_type')) !!}
+				{!! Form::hidden('rule_type', old('rule_type', 'price'), array('id' => 'rule_type')) !!}
 
 				{!! Form::close() !!}
 

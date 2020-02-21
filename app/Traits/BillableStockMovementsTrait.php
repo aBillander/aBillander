@@ -8,6 +8,7 @@ use App\Configuration;
 
 trait BillableStockMovementsTrait
 {
+    use SupplierBillableStockMovementsTrait;
     
     public function makeStockMovements()
     {

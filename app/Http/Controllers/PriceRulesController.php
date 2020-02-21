@@ -192,7 +192,24 @@ class PriceRulesController extends Controller
         // Force Currency
         $request->merge( [ 'currency_id' => \App\Context::getContext()->currency->id, 'price' => (float) $request->input('price', 0) ] );
 
+        $extra_rules = [];
+
 		$rule_type = $request->input('rule_type');
+		
+		if ($rule_type == 'price') 
+		{
+			if ($request->input('price_type', 'price') == 'discount')
+			{
+				$request->merge( [
+					'rule_type' => 'discount',
+					'discount_percent' => $request->input('price'),
+					'discount_type' => 'percentage',
+					'price'         => 0.0,
+				] );
+
+				$rule_type = 'discount';
+			}
+		}
 		
 		if ($rule_type == 'promo') 
 		{
@@ -215,10 +232,26 @@ class PriceRulesController extends Controller
 								'from_quantity'   => $request->input('from_quantity_pack'),
 								'price'           => $request->input('price_pack'),
 								'conversion_rate' => $conversion_rate,
+								'customer_id'     => $request->input('customer_group_id', 0) > 0 
+														? null 
+														: $request->input('customer_id'),
 							] );
+
+			$extra_rules =  [
+
+	        'from_quantity_pack' => [
+	                                new \App\Rules\PriceRuleDuplicated(
+	                                        $request->input('customer_id'), 
+	                                        $request->input('customer_group_id'), 
+	                                        $request->input('product_id'), 
+	                                        $request->input('currency_id', null),
+	                                        $measure_unit_id
+	                                ),
+	                            ]
+	        ];
 		}
 
-		$this->validate($request, PriceRule::$rules);
+		$this->validate($request, PriceRule::$rules + $extra_rules);
 		
 		$pricerule = $this->pricerule->create($request->all());
 
@@ -243,9 +276,9 @@ class PriceRulesController extends Controller
 	 */
 	public function show($id)
 	{
-		$stockmove = $this->pricerule->findOrFail($id);
+		$pricerule = $this->pricerule->findOrFail($id);
 
-		return view('price_rules.show', compact('stockmove'));
+		return view('price_rules.show', compact('pricerule'));
 	}
 
 	/**
@@ -256,7 +289,7 @@ class PriceRulesController extends Controller
 	 */
 	public function edit($id)
 	{
-		//
+		return $this->show($id);
 	}
 
 	/**

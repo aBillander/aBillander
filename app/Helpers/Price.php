@@ -297,26 +297,30 @@ class Price {
                 
                 continue;
             }
-            if ($rule->discount_type=='percentage')
+
+            if ($rule->rule_type=='discount')
             {
-                if ($quantity < $rule->from_quantity)
-                    $rule->best_price = $this->getPrice();
+                if ($rule->discount_type=='percentage')
+                {
+                    if ($quantity < $rule->from_quantity)
+                        $rule->best_price = $this->getPrice();
 
-                else
-                    $rule->best_price = $initial_price->getPrice() * (1.0 - $rule->discount_percent/100.0);
-                
-                continue;
-            }
-            if ($rule->discount_type=='amount')
-            {
-                if ($quantity < $rule->from_quantity)
-                    $rule->best_price = $this->getPrice();
+                    else
+                        $rule->best_price = $initial_price->getPrice() * (1.0 - $rule->discount_percent/100.0);
+                    
+                    continue;
+                }
+                if ($rule->discount_type=='amount')
+                {
+                    if ($quantity < $rule->from_quantity)
+                        $rule->best_price = $this->getPrice();
 
-                else
-                    ;
+                    else
+                        ;
 
-                // Not implemented so far
-                continue;
+                    // Not implemented so far
+                    continue;
+                }
             }
             
             // Just in case...

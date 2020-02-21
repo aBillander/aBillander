@@ -456,7 +456,14 @@ class Billable extends Model
         if ( $this->document_reference || ( $this->status != 'draft' ) ) return false;
 
         // Customer blocked?
+        if ( array_key_exists('customer_id', $this->getAttributes()) )
         if ( $this->customer->blocked > 0 ) return false;
+
+        // Supplier blocked?
+        if ( array_key_exists('supplier_id', $this->getAttributes()) )
+        if ( $this->supplier->blocked > 0 ) return false;
+
+        // array_key_exists($key, $model->attributesToArray()) or array_key_exists($key, $model->getAttributes()) can already be used.
 
         // onhold?
         if ( $this->onhold ) return false;
@@ -567,7 +574,12 @@ class Billable extends Model
         if ( $this->status == 'closed' ) return false;
         
         // Customer blocked?
+        if ( array_key_exists('customer_id', $this->getAttributes()) )
         if ( $this->customer->blocked > 0 ) return false;
+
+        // Supplier blocked?
+        if ( array_key_exists('supplier_id', $this->getAttributes()) )
+        if ( $this->supplier->blocked > 0 ) return false;
 
         // onhold?
         if ( $this->onhold ) return false;

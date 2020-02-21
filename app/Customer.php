@@ -735,7 +735,7 @@ class Customer extends Model {
 
 
         // Special prices have more priority
-        $rules = $this->getPriceRules( $product, $currency )->where('rule_type', 'price');
+        $rules = $this->getPriceRules( $product, $currency )->whereIn('rule_type', ['price', 'discount']);
 
         if ( $rules->count() )
             return $product->getPrice()->applyPriceRules( $rules, $quantity );

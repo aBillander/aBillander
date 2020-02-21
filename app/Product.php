@@ -1048,6 +1048,12 @@ class Product extends Model {
 
         return $price;
     }
+
+
+    public function getReferenceBySupplier( Supplier $supplier )
+    {
+        return $supplier->getReference( $this );
+    }
     
 
     public function getEcotax()

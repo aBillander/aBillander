@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
+use App\Product;
 use App\Supplier;
 use App\SupplierPriceListLine;
 use App\Currency;
@@ -63,7 +64,7 @@ class SupplierPriceListLinesController extends Controller
      */
     public function create($supplierId)
     {
-        $supplier = $this->supplier->findOrFail($supplierId);
+        $supplier = $this->supplier->with('currency')->findOrFail($supplierId);
 
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $currencyDefault = Configuration::getInt('DEF_CURRENCY');
@@ -80,7 +81,24 @@ class SupplierPriceListLinesController extends Controller
     {
         $supplier = $this->supplier->findOrFail($supplierId);
 
-        $this->validate($request, SupplierPriceListLine::$rules);
+        $q_rule = [
+
+        'from_quantity' => [
+                                new \App\Rules\SupplierPriceListLineQuantity(
+                                        $request->input('supplier_id'), 
+                                        $request->input('product_id'), 
+                                        $request->input('currency_id', null)
+                                ),
+
+                                new \App\Rules\SupplierPriceListLineDuplicated(
+                                        $request->input('supplier_id'), 
+                                        $request->input('product_id'), 
+                                        $request->input('currency_id', null)
+                                ),
+                            ]
+        ];
+
+        $this->validate($request, SupplierPriceListLine::$rules + $q_rule);
 
         // Handy conversions
         if ( !$request->input('percent') )  $request->merge( ['percent'  => 0.0] );
@@ -122,6 +140,32 @@ class SupplierPriceListLinesController extends Controller
         return view('supplier_price_list_lines.edit', compact('supplier', 'line', 'currencyList', 'currencyDefault'));
     }
 
+
+    public function editReference($supplierId, $productId)
+    {
+        // $supplier = $this->supplier->findOrFail($supplierId);
+        // $product  = Product::findOrFail($id);
+
+        $line = SupplierPriceListLine::
+                              where('supplier_id', $supplierId)
+                            ->where('product_id', $productId)
+                            ->with('supplier')
+                            ->orderBy('from_quantity', 'asc')
+                            ->first();
+
+        if ( !$line )
+        return redirect()->back()
+                ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => $reference], 'layouts'));
+
+
+        $supplier = $line->supplier;
+
+        $currencyList = Currency::pluck('name', 'id')->toArray();
+        $currencyDefault = $line->currency->id;
+        
+        return view('supplier_price_list_lines.edit_reference', compact('supplier', 'line', 'currencyList', 'currencyDefault'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -144,6 +188,28 @@ class SupplierPriceListLinesController extends Controller
 
         return redirect( route('suppliers.supplierpricelistlines.index', $supplierId) )
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+    public function updateReference($supplierId, $productId, Request $request)
+    {
+        // $this->validate($request, SupplierPriceListLine::$rules);
+
+        $reference = $request->input('supplier_reference', '');
+
+        $line = SupplierPriceListLine::
+                              where('supplier_id', $supplierId)
+                            ->where('product_id', $productId)
+                            ->orderBy('from_quantity', 'asc')
+                            ->first();
+
+        if ( !$line )
+        return redirect( route('suppliers.supplierpricelistlines.index', $supplierId) )
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $reference], 'layouts'));
+
+        $line->update(['supplier_reference' => $reference ]);
+
+        return redirect( route('suppliers.supplierpricelistlines.index', $supplierId) )
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $reference], 'layouts'));
     }
 
     /**
@@ -173,14 +239,14 @@ class SupplierPriceListLinesController extends Controller
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->IsPurchaseable()
 //                                ->qualifyForPriceList( $id )
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
 
 
 //                                dd($products);
@@ -188,5 +254,15 @@ class SupplierPriceListLinesController extends Controller
         return response( $products );
     }
 
+
+    public function getSupplierProductReference($id, $pid, Request $request)
+    {
+        $supplier = $this->supplier->findOrFail($id);
+        $product  = Product::findOrFail($pid);
+
+        $reference = $product->getReferenceBySupplier( $supplier );
+
+        return response( ['reference' => $reference] );
+    }
 
 }

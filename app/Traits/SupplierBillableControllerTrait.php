@@ -207,6 +207,8 @@ trait SupplierBillableControllerTrait
                             'price_is_tax_inc' => $supplier_price->price_is_tax_inc,  
 //                            'price_obj' => $supplier_price,
                             ],
+
+                'discount_percent' => $supplier_price->discount_percent,
     
                 'tax_percent' => $tax_percent,
                 'tax_id' => $product->tax_id,

@@ -35,6 +35,7 @@
       </div>
 
    </div>
+</div>
 
 
 @include('abcc.catalogue._modal_view_product')

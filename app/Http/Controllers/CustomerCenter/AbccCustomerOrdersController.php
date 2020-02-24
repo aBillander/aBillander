@@ -83,6 +83,13 @@ class AbccCustomerOrdersController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+        // Start Logger
+        $logger = \App\ActivityLogger::setup( 'ABCC Order Validation Profiling', __METHOD__ );
+
+        $logger->empty();
+        $logger->start();
+
+        $logger->log("INFO", 'Start the whole thing!');
 
 		$process_as = $request->input('process_as', 'order');
 		if ($process_as == 'quotation')
@@ -106,6 +113,7 @@ class AbccCustomerOrdersController extends Controller {
 	                ->with('error', l('Document amount should be more than: :amount', ['amount' => abi_money( Auth::user()->canMinOrderValue(), $cart->currency )], 'layouts'));
         }
 		
+        $logger->log("INFO", 'Cart loaded');
 
 		// Check. What check?
 /*
@@ -192,6 +200,7 @@ class AbccCustomerOrdersController extends Controller {
 
         $customerOrder = $this->customerOrder->create($data);
 		
+        $logger->log("INFO", 'Order created (header)');
 
         // Lines stuff here in
 
@@ -238,6 +247,7 @@ class AbccCustomerOrdersController extends Controller {
         			break;
         	}
 
+        $logger->log("INFO", 'Order Line created');
         	
         }
 /*
@@ -270,9 +280,14 @@ Bah!
 		{
 			$customerOrder->confirm();
 		}
+
+        $logger->log("INFO", 'Finished Order');
 		
         // At last: empty cart ( delete lines & initialize )
         $cart->delete();
+
+
+        $logger->log("INFO", 'Cart deleted');
 
 
         // Notify Admin
@@ -309,6 +324,8 @@ Bah!
 				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
 				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
 				'subject'  => l(' :_> New Customer Order #:num', ['num' => $template_vars['document_num']]),
+
+				'bcc'      => $customer_user->email,
 				);
 
 			
@@ -318,11 +335,21 @@ Bah!
 				$message->from($data['from'], $data['fromName']);
 
 				// $message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );	// Will send blind copy to sender!
-				$message->to( $data['to'], $data['toName'] )->bcc( $customer_user->email )->subject( $data['subject'] );
+
+				$message->to( $data['to'], $data['toName'] )->bcc( $data['bcc'] )->subject( $data['subject'] );
+				// $message->to( $data['bcc'], $data['toName'] )->subject( $data['subject'] );
 
 			});	
 
+        $logger->log("INFO", 'Email sent');
+
+        $logger->stop();
+
         } catch(\Exception $e) {
+
+        $logger->log("INFO", 'Email Error');
+
+        $logger->stop();
 
             return redirect()->route('abcc.orders.index')
                 	->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.

@@ -131,7 +131,7 @@
       
       <div class="col-lg-9 col-md-9 col-sm-9">
 
-          @include('abcc.catalogue._panel_products')
+          @include('abcc.catalogue._panel_products' . $vparams['display_with_taxes'])
 
       </div><!-- div class="col-lg-8 col-md-8 col-sm-8" -->
 

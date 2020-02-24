@@ -29,30 +29,53 @@
     <thead>
         <tr>
       <!-- th>{{l('ID', [], 'layouts')}}</th -->
-      <th>{{ l('Reference') }}</th>
+      <th>{{ l('Reference') }}x</th>
       <th>{{ l('EAN Code') }}</th>
       <th colspan="2">{{ l('Product Name') }}</th>
-      <!-- th>{{ l('Manufacturer') }}</th -->
+      <th>{{ l('Manufacturer') }}</th>
       <th>
 @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
       {{ l('Stock') }}
 @endif
       </th>
       <!-- th>{{ l('Measure Unit') }}</th -->
-      <th><span class="button-pad">{{ l('Customer Price') }}
-           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
+      <th>
+        <span class="button-pad">{{ l('Customer Price') }}
+           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                   data-content="{{ l('Prices are exclusive of Tax') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-    <br />
-    {{ l('Prices are inclusive of Ecotax') }}
-@endif
-          ">
+                  @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                      <br />
+                      {{ l('Prices are inclusive of Ecotax') }}
+                  @endif
+                          ">
               <i class="fa fa-question-circle abi-help"></i>
-           </a></span>
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES'))
-    <br /><span class="button-pad text-muted">
-    {{ l('Without Ecotax') }}</span>
-@endif</th>
+           </a>
+         </span>
+        @if( $vparams['enable_ecotaxes'])
+            <br/><span class="button-pad text-muted">{{ l('Without Ecotax') }}</span>
+        @endif
+      </th>
+
+                        @if ($vparams['display_with_taxes'])
+                            <th>
+                            <span class="button-pad">{{ l('Customer Price (with Tax)') }}
+                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top"
+                                   data-container="body" xdata-trigger="focus"
+                                   data-content="
+                                        {{ l('Prices are inclusive of Tax') }}
+                                   @if($vparams['enable_ecotaxes'] )
+                                           <br/>{{ l('Prices are inclusive of Ecotax') }}
+                                   @endif
+                                           ">
+                                <i class="fa fa-question-circle abi-help"></i>
+                                </a>
+                            </span>
+                            </th>
+
+                            <th>{{ l('Tax') }}</th>
+                        @endif
+ 
+      <th>{{ l('Recommended Retail Price') }}</th>
       <th class="text-right"> </th>
       <th class="text-right"> </th>
     </tr>
@@ -71,17 +94,27 @@
 @php
   $img = $product->getFeaturedImage();
 @endphp
-
+@if ($img)
               <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
+                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
                      data-title="{{ $product->name }} " 
-                     data-caption="({{$img->filename}}) {{ $img->caption }} " 
+                     data-caption="({{$img->id}}) {{ $img->caption }} " 
                      data-content="{{ nl2p($product->description_short) }} <br /> {{ nl2p($product->description) }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
+@else
+              <a class="view-image" data-html="false" data-toggle="modal" 
+                     href="{{ URL::to( \App\Image::pathProducts() . 'default-large_default.png' ) }}"
+                     data-title="{{ $product->name }} " 
+                     data-caption="({{$product->id}}) {{ $product->name }} " 
+                     data-content="{{ nl2p($product->description_short) }} <br /> {{ nl2p($product->description) }} " 
+                     onClick="return false;" title="{{l('View Image')}}">
 
+                      <img src="{{ URL::to( \App\Image::pathProducts() . 'default-mini_default.png' ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+              </a>
+@endif
       </td>
 
       <td>{{ $product->name }}
@@ -90,7 +123,7 @@
               {{ l('Ecotax: ') }} {{ $product->ecotax->name }} ({{ abi_money( $product->ecotax->amount ) }})
           @endif
       </td>
-      <!-- td>{{ optional($product->manufacturer)->name }} {{-- optional($product->category)->name --}}</td -->
+      <td>{{ optional($product->manufacturer)->name }} {{-- optional($product->category)->name --}}</td>
       <td>
 @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
             @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
@@ -107,54 +140,28 @@
             @endif
 @endif
       </td>
-      <td>
-
-@php
-
-  $price_by_list = $product->getPriceByCustomerPriceList( 
-                  \Auth::user()->customer,
-                  1,
-                  \Auth::user()->customer->currency
-              );
-  $price_by_customer = $product->getPriceByCustomer( 
-                  \Auth::user()->customer,
-                  1,
-                  \Auth::user()->customer->currency
-              );
-
-  $flag = $price_by_customer->getPrice() != $price_by_list->getPrice();
-
-@endphp
-
-        {{ $product->as_priceable( 
-              $product->getPriceByCustomer( 
-                  \Auth::user()->customer,
-                  1,
-                  \Auth::user()->customer->currency
-              )->getPrice()
-            ) }}
-
-@if( $flag )
-    &nbsp; <span class="text-info crossed">
-    {{ $product->as_priceable( 
-              $price_by_list->getPrice() 
-            ) }}</span>
-@endif
-
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax)
-    <br /><p class="text-muted">
-    {{ $product->as_priceable( 
-              $product->getPriceByCustomer( 
-                  \Auth::user()->customer,
-                  1,
-                  \Auth::user()->customer->currency
-              )->getPrice() - $product->getEcotax()
-            ) }}</p>
-@endif
+      <td>{{ $product->as_priceable( $product->price ) }}
+          @if( $vparams['enable_ecotaxes'] && $product->ecotax)
+              <br /><p class="text-muted">
+              {{ $product->as_priceable( $product->price - $product->getEcotax() ) }}</p>
+          @endif
       </td>
+
+      @if($vparams['display_with_taxes'])
+          <td>
+              {{ $product->as_priceable( $product->price_tax_inc ) }}
+          </td>
+          <td>{{$product->tax_percent }}%</td>
+          {{--<td>{{ (int)$product->tax->percent }}%</td>--}}
+      @endif
+
+      <td>
+          {{ $product->as_priceable( $product->recommended_retail_price ) }}
+      </td>
+
       <td>
 
-@if ( $product->hasQuantityPriceRules( \Auth::user()->customer ) )
+@if ( $product->getPriceRulesByCustomer( \Auth::user()->customer )->count() )
 
           <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules' data-id="{{ $product->id }}" data-toggle="modal" onClick="return false;" title="{{ l('Show Special Prices') }} {{-- $product->hasQuantityPriceRules( \Auth::user()->customer ) --}}"><i class="fa fa-thumbs-o-up"></i></a>
 
@@ -195,7 +202,7 @@ https://stackoverflow.com/questions/25424163/bootstrap-button-dropdown-with-cust
 https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-group-with-an-html-form
 --}}
 
-@if ($product->quantity_onhand > 0)
+@if ($product->quantity_onhand > 0 || $product->isManufactured())
             <div xclass="form-group">
               <div class="input-group" style="width: 72px;">
 
@@ -236,9 +243,6 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 
    </div>
 </div>
-
-
-{{-- abi_r(Request::all()) --}}
 
 
 </div>
@@ -333,7 +337,9 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 
               // loadCartlines();
 
-              $(function () {  $('[data-toggle="tooltip"]').tooltip()});
+              $(function () {
+                  $('[data-toggle="tooltip"]').tooltip();
+              });
 
               $('#badge_cart_nbr_items').html(result.cart_nbr_items);
 

@@ -715,10 +715,13 @@ class Customer extends Model {
         // Special prices have more priority
         $price = $this->getPriceByRules( $product, $quantity, $currency );
 
-        if ( $price ) return $price;
+        if ( $price && $price->getPrice() < $product->price ) // A Rule has been applied
+        {
+            return $price;
+        }
 
 
-        // Customer has pricelist?
+        // Customer has pricelist? (I hope so!)
         return $this->getPriceByPriceList( $product, $quantity, $currency );
     }
 

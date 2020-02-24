@@ -156,6 +156,8 @@
             </div>
 
 {{-- EXTRA QUANTITY --}}
+@if ($line->unit_customer_final_price == $line->unit_customer_price && $line->pmu_conversion_rate == 1)
+{{-- Extra quantity only applies if no other rule applies --}}
                   @if ( $rule = $cart->customer->getExtraQuantityRule( $line->product, $cart->customer->currency ) )
                       <div class="pull-left">
                           <p class="text-center text-info">
@@ -177,6 +179,7 @@
                           </p>
                       </div>
                   @endif
+@endif
 
       </td>
 

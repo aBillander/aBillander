@@ -266,6 +266,7 @@ class Price {
             $p = (float) $price;
         }
 
+        // $this->amount        += $p;      // Really need this ???
         $this->price         += $p;
         $this->price_tax_inc += $p * (1.0+$this->tax_percent/100.0);
 

@@ -5,7 +5,7 @@
     <table id="cart_lines" class="table table-hover">
         <thead>
             <tr>
-              <th>{{ l('Reference') }}
+              <th class="button-pad">{{ l('Reference') }} / {{ l('EAN Code') }}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                       data-content="{{ l('Drag to Sort.', 'layouts') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
@@ -46,7 +46,8 @@
     <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
 
       <td class="button-pad" title="[{{ $line->line_sort_order }}] - {{ $line->id }} - {{ $line->product->id }}">
-        {{ $line->product->reference }}
+        {{ $line->product->reference }}<br />
+        {{ $line->product->ean13 }}
       </td>
 
       <td class="button-pad">
@@ -112,6 +113,8 @@
             </div>
 
 {{-- EXTRA QUANTITY --}}
+@if ($line->unit_customer_final_price == $line->unit_customer_price && $line->pmu_conversion_rate == 1)
+{{-- Extra quantity only applies if no other rule applies --}}
                   @if ( $rule = $cart->customer->getExtraQuantityRule( $line->product, $cart->customer->currency ) )
                       <div class="pull-left">
                           <p class="text-center text-info">
@@ -133,6 +136,7 @@
                           </p>
                       </div>
                   @endif
+@endif
 
       </td>
 

@@ -15,6 +15,12 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
+
+                <a class="btn btn-sm btn-warning" href="{{ URL::route('suppliers.pricelist.import', [$supplier->id] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a>
+
+                <a class="btn btn-sm btn-grey" href="{{ URL::route('suppliers.pricelist.export', [$supplier->id] ) }}" title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
+
         <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Supplier') }}</a> 
     </div>
     <h2><a class="btn btn-sm btn-grey" href="#" title="{{ l('Price List') }}"><i class="fa fa-user"></i></a> <span style="color: #cccccc;">/</span> 

@@ -605,6 +605,10 @@ foreach ($pairs as $pair) {
         Route::post('import/suppliers', 'Import\ImportSuppliersController@process')->name('suppliers.import.process');
         Route::get( 'export/suppliers', 'Import\ImportSuppliersController@export' )->name('suppliers.export');
 
+        Route::get( 'import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@import' )->name('suppliers.pricelist.import');
+        Route::post('import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@process')->name('suppliers.pricelist.import.process');
+        Route::get( 'export/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@export' )->name('suppliers.pricelist.export');
+
 
         Route::get('import', function()
             {

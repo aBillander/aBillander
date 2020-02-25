@@ -55,7 +55,12 @@
                   <div class="form-group col-lg-12 col-md-12 col-sm-12">
                       <strong>{{ l('Price input method') }}</strong> : {{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
                                                         l('Prices are entered inclusive of tax', [], 'appmultilang') :
-                                                        l('Prices are entered exclusive of tax', [], 'appmultilang') }}
+                                                        l('Prices are entered exclusive of tax', [], 'appmultilang') }}.
+
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax)
+    {!! l('Prices are exclusive of Ecotax') !!} ( <span class="text-success">{{ $product->as_priceable($product->ecotax->amount) }} {{ \App\Context::getContext()->currency->name }}</span> ).
+@endif
+
                   </div>
         </div>
 

@@ -4,17 +4,34 @@
 
 
 @section('content') 
+
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="page-header">
             @if ( $parentId>0 )
             <div class="pull-right">
-                <a href="{{ URL::to('categories') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Product Categories') }}</a>
-                <a href="{{ URL::to('categories/'.$parent->id.'/subcategories') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to :name', ['name' => $parent->name]) }}</a>
+                <!-- a href="{{ URL::to('categories') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Product Categories') }}</a>
+                <a href="{{ URL::to('categories/'.$parent->id.'/subcategories') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to :name', ['name' => $parent->name]) }}</a -->
+
+
+                <div class="btn-group" style="margin-right: 72px">
+                    <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" style="background-color: #31b0d5;
+border-color: #269abc;" data-toggle="dropdown" title="{{l('Back to', 'layouts')}}"><i class="fa fa-mail-reply"></i> &nbsp; {{l('Back to', 'layouts')}} &nbsp; <span class="caret"></span></a>
+                    <ul class="dropdown-menu  pull-right">
+                      <li><a href="{{ URL::to('categories/'.$parent->id.'/subcategories') }}"><i class="fa fa-level-up"></i> &nbsp;{{ l('Back to :name', ['name' => $parent->name]) }}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{ URL::to('categories') }}">{{ l('Back to Product Categories') }}</a></li>
+                      <!-- li><a href="#">Separated link</a></li -->
+                    </ul>
+                </div>
+
+
             </div>
             <h2><a class="btn btn-sm alert-success" href="{{ URL::to('categories') }}" title="{{ l('Product Categories') }}"><i class="fa fa-list"></i></a> <span style="color: #cccccc;">/</span> <a href="{{ URL::to('categories/'.$parent->id.'/subcategories') }}">{{ $parent->name }}</a> <span style="color: #cccccc;">/</span> {{ $category->name }} :: {{ l('Products') }}</h2>
             @else
+            <div class="pull-right">
                 <a href="{{ URL::to('categories') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Product Categories') }}</a>
+            </div>
             <h2><a class="btn btn-sm alert-success" href="{{ URL::to('categories') }}" title="{{ l('Product Categories') }}"><i class="fa fa-list"></i></a> <span style="color: #cccccc;">/</span> {{ $category->name }} :: {{ l('Products') }}</h2>
             @endif
         </div>
@@ -130,12 +147,12 @@
 </div>
 
 
+@include('layouts/back_to_top_button')
+
 @endsection
 
 
 @include('products._modal_view_image')
-
-@include('layouts/back_to_top_button')
 
 
 @section('scripts')  @parent 

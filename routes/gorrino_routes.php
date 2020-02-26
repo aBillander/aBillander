@@ -26,6 +26,18 @@
 /* ********************************************************** */
 
 
+Route::get('mprobe', 'MProbeController@send');
+
+Route::get('mqueue', 'MProbeController@queue');
+
+
+
+
+
+
+/* ********************************************************** */
+
+
 Route::get('xtrame', function( )
 {
 	$f = \App\CustomerInvoice::with('template')->find(1);

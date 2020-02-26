@@ -7,13 +7,11 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-// https://www.youtube.com/watch?v=iQoRh_9LkjU
-
-class AbccCustomerOrderMail extends Mailable
+class ContactFormMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $data;      // Change to "public" to make it (automatically) available to view
+    public $data;
 
     /**
      * Create a new message instance.
@@ -32,8 +30,10 @@ class AbccCustomerOrderMail extends Mailable
      */
     public function build()
     {
-        $data = $this->data;
+        // $data = $this->data;
 
-        return $this->view('view.name', compact('data'));
+        // abi_r($data, true);
+
+        return $this->markdown('emails.forms.contact');
     }
 }

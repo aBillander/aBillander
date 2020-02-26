@@ -320,7 +320,9 @@ Bah!
 				// $message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );	// Will send blind copy to sender!
 				$message->to( $data['to'], $data['toName'] )->bcc( $customer_user->email )->subject( $data['subject'] );
 
-			});	
+			});
+
+			$send = Mail::to( $customer_user->email )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
 
         } catch(\Exception $e) {
 
@@ -542,7 +544,7 @@ Bah!
 
 				$message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );	// Will send blind copy to sender!
 
-			});	
+			});
 
         } catch(\Exception $e) {
 

@@ -14,15 +14,17 @@ class AbccCustomerOrderMail extends Mailable
     use Queueable, SerializesModels;
 
     private $data;      // Change to "public" to make it (automatically) available to view
+    private $template_vars;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct( $data = [] )
+    public function __construct( $data = [], $template_vars = [] )
     {
-        $this->data = $data;
+        $this->data          = $data;
+        $this->template_vars = $template_vars;
     }
 
     /**
@@ -32,8 +34,13 @@ class AbccCustomerOrderMail extends Mailable
      */
     public function build()
     {
-        $data = $this->data;
+        $data          = $this->data;
+        $template_vars = $this->template_vars;
 
-        return $this->view('view.name', compact('data'));
+        return $this->from( $data['from'], $data['fromName'] )
+                    ->bcc( $data['from'] )
+                    ->subject( $data['subject'] )
+                    ->view('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_order')
+                    ->with(compact('data', 'template_vars'));
     }
 }

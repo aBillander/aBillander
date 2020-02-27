@@ -1,5 +1,5 @@
 
-@if ($customer_rules->where('rule_type', 'pack')->count())
+@if ($pricerules_pack->count())
 
     <h2>
         <span style="color: #cccccc;">/</span>

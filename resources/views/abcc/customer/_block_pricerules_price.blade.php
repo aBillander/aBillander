@@ -36,7 +36,7 @@
     </thead>
     <tbody id="pricerule_lines">
 
-    @foreach ($customer_rules->whereIn('rule_type', ['price', 'discount']) as $rule)
+    @foreach ($pricerules_price as $rule)
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
       <!-- td>{{ optional($rule->category)->name }}</td -->

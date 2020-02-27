@@ -38,7 +38,7 @@
     </thead>
     <tbody id="pricerule_lines">
 
-    @foreach ($customer_rules->where('rule_type', 'promo') as $rule)
+    @foreach ($pricerules_promo as $rule)
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
       <td class="text-leftr">{{ $rule->name }}</td>

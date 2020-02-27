@@ -213,9 +213,9 @@ class AbccCustomerController extends Controller
         $pricerules_pall  = $customer_rules->where(  'rule_type',  'promo');
 
         // But "Promo" rule only applies if There is not a "Price" rule
-        $pricerules_promo = $pricerules_pall->reject(function ($item, $key) use ($pricerules_pall) 
+        $pricerules_promo = $pricerules_pall->reject(function ($item, $key) use ($pricerules_price) 
         {
-            return $pricerules_pall->where('product_id', $item->product_id);
+            return $pricerules_price->where('product_id', $item->product_id)->count() > 0;
         });
 
         return view('abcc.customer.pricerules_list', compact('id', 'customer_rules', 'items_per_page_pricerules', 'customer', 'pricerules_price', 'pricerules_pack', 'pricerules_promo'));

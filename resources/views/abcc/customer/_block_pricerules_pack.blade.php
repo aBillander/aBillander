@@ -48,7 +48,7 @@
     </thead>
     <tbody id="pricerule_lines">
 
-    @foreach ($customer_rules->where('rule_type', 'pack') as $rule)
+    @foreach ($pricerules_pack as $rule)
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
       <!-- td>{{ optional($rule->category)->name }}</td -->

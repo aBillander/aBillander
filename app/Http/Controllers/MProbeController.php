@@ -21,4 +21,9 @@ class MProbeController extends Controller
     {
     	\Artisan::call('queue:work');
     }
+
+    public function queuer()
+    {
+    	\Artisan::call('queue:restart');
+    }
 }

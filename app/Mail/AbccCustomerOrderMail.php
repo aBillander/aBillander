@@ -40,7 +40,7 @@ class AbccCustomerOrderMail extends Mailable
         return $this->from( $data['from'], $data['fromName'] )
                     ->bcc( $data['from'] )
                     ->subject( $data['subject'] )
-                    ->view('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_order')
-                    ->with(compact('data', 'template_vars'));
+                    ->view('emails.'.$data['iso_code'].'.abcc.new_customer_order')
+                    ->with( $template_vars + $data );
     }
 }

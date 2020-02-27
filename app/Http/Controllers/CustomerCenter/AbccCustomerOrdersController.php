@@ -20,7 +20,7 @@ use App\CustomerOrderLine;
 use App\CustomerQuotation;
 use App\CustomerQuotationLine;
 
-use Mail;
+use Illuminate\Support\Facades\Mail;
 
 class AbccCustomerOrdersController extends Controller {
 
@@ -86,10 +86,10 @@ class AbccCustomerOrdersController extends Controller {
         // Start Logger
         $logger = \App\ActivityLogger::setup( 'ABCC Order Validation Profiling', __METHOD__ );
 
-        $logger->empty();
-        $logger->start();
+        // $logger->empty();
+        // $logger->start();
 
-        $logger->log("INFO", 'Start the whole thing!');
+        // $logger->log("INFO", 'Start the whole thing!');
 
 		$process_as = $request->input('process_as', 'order');
 		if ($process_as == 'quotation')
@@ -113,7 +113,7 @@ class AbccCustomerOrdersController extends Controller {
 	                ->with('error', l('Document amount should be more than: :amount', ['amount' => abi_money( Auth::user()->canMinOrderValue(), $cart->currency )], 'layouts'));
         }
 		
-        $logger->log("INFO", 'Cart loaded');
+        // $logger->log("INFO", 'Cart loaded');
 
 		// Check. What check?
 /*
@@ -200,7 +200,7 @@ class AbccCustomerOrdersController extends Controller {
 
         $customerOrder = $this->customerOrder->create($data);
 		
-        $logger->log("INFO", 'Order created (header)');
+        // $logger->log("INFO", 'Order created (header)');
 
         // Lines stuff here in
 
@@ -247,7 +247,7 @@ class AbccCustomerOrdersController extends Controller {
         			break;
         	}
 
-        $logger->log("INFO", 'Order Line created');
+        // $logger->log("INFO", 'Order Line created');
         	
         }
 /*
@@ -281,13 +281,13 @@ Bah!
 			$customerOrder->confirm();
 		}
 
-        $logger->log("INFO", 'Finished Order');
+        // $logger->log("INFO", 'Finished Order');
 		
         // At last: empty cart ( delete lines & initialize )
         $cart->delete();
 
 
-        $logger->log("INFO", 'Cart deleted');
+        // $logger->log("INFO", 'Cart deleted');
 
 
         // Notify Admin
@@ -326,10 +326,11 @@ Bah!
 				'subject'  => l(' :_> New Customer Order #:num', ['num' => $template_vars['document_num']]),
 
 				'bcc'      => $customer_user->email,
+				'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
 				);
 
 			
-
+/*
 			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_order', $template_vars, function($message) use ($data)
 			{
 				$message->from($data['from'], $data['fromName']);
@@ -340,18 +341,18 @@ Bah!
 				// $message->to( $data['bcc'], $data['toName'] )->subject( $data['subject'] );
 
 			});
-
+*/
 			$send = Mail::to( $customer_user->email )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
 
-        $logger->log("INFO", 'Email sent');
+        // $logger->log("INFO", 'Email sent');
 
-        $logger->stop();
+        // $logger->stop();
 
         } catch(\Exception $e) {
 
-        $logger->log("INFO", 'Email Error');
+        // $logger->log("INFO", 'Email Error');
 
-        $logger->stop();
+        // $logger->stop();
 
             return redirect()->route('abcc.orders.index')
                 	->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
@@ -674,6 +675,8 @@ Bah!
 
         foreach ($order->lines as $orderline) {
         	# code...
+        	if ( $orderline->line_type        != 'product' ) continue;
+        	if ( $orderline->unit_final_price == 0.0       ) continue;
         	$line = $cart->addLine($orderline->product_id, $orderline->combination_id, $orderline->quantity);
         }
 

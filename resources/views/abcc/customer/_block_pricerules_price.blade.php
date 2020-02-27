@@ -1,5 +1,5 @@
 
-@if ($customer_rules->whereIn('rule_type', ['price', 'discount'])->count())
+@if ($pricerules_price->count())
 
     <h2>
         <span style="color: #cccccc;">/</span>

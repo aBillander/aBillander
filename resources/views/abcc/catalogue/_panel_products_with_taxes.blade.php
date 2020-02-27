@@ -30,7 +30,7 @@
         <tr>
       <!-- th>{{l('ID', [], 'layouts')}}</th -->
       <th>{{ l('Reference') }}</th>
-      <th>{{ l('EAN Code') }}</th>
+      <!-- th>{{ l('EAN Code') }}</th -->
       <th colspan="2">{{ l('Product Name') }}</th>
       <!-- th>{{ l('Manufacturer') }}</th -->
       <th>
@@ -54,6 +54,26 @@
     {{ l('Without Ecotax') }}</span>
 @endif</th>
       <th class="text-right"> </th>
+
+          <th>
+          <span class="button-pad">{{ l('Customer Price (with Tax)') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true"
+                 data-container="body" xdata-trigger="focus"
+                 data-content="
+                      {{ l('Prices are inclusive of Tax') }}
+                 @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                         <br/>{{ l('Prices are inclusive of Ecotax') }}
+                 @endif
+                         ">
+              <i class="fa fa-question-circle abi-help"></i>
+              </a>
+          </span>
+          </th>
+
+          <th>{{ l('Tax') }}</th>
+ 
+          <th>{{ l('Recommended Retail Price') }}</th>
+
       <th class="text-right"> </th>
     </tr>
   </thead>
@@ -66,7 +86,6 @@
                 @else {{ $product->reference }}
                 @endif</td>
 
-      <td>{{ $product->ean13 }}</td>
       <td>
 @php
   $img = $product->getFeaturedImage();
@@ -163,6 +182,25 @@
 
 
       </td>
+
+
+          <td class="text-center">
+              {{ $product->as_priceable( 
+              $product->getPriceByCustomer( 
+                  \Auth::user()->customer,
+                  1,
+                  \Auth::user()->customer->currency
+              )->getPrice() * (1.0 + $product->tax->percent / 100.0) 
+            ) }}
+          </td>
+          <td>{{ $product->as_percentable($product->tax->percent, 1) }}%</td>
+          {{--<td>{{ (int)$product->tax->percent }}%</td>--}}
+
+
+          <td>
+              {{ $product->recommended_retail_price > 0 ? $product->as_priceable( $product->recommended_retail_price ) : '-' }}
+          </td>
+
 
       <td class="text-right xbutton-pad" style="white-space: nowrap;">
 

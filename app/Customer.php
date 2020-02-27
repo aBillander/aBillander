@@ -715,10 +715,13 @@ class Customer extends Model {
         // Special prices have more priority
         $price = $this->getPriceByRules( $product, $quantity, $currency );
 
-        if ( $price ) return $price;
+        if ( $price && $price->getPrice() < $product->price ) // A Rule has been applied
+        {
+            return $price;
+        }
 
 
-        // Customer has pricelist?
+        // Customer has pricelist? (I hope so!)
         return $this->getPriceByPriceList( $product, $quantity, $currency );
     }
 
@@ -808,9 +811,15 @@ class Customer extends Model {
             $currency = Context::getContext()->currency;
 
 
-        $rule = $this->getPriceRules( $product, $currency )
+        $all_rules = $this->getPriceRules( $product, $currency );
+        $rules = $all_rules->whereIn('rule_type', ['price', 'discount']);
+
+        // Precedence takes place, and extra quantity rule won't apply
+        if ( $rules->count() > 0 ) return null;
+
+
+        $rule = $all_rules
                     ->where('rule_type', 'promo')
-//                    ->sortBy('from_quantity')
                     ->sortByDesc(function ($item, $key) {   // Best Rule for Customer
                         return $item->extra_quantity / $item->from_quantity;
                     })

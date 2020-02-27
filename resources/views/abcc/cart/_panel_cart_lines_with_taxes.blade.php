@@ -6,7 +6,7 @@
         <thead>
             <tr>
               <th>{{ l('Reference') }}
-                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                                       data-content="{{ l('Drag to Sort.', 'layouts') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
                            </a></th>
@@ -24,10 +24,10 @@
                <th> </th>
                <th class="text-right">
                   <span class="button-pad">{{ l('Customer Price') }}
-                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                                 data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
       @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-          . 
+          <br /> 
           {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
       @endif
                         ">
@@ -67,7 +67,7 @@
 
 
                <th class="text-right button-pad">{{ l('Total') }}
-                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                                 data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
 @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
     <br />
@@ -89,7 +89,7 @@
 
     <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
 
-      <td title="[{{ $line->line_sort_order }}] - {{ $line->id }} - {{ $line->product->id }}">
+      <td class="button-pad" title="[{{ $line->line_sort_order }}] - {{ $line->id }} - {{ $line->product->id }}">
         {{ $line->product->reference }}
       </td>
 
@@ -156,6 +156,8 @@
             </div>
 
 {{-- EXTRA QUANTITY --}}
+@if ($line->unit_customer_final_price == $line->unit_customer_price && $line->pmu_conversion_rate == 1)
+{{-- Extra quantity only applies if no other rule applies --}}
                   @if ( $rule = $cart->customer->getExtraQuantityRule( $line->product, $cart->customer->currency ) )
                       <div class="pull-left">
                           <p class="text-center text-info">
@@ -177,6 +179,7 @@
                           </p>
                       </div>
                   @endif
+@endif
 
       </td>
 

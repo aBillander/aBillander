@@ -419,8 +419,6 @@ class Product extends Model {
         {
             $query->where('category_id', '=', $params['category_id'])
                   ->orderBy('position', 'asc');
-        } else {
-            $query->orderBy('reference', 'asc');
         }
 
         if ( isset($params['manufacturer_id']) && $params['manufacturer_id'] > 0 && 0)

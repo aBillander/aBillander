@@ -145,6 +145,7 @@ return [
 
     // _invoice_lines
     'Reference'                     => 'Ref.',
+    'EAN Code'     => 'EAN',
     'Description'                   => 'Descripción',
     'Price'                         => 'Precio',
     'Disc. %'                       => 'Dto. %',

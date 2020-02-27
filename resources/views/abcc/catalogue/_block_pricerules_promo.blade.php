@@ -1,5 +1,5 @@
 
-@if ($customer_rules->where('rule_type', 'promo')->count())
+@if (!$customer_rules->whereIn('rule_type', ['price', 'discount'])->count() && $customer_rules->where('rule_type', 'promo')->count())
 
     <h2>
         <span style="color: #cccccc;">/</span>

@@ -338,11 +338,13 @@ class StockMovement extends Model {
 
 
             // Last segment
-            $str = substr( $segments[0], 0, -strlen('Line') );
+            // $str = substr( $segments[0], 0, -strlen('Line') );
             // Better approach:
-            $str = rtrim($segments[0], 'Line');
+            $str = substr( $segments[0], 0, strpos($segments[0], "Line") );
 
-            return $segment = str_plural(strtolower($str));
+            $segment = strtolower($str);
+
+            return str_plural($segment);
     }
     
     

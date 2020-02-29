@@ -23,6 +23,46 @@
 
 
 
+Route::get('segment', function( )
+{
+
+            $str = 'App\CustomerInvoiceLine';
+
+            $segments = array_reverse(explode('\\', $str));
+
+            abi_r($segments);
+
+
+            // Last segment
+            $str = substr( $segments[0], 0, -strlen('Line') );
+
+            $str = substr( $segments[0], 0, strpos($segments[0], "Line"));
+
+            // abi_r($str);
+            abi_r($str.' => '.strpos($segments[0], "Line"));
+
+            $segment = strtolower($str);
+
+            // abi_r($segment.' x '.str_plural($segment), true);
+
+            // Better approach:
+            // $str = rtrim($segments[0], 'Line');
+            // $str= substr($segments[0], 0, strpos($segments[0], "Line"));
+
+            abi_r($str);
+
+            $segment = strtolower($str);
+
+            abi_r($segment.' x '.str_plural($segment), true);
+            
+
+            $segment = strtolower($str);
+
+            if ($segment == 'customerinvoic') return 'customerinvoices';
+
+            else return str_plural($segment);
+});
+
 /* ********************************************************** */
 
 

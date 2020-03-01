@@ -63,6 +63,23 @@ function abi_toSql($query)
   }
 
 
+
+if (! function_exists('abi_laravel_version')) {
+    /**
+     * Get the version number of the Laravel framework.
+     *
+     * @param  none
+     * @return string
+     */
+    function abi_laravel_version()
+    {
+        return app()->version();
+    }
+}
+
+
+
+
 function abi_date_short(\Carbon\Carbon $date = null, $format = '')
     {
         if (!$date) return null;

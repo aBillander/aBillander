@@ -56,13 +56,13 @@ class Category extends Model {
     
     public function children() {
 
-        return $this->hasMany('App\Category','parent_id','id')->orderBy('position', 'asc');
+        return $this->hasMany('App\Category','parent_id','id')->orderBy('position', 'asc')->orderBy('name', 'asc');
 
     }
     
     public function activechildren() {
 
-        return $this->hasMany('App\Category','parent_id','id')->where('active', '>', 0)->IsPublished()->orderBy('position', 'asc');    // ->IsActive() ;
+        return $this->hasMany('App\Category','parent_id','id')->where('active', '>', 0)->IsPublished()->orderBy('position', 'asc')->orderBy('name', 'asc');    // ->IsActive() ;
 
     }
 

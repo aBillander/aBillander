@@ -493,7 +493,8 @@ class Cart extends Model
                 $pmu_label           = $pack_rule->name;
 
                 // Assumes $pack_rule is not null
-                $package_price = $pack_rule->price;
+                // $package_price = $pack_rule->price;
+                $package_price = $pack_rule->getUnitPrice() * $pmu_conversion_rate;
 
                 $unit_customer_price       = $customer_price->getPrice();
                 $unit_customer_final_price = $package_price / $pmu_conversion_rate;

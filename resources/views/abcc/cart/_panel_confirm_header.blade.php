@@ -6,6 +6,10 @@
 
 {!! Form::open(array('route' => 'abcc.orders.store', 'id' => 'create_customer_order', 'name' => 'create_customer_order', 'class' => 'form')) !!}
 
+
+                  <input type="hidden" id="send_confirmation_email" name="send_confirmation_email" value="" />
+
+
    <div class="panel-body">
       <div xclass="row">
 

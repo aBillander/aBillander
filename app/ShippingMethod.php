@@ -34,6 +34,12 @@ class ShippingMethod extends Model {
     {
         return $this->hasMany('App\CustomerOrder');
     }
+    
+
+    public function shippingmethodtable()
+    {
+        return $this->hasOne('App\ShippingMethodTable', 'shipping_method_table_id');
+    }
 
 
 

@@ -163,11 +163,19 @@ class DbBackupsController extends Controller
 
 	    // abi_r( Artisan::output() );
 
+        $result = Artisan::output();
+	    if (   strpos($result, 'Error') !== false
+			|| strpos($result, 'error') !== false )
+		{
+			return redirect()->back()	// '/dbbackups')
+	                ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result);
+		}
+
 	    // The backup has been proceed successfully.
 	    event(new DatabaseBackup());
 	    
         return redirect()->back()	// '/dbbackups')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') . Artisan::output());
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result);
 	}
 
     /**

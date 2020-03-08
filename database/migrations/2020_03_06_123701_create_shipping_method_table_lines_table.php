@@ -23,7 +23,8 @@ class CreateShippingMethodTableLinesTable extends Migration {
 			$table->integer('state_id')->unsigned()->nulable();
 			$table->string('postcode', 12)->nullable();
 
-			$table->decimal('amount', 20, 6)->default(0.0);
+			$table->decimal('from_amount', 20, 6)->default(0.0);	// Maybe price (order total), weight, number of items, volume, etc. 
+			$table->decimal('price', 20, 6)->default(0.0);
 
 			$table->integer('tax_id')->unsigned()->nulable();		// Future use
 			

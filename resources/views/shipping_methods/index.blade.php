@@ -44,6 +44,7 @@
 
 			<td class="text-right">
                 @if (  is_null($shippingmethod->deleted_at))
+                <a class="btn btn-sm btn-blue" href="{{ route('shippingmethods.shippingmethodtablelines.index', [$shippingmethod->id]) }}" title="{{l('Show Price Rules')}}"><i class="fa fa-folder-open-o"></i></a>
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('shippingmethods/' . $shippingmethod->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('shippingmethods/' . $shippingmethod->id ) }}" 

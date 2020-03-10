@@ -40,7 +40,7 @@ class ProductionSheet extends Model
         }
 
         // $errors = [];
-        $this->sandbox = new ProductionPlanner();
+        $this->sandbox = new ProductionPlanner( $this->id, $this->due_date );
 
         // Do the Mambo!
         // STEP 1
@@ -92,64 +92,14 @@ class ProductionSheet extends Model
         // Adjust batch size
 
         foreach ($lines_summary as $pid => $line) {
-            //Batch size stuff
-            // Obviously: $line['planned_quantity'] >= $line['required_quantity']
-            $nbt = ceil($line['planned_quantity'] / $line['manufacturing_batch_size']);
-            $extra_quantity = $nbt * $line['manufacturing_batch_size'] - $line['planned_quantity'];
 
-
-            // Create Production Order
-            if ( $extra_quantity > 0.0 )
-            $order = $this->sandbox->addExtraPlannedMultiLevel([
-                'created_via' => 'manufacturing',
-                'status' => 'planned',
-                'product_id' => $pid,
-//                'product_reference' => $line['reference'],
-//                'product_name' => $line['name'],
-                'required_quantity' => 0,       // Not required for manufacturing, only to complete batch size
-                'planned_quantity' => $extra_quantity,
-//                'product_bom_id' => 1,
-                'due_date' => $this->due_date,
-                'notes' => '',
-//                
-//                'work_center_id' => 2,
-                'manufacturing_batch_size' => $line['manufacturing_batch_size'],
-//                'warehouse_id' => 0,
-                'production_sheet_id' => $this->id,
-            ]);
+            $order = $this->sandbox->addExtraPlannedMultiLevel($line->product_id, 0.0);
 
         }
 
 
-        // abi_r($lines_summary);
-        // abi_r('* *************************** *');
-
-// abi_r($lines_summary);
-
-// abi_r($this->sandbox->getPlannedOrders(), true);
-
         // STEP 4
-        // Adjust Release
-        
-/* Not needed with new brand calculation machine
-        // Group Planned Orders
-        $lines_summary = $this->sandbox->getPlannedOrders()
-                ->groupBy('product_id')->reduce(function ($result, $group) {
-                  return $result->put($group->first()->product_id, [
-                    'product_id' => $group->first()->product_id,
-                    'reference' => $group->first()->product_reference,
-                    'name' => $group->first()->product_name,
-                    'required_quantity' => $group->sum('required_quantity'),
-                    'planned_quantity' => $group->sum('planned_quantity'),
-
-                    'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
-                  ]);
-                }, collect());
-*/
-
-        // abi_r($lines_summary);
-        // abi_r('* *************************** *');die();
-
+        // Release
 
         $lines_summary = $this->sandbox->getPlannedOrders();
 
@@ -180,13 +130,7 @@ class ProductionSheet extends Model
         }
 
         // STEP 5
-        // Some clean-up
-
-        // Delete current -Planned- Production Orders
-        /* $porders = $this->productionorders->where('status', 'planned');
-        foreach ($porders as $order) {
-            $order->deleteWithLines();
-        } */
+        // Some clean-up ???
 
     }
     
@@ -269,7 +213,7 @@ class ProductionSheet extends Model
 
     public function customerorderlinesGrouped( $withStock = false )
     {
-        $lines = $this->customerorderlines->
+        $lines = $this->customerorderlines
                     ->whereHas('product', function($query) {
                        $query->  where('procurement_type', 'manufacture');
                        $query->orWhere('procurement_type', 'assembly');
@@ -314,8 +258,6 @@ class ProductionSheet extends Model
         $mystuff = collect([]);
         $lines = $this->customerorderlines->load('product');     // ()->whereHas('product');
 
-// abi_r($lines, true);
-
         foreach($lines as $line)
         {
             if ( $line->product )
@@ -327,15 +269,7 @@ class ProductionSheet extends Model
 
         }
 
-// abi_r($mystuff, true);
-
         $num = $mystuff
-//                    ->where('procurement_type', 'manufacture')
-//                    ->where('procurement_type', 'assembly')
-//                    ->filter(function($line) {
-//                        return ($line->product->procurement_type == 'manufacture') ||
-//                               ($line->product->procurement_type == 'assembly');
-//                    })
                     ->groupBy('product_id')->reduce(function ($result, $group) {
                       return $result->put($group->first()->product_id, [
                         'product_id' => $group->first()->product_id,
@@ -371,11 +305,6 @@ class ProductionSheet extends Model
                       $this->productionorders->where('status', $status)
                     : $this->productionorders;
 
-//        $num = $mystuff->groupBy('product_id')->map(function ($row) {
-//            return $row->sum('planned_quantity');
-//        });
-
-
         $num = $mystuff->groupBy('product_id')->reduce(function ($result, $group) {
                       return $result->put($group->first()->product_id, collect([
                         'product_id' => $group->first()->product_id,
@@ -386,8 +315,6 @@ class ProductionSheet extends Model
                         'manufacturing_batch_size' => $group->first()->manufacturing_batch_size,
                       ]));
                     }, collect());
-
-//        abi_r($num, true);
 
         return $num;
     }
@@ -426,13 +353,6 @@ class ProductionSheet extends Model
                       ]));
                     }, collect());
 
-/*
-        $sorted = $num->sortBy(function ($product, $key) {
-            abi_r($key);
-            abi_r($product);
-            return $product['reference'];
-        });
-*/
         return $num->sortBy('reference');
     }
     
@@ -457,13 +377,6 @@ class ProductionSheet extends Model
                       ]));
                     }, collect());
 
-/*
-        $sorted = $num->sortBy(function ($product, $key) {
-            abi_r($key);
-            abi_r($product);
-            return $product['reference'];
-        });
-*/
         return $num->sortBy('reference');
     }
 

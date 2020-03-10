@@ -4,12 +4,17 @@ namespace App;
 
 class ProductionPlanner 
 {
+    public $production_sheet_id;
+    public $due_date;
     public $orders_planned;
     public $products_planned;
 	
-    public function __construct( )
+    public function __construct( $production_sheet_id, $due_date )
     {
         //
+        $this->production_sheet_id; 
+        $this->due_date = $due_date;
+
         $this->orders_planned = collect([]);
         $this->products_planned = collect([]);
     }
@@ -28,26 +33,13 @@ class ProductionPlanner
                     'work_center_id', 'manufacturing_batch_size', 'machine_capacity', 'units_per_tray', 
                     'warehouse_id', 'production_sheet_id', 'notes'];
 
-        $product = Product::findOrFail( $data['product_id'] );
-
-         if ( !( 
-                   ($product->procurement_type == 'manufacture') 
-                || ($product->procurement_type == 'assembly') 
-            ) )
-         return null;
+        $product = Product::where('procurement_type', 'manufacture')
+                        ->orWhere('procurement_type', 'assembly')
+                        ->findOrFail( $data['product_id'] );
 
         $bom     = $product->bom;
 
-//        $production_orders = collect([]);
-
-        // if (!$bom) return NULL;
-
-        // Adjust Manufacturing batch size <- Not here, boy
-//        $nbt = ceil($data['planned_quantity'] / $product->manufacturing_batch_size);
-//        $order_quantity = $nbt * $product->manufacturing_batch_size;
-
         $order_quantity = $data['planned_quantity'];
-//        + $order_manufacturing_batch_size = $data['manufacturing_batch_size'] ?? $product->manufacturing_batch_size;
 
         $order = new ProductionOrder([
             'created_via' => $data['created_via'] ?? 'manual',
@@ -84,24 +76,8 @@ class ProductionPlanner
         // Order lines
         if ( !$bom ) return null;
 
-        foreach( $bom->BOMlines as $line ) {
-            
-             $line_product = $line->product;
+        foreach( $bom->BOMmanufacturablelines as $line ) {
 
-             if ( !( 
-                       ($line_product->procurement_type == 'manufacture') 
-                    || ($line_product->procurement_type == 'assembly') 
-                ) ) continue;
-
-/*
-            // Calculate $mbs (manufacturing_batch_size) for line
-            // According to BOM parent: $mbs = $order_manufacturing_batch_size * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0)
-            // According to prodcut:    $mbs = $line_product->manufacturing_batch_size
-            // Then;
-            $parent_mbs = $order_manufacturing_batch_size * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
-            $current_mbs = $line_product->manufacturing_batch_size;
-            $mbs = ceil( $parent_mbs / $current_mbs ) * $current_mbs;
-*/
             $quantity = $order_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
 
             $order = $this->addPlannedMultiLevel([
@@ -134,7 +110,7 @@ class ProductionPlanner
     }
 
 
-    public function addExtraPlannedMultiLevel($data = [])
+    public function addExtraPlannedMultiLevel_old($data = [])
     {
         $fields = [ 'created_via', 'status',
                     'product_id', 'required_quantity', 'planned_quantity', 'due_date', 'schedule_sort_order',
@@ -262,7 +238,7 @@ class ProductionPlanner
 
                                 return $item;
                             });
-                
+
 
                 $order = $this->addPlannedMultiLevel([
                     'created_via' => $data['created_via'] ?? 'manual',
@@ -291,6 +267,120 @@ class ProductionPlanner
         }
 
         // return $production_orders;
+    }
+
+
+
+
+    public function addExtraPlannedMultiLevel($product_id, $new_required = 0.0)
+    {
+        $product = $this->products_planned->firstWhere('id', $product_id) 
+                 ?: Product::where('procurement_type', 'manufacture')
+                            ->orWhere('procurement_type', 'assembly')
+                            ->findOrFail( $product_id );
+        
+        $bom     = $product->bom;
+
+        // Retrieve Planned Order for this Product
+        // If no order, issue one
+        if ( !$this->getPlannedOrders()->contains('product_id', $product->id) )
+        {
+            $order = new ProductionOrder([
+                'created_via' => 'manufacturing',
+                'status'      => 'planned',
+
+                'product_id' => $product->id,
+                'product_reference' => $product->reference,
+                'product_name' => $product->name,
+                'procurement_type' => $product->procurement_type,
+
+                'required_quantity' => 0.0,
+                'planned_quantity' => 0.0,
+                'product_bom_id' => $bom ? $bom->id : 0,
+
+                'due_date' => $this->due_date,
+    //            'schedule_sort_order' => 0,
+    //            'notes' => $data['notes'],
+
+                'work_center_id' => $product->work_center_id,
+
+                'manufacturing_batch_size' => $product->manufacturing_batch_size,
+                'machine_capacity' => $product->machine_capacity, 
+                'units_per_tray' => $product->units_per_tray,
+    //            'warehouse_id' => '',
+                'production_sheet_id' => $this->production_sheet_id,
+            ]);
+
+            $this->orders_planned->push($order);
+        }
+
+
+        // Do Continue
+        $quantity = $new_required ;
+
+        // Let's see if we have something to manufacture.  Two use cases:
+        $diff = $order->planned_quantity - $order->required_quantity;
+        // [1] 
+        if ( $diff >= $quantity )   // No more manufacturing needed!
+        {
+            $product_id = $order->product_id;
+            $order_required = $quantity;
+            $order_planned  = 0.0;
+            
+            $this->orders_planned->transform(function ($item, $key) use ($product_id, $order_required, $order_planned) {
+                            if($item->product_id == $product_id) {
+
+                                $item->required_quantity += $order_required;
+                                $item->planned_quantity  += $order_planned;         // Do not check bat size, as it should be checked before call to this function
+                            } 
+
+                            return $item;
+                        });
+
+            // That's all Folcks!
+            return ;
+        }
+
+        // [2] $diff < $quantity 
+        $product_id = $order->product_id;
+        $order_required = $quantity;
+        // Total Planned Quantity will be determined by Total Required Quantity and Batch size
+        $total_required = $order->required_quantity + $order_required;
+
+        $nbt = ceil($total_required / $order->manufacturing_batch_size);
+        $extra_quantity = $nbt * $order->manufacturing_batch_size - $total_required;
+
+        $order_planned  = $total_required + $extra_quantity - $order->planned_quantity;       // Maybe positive or negative amout. Sexy!
+
+        
+        $this->orders_planned->transform(function ($item, $key) use ($product_id, $order_required, $order_planned) {
+                        if($item->product_id == $product_id) {
+
+                            $item->required_quantity += $order_required;
+                            $item->planned_quantity  += $order_planned;         // Do not check bat size, as it should be checked before call to this function
+                        } 
+
+                        return $item;
+                    });
+
+
+        // In the end, 
+        $extra_manufacture = $extra_quantity;
+
+
+        // Order lines
+        if ( !$bom ) return null;
+
+        foreach( $bom->BOMmanufacturablelines as $line ) {
+            
+            // $quantity es la cantidad extra que hay que fabricar del hijo.
+            // Para el padre es "planned", pero para el hijo es "required"
+            $quantity = $extra_manufacture * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
+                
+            $order = $this->addExtraPlannedMultiLevel($line_product->id, $quantity);
+
+        }
+
     }
 
 

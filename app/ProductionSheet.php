@@ -44,11 +44,13 @@ class ProductionSheet extends Model
         // $errors = [];
         $this->sandbox = new ProductionPlanner();
 
+        $withStock = false;
+
         // Do the Mambo!
         // STEP 1
         // Calculate raw requirements
 
-        foreach ($this->customerorderlinesGrouped() as $pid => $line) {
+        foreach ($this->customerorderlinesGrouped( $withStock ) as $pid => $line) {
             //Batch size stuff
             $nbt = ceil($line['quantity'] / $line['manufacturing_batch_size']);
             $order_quantity = $nbt * $line['manufacturing_batch_size'];
@@ -81,7 +83,7 @@ class ProductionSheet extends Model
         // abi_r($this->sandbox->getPlannedOrders());
         // abi_r('* *************************** *');
 
-        $this->sandbox->groupPlannedOrders();
+        $this->sandbox->groupPlannedOrders( $withStock );
 
         abi_r($this->sandbox->getPlannedOrders());
         abi_r('* *************************** *');
@@ -112,6 +114,7 @@ class ProductionSheet extends Model
 
 
             // Create Production Order
+            if ( $extra_quantity > 0.0 )
             $order = $this->sandbox->addExtraPlannedMultiLevel([
                 'created_via' => 'manufacturing',
                 'status' => 'planned',
@@ -162,6 +165,7 @@ class ProductionSheet extends Model
 
 
 
+        // Release
         foreach ($lines_summary as $pid => $line) {
             // Create Production Order
             $order = \App\ProductionOrder::createWithLines([
@@ -273,10 +277,10 @@ class ProductionSheet extends Model
         return $num;
     }
 
-    public function customerorderlinesGrouped()
+    public function customerorderlinesGrouped( $withStock = false )
     {
         $mystuff = collect([]);
-        $lines = $this->customerorderlines;     // ()->whereHas('product');
+        $lines = $this->customerorderlines->with('product');     // ()->whereHas('product');
 
 // abi_r($lines, true);
 
@@ -300,21 +304,30 @@ class ProductionSheet extends Model
 //                        return ($line->product->procurement_type == 'manufacture') ||
 //                               ($line->product->procurement_type == 'assembly');
 //                    })
-                    ->groupBy('product_id')->reduce(function ($result, $group) {
-                      return $result->put($group->first()->product_id, [
-                        'product_id' => $group->first()->product_id,
-                        'reference' => $group->first()->reference,
-                        'name' => $group->first()->name,
-                        'quantity' => $group->sum('quantity'),
-                        'measureunit' => $group->first()->product->measureunit->name,
-                        'measureunit_sign' => $group->first()->product->measureunit->sign,
+                    ->groupBy('product_id')->reduce(function ($result, $group) use ( $withStock ) {
+                      $first = $group->first();
+                      $stock = 0.0;
 
-                        'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
+                      if ( $withStock )
+                      {
+                            if ( $first->stock_control )
+                                $stock = $first->quantity_onhand;
+                      }
+
+                      return $result->put($first->product_id, [
+                        'product_id' => $first->product_id,
+                        'reference' => $first->reference,
+                        'name' => $first->name,
+                        'quantity' => $group->sum('quantity') - $stock,
+                        'measureunit' => $first->product->measureunit->name,
+                        'measureunit_sign' => $first->product->measureunit->sign,
+
+                        'manufacturing_batch_size' => $first->product->manufacturing_batch_size,
                       ]);
                     }, collect());
 
         // Sort order
-        return $num->sortBy('reference');
+        return $num;        // ->sortBy('reference');
     }
 
     public function customerorderlinesGroupedByWorkCenter( $work_center_id = null )

@@ -141,7 +141,9 @@ class ProductionPlanner
                     'work_center_id', 'manufacturing_batch_size', 'machine_capacity', 'units_per_tray', 
                     'warehouse_id', 'production_sheet_id', 'notes'];
 
-        $product = Product::findOrFail( $data['product_id'] );
+        // $product = Product::findOrFail( $data['product_id'] );
+        $product = $this->products_planned->firstWhere('id', $data['product_id']) ?: Product::findOrFail( $data['product_id'] );
+
 
          if ( !( 
                    ($product->procurement_type == 'manufacture') 
@@ -248,7 +250,7 @@ class ProductionPlanner
     }
 
 
-    public function groupPlannedOrders()
+    public function groupPlannedOrders( $withStock = false )
     {
         $this->orders_planned = $this->getPlannedOrders()
                 ->groupBy('product_id')->reduce(function ($result, $group) {
@@ -268,11 +270,20 @@ class ProductionPlanner
         $products_planned = &$this->products_planned;
 
         // Stock adjustment
-        $this->orders_planned->transform(function($order, $key) use ($products_planned) {
-            $product_stock = $products_planned->firstWhere('id', $order->product_id)->quantity_onhand;
+        $this->orders_planned->transform(function($order, $key) use ($products_planned, $withStock) {
+                      $theProduct = $products_planned->firstWhere('id', $order->product_id);
+                      $product_stock = 0.0;
+
+                      if ( $withStock )
+                      {
+                            if ( $theProduct->stock_control )
+                                $product_stock = $theProduct->quantity_onhand;
+                      }
+
+            // $product_stock = $products_planned->firstWhere('id', $order->product_id)->quantity_onhand;
             abi_r($order->product_id.' - '.$product_stock.' - '.$order->required_quantity);
             $order->required_quantity = $order->required_quantity - $product_stock;
-            $order->planned_quantity  = $order->required_quantity;
+            $order->planned_quantity  = $order->planned_quantity  - $product_stock;
             return $order;
         });
 

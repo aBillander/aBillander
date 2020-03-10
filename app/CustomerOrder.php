@@ -251,6 +251,16 @@ class CustomerOrder extends Billable
         return $this->belongsTo('App\ProductionSheet', 'production_sheet_id');
     }
 
+    public function customerorderManufacturableLines()
+    {
+        return $this->documentlines()
+                    ->whereHas('product', function($query) {
+                       $query->  where('procurement_type', 'manufacture');
+                       $query->orWhere('procurement_type', 'assembly');
+                    })
+                    ->with('product');
+    }
+
     
     // Alias
     public function customerorderlines()

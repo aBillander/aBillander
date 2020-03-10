@@ -4,8 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use \App\ProductionPlanner;
-
 use App\Traits\ViewFormatterTrait;
 
 class ProductionSheet extends Model
@@ -31,20 +29,18 @@ class ProductionSheet extends Model
     |--------------------------------------------------------------------------
     */
     
-    public function calculateProductionOrders()
+    public function calculateProductionOrders( $withStock = false )
     {
 
         // Delete current Production Orders
         $porders = $this->productionorders()->get();
         foreach ($porders as $order) {
 //            if ( $order->created_via != 'manual' )
-                $order->deleteWithLines();
+                $order->delete();
         }
 
         // $errors = [];
         $this->sandbox = new ProductionPlanner();
-
-        $withStock = false;
 
         // Do the Mambo!
         // STEP 1
@@ -89,18 +85,7 @@ class ProductionSheet extends Model
         abi_r('* *************************** *');
 
         $lines_summary = $this->sandbox->getPlannedOrders()
-                ->where('manufacturing_batch_size', '>', 1)     // Take only if batch size must be checked
-                ->groupBy('product_id')->reduce(function ($result, $group) {
-                  return $result->put($group->first()->product_id, [
-                    'product_id' => $group->first()->product_id,
-                    'reference' => $group->first()->product_reference,
-                    'name' => $group->first()->product_name,
-                    'required_quantity' => $group->sum('required_quantity'),
-                    'planned_quantity' => $group->sum('planned_quantity'),
-
-                    'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
-                  ]);
-                }, collect());
+                ->where('manufacturing_batch_size', '>', 1);     // Take only if batch size must be checked
 
 
         // STEP 3
@@ -145,6 +130,8 @@ class ProductionSheet extends Model
 
         // STEP 4
         // Adjust Release
+        
+/* Not needed with new brand calculation machine
         // Group Planned Orders
         $lines_summary = $this->sandbox->getPlannedOrders()
                 ->groupBy('product_id')->reduce(function ($result, $group) {
@@ -158,10 +145,13 @@ class ProductionSheet extends Model
                     'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
                   ]);
                 }, collect());
-
+*/
 
         // abi_r($lines_summary);
         // abi_r('* *************************** *');die();
+
+
+        $lines_summary = $this->sandbox->getPlannedOrders();
 
 
 
@@ -279,39 +269,25 @@ class ProductionSheet extends Model
 
     public function customerorderlinesGrouped( $withStock = false )
     {
-        $mystuff = collect([]);
-        $lines = $this->customerorderlines->with('product');     // ()->whereHas('product');
+        $lines = $this->customerorderlines->
+                    ->whereHas('product', function($query) {
+                       $query->  where('procurement_type', 'manufacture');
+                       $query->orWhere('procurement_type', 'assembly');
+                    })
+                    ->with('product');
 
-// abi_r($lines, true);
-
-        foreach($lines as $line)
-        {
-            if ( $line->product )
-                if ( ($line->product->procurement_type == 'manufacture') ||
-                 ($line->product->procurement_type == 'assembly') ) {
-
-                    $mystuff->push($line);
-                }
-
-        }
-
-// abi_r($mystuff, true);
-
-        $num = $mystuff
-//                    ->where('procurement_type', 'manufacture')
-//                    ->where('procurement_type', 'assembly')
-//                    ->filter(function($line) {
-//                        return ($line->product->procurement_type == 'manufacture') ||
-//                               ($line->product->procurement_type == 'assembly');
-//                    })
+        $num = $lines
                     ->groupBy('product_id')->reduce(function ($result, $group) use ( $withStock ) {
                       $first = $group->first();
+                      $product = $first->product;
                       $stock = 0.0;
 
+                      if ($product->procurement_type == 'manufacture')
+                      // Assembies wil be fit later (groupPlannedOrders)
                       if ( $withStock )
                       {
-                            if ( $first->stock_control )
-                                $stock = $first->quantity_onhand;
+                            if ( $product->stock_control )
+                                $stock = $product->quantity_onhand;
                       }
 
                       return $result->put($first->product_id, [
@@ -319,10 +295,10 @@ class ProductionSheet extends Model
                         'reference' => $first->reference,
                         'name' => $first->name,
                         'quantity' => $group->sum('quantity') - $stock,
-                        'measureunit' => $first->product->measureunit->name,
-                        'measureunit_sign' => $first->product->measureunit->sign,
+                        'measureunit' => $product->measureunit->name,
+                        'measureunit_sign' => $product->measureunit->sign,
 
-                        'manufacturing_batch_size' => $first->product->manufacturing_batch_size,
+                        'manufacturing_batch_size' => $fproduct->manufacturing_batch_size,
                       ]);
                     }, collect());
 

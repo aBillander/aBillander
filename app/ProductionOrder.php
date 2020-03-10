@@ -36,6 +36,22 @@ class ProductionOrder extends Model
     	);
     
 
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($document)
+        {
+            // before delete() method call this
+            foreach($document->productionorderlines as $line) {
+                $line->delete();
+            }
+
+        });
+
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Methods
@@ -421,10 +437,12 @@ if ( $bomitem )
     public function deleteWithLines()
     {
         // Destroy Order Lines
+/*
         if ($this->productionorderlines()->count())
             foreach( $this->productionorderlines as $line ) {
                 $line->delete();
             }
+*/
 
         // Destroy Order
         $this->delete();

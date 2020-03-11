@@ -45,12 +45,10 @@ Route::get('notify', function( )
 
 Route::get('migratethis_gmdis', function()
 {
+  // 2020-03-11
+  \App\Configuration::updateValue('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY', '1');
 
-  // 2020-02-19
-
-
-	die('OK');
-
+  die('OK');
 
 
 });

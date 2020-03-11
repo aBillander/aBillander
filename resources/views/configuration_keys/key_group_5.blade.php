@@ -167,6 +167,27 @@
         <span class="help-block">{!! l('ABCC_OUT_OF_STOCK_PRODUCTS.help') !!}</span>
       </div>
     </div>
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY" id="ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY_on" value="1" @if( old('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY', $key_group['ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY" id="ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY_off" value="0" @if( !old('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY', $key_group['ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY.help') !!}</span>
+      </div>
+    </div>
+    
     
     <div class="form-group {{ $errors->has('ABCC_OUT_OF_STOCK_TEXT') ? 'has-error' : '' }}">
       <label for="ABCC_OUT_OF_STOCK_TEXT" class="col-lg-4 control-label">{!! l('ABCC_OUT_OF_STOCK_TEXT.name') !!}</label>

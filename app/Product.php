@@ -1157,14 +1157,19 @@ class Product extends Model {
                     ->where( function($query) use ($customer) {
                             if ($customer)
                             {
-                                $query->where('customer_id', $customer->id);
-                                if ($customer->customer_group_id)
-                                    $query->orWhere('customer_group_id', $customer->customer_group_id);
-                            }
+                                $query->where( function($query1) use ($customer) {
 
-                            $query->orWhere( function($query1) {
-                                    $query1->whereDoesntHave('customer');
+                                    $query1->where('customer_id', $customer->id);
+                                    if ($customer->customer_group_id)
+                                        $query1->orWhere('customer_group_id', $customer->customer_group_id);
                                 } );
+
+                                $query->orWhere( function($query1) {
+                                    $query1->whereDoesntHave('customer');
+                                    $query1->whereDoesntHave('customergroup');
+                                } );
+                            
+                            }
                         } )
                     // Product range
                     ->where( function($query) use ($product) {

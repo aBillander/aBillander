@@ -58,27 +58,31 @@ class ProductionSheet extends Model
 
             // Create Production Order
             $orders = $this->sandbox->addPlannedMultiLevel([
-                'created_via' => 'manufacturing',
-                'status' => 'planned',
                 'product_id' => $pid,
-//                'product_reference' => $line['reference'],
-//                'product_name' => $line['name'],
+
                 'required_quantity' => $line['quantity'],
                 'planned_quantity' => $order_quantity,
-//                'product_bom_id' => 1,
-                'due_date' => $this->due_date,
+
                 'notes' => '',
-//                
-//                'work_center_id' => 2,
-                'manufacturing_batch_size' => $line['manufacturing_batch_size'],
-//                'warehouse_id' => 0,
+
                 'production_sheet_id' => $this->id,
             ]);
 
         }
+        // Resultado hasta aquí:
+        // en ->sandbox->orders_planned hay las ProductionOrder (s) que deben fabricarse según las BOM.
+        // La cantidad de Producto Terminado resulta de:
+        // - Sumar los Pedidos
+        // - Descontar el Stock (si se controla el stock del producto)
+        // - Ajustar con el tamaño de lote
+        // 
+        // Para los semielaborados:
+        // - NO se tiene en cuenta el stock
+        // - NO se tiene en cuenta el tamaño del lote
+
 
         // STEP 2
-        // Group Planned Orders, with stock
+        // Group Planned Orders, adjust according to onhand stock
 
         $this->sandbox->groupPlannedOrders( $withStock );
 
@@ -90,11 +94,12 @@ class ProductionSheet extends Model
 
         foreach ($pIDs as $pID) {
             
-            $order = $this->sandbox->getPlannedOrders()->where('product_id', $product->id)->first();
+            $order = $this->sandbox->getPlannedOrders()->firstWhere('product_id', $product->id);
             // this check is necessary, since collection is modified on the fly
-            if (  $order->planned_quantity >= 0,0 ) continue;     // Noting to do here
+            if (  $order->planned_quantity >= 0.0 ) continue;     // Noting to do here
 
-            $this->sandbox->equalizePlannedMultiLevel($pID, (-1.0) * $order->planned_quantity);
+            $quantity = (-1.0) * $order->planned_quantity;      // $quantity is positive now
+            $this->sandbox->equalizePlannedMultiLevel($pID, $quantity);
 
             // ProductionOrders collection has been equalized (balanced negative values)
         }
@@ -141,7 +146,6 @@ class ProductionSheet extends Model
                 'production_sheet_id' => $this->id,
             ]);
 
-            // if (!$order) $errors[] = '<li>['.$line['reference'].'] '.$line['name'].'</li>';
         }
 
         // STEP 5
@@ -219,10 +223,11 @@ class ProductionSheet extends Model
                         'reference' => $first->reference,
                         'name' => $first->name,
                         'quantity' => $group->sum('quantity') - $stock,
-                        'measureunit' => $product->measureunit->name,
-                        'measureunit_sign' => $product->measureunit->sign,
+                        // Do I need these two?
+//                        'measureunit' => $product->measureunit->name,
+//                        'measureunit_sign' => $product->measureunit->sign,
 
-                        'manufacturing_batch_size' => $fproduct->manufacturing_batch_size,
+                        'manufacturing_batch_size' => $product->manufacturing_batch_size,
                       ]);
                     }, collect());
 

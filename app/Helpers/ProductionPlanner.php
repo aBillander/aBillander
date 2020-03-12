@@ -78,25 +78,14 @@ class ProductionPlanner
             $quantity = $order_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
 
             $order = $this->addPlannedMultiLevel([
-                'created_via' => 'manufacturing',
-                'status'      => 'planned',
-
                 'product_id' => $line_product->id,
-                'product_reference' => $line_product->reference,
-                'product_name' => $line_product->name,
-                'procurement_type' => $line_product->procurement_type,
 
                 'required_quantity' => $quantity,
                 'planned_quantity' => $quantity,
                 'product_bom_id' => $line_product->bom ? $line_product->bom->id : 0,
 
-                'due_date' => $this->due_date,
-//            'schedule_sort_order' => 0,
                 'notes' => $data['notes'],
 
-                'work_center_id' => $line_product->work_center_id,
-                'manufacturing_batch_size' => $line_product->manufacturing_batch_size,  // $mbs,
-    //            'warehouse_id' => '',
                 'production_sheet_id' => $this->production_sheet_id,
             ]);
 
@@ -109,11 +98,11 @@ class ProductionPlanner
 
     public function equalizePlannedMultiLevel($product_id, $new_required = 0.0)
     {
-        // Retrieve Planned Order for this Product (shouls exists!)
-        $order = $this->getPlannedOrders()->where('product_id', $product->id)->first();
+        // Retrieve Planned Order for this Product (should exist!)
+        $order = $this->getPlannedOrders()->firstWhere('product_id', $product->id);
 
-        if ( !$order ) return ;     // Noting to do here
-//        if (  $order->planned_quantity >= 0,0 ) return ;     // <= carry this check at the top level only!
+        if ( !$order ) return ;     // <= Noting to do here
+//        if (  $order->planned_quantity >= 0.0 ) return ;     // <= carry this check at the top level only!
 
 
         // Wanna dance, baby? For sure I do.
@@ -164,11 +153,9 @@ class ProductionPlanner
                  ?: Product::where('procurement_type', 'manufacture')
                             ->orWhere('procurement_type', 'assembly')
                             ->findOrFail( $product_id );
-        
-        $bom     = $product->bom;
 
         // Retrieve Planned Order for this Product
-        $order = $this->getPlannedOrders()->where('product_id', $product->id)->first();
+        $order = $this->getPlannedOrders()->firstWhere('product_id', $product->id);
         // If no order, issue one
         if ( !$order )
         {
@@ -208,7 +195,7 @@ class ProductionPlanner
         // Let's see if we have something to manufacture.  Two use cases:
         $diff = $order->planned_quantity - $order->required_quantity;
         // [1] 
-        if ( $diff >= $quantity )   // No more manufacturing needed!
+        if ( $diff > $quantity )   // No more manufacturing needed!
         {
             $product_id = $order->product_id;
             $order_required = $quantity;
@@ -224,11 +211,14 @@ class ProductionPlanner
                             return $item;
                         });
 
-            // That's all Folcks!
+            // No children to manufacture. That's all Folcks!
             return ;
         }
 
-        // [2] $diff < $quantity 
+        // [2] $diff <= $quantity
+        // This use case include $quantity = 0 and $diff = 0, that means: "Please, adjust batch size"
+        // NOTE: if $quantity = 0 and $diff > 0,
+        // this means that batch size has already taken into consideration, and we are in Use Case [1]
         $product_id = $order->product_id;
         $order_required = $quantity;
         // Total Planned Quantity will be determined by Total Required Quantity and Batch size
@@ -244,16 +234,19 @@ class ProductionPlanner
                         if($item->product_id == $product_id) {
 
                             $item->required_quantity += $order_required;
-                            $item->planned_quantity  += $order_planned;         // Do not check bat size, as it should be checked before call to this function
+                            $item->planned_quantity  += $order_planned;         // Do not check batch size, as it should be checked before call to this function
                         } 
 
                         return $item;
                     });
 
 
-        // In the end, 
-        $extra_manufacture = $extra_quantity;
+        // In the end,
+        // Esta es la cantidad que ha variado la Orden de fabricación del Padre:
+        $extra_manufacture = $order_planned;
 
+        
+        $bom     = $product->bom;
 
         // Order lines
         if ( !$bom ) return null;
@@ -283,9 +276,11 @@ class ProductionPlanner
                       return $result->put($reduced->product_id, $reduced);
 
                 }, collect());
+        // Realmente sólo ha agrupado los Semielaborados, ya que el Producto Terminado se agrupó en STEP 1.
+        // En este punto, para semielaborados, planned = required (por construcción) 
 
         // Load Products into memory
-        $pIDs = $this->orders_planned->pluck('product_id');
+        $pIDs = $this->orders_planned->pluck('product_id');     // Estos son todos los Productos que se han de Planificar
         $this->products_planned = Product::whereIn('id', $pIDs)->get();
 
         $products_planned = &$this->products_planned;

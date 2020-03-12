@@ -197,6 +197,8 @@ return [
 	'ABCC_OUT_OF_STOCK_PRODUCTS.option.deny' => '<strong>deny</strong>: Denegar Pedidos',
 	'ABCC_OUT_OF_STOCK_PRODUCTS.option.allow' => '<strong>allow</strong>: Permitir Pedidos',
 	'ABCC_OUT_OF_STOCK_PRODUCTS.help' => '',
+	'ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY.name' => 'Avisar al Cliente "Cuando no hay Stock" tiene el valor "Permitir Pedidos"',
+	'ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY.help' => '',
 	'ABCC_OUT_OF_STOCK_TEXT.name' => 'Texto que se mostrará cuando se permiten Pedidos sin Stock',
 	'ABCC_OUT_OF_STOCK_TEXT.help' => '',
 	'ABCC_ORDERS_NEED_VALIDATION.name' => 'Los Pedidos de Clientes necesitan Validación',

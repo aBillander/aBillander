@@ -45,8 +45,12 @@ class ProductionSheet extends Model
         // Do the Mambo!
         // STEP 1
         // Calculate raw requirements
+        $requirements = $this->customerorderlinesGrouped( $withStock );
 
-        foreach ($this->customerorderlinesGrouped( $withStock ) as $pid => $line) {
+        foreach ( $requirements as $pid => $line ) {
+            // Discard Products with stock
+            if ($line['quantity'] <= 0.0) continue;
+
             //Batch size stuff
             $nbt = ceil($line['quantity'] / $line['manufacturing_batch_size']);
             $order_quantity = $nbt * $line['manufacturing_batch_size'];
@@ -74,22 +78,33 @@ class ProductionSheet extends Model
         }
 
         // STEP 2
-        // Group Planned Orders, 
-
-        // abi_r($this->sandbox->getPlannedOrders());
-        // abi_r('* *************************** *');
+        // Group Planned Orders, with stock
 
         $this->sandbox->groupPlannedOrders( $withStock );
 
-        abi_r($this->sandbox->getPlannedOrders());
-        abi_r('* *************************** *');
+        // Now we may have orders with negative quantity, when $product->quantity_onhand > $order->required_quantity.
 
-        $lines_summary = $this->sandbox->getPlannedOrders()
-                ->where('manufacturing_batch_size', '>', 1);     // Take only if batch size must be checked
+        $pIDs = $this->sandbox->getPlannedOrders()
+                ->where('planned_quantity', '<', 0.0)
+                ->pluck('product_id');
+
+        foreach ($pIDs as $pID) {
+            
+            $order = $this->sandbox->getPlannedOrders()->where('product_id', $product->id)->first();
+            // this check is necessary, since collection is modified on the fly
+            if (  $order->planned_quantity >= 0,0 ) continue;     // Noting to do here
+
+            $this->sandbox->equalizePlannedMultiLevel($pID, (-1.0) * $order->planned_quantity);
+
+            // ProductionOrders collection has been equalized (balanced negative values)
+        }
 
 
         // STEP 3
         // Adjust batch size
+
+        $lines_summary = $this->sandbox->getPlannedOrders()
+                ->where('manufacturing_batch_size', '>', 1);     // Take only if batch size must be checked
 
         foreach ($lines_summary as $pid => $line) {
 
@@ -108,7 +123,7 @@ class ProductionSheet extends Model
         // Release
         foreach ($lines_summary as $pid => $line) {
             // Create Production Order
-            $order = \App\ProductionOrder::createWithLines([
+            $order = ProductionOrder::createWithLines([
                 'created_via' => 'manufacturing',
                 'status' => 'released',
                 'product_id' => $pid,
@@ -131,41 +146,6 @@ class ProductionSheet extends Model
 
         // STEP 5
         // Some clean-up ???
-
-    }
-    
-    public function calculateProductionOrdersRaw()
-    {
-
-        // Delete current Production Orders
-        $porders = $this->productionorders()->get();
-        foreach ($porders as $order) {
-            $order->deleteWithLines();
-        }
-
-        // $errors = [];
-
-        // Do the Mambo!
-        foreach ($this->customerorderlinesGrouped() as $pid => $line) {
-            // Create Production Order
-            $order = \App\ProductionOrder::createWithLines([
-                'created_via' => 'manufacturing',
-//                'status' => 'released',
-                'product_id' => $pid,
-//                'product_reference' => $line['reference'],
-//                'product_name' => $line['name'],
-                'planned_quantity' => $line['quantity'],
-//                'product_bom_id' => 1,
-                'due_date' => $this->due_date,
-                'notes' => '',
-//                
-//                'work_center_id' => 2,
-//                'warehouse_id' => 0,
-                'production_sheet_id' => $this->id,
-            ]);
-
-            // if (!$order) $errors[] = '<li>['.$line['reference'].'] '.$line['name'].'</li>';
-        }
 
     }
     
@@ -227,7 +207,7 @@ class ProductionSheet extends Model
                       $stock = 0.0;
 
                       if ($product->procurement_type == 'manufacture')
-                      // Assembies wil be fit later (groupPlannedOrders)
+                      // Assembies will be fit later on (groupPlannedOrders)
                       if ( $withStock )
                       {
                             if ( $product->stock_control )

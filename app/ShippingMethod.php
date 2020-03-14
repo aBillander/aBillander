@@ -11,7 +11,13 @@ class ShippingMethod extends Model {
 
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['name', 'alias', 'webshop_id', 'class_name', 'carrier_id', 'active'];
+    protected $fillable = ['name', 'alias', 'webshop_id', 'class_name', 'carrier_id', 'active',
+                           'type', 'transit_time', 'billing_type', 'free_shipping_from', 'tax_id', 'position', 
+             ];
+    
+    // 
+    // ShippingMethod CRUD is only available if 'type' == 'basic'
+    // 
 
     public static $rules = array(
         'name'         => 'required|min:2|max:64',
@@ -36,9 +42,16 @@ class ShippingMethod extends Model {
     }
     
 
-    public function shippingmethodtable()
+    public function services()
     {
-        return $this->hasOne('App\ShippingMethodTable', 'shipping_method_table_id');
+        return $this->hasMany('App\ShippingMethodService', 'shipping_method_id');
+    }
+    
+
+    public function servicelines()
+    {
+        // Only if 'type' == 'basic'
+        return $this->morphMany('App\ShippingMethodServiceLine', 'tabulable');
     }
 
 

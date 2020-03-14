@@ -31,6 +31,13 @@ class CreateShippingMethodsTable extends Migration {
 
 			/* Cost calculation stuff */
 
+			$table->string('type', 32)->nullable(false)->default('basic');
+			// 'basic', 'multiservice'
+			// ShippingMethod CRUD is only available if 'type' == 'basic'
+			// If 'type' == 'multiservice', these properties must be defined for each service
+
+			$table->string('transit_time', 16)->nullable();		// 2d: 2 days; 12h: 12 hours. Case insensitive.
+
 			$table->string('billing_type', 32)->nullable(false)->default('price');
 			// 'price', 'weight', 'items' (number of items), etc.
 
@@ -44,10 +51,13 @@ class CreateShippingMethodsTable extends Migration {
 			// $table->string('billing_out_of_range', 32)->nullable(false)->default('highest');
 			// 'highest', 'disable'
 
+			$table->decimal('free_shipping_from', 20, 6)->default(0.0);
+
 			$table->integer('tax_id')->unsigned()->nulable();
 
 			// bonus
 			$table->integer('position')->unsigned()->default(0);
+			// If 'type' == 'multiservice', each service has a 'position' too
 
 			/* Cost calculation stuff ENDS */
 

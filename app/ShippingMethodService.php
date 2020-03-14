@@ -77,11 +77,11 @@ class ShippingMethodTable extends Model {
     |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
-    */
-    
-    public function shippingmethodtablelines()
+    */    
+
+    public function servicelines()
     {
-        return $this->hasMany('App\ShippingMethodTableLine', 'shipping_method_table_id')->orderBy('amount', 'asc');
+        return $this->morphMany('App\ShippingMethodServiceLine', 'tabulable');
     }
     
     public function shippingmethod()

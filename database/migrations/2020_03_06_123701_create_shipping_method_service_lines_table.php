@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateShippingMethodTableLinesTable extends Migration {
+class CreateShippingMethodServiceLinesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -13,9 +13,9 @@ class CreateShippingMethodTableLinesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::dropIfExists('shipping_method_table_lines');
+		Schema::dropIfExists('shipping_method_service_lines');
 		
-		Schema::create('shipping_method_table_lines', function(Blueprint $table)
+		Schema::create('shipping_method_service_lines', function(Blueprint $table)
 		{
 			$table->increments('id');
 			
@@ -28,7 +28,9 @@ class CreateShippingMethodTableLinesTable extends Migration {
 
 			$table->integer('tax_id')->unsigned()->nulable();		// Future use
 			
-			$table->integer('shipping_method_table_id')->unsigned()->default(0);
+			// Tabulaable (ShippingMethod or ShippingMethodService)
+			$table->integer('tabulable_id');
+			$table->string('tabulable_type');
 
 			$table->timestamps();
 		});
@@ -41,7 +43,7 @@ class CreateShippingMethodTableLinesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('shipping_method_table_lines');
+		Schema::dropIfExists('shipping_method_service_lines');
 	}
 
 }

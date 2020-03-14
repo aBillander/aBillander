@@ -11,7 +11,9 @@ class Carrier extends Model {
 
     protected $dates = ['deleted_at'];
     
-	protected $fillable = [ 'name', 'alias', 'active' ];
+	protected $fillable = [ 'name', 'alias', 'active',
+                            'tracking_url', 'transit_time', 
+             ];
 
     public static $rules = array(
         'name'    => array('required', 'min:2', 'max:64'),

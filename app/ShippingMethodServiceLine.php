@@ -59,9 +59,9 @@ class ShippingMethodTableLine extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public function shippingmethodtable()
+    public function tabulable()
     {
-        return $this->belongsTo('App\ShippingMethodTable', 'shipping_method_table_id');
+        return $this->morphTo();
 	}
 
     public function country()

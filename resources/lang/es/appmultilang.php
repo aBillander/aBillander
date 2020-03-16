@@ -333,6 +333,18 @@ return array(
 	'App\CommissionSettlement.pending' => 'Pendiente',
 	'App\CommissionSettlement.closed'    => 'Cerrado',
 
+	/*
+	|--------------------------------------------------------------------------
+	| Shipping Method Billing Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\ShippingMethod.price'  => 'Precio',
+	'App\ShippingMethod.weight' => 'Peso',
+
 
 	/*
 	|--------------------------------------------------------------------------

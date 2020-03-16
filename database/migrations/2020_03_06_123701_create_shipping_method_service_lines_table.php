@@ -19,8 +19,8 @@ class CreateShippingMethodServiceLinesTable extends Migration {
 		{
 			$table->increments('id');
 			
-			$table->integer('country_id')->unsigned()->nulable();
-			$table->integer('state_id')->unsigned()->nulable();
+			$table->integer('country_id')->unsigned()->nulable()->default(null);
+			$table->integer('state_id')->unsigned()->nulable()->default(null);
 			$table->string('postcode', 12)->nullable();
 
 			$table->decimal('from_amount', 20, 6)->default(0.0);	// Maybe price (order total), weight, number of items, volume, etc. 

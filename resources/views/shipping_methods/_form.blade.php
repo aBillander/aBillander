@@ -14,6 +14,33 @@
 </div>
 <div class="row">
 
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('billing_type') ? 'has-error' : '' }}">
+            {!! Form::label('billing_type', l('Billing Type')) !!}
+            {!! Form::select('billing_type', $billing_typeList, null, array('class' => 'form-control', 'id' => 'billing_type')) !!}
+            {!! $errors->first('billing_type', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         
+          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('free_shipping_from') ? 'has-error' : '' }}">
+             {!! Form::label('free_shipping_from', l('Free Shipping from')) !!}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Order value before Document discounts') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a>
+             {!! Form::text('free_shipping_from', null, array('class' => 'form-control', 'id' => 'free_shipping_from', 'autocomplete' => 'off', 'onclick' => 'this.select()')) !!}
+             {!! $errors->first('free_shipping_from', '<span class="help-block">:message</span>') !!}
+          </div>
+
+         <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('tax_id') ? 'has-error' : '' }}">
+            {!! Form::label('tax_id', l('Tax')) !!}
+            {!! Form::select('tax_id', array('' => l('-- Please, select --', [], 'layouts')) + $taxList, null, array('class' => 'form-control', 'id' => 'tax_id')) !!}
+            {!! $errors->first('tax_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+
+</div>
+<div class="row">
+
                   <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
                      {!! Form::label('carrier_id', l('Carrier')) !!}
                      {!! Form::select('carrier_id', array('' => l('-- Please, select --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control')) !!}

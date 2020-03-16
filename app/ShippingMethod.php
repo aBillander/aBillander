@@ -9,6 +9,16 @@ class ShippingMethod extends Model {
 
     use SoftDeletes;
 
+    public static $types = [
+            'basic',
+            'multiservice',
+        ];
+
+    public static $billing_types = [
+            'price',
+            'weight',
+        ];
+
     protected $dates = ['deleted_at'];
 
     protected $fillable = ['name', 'alias', 'webshop_id', 'class_name', 'carrier_id', 'active',
@@ -21,15 +31,61 @@ class ShippingMethod extends Model {
 
     public static $rules = array(
         'name'         => 'required|min:2|max:64',
-        'alias'         => 'required|min:2|max:16',
+        'alias'        => 'required|min:2|max:16',
+        'tax_id'       => 'exists:taxes,id',
         'carrier_id'   => 'sometimes|nullable|exists:carriers,id',
     	);
+    
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function($method)
+        {
+            $method->servicelines()->delete(); // Not calling the events on each child
+        });
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+    public static function getBillingTypeList()
+    {
+            $list = [];
+            foreach (static::$billing_types as $billing_type) {
+                $list[$billing_type] = l(get_called_class().'.'.$billing_type, [], 'appmultilang');
+            }
+
+            return $list;
+    }
+
+    public function getBillingTypeNameAttribute( )
+    {
+            return l(get_called_class().'.'.$this->billing_type, [], 'appmultilang');
+    }
+
+    public static function getBillingTypeName( $billing_type )
+    {
+            return l(get_called_class().'.'.$billing_type, [], 'appmultilang');
+    }
+
 
     /*
     |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
     */
+
+    public function tax()
+    {
+        return $this->belongsTo('App\Tax', 'tax_id');
+    }
 
     public function carrier()
     {
@@ -52,6 +108,13 @@ class ShippingMethod extends Model {
     {
         // Only if 'type' == 'basic'
         return $this->morphMany('App\ShippingMethodServiceLine', 'tabulable');
+    }
+
+    // Alias
+    public function rules()
+    {
+        // Only if 'type' == 'basic'
+        return $this->servicelines();
     }
 
 

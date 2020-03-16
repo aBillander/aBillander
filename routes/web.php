@@ -355,7 +355,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('paymenttypes', 'PaymentTypesController');
 
         Route::resource('shippingmethods', 'ShippingMethodsController');
-        Route::resource('shippingmethods.shippingmethodtablelines', 'ShippingMethodTableLinesController');
+        Route::resource('shippingmethods.shippingmethodrules', 'ShippingMethodRulesController');
 
         Route::resource('customergroups', 'CustomerGroupsController');
 

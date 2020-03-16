@@ -6,26 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\ViewFormatterTrait;
 
-class ShippingMethodTableLine extends Model {
+class ShippingMethodServiceLine extends Model {
 
     use ViewFormatterTrait;
 
-    protected $appends = ['fullName'];
+    // protected $appends = ['fullName'];
 
     public static $types = array(
             'sales', 
             'sales_equalization',
         );
-
-    protected $dates = ['deleted_at'];
     
-    protected $fillable = [ 'country_id', 'state_id', 'rule_type', 'name', 'percent', 'amount', 'position' ];
+    protected $fillable = [ 'country_id', 'state_id', 'postcode', 'from_amount', 'price' ];
 
     public static $rules = array(
-    	'name'     => array('required'),
-        'percent'  => array('nullable', 'numeric', 'between:0,100'), 
-        'amount'   => array('nullable', 'numeric'),
-        'position' => array('nullable', 'numeric'),      // , 'min:0')   Allow negative in case starts on 0
+        'from_amount' => 'min:0',
+        'price'       => 'min:0',
+        'country_id'  => 'exists:countries,id',
+        'state_id'    => 'sometimes|nullable|exists:states,id',
+        'postcode'    => 'nullable|numeric',
     	);
 
     public static function getTypeList()
@@ -47,7 +46,7 @@ class ShippingMethodTableLine extends Model {
 
     public function getFullNameAttribute()
     {
-        $value = $this->tax->name . ' | ' . $this->name;
+        // $value = $this->tax->name . ' | ' . $this->name;
 
         return $value;
     }

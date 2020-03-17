@@ -129,6 +129,9 @@ class ShippingMethod extends Model {
     {
         // $shippable is either a Cart or Document (Quotation, Order, Slip or Invoice) object
 
+        return $price = $method->calculateDocumentShippingCost( $shippable );
+
+/*
         // laravel helper class_basename:
         $baseClass = class_basename(get_class( $shippable ));
 
@@ -137,8 +140,103 @@ class ShippingMethod extends Model {
 
         // Return Price Object
         return $price = $method->calculateCartCostPrice( $shippable );
+*/
     }
     
+    public function calculateDocumentShippingCost( $shippable )
+    {
+        // $shippable is either a Cart or Document (Quotation, Order, Slip or Invoice) object
+        // that implements "Shippable Interface"
+
+        $shipping_label = Configuration::get('ABCC_SHIPPING_LABEL');
+
+        $free_shipping  = $this->free_shipping_from;
+
+        $tax_id         = $this->tax_id;
+
+
+        $tax = Tax::find($tax_id);
+
+        $cost = 0.0;
+
+        $billable_amount = $shippable->getShippingBillableAmount( $this->billing_type );
+
+        // Now, perform calculations, Ho, ho, ho!
+
+        // Free Shipping
+        if ( $billable_amount >= $free_shipping ) 
+            $cost = 0.0;
+        else 
+        {
+            $address = $shippable->shippingaddress;
+
+            $price = $this->getPriceByAddress( $address, $billable_amount );
+
+            if ( $price == null )
+                // No rule found => Out of range
+                // ToDo: Manage this situation
+                $cost = 0.0;
+            else
+                $cost = $price;
+
+        }
+
+        return [
+                    'shipping_label' => $shipping_label,
+                    'cost'           => $cost,
+                    'tax'            => $tax,
+            ];
+
+    }
+
+    public function getPriceByAddress( Address $address = null, $amount = 0.0 )
+    {
+        if ( $address == null ) $address = Context::getContext()->company->address;
+
+        $rules = $this->rules;
+
+        // [1] Postal Code
+        $address_rule = $rules->where('country_id', $address->country_id)
+                                ->where('postcode', $address->postcode)
+                                ->where('from_amount', '<=', $amount)
+                                ->sortByDesc('from_amount')
+                                ->first();
+
+        if ($address_rule) return $address_rule->price;
+
+        // [2] State
+        $address_rule = $rules->where('country_id', $address->country_id)
+                                ->where('state_id', $address->state_id)
+                                ->where('from_amount', '<=', $amount)
+                                ->sortByDesc('from_amount')
+                                ->first();
+
+        if ($address_rule) return $address_rule->price;
+
+        // [3] Country
+        $address_rule = $rules->where('country_id', $address->country_id)
+                                ->where('from_amount', '<=', $amount)
+                                ->sortByDesc('from_amount')
+                                ->first();
+
+        if ($address_rule) return $address_rule->price;
+
+        // [4] Universe
+        $address_rule = $rules->filter(function ($value, $key) {
+                                    return $value->country_id == null || $value->country_id == '' || $value->country_id == 0 ;
+                                })
+                                ->where('from_amount', '<=', $amount)
+                                ->sortByDesc('from_amount')
+                                ->first();
+
+        if ($address_rule) return $address_rule->price;
+
+        // Nothing found
+        return null;
+    }
+
+    
+    // To be deprecated...
     public function calculateCartCostPrice( Cart $cart )
     {
         // Instantiate calculator
@@ -158,6 +256,5 @@ class ShippingMethod extends Model {
         return $calculator->calculateCartCostPrice( $cart );
 
     }
-
 
 }

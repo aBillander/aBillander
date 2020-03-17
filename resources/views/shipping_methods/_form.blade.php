@@ -21,7 +21,7 @@
          </div>
 
          
-          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('free_shipping_from') ? 'has-error' : '' }}">
+          <div class=" hide form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('free_shipping_from') ? 'has-error' : '' }}">
              {!! Form::label('free_shipping_from', l('Free Shipping from')) !!}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Order value before Document discounts') }}">

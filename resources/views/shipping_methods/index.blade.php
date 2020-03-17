@@ -26,7 +26,7 @@
             <th class="text-left">{{l('Alias', 'layouts')}}</th>
             <th>{{l('Shipping Method name')}}</th>
             <th>{{l('Billing Type')}}</th>
-            <th>{{l('Free Shipping from')}}</th>
+            <!-- th>{{l('Free Shipping from')}}</th -->
             <th>{{l('Tax')}}</th>
             <th>{{l('Carrier')}}</th>
             <th>{{l('Class name')}}</th>
@@ -42,7 +42,7 @@
             <td>{{ $shippingmethod->alias }}</td>
             <td>{{ $shippingmethod->name }}</td>
             <td>{{ $shippingmethod->billing_type_name }}</td>
-            <td>{{ $shippingmethod->free_shipping_from }}</td>
+            <!-- td>{{ $shippingmethod->free_shipping_from }}</td -->
             <td>{{ optional($shippingmethod->tax)->name ?: '-' }}</td>
             <td>{{ $shippingmethod->carrier ? $shippingmethod->carrier->name : '-' }}</td>
             <td>{{ $shippingmethod->class_name }}</td>

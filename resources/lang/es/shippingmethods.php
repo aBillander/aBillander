@@ -33,6 +33,7 @@ return [
 	|
 	*/
 
+	'Show Price Rules' => 'Mostrar Reglas de Precio',
 	'Shipping Method Rules' => 'Reglas de Método de Envío',
 	'Back to Shipping Methods'     => 'Volver a Métodos de Envío',
 

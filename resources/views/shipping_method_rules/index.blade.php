@@ -11,7 +11,7 @@
         <a href="{{ route('shippingmethods.index') }}" class="btn btn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Shipping Methods') }}</a> 
     </div>
     <h2>
-        <a href="{{ route('shippingmethods.index') }}">{{ l('Shipping Methods') }}</a> <span style="color: #cccccc;">/</span> {{ $shippingmethod->name }}
+        <a href="{{ route('shippingmethods.index') }}">{{ l('Shipping Method Rules') }}</a> <span style="color: #cccccc;">/</span> {{ $shippingmethod->name }}
 
         <a href="javascript:void(0);" class="btn btn-info btn-xs">{{ $shippingmethod->billing_type_name }}</a>
         <span class="badge" style="background-color: #3a87ad;" title="{{ \App\Context::getContext()->currency->name }}">{{ \App\Context::getContext()->currency->iso_code }}</span>

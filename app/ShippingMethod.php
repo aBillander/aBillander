@@ -164,7 +164,8 @@ class ShippingMethod extends Model {
         // Now, perform calculations, Ho, ho, ho!
 
         // Free Shipping
-        if ( $billable_amount >= $free_shipping ) 
+        // ToDo: Global ABCC free shipping ???
+        if ( 0 && $billable_amount >= $free_shipping ) 
             $cost = 0.0;
         else 
         {

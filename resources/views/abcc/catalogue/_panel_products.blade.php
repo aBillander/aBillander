@@ -195,7 +195,7 @@ https://stackoverflow.com/questions/25424163/bootstrap-button-dropdown-with-cust
 https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-group-with-an-html-form
 --}}
 
-@if ($product->quantity_onhand > 0)
+@if (\App\Configuration::isFalse('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY') || $product->quantity_onhand > 0)
             <div xclass="form-group">
               <div class="input-group" style="width: 72px;">
 

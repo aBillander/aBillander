@@ -18,6 +18,13 @@ class CreateCarriersTable extends Migration {
 			$table->increments('id');
 			$table->string('alias', 32)->nullable(false);
 			$table->string('name', 64)->nullable(false);
+
+			/* Cost calculation stuff */
+			
+			$table->string('tracking_url', 128)->nullable();
+			$table->string('transit_time', 16)->nullable();		// 2d: 2 days; 12h: 12 hours. Case insensitive.
+			
+			/* Cost calculation stuff ENDS */
 			
 			$table->tinyInteger('active')->default(1);
 

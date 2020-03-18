@@ -28,6 +28,12 @@
 
 Route::get('migratethis_xtra', function()
 {
+  // 2020-03-11
+  \App\Configuration::updateValue('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY', '0');
+
+  die('OK');
+
+
   // 2020-03-02
   Illuminate\Support\Facades\DB::statement("ALTER TABLE `cart_lines` ADD `pmu_label` varchar(128) null AFTER `pmu_conversion_rate`;");
 

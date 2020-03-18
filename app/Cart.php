@@ -8,8 +8,9 @@ use Auth;
 use Carbon\Carbon;
 
 use App\Traits\ViewFormatterTrait;
+// use App\Traits\DocumentShippableTrait;
 
-class Cart extends Model
+class Cart extends Model implements ShippableInterface
 {
 
     use ViewFormatterTrait;
@@ -493,7 +494,8 @@ class Cart extends Model
                 $pmu_label           = $pack_rule->name;
 
                 // Assumes $pack_rule is not null
-                $package_price = $pack_rule->price;
+                // $package_price = $pack_rule->price;
+                $package_price = $pack_rule->getUnitPrice() * $pmu_conversion_rate;
 
                 $unit_customer_price       = $customer_price->getPrice();
                 $unit_customer_final_price = $package_price / $pmu_conversion_rate;
@@ -769,6 +771,17 @@ class Cart extends Model
         $total_products_tax_excl = $line_products->sum('total_tax_excl');
 
         return $total_products_tax_excl;
+    }
+
+    public function getWeightAttribute() 
+    {
+        $line_products = $this->cartlines->where('line_type', 'product')->load('product');
+
+        $total_weight = $line_products->sum(function ($line) {
+            return $line->product->weight;
+        });
+
+        return $total_weight;
     }
 
     public function isBillable() 
@@ -1216,4 +1229,26 @@ class Cart extends Model
         $this->total_products = $this->as_priceable($this->amount) - $this->discount1 - $this->discount2;
         $this->total_price = $this->as_priceable($amount_with_taxes) - $this->discount1 - $this->discount2;
     }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shippable Interface
+    |--------------------------------------------------------------------------
+    */
+
+    public function getShippingBillableAmount( $billing_type = 'price' )
+    {
+        if ( $billing_type == 'price' )
+            return $this->amount;
+        
+        else
+        if ( $billing_type == 'weight' )
+            return $this->weight;
+        
+        else
+            return 0.0;
+    }
+
 }

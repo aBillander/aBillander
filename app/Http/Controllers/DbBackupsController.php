@@ -163,11 +163,21 @@ class DbBackupsController extends Controller
 
 	    // abi_r( Artisan::output() );
 
+        $result = Artisan::output();
+	    if (   strpos($result, 'Error') !== false
+			|| strpos($result, 'error') !== false )
+		{
+			$result = nl2p($result);
+
+			return redirect()->back()	// '/dbbackups')
+	                ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result);
+		}
+
 	    // The backup has been proceed successfully.
 	    event(new DatabaseBackup());
 	    
         return redirect()->back()	// '/dbbackups')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') . Artisan::output());
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result);
 	}
 
     /**
@@ -229,3 +239,7 @@ class DbBackupsController extends Controller
 	}
 
 }
+
+// https://www.google.com/search?client=ubuntu&channel=fs&q=xampp+mysqldump%3A+not+found&ie=utf-8&oe=utf-8
+// https://stackoverflow.com/questions/22786583/mysqldump-command-not-found-xampp
+// https://askubuntu.com/questions/979929/xampp-access-mysql-from-terminal

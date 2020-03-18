@@ -84,7 +84,7 @@ class AbccCustomerOrdersController extends Controller {
 	public function store(Request $request)
 	{
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'ABCC Order Validation Profiling', __METHOD__ );
+        // $logger = \App\ActivityLogger::setup( 'ABCC Order Validation Profiling', __METHOD__ );
 
         // $logger->empty();
         // $logger->start();
@@ -95,6 +95,8 @@ class AbccCustomerOrdersController extends Controller {
 		if ($process_as == 'quotation')
 			return $this->storeAsQuotation( $request );
         
+
+        $send_confirmation_email = $request->input('send_confirmation_email', false);
 
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
@@ -314,7 +316,7 @@ Bah!
 				'url' => route('customerorders.edit', [$customerOrder->id]),
 				'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
 				'document_date'  => abi_date_short($customerOrder->document_date),
-				'document_total' => $customerOrder->as_money('total_tax_excl'),
+				'document_total' => $customerOrder->as_money('total_tax_incl'),
 //				'custom_body'   => $request->input('email_body'),
 				);
 
@@ -342,7 +344,7 @@ Bah!
 
 			});
 */
-			$send = Mail::to( $customer_user->email )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
+			$send = Mail::to( abi_mail_from_address() )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
 
         // $logger->log("INFO", 'Email sent');
 
@@ -357,6 +359,48 @@ Bah!
             return redirect()->route('abcc.orders.index')
                 	->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
 		    			$e->getMessage());
+        }
+
+        /* ****************************************************************************************** */
+
+        if ($send_confirmation_email)
+        {
+        	//
+			try {
+
+				$template_vars = array(
+	//				'company'       => $company,
+					'customer'       => $customer,
+					'url' => route('abcc.orders.show', [$customerOrder->id]),
+					'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
+					'document_date'  => abi_date_short($customerOrder->document_date),
+					'document_total' => $customerOrder->as_money('total_tax_incl'),
+	//				'custom_body'   => $request->input('email_body'),
+					);
+
+				$data = array(
+					'from'     => abi_mail_from_address(),			// config('mail.from.address'  ),
+					'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
+					'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
+					'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
+					'subject'  => l(' :_> New Customer Order #:num', ['num' => $template_vars['document_num']]),
+
+					'bcc'      => $customer_user->email,
+					'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
+					);
+				
+				$send = Mail::to( $customer_user->email )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
+
+	        // $logger->log("INFO", 'Email sent');
+
+	        // $logger->stop();
+
+	        } catch(\Exception $e) {
+
+	            return redirect()->route('abcc.orders.index')
+	                	->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
+			    			$e->getMessage());
+	        }
         }
 		// MAIL stuff ENDS
 
@@ -379,6 +423,8 @@ Bah!
 	// Maybe in AbccCustomerQuotationsController? I think so.
 	public function storeAsQuotation(Request $request)
 	{
+        $send_confirmation_email = $request->input('send_confirmation_email', false);
+
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
         // $cart = \App\Context::getcontext()->cart;

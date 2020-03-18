@@ -242,6 +242,7 @@ return [
     'Order Confirmation'                                 => 'Confirmación de Pedido',
     'You are going to Confirm your Order. Are you sure?' => 'Está a punto de confirmar su Pedido. ¿Está seguro?',
     'You can not Confirm your Order at this moment.'     => 'No puede confirmar su Pedido en este momento.',
+    'Send me a confirmation email'                       => 'Envíeme un email de confirmación',
 
     'Cart amount should be more than: :amount (Products Value)' => 'El importe del Pedido debe ser al menos de: :amount (Valor de los Productos )',
 

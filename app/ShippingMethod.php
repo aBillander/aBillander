@@ -125,11 +125,11 @@ class ShippingMethod extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public static function costPriceCalculator( $method, $shippable )
+    public static function costPriceCalculator( $method, $shippable, $free_shipping = null )
     {
         // $shippable is either a Cart or Document (Quotation, Order, Slip or Invoice) object
 
-        return $price = $method->calculateDocumentShippingCost( $shippable );
+        return $price = $method->calculateDocumentShippingCost( $shippable, $free_shipping );
 
 /*
         // laravel helper class_basename:
@@ -143,14 +143,14 @@ class ShippingMethod extends Model {
 */
     }
     
-    public function calculateDocumentShippingCost( $shippable )
+    public function calculateDocumentShippingCost( $shippable, $free_shipping = null )
     {
         // $shippable is either a Cart or Document (Quotation, Order, Slip or Invoice) object
         // that implements "Shippable Interface"
 
         $shipping_label = Configuration::get('ABCC_SHIPPING_LABEL');
 
-        $free_shipping  = $this->free_shipping_from;
+        // $free_shipping  = $this->free_shipping_from;
 
         $tax_id         = $this->tax_id;
 
@@ -164,8 +164,8 @@ class ShippingMethod extends Model {
         // Now, perform calculations, Ho, ho, ho!
 
         // Free Shipping
-        // ToDo: Global ABCC free shipping ???
-        if ( 0 && $billable_amount >= $free_shipping ) 
+        // if ( $billable_amount >= $free_shipping )
+        if ( ($free_shipping !== null) && ($billable_amount >= $free_shipping) )
             $cost = 0.0;
         else 
         {

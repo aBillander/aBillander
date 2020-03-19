@@ -47,7 +47,7 @@
                      {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !!}
                   </div>
 
-      <div class="form-group col-lg-8 col-md-8 col-sm-8">
+      <div class=" hide form-group col-lg-8 col-md-8 col-sm-8">
           {!! Form::label('class_name', l('Class name')) !!}
                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Class fully qualified name') }}">

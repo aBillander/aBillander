@@ -4,6 +4,9 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
+use App\Configuration;
+use App\ShippingMethod;
+
 trait BillableFormsControllerTrait
 {
    use SupplierBillableFormsControllerTrait;
@@ -188,6 +191,7 @@ trait BillableFormsControllerTrait
         $document = $this->document
                         ->with('customer')
                         ->with('taxingaddress')
+                        ->with('shippingaddress')
                         ->with('salesrep')
                         ->with('currency')
                         ->find($document_id);
@@ -211,8 +215,9 @@ trait BillableFormsControllerTrait
             'cost_price' => $request->input('cost_price', 0.0),
             'unit_price' => $request->input('unit_price', 0.0),
             'discount_percent' => $request->input('discount_percent', 0.0),
+            'unit_customer_price' => $request->input('unit_customer_price'),
             'unit_customer_final_price' => $request->input('unit_customer_final_price'),
-            'tax_id' => $request->input('tax_id', \App\Configuration::get('DEF_TAX')),
+            'tax_id' => $request->input('tax_id', Configuration::get('DEF_TAX')),
 
             'line_sort_order' => $request->input('line_sort_order'),
             'notes' => $request->input('notes', ''),
@@ -234,6 +239,30 @@ trait BillableFormsControllerTrait
         if ($request->has('commission_percent')) 
             $params['commission_percent'] = $request->input('commission_percent');
 
+
+        // Final touches
+        if ( $params['line_type'] == 'shipping' )
+        if ( $request->input('use_shipping_method', 0) > 0 )
+        // Do start Shipping Cost Engine
+        {
+            // 
+            $method = $document->shippingaddress->getShippingMethod();
+            $free_shipping = (Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') >= 0.0) ? Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') : null;
+
+            list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $document, $free_shipping ));
+
+            $data = [
+                'name' => $shipping_label.' :: '.$method->name,
+                'cost_price' => $cost,
+                'unit_price' => $cost,
+                'unit_customer_price' => $cost,
+                'unit_customer_final_price' => $cost,
+                'tax_id' => $tax->id,
+                'sales_equalization' => 0,
+            ];
+
+            $params = array_merge($params, $data);
+        }
 
         // Let's Rock!
 
@@ -276,7 +305,7 @@ trait BillableFormsControllerTrait
             'unit_price' => $request->input('unit_price', 0.0),
             'discount_percent' => $request->input('discount_percent', 0.0),
             'unit_customer_final_price' => $request->input('unit_customer_final_price'),
-            'tax_id' => $request->input('tax_id', \App\Configuration::get('DEF_TAX')),
+            'tax_id' => $request->input('tax_id', Configuration::get('DEF_TAX')),
 
             'line_sort_order' => $request->input('line_sort_order'),
             'notes' => $request->input('notes', ''),

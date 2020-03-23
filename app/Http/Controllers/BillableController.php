@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Customer;
+use App\Product;
+use App\Combination;
+use App\Currency;
+use App\Address;
 
 use App\Configuration;
+use App\Context;
 use App\Sequence;
 
 use App\Traits\BillableIntrospectorTrait;
@@ -64,7 +69,7 @@ class BillableController extends Controller
         {
             $search = $request->customer_id;
 
-            $customers = \App\Customer::
+            $customers = Customer::
                     // select('id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id', 'invoice_sequence_id')
                                       with('currency')
                                     ->with('addresses')
@@ -84,14 +89,14 @@ class BillableController extends Controller
         {
             $search = $request->term;
 
-            $customers = \App\Customer::select('id', 'name_fiscal', 'name_commercial', 'identification', 'reference_external', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
+            $customers = Customer::select('id', 'name_fiscal', 'name_commercial', 'identification', 'reference_external', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
                                     ->where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
                                     ->isNotBlocked()
                                     ->with('currency')
                                     ->with('addresses')
-                                    ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                    ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
 
 //            return $customers;
 //            return Product::searchByNameAutocomplete($query, $onhand_only);
@@ -110,7 +115,7 @@ class BillableController extends Controller
     {
         if (intval($id)>0)
         {
-            $customer = \App\Customer::find($id);
+            $customer = Customer::find($id);
 
             if ( $customer )
             	return response()->json( $customer->getAddressList() );
@@ -149,7 +154,7 @@ class BillableController extends Controller
                         ->findOrFail($id);
 /*
         $model = 'customerorder';
-        $document = \App\CustomerOrder
+        $document = CustomerOrder
                         ::with($model.'lines')
                         ->with($model.'lines.product')
                         ->findOrFail($id);
@@ -190,7 +195,7 @@ class BillableController extends Controller
 
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->IsSaleable()
@@ -199,7 +204,7 @@ class BillableController extends Controller
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
 
 
 //                                dd($products);
@@ -211,7 +216,7 @@ class BillableController extends Controller
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->isService()
@@ -236,7 +241,7 @@ class BillableController extends Controller
         $product_id      = $request->input('product_id');
         $combination_id  = $request->input('combination_id');
         $customer_id     = $request->input('customer_id');
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 //        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
 
  //       return response()->json( [ $product_id, $combination_id, $customer_id, $currency_id ] );
@@ -244,24 +249,24 @@ class BillableController extends Controller
         // Do the Mambo!
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+            $product = Product::with('tax')->findOrFail(intval($product_id));
         }
 
         // Customer
-        $customer = \App\Customer::findOrFail(intval($customer_id));
+        $customer = Customer::findOrFail(intval($customer_id));
         
         // Currency
-        $currency = \App\Currency::findOrFail(intval($currency_id));
+        $currency = Currency::findOrFail(intval($currency_id));
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
         // Tax
         $tax = $product->tax;
-        $taxing_address = \App\Address::findOrFail($request->input('taxing_address_id'));
+        $taxing_address = Address::findOrFail($request->input('taxing_address_id'));
         $tax_percent = $tax->getTaxPercent( $taxing_address );
 
         $price = $product->getPrice();
@@ -331,7 +336,7 @@ class BillableController extends Controller
         $combination_id  = $request->input('combination_id');
         $customer_id     = $request->input('customer_id');
         $recent_sales_this_customer = $request->input('recent_sales_this_customer', 0);
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 //        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
 
  //       return response()->json( [ $product_id, $combination_id, $customer_id, $currency_id ] );
@@ -339,30 +344,31 @@ class BillableController extends Controller
         // Do the Mambo!
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+            $product = Product::with('tax')->findOrFail(intval($product_id));
         }
 
         $category_id = $product->category_id;
 
         // Customer
-        $customer = \App\Customer::findOrFail(intval($customer_id));
+        $customer = Customer::findOrFail(intval($customer_id));
         $customer_group_id = $customer->customer_group_id;
         
         // Currency
-        $currency = \App\Currency::findOrFail(intval($currency_id));
+        $currency = Currency::findOrFail(intval($currency_id));
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
         // Pricelists
-        $pricelists = $product->pricelists; //  \App\PriceList::with('currency')->orderBy('id', 'ASC')->get();
+        $pricelists = $product->pricelists; //  PriceList::with('currency')->orderBy('id', 'ASC')->get();
 
         // Price Rules
-
-        $customer_rules = \App\PriceRule::
+        $customer_rules = $product->getPriceRulesByCustomer( $customer );
+/*      Old stuff
+        $customer_rules = PriceRule::
 //                                  where('customer_id', $customer->id)
                                   where(function($q) use ($customer_id, $customer_group_id) {
 
@@ -397,9 +403,11 @@ class BillableController extends Controller
                                 ->orderBy('customer_id', 'ASC')
                                 ->orderBy('from_quantity', 'ASC')
                                 ->take(7)->get();
+*/
+
 /*
         // Recent Sales
-        $lines = \App\CustomerOrderLine::where('product_id', $product->id)
+        $lines = CustomerOrderLine::where('product_id', $product->id)
                             ->with(["document" => function($q){
                                 $q->where('customerorders.customer_id', $customer->id);
                             }])
@@ -451,7 +459,7 @@ class BillableController extends Controller
         if ( !$document_line )
             return response()->json( [] );
 /*
-        $unit_customer_final_price = \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
+        $unit_customer_final_price = Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
                                         $order_line->unit_customer_final_price * ( 1.0 + $order_line->tax_percent / 100.0 ) : 
                                         $order_line->unit_customer_final_price ;
 */
@@ -631,7 +639,7 @@ class BillableController extends Controller
         $clone->document_id          = $doc_id;
         $clone->document_reference   = $seq->getDocumentReference($doc_id);
 */
-        $clone->user_id              = \App\Context::getContext()->user->id;
+        $clone->user_id              = Context::getContext()->user->id;
 
         $clone->document_reference = null;
         $clone->reference = '';

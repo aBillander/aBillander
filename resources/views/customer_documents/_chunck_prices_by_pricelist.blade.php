@@ -7,7 +7,9 @@
 
     <div xclass="page-header" onclick="$(this).next().toggle();">
         <h3>
-            <span style="color: #dd4814;">{{ l('Price Lists', 'products') }}</span> {{-- <span style="color: #cccccc;">/</span> $product->name --}}
+            <span style="color: #dd4814;">{{ l('Price Lists', 'products') }}</span> &nbsp; 
+            <a href="javascript::void();" class="btn btn-sm btn-grey"> <span class="caret"> </span> </a>
+            {{-- <span style="color: #cccccc;">/</span> $product->name --}}
         </h3>        
     </div>
 

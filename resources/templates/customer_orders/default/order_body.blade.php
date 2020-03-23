@@ -24,8 +24,15 @@
 		</td>
 
 		<td class="shop-info">
+@php
+	$name = $str = $company->name_fiscal;
 
-			<div class="shop-name"><h3>{{ $company->name_fiscal }}</h3></div>
+	if( strlen( $str) > 33) {
+	    $str = substr( $str, 0, 30);
+	    $name = $str . '...';
+	}
+@endphp
+			<div class="shop-name"><h3>{{ $name }}</h3></div>
 
 			<div class="shop-address">
                         {{ $company->address->address1 }} {{ $company->address->address2 }}<br />
@@ -232,6 +239,7 @@
 			    @if ( 
 			    			( $line->line_type != 'product' ) &&
 			    			( $line->line_type != 'service' ) &&
+			    			( $line->line_type != 'shipping' ) &&
 			    			( $line->line_type != 'comment' )
 			    )
 			        @continue

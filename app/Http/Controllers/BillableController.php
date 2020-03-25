@@ -310,6 +310,7 @@ class BillableController extends Controller
                 'tax_percent' => $tax_percent,
                 'tax_id' => $product->tax_id,
                 'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
+                'ecotax_value_label' => $product->as_priceable($product->ecotax->amount).' '.$currency->name,
                 'customer_id' => $customer_id,
                 'currency' => $currency,
     
@@ -465,11 +466,13 @@ class BillableController extends Controller
                                         $order_line->unit_customer_final_price * ( 1.0 + $order_line->tax_percent / 100.0 ) : 
                                         $order_line->unit_customer_final_price ;
 */
+        $product = $document_line->product;
         $tax = $document_line->tax;
 
         return response()->json( $document_line->toArray() + [
 //            'unit_customer_final_price' => $unit_customer_final_price,
-            'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)"
+            'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
+            'ecotax_value_label' => $product->as_priceable($product->ecotax->amount).' '.$currency->name,
         ] );
     }
 

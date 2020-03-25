@@ -202,6 +202,8 @@
                     }
 
                     $("#line_price").val( price );
+
+                    $("#label_ecotax_value").html(result.ecotax_value_label);
                     
                     // $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
                     // $("#line_price").val( result.unit_customer_final_price );
@@ -697,6 +699,8 @@
                     $("#line_unit_customer_price").val( price );
                     // $("#line_price").val( price.round( PRICE_DECIMAL_PLACES ) );
                     $("#line_price").val( price );
+
+                    $("#label_ecotax_value").html(response.ecotax_value_label);
 
                     calculate_line_product();
 

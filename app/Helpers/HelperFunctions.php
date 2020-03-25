@@ -11,7 +11,7 @@
 */
 
 function l($string = NULL, $data = [], $langfile = NULL)
-	{
+  {
         if ( is_string($data) && ($langfile == NULL) ) {
             $langfile = $data;
             $data = [];
@@ -24,17 +24,22 @@ function l($string = NULL, $data = [], $langfile = NULL)
 
         if (Lang::has($langfile.'.'.$string))
             return Lang::get($langfile.'.'.$string, $data);
-	//	elseif (Lang::has('_allcontrollers.'.$string))
-	//		return Lang::get('_allcontrollers.'.$string);
-		else 
-		{
-			foreach ($data as $key => $value)
-			{
-				$string = str_replace(':'.$key, $value, $string);
-			}
-			return $string;
-		}
-	}
+  //  elseif (Lang::has('_allcontrollers.'.$string))
+  //    return Lang::get('_allcontrollers.'.$string);
+    else 
+    {
+      foreach ($data as $key => $value)
+      {
+        $string = str_replace(':'.$key, $value, $string);
+      }
+      return $string;
+    }
+  }
+
+function ld($string = NULL, $data = [], $langfile = 'customerdocuments')
+  {
+      return l($string, $data, $langfile);
+  }
 
 
 function abi_yn_label($foo=true)

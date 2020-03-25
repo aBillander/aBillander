@@ -118,9 +118,21 @@
                     <span class="label_tax_inc">{{ l('Price with Tax') }}</span>
                     
                     <span class="label_tax_exc">{{ l('Price') }}</span>
+
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
+                                    data-content="{{ ld('Prices are inclusive of Ecotax.')}}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+@endif
                     
                     {!! Form::text('line_price', null, array('class' => 'form-control', 'id' => 'line_price', 'onkeyup' => 'calculate_line_product( )', 'onchange' => 'calculate_line_product( )', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
                     {!! $errors->first('line_price', '<span class="help-block">:message</span>') !!}
+
+
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                    <span class="help-block">{{ ld('Ecotax: ')}}<span id="label_ecotax_value" class="text-success"></span></span>
+@endif
                  </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
                     {{ l('Discount') }} (%)

@@ -2,10 +2,12 @@
 
 namespace App\Traits;
 
+use App\Price;
+
 trait BillableDocumentLinesTrait
 {
    use BillableDocumentAsIsLinesTrait;
-   
+
    use SupplierBillableDocumentLinesTrait;      // <<< ???
 
     /*
@@ -83,6 +85,32 @@ trait BillableDocumentLinesTrait
                             ? $params['name'] 
                             : $product->name;
 
+        $measure_unit_id = array_key_exists('measure_unit_id', $params) 
+                            ? $params['measure_unit_id'] 
+                            : $product->measure_unit_id;
+
+        $package_measure_unit_id = array_key_exists('package_measure_unit_id', $params) 
+                            ? $params['package_measure_unit_id'] 
+                            : $product->measure_unit_id;
+
+        $pmu_conversion_rate = array_key_exists('pmu_conversion_rate', $params) 
+                            ? $params['pmu_conversion_rate'] 
+                            : 1.0;
+
+        // Do not trust...
+        if ( $package_measure_unit_id != $measure_unit_id )
+        {
+            $pmu_conversion_rate = $product->measureunits->where('id', $package_measure_unit_id)->first()->conversion_rate;
+
+            // abi_r($pmu_conversion_rate, true);
+
+            $quantity = $quantity * $pmu_conversion_rate;
+        }
+
+        $pmu_label = array_key_exists('pmu_label', $params) 
+                            ? $params['pmu_label'] 
+                            : '';
+
         // $cost_price = $product->cost_price;
         // Do this ( because of getCostPriceAttribute($value) ):
         $cost_price = $product->getOriginal('cost_price');
@@ -103,7 +131,8 @@ trait BillableDocumentLinesTrait
         $unit_price = $price->getPrice();
 
         // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+        // $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+        $customer_price = $product->getPriceByCustomerPriceList( $customer, $quantity, $currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return null;      // Product not allowed for this Customer
@@ -111,11 +140,68 @@ trait BillableDocumentLinesTrait
         $customer_price->applyTaxPercent( $tax_percent );
         $unit_customer_price = $customer_price->getPrice();
 
+        // Still with me? 
+        if (    ( $package_measure_unit_id != $measure_unit_id ) &&
+                ( $pack_rule = $customer->getPackageRule( $product, $package_measure_unit_id, $currency ) )
+           )
+        {
+                // Calculate quantity conversion
+                $pmu_conversion_rate = $pack_rule->conversion_rate;
+                $pmu_label           = $pack_rule->name;
+
+                // Assumes $pack_rule is not null
+                // $package_price = $pack_rule->price;
+                $customer_final_price = new Price( $pack_rule->getUnitPrice() );
+
+                // Still one thing left: rule_type = 'promo' (avoid)
+                $promo_rule = null;
+
+        } else {
+            //
+                $pmu_conversion_rate = 1.0;
+                $pmu_label           = '';
+
+                $customer_final_price = $product->getPriceByCustomerPriceRules( $customer, $quantity, $currency );
+
+                // Still one thing left: rule_type = 'promo'
+                $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
+        }
+
+
+
+        
+        if ( !$customer_final_price )
+            $customer_final_price = clone $customer_price;  // No price Rules available
+        
+        // Better price?
+        if ( $customer_final_price->getPrice() > $unit_customer_price )
+        {
+            $customer_final_price = clone $customer_price;
+        }
+        $unit_customer_final_price = $customer_final_price->getPrice();
+
+
+        // Still one thing left: rule_type = 'promo'
+        $extra_quantity = 0.0;
+        $extra_quantity_label = '';
+
+        if ($promo_rule)
+        {
+            // First: Does it apply?
+            if ( $unit_customer_final_price == $unit_customer_price )   // No price rule has been applied
+            {
+                $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
+                $extra_quantity_label = $extra_quantity > 0 ? $promo_rule->name : '';
+            }
+        }
+
+
+
         // Price Policy
         $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
                             ? $params['prices_entered_with_tax'] 
                             : $customer_price->price_is_tax_inc;
-
+/*
         // Customer Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
         {
@@ -127,16 +213,16 @@ trait BillableDocumentLinesTrait
 
             $unit_customer_final_price = clone $customer_price;
         }
-
+*/
         // Discount
         $discount_percent = array_key_exists('discount_percent', $params) 
                             ? $params['discount_percent'] 
                             : 0.0;
 
         // Final Price
-        $unit_final_price = clone $unit_customer_final_price;
-        if ( $discount_percent ) 
-            $unit_final_price->applyDiscountPercent( $discount_percent );
+        $final_price = clone $customer_final_price;
+//        if ( $discount_percent ) 
+//            $unit_final_price->applyDiscountPercent( $discount_percent );
 
         // Sales Rep
         $sales_rep_id = array_key_exists('sales_rep_id', $params) 
@@ -150,14 +236,10 @@ trait BillableDocumentLinesTrait
 
 
         // Misc
-        $measure_unit_id = array_key_exists('measure_unit_id', $params) 
-                            ? $params['measure_unit_id'] 
-                            : $product->measure_unit_id;
-
         $line_sort_order = array_key_exists('line_sort_order', $params) 
                             ? $params['line_sort_order'] 
                             : $this->getNextLineSortOrder();
-
+/*
         $extra_quantity = array_key_exists('extra_quantity', $params) 
                             ? $params['extra_quantity'] 
                             : 0.0;
@@ -165,19 +247,7 @@ trait BillableDocumentLinesTrait
         $extra_quantity_label = array_key_exists('extra_quantity_label', $params) 
                             ? $params['extra_quantity_label'] 
                             : '';
-
-        $package_measure_unit_id = array_key_exists('package_measure_unit_id', $params) 
-                            ? $params['package_measure_unit_id'] 
-                            : $product->measure_unit_id;
-
-        $pmu_conversion_rate = array_key_exists('pmu_conversion_rate', $params) 
-                            ? $params['pmu_conversion_rate'] 
-                            : 1.0;
-
-        $pmu_label = array_key_exists('pmu_label', $params) 
-                            ? $params['pmu_label'] 
-                            : '';
-
+*/
         $notes = array_key_exists('notes', $params) 
                             ? $params['notes'] 
                             : '';
@@ -205,17 +275,17 @@ trait BillableDocumentLinesTrait
             'cost_price' => $cost_price,
             'unit_price' => $unit_price,
             'unit_customer_price' => $unit_customer_price,
-            'unit_customer_final_price' => $unit_customer_final_price->getPrice(),
-            'unit_customer_final_price_tax_inc' => $unit_customer_final_price->getPriceWithTax(),
-            'unit_final_price' => $unit_final_price->getPrice(),
-            'unit_final_price_tax_inc' => $unit_final_price->getPriceWithTax(), 
+            'unit_customer_final_price' => $customer_final_price->getPrice(),
+            'unit_customer_final_price_tax_inc' => $customer_final_price->getPriceWithTax(),
+            'unit_final_price' => $final_price->getPrice(),
+            'unit_final_price_tax_inc' => $final_price->getPriceWithTax(), 
             'sales_equalization' => $sales_equalization,
             'discount_percent' => $discount_percent,
             'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
             'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
 
-            'total_tax_incl' => $quantity * $unit_final_price->getPriceWithTax(),
-            'total_tax_excl' => $quantity * $unit_final_price->getPrice(),
+            'total_tax_incl' => $quantity * $final_price->getPriceWithTax(),
+            'total_tax_excl' => $quantity * $final_price->getPrice(),
 
             'tax_percent' => $tax_percent,
             'commission_percent' => $commission_percent,

@@ -321,6 +321,8 @@ class BillableController extends Controller
                 'quantity_allocated' => $product->quantity_allocated, 
                 'blocked' => $product->blocked, 
                 'active'  => $product->active, 
+
+                'measure_units' => $product->measureunits->pluck('name', 'id')->toArray(),
             ];
         } else
             $data = [];

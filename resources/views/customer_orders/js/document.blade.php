@@ -422,11 +422,20 @@
             });
         }
 
-        $("body").on('click', "#modal_document_line_productSubmit", function() {
+        $("body").on('click', ".modal_document_line_productSubmit", function( event ) {
+
+            var clicked = event.target;
+
+            // alert(clicked.name); return;
 
             var id = $('#line_id').val();
             var url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
+
+            var store_mode = '';
+
+            if (clicked.name  == 'modal_document_line_productSubmitAsIs')
+                store_mode = 'asis';
 
             if ( id == '' )
                 url = "{{ route($model_path.'.storeline', [$document->id]) }}";
@@ -435,6 +444,7 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
+                              store_mode : store_mode,
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),
@@ -443,6 +453,7 @@
                               quantity : $('#line_quantity').val(),
                               quantity_decimal_places : $('#line_quantity_decimal_places').val(),
                               measure_unit_id : $('#line_measure_unit_id').val(),
+                              package_measure_unit_id : $('#line_package_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_unit_price').val(),
                               unit_customer_price : $('#line_unit_customer_price').val(),
@@ -476,14 +487,17 @@
                 dataType : 'json',
                 data : payload,
 
-                success: function(){
+                success: function(response){
                     loadDocumentlines();
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
                     $('#modal_document_line').modal('toggle');
 
-                    showAlertDivWithDelay("#msg-success");
+                    if ( response.msg == 'OK' )
+                      showAlertDivWithDelay("#msg-success");
+                    else
+                      showAlertDivWithDelay("#msg-error");
                 }
             });
 
@@ -621,6 +635,20 @@
 
                     $('#line_reference').val(response.reference);
                     $('#line_measure_unit_id').val(response.measure_unit_id);
+
+                    // Populate Measure Units
+                    munits = response.measure_units;
+
+                    $('select[name="line_package_measure_unit_id"]').empty();
+                    // $('select[name="line_package_measure_unit_id"]').append('<option value="">{{ l('-- Please, select --', [], 'layouts') }}</option>');
+                    $.each(munits, function (key, value) {
+                        $('select[name="line_package_measure_unit_id"]').append('<option value=' + key + '>' + value + '</option>');
+                    });
+
+                    $('select[name="line_package_measure_unit_id').val(response.measure_unit_id);
+
+
+
                     $('#line_quantity').val(1);
                     $('#line_quantity_decimal_places').val(response.quantity_decimal_places);
 

@@ -4,7 +4,9 @@ namespace App\Traits;
 
 trait BillableDocumentLinesTrait
 {
-   use SupplierBillableDocumentLinesTrait;
+   use BillableDocumentAsIsLinesTrait;
+   
+   use SupplierBillableDocumentLinesTrait;      // <<< ???
 
     /*
     |--------------------------------------------------------------------------

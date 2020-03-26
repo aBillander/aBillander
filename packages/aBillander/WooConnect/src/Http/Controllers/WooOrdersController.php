@@ -115,7 +115,9 @@ class WooOrdersController extends Controller
 //			$e->getResponse(); // Last response data.
 //			abi_r($e->getResponse);
 
-			$err = '<ul><li><strong>'.$e->getMessage().'</strong></li></ul>';
+			// $err = '<ul><li><strong>'.$e->getMessage().'</strong></li></ul>';
+
+			$err = '<ul><li><strong>'.nl2p($e).'</strong></li></ul>';
 
 			return redirect('404')
 				->with('error', l('La Tienda Online ha rechazado la conexión, y ha dicho: ') . $err);

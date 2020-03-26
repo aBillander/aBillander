@@ -1,4 +1,12 @@
 <?php
+/*
+    WooCommerce: 
+
+    https://github.com/woocommerce/wc-api-php/issues/10
+    Error: Invalid JSON returned => Well, when you will change your permalink settings , Plain to Post name, this error will disappear. so change your site's permalink setting, dont use default setting
+
+    Use .hraccess as suggested by WordPress
+*/
 
 return [
     /*

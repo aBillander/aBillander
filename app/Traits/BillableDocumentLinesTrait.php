@@ -152,6 +152,7 @@ trait BillableDocumentLinesTrait
                 // Assumes $pack_rule is not null
                 // $package_price = $pack_rule->price;
                 $customer_final_price = new Price( $pack_rule->getUnitPrice() );
+                $customer_final_price->applyTaxPercent( $tax_percent );
 
                 // Still one thing left: rule_type = 'promo' (avoid)
                 $promo_rule = null;

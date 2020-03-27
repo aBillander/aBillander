@@ -282,6 +282,10 @@ class BillableController extends Controller
         if ($customer_price) 
         {
             $customer_price->applyTaxPercentToPrice($tax_percent);        
+
+            $ecotax_value_label = $product->ecotax ? 
+                                  $product->as_priceable($product->ecotax->amount).' '.$currency->name :
+                                  '';
     
             $data = [
                 'product_id' => $product->id,
@@ -310,7 +314,7 @@ class BillableController extends Controller
                 'tax_percent' => $tax_percent,
                 'tax_id' => $product->tax_id,
                 'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
-                'ecotax_value_label' => $product->as_priceable($product->ecotax->amount).' '.$currency->name,
+                'ecotax_value_label' => $ecotax_value_label,
                 'customer_id' => $customer_id,
                 'currency' => $currency,
     
@@ -455,6 +459,7 @@ class BillableController extends Controller
         $document_line = $this->document_line
                         ->with('product')
                         ->with('product.tax')
+                        ->with('product.ecotax')
                         ->with('measureunit')
                         ->with('tax')
                         ->find($line_id);
@@ -469,10 +474,16 @@ class BillableController extends Controller
         $product = $document_line->product;
         $tax = $document_line->tax;
 
+        $currency = Context::getContext()->currency;
+
+        $ecotax_value_label = $product->ecotax ? 
+                              $product->as_priceable($product->ecotax->amount).' '.$currency->name :
+                              '';
+
         return response()->json( $document_line->toArray() + [
 //            'unit_customer_final_price' => $unit_customer_final_price,
             'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
-            'ecotax_value_label' => $product->as_priceable($product->ecotax->amount).' '.$currency->name,
+            'ecotax_value_label' => $ecotax_value_label,
         ] );
     }
 

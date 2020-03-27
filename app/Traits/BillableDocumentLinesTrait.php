@@ -105,7 +105,9 @@ trait BillableDocumentLinesTrait
             // abi_r($pmu_conversion_rate, true);
 
             $quantity = $quantity * $pmu_conversion_rate;
-        }
+            
+        } else
+            $pmu_conversion_rate = 1.0;
 
         $pmu_label = array_key_exists('pmu_label', $params) 
                             ? $params['pmu_label'] 

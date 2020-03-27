@@ -183,7 +183,14 @@ trait BillableFormsControllerTrait
 
         // Let's Rock!
 
-        $document_line = $document->addProductLine( $product_id, $combination_id, $quantity, $params );
+        $store_mode = $request->input('store_mode', '');
+
+        if ( $store_mode == 'asis' )
+            // Force product price from imput
+            $document_line = $document->addProductAsIsLine( $product_id, $combination_id, $quantity, $params );
+        else
+            // Calculate product price according to Customer Price List and Price Rules
+            $document_line = $document->addProductLine( $product_id, $combination_id, $quantity, $params );
 
 
         return response()->json( [

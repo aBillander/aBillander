@@ -37,6 +37,34 @@ trait BillableDocumentAsIsLinesTrait
                             ? $params['name'] 
                             : $product->name;
 
+        $measure_unit_id = array_key_exists('measure_unit_id', $params) 
+                            ? $params['measure_unit_id'] 
+                            : $product->measure_unit_id;
+
+        $package_measure_unit_id = array_key_exists('package_measure_unit_id', $params) 
+                            ? $params['package_measure_unit_id'] 
+                            : $product->measure_unit_id;
+
+        $pmu_conversion_rate = array_key_exists('pmu_conversion_rate', $params) 
+                            ? $params['pmu_conversion_rate'] 
+                            : 1.0;
+
+        // Do not trust...
+        if ( $package_measure_unit_id != $measure_unit_id )
+        {
+            $pmu_conversion_rate = $product->measureunits->where('id', $package_measure_unit_id)->first()->conversion_rate;
+
+            // abi_r($pmu_conversion_rate, true);
+
+            $quantity = $quantity * $pmu_conversion_rate;
+
+        } else
+            $pmu_conversion_rate = 1.0;
+
+        $pmu_label = array_key_exists('pmu_label', $params) 
+                            ? $params['pmu_label'] 
+                            : '';
+
         // $cost_price = $product->cost_price;
         // Do this ( because of getCostPriceAttribute($value) ):
         $cost_price = $product->getOriginal('cost_price');
@@ -57,7 +85,8 @@ trait BillableDocumentAsIsLinesTrait
         $unit_price = $price->getPrice();
 
         // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+        // $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+        $customer_price = $product->getPriceByCustomerPriceList( $customer, $quantity, $currency );
 
         // Is there a Price for this Customer?
         if (!$customer_price) return null;      // Product not allowed for this Customer
@@ -68,12 +97,12 @@ trait BillableDocumentAsIsLinesTrait
         // Price Policy
         $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
                             ? $params['prices_entered_with_tax'] 
-                            : $customer_price->price_is_tax_inc;
+                            : $customer_price->price_is_tax_inc;        // <= $document->customer->currentPricesEnteredWithTax( $document->document_currency )
 
         // Customer Final Price
-        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
+        if ( array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 
@@ -104,14 +133,10 @@ trait BillableDocumentAsIsLinesTrait
 
 
         // Misc
-        $measure_unit_id = array_key_exists('measure_unit_id', $params) 
-                            ? $params['measure_unit_id'] 
-                            : $product->measure_unit_id;
-
         $line_sort_order = array_key_exists('line_sort_order', $params) 
                             ? $params['line_sort_order'] 
                             : $this->getNextLineSortOrder();
-
+/*
         $extra_quantity = array_key_exists('extra_quantity', $params) 
                             ? $params['extra_quantity'] 
                             : 0.0;
@@ -119,19 +144,11 @@ trait BillableDocumentAsIsLinesTrait
         $extra_quantity_label = array_key_exists('extra_quantity_label', $params) 
                             ? $params['extra_quantity_label'] 
                             : '';
+*/
+        $extra_quantity = 0.0;
 
-        $package_measure_unit_id = array_key_exists('package_measure_unit_id', $params) 
-                            ? $params['package_measure_unit_id'] 
-                            : $product->measure_unit_id;
-
-        $pmu_conversion_rate = array_key_exists('pmu_conversion_rate', $params) 
-                            ? $params['pmu_conversion_rate'] 
-                            : 1.0;
-
-        $pmu_label = array_key_exists('pmu_label', $params) 
-                            ? $params['pmu_label'] 
-                            : '';
-
+        $extra_quantity_label = '';
+        
         $notes = array_key_exists('notes', $params) 
                             ? $params['notes'] 
                             : '';

@@ -129,6 +129,11 @@
                     <span class="fa fa-envelope"></span>
                 </span>
                 <div class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;">{{ $order['billing']['email'] }}</div>
+
+                <span class="input-group-addon" style="padding: 8px 6px;
+background-color: white;
+border: 0px solid;"></span>
+
                 <span class="input-group-addon" style="border-top-left-radius: 4px; border-bottom-left-radius: 4px;">
                     <span class="fa fa-phone"></span>
                 </span>

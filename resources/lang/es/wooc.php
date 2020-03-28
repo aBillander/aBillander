@@ -70,8 +70,9 @@ return [
 	'Customer'     => 'Cliente',
 
 	'Transaction ID'     => 'ID Transacción',
-	''     => '',
-	''     => '',
+
+	'Go to Customer'     => 'Ir al Cliente',
+	'This Customer has not been imported'     => 'Este Cliente no ha sido importado',
 
 	/*
 	|--------------------------------------------------------------------------

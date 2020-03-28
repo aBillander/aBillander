@@ -253,8 +253,10 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 //            }
 
 		// I am thirsty. Let's get hydrated!
-		$customer = \App\Customer::where('webshop_id', $order['customer_id'])->first();
-//		$customer = null;
+		if ( $order['customer_id'] > 0 )		// Registered Customer
+			$customer = \App\Customer::where('webshop_id', $order['customer_id'])->first();
+		else 									// Guest: $order['customer_id'] == 0
+			$customer = null;
 
 		$vatNumber = WooOrder::getVatNumber( $order );
 		$order['billing']['vat_number'] = $vatNumber;

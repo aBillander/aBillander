@@ -29,10 +29,12 @@
     $TB = array();
     $RTB = array();
     $T = array();
+    $TT = array();
     $RT = array();
     $TEB = array();
     $RTEB = array();
     $TE = array();
+    $TET = array();
     $RTE = array();
 
     $TOTAL_TAX_EXCL = 0.0;
@@ -91,9 +93,13 @@
     $T[1] = $T[0] * (1.0 - $document->document_discount_percent/100.0);
     $T[2] = $T[1] * (1.0 - $document->document_ppd_percent     /100.0);
 
-    $RT[0] = $currency->round( $T[0] );
-    $RT[1] = $currency->round( $T[1] );
-    $RT[2] = $currency->round( $T[2] );
+    $TT[0] = $TB[0] + $lines->where('tax_rule_type', 'sales')->sum('total_line_tax');   // Sales Base + Tax
+    $TT[1] = $TT[0] * (1.0 - $document->document_discount_percent/100.0);
+    $TT[2] = $TT[1] * (1.0 - $document->document_ppd_percent     /100.0);
+
+    $RT[0] = $currency->round( $TT[0] - $TB[0]);
+    $RT[1] = $currency->round( $TT[1] - $TB[1] );
+    $RT[2] = $currency->round( $TT[2] - $TB[2] );
 
     // Sales Ecualization Tax
 
@@ -109,9 +115,13 @@
     $TE[1] = $TE[0] * (1.0 - $document->document_discount_percent/100.0);
     $TE[2] = $TE[1] * (1.0 - $document->document_ppd_percent     /100.0);
 
-    $RTE[0] = $currency->round( $TE[0] );
-    $RTE[1] = $currency->round( $TE[1] );
-    $RTE[2] = $currency->round( $TE[2] );
+    $TET[0] = $TEB[0] + $lines->where('tax_rule_type', 'sales_equalization')->sum('total_line_tax');   // Sales Ecualization Base + Tax
+    $TET[1] = $TET[0] * (1.0 - $document->document_discount_percent/100.0);
+    $TET[2] = $TET[1] * (1.0 - $document->document_ppd_percent     /100.0);
+
+    $RTE[0] = $currency->round( $TET[0] - $TEB[0] );
+    $RTE[1] = $currency->round( $TET[1] - $TEB[1] );
+    $RTE[2] = $currency->round( $TET[2] - $TEB[2] );
 
     // Totals
     $TOTAL_TAX_EXCL += $RB[2];

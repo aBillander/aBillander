@@ -21,6 +21,11 @@
                   ">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="right" data-container="body" data-html="true" 
+                                    data-content="{!! l('If Price ends with &quot;u&quot;, it will be taken as <i>Unit Price</i> (Price for each single unit in the Package).') !!}
+                  ">
+                        <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                 </a>
         {!! Form::text('price_pack', old('price_pack', 0.0), array('id' => 'price_pack', 'class' => 'form-control')) !!}
     </div>
 </div>

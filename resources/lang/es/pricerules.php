@@ -78,5 +78,7 @@ return [
 	'Value' => 'Valor',
 	'Discount (%)' => 'Descuento (%)',
 
+	'If Price ends with &quot;u&quot;, it will be taken as <i>Unit Price</i> (Price for each single unit in the Package).' => 'Si el Precio termina en &quot;u&quot;, se tomará como <i>Precio Unitario</i> (Precio de cada una de las unidades contenidas en la Caja).',
+
 
 ];

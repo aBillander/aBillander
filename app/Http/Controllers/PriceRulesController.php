@@ -227,10 +227,16 @@ class PriceRulesController extends Controller
 
 			$conversion_rate = $product->extra_measureunits->where('id', $measure_unit_id)->first()->conversion_rate;
 
+			$price_pack = $request->input('price_pack');
+
+			$ppl = $price_pack;
+			if ( $ppl[-1] == 'u' || $ppl[-1] == 'U' ) {		// Unit price issued
+				$price_pack = rtrim(rtrim($ppl, 'uU')) * $conversion_rate;
+			}
 
 			$request->merge( [
 								'from_quantity'   => $request->input('from_quantity_pack'),
-								'price'           => $request->input('price_pack'),
+								'price'           => $price_pack,
 								'conversion_rate' => $conversion_rate,
 								'customer_id'     => $request->input('customer_group_id', 0) > 0 
 														? null 

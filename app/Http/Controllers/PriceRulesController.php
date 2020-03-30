@@ -229,9 +229,11 @@ class PriceRulesController extends Controller
 
 			$price_pack = $request->input('price_pack');
 
-			$ppl = $price_pack;
-			if ( $ppl[-1] == 'u' || $ppl[-1] == 'U' ) {		// Unit price issued
-				$price_pack = rtrim(rtrim($ppl, 'uU')) * $conversion_rate;
+			// $ppl = $price_pack;
+			$lastc = substr($price_pack, -1);
+//			if ( $ppl[-1] == 'u' || $ppl[-1] == 'U' ) {		// Unit price issued
+			if ( $lastc == 'u' || $lastc == 'U' ) {		// Unit price issued
+				$price_pack = rtrim(rtrim($price_pack, 'uU')) * $conversion_rate;
 			}
 
 			$request->merge( [

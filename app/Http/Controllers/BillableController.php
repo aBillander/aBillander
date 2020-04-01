@@ -281,11 +281,13 @@ class BillableController extends Controller
 
         if ($customer_price) 
         {
-            $customer_price->applyTaxPercentToPrice($tax_percent);        
+            $customer_price->applyTaxPercentToPrice($tax_percent);
 
-            $ecotax_value_label = $product->ecotax ? 
-                                  $product->as_priceable($product->ecotax->amount).' '.$currency->name :
-                                  '';
+            $ecotax_amount = $product->ecotax ? 
+                                  $product->ecotax->amount :
+                                  0.0;
+
+            $ecotax_value_label = $product->as_priceable($ecotax_amount).' '.$currency->name;
     
             $data = [
                 'product_id' => $product->id,
@@ -461,6 +463,7 @@ class BillableController extends Controller
                         ->with('product.tax')
                         ->with('product.ecotax')
                         ->with('measureunit')
+                        ->with('packagemeasureunit')
                         ->with('tax')
                         ->find($line_id);
 
@@ -476,14 +479,37 @@ class BillableController extends Controller
 
         $currency = Context::getContext()->currency;
 
-        $ecotax_value_label = $product->ecotax ? 
-                              $product->as_priceable($product->ecotax->amount).' '.$currency->name :
-                              '';
+        $ecotax_amount = $product && $product->ecotax ? 
+                              $product->as_priceable($product->ecotax->amount) :
+                              '0.00';
+
+        $ecotax_value_label = $ecotax_amount.' '.$currency->name;
+
+        if ( !$document_line->packagemeasureunit )
+        {
+            $document_line->package_measure_unit_id = $document_line->measure_unit_id;
+            $document_line->load('packagemeasureunit');
+        }
+
+        $pmu_conversion_rate = 1.0;
+        $package_label = '';
+
+        if ( 1 || $document_line->package_measure_unit_id != $document_line->measure_unit_id)
+        {
+            $pmu_conversion_rate = $document_line->packagemeasureunit->conversion_rate ?: 1.0;
+
+            $package_label = $pmu_conversion_rate.'x'.$document_line->measureunit->name;
+        }
+
+        // abi_r($document_line->toArray());die();
 
         return response()->json( $document_line->toArray() + [
 //            'unit_customer_final_price' => $unit_customer_final_price,
             'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
             'ecotax_value_label' => $ecotax_value_label,
+
+            'pmu_conversion_rate' => $pmu_conversion_rate,
+            'package_label' => $package_label,
         ] );
     }
 

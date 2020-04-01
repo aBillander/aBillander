@@ -22,6 +22,7 @@ class Tax extends Model {
 
     public static $rules = array(
     	'name'    => array('required', 'min:2', 'max:64'),
+        'country_id' => 'exists:countries,id',
  //   	'percent' => array('required', 'numeric', 'between:0,100')
     	);
     

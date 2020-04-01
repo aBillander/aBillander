@@ -171,9 +171,15 @@
                     $('#line_name').val(result.name);
                     $('#line_reference').val(result.reference);
 
+                    pmu_conversion_rate = result.pmu_conversion_rate;
+                    pmu_quantity = result.quantity * pmu_conversion_rate
+
                     $('#line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
-                    $('#line_quantity').val(result.quantity.round( QUANTITY_DECIMAL_PLACES ));
+                    $('#line_quantity').val(pmu_quantity.round( QUANTITY_DECIMAL_PLACES ));
+                    $('#line_package_measure_unit_id').val(result.measure_unit_id);
                     $('#line_measure_unit_id').val(result.measure_unit_id);
+                    $('#line_measure_unit_name').text(result.packagemeasureunit.name);
+                    $('#line_package_label').text(result.package_label);
 
                     $('#line_cost_price').val(result.cost_price);
                     $('#line_unit_price').val(result.unit_price);
@@ -201,7 +207,7 @@
 
                     }
 
-                    $("#line_price").val( price );
+                    $("#line_price").val( price * pmu_conversion_rate );
 
                     $("#label_ecotax_value").html(result.ecotax_value_label);
                     

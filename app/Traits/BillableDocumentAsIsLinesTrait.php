@@ -37,33 +37,31 @@ trait BillableDocumentAsIsLinesTrait
                             ? $params['name'] 
                             : $product->name;
 
-        $measure_unit_id = array_key_exists('measure_unit_id', $params) 
-                            ? $params['measure_unit_id'] 
-                            : $product->measure_unit_id;
+        $measure_unit_id = $product->measure_unit_id;
 
         $package_measure_unit_id = array_key_exists('package_measure_unit_id', $params) 
                             ? $params['package_measure_unit_id'] 
                             : $product->measure_unit_id;
 
-        $pmu_conversion_rate = array_key_exists('pmu_conversion_rate', $params) 
-                            ? $params['pmu_conversion_rate'] 
-                            : 1.0;
+        $pmu_conversion_rate = 1.0; // Temporarily default
 
-        // Do not trust...
+        $pmu_label = ''; // Temporarily default
+
+        // Measure unit stuff...
         if ( $package_measure_unit_id != $measure_unit_id )
         {
-            $pmu_conversion_rate = $product->measureunits->where('id', $package_measure_unit_id)->first()->conversion_rate;
+            $mu  = $product->measureunits->where('id', $measure_unit_id        )->first();
+            $pmu = $product->measureunits->where('id', $package_measure_unit_id)->first();
 
-            // abi_r($pmu_conversion_rate, true);
+            $pmu_conversion_rate = $pmu->conversion_rate;
 
             $quantity = $quantity * $pmu_conversion_rate;
 
-        } else
-            $pmu_conversion_rate = 1.0;
-
-        $pmu_label = array_key_exists('pmu_label', $params) 
+            $pmu_label = array_key_exists('pmu_label', $params) && $params['pmu_label']
                             ? $params['pmu_label'] 
-                            : '';
+                            : $pmu->name.' : '.$pmu_conversion_rate.'x'.$mu->name;
+
+        }
 
         // $cost_price = $product->cost_price;
         // Do this ( because of getCostPriceAttribute($value) ):

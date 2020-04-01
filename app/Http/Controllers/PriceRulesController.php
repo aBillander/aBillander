@@ -257,6 +257,12 @@ class PriceRulesController extends Controller
 	                                ),
 	                            ]
 	        ];
+		
+		} else {
+
+			$request->merge( [
+								'measure_unit_id '   =>  null,
+							] );
 		}
 
 		$this->validate($request, PriceRule::$rules + $extra_rules);

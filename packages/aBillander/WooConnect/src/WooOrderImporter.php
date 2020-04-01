@@ -225,6 +225,9 @@ class WooOrderImporter {
         $customer_webshop_id = WooOrder::getCustomerId( $this->raw_data );
 
         $customer_reference_external = $this->raw_data['customer_reference_external'];
+        // = FSxTools::translate_customers_fsol($woo_customer>0?$woo_customer:$this->data['billing']['email']);        
+        // $woo_customer = intval($this->data['customer_id']);
+        // From WooOrder :: __construct
 
         $this->customer = Customer::where('webshop_id', $customer_webshop_id )->first();
 

@@ -92,6 +92,7 @@ return [
 	'Combinations'     => 'Combinaciones',
 	'Images'     => 'Imágenes',
 	'Internet'     => 'Internet',
+	'Web Shop'	=> 'Tienda Online',
 	'Manufacturing'     => 'Fabricación',
 
 	'Ean13'     => 'Ean13',

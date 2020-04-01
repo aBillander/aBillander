@@ -9,6 +9,10 @@ use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientExcept
 
 use aBillander\WooConnect\FSxTools;
 
+use App\Configuration;
+use App\Country;
+use App\State;
+
 class WooOrder // extends Model
 {
 //    protected $dates = ['deleted_at', 'date_created', 'date_paid', 'date_abi_exported', 'date_invoiced'];
@@ -49,10 +53,10 @@ class WooOrder // extends Model
 /*
             // Too much work. Currency does not change often.
             try {
-                $wc_currency = \App\Currency::findOrFail( intval(\App\Configuration::get('WOOC_DEF_CURRENCY')) );
+                $wc_currency = Currency::findOrFail( intval(Configuration::get('WOOC_DEF_CURRENCY')) );
             } catch (ModelNotFoundException $ex) {
                 // If Currency does not found. Not any good here...
-                $wc_currency = \App\Context::getContext()->currency;    // Or fallback to Configuration::get('DEF_CURRENCY')
+                $wc_currency = Context::getContext()->currency;    // Or fallback to Configuration::get('DEF_CURRENCY')
             }
 */
 
@@ -60,7 +64,7 @@ class WooOrder // extends Model
             $params = [
     //          'dp'   => 6,        // WooCommerce serve store some values rounded. 
                                     // Not useful this option. Use WooCommerce API default instead: 2 decimal places
-                'dp'   => \App\Configuration::get('WOOC_DECIMAL_PLACES'),
+                'dp'   => Configuration::get('WOOC_DECIMAL_PLACES'),
  //               'dp'   => $wc_currency->decimalPlaces,
             ];
 
@@ -203,12 +207,21 @@ class WooOrder // extends Model
 		return $vn;
     }
 
+    public static function getCustomerId( $order = [] )
+    {
+        $cId = $order['customer_id'] > 0
+                ? $order['customer_id']    // Regular Registered Customer
+                : -$order['id'];           // Guest Customer. Identify with Order number prefixed with a minus sign
+
+        return $cId;
+    }
+
     public static function getVatNumber( $order = [] )
     {
         if ( isset( $order['billing']['vat_number'] ) && $order['billing']['vat_number'] ) 
              return $order['billing']['vat_number'];
 
-        return self::getMetaByKey( $order, \App\Configuration::get('WOOC_ORDER_NIF_META') );    // 'CIF/NIF' );
+        return self::getMetaByKey( $order, Configuration::get('WOOC_ORDER_NIF_META') );    // 'CIF/NIF' );
     }
 
     public static function getSalesEqualization( $order = [] )
@@ -339,7 +352,7 @@ class WooOrder // extends Model
     
     public static function getState( $state = '', $country = '' )
     {
-        $s = \App\State::findByIsoCode( (strpos($state, '-') ? '' : $country.'-').$state );
+        $s = State::findByIsoCode( (strpos($state, '-') ? '' : $country.'-').$state );
 
         return $s;
     }
@@ -355,13 +368,13 @@ class WooOrder // extends Model
 
         // Dictionary
         if ( !isset(self::$smethods) )
-            self::$smethods = json_decode(\App\Configuration::get('WOOC_SHIPPING_METHODS_DICTIONARY_CACHE'), true);
+            self::$smethods = json_decode(Configuration::get('WOOC_SHIPPING_METHODS_DICTIONARY_CACHE'), true);
 
         $smethods = self::$smethods;
 
         return isset($smethods[$method]) ? $smethods[$method] : null;
 
-        // return \App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD');
+        // return Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD');
     }
     
     public static function getPaymentMethodId( $method = '', $title = '' )
@@ -370,13 +383,13 @@ class WooOrder // extends Model
 
         // Dictionary
         if ( !isset(self::$gates) )
-            self::$gates = json_decode(\App\Configuration::get('WOOC_PAYMENT_GATEWAYS_DICTIONARY_CACHE'), true);
+            self::$gates = json_decode(Configuration::get('WOOC_PAYMENT_GATEWAYS_DICTIONARY_CACHE'), true);
 
         $gates = self::$gates;
 
         return isset($gates[$method]) ? $gates[$method] : null;
 
-        // return \App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD');
+        // return Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD');
     }
     
     public static function getTaxId( $slug = '' )
@@ -386,7 +399,7 @@ class WooOrder // extends Model
 
         // Dictionary
         if ( !isset(self::$taxes) )
-            self::$taxes = json_decode(\App\Configuration::get('WOOC_TAXES_DICTIONARY_CACHE'), true);
+            self::$taxes = json_decode(Configuration::get('WOOC_TAXES_DICTIONARY_CACHE'), true);
 
         $taxes = self::$taxes;
 

@@ -393,6 +393,21 @@ trait BillableDocumentLinesTrait
             $product = $document_line->product;
         }
 
+        $pmu_conversion_rate = 1.0; // Temporarily default
+
+        // Measure unit stuff...
+        if ( $document_line->package_measure_unit_id && $document_line->package_measure_unit_id != $document_line->measure_unit_id )
+        {
+            $pmu_conversion_rate = $document_line->pmu_conversion_rate;
+/*
+            $quantity = $quantity * $pmu_conversion_rate;
+
+            $pmu_label = array_key_exists('pmu_label', $params) && $params['pmu_label']
+                            ? $params['pmu_label'] 
+                            : $pmu->name.' : '.$pmu_conversion_rate.'x'.$mu->name;
+*/            
+        }
+
         // Tax
         $tax = $product->tax;
         $taxing_address = $this->taxingaddress;
@@ -411,6 +426,10 @@ trait BillableDocumentLinesTrait
         else
             $quantity = $document_line->quantity;
 
+        $quantity = $quantity * $pmu_conversion_rate;
+
+/*      Not needed:
+
         // Calculate price per $customer_id now!
         $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
 
@@ -420,7 +439,7 @@ trait BillableDocumentLinesTrait
 
         $customer_price->applyTaxPercent( $tax_percent );
         $unit_customer_price = $customer_price->getPrice();
-
+*/
         // Price Policy
         $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
                             ? $params['prices_entered_with_tax'] 
@@ -429,7 +448,7 @@ trait BillableDocumentLinesTrait
         // Customer Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 
@@ -502,9 +521,6 @@ trait BillableDocumentLinesTrait
         ];
 
         // More stuff
-        if (array_key_exists('quantity', $params)) 
-            $data['quantity'] = $params['quantity'];
-        
 
         if (array_key_exists('line_sort_order', $params)) 
             $data['line_sort_order'] = $params['line_sort_order'];

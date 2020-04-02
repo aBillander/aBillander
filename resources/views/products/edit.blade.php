@@ -207,7 +207,7 @@
       {
          $("#panel_internet").show();
          $("#b_internet").addClass('active');
-         getProductInternetData( {{ $product->reference }} );
+         getProductInternetData( '{{ $product->reference }}' );
       }
       else if(window.location.hash.substring(1) == 'combinations')
       {

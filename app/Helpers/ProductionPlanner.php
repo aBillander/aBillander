@@ -12,7 +12,7 @@ class ProductionPlanner
     public function __construct( $production_sheet_id, $due_date )
     {
         //
-        $this->production_sheet_id; 
+        $this->production_sheet_id = $production_sheet_id; 
         $this->due_date = $due_date;
 
         $this->orders_planned = collect([]);

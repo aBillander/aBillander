@@ -32,6 +32,7 @@ class ConfigurationKeysController extends Controller {
                         'ENABLE_CUSTOMER_CENTER',
                         'ENABLE_SALESREP_CENTER',
                         'ENABLE_MANUFACTURING',
+                        'MRP_WITH_STOCK',
                         'ENABLE_WEBSHOP_CONNECTOR',
                         'ENABLE_FSOL_CONNECTOR',
                         'SELL_ONLY_MANUFACTURED',

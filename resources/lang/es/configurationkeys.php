@@ -33,6 +33,8 @@ return [
 	'ENABLE_SALESREP_CENTER.help' => 'Permitir a los Agentes Comerciales introducir Pedidos y más.',
 	'ENABLE_MANUFACTURING.name' => 'ENABLE_MANUFACTURING',
 	'ENABLE_MANUFACTURING.help' => '',
+	'MRP_WITH_STOCK.name' => 'MRP_WITH_STOCK',
+	'MRP_WITH_STOCK.help' => '<p>Valores:</p><ul>	<li>	<p><strong>Sí</strong><br />	Calcula la Hoja de Producción teniendo en cuenta el Stock Físico.</p>	</li>	<li>	<p><strong>No</strong><br />	Calcula las necesidades de Productos Terminados y Semi-Elaborados sin tener en cuenta el Stock Físico.</p>	</li></ul>',
 	'ENABLE_WEBSHOP_CONNECTOR.name' => 'Activar enlace con la Tienda online.',
 	'ENABLE_WEBSHOP_CONNECTOR.help' => 'Para que el enlace funcione correctamente, puede ser necesario algún "package" adicional.',
 	'ENABLE_FSOL_CONNECTOR.name' => 'Activar enlace con FactuSOL',

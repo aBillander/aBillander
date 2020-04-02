@@ -92,6 +92,7 @@ return [
 	'Combinations'     => 'Combinaciones',
 	'Images'     => 'Imágenes',
 	'Internet'     => 'Internet',
+	'Web Shop'	=> 'Tienda Online',
 	'Manufacturing'     => 'Fabricación',
 
 	'Ean13'     => 'Ean13',
@@ -263,5 +264,23 @@ return [
 	'Conversion rate' => 'Factor de Conversión',
 	'Conversion rates are calculated from one unit of your main Measura Unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, the Conversion rate will be "6" (since a pack of six bottles will contain six bottles).' => 'El Factor de Conversión se calcula a partir de la Unidad de Medida principal. Por ejemplo, si la unidad principal es "botella" y la unidad alternativa es "paquete-de-seis", el Factor de Conversión será "6" (ya que un paquete de seis botellas contendrá seis botellas).',
 	'' => '',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Last additions
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Position'     => 'Posición',
+
+	'Use multiples of 10. Use other values to interpolate.'     => 'Use múltiplos de 10. Use otros valores para intercalar.',
+
+
+    'Prices are exclusive of Ecotax' => 'El Precio no incluye la Ecotasa',
+    'Prices are inclusive of Ecotax' => 'El Precio incluye la Ecotasa',
 
 ];

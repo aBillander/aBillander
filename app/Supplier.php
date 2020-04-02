@@ -320,7 +320,7 @@ class Supplier extends Model {
 
         if ( $line )
         {
-            $thePrice = $line->price;
+            $thePrice = $line->price * (1.0 - $line->discount_percent / 100.0);
 
         } else {
 

@@ -83,6 +83,12 @@ function calculate_service_price()
 }
 
 
+function calculate_comment_price()
+{
+   return ;
+}
+
+
 
 function get_tax_percent_by_id(tax_id, se = 0) 
 {

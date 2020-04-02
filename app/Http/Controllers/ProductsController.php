@@ -53,7 +53,10 @@ class ProductsController extends Controller
                               ->with('combinations')                                  
                               ->with('category')
                               ->with('tax')
-                              ->orderBy('reference', 'asc');
+//                            ->orderBy('position', 'asc')
+//                            ->orderBy('name', 'asc')
+//                              ->orderBy('reference', 'asc')
+                              ;
     }
 
     /**
@@ -74,6 +77,7 @@ class ProductsController extends Controller
 //          ->withCount('products')
             ->where('parent_id', '=', intval($parentId))
             ->orderBy('position', 'asc')
+            ->orderBy('name', 'asc')
             ->get();
 
         if ($category_id>0 && !$request->input('search_status', 0)) {
@@ -100,9 +104,17 @@ class ProductsController extends Controller
             // abi_r($parent->name.' / '.$child->name, true);
         }
 
-        $products = $this->indexQueryRaw( $request )
-//                         ->isManufactured()
+
+        if ($category_id>0 && !$request->input('search_status', 0)) {
+                $products = $this->indexQueryRaw( $request )
+                            ->orderBy('position', 'asc')
+                            ->orderBy('name', 'asc')
                         ;
+        } else {
+                $products = $this->indexQueryRaw( $request )
+                            ->orderBy('reference', 'asc')
+                        ;
+        }
 
 //        abi_r($products->toSql(), true);
 

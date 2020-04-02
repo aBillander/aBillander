@@ -15,6 +15,7 @@ return [
 	'Expand / Collapse'     => 'Ver / Ocultar',
 
 	'Show Sub-Categories' => 'Ver Sub-Categorías',
+	'Show Products' => 'Ver Productos',
 	'Categories' => 'Categorías',
 	''     => '',
 	''     => '',

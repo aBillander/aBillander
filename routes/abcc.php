@@ -127,6 +127,9 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::post('cart/deleteline/{lid}',  'AbccCustomerCartController@deleteCartLine'  )->name('cart.deleteline');
         Route::post('cart/shippingaddress',  'AbccCustomerCartController@updateShippingAddress'  )->name('abcc.cart.shippingaddress.store');
 
+        Route::post('cart/sortlines', 'AbccCustomerCartController@sortLines')->name('abcc.cart.sortlines');
+
+
 
         Route::get( '/account/edit', 'AbccCustomerUserController@edit'  )->name('abcc.account.edit'  );
         Route::post('/account',      'AbccCustomerUserController@update')->name('abcc.account.update');

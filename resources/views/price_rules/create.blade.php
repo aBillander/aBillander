@@ -37,8 +37,24 @@
 
     $(document).ready(function() {
 
+        // Forget Product
+        $("#product_query").val('');
+        $('#product_id').val('');
+
+        // Forget Customer
         $("#autocustomer_name").val('');
         $('#customer_id').val('');
+
+        // Redirect to the right tab
+        if ( $('#rule_type').val() == 'pack' )
+        {
+              $('.nav-tabs a[href="#tab3default"]').tab('show');
+
+        } else
+        if ( $('#rule_type').val() == 'promo' )
+        {
+              $('.nav-tabs a[href="#tab2default"]').tab('show');
+        } 
 
         // To get focus;
         $("#autocustomer_name").focus();
@@ -310,6 +326,10 @@
      }
      */
     });
+
+    // Active tab:
+    // var id = $('.tab-content .active');
+    // https://stackoverflow.com/questions/33743432/bootstrap-tabpanel-which-tab-is-selected
 
 
 

@@ -34,6 +34,7 @@ class CategoriesController extends Controller {
                         ->with('children')
                         ->where('parent_id', '=', intval($parentId))
                         ->orderBy('position', 'asc')
+                        ->orderBy('name', 'asc')
                         ->get();
 
         return view('categories.index', compact('parentId', 'parent', 'categories'));

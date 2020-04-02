@@ -31,8 +31,13 @@
 
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {{ l('Currency') }}
+{{--
         {!! Form::select('currency_id', $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id')) !!}
         {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
+--}}
+        <div class="form-control">{{ $supplier->currency->name }}</div>
+
+        {!! Form::hidden('currency_id', $supplier->currency_id, array('id' => 'currency_id')) !!}
     </div>
 
 </div>

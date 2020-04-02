@@ -1,5 +1,5 @@
 
-@if ($customer_rules->where('rule_type', 'pack')->count())
+@if ($pricerules_pack->count())
 
     <h2>
         <span style="color: #cccccc;">/</span>
@@ -19,8 +19,28 @@
               <th class="text-center">{{l('Package')}}</th>
               <!-- th>{{l('Currency')}}</th -->
               <!-- th class="text-center">{{l('From Quantity')}}</th -->
-              <th class="text-center">{{l('Price per Package')}}</th>
-              <th class="text-center">{{l('Unit Price')}}</th>
+              <th class="text-center">{{l('Price per Package')}}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
+                          data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a></span>
+              </th>
+              <th class="text-center">{{l('Unit Price')}}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
+                          data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+              </th>
               <th>{{l('Date from')}}</th>
               <th>{{l('Date to')}}</th>
             <th>  </th>
@@ -28,7 +48,7 @@
     </thead>
     <tbody id="pricerule_lines">
 
-    @foreach ($customer_rules->where('rule_type', 'pack') as $rule)
+    @foreach ($pricerules_pack as $rule)
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
       <!-- td>{{ optional($rule->category)->name }}</td -->
@@ -37,33 +57,20 @@
 @php
   $img = $rule->product->getFeaturedImage();
 @endphp
-@if ($img)
+
               [<a class="view-image" data-html="false" data-toggle="modal" 
-                       href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
+                       href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
                        data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
                        data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
-                       data-caption="({{$img->id}}) {{ $img->caption }} " 
+                       data-caption="({{$img->filename}}) {{ $img->caption }} " 
                        onClick="return false;" title="{{l('View Image', 'abcc/catalogue')}}">
   
                         {{ $rule->product->reference }}
                 </a>]
   
-                <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
 
                 {{ $rule->product->name }}
-@else
-              [<a class="view-image" data-html="false" data-toggle="modal" 
-                       href=""
-                       data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
-                       data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
-                       data-caption="" 
-                       onClick="return false;" title="{{l('View', 'layouts')}}">
-  
-                        {{ $rule->product->reference }}
-                </a>]
-
-                {{ $rule->product->name }}
-@endif
             @endif
       </td>
       <td class="text-center">{{ optional($rule->measureunit)->name }}<br />
@@ -73,13 +80,15 @@
 
 @php
 
-$regular_price = $rule->as_priceable(optional(optional($rule->product)->getPriceByCustomerPriceList( $customer, 1, $customer->currency ))->getPrice());
+$priceListPrice = $rule->as_priceable(optional(optional($rule->product)->getPriceByCustomerPriceList( $customer, 1, $customer->currency ))->getPrice());
+
+$priceRule = $rule->getUnitPrice( $customer->currency );
 
 @endphp
 
-      <td class="text-center">{{ $rule->as_price('price') }}</td>
+      <td class="text-center">{{ $rule->as_priceable($priceRule * $rule->conversion_rate) }}</td>
 
-      <td class="text-center">{{ $rule->as_priceable( $rule->price / $rule->conversion_rate ) }}<br /><span class="text-info crossed">{{ $regular_price }}</span></td>
+      <td class="text-center">{{ $rule->as_priceable( $priceRule ) }}<br /><span class="text-info crossed">{{ $priceListPrice }}</span></td>
 
       <td>{{ abi_date_short( $rule->date_from ) }}</td>
             <td>{{ abi_date_short( $rule->date_to   ) }}</td>

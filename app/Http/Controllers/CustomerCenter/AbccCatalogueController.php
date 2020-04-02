@@ -96,7 +96,8 @@ class AbccCatalogueController extends Controller
 	                                  ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id)
                                       ->IsActive()
                                       ->IsPublished()
-                                      ->orderBy('reference', 'asc');
+                                      ->orderBy('name', 'asc')
+                                      ;
 
                 // abi_toSQL($products);
 
@@ -104,14 +105,16 @@ class AbccCatalogueController extends Controller
 
                 $products = $products->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
 
-	            $this->appendInfosToProducts($products, $customer_user->customer);
+	            // $this->appendInfosToProducts($products, $customer_user->customer);
 
-	            $config['display_with_taxes'] = $customer_user->canDisplayPricesTaxInc();
-	            $config['enable_ecotaxes'] = Configuration::isTrue('ENABLE_ECOTAXES');
+	            $vparams = [];
+
+	            $vparams['display_with_taxes'] = $customer_user->canDisplayPricesTaxInc() > 0 ? '_with_taxes' : '';
+	            $vparams['enable_ecotaxes']    = Configuration::isTrue('ENABLE_ECOTAXES');
 
                 $products->setPath('catalogue');     // Customize the URI used by the paginator
         }        
-        return view('abcc.catalogue.index', compact('category_id', 'categories', 'products', 'breadcrumb', 'config'));
+        return view('abcc.catalogue.index', compact('category_id', 'categories', 'products', 'breadcrumb', 'vparams'));
 	}
 
 

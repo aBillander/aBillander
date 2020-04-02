@@ -22,6 +22,7 @@ class Tax extends Model {
 
     public static $rules = array(
     	'name'    => array('required', 'min:2', 'max:64'),
+        'country_id' => 'exists:countries,id',
  //   	'percent' => array('required', 'numeric', 'between:0,100')
     	);
     
@@ -41,10 +42,10 @@ class Tax extends Model {
         // $country_id = \App\Context::getContext()->company->address()->country_id;
 
 //        $value = $this->taxrules()->where('country_id', '=', '0')->orWhere('country_id', '=', $country_id)->orderBy('position', 'asc')->first()->percent;
-        $value = $this->taxrules()->where(function ($query) use ($country_id) {
-            $query->where('country_id', '=', '0')
-                  ->OrWhere('country_id', '=', $country_id);
-        })->orderBy('position', 'asc')->first()->percent;
+        $value = optional($this->taxrules()->where(function ($query) use ($country_id) {
+                    $query->where('country_id', '=', '0')
+                          ->OrWhere('country_id', '=', $country_id);
+                })->orderBy('position', 'asc')->first())->percent ?? 0.0;
 
         return $value;
     }

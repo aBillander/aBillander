@@ -31,7 +31,7 @@ class BillableLine extends Model
     protected $fillable = ['line_sort_order', 'line_type', 
                     'product_id', 'combination_id', 'reference', 'name', 
                     'quantity', 'extra_quantity', 'extra_quantity_label', 'measure_unit_id',
-                    'package_measure_unit_id', 'pmu_conversion_rate',
+                    'package_measure_unit_id', 'pmu_conversion_rate', 'pmu_label', 
                     'cost_price', 'unit_price', 'unit_customer_price', 
                     'prices_entered_with_tax',
                     'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
@@ -137,6 +137,11 @@ class BillableLine extends Model
     public function measureunit()
     {
         return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+    }
+
+    public function packagemeasureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'package_measure_unit_id');
     }
 
     public function tax()

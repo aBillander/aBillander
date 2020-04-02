@@ -59,7 +59,9 @@ class AbccCustomerCartController extends Controller
 
 		$cart = Cart::getCustomerUserCart();
 
-        return view('abcc.cart.index', compact('cart'));
+        $config['display_with_taxes'] = $this->customer_user->canDisplayPricesTaxInc();
+
+        return view('abcc.cart.index', compact('cart', 'config'));
 	}
 
 	/**
@@ -210,6 +212,7 @@ class AbccCustomerCartController extends Controller
         return back(); // will keep same page
     }
 
+    // Where used???
     public function updateLine(Request $request, $id)
     {
         $qty = $request->qty;
@@ -486,6 +489,20 @@ class AbccCustomerCartController extends Controller
             return view('abcc.cart._panel_cart_lines', compact('cart', 'config'));
     }
 
+    public function sortLines(Request $request)
+    {
+        $positions = $request->input('positions', []);
+
+        \DB::transaction(function () use ($positions) {
+            foreach ($positions as $position) {
+                $this->cartLine::where('id', '=', $position[0])->update(['line_sort_order' => $position[1]]);
+            }
+        });
+
+        return response()->json($positions);
+    }
+
+    // Where used???
     public function getCartTotal()
     {
         $order = $this->customerOrder

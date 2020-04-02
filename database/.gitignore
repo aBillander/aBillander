@@ -1,2 +1,3 @@
 *.sqlite
 migrations/solo/*
+!migrations/solo/hint.txt

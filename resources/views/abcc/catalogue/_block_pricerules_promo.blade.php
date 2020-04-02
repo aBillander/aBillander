@@ -1,5 +1,5 @@
 
-@if ($customer_rules->where('rule_type', 'promo')->count())
+@if (!$customer_rules->whereIn('rule_type', ['price', 'discount'])->count() && $customer_rules->where('rule_type', 'promo')->count())
 
     <h2>
         <span style="color: #cccccc;">/</span>
@@ -20,7 +20,17 @@
               <!-- th>{{l('Currency')}}</th -->
               <th class="text-center">{{l('Quantity', 'abcc/customer')}}</th>
               <th class="text-center">{{l('Free Quantity', 'abcc/customer')}}</th>
-              <th class="text-center">{{l('Price', 'abcc/customer')}}</th>
+              <th class="text-center">{{l('Price', 'abcc/customer')}}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
+                          data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+              </th>
               <th>{{l('Date from', 'abcc/customer')}}</th>
               <th>{{l('Date to', 'abcc/customer')}}</th>
             <th>  </th>
@@ -43,13 +53,13 @@
 
 @php
 
-$regular_price = $rule->as_priceable(optional(optional($rule->product)->getPriceByCustomerPriceList( $customer, 1, $customer->currency ))->getPrice());
+$priceListPrice = $rule->as_priceable(optional(optional($rule->product)->getPriceByCustomerPriceList( $customer, 1, $customer->currency ))->getPrice());
 
 $ratio = $rule->from_quantity / ($rule->from_quantity + $rule->extra_quantity);
 
 @endphp
 
-      <td class="text-center">{{ $rule->as_priceable( $regular_price * $ratio ) }}<br /><span class="text-info crossed">{{ $regular_price }}</span></td>
+      <td class="text-center">{{ $rule->as_priceable( $priceListPrice * $ratio ) }}<br /><span class="text-info crossed">{{ $priceListPrice }}</span></td>
 
       <td>{{ abi_date_short( $rule->date_from ) }}</td>
             <td>{{ abi_date_short( $rule->date_to   ) }}</td>

@@ -283,6 +283,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
                                                         'as'   => 'categories.publish' ));
         Route::post('categories/sortlines', 'CategoriesController@sortLines')->name('categories.sortlines');
 
+        Route::get('category/{id}/products', 'CategoryProductsController@index')->name('category.products');
+        Route::post('category/sortproducts', 'CategoryProductsController@sortProducts')->name('category.sortproducts');
+
+
         Route::get('productionorders/{id}/getorder', 'ProductionOrdersController@getOrder')->name('productionorder.getorder');
         Route::post('productionorders/{id}/productionsheetedit', 'ProductionOrdersController@productionsheetEdit')->name('productionorder.productionsheet.edit');
         Route::post('productionorders/{id}/productionsheetdelete', 'ProductionOrdersController@productionsheetDelete')->name('productionorder.productionsheet.delete');
@@ -351,6 +355,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('paymenttypes', 'PaymentTypesController');
 
         Route::resource('shippingmethods', 'ShippingMethodsController');
+        Route::resource('shippingmethods.shippingmethodrules', 'ShippingMethodRulesController');
 
         Route::resource('customergroups', 'CustomerGroupsController');
 
@@ -600,6 +605,10 @@ foreach ($pairs as $pair) {
         Route::get( 'import/suppliers', 'Import\ImportSuppliersController@import' )->name('suppliers.import');
         Route::post('import/suppliers', 'Import\ImportSuppliersController@process')->name('suppliers.import.process');
         Route::get( 'export/suppliers', 'Import\ImportSuppliersController@export' )->name('suppliers.export');
+
+        Route::get( 'import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@import' )->name('suppliers.pricelist.import');
+        Route::post('import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@process')->name('suppliers.pricelist.import.process');
+        Route::get( 'export/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@export' )->name('suppliers.pricelist.export');
 
 
         Route::get('import', function()

@@ -110,10 +110,16 @@
       <th>{{-- l('Measure Unit') --}}</th>
       <!-- th>{{l('Currency')}}</th -->
       <th class="text-right">{{l('Price')}}
-                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Prices shown: Rule Price (or Unit Price, if there are Extra Items), Unit Price (when applies, i.e. Price Rule is per Pack), Product Price (as seen on Product record).') }}">
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
+                                    data-content="{{ l('Prices shown: Rule Price (or Unit Price, if there are Extra Items), Unit Price (when applies, i.e. Price Rule is per Pack), Product Price (as seen on Product record).') }}
+                                    {{l('Price is WITHOUT Taxes.')}}
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />{{l('Prices are exclusive of Ecotax.')}}
+@endif
+                  ">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a></th>
+      <th> </th>
       <!-- th class="text-right">{{l('Discount Percent')}}</th>
       <th class="text-right">{{l('Discount Amount')}}</th -->
       <th class="text-center">{{l('From Quantity')}}</th>
@@ -160,16 +166,35 @@
 
                 <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
       </td>
-@else
+      <td></td>
+@endif
+@if($rule->rule_type == 'price')
       <td class="text-right">{{ $rule->as_price('price') }}
-
-        @if($rule->rule_type == 'pack')
-                <br /><span class="text-success">{{ $rule->as_priceable( $rule->price / $rule->conversion_rate ) }}</span>
-        @endif
 
                 <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
 
       </td>
+      <td></td>
+@endif
+@if($rule->rule_type == 'discount')
+      <td class="text-right">{{ $rule->as_priceable( $rule->product->price * (1.0 - $rule->discount_percent/100.0 ) ) }}
+
+                <br /><span class="text-success">-{{ $rule->as_percent('discount_percent') }} %</span>
+
+                <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
+
+      </td>
+      <td>%</td>
+@endif
+@if($rule->rule_type == 'pack')
+      <td class="text-right">{{ $rule->as_price('price') }}
+
+                <br /><span class="text-success">{{ $rule->as_priceable( $rule->price / $rule->conversion_rate ) }}</span>
+
+                <br /><span class="text-info crossed">{{ optional($rule->product)->as_price('price') }}</span>
+
+      </td>
+      <td></td>
 @endif
 
 {{--
@@ -397,6 +422,11 @@ $(document).ready(function() {
             https://stackoverflow.com/questions/7033420/jquery-date-picker-z-index-issue
     --}}
   .ui-datepicker{ z-index: 9999 !important;}
+
+
+  .popover {
+     max-width: 570px;
+   }
 </style>
 
 @endsection

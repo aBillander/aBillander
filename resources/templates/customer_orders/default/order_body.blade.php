@@ -24,8 +24,15 @@
 		</td>
 
 		<td class="shop-info">
+@php
+	$name = $str = $company->name_fiscal;
 
-			<div class="shop-name"><h3>{{ $company->name_fiscal }}</h3></div>
+	if( strlen( $str) > 33) {
+	    $str = substr( $str, 0, 30);
+	    $name = $str . '...';
+	}
+@endphp
+			<div class="shop-name"><h3>{{ $name }}</h3></div>
 
 			<div class="shop-address">
                         {{ $company->address->address1 }} {{ $company->address->address2 }}<br />
@@ -232,6 +239,7 @@
 			    @if ( 
 			    			( $line->line_type != 'product' ) &&
 			    			( $line->line_type != 'service' ) &&
+			    			( $line->line_type != 'shipping' ) &&
 			    			( $line->line_type != 'comment' )
 			    )
 			        @continue
@@ -264,6 +272,16 @@
 					<span class="item-name">{{ $line->name }}</span>
 					<span class="item-combination-options"></span>
 				</span>
+@if ( $line->package_measure_unit_id != $line->measure_unit_id && $line->pmu_label != '' )
+				<br />
+				<span class="abi-line-rule-label">{!! $line->pmu_label !!}
+				</span>
+@endif
+@if ( $line->extra_quantity > 0 && $line->extra_quantity_label != '' )
+				<br />
+				<span class="abi-line-rule-label">{!! $line->extra_quantity_label !!}
+				</span>
+@endif
 			</td>
 			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
 			</td>

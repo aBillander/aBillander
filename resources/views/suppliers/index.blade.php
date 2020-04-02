@@ -15,7 +15,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{ { route('suppliers.import') }}" class="btn btn-sm btn-warning" 
+        <a href="{{ route('suppliers.import') }}" class="btn btn-sm btn-warning" 
                 title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a>
 
         <a href="{{ route('suppliers.export') }}" class="btn btn-sm btn-grey" 

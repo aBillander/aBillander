@@ -369,6 +369,8 @@
 
           }
 
+          sortableCartLines();
+
      }, 'html');
 
   }

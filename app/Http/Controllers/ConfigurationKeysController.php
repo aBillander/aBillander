@@ -123,6 +123,7 @@ class ConfigurationKeysController extends Controller {
                         'ABCC_STOCK_SHOW',
                         'ABCC_STOCK_THRESHOLD',
                         'ABCC_OUT_OF_STOCK_PRODUCTS',
+                        'ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY',
                         'ABCC_OUT_OF_STOCK_TEXT',
                         'ABCC_ORDERS_NEED_VALIDATION',
                         'ABCC_ENABLE_QUOTATIONS',

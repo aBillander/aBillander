@@ -70,7 +70,7 @@ footer {
 
 .xfa-foursquare:before {
     content:"" !important;
-    background-image:url("http://localhost/enatural/public/assets/theme/images/icons/FACTUSOL.png");
+    background-image:url("/../images/icons/FACTUSOL.png");
     width:  12px;
     height: 12px;
 
@@ -91,6 +91,8 @@ footer {
 
 .text-dark {color: #000;}
 
-#div_cart_lines .show-pricerules {margin-left:1em}
-#div_cart_lines td {vertical-align: middle}
+/* Cart Stuff */
+/* #div_cart_lines .show-pricerules {margin-left:1em} */
+/* #div_cart_lines td {vertical-align: middle} */
+
 .crossed {text-decoration: line-through;}

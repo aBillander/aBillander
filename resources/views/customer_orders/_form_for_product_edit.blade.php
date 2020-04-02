@@ -38,13 +38,22 @@
 
         <div class="row" id="product-search-autocomplete">
 
-                  <div class="form-group col-lg-7 col-md-7 col-sm-7 {{ $errors->has('line_name') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('line_name') ? 'has-error' : '' }}">
                      {{ l('Product Name') }}
                      {!! Form::text('line_name', null, array('class' => 'form-control', 'id' => 'line_name', 'onclick' => 'this.select()')) !!}
                      {!! $errors->first('line_name', '<span class="help-block">:message</span>') !!}
                   </div>
 
-                 <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                    {{ l('Measure Unit') }}
+                    <div id="line_measure_unit_name" class="form-control"></div>
+
+                    <span id="line_package_label" class="help-block text-success"></span>
+
+                    {{ Form::hidden( 'line_package_measure_unit_id', null, ['id' => 'line_package_measure_unit_id'] ) }}
+                 </div>
+
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2">
                     {{ l('Tax') }}
                     <div id="line_tax_label" class="form-control"></div>
                     {{ Form::hidden('line_tax_percent', null, array('id' => 'line_tax_percent')) }}
@@ -108,9 +117,21 @@
                     <span class="label_tax_inc">{{ l('Price with Tax') }}</span>
                     
                     <span class="label_tax_exc">{{ l('Price') }}</span>
+
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
+                                    data-content="{{ ld('Prices are inclusive of Ecotax.')}}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+@endif
                     
                     {!! Form::text('line_price', null, array('class' => 'form-control', 'id' => 'line_price', 'onkeyup' => 'calculate_line_product( )', 'onchange' => 'calculate_line_product( )', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
                     {!! $errors->first('price', '<span class="help-block">:message</span>') !!}
+
+
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                    <span class="help-block">{{ ld('Ecotax: ')}}<span id="label_ecotax_value" class="text-success"></span></span>
+@endif
                  </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
                     {{ l('Discount') }} (%)
@@ -148,8 +169,8 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="modal_edit_document_line_productSubmit" id="modal_edit_document_line_productSubmit">
-                <i class="fa fa-thumbs-up"></i>
+               <button type="submit" class="btn btn-info" name="modal_edit_document_line_productSubmit" id="modal_edit_document_line_productSubmit" title="{{l('Save line "as is", and WILL NOT apply Customer Price List and/or Price Rules.', 'customerdocuments')}}">
+                <i class="fa fa-hdd-o"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 
            </div>

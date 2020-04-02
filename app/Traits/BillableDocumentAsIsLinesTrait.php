@@ -59,7 +59,7 @@ trait BillableDocumentAsIsLinesTrait
 
             $pmu_label = array_key_exists('pmu_label', $params) && $params['pmu_label']
                             ? $params['pmu_label'] 
-                            : $pmu->name.' : '.$pmu_conversion_rate.'x'.$mu->name;
+                            : $pmu->name.' : '.(int) $pmu_conversion_rate.'x'.$mu->name;
 
         }
 

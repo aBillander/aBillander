@@ -107,7 +107,7 @@ trait BillableDocumentLinesTrait
 
             $pmu_label = array_key_exists('pmu_label', $params) && $params['pmu_label']
                             ? $params['pmu_label'] 
-                            : $pmu->name.' : '.$pmu_conversion_rate.'x'.$mu->name;
+                            : $pmu->name.' : '.(int) $pmu_conversion_rate.'x'.$mu->name;
             
         }
 
@@ -141,11 +141,11 @@ trait BillableDocumentLinesTrait
         $unit_customer_price = $customer_price->getPrice();
 
         // Still with me? 
-        if ( $package_measure_unit_id != $measure_unit_id )
-        {
+        if ( $package_measure_unit_id != $measure_unit_id  &&
+        
             // Is there any package rule?
-            if ( $pack_rule = $customer->getPackageRule( $product, $package_measure_unit_id, $currency ) )
-            {
+             $pack_rule = $customer->getPackageRule( $product, $package_measure_unit_id, $currency ) )
+        {
                 // Calculate quantity conversion
                 $pmu_conversion_rate = $pack_rule->conversion_rate;
                 $pmu_label           = $pack_rule->name;
@@ -157,7 +157,7 @@ trait BillableDocumentLinesTrait
 
                 // Still one thing left: rule_type = 'promo' (avoid)
                 $promo_rule = null;
-            }
+            
 
         } else {
             //
@@ -404,7 +404,7 @@ trait BillableDocumentLinesTrait
 
             $pmu_label = array_key_exists('pmu_label', $params) && $params['pmu_label']
                             ? $params['pmu_label'] 
-                            : $pmu->name.' : '.$pmu_conversion_rate.'x'.$mu->name;
+                            : $pmu->name.' : '.(int) $pmu_conversion_rate.'x'.$mu->name;
 */            
         }
 
@@ -490,7 +490,7 @@ trait BillableDocumentLinesTrait
  //           'combination_id' => $combination_id,
  //           'reference' => $reference,
  //           'name' => $name,
- //           'quantity' => $quantity,
+            'quantity' => $quantity,
  //           'measure_unit_id' => $measure_unit_id,
 
             'prices_entered_with_tax' => $pricetaxPolicy,

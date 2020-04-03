@@ -28,11 +28,13 @@ class ProductionPlanner
 
     public function addPlannedMultiLevel($data = [])
     {
-        $product = Product::where('procurement_type', 'manufacture')
-                        ->orWhere('procurement_type', 'assembly')
-                        ->findOrFail( $data['product_id'] );
+        // abi_r($data);
+
+        $product = Product::findOrFail( $data['product_id'] );
 
         $bom     = $product->bom;
+
+        // abi_r($data);    // die();
 
         $required_quantity = $data['required_quantity'];
         $order_quantity    = $data['planned_quantity'];
@@ -78,11 +80,11 @@ class ProductionPlanner
             $quantity = $order_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
 
             $order = $this->addPlannedMultiLevel([
-                'product_id' => $line_product->id,
+                'product_id' => $line->product_id,
 
                 'required_quantity' => $quantity,
                 'planned_quantity' => $quantity,
-                'product_bom_id' => $line_product->bom ? $line_product->bom->id : 0,
+//                'product_bom_id' => $line_product->bom ? $line_product->bom->id : 0,
 
                 'notes' => $data['notes'],
 
@@ -98,15 +100,19 @@ class ProductionPlanner
 
     public function equalizePlannedMultiLevel($product_id, $new_required = 0.0)
     {
+        abi_r(compact('product_id', 'new_required'));
+
         // Retrieve Planned Order for this Product (should exist!)
-        $order = $this->getPlannedOrders()->firstWhere('product_id', $product->id);
+        $order = $this->getPlannedOrders()->firstWhere('product_id', $product_id);
 
         if ( !$order ) return ;     // <= Noting to do here
 //        if (  $order->planned_quantity >= 0.0 ) return ;     // <= carry this check at the top level only!
 
 
         // Wanna dance, baby? For sure I do.
-        $product_id = $order->product_id;
+        $products_planned = $this->products_planned;
+        $product = $products_planned->firstWhere('id', $product_id);
+
         $quantity = $new_required;
             
         $this->orders_planned->transform(function ($item, $key) use ($product_id, $quantity) {
@@ -125,6 +131,8 @@ class ProductionPlanner
         $extra_manufacture = $quantity;
 
         $bom     = $product->bom;
+
+        // abi_r($product->bom->BOMmanufacturablelines);die();
 
 
         // Order lines
@@ -284,6 +292,8 @@ class ProductionPlanner
         $this->products_planned = Product::whereIn('id', $pIDs)->get();
 
         $products_planned = &$this->products_planned;
+
+        // abi_r($products_planned, true);
 
         // Stock adjustment
         $this->orders_planned->transform(function($order, $key) use ($products_planned, $withStock) {

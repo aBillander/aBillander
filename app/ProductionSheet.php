@@ -80,11 +80,15 @@ class ProductionSheet extends Model
         // - NO se tiene en cuenta el stock
         // - NO se tiene en cuenta el tamaño del lote
 
+        // abi_r($this->sandbox->getPlannedOrders(), true);
+
 
         // STEP 2
         // Group Planned Orders, adjust according to onhand stock
 
         $this->sandbox->groupPlannedOrders( $withStock );
+
+        // abi_r($this->sandbox->getPlannedOrders(), true);
 
         // Now we may have orders with negative quantity, when $product->quantity_onhand > $order->required_quantity.
 
@@ -92,9 +96,12 @@ class ProductionSheet extends Model
                 ->where('planned_quantity', '<', 0.0)
                 ->pluck('product_id');
 
-        foreach ($pIDs as $pID) {
+        abi_r($this->sandbox->getPlannedOrders()
+                ->where('planned_quantity', '<', 0.0), true); // die();
+
+        foreach ($pIDs as $pID) {       // abi_r($pID); continue;
             
-            $order = $this->sandbox->getPlannedOrders()->firstWhere('product_id', $product->id);
+            $order = $this->sandbox->getPlannedOrders()->firstWhere('product_id', $pID);
             // this check is necessary, since collection is modified on the fly
             if (  $order->planned_quantity >= 0.0 ) continue;     // Noting to do here
 
@@ -104,12 +111,17 @@ class ProductionSheet extends Model
             // ProductionOrders collection has been equalized (balanced negative values)
         }
 
+        abi_r($this->sandbox->getPlannedOrders(), true);
+        // die();
+
 
         // STEP 3
         // Adjust batch size
 
         $lines_summary = $this->sandbox->getPlannedOrders()
                 ->where('manufacturing_batch_size', '>', 1);     // Take only if batch size must be checked
+
+        // abi_r( $lines_summary , true);
 
         foreach ($lines_summary as $pid => $line) {
 
@@ -197,12 +209,26 @@ class ProductionSheet extends Model
 
     public function customerorderlinesGrouped( $withStock = false )
     {
+        $this->load('customerorderlines', 'customerorderlines.product');
+/*
         $lines = $this->customerorderlines
-                    ->whereHas('product', function($query) {
-                       $query->  where('procurement_type', 'manufacture');
-                       $query->orWhere('procurement_type', 'assembly');
+                    ->whereHas('customerorderlines', function($query) {
+                            $query->whereHas('product', function($query1) {
+                                   $query1->  where('procurement_type', 'manufacture');
+                                   $query1->orWhere('procurement_type', 'assembly');
+                            });
                     })
-                    ->with('product');
+ //                   ->with('customerorderlines.product')
+                    ;
+*/
+        
+
+        // Filter Lines
+        $lines = $this->customerorderlines->filter(function ($value, $key) {
+            return $value->product && 
+                   ( ($value->product->procurement_type == 'manufacture') ||
+                     ($value->product->procurement_type == 'assembly'   )    );
+        });
 
         $num = $lines
                     ->groupBy('product_id')->reduce(function ($result, $group) use ( $withStock ) {
@@ -222,6 +248,7 @@ class ProductionSheet extends Model
                         'product_id' => $first->product_id,
                         'reference' => $first->reference,
                         'name' => $first->name,
+                        'stock' => $stock,
                         'quantity' => $group->sum('quantity') - $stock,
                         // Do I need these two?
 //                        'measureunit' => $product->measureunit->name,
@@ -230,6 +257,9 @@ class ProductionSheet extends Model
                         'manufacturing_batch_size' => $product->manufacturing_batch_size,
                       ]);
                     }, collect());
+
+
+        // abi_r( $num, true);
 
         // Sort order
         return $num;        // ->sortBy('reference');

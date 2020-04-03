@@ -24,7 +24,7 @@
   @if ( $product->procurement_type != 'purchase' || $product->is_packaging) @continue @endif
     <tr>
       <td>{{ $order['product_id'] }}</td>
-      <td>{{ $order['reference'] }}</td>
+      <td><a href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $order['reference'] }}</a></td>
       <td>{{ $order['name'] }}</td>
       <td>{{ $product->as_quantityable($order['quantity']) }}</td>
       <td>{{ $product->measureunit->name }}</td>

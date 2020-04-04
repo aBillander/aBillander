@@ -251,12 +251,16 @@ class ProductionSheet extends Model
                                 $stock = $product->quantity_onhand;
                       }
 
+                      $quantity = $group->sum('quantity') - $stock;
+                      
+                      if ( $quantity < 0.0 ) $quantity = 0.0;        // No Manufacturing needed
+
                       return $result->put($first->product_id, [
                         'product_id' => $first->product_id,
                         'reference' => $first->reference,
                         'name' => $first->name,
                         'stock' => $stock,
-                        'quantity' => $group->sum('quantity') - $stock,
+                        'quantity' => $quantity,
                         // Do I need these two?
 //                        'measureunit' => $product->measureunit->name,
 //                        'measureunit_sign' => $product->measureunit->sign,

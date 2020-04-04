@@ -108,4 +108,10 @@ class TourlineExcel {
         // Tourlie carrier_id
         return 3;
     }
+
+    public static function getTourlineLogoUrl( ) 
+    {
+        // Tourlie Logo Url
+        return 'https://www.cttexpress.com/application/themes/images/logo-ctt-express.png';
+    }
 }

@@ -58,7 +58,7 @@
                       <li><a href="{{ route('productionsheet.shippingslips', [$sheet->id]) }}"><i class="fa fa-truck"></i> {{l('Customer Shipping Slips')}}</a></li>
 
                       <li class="divider"></li>
-                      <li><a href="{{ route('productionsheet.tourline', [$sheet->id]) }}"><img src="https://www.tourlineexpress.com/images/logoh.gif" height="20" /> &nbsp;{{l('Tourline Hoja Excel')}}</a></li>
+                      <li><a href="{{ route('productionsheet.tourline', [$sheet->id]) }}"><img src="{{ \App\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" /> &nbsp;{{l('Tourline Hoja Excel')}}</a></li>
                       <li><a href="{{ route('productionsheet.deliveryroute', [$sheet->id, 1]) }}"><i class="fa fa-map-o"></i> {{l('Hoja de Reparto')}}: Sevilla</a></li>
 
                       <li class="divider"></li>

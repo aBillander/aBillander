@@ -34,7 +34,11 @@
 <p>a) Agrupar los requerimientos de Semi-elaborados (Productos con <i>procurement_type</i> = <strong>"assembly"</strong>).</p>
 <p>b) Requerimientos netos: descontar de la cantidad a fabricar el Stock de los Productos con <i>mrp_type</i> = <strong>"manual"</strong> o <i>mrp_type</i> = <strong>"reorder"</strong>. Estos Productos se gestionan fuera de las Hojas de Producción normales.</p>
 
-<br />
+<div class="alert alert-warning">
+    <p><strong>Productos Semi-elaborados con <i>mrp_type</i> = <strong>"manual"</strong> o <i>mrp_type</i> = <strong>"reorder"</strong></strong></p>
+    <p></p>
+  <p>Si uno de estos Productos tiene una Lista de Materiales que incluye otro Producto Semi-elaborado, éste último debe tener <i>mrp_type</i> = <strong>"onorder"</strong>, ya que la demanda de este Producto es "dependiente" de la demanda del primero.</p>
+</div>
 
 <h4>Paso 3 :: Ajustar al Tamaño de Lote de Fabricación</h4>
 

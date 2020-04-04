@@ -272,6 +272,25 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('MRP_WITH_ZERO_ORDERS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="MRP_WITH_ZERO_ORDERS" id="MRP_WITH_ZERO_ORDERS_on" value="1" @if( old('MRP_WITH_ZERO_ORDERS', $key_group['MRP_WITH_ZERO_ORDERS']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="MRP_WITH_ZERO_ORDERS" id="MRP_WITH_ZERO_ORDERS_off" value="0" @if( !old('MRP_WITH_ZERO_ORDERS', $key_group['MRP_WITH_ZERO_ORDERS']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('MRP_WITH_ZERO_ORDERS.help') !!}</span>
+      </div>
+    </div>
+
 @endif
 
 

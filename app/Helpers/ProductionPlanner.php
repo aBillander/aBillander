@@ -295,7 +295,7 @@ class ProductionPlanner
 
         // abi_r($products_planned, true);
 
-        // Stock adjustment
+        // Load Stock (only value) onto Production Order
         $this->orders_planned->transform(function($order, $key) use ($products_planned, $withStock) {
                       $product = $products_planned->firstWhere('id', $order->product_id);
                       $product_stock = 0.0;
@@ -304,13 +304,12 @@ class ProductionPlanner
                       // Only Assembies since Manufacture Products are already adjusted in STEP 1
                       if ( $withStock )
                       {
-                            if ( $product->stock_control )
+                            if ( $product->mrp_type == 'manual' || $product->mrp_type == 'reorder' )
                                 $product_stock = $product->quantity_onhand;
                       }
 
-            // Watch out! Quantities maybe negative amounts!!! (see STEP 2)
-            $order->required_quantity = $order->required_quantity - $product_stock;
-            $order->planned_quantity  = $order->planned_quantity  - $product_stock;
+            // Load Stock
+            $order->product_stock = $product_stock;
             return $order;
         });
 

@@ -90,28 +90,31 @@ class ProductionSheet extends Model
 
         // abi_r($this->sandbox->getPlannedOrders(), true);
 
-        // Now we may have orders with negative quantity, when $product->quantity_onhand > $order->required_quantity.
+        // Now we may have orders with some onhand quantity
 
         $pIDs = $this->sandbox->getPlannedOrders()
-                ->where('planned_quantity', '<', 0.0)
+                ->where('product_stock', '>', 0.0)
                 ->pluck('product_id');
 
-        abi_r($this->sandbox->getPlannedOrders()
-                ->where('planned_quantity', '<', 0.0), true); // die();
+        // abi_r($pIDs, true); // die();
 
         foreach ($pIDs as $pID) {       // abi_r($pID); continue;
             
             $order = $this->sandbox->getPlannedOrders()->firstWhere('product_id', $pID);
             // this check is necessary, since collection is modified on the fly
-            if (  $order->planned_quantity >= 0.0 ) continue;     // Noting to do here
+            if (  $order->product_stock <= 0.0 ) continue;     // Noting to do here
 
-            $quantity = (-1.0) * $order->planned_quantity;      // $quantity is positive now
+            $qty = ( $order->planned_quantity < $order->product_stock ) ?
+                    $order->planned_quantity :
+                    $order->product_stock    ;
+
+            $quantity = (-1.0) * $qty;
             $this->sandbox->equalizePlannedMultiLevel($pID, $quantity);
 
-            // ProductionOrders collection has been equalized (balanced negative values)
+            // ProductionOrders collection has been equalized ()
         }
 
-        abi_r($this->sandbox->getPlannedOrders(), true);
+        // abi_r($this->sandbox->getPlannedOrders(), true);
         // die();
 
 
@@ -139,6 +142,10 @@ class ProductionSheet extends Model
 
         // Release
         foreach ($lines_summary as $pid => $line) {
+
+            if ( Configuration::isFalse('MRP_WITH_ZERO_ORDERS') && $line['planned_quantity'] <= 0.0 )
+                continue;       // Nothing to do here
+
             // Create Production Order
             $order = ProductionOrder::createWithLines([
                 'created_via' => 'manufacturing',

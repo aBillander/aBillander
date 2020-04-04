@@ -35,6 +35,8 @@ return [
 	'ENABLE_MANUFACTURING.help' => '',
 	'MRP_WITH_STOCK.name' => 'MRP_WITH_STOCK',
 	'MRP_WITH_STOCK.help' => '<p>Valores:</p><ul>	<li>	<p><strong>Sí</strong><br />	Calcula la Hoja de Producción teniendo en cuenta el Stock Físico.</p>	</li>	<li>	<p><strong>No</strong><br />	Calcula las necesidades de Productos Terminados y Semi-Elaborados sin tener en cuenta el Stock Físico.</p>	</li></ul>',
+	'MRP_WITH_ZERO_ORDERS.name' => 'MRP_WITH_ZERO_ORDERS',
+	'MRP_WITH_ZERO_ORDERS.help' => 'Incluye las Odenes de Fabricación con cantidad 0 (cero) en el cálculo de las Hojas de Producción.',
 	'ENABLE_WEBSHOP_CONNECTOR.name' => 'Activar enlace con la Tienda online.',
 	'ENABLE_WEBSHOP_CONNECTOR.help' => 'Para que el enlace funcione correctamente, puede ser necesario algún "package" adicional.',
 	'ENABLE_FSOL_CONNECTOR.name' => 'Activar enlace con FactuSOL',

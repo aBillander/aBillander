@@ -114,6 +114,14 @@ trait BillableDocumentControllerTrait
             // return Redirect::to('invoice')->with('message', trans('invoice.access_denied'));
         }
 
+        $document->close();
+
+        if ( $document->status != 'closed' )
+            return redirect()->back()
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document is NOT closed.');
+
+
+
         // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
         $company = \App\Context::getContext()->company;
 

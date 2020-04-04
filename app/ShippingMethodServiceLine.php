@@ -20,8 +20,8 @@ class ShippingMethodServiceLine extends Model {
     protected $fillable = [ 'country_id', 'state_id', 'postcode', 'from_amount', 'price' ];
 
     public static $rules = array(
-        'from_amount' => 'min:0',
-        'price'       => 'min:0',
+        'from_amount' => 'numeric|min:0',
+        'price'       => 'numeric|min:0',
         'country_id'  => 'exists:countries,id',
         'state_id'    => 'sometimes|nullable|exists:states,id',
         'postcode'    => 'nullable|numeric',

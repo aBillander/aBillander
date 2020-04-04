@@ -205,6 +205,7 @@ trait BillableFormsControllerTrait
         $document = $this->document
                         ->with('customer')
                         ->with('taxingaddress')
+                        ->with('shippingmethod')
                         ->with('shippingaddress')
                         ->with('salesrep')
                         ->with('currency')
@@ -260,7 +261,7 @@ trait BillableFormsControllerTrait
         // Do start Shipping Cost Engine
         {
             // 
-            $method = $document->shippingaddress->getShippingMethod();
+            $method = $document->shippingmethod ?: $document->shippingaddress->getShippingMethod();
             $free_shipping = (Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') >= 0.0) ? Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') : null;
 
             list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $document, $free_shipping ));

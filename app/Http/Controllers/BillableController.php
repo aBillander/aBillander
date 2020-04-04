@@ -488,17 +488,18 @@ class BillableController extends Controller
         if ( !$document_line->packagemeasureunit )
         {
             $document_line->package_measure_unit_id = $document_line->measure_unit_id;
+            $document_line->pmu_conversion_rate = 1.0;
             $document_line->load('packagemeasureunit');
         }
 
         $pmu_conversion_rate = 1.0;
         $package_label = '';
 
-        if ( 1 || $document_line->package_measure_unit_id != $document_line->measure_unit_id)
+        if ( $document_line->package_measure_unit_id != $document_line->measure_unit_id)
         {
-            $pmu_conversion_rate = $document_line->packagemeasureunit->conversion_rate ?: 1.0;
+            $pmu_conversion_rate = $document_line->pmu_conversion_rate;
 
-            $package_label = $pmu_conversion_rate.'x'.$document_line->measureunit->name;
+            $package_label = (int) $pmu_conversion_rate.'x'.$document_line->measureunit->name;
         }
 
         // abi_r($document_line->toArray());die();

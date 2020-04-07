@@ -98,6 +98,7 @@ return [
 	'DB Backups' => 'Copias de Seguridad',
 
 	'Warehouse'     => 'Almacén',
+    'Products with Low Stock' => 'Productos con Bajo Stock',
 	'Suppliers' => 'Proveedores',
 	'Supplier Shipping Slips'     => 'Albaranes de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',

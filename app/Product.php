@@ -415,6 +415,14 @@ class Product extends Model {
                 $query->where('quantity_onhand', '>', 0);
         }
 
+        if ( isset($params['stock_control']) )
+        {
+            if ( $params['stock_control'] == 0 )
+                $query->where('stock_control', '<=', 0);
+            if ( $params['stock_control'] == 1 )
+                $query->where('stock_control', '>', 0);
+        }
+
         if ( isset($params['category_id']) && $params['category_id'] > 0 )
         {
             $query->where('category_id', '=', $params['category_id'])
@@ -429,6 +437,11 @@ class Product extends Model {
         if ( isset($params['procurement_type']) && $params['procurement_type'] != '' )
         {
             $query->where('procurement_type', '=', $params['procurement_type']);
+        }
+
+        if ( isset($params['mrp_type']) && $params['mrp_type'] != '' )
+        {
+            $query->where('mrp_type', '=', $params['mrp_type']);
         }
 
         if ( isset($params['active']) )

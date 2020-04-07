@@ -55,6 +55,17 @@ class ShippingMethod extends Model {
     |--------------------------------------------------------------------------
     */
 
+    public static function getSystemDefault( )
+    {
+            return ShippingMethod::find( Configuration::getInt('DEF_SHIPPING_METHOD') );
+    }
+
+    public function getIsDefaultAttribute( )
+    {
+            return Configuration::getInt('DEF_SHIPPING_METHOD') == $this->id;
+    }
+
+
     public static function getBillingTypeList()
     {
             $list = [];

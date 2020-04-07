@@ -15,6 +15,18 @@
     </h2>        
 </div>
 
+@if ( !$system_default )
+
+<div class="alert alert-danger alert-block">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <strong>{!! l('Error', [], 'layouts') !!}: </strong>
+            <ul>
+                    <li>{!! l('You SHOULD define a System wide Default Value for this Model.', 'layouts') !!}</li>
+            </ul>
+</div>
+
+@endif
+
 <div id="div_shippingmethods">
    <div class="table-responsive">
 
@@ -31,6 +43,7 @@
             <th>{{l('Carrier')}}</th>
             <!-- th>{{l('Class name')}}</th -->
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
+            <th class="text-center">{{l('Default', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -48,6 +61,9 @@
             <!-- td>{{ $shippingmethod->class_name }}</td -->
 
             <td class="text-center">@if ($shippingmethod->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
+
+            <td class="text-center">@if ($shippingmethod->is_default) <i class="fa fa-check-square" style="color: #2780e3;"></i> @else <i class="fa fa-square-o" style="color: #2780e3;"></i> @endif</td>
+
 
 			<td class="text-right button-pad">
                 @if (  is_null($shippingmethod->deleted_at))

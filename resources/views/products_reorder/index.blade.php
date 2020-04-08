@@ -33,10 +33,10 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ route('products.export') }}" class=" hidden btn btn-sm btn-grey" 
+        <a href="{{ route('products.reorder.export', Request::all()) }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
-        <a href="{{ route('helferin.home.mfg') }}" class="btn btn-sm btn-grey" 
+        <a href="{{ route('helferin.home.mfg') }}" class=" hidden btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
     </div>
@@ -78,7 +78,7 @@
 </div>
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('mrp_type', 'Planificación') !!}
+        {!! Form::label('mrp_type', l('MRP type')) !!}
         {!! Form::select('mrp_type', ['' => l('All', 'layouts')] + $product_mrptypeList, null, array('id' => 'mrp_type', 'class' => 'form-control')) !!}
     </div>
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Configuration;
 
 use App\Product;
+use App\Category;
 
 use Excel;
 
@@ -24,6 +25,27 @@ class ProductsReorderController extends Controller
    {
         $this->product = $product;
    }
+   
+    /**
+     * Display a listing of the resource.
+     *
+     */
+
+    public function indexQueryRaw(Request $request)
+    {
+        return $this->product
+                              ->isActive()
+                              ->filter( $request->all() )
+                              ->with('measureunit')
+//                              ->with('combinations')                                  
+//                              ->with('category')
+//                              ->with('tax')
+//                            ->orderBy('position', 'asc')
+//                            ->orderBy('name', 'asc')
+                              ->orderByRaw('(quantity_onhand - reorder_point) asc')
+                              ->orderBy('reference', 'asc')
+                              ;
+    }
 
     /**
      * Show something useful.
@@ -37,18 +59,7 @@ class ProductsReorderController extends Controller
 		// $category_id = $request->input('category_id', 0);
 		// $category = 
 
-        $products = $this->product
-                              ->isActive()
-                              ->filter( $request->all() )
-                              ->with('measureunit')
-//                              ->with('combinations')                                  
-//                              ->with('category')
-//                              ->with('tax')
-//                            ->orderBy('position', 'asc')
-//                            ->orderBy('name', 'asc')
-                              ->orderByRaw('(quantity_onhand - reorder_point) asc')
-                              ->orderBy('reference', 'asc')
-                              ;
+        $products = $this->indexQueryRaw( $request );
         
         $products = $products->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
@@ -63,5 +74,132 @@ class ProductsReorderController extends Controller
         $product_mrptypeList = Product::getMrpTypeList();
 
         return view('products_reorder.index', compact('products', 'product_procurementtypeList', 'product_mrptypeList'));
+
+    }
+
+
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function export(Request $request)
+    {
+        $category_id = $request->input('category_id', 0);
+        $procurement_type = $request->input('procurement_type', null);
+        $mrp_type = $request->input('mrp_type', null);
+        $stock_control = $request->input('stock_control', -1);
+
+        $products = $this->indexQueryRaw( $request )->get();
+
+        // Lets get dirty!!
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = [];
+
+        $ribbon1 = $category_id > 0 ? optional(Category::find($category_id))->name : 'todos';
+        $ribbon2 = $procurement_type == '' ? 'todos' : $procurement_type;
+        $ribbon3 = $mrp_type == '' ? 'todos' : $mrp_type;
+        $ribbon4 = $stock_control < 0 ? 'todos' : ($stock_control == 1 ? 'Sí' : 'No');
+
+        // Sheet Header Report Data
+        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = ['Re-Aprovisionamiento de Productos :: ', '', '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Categorías: '.$ribbon1];
+        $data[] = ['Aprovisionamiento: '.$ribbon2];
+        $data[] = ['Planificación: '.$ribbon3];
+        $data[] = ['Control de Stock: '.$ribbon4];
+
+        $data[] = [''];
+
+
+        // Define the Excel spreadsheet headers
+        $header_names = [
+
+                        l('Reference'), l('Product Name'), l('Procurement type'), l('MRP type'), l('Stock Control'),
+
+                        l('Stock'), l('Allocated'), l('On Order'), l('Available'), 
+                        l('Re-Order Point'), l('Maximum stock'), l('Suggested Quantity'), l('Measure Unit'),
+
+        ];
+
+        $data[] = $header_names;
+
+        foreach ($products as $product) 
+        {
+                $row = [];
+                $row[] = (string) $product->reference;
+                $row[] = $product->name;
+                $row[] = $product->procurement_type;
+                $row[] = $product->mrp_type;
+                $row[] = (string) $product->stock_control;
+
+                $row[] = $product->quantity_onhand *1.0;
+                $row[] = (float) $product->quantity_allocated;
+                $row[] = $product->quantity_onorder *1.0;
+                $row[] = $product->quantity_available *1.0;
+
+                $row[] = $product->reorder_point * 1.0;
+                $row[] = $product->maximum_stock * 1.0;
+                $row[] = (float) $product->quantity_reorder_suggested;
+                $row[] = $product->measureunit->sign;
+    
+                $data[] = $row;
+
+        }
+
+        $sheetName = 'Re-Aprovisionamiento';
+
+        // Generate and return the spreadsheet
+        Excel::create('Re-Aprovisionamiento de Productos', function($excel) use ($sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                
+                $sheet->mergeCells('A1:B1');
+                $sheet->mergeCells('A2:B2');
+
+                $sheet->getStyle('A2:A2')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->getStyle('A8:M8')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->setColumnFormat(array(
+//                    'B' => 'dd/mm/yyyy',
+//                    'C' => 'dd/mm/yyyy',
+                    'A' => '@',
+//                    'C' => '0.00',
+                    'C' => '0',
+                    'D' => '0.00',
+                    'E' => '0.00',
+                    'F' => '0.00',
+                    'G' => '0.00',
+
+                ));
+
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');
+
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+
+        abi_r($data);
+
     }
 }

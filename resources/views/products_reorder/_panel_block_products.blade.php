@@ -84,7 +84,7 @@
             <td>{{ $product->as_quantity('reorder_point') }}</td>
             <td>{{ $product->as_quantity('maximum_stock') }}</td>
             <!--td>{{ $product->as_quantity('manufacturing_batch_size') }}</td -->
-            <td>{{ $quantity_suggested = $product->as_quantity('maximum_stock') - $product->as_quantity('quantity_onhand') - $product->as_quantity('quantity_onorder') + $product->as_quantity('quantity_allocated') }}</td>
+            <td>{{ $product->as_quantityable($product->quantity_reorder_suggested) }}</td>
             <!-- td>{{ $product->as_price('cost_price') }}</td -->
             <!-- td>{{ $product->displayPrice }}</td -->
             <!-- td>{{ $product->tax->name }}</td -->

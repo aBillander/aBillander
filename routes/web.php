@@ -256,7 +256,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
                                                         'as'   => 'products.ajax.combinationLookup' ));
 
-        Route::get('products/stock/reorder', 'ProductsReorderController@index')->name('products.reorder.index');
+        Route::get('products/stock/reorder',        'ProductsReorderController@index' )->name('products.reorder.index' );
+        Route::get('products/stock/reorder/export', 'ProductsReorderController@export')->name('products.reorder.export');
 
         Route::resource('ingredients', 'IngredientsController');
 

@@ -278,6 +278,14 @@ class Product extends Model {
         return $value;
     }
 
+    public function getQuantityReorderSuggestedAttribute()
+    {
+        $value =      $this->maximum_stock 
+                    - $this->quantity_available;
+
+        return $value > 0 ? $value : 0.0;
+    }
+
     public function getDisplayPriceAttribute()
     {
         $value = Configuration::get('PRICES_ENTERED_WITH_TAX') ?

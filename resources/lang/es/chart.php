@@ -40,6 +40,12 @@ return [
 	'Customer Vouchers' => 'Recibos de Clientes',
 	'Pending Vouchers' => 'Recibos Pendientes',
 
+	'Chart - Product Stock' => 'Gráfico - Nivel de Inventario',
+	'Product Stock' => 'Nivel de Inventario',
+	'Pending V' => 'Recibos P',
+	'Chart - Aggregated Stock Movements' => 'Gráfico - Resumen Movimientos de Stock',
+	'Aggregated Stock Movements' => 'Resumen Movimientos de Stock',
+
 	''     => '',
 
 

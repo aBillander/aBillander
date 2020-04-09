@@ -431,6 +431,14 @@ class Product extends Model {
                 $query->where('stock_control', '>', 0);
         }
 
+        if ( isset($params['main_supplier_id']) )
+        {
+            if ( $params['main_supplier_id'] > 0 )
+                $query->where('main_supplier_id', $params['main_supplier_id']);
+            if ( $params['main_supplier_id'] < 0 )
+                $query->where('main_supplier_id', 0)->orWhere('main_supplier_id', null);
+        }
+
         if ( isset($params['category_id']) && $params['category_id'] > 0 )
         {
             $query->where('category_id', '=', $params['category_id'])
@@ -800,9 +808,15 @@ class Product extends Model {
         return $this->hasMany('App\StockMovement');
     }
 
-    public function supplier()
+    public function mainsupplier()
     {
         return $this->belongsTo('App\Supplier', 'main_supplier_id');
+    }
+
+    // Alias
+    public function supplier()
+    {
+        return $this->mainsupplier();
     }
 
     public function manufacturer()

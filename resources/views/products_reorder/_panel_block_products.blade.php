@@ -20,6 +20,7 @@
       <th>{{ l('Reference') }}</th>
       <th>{{-- l('Procurement type') --}}</th>
       <th colspan="2">{{ l('Product Name') }}</th>
+            <th>{{ l('Main Supplier') }}</th>
 			<!-- th>{{ l('Measure Unit') }}</th -->
             <th>{{ l('Stock') }}</th>
             <th>{{ l('Allocated') }}</th>
@@ -59,6 +60,7 @@
       </td>
 
       <td>
+{{--
 @php
   $img = $product->getFeaturedImage();
 @endphp
@@ -73,9 +75,15 @@
                       <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
 @endif
+--}}
       </td>
 
       <td>{{ $product->name }}</td>
+      <td>
+        <a target="_blank" href="{{ route('suppliers.edit', optional($product->mainsupplier)->id ) }}" title="{{l('Go to', [], 'layouts')}}">
+        {{ optional($product->mainsupplier)->name_fiscal }}
+        </a>
+      </td>
 			<!-- td>{{ $product->measureunit->name }}</td -->
             <td>{{ $product->as_quantity('quantity_onhand') }}</td>
             <td>{{ $product->as_quantity('quantity_allocated') }}</td>

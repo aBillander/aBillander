@@ -100,6 +100,11 @@
                                           ), null, array('class' => 'form-control')) !!}
 </div>
 
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('main_supplier_id', l('Main Supplier'), ['class' => 'control-label']) !!}
+    {!! Form::select('main_supplier_id', ['' => l('All', [], 'layouts'), '-1' => l('None', [], 'layouts')] + $supplierList, null, array('class' => 'form-control')) !!}
+</div>
+
 </div>
 
                 {!! Form::close() !!}

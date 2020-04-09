@@ -8,6 +8,7 @@ use App\Configuration;
 
 use App\Product;
 use App\Category;
+use App\Supplier;
 
 use Excel;
 
@@ -37,6 +38,7 @@ class ProductsReorderController extends Controller
                               ->isActive()
                               ->filter( $request->all() )
                               ->with('measureunit')
+                              ->with('mainsupplier')
 //                              ->with('combinations')                                  
 //                              ->with('category')
 //                              ->with('tax')
@@ -63,9 +65,13 @@ class ProductsReorderController extends Controller
         
         $products = $products->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
+        $supplierList = Supplier::select('id', \DB::raw("concat('[', id, '] ', name_fiscal) as full_name"))->pluck('full_name', 'id')->toArray();
+
+        // abi_r($supplierList);die();
+
         // abi_r($products, true);
 
-        $products->setPath('products');     // Customize the URI used by the paginator
+        $products->setPath('reorder');     // Customize the URI used by the paginator
 
         // $categoryList = ;		<= See ViewComposerServiceProvider
 
@@ -73,7 +79,7 @@ class ProductsReorderController extends Controller
 
         $product_mrptypeList = Product::getMrpTypeList();
 
-        return view('products_reorder.index', compact('products', 'product_procurementtypeList', 'product_mrptypeList'));
+        return view('products_reorder.index', compact('products', 'product_procurementtypeList', 'product_mrptypeList', 'supplierList'));
 
     }
 
@@ -104,7 +110,7 @@ class ProductsReorderController extends Controller
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Re-Aprovisionamiento de Productos :: ', '', '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Re-Aprovisionamiento de Productos :: ', '', '', '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Categorías: '.$ribbon1];
         $data[] = ['Aprovisionamiento: '.$ribbon2];
         $data[] = ['Planificación: '.$ribbon3];
@@ -116,7 +122,7 @@ class ProductsReorderController extends Controller
         // Define the Excel spreadsheet headers
         $header_names = [
 
-                        l('Reference'), l('Product Name'), l('Procurement type'), l('MRP type'), l('Stock Control'),
+                        l('Reference'), l('Product Name'), l('Main Supplier'), l('Procurement type'), l('MRP type'), l('Stock Control'),
 
                         l('Stock'), l('Allocated'), l('On Order'), l('Available'), 
                         l('Re-Order Point'), l('Maximum stock'), l('Suggested Quantity'), l('Measure Unit'),
@@ -127,9 +133,14 @@ class ProductsReorderController extends Controller
 
         foreach ($products as $product) 
         {
+                $supplier_label = '';
+                if ( $product->procurement_type == 'purchase' && $product->mainsupplier )
+                    $supplier_label = '['.$product->mainsupplier->id .'] '.$product->mainsupplier->name_fiscal;
+
                 $row = [];
                 $row[] = (string) $product->reference;
                 $row[] = $product->name;
+                $row[] = $supplier_label;
                 $row[] = $product->procurement_type;
                 $row[] = $product->mrp_type;
                 $row[] = (string) $product->stock_control;
@@ -170,7 +181,7 @@ class ProductsReorderController extends Controller
                     ]
                 ]);
 
-                $sheet->getStyle('A8:M8')->applyFromArray([
+                $sheet->getStyle('A8:N8')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

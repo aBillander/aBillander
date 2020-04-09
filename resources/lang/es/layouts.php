@@ -46,6 +46,8 @@ return [
 	'Your Document has been sent! &#58&#58 (:id) '     => 'Su Documento ¡ha sido enviado! &#58&#58 (:id) ',
 	'Your Document could not be sent &#58&#58 (:id) '     => 'Su Documento no ha podido ser enviado &#58&#58 (:id) ',
 
+	'You SHOULD define a System wide Default Value for this Model.' => 'Para este Modelo DEBE definir un Valor por Defecto que se usará en toda la Aplicación.',
+
 	'This function is not available &#58&#58 (:id) ' => 'Esta función no está diosponible &#58&#58 (:id) ',
 
 	'No records selected. ' => 'No se han seleccionado registros. ',

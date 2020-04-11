@@ -192,7 +192,7 @@ class ChartProductStockController extends Controller
 				array_push( $month_name_array, $month_name );
 			}
 		}
-		$max_no = max( $monthly_order_count_array );
+		$max_no = max( max( $monthly_order_count_array ), max( $monthly_pending_count_array ) );
 		$max = ceil(( $max_no ) / 10 ) * 10;
 		$monthly_order_data_array = array(
 			'months' => $month_name_array,

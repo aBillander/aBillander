@@ -283,4 +283,16 @@ return [
     'Prices are exclusive of Ecotax' => 'El Precio no incluye la Ecotasa',
     'Prices are inclusive of Ecotax' => 'El Precio incluye la Ecotasa',
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Internet Tab
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'Import Images' => 'Importar Imágenes',
+
 ];

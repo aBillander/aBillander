@@ -150,11 +150,12 @@ $tax = \App\Tax::find( $tax_id );
        </a>
       @endif</td>
 
-			<td class="text-right" style="width:1px; white-space: nowrap;">
-{{--
-                <a class='open-AddBookDialog btn btn-sm btn-warning' href="{{ URL::route('worders.update', [$product["id"]] + $query ) }}" data-target='#myModalOrder' data-id="{{ $product["id"] }}" data-status="{{ $product["status"] }}" data-statusname="{{ \aBillander\WooConnect\WooConnector::getOrderStatusName( $product["status"] ) }}" data-toggle="modal" onClick="return false;" title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>
+			<td class="text-right button-pad" xstyle="width:1px; white-space: nowrap;">
 
                 <a class="btn btn-sm btn-info" href="{{ URL::route('wproducts.fetch', [$product["sku"] ?: $product["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-superpowers"></i></a>
+
+{{--
+                <a class='open-AddBookDialog btn btn-sm btn-warning' href="{{ URL::route('worders.update', [$product["id"]] + $query ) }}" data-target='#myModalOrder' data-id="{{ $product["id"] }}" data-status="{{ $product["status"] }}" data-statusname="{{ \aBillander\WooConnect\WooConnector::getOrderStatusName( $product["status"] ) }}" data-toggle="modal" onClick="return false;" title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to('wooc/worders/' . $product["id"]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
       

@@ -244,6 +244,8 @@ return [
 	'Browse'     => 'Seleccionar',
 	'Help'     => 'Ayuda',
 	'Home'     => 'Inicio',
+	'Fetch' => 'Extraer',
+	'Fetch Data' => 'Extraer Datos',
 
 	'Set on-hold'     => 'Click para poner en espera',
 	'Unset on-hold'     => 'Click para liberar',

@@ -231,15 +231,28 @@ class WooProductsController extends Controller
 	}
 
 
-	public function importProductImages()
+	public function importProductImages( Request $request )
 	{
 		// Route::get('wproducts/importProductImages'
 
 		// En el Servidor se recuperaron las imagnes de la WooTienda, pero dió un gateway timeout => ¿Se podría hacer por partes (chuncks) para que no pase esto?
 
+		// abi_r($request->all());die();
+
+		$product_sku = $request->input('product_sku', '');
+
 		// Products
-		$list = Product::select('id', 'reference', 'name')->where('reference', '!=', '')->get();
-		// $list = Product::select('id', 'reference', 'name')->where('reference', '4003')->get();		// ->where('reference', '!=', '');	// ->pluck('reference');
+		$list = Product::select('id', 'reference', 'name')
+						->where( function ($q) use ($product_sku) {
+
+							if ( $product_sku == '' )
+								// Import All Product Images
+								$q->where('reference', '!=', '');
+							else
+								// Only ONE Product
+								$q->where('reference', $product_sku);
+						} )
+						->get();
 
 		foreach( $list as $p )
 		{
@@ -255,47 +268,57 @@ class WooProductsController extends Controller
 			if ( $images && count($images) )
 			{
 				// Initialize with something to show
-				$img_src  = $images[0]['src']  ?? '';
-				$img_name = $images[0]['name'] ?? '';
-				$img_alt  = $images[0]['alt']  ?? '';
+				// $img_src  = $images[0]['src']  ?? '';
+				// $img_name = $images[0]['name'] ?? '';
+				// $img_alt  = $images[0]['alt']  ?? '';
 
 				foreach ($images as $image)
 				{
-					if ($image['position'] == 0)
+					$img_src  = $image['src'];
+					$img_name = $image['name'];
+					$img_alt  = $image['alt'];
+
+					$img_position  = $image['position'];	// position = 0 => Product Image (Woo Featured image)
+
+					$caption = $img_name . ' :: ' . $img_alt;
+
+					// Make the magic
+					if( $img_src )
 					{
-						$img_src  = $image['src'];
-						$img_name = $image['name'];
-						$img_alt  = $image['alt'];
-						break;
+
+				        $image = \App\Image::createForProductFromUrl($img_src, ['caption' => $caption]);
+						
+				        $p->images()->save($image);
+
+				        if ( $p->images()->count() == 1 )
+				        	$p->setFeaturedImage( $image );
+
 					}
-				}
-
-				// Make the magic
-				if( $img_src )
-				{
-
-			        $image = \App\Image::createForProductFromUrl($img_src, ['caption' => $p->name]);
-					
-			        $p->images()->save($image);
-
-			        if ( $p->images()->count() == 1 )
-			        	$p->setFeaturedImage( $image );
-
 				}
 
 			} else {
 
-				$img_src = 'https://www.laextranatural.com/wp-content/plugins/woocommerce/assets/images/placeholder.png';
+				// Maybe a default image here???
+				// $img_src = 'https://www.laextranatural.com/wp-content/plugins/woocommerce/assets/images/placeholder.png';
 				
 			}
-
-			// abi_r($sku.' :: '.$img_src);
 		}
+/*
 
-		// die();
+See https://woocommerce.github.io/woocommerce-rest-api-docs/#product-properties and the Product - Images properties section.
 
-        return redirect('products')
-                ->with('success', l('Some Product Images has been retrieved from WooCommerce Shop.'));
+    Image position. 0 means that the image is featured.
+
+The image in position 0 is your featured image.
+
+
+// https://github.com/woocommerce/woocommerce-rest-api/issues/100
+
+
+*/
+
+        return redirect()->back()
+                ->with('success', l('Some Product Images has been retrieved from WooCommerce Shop.') . " $product_sku");
 	}
 
 

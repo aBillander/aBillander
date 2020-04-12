@@ -143,17 +143,25 @@ class ImportProductsController extends Controller
 
 
 
-        $truncate = $request->input('truncate', 0);
-        $params = ['simulate' => $request->input('simulate', 0)];
+        $simulate = (int) $request->input('simulate', 0);
+        $truncate = (int) $request->input('truncate', 0);
+
+        $params = ['simulate' => $simulate];
 
         // Truncate table
         if ( $truncate > 0 ) {
 
             $nbr = Product::count();
-            
-            Product::truncate();
 
-            $logger->log("INFO", "Se han borrado todos los Productos antes de la Importación. En total {nbr} Productos.", ['nbr' => $nbr]);
+            if ( $simulate > 0 ) {
+
+                $logger->log("INFO", "NO se han borrado los Productos antes de la Importación (Modo SIMULACION). En total {nbr} Productos.", ['nbr' => $nbr]);
+            } else {
+                
+                Product::truncate();
+
+                $logger->log("INFO", "Se han borrado todos los Productos antes de la Importación. En total {nbr} Productos.", ['nbr' => $nbr]);
+            }
         }
 
 
@@ -355,6 +363,7 @@ class ImportProductsController extends Controller
                           ->with('tax')
                           ->with('ecotax')
                           ->with('supplier')
+                          ->with('manufacturer')
                           ->orderBy('reference', 'asc')
                           ->get();
 
@@ -377,7 +386,7 @@ class ImportProductsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'reference', 'name', 'product_type', 'procurement_type', 'mrp_type', 'phantom_assembly', 'ean13', 'description', 'description_short', 'category_id', 'category_REFERENCE_EXTERNAL', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'ecotax_id', 'ECOTAX_NAME', 'cost_price', 'location', 'width', 'height', 'depth', 'weight', 'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'route_notes', 'main_supplier_id', 'main_supplier_REFERENCE_EXTERNAL', 'SUPPLIER_NAME',
+        $headers = [ 'id', 'reference', 'name', 'product_type', 'procurement_type', 'mrp_type', 'phantom_assembly', 'ean13', 'position', 'description', 'description_short', 'category_id', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'ecotax_id', 'ECOTAX_NAME', 'cost_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'available_for_sale_date', 'location', 'width', 'height', 'depth', 'volume', 'weight', 'notes', 'stock_control', 'reorder_point', 'maximum_stock', 'out_of_stock', 'out_of_stock_text', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'machine_capacity', 'units_per_tray', 'route_notes', 'main_supplier_id', 'SUPPLIER_NAME', 'supplier_reference', 'supply_lead_time', 'manufacturer_id', 'MANUFACTURER_NAME',
         ];
 
         $data[] = $headers;
@@ -395,7 +404,8 @@ class ImportProductsController extends Controller
             $row['TAX_NAME']          = $product->tax ? $product->tax->name : '';
             $row['ECOTAX_NAME']          = $product->ecotax ? $product->ecotax->name : '';
             $row['MEASURE_UNIT_NAME'] = $product->measureunit ? $product->measureunit->name : '';
-            $row['SUPPLIER_NAME']     = $product->supplier ? $product->supplier->name : '';
+            $row['SUPPLIER_NAME']     = $product->supplier ? $product->supplier->name_fiscal : '';
+            $row['MANUFACTURER_NAME']     = $product->manufacturer ? $product->manufacturer->name : '';
 
             $data[] = $row;
         }

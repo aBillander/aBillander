@@ -34,4 +34,9 @@ return [
 
 	'Ecotax: ' => 'Ecotasa: ',
 
+    'Measure Unit Label' => 'Etiqueta Unidad de Medida',
+    'Extra Quantity Label' => 'Etiqueta Cantidad sin Coste',
+
+    'This Label will appear on Document Lines.' => 'Esta Etiqueta aparecerá en las Líneas del Documento.',
+
 ];

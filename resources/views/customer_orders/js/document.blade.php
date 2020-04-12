@@ -240,6 +240,12 @@
                     $('#line_pmu_label').val(result.pmu_label);
                     $('#line_extra_quantity_label').val(result.extra_quantity_label);
 
+                    if ((result.pmu_label || '') != '')
+                        $('#line_pmu_label').parent().removeClass('hidden');
+
+                    if ((result.extra_quantity_label || '') != '')
+                        $('#line_extra_quantity_label').parent().removeClass('hidden');
+
                     $('#line_notes').val(result.notes);
 
                     console.log(result);

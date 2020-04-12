@@ -12,7 +12,7 @@ class ProductionPlanner
     public function __construct( $production_sheet_id, $due_date )
     {
         //
-        $this->production_sheet_id; 
+        $this->production_sheet_id = $production_sheet_id; 
         $this->due_date = $due_date;
 
         $this->orders_planned = collect([]);
@@ -28,11 +28,13 @@ class ProductionPlanner
 
     public function addPlannedMultiLevel($data = [])
     {
-        $product = Product::where('procurement_type', 'manufacture')
-                        ->orWhere('procurement_type', 'assembly')
-                        ->findOrFail( $data['product_id'] );
+        // abi_r($data);
+
+        $product = Product::findOrFail( $data['product_id'] );
 
         $bom     = $product->bom;
+
+        // abi_r($data);    // die();
 
         $required_quantity = $data['required_quantity'];
         $order_quantity    = $data['planned_quantity'];
@@ -78,11 +80,11 @@ class ProductionPlanner
             $quantity = $order_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
 
             $order = $this->addPlannedMultiLevel([
-                'product_id' => $line_product->id,
+                'product_id' => $line->product_id,
 
                 'required_quantity' => $quantity,
                 'planned_quantity' => $quantity,
-                'product_bom_id' => $line_product->bom ? $line_product->bom->id : 0,
+//                'product_bom_id' => $line_product->bom ? $line_product->bom->id : 0,
 
                 'notes' => $data['notes'],
 
@@ -98,15 +100,19 @@ class ProductionPlanner
 
     public function equalizePlannedMultiLevel($product_id, $new_required = 0.0)
     {
+        abi_r(compact('product_id', 'new_required'));
+
         // Retrieve Planned Order for this Product (should exist!)
-        $order = $this->getPlannedOrders()->firstWhere('product_id', $product->id);
+        $order = $this->getPlannedOrders()->firstWhere('product_id', $product_id);
 
         if ( !$order ) return ;     // <= Noting to do here
 //        if (  $order->planned_quantity >= 0.0 ) return ;     // <= carry this check at the top level only!
 
 
         // Wanna dance, baby? For sure I do.
-        $product_id = $order->product_id;
+        $products_planned = $this->products_planned;
+        $product = $products_planned->firstWhere('id', $product_id);
+
         $quantity = $new_required;
             
         $this->orders_planned->transform(function ($item, $key) use ($product_id, $quantity) {
@@ -125,6 +131,8 @@ class ProductionPlanner
         $extra_manufacture = $quantity;
 
         $bom     = $product->bom;
+
+        // abi_r($product->bom->BOMmanufacturablelines);die();
 
 
         // Order lines
@@ -285,7 +293,9 @@ class ProductionPlanner
 
         $products_planned = &$this->products_planned;
 
-        // Stock adjustment
+        // abi_r($products_planned, true);
+
+        // Load Stock (only value) onto Production Order
         $this->orders_planned->transform(function($order, $key) use ($products_planned, $withStock) {
                       $product = $products_planned->firstWhere('id', $order->product_id);
                       $product_stock = 0.0;
@@ -294,13 +304,12 @@ class ProductionPlanner
                       // Only Assembies since Manufacture Products are already adjusted in STEP 1
                       if ( $withStock )
                       {
-                            if ( $product->stock_control )
+                            if ( $product->mrp_type == 'manual' || $product->mrp_type == 'reorder' )
                                 $product_stock = $product->quantity_onhand;
                       }
 
-            // Watch out! Quantities maybe negative amounts!!! (see STEP 2)
-            $order->required_quantity = $order->required_quantity - $product_stock;
-            $order->planned_quantity  = $order->planned_quantity  - $product_stock;
+            // Load Stock
+            $order->product_stock = $product_stock;
             return $order;
         });
 

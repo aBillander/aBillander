@@ -58,7 +58,7 @@
                       <li><a href="{{ route('productionsheet.shippingslips', [$sheet->id]) }}"><i class="fa fa-truck"></i> {{l('Customer Shipping Slips')}}</a></li>
 
                       <li class="divider"></li>
-                      <li><a href="{{ route('productionsheet.tourline', [$sheet->id]) }}"><img src="https://www.tourlineexpress.com/images/logoh.gif" height="20" /> &nbsp;{{l('Tourline Hoja Excel')}}</a></li>
+                      <li><a href="{{ route('productionsheet.tourline', [$sheet->id]) }}"><img src="{{ \App\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" /> &nbsp;{{l('Tourline Hoja Excel')}}</a></li>
                       <li><a href="{{ route('productionsheet.deliveryroute', [$sheet->id, 1]) }}"><i class="fa fa-map-o"></i> {{l('Hoja de Reparto')}}: Sevilla</a></li>
 
                       <li class="divider"></li>
@@ -71,6 +71,10 @@
         <!-- a href="{{ route('productionsheet.orders', [$sheet->id]) }}" class="btn btn-blue" stile="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a -->
 
         <a href="{{ URL::to('productionsheets') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Production Sheets') }}</a>
+
+
+                <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
+
     </div>
     <h2>
         <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">::</span> {{ abi_date_form_short($sheet->due_date) }}
@@ -240,6 +244,18 @@
    </div>
 
 </div>
+
+
+
+{{-- *************************************** --}}
+
+
+{{--  --}}
+
+    @include('production_sheets._modal_help')
+
+{{--  --}}
+
 
 @include('layouts/back_to_top_button')
 

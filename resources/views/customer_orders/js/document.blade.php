@@ -68,6 +68,9 @@
                     $('#line_sales_rep_id').val( $('#sales_rep_id').val() );
                     $('#line_commission_percent').val( 0.0 );   // Use default
 
+                    $('#line_pmu_label').val('');
+                    $('#line_extra_quantity_label').val('');
+
                     $('#line_notes').val('');
 
                     $("#line_autoproduct_name").val('');
@@ -232,8 +235,11 @@
                     calculate_line_product( );
 
                     $('#line_sales_rep_id').val( result.sales_rep_id );
-                    $('#line_commission_percent').val( result.commission_percent );
+                    $('#line_commission_percent').val( result.commission_percent );line_extra_quantity_label
                     
+                    $('#line_pmu_label').val(result.pmu_label);
+                    $('#line_extra_quantity_label').val(result.extra_quantity_label);
+
                     $('#line_notes').val(result.notes);
 
                     console.log(result);
@@ -549,6 +555,8 @@
                               discount_amount_tax_excl : $('#line_discount_amount_tax_excl').val(),
                               sales_rep_id : $('#line_sales_rep_id').val(),
                               commission_percent : $('#line_commission_percent').val(),
+                              pmu_label : $('#line_pmu_label').val(),
+                              extra_quantity_label : $('#line_extra_quantity_label').val(),
                               notes : $('#line_notes').val()
                           };
 

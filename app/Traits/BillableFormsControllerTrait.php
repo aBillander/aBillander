@@ -418,6 +418,12 @@ trait BillableFormsControllerTrait
         if ($request->has('line_sort_order')) 
             $params['line_sort_order'] = $request->input('line_sort_order');
 
+        if ($request->has('pmu_label')) 
+            $params['pmu_label'] = $request->input('pmu_label');
+
+        if ($request->has('extra_quantity_label')) 
+            $params['extra_quantity_label'] = $request->input('extra_quantity_label');
+
         if ($request->has('notes')) 
             $params['notes'] = $request->input('notes');
 

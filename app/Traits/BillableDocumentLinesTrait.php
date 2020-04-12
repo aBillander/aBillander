@@ -525,8 +525,14 @@ trait BillableDocumentLinesTrait
         if (array_key_exists('line_sort_order', $params)) 
             $data['line_sort_order'] = $params['line_sort_order'];
         
-        if (array_key_exists('notes', $params)) 
-            $data['notes'] = $params['notes'];
+        if (array_key_exists('pmu_label', $params)) 
+            $data['pmu_label'] = $params['pmu_label'];
+        
+        if (array_key_exists('extra_quantity_label', $params)) 
+            $data['extra_quantity_label'] = $params['extra_quantity_label'];
+        
+        if (array_key_exists('name', $params)) 
+            $data['name'] = $params['name'];
         
 
         if (array_key_exists('name', $params)) 

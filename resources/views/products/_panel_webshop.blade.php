@@ -12,7 +12,7 @@
 
    <div class="panel-body">
 
-        <div class="content_product_data loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}</div>
+        <div class=" hidden content_product_data loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}</div>
 
         <div class="row">
 
@@ -32,6 +32,20 @@
                          </label>
                        </div>
                      </div>
+                   </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+
+                <a class="btn xbtn-sm btn-blue" href="{{ URL::route('wproducts.fetch', $product->reference ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i> {{l('Fetch Data', [], 'layouts')}}</a>
+
+
+                   </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+
+                <a class="btn xbtn-sm btn-grey" href="{{ URL::route('wproducts.import.product.images', ['product_sku' => $product->reference] ) }}" title="{{l('Import', [], 'layouts')}}" target="_blank"><i class="fa fa-image"></i> {{l('Import Images')}}</a>
+
+
                    </div>
         </div>
 
@@ -117,7 +131,7 @@
     function getProductInternetData( pId = 0 ){
 
       // $('.content_product_data').html(pId);
-      // return;
+      return;
 
       if ( pId <= 0 ) return;
 

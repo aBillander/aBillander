@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use \App\ProductionPlanner;
+
 use App\Traits\ViewFormatterTrait;
 
 class ProductionSheet extends Model
@@ -29,28 +31,24 @@ class ProductionSheet extends Model
     |--------------------------------------------------------------------------
     */
     
-    public function calculateProductionOrders( $withStock = false )
+    public function calculateProductionOrders()
     {
 
         // Delete current Production Orders
         $porders = $this->productionorders()->get();
         foreach ($porders as $order) {
 //            if ( $order->created_via != 'manual' )
-                $order->delete();
+                $order->deleteWithLines();
         }
 
         // $errors = [];
-        $this->sandbox = new ProductionPlanner( $this->id, $this->due_date );
+        $this->sandbox = new ProductionPlanner();
 
         // Do the Mambo!
         // STEP 1
         // Calculate raw requirements
-        $requirements = $this->customerorderlinesGrouped( $withStock );
 
-        foreach ( $requirements as $pid => $line ) {
-            // Discard Products with stock
-            if ($line['quantity'] <= 0.0) continue;
-
+        foreach ($this->customerorderlinesGrouped() as $pid => $line) {
             //Batch size stuff
             $nbt = ceil($line['quantity'] / $line['manufacturing_batch_size']);
             $order_quantity = $nbt * $line['manufacturing_batch_size'];
@@ -58,96 +56,101 @@ class ProductionSheet extends Model
 
             // Create Production Order
             $orders = $this->sandbox->addPlannedMultiLevel([
+                'created_via' => 'manufacturing',
+                'status' => 'planned',
                 'product_id' => $pid,
-
+//                'product_reference' => $line['reference'],
+//                'product_name' => $line['name'],
                 'required_quantity' => $line['quantity'],
                 'planned_quantity' => $order_quantity,
-
+//                'product_bom_id' => 1,
+                'due_date' => $this->due_date,
                 'notes' => '',
-
+//                
+//                'work_center_id' => 2,
+                'manufacturing_batch_size' => $line['manufacturing_batch_size'],
+//                'warehouse_id' => 0,
                 'production_sheet_id' => $this->id,
             ]);
 
         }
-        // Resultado hasta aquí:
-        // en ->sandbox->orders_planned hay las ProductionOrder (s) que deben fabricarse según las BOM.
-        // La cantidad de Producto Terminado resulta de:
-        // - Sumar los Pedidos
-        // - Descontar el Stock (si se controla el stock del producto)
-        // - Ajustar con el tamaño de lote
-        // 
-        // Para los semielaborados:
-        // - NO se tiene en cuenta el stock
-        // - NO se tiene en cuenta el tamaño del lote
-
-        // abi_r($this->sandbox->getPlannedOrders(), true);
-
 
         // STEP 2
-        // Group Planned Orders, adjust according to onhand stock
+        // Group Planned Orders, 
 
-        $this->sandbox->groupPlannedOrders( $withStock );
+        // $this->sandbox->orders_planned = $this->sandbox->orders_planned->groupBy('product_id');
 
-        // abi_r($this->sandbox->getPlannedOrders(), true);
+        $lines_summary = $this->sandbox->orders_planned
+                ->where('manufacturing_batch_size', '>', 1)     // Take only if batch size must be checked
+                ->groupBy('product_id')->reduce(function ($result, $group) {
+                  return $result->put($group->first()->product_id, [
+                    'product_id' => $group->first()->product_id,
+                    'reference' => $group->first()->product_reference,
+                    'name' => $group->first()->product_name,
+                    'required_quantity' => $group->sum('required_quantity'),
+                    'planned_quantity' => $group->sum('planned_quantity'),
 
-        // Now we may have orders with some onhand quantity
-
-        $pIDs = $this->sandbox->getPlannedOrders()
-                ->where('product_stock', '>', 0.0)
-                ->pluck('product_id');
-
-        // abi_r($pIDs, true); // die();
-
-        foreach ($pIDs as $pID) {       // abi_r($pID); continue;
-            
-            $order = $this->sandbox->getPlannedOrders()->firstWhere('product_id', $pID);
-            // this check is necessary, since collection is modified on the fly
-            if (  $order->product_stock <= 0.0 ) continue;     // Noting to do here
-
-            $qty = ( $order->planned_quantity < $order->product_stock ) ?
-                    $order->planned_quantity :
-                    $order->product_stock    ;
-
-            $quantity = (-1.0) * $qty;
-            $this->sandbox->equalizePlannedMultiLevel($pID, $quantity);
-
-            // ProductionOrders collection has been equalized ()
-        }
-
-        // abi_r($this->sandbox->getPlannedOrders(), true);
-        // die();
+                    'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
+                  ]);
+                }, collect());
 
 
         // STEP 3
         // Adjust batch size
 
-        $lines_summary = $this->sandbox->getPlannedOrders()
-                ->where('manufacturing_batch_size', '>', 1);     // Take only if batch size must be checked
-
-        // abi_r( $lines_summary , true);
-
         foreach ($lines_summary as $pid => $line) {
+            //Batch size stuff
+            // Obviously: $line['planned_quantity'] >= $line['required_quantity']
+            $nbt = ceil($line['planned_quantity'] / $line['manufacturing_batch_size']);
+            $extra_quantity = $nbt * $line['manufacturing_batch_size'] - $line['planned_quantity'];
 
-            $order = $this->sandbox->addExtraPlannedMultiLevel($line->product_id, 0.0);
+
+            // Create Production Order
+            $order = $this->sandbox->addExtraPlannedMultiLevel([
+                'created_via' => 'manufacturing',
+                'status' => 'planned',
+                'product_id' => $pid,
+//                'product_reference' => $line['reference'],
+//                'product_name' => $line['name'],
+                'required_quantity' => 0,       // Not required for manufacturing, only to complete batch size
+                'planned_quantity' => $extra_quantity,
+//                'product_bom_id' => 1,
+                'due_date' => $this->due_date,
+                'notes' => '',
+//                
+//                'work_center_id' => 2,
+                'manufacturing_batch_size' => $line['manufacturing_batch_size'],
+//                'warehouse_id' => 0,
+                'production_sheet_id' => $this->id,
+            ]);
 
         }
 
+// abi_r($lines_summary);
+
+// abi_r($this->sandbox->orders_planned, true);
 
         // STEP 4
-        // Release
+        // Adjust Release
+        // Group Planned Orders
+        $lines_summary = $this->sandbox->orders_planned
+                ->groupBy('product_id')->reduce(function ($result, $group) {
+                  return $result->put($group->first()->product_id, [
+                    'product_id' => $group->first()->product_id,
+                    'reference' => $group->first()->product_reference,
+                    'name' => $group->first()->product_name,
+                    'required_quantity' => $group->sum('required_quantity'),
+                    'planned_quantity' => $group->sum('planned_quantity'),
 
-        $lines_summary = $this->sandbox->getPlannedOrders();
+                    'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
+                  ]);
+                }, collect());
 
 
 
-        // Release
         foreach ($lines_summary as $pid => $line) {
-
-            if ( Configuration::isFalse('MRP_WITH_ZERO_ORDERS') && $line['planned_quantity'] <= 0.0 )
-                continue;       // Nothing to do here
-
             // Create Production Order
-            $order = ProductionOrder::createWithLines([
+            $order = \App\ProductionOrder::createWithLines([
                 'created_via' => 'manufacturing',
                 'status' => 'released',
                 'product_id' => $pid,
@@ -165,10 +168,52 @@ class ProductionSheet extends Model
                 'production_sheet_id' => $this->id,
             ]);
 
+            // if (!$order) $errors[] = '<li>['.$line['reference'].'] '.$line['name'].'</li>';
         }
 
         // STEP 5
-        // Some clean-up ???
+        // Some clean-up
+
+        // Delete current -Planned- Production Orders
+        /* $porders = $this->productionorders->where('status', 'planned');
+        foreach ($porders as $order) {
+            $order->deleteWithLines();
+        } */
+
+    }
+    
+    public function calculateProductionOrdersRaw()
+    {
+
+        // Delete current Production Orders
+        $porders = $this->productionorders()->get();
+        foreach ($porders as $order) {
+            $order->deleteWithLines();
+        }
+
+        // $errors = [];
+
+        // Do the Mambo!
+        foreach ($this->customerorderlinesGrouped() as $pid => $line) {
+            // Create Production Order
+            $order = \App\ProductionOrder::createWithLines([
+                'created_via' => 'manufacturing',
+//                'status' => 'released',
+                'product_id' => $pid,
+//                'product_reference' => $line['reference'],
+//                'product_name' => $line['name'],
+                'planned_quantity' => $line['quantity'],
+//                'product_bom_id' => 1,
+                'due_date' => $this->due_date,
+                'notes' => '',
+//                
+//                'work_center_id' => 2,
+//                'warehouse_id' => 0,
+                'production_sheet_id' => $this->id,
+            ]);
+
+            // if (!$order) $errors[] = '<li>['.$line['reference'].'] '.$line['name'].'</li>';
+        }
 
     }
     
@@ -214,66 +259,48 @@ class ProductionSheet extends Model
         return $num;
     }
 
-    public function customerorderlinesGrouped( $withStock = false )
+    public function customerorderlinesGrouped()
     {
-        $this->load('customerorderlines', 'customerorderlines.product');
-/*
-        $lines = $this->customerorderlines
-                    ->whereHas('customerorderlines', function($query) {
-                            $query->whereHas('product', function($query1) {
-                                   $query1->  where('procurement_type', 'manufacture');
-                                   $query1->orWhere('procurement_type', 'assembly');
-                            });
-                    })
- //                   ->with('customerorderlines.product')
-                    ;
-*/
-        
+        $mystuff = collect([]);
+        $lines = $this->customerorderlines;     // ()->whereHas('product');
 
-        // Filter Lines
-        $lines = $this->customerorderlines->filter(function ($value, $key) {
-            return $value->product && 
-                   ( ($value->product->procurement_type == 'manufacture') ||
-                     ($value->product->procurement_type == 'assembly'   )    );
-        });
+// abi_r($lines, true);
 
-        $num = $lines
-                    ->groupBy('product_id')->reduce(function ($result, $group) use ( $withStock ) {
-                      $first = $group->first();
-                      $product = $first->product;
-                      $stock = 0.0;
+        foreach($lines as $line)
+        {
+            if ( $line->product )
+                if ( ($line->product->procurement_type == 'manufacture') ||
+                 ($line->product->procurement_type == 'assembly') ) {
 
-                      if ($product->procurement_type == 'manufacture')
-                      // Assembies will be fit later on (groupPlannedOrders)
-                      if ( $withStock )
-                      {
-                            if ( $product->stock_control )
-                                $stock = $product->quantity_onhand;
-                      }
+                    $mystuff->push($line);
+                }
 
-                      $quantity = $group->sum('quantity') - $stock;
-                      
-                      if ( $quantity < 0.0 ) $quantity = 0.0;        // No Manufacturing needed
+        }
 
-                      return $result->put($first->product_id, [
-                        'product_id' => $first->product_id,
-                        'reference' => $first->reference,
-                        'name' => $first->name,
-                        'stock' => $stock,
-                        'quantity' => $quantity,
-                        // Do I need these two?
-//                        'measureunit' => $product->measureunit->name,
-//                        'measureunit_sign' => $product->measureunit->sign,
+// abi_r($mystuff, true);
 
-                        'manufacturing_batch_size' => $product->manufacturing_batch_size,
+        $num = $mystuff
+//                    ->where('procurement_type', 'manufacture')
+//                    ->where('procurement_type', 'assembly')
+//                    ->filter(function($line) {
+//                        return ($line->product->procurement_type == 'manufacture') ||
+//                               ($line->product->procurement_type == 'assembly');
+//                    })
+                    ->groupBy('product_id')->reduce(function ($result, $group) {
+                      return $result->put($group->first()->product_id, [
+                        'product_id' => $group->first()->product_id,
+                        'reference' => $group->first()->reference,
+                        'name' => $group->first()->name,
+                        'quantity' => $group->sum('quantity'),
+                        'measureunit' => $group->first()->product->measureunit->name,
+                        'measureunit_sign' => $group->first()->product->measureunit->sign,
+
+                        'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
                       ]);
                     }, collect());
 
-
-        // abi_r( $num, true);
-
         // Sort order
-        return $num;        // ->sortBy('reference');
+        return $num->sortBy('reference');
     }
 
     public function customerorderlinesGroupedByWorkCenter( $work_center_id = null )
@@ -283,6 +310,8 @@ class ProductionSheet extends Model
 
         $mystuff = collect([]);
         $lines = $this->customerorderlines->load('product');     // ()->whereHas('product');
+
+// abi_r($lines, true);
 
         foreach($lines as $line)
         {
@@ -295,7 +324,15 @@ class ProductionSheet extends Model
 
         }
 
+// abi_r($mystuff, true);
+
         $num = $mystuff
+//                    ->where('procurement_type', 'manufacture')
+//                    ->where('procurement_type', 'assembly')
+//                    ->filter(function($line) {
+//                        return ($line->product->procurement_type == 'manufacture') ||
+//                               ($line->product->procurement_type == 'assembly');
+//                    })
                     ->groupBy('product_id')->reduce(function ($result, $group) {
                       return $result->put($group->first()->product_id, [
                         'product_id' => $group->first()->product_id,
@@ -331,6 +368,11 @@ class ProductionSheet extends Model
                       $this->productionorders->where('status', $status)
                     : $this->productionorders;
 
+//        $num = $mystuff->groupBy('product_id')->map(function ($row) {
+//            return $row->sum('planned_quantity');
+//        });
+
+
         $num = $mystuff->groupBy('product_id')->reduce(function ($result, $group) {
                       return $result->put($group->first()->product_id, collect([
                         'product_id' => $group->first()->product_id,
@@ -341,6 +383,8 @@ class ProductionSheet extends Model
                         'manufacturing_batch_size' => $group->first()->manufacturing_batch_size,
                       ]));
                     }, collect());
+
+//        abi_r($num, true);
 
         return $num;
     }
@@ -379,6 +423,13 @@ class ProductionSheet extends Model
                       ]));
                     }, collect());
 
+/*
+        $sorted = $num->sortBy(function ($product, $key) {
+            abi_r($key);
+            abi_r($product);
+            return $product['reference'];
+        });
+*/
         return $num->sortBy('reference');
     }
     
@@ -403,6 +454,13 @@ class ProductionSheet extends Model
                       ]));
                     }, collect());
 
+/*
+        $sorted = $num->sortBy(function ($product, $key) {
+            abi_r($key);
+            abi_r($product);
+            return $product['reference'];
+        });
+*/
         return $num->sortBy('reference');
     }
 

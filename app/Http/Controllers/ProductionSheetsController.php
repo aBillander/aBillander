@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ProductionSheet;
+// use App\ProductionSheetRegistry;
 use Illuminate\Http\Request;
 
 use WooCommerce;
@@ -14,8 +15,10 @@ class ProductionSheetsController extends Controller
 
    protected $productionSheet;
 
+   // public function __construct(ProductionSheetRegistry $registry)
    public function __construct(ProductionSheet $productionSheet)
    {
+        // $this->productionSheet = $registry->get('new');
         $this->productionSheet = $productionSheet;
    }
     /**

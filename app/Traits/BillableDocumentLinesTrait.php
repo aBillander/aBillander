@@ -426,7 +426,8 @@ trait BillableDocumentLinesTrait
         else
             $quantity = $document_line->quantity;
 
-        $quantity = $quantity * $pmu_conversion_rate;
+        // Mistake: $quantity is ALLWAYS in "stock keeping unit"
+        // $quantity = $quantity * $pmu_conversion_rate;
 
 /*      Not needed:
 

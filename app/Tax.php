@@ -22,6 +22,7 @@ class Tax extends Model {
 
     public static $rules = array(
     	'name'    => array('required', 'min:2', 'max:64'),
+        'country_id' => 'exists:countries,id',
  //   	'percent' => array('required', 'numeric', 'between:0,100')
     	);
     
@@ -43,8 +44,23 @@ class Tax extends Model {
 //        $value = $this->taxrules()->where('country_id', '=', '0')->orWhere('country_id', '=', $country_id)->orderBy('position', 'asc')->first()->percent;
         $value = optional($this->taxrules()->where(function ($query) use ($country_id) {
                     $query->where('country_id', '=', '0')
-                          ->OrWhere('country_id', '=', $country_id);
+                          ->orWhere('country_id', '=', $country_id);
                 })->orderBy('position', 'asc')->first())->percent ?? 0.0;
+
+        return $value;
+    }
+
+
+    public function getEqualizationPercentAttribute()
+    {
+        $country_id = \App\Configuration::get('DEF_COUNTRY');
+
+        $value = optional($this->taxrules()->where(function ($query) use ($country_id) {
+                    $query->where('country_id', '=', '0')
+                          ->orWhere('country_id', '=', $country_id);
+                })
+                ->where('rule_type', '=', 'sales_equalization')
+                ->orderBy('position', 'asc')->first())->percent ?? 0.0;
 
         return $value;
     }

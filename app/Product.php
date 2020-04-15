@@ -278,6 +278,14 @@ class Product extends Model {
         return $value;
     }
 
+    public function getQuantityReorderSuggestedAttribute()
+    {
+        $value =      $this->maximum_stock 
+                    - $this->quantity_available;
+
+        return $value > 0 ? $value : 0.0;
+    }
+
     public function getDisplayPriceAttribute()
     {
         $value = Configuration::get('PRICES_ENTERED_WITH_TAX') ?
@@ -415,6 +423,22 @@ class Product extends Model {
                 $query->where('quantity_onhand', '>', 0);
         }
 
+        if ( isset($params['stock_control']) )
+        {
+            if ( $params['stock_control'] == 0 )
+                $query->where('stock_control', '<=', 0);
+            if ( $params['stock_control'] == 1 )
+                $query->where('stock_control', '>', 0);
+        }
+
+        if ( isset($params['main_supplier_id']) )
+        {
+            if ( $params['main_supplier_id'] > 0 )
+                $query->where('main_supplier_id', $params['main_supplier_id']);
+            if ( $params['main_supplier_id'] < 0 )
+                $query->where('main_supplier_id', 0)->orWhere('main_supplier_id', null);
+        }
+
         if ( isset($params['category_id']) && $params['category_id'] > 0 )
         {
             $query->where('category_id', '=', $params['category_id'])
@@ -429,6 +453,11 @@ class Product extends Model {
         if ( isset($params['procurement_type']) && $params['procurement_type'] != '' )
         {
             $query->where('procurement_type', '=', $params['procurement_type']);
+        }
+
+        if ( isset($params['mrp_type']) && $params['mrp_type'] != '' )
+        {
+            $query->where('mrp_type', '=', $params['mrp_type']);
         }
 
         if ( isset($params['active']) )
@@ -779,9 +808,15 @@ class Product extends Model {
         return $this->hasMany('App\StockMovement');
     }
 
-    public function supplier()
+    public function mainsupplier()
     {
         return $this->belongsTo('App\Supplier', 'main_supplier_id');
+    }
+
+    // Alias
+    public function supplier()
+    {
+        return $this->mainsupplier();
     }
 
     public function manufacturer()

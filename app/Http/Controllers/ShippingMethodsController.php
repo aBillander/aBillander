@@ -34,14 +34,16 @@ class ShippingMethodsController extends Controller {
 						->orderBy('name', 'asc')
 						->get();
 
-        return view('shipping_methods.index', compact('shippingmethods'));
+		$system_default = ShippingMethod::getSystemDefault();
+
+        return view('shipping_methods.index', compact('shippingmethods', 'system_default'));
 	}
 
 	/**
 	 * Show the form for creating a new resource.
 	 * GET /shippingmethods/create
 	 *
-	 * @return Response
+	 * @return Response->with('info', )
 	 */
 	public function create()
 	{

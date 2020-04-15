@@ -4,6 +4,10 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
+use App\Configuration;
+use App\Product;
+use App\ShippingMethod;
+
 trait BillableFormsControllerTrait
 {
    use SupplierBillableFormsControllerTrait;
@@ -132,15 +136,16 @@ trait BillableFormsControllerTrait
                         ->with('currency')
                         ->find($document_id);
 
-        if ( !$document )
+
+        $product_id     = $request->input('product_id');
+        $combination_id = $request->input('combination_id', null);
+
+        if ( !$document || !Product::where('id', $product_id)->exists() )
             return response()->json( [
                     'msg' => 'ERROR',
                     'data' => $document_id,
             ] );
-
-
-        $product_id     = $request->input('product_id');
-        $combination_id = $request->input('combination_id', null);
+        
         $quantity       = $request->input('quantity', 1.0);
 
         $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', $document->customer->currentPricesEnteredWithTax( $document->document_currency )) );
@@ -152,6 +157,8 @@ trait BillableFormsControllerTrait
 
             'line_sort_order' => $request->input('line_sort_order'),
             'notes' => $request->input('notes', ''),
+
+            'store_mode' => $request->input('store_mode', ''),
         ];
 
         // More stuff
@@ -164,6 +171,9 @@ trait BillableFormsControllerTrait
         if ($request->has('measure_unit_id')) 
             $params['measure_unit_id'] = $request->input('measure_unit_id');
 
+        if ($request->has('package_measure_unit_id')) 
+            $params['package_measure_unit_id'] = $request->input('package_measure_unit_id');
+
         if ($request->has('sales_rep_id')) 
             $params['sales_rep_id'] = $request->input('sales_rep_id');
 
@@ -173,7 +183,14 @@ trait BillableFormsControllerTrait
 
         // Let's Rock!
 
-        $document_line = $document->addProductLine( $product_id, $combination_id, $quantity, $params );
+        $store_mode = $request->input('store_mode', '');
+
+        if ( $store_mode == 'asis' )
+            // Force product price from imput
+            $document_line = $document->addProductAsIsLine( $product_id, $combination_id, $quantity, $params );
+        else
+            // Calculate product price according to Customer Price List and Price Rules
+            $document_line = $document->addProductLine( $product_id, $combination_id, $quantity, $params );
 
 
         return response()->json( [
@@ -188,6 +205,8 @@ trait BillableFormsControllerTrait
         $document = $this->document
                         ->with('customer')
                         ->with('taxingaddress')
+                        ->with('shippingmethod')
+                        ->with('shippingaddress')
                         ->with('salesrep')
                         ->with('currency')
                         ->find($document_id);
@@ -211,8 +230,9 @@ trait BillableFormsControllerTrait
             'cost_price' => $request->input('cost_price', 0.0),
             'unit_price' => $request->input('unit_price', 0.0),
             'discount_percent' => $request->input('discount_percent', 0.0),
+            'unit_customer_price' => $request->input('unit_customer_price'),
             'unit_customer_final_price' => $request->input('unit_customer_final_price'),
-            'tax_id' => $request->input('tax_id', \App\Configuration::get('DEF_TAX')),
+            'tax_id' => $request->input('tax_id', Configuration::get('DEF_TAX')),
 
             'line_sort_order' => $request->input('line_sort_order'),
             'notes' => $request->input('notes', ''),
@@ -234,6 +254,30 @@ trait BillableFormsControllerTrait
         if ($request->has('commission_percent')) 
             $params['commission_percent'] = $request->input('commission_percent');
 
+
+        // Final touches
+        if ( $params['line_type'] == 'shipping' )
+        if ( $request->input('use_shipping_method', 0) > 0 )
+        // Do start Shipping Cost Engine
+        {
+            // 
+            $method = $document->shippingmethod ?: $document->shippingaddress->getShippingMethod();
+            $free_shipping = (Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') >= 0.0) ? Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') : null;
+
+            list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $document, $free_shipping ));
+
+            $data = [
+                'name' => $shipping_label.' :: '.$method->name,
+                'cost_price' => $cost,
+                'unit_price' => $cost,
+                'unit_customer_price' => $cost,
+                'unit_customer_final_price' => $cost,
+                'tax_id' => $tax->id,
+                'sales_equalization' => 0,
+            ];
+
+            $params = array_merge($params, $data);
+        }
 
         // Let's Rock!
 
@@ -276,7 +320,7 @@ trait BillableFormsControllerTrait
             'unit_price' => $request->input('unit_price', 0.0),
             'discount_percent' => $request->input('discount_percent', 0.0),
             'unit_customer_final_price' => $request->input('unit_customer_final_price'),
-            'tax_id' => $request->input('tax_id', \App\Configuration::get('DEF_TAX')),
+            'tax_id' => $request->input('tax_id', Configuration::get('DEF_TAX')),
 
             'line_sort_order' => $request->input('line_sort_order'),
             'notes' => $request->input('notes', ''),
@@ -373,6 +417,12 @@ trait BillableFormsControllerTrait
 
         if ($request->has('line_sort_order')) 
             $params['line_sort_order'] = $request->input('line_sort_order');
+
+        if ($request->has('pmu_label')) 
+            $params['pmu_label'] = $request->input('pmu_label');
+
+        if ($request->has('extra_quantity_label')) 
+            $params['extra_quantity_label'] = $request->input('extra_quantity_label');
 
         if ($request->has('notes')) 
             $params['notes'] = $request->input('notes');

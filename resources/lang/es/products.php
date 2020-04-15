@@ -295,4 +295,20 @@ return [
 
     'Import Images' => 'Importar Imágenes',
 
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Reorder Point
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'Products with Low Stock' => 'Productos con Bajo Stock',
+    'Suggested Quantity' => 'Cantidad Sugerida',
+    'Re-Order Point' => 'Punto de Pedido',
+	'Stock Control'     => 'Control de Stock',
+
 ];

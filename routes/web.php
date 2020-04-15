@@ -109,6 +109,46 @@ Route::get('dbbackup', function()
     return ;
 });
 
+
+Route::get('eggtimer', function()
+{
+    $seconds = 1;
+
+    $limit = max((int) ini_get('max_execution_time'), 60) + 10;
+
+        // Start Logger
+        $logger = \App\ActivityLogger::setup( 'Egg Timmer', 'Guess max_execution_time' );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+
+
+        $logger->empty();
+        $logger->start();
+
+        $logger->log("INFO", "PHP says: ini_get('max_execution_time') = ".(int) ini_get('max_execution_time').' secs.');
+
+        $i=0;
+
+        while ( true ) {
+            # code...
+
+            $i++;
+
+            // sleep( $seconds );
+            usleep((int)($seconds * 1000000));
+
+            $logger->log("INFO", "Round: ".(int) $i.' => '.(int) $i*$seconds.' secs.');
+
+            if ($i*$seconds>$limit) break;
+        }
+
+
+        $logger->stop();
+
+
+        return redirect('activityloggers/'.$logger->id)
+                ->with('success', l('Egg Timmer :: Guess max_execution_time.'));
+});
+
+
 Route::get('404', function()
 {
     return view('errors.404');
@@ -255,6 +295,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
                                                         'as'   => 'products.ajax.optionsLookup' ));
         Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
                                                         'as'   => 'products.ajax.combinationLookup' ));
+
+        Route::get('products/stock/reorder',        'ProductsReorderController@index' )->name('products.reorder.index' );
+        Route::get('products/stock/reorder/export', 'ProductsReorderController@export')->name('products.reorder.export');
 
         Route::resource('ingredients', 'IngredientsController');
 
@@ -667,6 +710,9 @@ foreach ($pairs as $pair) {
 
             Route::get('/get-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('chart.customervouchers.monthly');
             Route::get('/get-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('chart.customervouchers.monthly.data');
+
+            Route::get('/get-monthly-product-stock',      'ChartProductStockController@getMonthlyProductStock')->name('chart.product.stock.monthly');
+            Route::get('/get-monthly-product-stock-data', 'ChartProductStockController@getMonthlyProductStockData')->name('chart.product.stock.monthly.data');
 
             Route::get('r', function()
                 {

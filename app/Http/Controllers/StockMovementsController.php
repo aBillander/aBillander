@@ -116,7 +116,7 @@ class StockMovementsController extends Controller
 //		abi_r($date_view->toDateTimeString());
 //		abi_r($date_view->toDateString(), true);
  
-		$data      = ['price' => $request->input('price_currency') / $conversion_rate,
+		$data      = ['price' => $request->input('price_currency'),
 					  'conversion_rate' => $conversion_rate, 
 					  ];
 
@@ -147,6 +147,7 @@ class StockMovementsController extends Controller
 
         $extradata['reference']  = $product->reference;
         $extradata['name']       = $product->name;
+        $extradata['price']      = $request->input('price_currency') / $conversion_rate;
 
 
 //		$stockmovement = $this->stockmovement->create( array_merge( $request->all(), $extradata ) );
@@ -154,7 +155,7 @@ class StockMovementsController extends Controller
 		# $stockmovement = StockMovement::createAndProcess( array_merge( $request->all(), $extradata ) );
 
         try {
-            $stockmovement = StockMovement::createAndProcess( array_merge( $request->all(), $extradata ) );
+            $stockmovement = StockMovement::createAndProcess( $request->merge( $extradata )->all() );
         } catch (\App\Exceptions\StockMovementException $exception) {
             return back()->with('error', $exception->getMessage())->withInput();
         }
@@ -174,7 +175,8 @@ class StockMovementsController extends Controller
         return redirect('stockmovements/create')
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($stockmovement)->id], 'layouts') . 
 					$request->input('document_reference') . ' - ' . $request->input('date') )
-				->with( compact('date', 'document_reference', 'movement_type_id', 'currency_id') );
+// 				->with( compact('date', 'document_reference', 'movement_type_id', 'currency_id') )
+				;
         else
 		return redirect('stockmovements')
 				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($stockmovement)->id], 'layouts') . 

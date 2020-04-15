@@ -198,6 +198,13 @@
                         </li>
                         <li class="divider"></li>
                          <li>
+                            <a href="{{ route('products.reorder.index') }}">
+                                 <i class="fa fa-calculator btn-xs text-warning"></i> 
+                                 {{l('Products with Low Stock', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
                             <a href="{{ URL::to('suppliers') }}">
                                  {{l('Suppliers', [], 'layouts')}}
                             </a>

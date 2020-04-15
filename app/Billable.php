@@ -17,7 +17,7 @@ use App\Configuration;
 
 // use ReflectionClass;
 
-class Billable extends Model
+class Billable extends Model implements ShippableInterface
 {
     use BillableIntrospectorTrait;
     use BillableCustomTrait;
@@ -1127,4 +1127,45 @@ class Billable extends Model
         return $query->where( 'due_date', '>=', \Carbon\Carbon::now()->toDateString() );
     }
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shippable Interface
+    |--------------------------------------------------------------------------
+    */
+
+    public function getShippingBillableAmount( $billing_type = 'price' )
+    {
+        if ( $billing_type == 'price' )
+            return $this->amount;
+        
+        else
+        if ( $billing_type == 'weight' )
+            return $this->weight;
+        
+        else
+            return 0.0;
+    }
+
+
+    public function getAmountAttribute() 
+    {
+        $line_products = $this->lines->where('line_type', 'product');
+
+        $total_products_tax_excl = $line_products->sum('total_tax_excl');
+
+        return $total_products_tax_excl;
+    }
+
+    public function getWeightAttribute() 
+    {
+        $line_products = $this->lines->where('line_type', 'product')->load('product');
+
+        $total_weight = $line_products->sum(function ($line) {
+            return $line->product->weight;
+        });
+
+        return $total_weight;
+    }
 }

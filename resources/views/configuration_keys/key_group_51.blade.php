@@ -12,7 +12,7 @@
   <input id="tab_index" name="tab_index" type="hidden" value="51">
 
   <fieldset>
-    <legend>{{ l('Customer Center') }} :: Gastos de Envío (Formulario NO definitivo)</legend>
+    <legend>{{ l('Customer Center') }} :: Gastos de Envío</legend>
     
 
 
@@ -26,14 +26,14 @@
         </div>
         <div class="col-lg-6"> </div>
         </div>
-        <span class="help-block">{!! l('Esta etiqueta será el nombre de la línea del Pedido correspondiente al Coste de Envío') !!}</span>
+        <span class="help-block">{!! l('Esta etiqueta será el nombre de la línea del Pedido correspondiente al Coste de Envío.') !!}</span>
       </div>
     </div>
     
 
 
     <div class="form-group {{ $errors->has('ABCC_FREE_SHIPPING_PRICE') ? 'has-error' : '' }}">
-      <label for="ABCC_FREE_SHIPPING_PRICE" class="col-lg-4 control-label">{!! l('Envío gratis a partir de') !!}</label>
+      <label for="ABCC_FREE_SHIPPING_PRICE" class="col-lg-4 control-label">{!! l('Envío gratis a partir de (Euros)') !!}</label>
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-6">
@@ -42,12 +42,12 @@
         </div>
         <div class="col-lg-6"> </div>
         </div>
-        <span class="help-block">{!! l('En Euros') !!}</span>
+        <span class="help-block">{!! l('Valor de los Productos sin Impuestos. Este valor tiene precedencia sobre el valor calculado a partir del Método de Envío. Introduzca un valor negativo para deshabilitar esta característica.') !!}</span>
       </div>
     </div>
 
 
-
+{{--
     <div class="form-group {{ $errors->has('ABCC_STATE_42_SHIPPING') ? 'has-error' : '' }}">
       <label for="ABCC_STATE_42_SHIPPING" class="col-lg-4 control-label">{!! l('Coste del Envío a Sevilla') !!}</label>
       <div class="col-lg-8">
@@ -97,7 +97,7 @@ $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
         <span class="help-block">{!! l('Este Impuesto se aplicará al Coste del Envío') !!}</span>
       </div>
     </div>
-    
+--}}
 
 
     <div class="form-group">

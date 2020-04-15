@@ -31,12 +31,12 @@
     <td  colspan="2">
         <h4 title="{{ optional( $cart->cartshippingline() )->name }}"><span style="color: #dd4814;">{{ l('Shipping Cost') }}</span>
 
-                        @if ( $cart->total_shipping_tax_excl > 0.0 && \App\Configuration::get('ABCC_FREE_SHIPPING_PRICE') > 0.0 )
+                        @if ( $cart->total_shipping_tax_excl > 0.0 && \App\Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') >= 0.0 )
                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
                                   xdata-trigger="focus"
                                   data-html="true" 
                                   data-content="{!! l('Free Shipping for Orders greater than: :amount (Products Value)',
-                                                ['amount' => abi_money( \App\Configuration::get('ABCC_FREE_SHIPPING_PRICE'), $cart->currency )] ) !!}
+                                                ['amount' => abi_money( \App\Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE'), $cart->currency )] ) !!}
                                     ">
                                   <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
                                </a>

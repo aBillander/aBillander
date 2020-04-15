@@ -944,9 +944,11 @@ class Cart extends Model implements ShippableInterface
         // $method = $cart->shippingmethod;
         $method = $cart->shippingaddress->getShippingMethod();
 
+        $free_shipping = (Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') >= 0.0) ? Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') : null;
+
         // abi_r($method, true);
 
-        list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $cart ));
+        list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $cart, $free_shipping ));
 
         $tax_id      = $tax->id;
         $tax_percent = $tax->percent;   // Naughty boy! Should consider cart invoicing address!

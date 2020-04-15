@@ -313,7 +313,7 @@ switch ( $f ) {
 @if ($model_path=='customerorders')
 
 
-        @include($view_path.'._chunck_manufacturing')
+        @include('customer_documents._chunck_manufacturing')
 
 
 @endif

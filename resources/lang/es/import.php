@@ -55,6 +55,12 @@ return [
 	'File contains header row?'     => '¿Primera línea es encabezado?',
 	'Delete existing Products?'     => '¿Eliminar los Productos existentes?',
 
+	'Action' => 'Acción',
+	'Create Products' => 'Crear Productos',
+	'Update existing Prodcuts' => 'Actualizar Productos existentes',
+	'Import File MUST contain ALL mandatory columns.' => 'El Fichero de importación DEBE contener TODAS las columnas obligatorias.',
+	'Import File can contain columns to be modified only.' => 'El Fichero de importación puede contener sólo las columnas que han de ser modificadas.',
+
 	'Images'     => 'Imágenes',
 	'Import Product Images'     => 'Importar Imágenes de Productos',
 	'Delete ALL Images'     => 'Borrar TODAS las Imágenes',

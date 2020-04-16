@@ -159,10 +159,10 @@ class ImportSupplierPriceListLinesController extends Controller
 //        abi_r($columns);
 
 
-        $name = '['.$supplier->id.'] '.$supplier->name;
+        $name = '['.$supplier->id.'] '.$supplier->name_fiscal;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Price List', __METHOD__ )
+        $logger = \App\ActivityLogger::setup( 'Import Supplier Price List', __METHOD__ )
                     ->backTo( route('suppliers.import', [$supplier->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -175,10 +175,10 @@ class ImportSupplierPriceListLinesController extends Controller
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
 
-        $logger->log("INFO", 'Se cargará la Tarifa {name} desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['name' => $name, 'file' => $file]);
+        $logger->log("INFO", 'Se cargará la Tarifa para {name} desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['name' => $name, 'file' => $file]);
 
 
-        if ( $request->input('round_price', 0) )
+        if ( 0 && $request->input('round_price', 0) )   // Avoid rounding
         {
             $decimal_places = $supplier->currency->decimalPlaces;
             $logger->log("INFO", 'Se redondearán los Precios a <span class="log-showoff-format">{decimal_places} decimales</span>.', ['decimal_places' => $decimal_places]);
@@ -217,7 +217,7 @@ class ImportSupplierPriceListLinesController extends Controller
 
 
         return redirect('activityloggers/'.$logger->id)
-                ->with('success', l('Se ha cargado la Tarifa :name desde el Fichero: <strong>:file</strong> .', ['name' => $name, 'file' => $file]));
+                ->with('success', l('Se ha cargado la Tarifa para :name desde el Fichero: <strong>:file</strong> .', ['name' => $name, 'file' => $file]));
 
 
 //        abi_r('Se han cargado: '.$i.' productos');
@@ -361,6 +361,18 @@ class ImportSupplierPriceListLinesController extends Controller
                         $i++;
                         continue;
                     }
+
+                    // Currency
+                    if ( intval($data['currency_id']) && ( ! \App\Currency::where('id', intval($data['currency_id']))->exists() ) ) {
+                        
+                        $logger->log("ERROR", "La fila (".$item.") no tiene una Divisa válida.");
+
+                        $i++;
+                        continue;
+                    } else {
+                        
+                        $data['currency_id'] = $supplier->currency_id;
+                    }
                     
 
 
@@ -407,7 +419,7 @@ class ImportSupplierPriceListLinesController extends Controller
 
                 // Customer::reguard();
 
-                $supplier->update(['last_imported_at' => \Carbon\Carbon::now()]);
+                // $supplier->update(['last_imported_at' => \Carbon\Carbon::now()]);
 
 
             } else {
@@ -443,10 +455,11 @@ class ImportSupplierPriceListLinesController extends Controller
 
         $supplier  = $this->supplier->findOrFail($id);
         $lines = $this->supplierpricelistline
-                        ->select('price_list_lines.*', 'products.id', 'products.reference', 'products.name')
+                        ->select('supplier_price_list_lines.*', 'products.id', 'products.reference', 'products.name')
 //                        ->with('product')
-                        ->where('price_list_id', $id)
-                        ->join('products', 'products.id', '=', 'price_list_lines.product_id')       // Get field to order by
+                        ->where('supplier_id', $id)
+                        ->join('products', 'products.id', '=', 'supplier_price_list_lines.product_id')       // Get field to order by
+                        ->with('currency')
                         ->orderBy('products.reference', 'asc')
                         ->get();
 
@@ -454,18 +467,24 @@ class ImportSupplierPriceListLinesController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $data[] = [ 'reference', 'NOMBRE', 'price', 'price_list_id' ];
+        $headers = [ 'supplier_id', 'SUPPLIER_NAME_FISCAL', 'product_id', 'PRODUCT_REFERENCE', 'PRODUCT_NAME', 'supplier_reference', 'from_quantity', 'price', 'discount_percent', 'currency_id', 'CURRENCY_NAME' ];
 
-        // Convert each member of the returned collection into an array,
-        // and append it to the payments array.
+        $data[] = $headers;
+
         foreach ($lines as $line) {
             // $data[] = $line->toArray();
-            $data[] = [
-                            'reference' => $line->reference,
-                            'NOMBRE' => $line->name,
-                            'price' => $line->price,
-                            'price_list_id' => $id,
-            ];
+            $row = [];
+            foreach ($headers as $header)
+            {
+                $row[$header] = $line->{$header} ?? '';
+            }
+
+            $row['SUPPLIER_NAME_FISCAL']     = $supplier->name_fiscal ?? '';
+            $row['PRODUCT_REFERENCE']     = $line->reference ?? '';
+            $row['PRODUCT_NAME']     = $line->name ?? '';
+            $row['CURRENCY_NAME']     = $line->currency->name ?? '';
+
+            $data[] = $row;
         }
 
         $sheetName = $supplier->price_is_tax_inc > 0 ?
@@ -473,7 +492,7 @@ class ImportSupplierPriceListLinesController extends Controller
                     'Precio es SIN IVA' ;
 
         // Generate and return the spreadsheet
-        Excel::create('Price_List_'.$id, function($excel) use ($id, $sheetName, $data) {
+        Excel::create('Supplier_Price_List_'.$id, function($excel) use ($id, $sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');

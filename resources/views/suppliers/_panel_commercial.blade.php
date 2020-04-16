@@ -26,7 +26,7 @@
         </div>
 
 
-        <div class="row">
+        <div class=" hidden row">
 
                    <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-active">
                      {!! Form::label('sales_equalization', l('Sales Equalization'), ['class' => 'control-label']) !!}

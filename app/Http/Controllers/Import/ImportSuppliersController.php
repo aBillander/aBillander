@@ -144,35 +144,43 @@ class ImportSuppliersController extends Controller
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
 
-        $logger->log("INFO", 'Se cargarán los Clientes desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $file]);
+        $logger->log("INFO", 'Se cargarán los Proveedores desde el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $file]);
 
 
 
-        $truncate = $request->input('truncate', 0);
-        $params = ['simulate' => $request->input('simulate', 0)];
+        $simulate = (int) $request->input('simulate', 0);
+        $truncate = (int) $request->input('truncate', 0);
+
+        $params = ['simulate' => $simulate, 'file' => $file];
 
         // Truncate table
         if ( $truncate > 0 ) {
 
             $nbr = Supplier::count();
-            
-            Supplier::truncate();
 
-            // SELECT * FROM `addresses` where `addressable_type`='App\\Supplier'
+            if ( $simulate > 0 ) {
 
-            // Soft-deleting...We dont want thies here!
-            // $this->address->where('addressable_type', 'App\\Supplier')->delete();
+                $logger->log("INFO", "NO se han borrado los Proveedores antes de la Importación (Modo SIMULACION). En total {nbr} Proveedores.", ['nbr' => $nbr]);
+            } else {
+                
+                Supplier::truncate();
 
-            // $collection = Address::where('addressable_type', "App\\Supplier")->get(['id']);
-            // Address::destroy($collection->toArray());
+                // SELECT * FROM `addresses` where `addressable_type`='App\\Supplier'
 
-            \DB::table('addresses')->where('addressable_type', "App\\Supplier")->delete();
+                // Soft-deleting...We dont want thies here!
+                // $this->address->where('addressable_type', 'App\\Supplier')->delete();
 
-            // Note: This solution is for resetting the auto_increment of the table without truncating the table itself
-            $max = \DB::table('addresses')->max('id') + 1; 
-            \DB::statement("ALTER TABLE addresses AUTO_INCREMENT = $max");
+                // $collection = Address::where('addressable_type', "App\\Supplier")->get(['id']);
+                // Address::destroy($collection->toArray());
 
-            $logger->log("INFO", "Se han borrado todos los Clientes antes de la Importación. En total {nbr} Clientes.", ['nbr' => $nbr]);
+                \DB::table('addresses')->where('addressable_type', "App\\Supplier")->delete();
+
+                // Note: This solution is for resetting the auto_increment of the table without truncating the table itself
+                $max = \DB::table('addresses')->max('id') + 1; 
+                \DB::statement("ALTER TABLE addresses AUTO_INCREMENT = $max");
+
+                $logger->log("INFO", "Se han borrado todos los Proveedores antes de la Importación. En total {nbr} Proveedores.", ['nbr' => $nbr]);
+            }
         }
 
 
@@ -192,7 +200,7 @@ class ImportSuppliersController extends Controller
 
 
         return redirect('activityloggers/'.$logger->id)
-                ->with('success', l('Se han cargado los Clientes desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
+                ->with('success', l('Se han cargado los Proveedores desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
 
 
 //        abi_r('Se han cargado: '.$i.' productos');
@@ -285,39 +293,32 @@ class ImportSuppliersController extends Controller
                     // Prepare data
                     $data = $row->toArray();
 
-                    $item = '[<span class="log-showoff-format">'.$data['reference_external'].'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
+                    // $item = implode(', ', $data);
+                    $item = http_build_query($data, null, ', ');
+
+                    // $item = '[<span class="log-showoff-format">'.$data['reference_external'].'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
 
                     // Some Poor Man checks:
                     if ( ! $data['name_fiscal'] )
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'name_fiscal' está vacío");
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'name_fiscal' está vacío");
 
                     if ( strlen( $data['name_fiscal'] ) > 128 )
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'name_fiscal' es demasiado largo (128). ".$data['name_fiscal']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'name_fiscal' es demasiado largo (128). ".$data['name_fiscal']);
 
                     if ( strlen( $data['name_commercial'] ) > 64 )
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'name_commercial' es demasiado largo (64). ".$data['name_commercial']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'name_commercial' es demasiado largo (64). ".$data['name_commercial']);
 
-                    if ( $data['identification'] )
+                    if ( 0 && $data['identification'] )
                     {
                         $data['identification'] = Supplier::normalize_spanish_nif_cif_nie( $data['identification'] );
                         
                         // if ( Supplier::check_spanish_nif_cif_nie( $data['identification'] ) <= 0 )
-                        //    $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'identification' es inválido. ".$data['identification']);
+                        //    $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'identification' es inválido. ".$data['identification']);
                     }
 
-                    $data['sales_equalization'] = (int) $data['sales_equalization'] > 0 ? 1 : 0;
-
-                    $data['allow_login'] = (int) $data['allow_login'] > 0 ? 1 : 0;
+                    // $data['sales_equalization'] = (int) $data['sales_equalization'] > 0 ? 1 : 0;
 
                     $data['blocked'] = (int) $data['blocked'] > 0 ? 1 : 0;
-
-
-                    // Precedence
-                    if ( $data['reference_external'] )
-                    {
-                        if ( isset( $data['id'] ) )
-                             unset( $data['id'] );
-                    }
 
 
 
@@ -327,13 +328,25 @@ class ImportSuppliersController extends Controller
                     if ( $data['payment_method_id'] )
                     {
                         if ( !\App\PaymentMethod::where('id', $data['payment_method_id'])->exists() )
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'payment_method_id' no existe. ".$data['payment_method_id']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'payment_method_id' no existe. ".$data['payment_method_id']);
                     }
 
-                    if ( $data['shipping_method_id'] )
+                    if ( $data['language_id'] )
                     {
-                        if ( !\App\ShippingMethod::where('id', $data['shipping_method_id'])->exists() )
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'shipping_method_id' no existe. ".$data['shipping_method_id']);
+                        if ( !\App\Language::where('id', $data['language_id'])->exists() )
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'language_id' no existe. ".$data['language_id']);
+                    }
+
+                    if ( $data['currency_id'] )
+                    {
+                        if ( !\App\Currency::where('id', $data['currency_id'])->exists() )
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'currency_id' no existe. ".$data['currency_id']);
+                    }
+
+                    if ( $data['invoice_sequence_id'] )
+                    {
+                        if ( !\App\Language::where('id', $data['invoice_sequence_id'])->exists() )
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'invoice_sequence_id' no existe. ".$data['invoice_sequence_id']);
                     }
 
 
@@ -376,53 +389,47 @@ class ImportSuppliersController extends Controller
                         unset( $data['id'] );
                     }
 */
-                    // 'webshop_id'
-                    $data['webshop_id'] = '';
-                    $reference_external = intval( $data['reference_external'] );
-                    if ( $reference_external > 50000 ) 
-                        $data['webshop_id'] = $reference_external - 50000;
-
 
                     if ( strlen( $data['address1'] ) > 128 )
                     {
                             $data['notes'] .= "\n" . $data['address1'];
 
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'address1' es demasiado largo (128). ".$data['address1']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'address1' es demasiado largo (128). ".$data['address1']);
                     }
 
                     if ( strlen( $data['firstname'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['firstname'];
 
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'firstname' es demasiado largo (32). ".$data['firstname']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'firstname' es demasiado largo (32). ".$data['firstname']);
                     }
 
                     if ( strlen( $data['lastname'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['lastname'];
 
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'lastname' es demasiado largo (32). ".$data['lastname']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'lastname' es demasiado largo (32). ".$data['lastname']);
                     }
 
                     if ( strlen( $data['email'] ) > 128 )
                     {
                             $data['notes'] .= "\n" . $data['email'];
 
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'email' es demasiado largo (128). ".$data['email']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'email' es demasiado largo (128). ".$data['email']);
                     }
 
                     if ( strlen( $data['phone'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['phone'];
 
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'phone' es demasiado largo (32). ".$data['phone']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'phone' es demasiado largo (32). ".$data['phone']);
                     }
 
                     if ( strlen( $data['phone_mobile'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['phone_mobile'];
 
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'phone_mobile' es demasiado largo (32). ".$data['phone_mobile']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'phone_mobile' es demasiado largo (32). ".$data['phone_mobile']);
                     }
 
 
@@ -451,36 +458,59 @@ if ($country) {
                         }
                     }
                     if ( !$country->hasState( $data['state_id'] ) )
-                        $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'state_id' es inválido o no corresponde con el país: " . ($data['state_id'] ?? $data['STATE_NAME'] ?? ''));
+                        $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'state_id' es inválido o no corresponde con el país: " . ($data['state_id'] ?? $data['STATE_NAME'] ?? ''));
 
                     // VAT ID 'identification'
-                    if ( array_key_exists('identification', $data) && trim($data['identification'])) 
+                    if ( 0 && array_key_exists('identification', $data) && trim($data['identification'])) 
                     {
                         // Check
                         if ( !$country->checkIdentification( $data['identification'] ) ) 
                         {
                         
-                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'identification' es inválido o no corresponde con el país: " . $data['identification']);
+                            $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'identification' es inválido o no corresponde con el país: " . $data['identification']);
                         }
                     }
 
 } else {
 
                     // No Country
-                    $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'country_id' es inválido: " . ($data['country_id'] ?? ''));
+                    $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'country_id' es inválido: " . ($data['country_id'] ?? ''));
 
 }
 
                     $data['alias'] = l('Main Address', [],'addresses');
-
-                    $data['outstanding_amount_allowed'] = $data['outstanding_amount_allowed'] ?? \App\Configuration::get('DEF_OUTSTANDING_AMOUNT');
 
 
                     if ( $data['notes'] )
                     {
                         $data['notes'] = trim( $data['notes'] );
 
-                        // $logger->log("WARNING", "Cliente ".$item.":<br />" . "El campo 'notes' es: " . $data['notes']);
+                        // $logger->log("WARNING", "Proveedor ".$item.":<br />" . "El campo 'notes' es: " . $data['notes']);
+                    }
+
+
+                    // Let's see which Supplier
+                    $key_name = $key_val = '';
+
+                    if ( array_key_exists('id', $data) )
+                    {
+                        $key_name = 'id';
+                        $key_val = trim( $data['id'] );
+
+                        unset( $data['id'] );
+                        // Unomment lines to prevent changes in reference value
+                        // if ( array_key_exists('reference', $data) )
+                        //     unset( $data['reference'] );
+                        
+                    } else
+
+                    if ( array_key_exists('reference_external', $data) )
+                    {
+                        $key_name = 'reference_external';
+                        $key_val = trim( $data['reference_external'] );
+
+                        unset( $data['reference_external'] );
+                        
                     }
 
 
@@ -491,14 +521,17 @@ if ($country) {
                     \DB::beginTransaction();
                     try {
 
-                        $supplier = $this->supplier->where( 'reference_external', $data['reference_external'] )
+                        $supplier = null;
+
+                        if ( $key_name != '' )
+                            $supplier = $this->supplier->where( $key_name, $key_val )
                                                     ->with('address')
                                                     ->first();
 
                         if ( !($params['simulate'] > 0) && $supplier ) 
                         {
 
-                            $logger->log("INFO", "El Cliente ".$data['reference_external'] ." existe y se actualizará");
+                            $logger->log("INFO", "El Proveedor ". $key_val ." existe y se actualizará");
 
                             $address = $supplier->address;
 
@@ -541,7 +574,7 @@ if ($country) {
 
                             $customer->update( $mini_data );
 */
-                            // $logger->log("INFO", "El Cliente ".$data['reference_external'] ." se ha actualizado (".$customer->id.")");
+                            // $logger->log("INFO", "El Proveedor ".$data['reference_external'] ." se ha actualizado (".$customer->id.")");
 
                             $i_updated++;
 
@@ -572,7 +605,7 @@ if ($country) {
                             // $customer->update( $data );
 
 
-                            // $logger->log("TIMER", " Se ha creado el Cliente: ".$item." - " . $customer->id);
+                            // $logger->log("TIMER", " Se ha creado el Proveedor: ".$item." - " . $customer->id);
 
                             unset( $data['webshop_id'] );
 
@@ -593,15 +626,15 @@ if ($country) {
                                 
                             }
 
-                            $logger->log("INFO", "El Cliente ".$data['reference_external'] ." se ha creado (".$supplier->id.")");
+                            $logger->log("INFO", "El Proveedor ". $key_val ." se ha creado (".$supplier->id.")");
 
                             $i_created++;
 
                         } else {
 
-                            if ( !$supplier )
+                            // if ( !$supplier )
 
-                            $logger->log("INFO", "El Cliente ".$data['reference_external'] ." no existe y debe crearse");
+                            // $logger->log("INFO", "El Proveedor ".$data['reference_external'] ." no existe y debe crearse");
 
                         }
 
@@ -612,9 +645,9 @@ if ($country) {
 
                             \DB::rollback();
 
-                            $item = '[<span class="log-showoff-format">'.$data['reference_external'].'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
+                            // $item = '[<span class="log-showoff-format">'. $key_val.'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
 
-                            $logger->log("ERROR", "Se ha producido un error al procesar el Cliente ".$item.":<br />" . $e->getMessage());
+                            $logger->log("ERROR", "Se ha producido un error al procesar el Proveedor ".$item.":<br />" . $e->getMessage());
 
                     }
 
@@ -634,16 +667,16 @@ if ($country) {
             } else {
 
                 // No data in file
-                $logger->log('WARNING', 'No se encontraton datos de Clientes en el fichero.');
+                $logger->log('WARNING', 'No se encontraton datos de Proveedores en el fichero.');
             }
 
-            $logger->log('INFO', 'Se han creado {i} Clientes.', ['i' => $i_created]);
+            $logger->log('INFO', 'Se han creado {i} Proveedores.', ['i' => $i_created]);
 
-            $logger->log('INFO', 'Se han actualizado {i} Clientes.', ['i' => $i_updated]);
+            $logger->log('INFO', 'Se han actualizado {i} Proveedores.', ['i' => $i_updated]);
 
-            $logger->log('INFO', 'Se han creado / actualizado {i} Clientes.', ['i' => $i_ok]);
+            $logger->log('INFO', 'Se han creado / actualizado {i} Proveedores.', ['i' => $i_ok]);
 
-            $logger->log('INFO', 'Se han procesado {i} Clientes.', ['i' => $i]);
+            $logger->log('INFO', 'Se han procesado {i} Proveedores.', ['i' => $i]);
 
 // Process reader          
     
@@ -674,12 +707,15 @@ if ($country) {
         $data = [];  
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'name_fiscal', 'name_commercial', 'identification', 'reference_external', 'accounting_id', 'sales_equalization', 
+        $headers = [ 'id', 'name_fiscal', 'name_commercial', 'identification', 'reference_external', 'accounting_id', 
+                    // 'sales_equalization', 
                     'website', // 'customer_center_url', 'customer_center_user', 'customer_center_password', 
 
-                    'payment_method_id', 'PAYMENT_METHOD_NAME', 'discount_percent', 'discount_ppd_percent', 'payment_days', 
+                    'payment_method_id', 'PAYMENT_METHOD_NAME', 'discount_percent', 'discount_ppd_percent', 'payment_days', 'delivery_time', 
+                    'creditor', 'customer_id',
                     'notes', 'approved', 'blocked', 'active', 
                     'currency_id', 'CURRENCY_NAME', 'language_id', 'LANGUAGE_NAME',  
+                    'invoice_sequence_id', 
 
                     'address1', 'address2', 'postcode', 'city', 'state_id', 'STATE_NAME', 'country_id', 'COUNTRY_NAME', 
                     'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax', 

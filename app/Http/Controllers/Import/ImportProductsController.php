@@ -411,7 +411,8 @@ class ImportProductsController extends Controller
                     // Prepare data
                     $data = $row->toArray();
 
-                    $item = implode(', ', $data);
+                    // $item = implode(', ', $data);
+                    $item = http_build_query($data, null, ', ');
 
                     // Let's see which Product
                     if ( array_key_exists('id', $data) )

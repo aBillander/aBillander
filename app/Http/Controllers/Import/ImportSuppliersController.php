@@ -732,6 +732,11 @@ if ($country) {
             {
                 $row[$header] = $supplier->{$header} ?? ( $supplier->address->{$header} ?? '');
             }
+
+            // Casting
+            $row['discount_percent'] = (float) $row['discount_percent'];
+            $row['discount_ppd_percent'] = (float) $row['discount_ppd_percent'];
+
             $row['PAYMENT_METHOD_NAME']  = $supplier->paymentmethod  ? $supplier->paymentmethod->name : '';
             $row['CURRENCY_NAME']        = $supplier->currency->name    ? $supplier->currency->name : '';
             $row['LANGUAGE_NAME']        = $supplier->language->name    ? $supplier->language->name : '';

@@ -479,6 +479,11 @@ class ImportSupplierPriceListLinesController extends Controller
                 $row[$header] = $line->{$header} ?? '';
             }
 
+            // Casting
+            $row['from_quantity'] = (float) $row['from_quantity'];
+            $row['price'] = (float) $row['price'];
+            $row['discount_percent'] = (float) $row['discount_percent'];
+
             $row['SUPPLIER_NAME_FISCAL']     = $supplier->name_fiscal ?? '';
             $row['PRODUCT_REFERENCE']     = $line->reference ?? '';
             $row['PRODUCT_NAME']     = $line->name ?? '';

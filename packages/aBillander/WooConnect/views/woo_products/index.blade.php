@@ -99,12 +99,13 @@
 	<thead>
 		<tr>
       <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-      <th class="text-left">{{l('SKU #')}}</th>
+      <th class="text-left">{{l('SKU')}}</th>
       <th colspan="2">{{l('Product Name')}}</th>
       <th>{{l('Category')}}</th>
       <th>{{l('Type')}}</th>
       <th>{{l('Status')}}</th>
       <th>{{l('Price')}} ({{ \aBillander\WooConnect\WooConnector::getWooSetting( 'woocommerce_currency' ) }})</th>
+      <th>{{l('Sale Price')}}</th>
       <th>{{l('Regular Price')}}</th>
       <th>{{l('Tax')}}</th>
       <th>{{l('Weight')}}</th>
@@ -134,6 +135,7 @@
       <td>{{ $product["type"] }}</td>
       <td>{{ $product["status"] }}</td>
       <td>{{ $product["price"] }}</td>
+      <td>{{ $product["sale_price"] }}</td>
       <td>{{ $product["regular_price"] }}</td>
 @php
 
@@ -157,7 +159,7 @@ $tax = \App\Tax::find( $tax_id );
 
 			<td class="text-right button-pad" xstyle="width:1px; white-space: nowrap;">
 
-                <a class="btn btn-sm btn-info" href="{{ URL::route('wproducts.fetch', [$product["sku"] ?: $product["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-superpowers"></i></a>
+                <a class="btn btn-sm btn-blue" href="{{ URL::route('wproducts.fetch', [$product["sku"] ?: $product["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i></a>
 
 {{--
                 <a class='open-AddBookDialog btn btn-sm btn-warning' href="{{ URL::route('worders.update', [$product["id"]] + $query ) }}" data-target='#myModalOrder' data-id="{{ $product["id"] }}" data-status="{{ $product["status"] }}" data-statusname="{{ \aBillander\WooConnect\WooConnector::getOrderStatusName( $product["status"] ) }}" data-toggle="modal" onClick="return false;" title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>

@@ -185,6 +185,7 @@ return [
 	*/
 
 	'Categories'     => 'Categorías',
+	'Products' => 'Productos',
 //	'ID'     => 'ID', from layouts
 	'Parent ID'     => 'ID del Padre',
 	'Category Name'     => 'Nombre de la Categoría',
@@ -195,6 +196,27 @@ return [
 	'Set Local Category'     => 'Enlazar con Categoría Local',
 	'Local Category'     => 'Categoría Local',
 	'WooCommerce Category'     => 'Categoría WooCommerce',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| WooCommerce Categories Language Lines :: show
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'SKU' => 'SKU',
+	'Product Name' => 'Nombre del Producto',
+	'Category' => 'Categoría',
+	'Type' => 'Tipo',
+	'Price' => 'Precio',
+	'Regular Price' => 'Precio Normal',
+	'Sale Price' => 'Precio en Oferta',
+	'Tax' => 'Impuesto',
+	'Weight' => 'Peso',
+	
 
 	/*
 	|--------------------------------------------------------------------------

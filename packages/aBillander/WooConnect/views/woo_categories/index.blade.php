@@ -8,6 +8,8 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
+        <a class="btn btn-sm alert-success" style="margin-right: 76px" href="{{ URL::route('wproducts.index') }}" title="{{l('Products', [], 'layouts')}}"><i class="fa fa-list"></i> {{l('Products')}} [WooC]</a>
+
         <a class=" hide btn btn-sm btn-grey" style="margin-right: 21px" href="javascript:void(0);" title="{{l('Import', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-import').attr('action', '{{ route( 'worders.import.orders' )}}');$('#form-import').submit();return false;"><i class="fa fa-download"></i> {{l('Import', 'layouts')}}</a>
 
 
@@ -99,7 +101,7 @@
       <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
       <th class="text-left">{{l('ID', 'layouts')}}</th>
       <th class="text-left">{{l('Parent ID')}}</th>
-      <th colspan="2">{{l('Category Name')}}<br />{{l('Slug')}}</th>
+      <th colspan="2"><span style="font-weight: normal !important">{{l('Category Name')}}</span><br />{{l('Slug')}}</th>
       <!-- th>{{l('Slug')}}</th -->
       <th>{{l('Description')}}</th>
       <th>{{l('Display')}}</th>
@@ -156,7 +158,7 @@
                     data-toggle="modal" onClick="return false;" 
                     title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>                
 
-                <a class="btn btn-sm btn-info" href="{{ URL::route('wcategories.fetch', $category["id"] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-superpowers"></i></a>
+                <a class="btn btn-sm btn-blue" href="{{ URL::route('wcategories.fetch', $category["id"] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i></a>
 
 {{--
                 <a class="btn btn-sm btn-info" href="{{ URL::route('wcategories.fetch', [$category["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-superpowers"></i></a>

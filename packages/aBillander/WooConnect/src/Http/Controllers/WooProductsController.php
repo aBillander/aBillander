@@ -122,7 +122,30 @@ class WooProductsController extends Controller
 
 		$products = new LengthAwarePaginator($products, $total, $perPage, $page, ['path' => $request->url(), 'query' => $query]);
 
-        return view('woo_connect::woo_products.index', compact('products', 'query'));
+		// Let's hidrate a little bit
+		$skus = $products->pluck('sku')->filter()->toArray();
+
+		$abi_products = Product::select('id', 'reference')
+							->whereIn('reference', $skus)
+							->pluck('id', 'reference')
+							->toArray();
+
+		$abi_product_ids = [];
+
+		foreach ($products as $product) {
+			# code...
+			$abi_product_ids[$product["sku"]] = 0;
+
+			if ( array_key_exists($product["sku"], $abi_products))
+			{
+				$abi_product_ids[$product["sku"]] = $abi_products[$product["sku"]];
+				// abi_r($product["abi_product_id"]);
+			}
+		}
+
+		// abi_r($abi_products);die();
+
+        return view('woo_connect::woo_products.index', compact('products', 'query', 'abi_product_ids'));
 	}
 
 	/**

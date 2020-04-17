@@ -41,6 +41,13 @@
                           {!! $errors->first('webshop_id', '<span class="help-block">:message</span>') !!}
                       </div>
                   </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+
+                <a class="btn xbtn-sm btn-blue" href="{{ URL::route('wcategories.fetch', $category->webshop_id ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i> {{l('Fetch Data', [], 'layouts')}}</a>
+
+
+                   </div>
         </div>
 
 <!-- Internet ENDS -->

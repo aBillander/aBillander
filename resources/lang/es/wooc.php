@@ -192,18 +192,20 @@ return [
 	'Menu Order'     => 'Posición en el Menú',
 	'Products Count'     => 'Número de Productos',
 	'Slug'     => 'Slug',
+	'Set Local Category'     => 'Enlazar con Categoría Local',
 	'Local Category'     => 'Categoría Local',
+	'WooCommerce Category'     => 'Categoría WooCommerce',
 
 	/*
 	|--------------------------------------------------------------------------
-	| WooCommerce Products Language Lines :: show
+	| WooCommerce Language Lines :: Last aditions
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	''     => '',
+	'Go to local Product'     => 'Ir al Producto',
 	''     => '',
 	''     => '',
 	''     => '',

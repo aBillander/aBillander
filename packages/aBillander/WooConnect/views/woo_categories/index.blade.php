@@ -122,7 +122,7 @@
       @endif
       <td>{{ $category["id"] }}</td>
       <td>{{ $category["parent"] }}</td>
-      <td>@if ( optional($category['image'])['src'] ) <img width="32px" src="{{ optional($category['image'])['src'] }}" style="border: 1px solid #dddddd;"> @endif
+      <td>@if ( optional($category['image'])['src'] ) <img height="32px" src="{{ optional($category['image'])['src'] }}" style="border: 1px solid #dddddd;"> @endif
       </td>
       <td>{{ $category["name"] }}<br /><strong>{{ $category["slug"] }}</strong></td>
 
@@ -146,6 +146,18 @@
         @endif
       </td>
 			<td class="text-right" style="width:1px; white-space: nowrap;">
+
+                <a class='update-local-category btn btn-sm btn-warning' href="{{ URL::route('wcategories.ascription') }}"
+                    data-target='#myModalAscribe' 
+                    data-id="{{ $category['id'] }}" 
+                    data-name="{{ $category['name'] }}" 
+                    data-slug="{{ $category['slug'] }}" 
+                    data-localid="{{ $category['abi_category'] ? $category['abi_category']->id : '' }}" 
+                    data-toggle="modal" onClick="return false;" 
+                    title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>                
+
+                <a class="btn btn-sm btn-info" href="{{ URL::route('wcategories.fetch', $category["id"] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-superpowers"></i></a>
+
 {{--
                 <a class="btn btn-sm btn-info" href="{{ URL::route('wcategories.fetch', [$category["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-superpowers"></i></a>
 
@@ -228,7 +240,7 @@
 
 @parent
 
-<div class="modal fade" id="myModalOrder" role="dialog">
+<div class="modal fade" id="myModalAscribe" role="dialog">
 
    <div class="modal-dialog">
 
@@ -242,7 +254,7 @@
 
                <button type="button" class="close" data-dismiss="modal">&times;</button>
 
-               <h4 class="modal-title">{{l('Change Order Status')}}</h4>
+               <h4 class="modal-title">{{l('Set Local Category')}}</h4>
 
            </div>
 
@@ -251,46 +263,39 @@
                <!-- p>Some text in the modal.</p -->
 
 
-{!! Form::open(array('url' => '', 'method' => 'PATCH', 'id' => 'change_woo_order_status', 'name' => 'change_woo_order_status', 'class' => 'form')) !!}
+{!! Form::open(array('url' => '', 'method' => 'POST', 'id' => 'woo_category_ascription', 'name' => 'woo_category_ascription', 'class' => 'form')) !!}
 
                   
 <div class="row">
 		<div class="form-group col-lg-6 col-md-6 col-sm-6">
-		                       <label for="bookId" xclass="col-sm-3 control-label text-right">{{l('Order #')}}</label>
-		                       <input type="text" class="form-control" name="bookId" id="bookId" value="" onfocus="this.blur();">
+                           
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{l('WooCommerce Category')}}</h3>
+          </div>
+          <div class="panel-body">
+            <div id="category-label"></div>
+            {!! Form::hidden('webshop_id', null, array('id' => 'webshop_id')) !!}
+          </div>
+        </div>
+
 		</div>
 
 		<div class="form-group col-lg-6 col-md-6 col-sm-6">
-		                       <label for="bookStatus" xclass="col-sm-3 control-label text-right">{{l('Status')}}</label>
-		                       <input type="text" class="form-control" name="bookStatus" id="bookStatus" value="" onfocus="this.blur();">
+                           
+        <div class="panel panel-success">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{l('Local Category')}}</h3>
+          </div>
+          <div class="panel-body {{ $errors->has('category_id') ? 'has-error' : '' }}">
+                    {!! Form::select('category_id', array('' => l('-- Please, select --', [], 'layouts')) + $categoryList, null, array('class' => 'form-control', 'id' => 'category_id')) !!}
+                    {!! $errors->first('category_id', '<span class="help-block">:message</span>') !!}
+
+                    {!! Form::hidden('current_category_id', null, array('id' => 'current_category_id')) !!}
+          </div>
+        </div>
+
 		</div>
-</div>
-
-<div class="row">
-  <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                         <label for="order_status">{{l('New Order Status')}}</label>
-
-                         {!! Form::select('order_status', \aBillander\WooConnect\WooConnector::getOrderStatusList(), null, array('class' => 'form-control', 'id' => 'order_status')) !!}
-  </div>
-
-  <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-order_set_paid">
-   {!! Form::label('order_set_paid', l('Mark as Paid'), ['class' => 'control-label']) !!}
-   <div>
-     <div class="radio-inline">
-       <label>
-         {!! Form::radio('order_set_paid', '1', false, ['id' => 'order_set_paid_on']) !!}
-         {!! l('Yes', [], 'layouts') !!}
-       </label>
-     </div>
-     <div class="radio-inline">
-       <label>
-         {!! Form::radio('order_set_paid', '0', true, ['id' => 'order_set_paid_off']) !!}
-         {!! l('No', [], 'layouts') !!}
-       </label>
-     </div>
-   </div>
-  </div>
-
 </div>
 
 
@@ -347,23 +352,27 @@ $("#order_lines").on("change", function () {
 
 
     $(document).ready(function () {
-          // $(document).on("click", ".open-AddBookDialog", function() {
-            $('.open-AddBookDialog').click(function (evnt) {
+          // $(document).on("click", ".update-local-category", function() {
+            $('.update-local-category').click(function (evnt) {
 
                var href = $(this).attr('href');
-               var myBookId = $(this).attr('data-id');
-               var myBookStatus = $(this).attr('data-status');
-               var myBookStatusname = $(this).attr('data-statusname');
+               var cId = $(this).attr('data-id');
+               var name = $(this).attr('data-name');
+               var slug = $(this).attr('data-slug');
+               var abiId = $(this).attr('data-localid');
 
-               $('#change_woo_order_status').attr('action', href);
-               $(".modal-body #bookId").val(myBookId);
-               $(".modal-body #bookStatus").val(myBookStatusname);
-               $(".modal-body #order_status").val(myBookStatus);
+               var label = '[' + cId + '] ' + name + '<br />{{l('Slug')}}: <strong>' + slug + '</strong>';
+
+               $('#woo_category_ascription').attr('action', href);
+               $("#category-label").html(label);
+               $("#webshop_id").val(cId);
+               $("#current_category_id").val(abiId);
+               $("#category_id").val(abiId);
 
                // https://blog.revillweb.com/jquery-disable-button-disabling-and-enabling-buttons-with-jquery-5e3ffe669ece
                // $('#btn-update').prop('disabled', false);
 
-               $('#myModalOrder').modal({show: true});
+               $('#myModalAscribe').modal({show: true});
 
                return false;
 

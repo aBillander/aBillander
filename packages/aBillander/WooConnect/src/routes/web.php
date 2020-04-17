@@ -75,8 +75,9 @@ Route::group([
 
     Route::resource('wcategories', 'WooCategoriesController');
 
-    Route::get('wcategories/{id}/fetch' , array('uses' => 'WooCategoriesController@fetch', 
-                                                        'as'   => 'wcategories.fetch' ));
+    Route::get('wcategories/{id}/fetch' , 'WooCategoriesController@fetch')->name('wcategories.fetch' );
+
+    Route::post('wcategories/ascription' , 'WooCategoriesController@ascription')->name('wcategories.ascription' );
 
 });
 

@@ -122,7 +122,12 @@
       @else
       <td class="text-center warning">{!! Form::checkbox('worders[]', $product['id'], false, ['class' => 'case checkbox']) !!}</td>
       @endif
-      <td title="{{ $product['id'] }}">{{ $product["sku"] }}</td>
+      <td title="{{ $product['id'] }}">{{ $product["sku"] }}
+              
+        @if ( ($pid = $abi_product_ids[$product["sku"]]) > 0 )
+                        <a class="btn btn-xs btn-warning" href="{{ route('products.edit', $pid) }}" title="{{l('Go to local Product')}}" target="_blank"><i class="fa fa-external-link"></i></a>
+        @endif
+      </td>
       <td><img width="32px" src="{{ optional($product['images'])[0]['src'] }}" style="border: 1px solid #dddddd;"></td>
       <td>{{ $product["name"] }}<br /><strong>{{ $product["slug"] }}</strong></td>
       <td>{{ $product["categories"][0]["name"] }}</td>

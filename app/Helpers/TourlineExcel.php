@@ -64,6 +64,11 @@ class TourlineExcel {
 'HasControl',
 'IsClientPodScanned',
 'HasIdentificationDestin',
+// Extra Stuff
+'-',
+'DocumentId',
+'aBillanderCustomerId',
+'CodigoClienteFactuSOL',
 
         ];
     }

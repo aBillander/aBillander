@@ -164,7 +164,38 @@ class WooCategoriesController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		//
+		$abi_category = $this->abi_category->findOrFail($request->input('abi_category_id', 0));
+
+		// abi_r($abi_category);die();
+
+		$data = [
+		    'name' => 'aaaab bbbba',
+//		    'slug' => 'aaaab',
+		    'parent' => 0,
+		    'description' => '',		// HTML
+		    'display' => 'default',		//  Options: default, products, subcategories and both. Default is default.
+		    'image' => [
+		    		'src' => '',		// Image URL.
+		    		'name' => '',
+		    		'alt' => ''
+		    ],
+//		    'menu_order' => 0,
+
+//		    '_method' => 'POST',
+		];
+
+		// https://rudrastyh.com/woocommerce/rest-api-create-update-remove-products.html#remove_product
+		// $result = WooCommerce::delete('products/categories/'.$abi_category->webshop_id, ['force' => true]);
+
+		$result = WooCommerce::post('products/categories', $data);
+
+		abi_r($result);
+
+		$abi_category->update(['webshop_id' => $result['id']]);
+
+		
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $result['id']], 'layouts') );
 	}
 
 	/**

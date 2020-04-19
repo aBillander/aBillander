@@ -295,15 +295,16 @@ class WooProductsController extends Controller
 				// $img_name = $images[0]['name'] ?? '';
 				// $img_alt  = $images[0]['alt']  ?? '';
 
-				foreach ($images as $image)
+				foreach ($images as $position => $image)
 				{
 					$img_src  = $image['src'];
 					$img_name = $image['name'];
 					$img_alt  = $image['alt'];
 
-					$img_position  = $image['position'];	// position = 0 => Product Image (Woo Featured image)
+					$img_position  = $position;	// position = 0 => Product Image (Woo Featured image)
 
-					$caption = $img_name . ' :: ' . $img_alt;
+					$img_alt = ( $img_alt != '' ? ' :: ' . $img_alt : '' );
+					$caption = $img_name . $img_alt;
 
 					// Make the magic
 					if( $img_src )

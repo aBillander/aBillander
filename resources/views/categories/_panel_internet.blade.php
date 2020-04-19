@@ -48,6 +48,20 @@
 
 
                    </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+
+                        <a class="btn xbtn-sm btn-lightblue" href="javascript:void(0);"
+                                onclick="event.preventDefault();
+                                         document.getElementById('publish-category-form').submit();" title="{{l('Fetch', [], 'layouts')}}"><i class="fa fa-cloud-upload"></i> {{l('Publish', [], 'layouts')}}</a>
+{{-- See end of file
+                        <form id="publish-category-form" action="{{ route('wcategories.store') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                            {!! Form::hidden('abi_category_id', $category->id, array('id' => 'abi_category_id')) !!}
+                        </form>
+--}}
+
+                   </div>
         </div>
 
 <!-- Internet ENDS -->
@@ -167,3 +181,10 @@
 @endif
 
 </div>
+
+{{-- Extra Form --}}
+
+                        <form id="publish-category-form" action="{{ route('wcategories.store') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                            {!! Form::hidden('abi_category_id', $category->id, array('id' => 'abi_category_id')) !!}
+                        </form>

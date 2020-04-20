@@ -13,8 +13,8 @@ use Illuminate\Http\Request;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-use \App\Category;
-use \aBillander\WooConnect\WooCategory;
+use App\Category;
+use aBillander\WooConnect\WooCategory;
 
 class WooCategoriesController extends Controller 
 {
@@ -164,37 +164,41 @@ class WooCategoriesController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		$abi_category = $this->abi_category->findOrFail($request->input('abi_category_id', 0));
+		$abi_category = $this->abi_category
+									->with('parent')
+									->findOrFail($request->input('abi_category_id', 0));
 
 		// abi_r($abi_category);die();
 
 		$data = [
-		    'name' => 'aaaab bbbba',
-//		    'slug' => 'aaaab',
-		    'parent' => 0,
-		    'description' => '',		// HTML
+		    'name' => $abi_category->name,
+		    'slug' => '',
+		    'parent' => $abi_category->parent ? (int) $abi_category->parent->webshop_id : 0,
+		    'description' => $abi_category->description,		// HTML
 		    'display' => 'default',		//  Options: default, products, subcategories and both. Default is default.
 		    'image' => [
 		    		'src' => '',		// Image URL.
 		    		'name' => '',
 		    		'alt' => ''
 		    ],
-//		    'menu_order' => 0,
-
-//		    '_method' => 'POST',
+		    'menu_order' => 0,
 		];
 
 		// https://rudrastyh.com/woocommerce/rest-api-create-update-remove-products.html#remove_product
 		// $result = WooCommerce::delete('products/categories/'.$abi_category->webshop_id, ['force' => true]);
 
-		$result = WooCommerce::post('products/categories', $data);
+		unset($data['slug']);
+		unset($data['image']);
+		unset($data['menu_order']);
 
-		abi_r($result);
+		// abi_r($data);die();
+
+		$result = WooCommerce::post('products/categories', $data);
 
 		$abi_category->update(['webshop_id' => $result['id']]);
 
 		
-		return redirect()->back()
+		return redirect()->to(url()->previous() . '#internet')
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $result['id']], 'layouts') );
 	}
 
@@ -205,9 +209,14 @@ class WooCategoriesController extends Controller
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show($id, Request $request)
 	{
-		// 
+		$category = WooCategory::fetch( $id );
+
+        if ($request->has('embed'))
+        	return view('woo_connect::woo_categories.show_embed', compact('category'));
+        else
+        	return $this->fetch($id);	// To do: return data into proper view
 	}
 
 	/**

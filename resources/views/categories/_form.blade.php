@@ -34,7 +34,16 @@
                      </div>
                    </div>
         </div>
+                
+        <div class="row">
+          
+                  <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('description') ? 'has-error' : '' }}">
+                     {{ l('Description') }}
+                     {!! Form::textarea('description', null, array('class' => 'form-control', 'id' => 'description', 'rows' => '3')) !!}
+                     {!! $errors->first('description', '<span class="help-block">:message</span>') !!}
+                  </div>
 
+        </div>
 
                </div><!-- div class="panel-body" -->
 

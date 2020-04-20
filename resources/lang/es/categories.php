@@ -64,5 +64,6 @@ return [
 	'META Description'     => 'META Descripción',
 	'META Keywords'     => 'META Palabras Clave',
 	'Internet'     => 'Internet',
+	'Web Shop'	=> 'Tienda Online',
 
 ];

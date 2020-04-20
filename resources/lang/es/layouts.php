@@ -248,6 +248,7 @@ return [
 	'Help'     => 'Ayuda',
 	'Home'     => 'Inicio',
 	'Fetch' => 'Extraer',
+	'View Data' => 'Ver Datos',
 	'Fetch Data' => 'Extraer Datos',
 
 	'Set on-hold'     => 'Click para poner en espera',

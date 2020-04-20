@@ -46,17 +46,15 @@
 
 @if( $category->webshop_id > 0 )
 
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
                         <a class="btn xbtn-sm alert-info view-webshop-data" href="javascript::void(0);" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('View Data', [], 'layouts')}}</a>
 
-
                    </div>
 
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
                         <a class="btn xbtn-sm btn-blue" href="{{ URL::route('wcategories.fetch', $category->webshop_id ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i> {{l('Fetch Data', [], 'layouts')}}</a>
-
 
                    </div>
 

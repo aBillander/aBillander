@@ -159,6 +159,7 @@
       $("#panel_inventory").hide();
       $("#panel_manufacturing").hide();
       $("#panel_internet").hide();
+      $("#product-webshop-data").html('');
       $("#panel_combinations").hide();
       $("#panel_images").hide();
 
@@ -207,7 +208,7 @@
       {
          $("#panel_internet").show();
          $("#b_internet").addClass('active');
-         getProductInternetData( '{{ $product->reference }}' );
+         // getProductInternetData( '{{ $product->reference }}' );
       }
       else if(window.location.hash.substring(1) == 'combinations')
       {

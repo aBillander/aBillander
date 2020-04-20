@@ -16,7 +16,7 @@
 
         <div class="row">
 
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+                   <div class=" hidden form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
                      {!! Form::label('publish_to_web', l('Publish to web?'), ['class' => 'control-label']) !!}
                      <div>
                        <div class="radio-inline">
@@ -34,29 +34,51 @@
                      </div>
                    </div>
 
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
-
-                <a class="btn xbtn-sm btn-blue" href="{{ URL::route('wproducts.fetch', $product->reference ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i> {{l('Fetch Data', [], 'layouts')}}</a>
-
-
-                   </div>
-
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
-
-                <a class="btn xbtn-sm btn-grey" href="{{ URL::route('wproducts.import.product.images', ['product_sku' => $product->reference] ) }}" title="{{l('Import', [], 'layouts')}}" target="_blank"><i class="fa fa-image"></i> {{l('Import Images')}}</a>
-
-
-                   </div>
-        </div>
-
-        <hr />
-
-        <div class="row">
-                  <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('description_short') ? 'has-error' : '' }}">
-                     {{ l('Short Description') }}
-                     {!! Form::textarea('description_short', null, array('class' => 'form-control', 'id' => 'description_short', 'rows' => '3')) !!}
-                     {!! $errors->first('description_short', '<span class="help-block">:message</span>') !!}
+                  <div class="col-lg-3 col-md-3 col-sm-3">
+                      <div class="form-group">
+                          {!! Form::label('webshop_id', l('Webshop ID'), ['class' => 'control-label']) !!}
+                          <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div id="webshop_id" class="form-control">{{ $product->reference }}</div>
+                          </div>
+                      </div>
                   </div>
+
+@if( $product->reference )
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+                        <a class="btn xbtn-sm alert-info view-webshop-data" href="javascript::void(0);" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('View Data', [], 'layouts')}}</a>
+
+                   </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+                      <a class="btn xbtn-sm btn-blue" href="{{ URL::route('wproducts.fetch', $product->reference ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i> {{l('Fetch Data', [], 'layouts')}}</a>
+
+                   </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+                      <a class="btn xbtn-sm btn-grey" href="{{ URL::route('wproducts.import.product.images', ['product_sku' => $product->reference] ) }}" title="{{l('Import', [], 'layouts')}}" target="_blank"><i class="fa fa-image"></i> {{l('Import Images')}}</a>
+
+                   </div>
+
+@else
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web_1">
+
+                        <a class="btn xbtn-sm btn-lightblue" href="javascript:void(0);"
+                                onclick="event.preventDefault();
+                                         document.getElementById('publish-product-form').submit();" title="{{l('Fetch', [], 'layouts')}}"><i class="fa fa-cloud-upload"></i> {{l('Publish', [], 'layouts')}}</a>
+{{-- See end of file
+                        <form id="publish-product-form" action="{{ route('wproducts.store') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                            {!! Form::hidden('abi_product_id', $product->id, array('id' => 'abi_product_id')) !!}
+                        </form>
+--}}
+
+                   </div>
+@endif
         </div>
 
         <div class="row">
@@ -81,12 +103,56 @@
 </div>
 
 
+
+<div id="product-webshop-data">
+
+    <div id="product-webshop-data-content"></div>
+
+</div>
+
+
+
+
+{{-- Extra Form --}}
+
+                        <form id="publish-product-form" action="{{ route('wproducts.store') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                            {!! Form::hidden('abi_product_id', $product->id, array('id' => 'abi_product_id')) !!}
+                        </form>
+
+
 @section('scripts')     @parent
 <script type="text/javascript">
    
    $(document).ready(function() {
 
+          $(document).on('click', '.view-webshop-data', function(evnt) {
+           
+               var panel = $("#product-webshop-data");
+               var url = "{{ route('wproducts.show', [$product->reference, 'embed']) }}";
 
+               panel.html(" &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}").addClass('loading');
+
+               $.get(url, {}, function(result){
+                     panel.html(result);
+                     panel.removeClass('loading');
+
+                     $("[data-toggle=popover]").popover();
+
+               }, 'html').done( function() { 
+
+                    // var selector = "#line_autoproduct_name";
+                    // var next = $('#next_line_sort_order').val();
+
+                    // $('#modal_document_line').modal({show: true});
+                    // $("#line_autoproduct_name").focus();
+
+                });
+
+              return false;
+          });
+
+{{--
         $(document).on('click', '.create-pricerule', function(evnt) {
 
             // Initialize
@@ -106,9 +172,12 @@
 
             return false;
         });
+--}}
       
 
    });
+
+{{--
 
       $(window).on('hashchange',function(){
       page = window.location.hash.replace('#','');
@@ -157,7 +226,7 @@
       }
 
     });
-
+--}}
 
 </script>
 

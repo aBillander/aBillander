@@ -11,21 +11,21 @@
 
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
-                          <label for="webshop_id" class="control-label">{{ l('parent') }}</label>
+                          <label for="" class="control-label">{{ l('parent') }}</label>
                           <div class="form-control">{{ $category['parent'] }}</div>
                       </div>
                   </div>
 
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
-                          <label for="webshop_id" class="control-label">{{ l('display') }}</label>
+                          <label for="" class="control-label">{{ l('display') }}</label>
                           <div class="form-control">{{ $category['display'] }}</div>
                       </div>
                   </div>
 
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
-                          <label for="webshop_id" class="control-label">{{ l('menu_order') }}</label>
+                          <label for="" class="control-label">{{ l('menu_order') }}</label>
                           <div class="form-control">{{ $category['menu_order'] }}</div>
                       </div>
                   </div>
@@ -33,7 +33,7 @@
 
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
-                          <label for="webshop_id" class="control-label">{{ l('count') }}</label>
+                          <label for="" class="control-label">{{ l('count') }}</label>
                           <div class="form-control">{{ $category['count'] }}</div>
                       </div>
                   </div>
@@ -44,23 +44,24 @@
 
                   <div class="col-lg-6 col-md-6 col-sm-6">
                       <div class="form-group">
-                          <label for="webshop_id" class="control-label">{{ l('description') }}</label>
-                         	<div class="panel panel-default">
-								<div class="panel-body">
-									{{ $category['description'] }}
-								</div>
-							</div>
+                          <label for="" class="control-label">{{ l('description') }}</label>
+                          <div class="panel panel-default">
+                              <div class="panel-body">
+                                {!! $category['description'] !!}
+                              </div>
+                          </div>
                       </div>
                   </div>
 
                   <div class="col-lg-6 col-md-6 col-sm-6">
                       <div class="form-group">
-                          <label for="webshop_id" class="control-label">{{ l('image') }}</label>
-                         	<div class="panel panel-default">
-								<div class="panel-body">
-                          			<img width="100%" xheight="32px" src="{{ optional($category['image'])['src'] }}" style="border: 1px solid #dddddd;" alt="{{ optional($category['image'])['alt'] }}">
-								</div>
-							</div>
+                          <label for="" class="control-label">{{ l('image') }}</label>
+                          <div class="panel panel-default">
+                                <div class="panel-body">
+                                      <img width="100%" xheight="32px" src="{{ optional($category['image'])['src'] }}" style="border: 1px solid #dddddd;" alt="{{ optional($category['image'])['alt'] }}">
+                                </div>
+                                  <h5 class="text-center">{{ optional($category['image'])['name'] }}</h5>
+                          </div>
                       </div>
                   </div>
 

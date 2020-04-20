@@ -177,9 +177,14 @@ class WooProductsController extends Controller
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show($id, Request $request)
 	{
-		// 
+		$product = WooProduct::fetch( $id );
+
+        if ($request->has('embed'))
+        	return view('woo_connect::woo_products.show_embed', compact('product'));
+        else
+        	return $this->fetch($id);	// To do: return data into proper view
 	}
 
 	/**

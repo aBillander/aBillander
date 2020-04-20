@@ -64,6 +64,7 @@
    {
       $("#panel_main_data").hide();
       $("#panel_internet").hide();
+      $("#category-webshop-data").html('');
 
       $("#b_main_data").removeClass('active');
       $("#b_internet").removeClass('active');

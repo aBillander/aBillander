@@ -183,6 +183,7 @@ return [
 	'Default?'     => '¿Principal?',
 
 	'Publish to web?'     => '¿Publicar en la web?',
+	'Webshop ID'     => 'Código en la Tienda Web',
 
 
 

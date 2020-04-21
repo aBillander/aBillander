@@ -73,6 +73,8 @@ return [
 
 	'Go to Customer'     => 'Ir al Cliente',
 	'This Customer has not been imported'     => 'Este Cliente no ha sido importado',
+	'Shipping Address is different from Billing Address!' => 'La Dirección de Envío es diferente de la Dirección de Facturación!',
+	'Shipping Address is the same as Billing Address.' => 'La Dirección de Envío coincide con la Dirección de Facturación.',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -228,6 +230,10 @@ return [
 	*/
 
 	'Go to local Product'     => 'Ir al Producto',
+
+	'Billing Address'     => 'Dirección de Facturación',
+	'Shipping Address'     => 'Dirección de Envío',
+
 	''     => '',
 	''     => '',
 	''     => '',

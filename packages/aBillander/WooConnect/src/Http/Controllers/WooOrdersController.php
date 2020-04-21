@@ -283,6 +283,9 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		$state = State::findByIsoCode( $order['shipping']['state'], $order['shipping']['country'] );
 		$order['shipping']['state_name'] = $state ? $state->name : $order['shipping']['state'];
 
+		// Address check
+		$order['has_shipping'] = WooOrder::getShippingAddressId( $order ) != WooOrder::getBillingAddressId( $order );
+
 		// Carrier
 		$order['shipping']['shipping_method'] = '('.$order['shipping_lines'][0]['method_id'].') '.$order['shipping_lines'][0]['method_title'];
 		$shipping_method = ShippingMethod::with('carrier')->find( WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ) );

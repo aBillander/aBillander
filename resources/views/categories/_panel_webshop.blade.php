@@ -64,7 +64,7 @@
 
                         <a class="btn xbtn-sm btn-lightblue" href="javascript:void(0);"
                                 onclick="event.preventDefault();
-                                         document.getElementById('publish-category-form').submit();" title="{{l('Fetch', [], 'layouts')}}"><i class="fa fa-cloud-upload"></i> {{l('Publish', [], 'layouts')}}</a>
+                                         document.getElementById('publish-category-form').submit();" title="{{l('Publish', [], 'layouts')}}"><i class="fa fa-cloud-upload"></i> {{l('Publish', [], 'layouts')}}</a>
 {{-- See end of file
                         <form id="publish-category-form" action="{{ route('wcategories.store') }}" method="POST" style="display: none;">
                             {{ csrf_field() }}

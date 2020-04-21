@@ -52,7 +52,14 @@ Route::get('migratethis', function()
 {
 
 	// 2020-04-20
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `webshop_id` varchar(16) NULL DEFAULT NULL AFTER `publish_to_web`;");
+
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `categories` ADD `description` TEXT NULL DEFAULT NULL AFTER `name`;");
+
+	// Fix error; see below
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `carriers` CHANGE `transit_time` varchar(116) null;");
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `carriers` CHANGE `tracking_url` varchar(128) null;");
+
 
 
 

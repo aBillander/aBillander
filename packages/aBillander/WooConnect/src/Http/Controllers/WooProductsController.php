@@ -21,10 +21,12 @@ class WooProductsController extends Controller
 
 
    protected $product;
+   protected $abi_product;
 
-   public function __construct(WooProduct $product)
+   public function __construct(WooProduct $product, Product $abi_product)
    {
          $this->product = $product;
+         $this->abi_product = $abi_product;
    }
 
 	/**
@@ -167,7 +169,41 @@ class WooProductsController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		//
+		$abi_product = $this->abi_product
+									->findOrFail($request->input('abi_product_id', 0));
+
+		// abi_r($abi_product);die();
+
+		$data = [
+		    'name' => $abi_product->name,
+		    'slug' => '',
+		    'parent' => $abi_product->parent ? (int) $abi_product->parent->webshop_id : 0,
+		    'description' => $abi_product->description,		// HTML
+		    'display' => 'default',		//  Options: default, products, subcategories and both. Default is default.
+		    'image' => [
+		    		'src' => '',		// Image URL.
+		    		'name' => '',
+		    		'alt' => ''
+		    ],
+		    'menu_order' => 0,
+		];
+
+		// https://rudrastyh.com/woocommerce/rest-api-create-update-remove-products.html#remove_product
+		// $result = WooCommerce::delete('products/categories/'.$abi_product->webshop_id, ['force' => true]);
+
+		unset($data['slug']);
+		unset($data['image']);
+		unset($data['menu_order']);
+
+		// abi_r($data);die();
+
+		$result = WooCommerce::post('products', $data);
+
+		$abi_product->update(['webshop_id' => $result['id']]);
+
+		
+		return redirect()->to(url()->previous() . '#internet')
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $result['id']], 'layouts') );
 	}
 
 	/**
@@ -346,7 +382,7 @@ The image in position 0 is your featured image.
 
 */
 
-        return redirect()->back()
+        return redirect()->to(url()->previous() . '#images')
                 ->with('success', l('Some Product Images has been retrieved from WooCommerce Shop.') . " $product_sku");
 	}
 

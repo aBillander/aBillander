@@ -159,7 +159,7 @@
       $("#panel_inventory").hide();
       $("#panel_manufacturing").hide();
       $("#panel_internet").hide();
-      $("#product-webshop-data").html('');
+      $("#product-webshop-data").hide();
       $("#panel_combinations").hide();
       $("#panel_images").hide();
 
@@ -207,8 +207,11 @@
       else if(window.location.hash.substring(1) == 'internet')
       {
          $("#panel_internet").show();
+         $("#product-webshop-data").show();
          $("#b_internet").addClass('active');
          // getProductInternetData( '{{ $product->reference }}' );
+         if ($("#product-webshop-data-content").html() == '')
+          getProductWebShopEmbedData();
       }
       else if(window.location.hash.substring(1) == 'combinations')
       {

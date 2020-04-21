@@ -21,6 +21,7 @@ class WooCategoriesController extends Controller
 
 
    protected $category;
+   protected $abi_category;
 
    public function __construct(WooCategory $category, Category $abi_category)
    {

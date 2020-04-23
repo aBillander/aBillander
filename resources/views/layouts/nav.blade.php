@@ -279,6 +279,14 @@
                                  {{l('Product Categories', [], 'layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+                         <li>
+                            <a href="{{ URL::to('wooc/wcategories') }}">
+                                 <i class="fa fa-cloud-upload btn-xs alert-info"></i> 
+                                 {{l('Product Categories', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+@endif
                          <li>
                             <a href="{{ URL::to('manufacturers') }}">
                                  {{l('Manufacturers', [], 'layouts')}}

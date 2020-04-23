@@ -30,6 +30,9 @@
 @if ($order )
 
 <div class="row">
+
+{{-- Order Header --}}
+
     <div class="col-sm-4">
         
         <div class="form-group col-sm-6">
@@ -44,7 +47,7 @@
         
         <!-- div class="form-group col-sm-6">
             {{l('Currency')}}
-            <div class="form-control">{{ $order['currency'] }}</div>
+            <div class="form-control">{ { $order['currency'] }}</div>
         </div>
         
         <div class="form-group col-sm-6">
@@ -64,7 +67,7 @@
         
         <!-- div class="form-group col-sm-6">
             {{l('Downloaded at')}}
-            <div class="form-control">{{ $order["date_downloaded"] }}</div>
+            <div class="form-control">{ { $order["date_downloaded"] }}</div>
         </div>
         
         <div class="form-group col-sm-6">
@@ -72,89 +75,68 @@
             <div class="form-control"> </div>
         </div -->
 
-        <div class="form-group">
-            {{ l('Customer') }}:
-            <div class="input-group">
-                <div class="form-control">{{ $order['customer_id'] }} - {{ $order['billing']['first_name'].' '.$order['billing']['last_name'] }}</div>
-@if ( $customer )                
-                <span class="input-group-btn">
-                    <a href="{{ URL::to('customers/' . $customer->id) }}" class="btn btn-success" title="{{ l('Go to Customer') }}" target="_blank">
-                        <span class="fa fa-eye"></span>
-                    </a>
-                </span>
-@else               
-                <span class="input-group-addon" title="{{ l('This Customer has not been imported') }}">
-                    <span class="fa fa-eye-slash"></span>
-                </span>
-@endif                
-            </div>
-        </div>
-        
-        <div class="form-group">
-            {{ l('Company') }}:
-            <div class="form-control">{{ $order['billing']['company'] }}</div>
-        </div>
-        
-        <div class="form-group">
-            {{ l('Address') }}:
-            <div class="form-control">{!! $order["shipping"]["address_1"].(isset($order["shipping"]["address_2"])?'<br />'.$order["shipping"]["address_2"]:'') !!}</div>
-        </div>
-        
-        <!-- div class="form-group">
-            {{ l('VAT Number') }}
-            <div class="form-control">{{ $order['billing']['vat_number'] }}</div>
-        </div -->
-        
-        <!-- div class="form-group">
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-envelope"></span>
-                </span>
-                <div class="form-control">{{ $order['billing']['email'] }}</div>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-phone"></span>
-                </span>
-                <div class="form-control">{{ $order['billing']['phone'] }}</div>
-            </div>
-        </div -->
-        
-        <div class="form-group">
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-envelope"></span>
-                </span>
-                <div class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;">{{ $order['billing']['email'] }}</div>
+        {{-- Addresses --}}
 
-                <span class="input-group-addon" style="padding: 8px 6px;
-background-color: white;
-border: 0px solid;"></span>
+        <div class="row">
+        <div class="xform-group col-sm-12">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{ l('Shipping Address') }}</h3>
+              </div>
+              <div class="panel-body">
 
-                <span class="input-group-addon" style="border-top-left-radius: 4px; border-bottom-left-radius: 4px;">
-                    <span class="fa fa-phone"></span>
-                </span>
-                <div class="form-control">{{ $order['billing']['phone'] }}</div>
+@if ( $order['has_shipping'] )
+
+            <div class="alert alert-dismissible alert-danger">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <strong> <span class="fa fa-warning"></span> </strong> {{ l('Shipping Address is different from Billing Address!') }}
+            </div>
+
+@php
+
+$extra = [];
+
+$extra['email'] = $order['shipping']['email'] ?? $order['billing']['email'];
+$extra['phone'] = $order['shipping']['phone'] ?? $order['billing']['phone'];
+
+@endphp
+
+                @include('woo_connect::woo_orders._block_address', ['address' => $order['shipping'] + $extra])
+
+@else
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <strong> <span class="text-warning fa fa-thumbs-o-up"></span> </strong> {{ l('Shipping Address is the same as Billing Address.') }}
+                </div>
+            </div>
+
+@endif
+
+              </div>
             </div>
         </div>
-        
-        <div class="form-group">
-            {{ l('City') }}:
-            <div class="form-control">{{ $order['shipping']['postcode'].' - '.$order['shipping']['city'] }}</div>
         </div>
-        <div class="form-group">
-            <span class="text-capitalize">{{ l('State') }}</span>
-            <div class="input-group">
-                <div class="form-control">{{ $order['shipping']['state_name'] }}</div>
-                <span class="input-group-addon">
-                    {{ $order['shipping']['country_name'] }}
-                </span>
+
+        <div class="row">
+        <div class="xform-group col-sm-12">
+            <div class="panel panel-success">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{ l('Billing Address') }}</h3>
+              </div>
+              <div class="panel-body">
+
+                @include('woo_connect::woo_orders._block_address', ['address' => $order['billing']])
+                
+              </div>
             </div>
         </div>
+        </div>
+
     </div>
+
+{{-- Order Details --}}
+
     <div class="col-sm-8">
         <div class="table-responsive">
             <table class="table table-hover">
@@ -236,7 +218,7 @@ border: 0px solid;"></span>
             </table>
         </div>
         <div class="form-group">
-            {{ l('Customer Notes') }}
+            <label class="control-label">{{ l('Customer Notes') }}</label>
             <textarea class="form-control" rows="2" onfocus="this.blur();" xreadonly="">{{ $order['customer_note'] }}</textarea>
         </div>
     </div>
@@ -249,11 +231,6 @@ border: 0px solid;"></span>
 </div>
 @endif
 
-
-            </div>
-
-		</div>
-	</div>
 
 {{-- !! abi_r($order) !! --}}
 

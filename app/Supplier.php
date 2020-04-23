@@ -198,6 +198,11 @@ class Supplier extends Model {
     {
         return $this->hasMany('App\Product', 'main_supplier_id')->orderby('name', 'asc');
     }
+    
+    public function supplierpricelistlines()
+    {
+        return $this->hasMany('App\SupplierPriceListLine', 'supplier_id');
+    }
 
     /**
      * Get all of the customer's Bank Accounts.

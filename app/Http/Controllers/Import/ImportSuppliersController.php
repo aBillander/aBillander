@@ -345,7 +345,7 @@ class ImportSuppliersController extends Controller
 
                     if ( $data['invoice_sequence_id'] )
                     {
-                        if ( !\App\Language::where('id', $data['invoice_sequence_id'])->exists() )
+                        if ( !\App\Sequence::where('id', $data['invoice_sequence_id'])->exists() )
                             $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'invoice_sequence_id' no existe. ".$data['invoice_sequence_id']);
                     }
 
@@ -503,7 +503,7 @@ if ($country) {
                         //     unset( $data['reference'] );
                         
                     } else
-
+/*
                     if ( array_key_exists('reference_external', $data) )
                     {
                         $key_name = 'reference_external';
@@ -512,7 +512,7 @@ if ($country) {
                         unset( $data['reference_external'] );
                         
                     }
-
+*/
 
                     // http://fideloper.com/laravel-database-transactions
                     // https://stackoverflow.com/questions/45231810/how-can-i-use-db-transaction-in-laravel
@@ -736,6 +736,11 @@ if ($country) {
             // Casting
             $row['discount_percent'] = (float) $row['discount_percent'];
             $row['discount_ppd_percent'] = (float) $row['discount_ppd_percent'];
+
+            $row['creditor'] = (int) $row['creditor'];
+            $row['approved'] = (int) $row['approved'];
+            $row['blocked'] = (int) $row['blocked'];
+            $row['active'] = (int) $row['active'];
 
             $row['PAYMENT_METHOD_NAME']  = $supplier->paymentmethod  ? $supplier->paymentmethod->name : '';
             $row['CURRENCY_NAME']        = $supplier->currency->name    ? $supplier->currency->name : '';

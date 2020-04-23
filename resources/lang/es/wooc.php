@@ -234,8 +234,8 @@ return [
 	'Billing Address'     => 'Dirección de Facturación',
 	'Shipping Address'     => 'Dirección de Envío',
 
-	''     => '',
-	''     => '',
+	'Some Product Descriptions has been retrieved from WooCommerce Shop.'     => 'Algunas Descripciones de Productos han sido importadas desde la Tienda WooCommerce.',
+	'Some Product Images has been retrieved from WooCommerce Shop.'     => 'Algunas Imagenes de Productos han sido importadas desde la Tienda WooCommerce.',
 	''     => '',
 	''     => '',
 	''     => '',

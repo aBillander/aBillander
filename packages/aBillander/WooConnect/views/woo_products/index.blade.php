@@ -161,6 +161,10 @@ $tax = \App\Tax::find( $tax_id );
 
                 <a class="btn btn-sm btn-blue" href="{{ URL::route('wproducts.fetch', [$product["sku"] ?: $product["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i></a>
 
+        @if ( !($pid = $abi_product_ids[$product["sku"]]) > 0 )
+                <a class="btn btn-sm btn-grey" href="{{ URL::route('wproducts.import', [$product["id"]] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
+        @endif
+
 {{--
                 <a class='open-AddBookDialog btn btn-sm btn-warning' href="{{ URL::route('worders.update', [$product["id"]] + $query ) }}" data-target='#myModalOrder' data-id="{{ $product["id"] }}" data-status="{{ $product["status"] }}" data-statusname="{{ \aBillander\WooConnect\WooConnector::getOrderStatusName( $product["status"] ) }}" data-toggle="modal" onClick="return false;" title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>
 

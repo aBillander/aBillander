@@ -295,6 +295,7 @@ return [
 	*/
 
     'Import Images' => 'Importar Imágenes',
+    'Import Descriptions' => 'Importar Descripciones',
 
 
 

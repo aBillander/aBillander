@@ -69,11 +69,23 @@
 
                    <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
-                      <a class="btn xbtn-sm btn-grey" href="{{ URL::route('wproducts.import.product.images', ['product_sku' => $product->reference] ) }}" title="{{l('Import', [], 'layouts')}}" target="_blank"><i class="fa fa-image"></i> {{l('Import Images')}}</a>
+                      <a class="btn xbtn-sm btn-grey" href="{{ URL::route('wproducts.import.product.images', ['product_sku' => $product->reference] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-image"></i> {{l('Import Images')}}</a>
+
+                   </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+                      <a class="btn xbtn-sm btn-grey" href="{{ URL::route('wproducts.import.product.descriptions', ['product_sku' => $product->reference] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-file-text-o"></i> {{l('Import Descriptions')}}</a>
 
                    </div>
 
 @else
+
+                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('description_short') ? 'has-error' : '' }}">
+                     {!! Form::label('description_short', l('Short Description'), ['class' => 'control-label']) !!}
+                     {!! Form::textarea('description_short', null, array('class' => 'form-control', 'id' => 'description_short', 'rows' => '3')) !!}
+                     {!! $errors->first('description_short', '<span class="help-block">:message</span>') !!}
+                  </div>
 
                    <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web_1">
 

@@ -113,6 +113,8 @@ return [
 	'DEF_CUSTOMER_PAYMENT_METHOD.help' => '',
 	'DEF_LANGUAGE.name' => 'Idioma',
 	'DEF_LANGUAGE.help' => '',
+	'DEF_CATEGORY.name' => 'Categoría de Productos',
+	'DEF_CATEGORY.help' => '',
 	'DEF_MEASURE_UNIT_FOR_BOMS.name' => 'Unidad de Medida para BOMs',
 	'DEF_MEASURE_UNIT_FOR_BOMS.help' => 'Unidad de Medida por defecto para Listas de Materiales.',
 	'DEF_MEASURE_UNIT_FOR_PRODUCTS.name' => 'Unidad de Medida para Productos',

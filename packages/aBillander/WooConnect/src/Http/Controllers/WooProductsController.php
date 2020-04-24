@@ -173,9 +173,17 @@ class WooProductsController extends Controller
 	 */
 	public function store(Request $request)
 	{
+		$description_short = $request->input('description_short', '');
+
 		$abi_product = $this->abi_product
 							->with('category')
 							->findOrFail($request->input('abi_product_id', 0));
+
+		if ($description_short != '')
+		{
+			$abi_product->description_short = $description_short;
+			$abi_product->save();
+		}
 
 		// abi_r($abi_product);die();
 
@@ -347,7 +355,17 @@ class WooProductsController extends Controller
 		$product = WooProduct::fetch( $id );
 
         if ($request->has('embed'))
-        	return view('woo_connect::woo_products.show_embed', compact('product'));
+        {
+        	if($request->ajax()){
+
+	            return response()->json( [
+	                'success' => $product ? 'OK' : 'KO',
+	                'msg' => 'OK'." $id ".($product['name'] ?? ''),
+	                'html' => view('woo_connect::woo_products.show_embed', compact('product'))->render(),
+	            ] );
+
+	        }
+        }
         else
         	return $this->fetch($id);	// To do: return data into proper view
 	}

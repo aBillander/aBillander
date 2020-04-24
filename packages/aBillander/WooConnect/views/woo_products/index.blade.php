@@ -100,7 +100,7 @@
 		<tr>
       <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
       <th class="text-left">{{l('SKU')}}</th>
-      <th colspan="2">{{l('Product Name')}}</th>
+      <th colspan="2"><span style="font-weight: normal !important">{{l('Product Name')}}</span><br />{{l('Slug')}}</th>
       <th>{{l('Category')}}</th>
       <th>{{l('Type')}}</th>
       <th>{{l('Status')}}</th>

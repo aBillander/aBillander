@@ -7,7 +7,13 @@
 
 <!-- Internet -->
 
-{!! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
+<div class=" hidden " id="wooc_match_ko">
+
+{{-- !! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !! --}}
+<form id="publish-product-form" action="{{ route('wproducts.store') }}" method="POST">
+  {{ csrf_field() }}
+  {!! Form::hidden('abi_product_id', $product->id, array('id' => 'abi_product_id')) !!}
+
 <input type="hidden" value="internet" name="tab_name" id="tab_name">
 
    <div class="panel-body">
@@ -43,7 +49,7 @@
                       </div>
                   </div -->
 
-                  <div class="col-lg-3 col-md-3 col-sm-3">
+                  <div class=" hidden col-lg-3 col-md-3 col-sm-3">
                       <div class="form-group {{ $errors->has('webshop_id') ? 'has-error' : '' }}">
                           {!! Form::label('webshop_id', l('Webshop ID'), ['class' => 'control-label']) !!}
                           <div class="col-lg-6 col-md-6 col-sm-6">
@@ -53,7 +59,53 @@
                       </div>
                   </div>
 
-@if( $product->webshop_id > 0 )
+
+                  <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('description_short') ? 'has-error' : '' }}">
+                     {!! Form::label('description_short', l('Short Description'), ['class' => 'control-label']) !!}
+                     {!! Form::textarea('description_short', $product->description_short, array('class' => 'form-control', 'id' => 'description_short', 'rows' => '3')) !!}
+                     {!! $errors->first('description_short', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web_1">
+
+                        <a class="btn xbtn-sm btn-lightblue" href="javascript:void(0);"
+                                onclick="event.preventDefault();
+                                         document.getElementById('publish-product-form').submit();" title="{{l('Publish', [], 'layouts')}}"><i class="fa fa-cloud-upload"></i> {{l('Publish', [], 'layouts')}}</a>
+{{-- This has replaced main form
+                        <form id="publish-product-form" action="{{ route('wproducts.store') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                            {!! Form::hidden('abi_product_id', $product->id, array('id' => 'abi_product_id')) !!}
+                        </form>
+--}}
+
+                   </div>
+
+        </div>
+
+        <div class="row">
+        </div>
+
+        <div class="row">
+        </div>
+
+   </div>
+{{--
+   <div class="panel-footer text-right">
+      <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
+         <i class="fa fa-hdd-o"></i>
+         &nbsp; {{l('Save', [], 'layouts')}}
+      </button>
+   </div>
+--}}
+{!! Form::close() !!}
+
+</div>
+
+<div class=" hidden " id="wooc_match_ok">
+
+   <div class="panel-body">
+
+        <div class="row">
 
                    <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
@@ -79,46 +131,13 @@
 
                    </div>
 
-@else
 
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('description_short') ? 'has-error' : '' }}">
-                     {!! Form::label('description_short', l('Short Description'), ['class' => 'control-label']) !!}
-                     {!! Form::textarea('description_short', null, array('class' => 'form-control', 'id' => 'description_short', 'rows' => '3')) !!}
-                     {!! $errors->first('description_short', '<span class="help-block">:message</span>') !!}
-                  </div>
-
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web_1">
-
-                        <a class="btn xbtn-sm btn-lightblue" href="javascript:void(0);"
-                                onclick="event.preventDefault();
-                                         document.getElementById('publish-product-form').submit();" title="{{l('Publish', [], 'layouts')}}"><i class="fa fa-cloud-upload"></i> {{l('Publish', [], 'layouts')}}</a>
-{{-- See end of file
-                        <form id="publish-product-form" action="{{ route('wproducts.store') }}" method="POST" style="display: none;">
-                            {{ csrf_field() }}
-                            {!! Form::hidden('abi_product_id', $product->id, array('id' => 'abi_product_id')) !!}
-                        </form>
---}}
-
-                   </div>
-@endif
-        </div>
-
-        <div class="row">
-        </div>
-
-        <div class="row">
         </div>
 
    </div>
 
-   <div class="panel-footer text-right">
-      <button class="btn btn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
-         <i class="fa fa-hdd-o"></i>
-         &nbsp; {{l('Save', [], 'layouts')}}
-      </button>
-   </div>
 
-{!! Form::close() !!}
+</div>
 
 <!-- Internet ENDS -->
 
@@ -133,14 +152,6 @@
 </div>
 
 
-
-
-{{-- Extra Form --}}
-
-                        <form id="publish-product-form" action="{{ route('wproducts.store') }}" method="POST" style="display: none;">
-                            {{ csrf_field() }}
-                            {!! Form::hidden('abi_product_id', $product->id, array('id' => 'abi_product_id')) !!}
-                        </form>
 
 
 @section('scripts')     @parent
@@ -186,17 +197,27 @@
        var url = "{{ route('wproducts.show', [$product->reference, 'embed']) }}";
 
       // if ( pId <= 0 ) return;
-      if ( {{ (int) $product->webshop_id }} <= 0 ) return;
+      // if ( {{ (int) $product->webshop_id }} <= 0 ) return;
 
        panel.html(" &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}").addClass('loading');
 
        $.get(url, {}, function(result){
-             panel.html(result);
+
+            if ( result.success == 'OK')
+            {
+                //
+                $("#wooc_match_ok").removeClass('hidden');
+            } else {
+                // 
+                $("#wooc_match_ko").removeClass('hidden');
+            }
+
+             panel.html(result.html);
              panel.removeClass('loading');
 
              $("[data-toggle=popover]").popover();
 
-       }, 'html').done( function() { 
+       }, 'json').done( function(result){
 
             // var selector = "#line_autoproduct_name";
             // var next = $('#next_line_sort_order').val();

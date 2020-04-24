@@ -176,9 +176,19 @@
 
 @else
 
+<div class="panel panel-info">
+   <div class="panel-heading">
+      <h3 class="panel-title"><strong>WooC</strong> :: [ - ]   <span class="pull-right">{{ l('slug') }}: - </span></h3>
+   </div>
+   <div class="panel-body">
+
+
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
     {{l('No records found', [], 'layouts')}}
 </div>
+
+
+   </div>
 
 @endif

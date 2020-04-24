@@ -57,8 +57,8 @@ Route::get('migratethis', function()
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `categories` ADD `description` TEXT NULL DEFAULT NULL AFTER `name`;");
 
 	// Fix error; see below
-	Illuminate\Support\Facades\DB::statement("ALTER TABLE `carriers` CHANGE `transit_time` varchar(116) null;");
-	Illuminate\Support\Facades\DB::statement("ALTER TABLE `carriers` CHANGE `tracking_url` varchar(128) null;");
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `carriers` CHANGE `transit_time` `transit_time` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;");
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `carriers` CHANGE `tracking_url` `tracking_url` VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;");
 
 
 

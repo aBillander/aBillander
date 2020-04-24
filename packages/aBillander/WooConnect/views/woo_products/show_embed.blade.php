@@ -82,7 +82,7 @@
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
                           <label for="" class="control-label">{{ l('stock_status') }}</label>
-                          <div class="form-control">{{ $product['stock_status'] }}</div>
+                          <div class="form-control">{{ $product['stock_status'] ?? '' }}</div>
                       </div>
                   </div>
 

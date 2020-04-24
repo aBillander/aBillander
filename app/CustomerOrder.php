@@ -73,7 +73,7 @@ class CustomerOrder extends Billable
 
     public function getWebshopIdAttribute()
     {
-        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && (strpos($this->reference, '#') !== FALSE) )
         {
             list($prifix, $ws_id) = explode('#', $this->reference);
 

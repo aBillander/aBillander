@@ -1008,6 +1008,19 @@ class Customer extends Model {
 
             $tax = $product->tax;
 
+            $rules = $this->getTaxRulesByTax( $tax, $address );
+
+        }
+
+        return $rules;
+    }
+
+    public function getTaxRulesByTax( Tax $tax, $address = null )
+    {
+        $rules = collect([]);
+
+        // Sales Equalization
+        if ( $this->sales_equalization ) {
 
             if ( $address == null ) 
                 $address = $this->invoicing_address();

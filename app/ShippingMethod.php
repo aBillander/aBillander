@@ -163,11 +163,22 @@ class ShippingMethod extends Model {
 
         // $free_shipping  = $this->free_shipping_from;
 
+        // Taxes stuff
         $tax_id         = $this->tax_id;
 
+        // $tax = Tax::find($tax_id);
 
-        $tax = Tax::find($tax_id);
+        $address = $shippable->taxingaddress();
+        $tax_rules = $this->getTaxRules($address, $shippable->customer);
 
+        $taxes_summary = [
+            'id'                 => $tax_id,
+            'all'                => $tax_rules->sum('percent'),
+            'sales'              => $tax_rules->where('rule_type', '=', 'sales')->sum('percent'),
+            'sales_equalization' => $tax_rules->where('rule_type', '=', 'sales_equalization')->sum('percent'),
+        ];
+
+        // Shipping Cost
         $cost = 0.0;
 
         $billable_amount = $shippable->getShippingBillableAmount( $this->billing_type );
@@ -196,10 +207,49 @@ class ShippingMethod extends Model {
         return [
                     'shipping_label' => $shipping_label,
                     'cost'           => $cost,
-                    'tax'            => $tax,
+                    'tax'            => $taxes_summary,
             ];
 
     }
+
+
+    public function getTaxRules( Address $address = null, Customer $customer = null )
+    {
+        $rules =         $this->getTaxRulesByAddress ( $address  )
+                ->merge( $this->getTaxRulesByCustomer( $customer ) )
+                ->merge( $this->getTaxRulesByMethod  ( $address  ) );
+
+        // Higher Tax first
+        // return $rules->sortByDesc('percent');
+        // Not needed: use rule 'position' for precedence
+
+        return $rules;      // ->sortBy('position');
+    }
+
+    public function getTaxRulesByAddress( Address $address = null )
+    {
+        // Taxes depending on location
+        // If no address, use default Company address
+        if ( $address == null ) $address = Context::getContext()->company->address;
+
+        return $address->getTaxRules( $this->tax );
+    }
+
+    public function getTaxRulesByCustomer( Customer $customer = null )
+    {
+        // Taxes depending on Customer, no matter of location
+        if ( $customer == null ) return collect([]);
+
+        return $customer->getTaxRulesByTax( $this->tax );
+    }
+
+    public function getTaxRulesByMethod( Address $address = null )
+    {
+        // Taxes depending on Method itself, such as eco tax ????
+        return collect([]);
+    }
+
+
 
     public function getPriceByAddress( Address $address = null, $amount = 0.0 )
     {

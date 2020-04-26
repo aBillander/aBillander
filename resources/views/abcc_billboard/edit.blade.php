@@ -82,9 +82,17 @@
 <script src="{{ asset('vendor/unisharp/laravel-ckeditor/ckeditor.js') }}"></script>
 <script>
     CKEDITOR.replace( 'caption', {
-        height: 80
+        height: 80,
+        allowedContent: true,
     } );
     CKEDITOR.replace( 'caption_default' );
+/*
+CKEDITOR Allow everything (disable ACF)
+https://ckeditor.com/docs/ckeditor4/latest/guide/dev_acf.html
+https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html
+https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_filter_allowedContentRules.html
+https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent
+*/
 </script>
 
 @endsection

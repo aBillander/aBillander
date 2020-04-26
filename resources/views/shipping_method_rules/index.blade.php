@@ -72,7 +72,22 @@
 
    </div>
 </div>
+{{--
+@php
 
-@stop
+$address = \App\Context::getContext()->company->address;
+$address->state_id = 42;  // Sevilla
 
+$amount = 25.0;
+
+$p=$shippingmethod->getPriceByAddress( $address, $amount );
+
+// die($p);
+
+@endphp
+
+{{ $amount = 25.0 }} - {{ $p }}
+
+@endsection
+--}}
 @include('layouts/modal_delete')

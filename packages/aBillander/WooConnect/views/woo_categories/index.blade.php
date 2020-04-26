@@ -124,7 +124,14 @@
       @endif
       <td>{{ $category["id"] }}</td>
       <td>{{ $category["parent"] }}</td>
-      <td>@if ( optional($category['image'])['src'] ) <img height="32px" src="{{ optional($category['image'])['src'] }}" style="border: 1px solid #dddddd;"> @endif
+      <td>@if ( optional($category['image'])['src'] ) 
+            <img height="32px" src="{{ optional($category['image'])['src'] }}" style="border: 1px solid #dddddd;" class="center-block"> 
+          @else
+            @php
+              $img = new \App\Image();
+            @endphp
+            <img height="32px" src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}" style="border: 1px solid #dddddd;" class="center-block"> 
+          @endif
       </td>
       <td>{{ $category["name"] }}<br /><strong>{{ $category["slug"] }}</strong></td>
 

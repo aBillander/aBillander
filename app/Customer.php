@@ -629,6 +629,16 @@ class Customer extends Model {
         return $this->hasMany('App\CustomerOrder');
     }
 
+    public function customerordertemplates()
+    {
+        return $this->hasMany('App\CustomerOrderTemplate');
+    }
+
+    public function getCustomerordertemplateAttribute()
+    {
+        return $this->customerordertemplates()->first();
+    }
+
     public function customershippingslips()
     {
         return $this->hasMany('App\CustomerShippingSlip');

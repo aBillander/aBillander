@@ -64,6 +64,12 @@
                                  {{l('Sale Orders', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ URL::to('customerordertemplates') }}">
+                                 <img src="{{ asset('assets/theme/self-distract-button-20.png') }}"> 
+                                 {{l('Sale Order Templates', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
 
                          <li>

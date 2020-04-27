@@ -72,6 +72,7 @@
 
    </div>
 </div>
+
 {{--
 @php
 
@@ -87,7 +88,8 @@ $p=$shippingmethod->getPriceByAddress( $address, $amount );
 @endphp
 
 {{ $amount = 25.0 }} - {{ $p }}
+--}}
 
 @endsection
---}}
+
 @include('layouts/modal_delete')

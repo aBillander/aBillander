@@ -50,6 +50,7 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// https://stackoverflow.com/questions/21047573/maintenance-mode-without-using-artisan
 	
 	// 2020-04-20
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `webshop_id` varchar(16) NULL DEFAULT NULL AFTER `publish_to_web`;");

@@ -985,7 +985,7 @@ class Cart extends Model implements ShippableInterface
                 'total_tax_excl' => 0.0, 
 
                 'tax_percent'         => $tax_percent,
-                'tax_se_percent'      => 0.0,
+                'tax_se_percent'      => $tax_se_percent,
                 'tax_id' => $tax_id,
             ]);
 

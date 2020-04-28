@@ -137,6 +137,19 @@
                         <i class="fa fa-address-card-o"></i>
                     </button>
                  </a>
+
+@php
+
+$has_shipping = \aBillander\WooConnect\WooOrder::getShippingAddressId( $order ) != 
+                \aBillander\WooConnect\WooOrder::getBillingAddressId( $order );
+
+@endphp
+
+@if ( $has_shipping )
+
+  <a href="javascript:void(0);" class="btn btn-danger btn-xs" title="{{ l('Shipping Address is different from Billing Address!') }}"><i class="fa fa-warning"></i></a>
+
+@endif
       
 {{--
           {{ $order["billing"]["first_name"].' '.$order["billing"]["last_name"] }}<br />
@@ -180,7 +193,7 @@
                 <a class="btn btn-sm btn-success" href="{{ URL::to('wooc/worders/' . $order["id"]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
       
       @if ( $order["imported_at"] )
-                <a class="btn btn-sm btn-lightblue" href="{{ URL::route('customerorders.edit', [$order["abi_order_id"]] ) }}" title="aBillander :: {{l('Show', [], 'layouts')}}"><i class="fa fa-file-text-o"></i></a>
+                <a class="btn btn-sm btn-info" href="{{ URL::route('customerorders.edit', [$order["abi_order_id"]] ) }}" title="{{l('Go to Customer Order')}}"><i class="fa fa-file-text-o"></i></a>
       @else
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('worders.import', [$order["id"]] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
       @endif

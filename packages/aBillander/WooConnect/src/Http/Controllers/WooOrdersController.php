@@ -301,6 +301,20 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 			}
 		}
 
+		$abi_order = CustomerOrder::where('reference_external', $order["id"])->first();
+
+			if ($abi_order) {
+				$order["abi_order_id"] = $abi_order->id;
+				$order["imported_at"] = $abi_order->created_at->toDateString();
+				$order["production_at"] = ''; // $abi_order->productionsheet->due_date;
+				$order["production_sheet_id"] = $abi_order->production_sheet_id;
+			} else {
+				$order["abi_order_id"] = '';
+				$order["imported_at"] = '';
+				$order["production_at"] = '';
+				$order["production_sheet_id"] = '';
+			}
+
 		return view('woo_connect::woo_orders.show', compact('order', 'customer'));
 	}
 

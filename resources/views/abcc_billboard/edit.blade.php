@@ -12,6 +12,10 @@
         <a href="#preview" class="btn btn-sm btn-success" 
             title="{{l('Billboard Preview')}}"><i class="fa fa-eye"></i> {{l('Billboard Preview')}}</a>
 
+        <a href="https://abillander.gitbook.io/abillander-tutorial-spanish/centro-de-clientes/portada" 
+            class="btn btn-sm btn-behance" target="_blank" 
+            title="{{l('Help', [], 'layouts')}}"><i class="fa fa-life-saver"></i> {{l('Help', [], 'layouts')}}</a>
+
             </div>
             <h2>{{ l('ABCC Billboard') }}</h2>
         </div>
@@ -104,3 +108,29 @@ https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedC
 
 @endsection
 --}}
+
+
+
+
+@section('styles')    @parent
+
+<style>
+
+.modal-content {
+  overflow:hidden;
+}
+
+/*
+See: https://coreui.io/docs/components/buttons/ :: Brand buttons
+*/
+.btn-behance {
+    color: #fff;
+    background-color: #1769ff;
+    border-color: #1769ff;
+}
+
+</style>
+
+@endsection
+
+

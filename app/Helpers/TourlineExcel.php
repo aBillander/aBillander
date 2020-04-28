@@ -82,7 +82,7 @@ class TourlineExcel {
 
         // Prefill columns with fixed values
         $row['ClientCode'] = '10152';
-        $row['ShippingDate'] = abi_date_form_short( 'now' );      
+//        $row['ShippingDate'] = abi_date_form_short( 'now' );      
         $row['ShippingTypeCode'] = '13H';
         $row['SenderName'] = 'LA EXTRANATURAL S.L.';
         $row['SenderAddress'] = 'C/ RODRIGUEZ DE LA FUENTE 18';

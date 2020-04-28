@@ -13,6 +13,7 @@ return [
 
 	'Error 404 / Page not found'     => 'Error 404 / Página no encontrada',
 	'Coming soon...' => 'Próximamente...',
+	'Be right back.' => 'Estamos mejorando el sitio.',
 
 	'Success' => 'Éxito',
 	'Info'    => 'Información',

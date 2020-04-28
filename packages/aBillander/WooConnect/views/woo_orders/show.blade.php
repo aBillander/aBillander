@@ -37,7 +37,20 @@
         
         <div class="form-group col-sm-6">
             {{l('WooC Order #')}}
+            <div class="input-group">
             <div class="form-control">{{ $order['id'] }}</div>
+@if ( $order["imported_at"] )                
+                <span class="input-group-btn">
+                    <a href="{{ URL::route('customerorders.edit', [$order["abi_order_id"]] ) }}" class="btn btn-success" title="{{ l('Go to Customer Order') }}" target="_blank">
+                        <span class="fa fa-eye"></span>
+                    </a>
+                </span>
+@else               
+                <span class="input-group-addon" title="{{ l('This Customer Order has not been imported') }}">
+                    <span class="fa fa-eye-slash"></span>
+                </span>
+@endif
+            </div>
         </div>
         
         <div class="form-group col-sm-6">

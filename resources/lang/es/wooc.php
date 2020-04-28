@@ -71,6 +71,9 @@ return [
 
 	'Transaction ID'     => 'ID Transacción',
 
+	'Go to Customer Order'     => 'Ir al Pedido del Cliente',
+	'This Customer Order has not been imported'     => 'Este Pedido de Cliente no ha sido importado',
+
 	'Go to Customer'     => 'Ir al Cliente',
 	'This Customer has not been imported'     => 'Este Cliente no ha sido importado',
 	'Shipping Address is different from Billing Address!' => 'La Dirección de Envío es diferente de la Dirección de Facturación!',

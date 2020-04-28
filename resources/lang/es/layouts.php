@@ -105,7 +105,7 @@ return [
 	'Suppliers' => 'Proveedores',
 	'Supplier Shipping Slips'     => 'Albaranes de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',
-	'Sale Orders'     => 'Pedidos de Venta',
+	'Sale Orders'     => 'Pedidos de Clientes',
 	'Orders'     => 'Pedidos',
 	'Shipping Slips'     => 'Albaranes',
 	'Invoices'     => 'Facturas',

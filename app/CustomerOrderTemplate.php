@@ -14,14 +14,15 @@ class CustomerOrderTemplate extends Model
     						'notes', 'active', 'last_used_at', 'customer_id', 'template_id',
     					];
 
-    public static $rules = array(
+    public static $rules = [
         'name'         => 'required|min:2|max:128',
 
-    	'document_discount_percent'   => 'numeric|min:0',
-    	'document_ppd_percent'   => 'numeric|min:0',
+    	// 'document_discount_percent'   => 'numeric|min:0',
+    	// 'document_ppd_percent'   => 'numeric|min:0',
 
+        'customer_id'   => 'required|exists:customers,id',
         'template_id'   => 'nullable|sometimes|exists:templates,id',
-    	);
+    	];
     
 
     /*

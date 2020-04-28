@@ -26,7 +26,7 @@ return [
 	'New Customer Order Template'     => 'Nueva Plantilla para Pedidos de Venta',
 	'Customer Order Template name'     => 'Nombre de la Plantilla para Pedidos de Venta',
 	'Alias'     => 'Alias',
-	'Carrier' => 'Transportista',
+	'Customer' => 'Cliente',
 	'Driver name' => 'Nombre del Conductor',
 
 
@@ -48,11 +48,5 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
-
-
-	
-
-	'Customer' => 'Cliente',
-	'Address' => 'Dirección',
 
 ];

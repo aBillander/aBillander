@@ -9,7 +9,7 @@ class CustomerOrderTemplateLine extends Model
 
     protected $fillable = ['line_sort_order', 'line_type', 'product_id', 'combination_id',
     						'quantity', 'measure_unit_id', 'package_measure_unit_id', 'pmu_conversion_rate', 'pmu_label', 
-    						'notes',
+    						'notes', 'active',
     					];
 
     public static $rules = array(

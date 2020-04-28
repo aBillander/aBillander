@@ -3,25 +3,26 @@
 
 <div class="row">
 
-      <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('customer_id') ? 'has-error' : '' }}">
-        {!! Form::label('autocustomer_name', l('Customer')) !!}
+      <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('product_id') ? 'has-error' : '' }}">
+        {!! Form::label('autoproduct_name', l('Product')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Search by Name or Identification (VAT Number).') }}">
+                                    data-content="{{ l('Search by Name or Reference.') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
 
-        {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
+        {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autoproduct_name')) !!}
 
-        {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
-        {!! Form::hidden('invoicing_address_id', old('invoicing_address_id'), array('id' => 'invoicing_address_id')) !!}
+        {!! Form::hidden('product_id', null, array('id' => 'product_id')) !!}
+        {!! Form::hidden('measure_unit_id', old('measure_unit_id'), array('id' => 'measure_unit_id')) !!}
 
-        {!! $errors->first('customer_id', '<span class="help-block">:message</span>') !!}
+        {!! $errors->first('product_id', '<span class="help-block">:message</span>') !!}
       </div>
-      <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('address_id') ? 'has-error' : '' }}">
-        {!! Form::label('address_id', l('Address')) !!}
-        {!! Form::select('address_id', ['' => l('-- Please, select --', 'layouts')], null, array('class' => 'form-control', 'id' => 'address_id')) !!}
-        {!! $errors->first('address_id', '<span class="help-block">:message</span>') !!}
-      </div>
+
+    <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('quantity') ? 'has-error' : '' }}">
+        {!! Form::label('quantity', l('Quantity')) !!}
+        {!! Form::text('quantity', null, array('class' => 'form-control')) !!}
+        {!! $errors->first('quantity', '<span class="help-block">:message</span>') !!}
+    </div>
 
 </div>
 
@@ -65,7 +66,7 @@
 </div>
 
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-	{!! link_to_route('deliveryroutes.deliveryroutelines.index', l('Cancel', [], 'layouts'), array($deliveryroute->id), array('class' => 'btn btn-warning')) !!}
+	{!! link_to_route('customerordertemplates.customerordertemplatelines.index', l('Cancel', [], 'layouts'), array($customerordertemplate->id), array('class' => 'btn btn-warning')) !!}
 
 
 
@@ -82,27 +83,42 @@
 
     $(document).ready(function() {
 
-        $("#autocustomer_name").val('');
-        $("#customer_id").val('');
-        $("#address_id").val('');
+      @if ( $customerordertemplateline ?? null )
+        $("#autoproduct_name").val('[{{ $customerordertemplateline->product->reference }}] {{ $customerordertemplateline->product->name }}');
+        $("#product_id").val('{{ $customerordertemplateline->product->id }}');
+        $("#measure_unit_id").val('{{ $customerordertemplateline->product->measure_unit_id }}');
+      @else
+        $("#autoproduct_name").val('');
+        $("#product_id").val('');
+        $("#measure_unit_id").val('');
+      @endif
+
 
         // To get focus;
-        $("#autocustomer_name").focus();
+        $("#autoproduct_name").focus();
 
-        $("#autocustomer_name").autocomplete({
-            source : "{{ route('customerorders.ajax.customerLookup') }}",
+        $("#autoproduct_name").autocomplete({
+            source : "{{ route('customerorders.searchproduct') }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 
             select : function(key, value) {
 
-                getCustomerData( value.item.id );
+                var str = '[' + value.item.reference+'] ' + value.item.name;
+
+                $("#autoproduct_name").val(str);
+                $('#product_id').val(value.item.id);
+                $('#measure_unit_id').val(value.item.measure_unit_id);
+
+                $('#quantity').focus();
+
+                // getCustomerData( value.item.id );
 
                 return false;
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
-                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .append( '<div>[' + item.reference+'] ' + item.name + "</div>" )
                 .appendTo( ul );
             };
 

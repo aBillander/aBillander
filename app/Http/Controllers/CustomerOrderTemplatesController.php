@@ -19,7 +19,7 @@ class CustomerOrderTemplatesController extends Controller
      */
     public function index()
     {
-        $customerordertemplates = CustomerOrderTemplate::orderBy('id', 'asc')->get();
+        $customerordertemplates = CustomerOrderTemplate::with('customer')->orderBy('id', 'asc')->get();
 
         return view('customer_order_templates.index', compact('customerordertemplates'));
     }
@@ -31,9 +31,7 @@ class CustomerOrderTemplatesController extends Controller
      */
     public function create()
     {
-        $carrierList = \App\Carrier::pluck('name', 'id')->toArray();
-
-        return view('customer_order_templates.create', compact('carrierList'));
+        return view('customer_order_templates.create');
     }
 
     /**
@@ -71,9 +69,7 @@ class CustomerOrderTemplatesController extends Controller
      */
     public function edit(CustomerOrderTemplate $customerordertemplate)
     {
-        $carrierList = Carrier::pluck('name', 'id')->toArray();
-
-        return view('customer_order_templates.edit', compact('customerordertemplate', 'carrierList'));
+        return view('customer_order_templates.edit', compact('customerordertemplate'));
     }
 
     /**

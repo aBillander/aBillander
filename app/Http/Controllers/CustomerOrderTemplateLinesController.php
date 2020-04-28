@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\CustomerOrderTemplateLine;
 use Illuminate\Http\Request;
+
+use App\Product;
+use App\CustomerOrderTemplate;
+use App\CustomerOrderTemplateLine;
 
 class CustomerOrderTemplateLinesController extends Controller
 {
@@ -12,9 +15,12 @@ class CustomerOrderTemplateLinesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($customerordertemplateId)
     {
-        //
+        $customerordertemplate = CustomerOrderTemplate::with('customerordertemplatelines')->findOrFail($customerordertemplateId);
+        $customerordertemplatelines = $customerordertemplate->customerordertemplatelines;
+
+        return view('customer_order_template_lines.index', compact('customerordertemplate', 'customerordertemplatelines'));
     }
 
     /**
@@ -22,9 +28,10 @@ class CustomerOrderTemplateLinesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($customerordertemplateId)
     {
-        //
+        $customerordertemplate = CustomerOrderTemplate::with('customerordertemplatelines')->findOrFail($customerordertemplateId);
+        return view('customer_order_template_lines.create', compact('customerordertemplate'));
     }
 
     /**
@@ -33,9 +40,23 @@ class CustomerOrderTemplateLinesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($customerordertemplateId, Request $request)
     {
-        //
+        $customerordertemplate = CustomerOrderTemplate::with('customerordertemplatelines')->findOrFail($customerordertemplateId);
+
+        $this->validate($request, CustomerOrderTemplateLine::$rules);
+
+        // Handy conversions
+        if ( !$request->input('line_sort_order') ) 
+            $request->merge( ['line_sort_order' => $customerordertemplate->customerordertemplatelines->max('line_sort_order') + 10  ] );
+
+
+        $customerordertemplateline = CustomerOrderTemplateLine::create($request->all());
+
+        $customerordertemplate->customerordertemplatelines()->save($customerordertemplateline);
+
+        return redirect('customerordertemplates/'.$customerordertemplateId.'/customerordertemplatelines')
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerordertemplateline->id], 'layouts') . $request->input('line_sort_order'));
     }
 
     /**
@@ -44,9 +65,9 @@ class CustomerOrderTemplateLinesController extends Controller
      * @param  \App\CustomerOrderTemplateLine  $customerOrderTemplateLine
      * @return \Illuminate\Http\Response
      */
-    public function show(CustomerOrderTemplateLine $customerOrderTemplateLine)
+    public function show($customerordertemplateId, CustomerOrderTemplateLine $customerordertemplateline)
     {
-        //
+        return $this->edit($customerordertemplateId, $customerordertemplateline);
     }
 
     /**
@@ -55,9 +76,13 @@ class CustomerOrderTemplateLinesController extends Controller
      * @param  \App\CustomerOrderTemplateLine  $customerOrderTemplateLine
      * @return \Illuminate\Http\Response
      */
-    public function edit(CustomerOrderTemplateLine $customerOrderTemplateLine)
+    public function edit($customerordertemplateId, CustomerOrderTemplateLine $customerordertemplateline)
     {
-        //
+        $customerordertemplate = CustomerOrderTemplate::with('customerordertemplatelines')->findOrFail($customerordertemplateId);
+
+        $customerordertemplateline->load(['product']);
+
+        return view('customer_order_template_lines.edit', compact('customerordertemplate', 'customerordertemplateline'));
     }
 
     /**
@@ -67,9 +92,23 @@ class CustomerOrderTemplateLinesController extends Controller
      * @param  \App\CustomerOrderTemplateLine  $customerOrderTemplateLine
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CustomerOrderTemplateLine $customerOrderTemplateLine)
+    public function update($customerordertemplateId, Request $request, CustomerOrderTemplateLine $customerordertemplateline)
     {
-        //
+        $customerordertemplate = CustomerOrderTemplate::with('customerordertemplatelines')->findOrFail($customerordertemplateId);
+
+        // Handy conversions
+        $request->merge( ['customer_id'  => $customerordertemplateline->customer_id] );
+        $request->merge( ['address_id'   => $customerordertemplateline->address_id ] );
+        if ( !$request->input('line_sort_order') ) 
+            $request->merge( ['line_sort_order' => $customerordertemplate->customerordertemplatelines->max('line_sort_order') + 10  ] );
+        
+
+        $this->validate($request, CustomerOrderTemplateLine::$rules);
+
+        $customerordertemplateline->update($request->all());
+
+        return redirect('customerordertemplates/'.$customerordertemplateId.'/customerordertemplatelines')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customerordertemplateline->id], 'layouts') . $request->input('line_sort_order'));
     }
 
     /**
@@ -78,8 +117,13 @@ class CustomerOrderTemplateLinesController extends Controller
      * @param  \App\CustomerOrderTemplateLine  $customerOrderTemplateLine
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CustomerOrderTemplateLine $customerOrderTemplateLine)
+    public function destroy($customerordertemplateId, CustomerOrderTemplateLine $customerordertemplateline)
     {
-        //
+        $id = $customerordertemplateline->id;
+
+        $customerordertemplateline->delete();
+
+        return redirect('customerordertemplates/'.$customerordertemplateId.'/customerordertemplatelines')
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 }

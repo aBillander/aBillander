@@ -31,8 +31,7 @@
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{ l('Alias') }}</th>
             <th>{{l('Customer Order Template name')}}</th>
-            <th>{{l('Carrier')}}</th>
-            <th>{{l('Driver name')}}</th>
+            <th>{{l('Customer')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th> </th>
@@ -44,8 +43,7 @@
             <td>{{ $customerordertemplate->id }}</td>
             <td>{{ $customerordertemplate->alias }}</td>
 			      <td>{{ $customerordertemplate->name }}</td>
-            <td>{{ $customerordertemplate->carrier->name }}</td>
-            <td>{{ $customerordertemplate->driver_name }}</td>
+            <td>{{ $customerordertemplate->customer->name_regular }}</td>
 
             <td class="text-center">@if ($customerordertemplate->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

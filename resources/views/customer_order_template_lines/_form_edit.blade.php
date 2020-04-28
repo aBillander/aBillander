@@ -7,7 +7,7 @@
         {!! Form::label('autocustomer_name', l('Customer')) !!}
 
         <div class="form-control" style="background-color: #eeeeee; opacity: 1;">
-            {{ $deliveryrouteline->customer->name_regular }}
+            {{ $customerordertemplateline->customer->name_regular }}
         </div>
 
       </div>
@@ -15,7 +15,7 @@
         {!! Form::label('address_id', l('Address')) !!}
 
         <div class="form-control" style="background-color: #eeeeee; opacity: 1;">
-            [{{ $deliveryrouteline->address->alias }}] {{ $deliveryrouteline->address->name_commercial }}
+            [{{ $customerordertemplateline->address->alias }}] {{ $customerordertemplateline->address->name_commercial }}
         </div>
         
       </div>
@@ -62,7 +62,7 @@
 </div>
 
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-	{!! link_to_route('deliveryroutes.deliveryroutelines.index', l('Cancel', [], 'layouts'), array($deliveryroute->id), array('class' => 'btn btn-warning')) !!}
+	{!! link_to_route('customerordertemplates.customerordertemplatelines.index', l('Cancel', [], 'layouts'), array($customerordertemplate->id), array('class' => 'btn btn-warning')) !!}
 
 
 

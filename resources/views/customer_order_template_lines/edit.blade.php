@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Delivery Route Lines - Edit') }} @parent @stop
+@section('title') {{ l('Customer Order Template Lines - Edit') }} @parent @stop
 
 
 @section('content')
@@ -8,11 +8,11 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3" style="margin-top: 50px">
 		<div class="panel panel-info">
-			<div class="panel-heading"><h3 class="panel-title">{{ l('Edit Delivery Route Line') }} :: ({{$deliveryrouteline->id}}) </h3></div>
+			<div class="panel-heading"><h3 class="panel-title">{{ l('Edit Customer Order Template Line') }} :: ({{$customerordertemplateline->id}}) </h3></div>
 			<div class="panel-body">
-				{!! Form::model($deliveryrouteline, array('method' => 'PATCH', 'route' => array('deliveryroutes.deliveryroutelines.update', $deliveryroute->id, $deliveryrouteline->id))) !!}
+				{!! Form::model($customerordertemplateline, array('method' => 'PATCH', 'route' => array('customerordertemplates.customerordertemplatelines.update', $customerordertemplate->id, $customerordertemplateline->id))) !!}
 
-					@include('delivery_route_lines._form_edit')
+					@include('customer_order_template_lines._form')
 
 				{!! Form::close() !!}
 			</div>

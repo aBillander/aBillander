@@ -30,6 +30,8 @@ class CreateCustomerOrderTemplateLinesTable extends Migration
             $table->string('pmu_label', 128)->nullable();
 
             $table->text('notes')->nullable();
+            
+            $table->tinyInteger('active')->default(1);
 
             // Parent Document
             $table->integer('customer_order_template_id')->unsigned()->nullable(false);

@@ -112,7 +112,7 @@
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('abccbillboard/edit') }}">
-                                 <img src="{{ asset('assets/theme/company_icon.png') }}"> 
+                                 <img src="{{ asset('assets/theme/new-badge-20.png') }}"> 
                                  &nbsp; {{l('ABCC Billboard', [], 'layouts')}}
                             </a>
                         </li>

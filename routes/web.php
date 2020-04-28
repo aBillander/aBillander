@@ -615,6 +615,11 @@ foreach ($pairs as $pair) {
         Route::resource('deliverysheets.deliverysheetlines', 'DeliverySheetLinesController');
         Route::post('deliverysheets/sortlines', 'DeliverySheetsController@sortLines')->name('deliverysheet.sortlines');
 
+        // Customer Order Templates
+        Route::resource('customerordertemplates',                    'CustomerOrderTemplatesController'    );
+        Route::resource('customerordertemplates.customerordertemplatelines', 'CustomerOrderTemplateLinesController');
+        Route::post('customerordertemplates/sortlines', 'CustomerOrderTemplatesController@sortLines')->name('customerordertemplate.sortlines');
+
 
 
         // Import / Export to Database

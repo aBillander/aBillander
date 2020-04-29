@@ -23,6 +23,7 @@ $confs = [
 ['ABCC_EMAIL', ''],
 ['ABCC_EMAIL_NAME', 'Customer Center'],
 ['ABCC_DEFAULT_PASSWORD', '12345678'],
+['ABCC_LOGIN_REDIRECT', 'customer.dashboard'],
 ['ABCC_STOCK_SHOW', 'label'],
 ['ABCC_STOCK_THRESHOLD', '999'],
 ['ABCC_OUT_OF_STOCK_PRODUCTS', 'hide'],

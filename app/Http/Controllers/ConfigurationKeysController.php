@@ -123,6 +123,7 @@ class ConfigurationKeysController extends Controller {
                         'ABCC_EMAIL',
                         'ABCC_EMAIL_NAME',
                         'ABCC_DEFAULT_PASSWORD',
+                        'ABCC_LOGIN_REDIRECT',
                         'ABCC_STOCK_SHOW',
                         'ABCC_STOCK_THRESHOLD',
                         'ABCC_OUT_OF_STOCK_PRODUCTS',

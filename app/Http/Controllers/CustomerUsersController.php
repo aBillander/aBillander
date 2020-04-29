@@ -285,8 +285,14 @@ class CustomerUsersController extends Controller
     {
         
         \Auth()->guard('customer')->loginUsingId($id);
+        
+        // Redirect to their intended location
+        if ( Configuration::get('ABCC_LOGIN_REDIRECT') && \Route::has(Configuration::get('ABCC_LOGIN_REDIRECT')) )
+          return redirect()->route( Configuration::get('ABCC_LOGIN_REDIRECT') );
+        else
+          return redirect()->route('customer.dashboard');
 
-        return redirect()->route('customer.dashboard');
+        // return redirect()->route('customer.dashboard');
     }
 
 

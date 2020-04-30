@@ -64,10 +64,17 @@ class ProductionSheetsTourlineController extends Controller
             $row['RecipientName'] = $document->customer->name_commercial;     // Nombre destinatario
             $row['RecipientAddress'] = $document->shippingaddress->address1.' '.$document->shippingaddress->address2;
 
-            $phone = $document->shippingaddress->phone ?: $document->shippingaddress->phone_mobile;
-            if ( !$phone )
-                $phone = $document->billingaddress->phone ?: $document->billingaddress->phone_mobile;
-            
+            $phone = $document->shippingaddress->phone;
+
+            if ( strlen($phone) < 6 )
+                $phone = $document->shippingaddress->phone_mobile;
+
+            if ( strlen($phone) < 6 )
+                $phone = $document->billingaddress->phone;
+
+            if ( strlen($phone) < 6 )
+                $phone = $document->billingaddress->phone_mobile;
+
             $row['RecipientPhone'] = $phone;
             $row['RecipientAddres2'] = $document->shippingaddress->city; // Población
             $row['DestinPostalCode'] = $document->shippingaddress->postcode;

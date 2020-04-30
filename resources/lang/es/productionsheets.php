@@ -27,6 +27,7 @@ return [
     'Finished Product Requirements'     => 'Necesidades de Elaborados',
     'Production Orders' => 'Ordenes de Fabricación',
     'Material Requirements'     => 'Requerimientos de Ingredientes',
+	'Production Sheet'     => 'Hoja de Producción',
 	'Production Sheets'     => 'Hojas de Producción',
 	'Due Date'     => 'Fecha de Vencimiento',
 	'Name'     => 'Nombre',

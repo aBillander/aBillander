@@ -38,7 +38,7 @@ class AbccCustomerOrderMail extends Mailable
         $template_vars = $this->template_vars;
 
         return $this->from( $data['from'], $data['fromName'] )
-                    ->bcc( $data['from'] )
+//                    ->bcc( $data['from'] )
                     ->subject( $data['subject'] )
                     ->view('emails.'.$data['iso_code'].'.abcc.new_customer_order')
                     ->with( $template_vars + $data );

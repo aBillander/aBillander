@@ -36,6 +36,11 @@ return [
 	*/
 
 	' :_> New Customer Order #:num'     => ' :_> Nuevo Pedido de Cliente #:num',
+
+	' :_> :company - New Order #:num'     => ' :_> :company - Nuevo Pedido #:num',
+
+	' :_> [#:num] New Customer Order of :name'     => ' :_> [#:num] Nuevo Pedido de :name',
+
 	''     => '',
 	''     => '',
 

@@ -318,6 +318,7 @@ Bah!
 				'document_date'  => abi_date_short($customerOrder->document_date),
 				'document_total' => $customerOrder->as_money('total_tax_incl'),
 //				'custom_body'   => $request->input('email_body'),
+				'document_probe' => 'admin',
 				);
 
 			$data = array(
@@ -325,9 +326,9 @@ Bah!
 				'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
 				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
 				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
-				'subject'  => l(' :_> New Customer Order #:num', ['num' => $template_vars['document_num']]),
+				'subject'  => l(' :_> [#:num] New Customer Order of :name', ['num' => $template_vars['document_num'], 'name' => $customer->name_regular]),
 
-				'bcc'      => $customer_user->email,
+//				'bcc'      => $customer_user->email,
 				'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
 				);
 
@@ -376,16 +377,17 @@ Bah!
 					'document_date'  => abi_date_short($customerOrder->document_date),
 					'document_total' => $customerOrder->as_money('total_tax_incl'),
 	//				'custom_body'   => $request->input('email_body'),
+					'document_probe' => 'customer',
 					);
 
 				$data = array(
 					'from'     => abi_mail_from_address(),			// config('mail.from.address'  ),
 					'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
-					'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
-					'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
-					'subject'  => l(' :_> New Customer Order #:num', ['num' => $template_vars['document_num']]),
+					'to'       => $customer_user->email,			// $cinvoice->customer->address->email,
+					'toName'   => $customer_user->full_name,		// $cinvoice->customer->name_fiscal,
+					'subject'  => l(' :_> :company - New Order #:num', ['num' => $template_vars['document_num'], 'company' => abi_mail_from_name()]),
 
-					'bcc'      => $customer_user->email,
+//					'bcc'      => $customer_user->email,
 					'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
 					);
 				

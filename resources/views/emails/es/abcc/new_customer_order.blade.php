@@ -7,7 +7,9 @@
 		<h2>Nuevo Pedido: {{ $document_num }} ({{ $document_date }})<br /> Total: {{ $document_total }}</h2>
 
 		<div>
-			<br /><br />
+			<br /><!-- br />
+			{{ $document_probe }}
+			<br / --><br />
 			<hr />
 			Cliente: {{ $customer->name_fiscal }}<br />
             NIF: {{ $customer->identification }}<br />

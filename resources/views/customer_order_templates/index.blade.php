@@ -32,8 +32,10 @@
             <th>{{ l('Alias') }}</th>
             <th>{{l('Customer Order Template name')}}</th>
             <th>{{l('Customer')}}</th>
+            <th>{{l('Shipping Address')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
+            <th>{{l('Last used')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -43,7 +45,27 @@
             <td>{{ $customerordertemplate->id }}</td>
             <td>{{ $customerordertemplate->alias }}</td>
 			      <td>{{ $customerordertemplate->name }}</td>
-            <td>{{ $customerordertemplate->customer->name_regular }}</td>
+            <td><a class="" href="{{ URL::to('customers/' . $customerordertemplate->customer_id . '/edit') }}" 
+                title="{{ l('Go to', 'layouts') }}" target="_new">
+                  {{ $customerordertemplate->customer->name_regular }}
+              </a>
+            </td>
+            <td>
+                @if ( $customerordertemplate->shippingaddress )
+
+
+
+                {{ $customerordertemplate->shippingaddress->alias }} 
+                 <a href="javascript:void(0);">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $customerordertemplate->shippingaddress->firstname }} {{ $customerordertemplate->shippingaddress->lastname }}<br />{{ $customerordertemplate->shippingaddress->address1 }}<br />{{ $customerordertemplate->shippingaddress->city }} - {{ $customerordertemplate->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $customerordertemplate->shippingaddress->phone }}</a>" data-original-title="" title="">
+                        <i class="fa fa-address-card-o"></i>
+                    </button>
+                 </a>
+      
+
+                @endif
+
+            </td>
 
             <td class="text-center">@if ($customerordertemplate->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 
@@ -57,11 +79,16 @@
                    </a>
                   @endif
               </td>
+            <td>{{ abi_date_short($customerordertemplate->last_used_at) ?: '-' }}</td>
 
 			<td class="text-right">
                 @if (  is_null($customerordertemplate->deleted_at))
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('customerordertemplates/' . $customerordertemplate->id . '/customerordertemplatelines') }}" title="{{l('Show Customer Order Template Stops')}}"><i class="fa fa-folder-open-o"></i></a>
+                <a class="btn btn-sm btn-blue" href="{{ URL::to('customerordertemplates/' . $customerordertemplate->id . '/customerordertemplatelines') }}" title="{{l('Show Customer Order Template Lines')}}"><i class="fa fa-folder-open-o"></i></a>
+
+                <a class="btn btn-sm btn-magick" href="{{ route('customerordertemplates.createcustomerorder', $customerordertemplate->id) }}" title="{{l('Create Customer Order')}}"><i class="fa fa-superpowers"></i></a>
+
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('customerordertemplates/' . $customerordertemplate->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('customerordertemplates/' . $customerordertemplate->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 

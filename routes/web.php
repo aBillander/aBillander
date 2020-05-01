@@ -620,6 +620,8 @@ foreach ($pairs as $pair) {
         Route::resource('customerordertemplates.customerordertemplatelines', 'CustomerOrderTemplateLinesController');
         Route::post('customerordertemplates/sortlines', 'CustomerOrderTemplatesController@sortLines')->name('customerordertemplate.sortlines');
 
+        Route::get( 'customerordertemplates/{customerordertemplate}/createorder', 'CustomerOrderTemplatesController@createCustomerOrder' )->name('customerordertemplates.createcustomerorder');
+
 
 
         // Import / Export to Database

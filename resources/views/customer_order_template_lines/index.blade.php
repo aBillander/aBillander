@@ -42,7 +42,7 @@
 		<tr data-id="{{ $customerordertemplateline->id }}" data-sort-order="{{ $customerordertemplateline->line_sort_order }}">
             <td>{{ $customerordertemplateline->id }}</td>
             <td>{{ $customerordertemplateline->line_sort_order }}</td>
-            <td>[{{ $customerordertemplateline->product->reference }}] {{ $customerordertemplateline->product->name }}</td>
+            <td>[<a href="{{ URL::to('products/' . $customerordertemplateline->product_id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $customerordertemplateline->product->reference }}</a>] {{ $customerordertemplateline->product->name }}</td>
             <td>{{ $customerordertemplateline->quantity }}</td>
             <td>{{ $customerordertemplateline->product->measureunit->name }}</td>
 

@@ -28,6 +28,7 @@ class CreateCustomerOrderTemplatesTable extends Migration
             $table->timestamp('last_used_at')->nullable();
 
             $table->integer('customer_id')->unsigned()->nullable(false);
+            $table->integer('shipping_address_id')->unsigned()->nullable(false);
             $table->integer('template_id')->nullable();
 
             $table->timestamps();

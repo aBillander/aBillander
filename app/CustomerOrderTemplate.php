@@ -11,7 +11,7 @@ class CustomerOrderTemplate extends Model
     ];
 
     protected $fillable = ['alias', 'name', 'document_discount_percent', 'document_ppd_percent', 
-    						'notes', 'active', 'last_used_at', 'customer_id', 'template_id',
+    						'notes', 'active', 'last_used_at', 'customer_id', 'shipping_address_id', 'template_id',
     					];
 
     public static $rules = [
@@ -21,6 +21,7 @@ class CustomerOrderTemplate extends Model
     	// 'document_ppd_percent'   => 'numeric|min:0',
 
         'customer_id'   => 'required|exists:customers,id',
+        'shipping_address_id'   => 'required|exists:addresses,id',
         'template_id'   => 'nullable|sometimes|exists:templates,id',
     	];
     
@@ -39,6 +40,15 @@ class CustomerOrderTemplate extends Model
     public function customer()
     {
     	return $this->belongsTo( 'App\Customer' );
+    }
+    
+    public function shippingaddress()
+    {
+        // return $this->morphMany('App\Address', 'addressable')
+        //       ->where('addresses.id', $this->shipping_address_id)->first();
+        
+        return $this->hasOne('App\Address', 'id', 'shipping_address_id')
+                   ->where('addressable_type', \App\Customer::class);
     }
 
     public function template()

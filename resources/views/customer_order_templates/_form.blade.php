@@ -26,6 +26,12 @@
         {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
     </div>
 
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
+            {!! Form::label('shipping_address_id', l('Shipping Address'), ['class' => 'control-label']) !!}
+            {!! Form::select('shipping_address_id', [], old('shipping_address_id'), array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
+            {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
 </div>
 
 <div class="row">
@@ -100,8 +106,11 @@
     $(document).ready(function() {
 
       @if ( $customerordertemplate ?? null )
+        getCustomerData( {{ $customerordertemplate->customer->id }}, {{ $customerordertemplate->shipping_address_id }} );
+
         $("#autocustomer_name").val('{{ $customerordertemplate->customer->name_regular }}');
         $("#customer_id").val('{{ $customerordertemplate->customer->id }}');
+        // $("#shipping_address_id").val('{{ $customerordertemplate->shipping_address_id }}');
       @else
         $("#autocustomer_name").val('');
         $("#customer_id").val('');
@@ -120,7 +129,7 @@
                 // var str = '[' + value.item.identification+'] ' + value.item.name_regular + ' [' + value.item.reference_external +']';
                 var str = value.item.name_regular + ' [' + value.item.reference_external +']';
 
-                // getCustomerData( value.item.id );
+                getCustomerData( value.item.id );
 
                 $("#autocustomer_name").val(str);
                 $('#customer_id').val(value.item.id );
@@ -134,7 +143,7 @@
             };
 
 
-        function getCustomerData( customer_id )
+        function getCustomerData( customer_id, shipping_address_id = 0 )
         {
             var token = "{{ csrf_token() }}";
 
@@ -188,6 +197,9 @@
                     } else {
                       $('#shipping_address_id').val(response.invoicing_address_id);
                     }
+
+                    if ( shipping_address_id > 0 )
+                      $("#shipping_address_id").val( shipping_address_id );
 
                     $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
 

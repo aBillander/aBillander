@@ -27,7 +27,11 @@ return [
 	'Customer Order Template name'     => 'Nombre de la Plantilla para Pedidos de Venta',
 	'Alias'     => 'Alias',
 	'Customer' => 'Cliente',
-	'Driver name' => 'Nombre del Conductor',
+	'Shipping Address' => 'Dirección de Envío',
+	'Last used' => 'Usado última vez',
+
+	'Show Customer Order Template Lines' => 'Ver Líneas de Plantilla',
+	'Create Customer Order' => 'Crear Pedido de Venta',
 
 
 	/*

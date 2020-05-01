@@ -273,7 +273,7 @@ trait BillableFormsControllerTrait
                 'unit_customer_price' => $cost,
                 'unit_customer_final_price' => $cost,
                 'tax_id' => $tax->id,
-                'sales_equalization' => 0,
+                'sales_equalization' => $document->customer->sales_equalization,
             ];
 
             $params = array_merge($params, $data);

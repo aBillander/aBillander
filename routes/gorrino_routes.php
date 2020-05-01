@@ -53,6 +53,13 @@ Route::get('migratethis', function()
 	// https://stackoverflow.com/questions/21047573/maintenance-mode-without-using-artisan
 
 
+	// 2020-05-01
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_order_templates` ADD `shipping_address_id` INT(10) UNSIGNED NOT NULL AFTER `customer_id`;");
+
+
+	die('OK');
+
+
 	// 2020-04-26
 	Illuminate\Support\Facades\DB::statement("create table `customer_order_templates` (`id` int unsigned not null auto_increment primary key, `alias` varchar(32) null, `name` varchar(128) not null, `document_discount_percent` decimal(20, 6) not null default '0', `document_ppd_percent` decimal(20, 6) not null default '0', `notes` text null, `active` tinyint not null default '1', `last_used_at` timestamp null, `customer_id` int unsigned not null, `template_id` int null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 	

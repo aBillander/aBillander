@@ -291,7 +291,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Categories
-		view()->composer(array('products.index', 'products.create', 'products._panel_main_data', 'products_reorder.index'), function($view) {
+		view()->composer(array('products.index', 'products.create', 'products._panel_main_data', 'products_reorder.index', 'configuration_keys.key_group_2'), function($view) {
 		    
 		    if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
 		    	$tree = [];

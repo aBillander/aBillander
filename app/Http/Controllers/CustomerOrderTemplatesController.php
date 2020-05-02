@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\CustomerOrderTemplate;
 use App\CustomerOrderTemplateLine;
 
+use App\Configuration;
 use App\Customer;
 use App\Template;
 use App\CustomerOrder;
@@ -131,12 +132,16 @@ class CustomerOrderTemplatesController extends Controller
 
     public function createCustomerOrder(CustomerOrderTemplate $customerordertemplate, Request $request)
     {
-        $customerordertemplate->load(['customerordertemplatelines', 'customer', 'customer.currency', 'template']);
+        $customerordertemplate->load(['customerordertemplatelines', 'customer', 'customer.currency', 'shippingaddress', 'shippingaddress.shippingmethod', 'template']);
         $customer = $customerordertemplate->customer;
+        $shippingaddress = $customerordertemplate->shippingaddress;
+
         $cotlines = $customerordertemplate->customerordertemplatelines;
 
         // Create Customer Order Header
-        $shipping_method_id = $customer->getShippingMethodId();
+        $shipping_method_id =   $shippingaddress->shippingmethod     ?
+                                $shippingaddress->shippingmethod->id :
+                                $customer->getShippingMethodId();
 
         $shipping_method = ShippingMethod::find($shipping_method_id);
         $carrier_id = $shipping_method ? $shipping_method->carrier_id : null;
@@ -219,6 +224,9 @@ class CustomerOrderTemplatesController extends Controller
 
         list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $order, $free_shipping ));
 
+        $tax_id      = $tax['id'];
+        $tax_percent = $tax['sales'];
+        $tax_se_percent = $tax['sales_equalization'];
 
         $params = [
             'line_type' => 'shipping',
@@ -229,11 +237,13 @@ class CustomerOrderTemplatesController extends Controller
             'discount_percent' => 0.0,
             'unit_customer_price' => $cost,
             'unit_customer_final_price' => $cost,
-            'tax_id' => $tax->id,
+            'tax_id' => $tax_id,
             'sales_equalization' => $order->customer->sales_equalization,
 
 //            'line_sort_order' => $request->input('line_sort_order'),
 //            'notes' => $request->input('notes', ''),
+
+            'prices_entered_with_tax' => 0,
         ];
 
         $line[] = $order->addServiceLine( null, null, 1.0, $params );

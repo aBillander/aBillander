@@ -282,6 +282,21 @@
       </div>
     </div>
 
+
+    <div class="form-group {{ $errors->has('DEF_CATEGORY') ? 'has-error' : '' }}">
+      <label for="DEF_CATEGORY" class="col-lg-4 control-label">{!! l('DEF_CATEGORY.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_CATEGORY', $categoryList, old('DEF_CATEGORY', $key_group['DEF_CATEGORY']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_CATEGORY', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_CATEGORY.help') !!}</span>
+      </div>
+    </div>
+
     <div class="form-group {{ $errors->has('DEF_MEASURE_UNIT_FOR_BOMS') ? 'has-error' : '' }}">
       <label for="DEF_MEASURE_UNIT_FOR_BOMS" class="col-lg-4 control-label">{!! l('DEF_MEASURE_UNIT_FOR_BOMS.name') !!}</label>
       <div class="col-lg-8">

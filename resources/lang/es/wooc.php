@@ -71,8 +71,13 @@ return [
 
 	'Transaction ID'     => 'ID Transacción',
 
+	'Go to Customer Order'     => 'Ir al Pedido del Cliente',
+	'This Customer Order has not been imported'     => 'Este Pedido de Cliente no ha sido importado',
+
 	'Go to Customer'     => 'Ir al Cliente',
 	'This Customer has not been imported'     => 'Este Cliente no ha sido importado',
+	'Shipping Address is different from Billing Address!' => 'La Dirección de Envío es diferente de la Dirección de Facturación!',
+	'Shipping Address is the same as Billing Address.' => 'La Dirección de Envío coincide con la Dirección de Facturación.',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -185,6 +190,7 @@ return [
 	*/
 
 	'Categories'     => 'Categorías',
+	'Products' => 'Productos',
 //	'ID'     => 'ID', from layouts
 	'Parent ID'     => 'ID del Padre',
 	'Category Name'     => 'Nombre de la Categoría',
@@ -192,20 +198,47 @@ return [
 	'Menu Order'     => 'Posición en el Menú',
 	'Products Count'     => 'Número de Productos',
 	'Slug'     => 'Slug',
+	'Set Local Category'     => 'Enlazar con Categoría Local',
 	'Local Category'     => 'Categoría Local',
+	'WooCommerce Category'     => 'Categoría WooCommerce',
+
 
 	/*
 	|--------------------------------------------------------------------------
-	| WooCommerce Products Language Lines :: show
+	| WooCommerce Categories Language Lines :: show
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	''     => '',
-	''     => '',
-	''     => '',
+	'SKU' => 'SKU',
+	'Product Name' => 'Nombre del Producto',
+	'Category' => 'Categoría',
+	'Type' => 'Tipo',
+	'Price' => 'Precio',
+	'Regular Price' => 'Precio Normal',
+	'Sale Price' => 'Precio en Oferta',
+	'Tax' => 'Impuesto',
+	'Weight' => 'Peso',
+	
+
+	/*
+	|--------------------------------------------------------------------------
+	| WooCommerce Language Lines :: Last aditions
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Go to local Product'     => 'Ir al Producto',
+
+	'Billing Address'     => 'Dirección de Facturación',
+	'Shipping Address'     => 'Dirección de Envío',
+
+	'Some Product Descriptions has been retrieved from WooCommerce Shop.'     => 'Algunas Descripciones de Productos han sido importadas desde la Tienda WooCommerce.',
+	'Some Product Images has been retrieved from WooCommerce Shop.'     => 'Algunas Imagenes de Productos han sido importadas desde la Tienda WooCommerce.',
 	''     => '',
 	''     => '',
 	''     => '',

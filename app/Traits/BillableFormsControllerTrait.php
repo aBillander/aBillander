@@ -266,13 +266,17 @@ trait BillableFormsControllerTrait
 
             list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $document, $free_shipping ));
 
+            $tax_id      = $tax['id'];
+            $tax_percent = $tax['sales'];
+            $tax_se_percent = $tax['sales_equalization'];
+
             $data = [
                 'name' => $shipping_label.' :: '.$method->name,
                 'cost_price' => $cost,
                 'unit_price' => $cost,
                 'unit_customer_price' => $cost,
                 'unit_customer_final_price' => $cost,
-                'tax_id' => $tax->id,
+                'tax_id' => $tax_id,
                 'sales_equalization' => $document->customer->sales_equalization,
             ];
 

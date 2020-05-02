@@ -44,7 +44,10 @@
                     {!! $errors->first('data_file', '<span class="help-block">:message</span>') !!}
 
             <div class="form-group" style="margin-top: 12px">
+
+@if( \App\Configuration::get('ABCC_BB_IMAGE') )
               <img width="50%" src="{{ URL::to( abi_tenant_local_path( 'images_bb/' ) . \App\Configuration::get('ABCC_BB_IMAGE') ) }}" class="img-responsive pull-right xcenter-block" style="border: 1px solid #dddddd;">
+@endif
               {!! Form::label('', l('Current image').': &nbsp; ', ['class' => 'control-label pull-right']) !!}
             </div>
 

@@ -110,7 +110,7 @@ class Product extends Model {
 
                             'location', 'width', 'height', 'depth', 'volume', 'weight',
 
-                            'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 
+                            'notes', 'stock_control', 'publish_to_web', 'webshop_id', 'blocked', 'active', 
                             'out_of_stock', 'out_of_stock_text', 'available_for_sale_date',
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 

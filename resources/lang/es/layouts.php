@@ -13,6 +13,7 @@ return [
 
 	'Error 404 / Page not found'     => 'Error 404 / Página no encontrada',
 	'Coming soon...' => 'Próximamente...',
+	'Be right back.' => 'Estamos mejorando el sitio.',
 
 	'Success' => 'Éxito',
 	'Info'    => 'Información',
@@ -105,7 +106,7 @@ return [
 	'Suppliers' => 'Proveedores',
 	'Supplier Shipping Slips'     => 'Albaranes de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',
-	'Sale Orders'     => 'Pedidos de Venta',
+	'Sale Orders'     => 'Pedidos de Clientes',
 	'Sale Order Templates'     => 'Plantillas Pedidos Venta',
 	'Orders'     => 'Pedidos',
 	'Shipping Slips'     => 'Albaranes',
@@ -251,6 +252,7 @@ return [
 	'Help'     => 'Ayuda',
 	'Home'     => 'Inicio',
 	'Fetch' => 'Extraer',
+	'View Data' => 'Ver Datos',
 	'Fetch Data' => 'Extraer Datos',
 
 	'Set on-hold'     => 'Click para poner en espera',

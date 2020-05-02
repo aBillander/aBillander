@@ -112,7 +112,7 @@
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('abccbillboard/edit') }}">
-                                 <img src="{{ asset('assets/theme/company_icon.png') }}"> 
+                                 <img src="{{ asset('assets/theme/new-badge-20.png') }}"> 
                                  &nbsp; {{l('ABCC Billboard', [], 'layouts')}}
                             </a>
                         </li>
@@ -295,6 +295,14 @@
                                  {{l('Product Categories', [], 'layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+                         <li>
+                            <a href="{{ URL::to('wooc/wcategories') }}">
+                                 <i class="fa fa-cloud-upload btn-xs alert-info"></i> 
+                                 {{l('Product Categories', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+@endif
                          <li>
                             <a href="{{ URL::to('manufacturers') }}">
                                  {{l('Manufacturers', [], 'layouts')}}

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Category extends Model {
     
-    protected $fillable = [ 'name', 'position', 'publish_to_web', 'webshop_id', 'reference_external', 
+    protected $fillable = [ 'name', 'description', 'position', 'publish_to_web', 'webshop_id', 'reference_external', 
                             'is_root', 'active', 'parent_id'
                           ];
 
@@ -23,6 +23,34 @@ class Category extends Model {
     	);
     
 
+    
+    static function getcategoryList()
+    {            
+        if ( Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
+            $tree = [];
+            $categories =  Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+            
+            foreach($categories as $category) {
+                $label = $category->name;
+
+                // Prevent duplicate names
+                while ( array_key_exists($label, $tree))
+                    $label .= ' ';
+
+                $tree[$label] = $category->children()->orderby('position', 'asc')->pluck('name', 'id')->toArray();
+                // foreach($category->children as $child) {
+                    // $tree[$category->name][$child->id] = $child->name;
+                // }
+            }
+            // abi_r($tree, true);
+            return $tree;
+
+        } else {
+            // abi_r(\App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
+            return Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray();
+        }
+
+    }
 
     /*
     |--------------------------------------------------------------------------

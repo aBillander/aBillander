@@ -71,6 +71,20 @@ class CustomerOrder extends Billable
                ];
 
 
+    public function getWebshopIdAttribute()
+    {
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && (strpos($this->reference, '#') !== FALSE) )
+        {
+            list($prifix, $ws_id) = explode('#', $this->reference);
+
+            if ( ($ws_id = (int) $ws_id) > 0 )
+                return $ws_id;
+        }
+
+        return null;
+    }
+
+
     public function getDeletableAttribute()
     {
 //        return $this->status != 'closed' && !$this->->status != 'canceled';

@@ -32,10 +32,10 @@
                &nbsp; {{ l('Main Data') }}
             </a>
 
-@if ( 1 || \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
             <a id="b_internet" href="#internet" class="list-group-item">
                <i class="fa fa-cloud"></i>
-               &nbsp; {{ l('Internet') }}
+               &nbsp; {{ l('Web Shop') }}
             </a>
 @endif
 
@@ -47,23 +47,24 @@
           @include('categories._panel_main_data')
 
 
-@if ( 1 || \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
-          @include('categories._panel_internet')
+          @include('categories._panel_webshop')
 
 @endif
 
       </div>
    </div>
 </div>
-@stop
+@endsection
 
-@section('scripts') 
+@section('scripts') @parent
 <script type="text/javascript">
    function route_url()
    {
       $("#panel_main_data").hide();
       $("#panel_internet").hide();
+      $("#category-webshop-data").html('');
 
       $("#b_main_data").removeClass('active');
       $("#b_internet").removeClass('active');
@@ -88,4 +89,12 @@
    });
 </script>
 
-@stop
+{{-- Use CKEditor. See: https://artisansweb.net/install-use-ckeditor-laravel/ --}}
+<script src="{{ asset('vendor/unisharp/laravel-ckeditor/ckeditor.js') }}"></script>
+<script>
+    CKEDITOR.replace( 'description' );
+    CKEDITOR.replace( 'description_short' );
+    CKEDITOR.replace( 'route_notes' );
+</script>
+
+@endsection

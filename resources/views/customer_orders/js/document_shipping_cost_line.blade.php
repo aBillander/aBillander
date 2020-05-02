@@ -119,7 +119,7 @@
                               unit_price : '0.0',
                               unit_customer_price : '0.0',
                               unit_customer_final_price : '0.0',
-                              prices_entered_with_tax : '{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') }}',
+                              prices_entered_with_tax : 0,  // Shipping Cost Rules are tax excluded!!! '{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') }}',
                               tax_id : '{{ \App\Configuration::get('DEF_TAX') }}',
 //                              tax_percent : $('#line_tax_percent').val(),
                               sales_equalization : '{{ $document->customer->sales_equalization }}',

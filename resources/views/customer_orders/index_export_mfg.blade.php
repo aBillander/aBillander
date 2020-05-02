@@ -100,7 +100,7 @@
     <tbody id="order_lines">
         @foreach ($documents as $document)
         <tr>
-            @if ( $document->production_sheet_id )
+            @if ( $document->production_sheet_id || ($document->status == 'closed') )
               <td> </td>
             @else
               <td class="text-center warning">{!! Form::checkbox('corders[]', $document->id, false, ['class' => 'case checkbox']) !!}</td>

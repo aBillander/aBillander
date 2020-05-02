@@ -190,7 +190,7 @@ class ImportSupplierPriceListLinesController extends Controller
 
 
         // Delete Price List Lines
-        $supplier->suppliersupplierlines()->delete();
+        $supplier->supplierpricelistlines()->delete();
 
 
         $params = [
@@ -326,7 +326,7 @@ class ImportSupplierPriceListLinesController extends Controller
                         $data['price'] = round($data['price'], $decimal_places);
                     }
 
-                    if ( intval($data['price_list_id']) != $price_list_id ) {
+                    if ( intval($data['supplier_id']) != $price_list_id ) {
                         
                         $logger->log("ERROR", "La fila (".$item.") no corresponde a la Tarifa ".$name);
 
@@ -371,9 +371,15 @@ class ImportSupplierPriceListLinesController extends Controller
                         continue;
                     } else {
                         
+                        if ( intval($data['currency_id']) != $supplier->currency_id )
+                            $logger->log("ERROR", "La fila (".$item.") la Divisa no coincide con la Divisa del Proveedor. Se cambiará a la Divisa del Proveedor.");
+
                         $data['currency_id'] = $supplier->currency_id;
                     }
                     
+                    // Price && Discount
+                    $data['price'] = (float) $data['price'];
+                    $data['discount_percent'] = (float) $data['discount_percent'];
 
 
 
@@ -478,6 +484,11 @@ class ImportSupplierPriceListLinesController extends Controller
             {
                 $row[$header] = $line->{$header} ?? '';
             }
+
+            // Casting
+            $row['from_quantity'] = (float) $row['from_quantity'];
+            $row['price'] = (float) $row['price'];
+            $row['discount_percent'] = (float) $row['discount_percent'];
 
             $row['SUPPLIER_NAME_FISCAL']     = $supplier->name_fiscal ?? '';
             $row['PRODUCT_REFERENCE']     = $line->reference ?? '';

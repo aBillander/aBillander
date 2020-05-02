@@ -50,6 +50,8 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// https://stackoverflow.com/questions/21047573/maintenance-mode-without-using-artisan
+
 
 	// 2020-05-01
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_order_templates` ADD `shipping_address_id` INT(10) UNSIGNED NOT NULL AFTER `customer_id`;");
@@ -62,6 +64,16 @@ Route::get('migratethis', function()
 	Illuminate\Support\Facades\DB::statement("create table `customer_order_templates` (`id` int unsigned not null auto_increment primary key, `alias` varchar(32) null, `name` varchar(128) not null, `document_discount_percent` decimal(20, 6) not null default '0', `document_ppd_percent` decimal(20, 6) not null default '0', `notes` text null, `active` tinyint not null default '1', `last_used_at` timestamp null, `customer_id` int unsigned not null, `template_id` int null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 	
 	Illuminate\Support\Facades\DB::statement("create table `customer_order_template_lines` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `line_type` varchar(32) not null, `product_id` int unsigned null, `combination_id` int unsigned null, `quantity` decimal(20, 6) not null, `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `pmu_label` varchar(128) null, `notes` text null, `active` tinyint not null default '1', `customer_order_template_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	
+	
+	// 2020-04-20
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `webshop_id` varchar(16) NULL DEFAULT NULL AFTER `publish_to_web`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `categories` ADD `description` TEXT NULL DEFAULT NULL AFTER `name`;");
+
+	// Fix error; see below
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `carriers` CHANGE `transit_time` `transit_time` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;");
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `carriers` CHANGE `tracking_url` `tracking_url` VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;");
 
 
 	die('OK');
@@ -70,7 +82,10 @@ Route::get('migratethis', function()
 
 	// 2020-04-15
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `suppliers` CHANGE `customer_logo` `supplier_logo` VARCHAR(128) NULL DEFAULT NULL;");
-	
+
+
+	die('OK');
+
 
 	// 2020-03-14
 	Illuminate\Support\Facades\DB::statement("create table `shipping_method_services` (`id` int unsigned not null auto_increment primary key, `name` varchar(64) null, `billing_type` varchar(32) not null, `transit_time` varchar(16) null, `free_shipping_from` decimal(20, 6) not null default '0', `tax_id` int unsigned not null, `position` int unsigned not null default '0', `shipping_method_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");

@@ -283,6 +283,9 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		$state = State::findByIsoCode( $order['shipping']['state'], $order['shipping']['country'] );
 		$order['shipping']['state_name'] = $state ? $state->name : $order['shipping']['state'];
 
+		// Address check
+		$order['has_shipping'] = WooOrder::getShippingAddressId( $order ) != WooOrder::getBillingAddressId( $order );
+
 		// Carrier
 		$order['shipping']['shipping_method'] = '('.$order['shipping_lines'][0]['method_id'].') '.$order['shipping_lines'][0]['method_title'];
 		$shipping_method = ShippingMethod::with('carrier')->find( WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ) );
@@ -297,6 +300,20 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 				$order['shipping']['carrier'] = $shipping_method->carrier->name;
 			}
 		}
+
+		$abi_order = CustomerOrder::where('reference_external', $order["id"])->first();
+
+			if ($abi_order) {
+				$order["abi_order_id"] = $abi_order->id;
+				$order["imported_at"] = $abi_order->created_at->toDateString();
+				$order["production_at"] = ''; // $abi_order->productionsheet->due_date;
+				$order["production_sheet_id"] = $abi_order->production_sheet_id;
+			} else {
+				$order["abi_order_id"] = '';
+				$order["imported_at"] = '';
+				$order["production_at"] = '';
+				$order["production_sheet_id"] = '';
+			}
 
 		return view('woo_connect::woo_orders.show', compact('order', 'customer'));
 	}

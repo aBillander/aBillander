@@ -98,7 +98,7 @@
         $("#autoproduct_name").focus();
 
         $("#autoproduct_name").autocomplete({
-            source : "{{ route('customerorders.searchproduct') }}",
+            source : "{{ route('customerorders.searchproduct') }}?customer_id={{ $customerordertemplate->customer->id }}&currency_id={{ $customerordertemplate->customer->currency_id }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 

@@ -1073,8 +1073,8 @@ class Cart extends Model implements ShippableInterface
     public function taxingaddress()
     {
         return Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') ? 
-            $this->shippingaddress  : 
-            $this->invoicingaddress ;
+            $this->shippingaddress()  : 
+            $this->invoicingaddress() ;
     }
 
     
@@ -1145,7 +1145,7 @@ class Cart extends Model implements ShippableInterface
     {
         // get the tax percent checking the taxing address,
         // while using product tax as backup data
-        $address = $this->taxingaddress();
+        $address = $this->taxingaddress;
 
         // if the customer has que sales_equalization enabled,
         // we need to set the product's sales_equalization to 1 to use it

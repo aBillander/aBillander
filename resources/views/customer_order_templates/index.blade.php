@@ -79,7 +79,7 @@
                    </a>
                   @endif
               </td>
-            <td>{{ abi_date_short($customerordertemplate->last_used_at) ?: '-' }}</td>
+            <td>{{ abi_date_full($customerordertemplate->last_used_at) ?: '-' }}</td>
 
 			<td class="text-right">
                 @if (  is_null($customerordertemplate->deleted_at))

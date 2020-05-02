@@ -30,7 +30,11 @@ class CustomerOrderTemplateLinesController extends Controller
      */
     public function create($customerordertemplateId)
     {
-        $customerordertemplate = CustomerOrderTemplate::with('customerordertemplatelines')->findOrFail($customerordertemplateId);
+        $customerordertemplate = CustomerOrderTemplate::
+                                      with('customerordertemplatelines')
+                                    ->with('customer')
+                                    ->findOrFail($customerordertemplateId);
+        
         return view('customer_order_template_lines.create', compact('customerordertemplate'));
     }
 

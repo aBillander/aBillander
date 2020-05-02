@@ -168,7 +168,7 @@ class ShippingMethod extends Model {
 
         // $tax = Tax::find($tax_id);
 
-        $address = $shippable->taxingaddress();
+        $address = $shippable->taxingaddress;
         $tax_rules = $this->getTaxRules($address, $shippable->customer);
 
         $taxes_summary = [

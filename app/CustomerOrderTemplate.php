@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomerOrderTemplate extends Model
 {
-    protected $document_dates = [
+    protected $dates = [
             'last_used_at',
     ];
 

@@ -238,6 +238,7 @@ class AbccCustomerOrdersController extends Controller {
         				$line_data['line_sort_order'] = $cart->getNextLineSortOrder();	// Move at the end of the list
         				$line_data['sales_equalization'] = 0;
         				$line_data['tax_id'] = $cartline->tax_id;	// Otherwise default tax will be taken
+        				$line_data['sales_equalization'] = $customer->sales_equalization;
 	        			$line = $customerOrder->addServiceLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, $line_data );
 	        		}
         			break;

@@ -1,5 +1,5 @@
 
-<div class="jumbotron">
+<div class="jumbotron container-fluid">
 
 @if ( \App\Configuration::get('ABCC_BB_ACTIVE') && (\App\Configuration::get('ABCC_BB_ACTIVE') != 'none') )
 

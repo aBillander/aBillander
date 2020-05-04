@@ -257,7 +257,7 @@ class CustomerOrderTemplatesController extends Controller
         $customerordertemplate->last_used_at =  $order->document_date;
         $customerordertemplate->save();
 
-        return redirect('customerordertemplates')
+        return redirect()->route('customerorders.edit', $order->id)
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $order->id], 'layouts'));
     }
 }

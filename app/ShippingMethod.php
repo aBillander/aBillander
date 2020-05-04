@@ -257,36 +257,63 @@ class ShippingMethod extends Model {
 
         $rules = $this->rules;
 
-        // abi_r('[All');
+        // abi_r('[All]');
         // abi_r($rules);
 
         // [1] Postal Code
-        $address_rules = $rules->where('country_id', $address->country_id)
-                                ->where('postcode', $address->postcode)
-                                ->where('from_amount', '<=', $amount)
+        $address_rules = $rules->filter(function ($item) use ($address, $amount) {
+                                    if(
+                                        ($item->country_id  == $address->country_id) &&
+                                        ($item->postcode    == $address->postcode)   &&
+                                        ($item->from_amount <= $amount)
+                                    )
+                                        return true;
+
+                                    return false;
+                                })
                                 ->sortByDesc('from_amount');
 
+        
         // abi_r('[1] Postal Code');
         // abi_r($address_rules);
 
         if ($address_rule = $address_rules->first()) return $address_rule->price;
 
         // [2] State
-        $address_rules = $rules->where('country_id', $address->country_id)
-                                ->where('state_id', $address->state_id)
-                                ->where('from_amount', '<=', $amount)
+        $address_rules = $rules->filter(function ($item) use ($address, $amount) {
+                                    if(
+                                        ($item->country_id  == $address->country_id) &&
+                                        ($item->state_id    == $address->state_id)   &&
+                                        ( (string) $item->postcode == '' )   &&
+                                        ($item->from_amount <= $amount)
+                                    )
+                                        return true;
+
+                                    return false;
+                                })
                                 ->sortByDesc('from_amount');
 
+        
         // abi_r('[2] State');
         // abi_r($address_rules);
 
         if ($address_rule = $address_rules->first()) return $address_rule->price;
 
         // [3] Country
-        $address_rules = $rules->where('country_id', $address->country_id)
-                                ->where('from_amount', '<=', $amount)
+        $address_rules = $rules->filter(function ($item) use ($address, $amount) {
+                                    if(
+                                        ($item->country_id         == $address->country_id) &&
+                                        ( (int) $item->state_id    == 0  )   &&
+                                        ( (string) $item->postcode == '' )   &&
+                                        ($item->from_amount <= $amount)
+                                    )
+                                        return true;
+
+                                    return false;
+                                })
                                 ->sortByDesc('from_amount');
 
+        
         // abi_r('[3] Country');
         // abi_r($address_rules);
 
@@ -294,7 +321,7 @@ class ShippingMethod extends Model {
 
         // [4] Universe
         $address_rules = $rules->filter(function ($value, $key) {
-                                    return $value->country_id == null || $value->country_id == '' || $value->country_id == 0 ;
+                                    return ($value->country_id == null) || ($value->country_id == '') || ($value->country_id == 0) ;
                                 })
                                 ->where('from_amount', '<=', $amount)
                                 ->sortByDesc('from_amount');

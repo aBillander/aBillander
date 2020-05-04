@@ -13,9 +13,11 @@
             <div class="modal-body-message">
             </div>
 
-    <div class="form-group" id="submit-confirmation_email">
+    <div class="xform-group" id="submit-confirmation_email" style="margin-top: 15px;">
 
-      <div class="col-lg-10">
+      <div class="row">
+
+      <div class="col-lg-6 col-md-6 col-sm-6">
         
         <div class="checkbox">
           <label>
@@ -23,7 +25,15 @@
           </label>
         </div>
       </div>
+
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('reference') ? 'has-error' : '' }}">
+            <label for="sales_equalization" class="control-label">{{ l('My Reference / Project') }}</label>
+            {!! Form::text('reference', old('reference'), array('class' => 'form-control', 'id' => 'reference')) !!}
+            {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
+         </div>
     </div>
+
+      </div>
                 
             </div>
             <div class="modal-footer">
@@ -85,6 +95,7 @@
             $(this).prop('disabled', true);
 
             $('#send_confirmation_email').val($('#confirmation_email').prop('checked'));
+            $('#reference_customer').val($('#reference').val());
 
             $('#'+$('#form_id').val()).submit();
         });

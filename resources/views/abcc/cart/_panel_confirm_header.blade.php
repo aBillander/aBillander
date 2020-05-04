@@ -8,6 +8,7 @@
 
 
                   <input type="hidden" id="send_confirmation_email" name="send_confirmation_email" value="" />
+                  <input type="hidden" id="reference_customer" name="reference_customer" value="" />
 
 
    <div class="panel-body">

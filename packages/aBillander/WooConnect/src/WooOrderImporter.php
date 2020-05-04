@@ -30,7 +30,7 @@ class WooOrderImporter {
 	protected $run_status = true;		// So far, so good. Can continue export
 	protected $error = null;
 
-	protected $raw_data = array();
+	protected $raw_data = [];           // WooC data + 'customer_reference_external' ( FSxTools::translate_customers_fsol() )
 
 	protected $currency;				// aBillander Object
 	protected $customer;				// aBillander Object
@@ -259,7 +259,7 @@ class WooOrderImporter {
 
         	if ( $customer_reference_external && $this->customer->reference_external && ( $customer_reference_external != $this->customer->reference_external ) ) {
 
-        		// Error gordo!
+        		// Error "gordo"!
 				$this->run_status = false;
 
 				$this->logError( l('Los campos que relacionan el Cliente entre la Tienda web, aBillander y FactuSOL no coinciden.') );
@@ -301,9 +301,6 @@ class WooOrderImporter {
         	}
         }
 
-//        if ($this->customer) $this->checkAddresses();
-
-//        else                 $this->importCustomer();
     }
 
     public function setOrderDocument()
@@ -938,6 +935,12 @@ foreach ( $order['shipping_lines'] as $item ) {
 		$addr = $this->customer->addresses()->where('webshop_id', $needle )->first();
         if ( $addr ) {
 
+            // Update phone & email
+            $addr->update([
+                'email' => $order['billing']['email'],
+                'phone' => $order['billing']['phone'],
+            ]);
+
 	        $this->invoicing_address_id = $addr->id;
 	        $this->invoicing_address = $addr;
 
@@ -961,6 +964,12 @@ foreach ( $order['shipping_lines'] as $item ) {
 		$needle = WooOrder::getShippingAddressId( $order );
 		$addr = $this->customer->addresses()->where('webshop_id', $needle )->first();
         if ( $addr ) {
+
+            // Update phone & email
+            $addr->update([
+                'email' => $order['billing']['email'],
+                'phone' => $order['billing']['phone'],
+            ]);
 
         	$this->shipping_address_id = $addr->id;
         	$this->shipping_address = $addr;
@@ -1084,9 +1093,9 @@ foreach ( $order['shipping_lines'] as $item ) {
 			
 			'firstname' => $order['shipping']['first_name'],
 			'lastname'  => $order['shipping']['last_name'],
-//			'email'     => $order['shipping']['email'],
+			'email'     => $order['billing']['email'],           // Better off
 
-//			'phone' => $order['shipping']['phone'],
+			'phone' => $order['billing']['phone'],               // Better off
 //			'phone_mobile' => $order[''],
 //			'fax' => $order[''],
 			

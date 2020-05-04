@@ -25,7 +25,7 @@ class WooOrder // extends Model
     public static  $gates = NULL;
     public static  $taxes = NULL;
 
-    protected $data = [];
+    protected $data = [];               // WooC data + 'customer_reference_external' ( FSxTools::translate_customers_fsol() )
     protected $run_status = true;       // So far, so good. Can continue export
     protected $error = null;
 

@@ -28,13 +28,18 @@ Route::group([
 //	Route::get('orders/{id}', 'WooOrdersController@show');
 //	Route::post('orders/{id}', ['as' => 'wostatus', 'uses' => 'WooOrdersController@update']);
 
-	Route::resource('wooconnect/wooconfigurationkeys', 'WooConfigurationKeysController');
+	
+//  Route::resource('wooconnect/wooconfigurationkeys', 'WooConfigurationKeysController');
+    Route::resource('wooconnect/configurationkeys', 'WooConfigurationKeysController')->names('wooconfigurationkeys');
 
 
 	Route::get( 'wooconnect/configuration', 'WooConfigurationKeysController@configurationsEdit')
 			->name('wooconnect.configuration');
 	Route::post('wooconnect/configuration', 'WooConfigurationKeysController@configurationsUpdate')
 			->name('wooconnect.configuration.update');
+    
+    Route::get( 'wooconnect/configuration/{group_id}/fetch', 'WooConfigurationKeysController@fetch')
+            ->name('woocommerce.configuration.fetch');
 
 	Route::get( 'wooconnect/configuration/taxes', 'WooConfigurationKeysController@configurationTaxesEdit')
 			->name('wooconnect.configuration.taxes');

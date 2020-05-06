@@ -187,6 +187,8 @@ class WooProductsController extends Controller
 
 		// abi_r($abi_product);die();
 
+		$abi_product_price = $abi_product->getPriceByListId( Configuration::getInt('WOOC_DEF_CUSTOMER_PRICE_LIST') );	// Returns a Price Object
+
 		$data = [
 		    'name' => $abi_product->name,
 //		    'slug' => '',
@@ -197,8 +199,8 @@ class WooProductsController extends Controller
 		    'description'   => $abi_product->description,
 		    'short_description'   => $abi_product->description_short,
 
-			'sku' => $abi_product->reference.'xx',
-			'regular_price' => $abi_product->price, // product price
+			'sku' => $abi_product->reference,
+			'regular_price' => $abi_product_price->getPrice(), // product price
 
 //			'virtual',
 //			'downloadable'

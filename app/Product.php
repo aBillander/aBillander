@@ -987,6 +987,16 @@ class Product extends Model {
         return $price;
     }
 
+    public function getPriceByListId( $list_id = null )
+    {
+        $list = null;
+
+        if ((int) $list_id > 0)
+            $list = PriceList::find((int) $list_id);
+
+        return $this->getPriceByList( $list );
+    }
+
     // Deprecated DO NOT USE
     public function getPriceByListWithEcotax( PriceList $list = null )
     {

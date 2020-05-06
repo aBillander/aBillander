@@ -12,6 +12,8 @@ return [
 	*/
 
 	'Customer Order Templates' => 'Plantillas para Pedidos de Venta',
+	'Order to Template' => 'Pedido a Plantilla',
+	'Create Customer Order Template after Customer Order' => 'Crear Plantilla desde un Pedido de Venta',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -32,6 +34,9 @@ return [
 
 	'Show Customer Order Template Lines' => 'Ver Líneas de Plantilla',
 	'Create Customer Order' => 'Crear Pedido de Venta',
+
+	'Customer Order' => 'Pedido de Cliente',
+	'Customer Order <i>ID</i>. If Order is \'Draft\', use ID as seen in Order url on your browser.' => 'Introduzca el <i>ID</i> del Pedido. Si el Pedido es \'Borrador\', use el ID que aparece en la url del Pedido, cuando éste se muestra en su navegador.',
 
 
 	/*

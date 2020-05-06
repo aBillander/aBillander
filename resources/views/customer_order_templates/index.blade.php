@@ -8,7 +8,11 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
         <a href="{{ URL::to('customerordertemplates/create') }}" class="btn btn-sm btn-success" 
-        		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+            title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+
+        <a href="{{ route('customerordertemplates.create.afterorder', 'none') }}" class="btn btn-sm alert-success" 
+            title="{{l('Create Customer Order Template after Customer Order')}}"><i class="fa fa-magic"></i> {{l('Order to Template')}}</a>
 
 
         <button type="button" class="btn btn-sm btn-behance" 

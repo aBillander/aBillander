@@ -934,7 +934,7 @@ foreach ( $order['shipping_lines'] as $item ) {
 		$needle = WooOrder::getBillingAddressId( $order );
 		$addr = $this->customer->addresses()->where('webshop_id', $needle )->first();
         if ( $addr ) {
-
+/*
             // Update phone & email
             $addr->update([
                 'email' => $order['billing']['email'],
@@ -943,8 +943,13 @@ foreach ( $order['shipping_lines'] as $item ) {
 
 	        $this->invoicing_address_id = $addr->id;
 	        $this->invoicing_address = $addr;
+*/
+            // Code above fails when aBillander addres is modified within aBillander, since 'webshop_id' remains unaltered.
+            // So, just to make sure: lets delete aBillander address and re-create. Remember that we deal with individuals, not with companies: WooCommerce customer address data may be changed 
 
-        } else {
+            $addr->delete();
+
+        }       // else {
         	
         	// Create Address
         	$address = $this->createInvoicingAddress();
@@ -952,19 +957,20 @@ foreach ( $order['shipping_lines'] as $item ) {
         	$this->invoicing_address_id = $address->id;
         	$this->invoicing_address = $address;
 
-        }
+//        }
 
         // Need to update Customer Invoicing Address?
         if ($this->customer->invoicing_address_id != $this->invoicing_address_id) {
         	$this->customer->update( [ 'invoicing_address_id' => $this->invoicing_address_id ] );
         }
+        // ^- Allready done in $this->createInvoicingAddress() , I guess.
 
 
 		// Build Shipping address
 		$needle = WooOrder::getShippingAddressId( $order );
 		$addr = $this->customer->addresses()->where('webshop_id', $needle )->first();
         if ( $addr ) {
-
+/*
             // Update phone & email
             $addr->update([
                 'email' => $order['billing']['email'],
@@ -973,8 +979,13 @@ foreach ( $order['shipping_lines'] as $item ) {
 
         	$this->shipping_address_id = $addr->id;
         	$this->shipping_address = $addr;
+*/
+            // Code above fails when aBillander addres is modified within aBillander, since 'webshop_id' remains unaltered.
+            // So, just to make sure: lets delete aBillander address and re-create. Remember that we deal with individuals, not with companies: WooCommerce customer address data may be changed 
 
-        } else {
+            $addr->delete();
+
+        }   // else {
         	
         	// Create Address
         	$address = $this->createShippingAddress();
@@ -982,7 +993,7 @@ foreach ( $order['shipping_lines'] as $item ) {
         	$this->shipping_address_id = $address->id;
         	$this->shipping_address = $address;
 
-        }
+//        }
     }
     
     public function createInvoicingAddress()

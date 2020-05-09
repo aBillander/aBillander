@@ -72,7 +72,8 @@ class CustomerOrdersController extends BillableController
     //                            ->orderBy('document_date', 'desc')
                                 // ->orderBy('document_reference', 'desc');
     // https://www.designcise.com/web/tutorial/how-to-order-null-values-first-or-last-in-mysql
-                                ->orderByRaw('DATE(document_date) DESC, document_reference IS NOT NULL, document_reference DESC');
+                                // ->orderByRaw('DATE(document_date) DESC, document_reference IS NOT NULL, document_reference DESC');
+                                ->orderByRaw('document_reference IS NOT NULL, document_reference DESC, id DESC');
     //                          ->orderBy('id', 'desc');        // ->get();
             
         } else {
@@ -262,6 +263,8 @@ class CustomerOrdersController extends BillableController
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
+                        
+                        'template_id'          => $request->input('template_id') ?? $customer->getOrderTemplateId(),
 
                         'document_discount_percent' => $customer->discount_percent,
                         'document_ppd_percent'      => $customer->discount_ppd_percent,
@@ -292,8 +295,8 @@ class CustomerOrdersController extends BillableController
         }
 
         // Maybe...
-//        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
-//            $customerOrder->confirm();
+        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
+            $document->confirm();
 
         return redirect($this->model_path.'/'.$document->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
@@ -595,7 +598,7 @@ class CustomerOrdersController extends BillableController
 
         $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
-        $documents->setPath($this->model_path);
+        $documents->setPath('today');
 
         return view($this->view_path.'.index_for_today', $this->modelVars() + compact('documents'));
     }

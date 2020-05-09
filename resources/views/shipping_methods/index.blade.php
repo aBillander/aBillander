@@ -15,6 +15,18 @@
     </h2>        
 </div>
 
+@if ( !$system_default )
+
+<div class="alert alert-danger alert-block">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <strong>{!! l('Error', [], 'layouts') !!}: </strong>
+            <ul>
+                    <li>{!! l('You SHOULD define a System wide Default Value for this Model.', 'layouts') !!}</li>
+            </ul>
+</div>
+
+@endif
+
 <div id="div_shippingmethods">
    <div class="table-responsive">
 
@@ -25,23 +37,37 @@
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th class="text-left">{{l('Alias', 'layouts')}}</th>
             <th>{{l('Shipping Method name')}}</th>
+            <th>{{l('Billing Type')}}</th>
+            <!-- th>{{l('Free Shipping from')}}</th -->
+            <th>{{l('Tax')}}</th>
             <th>{{l('Carrier')}}</th>
+            <!-- th>{{l('Class name')}}</th -->
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
+            <th class="text-center">{{l('Default', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
 	<tbody>
 	@foreach ($shippingmethods as $shippingmethod)
 		<tr>
-            <td>{{ $shippingmethod->id }}</td>
+            <td>{{ $shippingmethod->id }}<br />
+                <span class="text-success">[{{ $shippingmethod->type }}]</span></td>
             <td>{{ $shippingmethod->alias }}</td>
             <td>{{ $shippingmethod->name }}</td>
+            <td>{{ $shippingmethod->billing_type_name }}</td>
+            <!-- td>{{ $shippingmethod->free_shipping_from }}</td -->
+            <td>{{ optional($shippingmethod->tax)->name ?: '-' }}</td>
             <td>{{ $shippingmethod->carrier ? $shippingmethod->carrier->name : '-' }}</td>
+            <!-- td>{{ $shippingmethod->class_name }}</td -->
 
             <td class="text-center">@if ($shippingmethod->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 
-			<td class="text-right">
+            <td class="text-center">@if ($shippingmethod->is_default) <i class="fa fa-check-square" style="color: #2780e3;"></i> @else <i class="fa fa-square-o" style="color: #2780e3;"></i> @endif</td>
+
+
+			<td class="text-right button-pad">
                 @if (  is_null($shippingmethod->deleted_at))
+                <a class="btn btn-sm btn-blue" href="{{ route('shippingmethods.shippingmethodrules.index', [$shippingmethod->id]) }}" title="{{l('Show Price Rules')}}"><i class="fa fa-folder-open-o"></i></a>
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('shippingmethods/' . $shippingmethod->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('shippingmethods/' . $shippingmethod->id ) }}" 

@@ -234,7 +234,9 @@ class AbccCustomerQuotationsController extends Controller {
 
 			$template_vars = array(
 //				'company'       => $company,
-				'document_num'   => $customerOrder->document_reference,
+				'customer'       => $customer,
+				'url' => route('customerquotations.edit', [$customerOrder->id]),
+				'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
 				'document_date'  => abi_date_short($customerOrder->document_date),
 				'document_total' => $customerOrder->as_money('total_tax_excl'),
 //				'custom_body'   => $request->input('email_body'),
@@ -245,12 +247,12 @@ class AbccCustomerQuotationsController extends Controller {
 				'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
 				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
 				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
-				'subject'  => l(' :_> New Customer Order #:num', ['num' => $template_vars['document_num']]),
+				'subject'  => l(' :_> New Customer Quotation #:num', ['num' => $template_vars['document_num']]),
 				);
 
 			
 
-			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_order', $template_vars, function($message) use ($data)
+			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_quotation', $template_vars, function($message) use ($data)
 			{
 				$message->from($data['from'], $data['fromName']);
 

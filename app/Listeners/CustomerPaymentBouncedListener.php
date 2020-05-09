@@ -27,25 +27,21 @@ class CustomerPaymentBouncedListener
     public function handle(CustomerPaymentBounced $event)
     {
         $payment = $event->payment;
+        $from_status = $event->from_status;
+
         $document = $payment->customerinvoice;
-/*
-        // Update Document
-        $document->open_balance -= $payment->amount;
 
-        if ( abs($document->open_balance) < 0.0001 )
+        if ( $from_status == 'paid' )   // Kind of "undo payment"
         {
-            $document->open_balance = 0.0;
-            $document->payment_status = 'paid';
+
+            // Update Document
+            $document->checkPaymentStatus();
+
+            // Update Customer Risk
+            $customer = $payment->customer;
+            $customer->addRisk($payment->amount);
         }
-        else
-            $document->payment_status = 'halfpaid';
 
-        $document->save();
-
-        // Update Customer Risk
-        $customer = $payment->customer;
-        $customer->removeRisk($payment->amount);
-*/
         // Update bankorder
         if ( $bankorder = $payment->bankorder )
             $bankorder->checkStatus();

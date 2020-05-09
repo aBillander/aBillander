@@ -33,7 +33,7 @@
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-right">{{ l('Items') }}</th>
-            <th class="text-right"">{{ l('Total') }}</th>
+            <th class="text-right">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes') }}</th>
             <th> </th>
         </tr>
@@ -45,7 +45,7 @@
                 @if ($order->document_id>0)
                     {{ $order->document_reference }}
                 @else
-                    <span class="label label-default" title="{{ l('Draft', 'layouts') }}">{{ l('Draft', 'layouts') }}</span>
+                    <span class="label label-default" title="{{ l('Draft', 'layouts') }}">{{ l('Draft') }}</span>
                 @endif
                 @if ( $order->notes_from_customer && mb_stripos( $order->notes_from_customer, 'quotation' ) !== false )
                     <br /><span class="label label-success" title="{{ l('Quotation') }}">{{ l('Quotation', 'layouts') }}</span>
@@ -54,11 +54,11 @@
             <td>{{ abi_date_short($order->document_date) }}</td>
             <td>{{ abi_date_short($order->delivery_date_real ?: $order->delivery_date) }}</td>
             <td>
-                @if ( $order->hasShippingAddress() || 1)
+                @if ( $order->hasShippingAddress() || 1 && 0)
 
 
 
-                {{ $order->shippingaddress->alias }} 
+                {{ optional($order->shippingaddress)->alias }} 
                  <a href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $order->shippingaddress->firstname }} {{ $order->shippingaddress->lastname }}<br />{{ $order->shippingaddress->address1 }}<br />{{ $order->shippingaddress->city }} - {{ $order->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $order->shippingaddress->phone }}</a>" data-original-title="" title="">
                         <i class="fa fa-address-card-o"></i>

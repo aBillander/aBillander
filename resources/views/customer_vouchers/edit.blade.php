@@ -23,7 +23,11 @@
 @elseif ( $action == 'bounce' )
           @include('customer_vouchers._form_bounce')
 @else
-          @include('customer_vouchers._form_edit')
+          @if ( $payment->status == 'pending' )
+              @include('customer_vouchers._form_edit')
+          @else
+              @include('customer_vouchers._form_edit_notes')
+          @endif
 @endif
 
 				{!! Form::close() !!}
@@ -32,7 +36,7 @@
 	</div>
 </div>
 
-@stop
+@endsection
 
 @section('styles')
 
@@ -40,7 +44,7 @@
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
-@stop
+@endsection
 
 @section('scripts')
 
@@ -63,13 +67,6 @@
 function checkFields() 
 {
 
-@if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
-
-  // No checks at all
-  return true;
-
-@else
-
   var amount = parseFloat($("#amount").val());
   var amount_initial = parseFloat($("#amount_initial").val());
 
@@ -80,6 +77,11 @@ function checkFields()
 
           $("#amount_next").val(0);
 
+// Check amount
+
+// Positive amount
+if ( amount_initial > 0 )
+{
    if ( (amount<0.0) || (amount > amount_initial) ) 
    {
       $("#amount_check").show();
@@ -96,8 +98,29 @@ function checkFields()
 
   //    }
    }
+} // Positive amount ENDS
 
-@endif
+
+// Negative amount
+if ( amount_initial < 0 )
+{
+   if ( (amount>0.0) || (amount < amount_initial) ) 
+   {
+      $("#amount_check").show();
+      return false;
+   } else {
+
+      if (amount > amount_initial) {
+          $("#amount_next").val(amount_initial - amount);
+          $("#voucher_next").show();
+
+      } // else {
+
+          return true;
+
+  //    }
+   }
+} // Negative amount ENDS
 
 }
 
@@ -154,4 +177,4 @@ function make_payment()
 </script>
 
 
-@stop
+@endsection

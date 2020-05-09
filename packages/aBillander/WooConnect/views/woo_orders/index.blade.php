@@ -137,6 +137,19 @@
                         <i class="fa fa-address-card-o"></i>
                     </button>
                  </a>
+
+@php
+
+$has_shipping = \aBillander\WooConnect\WooOrder::getShippingAddressId( $order ) != 
+                \aBillander\WooConnect\WooOrder::getBillingAddressId( $order );
+
+@endphp
+
+@if ( $has_shipping )
+
+  <a href="javascript:void(0);" class="btn btn-danger btn-xs" title="{{ l('Shipping Address is different from Billing Address!') }}"><i class="fa fa-warning"></i></a>
+
+@endif
       
 {{--
           {{ $order["billing"]["first_name"].' '.$order["billing"]["last_name"] }}<br />
@@ -174,16 +187,13 @@
 			<td class="text-right" style="width:1px; white-space: nowrap;">
 
                 <a class='open-AddBookDialog btn btn-sm btn-warning' href="{{ URL::route('worders.update', [$order["id"]] + $query ) }}" data-target='#myModalOrder' data-id="{{ $order["id"] }}" data-status="{{ $order["status"] }}" data-statusname="{{ \aBillander\WooConnect\WooConnector::getOrderStatusName( $order["status"] ) }}" data-toggle="modal" onClick="return false;" title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>
-                        
-@if (config('app.url') =='http://localhost/enatural')
 
-                <a class="btn btn-sm btn-info" href="{{ URL::route('worders.fetch', [$order["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}"><i class="fa fa-superpowers"></i></a>
-@endif
+                <a class="btn btn-sm btn-blue" href="{{ URL::route('worders.fetch', [$order["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}"><i class="fa fa-eyedropper"></i></a>
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to('wooc/worders/' . $order["id"]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
       
       @if ( $order["imported_at"] )
-                <a class="btn btn-sm btn-lightblue" href="{{ URL::route('customerorders.edit', [$order["abi_order_id"]] ) }}" title="aBillander :: {{l('Show', [], 'layouts')}}"><i class="fa fa-file-text-o"></i></a>
+                <a class="btn btn-sm btn-info" href="{{ URL::route('customerorders.edit', [$order["abi_order_id"]] ) }}" title="{{l('Go to Customer Order')}}"><i class="fa fa-file-text-o"></i></a>
       @else
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('worders.import', [$order["id"]] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
       @endif

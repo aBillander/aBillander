@@ -95,6 +95,27 @@ class CustomerInvoice extends Billable
     }
 
 
+    public function getPaymentDateAttribute()
+    {
+        $payments = $this->payments;
+
+        if ( $payments->where('status', 'uncollectible')->count() > 0 ) return null;
+
+        if ( $payments->where('status', 'pending')->count() > 0 ) return null;
+
+        return $payments->where('status', 'paid')->max('payment_date');
+    }
+
+
+    public function getNextPaymentAttribute()
+    {
+        $payments = $this->payments;
+
+        return $payments->where('status', 'pending')->sortBy('due_date')->first();
+
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Methods

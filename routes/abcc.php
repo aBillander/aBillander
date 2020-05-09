@@ -33,7 +33,7 @@ RewriteRule ^blog/$ http://blog.website.com [L,NC,R=301]
 
 /* */
 
-Route::group(['prefix' => 'abcc'], function ()
+Route::group(['prefix' => 'abcc', 'middleware' => ['guestcontext']], function ()
 // Route::group(['domain' => env('ABCC_DOMAIN'), 'prefix' => 'abcc'], function ()
 {
     Route::get('/login', 'Auth\CustomerLoginController@showLoginForm')->name('customer.login');
@@ -125,6 +125,10 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
         Route::post('cart/updateline',  'AbccCustomerCartController@updateLineQuantity'    )->name('abcc.cart.updateline');
         Route::get('/cart/getlines',  'AbccCustomerCartController@getCartLines' )->name('abcc.cart.getlines');
         Route::post('cart/deleteline/{lid}',  'AbccCustomerCartController@deleteCartLine'  )->name('cart.deleteline');
+        Route::post('cart/shippingaddress',  'AbccCustomerCartController@updateShippingAddress'  )->name('abcc.cart.shippingaddress.store');
+
+        Route::post('cart/sortlines', 'AbccCustomerCartController@sortLines')->name('abcc.cart.sortlines');
+
 
 
         Route::get( '/account/edit', 'AbccCustomerUserController@edit'  )->name('abcc.account.edit'  );

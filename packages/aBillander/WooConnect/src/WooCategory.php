@@ -62,7 +62,7 @@ class WooCategory // extends Model
             }
 
             if (!$this->data) {
-                $this->error[] = 'Se ha intentado recuperar la Categoría <b>"'.$sku.'"</b> y no existe.';
+                $this->error[] = 'Se ha intentado recuperar la Categoría <b>"'.$id.'"</b> y no existe.';
                 $this->run_status = false;
             }
 

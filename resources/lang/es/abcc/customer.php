@@ -29,7 +29,7 @@ return [
 
 	'Price Rules - Create' => 'Regla de Precio - Crear',
 	'New Price Rule' => 'Nueva Regla de Precio',
-	'Price Rules take precedence over Price Lists.' => 'Las Regals de Precio tienen prioridad sobre las Tarifas',
+	'Price Rules take precedence over Price Lists.' => 'Las Reglas de Precio tienen prioridad sobre las Tarifas',
 	'Date from' => 'Fecha desde',
 	'Date to' => 'Fecha hasta',
 	'Customer'     => 'Cliente',
@@ -64,9 +64,22 @@ return [
 
 	
 	'Customer Price Rules'     => 'Precios Especiales',
+	'Extra Items' => 'Unidades sin Coste',
 	''     => '',
 	''     => '',
 	''     => '',
 	''     => '',
+
+	'Price by Product' => 'Precio por Producto',
+	'Free Units Promotion' => 'Promoción Unidades sin Coste',
+	'Price by Package' => 'Precio por Caja',
+
+	'Description' => 'Descripción',
+	'Quantity' => 'Cantidad',
+	'Free Quantity' => 'Cantidad sin Coste',
+	'Package' => 'Caja',
+	'Price per Package' => 'Precio por Caja',
+	'Unit Price' => 'Precio Unitario',
+
 
 ];

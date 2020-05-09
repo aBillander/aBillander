@@ -259,6 +259,8 @@ class ImportCustomersController extends Controller
                 $logger->log("WARNING", "Modo SIMULACION. Se mostrarán errores, pero no se cargará nada en la base de datos.");
 
             $i = 0;
+            $i_created = 0;
+            $i_updated = 0;
             $i_ok = 0;
             $max_id = 2000;
 
@@ -302,6 +304,82 @@ class ImportCustomersController extends Controller
                         // if ( Customer::check_spanish_nif_cif_nie( $data['identification'] ) <= 0 )
                         //    $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'identification' es inválido. ".$data['identification']);
                     }
+
+                    $data['sales_equalization'] = (int) $data['sales_equalization'] > 0 ? 1 : 0;
+
+                    $data['allow_login'] = (int) $data['allow_login'] > 0 ? 1 : 0;
+
+                    $data['blocked'] = (int) $data['blocked'] > 0 ? 1 : 0;
+
+
+                    // Precedence
+                    if ( $data['reference_external'] )
+                    {
+                        if ( isset( $data['id'] ) )
+                             unset( $data['id'] );
+                    }
+
+
+
+                    // Check related tables
+                    // 'customer_group_id',   'price_list_id',    'payment_method_id',    'shipping_method_id'
+
+                    if ( $data['customer_group_id'] )
+                    {
+                        if ( !\App\CustomerGroup::where('id', $data['customer_group_id'])->exists() )
+                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'customer_group_id' no existe. ".$data['customer_group_id']);
+                    }
+
+                    if ( $data['price_list_id'] )
+                    {
+                        if ( !\App\PriceList::where('id', $data['price_list_id'])->exists() )
+                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'price_list_id' no existe. ".$data['price_list_id']);
+                    }
+
+                    if ( $data['payment_method_id'] )
+                    {
+                        if ( !\App\PaymentMethod::where('id', $data['payment_method_id'])->exists() )
+                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'payment_method_id' no existe. ".$data['payment_method_id']);
+                    }
+
+                    if ( $data['shipping_method_id'] )
+                    {
+                        if ( !\App\ShippingMethod::where('id', $data['shipping_method_id'])->exists() )
+                            $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'shipping_method_id' no existe. ".$data['shipping_method_id']);
+                    }
+
+
+                    $data['notes'] = $data['notes'] ?? '';
+
+                    if ( 0 && $data['phone'] )
+                    {
+                            $phone = str_replace([' '], '', $data['phone']);
+
+                            if ( strlen( $phone ) > 32 )
+                            {
+                                $data['notes'] = $data['phone'] * "\n" + $data['notes'];
+                                $data['phone'] = substr($phone, 0, 9);
+
+                            } else {
+                                $data['phone'] = $phone;
+
+                            }
+                    }
+
+                    if ( 0 && $data['phone_mobile'] )
+                    {
+                            $phone = str_replace([' '], '', $data['phone_mobile']);
+
+                            if ( strlen( $phone ) > 32 )
+                            {
+                                $data['notes'] = $data['phone_mobile'] * "\n" + $data['notes'];
+                                $data['phone_mobile'] = substr($phone, 0, 9);
+
+                            } else {
+                                $data['phone_mobile'] = $phone;
+
+                            }
+                    }
 /*
                     $data['reference_external'] = intval( $data['reference_external'] );
                     $data['id'] = $data['reference_external'];
@@ -311,12 +389,11 @@ class ImportCustomersController extends Controller
                     }
 */
                     // 'webshop_id'
-                    $data['webshop_id'] = '';
-                    $reference_external = intval( $data['reference_external'] );
-                    if ( $reference_external > 50000 ) 
-                        $data['webshop_id'] = $reference_external - 50000;
+//                    $data['webshop_id'] = '';
+//                    $reference_external = intval( $data['reference_external'] );
+//                    if ( $reference_external > 50000 ) 
+//                        $data['webshop_id'] = $reference_external - 50000;
 
-                    $data['notes'] = $data['notes'] ?? '';
 
                     if ( strlen( $data['address1'] ) > 128 )
                     {
@@ -408,7 +485,7 @@ if ($country) {
 
                     $data['alias'] = l('Main Address', [],'addresses');
 
-                    $data['outstanding_amount_allowed'] = \App\Configuration::get('DEF_OUTSTANDING_AMOUNT');
+                    $data['outstanding_amount_allowed'] = $data['outstanding_amount_allowed'] ?? \App\Configuration::get('DEF_OUTSTANDING_AMOUNT');
 
 
                     if ( $data['notes'] )
@@ -425,6 +502,63 @@ if ($country) {
 
                     \DB::beginTransaction();
                     try {
+
+                        $customer = $this->customer->where( 'reference_external', $data['reference_external'] )
+                                                    ->with('address')
+                                                    ->first();
+
+                        if ( !($params['simulate'] > 0) && $customer ) 
+                        {
+
+                            $logger->log("INFO", "El Cliente ".$data['reference_external'] ." existe y se actualizará");
+
+                            $address = $customer->address;
+
+                            $customer->update( $data );
+
+                            unset( $data['webshop_id'] );       // Address has a 'webshop_id' field
+
+                            if ( $address )
+                            {
+
+                                $address->fill($data);
+                                $address->save();
+
+                            } else {
+
+                                $address = $this->address->create($data);
+                                $customer->addresses()->save($address);
+
+                                $customer->update(['invoicing_address_id' => $address->id, 'shipping_address_id' => $address->id]);
+                                
+                            }
+
+
+
+
+/*      Old implementation, update some fields only
+
+                            $fields = [
+                                'sales_equalization',  'customer_group_id',   'price_list_id',    'payment_method_id',    'shipping_method_id',  'outstanding_amount_allowed',  'allow_login', 'blocked', 'email'
+                            ];
+
+                            $mini_data = [];
+
+                            foreach ($fields as $field) {
+                                # code...
+                                 $mini_data[$field] =  $data[$field];
+                            }
+
+                            $mini_data['blocked'] =  (int) $mini_data['blocked'];
+
+                            $customer->update( $mini_data );
+*/
+                            // $logger->log("INFO", "El Cliente ".$data['reference_external'] ." se ha actualizado (".$customer->id.")");
+
+                            $i_updated++;
+
+                        } else
+
                         if ( !($params['simulate'] > 0) ) 
                         {
                             // Create Customer
@@ -437,9 +571,18 @@ if ($country) {
                             else unset( $customer->id );
                             $customer->save();
 */
-                            $customer = $this->customer->updateOrCreate( [ 
-                                'reference_external' => $data['reference_external'] 
-                            ], $data );
+
+                            if ( !$customer )
+
+                            $customer = $this->customer->create( $data );
+                            // $customer = $this->customer->updateOrCreate( [ 
+                            //     'reference_external' => $data['reference_external'] 
+                            // ], $data );
+
+                            // else
+
+                            // $customer->update( $data );
+
 
                             // $logger->log("TIMER", " Se ha creado el Cliente: ".$item." - " . $customer->id);
 
@@ -461,6 +604,17 @@ if ($country) {
                                 $customer->update(['invoicing_address_id' => $address->id, 'shipping_address_id' => $address->id]);
                                 
                             }
+
+                            $logger->log("INFO", "El Cliente ".$data['reference_external'] ." se ha creado (".$customer->id.")");
+
+                            $i_created++;
+
+                        } else {
+
+                            if ( !$customer )
+
+                            $logger->log("INFO", "El Cliente ".$data['reference_external'] ." no existe y debe crearse");
+
                         }
 
                         $i_ok++;
@@ -494,6 +648,10 @@ if ($country) {
                 // No data in file
                 $logger->log('WARNING', 'No se encontraton datos de Clientes en el fichero.');
             }
+
+            $logger->log('INFO', 'Se han creado {i} Clientes.', ['i' => $i_created]);
+
+            $logger->log('INFO', 'Se han actualizado {i} Clientes.', ['i' => $i_updated]);
 
             $logger->log('INFO', 'Se han creado / actualizado {i} Clientes.', ['i' => $i_ok]);
 
@@ -531,7 +689,7 @@ if ($country) {
         $data = [];  
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'reference_external', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
+        $headers = [ 'id', 'reference_external', 'webshop_id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
                     'customer_group_id', 'CUSTOMER_GROUP_NAME', 'price_list_id', 'PRICE_LIST_NAME', 
                     'payment_method_id', 'PAYMENT_METHOD_NAME', 'shipping_method_id', 'SHIPPING_METHOD_NAME', 
                     'outstanding_amount_allowed', 'notes', 'allow_login', 'blocked', 'active', 

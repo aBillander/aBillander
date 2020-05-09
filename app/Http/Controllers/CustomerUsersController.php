@@ -73,6 +73,10 @@ class CustomerUsersController extends Controller
         // https://itsolutionstuff.com/post/laravel-5-ajax-request-validation-exampleexample.html
         // https://www.youtube.com/watch?v=3mYs2rTjg1s
 
+        $def_lang = $customer->language_id > 0 ? $customer->language_id : Configuration::get('DEF_LANGUAGE');
+        $language_id = $request->input('language_id', $def_lang) > 0 ? $request->input('language_id', $def_lang) : $def_lang;
+        $request->merge( ['language_id' => $language_id] );
+
         /// $this->validate($request, CustomerUser::$rules);
         $validator = Validator::make($request->all(), CustomerUser::$rules);
 
@@ -89,7 +93,7 @@ class CustomerUsersController extends Controller
         $password = \Hash::make($request->input('password'));
         $request->merge( ['password' => $password] );
         
-        $request->merge( ['language_id' => $request->input('language_id', $customer->language_id)] );
+        // $request->merge( ['language_id' => $request->input('language_id', $customer->language_id)] );
 
         if (
                 $request->input('enable_min_order') || 
@@ -281,8 +285,14 @@ class CustomerUsersController extends Controller
     {
         
         \Auth()->guard('customer')->loginUsingId($id);
+        
+        // Redirect to their intended location
+        if ( Configuration::get('ABCC_LOGIN_REDIRECT') && \Route::has(Configuration::get('ABCC_LOGIN_REDIRECT')) )
+          return redirect()->route( Configuration::get('ABCC_LOGIN_REDIRECT') );
+        else
+          return redirect()->route('customer.dashboard');
 
-        return redirect()->route('customer.dashboard');
+        // return redirect()->route('customer.dashboard');
     }
 
 

@@ -29,26 +29,34 @@ class ShippingMethodsController extends Controller {
 	public function index()
 	{
 		$shippingmethods = $this->shippingmethod
-						->with('carrier')
+						->with('tax')
 						->orderBy('carrier_id', 'asc')
 						->orderBy('name', 'asc')
 						->get();
 
-        return view('shipping_methods.index', compact('shippingmethods'));
+		$system_default = ShippingMethod::getSystemDefault();
+
+        return view('shipping_methods.index', compact('shippingmethods', 'system_default'));
 	}
 
 	/**
 	 * Show the form for creating a new resource.
 	 * GET /shippingmethods/create
 	 *
-	 * @return Response
+	 * @return Response->with('info', )
 	 */
 	public function create()
 	{
 		$shippingmethod = $this->shippingmethod;
 		$shippingmethod->carrier_id = null;
+		$shippingmethod->free_shipping_from = 0.0;
+		$shippingmethod->class_name = 'App\ShippingMethods\\';
 
-		return view('shipping_methods.create', compact('shippingmethod'));
+		$billing_typeList = ShippingMethod::getBillingTypeList();
+
+		$taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+		return view('shipping_methods.create', compact('shippingmethod', 'billing_typeList', 'taxList'));
 	}
 
 	/**
@@ -93,8 +101,12 @@ class ShippingMethodsController extends Controller {
 	public function edit($id)
 	{
 		$shippingmethod = $this->shippingmethod->findOrFail($id);
+
+		$billing_typeList = ShippingMethod::getBillingTypeList();
+
+		$taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 		
-		return view('shipping_methods.edit', compact('shippingmethod'));
+		return view('shipping_methods.edit', compact('shippingmethod', 'billing_typeList', 'taxList'));
 	}
 
 	/**

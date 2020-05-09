@@ -94,15 +94,21 @@ class AbccCustomerUserController extends Controller
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
 
+        // abi_r($customer_user->id);die();
+
+
+        $vrules = CustomerUser::$rules;
+
+        if ( isset($vrules['email']) ) $vrules['email'] .= ','. $customer_user->id.',id';  // Unique
 
 		if ( $request->input('password') != '' ) {
-			$this->validate( $request, CustomerUser::$rules );
+			$this->validate( $request, $vrules );
 
 			$password = \Hash::make($request->input('password'));
 			$request->merge( ['password' => $password] );
 			$customer_user->update($request->all());
 		} else {
-			$this->validate($request, array_except( CustomerUser::$rules, array('password')) );
+			$this->validate($request, array_except( $vrules, array('password')) );
 			$customer_user->update($request->except(['password']));
 		}
 /*

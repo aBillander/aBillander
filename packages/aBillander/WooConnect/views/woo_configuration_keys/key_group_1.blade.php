@@ -27,7 +27,7 @@
                <div class="panel-body well">
 
 
-{!! Form::open(array('url' => 'wooc/wooconnect/wooconfigurationkeys', 'id' => 'key_group_'.intval($tab_index), 'name' => 'key_group_'.intval($tab_index), 'class' => 'form-horizontal')) !!}
+{!! Form::open(array('url' => 'wooc/wooconnect/configurationkeys', 'id' => 'key_group_'.intval($tab_index), 'name' => 'key_group_'.intval($tab_index), 'class' => 'form-horizontal')) !!}
 
 
   {!! Form::hidden('tab_index', $tab_index, array('id' => 'tab_index')) !!}
@@ -151,6 +151,20 @@
         <div class="col-lg-4"> </div>
         </div>
         <span class="help-block">{!! l('WOOC_DEF_CUSTOMER_PRICE_LIST.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('WOOC_DEF_WAREHOUSE') ? 'has-error' : '' }}">
+      <label for="WOOC_DEF_WAREHOUSE" class="col-lg-4 control-label">{!! l('WOOC_DEF_WAREHOUSE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('WOOC_DEF_WAREHOUSE', $warehouseList, old('WOOC_DEF_WAREHOUSE', $key_group['WOOC_DEF_WAREHOUSE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('WOOC_DEF_WAREHOUSE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('WOOC_DEF_WAREHOUSE.help') !!}</span>
       </div>
     </div>
 

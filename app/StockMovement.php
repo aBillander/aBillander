@@ -16,12 +16,14 @@ class StockMovement extends Model {
     use ViewFormatterTrait;
 //    use SoftDeletes;
 
+    protected $table = 'stock_movements';
+
     protected $price_in;        // Movement Price in Company Currency (for average price calculations)
 
     protected $dates = ['date', 'deleted_at'];
 
     protected $fillable = [ 'date', 'document_reference', 
-                            'price', 'price_currency', 'currency_id', 'conversion_rate', 'quantity', 
+                            'price', 'price_currency', 'currency_id', 'conversion_rate', 'quantity', 'measure_unit_id', 
                             'notes',
                             'product_id', 'combination_id', 'reference', 'name', 'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id',
 
@@ -55,9 +57,10 @@ class StockMovement extends Model {
                     ),
             '20' => array(
                     'date' => 'required',
-                    'price' => 'required|min:0|not_in:0',
+                    'price' => 'required|numeric|min:0|not_in:0',
                     'currency_id' => 'exists:currencies,id',
-                    'quantity' => 'required',                   //|not_in:0',
+                    'quantity' => 'required|numeric',                   //|not_in:0',
+                    'conversion_rate' => 'required|numeric|min:0',
                     'product_id' => 'exists:products,id',
 //                    'combination_id' => 'sometimes|exists:combinations,id',       // In fact, combination_id is CALCULATED in Controller
                     'warehouse_id' => 'exists:warehouses,id',
@@ -67,7 +70,8 @@ class StockMovement extends Model {
                     'date' => 'required',
                     'price' => 'required|min:0|not_in:0',
                     'currency_id' => 'exists:currencies,id',
-                    'quantity' => 'required',                   //|not_in:0',
+                    'quantity' => 'required|numeric',                   //|not_in:0',
+                    'conversion_rate' => 'required|numeric|min:0',
                     'product_id' => 'exists:products,id',
                     'combination_id' => 'sometimes|exists:combinations,id',
                     'warehouse_id' => 'exists:warehouses,id',
@@ -77,7 +81,8 @@ class StockMovement extends Model {
                     'date' => 'required',
                     'price' => 'required|min:0|not_in:0',
                     'currency_id' => 'exists:currencies,id',
-                    'quantity' => 'required',                   //|not_in:0',
+                    'quantity' => 'required|numeric',                   //|not_in:0',
+                    'conversion_rate' => 'required|numeric|min:0',
                     'product_id' => 'exists:products,id',
                     'combination_id' => 'sometimes|exists:combinations,id',
                     'warehouse_id' => 'exists:warehouses,id',
@@ -87,7 +92,8 @@ class StockMovement extends Model {
                     'date' => 'required',
                     'price' => 'required|min:0|not_in:0',
                     'currency_id' => 'exists:currencies,id',
-                    'quantity' => 'required',                   //|not_in:0',
+                    'quantity' => 'required|numeric',                   //|not_in:0',
+                    'conversion_rate' => 'required|numeric|min:0',
                     'product_id' => 'exists:products,id',
                     'combination_id' => 'sometimes|exists:combinations,id',
                     'warehouse_id' => 'exists:warehouses,id',
@@ -205,7 +211,7 @@ class StockMovement extends Model {
 
     const INITIAL_STOCK        = 10;
     const ADJUSTMENT           = 12;
-	const PURCHASE_ORDER       = 20;
+	const PURCHASE_ORDER       = 20;          // 'App\\Services\\' . studly_case($user_selection) . 'Report';
 	const PURCHASE_RETURN      = 21;
 	const SALE_ORDER           = 30;
 	const SALE_RETURN          = 31;
@@ -234,6 +240,46 @@ class StockMovement extends Model {
         );
 
         return $list;
+    }
+    
+    public static function getClassByType( $type )
+    {
+        switch ( $type ) {
+            case self::PURCHASE_ORDER:
+                # code...
+            return '\\App\\StockMovements\\PurchaseOrderStockMovement';
+                break;
+            
+            case self::MANUFACTURING_INPUT:
+                # code...
+            return '\\App\\StockMovements\\ManufacturingInputStockMovement';
+                break;
+            
+            case self::MANUFACTURING_OUTPUT:
+                # code...
+            return '\\App\\StockMovements\\ManufacturingOutputStockMovement';
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        $list = array(
+
+            self::INITIAL_STOCK,
+            self::ADJUSTMENT,
+            self::PURCHASE_ORDER,
+            self::PURCHASE_RETURN,
+            self::SALE_ORDER,
+            self::SALE_RETURN,
+            self::TRANSFER_OUT,
+            self::TRANSFER_IN,
+            self::MANUFACTURING_INPUT,
+            self::MANUFACTURING_RETURN,
+            self::MANUFACTURING_OUTPUT,
+
+        );
     }
     
     public static function stockmovementList()
@@ -296,9 +342,13 @@ class StockMovement extends Model {
 
 
             // Last segment
-            $str = substr( $segments[0], 0, -strlen('Line') );
+            // $str = substr( $segments[0], 0, -strlen('Line') );
+            // Better approach:
+            $str = substr( $segments[0], 0, strpos($segments[0], "Line") );
 
-            return $segment = str_plural(strtolower($str));
+            $segment = strtolower($str);
+
+            return str_plural($segment);
     }
     
     
@@ -332,7 +382,15 @@ class StockMovement extends Model {
         // Start transaction!
         \DB::beginTransaction();
 
-        $movement = StockMovement::create( $data );
+        // https://laracasts.com/discuss/channels/general-discussion/multiple-services-implementing-same-interface-switching-at-runtime
+        if ( in_array($movement_type_id, [20, 50, 55]) )
+        {
+            $class = self::getClassByType( $movement_type_id );
+            $movement = new $class;
+            $movement->fill( $data );
+        }
+        else
+            $movement = StockMovement::create( $data );
 
         try {
 
@@ -402,10 +460,51 @@ class StockMovement extends Model {
 
         // Product & Combination;
         // Update Combination
-        $this->load(['product', 'combination']);
+        $this->load(['product', 'combination', 'warehouse']);
         
         $method = 'process_'.$this->movement_type_id;
         return $this->{$method}();
+    }
+
+    public function prepareToProcess()
+    {
+        // throw new \App\Exceptions\StockMovementException('Something Went Wrong => pedo!');
+
+
+        // Product & Combination;
+        // Update Combination
+        $this->load(['product', 'combination']);
+
+        // Deal with measure Units (if needed) Maybe check measure Unit in Controller??
+        if ( $this->measure_unit_id <= 0 ) $this->measure_unit_id = $this->product->measure_unit_id;
+
+
+        // Deal with currency (enough to append sensible default currency, if not set)
+        if ( !($currency = \App\Currency::find($this->currency_id)) )
+        {
+            $currency = \App\Context::getContext()->company->currency;
+
+            $this->currency_id     = $currency->id;
+            $this->conversion_rate = $currency->conversion_rate;
+
+            // $this->price_currency = $this->price;
+        }
+
+        if ( $this->currency_id == \App\Context::getContext()->company->currency->id )
+        {
+            $this->conversion_rate = \App\Context::getContext()->company->currency->conversion_rate;
+
+            // $this->price_currency = $this->price;
+        }
+        // else {
+            // Asume Currency vars (currency_id and conversion_rate) are set:
+            $this->price = $this->price_currency / $this->conversion_rate;
+        // }
+
+
+        // Deal with Warehouse
+        if ( $this->warehouse_id <= 0 ) $this->warehouse_id = Configuration::getInt('DEF_WAREHOUSE');
+
     }
 
     public function process_stock()
@@ -1271,6 +1370,11 @@ class StockMovement extends Model {
     {
         return $this->morphTo();
     }
+
+    public function measureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+    }
     
 
     public function product()
@@ -1345,6 +1449,11 @@ class StockMovement extends Model {
         if ( isset($params['warehouse_id']) && $params['warehouse_id'] > 0 )
         {
             $query->where('warehouse_id', '=', $params['warehouse_id']);
+        }
+
+        if ( isset($params['movement_type_id']) && $params['movement_type_id'] > 0 )
+        {
+            $query->where('movement_type_id', '=', $params['movement_type_id']);
         }
 
         return $query;

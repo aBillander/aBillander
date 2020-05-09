@@ -10,7 +10,7 @@
 {{--
         <a href="{{ URL::to('customerorders/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
-
+{ {-- --} }
         <a href="{{ route('chart.customerorders.monthly') }}" class="btn btn-sm btn-warning" 
                 title="{{l('Reports', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'layouts')}}</a>
 --}}
@@ -33,7 +33,7 @@
             <th class="text-left">{{ l('Valid until') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-right">{{ l('Items') }}</th>
-            <th class="text-right"">{{ l('Total') }}</th>
+            <th class="text-right">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes') }}</th>
             <th> </th>
         </tr>
@@ -54,7 +54,7 @@
             <td>{{ abi_date_short($order->document_date) }}</td>
             <td>{{ abi_date_short($order->valid_until_date) }}</td>
             <td>
-                @if ( $order->hasShippingAddress() || 1)
+                @if ( $order->hasShippingAddress() || 0)
 
 
 

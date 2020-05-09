@@ -17,6 +17,9 @@ class SepaDirectDebit extends Model
 
     use ViewFormatterTrait;
 
+    protected $error_code    =  0;
+    protected $error_message = '';
+
     public static $schemes = [
             'CORE',
             'B2B',
@@ -33,7 +36,7 @@ class SepaDirectDebit extends Model
     protected $fillable = [ 'sequence_id', 'iban', 'swift', 'creditorid', 
                             'currency_iso_code', 'currency_conversion_rate', 
 
-                            'scheme', 'status', 'onhold', 'group_vouchers', 'notes',
+                            'scheme', 'status', 'onhold', 'group_vouchers', 'discount_dd', 'notes',
 
                             'document_date', 'validation_date', 'payment_date', 'posted_at',
 
@@ -57,7 +60,8 @@ class SepaDirectDebit extends Model
 
     public function updateTotal()
     {
-         $total = $this->vouchers()->where('status', '<>', 'bounced')->sum('amount');
+         // $total = $this->vouchers()->where('status', '<>', 'bounced')->sum('amount');
+         $total = $this->vouchers()->sum('amount');
 
          return $this->update( ['total' => $total] );
     }
@@ -73,7 +77,7 @@ class SepaDirectDebit extends Model
     {
             $list = [];
             foreach (static::$schemes as $scheme) {
-                $list[$scheme] = l(get_called_class().'.'.$scheme);
+                $list[$scheme] = l(get_called_class().'.'.$scheme, 'sepasp');
             }
 
             return $list;
@@ -81,7 +85,7 @@ class SepaDirectDebit extends Model
 
     public static function getSchemeName( $scheme )
     {
-            return l(get_called_class().'.'.$scheme);
+            return l(get_called_class().'.'.$scheme, 'sepasp');
     }
 
 
@@ -89,7 +93,7 @@ class SepaDirectDebit extends Model
     {
             $list = [];
             foreach (static::$statuses as $status) {
-                $list[$status] = l(get_called_class().'.'.$status);
+                $list[$status] = l(get_called_class().'.'.$status, 'sepasp');
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -98,12 +102,12 @@ class SepaDirectDebit extends Model
 
     public static function getStatusName( $status )
     {
-            return l(get_called_class().'.'.$status);
+            return l(get_called_class().'.'.$status, 'sepasp');
     }
 
     public function getStatusNameAttribute()
     {
-            return l(get_called_class().'.'.$this->status);
+            return l(get_called_class().'.'.$this->status, 'sepasp');
     }
 
     public function checkStatus()
@@ -220,6 +224,9 @@ class SepaDirectDebit extends Model
         // generate a SepaDirectDebit object (pain.008.001.02).
         $paymentInfoId = \App\Context::getContext()->company->identification . '_' . $this->document_reference;
 
+        if ( $this->discount_dd > 0 )
+            $paymentInfoId = 'FSDD' . $paymentInfoId;
+
         /**
          * normal direct debit : LOCAL_INSTRUMENT_CORE_DIRECT_DEBIT = 'CORE';
          * urgent direct debit : LOCAL_INSTRUMENT_CORE_DIRECT_DEBIT_D_1 = 'COR1';
@@ -254,7 +261,14 @@ class SepaDirectDebit extends Model
 
         // Maybe a waste of time? Lets see:
         if ( $collectables->count() == 0 )
+        {
+            $code = 10;
+            $message = 'No se han encontrado recibos pendientes de pago';
+
+            $this->setError($code, $message);
+
             return false;
+        }
         
         // Let's do some sorting
         $collectables = $collectables->groupBy(function ($item, $key) {
@@ -337,7 +351,25 @@ class SepaDirectDebit extends Model
 
                 // Maybe a waste of time? Lets see:
                 if ( !optional($voucher->customer)->bankaccount )
+                {
+                    $code = 20;
+                    $message = 'El Cliente ['.$voucher->customer->id.'] '.$voucher->customer->name_fiscal.' no tiene cuenta bancaria asociada';
+
+                    $this->setError($code, $message);
+
                     return false;
+                }
+
+
+                if ( $voucher->amount <= 0.0 )
+                {
+                    $code = 20;
+                    $message = 'El subtotal para el Cliente ['.$voucher->customer->id.'] '.$voucher->customer->name_fiscal.' es negativo';
+
+                    $this->setError($code, $message);
+
+                    return false;
+                }
 
 
 
@@ -542,5 +574,22 @@ class SepaDirectDebit extends Model
         }
 
         return $iban;
+    }
+
+
+/* *********************************************************************************************** */
+
+    private function setError($code, $message)
+    {
+        $this->error_code    = $code;
+        $this->error_message = $message;
+    }
+
+
+    public function getErrorMessage()
+    {
+        $message = $this->error_message ?? 'Unknown';
+
+        return  $message;
     }
 }

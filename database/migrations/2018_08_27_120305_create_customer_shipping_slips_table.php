@@ -23,11 +23,15 @@ class CreateCustomerShippingSlipsTable extends Migration
 
             $table->string('shipment_status', 32)->nullable(false)->default('pending');
 
+            $table->string('shipment_service_type_tag', 32)->nullable();
+
             $table->date('invoiced_at')->nullable();
 
             $table->date('printed_at')->nullable();                             // Printed at
             $table->date('edocument_sent_at')->nullable();                      // Electronic document sent at
             $table->date('customer_viewed_at')->nullable();                     // Customer retrieved invoice from online customer center
+
+            $table->integer('production_sheet_id')->unsigned()->nullable();
 
 
             $table->tinyInteger('prices_entered_with_tax')->default(0);         // See: PRICES_ENTERED_WITH_TAX; Maybe not needed here (stored for every invoice)

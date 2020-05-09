@@ -95,9 +95,23 @@ border-left:1px solid #e95420;">
                      {!! $errors->first('description', '<span class="help-block">:message</span>') !!}
                   </div>
                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
+                  <div class="row">
+                  <div class="form-group col-lg-12 col-md-12 col-sm-12">
                     {{ l('Category') }}
                     {!! Form::select('category_id', array('0' => l('-- Please, select --', [], 'layouts')) + $categoryList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('category_id', '<span class="help-block">:message</span>') !!}
+                  </div>
+                  </div>
+                  <div class="row">
+                  <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                    {{ l('Position') }}
+                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                                data-content="{{ l('Use multiples of 10. Use other values to interpolate.') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                             </a>
+                    {!! Form::text('position', null, array('class' => 'form-control')) !!}
+                  </div>
+                  </div>
                  </div>
         </div>
 

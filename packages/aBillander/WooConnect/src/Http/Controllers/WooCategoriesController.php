@@ -13,14 +13,15 @@ use Illuminate\Http\Request;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-use \App\Category;
-use \aBillander\WooConnect\WooCategory;
+use App\Category;
+use aBillander\WooConnect\WooCategory;
 
 class WooCategoriesController extends Controller 
 {
 
 
    protected $category;
+   protected $abi_category;
 
    public function __construct(WooCategory $category, Category $abi_category)
    {
@@ -138,7 +139,11 @@ class WooCategoriesController extends Controller
 
 		// abi_r($categories);die();
 
-        return view('woo_connect::woo_categories.index', compact('categories', 'abi_categories', 'query'));
+		$categoryList = \App\Category::getcategoryList();
+
+		// abi_r($categoryList, true);
+
+        return view('woo_connect::woo_categories.index', compact('categories', 'abi_categories', 'query', 'categoryList'));
 	}
 
 	/**
@@ -160,7 +165,42 @@ class WooCategoriesController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		//
+		$abi_category = $this->abi_category
+									->with('parent')
+									->findOrFail($request->input('abi_category_id', 0));
+
+		// abi_r($abi_category);die();
+
+		$data = [
+		    'name' => $abi_category->name,
+		    'slug' => '',
+		    'parent' => $abi_category->parent ? (int) $abi_category->parent->webshop_id : 0,
+		    'description' => $abi_category->description,		// HTML
+		    'display' => 'default',		//  Options: default, products, subcategories and both. Default is default.
+		    'image' => [
+		    		'src' => '',		// Image URL.
+		    		'name' => '',
+		    		'alt' => ''
+		    ],
+		    'menu_order' => 0,
+		];
+
+		// https://rudrastyh.com/woocommerce/rest-api-create-update-remove-products.html#remove_product
+		// $result = WooCommerce::delete('products/categories/'.$abi_category->webshop_id, ['force' => true]);
+
+		unset($data['slug']);
+		unset($data['image']);
+		unset($data['menu_order']);
+
+		// abi_r($data);die();
+
+		$result = WooCommerce::post('products/categories', $data);
+
+		$abi_category->update(['webshop_id' => $result['id']]);
+
+		
+		return redirect()->to(url()->previous() . '#internet')
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $result['id']], 'layouts') );
 	}
 
 	/**
@@ -170,9 +210,14 @@ class WooCategoriesController extends Controller
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show($id, Request $request)
 	{
-		// 
+		$category = WooCategory::fetch( $id );
+
+        if ($request->has('embed'))
+        	return view('woo_connect::woo_categories.show_embed', compact('category'));
+        else
+        	return $this->fetch($id);	// To do: return data into proper view
 	}
 
 	/**
@@ -310,6 +355,37 @@ class WooCategoriesController extends Controller
         return redirect('products')
                 ->with('success', l('Some Product Images has been retrieved from WooCommerce Shop.'));
 	}
+
+
+
+	public function ascription( Request $request )
+	{
+		
+		// abi_r($request->toArray(), true);
+
+		$current_category_id = $request->input('current_category_id');
+		$category_id = $request->input('category_id', null);		
+		$webshop_id  = $request->input('webshop_id');
+
+		if ( (int) $category_id > 0 )
+		{
+			$category = Category::findOrFail($category_id);
+
+			$category->update(['webshop_id' => $webshop_id]);
+
+		} else {
+			$category = Category::find($current_category_id);
+
+			if ($category)
+				$category->update(['webshop_id' => null]);
+		}
+
+		
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $webshop_id], 'layouts') );
+	}
+
+
 
 }
 

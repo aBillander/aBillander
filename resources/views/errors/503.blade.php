@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<link href='//fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
@@ -11,7 +12,7 @@
 				color: #B0BEC5;
 				display: table;
 				font-weight: 100;
-				font-family: 'Lato';
+				xfont-family: 'Lato';
 			}
 
 			.container {
@@ -34,7 +35,8 @@
 	<body>
 		<div class="container">
 			<div class="content">
-				<div class="title">Be right back.</div>
+				<div class="title">{{ l('Be right back.', 'layouts') }}</div>
+				<div class="title">Estamos mejorando el sitio.</div>
 			</div>
 		</div>
 	</body>

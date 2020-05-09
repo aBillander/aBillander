@@ -25,6 +25,8 @@
 
                <th class="text-left" style="width:1px; white-space: nowrap;">{{l('Discount')}}</th>
 
+               <th class="text-left" style="width:1px; white-space: nowrap;">{{l('Prompt Payment')}}</th>
+
                <th class="text-left">{{l('Taxable Base')}}</th>
                <th class="text-left">{{l('Taxes')}}</th>
 
@@ -69,6 +71,11 @@
                     </div>
 
                 </td>
+                <td style="width:1px; white-space: nowrap;vertical-align: middle;">
+
+                        {{ $document->as_percent('document_ppd_percent') }}
+
+                </td>
                 <td style="vertical-align: middle;">{{ $document->as_price('total_currency_tax_excl', $document->currency) }}</td>
                 <td style="vertical-align: middle;">{{ $document->as_priceable($document->total_currency_tax_incl - $document->total_currency_tax_excl) }}</td>
                 <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $document->as_price('total_currency_tax_incl') }}</strong></td>
@@ -105,3 +112,5 @@
 
 
 @include($view_path.'._panel_document_total_breakdown')
+
+@include($view_path.'._panel_document_total_breakdown_rebuild')

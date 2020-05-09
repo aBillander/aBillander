@@ -12,6 +12,8 @@ use App\Customer;
 use App\Payment;
 use App\Configuration;
 
+use aBillander\SepaSpain\SepaDirectDebit;
+
 use App\Traits\DateFormFormatterTrait;
 
 use App\Events\CustomerPaymentReceived;
@@ -52,7 +54,7 @@ class CustomerVouchersController extends Controller
 					->with('paymentable.customer.bankaccount')
 					->where('payment_type', 'receivable')
 					->with('bankorder')
-					->orderBy('due_date', 'asc');		// ->get();
+					->orderBy('due_date', 'desc');		// ->get();
 
         $payments = $payments->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
@@ -60,7 +62,21 @@ class CustomerVouchersController extends Controller
 
         $statusList = Payment::getStatusList();
 
-        return view('customer_vouchers.index', compact('payments', 'statusList'));
+        $sdds = SepaDirectDebit::where('status', 'pending')->orWhere('status', 'confirmed')
+        						->orderBy('document_date', 'desc')->orderBy('id', 'desc')
+        						->get();
+
+        // abi_r($sdds->pluck('document_reference', 'id')->toArray()); 
+
+        $sddList = [];
+        foreach ($sdds as $sdd) {
+        	# code...
+        	$sddList[$sdd->id] = $sdd->document_reference.' :: '.$sdd->status_name.' :: '.abi_date_short($sdd->document_date);
+        }
+
+        // abi_r($sddList);die();
+
+        return view('customer_vouchers.index', compact('payments', 'statusList', 'sddList'));
 	}
 
     /**
@@ -163,6 +179,7 @@ class CustomerVouchersController extends Controller
 		return view('customer_vouchers.edit', compact('payment', 'action' , 'back_route'));
 	}
 
+
 	public function pay($id, Request $request)
 	{
 		$action = 'pay';
@@ -175,6 +192,46 @@ class CustomerVouchersController extends Controller
 		
 		return view('customer_vouchers.edit', compact('payment', 'action' , 'back_route'));
 	}
+
+	public function payVouchers(Request $request)
+	{
+        // Dates (cuen)
+        $this->mergeFormDates( ['payment_date'], $request );
+		
+		// Validate input (to do)
+		$rules = [
+            'payment_date' => 'required|date',
+		];
+        $this->validate($request, $rules);
+
+		// $payment_date = ;
+
+		$list = $request->input('vouchers', []);
+
+        if ( count( $list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts') . l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+
+		// abi_r($list);die();
+        $payments = $this->payment->whereIn('id', $list)->where('status', 'pending')->get();
+
+        // Do the Mambo!
+        foreach ( $payments as $payment ) 
+        {
+        	$payment->payment_date = $request->input('payment_date');
+
+			$payment->status   = 'paid';
+			$payment->save();
+
+			// Update Customer Risk
+			event(new CustomerPaymentReceived($payment));
+        }
+
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') .  $request->input('payment_date_form'));
+	}
+
 
 	public function bounce($id, Request $request)
 	{
@@ -212,14 +269,18 @@ class CustomerVouchersController extends Controller
 
 			$rules = Payment::$rules;
 			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
-			$rules['amount'] .= $payment->amount;
+			if ( $payment->amount > 0.0 )
+				$rules['amount'] .= '|min:0.0|max:' . $payment->amount;
+			else
+				$rules['amount'] .= '|max:0.0|min:' . $payment->amount;
 
-			$this->validate($request, $rules);
+			if ( $payment->status == 'pending' )			// Other statuses: only field notes is allowed for update
+				$this->validate($request, $rules);
 
 			$diff = $payment->amount - $request->input('amount', $payment->amount);
 
 			// If amount is not fully paid, a new payment will be created for the difference
-			if ( $diff > 0 ) {
+			if ( $diff != 0 ) {
 				$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'amount'] );
 
 				$due_date = $request->input('due_date_next') ?: \Carbon\Carbon::now();
@@ -274,14 +335,17 @@ class CustomerVouchersController extends Controller
 			$rules = Payment::$rules;
 			$rules['payment_date']  = 'required';
 			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
-			$rules['amount'] .= $payment->amount;
+			if ( $payment->amount > 0.0 )
+				$rules['amount'] .= '|min:0.0|max:' . $payment->amount;
+			else
+				$rules['amount'] .= '|max:0.0|min:' . $payment->amount;
 
 			$this->validate($request, $rules);
 
 			$diff = $payment->amount - $request->input('amount', $payment->amount);
 
 			// If amount is not fully paid, a new payment will be created for the difference
-			if ( $diff > 0 ) {
+			if ( $diff != 0 ) {
 				$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'amount'] );
 
 				$due_date = $request->input('due_date_next') ?: \Carbon\Carbon::now();
@@ -323,7 +387,7 @@ class CustomerVouchersController extends Controller
 			$rules = Payment::$rules;
 			$rules['payment_date']  = 'required';
 //			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
-			$rules['amount'] .= $payment->amount;
+			$rules['amount'] .= '|max:' . $payment->amount;
 
 			$this->validate($request, $rules);
 
@@ -346,6 +410,8 @@ class CustomerVouchersController extends Controller
 
 			}
 
+			// 'pending' and / or 'paid' vouchers can be bounced
+			$from_status = $payment->status;
 //			$payment->name     = $request->input('name',     $payment->name);
 //			$payment->due_date = $request->input('due_date', $payment->due_date);
 			$payment->payment_date = $request->input('payment_date');
@@ -356,11 +422,51 @@ class CustomerVouchersController extends Controller
 			$payment->save();
 
 			// Update Customer Risk
-			event(new CustomerPaymentBounced($payment));
+			event(new CustomerPaymentBounced($payment, $from_status));
 
 
 			return redirect($back_route)
 					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . $request->input('due_date'));
+		
+		} else
+
+		if ( $action == 'uncollectible' ) {
+			//
+
+			$rules = Payment::$rules;
+			if ( $request->input('amount_next', 0.0) ) $rules['due_date_next'] = 'required';
+			if ( $payment->amount > 0.0 )
+				$rules['amount'] .= '|min:0.0|max:' . $payment->amount;
+			else
+				$rules['amount'] .= '|max:0.0|min:' . $payment->amount;
+
+			$this->validate($request, $rules);
+
+			// Check bankorder
+			if ( $bankorder = $payment->bankorder )
+        	{
+        		return redirect($back_route)
+						->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . l('There is a Bank Order with this Voucher: :bo', ['bo' => $bankorder->document_reference]));
+        	}
+
+			$payment->name     = $request->input('name',     $payment->name);
+			$payment->due_date = $request->input('due_date', $payment->due_date);
+//			$payment->amount   = $request->input('amount',   $payment->amount);
+			$payment->notes    = $request->input('notes',    $payment->notes);
+
+			$payment->auto_direct_debit = $request->input('auto_direct_debit',    $payment->auto_direct_debit);
+
+			$payment->status = 'uncollectible';
+
+			$payment->save();
+
+			// Update customer unresolved amount
+			$payment->customer->addUnresolved($payment->amount);
+
+
+			return redirect($back_route)
+					->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name') . ' / ' . 'uncollectible');
+		
 		}
 
 
@@ -433,29 +539,75 @@ class CustomerVouchersController extends Controller
     {
 		$payment = $this->payment->with('bankorder')->findOrFail($id);
 
+		if ( $payment->status != 'paid' )
+		{
+			return redirect()->back()
+					->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts').' :: '.l('Status is not "paid"'));
+		}
+
         
-			$payment->payment_date = null;
-			$payment->status   = 'pending';
+		$payment->payment_date = null;
+		$payment->status   = 'pending';
 
-			$payment->save();
-
-			// Update Customer Risk
-			// event(new CustomerPaymentReceived($payment));
-			//
-			// See: CustomerPaymentReceivedListener
-        $document = $payment->customerinvoice;
-
-        // Update Document
-        $document->checkPaymentStatus();
-
-        // Update Customer Risk
-        $customer = $payment->customer;
-        $customer->addRisk($payment->amount);
+		$payment->save();
 
         // Update bankorder
         if ( $bankorder = $payment->bankorder )
-            $bankorder->checkStatus();
+        {
+            // Not needed (will be done in event thrown):
+            // $bankorder->checkStatus();
 
+            // Voucher is bounced
+			$new_payment = $payment->replicate( ['id', 'due_date', 'payment_date', 'bank_order_id'] );
+
+			$due_date = \Carbon\Carbon::now();
+
+			$new_payment->reference = $payment->reference . ' bounced ';
+			$new_payment->name = $payment->name . ' bounced ';
+			$new_payment->status = 'pending';
+			$new_payment->due_date = $due_date;
+			$new_payment->payment_date = NULL;
+//				$new_payment->amount = $diff;
+
+			$new_payment->save();
+
+//			$payment->name     = $request->input('name',     $payment->name);
+//			$payment->due_date = $request->input('due_date', $payment->due_date);
+//			$payment->payment_date = $request->input('payment_date');
+//			$payment->amount   = $request->input('amount',   $payment->amount);
+//			$payment->notes    = $request->input('notes',    $payment->notes);
+
+			$payment->status   = 'bounced';
+			$payment->save();
+
+        }
+
+		// Update Customer Risk
+		event(new CustomerPaymentBounced($payment, 'paid'));
+
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
+    public function collectibleVoucher(Request $request, $id)
+    {
+		$payment = $this->payment->with('bankorder')->findOrFail($id);
+
+		if ( $payment->status != 'uncollectible' )
+		{
+			return redirect()->back()
+					->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $id], 'layouts').' :: '.l('Status is not "paid"'));
+		}
+
+        
+		$payment->payment_date = null;
+		$payment->status   = 'pending';
+
+		$payment->save();
+
+		// Update customer unresolved amount
+		$payment->customer->removeUnresolved($payment->amount);
 
 		return redirect()->back()
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));

@@ -70,6 +70,25 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\CustomerShippingSlipEmailed' => [
             'App\Listeners\CustomerShippingSlipEmailedListener',
         ],
+
+
+
+
+        'App\Events\SupplierShippingSlipConfirmed' => [
+            'App\Listeners\SupplierShippingSlipConfirmedListener',
+        ],
+    
+        'App\Events\SupplierShippingSlipClosed' => [
+            'App\Listeners\SupplierShippingSlipClosedListener',
+        ],
+    
+        'App\Events\SupplierShippingSlipUnclosed' => [
+            'App\Listeners\SupplierShippingSlipUnclosedListener',
+        ],
+    
+
+
+        
         
 
         'App\Events\DatabaseBackup' => [
@@ -87,6 +106,17 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\InitializeStock',
             'App\Listeners\AssignToPriceLists',
         ],
+
+        // MFG
+    
+        'App\Events\ProductionOrderFinished' => [
+            'App\Listeners\ProductionOrderFinishedListener',
+        ],
+    
+        'App\Events\ProductionOrderUnfinished' => [
+            'App\Listeners\ProductionOrderUnfinishedListener',
+        ],
+
 /*
         'App\Events\CustomerInvoiceViewed' => [
             'App\Listeners\CustomerInvoiceSetDates',

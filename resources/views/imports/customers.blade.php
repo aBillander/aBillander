@@ -20,15 +20,15 @@
 
       <div class="col-lg-2 col-md-2 col-sm-3">
          <div class="list-group">
-            <!-- a id="b_main_data" href="#" class="list-group-item active">
+            <a id="b_main_data" href="{{ route('customers.import') }}" class="list-group-item active">
                <i class="fa fa-asterisk"></i>
-               &nbsp; {{ l('Main Data') }}
+               &nbsp; {{ l('Customers') }}
             </a>
-            <a id="b_purchases" href="#purchases" class="list-group-item">
+            <a id="b_purchases" href="{{ route('customerusers.import') }}" class="list-group-item">
                <i class="fa fa-shopping-cart"></i>
-               &nbsp; {{ l('Purchases') }}
+               &nbsp; {{ l('ABCC Users') }}
             </a>
-            <a id="b_sales" href="#sales" class="list-group-item">
+            <!-- a id="b_sales" href="#sales" class="list-group-item">
                <i class="fa fa-share-square-o"></i>
                &nbsp; {{ l('Sales') }}
             </a>

@@ -64,6 +64,7 @@ return [
 	'Total'     => 'Total',
 
 	'View Image'     => 'Ver Imagen',
+	'View Product'     => 'Ver Producto',
 	'Product Images'     => 'Imágenes de Productos',
 
 	'EAN Code'     => 'Código EAN',

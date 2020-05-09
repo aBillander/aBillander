@@ -43,6 +43,7 @@ class CustomerShippingSlip extends Billable
      * https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
      */
     protected $document_fillable = [
+                            'shipment_service_type_tag', 
                             'prices_entered_with_tax', 'round_prices_with_tax',
     ];
 
@@ -318,7 +319,7 @@ class CustomerShippingSlip extends Billable
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));die();
+        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
 
         // abi_toSQL($relation->orderBy('id', 'ASC'));die();
 */
@@ -331,7 +332,7 @@ class CustomerShippingSlip extends Billable
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));die();
+        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
 
         // abi_toSQL($relation->orderBy('id', 'ASC'));die();\App\CustomerShippingSlip::class
 */

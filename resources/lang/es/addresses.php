@@ -27,6 +27,7 @@ return [
 
 	'Addresses - Edit'     => 'Direcciones - Modificar',
 	'Edit Address'     => 'Modificar Dirección',
+	'Other' => 'Otros',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,6 +55,7 @@ return [
 	'Email'     => 'Correo Electrónico',
 	'Longitude'     => 'Longitud',
 	'Latitude'     => 'Latitud',
+	'Shipping Method' => 'Método de Envío',
 
 	'Address'     => 'Dirección Postal',
 	'Contact'     => 'Contacto',

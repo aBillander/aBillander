@@ -63,6 +63,13 @@
                     {!! Form::select('measure_unit_id', $measure_unitList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('mrp_type') ? 'has-error' : '' }}"">
+                      {{ l('MRP type') }}
+                      {!! Form::select('mrp_type', $product_mrptypeList, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('mrp_type', '<span class="help-block">:message</span>') !!}
+                  </div>
+
 @if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('ecotax_id') ? 'has-error' : '' }}">
                     {{ l('Eco-Tax') }}

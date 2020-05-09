@@ -15,10 +15,10 @@
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                     data-title="{{ l('Products') }} :: ({{$product->id}}) {{{ $product->name }}}" 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-                
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
 
                 <a href="{{ route('products.measureunits.index', [$product->id]) }}" class="btn btn-success"><i class="fa fa-th-list"></i> {{ l('Measure Units', 'layouts') }}</a>
+                
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
 
                 <a class="btn btn-warning show-product-boms" onClick="return false;"><i class="fa fa-link"></i> {{ l('BOMs') }}</a>
 
@@ -85,10 +85,16 @@
                <i class="fa fa-picture-o"></i>
                &nbsp; {{ l('Images') }}
             </a>
+
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+
             <a id="b_internet" href="#internet" class="list-group-item">
                <i class="fa fa-cloud"></i>
-               &nbsp; {{ l('Internet') }}
+               &nbsp; {{ l('Web Shop') }}
             </a>
+
+@endif
+
          </div>
 
          <div class="list-group"><?php $img = $product->getFeaturedImage() ?>
@@ -120,7 +126,7 @@
 
           @include('products._panel_inventory')
 
-          @include('products._panel_internet')
+          @include('products._panel_webshop')
 
 
 @if ( ($product->product_type == 'simple') || ($product->product_type == 'combinable') )
@@ -153,6 +159,7 @@
       $("#panel_inventory").hide();
       $("#panel_manufacturing").hide();
       $("#panel_internet").hide();
+      $("#product-webshop-data").hide();
       $("#panel_combinations").hide();
       $("#panel_images").hide();
 
@@ -200,7 +207,11 @@
       else if(window.location.hash.substring(1) == 'internet')
       {
          $("#panel_internet").show();
+         $("#product-webshop-data").show();
          $("#b_internet").addClass('active');
+         // getProductInternetData( '{{ $product->reference }}' );
+         if ($("#product-webshop-data-content").html() == '')
+          getProductWebShopEmbedData();
       }
       else if(window.location.hash.substring(1) == 'combinations')
       {

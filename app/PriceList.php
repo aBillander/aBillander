@@ -129,6 +129,13 @@ class PriceList extends Model {
 
         $price = new \App\Price( $line->price, $this->price_is_tax_inc, $this->currency);
 
+        if ( $this->price_is_tax_inc )
+        {
+            $tax_percent = $product->tax->percent;
+
+            $price->applyTaxPercent( $tax_percent );
+        }
+
         $price->price_list_id = $this->id;
         $price->price_list_line_id = $line->id;
 

@@ -15,6 +15,7 @@ return [
 	'Expand / Collapse'     => 'Ver / Ocultar',
 
 	'Show Sub-Categories' => 'Ver Sub-Categorías',
+	'Show Products' => 'Ver Productos',
 	'Categories' => 'Categorías',
 	''     => '',
 	''     => '',
@@ -53,6 +54,7 @@ return [
 	'Edit Category'     => 'Modificar Categoría',
 
 	'Publish to web?'     => '¿Publicar en la web?',
+	'Publish to ABCC?'     => '¿Publicar en ABCC?',
 	'Webshop ID'     => 'Código en la Tienda Web',
 	'Web Shop Data'     => 'Datos para la Tienda Web',
 	'Name'     => 'Nombre',
@@ -63,5 +65,6 @@ return [
 	'META Description'     => 'META Descripción',
 	'META Keywords'     => 'META Palabras Clave',
 	'Internet'     => 'Internet',
+	'Web Shop'	=> 'Tienda Online',
 
 ];

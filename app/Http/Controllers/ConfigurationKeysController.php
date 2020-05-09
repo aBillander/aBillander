@@ -32,6 +32,8 @@ class ConfigurationKeysController extends Controller {
                         'ENABLE_CUSTOMER_CENTER',
                         'ENABLE_SALESREP_CENTER',
                         'ENABLE_MANUFACTURING',
+                        'MRP_WITH_STOCK',
+                        'MRP_WITH_ZERO_ORDERS',
                         'ENABLE_WEBSHOP_CONNECTOR',
                         'ENABLE_FSOL_CONNECTOR',
                         'SELL_ONLY_MANUFACTURED',
@@ -68,6 +70,7 @@ class ConfigurationKeysController extends Controller {
                         'DEF_CUSTOMER_PAYMENT_METHOD',
                         'DEF_SHIPPING_METHOD',
                         'DEF_LANGUAGE',
+                        'DEF_CATEGORY',
                         'DEF_MEASURE_UNIT_FOR_BOMS',
                         'DEF_MEASURE_UNIT_FOR_PRODUCTS',
                         'DEF_OUTSTANDING_AMOUNT',
@@ -83,6 +86,7 @@ class ConfigurationKeysController extends Controller {
                         'DEF_LOGS_PERPAGE',
                         'DEF_PERCENT_DECIMALS',
                         'DEF_QUANTITY_DECIMALS',
+                        'BUSINESS_NAME_TO_SHOW',
                         'ALLOW_IP_ADDRESSES', 
                         'MAX_DB_BACKUPS',
                         'MAX_DB_BACKUPS_ACTION',
@@ -119,9 +123,11 @@ class ConfigurationKeysController extends Controller {
                         'ABCC_EMAIL',
                         'ABCC_EMAIL_NAME',
                         'ABCC_DEFAULT_PASSWORD',
+                        'ABCC_LOGIN_REDIRECT',
                         'ABCC_STOCK_SHOW',
                         'ABCC_STOCK_THRESHOLD',
                         'ABCC_OUT_OF_STOCK_PRODUCTS',
+                        'ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY',
                         'ABCC_OUT_OF_STOCK_TEXT',
                         'ABCC_ORDERS_NEED_VALIDATION',
                         'ABCC_ENABLE_QUOTATIONS',
@@ -138,6 +144,16 @@ class ConfigurationKeysController extends Controller {
                         'ABCC_DEFAULT_ORDER_TEMPLATE',
                         'ABCC_ORDERS_SEQUENCE',
                         'ABCC_QUOTATIONS_SEQUENCE',
+
+                    ],
+
+                51 => [  // Customer Center :: Shipping
+
+                        'ABCC_SHIPPING_LABEL',
+                        'ABCC_FREE_SHIPPING_PRICE',
+                        'ABCC_STATE_42_SHIPPING',
+                        'ABCC_COUNTRY_1_SHIPPING',
+                        'ABCC_SHIPPING_TAX',
 
                     ],
 
@@ -179,6 +195,11 @@ class ConfigurationKeysController extends Controller {
         foreach ($this->conf_keys[$tab_index] as $key)
             $key_group[$key]= Configuration::get($key);
 
+        // Temporarily
+        if ($tab_index==5)
+        foreach ($this->conf_keys[51] as $key)
+            $key_group[$key]= Configuration::get($key);
+
         return view( $tab_view, compact('tab_index', 'key_group') );
 
         // https://bootsnipp.com/snippets/M27e3
@@ -204,7 +225,8 @@ class ConfigurationKeysController extends Controller {
      */
     public function store(Request $request)
     {
-        // die($request->input('tab_index'));
+         // abi_r($request->all());
+         // die($request->input('tab_index'));
 
         $tab_index =   $request->has('tab_index')
                         ? intval($request->input('tab_index'))
@@ -231,6 +253,9 @@ class ConfigurationKeysController extends Controller {
                 \App\Configuration::updateValue($key, $value);
             }
         }
+
+        // Temporarily
+        if ($tab_index==51) $tab_index=5;
 
         return redirect('configurationkeys?tab_index='.$tab_index)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $tab_index], 'layouts') );

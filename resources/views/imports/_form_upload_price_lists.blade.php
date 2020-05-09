@@ -19,7 +19,7 @@
 
     </div>
 
-     <div class="form-group col-lg-6 col-md-6 col-sm-6" id="div-round_price" xstyle="display: none">
+     <div class=" hidden form-group col-lg-6 col-md-6 col-sm-6" id="div-round_price" xstyle="display: none">
        {!! Form::label('round_price', l('Round Prices to Currency decimal places?'), ['class' => 'control-label']) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                         data-content="{{ l('Prices will be rounded to Price List Currency decimal places.') }}">
@@ -41,11 +41,11 @@
        </div>
       </div>
 
-</div>
+<!-- /div>
 <div class="row">
 
      <div class="form-group col-lg-6 col-md-6 col-sm-6">
-     </div>
+     </div -->
 
      <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-empty_log">
        {!! Form::label('empty_log', l('Empty LOG?'), ['class' => 'control-label']) !!}

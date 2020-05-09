@@ -13,6 +13,7 @@ return [
 
 	'My Orders'     => 'Mis Pedidos',
 	'Order #'     => 'Pedido #',
+	'Draft'    => 'En Proceso',
 	'Date'     => 'Fecha',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Deliver to'     => 'Entregar en',
@@ -35,6 +36,13 @@ return [
 	*/
 
 	' :_> New Customer Order #:num'     => ' :_> Nuevo Pedido de Cliente #:num',
+	' :_> New Customer Quotation #:num'     => ' :_> Nuevo Presupuesto de Cliente #:num',
+
+	' :_> :company - New Order #:num'     => ' :_> :company - Nuevo Pedido #:num',
+	' :_> :company - New Quotation #:num'     => ' :_> :company - Nuevo Presupuesto #:num',
+
+	' :_> [#:num] New Customer Order of :name'     => ' :_> [#:num] Nuevo Pedido de :name',
+
 	''     => '',
 	''     => '',
 

@@ -1,9 +1,12 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('Customer - Shopping Cart') }} @parent @stop
+@section('title') {{ l('Shopping Cart') }} @parent @stop
 
 
 @section('content') 
+
+@if ( 1 || $config['display_with_taxes'] )
+@else
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
@@ -22,30 +25,80 @@
                 </div>
                 <a href="{{ URL::to('customers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a -->
             </div>
-            <h2><!-- a href="{{ URL::to('customers') }}">{{ l('Shopping Cart') }}</a> <span style="color: #cccccc;">/</span --> {{ l('Shopping Cart') }} &nbsp; <span class="badge pull-right" style="background-color: #3a87ad; margin-right: 72px; margin-top: 8px;" title="{{ '' }}">{{ $cart->currency->iso_code }}</span></h2>
+            <h2><!-- a href="{{ URL::to('customers') }}">{{ l('Shopping Cart') }}</a> <span style="color: #cccccc;">/</span --> {{  l('Shopping Cart') }} [{{ $cart->id }}] &nbsp;
+            </h2>
         </div>
     </div>
 </div>
+@endif
 
 <div class="container-fluid">
    <div class="row">
 
-      <div class="col-lg-4 col-md-4 col-sm-4">
+      <div class="col-lg-5 col-md-5 col-sm-5">
 
-          @include('abcc.cart._panel_product')
-
-          @include('abcc.cart._panel_confirm')
+          @include('abcc.cart._panel_product_large')
 
       </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
+
+      <div class="col-lg-2 col-md-2 col-sm-2">
+
+          @include('abcc.cart._panel_shipping_address_header')
+
+      </div>
+
+      <div class="col-lg-5 col-md-5 col-sm-5">
+
+          @include('abcc.cart._panel_confirm_header')
+
+      </div>
+
+   </div>
+
+   <div class="row">
       
-      <div class="col-lg-8 col-md-8 col-sm-8">
+      <div class="col-lg-1 col-md-1 col-sm-1">
+
+      </div>
+      
+      <div class="col-lg-10 col-md-10 col-sm-10">
 
           @include('abcc.cart._panel_cart')
 
       </div><!-- div class="col-lg-8 col-md-8 col-sm-8" -->
+      
+      <div class="col-lg-1 col-md-1 col-sm-1">
+
+      </div>
 
    </div>
+{{--
+   <div class="row">
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          
+
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          @include('abcc.cart._panel_shipping_address')
+
+      </div>
+
+      <div class="col-lg-4 col-md-4 col-sm-4">
+
+          @include('abcc.cart._panel_confirm')
+
+      </div><!-- div class="col-lg-4 col-md-4 col-sm-4" -->
+
+   </div>
+--}}
 </div>
+
+@include('layouts/back_to_top_button')
+
 @endsection
 
 
@@ -89,6 +142,12 @@ fieldset[disabled] .btn-custom.active {
   background-color: #ff0084;
   border-color: #ff0084;
 }
+
+
+/* Cart Stuff */
+/* #div_cart_lines .show-pricerules {margin-left:1em} */
+#div_cart_lines td {vertical-align: middle}
+.crossed {text-decoration: line-through;}
 
 
 </style>

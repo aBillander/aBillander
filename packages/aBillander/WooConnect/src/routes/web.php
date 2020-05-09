@@ -28,13 +28,18 @@ Route::group([
 //	Route::get('orders/{id}', 'WooOrdersController@show');
 //	Route::post('orders/{id}', ['as' => 'wostatus', 'uses' => 'WooOrdersController@update']);
 
-	Route::resource('wooconnect/wooconfigurationkeys', 'WooConfigurationKeysController');
+	
+//  Route::resource('wooconnect/wooconfigurationkeys', 'WooConfigurationKeysController');
+    Route::resource('wooconnect/configurationkeys', 'WooConfigurationKeysController')->names('wooconfigurationkeys');
 
 
 	Route::get( 'wooconnect/configuration', 'WooConfigurationKeysController@configurationsEdit')
 			->name('wooconnect.configuration');
 	Route::post('wooconnect/configuration', 'WooConfigurationKeysController@configurationsUpdate')
 			->name('wooconnect.configuration.update');
+    
+    Route::get( 'wooconnect/configuration/{group_id}/fetch', 'WooConfigurationKeysController@fetch')
+            ->name('woocommerce.configuration.fetch');
 
 	Route::get( 'wooconnect/configuration/taxes', 'WooConfigurationKeysController@configurationTaxesEdit')
 			->name('wooconnect.configuration.taxes');
@@ -65,6 +70,8 @@ Route::group([
 
     Route::resource('wproducts', 'WooProductsController');
 
+    Route::get('wproduct/{id}/import' , array('uses' => 'WooProductsController@import', 
+                                                        'as'   => 'wproducts.import' ));
     Route::get('wproducts/{id}/fetch' , array('uses' => 'WooProductsController@fetch', 
                                                         'as'   => 'wproducts.fetch' ));
     Route::get('wproducts/import/ProductImages' , array('uses' => 'WooProductsController@importProductImages', 
@@ -75,8 +82,9 @@ Route::group([
 
     Route::resource('wcategories', 'WooCategoriesController');
 
-    Route::get('wcategories/{id}/fetch' , array('uses' => 'WooCategoriesController@fetch', 
-                                                        'as'   => 'wcategories.fetch' ));
+    Route::get('wcategories/{id}/fetch' , 'WooCategoriesController@fetch')->name('wcategories.fetch' );
+
+    Route::post('wcategories/ascription' , 'WooCategoriesController@ascription')->name('wcategories.ascription' );
 
 });
 

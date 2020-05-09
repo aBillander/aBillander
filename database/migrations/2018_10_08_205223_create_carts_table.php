@@ -28,8 +28,35 @@ class CreateCartsTable extends Migration
             $table->timestamp('date_prices_updated')->nullable();       // Reference date for prices & Cart persistance
 
             $table->integer('total_items')->unsigned()->default(0);
+
+//
+            $table->decimal('total_products_tax_incl', 20, 6)->default(0.0);    // Product netto (product discount included!)
+            $table->decimal('total_products_tax_excl', 20, 6)->default(0.0);
+
+            $table->decimal('total_shipping_tax_incl', 20, 6)->default(0.0);
+            $table->decimal('total_shipping_tax_excl', 20, 6)->default(0.0);
+            
+            $table->decimal('sub_tax_incl', 20, 6)->default(0.0);    // Sub-Totals (before discounts)
+            $table->decimal('sub_tax_excl', 20, 6)->default(0.0);
+
+            $table->decimal('document_discount_percent', 20, 6)->default(0.0);  // Order/Document discount Percent
+            $table->decimal('document_discount_amount_tax_incl', 20, 6)->default(0.0);   // Order/Document discount Amount
+            $table->decimal('document_discount_amount_tax_excl', 20, 6)->default(0.0);
+
+            $table->decimal('document_ppd_percent', 20, 6)->default(0.0);           // Order/Document prompt payment discount Percent
+            $table->decimal('document_ppd_amount_tax_incl', 20, 6)->default(0.0);   // Order/Document prompt payment discount Amount
+            $table->decimal('document_ppd_amount_tax_excl', 20, 6)->default(0.0);
+
+            $table->decimal('total_currency_tax_incl', 20, 6)->default(0.0);    // Totals using Customer Order Currency
             $table->decimal('total_currency_tax_excl', 20, 6)->default(0.0);
+            
+            $table->decimal('total_tax_incl', 20, 6)->default(0.0);    // Totals using Company Currency
             $table->decimal('total_tax_excl', 20, 6)->default(0.0);
+
+
+//
+//            $table->decimal('total_currency_tax_excl', 20, 6)->default(0.0);
+//            $table->decimal('total_tax_excl', 20, 6)->default(0.0);
 
             $table->integer('invoicing_address_id')->unsigned()->nullable();
             $table->integer('shipping_address_id')->unsigned()->nullable();     // For Shipping Slip!

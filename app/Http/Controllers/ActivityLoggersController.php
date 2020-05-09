@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\ActivityLogger;
 use Illuminate\Http\Request;
 
+use Excel;
+
 class ActivityLoggersController extends Controller
 {
 
@@ -89,12 +91,20 @@ class ActivityLoggersController extends Controller
      * @param  \App\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
-    public function show(ActivityLogger $activitylogger)
+    public function show(ActivityLogger $activitylogger, Request $request)
     {
 
-        $loggers = $activitylogger->activityloggerlines()->orderBy('id', 'desc');
+        $level = $request->input('level');
+
+        $loggers = $activitylogger->activityloggerlines()->when($level, function($query) use ($level) {
+
+                                $query->where('level_name', $level);
+
+                        })->orderBy('id', 'desc');
 
 
+
+        $logger_all = $activitylogger->activityloggerlines()->count();
 
         $logger_errors = $activitylogger->activityloggerlines()->where('level_name', 'ERROR')->count();
 
@@ -108,7 +118,7 @@ class ActivityLoggersController extends Controller
         $loggers->setPath('');     // Customize the URI used by the paginator
 
 
-        return view('activity_loggers.show', compact('activitylogger', 'loggers', 'logger_errors', 'logger_warnings'));
+        return view('activity_loggers.show', compact('activitylogger', 'loggers', 'logger_errors', 'logger_warnings', 'logger_all'));
     }
 
     /**
@@ -164,5 +174,66 @@ class ActivityLoggersController extends Controller
 
         return redirect('activityloggers')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+    }
+
+
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function export(ActivityLogger $activitylogger)
+    {        
+
+        $loggers = $activitylogger
+                        ->activityloggerlines()
+                        ->orderBy('id', 'desc')
+                        ->get();
+
+                        // Initialize the array which will be passed into the Excel generator.
+        $data = []; 
+
+        // Define the Excel spreadsheet headers
+        $headers = [ l('ID', [], 'layouts'), l('Date/Time'), l('Type'), l('Message')
+        ];
+
+        $data[] = $headers;
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the payments array.
+        foreach ($loggers as $logger) {
+            // $data[] = $line->toArray();
+
+            $row = [];
+
+            $row[] = $logger->id;
+            $row[] = $logger->date_added . ' '. sprintf( "(.%04s)",   intval(intval($logger->secs_added)/100.0) );
+            $row[] = $logger->level_name;
+            $row[] = strip_tags(htmlspecialchars_decode($logger->message));
+
+            $data[] = $row;
+        }
+
+        $sheetName = 'Activity LOG' ;
+
+        $id = $activitylogger->id;
+
+        // Generate and return the spreadsheet
+        Excel::create('Activity_Logger_'.$id, function($excel) use ($id, $sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');
+
+        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
+        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

@@ -64,11 +64,12 @@ class StockMovementsController extends Controller
 	{
 //		abi_r(Cookie::get('document_reference'), true);
 		$date = Cookie::get('date') ? Cookie::get('date') : abi_date_short( \Carbon\Carbon::now() );
+		$time = Cookie::get('time') ? Cookie::get('time') : 'now';
 		$document_reference = Cookie::get('document_reference') ? Cookie::get('document_reference') : '';
 		$movement_type_id   = Cookie::get('movement_type_id')   ? Cookie::get('movement_type_id')   : '0';
 		$currency_id        = Cookie::get('currency_id')        ? Cookie::get('currency_id')        : \App\Context::getContext()->currency->id;
 
-		return View::make('stock_movements.create', compact('date', 'document_reference', 'movement_type_id', 'currency_id'));
+		return View::make('stock_movements.create', compact('date', 'time', 'document_reference', 'movement_type_id', 'currency_id'));
 	}
 
 	/**
@@ -107,6 +108,7 @@ class StockMovementsController extends Controller
 		$conversion_rate = $conversion_rate ?: \App\Currency::find($request->input('currency_id'))->conversion_rate;
 
 		$date_raw = $request->input('date');
+		$time = $request->input('time');
 		// https://styde.net/componente-carbon-fechas-laravel-5/
 		// https://es.stackoverflow.com/questions/57020/validaci%C3%B3n-de-formato-de-fecha-no-funciona-laravel-5-3
 		$date_view = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $request->input('date') );
@@ -114,19 +116,22 @@ class StockMovementsController extends Controller
 //		abi_r($date_view->toDateTimeString());
 //		abi_r($date_view->toDateString(), true);
  
-		$data      = ['price' => $request->input('price_currency') / $conversion_rate,
+		$data      = ['price' => $request->input('price_currency'),
 					  'conversion_rate' => $conversion_rate, 
 					  ];
 
 		$request->merge( $data );
  
-		$extradata = ['date' =>  $date_view->toDateString(), 
+		$extradata = ['date' =>  $date_view->toDateString() . " $time:00", 
 					  'combination_id' => $combination_id, 
 //					  'user_id' => \Auth::id()
 					  ];
 
 		$rules = StockMovement::getRules( $request->input('movement_type_id') );
 		if ( !$combination_id ) unset( $rules['combination_id'] );
+
+//		if ( $request->input('movement_type_id') == 20 )
+//			$rules['quantity'][] = new \App\Rules\Decimal();
 
 		$this->validate($request, $rules);	// abi_r($request->all(), true);
 
@@ -142,6 +147,7 @@ class StockMovementsController extends Controller
 
         $extradata['reference']  = $product->reference;
         $extradata['name']       = $product->name;
+        $extradata['price']      = $request->input('price_currency') / $conversion_rate;
 
 
 //		$stockmovement = $this->stockmovement->create( array_merge( $request->all(), $extradata ) );
@@ -149,7 +155,7 @@ class StockMovementsController extends Controller
 		# $stockmovement = StockMovement::createAndProcess( array_merge( $request->all(), $extradata ) );
 
         try {
-            $stockmovement = StockMovement::createAndProcess( array_merge( $request->all(), $extradata ) );
+            $stockmovement = StockMovement::createAndProcess( $request->merge( $extradata )->all() );
         } catch (\App\Exceptions\StockMovementException $exception) {
             return back()->with('error', $exception->getMessage())->withInput();
         }
@@ -157,6 +163,7 @@ class StockMovementsController extends Controller
 
 		// Time savers
 		Cookie::queue('date', $date_raw, 1);	// Live 1 minute
+		Cookie::queue('time', $time, 1);
 		Cookie::queue('document_reference', $request->input('document_reference'), 1);
 		Cookie::queue('movement_type_id',   $request->input('movement_type_id'), 1);
 		Cookie::queue('currency_id',        $request->input('currency_id'), 1);
@@ -168,7 +175,8 @@ class StockMovementsController extends Controller
         return redirect('stockmovements/create')
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($stockmovement)->id], 'layouts') . 
 					$request->input('document_reference') . ' - ' . $request->input('date') )
-				->with( compact('date', 'document_reference', 'movement_type_id', 'currency_id') );
+// 				->with( compact('date', 'document_reference', 'movement_type_id', 'currency_id') )
+				;
         else
 		return redirect('stockmovements')
 				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($stockmovement)->id], 'layouts') . 

@@ -54,17 +54,7 @@ class Warehouse extends Model {
         return $this->belongsToMany('App\Product')->withPivot('quantity')->withTimestamps();
     }
 
-    // Better approach than Many to Many (Simpler, easy to understand and more flexible)
-    public function productlines()
-    {
-        return $this->hasMany('App\WarehouseProductLine');
-    }
-
-    public function combinations()
-    {
-        return $this->belongsToMany('App\Combination')->withPivot('quantity')->withTimestamps();
-    }
-	
+    
     /*
     public function currency()
     {
@@ -80,6 +70,45 @@ class Warehouse extends Model {
     public function stockcounts()
     {
         return $this->hasMany('App\StockCount');
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | New stuff implementing 'WarehouseProductLine' relations
+    |--------------------------------------------------------------------------
+    */
+    
+    // Better approach than Many to Many (Simpler, easy to understand and more flexible)
+    public function productline( $product_id )
+    {
+        $line = $this->hasMany('App\WarehouseProductLine')->where('product_id', $product_id)->first();
+
+        if ( !$line )
+            $line = new \App\WarehouseProductLine([
+                              'product_id'   => $product_id, 
+                              'quantity'     => 0.0, 
+                              'warehouse_id' => $this->id,  
+            ]);
+
+        return $line;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | New Relationships
+    |--------------------------------------------------------------------------
+    */
+    
+    public function productlines()
+    {
+        return $this->hasMany('App\WarehouseProductLine');
+    }
+
+    public function combinations()
+    {
+        return $this->belongsToMany('App\Combination')->withPivot('quantity')->withTimestamps();
     }
     
 }

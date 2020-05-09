@@ -185,12 +185,24 @@ class SetContextMiddleware {
 			} else {
 				//
 				Context::getContext()->controller = $dominion;
+				/*
 				if ($request->segment(3) == 'options' ) Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'states'  ) Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'taxrules') Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'ecotaxrules') Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'pricelistlines') Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'stockcountlines') Context::getContext()->controller = $request->segment(3);
+				if ($request->segment(3) == 'deliveryroutelines' ) Context::getContext()->controller = $request->segment(3);
+				*/
+
+				// Replace commented lines above
+				if ( $request->segment(3) )
+				{
+					$pos = strpos($request->segment(3), Str::singular($request->segment(1)));
+					if ( $pos === 0 )
+						Context::getContext()->controller = $request->segment(3);
+				}
+
 	//			Context::getContext()->action     = NULL;
 
 			}

@@ -13,6 +13,7 @@ return [
 
 	'Error 404 / Page not found'     => 'Error 404 / Página no encontrada',
 	'Coming soon...' => 'Próximamente...',
+	'Be right back.' => 'Estamos mejorando el sitio.',
 
 	'Success' => 'Éxito',
 	'Info'    => 'Información',
@@ -31,7 +32,9 @@ return [
 	'This record cannot be deleted because its Quantity or Value &#58&#58 (:id) '  =>  'El registro no puede ser eliminado por su Cantidad o Valor &#58&#58 (:id) ',
 	'Unable to create this record &#58&#58 (:id) '               =>  'No se ha podido crear el registro solicitado &#58&#58 (:id) ',
 	'Unable to update this record &#58&#58 (:id) '               =>  'No se ha podido actualizar el registro solicitado &#58&#58 (:id) ',
+	'Unable to load this record &#58&#58 (:id) '                 =>  'No se ha podido encontrar el registro solicitado &#58&#58 (:id) ',
 	'Document has no Lines'                                      =>  'El Documento no contiene Líneas',
+	'Document amount should be more than: :amount'               =>  'El Importe del Documento debe ser superior a: :amount',
 	'Document is on-hold'                                      =>  'El Documento está en espera',
 	'Document is not closed'                                      =>  'El Documento no está cerrado',
 	'Document has Payments'                                      =>  'El Documento tiene Pagos',
@@ -44,6 +47,8 @@ return [
 
 	'Your Document has been sent! &#58&#58 (:id) '     => 'Su Documento ¡ha sido enviado! &#58&#58 (:id) ',
 	'Your Document could not be sent &#58&#58 (:id) '     => 'Su Documento no ha podido ser enviado &#58&#58 (:id) ',
+
+	'You SHOULD define a System wide Default Value for this Model.' => 'Para este Modelo DEBE definir un Valor por Defecto que se usará en toda la Aplicación.',
 
 	'This function is not available &#58&#58 (:id) ' => 'Esta función no está diosponible &#58&#58 (:id) ',
 
@@ -85,6 +90,7 @@ return [
 	'Carriers'     => 'Transportistas',
 	'Price Lists'     => 'Tarifas',
 	'Price Rules'     => 'Reglas de Precio',
+	'ABCC Billboard' => 'ABCC Portada',
 	'Sales Representatives'     => 'Agentes',
 	'Warehouses'     => 'Almacenes',
 	'Product Options'     => 'Opciones de Productos',
@@ -97,9 +103,12 @@ return [
 	'DB Backups' => 'Copias de Seguridad',
 
 	'Warehouse'     => 'Almacén',
+    'Products with Low Stock' => 'Productos con Bajo Stock',
 	'Suppliers' => 'Proveedores',
+	'Supplier Shipping Slips'     => 'Albaranes de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',
-	'Sale Orders'     => 'Pedidos de Venta',
+	'Sale Orders'     => 'Pedidos de Clientes',
+	'Sale Order Templates'     => 'Plantillas Pedidos Venta',
 	'Orders'     => 'Pedidos',
 	'Shipping Slips'     => 'Albaranes',
 	'Invoices'     => 'Facturas',
@@ -160,7 +169,8 @@ return [
 	'Production Sheets'     => 'Hojas de Producción',
 	'Production Orders'     => 'Ordenes de Fabricación',
 	'Manufacturing'     => 'Fabricación',
-	''     => '',
+	'Delivery Routes'     => 'Rutas de Reparto',
+	'Delivery Sheets'     => 'Hojas de Reparto',
 	''     => '',
 	
 
@@ -198,6 +208,7 @@ return [
 	'Use terms of three (3) characters or more' => 'Use palabras de tres (3) caracteres o más',
 	'Actions'     => 'Acciones',
 	'Export'     => 'Exportar',
+	'Export Headers'     => 'Exportar Encabezados',
 	'Import'     => 'Importar',
 	'File'     => 'Fichero',
 	'Load'     => 'Cargar',
@@ -237,9 +248,13 @@ return [
 	'Print'     => 'Imprimir',
 	'Publish'     => 'Publicar',
 	'Upload File'     => 'Subir Fichero',
+	'Upload Image'     => 'Subir Imagen',
 	'Browse'     => 'Seleccionar',
 	'Help'     => 'Ayuda',
 	'Home'     => 'Inicio',
+	'Fetch' => 'Extraer',
+	'View Data' => 'Ver Datos',
+	'Fetch Data' => 'Extraer Datos',
 
 	'Set on-hold'     => 'Click para poner en espera',
 	'Unset on-hold'     => 'Click para liberar',

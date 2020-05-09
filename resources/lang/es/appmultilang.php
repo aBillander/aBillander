@@ -34,6 +34,22 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Product MRP Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'App\Product.manual'  => 'Manual',  //  => manualy place manufacture or purchase orders
+    'App\Product.onorder' => 'Bajo Pedido',  //  => manufactured or purchased on order
+    'App\Product.reorder' => 'Punto de Pedido',  //  => Reorder Point Planning
+    // 'forecast' => Forecast Based Planning
+    // 'phased'   => Time-phased Planning (planning cycles)
+
+
+	/*
+	|--------------------------------------------------------------------------
 	| Tax Rule Types
 	|--------------------------------------------------------------------------
 	|
@@ -61,6 +77,12 @@ return array(
 	'CustomerOrder' => 'Pedido de Cliente',
 	'CustomerShippingSlip' => 'Albarán de Cliente',
 	'CustomerInvoice' => 'Factura de Cliente',
+
+    'SupplierQuotation' => 'Presupuesto de Proveedor',
+	'SupplierOrder' => 'Pedido de Proveedor',
+	'SupplierShippingSlip' => 'Albarán de Proveedor',
+	'SupplierInvoice' => 'Factura de Proveedor',
+
     'StockCount' => 'Inventario de Almacén',
 
 
@@ -310,6 +332,18 @@ return array(
 
 	'App\CommissionSettlement.pending' => 'Pendiente',
 	'App\CommissionSettlement.closed'    => 'Cerrado',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Shipping Method Billing Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\ShippingMethod.price'  => 'Precio',
+	'App\ShippingMethod.weight' => 'Peso',
 
 
 	/*

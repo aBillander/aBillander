@@ -208,7 +208,7 @@
     @if ( $document->shipment_status == 'delivered' )
         @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
 
-                <div class="btn-group">
+                <div class="row btn-group">
                   <a href="#" class="btn btn-xs btn-blue" title="{{ l('Delivered at:') }} {{abi_date_short( $document->delivery_date_real )}}">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
                   <a href="#" class="btn btn-xs btn-blue dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
                   <ul class="dropdown-menu" style="background-color: #ffffff; color: #333333;">
@@ -281,6 +281,7 @@
 
                 <!-- a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a -->
 
+{{--
 @if ($document->onhold>0)
 
 @else
@@ -290,6 +291,7 @@
                 </a>
                 @endif
 @endif
+--}}
 
 @if ( !$document->invoiced_at )
                 <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>

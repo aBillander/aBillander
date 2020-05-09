@@ -35,7 +35,14 @@ return [
 	'Product Name'     => 'Nombre del Producto',
 	'Product type'     => 'Tipo',
 	'Procurement type'     => 'Aprovisionamiento',
+	'MRP type' => 'Planificación',
+
+//	'Leave empty if manufactured or purchased on order.' => 'Dejar vacío si se fabrica o compra bajo pedido.',
+
 	'Phantom Assembly?'     => '¿Es fantasma?',
+
+	'A phantom assembly is a logical (rather than functional) grouping of materials.'     => 'Un semi-elaborado fantasma es una agrupación lógica (más que funcional) de materiales.',
+
 	'Reference'     => 'Referencia',
 	'Customer Price'     => 'Precio de Venta',
 	'Tax'     => 'Impuesto',
@@ -85,6 +92,7 @@ return [
 	'Combinations'     => 'Combinaciones',
 	'Images'     => 'Imágenes',
 	'Internet'     => 'Internet',
+	'Web Shop'	=> 'Tienda Online',
 	'Manufacturing'     => 'Fabricación',
 
 	'Ean13'     => 'Ean13',
@@ -175,6 +183,7 @@ return [
 	'Default?'     => '¿Principal?',
 
 	'Publish to web?'     => '¿Publicar en la web?',
+	'Webshop ID'     => 'Código en la Tienda Web',
 
 
 
@@ -231,7 +240,7 @@ return [
 	'Available'     => 'Disponible',
 //	'Cost Price'     => 'Precio de Coste',
 	'Customer Margin'     => 'Margen Cliente',
-	'Customer Price'     => 'PVP Cliente',
+//	'Customer Price'     => 'PVP Cliente',	<= Duplicated
 	'Customer With Tax'     => 'PVP+IVA Cliente',
 
 	'Customer'     => 'Cliente',
@@ -256,5 +265,52 @@ return [
 	'Conversion rate' => 'Factor de Conversión',
 	'Conversion rates are calculated from one unit of your main Measura Unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, the Conversion rate will be "6" (since a pack of six bottles will contain six bottles).' => 'El Factor de Conversión se calcula a partir de la Unidad de Medida principal. Por ejemplo, si la unidad principal es "botella" y la unidad alternativa es "paquete-de-seis", el Factor de Conversión será "6" (ya que un paquete de seis botellas contendrá seis botellas).',
 	'' => '',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Last additions
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Position'     => 'Posición',
+
+	'Use multiples of 10. Use other values to interpolate.'     => 'Use múltiplos de 10. Use otros valores para intercalar.',
+
+
+    'Prices are exclusive of Ecotax' => 'El Precio no incluye la Ecotasa',
+    'Prices are inclusive of Ecotax' => 'El Precio incluye la Ecotasa',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Internet Tab
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'Import Images' => 'Importar Imágenes',
+    'Import Descriptions' => 'Importar Descripciones',
+
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Reorder Point
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'Products with Low Stock' => 'Productos con Bajo Stock',
+    'Suggested Quantity' => 'Cantidad Sugerida',
+    'Re-Order Point' => 'Punto de Pedido',
+	'Stock Control'     => 'Control de Stock',
 
 ];

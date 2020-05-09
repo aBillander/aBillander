@@ -33,6 +33,17 @@
 
 
 
+@include('helferin.reports_consumption')
+
+
+
+@include('helferin.reports_customer_vouchers')
+
+
+
+@include('helferin.reports_customer_invoices')
+
+
 
 
 {{-- ********************************************************** --}}

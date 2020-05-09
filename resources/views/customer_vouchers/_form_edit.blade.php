@@ -98,6 +98,13 @@
 @if($payment->status == 'paid')
 <a href="#" class="btn btn-danger btn-sm">{{ l('This Voucher is paid and cannot be modified') }}</a>
 @else
+  @if($payment->status == 'pending')
+            <input type="hidden" id="nextAction" name="nextAction" value="" />
+            <button class="pull-right btn btn-danger" type="submit" onclick="this.disabled=true;$('#action').val('uncollectible');this.form.submit();">
+               <i class="fa fa-exclamation-triangle"></i>
+               &nbsp; {{l('Set as Uncollectible')}}
+            </button>
+  @endif
 {!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 @endif
 

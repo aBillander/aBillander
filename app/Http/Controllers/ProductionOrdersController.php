@@ -68,10 +68,10 @@ class ProductionOrdersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionOrder  $productionOrder
+     * @param  \App\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
-    public function show(ProductionOrder $productionOrder)
+    public function show(ProductionOrder $productionorder)
     {
         //
     }
@@ -79,22 +79,23 @@ class ProductionOrdersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ProductionOrder  $productionOrder
+     * @param  \App\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
-    public function edit(ProductionOrder $productionOrder)
+    public function edit(ProductionOrder $productionorder, Request $request)
     {
-        //
+        return redirect()->route('productionsheet.productionorders', [$productionorder->production_sheet_id])
+                ->with('info', l('Compruebe la Orden de Fabricación &#58&#58 (:id) ', ['id' => $productionorder->id]));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ProductionOrder  $productionOrder
+     * @param  \App\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProductionOrder $productionOrder)
+    public function update(Request $request, ProductionOrder $productionorder)
     {
         //
     }
@@ -102,10 +103,10 @@ class ProductionOrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ProductionOrder  $productionOrder
+     * @param  \App\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductionOrder $productionOrder)
+    public function destroy(ProductionOrder $productionorder)
     {
         //
     }
@@ -122,16 +123,20 @@ class ProductionOrdersController extends Controller
 
 //        abi_r($order->planned_quantity. '==' .$request->input('planned_quantity'), true);
 
+//        abi_r( $request->all() );die();
+
         $order->update( $request->all() );
 
         if ($need_update) $order->updateLines();
-
+/*
         if ( $request->input('stay_current_sheet', 1) )
             $sheet_id = $request->input('current_production_sheet_id');
         else
             $sheet_id = $request->input('production_sheet_id');
+*/
+        $sheet_id = $request->input('current_production_sheet_id');
 
-        return redirect('productionsheets/'.$sheet_id)
+        return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $sheet_id], 'layouts') . $request->input('name', ''));
     }
 

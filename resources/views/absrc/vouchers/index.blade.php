@@ -31,7 +31,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => 'absrc.vouchers.index', 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => 'absrc.vouchers.index', 'method' => 'GET', 'id' => 'process')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -47,6 +47,31 @@
         {!! Form::label('date_to_form', l('Date to', 'layouts')) !!}
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
+
+
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('amount', l('Amount')) !!}
+        {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control')) !!}
+    </div>
+
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
+    {!! Form::label('status', l('Status')) !!}
+    {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
+</div>
+
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('name', l('Customer')) !!}
+    {!! Form::text('name', null, array('class' => 'form-control')) !!}
+</div>
+{{--
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('autocustomer_name', l('Customer')) !!}
+    {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
+
+    {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+</div>
+--}}
 
 <div class=" hide form-group col-lg-2 col-md-2 col-sm-2" id="div-auto_direct_debit">
      {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}
@@ -76,20 +101,6 @@
      </div>
 </div>
 
-{{--
-<div class="form-group col-lg-1 col-md-1 col-sm-1">
-    {!! Form::label('reference', l('Reference')) !!}
-    {!! Form::text('reference', null, array('class' => 'form-control')) !!}
-</div>
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {!! Form::label('name', l('Product Name')) !!}
-    {!! Form::text('name', null, array('class' => 'form-control')) !!}
-</div>
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {!! Form::label('warehouse_id', l('Warehouse')) !!}
-    {!! Form::select('warehouse_id', array('0' => l('All', [], 'layouts')) + $warehouseList, null, array('class' => 'form-control')) !!}
-</div>
---}}
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
@@ -129,6 +140,7 @@
                </a>
           </th>
       <th class="text-center">{{l('Status', [], 'layouts')}}</th>
+      <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -174,6 +186,19 @@
             		<span>
             	@endif
             	{{\App\Payment::getStatusName($payment->status)}}</span></td>
+
+
+      <td class="text-center">
+          @if ($payment->notes)
+           <a href="javascript:void(0);">
+              <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                      data-content="{{ $payment->notes }}">
+                  <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+              </button>
+           </a>
+          @endif
+      </td>
+
 
 			<td class="text-right">
 {{--
@@ -238,6 +263,7 @@ $(document).ready(function() {
 
 </script>
 
+{{-- Auto Complete --}}
 {{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
@@ -245,21 +271,52 @@ $(document).ready(function() {
 {!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
 
 <script>
-  $(function() {
+  $(document).ready(function() {
+{{--
+        $("#autocustomer_name").autocomplete({
+            source : "{{ route('absrc.ajax.customerLookup') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                customer_id = value.item.id;
+
+                $("#autocustomer_name").val(value.item.name_regular);
+                $("#customer_id").val(value.item.id);
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .appendTo( ul );
+            };
+--}}
+
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
-  });
 
-  $(function() {
+
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
   });
+
+
+   $('#process').submit(function(event) {
+
+     if ( $("#autocustomer_name").val() == '' ) $('#customer_id').val('');
+
+     return true;
+
+   });
+
 </script>
 
 @endsection

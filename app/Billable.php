@@ -17,7 +17,7 @@ use App\Configuration;
 
 // use ReflectionClass;
 
-class Billable extends Model
+class Billable extends Model implements ShippableInterface
 {
     use BillableIntrospectorTrait;
     use BillableCustomTrait;
@@ -55,6 +55,7 @@ class Billable extends Model
             'absrc',
             'aggregate_orders',
             'aggregate_shipping_slips',
+            'production_sheet',
         );
 
     protected $dates = [
@@ -96,6 +97,8 @@ class Billable extends Model
 
                             'notes_from_customer', 'notes', 'notes_to_customer',
                             'status', 'locked',
+
+                            'production_sheet_id',
 
                             'invoicing_address_id', 'shipping_address_id', 
                             'warehouse_id', 'shipping_method_id', 'sales_rep_id', 'currency_id', 'payment_method_id', 
@@ -418,7 +421,7 @@ class Billable extends Model
             )
             return $this->shipping_method_id;
 
-        return Configuration::getInt('DEF_CUSTOMER_SHIPPING_METHOD');
+        return Configuration::getInt('DEF_SHIPPING_METHOD');
     }
     
     public function getShippingAddressId() 
@@ -451,6 +454,16 @@ class Billable extends Model
     {
         // Already confirmed?
         if ( $this->document_reference || ( $this->status != 'draft' ) ) return false;
+
+        // Customer blocked?
+        if ( array_key_exists('customer_id', $this->getAttributes()) )
+        if ( $this->customer->blocked > 0 ) return false;
+
+        // Supplier blocked?
+        if ( array_key_exists('supplier_id', $this->getAttributes()) )
+        if ( $this->supplier->blocked > 0 ) return false;
+
+        // array_key_exists($key, $model->attributesToArray()) or array_key_exists($key, $model->getAttributes()) can already be used.
 
         // onhold?
         if ( $this->onhold ) return false;
@@ -559,6 +572,14 @@ class Billable extends Model
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
         
         if ( $this->status == 'closed' ) return false;
+        
+        // Customer blocked?
+        if ( array_key_exists('customer_id', $this->getAttributes()) )
+        if ( $this->customer->blocked > 0 ) return false;
+
+        // Supplier blocked?
+        if ( array_key_exists('supplier_id', $this->getAttributes()) )
+        if ( $this->supplier->blocked > 0 ) return false;
 
         // onhold?
         if ( $this->onhold ) return false;
@@ -622,10 +643,19 @@ class Billable extends Model
 
     public function getMaxLineSortOrder()
     {
+        // $this->load(['lines']);
+
         if ( $this->lines->count() )
             return $this->lines->max('line_sort_order');
 
         return 0;           // Or: return intval( $this->customershippingsliplines->max('line_sort_order') );
+    }
+    
+    public function getNextLineSortOrder()
+    {
+        $inc = 10;
+
+        return $this->getMaxLineSortOrder() + $inc;
     }
     
     public function hasShippingAddress()
@@ -842,6 +872,19 @@ class Billable extends Model
     public function customer()
     {
         return $this->belongsTo('App\Customer');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo('App\Supplier');
+    }
+
+    public function transactor()
+    {
+        $transactor = $this->getClassFirstSegment();
+        $transactor_id = strtolower($transactor).'_id';
+
+        return $this->belongsTo('App\\'.$transactor, $transactor_id);
     }
 
     public function shippingmethod()
@@ -1084,4 +1127,45 @@ class Billable extends Model
         return $query->where( 'due_date', '>=', \Carbon\Carbon::now()->toDateString() );
     }
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shippable Interface
+    |--------------------------------------------------------------------------
+    */
+
+    public function getShippingBillableAmount( $billing_type = 'price' )
+    {
+        if ( $billing_type == 'price' )
+            return $this->amount;
+        
+        else
+        if ( $billing_type == 'weight' )
+            return $this->weight;
+        
+        else
+            return 0.0;
+    }
+
+
+    public function getAmountAttribute() 
+    {
+        $line_products = $this->lines->where('line_type', 'product');
+
+        $total_products_tax_excl = $line_products->sum('total_tax_excl');
+
+        return $total_products_tax_excl;
+    }
+
+    public function getWeightAttribute() 
+    {
+        $line_products = $this->lines->where('line_type', 'product')->load('product');
+
+        $total_weight = $line_products->sum(function ($line) {
+            return $line->product->weight;
+        });
+
+        return $total_weight;
+    }
 }

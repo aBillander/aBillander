@@ -7,3 +7,6 @@ fsweb
 db_backups/*
 !db_backups/localhost
 db_backups/localhost/*
+
+!pdf
+pdf/*

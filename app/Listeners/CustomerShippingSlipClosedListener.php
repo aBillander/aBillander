@@ -6,6 +6,8 @@ use App\Events\CustomerShippingSlipClosed;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use App\Configuration;
+
 class CustomerShippingSlipClosedListener
 {
     /**
@@ -35,6 +37,15 @@ class CustomerShippingSlipClosedListener
         {
             //
             $document->makeStockMovements();
+        }
+
+
+        // 
+        // Ecotaxes stuff
+        // 
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') )
+        {
+            $document->loadLineEcotaxes();
         }
         
     }

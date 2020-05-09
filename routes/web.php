@@ -58,6 +58,9 @@ Route::get('clear-cache', function()
     // Artisan::call('storage:link');
     // Or create simlink manually
 
+    // php artisan clear-compiled       // https://stillat.com/blog/2016/12/07/laravel-artisan-general-command-the-clear-compiled-command
+    // composer dump-autoload
+
     return '<h1>Cachés borradas</h1>';
 });
 
@@ -106,6 +109,46 @@ Route::get('dbbackup', function()
     return ;
 });
 
+
+Route::get('eggtimer', function()
+{
+    $seconds = 1;
+
+    $limit = max((int) ini_get('max_execution_time'), 60) + 10;
+
+        // Start Logger
+        $logger = \App\ActivityLogger::setup( 'Egg Timmer', 'Guess max_execution_time' );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+
+
+        $logger->empty();
+        $logger->start();
+
+        $logger->log("INFO", "PHP says: ini_get('max_execution_time') = ".(int) ini_get('max_execution_time').' secs.');
+
+        $i=0;
+
+        while ( true ) {
+            # code...
+
+            $i++;
+
+            // sleep( $seconds );
+            usleep((int)($seconds * 1000000));
+
+            $logger->log("INFO", "Round: ".(int) $i.' => '.(int) $i*$seconds.' secs.');
+
+            if ($i*$seconds>$limit) break;
+        }
+
+
+        $logger->stop();
+
+
+        return redirect('activityloggers/'.$logger->id)
+                ->with('success', l('Egg Timmer :: Guess max_execution_time.'));
+});
+
+
 Route::get('404', function()
 {
     return view('errors.404');
@@ -145,6 +188,17 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('/helferin/home', 'HelferinController@index')->name('helferin.home');
         Route::post('/helferin/reports/sales'  , 'HelferinController@reportSales'  )->name('helferin.reports.sales');
         Route::post('/helferin/reports/ecotaxes'  , 'HelferinController@reportEcotaxes'  )->name('helferin.reports.ecotaxes');
+        Route::post('/helferin/reports/consumption'  , 'HelferinController@reportConsumption'  )->name('helferin.reports.consumption');
+        Route::post('/helferin/reports/customer/vouchers'  , 'HelferinController@reportCustomerVouchers'  )->name('helferin.reports.customer.vouchers');
+        Route::post('/helferin/reports/customer/invoices'  , 'HelferinController@reportCustomerInvoices'  )->name('helferin.reports.customer.invoices');
+
+        Route::get('/helferin/home/mfg', 'HelferinController@mfgIndex')->name('helferin.home.mfg');
+        Route::post('/helferin/reports/reorder'       , 'HelferinController@reportProductReorder'       )->name('helferin.reports.reorder');
+        Route::get( '/helferin/reports/reorder/headers', 'HelferinController@reportProductReorderHeaders' )->name('helferin.reports.reorder.headers');
+
+
+        Route::get( 'abccbillboard/edit',    'AbccBillboardController@edit'  )->name('abccbillboard.edit');
+        Route::post('abccbillboard/update',  'AbccBillboardController@update')->name('abccbillboard.update');
 
 
         Route::resource('configurations',    'ConfigurationsController');
@@ -189,6 +243,21 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('commissionsettlementlines/{id}/unlink', 'CommissionSettlementLinesController@unlink')->name('commissionsettlementline.unlink');
 
         Route::resource('suppliers', 'SuppliersController');
+        Route::get('suppliers/ajax/name_lookup', array('uses' => 'SuppliersController@ajaxSupplierSearch', 'as' => 'suppliers.ajax.nameLookup'));
+        Route::post('suppliers/{id}/bankaccount', 'SuppliersController@updateBankAccount')->name('suppliers.bankaccount');
+
+        Route::resource('suppliers.addresses', 'SupplierAddressesController');
+
+        Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
+
+        Route::get( 'suppliers/{id}/product/{pid}/reference/edit', 'SupplierPriceListLinesController@editReference')->name('supplier.product.update.reference.edit');
+        Route::post('suppliers/{id}/product/{pid}/reference', 'SupplierPriceListLinesController@updateReference')->name('supplier.product.update.reference');
+
+        Route::get('suppliers/{id}/supplierpricelistline/searchproduct', 'SupplierPriceListLinesController@searchProduct')->name('supplier.pricelistline.searchproduct');
+
+        Route::get('suppliers/{id}/getreference/{pid}', 'SupplierPriceListLinesController@getSupplierProductReference')->name('supplier.product.reference');
+
+
 
         Route::resource('templates', 'TemplatesController');
 
@@ -231,6 +300,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
                                                         'as'   => 'products.ajax.combinationLookup' ));
 
+        Route::get('products/stock/reorder',        'ProductsReorderController@index' )->name('products.reorder.index' );
+        Route::get('products/stock/reorder/export', 'ProductsReorderController@export')->name('products.reorder.export');
+
         Route::resource('ingredients', 'IngredientsController');
 
         Route::resource('productboms', 'ProductBOMsController');
@@ -256,6 +328,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('categories.subcategories', 'CategoriesController');
         Route::post('categories/{id}/publish', array('uses' => 'CategoriesController@publish', 
                                                         'as'   => 'categories.publish' ));
+        Route::post('categories/sortlines', 'CategoriesController@sortLines')->name('categories.sortlines');
+
+        Route::get('category/{id}/products', 'CategoryProductsController@index')->name('category.products');
+        Route::post('category/sortproducts', 'CategoryProductsController@sortProducts')->name('category.sortproducts');
+
 
         Route::get('productionorders/{id}/getorder', 'ProductionOrdersController@getOrder')->name('productionorder.getorder');
         Route::post('productionorders/{id}/productionsheetedit', 'ProductionOrdersController@productionsheetEdit')->name('productionorder.productionsheet.edit');
@@ -277,7 +354,26 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('productionsheets/{id}/orders/pdf', 'ProductionSheetsPdfController@getPdfOrders')->name('productionsheet.orders.pdf');
 
+        Route::get('productionsheets/{id}/shippingslips/pdf', 'ProductionSheetsPdfController@getPdfShippingslips')->name('productionsheet.shippingslips.pdf');
+
         Route::get('productionsheets/{id}/products/pdf', 'ProductionSheetsPdfController@getPdfProducts')->name('productionsheet.products.pdf');
+
+        // Production Sheet Orders
+        Route::get( 'productionsheetorders/{id}',  'ProductionSheetOrdersController@ordersIndex')->name('productionsheet.orders');
+
+        Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
+
+        // Production Sheet Shipping Slips
+        Route::get('productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+
+        Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
+
+        Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourlineController@export' )->name('productionsheet.tourline');
+
+        // Production Sheet Production Orders
+        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
+
+        Route::post('productionsheetproductionorders/finish', 'ProductionSheetProductionOrdersController@finishProductionOrders')->name('productionsheet.productionorders.finish');
 
 
 
@@ -306,6 +402,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('paymenttypes', 'PaymentTypesController');
 
         Route::resource('shippingmethods', 'ShippingMethodsController');
+        Route::resource('shippingmethods.shippingmethodrules', 'ShippingMethodRulesController');
 
         Route::resource('customergroups', 'CustomerGroupsController');
 
@@ -332,6 +429,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 //                         'as'   => 'activityloggers.index'] );
         Route::get('activityloggers/empty', ['uses' => 'ActivityLoggersController@empty', 
                          'as'   => 'activityloggers.empty'] );
+        
+        Route::get( 'export/activityloggers/{activitylogger}', 'ActivityLoggersController@export' )->name('activityloggers.export');
 
         Route::resource('emaillogs', 'EmailLogsController');
 
@@ -479,8 +578,12 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/pay'  , 'CustomerVouchersController@pay');
         Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('voucher.unlink');
 
+        Route::post('customervouchers/payvouchers'  , 'CustomerVouchersController@payVouchers')->name('customervouchers.payvouchers');
+
         Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('voucher.expresspay');
         Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('voucher.unpay');
+        
+        Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('voucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
         
@@ -499,6 +602,29 @@ foreach ($pairs as $pair) {
         Route::resource('combinations', 'CombinationsController');
 
         Route::resource('images', 'ImagesController');
+
+
+        // Delivery Routes
+        Route::resource('deliveryroutes',                    'DeliveryRoutesController'    );
+        Route::resource('deliveryroutes.deliveryroutelines', 'DeliveryRouteLinesController');
+        Route::post('deliveryroutes/sortlines', 'DeliveryRoutesController@sortLines')->name('deliveryroute.sortlines');
+
+        Route::get( 'deliveryroutes/{deliveryroute}/pdf', 'DeliveryRoutesController@showPdf' )->name('deliveryroutes.pdf');
+        
+        Route::resource('deliverysheets',                    'DeliverySheetsController'    );
+        Route::resource('deliverysheets.deliverysheetlines', 'DeliverySheetLinesController');
+        Route::post('deliverysheets/sortlines', 'DeliverySheetsController@sortLines')->name('deliverysheet.sortlines');
+
+        // Customer Order Templates
+        Route::resource('customerordertemplates',                    'CustomerOrderTemplatesController'    );
+        Route::resource('customerordertemplates.customerordertemplatelines', 'CustomerOrderTemplateLinesController');
+        Route::post('customerordertemplates/sortlines', 'CustomerOrderTemplatesController@sortLines')->name('customerordertemplate.sortlines');
+
+        Route::get('customerordertemplates/create/afterorder/{id}', 'CustomerOrderTemplatesController@createAfterOrder')->name('customerordertemplates.create.afterorder');
+        Route::post('customerordertemplates/store/afterorder',      'CustomerOrderTemplatesController@storeAfterOrder')->name('customerordertemplates.store.afterorder');
+
+        Route::get( 'customerordertemplates/{customerordertemplate}/createorder', 'CustomerOrderTemplatesController@createCustomerOrder' )->name('customerordertemplates.createcustomerorder');
+
 
 
         // Import / Export to Database
@@ -525,9 +651,21 @@ foreach ($pairs as $pair) {
         Route::post('import/customers', 'Import\ImportCustomersController@process')->name('customers.import.process');
         Route::get( 'export/customers', 'Import\ImportCustomersController@export' )->name('customers.export');
 
+        Route::get( 'import/customerusers', 'Import\ImportCustomerUsersController@import' )->name('customerusers.import');
+        Route::post('import/customerusers', 'Import\ImportCustomerUsersController@process')->name('customerusers.import.process');
+        Route::get( 'export/customerusers', 'Import\ImportCustomerUsersController@export' )->name('customerusers.export');
+
         Route::get( 'import/stockcounts/{id}', 'Import\ImportStockCountsController@import' )->name('stockcounts.import');
         Route::post('import/stockcounts/{id}', 'Import\ImportStockCountsController@process')->name('stockcounts.import.process');
         Route::get( 'export/stockcounts/{id}', 'Import\ImportStockCountsController@export' )->name('stockcounts.export');
+
+        Route::get( 'import/suppliers', 'Import\ImportSuppliersController@import' )->name('suppliers.import');
+        Route::post('import/suppliers', 'Import\ImportSuppliersController@process')->name('suppliers.import.process');
+        Route::get( 'export/suppliers', 'Import\ImportSuppliersController@export' )->name('suppliers.export');
+
+        Route::get( 'import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@import' )->name('suppliers.pricelist.import');
+        Route::post('import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@process')->name('suppliers.pricelist.import.process');
+        Route::get( 'export/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@export' )->name('suppliers.pricelist.export');
 
 
         Route::get('import', function()
@@ -584,6 +722,12 @@ foreach ($pairs as $pair) {
             Route::get('/get-monthly-sales',      'ChartCustomerSalesController@getMonthlySales')->name('chart.customerorders.monthly');
             Route::get('/get-monthly-sales-data', 'ChartCustomerSalesController@getMonthlySalesData')->name('chart.customerorders.monthly.data');
 
+            Route::get('/get-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('chart.customervouchers.monthly');
+            Route::get('/get-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('chart.customervouchers.monthly.data');
+
+            Route::get('/get-monthly-product-stock',      'ChartProductStockController@getMonthlyProductStock')->name('chart.product.stock.monthly');
+            Route::get('/get-monthly-product-stock-data', 'ChartProductStockController@getMonthlyProductStockData')->name('chart.product.stock.monthly.data');
+
             Route::get('r', function()
                 {
                     return 'Hello, world!';
@@ -591,12 +735,25 @@ foreach ($pairs as $pair) {
 
         });
 
+                
+        /* ********************************************************** */
+
+        // Temporary Purchase Order routes
+
+        if (file_exists(__DIR__.'/web_po.php')) {
+            include __DIR__.'/web_po.php';
+        }
+
+
+
+        /* ********************************************************** */
+
+
 
 });
 
 
 /* ********************************************************** */
-
 // Customer's Center
 
 // Fast & dirty

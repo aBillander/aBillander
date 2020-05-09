@@ -13,7 +13,14 @@ use Illuminate\Http\Request;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-use \aBillander\WooConnect\WooOrder;
+use aBillander\WooConnect\WooOrder;
+
+use App\Configuration;
+use App\Customer;
+use App\CustomerOrder;
+use App\Country;
+use App\State;
+use App\ShippingMethod;
 
 use App\Traits\DateFormFormatterTrait;
 
@@ -64,7 +71,7 @@ class WooOrdersController extends Controller
 		// https://laracasts.com/discuss/channels/laravel/laravel-pagination-not-working-with-array-instead-of-collection
 
 		$page = Paginator::resolveCurrentPage();  // $request->input('page', 1); // Get the current page or default to 1
-		$perPage = intval(\App\Configuration::get('WOOC_ORDERS_PER_PAGE'));
+		$perPage = Configuration::getInt('WOOC_ORDERS_PER_PAGE');
 		if ($perPage<1) $perPage=10;
 		$offset = ($page * $perPage) - $perPage;
 
@@ -115,7 +122,9 @@ class WooOrdersController extends Controller
 //			$e->getResponse(); // Last response data.
 //			abi_r($e->getResponse);
 
-			$err = '<ul><li><strong>'.$e->getMessage().'</strong></li></ul>';
+			// $err = '<ul><li><strong>'.$e->getMessage().'</strong></li></ul>';
+
+			$err = '<ul><li><strong>'.nl2p($e).'</strong></li></ul>';
 
 			return redirect('404')
 				->with('error', l('La Tienda Online ha rechazado la conexión, y ha dicho: ') . $err);
@@ -131,8 +140,8 @@ class WooOrdersController extends Controller
 		$first = $orders->first()["id"];
 		$last  = $orders->last()["id"];
 
-//		$abi_orders = \App\CustomerOrder::where('reference', '>=', $last)->where('reference', '<=', $first)->get();
-		$abi_orders = \App\CustomerOrder::with('productionsheet')->whereBetween('reference_external', [$last, $first])->get();
+//		$abi_orders = CustomerOrder::where('reference', '>=', $last)->where('reference', '<=', $first)->get();
+		$abi_orders = CustomerOrder::with('productionsheet')->whereBetween('reference_external', [$last, $first])->get();
 		$abi_orders = $abi_orders->keyBy('reference_external');
 /*
 		foreach ($orders as &$order){
@@ -165,7 +174,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 				$order["production_sheet_id"] = '';
 			}
 
-            $state = \App\State::findByIsoCode( $order['shipping']['state'], $order['shipping']['country'] );
+            $state = State::findByIsoCode( $order['shipping']['state'], $order['shipping']['country'] );
 
             $state_name = $state ? $state->name : $order['shipping']['state'];
             $order['shipping']['state_name'] = $state_name;
@@ -179,7 +188,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 
 		// $orders = collect($results);
 
-//		$availableProductionSheets = \App\ProductionSheet::isOpen()->orderBy('due_date', 'asc')->pluck('due_date', 'id')->toArray();
+//		$availableProductionSheets = ProductionSheet::isOpen()->orderBy('due_date', 'asc')->pluck('due_date', 'id')->toArray();
 
         return view('woo_connect::woo_orders.index', compact('orders', 'query'));
 	}
@@ -251,8 +260,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 //            }
 
 		// I am thirsty. Let's get hydrated!
-		$customer = \App\Customer::where('webshop_id', $order['customer_id'])->first();
-//		$customer = null;
+		$customer = Customer::where('webshop_id', WooOrder::getCustomerId( $order ))->first();
 
 		$vatNumber = WooOrder::getVatNumber( $order );
 		$order['billing']['vat_number'] = $vatNumber;
@@ -261,23 +269,26 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 
 
 		// Billing
-		$country = \App\Country::findByIsoCode( $order['billing']['country'] );
+		$country = Country::findByIsoCode( $order['billing']['country'] );
 		$order['billing']['country_name'] = $country ? $country->name : $order['billing']['country'];
 
-		$state = \App\State::findByIsoCode( $order['billing']['state'], $order['billing']['country'] );
+		$state = State::findByIsoCode( $order['billing']['state'], $order['billing']['country'] );
 		$order['billing']['state_name'] = $state ? $state->name : $order['billing']['state'];
 
 
 		// Shipping
-		$country = \App\Country::findByIsoCode( $order['shipping']['country'] );
+		$country = Country::findByIsoCode( $order['shipping']['country'] );
 		$order['shipping']['country_name'] = $country ? $country->name : $order['shipping']['country'];
 
-		$state = \App\State::findByIsoCode( $order['shipping']['state'], $order['shipping']['country'] );
+		$state = State::findByIsoCode( $order['shipping']['state'], $order['shipping']['country'] );
 		$order['shipping']['state_name'] = $state ? $state->name : $order['shipping']['state'];
+
+		// Address check
+		$order['has_shipping'] = WooOrder::getShippingAddressId( $order ) != WooOrder::getBillingAddressId( $order );
 
 		// Carrier
 		$order['shipping']['shipping_method'] = '('.$order['shipping_lines'][0]['method_id'].') '.$order['shipping_lines'][0]['method_title'];
-		$shipping_method = \App\ShippingMethod::with('carrier')->find( WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ) );
+		$shipping_method = ShippingMethod::with('carrier')->find( WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ) );
 
 		// $order['shipping']['shipping_method'] = '';
 		$order['shipping']['carrier'] = '';
@@ -289,6 +300,20 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 				$order['shipping']['carrier'] = $shipping_method->carrier->name;
 			}
 		}
+
+		$abi_order = CustomerOrder::where('reference_external', $order["id"])->first();
+
+			if ($abi_order) {
+				$order["abi_order_id"] = $abi_order->id;
+				$order["imported_at"] = $abi_order->created_at->toDateString();
+				$order["production_at"] = ''; // $abi_order->productionsheet->due_date;
+				$order["production_sheet_id"] = $abi_order->production_sheet_id;
+			} else {
+				$order["abi_order_id"] = '';
+				$order["imported_at"] = '';
+				$order["production_at"] = '';
+				$order["production_sheet_id"] = '';
+			}
 
 		return view('woo_connect::woo_orders.show', compact('order', 'customer'));
 	}

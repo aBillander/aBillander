@@ -10,6 +10,10 @@ use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientExcept
 
 class WooConnector {    // extends Model {
 
+    public static $woo_keys = [
+            'woocommerce_default_country', 'woocommerce_currency', 'woocommerce_weight_unit', 'woocommerce_dimension_unit', 'woocommerce_prices_include_tax', 'woocommerce_tax_based_on', 'woocommerce_shipping_tax_class', 'woocommerce_tax_round_at_subtotal', 'woocommerce_tax_display_shop', 'woocommerce_enable_guest_checkout',
+    ];
+
     public static $statuses = array(
             'pending', 
             'processing', 
@@ -60,6 +64,67 @@ class WooConnector {    // extends Model {
 /* ********************************************************************************************* */   
 
 
+    public static function getAllWooSettings()
+    {
+        $settings = [];
+
+        // Get Configurations from WooCommerce Shop
+        try {
+
+            $groups = WooCommerce::get('settings'); // Array
+        }
+
+        catch( WooHttpClientException $e ) {
+
+            /*
+            $e->getMessage(); // Error message.
+
+            $e->getRequest(); // Last request data.
+
+            $e->getResponse(); // Last response data.
+            */
+
+            return redirect()->route('worders.index')
+                    ->with('error', $e->getMessage());
+
+        }
+
+        // abi_r($groups, true);
+
+        foreach ($groups as $group) {
+
+            try {
+
+                $set = WooCommerce::get( 'settings/'.$group['id'] );    // Array
+
+                $settings = array_merge($settings, $set);
+
+                // abi_r($set);abi_r('* ***************************************** *');
+            }
+
+            catch( WooHttpClientException $e ) {
+
+                // settings/integration : Error: Grupo de ajustes no válido. [rest_setting_setting_group_invalid]
+
+//              return redirect()->route('worders.index')
+//                      ->with('error', $e->getMessage());
+
+            }
+        }
+
+//      abi_r($settings, true);
+
+        // Save Settings Cache
+        // Loose some fat first
+        $settings = array_map(function($value){
+            $v = [ 'id' => $value['id'], 'description' => $value['label'].' :: '.$value['description'], 'value' => $value['value'], ];
+            return $v;
+        }, $settings);
+
+        return $settings;
+    }
+
+
     public static function getWooConfigurations()
     {
         if ( !isset(self::$woo_settings) )
@@ -68,9 +133,10 @@ class WooConnector {    // extends Model {
         return self::$woo_settings;
     }
     
-    public static function getWooSetting( $setting_id = '' )
+    public static function getWooSetting( $setting_id = '', $settings = [] )
     {
-        $settings = self::getWooConfigurations();
+        if ( empty( (array) $settings) )
+            $settings = self::getWooConfigurations();
 
 //        abi_r($settings);
 
@@ -208,17 +274,5 @@ class WooConnector {    // extends Model {
         }
 
         return $methods;
-    }
-    
-
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
-    
-    public function customerinvoices()
-    {
-        // 
     }
 }

@@ -35,6 +35,14 @@
            {!! $errors->first('document_ppd_percent', '<span class="help-block">:message</span>') !!}
         </div>
 
+         <div class="form-group col-lg-2 col-md-2 col-sm-2">
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            <strong>{{ l('Customer Reference') }}</strong>
+            <div class="form-control">{{ $document->reference_customer}}</div>
+         </div>
+
       </div>
       <div class="row">
 

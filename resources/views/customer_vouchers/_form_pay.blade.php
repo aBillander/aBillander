@@ -53,7 +53,7 @@
 
 <div class="alert alert-danger alert-block" name="amount_check" id="amount_check" style="display: none;">
   <strong>{!! l('Error', [], 'layouts') !!}: </strong>
-    {!! l('Amount must be greater than 0 and not greater than :value', ['value' => $payment->amount]) !!}
+    {!! l('Amount must be greater than :min and not greater than :max', ['min' => ($payment->amount < 0 ? $payment->amount : 0.0), 'max' => ($payment->amount < 0 ? 0.0 : $payment->amount)]) !!}
 </div>
 
 <div class="row" @if( $payment->currency_id == \App\Context::getContext()->currency->id ) style="display: none;" @endif>
@@ -85,7 +85,7 @@
 @if($payment->status == 'paid')
 <a href="#" class="btn btn-danger btn-sm">{{ l('This Voucher is paid and cannot be modified') }}</a>
 @else
-{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
+{!! Form::submit(l('Make Payment'), array('class' => 'btn btn-blue')) !!}
 @endif
 
 {{-- !! link_to_route('customervouchers.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !! --}}
@@ -94,7 +94,7 @@
 
 <!-- a href="{ { url()->previous() } }" class="btn btn-warning">{{ l('Cancel', [], 'layouts') }}</a -->
 
-@if($payment->status != 'paid')
+@if(0 && $payment->status != 'paid')
 <a href="{{ route('voucher.expresspay', [$payment->id]) }}" class="btn xbtn-sm btn-blue pull-right" 
         title="{{l('Make Payment')}}" style="margin-left: 22px;"><i class="fa fa-money"></i> &nbsp;{{l('Make Payment')}}</a>
 @endif

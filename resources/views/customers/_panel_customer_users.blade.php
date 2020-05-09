@@ -40,6 +40,7 @@
         $(document).on('click', '.create-customeruser', function (evnt) {
 
             var id = $(this).attr('data-id');
+            var emo, emov;
 
             // Initialize
             $('#customeruser_action').val('create');
@@ -55,9 +56,36 @@
             $("input[name='customeruser_active'][value='1']").prop('checked', true);
             $("input[name='enable_quotations'][value='-1']").prop('checked', true);
             $("input[name='enable_min_order'][value='-1']").prop('checked', true);
+            $("input[name='use_default_min_order_value'][value='1']").prop('checked', true);
             $("input[name='allow_abcc_access'][value='1']").prop('checked', true);
             $("input[name='display_prices_tax_inc'][value='-1']").prop('checked', true);
             $("input[name='notify_customer'][value='1']").prop('checked', true);
+
+
+            emo = $("input[name='enable_min_order']:checked").val();
+
+            if (emo<0) emo = enable_min_order_default;
+
+            if ( emo>0 )
+            {
+              // Show elements
+              $('#div-use_default_min_order_value').fadeIn();
+
+              emov = $("input[type=radio][name=use_default_min_order_value]").val();
+
+                  if ( emov<=0 )
+                  {
+                    // Show elements
+                    $('#div-min_order_value').fadeIn();
+                  } else {
+                    //Hide elements
+                    $('#div-min_order_value').fadeOut();
+                  }
+            } else {
+              //Hide elements
+              $('#div-min_order_value').fadeOut();
+              $('#div-use_default_min_order_value').fadeOut();
+            }
 
             // Open popup
             $('#customeruserModalTitle').html('{{ l('Create User') }} :: {{ $customer->name_commercial }}');
@@ -127,10 +155,37 @@
             $("input[name='customeruser_active'][value='" + user.active + "']").prop('checked', true);
             $("input[name='enable_quotations'][value='" + user.enable_quotations + "']").prop('checked', true);
             $("input[name='enable_min_order'][value='" + user.enable_min_order + "']").prop('checked', true);
+            $("input[name='use_default_min_order_value'][value='" + user.use_default_min_order_value + "']").prop('checked', true);
             $("input[name='allow_abcc_access'][value='" + user.allow_abcc_access + "']").prop('checked', true);
             $("input[name='display_prices_tax_inc'][value='" + user.display_prices_tax_inc + "']").prop('checked', true);
-//            $("input[name='notify_customer'][value='"+user.+"']").prop('checked', true);
-            $("#div-notify_customer").css('display', 'none');
+            $("input[name='notify_customer'][value='0']").prop('checked', true);
+//            $("#div-notify_customer").css('display', 'none');
+
+
+            emo = $("input[name='enable_min_order']:checked").val();
+
+            if (emo<0) emo = enable_min_order_default;
+
+            if ( emo>0 )
+            {
+              // Show elements
+              $('#div-use_default_min_order_value').fadeIn();
+
+              emov = $("input[name='use_default_min_order_value']:checked").val();
+
+                  if ( emov<=0 )
+                  {
+                    // Show elements
+                    $('#div-min_order_value').fadeIn();
+                  } else {
+                    //Hide elements
+                    $('#div-min_order_value').fadeOut();
+                  }
+            } else {
+              //Hide elements
+              $('#div-min_order_value').fadeOut();
+              $('#div-use_default_min_order_value').fadeOut();
+            }
 
             // Open popup
             $('#customeruserModalTitle').html('{{ l('Update User') }} :: {{ $customer->name_commercial }}');

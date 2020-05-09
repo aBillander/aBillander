@@ -69,6 +69,15 @@
 
 </div>
 
+<div class="row">
+
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+        {!! Form::label('movement_type_id', l('Movement type')) !!}
+        {!! Form::select('movement_type_id', array('' => l('-- All --', [], 'layouts')) + $movement_typeList, null, array('class' => 'form-control')) !!}
+    </div>
+
+</div>
+
                 {!! Form::close() !!}
             </div>
         </div>
@@ -115,7 +124,7 @@
       </td>
 
 			<td>{{ $stockmovement->warehouse->alias }}</td>
-      <td><a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $stockmovement->reference }}</a>
+      <td><a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->reference }}</a>
 {{--
                     @if ( $stockmovement->combination_id > 0 )
                         {{ $stockmovement->combination->reference }}

@@ -118,6 +118,7 @@ class SepaDirectDebitsController extends Controller
         $vouchers =  $this->payment
                     ->where('payment_type', 'receivable')
                     ->where('status', 'pending')
+                    ->where('amount', '<>', 0.0)
                     ->whereHas('customer', function ($query) use ($customer_id) {
 
                             if ( (int) $customer_id > 0 )
@@ -310,7 +311,7 @@ class SepaDirectDebitsController extends Controller
 
         if ( ! $directDebitFile )
             return redirect()->back()
-                    ->with('error', l('Unable to create XML File &#58&#58 (:id) ', ['id' => $id]));
+                    ->with('error', l('Unable to create XML File &#58&#58 (:id) ', ['id' => $id]).' :: '.$directdebit->getErrorMessage());
 
 
         $directdebit->confirm();
@@ -320,6 +321,8 @@ class SepaDirectDebitsController extends Controller
         $filename = 'Remesa_' . $directdebit->document_reference . '_' . $creDtTm . '_SEPA_' .$directdebit->scheme . '' . '.xml';
         $creId    = $directdebit->calculateCreditorID( \App\Context::getContext()->company, $directdebit->bankaccount );
 
+        // Play nice with barryvdh/laravel-DebugBar
+        // https://github.com/barryvdh/laravel-debugbar/issues/621
         return $directDebitFile->downloadSepaFile( $filename, $creDtTm, $creId );
 
         return redirect()->route('sepasp.directdebits.show', $id)
@@ -331,7 +334,10 @@ class SepaDirectDebitsController extends Controller
     {
         $voucher = $this->payment->findOrFail($id);
 
-        $sdds = $this->directdebit->with('bankaccount')->where('status', '=', 'pending')->orderBy('document_date', 'desc')->orderBy('id', 'desc')->get();
+        $sdds = $this->directdebit->with('bankaccount')
+                                ->where('status', 'pending')->orWhere('status', 'confirmed')
+                                ->orderBy('document_date', 'desc')->orderBy('id', 'desc')
+                                ->get();
 
         return view('sepa_es::customer_vouchers._form_add_voucher', compact('voucher', 'sdds'));
     }
@@ -341,6 +347,15 @@ class SepaDirectDebitsController extends Controller
     {
         $voucher_id = (int) $request->input('voucher_id');
         $sdd_id     = (int) $request->input('sdd_id');
+
+/*
+        Needed for dropdown form in Voucher Index
+
+        $array = $request->input('voucher_id');
+        $voucher_id = (int) array_shift($array);
+        $array = $request->input('sdd_id');
+        $sdd_id     = (int) array_shift($array);
+*/        
 
         $voucher = $this->payment->findOrFail($voucher_id);
 
@@ -353,11 +368,19 @@ class SepaDirectDebitsController extends Controller
         $sdd->updateTotal();
 
 
-        return response()->json( [
-                'msg' => 'OK',
-                'sdd' => $sdd->id,
-                'voucher' => $voucher->id,
- //               'currency' => $line[0]->currency,
-        ] );
+        
+
+        if($request->ajax()){
+
+            return response()->json( [
+                    'msg' => 'OK',
+                    'sdd' => $sdd->id,
+                    'voucher' => $voucher->id,
+            ] );
+
+        }
+
+        return redirect()->back()
+                ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $voucher_id], 'layouts') );
     }
 }

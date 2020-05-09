@@ -521,7 +521,7 @@ class CustomerQuotationsController extends BillableController
 
         $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
-        $documents->setPath($this->model_path);
+        $documents->setPath('today');
 
         return view($this->view_path.'.index_for_today', $this->modelVars() + compact('documents'));
     }
@@ -948,6 +948,9 @@ class CustomerQuotationsController extends BillableController
 
             'currency_conversion_rate' => $document->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
+
+            'document_discount_percent' => $document->document_discount_percent,
+            'document_ppd_percent'      => $document->document_ppd_percent,
 
 //            'total_currency_tax_incl' => $document->total_currency_tax_incl,
 //            'total_currency_tax_excl' => $document->total_currency_tax_excl,

@@ -26,7 +26,7 @@ class TemplatesController extends Controller {
 	 */
 	public function index()
 	{
-		$templates = $this->template->orderBy('id', 'asc')->get();
+		$templates = $this->template->orderBy('model_name', 'asc')->get();
 
         return view('templates.index', compact('templates'));
 	}

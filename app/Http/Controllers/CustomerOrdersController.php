@@ -456,6 +456,10 @@ class CustomerOrdersController extends BillableController
     {
         $document = $this->document->findOrFail($id);
 
+        if ( Configuration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
+            return redirect()->back()
+                ->with('error', l('This record cannot be deleted because it belongs to a Production Sheet &#58&#58 (:id) ', ['id' => $document->production_sheet_id], 'productionsheets'));
+
         if( !$document->deletable )
             return redirect()->back()
                 ->with('error', l('This record cannot be deleted because its Status &#58&#58 (:id) ', ['id' => $id], 'layouts'));

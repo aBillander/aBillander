@@ -37,6 +37,7 @@
             <th>{{l('Customer Order Template name')}}</th>
             <th>{{l('Customer')}}</th>
             <th>{{l('Shipping Address')}}</th>
+            <th class="text-center">{{l('# Lines')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
             <th>{{l('Last used')}}</th>
@@ -70,6 +71,7 @@
                 @endif
 
             </td>
+            <td class="text-center">{{ $customerordertemplate->customerordertemplatelines_count }}</td>
 
             <td class="text-center">@if ($customerordertemplate->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

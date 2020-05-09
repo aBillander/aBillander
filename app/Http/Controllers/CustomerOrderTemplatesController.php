@@ -22,7 +22,11 @@ class CustomerOrderTemplatesController extends Controller
      */
     public function index()
     {
-        $customerordertemplates = CustomerOrderTemplate::with('customer')->orderBy('id', 'asc')->get();
+        $customerordertemplates = CustomerOrderTemplate::
+                                          with('customer')
+                                        ->withCount('customerordertemplatelines')
+                                        ->orderBy('id', 'asc')
+                                        ->get();
 
         return view('customer_order_templates.index', compact('customerordertemplates'));
     }
@@ -67,7 +71,20 @@ class CustomerOrderTemplatesController extends Controller
 
     public function storeAfterOrder(Request $request)
     {
-        $document_id = $request->input('customer_order', '');
+        $rules = CustomerOrderTemplate::$rules;
+
+        // Since Customer & Shipping Address is taken after the Order:
+        $rules = array_filter($rules, function($k) {
+                return $k != 'customer_id' && $k != 'shipping_address_id';
+            }, ARRAY_FILTER_USE_KEY);
+
+        // And Order **MUST** be issued
+        $rules = $rules + ['customer_order' => 'required|min:1'];
+
+        $this->validate($request, $rules);
+
+        $document_id = $request->input('customer_order');
+        
         $document = CustomerOrder::with('lines')->where('document_reference', $document_id)->first();
 
         if ( !$document )

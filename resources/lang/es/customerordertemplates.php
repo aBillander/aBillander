@@ -15,6 +15,8 @@ return [
 	'Order to Template' => 'Pedido a Plantilla',
 	'Create Customer Order Template after Customer Order' => 'Crear Plantilla desde un Pedido de Venta',
 
+	'# Lines' => 'Número de Líneas',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Customer Order Templates Language Lines :: create
@@ -26,7 +28,7 @@ return [
 
 	'Customer Order Templates - Create' => 'Plantillas para Pedidos de Venta - Crear',
 	'New Customer Order Template'     => 'Nueva Plantilla para Pedidos de Venta',
-	'Customer Order Template name'     => 'Nombre de la Plantilla para Pedidos de Venta',
+	'Customer Order Template name'     => 'Nombre de la Plantilla',
 	'Alias'     => 'Alias',
 	'Customer' => 'Cliente',
 	'Shipping Address' => 'Dirección de Envío',

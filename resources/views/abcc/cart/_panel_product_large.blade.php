@@ -7,6 +7,21 @@
    </div>
 
    <div class="panel-body">
+
+@if ($disable_add_to_cart)
+          <div class="alert alert-danger alert-block">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>{!! l('Error', [], 'layouts') !!}: </strong>
+              
+                  <ul>
+                  
+                      <li>{!! l('Ha alcanzado el máximo valor permitido para un Pedido y no podrá añadir más Productos. Por favor, Confirme el Pedido actual y haga otro Pedido a continuación.') !!}</li>
+                  
+                  </ul>
+
+          </div>
+@else
+
       <div xclass="row">
 
             {!! Form::hidden('customer_id', \App\Context::getContext()->customer->id, array('id' => 'customer_id')) !!}
@@ -79,6 +94,8 @@
 --}}
 
       </div>
+@endif
+
    </div><!-- div class="panel-body" -->
 </div>
 
@@ -120,7 +137,13 @@
                 dataType : 'json',
                 data : payload,
 
-                success: function(){
+                success: function(reponse){
+
+                    if(reponse.reload)
+                    {
+                      window.location.reload();
+                      return false;
+                    }
 
                     loadCartlines();
 
@@ -327,7 +350,13 @@
           dataType : 'json',
           data : payload,
 
-          success: function(result){
+          success: function(reponse){
+
+              if(reponse.reload)
+              {
+                window.location.reload();
+                return false;
+              }
 
               loadCartlines();
 
@@ -335,7 +364,7 @@
 
               showAlertDivWithDelay("#msg-success-update");
 
-              console.log(result);
+              console.log(reponse);
           }
       });
 

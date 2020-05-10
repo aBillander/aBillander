@@ -61,7 +61,9 @@ class AbccCustomerCartController extends Controller
 
         $config['display_with_taxes'] = $this->customer_user->canDisplayPricesTaxInc();
 
-        return view('abcc.cart.index', compact('cart', 'config'));
+        $disable_add_to_cart = $cart->isOverMaxValue();
+
+        return view('abcc.cart.index', compact('cart', 'config', 'disable_add_to_cart'));
 	}
 
 	/**
@@ -386,23 +388,27 @@ class AbccCustomerCartController extends Controller
 
         $cart = Cart::getCustomerUserCart();
 
-        $line = $cart->addLine($product_id, $combination_id, $quantity);
+        if ( !$cart->isOverMaxValue() )
+        {
+            $line = $cart->addLine($product_id, $combination_id, $quantity);
+        
+            // Refresh Cart
+            $cart = Cart::getCustomerUserCart();
+        }
 
-        // Refresh Cart
-        $cart = Cart::getCustomerUserCart();
 
-
-        if ($line)
+//        if ($line)
             return response()->json( [
                     'msg' => 'OK',
                     'cart_nbr_items' => $cart->nbrItems(),
      //               'data' => $cart_line->toArray()
+                    'reload' => $cart->isOverMaxValue(),
             ] );
-        else
-            return response()->json( [
-                    'msg' => 'ERROR',
+//        else
+//            return response()->json( [
+//                    'msg' => 'ERROR',
      //               'data' => $cart_line->toArray()
-            ] );
+//            ] );
     }
 
 
@@ -414,12 +420,25 @@ class AbccCustomerCartController extends Controller
         $quantity = floatval( $request->input('quantity', 0.0) );
         $measureunit_id = $request->input('measureunit', 0.0);
 
+        // Get line
         $cart = Cart::getCustomerUserCart();
+        $line = $cart->cartlines()->where('id', $line_id)->first();
 
-        $line = $cart->updateLineQuantity( $line_id, $quantity, $measureunit_id );
+//        $can_update = !$cart->isOverMaxValue() ||
+//                      ($cart->isOverMaxValue() && ($quantity < $line->quantity));
 
-        // Refresh Cart
-        $cart = Cart::getCustomerUserCart();
+        // Same as above
+        $cannot_update = $cart->isOverMaxValue() && ($quantity >= $line->quantity);
+        $can_update    = !$cannot_update;
+
+        if ( $can_update )
+        {
+            // Update line, then
+            $line = $cart->updateLineQuantity( $line_id, $quantity, $measureunit_id );
+
+            // Refresh Cart
+            $cart = Cart::getCustomerUserCart();
+        }
 
         if ( !$line ) 
             return response( null );
@@ -428,7 +447,8 @@ class AbccCustomerCartController extends Controller
 
         return response()->json( [
                 'msg' => 'OK',
-                'data' => [$line_id, $quantity]
+                'data' => [$line_id, $quantity],
+                'reload' => $cart->isOverMaxValue(),
         ] );
     }
 
@@ -517,6 +537,8 @@ class AbccCustomerCartController extends Controller
     public function deleteCartLine($line_id)
     {
 
+        $reload = Cart::getCustomerUserCart()->isOverMaxValue();
+
         $order_line = $this->cartLine
                         ->findOrFail($line_id);
 
@@ -529,7 +551,8 @@ class AbccCustomerCartController extends Controller
 
         return response()->json( [
                 'msg' => 'OK',
-                'data' => $line_id
+                'data' => $line_id,
+                'reload' => $reload != $cart->isOverMaxValue(),
         ] );
     }
 

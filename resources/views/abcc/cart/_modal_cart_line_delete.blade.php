@@ -58,7 +58,13 @@
                 dataType : 'json',
                 data : payload,
 
-                success: function(result){
+                success: function(reponse){
+
+                      if(reponse.reload)
+                      {
+                        window.location.reload();
+                        return false;
+                      }
                     
                     loadCartlines();
 
@@ -66,7 +72,7 @@
                     
                     showAlertDivWithDelay("#msg-success-delete");
     
-                    console.log(result);
+                    console.log(reponse);
                 }
             });
 

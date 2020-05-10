@@ -790,6 +790,11 @@ class Cart extends Model implements ShippableInterface
 
         return ( $this->amount > 0.0 ) && ( $this->amount > $min_order_value );
     }
+
+    public function isOverMaxValue() 
+    {
+        return ( $this->amount > 0.0 ) && ( $this->amount > Configuration::getNumber('ABCC_MAX_ORDER_VALUE') );
+    }
     
 
     /*

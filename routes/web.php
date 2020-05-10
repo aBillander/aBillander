@@ -697,7 +697,8 @@ foreach ($pairs as $pair) {
         // Route::resource( ... );   
 // }
 
-        Route::resource('stockmovements', 'StockMovementsController');
+        Route::resource('stockmovements', 'StockMovementsController');        
+        Route::get( 'export/stockmovements', 'StockMovementsController@export' )->name('stockmovements.export');
 
         Route::resource('stockcounts',              'StockCountsController');
         Route::post( 'stockcounts/{id}/warehouseupdate',    'StockCountsController@warehouseUpdate' )->name('stockcount.warehouse.update');

@@ -138,7 +138,8 @@ return [
     |
     */
 
-    'path' => '/',
+    // 'path' => '/',
+    'path' => '/;samesite=none',
 
     /*
     |--------------------------------------------------------------------------
@@ -164,7 +165,10 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE', false),
+    // 'secure' => env('SESSION_SECURE_COOKIE', false),
+    // https://github.com/laravel/framework/issues/30832
+    // https://laracasts.com/discuss/channels/laravel/how-to-update-cookies-at-laravel-56
+    'secure' => env('SESSION_SECURE_COOKIE', true),
 
     /*
     |--------------------------------------------------------------------------

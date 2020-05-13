@@ -62,7 +62,7 @@
   <div class="input-group">
     <!-- span class="input-group-addon">$</span -->
 
-    {!! Form::text('line_quantity', null, array('class' => 'form-control', 'id' => 'line_quantity', 'xonkeyup' => 'calculate_line_product( )', 'xonchange' => 'calculate_line_product( )', 'onfocus' => 'this.select()', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
+    {!! Form::text('line_quantity', null, ['class' => 'form-control', 'id' => 'line_quantity', 'xonkeyup' => 'calculate_line_product( )', 'xonchange' => 'calculate_line_product( )', 'onfocus' => 'this.select()', 'onclick' => 'this.select()', 'autocomplete' => 'off', 'maxlength' => '5' ]) !!}
 
     <span class="input-group-btn">
                     <button class="btn btn-success" type="submit" id="product_add_to_cart" xonclick="this.disabled=true;this.form.submit();" title="{{ l('Add to Cart') }}">

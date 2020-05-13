@@ -947,9 +947,20 @@ foreach ( $order['shipping_lines'] as $item ) {
             // Code above fails when aBillander addres is modified within aBillander, since 'webshop_id' remains unaltered.
             // So, just to make sure: lets delete aBillander address and re-create. Remember that we deal with individuals, not with companies: WooCommerce customer address data may be changed 
 
-            $addr->delete();
+            // $addr->delete();
 
-        }       // else {
+            /*  Let's try a new approach  */
+            
+            // Update Address
+            // Maybe need update of mail & phone only ???
+            $addr_data = $this->createInvoicingAddress( 'data' );
+
+            $addr->update( $addr_data );
+
+            $this->invoicing_address_id = $addr->id;
+            $this->invoicing_address = $addr;
+
+        } else {
         	
         	// Create Address
         	$address = $this->createInvoicingAddress();
@@ -957,7 +968,7 @@ foreach ( $order['shipping_lines'] as $item ) {
         	$this->invoicing_address_id = $address->id;
         	$this->invoicing_address = $address;
 
-//        }
+        }
 
         // Need to update Customer Invoicing Address?
         if ($this->customer->invoicing_address_id != $this->invoicing_address_id) {
@@ -969,7 +980,7 @@ foreach ( $order['shipping_lines'] as $item ) {
 		// Build Shipping address
 		$needle = WooOrder::getShippingAddressId( $order );
 		$addr = $this->customer->addresses()->where('webshop_id', $needle )->first();
-        if ( $addr ) {
+        if ( $addr && ($addr->id == $this->invoicing_address_id) ) {
 /*
             // Update phone & email
             $addr->update([
@@ -983,9 +994,14 @@ foreach ( $order['shipping_lines'] as $item ) {
             // Code above fails when aBillander addres is modified within aBillander, since 'webshop_id' remains unaltered.
             // So, just to make sure: lets delete aBillander address and re-create. Remember that we deal with individuals, not with companies: WooCommerce customer address data may be changed 
 
-            $addr->delete();
+            // $addr->delete();
 
-        }   // else {
+            /*  Let's try a new approach  */
+
+            $this->shipping_address_id = $addr->id;
+            $this->shipping_address = $addr;
+
+        } else {
         	
         	// Create Address
         	$address = $this->createShippingAddress();
@@ -993,10 +1009,10 @@ foreach ( $order['shipping_lines'] as $item ) {
         	$this->shipping_address_id = $address->id;
         	$this->shipping_address = $address;
 
-//        }
+        }
     }
     
-    public function createInvoicingAddress()
+    public function createInvoicingAddress( $flag = null )
     {
         // Build Customer data
         $order = $this->raw_data;
@@ -1053,6 +1069,9 @@ foreach ( $order['shipping_lines'] as $item ) {
 			'state_id'   => $state_id,
 			'country_id' => $country_id,
 		];
+
+        if ( $flag == 'data' )
+            return $data;
 
         $address = Address::create($data);
         $customer->addresses()->save($address);

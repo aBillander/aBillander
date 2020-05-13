@@ -415,6 +415,8 @@ class AbccCustomerCartController extends Controller
     public function updateLineQuantity(Request $request)
     {
 
+        $reload = Cart::getCustomerUserCart()->isOverMaxValue();
+
         $line_id = $request->input('line_id', 0);
 
         $quantity = floatval( $request->input('quantity', 0.0) );
@@ -440,15 +442,15 @@ class AbccCustomerCartController extends Controller
             $cart = Cart::getCustomerUserCart();
         }
 
-        if ( !$line ) 
-            return response( null );
+        // if ( !$line ) 
+        //    return response( null );
 
 
 
         return response()->json( [
                 'msg' => 'OK',
                 'data' => [$line_id, $quantity],
-                'reload' => $cart->isOverMaxValue(),
+                'reload' => $can_update !=  $cart->isOverMaxValue(),
         ] );
     }
 

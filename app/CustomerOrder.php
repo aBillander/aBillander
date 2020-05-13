@@ -171,6 +171,9 @@ class CustomerOrder extends Billable
     {
         $address = $this->customer->address;
 
+        // Gorrino way to detect which Order fails in listings!
+        if ( !$address ) die();
+
         $card = ($address->name_commercial ? $address->name_commercial .'<br />' : '').
                 ($address->firstname  ? $address->firstname . ' '.$address->lastname .'<br />' : '').
                 $address->address1 . ($address->address2 ? ' - ' : '') . $address->address2 .'<br />'.

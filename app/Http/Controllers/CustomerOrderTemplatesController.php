@@ -22,7 +22,11 @@ class CustomerOrderTemplatesController extends Controller
      */
     public function index()
     {
-        $customerordertemplates = CustomerOrderTemplate::with('customer')->orderBy('id', 'asc')->get();
+        $customerordertemplates = CustomerOrderTemplate::
+                                          with('customer')
+                                        ->withCount('customerordertemplatelines')
+                                        ->orderBy('id', 'asc')
+                                        ->get();
 
         return view('customer_order_templates.index', compact('customerordertemplates'));
     }
@@ -37,6 +41,18 @@ class CustomerOrderTemplatesController extends Controller
         return view('customer_order_templates.create');
     }
 
+    public function createAfterOrder($id)
+    {
+        $document_id = 0;
+
+        $document = CustomerOrder::find($id);
+
+        if ( $document )
+            $document_id = $document->id;
+        
+        return view('customer_order_templates.create_after_order', compact('document_id'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -48,6 +64,70 @@ class CustomerOrderTemplatesController extends Controller
         $this->validate($request, CustomerOrderTemplate::$rules);
 
         $customerordertemplate = CustomerOrderTemplate::create($request->all());
+
+        return redirect('customerordertemplates')
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerordertemplate->id], 'layouts') . $request->input('name'));
+    }
+
+    public function storeAfterOrder(Request $request)
+    {
+        $rules = CustomerOrderTemplate::$rules;
+
+        // Since Customer & Shipping Address is taken after the Order:
+        $rules = array_filter($rules, function($k) {
+                return $k != 'customer_id' && $k != 'shipping_address_id';
+            }, ARRAY_FILTER_USE_KEY);
+
+        // And Order **MUST** be issued
+        $rules = $rules + ['customer_order' => 'required|min:1'];
+
+        $this->validate($request, $rules);
+
+        $document_id = $request->input('customer_order');
+        
+        $document = CustomerOrder::with('lines')->where('document_reference', $document_id)->first();
+
+        if ( !$document )
+            $document = CustomerOrder::with('lines')->where('id', $document_id)->first();
+
+        if ( !$document )
+            return redirect('customerordertemplates')
+                    ->with('error', l('Unable to load this record &#58&#58 (:id) ', ['id' => $document_id], 'layouts'));
+
+        $data = [
+                'customer_id' => $document->customer_id,
+                'shipping_address_id' => $document->shipping_address_id,
+        ];
+
+        $request->merge( $data );
+
+        $this->validate($request, CustomerOrderTemplate::$rules);
+
+        // Create Template
+        $customerordertemplate = CustomerOrderTemplate::create($request->all());
+
+        // Create Template Lines
+        foreach ($document->lines->where('line_type', 'product') as $line) 
+        {
+            $data = [
+                'line_sort_order' => $line->line_sort_order, 
+//                'line_type', 
+                'product_id' => $line->product_id, 
+                'combination_id' => $line->combination_id,
+                'quantity' => $line->quantity, 
+                'measure_unit_id' => $line->measure_unit_id, 
+//                'package_measure_unit_id', 
+//                'pmu_conversion_rate',  => $line->
+//                'pmu_label', 
+                'notes' => $line->notes, 
+                'active' => 1,
+            ];
+
+            $customerordertemplateline = CustomerOrderTemplateLine::create($data);
+
+            $customerordertemplate->customerordertemplatelines()->save($customerordertemplateline);
+        }
+
 
         return redirect('customerordertemplates')
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerordertemplate->id], 'layouts') . $request->input('name'));
@@ -257,7 +337,7 @@ class CustomerOrderTemplatesController extends Controller
         $customerordertemplate->last_used_at =  $order->document_date;
         $customerordertemplate->save();
 
-        return redirect('customerordertemplates')
+        return redirect()->route('customerorders.edit', $order->id)
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $order->id], 'layouts'));
     }
 }

@@ -61,6 +61,8 @@
                       <li><a href="{{ URL::to($model_path.'') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
                       <li><a href="{{ URL::to($model_path.'/create') }}"><i class="fa fa-plus-square alert-success"></i> {{l('New Customer Order')}}</a></li>
                       <li><a href="{{ route('customer.orders', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Orders', 'layouts')}}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{ route('customerordertemplates.create.afterorder', [$document->id]) }}"><i class="fa fa-magic text-info"></i> {{l('Order to Template', 'customerordertemplates')}}</a></li>
 
 @if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
 

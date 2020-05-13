@@ -10,7 +10,7 @@
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
 
-        {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autoproduct_name')) !!}
+        {!! Form::text('autoproduct_name', null, array('class' => 'form-control', 'id' => 'autoproduct_name')) !!}
 
         {!! Form::hidden('product_id', null, array('id' => 'product_id')) !!}
         {!! Form::hidden('measure_unit_id', old('measure_unit_id'), array('id' => 'measure_unit_id')) !!}

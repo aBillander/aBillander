@@ -32,6 +32,7 @@ return [
 	'This record cannot be deleted because its Quantity or Value &#58&#58 (:id) '  =>  'El registro no puede ser eliminado por su Cantidad o Valor &#58&#58 (:id) ',
 	'Unable to create this record &#58&#58 (:id) '               =>  'No se ha podido crear el registro solicitado &#58&#58 (:id) ',
 	'Unable to update this record &#58&#58 (:id) '               =>  'No se ha podido actualizar el registro solicitado &#58&#58 (:id) ',
+	'Unable to load this record &#58&#58 (:id) '                 =>  'No se ha podido encontrar el registro solicitado &#58&#58 (:id) ',
 	'Document has no Lines'                                      =>  'El Documento no contiene Líneas',
 	'Document amount should be more than: :amount'               =>  'El Importe del Documento debe ser superior a: :amount',
 	'Document is on-hold'                                      =>  'El Documento está en espera',
@@ -43,6 +44,8 @@ return [
 	'The record with id=:id does not exist'                      =>  'El registro con id=:id no existe',
 	'Some records in the list [ :id ] do not exist'              =>  'Algunos registros en la lista [ :id ] no existen',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
+
+	'Too many Records for this Query &#58&#58 (:id) ' => 'Demasiados Registros para esta Consulta &#58&#58 (:id) ',
 
 	'Your Document has been sent! &#58&#58 (:id) '     => 'Su Documento ¡ha sido enviado! &#58&#58 (:id) ',
 	'Your Document could not be sent &#58&#58 (:id) '     => 'Su Documento no ha podido ser enviado &#58&#58 (:id) ',

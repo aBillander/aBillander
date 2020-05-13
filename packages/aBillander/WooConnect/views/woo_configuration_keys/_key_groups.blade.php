@@ -1,6 +1,6 @@
       <div class="col-lg-2 col-md-2 col-sm-3">
          <div class="list-group">
-            <a id="tab_index_1" href="{{ URL::to('wooc/wooconnect/wooconfigurationkeys?tab_index=1') }}" class="list-group-item @if ($tab_index==1) active @endif">
+            <a id="tab_index_1" href="{{ URL::route('wooconfigurationkeys.index') }}" class="list-group-item @if ($tab_index==1) active @endif">
                <i class="fa fa-dashboard"></i>
                &nbsp; {{ l('General') }}
             </a>

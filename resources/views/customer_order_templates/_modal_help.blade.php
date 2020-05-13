@@ -12,7 +12,13 @@
 
 
 <h2>¿Qué es una <i>Plantilla para Pedidos de Venta</i>?</h2>
-<p>Una <strong><i>Plantilla para Pedidos de Venta</i></strong> consta de .</p>
+<p>Una <strong><i>Plantilla para Pedidos de Venta</i></strong> es un Modelo para crear rápidamente Pedidos de Venta. Las Plantillas para Pedidos se utilizan convenientemente cuando un Cliente hace pedidos regularmente con el mismo contenido o similar.</p>
+
+<p>Tenga en cuenta que:</p>
+
+<p>1.- Un Pedido creado a partir de una Plantilla puede ser modificado sin restricciones.</p>
+
+<p>2.- Cuando crea un Pedido a partir de una Plantilla, se añadirán los Costes de Envío correspondientes a la Dirección de Entrega de la Plantilla.</p>
 
 
 

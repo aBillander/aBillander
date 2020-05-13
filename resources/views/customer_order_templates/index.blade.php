@@ -8,7 +8,11 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
         <a href="{{ URL::to('customerordertemplates/create') }}" class="btn btn-sm btn-success" 
-        		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+            title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+
+        <a href="{{ route('customerordertemplates.create.afterorder', 'none') }}" class="btn btn-sm alert-success" 
+            title="{{l('Create Customer Order Template after Customer Order')}}"><i class="fa fa-magic"></i> {{l('Order to Template')}}</a>
 
 
         <button type="button" class="btn btn-sm btn-behance" 
@@ -33,6 +37,7 @@
             <th>{{l('Customer Order Template name')}}</th>
             <th>{{l('Customer')}}</th>
             <th>{{l('Shipping Address')}}</th>
+            <th class="text-center">{{l('# Lines')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
             <th>{{l('Last used')}}</th>
@@ -66,6 +71,7 @@
                 @endif
 
             </td>
+            <td class="text-center">{{ $customerordertemplate->customerordertemplatelines_count }}</td>
 
             <td class="text-center">@if ($customerordertemplate->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

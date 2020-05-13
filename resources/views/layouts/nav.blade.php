@@ -66,7 +66,7 @@
                         </li>
                          <li>
                             <a href="{{ URL::to('customerordertemplates') }}">
-                                 <img src="{{ asset('assets/theme/self-distract-button-20.png') }}"> 
+                                 <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
                                  {{l('Sale Order Templates', [], 'layouts')}}
                             </a>
                         </li>
@@ -112,7 +112,7 @@
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('abccbillboard/edit') }}">
-                                 <img src="{{ asset('assets/theme/new-badge-20.png') }}"> 
+                                 <!-- img src="{{ asset('assets/theme/new-badge-20.png') }}" --> 
                                  &nbsp; {{l('ABCC Billboard', [], 'layouts')}}
                             </a>
                         </li>

@@ -33,6 +33,13 @@
             </a>
 @endif
 
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+            <a href="{{ route('wooconfigurationkeys.index') }}" class="list-group-item" target="_blank">
+               <i class="fa fa-wordpress text-info"></i>
+               &nbsp; {{l('WooC link', 'wooc')}}
+            </a>
+@endif
+
 @if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
             <a href="{{ route('fsxconfigurationkeys.index') }}" class="list-group-item">
                <i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>

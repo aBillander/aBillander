@@ -135,6 +135,7 @@ class ConfigurationKeysController extends Controller {
                         'ABCC_ENABLE_INVOICES',
                         'ABCC_ENABLE_MIN_ORDER',
                         'ABCC_MIN_ORDER_VALUE',
+                        'ABCC_MAX_ORDER_VALUE',
                         'ABCC_DISPLAY_PRICES_TAX_INC',
                         'ABCC_ENABLE_NEW_PRODUCTS',
                         'ABCC_NBR_DAYS_NEW_PRODUCT',

@@ -361,6 +361,21 @@
     </div>
 
 
+    <div class="form-group {{ $errors->has('ABCC_MAX_ORDER_VALUE') ? 'has-error' : '' }}">
+      <label for="ABCC_MAX_ORDER_VALUE" class="col-lg-4 control-label">{!! l('ABCC_MAX_ORDER_VALUE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_MAX_ORDER_VALUE" name="ABCC_MAX_ORDER_VALUE" placeholder="" value="{{ old('ABCC_MAX_ORDER_VALUE', $key_group['ABCC_MAX_ORDER_VALUE']) }}" />
+        {{ $errors->first('ABCC_MAX_ORDER_VALUE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_MAX_ORDER_VALUE.help') !!}</span>
+      </div>
+    </div>
+
+
 
 
 

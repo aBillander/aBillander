@@ -16,24 +16,6 @@
 
         <div class="row">
 
-                   <div class=" hidden form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
-                     {!! Form::label('publish_to_web', l('Publish to web?'), ['class' => 'control-label']) !!}
-                     <div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('publish_to_web', '1', true, ['id' => 'publish_to_web_on']) !!}
-                           {!! l('Yes', [], 'layouts') !!}
-                         </label>
-                       </div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('publish_to_web', '0', false, ['id' => 'publish_to_web_off']) !!}
-                           {!! l('No', [], 'layouts') !!}
-                         </label>
-                       </div>
-                     </div>
-                   </div>
-
                   <div class="col-lg-3 col-md-3 col-sm-3">
                       <div class="form-group {{ $errors->has('webshop_id') ? 'has-error' : '' }}">
                           {!! Form::label('webshop_id', l('Webshop ID'), ['class' => 'control-label']) !!}

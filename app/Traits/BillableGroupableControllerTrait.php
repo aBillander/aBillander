@@ -97,6 +97,27 @@ trait BillableGroupableControllerTrait
 //            'commission_amount' => $this->commission_amount,
 
             // Skip notes
+            // ^= You fool?
+            'notes_from_customer' => $documents->reduce(function ($carry, $item) {
+                                                        $stub = $item->notes_from_customer ?
+                                                                ($carry != '' ? ' | ' : '') . $item->notes_from_customer :
+                                                                '';
+                                                        return $carry . $stub;
+                                                    }, ''), 
+
+            'notes'               => $documents->reduce(function ($carry, $item) {
+                                                        $stub = $item->notes ?
+                                                                ($carry != '' ? ' | ' : '') . $item->notes :
+                                                                '';
+                                                        return $carry . $stub;
+                                                    }, ''), 
+
+            'notes_to_customer'   => $documents->reduce(function ($carry, $item) {
+                                                        $stub = $item->notes_to_customer ?
+                                                                ($carry != '' ? ' | ' : '') . $item->notes_to_customer :
+                                                                '';
+                                                        return $carry . $stub;
+                                                    }, ''), 
 
             'status' => 'draft',
             'onhold' => 0,

@@ -193,6 +193,8 @@ return [
         App\Providers\AbccViewComposerServiceProvider::class,
         App\Providers\AbsrcViewComposerServiceProvider::class,
 
+//        App\Providers\ProductionSheetServiceProvider::class,
+
         /*
          * aBillander Package Service Providers...
          */

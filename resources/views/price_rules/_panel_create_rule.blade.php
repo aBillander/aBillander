@@ -22,7 +22,7 @@
 
 
 
-                @include('errors.list')
+      {{--          @include('errors.list')       --}}
 
 
 <div class="row">
@@ -66,7 +66,7 @@
         {!! Form::label('reference', l('Reference')) !!}
         <div id="reference"></div>
     </div>
-    <div class="form-group col-lg-4 col-md-4 col-sm-4">
+    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('product_id') ? 'has-error' : '' }}">
         {!! Form::label('product_query', l('Product Name')) !!}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                           data-content="{{ l('Search by Product Reference or Name') }}">
@@ -76,6 +76,7 @@
         {!! Form::hidden('product_id', null, array('id' => 'product_id')) !!}
 
         {!! Form::text('product_query', null, array('id' => 'product_query', 'autocomplete' => 'off', 'class' => 'form-control', 'onclick' => 'this.select()')) !!}
+        {!! $errors->first('product_id', '<span class="help-block">:message</span>') !!}
     </div>
 
 </div>
@@ -114,7 +115,7 @@
                </div>
 --}}
 
-				{!! Form::hidden('rule_type', 'price', array('id' => 'rule_type')) !!}
+				{!! Form::hidden('rule_type', old('rule_type', 'price'), array('id' => 'rule_type')) !!}
 
 				{!! Form::close() !!}
 

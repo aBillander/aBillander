@@ -323,5 +323,10 @@ return [
 	'Valid until' => 'Válido hasta',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
+	'Prompt Payment'     => 'Pronto Pago',
+
+	
+
+	'Customer Reference' => 'Referencia del Cliente',
 
 ];

@@ -22,12 +22,13 @@
     </h2>        
 </div>
 
+{{--
 <div class="container hide">
 
-{{-- 
+{ {-- 
     https://startbootstrap.com/template-overviews/sb-admin-2/
     https://startbootstrap.com/template-overviews/sb-admin/
---}}
+--} }
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header">Dashboard</h1>
@@ -147,22 +148,10 @@
         </div>
     </div>
 </div -->
+--}}
 
 
-<div class="jumbotron">
-  <!-- h1>Jumbotron</h1>
-  <p>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-  <p><a class="btn btn-primary btn-lg">Learn more</a></p -->
-<img src="{{URL::to('/assets/theme/images/Dashboard.jpg')}}" 
-                    title=""
-                    class="center-block"
-                    style=" border: 1px solid #dddddd;
-                            border-radius: 18px;
-                            -moz-border-radius: 18px;
-                            -khtml-border-radius: 18px;
-                            -webkit-border-radius: 18px;">
-{{-- HTML::image('img/picture.jpg', 'a picture', array('class' => 'thumb')) --}}
-</div>
+@include('abcc._billboard')
 
 
 @endsection

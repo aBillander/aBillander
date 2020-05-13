@@ -55,6 +55,12 @@ return [
 	'File contains header row?'     => '¿Primera línea es encabezado?',
 	'Delete existing Products?'     => '¿Eliminar los Productos existentes?',
 
+	'Action' => 'Acción',
+	'Create Products' => 'Crear Productos',
+	'Update existing Prodcuts' => 'Actualizar Productos existentes',
+	'Import File MUST contain ALL mandatory columns.' => 'El Fichero de importación DEBE contener TODAS las columnas obligatorias.',
+	'Import File can contain columns to be modified only.' => 'El Fichero de importación puede contener sólo las columnas que han de ser modificadas.',
+
 	'Images'     => 'Imágenes',
 	'Import Product Images'     => 'Importar Imágenes de Productos',
 	'Delete ALL Images'     => 'Borrar TODAS las Imágenes',
@@ -88,7 +94,7 @@ return [
 
 	'ABCC Users' => 'Usuarios ABCC',
 	'Import ABCC Users File'     => 'Importar Fichero de Usuarios ABCC',
-	'Delete existing ABCC Users?'     => '¿Eliminar los Usuarios ABC existentes?',
+	'Delete existing ABCC Users?'     => '¿Eliminar los Usuarios ABCC existentes?',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -113,7 +119,21 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Price List
+	| Supplier Price List
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Import - Supplier Price List' => 'Importar - Tarifa de Proveedor',
+
+	'Back to Supplier Price List'     => 'Volver a Tarifa de Proveedor',
+	'Price List' => 'Tarifa',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Stock Count
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -132,5 +152,25 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Suppliers
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Import - Suppliers' => 'Importar - Proveedores',
+
+	'Back to Suppliers'     => 'Volver a Proveedores',
+	'Suppliers' => 'Proveedores',
+	'Import Supplier File'     => 'Importar Fichero de Proveedores',
+	'First row should be the header row.'     => 'La primera línea del fichero contiene el nombre de los campos en las columnas.',
+	'File contains header row?'     => '¿Primera línea es encabezado?',
+	'Delete existing Suppliers?'     => '¿Eliminar los Proveedores existentes?',
+	'Simulation Mode?'     => '¿Modo Simulación?',
 
 ];

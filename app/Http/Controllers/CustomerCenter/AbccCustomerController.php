@@ -146,6 +146,8 @@ class AbccCustomerController extends Controller
 
         $customer_rules = PriceRule::where('currency_id', $customer->currency->id)
                     // Customer range
+                    ->applyToCustomer($id)
+                    /*
                     ->where( function($query) use ($customer) {
                                 $query->where('customer_id', $customer->id);
                                 $query->orWhere( function($query1) {
@@ -154,6 +156,7 @@ class AbccCustomerController extends Controller
                                 if ($customer->customer_group_id)
                                     $query->orWhere('customer_group_id', $customer->customer_group_id);
                         } )
+                        */
                     // Product range
                     ->with('product')
                     ->whereHas('product', function ($query) use ($customer) {
@@ -203,6 +206,18 @@ class AbccCustomerController extends Controller
                             return $item;
                         });
 */        
-        return view('abcc.customer.pricerules_list', compact('id', 'customer_rules', 'items_per_page_pricerules', 'customer'));
+        
+        // Let's do a little work tonight:
+        $pricerules_price = $customer_rules->whereIn('rule_type', ['price', 'discount']);
+        $pricerules_pack  = $customer_rules->where(  'rule_type',  'pack');
+        $pricerules_pall  = $customer_rules->where(  'rule_type',  'promo');
+
+        // But "Promo" rule only applies if There is not a "Price" rule
+        $pricerules_promo = $pricerules_pall->reject(function ($item, $key) use ($pricerules_price) 
+        {
+            return $pricerules_price->where('product_id', $item->product_id)->count() > 0;
+        });
+
+        return view('abcc.customer.pricerules_list', compact('id', 'customer_rules', 'items_per_page_pricerules', 'customer', 'pricerules_price', 'pricerules_pack', 'pricerules_promo'));
     }
 }

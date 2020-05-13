@@ -44,6 +44,7 @@ class CreateProductsTable extends Migration {
 			// 'phased'   => Time-phased Planning (planning cycles)
 
 			$table->string('name', 128)->nullable(false);
+			$table->integer('position')->unsigned()->default(0);
 			$table->string('reference', 32)->nullable();
 			$table->string('ean13', 13)->nullable();
 			$table->text('description')->nullable();
@@ -104,6 +105,7 @@ class CreateProductsTable extends Migration {
 			$table->dateTime('available_for_sale_date')->nullable();
 			
 			$table->tinyInteger('publish_to_web')->default(0);
+			$table->string('webshop_id', 16)->nullable();
 			$table->tinyInteger('blocked')->default(0);							// Sales not allowed
 			$table->tinyInteger('active')->default(1);
 			

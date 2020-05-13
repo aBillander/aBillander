@@ -32,7 +32,7 @@ class CreatePriceRulesTable extends Migration {
 
 			$table->integer('currency_id')->unsigned()->nullable();
 
-			$table->string('rule_type', 32)->nullable(false)->default('discount');
+			$table->string('rule_type', 32)->nullable(false)->default('price');
 			// 'price'
 			// 'discount'
 			$table->decimal('price', 20, 6)->default(0.0);

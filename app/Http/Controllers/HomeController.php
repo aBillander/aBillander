@@ -70,6 +70,7 @@ class HomeController extends Controller
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
 //                                    ->with('currency')
 //                                    ->with('addresses')
+                                    ->isNotBlocked()
                                     ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
                                     ->get();
 

@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="{{ \App\Context::getContext()->language->iso_code }}">
+<html lang="{{ $iso_code }}">
 	<head>
 		<meta charset="utf-8">
 	</head>
 	<body>
 		<h2>Nuevo Presupuesto: {{ $document_num }} ({{ $document_date }})<br /> Total: {{ $document_total }}</h2>
+
+		<div>
+			<br /><!-- br />
+			{{ $document_probe }}
+			<br / --><br />
+			<hr />
+			Cliente: {{ $customer->name_fiscal }}<br />
+            NIF: {{ $customer->identification }}<br />
+            {{ $customer->address->address1 }} {{ $customer->address->address2 }}<br />
+            {{ $customer->address->postcode }} {{ $customer->address->city }}<br />
+            {{ $customer->address->state->name }}, {{ $customer->address->country->name }}<br />
+            Tel.: {{ $customer->address->phone }} / Email: {{ $customer->address->email }}<br />
+            <hr />
+		</div>
+
+		<div>
+			Puede ver el Presupuesto aquí: <a href="{{ $url }}">{{ $url }}</a>.
+		</div>
 {{--
 		<div>
 			Adjunto les enviamos la factura de referencia.<br /><br />

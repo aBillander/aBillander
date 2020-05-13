@@ -10,7 +10,7 @@
         @if ( $parentId>0 )
         <a href="{{ URL::to('categories') }}" class="btn btn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Product Categories') }}</a>
         @else
-            @if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $categories->count() )
+            @if ( 0 && \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $categories->count() )
                 <a xhref="{{ URL::to('categories') }}" class="btn btn-sm btn-success toggle-children"><i class="fa fa-sitemap"></i> {{ l('Expand / Collapse') }}</a>
             @endif
         @endif
@@ -42,7 +42,11 @@
 <table id="categories" class="table table-hover">
     <thead>
         <tr>
-            <th class="text-left" style="width: 35px">{{l('ID', [], 'layouts')}}</th>
+            <th class="text-left button-pad" style="width: 35px">{{l('ID', [], 'layouts')}}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('Drag to Sort.', 'layouts') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a></th>
             <th class="text-left" style="width: 35px"> </th>
             <th class="text-left">{{l('Category Name')}}</th>
             <th class="text-left">{{l('Webshop ID')}}</th>
@@ -51,10 +55,10 @@
             <th class="text-right"> </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="sortable ui-sortable">
         @foreach ($categories as $category)
-        <tr class="parent">
-            <td>{{ $category->id }}</td>
+        <tr data-id="{{ $category->id }}" data-sort-order="{{ $category->position }}">
+            <td class="button-pad">[{{ $category->id }}] {{ $category->position }}</td>
             <td> </td>
             <td>{{ $category->name }}</td>
             
@@ -68,6 +72,9 @@
                 @if (  is_null($category->deleted_at) )
                 @if (  \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $parentId==0 )
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('categories/' . $category->id . '/subcategories') }}" title="{{l('Show Sub-Categories')}}"><i class="fa fa-folder-open-o"></i></a>
+                @endif
+                @if (  \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $parentId>0 )
+                <a class="btn btn-sm btn-lightblue" href="{{ route('category.products', $category->id) }}" title="{{l('Show Products')}}"><i class="fa fa-cubes"></i></a>
                 @endif
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('categories/' . $parentId . '/subcategories/' . $category->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
@@ -83,34 +90,7 @@
             </td>
         </tr>
 
-@if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $category->parent_id==0 )
-        @foreach ($category->children as $child)
 
-        <tr class="child warning" style="display: none;">
-            <td> </td>
-            <td>{{ $child->id }}</td>
-            <td><span style="padding-left: 35px;">{{ $child->name }}</span></td>
-            
-            <td class="text-center">@if ($child->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
-
-            <td class="text-right">
-                @if (  is_null($child->deleted_at) )
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('categories/' . $child->parent_id . '/subcategories/' . $child->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                    href="{{ URL::to('categories/' . $child->parent_id . '/subcategories/' . $child->id ) }}" 
-                    data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Categories') }} :: ({{$child->id}}) {{ $child->name }} " 
-                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-                @else
-                <a class="btn btn-warning" href="{{ URL::to('categories/' . $child->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
-                <a class="btn btn-danger" href="{{ URL::to('categories/' . $child->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
-                @endif
-            </td>
-        </tr>
-
-        @endforeach
-@endif
 
         @endforeach
     </tbody>
@@ -132,63 +112,61 @@
 
 @section('scripts')  @parent 
 
-    <script type="text/javascript">
-    
-        function createCookie(name,value,days) {
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime()+(days*24*60*60*1000));
-                var expires = "; expires="+date.toGMTString();
-            }
-            else var expires = "";
-            document.cookie = name+"="+value+expires+"; path=/";
-        }
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-        function readCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for(var i=0;i < ca.length;i++) {
-                var c = ca[i];
-                while (c.charAt(0)==' ') c = c.substring(1,c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-            }
-            return null;
-        }
+<script type="text/javascript">
 
-        function eraseCookie(name) {
-            createCookie(name,"",-1);
-        }
+    $(document).ready(function() {
+        //
+        sortableCategories();
 
-    </script>
+    });
 
-    <script type="text/javascript">
-        
-        $(".toggle-children").click(function(){ 
 
-          var c = readCookie( 'tree' );
+    function sortableCategories() {
 
-          $(".child").toggle("slow");
+      // Sortable :: http://codingpassiveincome.com/jquery-ui-sortable-tutorial-save-positions-with-ajax-php-mysql
+      // See: https://stackoverflow.com/questions/24858549/jquery-sortable-not-functioning-when-ajax-loaded
+      $('.sortable').sortable({
+          cursor: "move",
+          update:function( event, ui )
+          {
+              $(this).children().each(function(index) {
+                  if ( $(this).attr('data-sort-order') != ((index+1)*10) ) {
+                      $(this).attr('data-sort-order', (index+1)*10).addClass('updated');
+                  }
+              });
 
-          if ( c != 'expanded' )
-        {
-            createCookie('tree','expanded',7);
-                $("tr.parent").addClass("info");
-        }
-          else
-        {
-            eraseCookie('tree');
-                $("tr.parent").removeClass("info");
-        }
+              saveNewPositions();
+          }
+      });
 
+    }
+
+    function saveNewPositions() {
+        var positions = [];
+        var token = "{{ csrf_token() }}";
+
+        $('.updated').each(function() {
+            positions.push([$(this).attr('data-id'), $(this).attr('data-sort-order')]);
+            $(this).removeClass('updated');
         });
 
-        var c = readCookie( 'tree' );
+        $.ajax({
+            url: "{{ route('categories.sortlines') }}",
+            headers : {'X-CSRF-TOKEN' : token},
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                positions: positions
+            },
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    }
 
-        if ( c == 'expanded' )
-        {
-                $(".child").toggle("slow");
-                $("tr.parent").addClass("info");
-        }
-    </script>
+
+</script>
 
 @endsection

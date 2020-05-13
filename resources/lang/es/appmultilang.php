@@ -77,6 +77,12 @@ return array(
 	'CustomerOrder' => 'Pedido de Cliente',
 	'CustomerShippingSlip' => 'Albarán de Cliente',
 	'CustomerInvoice' => 'Factura de Cliente',
+
+    'SupplierQuotation' => 'Presupuesto de Proveedor',
+	'SupplierOrder' => 'Pedido de Proveedor',
+	'SupplierShippingSlip' => 'Albarán de Proveedor',
+	'SupplierInvoice' => 'Factura de Proveedor',
+
     'StockCount' => 'Inventario de Almacén',
 
 
@@ -326,6 +332,18 @@ return array(
 
 	'App\CommissionSettlement.pending' => 'Pendiente',
 	'App\CommissionSettlement.closed'    => 'Cerrado',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Shipping Method Billing Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\ShippingMethod.price'  => 'Precio',
+	'App\ShippingMethod.weight' => 'Peso',
 
 
 	/*

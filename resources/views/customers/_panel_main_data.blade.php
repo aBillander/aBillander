@@ -42,7 +42,7 @@
                     {!! $errors->first('website', '<span class="help-block">:message</span>') !!}
                   </div>
 
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-active">
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-blocked">
                      {!! Form::label('blocked', l('Blocked?', [], 'layouts'), ['class' => 'control-label']) !!}
                      <div>
                        <div class="radio-inline">

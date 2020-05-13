@@ -99,9 +99,15 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
         Route::resource('customers', 'AbsrcCustomersController')->names('absrc.customers');
         Route::resource('customers.addresses', 'AbsrcCustomerAddressesController')->names('absrc.customers.addresses');
 
+        Route::get('customers/{id}/getusers',         'AbsrcCustomersController@getUsers')->name('absrc.customer.getusers');
+
         Route::resource('customerusers', 'AbsrcCustomerUsersController')->names('absrc.customerusers');
         Route::get('customerusers/create/withcustomer/{customer}', 'AbsrcCustomerUsersController@createWithCustomer')->name('absrc.customer.createuser');
         Route::get('customerusers/{customer}/impersonate', 'AbsrcCustomerUsersController@impersonate')->name('absrc.customer.impersonate');
+
+        Route::get('customerusers/{customer}/cart', 'AbsrcCustomerUsersController@getCart')->name('absrccustomer.cart');
+
+        Route::get('customerusers/{customer}/getuser', 'AbsrcCustomerUsersController@getUser')->name('absrc.customeruser.getuser');
 
         Route::get('customers/{id}/getpricerules',         'AbsrcCustomersController@getPriceRules')->name('absrc.customer.getpricerules');
 

@@ -48,7 +48,7 @@ class AbccCatalogueController extends Controller
 			->IsPublished()
 			->IsActive()
 			->where('parent_id', '=', intval($parentId))
-			->orderBy('name', 'asc')->get();
+			->orderBy('position', 'asc')->get();
 
 		$categories_ids = $categories->pluck('activechildren')->flatten()->pluck('id');
 		// Would be better? ->
@@ -96,7 +96,8 @@ class AbccCatalogueController extends Controller
 	                                  ->qualifyForCustomer( $customer_user->customer_id, $customer_user->customer->currency->id)
                                       ->IsActive()
                                       ->IsPublished()
-                                      ->orderBy('reference', 'asc');
+                                      ->orderBy('name', 'asc')
+                                      ;
 
                 // abi_toSQL($products);
 
@@ -104,14 +105,16 @@ class AbccCatalogueController extends Controller
 
                 $products = $products->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
 
-	            $this->appendInfosToProducts($products, $customer_user->customer);
+	            // $this->appendInfosToProducts($products, $customer_user->customer);
 
-	            $config['display_with_taxes'] = $customer_user->canDisplayPricesTaxInc();
-	            $config['enable_ecotaxes'] = Configuration::isTrue('ENABLE_ECOTAXES');
+	            $vparams = [];
+
+	            $vparams['display_with_taxes'] = $customer_user->canDisplayPricesTaxInc() > 0 ? '_with_taxes' : '';
+	            $vparams['enable_ecotaxes']    = Configuration::isTrue('ENABLE_ECOTAXES');
 
                 $products->setPath('catalogue');     // Customize the URI used by the paginator
         }        
-        return view('abcc.catalogue.index', compact('category_id', 'categories', 'products', 'breadcrumb', 'config'));
+        return view('abcc.catalogue.index', compact('category_id', 'categories', 'products', 'breadcrumb', 'vparams'));
 	}
 
 
@@ -247,7 +250,7 @@ class AbccCatalogueController extends Controller
 			->with('children')
 //			->withCount('products')
 			->where('parent_id', '=', intval($parentId))
-			->orderBy('name', 'asc')->get();
+			->orderBy('position', 'asc')->get();
 
 		if ($category_id>0 && !$request->input('search_status', 0)) {
 			//
@@ -319,6 +322,6 @@ class AbccCatalogueController extends Controller
 
         $customer_rules = ($product && $customer_price) ? $product->getPriceRulesByCustomer( $customer ) : collect([]);
 
-        return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules', 'customer_price', 'currency'));
+        return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules', 'customer_price', 'currency', 'customer'));
     }
 }

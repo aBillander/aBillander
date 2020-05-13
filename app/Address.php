@@ -17,6 +17,7 @@ class Address extends Model {
                             'firstname', 'lastname', 'email', 
                             'phone', 'phone_mobile', 'fax', 'notes', 'active', 
                             'latitude', 'longitude',
+                            'shipping_method_id',
                           ];
 
     public static $rules = array(
@@ -75,6 +76,20 @@ class Address extends Model {
     {
         return $this->belongsTo('App\State');
     }
+
+    public function shippingmethod()
+    {
+        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+    }
+
+    public function getShippingMethod()
+    {
+        if ( (int) $this->shipping_method_id > 0 ) return $this->shippingmethod;
+
+        if ( (int) $this->addressable->shipping_method_id > 0 ) return $this->addressable->shippingmethod;
+
+        return ShippingMethod::find( Configuration::getInt('DEF_SHIPPING_METHOD') );
+    }
     
 
     /*
@@ -88,17 +103,18 @@ class Address extends Model {
         $country_id = $this->country_id;
         $state_id   = $this->state_id;
 
-        $rules = $tax->taxrules()->where(function ($query) use ($country_id) {
-            $query->where(  'country_id', '=', 0)
-                  ->OrWhere('country_id', '=', $country_id);
-        })
-                                 ->where(function ($query) use ($state_id) {
-            $query->where(  'state_id', '=', 0)
-                  ->OrWhere('state_id', '=', $state_id);
-        })
-                                 ->where('rule_type', '=', 'sales')
- //                                ->orderBy('position', 'asc')     // $tax->taxrules() is already sorted by position asc
-                                 ->get();
+        $rules = $tax->taxrules()
+                    ->where(function ($query) use ($country_id, $state_id) {
+                        $query->where('country_id', '=', $country_id);
+                        
+                        $query->where(function ($query1) use ($state_id) {
+                            $query1->where(  'state_id', '=', 0)
+                                    ->OrWhere('state_id', '=', $state_id);
+                        });
+                    })
+                    ->where('rule_type', '=', 'sales')
+//                                ->orderBy('position', 'asc')     // $tax->taxrules() is already sorted by position asc
+                    ->get();
 
         return $rules;
     }
@@ -108,19 +124,17 @@ class Address extends Model {
         $country_id = $this->country_id;
         $state_id   = $this->state_id;
 
-        $taxes = \App\Tax::with('taxrules')
-                    ->whereHas('taxrules', function ($query) use ($country_id) {
-                        $query->where(  'country_id', '=', 0)
-                              ->OrWhere('country_id', '=', $country_id);
-                    })
-                    ->orWhereHas('taxrules', function ($query) use ($state_id) {
-                        $query->where(  'state_id', '=', 0)
-                              ->OrWhere('state_id', '=', $state_id);
+        $taxes = Tax::with('taxrules')
+                    ->whereHas('taxrules', function ($query) use ($country_id, $state_id) {
+                        $query->where('country_id', '=', $country_id);
+                        
+                        $query->where(function ($query1) use ($state_id) {
+                            $query1->where(  'state_id', '=', 0)
+                                    ->OrWhere('state_id', '=', $state_id);
+                        });
                     })
                     ->orderBy('id', 'asc')->get();
-
-
-
+                    
 /*
         $rules = $tax->taxrules()->where(function ($query) use ($country_id) {
             $query->where(  'country_id', '=', 0)
@@ -149,7 +163,7 @@ class Address extends Model {
         $taxes = $this->getTaxes();
 
         foreach ($taxes as $tax) {
-            $list[$tax->id] = $tax->taxrules()->where('rule_type', '=', 'sales')->sum('percent');
+            $list[$tax->id] = $this->getTaxRules( $tax )->where('rule_type', '=', 'sales')->sum('percent');
         }
 
         return $list;

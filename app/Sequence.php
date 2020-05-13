@@ -20,6 +20,12 @@ class Sequence extends Model {
             'CustomerOrder',
             'CustomerShippingSlip',
             'CustomerInvoice',
+
+            'SupplierQuotation',
+            'SupplierOrder',
+            'SupplierShippingSlip',
+            'SupplierInvoice',
+
             'StockCount',
 
             'SepaDirectDebit',
@@ -33,6 +39,11 @@ class Sequence extends Model {
             CustomerOrder::class        => 'CustomerOrder',
             CustomerShippingSlip::class => 'CustomerShippingSlip',
             CustomerInvoice::class      => 'CustomerInvoice',
+            
+            SupplierQuotation::class    => 'SupplierQuotation',
+            SupplierOrder::class        => 'SupplierOrder',
+            SupplierShippingSlip::class => 'SupplierShippingSlip',
+            SupplierInvoice::class      => 'SupplierInvoice',
             
             StockCount::class      => 'StockCount',
 

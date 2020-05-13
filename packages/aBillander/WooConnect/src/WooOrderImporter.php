@@ -5,16 +5,22 @@ namespace aBillander\WooConnect;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-use App\Customer as Customer;
-use App\Address as Address;
+use App\Context;
+use App\Configuration;
+use App\Customer;
+use App\Address;
+use App\Country;
+use App\State;
+use App\Currency;
+use App\Sequence;
 use App\CustomerOrder as Order;
 use App\CustomerOrderLine as OrderLine;
 use App\CustomerOrderLineTax as OrderLineTax;
 use App\Product;
 use App\Combination;
 use App\Tax;
-
-use \aBillander\WooConnect\WooOrder;
+use App\Price;
+use App\ActivityLogger;
 
 // use \aBillander\WooConnect\WooOrder;
 
@@ -24,7 +30,7 @@ class WooOrderImporter {
 	protected $run_status = true;		// So far, so good. Can continue export
 	protected $error = null;
 
-	protected $raw_data = array();
+	protected $raw_data = [];           // WooC data + 'customer_reference_external' ( FSxTools::translate_customers_fsol() )
 
 	protected $currency;				// aBillander Object
 	protected $customer;				// aBillander Object
@@ -90,7 +96,7 @@ class WooOrderImporter {
 
     public static function loggerSetup() 
     {
-    	return \App\ActivityLogger::setup( 
+    	return ActivityLogger::setup( 
                 self::loggerName(), 							//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
                 self::loggerSignature() )
             ->backTo( route('worders.index') );
@@ -202,9 +208,9 @@ class WooOrderImporter {
     {
         $order = $this->raw_data;
 
-        $currency = \App\Currency::findByIsoCode( $order['currency'] );
+        $currency = Currency::findByIsoCode( $order['currency'] );
         if (!$currency) {
-        	$currency = \App\Currency::find( \App\Configuration::get('WOOC_DEF_CURRENCY') );
+        	$currency = Currency::find( Configuration::get('WOOC_DEF_CURRENCY') );
 
         	$this->logMessage("WARNING", l('Order number <span class="log-showoff-format">{oid}</span> Currency not found. Using: <span class="log-showoff-format">{name}</span>.'), ['oid' => $order['id'], 'name' => $currency->name]);
         }
@@ -216,9 +222,12 @@ class WooOrderImporter {
     public function setCustomer()
     {
         // Check if Customer exists; Othrewise, import it
-        $customer_webshop_id = $this->raw_data['customer_id'];
+        $customer_webshop_id = WooOrder::getCustomerId( $this->raw_data );
 
         $customer_reference_external = $this->raw_data['customer_reference_external'];
+        // = FSxTools::translate_customers_fsol($woo_customer>0?$woo_customer:$this->data['billing']['email']);        
+        // $woo_customer = intval($this->data['customer_id']);
+        // From WooOrder :: __construct
 
         $this->customer = Customer::where('webshop_id', $customer_webshop_id )->first();
 
@@ -250,7 +259,7 @@ class WooOrderImporter {
 
         	if ( $customer_reference_external && $this->customer->reference_external && ( $customer_reference_external != $this->customer->reference_external ) ) {
 
-        		// Error gordo!
+        		// Error "gordo"!
 				$this->run_status = false;
 
 				$this->logError( l('Los campos que relacionan el Cliente entre la Tienda web, aBillander y FactuSOL no coinciden.') );
@@ -292,9 +301,6 @@ class WooOrderImporter {
         	}
         }
 
-//        if ($this->customer) $this->checkAddresses();
-
-//        else                 $this->importCustomer();
     }
 
     public function setOrderDocument()
@@ -305,8 +311,8 @@ class WooOrderImporter {
 
 		$data = [
 			'customer_id' => $this->customer->id,
-			'user_id' => \App\Context::getContext()->user->id,
-        	'sequence_id' => \App\Configuration::get('WOOC_DEF_ORDERS_SEQUENCE'),
+			'user_id' => Context::getContext()->user->id,
+        	'sequence_id' => Configuration::get('WOOC_DEF_ORDERS_SEQUENCE'),
 //			'document_prefix' => $order[''],
 //			'document_id' => $order[''],
 //			'document_reference' => $order[''],
@@ -330,8 +336,8 @@ class WooOrderImporter {
 			'number_of_packages' => 1,
 //			'shipping_conditions' => $order[''],
 
-//			'prices_entered_with_tax' => \App\Configuration::get('PRICES_ENTERED_WITH_TAX'),
-//			'round_prices_with_tax'   => \App\Configuration::get('ROUND_PRICES_WITH_TAX'),
+//			'prices_entered_with_tax' => Configuration::get('PRICES_ENTERED_WITH_TAX'),
+//			'round_prices_with_tax'   => Configuration::get('ROUND_PRICES_WITH_TAX'),
 
 			'currency_conversion_rate' => $this->currency->conversion_rate,
 //			'down_payment' => $order[''],
@@ -367,16 +373,16 @@ class WooOrderImporter {
 			'invoicing_address_id' => $this->invoicing_address_id,
 			'shipping_address_id'  => $this->shipping_address_id,
 
-			'warehouse_id' => \App\Configuration::get('DEF_WAREHOUSE'),
+			'warehouse_id' => Configuration::get('DEF_WAREHOUSE'),
 			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
 //			'sales_rep_id' => $order[''],
 			'currency_id' => $this->currency->id,
 			'payment_method_id' => WooOrder::getPaymentMethodId( $order['payment_method'], $order['payment_method_title'] ),
-//			'template_id' => \App\Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE'),
+//			'template_id' => Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE'),
 		];
 
         	
-		$seq = \App\Sequence::find( \App\Configuration::get('WOOC_DEF_ORDERS_SEQUENCE') );
+		$seq = Sequence::find( Configuration::get('WOOC_DEF_ORDERS_SEQUENCE') );
 
 		if ( !$seq ) 
 		{
@@ -469,7 +475,7 @@ foreach ( $order['line_items'] as $i => $item ) {
 /*
 		if ( !$tax_id ) {
 			// Tax not found. Issue an ERROR.
-			$tax_id = \App\Configuration::get('WOOC_DEF_TAX');	// To Do: Improbe this guess...
+			$tax_id = Configuration::get('WOOC_DEF_TAX');	// To Do: Improbe this guess...
 
 			$this->logMessage( 'WARNING', 'Pedido número <b>"'.$order["id"].'"</b>: NO de ha encontrado correspondencia del Impuesto <b>"'.$item['tax_class'].'"</b>.' );
 		}
@@ -494,7 +500,7 @@ foreach ( $order['line_items'] as $i => $item ) {
 				$product_id = $product->id;
 				$combination_id = $combination->id;
 				$reference = $sku;
-				if ( \App\Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $combination->name(' - ');
+				if ( Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $combination->name(' - ');
 				$cost_price = $product->cost_price;
 //				$tax_id = $product->tax_id;		// To Do: Match with WooCommerce & Tax Dictionary?
 //				$tax = $product->tax;
@@ -514,7 +520,7 @@ foreach ( $order['line_items'] as $i => $item ) {
 				$product_id = $product->id;
 				$combination_id = null;
 				$reference = $product->reference;
-				if ( \App\Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $product->name;
+				if ( Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $product->name;
 				$cost_price = $product->cost_price;
 //				$tax_id = $product->tax_id;		// To Do: Match with WooCommerce & Tax Dictionary?
 //				$tax = $product->tax;
@@ -534,7 +540,7 @@ foreach ( $order['line_items'] as $i => $item ) {
 				$product_id = $product->id;
 				$combination_id = null;
 				$reference = $product->reference;
-				if ( \App\Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $product->name;
+				if ( Configuration::get('WOOC_USE_LOCAL_PRODUCT_NAME') ) $name = $product->name;
 				$cost_price = $product->cost_price;
 		//
 		//
@@ -621,7 +627,7 @@ foreach ( $order['line_items'] as $i => $item ) {
 			$line_tax->name = $rule->fullName;
 			$line_tax->tax_rule_type = $rule->rule_type;
 
-			$p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $this->currency, $this->currency->currency_conversion_rate);
+			$p = Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $this->currency, $this->currency->currency_conversion_rate);
 
 //			abi_r($line, true);
 
@@ -706,10 +712,10 @@ foreach ( $order['shipping_lines'] as $item ) {
 		$unit_price = $item['total'];
 		$final_price = $item['total'];
 //		$line_tax_id = WooOrder::getTaxId($item['tax_class']);
-		$tax_id = intval(\App\Configuration::get('WOOC_DEF_SHIPPING_TAX'));	// WooOrder::getTaxId('standard');
+		$tax_id = intval(Configuration::get('WOOC_DEF_SHIPPING_TAX'));	// WooOrder::getTaxId('standard');
 		if ( $tax_id == 0 ) {
 			// Tax not found. Issue an ERROR.
-			$tax_id = \App\Configuration::get('WOOC_DEF_TAX');	// To Do: Improbe this guess...
+			$tax_id = Configuration::get('WOOC_DEF_TAX');	// To Do: Improbe this guess...
 			// -- This key does not exist?? --^
 		}
 		$tax = Tax::find($tax_id);
@@ -717,7 +723,7 @@ foreach ( $order['shipping_lines'] as $item ) {
         $sales_equalization = 0;	// $this->customer->sales_equalization;
 
 		// No database persistance, please!
-		$product  = new \App\Product(['product_type' => 'simple', 'name' => $name, 'tax_id' => $tax_id]);
+		$product  = new Product(['product_type' => 'simple', 'name' => $name, 'tax_id' => $tax_id]);
 		// $tax = $product->tax;
 
 // abi_r('>> # >> '.$this->order->customerorderlines->count());
@@ -732,7 +738,7 @@ foreach ( $order['shipping_lines'] as $item ) {
 			'name'           => $name,
 
 			'quantity' => 1,
-			'measure_unit_id' => \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+			'measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
 
 			'cost_price' => $cost_price,
 			'unit_price' => $unit_price,
@@ -783,7 +789,7 @@ foreach ( $order['shipping_lines'] as $item ) {
 			$line_tax->name = $rule->fullName;
 			$line_tax->tax_rule_type = $rule->rule_type;
 
-			$p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $this->currency, $this->currency->currency_conversion_rate);
+			$p = Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $this->currency, $this->currency->currency_conversion_rate);
 
 			// $p->applyRounding( );
 
@@ -828,15 +834,15 @@ foreach ( $order['shipping_lines'] as $item ) {
 
         // Spanish VAT Identification
         // Sometimes customer use "Company" field....
-        if ( \App\Customer::check_spanish_nif_cif_nie( $this->raw_data['billing']['company'] ) > 0 )
+        if ( Customer::check_spanish_nif_cif_nie( $this->raw_data['billing']['company'] ) > 0 )
         {
-        	$this->raw_data['billing']['vat_number'] = \App\Customer::normalize_spanish_nif_cif_nie( $this->raw_data['billing']['company'] );
+        	$this->raw_data['billing']['vat_number'] = Customer::normalize_spanish_nif_cif_nie( $this->raw_data['billing']['company'] );
         	$this->raw_data['billing']['company']    = '';
         }
         
-        if ( \App\Customer::check_spanish_nif_cif_nie( $this->raw_data['shipping']['company'] ) > 0 )
+        if ( Customer::check_spanish_nif_cif_nie( $this->raw_data['shipping']['company'] ) > 0 )
         {
-        	$this->raw_data['shipping']['vat_number'] = \App\Customer::normalize_spanish_nif_cif_nie( $this->raw_data['shipping']['company'] );
+        	$this->raw_data['shipping']['vat_number'] = Customer::normalize_spanish_nif_cif_nie( $this->raw_data['shipping']['company'] );
         	$this->raw_data['shipping']['company']    = '';
         }
 
@@ -845,10 +851,10 @@ foreach ( $order['shipping_lines'] as $item ) {
         // Build Customer data
         $order = $this->raw_data;
 
-        $language_id = intval(\App\Configuration::get('WOOC_DEF_LANGUAGE'));
+        $language_id = intval(Configuration::get('WOOC_DEF_LANGUAGE'));
 
         $language_id = $language_id > 0 ? $language_id : 
-						\App\Configuration::get('DEF_LANGUAGE');
+						Configuration::get('DEF_LANGUAGE');
 
 		$data = [
         	'name_fiscal'     => WooOrder::getNameFiscal( $order ),
@@ -858,14 +864,14 @@ foreach ( $order['shipping_lines'] as $item ) {
 
 			'identification' => WooOrder::getVatNumber( $order ),
 
-			'webshop_id' => $order['customer_id'],
+			'webshop_id' => WooOrder::getCustomerId( $order ),
 			'reference_external' => $order['customer_reference_external'],
 //			'accounting_id',
 
 //			'payment_days' => $order[''],
 //			'no_payment_month' => $order[''],
 
-			'outstanding_amount_allowed' => \App\Configuration::get('DEF_OUTSTANDING_AMOUNT'),
+			'outstanding_amount_allowed' => Configuration::get('DEF_OUTSTANDING_AMOUNT'),
 //			'outstanding_amount' => $order[''],
 //			'unresolved_amount',
 
@@ -881,10 +887,10 @@ foreach ( $order['shipping_lines'] as $item ) {
 			'currency_id' => $this->currency->id,
 			'language_id' => $language_id,
 
-			'customer_group_id' => \App\Configuration::get('WOOC_DEF_CUSTOMER_GROUP'),
+			'customer_group_id' => Configuration::get('WOOC_DEF_CUSTOMER_GROUP'),
 //			'payment_method_id'
 //			'carrier_id'
-			'price_list_id' => \App\Configuration::get('WOOC_DEF_CUSTOMER_PRICE_LIST'),
+			'price_list_id' => Configuration::get('WOOC_DEF_CUSTOMER_PRICE_LIST'),
 		];
 
 		$customer = Customer::create($data);
@@ -914,8 +920,8 @@ foreach ( $order['shipping_lines'] as $item ) {
 
     public function getAddressForTaxCalculation()
     {
-    	return (\App\Configuration::get('WOOC_TAX_BASED_ON') == 'shipping') ? $this->shipping_address : $this->invoicing_address ;
-    	// Don't care if \App\Configuration::get('WOOC_TAX_BASED_ON') == 'local'
+    	return (Configuration::get('WOOC_TAX_BASED_ON') == 'shipping') ? $this->shipping_address : $this->invoicing_address ;
+    	// Don't care if Configuration::get('WOOC_TAX_BASED_ON') == 'local'
    	}
 
 
@@ -928,9 +934,31 @@ foreach ( $order['shipping_lines'] as $item ) {
 		$needle = WooOrder::getBillingAddressId( $order );
 		$addr = $this->customer->addresses()->where('webshop_id', $needle )->first();
         if ( $addr ) {
+/*
+            // Update phone & email
+            $addr->update([
+                'email' => $order['billing']['email'],
+                'phone' => $order['billing']['phone'],
+            ]);
 
 	        $this->invoicing_address_id = $addr->id;
 	        $this->invoicing_address = $addr;
+*/
+            // Code above fails when aBillander addres is modified within aBillander, since 'webshop_id' remains unaltered.
+            // So, just to make sure: lets delete aBillander address and re-create. Remember that we deal with individuals, not with companies: WooCommerce customer address data may be changed 
+
+            // $addr->delete();
+
+            /*  Let's try a new approach  */
+            
+            // Update Address
+            // Maybe need update of mail & phone only ???
+            $addr_data = $this->createInvoicingAddress( 'data' );
+
+            $addr->update( $addr_data );
+
+            $this->invoicing_address_id = $addr->id;
+            $this->invoicing_address = $addr;
 
         } else {
         	
@@ -946,15 +974,32 @@ foreach ( $order['shipping_lines'] as $item ) {
         if ($this->customer->invoicing_address_id != $this->invoicing_address_id) {
         	$this->customer->update( [ 'invoicing_address_id' => $this->invoicing_address_id ] );
         }
+        // ^- Allready done in $this->createInvoicingAddress() , I guess.
 
 
 		// Build Shipping address
 		$needle = WooOrder::getShippingAddressId( $order );
 		$addr = $this->customer->addresses()->where('webshop_id', $needle )->first();
-        if ( $addr ) {
+        if ( $addr && ($addr->id == $this->invoicing_address_id) ) {
+/*
+            // Update phone & email
+            $addr->update([
+                'email' => $order['billing']['email'],
+                'phone' => $order['billing']['phone'],
+            ]);
 
         	$this->shipping_address_id = $addr->id;
         	$this->shipping_address = $addr;
+*/
+            // Code above fails when aBillander addres is modified within aBillander, since 'webshop_id' remains unaltered.
+            // So, just to make sure: lets delete aBillander address and re-create. Remember that we deal with individuals, not with companies: WooCommerce customer address data may be changed 
+
+            // $addr->delete();
+
+            /*  Let's try a new approach  */
+
+            $this->shipping_address_id = $addr->id;
+            $this->shipping_address = $addr;
 
         } else {
         	
@@ -967,7 +1012,7 @@ foreach ( $order['shipping_lines'] as $item ) {
         }
     }
     
-    public function createInvoicingAddress()
+    public function createInvoicingAddress( $flag = null )
     {
         // Build Customer data
         $order = $this->raw_data;
@@ -982,7 +1027,7 @@ foreach ( $order['shipping_lines'] as $item ) {
 		$state      = $order['billing']['state'];
 		$state_id   = null;
 
-		$bcountry = \App\Country::findByIsoCode( $order['billing']['country'] );
+		$bcountry = Country::findByIsoCode( $order['billing']['country'] );
 		if ($bcountry) {
 			$country    = $bcountry->name;
 			$country_id = $bcountry->id;
@@ -1025,6 +1070,9 @@ foreach ( $order['shipping_lines'] as $item ) {
 			'country_id' => $country_id,
 		];
 
+        if ( $flag == 'data' )
+            return $data;
+
         $address = Address::create($data);
         $customer->addresses()->save($address);
 
@@ -1048,7 +1096,7 @@ foreach ( $order['shipping_lines'] as $item ) {
 		$state      = $order['shipping']['state'];
 		$state_id   = null;
 
-		$scountry = \App\Country::findByIsoCode( $order['shipping']['country'] );
+		$scountry = Country::findByIsoCode( $order['shipping']['country'] );
 		if ($scountry) {
 			$country    = $scountry->name;
 			$country_id = $scountry->id;
@@ -1075,9 +1123,9 @@ foreach ( $order['shipping_lines'] as $item ) {
 			
 			'firstname' => $order['shipping']['first_name'],
 			'lastname'  => $order['shipping']['last_name'],
-//			'email'     => $order['shipping']['email'],
+			'email'     => $order['billing']['email'],           // Better off
 
-//			'phone' => $order['shipping']['phone'],
+			'phone' => $order['billing']['phone'],               // Better off
 //			'phone_mobile' => $order[''],
 //			'fax' => $order[''],
 			

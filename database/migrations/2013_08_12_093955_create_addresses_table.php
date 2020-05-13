@@ -51,6 +51,8 @@ class CreateAddressesTable extends Migration {
 			$table->integer('state_id')->unsigned()->nullable();
 			$table->integer('country_id')->unsigned()->nullable();
 			
+			$table->integer('shipping_method_id')->unsigned()->nullable();
+			
 			$table->timestamps();
 			$table->softDeletes();
 		});

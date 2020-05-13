@@ -20,7 +20,7 @@ use App\CustomerOrderLine;
 use App\CustomerQuotation;
 use App\CustomerQuotationLine;
 
-use Mail;
+use Illuminate\Support\Facades\Mail;
 
 class AbccCustomerOrdersController extends Controller {
 
@@ -83,11 +83,20 @@ class AbccCustomerOrdersController extends Controller {
 	 */
 	public function store(Request $request)
 	{
+        // Start Logger
+        // $logger = \App\ActivityLogger::setup( 'ABCC Order Validation Profiling', __METHOD__ );
+
+        // $logger->empty();
+        // $logger->start();
+
+        // $logger->log("INFO", 'Start the whole thing!');
 
 		$process_as = $request->input('process_as', 'order');
 		if ($process_as == 'quotation')
 			return $this->storeAsQuotation( $request );
         
+
+        $send_confirmation_email = $request->input('send_confirmation_email', false);
 
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
@@ -106,6 +115,7 @@ class AbccCustomerOrdersController extends Controller {
 	                ->with('error', l('Document amount should be more than: :amount', ['amount' => abi_money( Auth::user()->canMinOrderValue(), $cart->currency )], 'layouts'));
         }
 		
+        // $logger->log("INFO", 'Cart loaded');
 
 		// Check. What check?
 /*
@@ -126,7 +136,7 @@ class AbccCustomerOrdersController extends Controller {
 //			'document_id' => $order[''],
 //			'document_reference' => $order[''],
 //			'reference' => WooOrder::getOrderReference( $order ),
-			'reference_customer' => $request->input('reference'), 
+			'reference_customer' => $request->input('reference_customer', ''), 
 //			'reference_external' => $order['id'],
 
 			'created_via' => 'abcc',
@@ -192,6 +202,7 @@ class AbccCustomerOrdersController extends Controller {
 
         $customerOrder = $this->customerOrder->create($data);
 		
+        // $logger->log("INFO", 'Order created (header)');
 
         // Lines stuff here in
 
@@ -208,6 +219,10 @@ class AbccCustomerOrdersController extends Controller {
         			'extra_quantity'       => $cartline->extra_quantity, 
         			'extra_quantity_label' => $cartline->extra_quantity_label,
 
+        			'package_measure_unit_id' => $cartline->package_measure_unit_id,
+        			'pmu_conversion_rate'     => $cartline->pmu_conversion_rate,
+        			'pmu_label'               => $cartline->pmu_label,
+
         			'sales_equalization' =>  $customer->sales_equalization,
         			'sales_rep_id' =>  $customer->sales_rep_id,
         			'commission_percent' =>  (float) optional($customer->salesrep)->commission_percent,	// Maybe no Sales Rep for this Customer!
@@ -223,6 +238,7 @@ class AbccCustomerOrdersController extends Controller {
         				$line_data['line_sort_order'] = $cart->getNextLineSortOrder();	// Move at the end of the list
         				$line_data['sales_equalization'] = 0;
         				$line_data['tax_id'] = $cartline->tax_id;	// Otherwise default tax will be taken
+        				$line_data['sales_equalization'] = $customer->sales_equalization;
 	        			$line = $customerOrder->addServiceLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, $line_data );
 	        		}
         			break;
@@ -234,6 +250,7 @@ class AbccCustomerOrdersController extends Controller {
         			break;
         	}
 
+        // $logger->log("INFO", 'Order Line created');
         	
         }
 /*
@@ -266,9 +283,14 @@ Bah!
 		{
 			$customerOrder->confirm();
 		}
+
+        // $logger->log("INFO", 'Finished Order');
 		
         // At last: empty cart ( delete lines & initialize )
         $cart->delete();
+
+
+        // $logger->log("INFO", 'Cart deleted');
 
 
         // Notify Admin
@@ -291,10 +313,13 @@ Bah!
 
 			$template_vars = array(
 //				'company'       => $company,
-				'document_num'   => $customerOrder->document_reference,
+				'customer'       => $customer,
+				'url' => route('customerorders.edit', [$customerOrder->id]),
+				'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
 				'document_date'  => abi_date_short($customerOrder->document_date),
-				'document_total' => $customerOrder->as_money('total_tax_excl'),
+				'document_total' => $customerOrder->as_money('total_tax_incl'),
 //				'custom_body'   => $request->input('email_body'),
+				'document_probe' => 'admin',
 				);
 
 			$data = array(
@@ -302,25 +327,83 @@ Bah!
 				'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
 				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
 				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
-				'subject'  => l(' :_> New Customer Order #:num', ['num' => $template_vars['document_num']]),
+				'subject'  => l(' :_> [#:num] New Customer Order of :name', ['num' => $template_vars['document_num'], 'name' => $customer->name_regular]),
+
+//				'bcc'      => $customer_user->email,
+				'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
 				);
 
 			
-
+/*
 			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_order', $template_vars, function($message) use ($data)
 			{
 				$message->from($data['from'], $data['fromName']);
 
 				// $message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );	// Will send blind copy to sender!
-				$message->to( $data['to'], $data['toName'] )->bcc( 'laextranatural@laextranatural.es' )->subject( $data['subject'] );
 
-			});	
+				$message->to( $data['to'], $data['toName'] )->bcc( $data['bcc'] )->subject( $data['subject'] );
+				// $message->to( $data['bcc'], $data['toName'] )->subject( $data['subject'] );
+
+			});
+*/
+			$send = Mail::to( abi_mail_from_address() )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
+
+        // $logger->log("INFO", 'Email sent');
+
+        // $logger->stop();
 
         } catch(\Exception $e) {
+
+        // $logger->log("INFO", 'Email Error');
+
+        // $logger->stop();
 
             return redirect()->route('abcc.orders.index')
                 	->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
 		    			$e->getMessage());
+        }
+
+        /* ****************************************************************************************** */
+
+        if ($send_confirmation_email)
+        {
+        	//
+			try {
+
+				$template_vars = array(
+	//				'company'       => $company,
+					'customer'       => $customer,
+					'url' => route('abcc.orders.show', [$customerOrder->id]),
+					'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
+					'document_date'  => abi_date_short($customerOrder->document_date),
+					'document_total' => $customerOrder->as_money('total_tax_incl'),
+	//				'custom_body'   => $request->input('email_body'),
+					'document_probe' => 'customer',
+					);
+
+				$data = array(
+					'from'     => abi_mail_from_address(),			// config('mail.from.address'  ),
+					'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
+					'to'       => $customer_user->email,			// $cinvoice->customer->address->email,
+					'toName'   => $customer_user->full_name,		// $cinvoice->customer->name_fiscal,
+					'subject'  => l(' :_> :company - New Order #:num', ['num' => $template_vars['document_num'], 'company' => abi_mail_from_name()]),
+
+//					'bcc'      => $customer_user->email,
+					'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
+					);
+				
+				$send = Mail::to( $customer_user->email )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
+
+	        // $logger->log("INFO", 'Email sent');
+
+	        // $logger->stop();
+
+	        } catch(\Exception $e) {
+
+	            return redirect()->route('abcc.orders.index')
+	                	->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
+			    			$e->getMessage());
+	        }
         }
 		// MAIL stuff ENDS
 
@@ -343,6 +426,8 @@ Bah!
 	// Maybe in AbccCustomerQuotationsController? I think so.
 	public function storeAsQuotation(Request $request)
 	{
+        $send_confirmation_email = $request->input('send_confirmation_email', false);
+
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
         // $cart = \App\Context::getcontext()->cart;
@@ -352,7 +437,16 @@ Bah!
         	return redirect()->back()
                 ->with('error', l('Document has no Lines', 'layouts'));
 
-		$reference_customer = $request->input('process_as', 'order') == 'quotation' ? 'QUOTATION' : '';
+		 // Not used:
+		 // $reference_customer = $request->input('process_as', 'order') == 'quotation' ? 'QUOTATION' : '';
+
+
+        // Cart Amount
+        if( !$cart->isBillable() )
+        {
+	        	return redirect()->back()
+	                ->with('error', l('Document amount should be more than: :amount', ['amount' => abi_money( Auth::user()->canMinOrderValue(), $cart->currency )], 'layouts'));
+        }
 		
 
 		// Check. What check?
@@ -375,7 +469,7 @@ Bah!
 //			'document_id' => $order[''],
 //			'document_reference' => $order[''],
 //			'reference' => WooOrder::getOrderReference( $order ),
-			'reference_customer' => '', 
+			'reference_customer' => $request->input('reference_customer', ''), 
 //			'reference_external' => $order['id'],
 
 			'created_via' => 'abcc',
@@ -431,10 +525,10 @@ Bah!
 			'shipping_address_id'  => $cart->shipping_address_id,
 
 			'warehouse_id' => Configuration::get('DEF_WAREHOUSE'),
-//			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
+			'shipping_method_id' => $cart->shipping_method_id,	// Do not apply company default, since maybe a Shipping Method for Customer Center
 			'sales_rep_id' => $customer->sales_rep_id,
 			'currency_id' => $cart->currency->id,
-			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_PAYMENT_METHOD'),
+			'payment_method_id' => $cart->payment_method_id,
 			'template_id' => \App\Configuration::get('DEF_CUSTOMER_QUOTATION_TEMPLATE'),
 		];
 
@@ -459,6 +553,10 @@ Bah!
         			'extra_quantity'       => $cartline->extra_quantity, 
         			'extra_quantity_label' => $cartline->extra_quantity_label,
 
+        			'package_measure_unit_id' => $cartline->package_measure_unit_id,
+        			'pmu_conversion_rate'     => $cartline->pmu_conversion_rate,
+        			'pmu_label'               => $cartline->pmu_label,
+
         			'sales_equalization' =>  $customer->sales_equalization,
         			'sales_rep_id' =>  $customer->sales_rep_id,
         			'commission_percent' =>  (float) optional($customer->salesrep)->commission_percent,	// Maybe no Sales Rep for this Customer!
@@ -472,8 +570,9 @@ Bah!
         			{
         				$line_data['name'] = $cartline->name;
         				$line_data['line_sort_order'] = $cart->getNextLineSortOrder();	// Move at the end of the list
-        				$line_data['sales_equalization'] = 0;
+        				// $line_data['sales_equalization'] = 0;
         				$line_data['tax_id'] = $cartline->tax_id;	// Otherwise default tax will be taken
+        				$line_data['sales_equalization'] = $customer->sales_equalization;
 	        			$line = $customerOrder->addServiceLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, $line_data );
 	        		}
         			break;
@@ -499,7 +598,7 @@ Bah!
             'url' => route('customerquotations.edit', [$customerOrder->id]), 
             'due_date' => null, 
             'completed' => 0, 
-            'user_id' => \App\Context::getContext()->user->id,
+            'user_id' => $customer_user->id,
         ];
 
         $todo = Todo::create($data);
@@ -510,10 +609,13 @@ Bah!
 
 			$template_vars = array(
 //				'company'       => $company,
+				'customer'       => $customer,
+				'url' => route('customerquotations.edit', [$customerOrder->id]),
 				'document_num'   => $customerOrder->document_reference,
 				'document_date'  => abi_date_short($customerOrder->document_date),
 				'document_total' => $customerOrder->as_money('total_tax_excl'),
 //				'custom_body'   => $request->input('email_body'),
+				'document_probe' => 'admin',
 				);
 
 			$data = array(
@@ -521,24 +623,64 @@ Bah!
 				'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
 				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
 				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
-				'subject'  => l(' :_> New Customer Order #:num', ['num' => $template_vars['document_num']]),
+				'subject'  => l(' :_> New Customer Quotation #:num', ['num' => $template_vars['document_num']]),
+
+				'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
 				);
 
 			
 
-			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_quotation', $template_vars, function($message) use ($data)
-			{
-				$message->from($data['from'], $data['fromName']);
+			$send = Mail::to( abi_mail_from_address() )->queue( new \App\Mail\AbccCustomerQuotationMail( $data, $template_vars ) );
 
-				$message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );	// Will send blind copy to sender!
-
-			});	
-
+        
         } catch(\Exception $e) {
 
             return redirect()->route('abcc.quotations.index')
                 	->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
 		    			$e->getMessage());
+        }
+
+        /* ****************************************************************************************** */
+
+        if ($send_confirmation_email)
+        {
+        	//
+			try {
+
+				$template_vars = array(
+	//				'company'       => $company,
+					'customer'       => $customer,
+					'url' => route('abcc.quotations.show', [$customerOrder->id]),
+					'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
+					'document_date'  => abi_date_short($customerOrder->document_date),
+					'document_total' => $customerOrder->as_money('total_tax_incl'),
+	//				'custom_body'   => $request->input('email_body'),
+					'document_probe' => 'customer',
+					);
+
+				$data = array(
+					'from'     => abi_mail_from_address(),			// config('mail.from.address'  ),
+					'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
+					'to'       => $customer_user->email,			// $cinvoice->customer->address->email,
+					'toName'   => $customer_user->full_name,		// $cinvoice->customer->name_fiscal,
+					'subject'  => l(' :_> :company - New Quotation #:num', ['num' => $template_vars['document_num'], 'company' => abi_mail_from_name()]),
+
+//					'bcc'      => $customer_user->email,
+					'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
+					);
+				
+				$send = Mail::to( $customer_user->email )->queue( new \App\Mail\AbccCustomerQuotationMail( $data, $template_vars ) );
+
+	        // $logger->log("INFO", 'Email sent');
+
+	        // $logger->stop();
+
+	        } catch(\Exception $e) {
+
+	            return redirect()->route('abcc.quotations.index')
+	                	->with('error', l('There was an error. Your message could not be sent.', [], 'layouts').'<br />'.
+			    			$e->getMessage());
+	        }
         }
 		// MAIL stuff ENDS
 
@@ -635,6 +777,8 @@ Bah!
 
         foreach ($order->lines as $orderline) {
         	# code...
+        	if ( $orderline->line_type        != 'product' ) continue;
+        	if ( $orderline->unit_final_price == 0.0       ) continue;
         	$line = $cart->addLine($orderline->product_id, $orderline->combination_id, $orderline->quantity);
         }
 

@@ -34,6 +34,7 @@ class WooConfigurationKeysController extends Controller {
 //                        'WOOC_DEF_CURRENCY',
                         'WOOC_DEF_CUSTOMER_GROUP',
                         'WOOC_DEF_CUSTOMER_PRICE_LIST',
+                        'WOOC_DEF_WAREHOUSE',
 
                         'WOOC_DEF_LANGUAGE',
                         'WOOC_DEF_ORDERS_SEQUENCE',
@@ -89,11 +90,15 @@ class WooConfigurationKeysController extends Controller {
         $currencyList = \App\Currency::pluck('name', 'id')->toArray();
         $customer_groupList = \App\CustomerGroup::pluck('name', 'id')->toArray();
         $price_listList = \App\PriceList::pluck('name', 'id')->toArray();
+        $warehouseList = \App\Warehouse::pluck('name', 'id')->toArray();
+        if(count($warehouseList) != 1)
+            $warehouseList = ['0' => l('-- All --', [], 'layouts')] + $warehouseList;
+
         $languageList = \App\Language::pluck('name', 'id')->toArray();
         $orders_sequenceList = \App\Sequence::listFor( \App\CustomerOrder::class );
         $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
-        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'languageList', 'orders_sequenceList', 'taxList') );
+        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'warehouseList', 'languageList', 'orders_sequenceList', 'taxList') );
 
         // https://bootsnipp.com/snippets/M27e3
     }
@@ -147,7 +152,7 @@ class WooConfigurationKeysController extends Controller {
 
         // die();
 
-        return redirect('wooc/wooconnect/wooconfigurationkeys?tab_index='.$tab_index)
+        return redirect('wooc/wooconnect/configurationkeys?tab_index='.$tab_index)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $tab_index], 'layouts') );
     }
 
@@ -215,20 +220,47 @@ class WooConfigurationKeysController extends Controller {
         // Configuration::updateValue('WOOC_CONFIGURATIONS_CACHE', json_encode($wooconfs));
         // $wooconfs = ['woocommerce_default_country' => WooConnector::getWooSetting( 'woocommerce_default_country' )];
 
+        // 
+        // abi_r(WooConnector::getWooSetting( 'woocommerce_default_country' ));die();
+        $settings = WooConnector::getAllWooSettings();
+        // abi_r($settings); die();
+
+        $wooKeys = WooConnector::$woo_keys;
         $wooconfs = [];
 
-        $wooconfs[] = [ 'id' => 'WOOC_DEFAULT_COUNTRY', 'value' => Configuration::get('WOOC_DEFAULT_COUNTRY') ];
-        $wooconfs[] = [ 'id' => 'WOOC_CURRENCY', 'value' => Configuration::get('WOOC_CURRENCY') ];
-        $wooconfs[] = [ 'id' => 'WOOC_DEF_CURRENCY', 'value' => Configuration::get('WOOC_DEF_CURRENCY') ];
-        $wooconfs[] = [ 'id' => 'WOOC_DECIMAL_PLACES', 'value' => Configuration::get('WOOC_DECIMAL_PLACES') ];
-        $wooconfs[] = [ 'id' => 'WOOC_PRICES_INCLUDE_TAX', 'value' => Configuration::get('WOOC_PRICES_INCLUDE_TAX') ];
-        $wooconfs[] = [ 'id' => 'WOOC_TAX_BASED_ON', 'value' => Configuration::get('WOOC_TAX_BASED_ON') ];
-        $wooconfs[] = [ 'id' => 'WOOC_SHIPPING_TAX_CLASS', 'value' => Configuration::get('WOOC_SHIPPING_TAX_CLASS') ];
-        $wooconfs[] = [ 'id' => 'WOOC_DEF_SHIPPING_TAX', 'value' => Configuration::get('WOOC_DEF_SHIPPING_TAX') ];
-        $wooconfs[] = [ 'id' => 'WOOC_TAX_ROUND_AT_SUBTOTAL', 'value' => Configuration::get('WOOC_TAX_ROUND_AT_SUBTOTAL') ];
-        $wooconfs[] = [ 'id' => 'WOOC_TAX_DISPLAY_SHOP', 'value' => Configuration::get('WOOC_TAX_DISPLAY_SHOP') ];
-        $wooconfs[] = [ 'id' => 'WOOC_ENABLE_GUEST_CHECKOUT', 'value' => Configuration::get('WOOC_ENABLE_GUEST_CHECKOUT') ];
+        foreach ($wooKeys as $key) {
+            # code...
+            $abiKey = 'WOOC_' . strtoupper( str_replace('woocommerce_', '', $key) );
+            $wooconfs[] = [ 
+                                'id'       => $abiKey, 
+                                'value'    => Configuration::get($abiKey), 
+                                'woovalue' => WooConnector::getWooSetting( $key, $settings ) ];
+        }
 
+
+/*
+        $wooconfs[] = [ 'id' => 'WOOC_DEFAULT_COUNTRY', 'value' => Configuration::get('WOOC_DEFAULT_COUNTRY'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_default_country', $settings ) ];
+
+        $wooconfs[] = [ 'id' => 'WOOC_CURRENCY', 'value' => Configuration::get('WOOC_CURRENCY'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_currency', $settings ) ];
+        
+        // $wooconfs[] = [ 'id' => 'WOOC_DEF_CURRENCY', 'value' => Configuration::get('WOOC_DEF_CURRENCY'), 'woovalue' => Configuration::get('WOOC_DEF_CURRENCY') ];
+        
+        // $wooconfs[] = [ 'id' => 'WOOC_DECIMAL_PLACES', 'value' => Configuration::get('WOOC_DECIMAL_PLACES'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_default_country', $settings ) ];
+        
+        $wooconfs[] = [ 'id' => 'WOOC_PRICES_INCLUDE_TAX', 'value' => Configuration::get('WOOC_PRICES_INCLUDE_TAX'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_prices_include_tax', $settings ) ];
+        
+        $wooconfs[] = [ 'id' => 'WOOC_TAX_BASED_ON', 'value' => Configuration::get('WOOC_TAX_BASED_ON'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_tax_based_on', $settings ) ];
+        
+        $wooconfs[] = [ 'id' => 'WOOC_SHIPPING_TAX_CLASS', 'value' => Configuration::get('WOOC_SHIPPING_TAX_CLASS'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_shipping_tax_class', $settings ) ];
+        
+        // $wooconfs[] = [ 'id' => 'WOOC_DEF_SHIPPING_TAX', 'value' => Configuration::get('WOOC_DEF_SHIPPING_TAX'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_default_country', $settings ) ];
+        
+        $wooconfs[] = [ 'id' => 'WOOC_TAX_ROUND_AT_SUBTOTAL', 'value' => Configuration::get('WOOC_TAX_ROUND_AT_SUBTOTAL'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_tax_round_at_subtotal', $settings ) ];
+        
+        $wooconfs[] = [ 'id' => 'WOOC_TAX_DISPLAY_SHOP', 'value' => Configuration::get('WOOC_TAX_DISPLAY_SHOP'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_tax_display_shop', $settings ) ];
+        
+        $wooconfs[] = [ 'id' => 'WOOC_ENABLE_GUEST_CHECKOUT', 'value' => Configuration::get('WOOC_ENABLE_GUEST_CHECKOUT'), 'woovalue' => WooConnector::getWooSetting( 'woocommerce_enable_guest_checkout', $settings ) ];
+*/        
         return view('woo_connect::woo_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'wooconfs'));
     }
 
@@ -241,70 +273,34 @@ class WooConfigurationKeysController extends Controller {
      */
     public function configurationsUpdate(Request $request)
     {
-        $settings = [];
+        $settings = WooConnector::getAllWooSettings();
 
-        // Get Configurations from WooCommerce Shop
-        try {
+        // abi_r(WooConnector::getWooSetting( 'woocommerce_default_country', $settings ));die();
 
-            $groups = WooCommerce::get('settings'); // Array
-        }
-
-        catch( WooHttpClientException $e ) {
-
-            /*
-            $e->getMessage(); // Error message.
-
-            $e->getRequest(); // Last request data.
-
-            $e->getResponse(); // Last response data.
-            */
-
-            return redirect()->route('worders.index')
-                    ->with('error', $e->getMessage());
-
-        }
-
-        // abi_r($groups, true);
-
-        foreach ($groups as $group) {
-
-            try {
-
-                $set = WooCommerce::get( 'settings/'.$group['id'] );    // Array
-
-                $settings = array_merge($settings, $set);
-
-                // abi_r($set);abi_r('* ***************************************** *');
-            }
-
-            catch( WooHttpClientException $e ) {
-
-                // settings/integration : Error: Grupo de ajustes no válido. [rest_setting_setting_group_invalid]
-
-//              return redirect()->route('worders.index')
-//                      ->with('error', $e->getMessage());
-
-            }
-        }
-
-//      abi_r($settings, true);
-
-        // Save Settings Cache
-        // Loose some fat first
-        $settings = array_map(function($value){
-            $v = [ 'id' => $value['id'], 'description' => $value['label'].' :: '.$value['description'], 'value' => $value['value'], ];
-            return $v;
-        }, $settings);
         Configuration::updateValue('WOOC_CONFIGURATIONS_CACHE', json_encode($settings));
 
         // Set some handy values
 
+        $wooKeys = WooConnector::$woo_keys;
+        $wooconfs = [];
+
+        foreach ($wooKeys as $key) {
+            # code...
+            $abiKey = 'WOOC_' . strtoupper( str_replace('woocommerce_', '', $key) );
+            Configuration::updateValue($abiKey, WooConnector::getWooSetting( $key ));
+        }
+/*
         Configuration::updateValue('WOOC_DEFAULT_COUNTRY', WooConnector::getWooSetting( 'woocommerce_default_country' ));   // ES:SE
         Configuration::updateValue('WOOC_CURRENCY', WooConnector::getWooSetting( 'woocommerce_currency' ));         // EUR
 
 
         // This is currency decimal places, NOT precision in amounts
+        // This sets the number of decimal points shown in displayed prices.",
         // Configuration::updateValue('WOOC_DECIMAL_PLACES', WooConnector::getWooSetting( 'woocommerce_price_num_decimals' )); // 2
+        // ^- 'dp' => Number of decimal points to use in each resource. Default is 2.
+
+        // Watch out!
+        // 'woocommerce_price_num_decimals' : Número de decimales. Esto establece el número de decimales que se muestran en los precios mostrados.
 
 //      Configuration::updateValue('WOOC_', WooConnector::getWooSetting( 'woocommerce_weight_unit' ));      // kg
 //      Configuration::updateValue('WOOC_', WooConnector::getWooSetting( 'woocommerce_dimension_unit' ));   // cm
@@ -318,7 +314,7 @@ class WooConfigurationKeysController extends Controller {
         Configuration::updateValue('WOOC_TAX_ROUND_AT_SUBTOTAL', WooConnector::getWooSetting( 'woocommerce_tax_round_at_subtotal' ));   // no   Redondeo de impuesto en el subtotal, en lugar de redondeo por cada línea
         Configuration::updateValue('WOOC_TAX_DISPLAY_SHOP', WooConnector::getWooSetting( 'woocommerce_tax_display_shop' )); // incl**, excl
         Configuration::updateValue('WOOC_ENABLE_GUEST_CHECKOUT', WooConnector::getWooSetting( 'woocommerce_enable_guest_checkout' ));   // no
-
+*/
 
 
         $currency = \App\Currency::findByIsoCode( Configuration::get('WOOC_CURRENCY') );
@@ -369,7 +365,7 @@ class WooConfigurationKeysController extends Controller {
 
 
 
-        return redirect('wooc/wooconnect/configuration')
+        return redirect()->route('wooconfigurationkeys.index')
                 ->with('success', l('This configuration has been successfully updated', [], 'layouts'));
     }
 
@@ -671,6 +667,76 @@ class WooConfigurationKeysController extends Controller {
 
         // https://www.enriquejros.com/estados-de-pedido-woocommerce/
 
+
+    }
+
+
+/* ********************************************************************************************* */
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function fetch($group_id)
+    {
+        // 
+        $settings = [];
+
+        // Get Configurations from WooCommerce Shop
+        try {
+
+            $groups = WooCommerce::get('settings'); // Array
+        }
+
+        catch( WooHttpClientException $e ) {
+
+            /*
+            $e->getMessage(); // Error message.
+
+            $e->getRequest(); // Last request data.
+
+            $e->getResponse(); // Last response data.
+            */
+
+            // return redirect()->route('worders.index')
+            //        ->with('error', $e->getMessage());
+
+        }
+
+        // abi_r($groups, true);
+
+        foreach ($groups as $group) {
+
+            abi_r($group);
+
+            try {
+
+                $set = WooCommerce::get( 'settings/'.$group['id'] );    // Array
+
+                $settings = array_merge($settings, $set);
+
+                abi_r($set);abi_r('* ***************************************** *');
+            }
+
+            catch( WooHttpClientException $e ) {
+
+                // settings/integration : Error: Grupo de ajustes no válido. [rest_setting_setting_group_invalid]
+
+//              return redirect()->route('worders.index')
+//                      ->with('error', $e->getMessage());
+
+            }
+        }
+
+        // Save Settings Cache
+        // Loose some fat first
+        $settings = array_map(function($value){
+            $v = [ 'id' => $value['id'], 'description' => $value['label'].' :: '.$value['description'], 'value' => $value['value'], ];
+            return $v;
+        }, $settings);
 
     }
 

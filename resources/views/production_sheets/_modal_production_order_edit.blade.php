@@ -29,6 +29,33 @@
                     {!! Form::select('work_center_id', ['0' => l('-- Please, select --', [], 'layouts')] + $work_centerList, null, array('class' => 'form-control', 'id' => 'work_center_id_edit')) !!}
                     {!! $errors->first('work_center_id', '<span class="help-block">:message</span>') !!}
                  </div>
+
+@php
+          $tree = [];
+          $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+          
+          foreach($categories as $category) {
+            $label = $category->name;
+
+            // Prevent duplicate names
+            while ( array_key_exists($label, $tree))
+              $label .= ' ';
+
+            $tree[$label] = $category->children()->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+            // foreach($category->children as $child) {
+              // $tree[$category->name][$child->id] = $child->name;
+            // }
+          }
+
+$categoryList = $tree;
+
+@endphp
+
+                 <div class="form-group col-lg-5 col-md-5 col-sm-5 {{ $errors->has('schedule_sort_order') ? 'has-error' : '' }}">
+                    {{ l('Categoría') }}
+                    {!! Form::select('schedule_sort_order', ['0' => l('-- Please, select --', [], 'layouts')] + $categoryList, null, array('class' => 'form-control', 'id' => 'schedule_sort_order_edit')) !!}
+                    {!! $errors->first('schedule_sort_order', '<span class="help-block">:message</span>') !!}
+                 </div>
         </div>
 
         <div class="row">
@@ -62,6 +89,7 @@
             var href = $(this).attr('href');
             var quantity = $(this).attr('data-oquantity');
             var workcenter = $(this).attr('data-oworkcenter');
+            var category = $(this).attr('data-ocategory');
             var notes = $(this).attr('data-onotes');
 
             var label = '';
@@ -72,6 +100,7 @@
 
               $('#planned_quantity_edit').val(quantity);
               $('#work_center_id_edit').val(workcenter);
+              $('#schedule_sort_order_edit').val(category);
               $('#notes_edit').val(notes);
 
             $('#ProductionOrderEdit_action').attr('action', href);

@@ -71,6 +71,20 @@ class CustomerOrder extends Billable
                ];
 
 
+    public function getWebshopIdAttribute()
+    {
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && (strpos($this->reference, '#') !== FALSE) )
+        {
+            list($prifix, $ws_id) = explode('#', $this->reference);
+
+            if ( ($ws_id = (int) $ws_id) > 0 )
+                return $ws_id;
+        }
+
+        return null;
+    }
+
+
     public function getDeletableAttribute()
     {
 //        return $this->status != 'closed' && !$this->->status != 'canceled';
@@ -156,6 +170,9 @@ class CustomerOrder extends Billable
     public function customerCardFull()
     {
         $address = $this->customer->address;
+
+        // Gorrino way to detect which Order fails in listings!
+        if ( !$address ) die();
 
         $card = ($address->name_commercial ? $address->name_commercial .'<br />' : '').
                 ($address->firstname  ? $address->firstname . ' '.$address->lastname .'<br />' : '').
@@ -249,6 +266,16 @@ class CustomerOrder extends Billable
     public function productionsheet()
     {
         return $this->belongsTo('App\ProductionSheet', 'production_sheet_id');
+    }
+
+    public function customerorderManufacturableLines()
+    {
+        return $this->documentlines()
+                    ->whereHas('product', function($query) {
+                       $query->  where('procurement_type', 'manufacture');
+                       $query->orWhere('procurement_type', 'assembly');
+                    })
+                    ->with('product');
     }
 
     

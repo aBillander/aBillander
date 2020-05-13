@@ -68,7 +68,7 @@
         $('#notes_field').hide();
 
         $('#state_selector').hide();
-        $('#country_id').hide();
+        $('#country_selector').hide();
 
         // Disable Main Address edition
         $("#address1").attr( {"disabled" : "disabled"} );

@@ -5,8 +5,11 @@
     <table id="cart_lines" class="table table-hover">
         <thead>
             <tr>
-              <th class="text-right">ID</th>
-              <th>{{ l('Reference') }}</th>
+              <th>{{ l('Reference') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                                      data-content="{{ l('Drag to Sort.', 'layouts') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a></th>
               <th colspan="2">{{ l('Product Name') }}</th>
               <th>
 @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
@@ -18,18 +21,20 @@
                           data-content="{{ l('Change Quantity and press [Enter] or click button on the right.') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                    </a></th>
-               <th class="text-left">
+               <th> </th>
+               <th class="text-right">
                   <span class="button-pad">{{ l('Customer Price') }}
-                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                                 data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
       @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-          . 
+          <br /> 
           {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
       @endif
                         ">
                             <i class="fa fa-question-circle abi-help"></i>
                          </a></span>
                  </th>
+               <th> </th>
 
                       <th>{!! l('Recommended Retail Price') !!}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
@@ -62,13 +67,13 @@
 
 
                <th class="text-right button-pad">{{ l('Total') }}
-                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                                 data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-      @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
-          . 
-          {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
-      @endif
-                        ">
+@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+    <br />
+    {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
+@endif
+                  ">
                             <i class="fa fa-question-circle abi-help"></i>
                          </a></span>
 
@@ -79,42 +84,37 @@
         </thead>
 
         <tbody class="sortable ui-sortable">
-  @foreach ($cart->cartproductlines as $line)
-    <tr>
-      <td title="{{ $line->line_sort_order }}">{{ $line->id }}</td>
-      <td title="{{ $line->product->id }}">@if ($line->product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
-                @else {{ $line->product->reference }}
-                @endif</td>
 
-      <td>
-@php
-  $line->img = $line->product->getFeaturedImage();
-@endphp
-                @if ($line->img)
+  @foreach ($cart->cartproductlines as $line)
+
+    <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
+
+      <td class="button-pad" title="[{{ $line->line_sort_order }}] - {{ $line->id }} - {{ $line->product->id }}">
+        {{ $line->product->reference }}
+      </td>
+
+      <td class="button-pad">
+
                     <a class="view-image" data-html="false" data-toggle="modal"
-                       href="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-large_default' . '.' . $line->img->extension ) }}"
-                       data-title="{{ l('Product Images') }} :: {{ $line->product->name }}"
-                       data-caption="({{$line->img->id}}) {{ $line->img->caption }}"
+                       href="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
+                       data-title="{{ $line->product->name }}"
+                       data-caption="{{ $line->image->caption }}"
                        data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
                        onClick="return false;" title="{{l('View Image')}}">
 
-                        <img src="{{ URL::to( \App\Image::pathProducts() . $line->img->getImageFolder() . $line->img->id . '-mini_default' . '.' . $line->img->extension ) . '?'. 'time='. time() }}"
+                        <img src="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-mini_default' . '.' . $line->image->extension ) . '?'. 'time='. time() }}"
                              alt="{{ $line->product->name }}" style="border: 1px solid #dddddd;">
                     </a>
-                @else
-                    <a class="view-image" data-html="false" data-toggle="modal" 
-                           href="{{ URL::to( \App\Image::pathProducts() . 'default-large_default.png' ) }}"
-                           data-title="{{ l('Product Images') }} :: {{ $line->product->name }}" 
-                           data-caption="({{$line->product->id}}) {{ $line->product->name }} " 
-                           data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
-                           onClick="return false;" title="{{l('View Image')}}">
 
-                            <img src="{{ URL::to( \App\Image::pathProducts() . 'default-mini_default.png' ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
-                    </a>
-                @endif
       </td>
 
-      <td class="text-left view-image">{{ $line->product->name }}
+      <td class="text-left view-image" data-html="false" data-toggle="modal"
+                       href="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
+                       data-title="{{ $line->product->name }}"
+                       data-caption="{{ $line->image->caption }}"
+                       data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
+                       onClick="return false;" title="{{l('View Product')}}">{{ $line->product->name }}
+
           @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $line->product->ecotax )
               <br />
               {{ l('Ecotax: ', 'abcc/catalogue') }} {{ $line->product->ecotax->name }} ({{ abi_money( $line->product->getEcotax() ) }})
@@ -122,6 +122,7 @@
       </td>
 
       <td style="white-space:nowrap">
+{{-- STOCK --}}
 @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
             @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
               <div class="progress progress-striped" style="margin-bottom: auto !important">
@@ -138,12 +139,12 @@
 @endif
       </td>
 
-        <td style="width:1px; white-space: nowrap;xvertical-align: top;">
-
+        <td class="button-pad">
+{{-- QUANTITY --}}
             <div xclass="form-group">
               <div class="input-group" style="width: 81px;">
 
-                <input class="input-line-quantity form-control input-sm col-xs-2" data-id="{{$line->id}}" data-quantity="{{ (int) $line->quantity }}" type="text" size="5" maxlength="5" style="xwidth: auto;" value="{{ (int) $line->quantity }}" onclick="this.select()" >
+                <input class="input-line-quantity form-control input-sm col-xs-2" data-id="{{$line->id}}" data-quantity="{{ (int) $line->quantity }}" type="text" size="5" maxlength="5" style="xwidth: auto;" value="{{ (int) $line->quantity / $line->pmu_conversion_rate }}" onclick="this.select()" id="{{$line->id}}_quantity">
 
                 <span class="input-group-btn">
                   <button class="update-line-quantity btn btn-sm btn-lightblue" data-id="{{$line->id}}" data-quantity="{{ (int) $line->quantity }}" type="button" title="{{l('Apply', [], 'layouts')}}" xonclick="add_discount_to_order($('#order_id').val());">
@@ -154,7 +155,10 @@
               </div>
             </div>
 
-                  @if ( $cart->customer->getExtraQuantityRule( $line->product, $cart->customer->currency ) )
+{{-- EXTRA QUANTITY --}}
+@if ($line->unit_customer_final_price == $line->unit_customer_price && $line->pmu_conversion_rate == 1)
+{{-- Extra quantity only applies if no other rule applies --}}
+                  @if ( $rule = $cart->customer->getExtraQuantityRule( $line->product, $cart->customer->currency ) )
                       <div class="pull-left">
                           <p class="text-center text-info">
                               +{{ $line->as_quantity('extra_quantity') }}{{ l(' extra') }}
@@ -162,7 +166,7 @@
                                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
                                   xdata-trigger="focus"
                                   data-html="true" 
-                                  data-content="{{ $line->extra_quantity_label }}<br />
+                                  data-content="{{ $line->extra_quantity_label ?: $rule->name }}<br />
 
                                   @if( $line->extra_quantity > 0 )
                                                 {!! l('Promo: You pay :npay and get :nget',
@@ -175,34 +179,81 @@
                           </p>
                       </div>
                   @endif
+@endif
 
       </td>
 
-      <td class="text-right xbutton-pad">
+      <td class="button-pad">
+
+{{-- PACKAGE QUANTITY --}}
+@if ( $line->product->getPackagesWithPriceRules( \Auth::user()->customer ) )   {{-- Has extra measure units! --}}
+                {{-- {!! Form::select('measure_unit_id', $line->product->measureunits->pluck('name', 'id')->toArray(), $line->product->measure_unit_id, array('class' => 'form-control form-control-sm')) !!} --}}
+
+                {{-- $line->product->hasPackagePriceRules( \Auth::user()->customer ) --}}
+
+
+                   <span class="pull-right" style="position: absolute; padding-right: 7px" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Buy a Pack and save money.') }}">
+                      <i class="fa fa-info-circle abi-help" style="color: #ff0084;"></i>
+                   </span>
+
+
+<ul class="nav nav-pills pull-left" style="border: 1px solid #dddddd;border-radius: 3px;">
+  <li class="dropdown" xstyle="float: left;position: relative;
+
+display: inline-block;">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" style="padding: 5px 7px;">
+      {{ $line->package_measureunit->sign }} <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-right">
+
+      <li><a href="#" class="update-line-measureunit" data-id="{{$line->id}}" data-measureunit="{{ $line->product->measureunit->id }}">{{ $line->product->measureunit->name }}</a></li>
+
+@foreach( $line->product->getPackagesWithPriceRules( \Auth::user()->customer ) as $unit )
+
+      <li><a href="#" class="update-line-measureunit" data-id="{{$line->id}}" data-measureunit="{{ $unit->id }}">{{ $unit->name }} - {{ round($unit->conversion_rate, 0) }} {{ $line->product->measureunit->name }}</a></li>
+
+@endforeach
+
+    </ul>
+  </li>
+</ul>
+
+
+@else
 
 {{--
-          {{ $line->as_price('unit_customer_price') }}
-
-          <!-- p class="text-info">{{ $line->as_priceable($line->unit_customer_price + $line->product->getEcotax()) }}</p -->
-
-@if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
-
-          <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules' data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;" title="{{ l('Show Special Prices', 'abcc/catalogue') }} { {-- $line->product->hasQuantityPriceRules( \Auth::user()->customer ) --} }"><i class="fa fa-thumbs-o-up"></i></a>
+                   <span class="pull-right" style="position: absolute;" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Prices per Units!', 'abcc/catalogue') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </span>
+--}}
+<!-- p>Por unidad: 12,00€</p -->
 
 @endif
+
+      </td>
+
+{{--
+  https://stackoverflow.com/questions/25732320/bootstrap-grid-inside-a-td
+  http://jsfiddle.net/9jeyyfdL/
 --}}
+      <td class="text-right xbutton-pad" xstyle="white-space:nowrap">
 
+        <div style="display:inline-block; float: none; padding-left: 16px">
 
-                            @if ( $line->product->getPriceRulesByCustomer( \Auth::user()->customer )->count() > 0 )
-                                <a class="btn btn-sm btn-custom show-pricerules pull-right" href="#" data-target='#myModalShowPriceRules'
-                                   data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;"
-                                   title="{{ l('Show Special Prices', 'abcc/catalogue') }}">
-                                    <i class="fa fa-thumbs-o-up"></i>
-                                </a>
-                            @endif
+    @if ( $line->pmu_conversion_rate != 1 )
+                                <div class="pull-left" style="vertical-align: middle;">
+                                    {{ $line->as_priceable( $line->unit_customer_final_price * $line->pmu_conversion_rate ) }}
 
-                            @if ($line->unit_customer_final_price != $line->unit_customer_price)
-                                <div xclass="pull-right" style="vertical-align: middle; margin-right: 36px;">
+                                    <br />{{ (int) $line->pmu_conversion_rate}}x<span class="text-warning">{{ $line->as_priceable($line->unit_customer_final_price) }}</span>
+
+                                   <br /><span class="text-info crossed">{{ $line->as_priceable($line->unit_customer_price) }}</span>
+                                    
+                                </div>
+    
+    @elseif ($line->unit_customer_final_price != $line->unit_customer_price)
+                                <div xclass="pull-right" style="vertical-align: middle; xmargin-right: 36px;">
                                     {{ $line->as_price('unit_customer_final_price') }}{{-- $cart->currency->sign --}}
                                     
                                         <p class="text-info crossed">
@@ -210,33 +261,29 @@
                                         </p>
                                     
                                 </div>
-                            @else
-                                <div xclass="pull-right" style="vertical-align: middle;">
-                                    {{ $line->as_price('unit_customer_final_price') }}{{-- $cart->currency->sign --}}
-                                </div>
-                            @endif
+                  @else
+                      <div xclass="pull-right" style="vertical-align: middle;">
+                          {{ $line->as_price('unit_customer_final_price') }}{{-- $cart->currency->sign --}}
+                      </div>
+                  @endif
+        </div>
 
-{{--
-                            @if ($line->product->has_extra_item_applied)
-                                <div class="pull-left">
-                                    <p class="text-info">
-                                        +{{ $line->product->extra_item_qty }}{{ l(' extra') }}
-                                    </p>
-                                </div>
-                            @endif
---}}
-{{--
-                            @if ($line->extra_quantity)
-                                <div class="pull-left">
-                                    <p class="text-info">
-                                        {{ $line->extra_quantity_label }}
-                                    </p>
-                                </div>
-                            @endif
---}}
       </td>
+
+      <td class="button-pad">
+
+@if ( $line->product->hasQuantityPriceRules( \Auth::user()->customer ) )
+
+          <a class="btn btn-sm btn-custom show-pricerules" href="#" data-target='#myModalShowPriceRules' data-id="{{ $line->product->id }}" data-toggle="modal" onClick="return false;" title="{{ l('Show Special Prices', 'abcc/catalogue') }} {{-- $line->product->hasQuantityPriceRules( \Auth::user()->customer ) --}}"><i class="fa fa-thumbs-o-up"></i></a>
+
+@endif
+      </td>
+
+
+
+
                             <td class="text-center">
-                                {{ $line->as_priceable($line->product->recommended_retail_price_tax_inc) }}
+                                {{ $line->product->recommended_retail_price_tax_inc > 0 ? $line->as_priceable($line->product->recommended_retail_price_tax_inc) : '-' }}
                             </td>
 
                         @if($config['display_with_taxes'])
@@ -281,6 +328,12 @@
                         </tr>
                     @endif
   @endforeach
+
+      </tbody>
+    </table>
+
+    <table id="cart_totals" class="table table-hover pull-right">
+      <tbody>
 
 
 @include('abcc.cart._panel_cart_total_with_taxes')

@@ -1,3 +1,38 @@
+    @if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && ($document->webshop_id > 0) )
+
+          <div class="xpanel xpanel-default">
+          <div class="xpanel-body">
+
+            <!-- h4>{{ l('Customer Risk') }}</h4>
+            <div class="progress progress-striped">
+                <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
+            </div -->
+            <ul class="list-group">
+              <li class="list-group-item" style="font-weight: bold;
+color: #ffffff; background-color: #772953; border-color: #772953;">
+                <h4>{{ l('Order', 'layouts') }} [WooC]</h4>
+              </li>
+              
+                  <li class="list-group-item">
+
+                      <a href="{{ URL::to('wooc/worders/' . $document->webshop_id) }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+
+                          
+                            <span class="btn btn-xs btn-grey">#{{ $document->webshop_id }}</span> 
+
+                      </a> 
+
+                        <a class="btn btn-xs btn-warning" href="{{ URL::to('wooc/worders/' . $document->webshop_id) }}" title="{{l('View Document', 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
+                    
+                  </li>
+
+            </ul>
+
+          </div>
+          </div>
+
+    @endif
+
     @if ($document->quotation)
 
           <div class="xpanel xpanel-default">
@@ -272,3 +307,39 @@
           </div>
           </div>
 @endif
+
+    @if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
+
+          <div class="xpanel xpanel-default">
+          <div class="xpanel-body">
+
+            <!-- h4>{{ l('Customer Risk') }}</h4>
+            <div class="progress progress-striped">
+                <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
+            </div -->
+            <ul class="list-group">
+              <li class="list-group-item" style="font-weight: bold;
+color: #ffffff;
+background-color: #325d88; border-color: #772953;">
+                <h4>{{ l('Production Sheet', 'productionsheets') }}</h4>
+              </li>
+              
+                  <li class="list-group-item">
+
+                      <a href="{{ URL::to('productionsheets/' . $document->production_sheet_id) }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+
+                          
+                            <span class="btn btn-xs btn-grey">#{{ $document->production_sheet_id }} ({{ abi_date_form_short( $document->productionsheet->due_date ) }})</span> 
+
+                      </a> 
+
+                        <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $document->production_sheet_id) }}" title="{{l('View Document', 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
+                    
+                  </li>
+
+            </ul>
+
+          </div>
+          </div>
+
+    @endif

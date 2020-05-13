@@ -27,6 +27,7 @@ class CreateStockMovementsTable extends Migration {
 
 			$table->decimal('quantity_before_movement', 20, 6);
 			$table->decimal('quantity', 20, 6);
+			$table->integer('measure_unit_id')->unsigned()->nullable(false);
 			$table->decimal('quantity_after_movement', 20, 6);
 
 			// For tracking

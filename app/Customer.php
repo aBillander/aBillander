@@ -31,6 +31,7 @@ class Customer extends Model {
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
                            'invoice_sequence_id', 
                            'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id', 
+                           'order_template_id', 'shipping_slip_template_id',
                            'invoicing_address_id', 'shipping_address_id', 
                 ];
 
@@ -84,6 +85,8 @@ class Customer extends Model {
     
     public function getNameRegularAttribute() 
     {
+        if ( Configuration::get('BUSINESS_NAME_TO_SHOW') == 'fiscal' ) return $this->name_fiscal;
+
         return $this->name_commercial ?: $this->name_fiscal;
     }
 /*    
@@ -159,6 +162,26 @@ class Customer extends Model {
             return $this->invoice_template_id;
 
         return Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE');
+    }
+
+    public function getOrderTemplateId() 
+    {
+        if (   $this->order_template_id
+            && Template::where('id', $this->order_template_id)->exists()
+            )
+            return $this->order_template_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE');
+    }
+
+    public function getShippingSlipTemplateId() 
+    {
+        if (   $this->shipping_slip_template_id
+            && Template::where('id', $this->shipping_slip_template_id)->exists()
+            )
+            return $this->shipping_slip_template_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE');
     }
     
     public function getPaymentMethodId() 
@@ -284,6 +307,21 @@ class Customer extends Model {
         }
 
         return $query;
+    }
+
+    public function scopeIsActive($query)
+    {
+        return $query->where('active', '>', 0);
+    }
+
+    public function scopeIsBlocked($query)
+    {
+        return $query->where('blocked', '>', 0);
+    }
+
+    public function scopeIsNotBlocked($query)
+    {
+        return $query->where('blocked', 0);
     }
 
     public function scopeOfSalesRep($query)
@@ -591,6 +629,16 @@ class Customer extends Model {
         return $this->hasMany('App\CustomerOrder');
     }
 
+    public function customerordertemplates()
+    {
+        return $this->hasMany('App\CustomerOrderTemplate');
+    }
+
+    public function getCustomerordertemplateAttribute()
+    {
+        return $this->customerordertemplates()->first();
+    }
+
     public function customershippingslips()
     {
         return $this->hasMany('App\CustomerShippingSlip');
@@ -677,10 +725,13 @@ class Customer extends Model {
         // Special prices have more priority
         $price = $this->getPriceByRules( $product, $quantity, $currency );
 
-        if ( $price ) return $price;
+        if ( $price && $price->getPrice() < $product->price ) // A Rule has been applied
+        {
+            return $price;
+        }
 
 
-        // Customer has pricelist?
+        // Customer has pricelist? (I hope so!)
         return $this->getPriceByPriceList( $product, $quantity, $currency );
     }
 
@@ -697,7 +748,7 @@ class Customer extends Model {
 
 
         // Special prices have more priority
-        $rules = $this->getPriceRules( $product, $currency )->where('rule_type', 'price');
+        $rules = $this->getPriceRules( $product, $currency )->whereIn('rule_type', ['price', 'discount']);
 
         if ( $rules->count() )
             return $product->getPrice()->applyPriceRules( $rules, $quantity );
@@ -770,9 +821,15 @@ class Customer extends Model {
             $currency = Context::getContext()->currency;
 
 
-        $rule = $this->getPriceRules( $product, $currency )
+        $all_rules = $this->getPriceRules( $product, $currency );
+        $rules = $all_rules->whereIn('rule_type', ['price', 'discount']);
+
+        // Precedence takes place, and extra quantity rule won't apply
+        if ( $rules->count() > 0 ) return null;
+
+
+        $rule = $all_rules
                     ->where('rule_type', 'promo')
-//                    ->sortBy('from_quantity')
                     ->sortByDesc(function ($item, $key) {   // Best Rule for Customer
                         return $item->extra_quantity / $item->from_quantity;
                     })
@@ -818,10 +875,13 @@ class Customer extends Model {
         
         // $customer = Auth::user()->customer;
         $customer = $this;
+        $id = $customer->id;
 
         $rules = PriceRule::
                       where('currency_id', $currency->id)
                     // Customer range
+                    ->applyToCustomer($id)
+                    /*
                     ->where( function($query) use ($customer){
                                 $query->where('customer_id', $customer->id);
                                 // $query->orWhere('customer_id', null);
@@ -831,6 +891,7 @@ class Customer extends Model {
                                 if ($customer->customer_group_id)
                                     $query->orWhere('customer_group_id', $customer->customer_group_id);
                         } )
+                    */
                      // Product range
                     ->where( function($query) use ($product) {
                                 $query->where('product_id', $product->id);
@@ -957,6 +1018,19 @@ class Customer extends Model {
 
             $tax = $product->tax;
 
+            $rules = $this->getTaxRulesByTax( $tax, $address );
+
+        }
+
+        return $rules;
+    }
+
+    public function getTaxRulesByTax( Tax $tax, $address = null )
+    {
+        $rules = collect([]);
+
+        // Sales Equalization
+        if ( $this->sales_equalization ) {
 
             if ( $address == null ) 
                 $address = $this->invoicing_address();

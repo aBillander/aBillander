@@ -191,6 +191,8 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
 	'Add Product'     => 'Nuevo Producto',
 	'Add Service'     => 'Nuevo Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
+	'Add Shipping Cost'     => 'Añadir Costes de Envío',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -336,8 +338,13 @@ return [
 	'Address is displayed if it is different from Customer Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Cliente',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
+	'Prompt Payment'     => 'Pronto Pago',
 
 	'Not Closed'     => 'No Cerrados',
 	'Closed'     => 'Cerrados',
+
+	'New Customer Order' => 'Nuevo Pedido de Cliente',
+
+	'Customer Reference' => 'Referencia del Cliente',
 
 ];

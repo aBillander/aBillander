@@ -18,6 +18,10 @@
         <a href="{{ route('customers.import') }}" class="btn btn-success" 
                 title="{{l('Import', [], 'layouts')}}"><i class="fa fa-users"></i> {{l('Customers', [], 'layouts')}}</a>
 
+
+        <a href="{{ route('suppliers.import') }}" class="btn btn-warning" 
+                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-user-times"></i> {{l('Suppliers', [], 'layouts')}}</a>
+
 {{-- 
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('pricelists.import', [$pricelist->id] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-upload"></i></a>
 

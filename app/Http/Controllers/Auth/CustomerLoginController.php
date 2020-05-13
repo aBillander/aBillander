@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
 
-use App\CustomerUser as CustomerUser;
+use App\Configuration;
+use App\CustomerUser;
 
 class CustomerLoginController extends Controller
 {
@@ -45,7 +46,10 @@ class CustomerLoginController extends Controller
       if (Auth::guard('customer')->attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->remember)) {
         
         // if successful, then redirect to their intended location
-        return redirect()->intended(route('customer.dashboard'));
+        if ( Configuration::get('ABCC_LOGIN_REDIRECT') && \Route::has(Configuration::get('ABCC_LOGIN_REDIRECT')) )
+          return redirect()->route( Configuration::get('ABCC_LOGIN_REDIRECT') );
+        else
+          return redirect()->intended(route('customer.dashboard'));
       }
 
       // if unsuccessful, then redirect back to the login with the form data

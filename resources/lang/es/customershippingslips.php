@@ -151,6 +151,7 @@ return [
 	'Sales Representative'     => 'Agente Comercial',
 	'Down Payment'     => 'Anticipo',
 	'Number of Packages'     => 'Número de Bultos',
+	'Weight'     => 'Peso',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',
@@ -328,10 +329,14 @@ return [
 	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
+	'Prompt Payment'     => 'Pronto Pago',
 
 	'Shipment Status'     => 'Estado de Envío',
 
 	'Not Invoiced'     => 'No Facturados',
 	'Invoiced'     => 'Facturados',
+
+
+	'Shipment Service Type Tag' => 'Tipo de Envío',
 
 ];

@@ -86,11 +86,32 @@
 
 
 
+@section('styles')    @parent
+
+{{-- 
+ - Fix drop down button menu scroll
+ - https://stackoverflow.com/questions/26018756/bootstrap-button-drop-down-inside-responsive-table-not-visible-because-of-scroll
+--}}
+
+<style>
+    .table-responsive {
+      overflow-x: visible !important;
+      overflow-y: visible !important;
+    }
+</style>
+
+@endsection
+
+
 @section('scripts')    @parent
 
     @include($view_path.'.js.document')
 
     @include($view_path.'.js.document_service_lines')
+
+    @include($view_path.'.js.document_comment_lines')
+
+    @include($view_path.'.js.document_shipping_cost_line')
 
 
 <script>

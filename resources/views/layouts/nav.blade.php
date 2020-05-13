@@ -64,6 +64,12 @@
                                  {{l('Sale Orders', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ URL::to('customerordertemplates') }}">
+                                 <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
+                                 {{l('Sale Order Templates', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
 
                          <li>
@@ -102,6 +108,16 @@
                                  {{l('Price Rules', [], 'layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('abccbillboard/edit') }}">
+                                 <!-- img src="{{ asset('assets/theme/new-badge-20.png') }}" --> 
+                                 &nbsp; {{l('ABCC Billboard', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+@endif
                          <li>
                             <a href="{{ URL::to('shippingmethods') }}">
                                  {{l('Shipping Methods', [], 'layouts')}}
@@ -191,6 +207,20 @@
                         </li>
                         <li class="divider"></li>
                          <li>
+                            <a href="{{ route('suppliershippingslips.index') }}">
+                                 <i class="fa fa-truck btn-xs alert-info"></i> 
+                                 {{l('Supplier Shipping Slips', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ route('products.reorder.index') }}">
+                                 <i class="fa fa-calculator btn-xs text-warning"></i> 
+                                 {{l('Products with Low Stock', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
                             <a href="{{ URL::to('suppliers') }}">
                                  {{l('Suppliers', [], 'layouts')}}
                             </a>
@@ -265,6 +295,14 @@
                                  {{l('Product Categories', [], 'layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+                         <li>
+                            <a href="{{ URL::to('wooc/wcategories') }}">
+                                 <i class="fa fa-cloud-upload btn-xs alert-info"></i> 
+                                 {{l('Product Categories', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+@endif
                          <li>
                             <a href="{{ URL::to('manufacturers') }}">
                                  {{l('Manufacturers', [], 'layouts')}}
@@ -337,6 +375,11 @@
                          <li>
                             <a href="{{ route('chart.customerorders.monthly', ['CustomerInvoice']) }}">
                                  {{l('Sales Invoices', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('chart.customervouchers.monthly') }}">
+                                 {{l('Customer Vouchers', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>

@@ -17,6 +17,9 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
+        <a href="{{ route('stockmovements.export', Request::all()) }}" class="btn btn-sm btn-grey" 
+                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
     </div>
     <h2>
         {{ l('Stock Movements') }}
@@ -124,7 +127,7 @@
       </td>
 
 			<td>{{ $stockmovement->warehouse->alias }}</td>
-      <td><a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $stockmovement->reference }}</a>
+      <td><a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->reference }}</a>
 {{--
                     @if ( $stockmovement->combination_id > 0 )
                         {{ $stockmovement->combination->reference }}

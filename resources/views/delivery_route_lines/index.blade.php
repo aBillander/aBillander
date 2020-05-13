@@ -7,6 +7,10 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
+
+        <a href="{{ route('deliveryroutes.pdf', $deliveryroute->id) }}" class="btn xbtn-sm btn-grey" style="margin-right: 32px" 
+                title="{{l('Export', 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i> {{l('Export', 'layouts')}}</a>
+
         <a href="{{ URL::to('deliveryroutes/'.$deliveryroute->id.'/deliveryroutelines/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
         <a href="{{ URL::to('deliveryroutes') }}" class="btn btn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Delivery Routes') }}</a> 
@@ -37,8 +41,15 @@
 		<tr data-id="{{ $deliveryrouteline->id }}" data-sort-order="{{ $deliveryrouteline->line_sort_order }}">
             <td>{{ $deliveryrouteline->id }}</td>
             <td>{{ $deliveryrouteline->line_sort_order }}</td>
-            <td>{{ $deliveryrouteline->customer->name_regular }}</td>
-            <td>[{{ $deliveryrouteline->address->alias }}] {{ $deliveryrouteline->address->name_commercial }}</td>
+            <td>
+              @if ($deliveryrouteline->customer)
+                <a class="" href="{{ URL::to('customers/' . $deliveryrouteline->customer->id . '/edit') }}#addressbook" title="{{ l('Go to', 'layouts') }}" target="_new">
+              {{ $deliveryrouteline->customer->name_fiscal }}
+              </a>
+              @endif
+
+            </td>
+            <td>[{{ optional($deliveryrouteline->address)->alias }}] {{ optional($deliveryrouteline->address)->name_commercial }}</td>
 
             <td class="text-center">@if ($deliveryrouteline->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

@@ -44,7 +44,8 @@
             <!-- th>{{ l('Quantity decimals') }}</th>
             <th>{{ l('Manufacturing Batch Size') }}</th -->
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
-			<th class="text-center">{{l('Active', [], 'layouts')}}</th>
+            <th class="text-center">{{l('Active', [], 'layouts')}}</th>
+            <th class="text-center">{{l('Publish to web?')}}</th>
 			<th class="text-right"> </th>
 		</tr>
 	</thead>
@@ -67,13 +68,13 @@
 @endphp
 @if ($img)
               <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
+                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
                      data-content="{{l('You are going to view a record. Are you sure?')}}" 
                      data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
-                     data-caption="({{$img->id}}) {{ $img->caption }} " 
+                     data-caption="({{$img->filename}}) {{ $img->caption }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
 @endif
       </td>
@@ -97,7 +98,8 @@
                     </button>
                  </a>
                 @endif</td>
-			<td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
+            <td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
+            <td class="text-center">@if ($product->publish_to_web) <i class="fa fa-check-square" style="color: #2780e3;"></i> @else <i class="fa fa-square-o" style="color: #2780e3;"></i> @endif</td>
            <td class="text-right button-pad">
                 @if (  is_null($product->deleted_at))
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>

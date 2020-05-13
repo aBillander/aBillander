@@ -53,7 +53,10 @@ class ProductsController extends Controller
                               ->with('combinations')                                  
                               ->with('category')
                               ->with('tax')
-                              ->orderBy('reference', 'asc');
+//                            ->orderBy('position', 'asc')
+//                            ->orderBy('name', 'asc')
+//                              ->orderBy('reference', 'asc')
+                              ;
     }
 
     /**
@@ -73,7 +76,9 @@ class ProductsController extends Controller
         $categories = \App\Category::with('children')
 //          ->withCount('products')
             ->where('parent_id', '=', intval($parentId))
-            ->orderBy('name', 'asc')->get();
+            ->orderBy('position', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
 
         if ($category_id>0 && !$request->input('search_status', 0)) {
             //
@@ -99,9 +104,17 @@ class ProductsController extends Controller
             // abi_r($parent->name.' / '.$child->name, true);
         }
 
-        $products = $this->indexQueryRaw( $request )
-//                         ->isManufactured()
+
+        if ($category_id>0 && !$request->input('search_status', 0)) {
+                $products = $this->indexQueryRaw( $request )
+                            ->orderBy('position', 'asc')
+                            ->orderBy('name', 'asc')
                         ;
+        } else {
+                $products = $this->indexQueryRaw( $request )
+                            ->orderBy('reference', 'asc')
+                        ;
+        }
 
 //        abi_r($products->toSql(), true);
 
@@ -679,6 +692,19 @@ class ProductsController extends Controller
 */
         return response( $boms );
     }
+
+    // Used when adding BOM lines
+    public function getMeasureUnits($id, Request $request)
+    {
+        $product = $this->product->findOrFail($id);
+
+        $units = $product->measureunits;
+
+        return Response::json($units);
+
+//        return response( $boms );
+    }
+
 
 
 

@@ -11,7 +11,7 @@
 */
 
 function l($string = NULL, $data = [], $langfile = NULL)
-	{
+  {
         if ( is_string($data) && ($langfile == NULL) ) {
             $langfile = $data;
             $data = [];
@@ -24,17 +24,22 @@ function l($string = NULL, $data = [], $langfile = NULL)
 
         if (Lang::has($langfile.'.'.$string))
             return Lang::get($langfile.'.'.$string, $data);
-	//	elseif (Lang::has('_allcontrollers.'.$string))
-	//		return Lang::get('_allcontrollers.'.$string);
-		else 
-		{
-			foreach ($data as $key => $value)
-			{
-				$string = str_replace(':'.$key, $value, $string);
-			}
-			return $string;
-		}
-	}
+  //  elseif (Lang::has('_allcontrollers.'.$string))
+  //    return Lang::get('_allcontrollers.'.$string);
+    else 
+    {
+      foreach ($data as $key => $value)
+      {
+        $string = str_replace(':'.$key, $value, $string);
+      }
+      return $string;
+    }
+  }
+
+function ld($string = NULL, $data = [], $langfile = 'customerdocuments')
+  {
+      return l($string, $data, $langfile);
+  }
 
 
 function abi_yn_label($foo=true)
@@ -63,6 +68,23 @@ function abi_toSql($query)
   }
 
 
+
+if (! function_exists('abi_laravel_version')) {
+    /**
+     * Get the version number of the Laravel framework.
+     *
+     * @param  none
+     * @return string
+     */
+    function abi_laravel_version()
+    {
+        return app()->version();
+    }
+}
+
+
+
+
 function abi_date_short(\Carbon\Carbon $date = null, $format = '')
     {
         if (!$date) return null;
@@ -72,6 +94,25 @@ function abi_date_short(\Carbon\Carbon $date = null, $format = '')
 
         // if ($format == '') $format = \App\Configuration::get('DATE_FORMAT_SHORT');     
         if ($format == '') $format = \App\Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
+        if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
+        // echo ($format); die();
+        // $date = \Carbon\Carbon::createFromFormat($format, $date);    
+        // http://laravel.io/forum/03-12-2014-class-carbon-not-found?page=1
+
+        // echo $date.' - '.Configuration::get('DATE_FORMAT_SHORT').' - '.$date->format($format); die();
+
+        return $date->format($format);
+    }
+
+function abi_date_full(\Carbon\Carbon $date = null, $format = '')
+    {
+        if (!$date) return null;
+
+        // http://laravel.io/forum/03-11-2014-date-format
+        // https://laracasts.com/forum/?p=764-saving-carbon-dates-from-user-input/0
+
+        // if ($format == '') $format = \App\Configuration::get('DATE_FORMAT_SHORT');     
+        if ($format == '') $format = \App\Context::getContext()->language->date_format_full; // Should take value after User / Environment settings
         if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
         // echo ($format); die();
         // $date = \Carbon\Carbon::createFromFormat($format, $date);    

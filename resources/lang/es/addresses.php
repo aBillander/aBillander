@@ -55,6 +55,7 @@ return [
 	'Email'     => 'Correo Electrónico',
 	'Longitude'     => 'Longitud',
 	'Latitude'     => 'Latitud',
+	'Shipping Method' => 'Método de Envío',
 
 	'Address'     => 'Dirección Postal',
 	'Contact'     => 'Contacto',

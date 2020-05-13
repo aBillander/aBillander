@@ -304,6 +304,11 @@ class ImportProductPricesController extends Controller
                                 $data1['tax_id']        = $data['tax_id'];
                                 $data1['price_tax_inc'] = $data['price_tax_inc'];
                                 $data1['price']         = $data['price'];
+
+                                $data1['recommended_retail_price_tax_inc'] = 
+                                    (float) $data['recommended_retail_price_tax_inc'] > 0.0 ? (float) $data['recommended_retail_price_tax_inc'] : null;
+                                $data1['recommended_retail_price']         = 
+                                    (float) $data['recommended_retail_price']         > 0.0 ? (float) $data['recommended_retail_price']         : null;
                             }
 
                             if (array_key_exists('cost_price', $data))
@@ -378,7 +383,7 @@ class ImportProductPricesController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference', 'NAME', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price',
+        $headers = [ 'id', 'reference', 'NAME', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
         ];
 
         $data[] = $headers;

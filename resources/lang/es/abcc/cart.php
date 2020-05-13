@@ -31,6 +31,7 @@ return [
     'Sales Equalization Total'    => 'Total RE',
     'Order Total'                 => 'Total Pedido',
     'Total to Pay'                => 'Total a Pagar',
+    'Total (Tax included)' => 'Total (con Impuestos)',
 
     'Change Quantity and press [Enter] or click button below.' => 'Cambie la Cantidad y pulse [Enter] o click en el botón de más abajo.',
 
@@ -38,6 +39,7 @@ return [
     //	'Taxes are not included.'     => 'Impuestos no incluidos.',
 
     'View Image'     => 'Ver Imagen',
+    'View Product'     => 'Ver Producto',
     'Product Images' => 'Imágenes de Productos',
 
     'EAN Code'     => 'Código EAN',
@@ -143,6 +145,7 @@ return [
 
     // _invoice_lines
     'Reference'                     => 'Ref.',
+    'EAN Code'     => 'EAN',
     'Description'                   => 'Descripción',
     'Price'                         => 'Precio',
     'Disc. %'                       => 'Dto. %',
@@ -239,6 +242,7 @@ return [
     'Order Confirmation'                                 => 'Confirmación de Pedido',
     'You are going to Confirm your Order. Are you sure?' => 'Está a punto de confirmar su Pedido. ¿Está seguro?',
     'You can not Confirm your Order at this moment.'     => 'No puede confirmar su Pedido en este momento.',
+    'Send me a confirmation email'                       => 'Envíeme un email de confirmación',
 
     'Cart amount should be more than: :amount (Products Value)' => 'El importe del Pedido debe ser al menos de: :amount (Valor de los Productos )',
 
@@ -252,5 +256,7 @@ return [
     'Recommended Retail Price, taxes included'     => 'Precio de Venta Recomendado, IVA incluido',
 
     'Free Shipping for Orders greater than: :amount (Products Value)' => 'Envío Gratis para Pedido superior a: :amount (Valor de los Productos )',
+
+    'Buy a Pack and save money.' => 'Ahorre dinero comprando por Cajas.',
 
 ];

@@ -224,11 +224,18 @@ class ProductionSheet extends Model
     |--------------------------------------------------------------------------
     */
 
+    /* Customer Shipping Slips */
+    
+    public function customershippingslips()
+    {
+        return $this->hasMany('App\CustomerShippingSlip', 'production_sheet_id')->orderBy('shipping_method_id', 'asc');
+    }
+
     /* Customer Orders */
     
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerOrder')->orderBy('shipping_method_id', 'asc');
+        return $this->hasMany('App\CustomerOrder', 'production_sheet_id')->orderBy('shipping_method_id', 'asc');
     }
     
     public function nbr_customerorders()
@@ -333,6 +340,9 @@ class ProductionSheet extends Model
                         'name' => $group->first()->name,
                         'quantity' => $group->sum('quantity'),
                         'measureunit' => $group->first()->product->measureunit->name,
+                        'measureunit_sign' => $group->first()->product->measureunit->sign,
+
+                        'manufacturing_batch_size' => $group->first()->product->manufacturing_batch_size,
                       ]);
                     }, collect());
 

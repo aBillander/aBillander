@@ -99,12 +99,13 @@
 	<thead>
 		<tr>
       <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-      <th class="text-left">{{l('SKU #')}}</th>
-      <th colspan="2">{{l('Product Name')}}</th>
+      <th class="text-left">{{l('SKU')}}</th>
+      <th colspan="2"><span style="font-weight: normal !important">{{l('Product Name')}}</span><br />{{l('Slug')}}</th>
       <th>{{l('Category')}}</th>
       <th>{{l('Type')}}</th>
       <th>{{l('Status')}}</th>
       <th>{{l('Price')}} ({{ \aBillander\WooConnect\WooConnector::getWooSetting( 'woocommerce_currency' ) }})</th>
+      <th>{{l('Sale Price')}}</th>
       <th>{{l('Regular Price')}}</th>
       <th>{{l('Tax')}}</th>
       <th>{{l('Weight')}}</th>
@@ -122,13 +123,19 @@
       @else
       <td class="text-center warning">{!! Form::checkbox('worders[]', $product['id'], false, ['class' => 'case checkbox']) !!}</td>
       @endif
-      <td title="{{ $product['id'] }}">{{ $product["sku"] }}</td>
+      <td title="{{ $product['id'] }}">{{ $product["sku"] }}
+              
+        @if ( ($pid = $abi_product_ids[$product["sku"]]) > 0 )
+                        <a class="btn btn-xs btn-warning" href="{{ route('products.edit', $pid) }}" title="{{l('Go to local Product')}}" target="_blank"><i class="fa fa-external-link"></i></a>
+        @endif
+      </td>
       <td><img width="32px" src="{{ optional($product['images'])[0]['src'] }}" style="border: 1px solid #dddddd;"></td>
       <td>{{ $product["name"] }}<br /><strong>{{ $product["slug"] }}</strong></td>
       <td>{{ $product["categories"][0]["name"] }}</td>
       <td>{{ $product["type"] }}</td>
       <td>{{ $product["status"] }}</td>
       <td>{{ $product["price"] }}</td>
+      <td>{{ $product["sale_price"] }}</td>
       <td>{{ $product["regular_price"] }}</td>
 @php
 
@@ -150,11 +157,16 @@ $tax = \App\Tax::find( $tax_id );
        </a>
       @endif</td>
 
-			<td class="text-right" style="width:1px; white-space: nowrap;">
+			<td class="text-right button-pad" xstyle="width:1px; white-space: nowrap;">
+
+                <a class="btn btn-sm btn-blue" href="{{ URL::route('wproducts.fetch', [$product["sku"] ?: $product["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i></a>
+
+        @if ( !($pid = $abi_product_ids[$product["sku"]]) > 0 )
+                <a class="btn btn-sm btn-grey" href="{{ URL::route('wproducts.import', [$product["id"]] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
+        @endif
+
 {{--
                 <a class='open-AddBookDialog btn btn-sm btn-warning' href="{{ URL::route('worders.update', [$product["id"]] + $query ) }}" data-target='#myModalOrder' data-id="{{ $product["id"] }}" data-status="{{ $product["status"] }}" data-statusname="{{ \aBillander\WooConnect\WooConnector::getOrderStatusName( $product["status"] ) }}" data-toggle="modal" onClick="return false;" title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>
-
-                <a class="btn btn-sm btn-info" href="{{ URL::route('wproducts.fetch', [$product["sku"] ?: $product["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-superpowers"></i></a>
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to('wooc/worders/' . $product["id"]) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
       

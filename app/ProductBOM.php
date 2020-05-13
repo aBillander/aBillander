@@ -166,6 +166,15 @@ class ProductBOM extends Model
         return $this->hasMany('App\ProductBOMLine', 'product_bom_id')->orderBy('line_sort_order', 'ASC');
     }
     
+    public function BOMmanufacturablelines()      // http://advancedlaravel.com/eloquent-relationships-examples
+    {
+        return $this->BOMlines()
+                    ->whereHas('product', function($query) {
+                       $query->  where('procurement_type', 'manufacture');
+                       $query->orWhere('procurement_type', 'assembly');
+                    });
+    }
+    
     public function bomitems()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
         return $this->hasMany('App\BOMItem', 'product_bom_id');

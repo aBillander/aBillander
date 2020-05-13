@@ -32,6 +32,7 @@ class CreateCartLinesTable extends Migration
 
             $table->integer('package_measure_unit_id')->unsigned()->nullable();         // Measure unit used to bundle items
             $table->decimal('pmu_conversion_rate', 20, 6)->nullable()->default(1.0);    // Conversion rates are calculated from one unit of your main measura unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, type "6" (since a pack of six bottles will contain six bottles)
+            $table->string('pmu_label', 128)->nullable();
 
             // Unit prices are for stock_measure_unit (Product default / stock measure unit)
             $table->decimal('unit_customer_price', 20, 6)->default(0.0);        // Calculated for customer after Price List(initial price for customer)

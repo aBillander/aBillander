@@ -6,15 +6,22 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\ViewFormatterTrait;
 
+
 class PriceRule extends Model
 {
     use ViewFormatterTrait;
 
     public static $types = [
                 'price', 
+                'discount', 
                 'promo',       // Extra units free of charge
                 'pack',        // Price for different measure unit than default / stock measure unit
             ];
+
+    protected $discount_types = [
+        'percentage',
+        'amount',               // Not used, so far...
+    ];
 
     protected $dates = [
         'date_from',
@@ -32,7 +39,7 @@ class PriceRule extends Model
 
     public static $rules = [
         'category_id'       => 'nullable|exists:categories,id',
-        'product_id'        => 'nullable|exists:products,id',
+        'product_id'        => 'exists:products,id',
         'combination_id'    => 'nullable|exists:combinations,id',
         'customer_id'       => 'nullable|exists:customers,id',
         'customer_group_id' => 'nullable|exists:customer_groups,id',
@@ -51,11 +58,17 @@ class PriceRule extends Model
     {
             $list = [];
             foreach (static::$types as $type) {
-                // $list[$scheme] = l(get_called_class().'.'.$scheme, 'sepasp');
+                // $list[$type] = l('App\\PriceRule.'.$type, [], 'appmultilang');
                 $list[$type] = $type;
             }
 
             return $list;
+    }
+
+    public static function getRuleTypeName( $type )
+    {
+            return $type;
+            //return l('App\\PriceRule.'.$type, [], 'appmultilang');
     }
 
 
@@ -64,11 +77,43 @@ class PriceRule extends Model
      *
      * @param Product $product
      */
-    public function removeLine(Product $product)
+    public function getUnitPrice( Currency $currency = null )
     {
-        $line = $this->pricelistlines()->where('product_id', '=', $product->id)->first();
-        $line->delete();
+/*
+        if (!$currency && $this->currency_id)
+            $currency = $this->currency;
+
+        if (!$currency)
+            $currency = Context::getContext()->currency;
+
+*/
+        // Welcome to the show:
+        if($this->rule_type=='price')
+        {
+            $price = $this->price;
+        }
+        elseif($this->rule_type=='discount')
+        {
+            $price = optional($this->product)->price * (1.0 - $this->discount_percent/100.0);
+        }
+        elseif($this->rule_type=='pack')
+        {
+            $price = $this->price / $this->conversion_rate;
+        }
+        elseif($this->rule_type=='promo')
+        {
+            $price = $this->price;
+        }
+
+        // Add Ecotax
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') )
+        {
+            $price += optional($this->product)->getEcotax(); 
+        }
+
+        return $price;
     }
+
 
     /**
      * Return true or false if a rule applies to a product right now
@@ -136,6 +181,42 @@ class PriceRule extends Model
     | Scopes
     |--------------------------------------------------------------------------
     */
+
+    public function scopeApplyToCustomer($query, $customer_id)
+    {
+        // Be careful:
+        // If $customer_id = $customer->id, then: $customer_group_id = $customer->customer_group_id
+        return $query->when($customer_id, function($query) use ($customer_id) {
+
+                        $customer_group_id = Customer::find($customer_id)->customer_group_id;
+
+
+                        $query->where(function ($query) use ($customer_id) {
+
+                                $query->whereHas('customer', function ($query) use ($customer_id) {
+
+                                        $query->where('id', $customer_id);
+                                });
+                        });
+
+                        $query->orWhere(function ($query) use ($customer_group_id) {
+
+                                $query->whereDoesntHave('customer');
+
+                                $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
+
+                                        $query->where('id', $customer_group_id);
+                                });
+                        });
+
+                        $query->orWhere(function ($query) {
+
+                                $query->whereDoesntHave('customer');
+
+                                $query->whereDoesntHave('customergroup');
+                        });
+                });
+    }
 
     public function scopeFilter($query, $params)
     {

@@ -99,7 +99,7 @@ class Product extends Model {
     protected $appends = ['extra_measureunits', 'tool_id', 'quantity_available'];
     
     protected $fillable = [ 'product_type', 'procurement_type', 'mrp_type', 
-                            'name', 'reference', 'ean13', 'description', 'description_short', 
+                            'name', 'position', 'reference', 'ean13', 'description', 'description_short', 
                             'quantity_decimal_places', 'manufacturing_batch_size',
 //                            'warranty_period', 
 
@@ -110,7 +110,7 @@ class Product extends Model {
 
                             'location', 'width', 'height', 'depth', 'volume', 'weight',
 
-                            'notes', 'stock_control', 'publish_to_web', 'blocked', 'active', 
+                            'notes', 'stock_control', 'publish_to_web', 'webshop_id', 'blocked', 'active', 
                             'out_of_stock', 'out_of_stock_text', 'available_for_sale_date',
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
@@ -278,6 +278,14 @@ class Product extends Model {
         return $value;
     }
 
+    public function getQuantityReorderSuggestedAttribute()
+    {
+        $value =      $this->maximum_stock 
+                    - $this->quantity_available;
+
+        return $value > 0 ? $value : 0.0;
+    }
+
     public function getDisplayPriceAttribute()
     {
         $value = Configuration::get('PRICES_ENTERED_WITH_TAX') ?
@@ -415,9 +423,26 @@ class Product extends Model {
                 $query->where('quantity_onhand', '>', 0);
         }
 
+        if ( isset($params['stock_control']) )
+        {
+            if ( $params['stock_control'] == 0 )
+                $query->where('stock_control', '<=', 0);
+            if ( $params['stock_control'] == 1 )
+                $query->where('stock_control', '>', 0);
+        }
+
+        if ( isset($params['main_supplier_id']) )
+        {
+            if ( $params['main_supplier_id'] > 0 )
+                $query->where('main_supplier_id', $params['main_supplier_id']);
+            if ( $params['main_supplier_id'] < 0 )
+                $query->where('main_supplier_id', 0)->orWhere('main_supplier_id', null);
+        }
+
         if ( isset($params['category_id']) && $params['category_id'] > 0 )
         {
-            $query->where('category_id', '=', $params['category_id']);
+            $query->where('category_id', '=', $params['category_id'])
+                  ->orderBy('position', 'asc');
         }
 
         if ( isset($params['manufacturer_id']) && $params['manufacturer_id'] > 0 && 0)
@@ -428,6 +453,11 @@ class Product extends Model {
         if ( isset($params['procurement_type']) && $params['procurement_type'] != '' )
         {
             $query->where('procurement_type', '=', $params['procurement_type']);
+        }
+
+        if ( isset($params['mrp_type']) && $params['mrp_type'] != '' )
+        {
+            $query->where('mrp_type', '=', $params['mrp_type']);
         }
 
         if ( isset($params['active']) )
@@ -471,6 +501,33 @@ class Product extends Model {
     }
 
     public function getStockToDateByWarehouse(  $warehouse = null, Carbon $date = null  )
+    {
+        if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
+        $wh_id = is_numeric($warehouse)
+                    ? $warehouse
+                    : $warehouse->id ;
+        
+        if ( $date      == null ) $date      = Carbon::now();   //->endOfDay();
+        else                      $date      = $date->endOfDay();
+
+        // Last movement BEFORE requested date
+        $mvt = StockMovement::
+                      where('product_id', $this->id)
+                    ->where('warehouse_id', $wh_id)
+                    ->where('date', '<=', $date)
+                    ->orderBy('date', 'desc')           // Guess "well ordered" movements
+                    ->first();
+
+        if ($mvt)
+            return $mvt->quantity_after_movement;
+
+        return 0.0;
+    }
+
+
+
+    // Just to disappear
+    public function getStockToDateByWarehouse_old_stuff(  $warehouse = null, Carbon $date = null  )
     {
         if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
         $wh_id = is_numeric($warehouse)
@@ -536,8 +593,13 @@ class Product extends Model {
 
     public function getFeaturedImage()
     { 
-        // If no featured image, return one, anyway
-        return $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
+        // If no featured image, GET one, anyway
+        $img = $this->images()->orderBy('is_featured', 'desc')->orderBy('position', 'asc')->first();
+
+        if ($img) return $img;
+
+        // If no featured image, RETURN one, anyway
+        return new \App\Image();
     }
 
     public function setFeaturedImage( Image $image )
@@ -773,9 +835,15 @@ class Product extends Model {
         return $this->hasMany('App\StockMovement');
     }
 
-    public function supplier()
+    public function mainsupplier()
     {
         return $this->belongsTo('App\Supplier', 'main_supplier_id');
+    }
+
+    // Alias
+    public function supplier()
+    {
+        return $this->mainsupplier();
     }
 
     public function manufacturer()
@@ -946,6 +1014,16 @@ class Product extends Model {
         return $price;
     }
 
+    public function getPriceByListId( $list_id = null )
+    {
+        $list = null;
+
+        if ((int) $list_id > 0)
+            $list = PriceList::find((int) $list_id);
+
+        return $this->getPriceByList( $list );
+    }
+
     // Deprecated DO NOT USE
     public function getPriceByListWithEcotax( PriceList $list = null )
     {
@@ -1016,6 +1094,35 @@ class Product extends Model {
         }
 
         return $price;
+    }
+
+
+
+    public function getPriceBySupplier( Supplier $supplier, $quantity = 1, Currency $currency = null )
+    {
+        // Return Price Object
+        $price = $supplier->getPrice( $this, $quantity, $currency );
+
+        // Add Ecotax
+        if ( 0 && Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        {
+            // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
+//            $ecoprice = Price::create([
+//                        $this->getEcotax(), 
+//                        $this->getEcotax()*(1.0+$price->tax_percent/100.0), 
+//                        $price->price_tax_inc
+//                ]);
+
+            $price->add( $this->getEcotax() ); 
+        }
+
+        return $price;
+    }
+
+
+    public function getReferenceBySupplier( Supplier $supplier )
+    {
+        return $supplier->getReference( $this );
     }
     
 
@@ -1093,6 +1200,19 @@ class Product extends Model {
         return $rules->sortBy('position');
     }
 
+    public function getSupplierTaxRules( Address $address = null, Supplier $supplier = null )
+    {
+        $rules =         $this->getTaxRulesByAddress(  $address  )
+//                ->merge( $this->getTaxRulesBySupplier( $supplier ) )
+                ->merge( $this->getTaxRulesByProduct(  $address  ) );
+
+        // Higher Tax first
+        // return $rules->sortByDesc('percent');
+        // Not needed: use rule 'position' for precedence
+
+        return $rules->sortBy('position');
+    }
+
     public function getQuantityPriceRules( Customer $customer = null )
     {
         $product = $this;
@@ -1109,14 +1229,19 @@ class Product extends Model {
                     ->where( function($query) use ($customer) {
                             if ($customer)
                             {
-                                $query->where('customer_id', $customer->id);
-                                if ($customer->customer_group_id)
-                                    $query->orWhere('customer_group_id', $customer->customer_group_id);
-                            }
+                                $query->where( function($query1) use ($customer) {
 
-                            $query->orWhere( function($query1) {
-                                    $query1->whereDoesntHave('customer');
+                                    $query1->where('customer_id', $customer->id);
+                                    if ($customer->customer_group_id)
+                                        $query1->orWhere('customer_group_id', $customer->customer_group_id);
                                 } );
+
+                                $query->orWhere( function($query1) {
+                                    $query1->whereDoesntHave('customer');
+                                    $query1->whereDoesntHave('customergroup');
+                                } );
+                            
+                            }
                         } )
                     // Product range
                     ->where( function($query) use ($product) {
@@ -1269,6 +1394,15 @@ class Product extends Model {
         return $query;
     }
 
+    public function scopeIsPurchaseable($query, $all = false)
+    {
+        // Apply filters here
+        if ( $all ) 
+            return $query;
+
+        return $query->where('procurement_type', 'purchase');
+    }
+
     public function scopeIsService($query)
     {
         return $query->where('procurement_type', 'none');
@@ -1341,6 +1475,13 @@ class Product extends Model {
         });
     }
 
+
+    public function scopeQualifyForSupplier($query, $supplier_id, $currency_id) 
+    {
+        // Filter Products by Supplier
+
+        return $query;
+    }
 
 
     public function scopeIsAvailable($query) 

@@ -43,8 +43,20 @@
 
                   <a class="btn btn-sm btn-success create-document-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-shopping-basket"></i> </a>
 
+{{--
                   <a class="btn btn-sm btn-success create-document-service" title="{{l('Add Service')}}" style="background-color: #2bbbad;"><i class="fa fa-plus"></i> <i class="fa fa-handshake-o"></i> </a>
+--}}
 
+                <div class="btn-group">
+                    <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Service')}}" style="background-color: #2bbbad;"> <i class="fa fa-handshake-o"></i> &nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu  pull-right"">
+                      <li><a class="create-document-service"><i class="fa fa-handshake-o"></i> {{l('Add Service')}}</a></li>
+                      <li><a class="create-document-comment"><i class="fa fa-file-text-o"></i> {{l('Add Text Line')}}</a></li>
+                      <li class="divider"></li>
+                      <li><a class="create-document-shipping"><i class="fa fa-truck"></i> {{l('Add Shipping Cost')}}</a></li>
+                      <!-- li><a href="#">Separated link</a></li -->
+                    </ul>
+                </div>
 {{--
 <div class="btn-group" xstyle="width:98%">
   <a href="#" class="btn btn-sm btn-success create-document-product"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
@@ -94,7 +106,19 @@
                 @endif
                 {{ $line->name }}</td>
                 <td class="text-right">{{ $line->as_quantity('quantity') }}
-                        @if ($line->extra_quantity>0.0)
+                        @if ($line->package_measure_unit_id != $line->measure_unit_id && $line->pmu_label != '')
+                            <p class="text-right text-info">
+                                {{ optional($line->packagemeasureunit)->name }}
+
+                                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                                    xdata-trigger="focus"
+                                    data-html="true" 
+                                    data-content="{!! $line->pmu_label !!}">
+                                    <i class="fa fa-question-circle abi-help" style="color: #9a00cd;"></i>
+                                 </a>
+                            </p>
+                        @endif
+                        @if ($line->extra_quantity > 0.0 && $line->extra_quantity_label != '')
                             <p class="text-right text-info">
                                 +{{ $line->as_quantity('extra_quantity') }}{{ l(' extra') }}
 
@@ -121,7 +145,7 @@
                 <td class="text-center">
                 @if ($line->notes)
                  <a href="javascript:void(0);">
-                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="left" 
                             data-content="{{ $line->notes }}">
                         <i class="fa fa-paperclip"></i> {{-- l('View', [], 'layouts') --}}
                     </button>

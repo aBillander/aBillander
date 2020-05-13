@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ProductionSheet;
+// use App\ProductionSheetRegistry;
 use Illuminate\Http\Request;
 
 use WooCommerce;
@@ -14,8 +15,10 @@ class ProductionSheetsController extends Controller
 
    protected $productionSheet;
 
+   // public function __construct(ProductionSheetRegistry $registry)
    public function __construct(ProductionSheet $productionSheet)
    {
+        // $this->productionSheet = $registry->get('new');
         $this->productionSheet = $productionSheet;
    }
     /**
@@ -133,7 +136,7 @@ class ProductionSheetsController extends Controller
     {
         $sheet = $this->productionSheet->findOrFail($id);
 
-        $sheet->calculateProductionOrders();
+        $sheet->calculateProductionOrders( \App\Configuration::isTrue('MRP_WITH_STOCK') );
 
         return redirect('productionsheets/'.$id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));

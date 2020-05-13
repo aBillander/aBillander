@@ -30,7 +30,12 @@ class CategoriesController extends Controller {
         $parent=null;
         if ($parentId>0) $parent=$this->category->find($parentId);
 
-        $categories = $this->category->with('children')->where('parent_id', '=', intval($parentId))->orderBy('id', 'asc')->get();
+        $categories = $this->category
+                        ->with('children')
+                        ->where('parent_id', '=', intval($parentId))
+                        ->orderBy('position', 'asc')
+                        ->orderBy('name', 'asc')
+                        ->get();
 
         return view('categories.index', compact('parentId', 'parent', 'categories'));
         
@@ -99,10 +104,11 @@ class CategoriesController extends Controller {
      */
     public function edit($parentId=0, $id)
     {
+        $category = $this->category->findOrFail($id);
+        if ($parentId<0) $parentId=$category->parent_id;
+        
         $parent=null;
         if ($parentId>0) $parent=$this->category->findOrFail($parentId);
-
-        $category = $this->category->findOrFail($id);
 
         return view('categories.edit', compact('parentId', 'parent', 'category'));
     }
@@ -179,6 +185,25 @@ class CategoriesController extends Controller {
     // Better: https://github.com/kun391/laravel-categories
     // https://github.com/lazychaser/laravel-nestedset
     // https://github.com/redooor
+
+
+    /**
+     * AJAX Stuff.
+     *
+     * 
+     */
+    public function sortLines(Request $request)
+    {
+        $positions = $request->input('positions', []);
+
+        \DB::transaction(function () use ($positions) {
+            foreach ($positions as $position) {
+                Category::where('id', '=', $position[0])->update(['position' => $position[1]]);
+            }
+        });
+
+        return response()->json($positions);
+    }
 
 
 

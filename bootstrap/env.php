@@ -11,7 +11,7 @@
 
 	    // clearstatcache ( );  ???
 
-	    if ( file_exists($env_dir.$env_file) );		// Somohow returs always true, no matter the value of $domain . Why?
+	    if ( file_exists($env_dir.$env_file) )
 	    {
 	        try {
 	        	$dotenv = new \Dotenv\Dotenv($env_dir, $env_file);

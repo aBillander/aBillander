@@ -27,6 +27,7 @@ return [
     'Finished Product Requirements'     => 'Necesidades de Elaborados',
     'Production Orders' => 'Ordenes de Fabricación',
     'Material Requirements'     => 'Requerimientos de Ingredientes',
+	'Production Sheet'     => 'Hoja de Producción',
 	'Production Sheets'     => 'Hojas de Producción',
 	'Due Date'     => 'Fecha de Vencimiento',
 	'Name'     => 'Nombre',
@@ -80,4 +81,11 @@ return [
 	'Products' => 'Productos',
 	'' => '',
 	'' => '',
+
+
+	'Address'     => 'Dirección',
+
+	'Customer Shipping Slips' => 'Albaranes de Clientes',
+
+	'This record cannot be deleted because it belongs to a Production Sheet &#58&#58 (:id) ' => 'El registro no puede ser eliminado porque pertenece a una Hoja de producción &#58&#58 (:id) ',
 ];

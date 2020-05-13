@@ -138,7 +138,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 @if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
 @if( \App\Configuration::isTrue('ABSRC_ALLOW_ABCC_ACCESS') )
 
-          @include('absrc.customers._panel_customeruser')
+          @include('absrc.customers._panel_customer_users')
 
 @endif
 @endif
@@ -215,6 +215,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       {
          $("#panel_customeruser").show();
          $("#b_customeruser").addClass('active');
+         getCustomerUsers();
       }
       else  
       {

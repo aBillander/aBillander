@@ -68,6 +68,9 @@
                     $('#line_sales_rep_id').val( $('#sales_rep_id').val() );
                     $('#line_commission_percent').val( 0.0 );   // Use default
 
+                    $('#line_pmu_label').val('');
+                    $('#line_extra_quantity_label').val('');
+
                     $('#line_notes').val('');
 
                     $("#line_autoproduct_name").val('');
@@ -99,6 +102,11 @@
                   case 'shipping':
                       
                       editDocumentServiceLine( $(this) );
+                      break;
+
+                  case 'comment':
+                      
+                      editDocumentCommentLine( $(this) );
                       break;
 
                   default:
@@ -166,9 +174,15 @@
                     $('#line_name').val(result.name);
                     $('#line_reference').val(result.reference);
 
+                    pmu_conversion_rate = result.pmu_conversion_rate;
+                    pmu_quantity = result.quantity / pmu_conversion_rate
+
                     $('#line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
-                    $('#line_quantity').val(result.quantity.round( QUANTITY_DECIMAL_PLACES ));
+                    $('#line_quantity').val(pmu_quantity.round( QUANTITY_DECIMAL_PLACES ));
+                    $('#line_package_measure_unit_id').val(result.measure_unit_id);
                     $('#line_measure_unit_id').val(result.measure_unit_id);
+                    $('#line_measure_unit_name').text(result.packagemeasureunit.name);
+                    $('#line_package_label').text(result.package_label);
 
                     $('#line_cost_price').val(result.cost_price);
                     $('#line_unit_price').val(result.unit_price);
@@ -196,7 +210,9 @@
 
                     }
 
-                    $("#line_price").val( price );
+                    $("#line_price").val( price * pmu_conversion_rate );
+
+                    $("#label_ecotax_value").html(result.ecotax_value_label);
                     
                     // $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
                     // $("#line_price").val( result.unit_customer_final_price );
@@ -219,8 +235,17 @@
                     calculate_line_product( );
 
                     $('#line_sales_rep_id').val( result.sales_rep_id );
-                    $('#line_commission_percent').val( result.commission_percent );
+                    $('#line_commission_percent').val( result.commission_percent );line_extra_quantity_label
                     
+                    $('#line_pmu_label').val(result.pmu_label);
+                    $('#line_extra_quantity_label').val(result.extra_quantity_label);
+
+                    if ((result.pmu_label || '') != '')
+                        $('#line_pmu_label').parent().removeClass('hidden');
+
+                    if ((result.extra_quantity_label || '') != '')
+                        $('#line_extra_quantity_label').parent().removeClass('hidden');
+
                     $('#line_notes').val(result.notes);
 
                     console.log(result);
@@ -417,11 +442,20 @@
             });
         }
 
-        $("body").on('click', "#modal_document_line_productSubmit", function() {
+        $("body").on('click', ".modal_document_line_productSubmit", function( event ) {
+
+            var clicked = event.target;
+
+            // alert(clicked.name); return;
 
             var id = $('#line_id').val();
             var url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
+
+            var store_mode = '';
+
+            if (clicked.name  == 'modal_document_line_productSubmitAsIs')
+                store_mode = 'asis';
 
             if ( id == '' )
                 url = "{{ route($model_path.'.storeline', [$document->id]) }}";
@@ -430,6 +464,7 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
+                              store_mode : store_mode,
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),
@@ -438,6 +473,7 @@
                               quantity : $('#line_quantity').val(),
                               quantity_decimal_places : $('#line_quantity_decimal_places').val(),
                               measure_unit_id : $('#line_measure_unit_id').val(),
+                              package_measure_unit_id : $('#line_package_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_unit_price').val(),
                               unit_customer_price : $('#line_unit_customer_price').val(),
@@ -471,14 +507,17 @@
                 dataType : 'json',
                 data : payload,
 
-                success: function(){
+                success: function(response){
                     loadDocumentlines();
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
                     $('#modal_document_line').modal('toggle');
 
-                    showAlertDivWithDelay("#msg-success");
+                    if ( response.msg == 'OK' )
+                      showAlertDivWithDelay("#msg-success");
+                    else
+                      showAlertDivWithDelay("#msg-error");
                 }
             });
 
@@ -522,6 +561,8 @@
                               discount_amount_tax_excl : $('#line_discount_amount_tax_excl').val(),
                               sales_rep_id : $('#line_sales_rep_id').val(),
                               commission_percent : $('#line_commission_percent').val(),
+                              pmu_label : $('#line_pmu_label').val(),
+                              extra_quantity_label : $('#line_extra_quantity_label').val(),
                               notes : $('#line_notes').val()
                           };
 
@@ -616,6 +657,20 @@
 
                     $('#line_reference').val(response.reference);
                     $('#line_measure_unit_id').val(response.measure_unit_id);
+
+                    // Populate Measure Units
+                    munits = response.measure_units;
+
+                    $('select[name="line_package_measure_unit_id"]').empty();
+                    // $('select[name="line_package_measure_unit_id"]').append('<option value="">{{ l('-- Please, select --', [], 'layouts') }}</option>');
+                    $.each(munits, function (key, value) {
+                        $('select[name="line_package_measure_unit_id"]').append('<option value=' + key + '>' + value + '</option>');
+                    });
+
+                    $('select[name="line_package_measure_unit_id').val(response.measure_unit_id);
+
+
+
                     $('#line_quantity').val(1);
                     $('#line_quantity_decimal_places').val(response.quantity_decimal_places);
 
@@ -664,6 +719,8 @@
                     $("#line_unit_customer_price").val( price );
                     // $("#line_price").val( price.round( PRICE_DECIMAL_PLACES ) );
                     $("#line_price").val( price );
+
+                    $("#label_ecotax_value").html(response.ecotax_value_label);
 
                     calculate_line_product();
 

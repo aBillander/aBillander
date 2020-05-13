@@ -17,15 +17,22 @@
 
 		<div class="banner" style="visibility:hidden">
 
-			{!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
+			&nbsp; {!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
 
 		</div>
 
 		</td>
 
 		<td class="shop-info">
+@php
+	$name = $str = $company->name_fiscal;
 
-			<div class="shop-name"><h3>{{ $company->name_fiscal }}</h3></div>
+	if( strlen( $str) > 33) {
+	    $str = substr( $str, 0, 30);
+	    $name = $str . '...';
+	}
+@endphp
+			<div class="shop-name"><h3>{{ $name }}</h3></div>
 
 			<div class="shop-address">
                         {{ $company->address->address1 }} {{ $company->address->address2 }}<br />
@@ -84,17 +91,21 @@
             
             <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
 
+			<div class="billing-phone">
 			@if ( $document->shippingaddress->phone )
 
-				<div class="billing-phone">Tel. {{ $document->shippingaddress->phone }}</div>
+				Tel. {{ $document->shippingaddress->phone }}
 
 			@else
 
-				<div class="billing-phone">Tel. {{ $document->customer->phone }}</div>
+				Tel. {{ $document->customer->phone }}
 
 			@endif
 
-			<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span></div>
+			@if ( $document->customer->reference_external )
+				<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span>
+			@endif
+			</div>
 			
 		</td>
 
@@ -228,6 +239,7 @@
 			    @if ( 
 			    			( $line->line_type != 'product' ) &&
 			    			( $line->line_type != 'service' ) &&
+			    			( $line->line_type != 'shipping' ) &&
 			    			( $line->line_type != 'comment' )
 			    )
 			        @continue
@@ -260,6 +272,16 @@
 					<span class="item-name">{{ $line->name }}</span>
 					<span class="item-combination-options"></span>
 				</span>
+@if ( $line->package_measure_unit_id != $line->measure_unit_id && $line->pmu_label != '' )
+				<br />
+				<span class="abi-line-rule-label">{!! $line->pmu_label !!}
+				</span>
+@endif
+@if ( $line->extra_quantity > 0 && $line->extra_quantity_label != '' )
+				<br />
+				<span class="abi-line-rule-label">{!! $line->extra_quantity_label !!}
+				</span>
+@endif
 			</td>
 			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
 			</td>
@@ -310,11 +332,11 @@
 
 @endif
 
-{{--
+
 
 @include('templates::customer_orders.default.totals')
 
---}}
+
 
 <table class="notes-totals">
 
@@ -437,7 +459,7 @@ ________________________________________
 { {-- --}}
 
 
-		<table  class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
+		<table  width="100%" style="height: 1.7cm;" class="print-friendly" xclass="order-details tax-summary" xstyle="border: 1px #ccc solid !important">
 			<tbody>
 				<tr>
 					<td style="padding-right: 2mm">

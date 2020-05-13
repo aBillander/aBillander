@@ -20,11 +20,19 @@
         {!! Form::label('date', l('Date')) !!}
         {!! Form::text('date', $date, array('id' => 'date', 'xreadonly' => 'xreadonly', 'class' => 'form-control')) !!}
     </div>
-    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('time', l('Time')) !!}
+
+        <div class="bfh-timepicker" data-name= "time" data-time="{{ $time }}"></div>
+
+    </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('warehouse_id', l('Warehouse')) !!}
         {!! Form::select('warehouse_id', $warehouseList, \App\Configuration::get('DEF_WAREHOUSE'), array('class' => 'form-control')) !!}
     </div>
-    <div class="form-group col-lg-4 col-md-4 col-sm-4">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('movement_type_id', l('Movement type')) !!}
         {!! Form::select('movement_type_id', array('0' => l('-- Please, select --', [], 'layouts')) + $movement_typeList, $movement_type_id, array('class' => 'form-control')) !!}
     </div>
@@ -127,6 +135,7 @@
 
 @section('scripts')    @parent
 
+
 {{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
@@ -141,6 +150,24 @@
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
   });
+</script>
+
+
+{{-- Time Picker :: https://github.com/winmarkltd/BootstrapFormHelpers --}}
+
+<script>
+  
+  @include('stock_movements.TimePicker.bootstrap-formhelpers_js')
+
+  // Localization
+ 
+  var BFHTimePickerDelimiter = ':';
+
+  var BFHTimePickerModes = {
+    'am': 'AM',
+    'pm': 'PM'
+  };
+
 </script>
 
 
@@ -279,6 +306,16 @@ function findCombination(firstTime)
 @section('styles')    @parent
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+
+{{-- Time Picker :: https://github.com/winmarkltd/BootstrapFormHelpers --}}
+
+<style>
+  
+  @include('stock_movements.TimePicker.bootstrap-formhelpers_css')
+
+</style>
+
 
 {{-- Auto Complete --}}
 

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\PriceRule;
 use App\Product;
+use App\Customer;
 use App\Configuration;
 
 use App\Traits\DateFormFormatterTrait;
@@ -35,17 +36,125 @@ class PriceRulesController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
+        $autocustomer_name = $request->input('autocustomer_name', null);
+        if ( !$autocustomer_name )
+        	$request->merge(['customer_id' => null]);
+        $customer_id = $request->input('customer_id', null);
+        // If Customer is selected, discard group
+        if ( $customer_id )
+        	$request->merge(['customer_group_id' => null]);
+        $customer_group_id = $request->input('customer_group_id', null);
+
         $rules = $this->pricerule
         						->filter( $request->all() )
         						->with('category')
         						->with('product')
         						->with('combination')
         						->with('customer')
+        						->with('customer.customergroup')
         						->with('customergroup')
         						->with('currency')
-        						->orderBy('product_id', 'ASC')
-        						->orderBy('customer_id', 'ASC')
-        						->orderBy('from_quantity', 'ASC');
+/* */
+	                            ->when($customer_id, function($query) use ($customer_id) {
+
+	                                    $customer_group_id = Customer::find($customer_id)->customer_group_id;
+
+
+			                            $query->where(function ($query) use ($customer_id) {
+
+					                            $query->whereHas('customer', function ($query) use ($customer_id) {
+
+							                            $query->where('id', $customer_id);
+							                    });
+					                    });
+
+	                                    $query->orWhere(function ($query) use ($customer_group_id) {
+
+					                            $query->whereDoesntHave('customer');
+
+					                            $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
+
+							                            $query->where('id', $customer_group_id);
+							                    });
+					                    });
+
+	                                    $query->orWhere(function ($query) {
+
+					                            $query->whereDoesntHave('customer');
+
+					                            $query->whereDoesntHave('customergroup');
+					                    });
+
+
+
+
+
+/*
+	                                    $query->whereHas('customer', function ($query) use ($customer_id) {
+
+					                            $query->where('id', $customer_id);
+					                    });
+
+/ *
+	                                    $query->orWhereHas('customergroup', function ($query) use ($customer_group_id) {
+
+					                            $query->where('id', $customer_group_id);
+					                    });
+* / 
+*/
+	                            })
+	                            ->when($customer_group_id, function($query) use ($customer_group_id) {
+
+			                            $query->where(function ($query) use ($customer_group_id) {
+
+					                            $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
+
+							                            $query->where('id', $customer_group_id);
+							                    });
+					                    });
+
+	                                    $query->orWhere(function ($query) {
+
+					                            $query->whereDoesntHave('customer');
+
+					                            $query->whereDoesntHave('customergroup');
+					                    });
+	                            })
+
+
+
+
+
+
+
+
+
+
+/*
+	                            ->when($customer_group_id, function($query) use ($customer_group_id) {
+
+	                                    $query->whereHas('customergroup', function ($query) use ($customer_group_id) {
+
+					                            $query->where('id', $customer_group_id);
+					                    });
+	                            })
+/ *
+	                            ->orWhere(function ($query) {
+
+			                            $query->whereDoesntHave('customer');
+
+			                            $query->whereDoesntHave('customergroup');
+			                    })
+* /
+*/
+//        						->orderBy('product_id', 'ASC')
+
+                            ->join('products', 'price_rules.product_id', '=', 'products.id')
+                            ->select('price_rules.*', 'products.reference')
+                            ->orderBy('products.reference', 'asc')
+
+//        						->orderBy('customer_id', 'ASC')
+        						->orderBy('created_at', 'ASC');
 
 //         abi_r($mvts->toSql(), true);
 
@@ -83,7 +192,24 @@ class PriceRulesController extends Controller
         // Force Currency
         $request->merge( [ 'currency_id' => \App\Context::getContext()->currency->id, 'price' => (float) $request->input('price', 0) ] );
 
+        $extra_rules = [];
+
 		$rule_type = $request->input('rule_type');
+		
+		if ($rule_type == 'price') 
+		{
+			if ($request->input('price_type', 'price') == 'discount')
+			{
+				$request->merge( [
+					'rule_type' => 'discount',
+					'discount_percent' => $request->input('price'),
+					'discount_type' => 'percentage',
+					'price'         => 0.0,
+				] );
+
+				$rule_type = 'discount';
+			}
+		}
 		
 		if ($rule_type == 'promo') 
 		{
@@ -101,15 +227,45 @@ class PriceRulesController extends Controller
 
 			$conversion_rate = $product->extra_measureunits->where('id', $measure_unit_id)->first()->conversion_rate;
 
+			$price_pack = $request->input('price_pack');
+
+			// $ppl = $price_pack;
+			$lastc = substr($price_pack, -1);
+//			if ( $ppl[-1] == 'u' || $ppl[-1] == 'U' ) {		// Unit price issued
+			if ( $lastc == 'u' || $lastc == 'U' ) {		// Unit price issued
+				$price_pack = rtrim(rtrim($price_pack, 'uU')) * $conversion_rate;
+			}
 
 			$request->merge( [
 								'from_quantity'   => $request->input('from_quantity_pack'),
-								'price'           => $request->input('price_pack'),
+								'price'           => $price_pack,
 								'conversion_rate' => $conversion_rate,
+								'customer_id'     => $request->input('customer_group_id', 0) > 0 
+														? null 
+														: $request->input('customer_id'),
+							] );
+
+			$extra_rules =  [
+
+	        'from_quantity_pack' => [
+	                                new \App\Rules\PriceRuleDuplicated(
+	                                        $request->input('customer_id'), 
+	                                        $request->input('customer_group_id'), 
+	                                        $request->input('product_id'), 
+	                                        $request->input('currency_id', null),
+	                                        $measure_unit_id
+	                                ),
+	                            ]
+	        ];
+		
+		} else {
+
+			$request->merge( [
+								'measure_unit_id '   =>  null,
 							] );
 		}
 
-		$this->validate($request, PriceRule::$rules);
+		$this->validate($request, PriceRule::$rules + $extra_rules);
 		
 		$pricerule = $this->pricerule->create($request->all());
 
@@ -134,9 +290,9 @@ class PriceRulesController extends Controller
 	 */
 	public function show($id)
 	{
-		$stockmove = $this->pricerule->findOrFail($id);
+		$pricerule = $this->pricerule->findOrFail($id);
 
-		return view('price_rules.show', compact('stockmove'));
+		return view('price_rules.show', compact('pricerule'));
 	}
 
 	/**
@@ -147,7 +303,7 @@ class PriceRulesController extends Controller
 	 */
 	public function edit($id)
 	{
-		//
+		return $this->show($id);
 	}
 
 	/**

@@ -25,7 +25,7 @@ class CreateCustomersTable extends Migration {
             $table->integer('company_id')->unsigned()->default(0);              // For multi-Company setup
             $table->integer('user_id')->unsigned()->default(0);            // Maybe creator user, modifier user
 
-			$table->string('name_fiscal', 128)->nullable();						// Company
+			$table->string('name_fiscal', 128)->nullable(false);						// Company
 			$table->string('name_commercial', 64)->nullable();
 
 			$table->string('website', 128)->nullable();
@@ -66,6 +66,10 @@ class CreateCustomersTable extends Migration {
             $table->integer('bank_account_id')->unsigned()->nullable();
 			$table->integer('invoice_sequence_id')->unsigned()->nullable();
 			$table->integer('invoice_template_id')->unsigned()->nullable();
+
+			$table->integer('order_template_id')->unsigned()->nullable();
+			$table->integer('shipping_slip_template_id')->unsigned()->nullable();
+
 //			$table->integer('carrier_id')->unsigned()->nullable();
 			$table->integer('shipping_method_id')->unsigned()->nullable();
 			$table->integer('price_list_id')->unsigned()->nullable();

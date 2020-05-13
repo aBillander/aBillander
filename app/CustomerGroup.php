@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,7 +13,9 @@ class CustomerGroup extends Model {
 	
     protected $guarded = array('id');
 
-	// protected $fillable = [];
+	protected $fillable = [ 'name', 'webshop_id', 'active', 
+                            'invoice_template_id', 'price_list_id',
+                          ];
 
     // Add your validation rules here
     public static $rules = array(

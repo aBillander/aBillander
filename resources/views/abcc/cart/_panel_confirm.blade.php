@@ -94,7 +94,7 @@
 
 </div>
 
-@if( Auth::user()->canMinOrderValue() > 0.0 )
+@if( 0 && Auth::user()->canMinOrderValue() > 0.0 )
 
       <div class="panel-body">
 

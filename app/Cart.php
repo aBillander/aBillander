@@ -8,8 +8,9 @@ use Auth;
 use Carbon\Carbon;
 
 use App\Traits\ViewFormatterTrait;
+// use App\Traits\DocumentShippableTrait;
 
-class Cart extends Model
+class Cart extends Model implements ShippableInterface
 {
 
     use ViewFormatterTrait;
@@ -300,17 +301,19 @@ class Cart extends Model
 
 
         // Still one thing left: rule_type = 'promo'
-        $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
+        $extra_quantity = 0.0;
+        $extra_quantity_label = '';
 
-        // abi_r($customer->getPriceRules( $product, $currency ), true);
+        $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
 
         if ($promo_rule)
         {
-            $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
-            $extra_quantity_label = $promo_rule->name;
-        } else {
-            $extra_quantity = 0.0;
-            $extra_quantity_label = '';
+            // First: Does it apply?
+            if ( $unit_customer_final_price == $unit_customer_price )   // No price rule has been applied
+            {
+                $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
+                $extra_quantity_label = $extra_quantity > 0 ? $promo_rule->name : '';
+            }
         }
 
         // Totals
@@ -346,6 +349,7 @@ class Cart extends Model
 
             'package_measure_unit_id' => $product->measure_unit_id,
             'pmu_conversion_rate' => 1.0,
+            'pmu_label' => '',
 
             'unit_customer_price'       => $unit_customer_price,
             'unit_customer_final_price' => $unit_customer_final_price,
@@ -367,6 +371,7 @@ class Cart extends Model
     }
 
 
+    // Seems thus funtion is not used anywhere
     // Need update according to public function addLine($product_id = null, $combination_id = null, $quantity = 1.0)
     public function addLineByAdmin($product_id = null, $combination_id = null, $quantity = 1.0)
     {
@@ -451,6 +456,7 @@ class Cart extends Model
         $measureunit_id = intval( $measureunit_id );
         $package_measure_unit_id = $measureunit_id  > 0 ? $measureunit_id  : $line->package_measure_unit_id;
         $pmu_conversion_rate     = $line->pmu_conversion_rate;
+        $pmu_label               = $line->pmu_label;
 
         //  $hasPackage =  ( $package_measure_unit_id != $product->measure_unit_id );
 
@@ -485,9 +491,11 @@ class Cart extends Model
                 // Calculate quantity conversion
 //                $pmu_conversion_rate = $product->extra_measureunits->where('id', $package_measure_unit_id)->first()->conversion_rate;
                 $pmu_conversion_rate = $pack_rule->conversion_rate;
+                $pmu_label           = $pack_rule->name;
 
                 // Assumes $pack_rule is not null
-                $package_price = $pack_rule->price;
+                // $package_price = $pack_rule->price;
+                $package_price = $pack_rule->getUnitPrice() * $pmu_conversion_rate;
 
                 $unit_customer_price       = $customer_price->getPrice();
                 $unit_customer_final_price = $package_price / $pmu_conversion_rate;
@@ -512,6 +520,7 @@ class Cart extends Model
         } else {
                 
                 $pmu_conversion_rate = 1.0;
+                $pmu_label           = '';
         
                 $customer_final_price = $product->getPriceByCustomerPriceRules( $customer, $quantity, $currency );
                 if ( !$customer_final_price )
@@ -531,15 +540,19 @@ class Cart extends Model
                 $promo_rule = $customer->getExtraQuantityRule( $product, $currency );
         }
 
-        // abi_r($customer->getPriceRules( $product, $currency ), true);
+
+        // Still one thing left: rule_type = 'promo'
+        $extra_quantity = 0.0;
+        $extra_quantity_label = '';
 
         if ($promo_rule)
         {
-            $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
-            $extra_quantity_label = $extra_quantity > 0 ? $promo_rule->name : '';
-        } else {
-            $extra_quantity = 0.0;
-            $extra_quantity_label = '';
+            // First: Does it apply?
+            if ( $unit_customer_final_price == $unit_customer_price )   // No price rule has been applied
+            {
+                $extra_quantity = floor( $quantity / $promo_rule->from_quantity ) * $promo_rule->extra_quantity;
+                $extra_quantity_label = $extra_quantity > 0 ? $promo_rule->name : '';
+            }
         }
 
         // Totals
@@ -566,7 +579,8 @@ class Cart extends Model
             'extra_quantity_label' => $extra_quantity_label,
 
             'package_measure_unit_id' => $package_measure_unit_id,
-            'pmu_conversion_rate' => $pmu_conversion_rate,
+            'pmu_conversion_rate'     => $pmu_conversion_rate,
+            'pmu_label'               => $pmu_label,
 
             'unit_customer_price'       => $unit_customer_price,
             'unit_customer_final_price' => $unit_customer_final_price,
@@ -647,7 +661,8 @@ class Cart extends Model
 	        		'measure_unit_id' => $product->measure_unit_id,            
 
                     'package_measure_unit_id' => $product->measure_unit_id,
-                    'pmu_conversion_rate' => 1.0,
+                    'pmu_conversion_rate'     => 1.0,
+                    'pmu_label'               => '',
 
                     'unit_customer_price' => $unit_customer_price,
                     'tax_percent'         => $tax_percent,
@@ -758,11 +773,27 @@ class Cart extends Model
         return $total_products_tax_excl;
     }
 
+    public function getWeightAttribute() 
+    {
+        $line_products = $this->cartlines->where('line_type', 'product')->load('product');
+
+        $total_weight = $line_products->sum(function ($line) {
+            return $line->product->weight;
+        });
+
+        return $total_weight;
+    }
+
     public function isBillable() 
     {
         $min_order_value = $this->customeruser->canMinOrderValue();
 
         return ( $this->amount > 0.0 ) && ( $this->amount > $min_order_value );
+    }
+
+    public function isOverMaxValue() 
+    {
+        return ( $this->amount > 0.0 ) && ( $this->amount > Configuration::getNumber('ABCC_MAX_ORDER_VALUE') );
     }
     
 
@@ -864,7 +895,8 @@ class Cart extends Model
                 'measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),            
 
                 'package_measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
-                'pmu_conversion_rate' => 1.0,
+                'pmu_conversion_rate'     => 1.0,
+                'pmu_label'               => '',
 
                 'unit_customer_price'       => 0.0,
                 'unit_customer_final_price' => 0.0,
@@ -914,12 +946,18 @@ class Cart extends Model
     public function makeShipping()
     {
         $cart = $this;
-        $method = $cart->shippingmethod;
+        // $method = $cart->shippingmethod;
+        $method = $cart->shippingaddress->getShippingMethod();
 
-        list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $cart ));
+        $free_shipping = (Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') >= 0.0) ? Configuration::getNumber('ABCC_FREE_SHIPPING_PRICE') : null;
 
-        $tax_id      = $tax->id;
-        $tax_percent = $tax->percent;   // Naughty boy! Should consider cart invoicing address!
+        // abi_r($method, true);
+
+        list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $cart, $free_shipping ));
+
+        $tax_id      = $tax['id'];
+        $tax_percent = $tax['sales'];
+        $tax_se_percent = $tax['sales_equalization'];
 
 
         $line_shipping = $cart->cartlines->where('line_type', 'shipping')->first();
@@ -942,7 +980,8 @@ class Cart extends Model
                 'measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),            
 
                 'package_measure_unit_id' => Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
-                'pmu_conversion_rate' => 1.0,
+                'pmu_conversion_rate'     => 1.0,
+                'pmu_label'               => '',
 
                 'unit_customer_price'       => 0.0,
                 'unit_customer_final_price' => 0.0,
@@ -951,7 +990,7 @@ class Cart extends Model
                 'total_tax_excl' => 0.0, 
 
                 'tax_percent'         => $tax_percent,
-                'tax_se_percent'      => 0.0,
+                'tax_se_percent'      => $tax_se_percent,
                 'tax_id' => $tax_id,
             ]);
 
@@ -964,10 +1003,11 @@ class Cart extends Model
 
             'unit_customer_price'       => $cost,
             'unit_customer_final_price' => $cost,
-            'total_tax_incl' => $cost * (1.0+$tax_percent/100.0),
+            'total_tax_incl' => $cost * (1.0+($tax_percent+$tax_se_percent)/100.0),
             'total_tax_excl' => $cost, 
 
             'tax_percent'         => $tax_percent,
+            'tax_se_percent'      => $tax_se_percent,
             'tax_id' => $tax_id,
         ]);
 
@@ -1038,8 +1078,8 @@ class Cart extends Model
     public function taxingaddress()
     {
         return Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') ? 
-            $this->shippingaddress  : 
-            $this->invoicingaddress ;
+            $this->shippingaddress()  : 
+            $this->invoicingaddress() ;
     }
 
     
@@ -1110,7 +1150,7 @@ class Cart extends Model
     {
         // get the tax percent checking the taxing address,
         // while using product tax as backup data
-        $address = $this->taxingaddress();
+        $address = $this->taxingaddress;
 
         // if the customer has que sales_equalization enabled,
         // we need to set the product's sales_equalization to 1 to use it
@@ -1198,4 +1238,26 @@ class Cart extends Model
         $this->total_products = $this->as_priceable($this->amount) - $this->discount1 - $this->discount2;
         $this->total_price = $this->as_priceable($amount_with_taxes) - $this->discount1 - $this->discount2;
     }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shippable Interface
+    |--------------------------------------------------------------------------
+    */
+
+    public function getShippingBillableAmount( $billing_type = 'price' )
+    {
+        if ( $billing_type == 'price' )
+            return $this->amount;
+        
+        else
+        if ( $billing_type == 'weight' )
+            return $this->weight;
+        
+        else
+            return 0.0;
+    }
+
 }

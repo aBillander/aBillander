@@ -25,7 +25,7 @@ class CartLine extends Model
     protected $fillable = [
     						'line_type', 'line_sort_order', 'product_id', 'combination_id', 'reference', 'name', 
     						'quantity', 'extra_quantity', 'extra_quantity_label', 'measure_unit_id', 
-                            'package_measure_unit_id', 'pmu_conversion_rate', 
+                            'package_measure_unit_id', 'pmu_conversion_rate', 'pmu_label', 
     						'unit_customer_price', 'unit_customer_final_price', 'sales_equalization', 
                             'total_tax_incl', 'total_tax_excl',
                             'tax_percent', 'tax_se_percent', 'tax_id', 
@@ -37,6 +37,14 @@ class CartLine extends Model
                             'measure_unit_id' => 'exists:measure_units,id',
                ];
     
+
+    
+    public function getImageAttribute()
+    {
+        if ($this->line_type == 'product') return $this->product->getFeaturedImage();
+
+        return new Image();
+    }
 
     /*
     |--------------------------------------------------------------------------

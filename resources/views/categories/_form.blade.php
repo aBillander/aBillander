@@ -16,7 +16,7 @@
               {!! $errors->first('reference_external', '<span class="help-block">:message</span>') !!}
             </div>
 
-                   <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-active">
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-active">
                      {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}
                      <div>
                        <div class="radio-inline">
@@ -33,8 +33,35 @@
                        </div>
                      </div>
                    </div>
-        </div>
 
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-publish_to_web">
+                     {!! Form::label('publish_to_web', l('Publish to ABCC?'), ['class' => 'control-label']) !!}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('publish_to_web', '1', true, ['id' => 'publish_to_web_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('publish_to_web', '0', false, ['id' => 'publish_to_web_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+        </div>
+                
+        <div class="row">
+          
+                  <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('description') ? 'has-error' : '' }}">
+                     {{ l('Description') }}
+                     {!! Form::textarea('description', null, array('class' => 'form-control', 'id' => 'description', 'rows' => '3')) !!}
+                     {!! $errors->first('description', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+        </div>
 
                </div><!-- div class="panel-body" -->
 

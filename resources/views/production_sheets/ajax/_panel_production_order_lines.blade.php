@@ -3,7 +3,8 @@
 
      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 
-     <h4 class="modal-title" id="modalProductionOrderShowLabel">{{ l('Production Order') }}: <span id="production_order_id">{{ $order->id }}</span> :: [{{ $order->product_reference }}] {{ $order->product_name }}</h4>
+     <h4 class="modal-title" id="modalProductionOrderShowLabel">{{ l('Production Order') }}: <span id="production_order_id">{{ $order->id }}</span> :: [{{ $order->product_reference }}] {{ $order->product_name }}<br />
+      {{l('Quantity')}}: {{ $order->as_quantity('planned_quantity') }} {{ $order->product->measureunit->name }}</h4>
 
  </div>
 
@@ -20,7 +21,7 @@
     <thead>
         <tr>
       <th>{{l('ID', [], 'layouts')}}</th>
-      <th>{{l('Product ID')}}</th>
+      <!-- th>{{l('Product ID')}}</th -->
       <th>{{l('Product Reference')}}</th>
       <th>{{l('Product Name')}}</th>
       <th>{{l('Quantity')}}</th>
@@ -31,10 +32,10 @@
   @foreach ($order->productionorderlines as $line)
     <tr>
       <td>{{ $line->id }}</td>
-      <td>{{ $line->product_id }}</td>
-      <td>{{ $line->reference }}</td>
+      <!-- td>{{ $line->product_id }}</td -->
+      <td><a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
       <td>{{ $line->name }}</td>
-      <td>{{ $line->required_quantity }}</td>
+      <td>{{ $line->as_quantityable($line->required_quantity) }}</td>
       <td>{{ $line->product->measureunit->name }}</td>
     </tr>
   @endforeach

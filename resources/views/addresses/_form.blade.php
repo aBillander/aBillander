@@ -147,6 +147,13 @@
                      {!! $errors->first('latitude', '<span class="help-block">:message</span>') !!}
                 </div>
             </div>
+
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('shipping_method_id') ? 'has-error' : '' }}">
+                    {{ l('Shipping Method', [],'addresses') }}
+                    {!! Form::select('shipping_method_id', array('' => l('-- Please, select --', [], 'layouts')) + $shipping_methodList, null, array('class' => 'form-control', 'id' => 'shipping_method_id')) !!}
+                    {!! $errors->first('shipping_method_id', '<span class="help-block">:message</span>') !!}
+                  </div>
+
             <div class="form-group col-lg-3 col-md-3 col-sm-3">
                 <div class="form-group {{ $errors->has('webshop_id') ? 'has-error' : '' }}">
                       {{ l('Webshop ID') }}

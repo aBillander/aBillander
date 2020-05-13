@@ -227,6 +227,8 @@ return [
 	'ABCC_ENABLE_MIN_ORDER.help' => '',
 	'ABCC_MIN_ORDER_VALUE.name' => 'Importe Pedido mínimo',
 	'ABCC_MIN_ORDER_VALUE.help' => '',
+	'ABCC_MAX_ORDER_VALUE.name' => 'Importe máximo del Pedido',
+	'ABCC_MAX_ORDER_VALUE.help' => 'Si se supera este valor, no se podrán añadir más Productos al Carrito',
 
 	'ABCC_DISPLAY_PRICES_TAX_INC.name'     => '¿Mostrar los Precios con el Impuesto incluido?',
 	'ABCC_DISPLAY_PRICES_TAX_INC.help'     => '',

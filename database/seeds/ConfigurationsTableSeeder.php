@@ -34,6 +34,7 @@ $confs = [
 ['ABCC_ENABLE_INVOICES', '0'],
 ['ABCC_ENABLE_MIN_ORDER', '0'],
 ['ABCC_MIN_ORDER_VALUE', '0.0'],
+['ABCC_MAX_ORDER_VALUE', '10000.0'],
 ['ABCC_ENABLE_NEW_PRODUCTS', '1'],
 ['ABCC_NBR_DAYS_NEW_PRODUCT', '20'],
 ['ABCC_NBR_ITEMS_IS_QUANTITY', 'items'],	// 'quantity', 'items', 'value'

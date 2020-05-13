@@ -510,6 +510,33 @@ class Product extends Model {
         if ( $date      == null ) $date      = Carbon::now();   //->endOfDay();
         else                      $date      = $date->endOfDay();
 
+        // Last movement BEFORE requested date
+        $mvt = StockMovement::
+                      where('product_id', $this->id)
+                    ->where('warehouse_id', $wh_id)
+                    ->where('date', '<=', $date)
+                    ->orderBy('date', 'desc')           // Guess "well ordered" movements
+                    ->first();
+
+        if ($mvt)
+            return $mvt->quantity_after_movement;
+
+        return 0.0;
+    }
+
+
+
+    // Just to disappear
+    public function getStockToDateByWarehouse_old_stuff(  $warehouse = null, Carbon $date = null  )
+    {
+        if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
+        $wh_id = is_numeric($warehouse)
+                    ? $warehouse
+                    : $warehouse->id ;
+        
+        if ( $date      == null ) $date      = Carbon::now();   //->endOfDay();
+        else                      $date      = $date->endOfDay();
+
         $last_stock_taking_mvt = $this->getLastStockTakingByWarehouse( $warehouse );
 
         // Retrieve movements

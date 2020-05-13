@@ -83,7 +83,13 @@
                 dataType : 'json',
                 data : payload,
 
-                success: function(){
+                success: function(reponse){
+
+                    if(reponse.reload)
+                    {
+                      window.location.reload();
+                      return false;
+                    }
 
                     loadCartlines();
 

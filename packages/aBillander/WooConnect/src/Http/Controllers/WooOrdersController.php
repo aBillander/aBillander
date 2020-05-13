@@ -164,11 +164,13 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 			$needle = $abi_orders->get( $order["id"] );
 			if ($needle) {
 				$order["abi_order_id"] = $needle->id;
+				$order["abi_order_document_reference"] = $needle->document_reference;
 				$order["imported_at"] = $needle->created_at->toDateString();
 				$order["production_at"] = ''; // $needle->productionsheet->due_date;
 				$order["production_sheet_id"] = ''; // $needle->productionsheet->id;
 			} else {
 				$order["abi_order_id"] = '';
+				$order["abi_order_document_reference"] = '';
 				$order["imported_at"] = '';
 				$order["production_at"] = '';
 				$order["production_sheet_id"] = '';

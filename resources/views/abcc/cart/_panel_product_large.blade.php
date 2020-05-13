@@ -7,6 +7,21 @@
    </div>
 
    <div class="panel-body">
+
+@if ($disable_add_to_cart)
+          <div class="alert alert-danger alert-block">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>{!! l('Error', [], 'layouts') !!}: </strong>
+              
+                  <ul>
+                  
+                      <li>{!! l('Ha alcanzado el máximo valor permitido para un Pedido y no podrá añadir más Productos. Por favor, Confirme el Pedido actual y haga otro Pedido a continuación.') !!}</li>
+                  
+                  </ul>
+
+          </div>
+@else
+
       <div xclass="row">
 
             {!! Form::hidden('customer_id', \App\Context::getContext()->customer->id, array('id' => 'customer_id')) !!}
@@ -47,7 +62,7 @@
   <div class="input-group">
     <!-- span class="input-group-addon">$</span -->
 
-    {!! Form::text('line_quantity', null, array('class' => 'form-control', 'id' => 'line_quantity', 'xonkeyup' => 'calculate_line_product( )', 'xonchange' => 'calculate_line_product( )', 'onfocus' => 'this.select()', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
+    {!! Form::text('line_quantity', null, ['class' => 'form-control', 'id' => 'line_quantity', 'xonkeyup' => 'calculate_line_product( )', 'xonchange' => 'calculate_line_product( )', 'onfocus' => 'this.select()', 'onclick' => 'this.select()', 'autocomplete' => 'off', 'maxlength' => '5' ]) !!}
 
     <span class="input-group-btn">
                     <button class="btn btn-success" type="submit" id="product_add_to_cart" xonclick="this.disabled=true;this.form.submit();" title="{{ l('Add to Cart') }}">
@@ -79,6 +94,8 @@
 --}}
 
       </div>
+@endif
+
    </div><!-- div class="panel-body" -->
 </div>
 
@@ -120,7 +137,13 @@
                 dataType : 'json',
                 data : payload,
 
-                success: function(){
+                success: function(reponse){
+
+                    if(reponse.reload)
+                    {
+                      window.location.reload();
+                      return false;
+                    }
 
                     loadCartlines();
 
@@ -327,7 +350,13 @@
           dataType : 'json',
           data : payload,
 
-          success: function(result){
+          success: function(reponse){
+
+              if(reponse.reload)
+              {
+                window.location.reload();
+                return false;
+              }
 
               loadCartlines();
 
@@ -335,7 +364,7 @@
 
               showAlertDivWithDelay("#msg-success-update");
 
-              console.log(result);
+              console.log(reponse);
           }
       });
 

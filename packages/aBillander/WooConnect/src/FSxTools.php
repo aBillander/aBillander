@@ -30,7 +30,7 @@ class FSxTools
                     'port' => env('DB_PORT', '3306'),
                     'database' => env('DB_DATABASE_FSX', 'laextran_com'),
                     'username' => env('DB_USERNAME_FSX', 'laextran_com'),
-                    'password' => env('DB_PASSWORD_FSX', 'DAS#6XqwyK%z'),
+                    'password' => env('DB_PASSWORD_FSX', 'EAS#6XqwyK%z'),
                     'unix_socket' => env('DB_SOCKET', ''),
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',

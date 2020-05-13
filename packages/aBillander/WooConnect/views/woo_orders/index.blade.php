@@ -97,7 +97,7 @@
 	<thead>
 		<tr>
       <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-      <th class="text-left">{{l('Order #')}}</th>
+      <th class="text-left" colspan="2">{{l('Order #')}}</th>
 			<th>{{l('Customer')}}</th>
 			<!-- th>{{l('Address')}}</th -->
 			<!-- th>{{l('Phone')}}</th -->
@@ -129,6 +129,15 @@
       <td class="text-center warning">{!! Form::checkbox('worders[]', $order['id'], false, ['class' => 'case checkbox']) !!}</td>
       @endif
       <td>{{ $order["id"] }}</td>
+      <td>
+
+      @if ( $order["imported_at"] )
+                <a class="btn btn-xs btn-info" href="{{ URL::route('customerorders.edit', [$order["abi_order_id"]] ) }}" title="{{l('Go to Customer Order')}} :: {{ $order["abi_order_document_reference"] }}" target="_blank"><i class="fa fa-external-link"></i></a>
+      @else
+                &nbsp;
+      @endif
+
+      </td>
 			<td xclass="button-pad">
 
           {{ $order["billing"]["first_name"].' '.$order["billing"]["last_name"] }} 

@@ -260,6 +260,7 @@ class StockMovementsController extends Controller
 //        						->with('stockmovementable')
 //        						->with('stockmovementable.document')
         						->orderBy('date', 'DESC')
+        						->orderBy('id', 'DESC')
                           ->get();
 
         // Limit number of records

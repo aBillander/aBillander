@@ -976,16 +976,15 @@ class Billable extends Model implements ShippableInterface
         {
             $query->where('invoiced_at', null);
         }
-
-
-        if ( array_key_exists('closed_not', $params) )
-        {
-            $query->where('status', '<>', 'closed');
-        } else
+        
         
         if ( array_key_exists('closed', $params) )
         {
-            $query->where('status', 'closed');
+            if ( $params['closed'] == '1' )
+                $query->where('status', 'closed');
+            else
+            if ( $params['closed'] == '0' )
+                $query->where('status', '<>', 'closed');
         }
 
 
@@ -1013,6 +1012,16 @@ class Billable extends Model implements ShippableInterface
         if (array_key_exists('customer_id', $params) && $params['customer_id'])
         {
             $query->where('customer_id', $params['customer_id']);
+        }
+
+        if (array_key_exists('price_amount', $params) && $params['price_amount'])
+        {
+            $amount = $params['price_amount'];
+
+            $query->where( function ($query) use ($amount) {
+                    $query->  where( 'total_tax_excl', $amount );
+                    $query->orWhere( 'total_tax_incl', $amount );
+            } );
         }
 
 

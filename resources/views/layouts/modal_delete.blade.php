@@ -31,8 +31,8 @@
             var href = $(this).attr('href');
             var message = $(this).attr('data-content');
             var title = $(this).attr('data-title');
-            $('#myModalLabel').text(title);
-            $('#dataConfirmModal .modal-body').text(message);
+            $('#myModalLabel').html(title);
+            $('#dataConfirmModal .modal-body').html(message);
             $('#action').attr('action', href);
             $('#dataConfirmModal').modal({show: true});
             return false;

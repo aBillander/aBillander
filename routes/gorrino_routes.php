@@ -50,6 +50,21 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+
+
+	// 2020-05-14
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_order_templates` ADD `total_tax_excl` DECIMAL(20,6) NULL DEFAULT '0.0' AFTER `last_used_at`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_order_templates` ADD `total_tax_incl` DECIMAL(20,6) NULL DEFAULT '0.0' AFTER `last_used_at`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_order_templates` ADD `last_document_reference` varchar(16) NULL DEFAULT NULL AFTER `last_used_at`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_order_templates` ADD `last_customer_order_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `last_used_at`;");
+
+
+	die('OK');
+
+
 	// https://stackoverflow.com/questions/21047573/maintenance-mode-without-using-artisan
 
 

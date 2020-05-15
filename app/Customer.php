@@ -629,6 +629,16 @@ class Customer extends Model {
         return $this->hasMany('App\CustomerOrder');
     }
 
+    public function customerordertemplates()
+    {
+        return $this->hasMany('App\CustomerOrderTemplate');
+    }
+
+    public function getCustomerordertemplateAttribute()
+    {
+        return $this->customerordertemplates()->first();
+    }
+
     public function customershippingslips()
     {
         return $this->hasMany('App\CustomerShippingSlip');
@@ -1008,6 +1018,19 @@ class Customer extends Model {
 
             $tax = $product->tax;
 
+            $rules = $this->getTaxRulesByTax( $tax, $address );
+
+        }
+
+        return $rules;
+    }
+
+    public function getTaxRulesByTax( Tax $tax, $address = null )
+    {
+        $rules = collect([]);
+
+        // Sales Equalization
+        if ( $this->sales_equalization ) {
 
             if ( $address == null ) 
                 $address = $this->invoicing_address();

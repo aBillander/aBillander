@@ -345,4 +345,6 @@ return [
 
 	'New Customer Order' => 'Nuevo Pedido de Cliente',
 
+	'Customer Reference' => 'Referencia del Cliente',
+
 ];

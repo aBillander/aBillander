@@ -1,2 +1,4 @@
 
+// php artisan make:model -m -r CustomerOrderTemplate
+
 // php artisan migrate --path=/database/migrations/solo --pretend

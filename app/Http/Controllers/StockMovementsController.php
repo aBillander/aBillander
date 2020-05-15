@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use App\StockMovement;
 use View, Cookie;
 
+use Excel;
+
 use App\Traits\DateFormFormatterTrait;
 
 class StockMovementsController extends Controller 
@@ -218,6 +220,9 @@ class StockMovementsController extends Controller
 		//
 	}
 
+
+	/* ********************************************************************************* */
+
 	/**
 	 * Remove the specified resource from storage.
 	 *
@@ -233,4 +238,90 @@ class StockMovementsController extends Controller
 		// 		->with('info', 'El registro se ha eliminado correctamente');
 	}
 
+
+
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function export(Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
+//        abi_r($request->all(), true);
+
+        $mvts = $this->stockmovement
+        						->filter( $request->all() )
+//        						->with('warehouse')
+//        						->with('product')
+//        						->with('combination')
+//        						->with('stockmovementable')
+//        						->with('stockmovementable.document')
+        						->orderBy('date', 'DESC')
+        						->orderBy('id', 'DESC')
+                          ->get();
+
+        // Limit number of records
+        if ( ($count=$mvts->count()) > 1000 )
+        	return redirect()->back()
+					->with('error', l('Too many Records for this Query &#58&#58 (:id) ', ['id' => $count], 'layouts'));
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = []; 
+
+        // Define the Excel spreadsheet headers
+        $headers = [ 
+        			'id', 'date', 'stockmovementable_id', 'stockmovementable_type', 'document_reference', 
+
+					'quantity_before_movement', 'quantity', 'measure_unit_id', 'quantity_after_movement', 
+
+					'cost_price_before_movement', 'cost_price_after_movement', 'price', 'price_currency', 'currency_id', 'conversion_rate', 
+
+					'notes', 'product_id', 'combination_id', 'reference', 'name', 
+
+            		'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id', 'MOVEMENT_TYPE_NAME', 'user_id', 'inventorycode', 'created_at', 'updated_at', 'deleted_at',
+        ];
+
+        $data[] = $headers;
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the payments array.
+        foreach ($mvts as $mvt) {
+            // $data[] = $line->toArray();
+            $row = [];
+            foreach ($headers as $header)
+            {
+                $row[$header] = $mvt->{$header} ?? '';
+            }
+//            $row['TAX_NAME']          = $category->tax ? $category->tax->name : '';
+
+            $row['MOVEMENT_TYPE_NAME'] = StockMovement::getTypeName($mvt->movement_type_id);
+
+            $data[] = $row;
+        }
+
+        $sheetName = 'Stock Movements' ;
+
+        // abi_r($data, true);
+
+        // Generate and return the spreadsheet
+        Excel::create('Stock_Movements', function($excel) use ($sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');
+
+        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
+        // https://www.youtube.com/watch?v=s-ZeszfCoEs
+    }
 }

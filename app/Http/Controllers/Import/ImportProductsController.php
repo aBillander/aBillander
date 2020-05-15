@@ -145,11 +145,14 @@ class ImportProductsController extends Controller
 
         $simulate = (int) $request->input('simulate', 0);
         $truncate = (int) $request->input('truncate', 0);
+        $action_create = (int) $request->input('import_action', 0);
+        $action_update = $action_create > 0 ? 0 : 1;
 
-        $params = ['simulate' => $simulate];
+        $params = ['simulate' => $simulate, 'file' => $file];
 
         // Truncate table
-        if ( $truncate > 0 ) {
+        if ( $action_create > 0 )
+        if ( $truncate      > 0 ) {
 
             $nbr = Product::count();
 
@@ -164,10 +167,19 @@ class ImportProductsController extends Controller
             }
         }
 
+        if ( $action_update > 0 )
+        if ( $truncate      > 0 ) {
+
+            $logger->log("WARNING", "NO es posible borrar los Productos antes de la Importación (Acción: ACTUALIZAR PRODUCTOS).");
+        }
+
 
         try{
             
-            $this->processFile( $request->file('data_file'), $logger, $params );
+            if ( $action_create > 0 )
+                $this->processFile( $request->file('data_file'), $logger, $params );
+            else
+                $this->processFileUpdate( $request->file('data_file'), $logger, $params );
 
         }
         catch(\Exception $e){
@@ -350,6 +362,145 @@ class ImportProductsController extends Controller
 
 
     /**
+     * Process a file of the resource (4 Update!).
+     *
+     * @return 
+     */
+    protected function processFileUpdate( $file, $logger, $params )
+    {
+
+        $logger->log("INFO", 'Se actualizarán los Productos según las columnas que se encuentren en el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $params['file']]);
+
+        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
+        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
+        {
+            
+ /*           $reader->each(function ($sheet){
+                // ::firstOrCreate($sheet->toArray);
+                abi_r($sheet);
+            });
+
+            $reader->each(function($sheet) {
+                // Loop through all rows
+                $sheet->each(function($row) {
+                    // Loop through all columns
+                });
+            });
+*/
+
+// Process reader STARTS
+
+            if ( $params['simulate'] > 0 ) 
+                $logger->log("WARNING", "Modo SIMULACION. Se mostrarán errores, pero no se cargará nada en la base de datos.");
+
+            $i = 0;
+            $i_ok = 0;
+            $max_id = 1000;
+
+
+            if(!empty($reader) && $reader->count()) {
+
+                        
+                        
+
+                foreach($reader as $row)
+                {
+                    // do stuff
+                    // if ($i > $max_id) break;
+
+                    // Prepare data
+                    $data = $row->toArray();
+
+                    // $item = implode(', ', $data);
+                    $item = http_build_query($data, null, ', ');
+
+                    // Let's see which Product
+                    if ( array_key_exists('id', $data) )
+                    {
+                        $key_name = 'id';
+                        $key_val = trim( $data['id'] );
+
+                        unset( $data['id'] );
+                        // Unomment lines to prevent changes in reference value
+                        // if ( array_key_exists('reference', $data) )
+                        //     unset( $data['reference'] );
+                        
+                    } else
+
+                    if ( array_key_exists('reference', $data) )
+                    {
+                        $key_name = 'reference';
+                        $key_val = trim( $data['reference'] );
+
+                        unset( $data['reference'] );
+                        
+                    } else {
+
+                        $logger->log("ERROR", "La fila (".($i+2).") :<br />".$item."<br /> No tiene un índice válido.");
+
+                        continue ;
+                    }
+
+
+
+                    // $item = '[<span class="log-showoff-format">'.($data['reference'] ?? $data['id'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
+
+
+                    // Cow boy style: avoid data validation and save precious time
+
+
+                    try{
+                        // Update Product
+                        $product = $this->product->where( $key_name, $key_val )->first();
+
+                        if ( !$product )
+                        {
+                            $logger->log("ERROR", "La fila (".($i+2).") :<br />".$item."<br /> No se encuentra ningún Producto en la Base de Datos.");
+
+                            continue ;
+                        }
+                        
+                        if ( !($params['simulate'] > 0) ) 
+                        {
+
+                            $product->update( $data );  // $data array does not contain indexes (id or reference)
+                        }
+
+                        $i_ok++;
+
+                    }
+                    catch(\Exception $e){
+
+                            // $item = '[<span class="log-showoff-format">'.$data['reference'].'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
+
+                            $logger->log("ERROR", "Se ha producido un error al procesar la fila (".($i+2).") :<br />".$item.":<br />" . $e->getMessage());
+
+                    }
+
+                    $i++;
+
+                }   // End foreach
+
+            } else {
+
+                // No data in file
+                $logger->log('WARNING', 'No se encontraton datos de Productos en el fichero.');
+            }
+
+            $logger->log('INFO', 'Se han actualizado {i} Productos.', ['i' => $i_ok]);
+
+            $logger->log('INFO', 'Se han procesado {i} Productos.', ['i' => $i]);
+
+// Process reader          
+    
+        }, false);      // should not queue $shouldQueue
+
+    }
+
+
+
+
+    /**
      * Export a file of the resource.
      *
      * @return 
@@ -387,6 +538,8 @@ class ImportProductsController extends Controller
 
         // Define the Excel spreadsheet headers
         $headers = [ 'id', 'reference', 'name', 'product_type', 'procurement_type', 'mrp_type', 'phantom_assembly', 'ean13', 'position', 'description', 'description_short', 'category_id', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'ecotax_id', 'ECOTAX_NAME', 'cost_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'available_for_sale_date', 'location', 'width', 'height', 'depth', 'volume', 'weight', 'notes', 'stock_control', 'reorder_point', 'maximum_stock', 'out_of_stock', 'out_of_stock_text', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'machine_capacity', 'units_per_tray', 'route_notes', 'main_supplier_id', 'SUPPLIER_NAME', 'supplier_reference', 'supply_lead_time', 'manufacturer_id', 'MANUFACTURER_NAME',
+
+//             'last_purchase_price', 'cost_average', // <= Easter Eggs!!!
         ];
 
         $data[] = $headers;

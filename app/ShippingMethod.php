@@ -163,11 +163,22 @@ class ShippingMethod extends Model {
 
         // $free_shipping  = $this->free_shipping_from;
 
+        // Taxes stuff
         $tax_id         = $this->tax_id;
 
+        // $tax = Tax::find($tax_id);
 
-        $tax = Tax::find($tax_id);
+        $address = $shippable->taxingaddress;
+        $tax_rules = $this->getTaxRules($address, $shippable->customer);
 
+        $taxes_summary = [
+            'id'                 => $tax_id,
+            'all'                => $tax_rules->sum('percent'),
+            'sales'              => $tax_rules->where('rule_type', '=', 'sales')->sum('percent'),
+            'sales_equalization' => $tax_rules->where('rule_type', '=', 'sales_equalization')->sum('percent'),
+        ];
+
+        // Shipping Cost
         $cost = 0.0;
 
         $billable_amount = $shippable->getShippingBillableAmount( $this->billing_type );
@@ -196,10 +207,49 @@ class ShippingMethod extends Model {
         return [
                     'shipping_label' => $shipping_label,
                     'cost'           => $cost,
-                    'tax'            => $tax,
+                    'tax'            => $taxes_summary,
             ];
 
     }
+
+
+    public function getTaxRules( Address $address = null, Customer $customer = null )
+    {
+        $rules =         $this->getTaxRulesByAddress ( $address  )
+                ->merge( $this->getTaxRulesByCustomer( $customer ) )
+                ->merge( $this->getTaxRulesByMethod  ( $address  ) );
+
+        // Higher Tax first
+        // return $rules->sortByDesc('percent');
+        // Not needed: use rule 'position' for precedence
+
+        return $rules;      // ->sortBy('position');
+    }
+
+    public function getTaxRulesByAddress( Address $address = null )
+    {
+        // Taxes depending on location
+        // If no address, use default Company address
+        if ( $address == null ) $address = Context::getContext()->company->address;
+
+        return $address->getTaxRules( $this->tax );
+    }
+
+    public function getTaxRulesByCustomer( Customer $customer = null )
+    {
+        // Taxes depending on Customer, no matter of location
+        if ( $customer == null ) return collect([]);
+
+        return $customer->getTaxRulesByTax( $this->tax );
+    }
+
+    public function getTaxRulesByMethod( Address $address = null )
+    {
+        // Taxes depending on Method itself, such as eco tax ????
+        return collect([]);
+    }
+
+
 
     public function getPriceByAddress( Address $address = null, $amount = 0.0 )
     {
@@ -207,41 +257,79 @@ class ShippingMethod extends Model {
 
         $rules = $this->rules;
 
-        // [1] Postal Code
-        $address_rule = $rules->where('country_id', $address->country_id)
-                                ->where('postcode', $address->postcode)
-                                ->where('from_amount', '<=', $amount)
-                                ->sortByDesc('from_amount')
-                                ->first();
+        // abi_r('[All]');
+        // abi_r($rules);
 
-        if ($address_rule) return $address_rule->price;
+        // [1] Postal Code
+        $address_rules = $rules->filter(function ($item) use ($address, $amount) {
+                                    if(
+                                        ($item->country_id  == $address->country_id) &&
+                                        ($item->postcode    == $address->postcode)   &&
+                                        ($item->from_amount <= $amount)
+                                    )
+                                        return true;
+
+                                    return false;
+                                })
+                                ->sortByDesc('from_amount');
+
+        
+        // abi_r('[1] Postal Code');
+        // abi_r($address_rules);
+
+        if ($address_rule = $address_rules->first()) return $address_rule->price;
 
         // [2] State
-        $address_rule = $rules->where('country_id', $address->country_id)
-                                ->where('state_id', $address->state_id)
-                                ->where('from_amount', '<=', $amount)
-                                ->sortByDesc('from_amount')
-                                ->first();
+        $address_rules = $rules->filter(function ($item) use ($address, $amount) {
+                                    if(
+                                        ($item->country_id  == $address->country_id) &&
+                                        ($item->state_id    == $address->state_id)   &&
+                                        ( (string) $item->postcode == '' )   &&
+                                        ($item->from_amount <= $amount)
+                                    )
+                                        return true;
 
-        if ($address_rule) return $address_rule->price;
+                                    return false;
+                                })
+                                ->sortByDesc('from_amount');
+
+        
+        // abi_r('[2] State');
+        // abi_r($address_rules);
+
+        if ($address_rule = $address_rules->first()) return $address_rule->price;
 
         // [3] Country
-        $address_rule = $rules->where('country_id', $address->country_id)
-                                ->where('from_amount', '<=', $amount)
-                                ->sortByDesc('from_amount')
-                                ->first();
+        $address_rules = $rules->filter(function ($item) use ($address, $amount) {
+                                    if(
+                                        ($item->country_id         == $address->country_id) &&
+                                        ( (int) $item->state_id    == 0  )   &&
+                                        ( (string) $item->postcode == '' )   &&
+                                        ($item->from_amount <= $amount)
+                                    )
+                                        return true;
 
-        if ($address_rule) return $address_rule->price;
+                                    return false;
+                                })
+                                ->sortByDesc('from_amount');
+
+        
+        // abi_r('[3] Country');
+        // abi_r($address_rules);
+
+        if ($address_rule = $address_rules->first()) return $address_rule->price;
 
         // [4] Universe
-        $address_rule = $rules->filter(function ($value, $key) {
-                                    return $value->country_id == null || $value->country_id == '' || $value->country_id == 0 ;
+        $address_rules = $rules->filter(function ($value, $key) {
+                                    return ($value->country_id == null) || ($value->country_id == '') || ($value->country_id == 0) ;
                                 })
                                 ->where('from_amount', '<=', $amount)
-                                ->sortByDesc('from_amount')
-                                ->first();
+                                ->sortByDesc('from_amount');
 
-        if ($address_rule) return $address_rule->price;
+        // abi_r('[4] Universe');
+        // abi_r($address_rules);
+
+        if ($address_rule = $address_rules->first()) return $address_rule->price;
 
         // Nothing found
         return null;

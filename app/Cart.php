@@ -790,6 +790,11 @@ class Cart extends Model implements ShippableInterface
 
         return ( $this->amount > 0.0 ) && ( $this->amount > $min_order_value );
     }
+
+    public function isOverMaxValue() 
+    {
+        return ( $this->amount > 0.0 ) && ( $this->amount > Configuration::getNumber('ABCC_MAX_ORDER_VALUE') );
+    }
     
 
     /*
@@ -950,8 +955,9 @@ class Cart extends Model implements ShippableInterface
 
         list($shipping_label, $cost, $tax) = array_values(ShippingMethod::costPriceCalculator( $method, $cart, $free_shipping ));
 
-        $tax_id      = $tax->id;
-        $tax_percent = $tax->percent;   // Naughty boy! Should consider cart invoicing address!
+        $tax_id      = $tax['id'];
+        $tax_percent = $tax['sales'];
+        $tax_se_percent = $tax['sales_equalization'];
 
 
         $line_shipping = $cart->cartlines->where('line_type', 'shipping')->first();
@@ -984,7 +990,7 @@ class Cart extends Model implements ShippableInterface
                 'total_tax_excl' => 0.0, 
 
                 'tax_percent'         => $tax_percent,
-                'tax_se_percent'      => 0.0,
+                'tax_se_percent'      => $tax_se_percent,
                 'tax_id' => $tax_id,
             ]);
 
@@ -997,10 +1003,11 @@ class Cart extends Model implements ShippableInterface
 
             'unit_customer_price'       => $cost,
             'unit_customer_final_price' => $cost,
-            'total_tax_incl' => $cost * (1.0+$tax_percent/100.0),
+            'total_tax_incl' => $cost * (1.0+($tax_percent+$tax_se_percent)/100.0),
             'total_tax_excl' => $cost, 
 
             'tax_percent'         => $tax_percent,
+            'tax_se_percent'      => $tax_se_percent,
             'tax_id' => $tax_id,
         ]);
 
@@ -1071,8 +1078,8 @@ class Cart extends Model implements ShippableInterface
     public function taxingaddress()
     {
         return Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') ? 
-            $this->shippingaddress  : 
-            $this->invoicingaddress ;
+            $this->shippingaddress()  : 
+            $this->invoicingaddress() ;
     }
 
     
@@ -1143,7 +1150,7 @@ class Cart extends Model implements ShippableInterface
     {
         // get the tax percent checking the taxing address,
         // while using product tax as backup data
-        $address = $this->taxingaddress();
+        $address = $this->taxingaddress;
 
         // if the customer has que sales_equalization enabled,
         // we need to set the product's sales_equalization to 1 to use it

@@ -22,6 +22,8 @@ class Kernel extends HttpKernel
 
         \App\Http\Middleware\SetContextMiddleware::class,
 //        \App\Http\Middleware\SetGuestContextMiddleware::class,
+        
+        \App\Http\Middleware\PricesAndQuantities::class,
     ];
 
     /**

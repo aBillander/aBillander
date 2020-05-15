@@ -197,6 +197,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get( '/helferin/reports/reorder/headers', 'HelferinController@reportProductReorderHeaders' )->name('helferin.reports.reorder.headers');
 
 
+        Route::get( 'abccbillboard/edit',    'AbccBillboardController@edit'  )->name('abccbillboard.edit');
+        Route::post('abccbillboard/update',  'AbccBillboardController@update')->name('abccbillboard.update');
+
+
         Route::resource('configurations',    'ConfigurationsController');
         Route::resource('configurationkeys', 'ConfigurationKeysController');
 
@@ -611,6 +615,16 @@ foreach ($pairs as $pair) {
         Route::resource('deliverysheets.deliverysheetlines', 'DeliverySheetLinesController');
         Route::post('deliverysheets/sortlines', 'DeliverySheetsController@sortLines')->name('deliverysheet.sortlines');
 
+        // Customer Order Templates
+        Route::resource('customerordertemplates',                    'CustomerOrderTemplatesController'    );
+        Route::resource('customerordertemplates.customerordertemplatelines', 'CustomerOrderTemplateLinesController');
+        Route::post('customerordertemplates/sortlines', 'CustomerOrderTemplatesController@sortLines')->name('customerordertemplate.sortlines');
+
+        Route::get('customerordertemplates/create/afterorder/{id}', 'CustomerOrderTemplatesController@createAfterOrder')->name('customerordertemplates.create.afterorder');
+        Route::post('customerordertemplates/store/afterorder',      'CustomerOrderTemplatesController@storeAfterOrder')->name('customerordertemplates.store.afterorder');
+
+        Route::get( 'customerordertemplates/{customerordertemplate}/createorder', 'CustomerOrderTemplatesController@createCustomerOrder' )->name('customerordertemplates.createcustomerorder');
+
 
 
         // Import / Export to Database
@@ -683,7 +697,8 @@ foreach ($pairs as $pair) {
         // Route::resource( ... );   
 // }
 
-        Route::resource('stockmovements', 'StockMovementsController');
+        Route::resource('stockmovements', 'StockMovementsController');        
+        Route::get( 'export/stockmovements', 'StockMovementsController@export' )->name('stockmovements.export');
 
         Route::resource('stockcounts',              'StockCountsController');
         Route::post( 'stockcounts/{id}/warehouseupdate',    'StockCountsController@warehouseUpdate' )->name('stockcount.warehouse.update');

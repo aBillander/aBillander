@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ \App\Context::getContext()->language->iso_code }}">
+<html lang="{{ $iso_code }}">
 	<head>
 		<meta charset="utf-8">
 	</head>
@@ -7,7 +7,9 @@
 		<h2>Nuevo Presupuesto: {{ $document_num }} ({{ $document_date }})<br /> Total: {{ $document_total }}</h2>
 
 		<div>
-			<br /><br />
+			<br /><!-- br />
+			{{ $document_probe }}
+			<br / --><br />
 			<hr />
 			Cliente: {{ $customer->name_fiscal }}<br />
             NIF: {{ $customer->identification }}<br />

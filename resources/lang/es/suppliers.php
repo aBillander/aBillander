@@ -75,6 +75,7 @@ return [
 	'ABCC Access'     => 'Acceso ABCC',
 
 	'Website'     => 'Web',
+	'Is Creditor?' => '¿Es Acreedor?',
 	'Misc'     => 'Otros',
 
 	'Sequence for Invoices'     => 'Serie de Facturas',

@@ -56,12 +56,26 @@ class ProductionSheetsTourlineController extends Controller
 
             $row = TourlineExcel::rowTemplate();
 
+            $row['ShippingDate'] = abi_date_form_short( $sheet->due_date );
+
             $row['ClientReference'] = $document->document_reference;   // Document reference
             if ( $document->shipment_service_type_tag != '' )
                 $row['ShippingTypeCode'] = $document->shipment_service_type_tag;
-            $row['RecipientName'] = $document->customer->name_fiscal;     // Nombre destinatario
+            $row['RecipientName'] = $document->customer->name_commercial;     // Nombre destinatario
             $row['RecipientAddress'] = $document->shippingaddress->address1.' '.$document->shippingaddress->address2;
-            $row['RecipientPhone'] = $document->shippingaddress->phone;
+
+            $phone = $document->shippingaddress->phone;
+
+            if ( strlen($phone) < 6 )
+                $phone = $document->shippingaddress->phone_mobile;
+
+            if ( strlen($phone) < 6 )
+                $phone = $document->billingaddress->phone;
+
+            if ( strlen($phone) < 6 )
+                $phone = $document->billingaddress->phone_mobile;
+
+            $row['RecipientPhone'] = $phone;
             $row['RecipientAddres2'] = $document->shippingaddress->city; // Población
             $row['DestinPostalCode'] = $document->shippingaddress->postcode;
             $row['PackageCount'] =  $document->number_of_packages != 0 ? $document->number_of_packages : 1;      // Número de paquetes
@@ -69,6 +83,11 @@ class ProductionSheetsTourlineController extends Controller
             $row['ShippingComments'] = (string) ($document->notes_from_customer.' '.$document->notes);  // Observaciones
             $row['RecipientEmailNotifiyAddress'] = $document->shippingaddress->email;
 //          $row[''] = '';
+
+            // Extra Stuff
+            $row['DocumentId'] = $document->id;
+            $row['aBillanderCustomerId'] = $document->customer->id;
+            $row['CodigoClienteFactuSOL'] = $document->customer->reference_external;
 
             $data[] = $row;
 

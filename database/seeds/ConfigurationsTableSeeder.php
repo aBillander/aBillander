@@ -23,6 +23,7 @@ $confs = [
 ['ABCC_EMAIL', ''],
 ['ABCC_EMAIL_NAME', 'Customer Center'],
 ['ABCC_DEFAULT_PASSWORD', '12345678'],
+['ABCC_LOGIN_REDIRECT', 'customer.dashboard'],
 ['ABCC_STOCK_SHOW', 'label'],
 ['ABCC_STOCK_THRESHOLD', '999'],
 ['ABCC_OUT_OF_STOCK_PRODUCTS', 'hide'],
@@ -33,6 +34,7 @@ $confs = [
 ['ABCC_ENABLE_INVOICES', '0'],
 ['ABCC_ENABLE_MIN_ORDER', '0'],
 ['ABCC_MIN_ORDER_VALUE', '0.0'],
+['ABCC_MAX_ORDER_VALUE', '10000.0'],
 ['ABCC_ENABLE_NEW_PRODUCTS', '1'],
 ['ABCC_NBR_DAYS_NEW_PRODUCT', '20'],
 ['ABCC_NBR_ITEMS_IS_QUANTITY', 'items'],	// 'quantity', 'items', 'value'
@@ -43,6 +45,11 @@ $confs = [
 ['ABCC_ORDERS_NEED_VALIDATION', '1'],
 ['ABCC_ORDERS_SEQUENCE', ''],
 ['ABCC_QUOTATIONS_SEQUENCE', ''],
+['ABCC_BB_IMAGE', ''],
+['ABCC_BB_IMAGE_DEFAULT', ''],
+['ABCC_BB_CAPTION', ''],
+['ABCC_BB_CAPTION_DEFAULT', ''],
+['ABCC_BB_ACTIVE', 'none'],
 
 ['ABI_IMPERSONATE_TIMEOUT', '0'],
 ['ABI_TIMEOUT_OFFSET', '3'],

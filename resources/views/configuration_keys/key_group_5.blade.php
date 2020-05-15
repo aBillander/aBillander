@@ -100,6 +100,50 @@
 
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ABCC_LOGIN_REDIRECT.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ABCC_LOGIN_REDIRECT" id="ABCC_LOGIN_REDIRECT_customer.dashboard" value="customer.dashboard" @if( old('ABCC_LOGIN_REDIRECT', $key_group['ABCC_LOGIN_REDIRECT']) == 'customer.dashboard' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_LOGIN_REDIRECT.option.customer.dashboard') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_LOGIN_REDIRECT" id="ABCC_LOGIN_REDIRECT_abcc.customer.pricerules" value="abcc.customer.pricerules" @if( old('ABCC_LOGIN_REDIRECT', $key_group['ABCC_LOGIN_REDIRECT']) == 'abcc.customer.pricerules' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_LOGIN_REDIRECT.option.abcc.customer.pricerules') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_LOGIN_REDIRECT" id="ABCC_LOGIN_REDIRECT_abcc.catalogue.newproducts" value="abcc.catalogue.newproducts" @if( old('ABCC_LOGIN_REDIRECT', $key_group['ABCC_LOGIN_REDIRECT']) == 'abcc.catalogue.newproducts' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_LOGIN_REDIRECT.option.abcc.catalogue.newproducts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_LOGIN_REDIRECT" id="ABCC_LOGIN_REDIRECT_abcc.catalogue" value="abcc.catalogue" @if( old('ABCC_LOGIN_REDIRECT', $key_group['ABCC_LOGIN_REDIRECT']) == 'abcc.catalogue' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_LOGIN_REDIRECT.option.abcc.catalogue') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_LOGIN_REDIRECT" id="ABCC_LOGIN_REDIRECT_abcc.cart" value="abcc.cart" @if( old('ABCC_LOGIN_REDIRECT', $key_group['ABCC_LOGIN_REDIRECT']) == 'abcc.cart' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_LOGIN_REDIRECT.option.abcc.cart') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ABCC_LOGIN_REDIRECT" id="ABCC_LOGIN_REDIRECT_none" value="none" @if( old('ABCC_LOGIN_REDIRECT', $key_group['ABCC_LOGIN_REDIRECT']) == 'none' ) checked="checked" @endif type="radio">
+            {!! l('ABCC_LOGIN_REDIRECT.option.none') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ABCC_LOGIN_REDIRECT.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ABCC_STOCK_SHOW.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">
@@ -313,6 +357,21 @@
         <div class="col-lg-6"> </div>
         </div>
         <span class="help-block">{!! l('ABCC_MIN_ORDER_VALUE.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group {{ $errors->has('ABCC_MAX_ORDER_VALUE') ? 'has-error' : '' }}">
+      <label for="ABCC_MAX_ORDER_VALUE" class="col-lg-4 control-label">{!! l('ABCC_MAX_ORDER_VALUE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="ABCC_MAX_ORDER_VALUE" name="ABCC_MAX_ORDER_VALUE" placeholder="" value="{{ old('ABCC_MAX_ORDER_VALUE', $key_group['ABCC_MAX_ORDER_VALUE']) }}" />
+        {{ $errors->first('ABCC_MAX_ORDER_VALUE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('ABCC_MAX_ORDER_VALUE.help') !!}</span>
       </div>
     </div>
 

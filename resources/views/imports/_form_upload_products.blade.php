@@ -61,6 +61,35 @@
 
 </div>
 <div class="row">
+
+     <div class="form-group col-lg-6 col-md-6 col-sm-6" id="div-import_action">
+       {!! Form::label('import_action', l('Action'), ['class' => 'control-label']) !!}
+       <div>
+         <div class="radio-inline" style="margin-left: 10px;">
+           <label style="font-weight: normal !important;">
+             {!! Form::radio('import_action', '1', false, ['id' => 'import_action_on']) !!}
+             {!! l('Create Products') !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                        data-content="{{ l('Import File MUST contain ALL mandatory columns.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+           </label>
+         </div>
+         <div class="radio-inline">
+           <label style="font-weight: normal !important;">
+             {!! Form::radio('import_action', '0', true, ['id' => 'import_action_off']) !!}
+             {!! l('Update existing Prodcuts') !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                        data-content="{{ l('Import File can contain columns to be modified only.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+           </label>
+         </div>
+       </div>
+      </div>    
+
+</div>
+<div class="row">
     
     <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-has_header" style="display: none">
      {!! Form::label('has_header', l('File contains header row?'), ['class' => 'control-label']) !!}

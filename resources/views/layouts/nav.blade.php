@@ -64,6 +64,12 @@
                                  {{l('Sale Orders', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ URL::to('customerordertemplates') }}">
+                                 <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
+                                 {{l('Sale Order Templates', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
 
                          <li>
@@ -102,6 +108,16 @@
                                  {{l('Price Rules', [], 'layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('abccbillboard/edit') }}">
+                                 <!-- img src="{{ asset('assets/theme/new-badge-20.png') }}" --> 
+                                 &nbsp; {{l('ABCC Billboard', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+@endif
                          <li>
                             <a href="{{ URL::to('shippingmethods') }}">
                                  {{l('Shipping Methods', [], 'layouts')}}

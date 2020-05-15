@@ -78,7 +78,7 @@
                 <th class="text-left">{{ l('Shipping Method') }}</th>
                 <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
                 <th class="text-center">{{l('Active', [], 'layouts')}}</th>
-                <th class="text-right"> </th>
+                <th class="text-right button-pad"> </th>
             </tr>
         </thead>
         <tbody>
@@ -110,7 +110,7 @@
                     @endif
                 </td>
                 <td class="text-center">@if ($addr->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
-                <td class="text-left">
+                <td class="text-right button-pad">
                     @if (  is_null($addr->deleted_at))
                     <a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
                             xhref="{{ URL::to('customers/' . $customer->id) . '/mail' }}" 

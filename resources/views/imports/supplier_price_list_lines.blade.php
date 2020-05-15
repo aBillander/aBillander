@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Import - Price Lists') }} @parent @stop
+@section('title') {{ l('Import - Supplier Price List') }} @parent @stop
 
 
 @section('content') 
@@ -8,9 +8,11 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
-                <a href="{{ URL::to('suppliers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Price Lists') }}</a>
+                <!-- a class="btn xbtn-sm btn-warning" href="{{ route('suppliers.supplierpricelistlines.index', $supplier->id) }}" title="{{l('Go to', [], 'layouts')}} :: {{$supplier->name_regular}} :: {{ l('Price List', 'suppliers') }}"><i class="fa fa-mail-reply"></i></a -->
+
+                <a href="{{ route('suppliers.supplierpricelistlines.index', $supplier->id) }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Supplier Price List') }}</a>
             </div>
-            <h2><a href="{{ URL::to('suppliers') }}">{{ l('Price Lists') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }} <span style="color: #cccccc;">::</span> [{{$supplier->id}}] {{$supplier->name}} </h2>
+            <h2><a href="{{ URL::to('suppliers') }}">{{ l('Price List') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }} <span style="color: #cccccc;">::</span> [{{$supplier->id}}] <a xclass="btn btn-sm btn-warning" href="{{ URL::to('suppliers/' . $supplier->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}">{{$supplier->name_regular}}</a></h2>
         </div>
     </div>
 </div>

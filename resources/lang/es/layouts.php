@@ -13,6 +13,7 @@ return [
 
 	'Error 404 / Page not found'     => 'Error 404 / Página no encontrada',
 	'Coming soon...' => 'Próximamente...',
+	'Be right back.' => 'Estamos mejorando el sitio.',
 
 	'Success' => 'Éxito',
 	'Info'    => 'Información',
@@ -31,6 +32,7 @@ return [
 	'This record cannot be deleted because its Quantity or Value &#58&#58 (:id) '  =>  'El registro no puede ser eliminado por su Cantidad o Valor &#58&#58 (:id) ',
 	'Unable to create this record &#58&#58 (:id) '               =>  'No se ha podido crear el registro solicitado &#58&#58 (:id) ',
 	'Unable to update this record &#58&#58 (:id) '               =>  'No se ha podido actualizar el registro solicitado &#58&#58 (:id) ',
+	'Unable to load this record &#58&#58 (:id) '                 =>  'No se ha podido encontrar el registro solicitado &#58&#58 (:id) ',
 	'Document has no Lines'                                      =>  'El Documento no contiene Líneas',
 	'Document amount should be more than: :amount'               =>  'El Importe del Documento debe ser superior a: :amount',
 	'Document is on-hold'                                      =>  'El Documento está en espera',
@@ -42,6 +44,8 @@ return [
 	'The record with id=:id does not exist'                      =>  'El registro con id=:id no existe',
 	'Some records in the list [ :id ] do not exist'              =>  'Algunos registros en la lista [ :id ] no existen',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
+
+	'Too many Records for this Query &#58&#58 (:id) ' => 'Demasiados Registros para esta Consulta &#58&#58 (:id) ',
 
 	'Your Document has been sent! &#58&#58 (:id) '     => 'Su Documento ¡ha sido enviado! &#58&#58 (:id) ',
 	'Your Document could not be sent &#58&#58 (:id) '     => 'Su Documento no ha podido ser enviado &#58&#58 (:id) ',
@@ -88,6 +92,7 @@ return [
 	'Carriers'     => 'Transportistas',
 	'Price Lists'     => 'Tarifas',
 	'Price Rules'     => 'Reglas de Precio',
+	'ABCC Billboard' => 'ABCC Portada',
 	'Sales Representatives'     => 'Agentes',
 	'Warehouses'     => 'Almacenes',
 	'Product Options'     => 'Opciones de Productos',
@@ -104,7 +109,8 @@ return [
 	'Suppliers' => 'Proveedores',
 	'Supplier Shipping Slips'     => 'Albaranes de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',
-	'Sale Orders'     => 'Pedidos de Venta',
+	'Sale Orders'     => 'Pedidos de Clientes',
+	'Sale Order Templates'     => 'Plantillas Pedidos Venta',
 	'Orders'     => 'Pedidos',
 	'Shipping Slips'     => 'Albaranes',
 	'Invoices'     => 'Facturas',
@@ -244,6 +250,7 @@ return [
 	'Print'     => 'Imprimir',
 	'Publish'     => 'Publicar',
 	'Upload File'     => 'Subir Fichero',
+	'Upload Image'     => 'Subir Imagen',
 	'Browse'     => 'Seleccionar',
 	'Help'     => 'Ayuda',
 	'Home'     => 'Inicio',

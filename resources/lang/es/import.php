@@ -55,6 +55,12 @@ return [
 	'File contains header row?'     => '¿Primera línea es encabezado?',
 	'Delete existing Products?'     => '¿Eliminar los Productos existentes?',
 
+	'Action' => 'Acción',
+	'Create Products' => 'Crear Productos',
+	'Update existing Prodcuts' => 'Actualizar Productos existentes',
+	'Import File MUST contain ALL mandatory columns.' => 'El Fichero de importación DEBE contener TODAS las columnas obligatorias.',
+	'Import File can contain columns to be modified only.' => 'El Fichero de importación puede contener sólo las columnas que han de ser modificadas.',
+
 	'Images'     => 'Imágenes',
 	'Import Product Images'     => 'Importar Imágenes de Productos',
 	'Delete ALL Images'     => 'Borrar TODAS las Imágenes',
@@ -110,6 +116,20 @@ return [
 	'Empty LOG?'     => '¿Vaciar el LOG?',
 	'Empty LOG before Price List Lines import.'     => 'Vaciar el LOG antes de importar las Líneas de Tarifa.',
 	'Simulation Mode: errors will be shown, but database will not be changed.' => 'Modo Simulación: se mostrarán errores, pero no se cargará nada en la base de datos.',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Price List
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Import - Supplier Price List' => 'Importar - Tarifa de Proveedor',
+
+	'Back to Supplier Price List'     => 'Volver a Tarifa de Proveedor',
+	'Price List' => 'Tarifa',
 
 	/*
 	|--------------------------------------------------------------------------

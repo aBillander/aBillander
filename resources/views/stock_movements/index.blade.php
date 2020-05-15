@@ -17,6 +17,9 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
+        <a href="{{ route('stockmovements.export', Request::all()) }}" class="btn btn-sm btn-grey" 
+                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
     </div>
     <h2>
         {{ l('Stock Movements') }}

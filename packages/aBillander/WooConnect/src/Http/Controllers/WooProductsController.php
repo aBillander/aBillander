@@ -19,6 +19,7 @@ use \aBillander\WooConnect\WooProduct;
 use \aBillander\WooConnect\WooProductImporter;
 
 use \App\Configuration;
+use \App\PriceList;
 
 class WooProductsController extends Controller 
 {
@@ -630,6 +631,84 @@ The image in position 0 is your featured image.
         return redirect()->to(url()->previous())
                 ->with('success', l('Some Product Descriptions has been retrieved from WooCommerce Shop.'));
 	}
+
+
+	/* ********************************************************************************************* */
+
+
+	public function updateProductStock( $sku )
+	{
+		$product_sku = $sku;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product stock
+        $product = Product::where('reference', $product_sku)->first();
+
+        $wh_id = Configuration::getInt('WOOC_DEF_WAREHOUSE');
+        $stock = $product->getStockByWarehouse( Configuration::getInt('WOOC_DEF_WAREHOUSE') );
+
+        // Happyly update WooCommerce Stock ;)
+		$data = [
+		    'stock_quantity'   => $stock,		// Integer
+//		    'stock_status' => '', 	// 	string 	Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
+//		    'regular_price' => '',	// string
+		];
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+
+
+        return redirect()->to(url()->previous())
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . $product->as_quantityable($stock));
+	}
+
+
+	public function updateProductPrice( $sku )
+	{
+		$product_sku = $sku;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product stock
+        $product = Product::where('reference', $product_sku)->first();
+
+        $cpl_id = Configuration::getInt('WOOC_DEF_CUSTOMER_PRICE_LIST');
+        $price = $product->getPriceByList( PriceList::find($cpl_id) );
+
+        // Happyly update WooCommerce Stock ;)
+		$data = [
+//		    'stock_quantity'   => $stock,		// Integer
+//		    'stock_status' => '', 	// 	string 	Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
+		    'regular_price' => $price->getPrice(),	// string
+		];
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+
+
+        return redirect()->to(url()->previous())
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . $product->as_priceable( $price->getPrice()));
+	}
+
 
 }
 

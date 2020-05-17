@@ -528,6 +528,7 @@ class Product extends Model {
                     ->where('warehouse_id', $wh_id)
                     ->where('date', '<=', $date)
                     ->orderBy('date', 'desc')           // Guess "well ordered" movements
+                    ->orderBy('id', 'DESC')
                     ->first();
 
         if ($mvt)

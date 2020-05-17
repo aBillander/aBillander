@@ -30,6 +30,12 @@ class ProductionSheet extends Model
     | Methods
     |--------------------------------------------------------------------------
     */
+
+    public function isOnGoing()
+    {
+
+        return $this->due_date >= \Carbon\Carbon::now()->toDateString();
+    }
     
     public function calculateProductionOrders()
     {

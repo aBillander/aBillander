@@ -347,4 +347,7 @@ return [
 
 	'Customer Reference' => 'Referencia del Cliente',
 
+	'Manufacturing Status' => 'Estado de Fabricación',
+	'Total Amount' => 'Importe',
+
 ];

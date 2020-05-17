@@ -59,6 +59,11 @@ class CustomerOrderTemplateLinesController extends Controller
 
         $customerordertemplate->customerordertemplatelines()->save($customerordertemplateline);
 
+        $customerordertemplate->update([
+                'total_tax_incl' => 0.0,
+                'total_tax_excl' => 0.0,
+        ]);
+
         return redirect('customerordertemplates/'.$customerordertemplateId.'/customerordertemplatelines')
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $customerordertemplateline->id], 'layouts') . $request->input('line_sort_order'));
     }
@@ -111,6 +116,11 @@ class CustomerOrderTemplateLinesController extends Controller
 
         $customerordertemplateline->update($request->all());
 
+        $customerordertemplate->update([
+                'total_tax_incl' => 0.0,
+                'total_tax_excl' => 0.0,
+        ]);
+
         return redirect('customerordertemplates/'.$customerordertemplateId.'/customerordertemplatelines')
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $customerordertemplateline->id], 'layouts') . $request->input('line_sort_order'));
     }
@@ -123,9 +133,16 @@ class CustomerOrderTemplateLinesController extends Controller
      */
     public function destroy($customerordertemplateId, CustomerOrderTemplateLine $customerordertemplateline)
     {
+        $customerordertemplate = CustomerOrderTemplate::findOrFail($customerordertemplateId);
+
         $id = $customerordertemplateline->id;
 
         $customerordertemplateline->delete();
+
+        $customerordertemplate->update([
+                'total_tax_incl' => 0.0,
+                'total_tax_excl' => 0.0,
+        ]);
 
         return redirect('customerordertemplates/'.$customerordertemplateId.'/customerordertemplatelines')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

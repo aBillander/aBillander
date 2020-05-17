@@ -92,7 +92,7 @@ class TourlineExcel {
         $row['SenderPhone'] = '692813253';
         $row['DestinCountryName'] = 'ESPAÑA';
         $row['IsSenderEmailNotified'] = 'N';
-        $row['SenderEmailNotifyAddress'] = 'lidiamartinez@laextranatural.es';
+        $row['SenderEmailNotifyAddress'] = env('TOURLINE_NOTIFY_MAIL', 'notify@mail.com');
 
         $row['IsSaturdayDelivery'] = 'N';
         $row['HasReturn'] = 'N';

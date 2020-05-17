@@ -47,7 +47,7 @@ class Address extends Model {
 
     public function getContactNameAttribute()
     {
-        return    $this->firstname . ' ' . $this->lastname;
+        return trim( $this->firstname . ' ' . $this->lastname );
     }
 
 

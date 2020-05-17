@@ -343,7 +343,8 @@ class WooCategoriesController extends Controller
 
 			} else {
 
-				$img_src = 'https://www.laextranatural.com/wp-content/plugins/woocommerce/assets/images/placeholder.png';
+				// Culo 4U:
+				$img_src = 'https://<wp_site>/wp-content/plugins/woocommerce/assets/images/placeholder.png';
 				
 			}
 

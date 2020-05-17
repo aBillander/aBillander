@@ -296,6 +296,8 @@ return [
 
     'Import Images' => 'Importar Imágenes',
     'Import Descriptions' => 'Importar Descripciones',
+    'Update Price' => 'Actualizar Precio',
+    'Update Stock' => 'Actualizar Stock',
 
 
 

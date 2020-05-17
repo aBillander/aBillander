@@ -19,36 +19,15 @@ class FSxTools
 
 
         // Get Configurations from FactuSOL Web
-        if (config('app.url') =='http://abimfg.laextranatural.es' 
-         || config('app.url') =='http://abimfg-test.laextranatural.es'
-         || 0 )
-        {
-                self::$_FSXCON['fsx-bbdd'] = 
-                [
-                    'driver' => 'mysql',
-                    'host' => env('DB_HOST', 'localhost'),
-                    'port' => env('DB_PORT', '3306'),
-                    'database' => env('DB_DATABASE_FSX', 'laextran_com'),
-                    'username' => env('DB_USERNAME_FSX', 'laextran_com'),
-                    'password' => env('DB_PASSWORD_FSX', 'EAS#6XqwyK%z'),
-                    'unix_socket' => env('DB_SOCKET', ''),
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'prefix' => '',
-        //            'strict' => true,
-                    'strict' => false,
-                    'engine' => null,
-                ];
-        } else {
+
                 self::$_FSXCON['fsx-bbdd'] = 
                 [
                     'driver' => 'mysql',
                     'host' => env('DB_HOST', '127.0.0.1'),
                     'port' => env('DB_PORT', '3306'),
-//                    'database' => env('DB_DATABASE_FSX', 'wooc_btester'),
-                    'database' => env('DB_DATABASE_FSX', 'xtranat55'),
-                    'username' => env('DB_USERNAME_FSX', 'root'),
-                    'password' => env('DB_PASSWORD_FSX', '1qaz2wsx'),
+                    'database' => env('DB_DATABASE_FSX', 'fsx_db'),
+                    'username' => env('DB_USERNAME_FSX', 'fsx_user'),
+                    'password' => env('DB_PASSWORD_FSX', 'fsx_pass'),
                     'unix_socket' => env('DB_SOCKET', ''),
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
@@ -57,7 +36,7 @@ class FSxTools
                     'strict' => false,
                     'engine' => null,
                 ];
-        }
+
 
 		\Config::set("database.connections.fsx-bbdd", self::$_FSXCON['fsx-bbdd'] );
 	}

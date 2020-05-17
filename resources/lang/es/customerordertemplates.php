@@ -17,6 +17,13 @@ return [
 
 	'# Lines' => 'Número de Líneas',
 
+	'Last used' => 'Usado última vez',
+	'Last Customer Order' => 'Ultimo Pedido',
+	'Total Amount' => 'Importe Total',
+
+	'This value is updated when a new Order is created, and cleared when a Template Line is created, updated or deleted.' => 
+		'Este valor es actualizado cuando se crea un Pedido, y se borra cuando una Línea de la Plantilla es creada, modificada o borrada.',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Customer Order Templates Language Lines :: create
@@ -32,7 +39,6 @@ return [
 	'Alias'     => 'Alias',
 	'Customer' => 'Cliente',
 	'Shipping Address' => 'Dirección de Envío',
-	'Last used' => 'Usado última vez',
 
 	'Show Customer Order Template Lines' => 'Ver Líneas de Plantilla',
 	'Create Customer Order' => 'Crear Pedido de Venta',

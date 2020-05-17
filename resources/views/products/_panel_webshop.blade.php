@@ -125,9 +125,25 @@
 
                    </div>
 
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
 
                       <a class="btn xbtn-sm btn-grey" href="{{ URL::route('wproducts.import.product.descriptions', ['product_sku' => $product->reference] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-file-text-o"></i> {{l('Import Descriptions')}}</a>
+
+                   </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+                      <div class="btn-group">
+                        <a href="javascript::void();" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-refresh"></i> {{l('Update', [], 'layouts')}}</a>
+                        <a href="javascript::void();" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                          <li><a href="{{ route('wproducts.update.product.stock', $product->reference ) }}"><i class="fa fa-th"></i> &nbsp;{{l('Update Stock')}}</a></li>
+                          <li><a href="{{ route('wproducts.update.product.price', ['product_sku' => $product->reference] ) }}"><i class="fa fa-money"></i> &nbsp;{{l('Update Price')}}</a></li>
+                          <!-- li class="divider"></li -->
+                        </ul>
+                      </div>
 
                    </div>
 

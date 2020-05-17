@@ -27,6 +27,11 @@ class CreateCustomerOrderTemplatesTable extends Migration
             $table->tinyInteger('active')->default(1);
             $table->timestamp('last_used_at')->nullable();
 
+            $table->integer('last_customer_order_id')->nullable();
+            $table->string('last_document_reference', 64)->nullable();
+            $table->decimal('total_tax_incl', 20, 6)->default(0.0);
+            $table->decimal('total_tax_excl', 20, 6)->default(0.0);
+
             $table->integer('customer_id')->unsigned()->nullable(false);
             $table->integer('shipping_address_id')->unsigned()->nullable(false);
             $table->integer('template_id')->nullable();

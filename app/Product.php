@@ -470,6 +470,18 @@ class Product extends Model {
 
         return $query;
     }
+
+
+    public function getStockByWarehouse( $warehouse_id = null  )
+    {
+        if ( $warehouse_id === null ) return $this->quantity_onhand;
+
+        $warehouse = $this->warehouses->where('id', $warehouse_id)->first();
+
+        if ( !$warehouse ) return $this->quantity_onhand;
+
+        return $warehouse->pivot ? $warehouse->pivot->quantity : 0.0;
+    }
     
 
     public function getLastStockTakingByWarehouse( $warehouse = null )

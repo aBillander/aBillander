@@ -41,6 +41,12 @@
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
             <th>{{l('Last used')}}</th>
+            <th>{{l('Last Customer Order')}}</th>
+            <th>{{l('Total Amount')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                                    data-content="{{ l('This value is updated when a new Order is created, and cleared when a Template Line is created, updated or deleted.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -55,7 +61,7 @@
                   {{ $customerordertemplate->customer->name_regular }}
               </a>
             </td>
-            <td>
+            <td class="button-pad">
                 @if ( $customerordertemplate->shippingaddress )
 
 
@@ -87,7 +93,19 @@
               </td>
             <td>{{ abi_date_full($customerordertemplate->last_used_at) ?: '-' }}</td>
 
-			<td class="text-right">
+            <td>
+                  @if ($customerordertemplate->last_customer_order_id)
+                    <a href="{{ URL::to('customerorders/' . $customerordertemplate->last_customer_order_id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">
+                        {{ $customerordertemplate->last_document_reference != '' ? $customerordertemplate->last_document_reference : $customerordertemplate->last_customer_order_id }}
+                    </a>
+                  @else
+                    {{ '-' }}
+                  @endif
+            </td>
+
+            <td>{{ $customerordertemplate->total_tax_incl > 0.0 ? $customerordertemplate->as_money_amount('total_tax_incl') : '-' }}</td>
+
+			<td class="text-right button-pad">
                 @if (  is_null($customerordertemplate->deleted_at))
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('customerordertemplates/' . $customerordertemplate->id . '/customerordertemplatelines') }}" title="{{l('Show Customer Order Template Lines')}}"><i class="fa fa-folder-open-o"></i></a>
 

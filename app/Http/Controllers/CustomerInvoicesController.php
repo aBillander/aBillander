@@ -35,12 +35,16 @@ class CustomerInvoicesController extends BillableController
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
         $documents = $this->document
+                            ->filter( $request->all() )
 							->with('customer')
 							->with('currency')
 							->with('paymentmethod')
@@ -54,7 +58,11 @@ class CustomerInvoicesController extends BillableController
 
         $documents->setPath($this->model_path);
 
-		return view($this->view_path.'.index', $this->modelVars() + compact('documents'));
+        $statusList = $this->model_class::getStatusList();
+
+        $payment_statusList = $this->model_class::getPaymentStatusList();
+
+		return view($this->view_path.'.index', $this->modelVars() + compact('documents', 'statusList', 'payment_statusList'));
 	}
 
     /**

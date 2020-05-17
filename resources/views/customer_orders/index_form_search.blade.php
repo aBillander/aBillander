@@ -91,6 +91,10 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('price_amount', l('Total Amount')) !!}
+                              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" xdata-container="body" 
+                                        data-content="{{ l('With or without Taxes') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                              </a>
     {!! Form::text('price_amount', null, array('class' => 'form-control', 'id' => 'price_amount')) !!}
 </div>
 

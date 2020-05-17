@@ -215,6 +215,11 @@ class CustomerInvoice extends Billable
             return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
+    public static function isPaymentStatus( $status )
+    {
+            return in_array($status, self::$payment_statuses);
+    }
+
     public function getPaymentStatusNameAttribute()
     {
             return l(get_called_class().'.'.$this->payment_status, 'appmultilang');
@@ -338,6 +343,8 @@ class CustomerInvoice extends Billable
 
         $this->wc_orders()->attach($document->id, ['parentable_type' => 'aBillander\WooConnect\WooOrder', 'childable_type' => 'App\CustomerInvoice']);
     }
+    
+
 
 
     /*
@@ -345,5 +352,19 @@ class CustomerInvoice extends Billable
     | Data Factory :: Scopes
     |--------------------------------------------------------------------------
     */
+
+
+    public function scopeFilter($query, $params)
+    {
+        $query = parent::scopeFilter($query, $params);
+
+
+        if (array_key_exists('payment_status', $params) && $params['payment_status'] && self::isPaymentStatus($params['payment_status']))
+        {
+            $query->where('payment_status', $params['payment_status']);
+        }
+
+        return $query;
+    }
 
 }

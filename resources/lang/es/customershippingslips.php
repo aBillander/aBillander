@@ -339,4 +339,7 @@ return [
 
 	'Shipment Service Type Tag' => 'Tipo de Envío',
 
+	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos'
+
 ];

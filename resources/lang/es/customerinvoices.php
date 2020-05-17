@@ -329,6 +329,10 @@ return [
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 	'Prompt Payment'     => 'Pronto Pago',
 	
-	'Overdue Payment(s)!' => 'Hay Pago(s) vencido(s)!'
+	'Overdue Payment(s)!' => 'Hay Pago(s) vencido(s)!',
+
+	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos',
+	'Payment Status' => 'Estado de Pago',
 
 ];

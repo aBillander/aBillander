@@ -259,7 +259,7 @@ class WooProductImporter {
             } else {
 
                 // Maybe a default image here???
-                // $img_src = 'https://www.laextranatural.com/wp-content/plugins/woocommerce/assets/images/placeholder.png';
+                // $img_src = 'https://<wp_site>/wp-content/plugins/woocommerce/assets/images/placeholder.png';
                 
             }
 

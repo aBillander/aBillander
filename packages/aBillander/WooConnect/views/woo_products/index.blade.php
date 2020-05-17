@@ -131,7 +131,7 @@
       </td>
       <td><img width="32px" src="{{ optional($product['images'])[0]['src'] }}" style="border: 1px solid #dddddd;"></td>
       <td>{{ $product["name"] }}<br /><strong>{{ $product["slug"] }}</strong></td>
-      <td>{{ $product["categories"][0]["name"] }}</td>
+      <td>{{ optional($product["categories"])[0]["name"] }}</td>
       <td>{{ $product["type"] }}</td>
       <td>{{ $product["status"] }}</td>
       <td>{{ $product["price"] }}</td>

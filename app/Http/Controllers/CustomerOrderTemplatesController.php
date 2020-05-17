@@ -103,8 +103,15 @@ class CustomerOrderTemplatesController extends Controller
 
         $this->validate($request, CustomerOrderTemplate::$rules);
 
+        $extra_data = [
+//                'last_customer_order_id' => $document->id,
+//                'last_document_reference' => $document->document_reference,
+                'total_tax_incl' => $document->total_tax_incl,
+                'total_tax_excl' => $document->total_tax_excl,
+        ];
+
         // Create Template
-        $customerordertemplate = CustomerOrderTemplate::create($request->all());
+        $customerordertemplate = CustomerOrderTemplate::create($request->all() + $extra_data);
 
         // Create Template Lines
         foreach ($document->lines->where('line_type', 'product') as $line) 
@@ -335,6 +342,10 @@ class CustomerOrderTemplatesController extends Controller
             $order->confirm();
         
         $customerordertemplate->last_used_at =  $order->document_date;
+        $customerordertemplate->last_customer_order_id =  $order->id;
+        $customerordertemplate->last_document_reference =  $order->document_reference;
+        $customerordertemplate->total_tax_incl =  $order->total_tax_incl;
+        $customerordertemplate->total_tax_excl =  $order->total_tax_excl;
         $customerordertemplate->save();
 
         return redirect()->route('customerorders.edit', $order->id)

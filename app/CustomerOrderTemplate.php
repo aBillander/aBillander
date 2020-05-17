@@ -4,14 +4,20 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\ViewFormatterTrait;
+
 class CustomerOrderTemplate extends Model
 {
+    use ViewFormatterTrait;
+
     protected $dates = [
             'last_used_at',
     ];
 
     protected $fillable = ['alias', 'name', 'document_discount_percent', 'document_ppd_percent', 
-    						'notes', 'active', 'last_used_at', 'customer_id', 'shipping_address_id', 'template_id',
+    						'notes', 'active', 
+                            'last_used_at', 'last_customer_order_id', 'last_document_reference', 'total_tax_incl', 'total_tax_excl', 
+                            'customer_id', 'shipping_address_id', 'template_id',
     					];
 
     public static $rules = [

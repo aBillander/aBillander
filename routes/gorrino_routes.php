@@ -52,6 +52,12 @@ Route::get('migratethis', function()
 {
 
 
+	die('OK');
+
+	
+	\App\Configuration::updateValue('ABCC_MAX_ORDER_VALUE', 10000);
+
+
 	// 2020-05-14
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_order_templates` ADD `total_tax_excl` DECIMAL(20,6) NULL DEFAULT '0.0' AFTER `last_used_at`;");
 

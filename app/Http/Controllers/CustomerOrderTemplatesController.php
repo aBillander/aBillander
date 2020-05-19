@@ -298,7 +298,7 @@ class CustomerOrderTemplatesController extends Controller
         foreach ($cotlines as $cotline) {
             # code...
 
-            $line[] = $order->addProductLine( $cotline->product_id, null, $cotline->quantity, [] );
+            $line[] = $order->addProductLine( $cotline->product_id, null, $cotline->quantity, ['notes' => $cotline->notes] );
 
             // ^- Document totals are calculated when a line is added   
         }

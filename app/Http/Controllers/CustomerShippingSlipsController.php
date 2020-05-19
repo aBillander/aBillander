@@ -78,6 +78,9 @@ class CustomerShippingSlipsController extends BillableController
      */
     protected function indexByCustomer($id, Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
@@ -92,12 +95,14 @@ class CustomerShippingSlipsController extends BillableController
         $customer = $this->customer->findOrFail($id);
 
         $documents = $this->document
+                            ->filter( $request->all() )
                             ->where('customer_id', $id)
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
                             ->orderBy('document_date', 'desc')
-                            ->orderBy('id', 'desc');        // ->get();
+//                            ->orderBy('id', 'desc');        // ->get();
+                            ->orderByRaw('document_reference IS NOT NULL, document_reference DESC');
 
         $documents = $documents->paginate( $items_per_page );
 
@@ -105,7 +110,11 @@ class CustomerShippingSlipsController extends BillableController
 
         $documents->setPath($id);
 
-        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
+        $statusList = $this->model_class::getStatusList();
+
+        $shipment_statusList = $this->model_class::getShipmentStatusList();
+
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList', 'shipment_statusList'));
     }
 
     /**

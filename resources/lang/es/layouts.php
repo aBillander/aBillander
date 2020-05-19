@@ -203,6 +203,8 @@ return [
 	'Search Records'     => 'Buscar Registros',
 	'Date from'     => 'Fecha desde',
 	'Date to'     => 'Fecha hasta',
+	'From'     => 'Desde',
+	'To'     => 'Hasta',
 
 	'Filter'     => 'Filtrar',
 	'Search' => 'Buscar',

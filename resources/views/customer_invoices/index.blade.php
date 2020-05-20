@@ -39,13 +39,13 @@
 
 <div class="row">
 
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('date_from_form', l('Date from', 'layouts')) !!}
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('date_from_form', l('From', 'layouts')) !!}
         {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
     </div>
 
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('date_to_form', l('Date to', 'layouts')) !!}
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('date_to_form', l('To', 'layouts')) !!}
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
 
@@ -84,7 +84,7 @@
 --}}
 
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('price_amount', l('Total Amount')) !!}
                               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" xdata-container="body" 
                                         data-content="{{ l('With or without Taxes') }}">
@@ -130,6 +130,7 @@
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-right""> </th>
             <th class="text-center">{{ l('Next Due Date') }}</th>
+            <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
     </thead>
@@ -210,6 +211,15 @@
             <td class="text-center @if ( optional($document->nextPayment())->is_overdue ) danger @endif ">
                 {{ abi_date_short($document->next_due_date) }}
             </td>
+            <td class="text-center">@if ($document->all_notes)
+                 <a href="javascript:void(0);">
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                            data-content="{!! nl2br($document->all_notes) !!}">
+                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                    </button>
+                 </a>
+                @endif
+            </td>
             <td class="text-right button-pad">
                 <!--
                 <a class="btn btn-sm btn-blue"    href="{{ URL::to('customeror ders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
@@ -235,6 +245,7 @@
                 <a class=" hide btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                
                 @if( $document->deletable )
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to($model_path.'/' . $document->id ) }}" 

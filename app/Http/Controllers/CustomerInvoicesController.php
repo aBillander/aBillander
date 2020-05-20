@@ -72,6 +72,9 @@ class CustomerInvoicesController extends BillableController
      */
     protected function indexByCustomer($id, Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
@@ -82,6 +85,7 @@ class CustomerInvoicesController extends BillableController
         $customer = $this->customer->findOrFail($id);
 
         $documents = $this->document
+                            ->filter( $request->all() )
                             ->where('customer_id', $id)
 //                            ->with('customer')
                             ->with('currency')
@@ -91,11 +95,13 @@ class CustomerInvoicesController extends BillableController
 
         $documents = $documents->paginate( $items_per_page );
 
-        // abi_r($this->model_path, true);
-
         $documents->setPath($id);
 
-        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'items_per_page'));
+        $statusList = $this->model_class::getStatusList();
+
+        $payment_statusList = $this->model_class::getPaymentStatusList();
+
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'items_per_page', 'statusList', 'payment_statusList'));
     }
 
 	/**

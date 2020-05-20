@@ -319,11 +319,14 @@
 
 {{ $documents->appends( Request::all() )->render() }}
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
+
+{{--
 <ul class="pagination" style="float:right;"><li xclass="active" style="float:right;"><span style="color:#333333;border-color:#ffffff"> <div class="input-group"><span class="input-group-addon" style="border: 0;background-color: #ffffff" title="{{l('Items per page', 'layouts')}}">{{l('Per page', 'layouts')}}</span><input id="items_per_page" name="items_per_page" class="form-control input-sm items_per_page" style="width: 50px !important;" type="text" value="{{ $items_per_page }}" onclick="this.select()">
     <span class="input-group-btn">
       <button class="btn btn-info btn-sm" type="button" title="{{l('Refresh', 'layouts')}}" onclick="getCustomerShippingSlips(); return false;"><i class="fa fa-refresh"></i></button>
     </span>
   </div></span></li></ul>
+--}}
 
 @else
 <div class="alert alert-warning alert-block">

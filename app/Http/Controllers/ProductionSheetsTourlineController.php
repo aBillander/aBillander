@@ -68,7 +68,7 @@ class ProductionSheetsTourlineController extends Controller
                 $contact_name = (string) $document->shippingaddress->name_commercial;
 
             if ( strlen($contact_name) == 0 )
-                $contact_name = (string) $document->customer->name_commercial;
+                $contact_name = (string) $document->customer->name_regular;
 
             $row['RecipientName'] = $contact_name;     // Nombre destinatario
             $row['RecipientAddress'] = $document->shippingaddress->address1.' '.$document->shippingaddress->address2;

@@ -56,7 +56,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => $model_path.'.index', 'method' => 'GET', 'id' => 'process')) !!}
+                {!! Form::model(Request::all(), array('route' => ['customer.'.str_replace('customer', '', $model_path ), $customer->id], 'method' => 'GET', 'id' => 'process')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -120,7 +120,7 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route($model_path.'.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('customer.'.str_replace('customer', '', $model_path ), l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>

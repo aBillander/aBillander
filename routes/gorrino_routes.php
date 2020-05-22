@@ -52,6 +52,10 @@ Route::get('migratethis', function()
 {
 
 
+	// 2020-05-22
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoices` ADD `production_sheet_id` INT(10) UNSIGNED NULL AFTER `posted_at`;");
+
+
 	die('OK');
 
 	

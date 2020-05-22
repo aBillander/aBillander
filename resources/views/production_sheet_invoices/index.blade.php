@@ -9,11 +9,9 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <a href="{{ route('productionsheet.tourline', [$productionSheet->id, 'customerorders']) }}" class="hidden btn xbtn-sm btn-blue" title="{{l('Hoja Tourline :: Excel')}}" xstyle="margin-right: 32px;"><img src="{{ \App\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja Pedidos')}}</b></i></a>
-
         <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}" class="btn btn-info" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-truck"></i> {{ l('Shipping Slips') }}</a>
 
-        <a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}" class="btn alert-success" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a>
+        <a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}" class="btn btn-success" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a>
 
         <a href="{{ route('productionsheets.show', [$productionSheet->id]) }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheet') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
 
@@ -64,7 +62,7 @@
             <th class="text-left">{{ l('Date') }}</th>
             <th>{{l('Customer')}}</th>
             <th class="text-left">{{ l('Warehouse') }}</th>
-            <th class="text-left">{{ l('Shipping Slip') }}</th>
+            <th class="text-left">{{ l('Invoice') }}</th>
             <th class="text-left">{{ l('Deliver to') }}
               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                         data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
@@ -81,7 +79,7 @@
         @foreach ($documents as $document)
         <tr>
             <td class="text-center warning">
-@if ( $document->status == 'closed' )
+@if ( 1 || $document->status == 'closed' )
 @else
               {!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}
 @endif
@@ -124,7 +122,7 @@
             </td>
             <td>{{ optional($document->warehouse)->alias }}</td>
             <td>
-@if ( $document->status == 'closed' )
+@if ( 0 && $document->status == 'closed' )
 @if ($document->shipping_slip_at && $document->shippingslip)
 
                       <a href="{{ URL::to('customershippingslips/' . $document->shippingslip->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
@@ -176,31 +174,7 @@
                 <a class="btn btn-sm btn-success" href="{ { URL::to('customer orders/' . $document->id) } }" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
                 -->
 
-@php
-
-$f = $document->stock_flag;
-
-switch ( $f ) {
-    case 1:
-        # code...
-        $class = 'btn-success';
-        break;
-
-    case 0:
-        # code...
-        $class = 'btn-warning';
-        break;
-    
-    case -1:
-    default:
-        # code...
-        $class = 'btn-danger';
-        break;
-}
-
-@endphp
-
-                <a class="btn btn-sm {{ $class }} show-stock-availability" data-id="{{$document->id}}" title="{{l('Stock Availability')}}"><i class="fa fa-th"></i></a>
+                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_blank"><i class="fa fa-pencil"></i></a>
 
@@ -256,6 +230,7 @@ switch ( $f ) {
 
    </div>
 
+@if ($documents->count())
 
    <div class="col-lg-3 col-md-3">
 
@@ -265,7 +240,7 @@ switch ( $f ) {
 
                         <ul class="nav nav-tabs">
                             <!-- li class="active"><a href="#tab1default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Group Orders') }}</a></li -->
-                            <li><a href="#tab2default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Create Shipping Slips') }}</a></li>
+                            <li><a href="#tab2default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Create Invoices') }}</a></li>
                         </ul>
 
    </div>
@@ -332,6 +307,7 @@ switch ( $f ) {
     </div>
 --}}
 
+@endif
 
    </div>
 
@@ -345,11 +321,11 @@ switch ( $f ) {
 
 
 @endsection
-
+{{--
 @include('layouts/modal_delete')
 
 @include('production_sheet_orders._modal_document_availability')
-
+--}}
 
 {{-- *************************************** --} }
 

@@ -47,7 +47,7 @@ return [
 	|
 	*/
 
-	'Documents' => 'Pedidos de Clientes',
+	'Documents' => 'Facturas de Clientes',
 	'Document #'     => 'Número',
 	'Date'     => 'Fecha',
 	'Created via'     => 'Creado por',
@@ -90,7 +90,7 @@ return [
 	'New Customer'     => 'Nuevo Cliente',
 	'You should choose a Customer'     => 'Debe seleccionar un Cliente',
 
-	'Documents'     => 'Pedidos de Clientes',
+//	'Documents'     => 'Pedidos de Clientes',
 	'Document to'     => 'Pedido a',
 	'Back to Documents'     => 'Volver a Pedidos de Clientes',
 	'Back to Customers'     => 'Volver a Clientes',
@@ -354,16 +354,17 @@ return [
 	'Back to Production Sheet'     => 'Volver a la Hoja de Producción',
 	'Shipping Slip'     => 'Albarán',
 	'Shipping Slips'     => 'Albaranes',
-	'Create Shipping Slips'     => 'Crear Albaranes',
-	'Should group?'     => '¿Agrupar?',
-	
+	'Invoice'     => 'Factura',
 	'Customer Orders'     => 'Pedidos de Clientes',
 	'Customer Shipping Slips'     => 'Albaranes de Clientes',
 	'Customer Invoices'     => 'Facturas de Clientes',
+	'Create Invoices'     => 'Crear Facturas',
+	'Should group?'     => '¿Agrupar?',
 	''     => '',
 	''     => '',
 	''     => '',
 	''     => '',
-	''     => '',
+
+	'Delivery Routes' => 'Rutas de Reparto',
 
 ];

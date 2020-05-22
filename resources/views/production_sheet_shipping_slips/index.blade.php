@@ -21,7 +21,9 @@
   </ul>
 </div>
 
-        <a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}" class="btn btn-success" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a>
+        <a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}" class="btn btn-success" style="margin-left: 32px; xmargin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a>
+
+        <a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}" class="btn alert-success" xstyle="margin-left: 32px; margin-right: 32px; "><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a>
 
         <a href="{{ route('productionsheets.show', [$productionSheet->id]) }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheet') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
 
@@ -244,13 +246,13 @@
 
    <div class="col-lg-3 col-md-3">
 
-<div class=" hide with-nav-tabs panel panel-info" id="panel_forms"> 
+<div class="with-nav-tabs panel panel-info" id="panel_forms"> 
 
    <div class="panel-heading">
 
                         <ul class="nav nav-tabs">
                             <!-- li class="active"><a href="#tab1default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Group Orders') }}</a></li -->
-                            <li><a href="#tab2default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Create Shipping Slips') }}</a></li>
+                            <li><a href="#tab2default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Create Invoices') }}</a></li>
                         </ul>
 
    </div>
@@ -263,7 +265,24 @@
       </div>
       <div class="tab-pane fade in active" id="tab2default_s">
                 
-                @inc lude('production_sheet_orders.index_form_group')
+          @if ($documents->where('status', '!=', 'closed')->count())
+
+                @include('production_sheet_orders.index_form_group')
+          
+          @else
+              <div class="panel-body">
+              
+                  <div class="alert alert-warning alert-block">
+                      <i class="fa fa-warning"></i>
+                      {{l('Se han creado Albaranes para todos los Pedidos.')}}
+                  </div>
+              
+              </div>
+
+              <div class="panel-footer">
+              
+              </div>
+          @endif
 
       </div>
   </div>

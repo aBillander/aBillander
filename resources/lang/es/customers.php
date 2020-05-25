@@ -85,6 +85,7 @@ return [
 
 	'Payment Method'     => 'Forma de Pago',
 	'Payment Currency'     => 'Divisa de Pago',
+	'Is Invoiceable?'     => '¿Es Facturable?',
 	'Accept e-Invoice?'     => '¿Admite Factura Electrónica?',
 	'Outstanding Amount Allowed'     => 'Riesgo Máximo Permitido',
 	'Outstanding Amount'     => 'Riesgo Alcanzado',

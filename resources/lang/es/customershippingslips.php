@@ -338,5 +338,7 @@ return [
 
 
 	'Shipment Service Type Tag' => 'Tipo de Envío',
+	
+	'Is Invoiceable?'     => '¿Es Facturable?',
 
 ];

@@ -367,4 +367,6 @@ return [
 
 	'Delivery Routes' => 'Rutas de Reparto',
 
+	'Close Documents' => 'Cerrar Albaranes',
+
 ];

@@ -366,6 +366,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         // Production Sheet Shipping Slips
         Route::get( 'productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
 
+        Route::post('productionsheetshippingslips/close',  'ProductionSheetShippingSlipsController@closeShippingSlips')->name('productionsheet.close.shippingslips');
+
         Route::post('productionsheetshippingslips/invoices',  'ProductionSheetShippingSlipsController@createInvoices')->name('productionsheet.create.invoices');
 
         // Production Sheet Invoices

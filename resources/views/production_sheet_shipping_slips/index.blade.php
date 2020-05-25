@@ -91,7 +91,7 @@
         @foreach ($documents as $document)
         <tr>
             <td class="text-center warning">
-@if ( 1 || $document->status == 'closed' )
+@if ( $document->status == 'closed' || $document->invoiced_at )
 @else
               {!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}
 @endif
@@ -251,30 +251,42 @@
    <div class="panel-heading">
 
                         <ul class="nav nav-tabs">
-                            <!-- li class="active"><a href="#tab1default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Group Orders') }}</a></li -->
+                            <li class="active"><a href="#tab1default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Close Documents') }}</a></li>
                             <li><a href="#tab2default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Create Invoices') }}</a></li>
                         </ul>
 
    </div>
 
   <div class="tab-content">
-      <div class="tab-pane fade" id="tab1default_s">
-                
-                @ include('production_sheet_orders.index_form_aggregate')
-
-      </div>
-      <div class="tab-pane fade in active" id="tab2default_s">
+      <div class="tab-pane fade in active" id="tab1default_s">
                 
           @if ($documents->where('status', '!=', 'closed')->count())
 
-                @include('production_sheet_orders.index_form_group')
+                @include('production_sheet_shipping_slips.index_form_close')
           
           @else
               <div class="panel-body">
               
                   <div class="alert alert-warning alert-block">
                       <i class="fa fa-warning"></i>
-                      {{l('Se han creado Albaranes para todos los Pedidos.')}}
+                      {{l('Todos los Albaranes están cerrados.')}}
+                  </div>              
+              </div>
+          @endif
+
+      </div>
+      <div class="tab-pane fade" id="tab2default_s">
+                
+          @if ($documents->where('invoiced_at', null)->count())
+
+                @include('production_sheet_shipping_slips.index_form_group')
+          
+          @else
+              <div class="panel-body">
+              
+                  <div class="alert alert-warning alert-block">
+                      <i class="fa fa-warning"></i>
+                      {{l('Se han creado Facturas para todos los Albaranes.')}}
                   </div>
               
               </div>

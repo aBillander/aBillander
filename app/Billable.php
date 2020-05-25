@@ -571,7 +571,10 @@ class Billable extends Model implements ShippableInterface
         // Can I ...?
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
         
-        if ( $this->status == 'closed' ) return false;
+        if ( $this->status == 'closed' ) return true;
+
+        // No lines?
+        if ( $this->lines->count() == 0 ) return false;
         
         // Customer blocked?
         if ( array_key_exists('customer_id', $this->getAttributes()) )

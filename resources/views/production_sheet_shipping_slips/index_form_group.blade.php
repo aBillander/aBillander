@@ -56,20 +56,12 @@
             </div>
          </div>
 
-         <div class="col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shippingslip_delivery_date') ? 'has-error' : '' }}">
-            <div class="form-group">
-               {{ l('Delivery Date') }}
-               {!! Form::text('delivery_date_form', null, array('class' => 'form-control', 'id' => 'delivery_date_form', 'autocomplete' => 'off')) !!}
-               {!! $errors->first('shippingslip_delivery_date', '<span class="help-block">:message</span>') !!}
-            </div>
-         </div>
-
 </div>
 
                   </div>
 
                   <div class="panel-footer">
 
-                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'productionsheet.create.shippingslips' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-truck"></i> {{l('Confirm', 'layouts')}}</a>
+                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'productionsheet.create.invoices' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-money"></i> {{l('Confirm', 'layouts')}}</a>
                   
                   </div>

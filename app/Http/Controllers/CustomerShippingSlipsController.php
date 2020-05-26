@@ -998,6 +998,20 @@ class CustomerShippingSlipsController extends BillableController
 
 
 
+    public function undoInvoice($id)
+    {
+        $document = $this->document
+                            ->with('customer')
+                            ->findOrFail($id);
+        
+        $invoice = $document->customerinvoice();
+
+        // abi_r($invoice);die();        
+        
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
 
 
     /*

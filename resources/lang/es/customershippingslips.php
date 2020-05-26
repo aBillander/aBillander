@@ -341,4 +341,8 @@ return [
 	
 	'Is Invoiceable?'     => '¿Es Facturable?',
 
+	'Undo Invoice' => 'Deshacer Factura',
+
+	'You are going to remove :slip from Invoice :inv . Are you sure?' => 'Está a punto de quitar :slip de la Factura :inv . ¿Está seguro?',
+
 ];

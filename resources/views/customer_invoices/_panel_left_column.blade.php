@@ -41,7 +41,7 @@ color: #c09853;">
 
             </ul>
 
-@if ( $document->created_via == 'aggregate_shipping_slips' )
+@if ( ($document->created_via == 'aggregate_shipping_slips') && $document->leftShippingSlips()->count() )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">

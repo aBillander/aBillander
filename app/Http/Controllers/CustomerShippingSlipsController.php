@@ -1023,7 +1023,44 @@ class CustomerShippingSlipsController extends BillableController
                             ->with('customer')
                             ->findOrFail($id);
         
+        // Get Invoice for this Shipping Slip
         $invoice = $document->customerinvoice();
+
+        // Get Lines to delete
+        $lines = $invoice->lines->where('customer_shipping_slip_id', $document->id);
+
+        foreach ($lines as $line) {
+            # code...
+            $line->delete();
+        }
+
+        // Not so fast, Sony Boy
+        $invoice->makeTotals();
+
+        // Final touches
+        $document->invoiced_at = null;
+        $document->save();
+
+        // Document traceability
+        //     leftable  is this document
+        //     rightable is Customer Invoice Document
+        $link_data = [
+            'leftable_id'    => $document->id,
+            'leftable_type'  => $document->getClassName(),
+
+            'rightable_id'   => $invoice->id,
+            'rightable_type' => CustomerInvoice::class,
+
+            'type' => 'traceability',
+            ];
+
+        $link = \App\DocumentAscription::where( $link_data )->first();
+
+        $link->delete();
+
+        // Good boy, so far
+
+        // abi_r($lines->pluck('id')->toArray());die();
 
         // abi_r($invoice);die();        
         

@@ -201,6 +201,7 @@ trait CustomerShippingSlipInvoiceableTrait
  //                 'customer_shipping_slip_id',
                 'tax_id' => Configuration::get('DEF_TAX'),  // Just convenient
  //               'sales_rep_id'
+                'customer_shipping_slip_id' => $document->id,
             ];
 
             $invoice_line = CustomerInvoiceLine::create( $line_data );
@@ -255,6 +256,8 @@ trait CustomerShippingSlipInvoiceableTrait
 
                         'line_sort_order' => $i*10,
                         'notes' => '',
+
+                        'customer_shipping_slip_id' => $document->id,
                     ];
 
                     $invoice_line = $invoice->addServiceLine( $product_id, $combination_id, $quantity, $line_data );
@@ -293,6 +296,7 @@ trait CustomerShippingSlipInvoiceableTrait
 
                 // Model specific data
                 $extradata = [
+                        'customer_shipping_slip_id' => $document->id,
                 ];
 
                 // abi_r($this->getParentModelSnakeCase().'_id');

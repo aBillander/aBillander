@@ -25,7 +25,14 @@
 
 Route::get('segment', function( )
 {
-	return '';
+	$list = [617];
+	$params = [];
+	$params['customer_id'] = 586;
+	$params['status'] = 'draft';
+
+	$invoice = \App\CustomerShippingSlip::invoiceDocumentList( $list, $params );
+
+	abi_r($invoice);
 });
 
 /* ********************************************************** */

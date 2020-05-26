@@ -325,6 +325,7 @@ return [
 
 	'Create Invoice'     => 'Crear Factura',
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
+	'Shipping Slip: :id [dicount Tax :percent %]'     => 'Albarán: :id [descuento IVA :percent %]',
 
 	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
 	

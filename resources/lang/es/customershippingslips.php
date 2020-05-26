@@ -339,6 +339,12 @@ return [
 
 
 	'Shipment Service Type Tag' => 'Tipo de Envío',
+	
+	'Is Invoiceable?'     => '¿Es Facturable?',
+
+	'Undo Invoice' => 'Deshacer Factura',
+
+	'You are going to remove :slip from Invoice :inv . Are you sure?' => 'Está a punto de quitar :slip de la Factura :inv . ¿Está seguro?',
 
 	'Total Amount' => 'Importe',
 	'With or without Taxes' => 'Con o sin Impuestos incluidos'

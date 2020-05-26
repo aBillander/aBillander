@@ -51,6 +51,7 @@ class CreateCustomersTable extends Migration {
 
 			$table->string('customer_logo', 128)->nullable();				// Usually lives in: /public/........
 
+			$table->tinyInteger('is_invoiceable')->default(1);				// Useful for internal customers & departments (is_invoiceable = false)
 			$table->tinyInteger('sales_equalization')->default(0);				// Charge Sales equalization tax? (only Spain)
 			$table->tinyInteger('allow_login')->default(0);						// Allow login to Customer Center
 			$table->tinyInteger('accept_einvoice')->default(0);					// Accept electronic invoice

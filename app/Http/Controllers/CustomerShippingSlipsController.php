@@ -92,6 +92,8 @@ class CustomerShippingSlipsController extends BillableController
 
         $templateList = Template::listFor( 'App\\CustomerInvoice' );
 
+        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
         $customer = $this->customer->findOrFail($id);
 
         $documents = $this->document
@@ -99,7 +101,7 @@ class CustomerShippingSlipsController extends BillableController
                             ->where('customer_id', $id)
 //                            ->with('customer')
                             ->with('currency')
-//                            ->with('paymentmethod')
+                            ->with('paymentmethod')
                             ->orderBy('document_date', 'desc')
 //                            ->orderBy('id', 'desc');        // ->get();
                             ->orderByRaw('document_reference IS NOT NULL, document_reference DESC');
@@ -114,7 +116,7 @@ class CustomerShippingSlipsController extends BillableController
 
         $shipment_statusList = $this->model_class::getShipmentStatusList();
 
-        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList', 'shipment_statusList'));
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList', 'shipment_statusList', 'payment_methodList'));
     }
 
     /**
@@ -612,6 +614,8 @@ class CustomerShippingSlipsController extends BillableController
 
         $templateList = Template::listFor( 'App\\CustomerInvoice' );
 
+        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
         $statusList = CustomerInvoice::getStatusList();
 
         // Make sense:
@@ -635,16 +639,16 @@ class CustomerShippingSlipsController extends BillableController
 
         $documents->setPath('invoiceables');
 
-        return view($this->view_path.'.index_by_customer_invoiceables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page'));
+        return view($this->view_path.'.index_by_customer_invoiceables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page', 'payment_methodList'));
     }
 
 
     public function createGroupInvoice( Request $request )
     {
         //
-        $document_group = $request->input('document_group', []);
+        $document_list = $request->input('document_group', []);
 
-        if ( count( $document_group ) == 0 ) 
+        if ( count( $document_list ) == 0 ) 
             return redirect()->route('customer.invoiceable.shippingslips', $request->input('customer_id'))
                 ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
         
@@ -656,11 +660,17 @@ class CustomerShippingSlipsController extends BillableController
         $this->validate($request, $rules);
 
         // Set params for group
-        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status');
+        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status', 'payment_method_id', 'testing');
 
         // abi_r($params, true);
 
-        return $this->invoiceDocumentList( $document_group, $params );
+        // => old schools :: return $this->invoiceDocumentList( $document_list, $params );
+
+        $invoice = \App\CustomerShippingSlip::invoiceDocumentList( $document_list, $params );
+
+        return redirect('customerinvoices/'.$invoice->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $invoice->id], 'layouts'));
+
     } 
 
     public function createInvoice($id)

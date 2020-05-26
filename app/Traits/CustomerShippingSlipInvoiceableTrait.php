@@ -72,10 +72,11 @@ trait CustomerShippingSlipInvoiceableTrait
      *
      * @param  $documents  : collectiom of Customer Shippiong Slips
      * @param  $params['customer_id'] : Customer Id of ALL Customer Shippiong Slips
-     * @return 
+     * @return CustomerInvoice Object
      */
     public static function invoiceDocumentCollection( $documents, $params )
     {
+        // abi_r($params);die();
 
 //        1.- Recuperar los documntos
 //        2.- Comprobar que están todos los de la lista ( comparando count() )
@@ -94,7 +95,8 @@ trait CustomerShippingSlipInvoiceableTrait
             'customer_id' => $customer->id,
 //            'user_id' => $this->,
 
-            'sequence_id' => $customer->getInvoiceSequenceId(),
+            'sequence_id' => array_key_exists('sequence_id', $params) ?
+                                    $params['sequence_id'] : $customer->getInvoiceSequenceId(),
 
             'created_via' => array_key_exists('created_via', $params) ?
                                     $params['created_via'] : 'aggregate_shipping_slips',
@@ -132,8 +134,10 @@ trait CustomerShippingSlipInvoiceableTrait
 //            'carrier_id' => $this->carrier_id,
             'sales_rep_id' => $customer->sales_rep_id,
             'currency_id' => $customer->currency->id,
-            'payment_method_id' => $customer->getPaymentMethodId(),
-            'template_id' => $customer->getInvoiceTemplateId(),
+            'payment_method_id' => array_key_exists('payment_method_id', $params) ?
+                                    $params['payment_method_id'] : $customer->getPaymentMethodId(),
+            'template_id' => array_key_exists('template_id', $params) ?
+                                    $params['template_id'] : $customer->getInvoiceTemplateId(),
         ];
 
         // Model specific data
@@ -206,50 +210,55 @@ trait CustomerShippingSlipInvoiceableTrait
             //
             // Document Discounts
             //
-            $documentlines = $document->documentlines;
-            $taxlines = $document->documentlinetaxes;
-            $reduction =  (1.0 - $document->document_discount_percent/100.0) * (1.0 - $document->document_ppd_percent/100.0);
-            $currency = $document->currency;
-
-            foreach ($alltaxes as $alltax) 
+            if (    ( $document->document_discount_percent != 0.0 ) || 
+                    ( $document->document_ppd_percent      != 0.0 )
+                ) 
             {
-                # code...                
-                $lines = $taxlines->where('tax_id', $alltax->id);
+                $documentlines = $document->documentlines;
+                $taxlines = $document->documentlinetaxes;
+                $reduction =  (1.0 - $document->document_discount_percent/100.0) * (1.0 - $document->document_ppd_percent/100.0);
+                $currency = $document->currency;
 
-                if ( $lines->count() == 0 ) continue;
+                foreach ($alltaxes as $alltax) 
+                {
+                    # code...                
+                    $lines = $taxlines->where('tax_id', $alltax->id);
 
-                $taxbase = $documentlines->where('tax_id', $alltax->id)->sum('total_tax_excl');
-                $discountByTax = $taxbase * (1.0 - $reduction);
+                    if ( $lines->count() == 0 ) continue;
 
-                // abi_r($taxbase .' - '.$discountByTax);
+                    $taxbase = $documentlines->where('tax_id', $alltax->id)->sum('total_tax_excl');
+                    $discountByTax = $taxbase * (1.0 - $reduction);
 
-                $i++;
+                    // abi_r($taxbase .' - '.$discountByTax);
 
-                $product_id     = null;
-                $combination_id = null;
-                $quantity       = 1.0;
+                    $i++;
 
-                $name = l('Shipping Slip: :id [dicount Tax :percent %]', ['id' => $document->document_reference, 'percent' => $alltax->as_percentable( $alltax->percent )], 'customershippingslips');
+                    $product_id     = null;
+                    $combination_id = null;
+                    $quantity       = 1.0;
 
-                // Create Discount Line
-                $line_data = [
-                    'line_type' => 'discount',
-                    'name' => $name,
-//                    'prices_entered_with_tax' => $document->customer->currentPricesEnteredWithTax( $document->document_currency ),
-                    'prices_entered_with_tax' => 0,
-                    'cost_price' => -$discountByTax,
-                    'unit_price' => -$discountByTax,
-                    'discount_percent' => 0.0,
-                    'unit_customer_price' => -$discountByTax,
-                    'unit_customer_final_price' => -$discountByTax,
-                    'tax_id' => $alltax->id,
-                    'sales_equalization' => $customer->sales_equalization,
+                    $name = l('Shipping Slip: :id [dicount Tax :percent %]', ['id' => $document->document_reference, 'percent' => $alltax->as_percentable( $alltax->percent )], 'customershippingslips');
 
-                    'line_sort_order' => $i*10,
-                    'notes' => '',
-                ];
+                    // Create Discount Line
+                    $line_data = [
+                        'line_type' => 'discount',
+                        'name' => $name,
+    //                    'prices_entered_with_tax' => $document->customer->currentPricesEnteredWithTax( $document->document_currency ),
+                        'prices_entered_with_tax' => 0,
+                        'cost_price' => -$discountByTax,
+                        'unit_price' => -$discountByTax,
+                        'discount_percent' => 0.0,
+                        'unit_customer_price' => -$discountByTax,
+                        'unit_customer_final_price' => -$discountByTax,
+                        'tax_id' => $alltax->id,
+                        'sales_equalization' => $customer->sales_equalization,
 
-                $invoice_line = $invoice->addServiceLine( $product_id, $combination_id, $quantity, $line_data );
+                        'line_sort_order' => $i*10,
+                        'notes' => '',
+                    ];
+
+                    $invoice_line = $invoice->addServiceLine( $product_id, $combination_id, $quantity, $line_data );
+                }
             }
 
 
@@ -364,7 +373,8 @@ trait CustomerShippingSlipInvoiceableTrait
             }
 
 
-$testing = true;
+$testing = array_key_exists('testing', $params) ?
+                                    (bool) $params['testing'] : true;
 if ( ! $testing )
 {
             // Final touches

@@ -257,10 +257,12 @@ trait CustomerShippingSlipInvoiceableTrait
                         'line_sort_order' => $i*10,
                         'notes' => '',
 
-                        'customer_shipping_slip_id' => $document->id,
+//                        'customer_shipping_slip_id' => $document->id,
                     ];
 
                     $invoice_line = $invoice->addServiceLine( $product_id, $combination_id, $quantity, $line_data );
+
+                    $invoice_line->update(['customer_shipping_slip_id' => $document->id]);
                 }
             }
 

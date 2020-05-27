@@ -223,6 +223,12 @@
            {!! $errors->first('weight', '<span class="help-block">:message</span>') !!}
         </div>
 
+        <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('volume') ? 'has-error' : '' }}">
+           {{ l('Volume') }}
+           {!! Form::text('volume', null, array('class' => 'form-control', 'id' => 'volume')) !!}
+           {!! $errors->first('volume', '<span class="help-block">:message</span>') !!}
+        </div>
+
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('tracking_number') ? 'has-error' : '' }}">
             {{ l('Tracking Number') }}
             {!! Form::text('tracking_number', null, array('class' => 'form-control', 'id' => 'tracking_number')) !!}

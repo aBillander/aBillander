@@ -344,12 +344,318 @@ trait CustomerShippingSlipInvoiceableTrait
                 }
             }
 
+
+
+$testing = array_key_exists('testing', $params) ?
+                                    (bool) $params['testing'] : false;
+if ( ! $testing )
+{
+            // Final touches
+            $document->invoiced_at = \Carbon\Carbon::now();
+            $document->save();
+
+
+            // Document traceability
+            //     leftable  is this document
+            //     rightable is Customer Invoice Document
+            $link_data = [
+                'leftable_id'    => $document->id,
+                'leftable_type'  => $document->getClassName(),
+
+                'rightable_id'   => $invoice->id,
+                'rightable_type' => CustomerInvoice::class,
+
+                'type' => 'traceability',
+                ];
+
+            $link = DocumentAscription::create( $link_data );
+}
+
+        // Good boy, so far
+        } // Document loop ends
+
+
+        // Not so fast, Sony Boy
+
+        $invoice->makeTotals();
+
+        $status = array_key_exists('status', $params) ?
+                                $params['status'] : 'draft';
+
+        // Manage Invoice Status
+        switch ( $status ) {
+            case 'draft':
+                # Noting to do
+                break;
+            
+            case 'confirmed':
+                # code...
+                $invoice->confirm();
+                break;
+            
+            case 'closed':
+                # code...
+                $invoice->confirm();
+                $invoice->close();
+                break;
+            
+            case 'canceled':
+                # code...
+                $invoice->cancel();
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+
+
+
+        // abi_r($grouped_lines, true);
+
+
+        return $invoice;
+
+
+
+//        3.- Si algún documento tiene plantilla diferente, generar factura para él <= Tontá: el albarán NO tiene plantilla de Factura
+
+//        6.- Crear línea de texto con los albaranes ???
+
+//        7.- Crear líneas agrupadas ???
+
+//        8.- Manage estados de documento, pago y stock
+    }
+
+
+
+    /**
+     * Modify an Invoice adding a single Customer Shippiong Slip. 
+     *
+     * @param  $document : Customer Shippiong Slips
+     * @param  $invoice  : Customer Invoice
+     * @param  $params[] : array
+     * @return  : Customer Invoice
+     */
+    public static function addDocumentToInvoice( $document, $invoice, $params = [] )
+    {
+        if ( ($document->customer_id != $invoice->customer_id) || ($document->status != 'closed') || ($document->invoiced_at != null) || ($invoice->status == 'closed') )
+            return false;
+
+        $customer = $invoice->customer;
+
+        // Handy:
+        $alltaxes = \App\Tax::get()->sortByDesc('percent');
+
+        // Initialize line sort order
+        $i_offset = $invoice->getMaxLineSortOrder();
+        $i = 0;
+
+        // Add Document (loop)
+            # code...
+            $i++;
+
+            //
+            // Text line announces Shipping Slip
+            //
+            $line_data = [
+                'line_sort_order' => ($i_offset+$i)*10, 
+                'line_type' => 'comment', 
+                'name' => l('Shipping Slip: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)], 'customershippingslips'),
+//                'product_id' => , 
+//                'combination_id' => , 
+                'reference' => $document->document_reference, 
+//                'name', 
+                'quantity' => 1, 
+                'measure_unit_id' => Configuration::getInt('DEF_MEASURE_UNIT_FOR_PRODUCTS'),
+//                    'cost_price', 'unit_price', 'unit_customer_price', 
+//                    'prices_entered_with_tax',
+//                    'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
+//                    'unit_final_price', 'unit_final_price_tax_inc', 
+//                    'sales_equalization', 'discount_percent', 'discount_amount_tax_incl', 'discount_amount_tax_excl', 
+                'total_tax_incl' => 0,
+                'total_tax_excl' => 0,
+//                    'tax_percent', 'commission_percent', 
+                'notes' => '', 
+                'locked' => 0,
+ //                 'customer_shipping_slip_id',
+                'tax_id' => Configuration::get('DEF_TAX'),  // Just convenient
+ //               'sales_rep_id'
+                'customer_shipping_slip_id' => $document->id,
+            ];
+
+            $invoice_line = CustomerInvoiceLine::create( $line_data );
+
+            $invoice->lines()->save($invoice_line);
+
+            //
+            // Document Discounts
+            //
+            if (    ( $document->document_discount_percent != 0.0 ) || 
+                    ( $document->document_ppd_percent      != 0.0 )
+                ) 
+            {
+                $documentlines = $document->documentlines;
+                $taxlines = $document->documentlinetaxes;
+                $reduction =  (1.0 - $document->document_discount_percent/100.0) * (1.0 - $document->document_ppd_percent/100.0);
+                $currency = $document->currency;
+
+                foreach ($alltaxes as $alltax) 
+                {
+                    # code...                
+                    $lines = $taxlines->where('tax_id', $alltax->id);
+
+                    if ( $lines->count() == 0 ) continue;
+
+                    $taxbase = $documentlines->where('tax_id', $alltax->id)->sum('total_tax_excl');
+                    $discountByTax = $taxbase * (1.0 - $reduction);
+
+                    // abi_r($taxbase .' - '.$discountByTax);
+
+                    $i++;
+
+                    $product_id     = null;
+                    $combination_id = null;
+                    $quantity       = 1.0;
+
+                    $name = l('Shipping Slip: :id [dicount Tax :percent %]', ['id' => $document->document_reference, 'percent' => $alltax->as_percentable( $alltax->percent )], 'customershippingslips');
+
+                    // Create Discount Line
+                    $line_data = [
+                        'line_type' => 'discount',
+                        'name' => $name,
+    //                    'prices_entered_with_tax' => $document->customer->currentPricesEnteredWithTax( $document->document_currency ),
+                        'prices_entered_with_tax' => 0,
+                        'cost_price' => -$discountByTax,
+                        'unit_price' => -$discountByTax,
+                        'discount_percent' => 0.0,
+                        'unit_customer_price' => -$discountByTax,
+                        'unit_customer_final_price' => -$discountByTax,
+                        'tax_id' => $alltax->id,
+                        'sales_equalization' => $customer->sales_equalization,
+
+                        'line_sort_order' => ($i_offset+$i)*10,
+                        'notes' => '',
+
+//                        'customer_shipping_slip_id' => $document->id,
+                    ];
+
+                    $invoice_line = $invoice->addServiceLine( $product_id, $combination_id, $quantity, $line_data );
+
+                    $invoice_line->update(['customer_shipping_slip_id' => $document->id]);
+                }
+            }
+
+
+            //
+            // Add current Shipping Slip lines to Invoice
+            //
+            foreach ($document->lines as $line) {
+                # code...
+                $i++;
+
+                // $invoice_line = $line->toInvoiceLine();
+
+                // Common data
+                $data = [
+                ];
+
+                $data = $line->toArray();
+                // id
+                unset( $data['id'] );
+                // Parent document
+                // unset( $data[$this->getParentModelSnakeCase().'_id'] );
+                unset( $data['customer_shipping_slip_id'] );
+                // Dates
+                unset( $data['created_at'] );
+                unset( $data['deleted_at'] );
+                // linetaxes
+                unset( $data['linetaxes'] );
+                // Sort order
+                $data['line_sort_order'] = ($i_offset+$i)*10; 
+                // Locked 
+                $data['locked'] = ( $line->line_type == 'comment' ? 0 : 1 ); 
+
+                // Model specific data
+                $extradata = [
+                        'customer_shipping_slip_id' => $document->id,
+                ];
+
+                // abi_r($this->getParentModelSnakeCase().'_id');
+                // abi_r($data, true);
+
+
+                // Let's get dirty
+                CustomerInvoiceLine::unguard();
+                $invoice_line = CustomerInvoiceLine::create( $data + $extradata );
+                CustomerInvoiceLine::reguard();
+
+                $invoice->lines()->save($invoice_line);
+
+                foreach ($line->taxes as $linetax) {
+
+                    // $invoice_line_tax = $this->lineTaxToInvoiceLineTax( $linetax );
+                    // Common data
+                    $data = [
+                    ];
+
+                    $data = $linetax->toArray();
+                    // id
+                    unset( $data['id'] );
+                    // Parent document
+                    // unset( $data[$this->getParentModelSnakeCase().'_line_id'] );
+                    unset( $data['customer_shipping_slip_line_id'] );
+                    // Dates
+                    unset( $data['created_at'] );
+                    unset( $data['deleted_at'] );
+
+                    // Model specific data
+                    $extradata = [
+                    ];
+
+
+                    // Let's get dirty
+                    CustomerInvoiceLineTax::unguard();
+                    $invoice_line_tax = CustomerInvoiceLineTax::create( $data + $extradata );
+                    CustomerInvoiceLineTax::reguard();
+
+                    $invoice_line->taxes()->save($invoice_line_tax);
+
+                }
+            }
+
+
+            // Final touches
+            $document->invoiced_at = \Carbon\Carbon::now();
+            $document->save();
+
+
+            // Document traceability
+            //     leftable  is this document
+            //     rightable is Customer Invoice Document
+            $link_data = [
+                'leftable_id'    => $document->id,
+                'leftable_type'  => $document->getClassName(),
+
+                'rightable_id'   => $invoice->id,
+                'rightable_type' => CustomerInvoice::class,
+
+                'type' => 'traceability',
+                ];
+
+            $link = DocumentAscription::create( $link_data );
+
+            // Document loop ends -^
+
+
+
             // Not so fast, Sony Boy
 
             $invoice->makeTotals();
 
             $status = array_key_exists('status', $params) ?
-                                    $params['status'] : 'draft';
+                                    $params['status'] : $invoice->status;
 
             // Manage Invoice Status
             switch ( $status ) {
@@ -379,51 +685,7 @@ trait CustomerShippingSlipInvoiceableTrait
             }
 
 
-$testing = array_key_exists('testing', $params) ?
-                                    (bool) $params['testing'] : true;
-if ( ! $testing )
-{
-            // Final touches
-            $document->invoiced_at = \Carbon\Carbon::now();
-            $document->save();
-
-
-            // Document traceability
-            //     leftable  is this document
-            //     rightable is Customer Invoice Document
-            $link_data = [
-                'leftable_id'    => $document->id,
-                'leftable_type'  => $document->getClassName(),
-
-                'rightable_id'   => $invoice->id,
-                'rightable_type' => CustomerInvoice::class,
-
-                'type' => 'traceability',
-                ];
-
-            $link = DocumentAscription::create( $link_data );
-        }
-
-        // Good boy, so far
-}
-
-
-
-
-        // abi_r($grouped_lines, true);
-
-
         return $invoice;
-
-
-
-//        3.- Si algún documento tiene plantilla diferente, generar factura para él <= Tontá: el albarán NO tiene plantilla de Factura
-
-//        6.- Crear línea de texto con los albaranes ???
-
-//        7.- Crear líneas agrupadas ???
-
-//        8.- Manage estados de documento, pago y stock
     }
 
 }

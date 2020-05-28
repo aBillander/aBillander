@@ -335,4 +335,8 @@ return [
 	'With or without Taxes' => 'Con o sin Impuestos incluidos',
 	'Payment Status' => 'Estado de Pago',
 
+	'Add Customer Shipping Slip to this Customer Invoice' => 'Añadir Albarán esta Factura',
+	'Use Customer Shipping Slip <i>ID</i> or ID as seen in Shipping Slip url on your browser.' => 
+		'Introduzca el <i>ID</i> del Albarán o el ID que aparece en la url del Albarán, cuando éste se muestra en su navegador.',
+
 ];

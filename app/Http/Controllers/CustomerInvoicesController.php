@@ -11,6 +11,8 @@ use App\Customer;
 use App\CustomerInvoice;
 use App\CustomerInvoiceLine;
 
+use App\CustomerShippingSlip;
+
 use App\Configuration;
 use App\Sequence;
 
@@ -762,6 +764,104 @@ class CustomerInvoicesController extends BillableController
         		->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
+
+
+
+
+    public function addShippingSlipToInvoice($id, Request $request)
+    {
+        $invoice = CustomerInvoice::where('status', '!=', 'closed')->findOrFail($id);
+
+        // Get Shipping Slip
+        $document_id = $request->input('invoiceable');
+        
+        $document = CustomerShippingSlip::with('lines')->where('document_reference', $document_id)->first();
+
+        if ( !$document )
+            $document = CustomerShippingSlip::with('lines')->where('id', $document_id)->first();
+
+        if ( !$document )
+            return redirect()->back()
+                    ->with('error', l('Unable to load this record &#58&#58 (:id) ', ['id' => $document_id], 'layouts'));
+
+        // Can add Document? (is invoiceable?)
+        if ( ($document->status != 'closed') || ($document->invoiced_at != null) )
+            return redirect()->back()
+                    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document_id], 'layouts') . l('Document is not closed', 'layouts'));
+
+
+        // Wanna dance?
+        $document->load('lines', 'lines.linetaxes');
+
+
+        // Set params
+        $params = [];
+        $new_invoice = \App\CustomerShippingSlip::addDocumentToInvoice( $document, $invoice, $params );
+
+        if ( !$new_invoice )
+            return redirect()->back()
+                    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document_id], 'layouts') . l('Document is not closed', 'layouts'));
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $new_invoice->id], 'layouts'));
+
+
+
+        abi_r($id);
+        abi_r($request->toArray());die();
+
+
+
+
+
+        $document = $this->document
+                            ->with('customer')
+                            ->findOrFail($id);
+        
+        // Get Invoice for this Shipping Slip
+        $invoice = $document->customerinvoice();
+
+        // Get Lines to delete
+        $lines = $invoice->lines->where('customer_shipping_slip_id', $document->id);
+
+        foreach ($lines as $line) {
+            # code...
+            $line->delete();
+        }
+
+        // Not so fast, Sony Boy
+        $invoice->makeTotals();
+
+        // Final touches
+        $document->invoiced_at = null;
+        $document->save();
+
+        // Document traceability
+        //     leftable  is this document
+        //     rightable is Customer Invoice Document
+        $link_data = [
+            'leftable_id'    => $document->id,
+            'leftable_type'  => $document->getClassName(),
+
+            'rightable_id'   => $invoice->id,
+            'rightable_type' => CustomerInvoice::class,
+
+            'type' => 'traceability',
+            ];
+
+        $link = \App\DocumentAscription::where( $link_data )->first();
+
+        $link->delete();
+
+        // Good boy, so far
+
+        // abi_r($lines->pluck('id')->toArray());die();
+
+        // abi_r($invoice);die();        
+        
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
 
 
 

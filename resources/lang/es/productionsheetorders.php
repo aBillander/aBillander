@@ -356,6 +356,10 @@ return [
 	'Shipping Slips'     => 'Albaranes',
 	'Create Shipping Slips'     => 'Crear Albaranes',
 	'Should group?'     => '¿Agrupar?',
+	
+	'Customer Orders'     => 'Pedidos de Clientes',
+	'Customer Shipping Slips'     => 'Albaranes de Clientes',
+	'Customer Invoices'     => 'Facturas de Clientes',
 	''     => '',
 	''     => '',
 	''     => '',

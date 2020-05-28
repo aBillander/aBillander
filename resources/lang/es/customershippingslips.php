@@ -152,6 +152,7 @@ return [
 	'Down Payment'     => 'Anticipo',
 	'Number of Packages'     => 'Número de Bultos',
 	'Weight'     => 'Peso',
+	'Volume' => 'Volumen',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',
@@ -325,6 +326,7 @@ return [
 
 	'Create Invoice'     => 'Crear Factura',
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
+	'Shipping Slip: :id [dicount Tax :percent %]'     => 'Albarán: :id [descuento IVA :percent %]',
 
 	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
 	
@@ -338,5 +340,14 @@ return [
 
 
 	'Shipment Service Type Tag' => 'Tipo de Envío',
+	
+	'Is Invoiceable?'     => '¿Es Facturable?',
+
+	'Undo Invoice' => 'Deshacer Factura',
+
+	'You are going to remove :slip from Invoice :inv . Are you sure?' => 'Está a punto de quitar :slip de la Factura :inv . ¿Está seguro?',
+
+	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos'
 
 ];

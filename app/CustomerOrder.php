@@ -469,4 +469,41 @@ class CustomerOrder extends Billable
     |--------------------------------------------------------------------------
     */
 
+
+    public function scopeFilter($query, $params)
+    {
+        $query = parent::scopeFilter($query, $params);
+        
+
+        if (array_key_exists('is_wooc', $params) && $params['is_wooc'] == '1')
+        {
+            $query->where('reference', 'LIKE', '%WooC%');
+        }
+        
+
+        if ( array_key_exists('manufacturing_status', $params) )
+        {
+            if ( $params['manufacturing_status'] == 'unasigned' )
+            {
+                $query->whereDoesntHave('productionsheet');
+            } else
+
+            if ( $params['manufacturing_status'] == 'asigned' )
+            {
+                $query->whereHas('productionsheet', function ($query) {
+                    $query->where( 'due_date', '>=', \Carbon\Carbon::now()->toDateString() );
+                });
+            } else
+
+            if ( $params['manufacturing_status'] == 'ongoing' )
+            {
+                $query->whereDoesntHave('productionsheet', function ($query) {
+                    $query->where( 'due_date', '<', \Carbon\Carbon::now()->toDateString() );
+                });
+            }
+        }
+
+        return $query;
+    }
+
 }

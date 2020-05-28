@@ -132,6 +132,17 @@
 </div>
 --}}
 
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('price_amount', l('Total Amount')) !!}
+                              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" xdata-container="body" 
+                                        data-content="{{ l('With or without Taxes') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                              </a>
+    {!! Form::text('price_amount', null, array('class' => 'form-control', 'id' => 'price_amount')) !!}
+</div>
+
+
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 {!! link_to_route($model_path.'.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}

@@ -9,21 +9,9 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <a href="{{ route('productionsheet.tourline', [$productionSheet->id]) }}" class="btn xbtn-sm btn-blue" title="{{l('Hoja Tourline :: Excel')}}" xstyle="margin-right: 32px;"><img src="{{ \App\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja Albaranes')}}</b></i></a>
+        <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}" class="btn btn-info" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-truck"></i> {{ l('Shipping Slips') }}</a>
 
-
-<div class="btn-group" style="margin-left: 32px; ">
-  <a href="{{ route('productionsheet.deliveryroute', [$productionSheet->id, 1]) }}" class="btn btn-info">{{ l('Delivery Routes')}}</a>
-  <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
-  <ul class="dropdown-menu">
-    <li><a href="{{ route('productionsheet.deliveryroute', [$productionSheet->id, 1]) }}">Sevilla</a></li>
-    <li class="divider"></li>
-  </ul>
-</div>
-
-        <a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}" class="btn btn-success" style="margin-left: 32px; xmargin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a>
-
-        <a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}" class="btn alert-success" xstyle="margin-left: 32px; margin-right: 32px; "><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a>
+        <a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}" class="btn btn-success" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a>
 
         <a href="{{ route('productionsheets.show', [$productionSheet->id]) }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheet') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
 
@@ -91,7 +79,7 @@
         @foreach ($documents as $document)
         <tr>
             <td class="text-center warning">
-@if ( $document->status == 'closed' || $document->invoiced_at )
+@if ( 1 || $document->status == 'closed' )
 @else
               {!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}
 @endif
@@ -251,42 +239,30 @@
    <div class="panel-heading">
 
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#tab1default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Close Documents') }}</a></li>
+                            <!-- li class="active"><a href="#tab1default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Group Orders') }}</a></li -->
                             <li><a href="#tab2default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Create Invoices') }}</a></li>
                         </ul>
 
    </div>
 
   <div class="tab-content">
-      <div class="tab-pane fade in active" id="tab1default_s">
+      <div class="tab-pane fade" id="tab1default_s">
+                
+                @ include('production_sheet_orders.index_form_aggregate')
+
+      </div>
+      <div class="tab-pane fade in active" id="tab2default_s">
                 
           @if ($documents->where('status', '!=', 'closed')->count())
 
-                @include('production_sheet_shipping_slips.index_form_close')
+                @include('production_sheet_orders.index_form_group')
           
           @else
               <div class="panel-body">
               
                   <div class="alert alert-warning alert-block">
                       <i class="fa fa-warning"></i>
-                      {{l('Todos los Albaranes están cerrados.')}}
-                  </div>              
-              </div>
-          @endif
-
-      </div>
-      <div class="tab-pane fade" id="tab2default_s">
-                
-          @if ($documents->where('invoiced_at', null)->count())
-
-                @include('production_sheet_shipping_slips.index_form_group')
-          
-          @else
-              <div class="panel-body">
-              
-                  <div class="alert alert-warning alert-block">
-                      <i class="fa fa-warning"></i>
-                      {{l('Se han creado Facturas para todos los Albaranes.')}}
+                      {{l('Se han creado Albaranes para todos los Pedidos.')}}
                   </div>
               
               </div>

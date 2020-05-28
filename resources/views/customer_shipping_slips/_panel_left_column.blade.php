@@ -27,6 +27,20 @@
 
                       </a> - {{ abi_date_short( $document->customerinvoice()->document_date ) }}
 
+                          @if ($document->customerinvoice()->status != 'closed')
+
+                          <br /><br />
+
+    <div class="text-center">
+                  <a class="btn btn-sm alert-danger undo-invoice-document" data-href="{{ route('customershippingslip.invoice.undo', [$document->id]) }}" title="{{l('Undo Invoice')}}" 
+                        data-content="{{l('You are going to remove :slip from Invoice :inv . Are you sure?', ['slip' => $document->document_reference, 'inv' => $document->customerinvoice()->document_reference])}}" 
+                        data-title="{{ l('Document') }} :: {{ $document->document_reference }}" 
+                        onClick="return false;"><i class="fa fa-undo"></i> {{l('Undo Invoice')}} </a>
+    </div>
+
+
+                          @endif
+
                       @else
                           <span class="btn btn-xs btn-grey">{{ l('Pending', 'layouts') }}</span>
                       @endif
@@ -159,3 +173,8 @@ background-color: #325d88; border-color: #772953;">
           </div>
 
     @endif
+
+
+@include($view_path.'._modal_document_undo_invoice')
+
+

@@ -13,6 +13,7 @@ class CustomerInvoiceLine extends BillableLine
      * 
      */
     protected $line_fillable = [
+                    'customer_shipping_slip_id',
     ];
     
 

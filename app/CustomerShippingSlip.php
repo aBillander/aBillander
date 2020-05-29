@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\BillableStockMovementsTrait;
+use App\Traits\CustomerShippingSlipInvoiceableTrait;
 // use App\Traits\BillableInvoiceableTrait;
 
 use \App\CustomerShippingSlipLine;
@@ -11,6 +12,7 @@ class CustomerShippingSlip extends Billable
 {
     
     use BillableStockMovementsTrait;
+    use CustomerShippingSlipInvoiceableTrait;
 //    use BillableInvoiceableTrait;
 
     public static $badges = [
@@ -43,7 +45,7 @@ class CustomerShippingSlip extends Billable
      * https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
      */
     protected $document_fillable = [
-                            'shipment_service_type_tag', 
+                            'shipment_service_type_tag', 'is_invoiceable',
                             'prices_entered_with_tax', 'round_prices_with_tax',
     ];
 

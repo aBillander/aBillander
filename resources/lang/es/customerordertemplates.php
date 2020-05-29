@@ -39,6 +39,7 @@ return [
 	'Alias'     => 'Alias',
 	'Customer' => 'Cliente',
 	'Shipping Address' => 'Dirección de Envío',
+	'Document Template' => 'Plantilla Impresión',
 
 	'Show Customer Order Template Lines' => 'Ver Líneas de Plantilla',
 	'Create Customer Order' => 'Crear Pedido de Venta',

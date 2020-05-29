@@ -14,17 +14,17 @@
 
 <div class="row">
 
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('date_from_form', l('Date from', 'layouts')) !!}
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('date_from_form', l('From', 'layouts')) !!}
         {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
     </div>
 
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('date_to_form', l('Date to', 'layouts')) !!}
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('date_to_form', l('To', 'layouts')) !!}
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('status', l('Status')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
@@ -89,8 +89,12 @@
 --}}
 
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('price_amount', l('Total Amount')) !!}
+                              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" xdata-container="body" 
+                                        data-content="{{ l('With or without Taxes') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                              </a>
     {!! Form::text('price_amount', null, array('class' => 'form-control', 'id' => 'price_amount')) !!}
 </div>
 

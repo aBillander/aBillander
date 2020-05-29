@@ -47,7 +47,7 @@ return [
 	|
 	*/
 
-	'Documents' => 'Pedidos de Clientes',
+	'Documents' => 'Facturas de Clientes',
 	'Document #'     => 'Número',
 	'Date'     => 'Fecha',
 	'Created via'     => 'Creado por',
@@ -90,7 +90,7 @@ return [
 	'New Customer'     => 'Nuevo Cliente',
 	'You should choose a Customer'     => 'Debe seleccionar un Cliente',
 
-	'Documents'     => 'Pedidos de Clientes',
+//	'Documents'     => 'Pedidos de Clientes',
 	'Document to'     => 'Pedido a',
 	'Back to Documents'     => 'Volver a Pedidos de Clientes',
 	'Back to Customers'     => 'Volver a Clientes',
@@ -191,8 +191,6 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
 	'Add Product'     => 'Nuevo Producto',
 	'Add Service'     => 'Nuevo Servicio',
-	'Add Text Line'     => 'Añadir Línea de Texto',
-	'Add Shipping Cost'     => 'Añadir Costes de Envío',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -338,17 +336,35 @@ return [
 	'Address is displayed if it is different from Customer Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Cliente',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
-	'Prompt Payment'     => 'Pronto Pago',
 
 	'Not Closed'     => 'No Cerrados',
 	'Closed'     => 'Cerrados',
 
-	'New Customer Order' => 'Nuevo Pedido de Cliente',
 
-	'Customer Reference' => 'Referencia del Cliente',
+	/*
+	|--------------------------------------------------------------------------
+	| Production Sheet orders Language Lines :: index 
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
 
-	'Manufacturing Status' => 'Estado de Fabricación',
-	'Total Amount' => 'Importe',
-	'With or without Taxes' => 'Con o sin Impuestos incluidos'
+	'Production Sheet'     => 'Hoja de Producción',
+	'Back to Production Sheet'     => 'Volver a la Hoja de Producción',
+	'Shipping Slip'     => 'Albarán',
+	'Shipping Slips'     => 'Albaranes',
+	'Invoice'     => 'Factura',
+	'Customer Orders'     => 'Pedidos de Clientes',
+	'Customer Shipping Slips'     => 'Albaranes de Clientes',
+	'Customer Invoices'     => 'Facturas de Clientes',
+	'Create Invoices'     => 'Crear Facturas',
+	'Should group?'     => '¿Agrupar?',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+
+	'Delivery Routes' => 'Rutas de Reparto',
 
 ];

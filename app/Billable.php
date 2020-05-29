@@ -571,7 +571,10 @@ class Billable extends Model implements ShippableInterface
         // Can I ...?
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
         
-        if ( $this->status == 'closed' ) return false;
+        if ( $this->status == 'closed' ) return true;
+
+        // No lines?
+        if ( $this->lines->count() == 0 ) return false;
         
         // Customer blocked?
         if ( array_key_exists('customer_id', $this->getAttributes()) )
@@ -1014,7 +1017,7 @@ class Billable extends Model implements ShippableInterface
             $query->where('customer_id', $params['customer_id']);
         }
 
-        if (array_key_exists('price_amount', $params) && $params['price_amount'])
+        if (array_key_exists('price_amount', $params) && is_numeric($params['price_amount']))
         {
             $amount = $params['price_amount'];
 
@@ -1166,7 +1169,7 @@ class Billable extends Model implements ShippableInterface
 
         return $total_products_tax_excl;
     }
-
+/*
     public function getWeightAttribute() 
     {
         $line_products = $this->lines->where('line_type', 'product')->load('product');
@@ -1177,4 +1180,5 @@ class Billable extends Model implements ShippableInterface
 
         return $total_weight;
     }
+*/
 }

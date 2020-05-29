@@ -353,9 +353,12 @@ return [
 	'Production Sheet'     => 'Hoja de Producción',
 	'Back to Production Sheet'     => 'Volver a la Hoja de Producción',
 	'Shipping Slip'     => 'Albarán',
+	'Shipping Slips'     => 'Albaranes',
 	'Invoice'     => 'Factura',
 	'Customer Orders'     => 'Pedidos de Clientes',
-	'Create Shipping Slips'     => 'Crear Albaranes',
+	'Customer Shipping Slips'     => 'Albaranes de Clientes',
+	'Customer Invoices'     => 'Facturas de Clientes',
+	'Create Invoices'     => 'Crear Facturas',
 	'Should group?'     => '¿Agrupar?',
 	''     => '',
 	''     => '',
@@ -363,5 +366,7 @@ return [
 	''     => '',
 
 	'Delivery Routes' => 'Rutas de Reparto',
+
+	'Close Documents' => 'Cerrar Albaranes',
 
 ];

@@ -13,6 +13,8 @@
 
         <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}" class="btn btn-info" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-truck"></i> {{ l('Shipping Slips') }}</a>
 
+        <a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}" class="btn alert-success" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a>
+
         <a href="{{ route('productionsheets.show', [$productionSheet->id]) }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheet') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
 
     </div>

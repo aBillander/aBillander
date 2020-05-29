@@ -83,6 +83,9 @@ class ProductionSheetsTourlineController extends Controller
                 $recipient_name = (string) $document->customer->name_regular;
 
             $row['RecipientName'] = $recipient_name;     // Nombre destinatario
+
+            // Free new field ;)             // Dirección de Envío, persona de contacto
+            $row['RecipientContactName'] = (string) $document->shippingaddress->contact_name;
             $row['RecipientAddress'] = $document->shippingaddress->address1.' '.$document->shippingaddress->address2;
 
             $phone = $document->shippingaddress->phone;

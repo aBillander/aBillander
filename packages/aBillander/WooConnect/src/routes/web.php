@@ -89,6 +89,17 @@ Route::group([
 
     Route::post('wcategories/ascription' , 'WooCategoriesController@ascription')->name('wcategories.ascription' );
 
+
+    Route::resource('wcustomers', 'WooCustomersController');
+
+    Route::get('wcustomers/{id}/fetch' , 'WooCustomersController@fetch')->name('wcustomers.fetch' );
+
+    Route::get('wcustomers/fetch/abiorphans' , 'WooCustomersController@fetchAbiOrphans')->name('wcustomers.fetch.abi.orphans' );
+
+    Route::get('wcustomers/fetch/woocorphans' , 'WooCustomersController@fetchWoocOrphans')->name('wcustomers.fetch.wooc.orphans' );
+
+    Route::post('wcustomers/ascription' , 'WooCustomersController@ascription')->name('wcustomers.ascription' );
+
 });
 
 /* WooCommerce webhoohs -> todo:download Woo Order to aBillander

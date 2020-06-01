@@ -546,6 +546,7 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{document}/unconfirm', $controller.'@unConfirm')->name($path.'.unconfirm');
 
         Route::get($path.'/{id}/pdf',         $controller.'@showPdf'       )->name($path.'.pdf'        );
+        Route::post($path.'/pdf/bulk',        $controller.'@showBulkPdf'   )->name($path.'.bulk.pdf'   );
         Route::get($path.'/{id}/invoice/pdf', $controller.'@showPdfInvoice')->name($path.'.invoice.pdf');
         Route::match(array('GET', 'POST'), 
                    $path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );

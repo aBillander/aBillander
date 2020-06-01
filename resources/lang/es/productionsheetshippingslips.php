@@ -369,4 +369,11 @@ return [
 
 	'Close Documents' => 'Cerrar Albaranes',
 
+	'Not closed' => 'Sin cerrar',
+	'Closed not invoiced' => 'Cerrados no facturados',
+	'Invoiced' => 'Facturados',
+
+
+	'in total' => 'en total',
+
 ];

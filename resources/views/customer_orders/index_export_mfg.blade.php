@@ -39,6 +39,12 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+           <i class="fa fa-filter"></i>
+           &nbsp; {{l('Filter', [], 'layouts')}}
+        </button>
+
+
         <a href="{{ URL::to('customerorders/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
         
@@ -48,10 +54,10 @@
           <a href="#" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
 
           <ul class="dropdown-menu">
-            <li><a href="{{ route($model_path.'.index', 'closed_not') }}"><i class="fa fa-exclamation-triangle text-danger"></i> &nbsp; {{l('Not Closed')}}</a>
+            <li><a href="{{ route($model_path.'.index', ['closed' => '0']) }}"><i class="fa fa-exclamation-triangle text-danger"></i> &nbsp; {{l('Not Closed')}}</a>
             </li>
 
-            <li><a href="{{ route($model_path.'.index', 'closed') }}"><i class="fa fa-truck text-muted"></i> &nbsp; {{l('Closed')}}</a>
+            <li><a href="{{ route($model_path.'.index', ['closed' => '1']) }}"><i class="fa fa-truck text-muted"></i> &nbsp; {{l('Closed')}}</a>
             </li>
 
             <li class="divider"></li>
@@ -68,8 +74,18 @@
     </div>
     <h2>
         {{ l('Documents') }}
-    </h2>        
+    </h2>
 </div>
+
+
+
+{{-- Search Stuff --}}
+
+          @include($view_path.'.index_form_search')
+
+{{-- Search Stuff - ENDS --}}
+
+
 
 <div id="div_documents">
 
@@ -157,7 +173,7 @@
               </td>
             
             <td><a class="" href="{{ URL::to('customers/' .$document->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
-            	{{ $document->customer->name_fiscal }}
+            	{{ $document->customer->name_regular }}
             	</a>
             </td>
             <td>
@@ -211,7 +227,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('customerorders/' . $document->id ) }}" 
                     data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Documents') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
+                    data-title="{{ l('Documents') }} :: <span class='btn btn-xs btn-grey'> {{ $document->document_reference != '' ? $document->document_reference : $document->id}} </span> &nbsp; <b>{{ $document->as_money_amount('total_tax_incl') }}</b> &nbsp; {{ $document->customer->name_regular }}" 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @endif
             </td>
@@ -222,11 +238,12 @@
 
    </div><!-- div class="table-responsive" ENDS -->
 
-{{ $documents->appends( collect(Request::all())
+{{-- $documents->appends( collect(Request::all())
                             ->map(function($item) {
                                     // Take empty keys, otherwise skipped!
                                     return is_null($item) ? 1 : $item;
-                            })->toArray() )->render() }}
+                            })->toArray() )->render() --}}
+{!! $documents->appends( Request::all() )->render() !!}
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
 
 
@@ -370,13 +387,74 @@ $("#order_lines").on("change", function () {
 // check box selection ENDS -->
 
 
-    $(document).ready(function () {
+$(document).ready(function () {
+   $("#b_search_filter").click(function() {
+      $('#search_status').val(1);
+      $('#search_filter').show();
+   });
 
-          // Select first element
-          $('#production_sheet_id option:first-child').attr("selected", "selected");
-    });
+      // Select first element
+      $('#production_sheet_id option:first-child').attr("selected", "selected");
+});
 
 </script>
+
+{{-- Auto Complete --}}
+{{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
+
+<!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script>
+  $(document).ready(function() {
+{{-- --}}
+        $("#autocustomer_name").autocomplete({
+            source : "{{ route('home.searchcustomer') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                customer_id = value.item.id;
+
+                $("#autocustomer_name").val(value.item.name_regular);
+                $("#customer_id").val(value.item.id);
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .appendTo( ul );
+            };
+{{-- --}}
+
+    $( "#date_from_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+
+
+    $( "#date_to_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+{{-- --}}
+   $('#process').submit(function(event) {
+
+     if ( $("#autocustomer_name").val() == '' ) $('#customer_id').val('');
+
+     return true;
+
+   });
+{{-- --}}
+</script>
+
 
 @endsection
 
@@ -415,7 +493,23 @@ $("#order_lines").on("change", function () {
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
 <style>
+  .ui-autocomplete-loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+  }
+  .loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
+  }
+  {{-- See: https://stackoverflow.com/questions/6762174/jquery-uis-autocomplete-not-display-well-z-index-issue
+            https://stackoverflow.com/questions/7033420/jquery-date-picker-z-index-issue
+    --}}
     .ui-datepicker { z-index: 10000 !important; }
+
+
+/* Undeliver dropdown effect */
+   .hover-item:hover {
+      background-color: #d3d3d3 !important;
+    }
+
 </style>
 
 @endsection

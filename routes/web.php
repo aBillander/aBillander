@@ -364,7 +364,15 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
 
         // Production Sheet Shipping Slips
-        Route::get('productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+        Route::get( 'productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+
+        Route::post('productionsheetshippingslips/close',  'ProductionSheetShippingSlipsController@closeShippingSlips')->name('productionsheet.close.shippingslips');
+
+        Route::post('productionsheetshippingslips/invoices',  'ProductionSheetShippingSlipsController@createInvoices')->name('productionsheet.create.invoices');
+
+        // Production Sheet Invoices
+        Route::get( 'productionsheetinvoices/{id}',  'ProductionSheetInvoicesController@invoicesIndex')->name('productionsheet.invoices');
+
 
         Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
 
@@ -573,6 +581,9 @@ foreach ($pairs as $pair) {
         Route::get('customershippingslips/{id}/undeliver'  , 'CustomerShippingSlipsController@undeliver')->name('customershippingslip.undeliver');
 
         Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('customershippingslips.for.today');
+
+
+        Route::post('customerinvoices/{id}/shippingslip/add'  , 'CustomerInvoicesController@addShippingSlipToInvoice')->name('customerinvoice.shippingslip.add');
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');
         Route::get('customervouchers/{id}/setduedate'  , 'CustomerVouchersController@setduedate');

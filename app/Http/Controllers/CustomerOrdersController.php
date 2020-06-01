@@ -57,6 +57,9 @@ class CustomerOrdersController extends BillableController
      */
     public function index(Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+        
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
@@ -130,16 +133,36 @@ class CustomerOrdersController extends BillableController
         
         if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
         {
-            //
             $suffix = '_export_mfg';
+
+            $manufacturing_statusList = [
+                            'unasigned' => 'No asignados',
+                            'asigned' => 'Asignados a Hojas de Producción abiertas',
+                            'ongoing' => 'Los dos anteriores (Pedidos en curso)',
+            ];
             
         } else {
-
-            //
             $suffix = '';
+            
+            $manufacturing_statusList = [];
         }
 
-        return view($this->view_path.'.index'.$suffix, $this->modelVars() + compact('documents', 'anyClient', 'anyOrder'));
+        
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+        {
+            $wooc_statusList = [
+                        '1' => 'Sólo Pedidos WooCommerce',
+            ];
+
+        } else {
+
+            $wooc_statusList = [];
+        }
+
+
+        $statusList = $this->model_class::getStatusList();
+
+        return view($this->view_path.'.index'.$suffix, $this->modelVars() + compact('documents', 'anyClient', 'anyOrder', 'statusList', 'manufacturing_statusList', 'wooc_statusList'));
     }
 
     /**
@@ -149,6 +172,9 @@ class CustomerOrdersController extends BillableController
      */
     protected function indexByCustomer($id, Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+        
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
@@ -163,20 +189,52 @@ class CustomerOrdersController extends BillableController
         $customer = $this->customer->findOrFail($id);
 
         $documents = $this->document
+                            ->filter( $request->all() )
                             ->where('customer_id', $id)
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
                             ->orderBy('document_date', 'desc')
-                            ->orderBy('id', 'desc');        // ->get();
+//                            ->orderBy('id', 'desc');        // ->get();
+                            ->orderByRaw('document_reference IS NOT NULL, document_reference DESC');
 
         $documents = $documents->paginate( $items_per_page );
 
-        // abi_r($this->model_path, true);
-
         $documents->setPath($id);
 
-        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
+        
+        if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+        {
+            $suffix = '_export_mfg';
+
+            $manufacturing_statusList = [
+                            'unasigned' => 'No asignados',
+                            'asigned' => 'Asignados a Hojas de Producción abiertas',
+                            'ongoing' => 'Los dos anteriores (Pedidos en curso)',
+            ];
+            
+        } else {
+            $suffix = '';
+            
+            $manufacturing_statusList = [];
+        }
+
+        
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+        {
+            $wooc_statusList = [
+                        '1' => 'Sólo Pedidos WooCommerce',
+            ];
+
+        } else {
+
+            $wooc_statusList = [];
+        }
+
+
+        $statusList = $this->model_class::getStatusList();
+
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList', 'manufacturing_statusList', 'wooc_statusList'));
     }
 
     /**

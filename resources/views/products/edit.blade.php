@@ -126,7 +126,12 @@
 
           @include('products._panel_inventory')
 
+
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+
           @include('products._panel_webshop')
+
+@endif
 
 
 @if ( ($product->product_type == 'simple') || ($product->product_type == 'combinable') )

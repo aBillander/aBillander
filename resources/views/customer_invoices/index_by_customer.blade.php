@@ -9,6 +9,11 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+           <i class="fa fa-filter"></i>
+           &nbsp; {{l('Filter', [], 'layouts')}}
+        </button>
+
         <a href="{{ route('customerinvoices.create.withcustomer', $customer->id) }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
@@ -43,15 +48,99 @@
 </div>
 
 
+
+<div name="search_filter" id="search_filter" @if( Request::has('search_status') AND (Request::input('search_status')==1) ) style="display:block" @else style="display:none" @endif>
+<div class="row" style="padding: 0 20px">
+    <div class="col-md-12 xcol-md-offset-3">
+        <div class="panel panel-info">
+            <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
+            <div class="panel-body">
+
+                {!! Form::model(Request::all(), array('route' => ['customer.'.str_replace('customer', '', $model_path ), $customer->id], 'method' => 'GET', 'id' => 'process')) !!}
+
+<!-- input type="hidden" value="0" name="search_status" id="search_status" -->
+{!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
+
+<div class="row">
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('date_from_form', l('From', 'layouts')) !!}
+        {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('date_to_form', l('To', 'layouts')) !!}
+        {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
+    </div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('status', l('Status')) !!}
+    {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('payment_status', l('Payment Status')) !!}
+    {!! Form::select('payment_status', array('' => l('All', [], 'layouts')) + $payment_statusList, null, array('class' => 'form-control')) !!}
+</div>
+
+{{--
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('autocustomer_name', l('Customer')) !!}
+    {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
+
+    {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+</div>
+--}}
+
+{{--
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
+    {!! Form::label('reference', l('Reference')) !!}
+    {!! Form::text('reference', null, array('class' => 'form-control')) !!}
+</div>
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('name', l('Product Name')) !!}
+    {!! Form::text('name', null, array('class' => 'form-control')) !!}
+</div>
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('warehouse_id', l('Warehouse')) !!}
+    {!! Form::select('warehouse_id', array('0' => l('All', [], 'layouts')) + $warehouseList, null, array('class' => 'form-control')) !!}
+</div>
+--}}
+
+
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
+    {!! Form::label('price_amount', l('Total Amount')) !!}
+                              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" xdata-container="body" 
+                                        data-content="{{ l('With or without Taxes') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                              </a>
+    {!! Form::text('price_amount', null, array('class' => 'form-control', 'id' => 'price_amount')) !!}
+</div>
+
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
+{!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
+{!! link_to_route('customer.'.str_replace('customer', '', $model_path ), l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+</div>
+
+</div>
+
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+
 {!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents'] ) !!}
 
 {!! Form::hidden('customer_id', $customer->id, array('id' => 'customer_id')) !!}
 
 <div id="div_documents">
 
-<div class="row">
-
-   <div xclass="col-lg-8 col-md-8">
    <div class="table-responsive">
 
 @if ($documents->count())
@@ -66,6 +155,8 @@
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
+            <th class="text-right""> </th>
+            <th class="text-center">{{ l('Next Due Date') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
@@ -86,12 +177,13 @@
 
 @if ( $document->status == 'closed' )
                 <a class="btn btn-xs alert-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
-@endif
+@else
 
 @if ($document->onhold>0)
                 <a class="btn btn-xs btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
 @else
                 <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
+@endif
 @endif
 
 @if ( $document->edocument_sent_at )
@@ -119,6 +211,22 @@
             <td>{{ $document->created_via }}
             </td>
             <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
+            <td>
+@if ( $document->status == 'closed' )
+@if ( $document->payment_status == 'pending' )
+                <a class="btn btn-xs alert-danger" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-window-close"></i>&nbsp;</a>
+@endif
+@if ( $document->payment_status == 'halfpaid' )
+                <a class="btn btn-xs alert-warning" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-star-half-o"></i>&nbsp;</a>
+@endif
+@if ( $document->payment_status == 'paid')
+                <a class="btn btn-xs alert-success" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-star"></i>&nbsp;</a>
+@endif
+@endif
+            </td>
+            <td class="text-center @if ( optional($document->nextPayment())->is_overdue ) danger @endif ">
+                {{ abi_date_short($document->next_due_date) }}
+            </td>
             <td class="text-center">@if ($document->all_notes)
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
@@ -128,13 +236,11 @@
                  </a>
                 @endif
             </td>
-            <td class="text-right">
+            <td class="text-right button-pad">
                 <!--
-                <a class="btn btn-sm btn-blue"    href="{{ URL::to('customeror ders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
+                <a class="btn btn-sm btn-blue"    href="{ { URL::to('customeror ders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
                 <a class="btn btn-sm btn-success" href="{ { URL::to('customer orders/' . $document->id) } }" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
                 -->
-
-                <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
 {{-- --}}
 @if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0)
@@ -154,7 +260,10 @@
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 
-                <!-- a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a -->
+                <a class=" hide btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
+
+                <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                
                 @if( $document->deletable )
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to($model_path.'/' . $document->id ) }}" 
@@ -173,11 +282,14 @@
 
 {{ $documents->appends( Request::all() )->render() }}
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
+
+{{--
 <ul class="pagination" style="float:right;"><li xclass="active" style="float:right;"><span style="color:#333333;border-color:#ffffff"> <div class="input-group"><span class="input-group-addon" style="border: 0;background-color: #ffffff" title="{{l('Items per page', 'layouts')}}">{{l('Per page', 'layouts')}}</span><input id="items_per_page" name="items_per_page" class="form-control input-sm items_per_page" style="width: 50px !important;" type="text" value="{{ $items_per_page }}" onclick="this.select()">
     <span class="input-group-btn">
       <button class="btn btn-info btn-sm" type="button" title="{{l('Refresh', 'layouts')}}" onclick="getCustomerShippingSlips(); return false;"><i class="fa fa-refresh"></i></button>
     </span>
   </div></span></li></ul>
+--}}
 
 @else
 <div class="alert alert-warning alert-block">
@@ -235,15 +347,13 @@
 
 @endif
 
-   </div>
-
-
-</div><!-- div class="row" ENDS -->
-
 </div><!-- div id="div_documents" ENDS -->
 
 
 {!! Form::close() !!}
+
+
+@include('layouts/back_to_top_button')
 
 
 @endsection
@@ -320,7 +430,7 @@ $("#document_lines").on("change", function () {
 
 </script>
 
-
+{{--
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -338,61 +448,106 @@ $(document).ready(function() {
 });
 
 </script>
-
-@endsection
-
+--}}
 
 {{-- *************************************** --}}
 
 
-@section('scripts') @parent 
 
-{{-- Date Picker --}}
 
-<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+   $("#b_search_filter").click(function() {
+      $('#search_status').val(1);
+      $('#search_filter').show();
+   });
+});
+
+</script>
+
+{{-- Auto Complete --}}
+{{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
+
+<!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 {!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
 
 <script>
+  $(document).ready(function() {
+{{--
+        $("#autocustomer_name").autocomplete({
+            source : "{{ route('home.searchcustomer') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
 
-  $(function() {
-    $( "#document_date_form" ).datepicker({
-      showOtherMonths: true,
-      selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
-    });
-  });
-  
-  $(function() {
+            select : function(key, value) {
+
+                customer_id = value.item.id;
+
+                $("#autocustomer_name").val(value.item.name_regular);
+                $("#customer_id").val(value.item.id);
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .appendTo( ul );
+            };
+--}}
+
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
-  });
 
-  $(function() {
+
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
   });
-  
+
+
+   $('#process').submit(function(event) {
+
+     if ( $("#autocustomer_name").val() == '' ) $('#customer_id').val('');
+
+     return true;
+
+   });
+
 </script>
 
 @endsection
 
 
 
-
-@section('styles') @parent
-
-{{-- Date Picker --}}
+@section('styles')    @parent
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
 <style>
-    .ui-datepicker { z-index: 10000 !important; }
+  .ui-autocomplete-loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+  }
+  .loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
+  }
+  {{-- See: https://stackoverflow.com/questions/6762174/jquery-uis-autocomplete-not-display-well-z-index-issue
+            https://stackoverflow.com/questions/7033420/jquery-date-picker-z-index-issue
+    --}}
+  .ui-datepicker{ z-index: 9999 !important;}
+
+
+/* Undeliver dropdown effect */
+   .hover-item:hover {
+      background-color: #d3d3d3 !important;
+    }
+
 </style>
 
 @endsection

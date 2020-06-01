@@ -14,7 +14,7 @@
 
 <div class="row">
 
-    <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('customer_id') ? 'has-error' : '' }}">
+    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('customer_id') ? 'has-error' : '' }}">
        {!! Form::label('autocustomer_name', l('Customer')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Search by Name or Identification (VAT Number).', 'customerorders') }}">
@@ -26,10 +26,16 @@
         {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
     </div>
 
-         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
             {!! Form::label('shipping_address_id', l('Shipping Address'), ['class' => 'control-label']) !!}
             {!! Form::select('shipping_address_id', [], old('shipping_address_id'), array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
             {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('template_id') ? 'has-error' : '' }}">
+            {!! Form::label('template_id', l('Document Template'), ['class' => 'control-label']) !!}
+            {!! Form::select('template_id', array('' => l('-- Please, select --', [], 'layouts')) + $templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
+            {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
          </div>
 
 </div>

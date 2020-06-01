@@ -25,7 +25,14 @@
 
 Route::get('segment', function( )
 {
-	return '';
+	$list = [617];
+	$params = [];
+	$params['customer_id'] = 586;
+	$params['status'] = 'draft';
+
+	$invoice = \App\CustomerShippingSlip::invoiceDocumentList( $list, $params );
+
+	abi_r($invoice);
 });
 
 /* ********************************************************** */
@@ -56,10 +63,25 @@ Route::get('migratethis', function()
 
 
 	// 2020-05-25
+
+	// $table->string('shipment_service_type_tag', 32)->nullable();
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_shipping_slips` ADD `shipment_service_type_tag` varchar(32) NULL DEFAULT NULL AFTER `shipment_status`;");
+	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `is_invoiceable` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `customer_logo`;");
 	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_shipping_slips` ADD `is_invoiceable` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `shipment_service_type_tag`;");
 
+
+
+	// 2020-05-22
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoices` ADD `production_sheet_id` INT(10) UNSIGNED NULL AFTER `posted_at`;");
+
+
+	die('OK');
+
+	
+	\App\Configuration::updateValue('ABCC_MAX_ORDER_VALUE', 10000);
 
 
 	// 2020-05-14

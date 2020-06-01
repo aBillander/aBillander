@@ -528,6 +528,7 @@ class Product extends Model {
                     ->where('warehouse_id', $wh_id)
                     ->where('date', '<=', $date)
                     ->orderBy('date', 'desc')           // Guess "well ordered" movements
+                    ->orderBy('id', 'DESC')
                     ->first();
 
         if ($mvt)
@@ -1423,6 +1424,14 @@ class Product extends Model {
     public function scopeIsActive($query)
     {
         return $query->where('active', '>', 0);
+    }
+
+    public function scopeIsBlocked($query, $apply = true)
+    {
+        if ( $apply )
+            return $query->where('blocked', '>', 0);
+
+        return $query->where('blocked', 0);
     }
 
     public function scopeIsPublished($query)

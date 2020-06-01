@@ -242,7 +242,7 @@ class WooOrderImporter {
 //        $this->logMessage('INFO', $this->raw_data['customer_id'].' - '.($this->customer ? $this->customer->id : ''));
 
         if ($this->customer) {
-
+/* Fuck FactuSOL
         	if ( !$customer_reference_external && $this->customer->reference_external ) {
 
         		// Update diccionario de fsxweb
@@ -267,14 +267,14 @@ class WooOrderImporter {
 				// Rock n Roll is over! 
 				return ;
         	}
-
+*/
         	// Good boy!
         	$this->checkAddresses();
 
         } else {
 
         	// Let's try this way:
-        	if ( $customer_reference_external && ($this->customer = Customer::where('reference_external', $customer_reference_external )->first()) )
+        	if ( 0 && $customer_reference_external && ($this->customer = Customer::where('reference_external', $customer_reference_external )->first()) )
         	{
 
         		// Unrealistic:

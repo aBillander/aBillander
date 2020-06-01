@@ -26,6 +26,30 @@
 /* ********************************************************** */
 
 
+Route::get('xtra_addrs', function()
+{
+  // 2020-05-31
+  $addrs = \App\Address::get();
+
+
+  foreach ($addrs as $addr) {
+    # code...
+    if ( $addr->email != trim($addr->email) ){
+      abi_r( '*'.$addr->email .'* - '. trim($addr->email) );
+      $addr->email = trim($addr->email);
+      $addr->save();
+    }
+  }
+
+
+  die('OK');
+
+});
+
+
+/* ********************************************************** */
+
+
 Route::get('migratethis_xtra', function()
 {
   // 2020-03-11
@@ -96,7 +120,7 @@ Route::get('migratethis_xtra', function()
 
 
 
-	die('OK');
+  die('OK');
 
 });
 

@@ -48,7 +48,7 @@ trait BillableDocumentControllerTrait
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 
             return redirect()->back()
-                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $list)], 'layouts'));
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $document_list)], 'layouts'));
             
         }
 

@@ -29,7 +29,7 @@
          </div>
 
 </div>
-
+{{--
 <div class="row">
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('template_id') ? 'has-error' : '' }}">
@@ -38,14 +38,8 @@
             {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
          </div>
 
-         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
-            {{ l('Sequence') }}
-            {!! Form::select('sequence_id', $sequenceList, old('sequence_id'), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
-            {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
-         </div>
-
 </div>
-
+--}}
 <div class="row">
 
          <div class="col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shippingslip date') ? 'has-error' : '' }}">
@@ -54,6 +48,12 @@
                {!! Form::text('document_date_form', null, array('class' => 'form-control', 'id' => 'document_date_form', 'autocomplete' => 'off')) !!}
                {!! $errors->first('shippingslip date', '<span class="help-block">:message</span>') !!}
             </div>
+         </div>
+
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
+            {{ l('Sequence') }}
+            {!! Form::select('sequence_id', $sequenceList, old('sequence_id'), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
+            {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
          </div>
 
 </div>

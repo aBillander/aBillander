@@ -205,6 +205,7 @@ return [
 	'Search Records'     => 'Buscar Registros',
 	'Date from'     => 'Fecha desde',
 	'Date to'     => 'Fecha hasta',
+	'Date'     => 'Fecha',
 	'From'     => 'Desde',
 	'To'     => 'Hasta',
 
@@ -236,6 +237,7 @@ return [
 	'Save & Confirm'      => 'Guardar y Confirmar',
 	'Save & Continue'     => 'Guardar y Continuar',
 	'Update'     => 'Actualizar',
+	'Process' => 'Procesar',
 	'Cancel'     => 'Cancelar',
 	'Confirm'     => 'Confirmar',
 	'Undo Confirm'     => 'Deshacer Confirmar',

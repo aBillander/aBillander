@@ -21,7 +21,7 @@ trait CustomerShippingSlipInvoiceableTrait
      *
      * @param  $list  : list of Id's of Customer Shippiong Slips
      * @param  $params[] : array of params
-     *                      Most used: 'should_group', 'document_date', 'status'
+     *                      Most used: 'group_by_customer', 'group_by_shipping_address', 'document_date', 'status'
      *                      Aditional: 'sequence_id', 'template_id', 'created_via', 'payment_method_id', 
      * @return 
      */
@@ -90,7 +90,7 @@ trait CustomerShippingSlipInvoiceableTrait
 
 
             // Should group? i.e.: One invoice per Customer?
-            if ( array_key_exists('should_group', $params) && ( $params['should_group'] == 0 ) ) {
+            if ( array_key_exists('group_by_customer', $params) && ( $params['group_by_customer'] == 0 ) ) {
 
                 // Every single document
 
@@ -99,7 +99,7 @@ trait CustomerShippingSlipInvoiceableTrait
                     // Select Documents
                     $documents_by_doc = collect($document);
 
-                    CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_doc, $params + $extra_params );;
+                    CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_doc, $params + $extra_params );
                 }
 
             } else {
@@ -142,7 +142,7 @@ trait CustomerShippingSlipInvoiceableTrait
             $params['payment_method_id'] = $payment_method_id;
 
             // Should group by Shipping Address?
-            if ( $params['group_by_address'] > 0 ) {
+            if ( $params['group_by_shipping_address'] > 0 ) {
 
                 // Adresses
                 $addresses = $documents_by_pm->unique('shipping_address_id')->pluck('shipping_address_id')->all();

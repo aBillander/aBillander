@@ -36,6 +36,9 @@
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
 
+        <a href="{{ route('customershippingslips.invoicer.create') }}" class="btn btn-sm btn-info" style="margin-left: 32px;" 
+                title="{{l('Filter and Invoice')}}"><i class="fa fa-money"></i> &nbsp; {{l('Filter and Invoice')}}</a>
+
     </div>
     <h2>
         {{ l('Documents') }}

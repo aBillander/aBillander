@@ -573,6 +573,10 @@ foreach ($pairs as $pair) {
 
         Route::post('customerorders/create/shippingslip/single',  'CustomerOrdersController@createSingleShippingSlip')->name('customerorder.single.shippingslip');
 
+
+        Route::get( 'customershippingslipsinvoicer',          'CustomerShippingSlipsInvoicerController@create' )->name('customershippingslips.invoicer.create' );
+        Route::post('customershippingslipsinvoicer/process',  'CustomerShippingSlipsInvoicerController@process')->name('customershippingslips.invoicer.process');
+
         Route::get( 'customershippingslips/customers/{id}/invoiceables',  'CustomerShippingSlipsController@getInvoiceableShippingSlips')->name('customer.invoiceable.shippingslips');
         Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');
         Route::get( 'customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');

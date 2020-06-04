@@ -29,7 +29,7 @@
          </div>
 
 </div>
-
+{{--
 <div class="row">
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('template_id') ? 'has-error' : '' }}">
@@ -45,7 +45,7 @@
          </div>
 
 </div>
-
+--}}
 <div class="row">
 
          <div class="col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shippingslip date') ? 'has-error' : '' }}">

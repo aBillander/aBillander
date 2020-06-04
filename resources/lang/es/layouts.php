@@ -252,6 +252,7 @@ return [
 	'Send by eMail'     => 'Enviar por eMail',
 	'PDF Export'     => 'Exportar PDF',
 	'Print'     => 'Imprimir',
+	'Print selected Documents'     => 'Imprimir Documentos seleccionados',
 	'Publish'     => 'Publicar',
 	'Upload File'     => 'Subir Fichero',
 	'Upload Image'     => 'Subir Imagen',

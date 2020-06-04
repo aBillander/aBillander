@@ -91,6 +91,16 @@
                             </a>
                         </li>
                         <li class="divider"></li>
+                        
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+                         <li>
+                            <a href="{{ URL::to('wooc/wcustomers') }}">
+                                 <i class="fa fa-cloud-download btn-xs alert-warning"></i> 
+                                 {{l('Customers', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+                        <!-- li class="divider"></li -->
+@endif
 
                          <li>
                             <a href="{{ URL::to('customers') }}">

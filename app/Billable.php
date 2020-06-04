@@ -444,6 +444,16 @@ class Billable extends Model implements ShippableInterface
         return Configuration::getInt('DEF_WAREHOUSE');
     }
     
+    public function getPaymentMethodId() 
+    {
+        if (   $this->payment_method_id
+            && \App\PaymentMethod::where('id', $this->payment_method_id)->exists()
+            )
+            return $this->payment_method_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD');
+    }
+    
 
 /*
 *

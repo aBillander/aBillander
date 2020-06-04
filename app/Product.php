@@ -1426,6 +1426,14 @@ class Product extends Model {
         return $query->where('active', '>', 0);
     }
 
+    public function scopeIsBlocked($query, $apply = true)
+    {
+        if ( $apply )
+            return $query->where('blocked', '>', 0);
+
+        return $query->where('blocked', 0);
+    }
+
     public function scopeIsPublished($query)
     {
         return $query->where('publish_to_web', '>', 0);

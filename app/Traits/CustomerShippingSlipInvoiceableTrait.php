@@ -142,7 +142,7 @@ trait CustomerShippingSlipInvoiceableTrait
             $params['payment_method_id'] = $payment_method_id;
 
             // Should group by Shipping Address?
-            if ( $params['group_by_shipping_address'] > 0 ) {
+            if ( array_key_exists('group_by_shipping_address', $params) && ($params['group_by_shipping_address'] > 0) ) {
 
                 // Adresses
                 $addresses = $documents_by_pm->unique('shipping_address_id')->pluck('shipping_address_id')->all();

@@ -190,4 +190,8 @@ return [
 	'Add New User' => 'Nuevo Usuario para este Cliente',
 	'Create User' => 'Crear Usuario',
 	'Update User' => 'Modificar Usuario',
+
+
+	'Invoice Shipping Slips' => 'Facturar Albaranes',
+
 ];

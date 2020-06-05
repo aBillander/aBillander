@@ -214,6 +214,22 @@ die();
 
         $pdfName    = str_singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
+        // Lets try another strategy
+        if ( $document->document_reference ) {
+            //
+            $sanitizer = new \App\FilenameSanitizer( $document->document_reference );
+
+            $sanitizer->stripPhp()
+                ->stripRiskyCharacters()
+                ->stripIllegalFilesystemCharacters('_');
+                
+            $pdfName = $sanitizer->getFilename();
+        } else {
+            //
+            $pdfName = str_singular($this->getParentClassLowerCase()).'_'.'ID_' . (string) $document->id;
+        }
+
+
         if ($request->has('screen')) return view($template, compact('document', 'company'));
 
 
@@ -227,7 +243,7 @@ die();
         }
     
 
-        return  $pdf->stream();
+        return  $pdf->stream($pdfName . '.pdf');
         return  $pdf->download( $pdfName . '.pdf');
     }
 

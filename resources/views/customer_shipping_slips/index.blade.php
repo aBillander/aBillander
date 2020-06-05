@@ -178,7 +178,11 @@
             <th> </th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>

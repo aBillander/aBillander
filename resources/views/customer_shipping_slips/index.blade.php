@@ -36,6 +36,9 @@
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
 
+        <a href="{{ route('customershippingslips.invoicer.create') }}" class="btn btn-sm btn-info" style="margin-left: 32px;" 
+                title="{{l('Filter and Invoice')}}"><i class="fa fa-money"></i> &nbsp; {{l('Filter and Invoice')}}</a>
+
     </div>
     <h2>
         {{ l('Documents') }}
@@ -175,7 +178,11 @@
             <th> </th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>

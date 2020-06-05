@@ -4,10 +4,153 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
+// use App\PDFMerger;
 use App\Configuration;
 
 trait BillableDocumentControllerTrait
 {
+
+
+    protected function showBulkPdf(Request $request)
+    {
+        //
+        // Get Document IDs & constraints
+        $document_list = $request->input('document_group', []);
+
+        if ( count( $document_list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date'], $request );
+        $request->merge( ['invoice_date' => $request->input('document_date')] );   // According to $rules_createinvoice
+
+        // $rules = $this->document::$rules_createinvoice;
+
+        // $this->validate($request, $rules);
+
+
+        //
+        // Get Documents
+        try {
+
+            $documents = $this->document
+                            ->with('customer')
+//                            ->with('invoicingAddress')
+//                            ->with('customerInvoiceLines')
+//                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
+                            ->with('currency')
+                            ->with('paymentmethod')
+                            ->with('customer.bankaccount')
+                            ->with('template')
+                                ->findOrFail( $document_list );
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return redirect()->back()
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $document_list)], 'layouts'));
+            
+        }
+
+        // return $request->toArray();
+
+        //
+        // Do some house-keeping
+        $storage_folder = $this->getParentClass().'/';
+        $currents =  \Storage::files($storage_folder);
+        // Empty folder
+        \Storage::delete( $currents );
+
+
+        //
+        // Loop through Documents
+
+        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
+        $company = \App\Context::getContext()->company;
+        $names = [];
+
+        foreach ($documents as $document) {
+            # code...
+
+                // Template
+                $t = $document->template ?? 
+                    \App\Template::find( $document->customer->getInvoiceTemplateId() );
+                    // \App\Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
+
+                if ( !$t )
+                    return redirect()->back()
+                        ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
+
+
+                $template = $t->getPath( $this->getParentModelSnakeCase() );
+
+                $paper = $t->paper;    // A4, letter
+                $orientation = $t->orientation;    // 'portrait' or 'landscape'.
+                
+                
+                // Catch for errors
+                try{
+                        $pdf        = \PDF::loadView( $template, compact('document', 'company') )
+                                    ->setPaper( $paper, $orientation );
+                }
+                catch(\Exception $e){
+
+                        abi_r($template);
+                        abi_r($e->getMessage(), true);
+
+                        // return redirect()->route('customerorders.show', $id)
+                        //    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+                }
+
+                // PDF stuff ENDS
+
+                $pdfName    = str_singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d').'.pdf';
+
+                // if ($request->has('screen')) return view($template, compact('document', 'company'));
+
+                $file_content = $pdf->output();
+                \Storage::put($storage_folder.$pdfName, $file_content);
+
+                $names[] = $pdfName;
+
+
+                if ( $request->has('preview') || 1 ) 
+                {
+                    //
+                } else {
+                    // Dispatch event
+                    // $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Printed';
+                    // event( new $event_class( $document ) );
+                }
+        }
+
+
+        //
+        // It is time to merge Documents
+        // include '../../Helpers/PDFMerger.php';
+
+        $documents_path = storage_path().'/app/'.$storage_folder;
+        $merged_pdf = new \PDFMerger;
+
+        foreach ($names as $name) {
+            # code...
+            // $content = \Storage::get($storage_folder.$name);
+
+            $merged_pdf->addPDF($documents_path.$name, 'all');
+
+        }
+
+        // Ta-chan!!
+        $merged_pdf->merge('browser', 'samplepdfs/TEST2.pdf'); //REPLACE 'file' (first argument) WITH 'browser', 'download', 'string', or 'file' for output options. You do not need to give a file path for browser, string, or download - just the name.
+    
+die();
+        return  $pdf->stream();
+        return  $pdf->download( $pdfName );
+    }
+
+
+
+/* ********************************************************************************************* */    
 
 
     protected function showPdf($id, Request $request)
@@ -71,6 +214,22 @@ trait BillableDocumentControllerTrait
 
         $pdfName    = str_singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
+        // Lets try another strategy
+        if ( $document->document_reference ) {
+            //
+            $sanitizer = new \App\FilenameSanitizer( $document->document_reference );
+
+            $sanitizer->stripPhp()
+                ->stripRiskyCharacters()
+                ->stripIllegalFilesystemCharacters('_');
+                
+            $pdfName = $sanitizer->getFilename();
+        } else {
+            //
+            $pdfName = str_singular($this->getParentClassLowerCase()).'_'.'ID_' . (string) $document->id;
+        }
+
+
         if ($request->has('screen')) return view($template, compact('document', 'company'));
 
 
@@ -84,7 +243,7 @@ trait BillableDocumentControllerTrait
         }
     
 
-        return  $pdf->stream();
+        return  $pdf->stream($pdfName . '.pdf');
         return  $pdf->download( $pdfName . '.pdf');
     }
 

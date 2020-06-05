@@ -660,7 +660,7 @@ class CustomerShippingSlipsController extends BillableController
         $this->validate($request, $rules);
 
         // Set params for group
-        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status', 'payment_method_id', 'testing');
+        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status', 'group_by_shipping_address', 'payment_method_id', 'testing');
 
         // abi_r($params, true);
 

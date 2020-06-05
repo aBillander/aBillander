@@ -10,6 +10,38 @@
     <div class="pull-right" style="padding-top: 4px;">
 
         <a href="{{ route('productionsheet.tourline', [$productionSheet->id]) }}" class="btn xbtn-sm btn-blue" title="{{l('Hoja Tourline :: Excel')}}" xstyle="margin-right: 32px;"><img src="{{ \App\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja Albaranes')}}</b></i></a>
+{{--
+        <button  name="b_search_filter" id="b_search_filter" class="btn xbtn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}" style="margin-left: 32px; ">
+           <i class="fa fa-filter"></i>
+           &nbsp; {{l('Filter', [], 'layouts')}}
+        </button>
+--}}
+        @if (Request::has('closed'))
+        @endif
+
+
+                <div class="btn-group" style="margin-left: 32px; ">
+                    <a href="#" class="btn xbtn-sm btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Filter Records', 'layouts')}}"><i class="fa fa-filter"></i> {{l('Filter', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu  pull-right">
+                      
+                      <li class="{{ Request::has('not_closed') ? 'alert-info' : '' }}">
+                        <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id, 'not_closed']) }}">{{ l('Not closed') }}</a></li>
+                      
+                      <li class="{{ Request::has('closed') ? 'alert-info' : '' }}">
+                        <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id, 'closed']) }}">{{ l('Closed') }}</a></li>
+                      
+                      <li class="{{ Request::has('closed_not_invoiced') ? 'alert-info' : '' }}">
+                        <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id, 'closed_not_invoiced']) }}">{{ l('Closed not invoiced') }}</a></li>
+                      
+                      <li class="{{ Request::has('invoiced') ? 'alert-info' : '' }}">
+                        <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id, 'invoiced']) }}">{{ l('Invoiced') }}</a></li>
+                      
+                      <li class="divider"></li>
+                      <li><a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}">{{ l('All', 'layouts') }}</a></li>
+                      <!-- li class="divider"></li -->
+                      <!-- li><a href="#">Separated link</a></li -->
+                    </ul>
+                </div>
 
 
 <div class="btn-group" style="margin-left: 32px; ">
@@ -21,12 +53,28 @@
   </ul>
 </div>
 
+
+                <div class="btn-group" style="margin-left: 32px; ">
+                    <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', 'layouts')}}" style="background-color: #31b0d5;
+border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu  pull-right">
+                      <li><a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}"><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a></li>
+                      <li><a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}"><i class="fa fa-truck"></i> {{ l('Shipping Slips') }}</a></li>
+                      <li><a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}"><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a></li>
+                      <li class="divider"></li>
+                      <!-- li class="divider"></li -->
+                      <!-- li><a href="#">Separated link</a></li -->
+                    </ul>
+                </div>
+{{--
         <a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}" class="btn btn-success" style="margin-left: 32px; xmargin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a>
 
+        <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}" class="btn btn-info" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-truck"></i> {{ l('Shipping Slips') }}</a>
+
         <a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}" class="btn alert-success" xstyle="margin-left: 32px; margin-right: 32px; "><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a>
+--}}
 
         <a href="{{ route('productionsheets.show', [$productionSheet->id]) }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheet') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
-
     </div>
     <h2>
         <a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Documents')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> 
@@ -47,10 +95,22 @@
     </h2>        
     <h2>     
                   {{ l('Documents') }} 
-                   &nbsp; 
+                   &nbsp; <span class="btn btn-sm btn-grey" title="{{ $documents_total_count }} {{ l('in total') }}">{{ $documents->total() }} / {{ $documents_total_count }}</span> 
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
     </h2>
 </div>
+
+
+
+
+{{-- Search Stuff - -} }
+
+          @include($view_path.'.index_form_search')
+
+{ {- - Search Stuff - ENDS --}}
+
+
+
 
 
 {!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents'] ) !!}
@@ -69,7 +129,11 @@
     <thead>
         <tr>
             <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-            <th class="text-left">{{ l('ID', 'layouts') }}</th>
+            <th class="text-left">{{-- l('ID', 'layouts') --}}
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customershippingslips.bulk.pdf' )}}');$('#form-select-documents').submit();return false;" target="_blank"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
+
+            </th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th>{{l('Customer')}}</th>
@@ -91,7 +155,7 @@
         @foreach ($documents as $document)
         <tr>
             <td class="text-center warning">
-@if ( $document->status == 'closed' || $document->invoiced_at )
+@if ( 0 && ($document->status == 'closed' || $document->invoiced_at) )
 @else
               {!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}
 @endif
@@ -134,13 +198,13 @@
             </td>
             <td>{{ optional($document->warehouse)->alias }}</td>
             <td>
-@if ( 0 && $document->status == 'closed' )
-@if ($document->shipping_slip_at && $document->shippingslip)
+@if ( $document->status == 'closed' )
+@if ($document->invoiced_at && $document->customerinvoice())
 
-                      <a href="{{ URL::to('customershippingslips/' . $document->shippingslip->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+                      <a href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
-                          @if ($document->shippingslip->document_reference)
-                            {{ $document->shippingslip->document_reference }}
+                          @if ($document->customerinvoice()->document_reference)
+                            {{ $document->customerinvoice()->document_reference }}
                           @else
                             <span class="btn btn-xs btn-grey">{{ l('Draft') }}</span>
                           @endif
@@ -240,7 +304,9 @@
 </div>
 @endif
 
-   </div>
+   </div><!-- div id="div_documents" ENDS -->
+
+
 
 @if ($documents->count())
 
@@ -344,6 +410,9 @@
 {!! Form::close() !!}
 
 
+@include('layouts/back_to_top_button')
+
+
 @endsection
 {{--
 @include('layouts/modal_delete')
@@ -428,6 +497,9 @@ $(document).ready(function() {
       $('#search_status').val(1);
       $('#search_filter').show();
    });
+
+      // Select first element
+      $('#production_sheet_id option:first-child').attr("selected", "selected");
 
 
     $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');

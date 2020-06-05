@@ -15,7 +15,7 @@
     </div>
     <h2>
         <a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Documents')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
-                  {{ l('Documents') }} <span class="lead well well-sm">
+                  {{ l('Invoiceable Shipping Slips') }} <span class="lead well well-sm">
 
                   <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
 
@@ -63,7 +63,11 @@
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-left">{{ l('Payment Method') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
@@ -237,11 +241,39 @@
 
 <div class="row">
 
+
+
+<div class="form-group col-lg-6 col-md-6 col-sm-6">
+  {{ l('Group by Address') }}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                        data-content="{{ l('Yes: One Invoice per Shipping Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+ <div>
+   <div class="radio-inline">
+     <label>
+       {!! Form::radio('group_by_shipping_address', '1', false, ['id' => 'group_by_shipping_address_on']) !!}
+       {!! l('Yes', [], 'layouts') !!}
+     </label>
+   </div>
+   <div class="radio-inline">
+     <label>
+       {!! Form::radio('group_by_shipping_address', '0', true, ['id' => 'group_by_shipping_address_off']) !!}
+       {!! l('No', [], 'layouts') !!}
+     </label>
+   </div>
+ </div>
+</div>
+
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('payment_method_id') ? 'has-error' : '' }}">
             {{ l('Payment Method') }}
             {!! Form::select('payment_method_id', $payment_methodList, null, array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
             {!! $errors->first('payment_method_id', '<span class="help-block">:message</span>') !!}
          </div>
+
+</div>
+
+<div class="row">
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('testing') ? 'has-error' : '' }}">
             {{ l('testing') }}
@@ -249,7 +281,7 @@
                                     data-content="{{ l('Sí: se creará la Factura, pero no se marcarán los Albaranes como facturados') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
-            {!! Form::select('testing', ['1' => 'Sí', '0' => 'No', ], null, array('class' => 'form-control', 'id' => 'testing')) !!}
+            {!! Form::select('testing', ['1' => 'Sí', '0' => 'No', ], 0, array('class' => 'form-control', 'id' => 'testing')) !!}
             {!! $errors->first('testing', '<span class="help-block">:message</span>') !!}
          </div>
 

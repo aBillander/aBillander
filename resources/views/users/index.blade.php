@@ -27,6 +27,7 @@
             <th class="text-left">{{l('Full Name')}}</th>
             <th class="text-left">{{l('Email')}}</th>
             <th class="text-left">{{l('User home page')}}</th>
+            <th class="text-left">{{l('User theme')}}</th>
             <th class="text-left">{{l('Language')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-center">{{l('Is Administrator?')}}</th>
@@ -41,6 +42,7 @@
             <td>{{ $user->getFullName() }}</td>
             <td>{{ $user->email }}</td>
             <td>{{ $user->home_page }}</td>
+            <td>{{ $user->theme }}</td>
             <td>{{ $user->language->name }}</td>
 
             <td class="text-center">@if ($user->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>

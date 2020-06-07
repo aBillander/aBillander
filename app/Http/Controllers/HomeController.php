@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -24,6 +25,8 @@ class HomeController extends Controller
     public function index()
     {
 
+        if ( checkRoute( Auth::user()->home_page ) )
+            return redirect( Auth::user()->home_page );
 
         return view('home.home');
     }

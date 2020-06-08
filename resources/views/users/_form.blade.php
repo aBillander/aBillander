@@ -26,10 +26,18 @@
     {!! Form::label('email', l('Email')) !!}
     {!! Form::text('email', null, array('placeholder' => l('your@email.com'), 'class' => 'form-control', 'required' => 'required')) !!}
 </div>
+</div>
+
+<div class="row">
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('home_page', l('User home page')) !!}
     {!! Form::text('home_page', null, array('placeholder' => '/', 'class' => 'form-control')) !!}
-</div><br />
+</div>
+
+<div class="form-group col-lg-4 col-md-4 col-sm-4">
+    {!! Form::label('theme', l('User theme')) !!}
+    {!! Form::select('theme', $themeList, null, array('class' => 'form-control')) !!}
+</div>
 </div>
 
 <div class="row">

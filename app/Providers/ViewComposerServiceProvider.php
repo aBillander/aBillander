@@ -327,7 +327,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Themes
-		view()->composer(array('configuration_keys.key_group_3'), function($view) {
+		view()->composer(array('users.create', 'users.edit', 'configuration_keys.key_group_3'), function($view) {
 		    
 		    
 			$directories = \File::directories(resource_path().'/theme');

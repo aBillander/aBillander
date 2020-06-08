@@ -35,6 +35,10 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\CustomerInvoicePrintedListener',
         ],
     
+        'App\Events\CustomerInvoicePosted' => [
+            'App\Listeners\CustomerInvoicePostedListener',
+        ],
+    
         'App\Events\CustomerInvoiceEmailed' => [
             'App\Listeners\CustomerInvoiceEmailedListener',
         ],

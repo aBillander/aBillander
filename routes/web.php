@@ -397,6 +397,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('customers.addresses', 'CustomerAddressesController');
 
         Route::post('mail', 'MailController@store');
+        Route::post('mail/feedback', 'MailController@storeFeedback');
 
         Route::resource('paymentmethods', 'PaymentMethodsController');
         Route::resource('paymenttypes', 'PaymentTypesController');

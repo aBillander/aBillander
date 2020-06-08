@@ -29,6 +29,10 @@ trait BillableDocumentControllerTrait
 
         // $this->validate($request, $rules);
 
+        $event = $request->input('event', 'Printed');
+        if ( !in_array($event, ['Printed', 'Posted']) )
+            $event = 'Printed';
+
 
         //
         // Get Documents
@@ -114,13 +118,13 @@ trait BillableDocumentControllerTrait
                 $names[] = $pdfName;
 
 
-                if ( $request->has('preview') || 1 ) 
+                if ( $request->has('preview') ) 
                 {
                     //
                 } else {
                     // Dispatch event
-                    // $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Printed';
-                    // event( new $event_class( $document ) );
+                    $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).$event;
+                    event( new $event_class( $document ) );
                 }
         }
 

@@ -44,7 +44,7 @@
                     <ul class="dropdown-menu" role="menu">
                         <li class="divider"></li>
                          <li>
-                            <a href="{{ URL::to('customerinvoices') }}">
+                            <a href="{{ route('accounting.customerinvoices.index') }}">
                                  {{l('Customer Invoices', [], 'layouts')}}
                             </a>
                         </li>

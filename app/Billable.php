@@ -70,7 +70,9 @@ class Billable extends Model implements ShippableInterface
 
                         'printed_at',
                         'edocument_sent_at',
-                        'customer_viewed_at'
+                        'customer_viewed_at',
+
+                        'posted_at',
                        ];
 
     protected $document_dates = [

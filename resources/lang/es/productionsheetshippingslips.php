@@ -376,4 +376,9 @@ return [
 
 	'in total' => 'en total',
 
+
+	'Yes: One Invoice per Customer<br />No: One Invoice per Shipping Slip' => 'Sí: Una Factura por Cliente<br />No: Una Factura por Albarán',
+
+	'Group by Address' => 'Agrupar por Dirección',
+	'Yes: One Invoice per Shipping Address' => 'Sí: Una Factura por Dirección de Envío',
 ];

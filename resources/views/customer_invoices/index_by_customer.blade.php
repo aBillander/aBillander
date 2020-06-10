@@ -150,7 +150,7 @@
             <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
             <th class="text-left">{{ l('ID', 'layouts') }}
 
-<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf' )}}');$('#form-select-documents').submit();return false;" target="_blank"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('target', '_blank');$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
 
             </th>
             <th class="text-center"></th>

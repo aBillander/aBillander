@@ -199,6 +199,8 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
 	'Add Product'     => 'Nuevo Producto',
 	'Add Service'     => 'Nuevo Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
+	'Add Shipping Cost'     => 'Añadir Costes de Envío',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',

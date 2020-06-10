@@ -236,7 +236,7 @@ class ProductionSheetShippingSlipsController extends BillableController
 
         // Set params for group
         // Excluded: 'template_id', 'sequence_id', 
-        $params = $request->only('production_sheet_id', 'should_group', 'document_date', 'status');
+        $params = $request->only('production_sheet_id', 'should_group', 'group_by_shipping_address', 'document_date', 'status');
 
         // abi_r($params, true);
 

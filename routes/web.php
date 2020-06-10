@@ -184,6 +184,14 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
         Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
 
+        Route::group(['prefix' => 'accounting', 'namespace' => '\Accounting'], function ()
+        {
+            Route::resource('customers', 'AccountingCustomersController')->names('accounting.customers');
+
+            Route::resource('customerinvoices', 'AccountingCustomerInvoicesController')->names('accounting.customerinvoices');
+            Route::get('customerinvoices/{id}/pdf', 'AccountingCustomerInvoicesController@showPdf')->name('accounting.customerinvoices.pdf');
+        });
+
         // Helferin
         Route::get('/helferin/home', 'HelferinController@index')->name('helferin.home');
         Route::post('/helferin/reports/sales'  , 'HelferinController@reportSales'  )->name('helferin.reports.sales');
@@ -406,6 +414,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('customers.addresses', 'CustomerAddressesController');
 
         Route::post('mail', 'MailController@store');
+        Route::post('mail/feedback', 'MailController@storeFeedback');
 
         Route::resource('paymentmethods', 'PaymentMethodsController');
         Route::resource('paymenttypes', 'PaymentTypesController');

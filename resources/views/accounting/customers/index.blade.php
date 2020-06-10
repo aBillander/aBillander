@@ -7,37 +7,11 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{ URL::to('customers/create') }}" class="btn btn-sm btn-success" 
-                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
         <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
-
-        <a href="{{ route('customers.import') }}" class="btn btn-sm btn-warning" 
-                title="{{l('Import', [], 'layouts')}}"><i class="fa fa-ticket"></i> {{l('Import', [], 'layouts')}}</a>
-
-        <a href="{{ route('customers.export') }}" class="btn btn-sm btn-grey" 
-                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
-
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
-                
-        <a class="btn btn-sm btn-navy invite-customer" data-html="false" data-toggle="modal" 
-                href="{{ route('customers.invite') }}" 
-                data-to_name = "" 
-                data-to_email = "" 
-                data-from_name = "{{ abi_mail_from_name() }}" 
-                data-from_email = "{{ abi_mail_from_address() }}" 
-                onClick="return false;" title="{{l('Invite Customer')}}"><i class="fa fa-paper-plane"></i> {{l('Invite')}}</a>
-
-        <a href="{{ route('carts.index') }}" class="btn btn-sm btn-blue" 
-                title="{{l('View Carts', [], 'layouts')}}"><i class="fa fa-shopping-cart"></i> {{l('View Carts', [], 'layouts')}}</a>
-
-        <button type="button" class="btn btn-sm btn-behance" 
-                data-toggle="modal" data-target="#customercenterHelp"
-                title="{{l('Help', [], 'layouts')}}"><i class="fa fa-life-saver"></i> {{l('Help', [], 'layouts')}}</button>
-@endif
 
     </div>
     <h2>
@@ -53,7 +27,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => 'customers.index', 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => 'accounting.customers.index', 'method' => 'GET')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -65,8 +39,8 @@
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {!! Form::label('reference_external', l('External Reference')) !!}
-    {!! Form::text('reference_external', null, array('class' => 'form-control')) !!}
+    {!! Form::label('accounting_id', l('Accounting ID')) !!}
+    {!! Form::text('accounting_id', null, array('class' => 'form-control')) !!}
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
@@ -116,7 +90,7 @@
     <thead>
         <tr>
             <th class="text-left">{{ l('ID', [], 'layouts') }}</th>
-            <th class="text-left">{{ l('External Reference') }}</th>
+            <th class="text-left">{{ l('Accounting ID') }}</th>
             <th class="text-left">{{ l('Name') }}</th>
             <th class="text-left">{{ l('Identification') }}</th>
             <th class="text-left">{{ l('Email') }}</th>
@@ -130,7 +104,7 @@
         @foreach ($customers as $customer)
         <tr>
             <td>{{ $customer->id }}</td>
-            <td>{{ $customer->reference_external }}</td>
+            <td>{{ $customer->accounting_id }}</td>
             <td>{{ $customer->name_regular }}<!-- br / -->{{-- $customer->name_commercial --}}</td>
             <td>{{ $customer->identification }}</td>
             <td>{{ $customer->address->email }}</td>
@@ -138,50 +112,9 @@
             <td @if ( ($customer->outstanding_amount - $customer->outstanding_amount_allowed)>0 ) class="alert alert-danger" @endif>{{ $customer->as_money('outstanding_amount', $customer->currency) }}</td>
             <td class="text-center">@if ($customer->blocked) <i class="fa fa-lock" style="color: #df382c;"></i> @else <i class="fa fa-unlock" style="color: #38b44a;"></i> @endif</td>
             <td class="text-right button-pad">
-                @if (  is_null($customer->deleted_at))
-                
-                <a class="btn btn-sm btn-blue mail-item" data-html="false" data-toggle="modal" 
-                        xhref="{{ URL::to('customers/' . $customer->id) . '/mail' }}" 
-                        href="{{ URL::to('mail') }}" 
-                        data-to_name = "{{ $customer->address->firstname }} {{ $customer->address->lastname }}" 
-                        data-to_email = "{{ $customer->address->email }}" 
-                        data-from_name = "{{ abi_mail_from_name() }}" 
-                        data-from_email = "{{ abi_mail_from_address() }}" 
-                        onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
-                
-                <div class="btn-group">
-                    <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{-- l('Document', [], 'layouts') --}} &nbsp;<span class="caret"></span></a>
-                    <ul class="dropdown-menu  pull-right"">
-                      <li style="
-color: #3a87ad;
-background-color: #d9edf7;
-border-color: #bce8f1;
-padding: 3px 20px;
-line-height: 1.42857143;
-                        ">{{l('Add Document', [], 'layouts')}}</li>
-                      <li class="divider"></li>
-                      <li><a href="{{ route('customerorders.create.withcustomer', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
-                      <li class="divider"></li>
-                      <li><a href="{{ route('customershippingslips.create.withcustomer', $customer->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
-                      <li class="divider"></li>
-                      <li><a href="{{ route('customerinvoices.create.withcustomer', $customer->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
-                      <li class="divider"></li>
-                      <li><a href="{{ route('customerquotations.create.withcustomer', $customer->id) }}">{{l('Quotation', [], 'layouts')}}</a></li>
-                      <li class="divider"></li>
-                      <!-- li><a href="#">Separated link</a></li -->
-                    </ul>
-                </div>
 
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                    href="{{ URL::to('customers/' . $customer->id ) }}" 
-                    data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Customers') }} :: ({{$customer->id}}) {{{ $customer->name_regular }}} " 
-                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-                @else
-                <a class="btn btn-warning" href="{{ URL::to('customers/' . $customer->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
-                <a class="btn btn-danger" href="{{ URL::to('customers/' . $customer->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
-                @endif
+                <a class="btn btn-sm btn-warning" href="{{ route('accounting.customers.edit', $customer->id ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
             </td>
         </tr>
         @endforeach
@@ -219,10 +152,6 @@ line-height: 1.42857143;
 </style>
 
 @endsection
-
-@include('layouts/modal_mail')
-@include('layouts/modal_invite_customer')
-@include('layouts/modal_delete')
 
 @include('customers/_modal_help')
 

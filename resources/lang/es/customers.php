@@ -194,4 +194,5 @@ return [
 
 	'Invoice Shipping Slips' => 'Facturar Albaranes',
 
+	'Accounting ID' => 'Código Contabilidad',
 ];

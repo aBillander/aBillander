@@ -104,10 +104,15 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-bar-chart"></i>
                &nbsp; {{ l('Statistics') }}
             </a -->
+
+@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+
             <a id="b_customerusers" href="#customerusers" class="list-group-item">
                <i class="fa fa-bolt"></i>
                &nbsp; {{ l('ABCC Access') }}
             </a>
+
+@endif
          </div>
       </div>
       

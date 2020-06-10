@@ -14,7 +14,8 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:web');
+        // https://stackoverflow.com/questions/47230395/laravel-middleware-redirect-loop
+        // $this->middleware('auth:web');
     }
 
     /**
@@ -25,7 +26,8 @@ class HomeController extends Controller
     public function index()
     {
 
-        if ( checkRoute( Auth::user()->home_page ) )
+        // https://stackoverflow.com/questions/47230395/laravel-middleware-redirect-loop
+        if ( 0 && checkRoute( Auth::user()->home_page ) )
             return redirect( Auth::user()->home_page );
 
         return view('home.home');

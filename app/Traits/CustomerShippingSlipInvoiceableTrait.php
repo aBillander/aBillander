@@ -99,12 +99,12 @@ trait CustomerShippingSlipInvoiceableTrait
                     // Select Documents
                     $documents_by_doc = collect($document);
 
-                    CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_doc, $params + $extra_params );
+                    return CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_doc, $params + $extra_params );
                 }
 
             } else {
 
-                CustomerShippingSlip::invoiceDocumentsByCustomer( $documents, $params + $extra_params );
+                return CustomerShippingSlip::invoiceDocumentsByCustomer( $documents, $params + $extra_params );
             }
         }
 
@@ -152,12 +152,12 @@ trait CustomerShippingSlipInvoiceableTrait
                     // Select Documents
                     $documents_by_pm_by_addrr = $documents_by_pm->where('shipping_address_id', $address_id);
 
-                    CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm_by_addrr, $params );
+                    return CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm_by_addrr, $params );
                 }
 
             } else {
 
-                CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm, $params );
+                return CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm, $params );
             }
         }
 

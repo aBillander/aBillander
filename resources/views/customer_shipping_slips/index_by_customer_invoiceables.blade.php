@@ -340,6 +340,33 @@
 
 <script>
 
+{{--
+var focused = true;
+
+window.onfocus = function() {
+    focused = true;
+};
+window.onblur = function() {
+    focused = false;
+};
+
+
+$(function() {
+    $(window).focus(function() {
+        if ( focused == true ) return;
+
+        window.location.reload();
+        focused = true;
+        // console.log('Focus event');
+    });
+
+    $(window).blur(function() {
+        focused = false;
+        // console.log('un focus');
+    });
+});
+--}}
+
 // check box selection -->
 // See: http://www.dotnetcurry.com/jquery/1272/select-deselect-multiple-checkbox-using-jquery
 

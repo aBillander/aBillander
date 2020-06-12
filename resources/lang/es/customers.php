@@ -73,6 +73,7 @@ return [
 	'Special Prices'     => 'Precios Especiales',
 	'Statistics'     => 'Estadísticas',
 	'ABCC Access'     => 'Acceso ABCC',
+	'Web Shop'	=> 'Tienda Online',
 
 	'Website'     => 'Web',
 	'Misc'     => 'Otros',

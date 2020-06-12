@@ -113,6 +113,16 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
             </a>
 
 @endif
+
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+
+            <a id="b_webshop" href="#webshop" class="list-group-item">
+               <!-- i class="fa fa-cloud"></i -->
+               <i class="fa fa-wordpress text-info"></i>
+               &nbsp; {{ l('Web Shop') }}
+            </a>
+
+@endif
          </div>
       </div>
       
@@ -145,6 +155,13 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
 @endif
 
+
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+
+          @include('customers._panel_webshop')
+
+@endif
+
       </div><!-- div class="col-lg-10 col-md-10 col-sm-9" -->
 
    </div>
@@ -166,6 +183,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#panel_pricerules").hide();
  //     $("#panel_statistics").hide();
       $("#panel_customerusers").hide();
+      $("#panel_webshop").hide();
 
       $("#b_main").removeClass('active');
       $("#b_commercial").removeClass('active');
@@ -178,6 +196,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#b_pricerules").removeClass('active');
 //      $("#b_statistics").removeClass('active');
       $("#b_customerusers").removeClass('active');
+      $("#b_webshop").removeClass('active');
       
       if(window.location.hash.substring(1) == 'commercial')
       {
@@ -223,6 +242,14 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
          $("#panel_customerusers").show();
          $("#b_customerusers").addClass('active');
          getCustomerUsers();
+      }
+      else if(window.location.hash.substring(1) == 'webshop')
+      {
+         $("#panel_iwebshop").show();
+         $("#customer-webshop-data").show();
+         $("#b_webshop").addClass('active');
+         if ($("#customer-webshop-data-content").html() == '')
+          getCustomerWebShopEmbedData();
       }
       else  
       {

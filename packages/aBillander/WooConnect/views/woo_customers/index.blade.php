@@ -106,13 +106,14 @@
       <!-- th>{{l('username')}}</th -->
       <th>{{l('Created')}}</th>
 
-      <th class="text-left">{{l('Company')}}</th>
-      <th>{{l('first_name')}} {{l('last_name')}}</th>
+      <!-- th class="text-left">{{l('Company')}}</th>
+      <th>{{l('first_name')}} {{l('last_name')}}</th -->
 
-      <th>{{l('Address')}}</th>
+      <th>{{l('Billing Address')}}</th>
+      <th> </th>
 
-      <th>{{l('email')}}</th>
-      <th>{{l('phone')}}</th>
+      <th>{{l('email')}}<br />
+          {{l('phone')}}</th>
 
       <th>{{l('orders_count')}}</th>
       <th>{{l('total_spent')}}</th>
@@ -121,6 +122,10 @@
 	</thead>
 	<tbody id="order_lines">
 	@foreach ($customers as $customer)
+
+      @if ( $customer["abi_customer_count"] == 0 )
+{{--        @continue     --}}
+      @endif
 
 		<tr>
 			@if ( 1 )
@@ -132,16 +137,16 @@
       <!-- td>{{ $customer["username"] }}</td -->
       <td title="{{ $customer["date_created"] }}">{{ explode('T', $customer["date_created"])[0] }}</td>
 
-      <td>{{ $customer["billing"]["company"] }}</td>
-      <td>{{ $customer["billing"]["first_name"] }} {{ $customer["billing"]["last_name"] }}</td>
+      <td>{{ $customer["billing"]["company"] }}<br />
+          {{ $customer["billing"]["first_name"] }} {{ $customer["billing"]["last_name"] }}</td>
 
       <td>{{ $customer["billing"]["address_1"] }}<br />
           {{ $customer["billing"]["address_2"] }}<br />
           {{ $customer["billing"]["postcode"] }} {{ $customer["billing"]["city"] }} {{ $customer["billing"]["state"] }}
       </td>
 
-      <td>{{ $customer["billing"]["email"] }}</td>
-      <td>{{ $customer["billing"]["phone"] }}</td>
+      <td>{{ $customer["billing"]["email"] }}<br />
+          {{ $customer["billing"]["phone"] }}</td>
 
 
       <td>{{ $customer["orders_count"] }}</td>
@@ -183,19 +188,21 @@
     <tr class="danger">
       <td class="text-center"> </td>
       
-      <td title="{{ $abi_customer->reference_external }}">{{ $abi_customer->id }}</td>
+      <td title="{{ $abi_customer->reference_external }}"><a href="{{ URL::route('customers.edit', [$abi_customer->id] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank">{{ $abi_customer->id }}</a><br />
+        {{ $abi_customer->reference_external }}
+      </td>
 
-      <td title="{{ '' }}">{{ $abi_customer->name_fiscal }}</td>
+      <td title="{{ '' }}">{{ $abi_customer->name_fiscal }}<br />
 
-      <td>{{ $abi_customer->name_commercial }}</td>
+          {{ $abi_customer->name_commercial }}</td>
 
-      <td>{{ $abi_customer->address->address_1 }}<br />
-          {{ $abi_customer->address->address_2 }}<br />
+      <td>{{ $abi_customer->address->address1 }}<br />
+          {{ $abi_customer->address->address2 }}<br />
           {{ $abi_customer->address->postcode }} {{ $abi_customer->address->city }} {{ $abi_customer->address->state->name }}
       </td>
 
-      <td>{{ $abi_customer->address->email }}</td>
-      <td>{{ $abi_customer->address->phone }}</td>
+      <td>{{ $abi_customer->address->email }}<br />
+          {{ $abi_customer->address->phone }}</td>
 
 
       <td> </td>

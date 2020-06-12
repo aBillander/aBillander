@@ -18,10 +18,11 @@ trait CustomerShippingSlipInvoiceableTrait
 
     /**
      * Create an Invoice after a list of Customer Shippiong Slips. 
-     * ALL Customer Shippiong Slips belongs to the same Customer. 
      *
      * @param  $list  : list of Id's of Customer Shippiong Slips
-     * @param  $params['customer_id'] : Customer Id of ALL Customer Shippiong Slips
+     * @param  $params[] : array of params
+     *                      Most used: 'group_by_customer', 'group_by_shipping_address', 'document_date', 'status'
+     *                      Aditional: 'sequence_id', 'template_id', 'created_via', 'payment_method_id', 
      * @return 
      */
     public static function invoiceDocumentList( $list, $params )
@@ -32,13 +33,13 @@ trait CustomerShippingSlipInvoiceableTrait
 
         try {
 
-            $customer = Customer::
-                                  with('currency')
-                                ->findOrFail($params['customer_id']);
+//            $customer = Customer::
+//                                  with('currency')
+//                                ->findOrFail($params['customer_id']);
 
             $documents = CustomerShippingSlip::
-                                  where('customer_id', $params['customer_id'])
-                                ->where('status', 'closed')
+//                                  where('customer_id', $params['customer_id'])
+                                  where('status', 'closed')
                                 ->where('invoiced_at', null)
                                 ->with('lines')
                                 ->with('lines.linetaxes')
@@ -68,13 +69,112 @@ trait CustomerShippingSlipInvoiceableTrait
 
     /**
      * Create an Invoice after a collection of Customer Shippiong Slips. 
+     * Group Shippiong Slips by Customer. 
+     *
+     * @param  $documents  : collectiom of Customer Shippiong Slips
+     * @param  $params[] : array of params
+     * @return CustomerInvoice Object
+     */
+    public static function invoiceDocumentCollection( $documents, $params )
+    {
+        // Group Shippiong Slips by Customer.
+        $customers = $documents->unique('customer_id')->pluck('customer_id')->all();
+
+        foreach ($customers as $customer_id) {
+            # code...
+            $documents_by_cid = $documents->where('customer_id', $customer_id);
+
+            $extra_params = [
+                        'customer_id'            => $customer_id,
+                    ];
+
+
+            // Should group? i.e.: One invoice per Customer?
+            if ( array_key_exists('group_by_customer', $params) && ( $params['group_by_customer'] == 0 ) ) {
+
+                // Every single document
+
+                foreach ($documents as $document) {
+                    # code...
+                    // Select Documents
+                    $documents_by_doc = collect($document);
+
+                    return CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_doc, $params + $extra_params );
+                }
+
+            } else {
+
+                return CustomerShippingSlip::invoiceDocumentsByCustomer( $documents, $params + $extra_params );
+            }
+        }
+
+    }
+
+    
+
+    /**
+     * Create an Invoice after a collection of Customer Shippiong Slips. 
+     * ALL Customer Shippiong Slips belongs to the same Customer. 
+     * Group Customer Shippiong Slips according to some criteria. 
+     *
+     * @param  $documents  : collectiom of Customer Shippiong Slips
+     * @param  $params[] : array of params
+     * @return CustomerInvoice Object
+     */
+    public static function invoiceDocumentsByCustomer( $documents, $params )
+    {
+        // Pre-process Documents
+
+        foreach ($documents as $document)
+        {
+            # code...
+            $document->payment_method_id = $document->getPaymentMethodId();
+        }
+
+        // Group by payment method
+        $pmethods = $documents->unique('payment_method_id')->pluck('payment_method_id')->all();
+
+        foreach ($pmethods as $payment_method_id) {
+            # code...
+            // Select Documents
+            $documents_by_pm = $documents->where('payment_method_id', $payment_method_id);
+
+            $params['payment_method_id'] = $payment_method_id;
+
+            // Should group by Shipping Address?
+            if ( array_key_exists('group_by_shipping_address', $params) && ($params['group_by_shipping_address'] > 0) ) {
+
+                // Adresses
+                $addresses = $documents_by_pm->unique('shipping_address_id')->pluck('shipping_address_id')->all();
+
+                foreach ($addresses as $address_id) {
+                    # code...
+                    // Select Documents
+                    $documents_by_pm_by_addrr = $documents_by_pm->where('shipping_address_id', $address_id);
+
+                    return CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm_by_addrr, $params );
+                }
+
+            } else {
+
+                return CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm, $params );
+            }
+        }
+
+
+    }
+
+    
+
+    /**
+     * Create an Invoice after a collection of Customer Shippiong Slips. 
      * ALL Customer Shippiong Slips belongs to the same Customer. 
      *
      * @param  $documents  : collectiom of Customer Shippiong Slips
      * @param  $params['customer_id'] : Customer Id of ALL Customer Shippiong Slips
      * @return CustomerInvoice Object
      */
-    public static function invoiceDocumentCollection( $documents, $params )
+    public static function invoiceCustomerDocuments( $documents, $params )
     {
         // abi_r($params);die();
 

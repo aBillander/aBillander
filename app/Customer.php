@@ -277,6 +277,11 @@ class Customer extends Model {
             $query->where('reference_external', 'LIKE', '%' . $params['reference_external'] . '%');
         }
 
+        if ( isset($params['accounting_id']) && $params['accounting_id'] != '' )
+        {
+            $query->where('accounting_id', 'LIKE', '%' . $params['accounting_id'] . '%');
+        }
+
         if ( isset($params['identification']) && $params['identification'] != '' )
         {
             $query->where('identification', 'LIKE', '%' . $params['identification'] . '%');

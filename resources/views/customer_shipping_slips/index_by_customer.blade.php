@@ -17,6 +17,8 @@
         <a href="{{ route('customershippingslips.create.withcustomer', $customer->id) }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
+                <a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}" class="btn btn-sm btn-info" style="margin-right: 0px; margin-left: 18px;"><i class="fa fa-money"></i> &nbsp;{{l('Invoice Shipping Slips', 'customers')}}</a>
+
     </div>
     <h2>
         <a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Documents')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
@@ -180,7 +182,11 @@
             <th class="text-left">{{ l('Date') }}</th>
             <th> </th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>

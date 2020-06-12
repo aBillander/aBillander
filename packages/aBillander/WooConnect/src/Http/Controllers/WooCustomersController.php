@@ -37,6 +37,44 @@ class WooCustomersController extends Controller
 	 */
 	public function index(Request $request)
 	{
+		if (request()->has('dupes'))
+		{
+				abi_r('>>>>> Clientes con igual webshop_id');
+
+				$customers = $this->abi_customer->select('id', 'webshop_id')->where('webshop_id', '!=', '')->get();
+		
+		
+				$groupedByValue = $customers->groupBy('webshop_id');
+		
+		
+			    $dupes = $groupedByValue->filter(function ($groups) {
+			        return $groups->count() > 1;
+			    });
+
+			    abi_r($dupes->toArray());
+
+				abi_r('>>>>> Clientes con igual reference_external');
+
+				$customers = $this->abi_customer->select('id', 'reference_external')->where('reference_external', '!=', '')->get();
+		
+		
+				$groupedByValue = $customers->groupBy('reference_external');
+		
+		
+			    $dupes = $groupedByValue->filter(function ($groups) {
+			        return $groups->count() > 1;
+			    });
+
+			    abi_r($dupes->toArray());die();
+		}
+
+	    
+
+
+
+
+
+
 		// 
 		$perPage = request('perPage', intval(\App\Configuration::get('WOOC_ORDERS_PER_PAGE')));
 
@@ -305,7 +343,18 @@ class WooCustomersController extends Controller
 		$customer = WooCustomer::fetch( $id );
 
         if ($request->has('embed'))
-        	return view('woo_connect::woo_customers.show_embed', compact('customer'));
+        {
+        	if($request->ajax()){
+
+	            return response()->json( [
+	                'success' => $customer ? 'OK' : 'KO',
+	                'msg' => 'OK'." $id ".($customer['name'] ?? ''),
+//	                'html-raw' => '<pre>'.print_r($customer, true).'</pre>',
+	                'html' => view('woo_connect::woo_customers.show_embed', compact('customer'))->render(),
+	            ] );
+
+	        }
+        }
         else
         	return $this->fetch($id);	// To do: return data into proper view
 	}

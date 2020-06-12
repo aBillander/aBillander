@@ -660,7 +660,7 @@ class CustomerShippingSlipsController extends BillableController
         $this->validate($request, $rules);
 
         // Set params for group
-        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status', 'payment_method_id', 'testing');
+        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status', 'group_by_shipping_address', 'payment_method_id', 'testing');
 
         // abi_r($params, true);
 
@@ -668,8 +668,8 @@ class CustomerShippingSlipsController extends BillableController
 
         $invoice = \App\CustomerShippingSlip::invoiceDocumentList( $document_list, $params );
 
-        return redirect('customerinvoices/'.$invoice->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $invoice->id], 'layouts'));
+        return redirect('customerinvoices/'.optional($invoice)->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($invoice)->id], 'layouts'));
 
     } 
 

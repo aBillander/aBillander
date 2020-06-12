@@ -70,7 +70,9 @@ class Billable extends Model implements ShippableInterface
 
                         'printed_at',
                         'edocument_sent_at',
-                        'customer_viewed_at'
+                        'customer_viewed_at',
+
+                        'posted_at',
                        ];
 
     protected $document_dates = [
@@ -442,6 +444,16 @@ class Billable extends Model implements ShippableInterface
             return $this->warehouse_id;
 
         return Configuration::getInt('DEF_WAREHOUSE');
+    }
+    
+    public function getPaymentMethodId() 
+    {
+        if (   $this->payment_method_id
+            && \App\PaymentMethod::where('id', $this->payment_method_id)->exists()
+            )
+            return $this->payment_method_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD');
     }
     
 

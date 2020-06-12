@@ -73,6 +73,7 @@ return [
 	'Special Prices'     => 'Precios Especiales',
 	'Statistics'     => 'Estadísticas',
 	'ABCC Access'     => 'Acceso ABCC',
+	'Web Shop'	=> 'Tienda Online',
 
 	'Website'     => 'Web',
 	'Misc'     => 'Otros',
@@ -190,4 +191,9 @@ return [
 	'Add New User' => 'Nuevo Usuario para este Cliente',
 	'Create User' => 'Crear Usuario',
 	'Update User' => 'Modificar Usuario',
+
+
+	'Invoice Shipping Slips' => 'Facturar Albaranes',
+
+	'Accounting ID' => 'Código Contabilidad',
 ];

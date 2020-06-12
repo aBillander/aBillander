@@ -103,6 +103,7 @@ return [
 	'View Invoicing Address'     => 'Ver Dirección de Facturación',
 
 	'Group Shipping Slips'     => 'Agrupar Albaranes',
+	'Invoice Shipping Slips' => 'Facturar Albaranes',
 
 
 	'Header'     => 'Cabecera',
@@ -198,6 +199,8 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
 	'Add Product'     => 'Nuevo Producto',
 	'Add Service'     => 'Nuevo Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
+	'Add Shipping Cost'     => 'Añadir Costes de Envío',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -329,6 +332,8 @@ return [
 	'Shipping Slip: :id [dicount Tax :percent %]'     => 'Albarán: :id [descuento IVA :percent %]',
 
 	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
+
+	'Address is displayed if it is different from Customer Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Cliente',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 	'Prompt Payment'     => 'Pronto Pago',
@@ -348,6 +353,13 @@ return [
 	'You are going to remove :slip from Invoice :inv . Are you sure?' => 'Está a punto de quitar :slip de la Factura :inv . ¿Está seguro?',
 
 	'Total Amount' => 'Importe',
-	'With or without Taxes' => 'Con o sin Impuestos incluidos'
+	'With or without Taxes' => 'Con o sin Impuestos incluidos',
+
+	'Filter and Invoice' => 'Filtrar y Facturar',
+
+	'Invoiceable Shipping Slips' => 'Albaranes para Facturar',
+
+	'Group by Address' => 'Agrupar por Dirección',
+	'Yes: One Invoice per Shipping Address' => 'Sí: Una Factura por Dirección de Envío',
 
 ];

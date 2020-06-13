@@ -92,6 +92,9 @@ Route::group([
 
     Route::resource('wcustomers', 'WooCustomersController');
 
+    Route::get('wcustomer/{id}/import' , array('uses' => 'WooCustomersController@import', 
+                                                        'as'   => 'wcustomers.import' ));
+
     Route::get('wcustomers/{id}/fetch' , 'WooCustomersController@fetch')->name('wcustomers.fetch' );
 
     Route::get('wcustomers/fetch/abiorphans' , 'WooCustomersController@fetchAbiOrphans')->name('wcustomers.fetch.abi.orphans' );

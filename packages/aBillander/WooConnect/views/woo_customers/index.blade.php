@@ -165,6 +165,10 @@
 --}}
                 <a class="btn btn-sm btn-blue" href="{{ URL::route('wcustomers.fetch', $customer['id'] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i></a>
 
+        @if ( !( isset($customer["abi_customer"]) && ($abi_customer = $customer["abi_customer"]) ) )
+                <a class="btn btn-sm btn-grey" href="{{ URL::route('wcustomers.import', $customer["id"] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
+        @endif
+
 {{--
                 <a class="btn btn-sm btn-info" href="{{ URL::route('wcustomers.fetch', [$customer["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-superpowers"></i></a>
 

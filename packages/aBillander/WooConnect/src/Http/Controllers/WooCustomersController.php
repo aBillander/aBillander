@@ -16,6 +16,10 @@ use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientExcept
 use App\Customer;
 use aBillander\WooConnect\WooCustomer;
 
+use \aBillander\WooConnect\WooCustomerImporter;
+
+use \App\Configuration;
+
 class WooCustomersController extends Controller 
 {
 
@@ -403,9 +407,32 @@ class WooCustomersController extends Controller
 	public function importCustomerList( $list )
 	{
         // 
+        if ( count( $list ) == 0 ) 
+            return redirect()->route('wcustomers.index')
+                ->with('warning', l('No se ha seleccionado ningún Cliente, y no se ha realizado ninguna acción.'));
+
+
+        // Prepare Logger
+        $logger = WooCustomerImporter::logger();
+
+        $logger->empty();
+        $logger->start();
+
+        // Do the Mambo!
+        foreach ( $list as $pID ) 
+        {
+        	$logger->log("INFO", 'Se descargará el Cliente class="log-showoff-format">{pid}</span> .', ['pid' => $pID]);
+
+        	$importer = WooCustomerImporter::processCustomer( $pID );
+        }
+
+        $logger->stop();
+
+        return redirect('activityloggers/'.$logger->id)
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $logger->id], 'layouts'));
 	}
 
-	public function importCategories( Request $request )
+	public function importCustomers( Request $request )
 	{
 
         return $this->importCustomerList( $request->input('wcustomers', []) );

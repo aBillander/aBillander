@@ -85,7 +85,7 @@ class WooCustomersController extends Controller
 		// abi_r($perPage);die();
 
 		$queries = [];
-		$columns = [];	// ['after', 'before', 'status'];
+		$columns = ['search', 'email'];	// ['after', 'before', 'status'];
 
 		foreach ($columns as $column) {
 			if (request()->has($column)) {
@@ -109,13 +109,13 @@ class WooCustomersController extends Controller
 //		    'context',				// Scope under which the request is made; determines fields present in response. Options: view and edit. Default is view.
 		    'per_page' => $perPage,	// Default: 10 :: Maximum: 100
 		    'page' => $page,
-//		    'search' => 			// Limit results to those matching a string.
+//		    'search' => 'LEoN',			// Limit results to those matching a string. Busca en varios campos la aparición de la cadena, sensible a acentos (con acentos no encuentra, aunque contenga la búsqueda), case insensitive. Ver: https://stackoverflow.com/questions/45442275/wordpress-rest-api-url-decoding
 //		    'exclude' 	array 	Ensure result set excludes specific IDs.
 //		    'include' 	array 	Limit result set to specific IDs.
 //		    'offset' 	integer 	Offset the result set by a specific number of items.
 	    	'orderby' => 'registered_date',	// Sort collection by object attribute. Options: id, include, name and registered_date. Default is name.
 	    	'order'   => 'desc',		// Options: asc and desc. Default is asc.
-//	    	'email',
+//	    	'email' => 'glagier@hotmail.com',	// Full email, case insensitive
 //	    	'role',
 		];
 

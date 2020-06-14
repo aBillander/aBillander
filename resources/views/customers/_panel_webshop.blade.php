@@ -210,7 +210,7 @@
     function getCustomerWebShopEmbedData( pId = 0 )
     {           
        var panel = $("#customer-webshop-data");
-       var url = "{{ route('wcustomers.show', [$customer->webshop_id, 'embed']) }}";
+       var url = "{{ route('wcustomers.show', [(int) $customer->webshop_id, 'embed']) }}";
 
       // if ( pId <= 0 ) return;
       // if ( {{ (int) $customer->webshop_id }} <= 0 ) return;

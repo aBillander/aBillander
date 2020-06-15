@@ -209,6 +209,9 @@ class AbccCustomerOrdersController extends Controller {
         foreach ($cart->cartlines as $cartline) {
         	# code...
         	// $line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, ['prices_entered_with_tax' => 0, 'unit_customer_final_price' => $cartline->unit_customer_price] );
+        	$pmu_conversion_rate = $cartline->pmu_conversion_rate > 0 ? $cartline->pmu_conversion_rate : 1.0;
+        	$quantity = $cartline->quantity / $pmu_conversion_rate;
+
         	$line_data = [
         			'line_type' => $cartline->line_type,
 
@@ -246,7 +249,7 @@ class AbccCustomerOrdersController extends Controller {
         		case 'product':
         		default:
         			# code...
-        			$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $cartline->quantity, $line_data );
+        			$line = $customerOrder->addProductLine( $cartline->product_id, $cartline->combination_id, $quantity, $line_data );
         			break;
         	}
 

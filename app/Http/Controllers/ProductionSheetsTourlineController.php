@@ -62,15 +62,30 @@ class ProductionSheetsTourlineController extends Controller
             if ( $document->shipment_service_type_tag != '' )
                 $row['ShippingTypeCode'] = $document->shipment_service_type_tag;
 
+/*
             $contact_name = (string) $document->shippingaddress->contact_name;
 
             if ( strlen($contact_name) == 0 )
                 $contact_name = (string) $document->shippingaddress->name_commercial;
 
             if ( strlen($contact_name) == 0 )
-                $contact_name = (string) $document->customer->name_commercial;
+                $contact_name = (string) $document->customer->name_regular;
 
             $row['RecipientName'] = $contact_name;     // Nombre destinatario
+*/
+
+            $recipient_name = (string) $document->shippingaddress->name_commercial;
+
+            if ( strlen($recipient_name) == 0 )
+                $recipient_name = (string) $document->shippingaddress->contact_name;
+
+            if ( strlen($recipient_name) == 0 )
+                $recipient_name = (string) $document->customer->name_regular;
+
+            $row['RecipientName'] = $recipient_name;     // Nombre destinatario
+
+            // Free new field ;)             // Dirección de Envío, persona de contacto
+            $row['RecipientContactName'] = (string) $document->shippingaddress->contact_name;
             $row['RecipientAddress'] = $document->shippingaddress->address1.' '.$document->shippingaddress->address2;
 
             $phone = $document->shippingaddress->phone;

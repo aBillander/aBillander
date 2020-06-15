@@ -241,7 +241,8 @@ class SepaDirectDebitsController extends Controller
 
         // $document_date = abi_date_short( \Carbon\Carbon::now() );
 
-        return view('sepa_es::direct_debits.edit', compact('directdebit', 'sepa_sp_schemeList', 'bank_accountList', 'sequenceList'));
+        // return view('sepa_es::direct_debits.edit', compact('directdebit', 'sepa_sp_schemeList', 'bank_accountList', 'sequenceList'));
+        return view('sepa_es::direct_debits.edit', compact('directdebit', 'sepa_sp_schemeList', 'bank_accountList'));
 	}
 
 	/**

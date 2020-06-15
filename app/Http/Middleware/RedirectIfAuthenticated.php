@@ -28,15 +28,31 @@ class RedirectIfAuthenticated
             if ( $guard == 'salesrep' ) {
                 return redirect()->route('salesrep.dashboard');
             }
+            
+            // Regular Users
+            if ( $guard == 'web' ) {
+                return redirect( Auth::user()->home_page );
+            }
 
             // Regular Users
+            // return redirect('/home');
+            // return redirect()->route( 'jennifer.home' );
+            // return redirect()->route( Auth::user()->home_page );
+            //    abi_r( Auth::user()->home_page );
+            //    abi_r( checkRoute( Auth::user()->home_page ) );die();
+
             if ( Auth::user()->home_page == '/' ) 
                 return redirect('/home');
-            else
-                if ( checkRoute( Auth::user()->home_page ) )
+            else 
+            {
+                if ( checkRoute( Auth::user()->home_page ) ) 
+                {
                     return redirect( Auth::user()->home_page );
-                else
+                
+                } else {
                     return redirect('/home');
+                }
+            }
 
             // return redirect('/home');
         }

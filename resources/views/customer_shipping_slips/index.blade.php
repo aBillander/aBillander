@@ -36,6 +36,9 @@
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
 
+        <a href="{{ route('customershippingslips.invoicer.create') }}" class="btn btn-sm btn-info" style="margin-left: 32px;" 
+                title="{{l('Filter and Invoice')}}"><i class="fa fa-money"></i> &nbsp; {{l('Filter and Invoice')}}</a>
+
     </div>
     <h2>
         {{ l('Documents') }}
@@ -132,6 +135,17 @@
 </div>
 --}}
 
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('price_amount', l('Total Amount')) !!}
+                              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" xdata-container="body" 
+                                        data-content="{{ l('With or without Taxes') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                              </a>
+    {!! Form::text('price_amount', null, array('class' => 'form-control', 'id' => 'price_amount')) !!}
+</div>
+
+
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 {!! link_to_route($model_path.'.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
@@ -164,7 +178,11 @@
             <th> </th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>

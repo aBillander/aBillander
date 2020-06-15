@@ -35,6 +35,27 @@
            {!! $errors->first('document_ppd_percent', '<span class="help-block">:message</span>') !!}
         </div>
 
+         <div class="form-group col-lg-2 col-md-2 col-sm-2">
+         </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="is_invoiceable">
+                     {{ l('Is Invoiceable?') }}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '1', true, ['id' => 'is_invoiceable_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '0', false, ['id' => 'is_invoiceable_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
       </div>
       <div class="row">
 
@@ -221,6 +242,12 @@
            {{ l('Weight') }}
            {!! Form::text('weight', null, array('class' => 'form-control', 'id' => 'weight')) !!}
            {!! $errors->first('weight', '<span class="help-block">:message</span>') !!}
+        </div>
+
+        <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('volume') ? 'has-error' : '' }}">
+           {{ l('Volume') }}
+           {!! Form::text('volume', null, array('class' => 'form-control', 'id' => 'volume')) !!}
+           {!! $errors->first('volume', '<span class="help-block">:message</span>') !!}
         </div>
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('tracking_number') ? 'has-error' : '' }}">

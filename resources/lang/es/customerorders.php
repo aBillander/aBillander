@@ -347,4 +347,8 @@ return [
 
 	'Customer Reference' => 'Referencia del Cliente',
 
+	'Manufacturing Status' => 'Estado de Fabricación',
+	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos'
+
 ];

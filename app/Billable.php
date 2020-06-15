@@ -70,7 +70,9 @@ class Billable extends Model implements ShippableInterface
 
                         'printed_at',
                         'edocument_sent_at',
-                        'customer_viewed_at'
+                        'customer_viewed_at',
+
+                        'posted_at',
                        ];
 
     protected $document_dates = [
@@ -444,6 +446,16 @@ class Billable extends Model implements ShippableInterface
         return Configuration::getInt('DEF_WAREHOUSE');
     }
     
+    public function getPaymentMethodId() 
+    {
+        if (   $this->payment_method_id
+            && \App\PaymentMethod::where('id', $this->payment_method_id)->exists()
+            )
+            return $this->payment_method_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD');
+    }
+    
 
 /*
 *
@@ -571,7 +583,10 @@ class Billable extends Model implements ShippableInterface
         // Can I ...?
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
         
-        if ( $this->status == 'closed' ) return false;
+        if ( $this->status == 'closed' ) return true;
+
+        // No lines?
+        if ( $this->lines->count() == 0 ) return false;
         
         // Customer blocked?
         if ( array_key_exists('customer_id', $this->getAttributes()) )
@@ -976,16 +991,15 @@ class Billable extends Model implements ShippableInterface
         {
             $query->where('invoiced_at', null);
         }
-
-
-        if ( array_key_exists('closed_not', $params) )
-        {
-            $query->where('status', '<>', 'closed');
-        } else
+        
         
         if ( array_key_exists('closed', $params) )
         {
-            $query->where('status', 'closed');
+            if ( $params['closed'] == '1' )
+                $query->where('status', 'closed');
+            else
+            if ( $params['closed'] == '0' )
+                $query->where('status', '<>', 'closed');
         }
 
 
@@ -1013,6 +1027,16 @@ class Billable extends Model implements ShippableInterface
         if (array_key_exists('customer_id', $params) && $params['customer_id'])
         {
             $query->where('customer_id', $params['customer_id']);
+        }
+
+        if (array_key_exists('price_amount', $params) && is_numeric($params['price_amount']))
+        {
+            $amount = $params['price_amount'];
+
+            $query->where( function ($query) use ($amount) {
+                    $query->  where( 'total_tax_excl', $amount );
+                    $query->orWhere( 'total_tax_incl', $amount );
+            } );
         }
 
 
@@ -1157,7 +1181,7 @@ class Billable extends Model implements ShippableInterface
 
         return $total_products_tax_excl;
     }
-
+/*
     public function getWeightAttribute() 
     {
         $line_products = $this->lines->where('line_type', 'product')->load('product');
@@ -1168,4 +1192,5 @@ class Billable extends Model implements ShippableInterface
 
         return $total_weight;
     }
+*/
 }

@@ -43,6 +43,8 @@ class CreateCustomerInvoicesTable extends Migration {
 			$table->date('customer_viewed_at')->nullable();						// Customer retrieved invoice from online customer center
 			$table->date('posted_at')->nullable();								// Recorded (in account, General Ledger) at
 
+            $table->integer('production_sheet_id')->unsigned()->nullable();
+
 
 			$table->tinyInteger('prices_entered_with_tax')->default(0);			// See: PRICES_ENTERED_WITH_TAX; Maybe not needed here (stored for every invoice)
 			$table->tinyInteger('round_prices_with_tax')->default(0);			// See: ROUND_PRICES_WITH_TAX

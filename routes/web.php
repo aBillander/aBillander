@@ -184,6 +184,14 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
         Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
 
+        Route::group(['prefix' => 'accounting', 'namespace' => '\Accounting'], function ()
+        {
+            Route::resource('customers', 'AccountingCustomersController')->names('accounting.customers');
+
+            Route::resource('customerinvoices', 'AccountingCustomerInvoicesController')->names('accounting.customerinvoices');
+            Route::get('customerinvoices/{id}/pdf', 'AccountingCustomerInvoicesController@showPdf')->name('accounting.customerinvoices.pdf');
+        });
+
         // Helferin
         Route::get('/helferin/home', 'HelferinController@index')->name('helferin.home');
         Route::post('/helferin/reports/sales'  , 'HelferinController@reportSales'  )->name('helferin.reports.sales');
@@ -351,6 +359,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('productionsheets/{id}/summary/pdf', 'ProductionSheetsPdfController@getPdfSummary')->name('productionsheet.summary.pdf');
         Route::get('productionsheets/{id}/preassemblies/pdf', 'ProductionSheetsPdfController@getPdfPreassemblies')->name('productionsheet.preassemblies.pdf');
         Route::get('productionsheets/{id}/manufacturing/pdf', 'ProductionSheetsPdfController@getPdfManufacturing')->name('productionsheet.manufacturing.pdf');
+        Route::get('productionsheets/{id}/manufacturing/{wc}/bulkpdf', 'ProductionSheetsPdfController@getBulkPdfManufacturing')->name('productionsheet.manufacturing.bulkpdf');
 
         Route::get('productionsheets/{id}/orders/pdf', 'ProductionSheetsPdfController@getPdfOrders')->name('productionsheet.orders.pdf');
 
@@ -364,7 +373,15 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
 
         // Production Sheet Shipping Slips
-        Route::get('productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+        Route::get( 'productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+
+        Route::post('productionsheetshippingslips/close',  'ProductionSheetShippingSlipsController@closeShippingSlips')->name('productionsheet.close.shippingslips');
+
+        Route::post('productionsheetshippingslips/invoices',  'ProductionSheetShippingSlipsController@createInvoices')->name('productionsheet.create.invoices');
+
+        // Production Sheet Invoices
+        Route::get( 'productionsheetinvoices/{id}',  'ProductionSheetInvoicesController@invoicesIndex')->name('productionsheet.invoices');
+
 
         Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
 
@@ -397,6 +414,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('customers.addresses', 'CustomerAddressesController');
 
         Route::post('mail', 'MailController@store');
+        Route::post('mail/feedback', 'MailController@storeFeedback');
 
         Route::resource('paymentmethods', 'PaymentMethodsController');
         Route::resource('paymenttypes', 'PaymentTypesController');
@@ -538,6 +556,7 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{document}/unconfirm', $controller.'@unConfirm')->name($path.'.unconfirm');
 
         Route::get($path.'/{id}/pdf',         $controller.'@showPdf'       )->name($path.'.pdf'        );
+        Route::post($path.'/pdf/bulk',        $controller.'@showBulkPdf'   )->name($path.'.bulk.pdf'   );
         Route::get($path.'/{id}/invoice/pdf', $controller.'@showPdfInvoice')->name($path.'.invoice.pdf');
         Route::match(array('GET', 'POST'), 
                    $path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );
@@ -563,15 +582,23 @@ foreach ($pairs as $pair) {
 
         Route::post('customerorders/create/shippingslip/single',  'CustomerOrdersController@createSingleShippingSlip')->name('customerorder.single.shippingslip');
 
+
+        Route::get( 'customershippingslipsinvoicer',          'CustomerShippingSlipsInvoicerController@create' )->name('customershippingslips.invoicer.create' );
+        Route::post('customershippingslipsinvoicer/process',  'CustomerShippingSlipsInvoicerController@process')->name('customershippingslips.invoicer.process');
+
         Route::get( 'customershippingslips/customers/{id}/invoiceables',  'CustomerShippingSlipsController@getInvoiceableShippingSlips')->name('customer.invoiceable.shippingslips');
         Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');
-        Route::get('customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
+        Route::get( 'customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
+        Route::post('customershippingslips/{id}/invoice/undo'  , 'CustomerShippingSlipsController@undoInvoice')->name('customershippingslip.invoice.undo');
 
         Route::get('customershippingslips/{id}/deliver'  , 'CustomerShippingSlipsController@deliver')->name('customershippingslip.deliver');
 
         Route::get('customershippingslips/{id}/undeliver'  , 'CustomerShippingSlipsController@undeliver')->name('customershippingslip.undeliver');
 
         Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('customershippingslips.for.today');
+
+
+        Route::post('customerinvoices/{id}/shippingslip/add'  , 'CustomerInvoicesController@addShippingSlipToInvoice')->name('customerinvoice.shippingslip.add');
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');
         Route::get('customervouchers/{id}/setduedate'  , 'CustomerVouchersController@setduedate');

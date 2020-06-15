@@ -86,6 +86,10 @@
 
     @include($view_path.'.js.document_service_lines')
 
+    @include($view_path.'.js.document_comment_lines')
+
+    @include($view_path.'.js.document_shipping_cost_line')
+
 
 <script>
 

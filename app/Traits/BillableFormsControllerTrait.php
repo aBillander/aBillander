@@ -245,6 +245,9 @@ trait BillableFormsControllerTrait
         if ($request->has('sales_equalization')) 
             $params['sales_equalization'] = $request->input('sales_equalization');
 
+        if ( $params['line_type'] == 'shipping' )
+            $params['sales_equalization'] = $document->customer->sales_equalization;
+
         if ($request->has('measure_unit_id')) 
             $params['measure_unit_id'] = $request->input('measure_unit_id');
 

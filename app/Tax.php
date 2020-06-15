@@ -45,7 +45,9 @@ class Tax extends Model {
         $value = optional($this->taxrules()->where(function ($query) use ($country_id) {
                     $query->where('country_id', '=', '0')
                           ->orWhere('country_id', '=', $country_id);
-                })->orderBy('position', 'asc')->first())->percent ?? 0.0;
+                })
+                ->where('rule_type', '=', 'sales')
+                ->orderBy('position', 'asc')->first())->percent ?? 0.0;
 
         return $value;
     }

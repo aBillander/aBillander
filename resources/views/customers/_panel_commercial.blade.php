@@ -34,6 +34,24 @@
 
         <div class="row">
 
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="is_invoiceable">
+                     {!! Form::label('is_invoiceable', l('Is Invoiceable?'), ['class' => 'control-label']) !!}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '1', true, ['id' => 'is_invoiceable_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '0', false, ['id' => 'is_invoiceable_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
                    <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-active">
                      {!! Form::label('accept_einvoice', l('Accept e-Invoice?'), ['class' => 'control-label']) !!}
                      <div>

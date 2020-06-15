@@ -29,6 +29,10 @@ trait BillableDocumentControllerTrait
 
         // $this->validate($request, $rules);
 
+        $event = $request->input('event', 'Printed');
+        if ( !in_array($event, ['Printed', 'Posted']) )
+            $event = 'Printed';
+
 
         //
         // Get Documents
@@ -114,13 +118,13 @@ trait BillableDocumentControllerTrait
                 $names[] = $pdfName;
 
 
-                if ( $request->has('preview') || 1 ) 
+                if ( $request->has('preview') ) 
                 {
                     //
                 } else {
                     // Dispatch event
-                    // $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Printed';
-                    // event( new $event_class( $document ) );
+                    $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).$event;
+                    event( new $event_class( $document ) );
                 }
         }
 
@@ -214,6 +218,22 @@ die();
 
         $pdfName    = str_singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
+        // Lets try another strategy
+        if ( $document->document_reference ) {
+            //
+            $sanitizer = new \App\FilenameSanitizer( $document->document_reference );
+
+            $sanitizer->stripPhp()
+                ->stripRiskyCharacters()
+                ->stripIllegalFilesystemCharacters('_');
+                
+            $pdfName = $sanitizer->getFilename();
+        } else {
+            //
+            $pdfName = str_singular($this->getParentClassLowerCase()).'_'.'ID_' . (string) $document->id;
+        }
+
+
         if ($request->has('screen')) return view($template, compact('document', 'company'));
 
 
@@ -227,7 +247,7 @@ die();
         }
     
 
-        return  $pdf->stream();
+        return  $pdf->stream($pdfName . '.pdf');
         return  $pdf->download( $pdfName . '.pdf');
     }
 

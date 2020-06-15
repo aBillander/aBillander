@@ -199,7 +199,9 @@ line-height: 1.42857143;
    </div>
 </div>
 
-@stop
+@include('layouts/back_to_top_button')
+
+@endsection
 
 
 @section('styles')    @parent

@@ -307,6 +307,7 @@ return [
 	'-- Click to Select --'     => '-- Haga click para Seleccionar --',
 	'-- All --'     => '-- Todos --',
 	'-- None --'    => '-- Ninguno --',
+	'-- Default --' => '-- Por defecto --',
 	'All'     => 'Todos',
 	'None'     => 'Ninguno',
 	'Loading...'     => 'Cargando...',

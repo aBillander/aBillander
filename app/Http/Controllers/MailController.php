@@ -93,6 +93,69 @@ class MailController extends Controller {
 	}
 
 	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function storeFeedback(Request $request)
+	{
+		
+		// See: https://itsolutionstuff.com/post/laravel-5-ajax-request-validation-exampleexample.html
+    	$validator = Validator::make($request->all(), [
+
+			'name_feedback' => 'required',
+            'email_feedback' => 'required|email',
+//            'subject' => 'required',
+            'notes_feedback' => 'required',
+
+        ]);
+
+
+        if ( !$validator->passes() ) {
+
+			return response()->json(['error'=>$validator->errors()->all()]);
+
+        }
+
+
+		// ToDo: validate if send to and send from fields are defined
+
+		$subject = ' **> aBillander Feed-Back';
+
+		$url = 'Sending feedback from: ' . url()->previous();
+
+		$body = $request->input('notes_feedback');
+
+		if ( !stripos( $body, '<br' ) ) $body = nl2br($body);
+
+		// See ContactMessagesController
+		try{
+			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.feedback',
+		        array(
+		            'user_email'   => $request->input('email_feedback'),
+		            'user_name'    => $request->input('name_feedback'),
+		            'url'          => $url,
+		            'user_message' => $body,
+		        ), function($message) use ( $request, $subject )
+		    {
+		        $message->from( config('mail.from.address'), config('mail.from.name') );
+//		        $message->replyTo( $request->input('from_email'), $request->input('from_name') );
+		        $message->to( env('MAIL_SUPPORT_FROM_ADDRESS', config('mail.from.address')), env('MAIL_SUPPORT_FROM_NAME', config('mail.from.name')) )->subject( $subject );
+		    });
+		}
+		catch(\Exception $e){
+
+		    	return response()->json(['error'=>[
+		    			l('There was an error. Your message could not be sent.', [], 'layouts'),
+		    			$e->getMessage()
+		    	]]);
+		}
+		
+
+		return response()->json(['success'=>'Email sent.']);
+	}
+
+	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -13,7 +14,8 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:web');
+        // https://stackoverflow.com/questions/47230395/laravel-middleware-redirect-loop
+        // $this->middleware('auth:web');
     }
 
     /**
@@ -24,6 +26,9 @@ class HomeController extends Controller
     public function index()
     {
 
+        // https://stackoverflow.com/questions/47230395/laravel-middleware-redirect-loop
+        if ( 0 && checkRoute( Auth::user()->home_page ) )
+            return redirect( Auth::user()->home_page );
 
         return view('home.home');
     }

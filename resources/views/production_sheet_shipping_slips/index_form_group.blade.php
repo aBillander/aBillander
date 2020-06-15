@@ -6,6 +6,10 @@
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('should_group') ? 'has-error' : '' }}">
              {{ l('Should group?') }}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                        data-content="{{ l('Yes: One Invoice per Customer<br />No: One Invoice per Shipping Slip') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+                 </a>
              <div>
                <div class="radio-inline">
                  <label>
@@ -55,6 +59,30 @@
                {!! $errors->first('shippingslip date', '<span class="help-block">:message</span>') !!}
             </div>
          </div>
+
+
+
+<div class="form-group col-lg-6 col-md-6 col-sm-6">
+  {{ l('Group by Address') }}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                        data-content="{{ l('Yes: One Invoice per Shipping Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+ <div>
+   <div class="radio-inline">
+     <label>
+       {!! Form::radio('group_by_shipping_address', '1', false, ['id' => 'group_by_shipping_address_on']) !!}
+       {!! l('Yes', [], 'layouts') !!}
+     </label>
+   </div>
+   <div class="radio-inline">
+     <label>
+       {!! Form::radio('group_by_shipping_address', '0', true, ['id' => 'group_by_shipping_address_off']) !!}
+       {!! l('No', [], 'layouts') !!}
+     </label>
+   </div>
+ </div>
+</div>
 
 </div>
 

@@ -5,6 +5,46 @@
 
 @section('content')
 
+<div class="row hide" id="cssload">
+    <div class="col-md-12">
+
+{{--
+<div class="cssload-dots">
+  <div class="cssload-dot"></div>
+  <div class="cssload-dot"></div>
+  <div class="cssload-dot"></div>
+  <div class="cssload-dot"></div>
+  <div class="cssload-dot"></div>
+</div>
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="12" ></feGaussianBlur>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="goo" ></feColorMatrix>
+      <!--<feBlend in2="goo" in="SourceGraphic" result="mix" ></feBlend>-->
+    </filter>
+  </defs>
+</svg>
+--}}
+
+<div class="page-header">
+    <h2>
+         <a class="btn btn-sm alert-info" href="{{ route('customershippingslips.index') }}" title="{{l('Customer Shipping Slips')}}"><i class="fa fa-truck"></i></a> <span style="color: #cccccc;">/</span> {{ l('Invoice Customer Shipping Slips') }}
+
+        <a href="" class="btn btn-success disabled" onclick="return false;" style="margin-left: 72px;"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i> {{ l('Processing...', 'layouts') }}</a>
+
+    </h2>     
+</div>
+
+    </div>
+</div> 
+
+
+
+<div class="row" id="content-header">
+    <div class="col-md-12">
+
 <div class="page-header">
     <h2>
          <a class="btn btn-sm alert-info" href="{{ route('customershippingslips.index') }}" title="{{l('Customer Shipping Slips')}}"><i class="fa fa-truck"></i></a> <span style="color: #cccccc;">/</span> {{ l('Invoice Customer Shipping Slips') }}
@@ -144,7 +184,7 @@ border-color: #772953;">
               </div>
 
                <div class="panel-footer text-right">
-                  <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
+                  <button class="btn btn-success" type="submit" onclick="loadingpage();this.disabled=false;this.form.submit();">
                      <i class="fa fa-refresh"></i>
                      &nbsp; {!! l('Process', [], 'layouts') !!}
                   </button>
@@ -175,6 +215,11 @@ border-color: #772953;">
     </div><!-- div class="row" ENDS -->
 
 </div>
+
+
+    </div>
+</div> <!-- div class="row hide" id="cssload" ENDS -->
+
 
 
 
@@ -380,6 +425,26 @@ border-color: #772953;">
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
   });
+
+</script>
+
+{{-- Page loader --}}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+   $("#cssload").hide();
+});
+
+function loadingpage()
+{
+    $("#content-header").hide('slow');
+    $("#content-body").hide('slow');
+
+   $("#cssload").hide();
+   $("#cssload").removeClass('hide');
+   $("#cssload").slideDown( "slow" );
+}
 
 </script>
 

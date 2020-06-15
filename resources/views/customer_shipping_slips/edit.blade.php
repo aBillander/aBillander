@@ -152,6 +152,24 @@
 
     @include($view_path.'.css.panels')
 
+{{-- Stop Bootstrap drop menu's being cut off in responsive tables
+
+    https://dcblog.dev/stop-bootstrap-drop-menus-being-cut-off-in-responsive-tables
+--}}
+
+<style type="text/css">
+    @media (max-width: 767px) {
+        .table-responsive .dropdown-menu {
+            position: static !important;
+        }
+    }
+    @media (min-width: 768px) {
+        .table-responsive {
+            overflow: visible;
+        }
+    }
+</style>
+
 @endsection
 
 

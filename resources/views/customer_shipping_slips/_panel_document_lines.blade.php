@@ -48,7 +48,7 @@
 
                 <div class="btn-group">
                     <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Service')}}" style="background-color: #2bbbad;"> <i class="fa fa-handshake-o"></i> &nbsp;<span class="caret"></span></a>
-                    <ul class="dropdown-menu  pull-right"">
+                    <ul class="dropdown-menu  pull-right" style="overflow: visible">
                       <li><a class="create-document-service"><i class="fa fa-handshake-o"></i> {{l('Add Service')}}</a></li>
                       <li><a class="create-document-comment"><i class="fa fa-file-text-o"></i> {{l('Add Text Line')}}</a></li>
                       <li class="divider"></li>

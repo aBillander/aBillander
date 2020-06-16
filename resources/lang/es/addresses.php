@@ -75,5 +75,6 @@ return [
 	*/
 
 	'Main Address'     => 'Dirección Principal',
+	'Shipping Address'     => 'Dirección de Envío',
 
 ];

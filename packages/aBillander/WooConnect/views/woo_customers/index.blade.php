@@ -8,7 +8,12 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <a class="btn btn-sm alert-danger" style="margin-right: 21px" href="{{ route( 'wcustomers.fetch.abi.orphans' )}}" title="{{l('aBillander Orphans')}}"> {{l('ab://ander/orphans')}}</a>
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+           <i class="fa fa-filter"></i>
+           &nbsp; {{l('Filter', [], 'layouts')}}
+        </button>
+
+        <a class="btn btn-sm alert-danger" style="margin-left: 21px" href="{{ route( 'wcustomers.fetch.abi.orphans' )}}" title="{{l('aBillander Orphans')}}"> {{l('ab://ander/orphans')}}</a>
 
         <a class="btn btn-sm alert-danger" style="margin-right: 21px" href="{{ route( 'wcustomers.fetch.wooc.orphans' )}}" title="{{l('WooCommerce Orphans')}}"><i class="fa fa-wordpress text-info"></i> &nbsp;{{l('Wooc :: orphans')}}</a>
 
@@ -21,7 +26,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-    <a class="btn btn-sm btn-success" style="margin-right: 152px" href="{{ URL::route('wooconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}}"><i class="fa fa-cog"></i> {{l('Configuration', [], 'layouts')}} [WooC]</a> 
+    <a class="btn btn-sm btn-success" style="margin-right: 38px" href="{{ URL::route('wooconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}}"><i class="fa fa-cog"></i> {{l('Configuration', [], 'layouts')}} [WooC]</a> 
 
 {{--
     <div class="btn-group" style="margin-right: 152px">
@@ -54,7 +59,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => 'worders.index', 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => 'wcustomers.index', 'method' => 'GET')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -62,18 +67,26 @@
 <div class="row">
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('date_from_form', l('Date from')) !!}
-        {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
+        {!! Form::label('search', l('search')) !!}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Busca en varios campos la aparición de la cadena introducida. No reconoce letras con acentos. No sensible a mayúsculas / minúsculas.') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+        {!! Form::text('search', null, array('id' => 'search', 'class' => 'form-control')) !!}
     </div>
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('date_to_form', l('Date to')) !!}
-        {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
+        {!! Form::label('email', l('email')) !!}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                          data-content="{{ l('Debe ser una dirección de correo válida. No sensible a mayúsculas / minúsculas.') }}">
+                      <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+        {!! Form::text('email', null, array('id' => 'email', 'class' => 'form-control')) !!}
     </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route('worders.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('wcustomers.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>
@@ -164,6 +177,10 @@
                     title="{{l('Update', [], 'layouts')}}"><i class="fa fa-pencil-square-o"></i></a>                
 --}}
                 <a class="btn btn-sm btn-blue" href="{{ URL::route('wcustomers.fetch', $customer['id'] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-eyedropper"></i></a>
+
+        @if ( !( isset($customer["abi_customer"]) && ($abi_customer = $customer["abi_customer"]) ) )
+                <a class="btn btn-sm btn-grey" href="{{ URL::route('wcustomers.import', $customer["id"] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
+        @endif
 
 {{--
                 <a class="btn btn-sm btn-info" href="{{ URL::route('wcustomers.fetch', [$customer["id"]] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank"><i class="fa fa-superpowers"></i></a>

@@ -423,11 +423,11 @@
                                  {{l('Documentation', [], 'layouts')}}
                             </a>
                         </li>
-                         <!-- li>
-                            <a data-target="#contactForm" data-toggle="modal" onclick="return false;" href="">
+                         <li>
+                            <a data-target="#feedbackForm" data-toggle="modal" onclick="return false;" href="">
                                  {{l('Support & feed-back', [], 'layouts')}}
                             </a>
-                        </li -->
+                        </li>
                          <li>
                             <a data-target="#aboutLaraBillander" data-toggle="modal" onclick="return false;" href="">
                                  {{l('About ...', [], 'layouts')}}
@@ -534,3 +534,5 @@ https://github.com/almasaeed2010/AdminLTE/issues/1275
 https://bootsnipp.com/snippets/featured/multi-level-dropdown-menu-bs3
 
 --}}
+
+@include('layouts/modal_feedback')

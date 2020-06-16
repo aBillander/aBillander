@@ -104,7 +104,7 @@ class ProductionSheetInvoicesController extends BillableController
                             ->with('currency')
 //                            ->with('paymentmethod')
                             ->orderBy('document_date', 'desc')
-                            ->orderBy('id', 'desc');        // ->get();
+                            ->orderBy('document_reference', 'desc');        // ->get();
 
         $documents = $documents->paginate( $items_per_page );
 
@@ -114,7 +114,7 @@ class ProductionSheetInvoicesController extends BillableController
 
         // abi_r( $this->modelVars() , true);
 
-        $this->model_path = 'customershippingslips';
+        $this->model_path = 'customerinvoices';
 
         return view('production_sheet_invoices.index', $this->modelVars() + compact('productionSheet', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page'));
     }
@@ -191,4 +191,93 @@ class ProductionSheetInvoicesController extends BillableController
      * Let' rock >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
      *
      */
+
+
+    /**
+     * Close Shipping Slips for a Production Sheet.
+     * Prepare data for processCreateShippingSlips()
+     *
+     */
+    public function closeInvoices( Request $request )
+    {
+        // ProductionSheetsController
+        $document_group = $request->input('document_group', []);
+
+        if ( count( $document_group ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => $request->production_sheet_id], 'layouts'));
+
+        // abi_r($request->all(), true);
+
+        // Set params for group
+        $params = $request->only('production_sheet_id');
+
+        // abi_r($params, true);
+
+        return $this->processCloseShippingSlips( $document_group, $params );
+    }
+
+    
+    /**
+     * Close Shipping Slips after a list of Customer Shipping (id's).
+     * Hard work is done here
+     *
+     */
+    public function processCloseInvoices( $list, $params )
+    {
+
+//        1.- Recuperar los documntos
+//        2.- Comprobar que están todos los de la lista ( comparando count() )
+
+        try {
+
+            $productionSheet = $this->productionSheet
+                                ->findOrFail($params['production_sheet_id']);
+
+            $documents = $this->document
+                                ->where('production_sheet_id', $params['production_sheet_id'])
+                                ->where('status', '<>', 'closed')
+                                ->with('lines')
+    //                            ->with('lines.linetaxes')
+    //                            ->with('customer')
+    //                            ->with('currency')
+    //                            ->with('paymentmethod')
+    //                            ->orderBy('document_date', 'asc')
+    //                            ->orderBy('id', 'asc')
+                                ->find( $list );
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return redirect()->back()
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $list)], 'layouts'));
+            
+        }
+
+
+//        3.- Close Documents
+
+        $fails = [];
+
+        foreach ($documents as $document)
+        {
+            # code...
+            if ( !$document->close() )
+                $fails[] = l('Unable to close this document &#58&#58 (:id) ', ['id' => $document->document_reference], 'layouts');
+        }
+
+        if (count($fails) > 0) {
+            $result  = 'error';
+            $message = $fails;
+        } else {
+            $result  = 'success';
+            $message = l('These records have been successfully updated &#58&#58 (:id) ', ['id' => $params['production_sheet_id']], 'layouts');
+        }
+
+        // die();
+
+        return redirect()->back()
+//                ->route('productionsheet.orders', $params['production_sheet_id'])
+                ->with($result, $message);
+
+    }
 }

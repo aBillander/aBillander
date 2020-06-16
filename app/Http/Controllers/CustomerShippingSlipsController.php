@@ -668,8 +668,10 @@ class CustomerShippingSlipsController extends BillableController
 
         $invoice = \App\CustomerShippingSlip::invoiceDocumentList( $document_list, $params );
 
-        return redirect('customerinvoices/'.optional($invoice)->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($invoice)->id], 'layouts'));
+        return redirect()->back()
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+//        return redirect('customerinvoices/'.optional($invoice)->id.'/edit')
+//                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($invoice)->id], 'layouts'));
 
     } 
 

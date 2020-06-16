@@ -102,6 +102,7 @@ class ProductionSheetOrdersController extends BillableController
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
+                            ->orderBy('shipping_method_id', 'asc')
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 

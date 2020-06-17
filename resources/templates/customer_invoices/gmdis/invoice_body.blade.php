@@ -244,7 +244,8 @@
 			    			( $line->line_type != 'product'  ) &&
 			    			( $line->line_type != 'service'  ) &&
 			    			( $line->line_type != 'shipping' ) &&
-			    			( $line->line_type != 'comment' )
+			    			( $line->line_type != 'comment'  ) &&
+			    			( $line->line_type != 'discount' )
 			    )
 			        @continue
 			    @endif

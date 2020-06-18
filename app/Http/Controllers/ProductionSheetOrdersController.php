@@ -428,6 +428,8 @@ class ProductionSheetOrdersController extends BillableController
             'onhold' => 0,
             'locked' => 0,
 
+            'is_invoiceable' => $customer->is_invoiceable,
+
             'invoicing_address_id' => $customer->invoicing_address_id,
             'shipping_address_id' => $params['shipping_address_id'],
             'warehouse_id' => $params['warehouse_id'],

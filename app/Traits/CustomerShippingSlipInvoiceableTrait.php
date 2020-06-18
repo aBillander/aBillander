@@ -40,6 +40,7 @@ trait CustomerShippingSlipInvoiceableTrait
             $documents = CustomerShippingSlip::
 //                                  where('customer_id', $params['customer_id'])
                                   where('status', 'closed')
+                                ->where('is_invoiceable', '>', 0)
                                 ->where('invoiced_at', null)
                                 ->with('lines')
                                 ->with('lines.linetaxes')
@@ -179,12 +180,16 @@ trait CustomerShippingSlipInvoiceableTrait
     {
         // abi_r($params);die();
 
-//        1.- Recuperar los documntos
+//        1.- Recuperar los documntos. Skip not invoiceable
+        $documents = $documents->reject(function ($item, $key) {
+                                    return $item->is_invoiceable == 0;
+                                });
+
 //        2.- Comprobar que están todos los de la lista ( comparando count() )
 
-            $customer = Customer::
-                                  with('currency')
-                                ->findOrFail($params['customer_id']);
+        $customer = Customer::
+                              with('currency')
+                            ->findOrFail($params['customer_id']);
 
 
 //        4.- Cear cabecera

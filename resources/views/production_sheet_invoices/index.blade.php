@@ -72,7 +72,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
     <thead>
         <tr>
             <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-            <th class="text-left">{{ l('ID', 'layouts') }}</th>
+            <th class="text-left">{{-- l('ID', 'layouts') --}}
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf' )}}');$('#form-select-documents').submit();return false;" target="_blank"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
+
+            </th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th>{{l('Customer')}}</th>
@@ -96,7 +100,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
         @foreach ($documents as $document)
         <tr>
             <td class="text-center warning">
-@if ( 1 || $document->status == 'closed' )
+@if ( 0 && $document->status == 'closed' )
 @else
               {!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}
 @endif
@@ -361,6 +365,9 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 </div><!-- div class="row" ENDS -->
 
 </div><!-- div id="div_documents" ENDS -->
+
+
+@include('layouts/back_to_top_button')
 
 
 {!! Form::close() !!}

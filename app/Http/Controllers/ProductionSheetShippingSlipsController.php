@@ -269,6 +269,7 @@ class ProductionSheetShippingSlipsController extends BillableController
 
             $documents = $this->document
                                 ->where('production_sheet_id', $params['production_sheet_id'])
+                                ->where('is_invoiceable', '>', 0)
                                 ->where('status', 'closed')
                                 ->where('invoiced_at', null)
                                 ->with('lines')

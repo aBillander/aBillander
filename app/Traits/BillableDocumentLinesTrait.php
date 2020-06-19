@@ -396,7 +396,7 @@ trait BillableDocumentLinesTrait
         $pmu_conversion_rate = 1.0; // Temporarily default
 
         // Measure unit stuff...
-        if ( $document_line->package_measure_unit_id && $document_line->package_measure_unit_id != $document_line->measure_unit_id )
+        if ( $document_line->package_measure_unit_id && ($document_line->package_measure_unit_id != $document_line->measure_unit_id) )
         {
             $pmu_conversion_rate = $document_line->pmu_conversion_rate;
 /*
@@ -407,6 +407,25 @@ trait BillableDocumentLinesTrait
                             : $pmu->name.' : '.(int) $pmu_conversion_rate.'x'.$mu->name;
 */            
         }
+
+        // Warning: stored $quantity is ALLWAYS in "stock keeping unit"
+        if (array_key_exists('quantity', $params)) 
+        {
+            if (array_key_exists('use_measure_unit_id', $params) && ( $params['use_measure_unit_id'] == 'measure_unit_id' ))
+            {
+                // FORCE measure unit to default line measure unit
+                // See CustomerOrdersController@createSingleShippingSlip, section relative to back order creation
+                // No need of calculations
+                $quantity = $params['quantity'];
+
+            } else {
+                // "Input quantity" (from form, etc.) is expected in "line measure unit", i.e., in package_measure_unit,
+                // when $document_line->package_measure_unit_id != $document_line->measure_unit_id
+                $quantity = $params['quantity'] * $pmu_conversion_rate;
+            }
+        }
+        else
+            $quantity = $document_line->quantity;       // Already in "stock keeping unit"
 
         // Tax
         $tax = $product->tax;
@@ -420,14 +439,7 @@ trait BillableDocumentLinesTrait
         // Product Price
 //        $price = $product->getPrice();
 //        $unit_price = $price->getPrice();
-        
-        if (array_key_exists('quantity', $params)) 
-            $quantity = $params['quantity'];
-        else
-            $quantity = $document_line->quantity;
 
-        // Mistake: $quantity is ALLWAYS in "stock keeping unit"
-        // $quantity = $quantity * $pmu_conversion_rate;
 
 /*      Not needed:
 

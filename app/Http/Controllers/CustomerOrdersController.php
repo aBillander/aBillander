@@ -1115,7 +1115,7 @@ class CustomerOrdersController extends BillableController
 
             $clone->lines()->save($clone_line);
 
-            $clone->updateProductLine( $clone_line->id, [ 'quantity' => $bo_quantity[$line->id] ] );
+            $clone->updateProductLine( $clone_line->id, [ 'quantity' => $bo_quantity[$line->id], 'use_measure_unit_id' => 'measure_unit_id' ] );
         }
 
         // Save Customer document

@@ -104,7 +104,32 @@
                   <i class="fa fa-truck abi-help" title="{{l('Shipping Cost')}}"></i> 
                 @endif
                 {{ $line->name }}</td>
-                <td class="text-right">{{ $line->as_quantity('quantity') }}</td>
+                <td class="text-right">{{ $line->as_quantity('quantity') }}
+                        @if ($line->package_measure_unit_id != $line->measure_unit_id && $line->pmu_label != '')
+                            <p class="text-right text-info">
+                                {{ optional($line->packagemeasureunit)->name }}
+
+                                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                                    xdata-trigger="focus"
+                                    data-html="true" 
+                                    data-content="{!! $line->pmu_label !!}">
+                                    <i class="fa fa-question-circle abi-help" style="color: #9a00cd;"></i>
+                                 </a>
+                            </p>
+                        @endif
+                        @if ($line->extra_quantity > 0.0 && $line->extra_quantity_label != '')
+                            <p class="text-right text-info">
+                                +{{ $line->as_quantity('extra_quantity') }}{{ l(' extra') }}
+
+                                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                                    xdata-trigger="focus"
+                                    data-html="true" 
+                                    data-content="{{ $line->extra_quantity_label }}">
+                                    <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                                 </a>
+                            </p>
+                        @endif
+                </td>
                 <td class="text-right">{{ $line->as_price('unit_customer_final_price') }}</td>
                 <td class="text-right">{{ $line->as_percent('discount_percent') }}</td>
                 <td class="text-right">{{ $line->as_price('total_tax_excl') }}</td>
@@ -119,7 +144,7 @@
                 <td class="text-center">
                 @if ($line->notes)
                  <a href="javascript:void(0);">
-                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="left" 
                             data-content="{{ $line->notes }}">
                         <i class="fa fa-paperclip"></i> {{-- l('View', [], 'layouts') --}}
                     </button>

@@ -234,11 +234,13 @@ class Payment extends Model {
         {
             $user = Auth::guard('customer')->user();
 
-            return $query->whereHas('customerinvoice', function ($query) use ($user) {
+            $addresses_count = $user->customer->addresses->count();
+
+            return $query->whereHas('customerinvoice', function ($query) use ($user, $addresses_count) {
                                 
                                 $query->where('customer_id', $user->customer_id);
 
-                                if ( $user->address_id )
+                                if ( ($addresses_count > 1) && $user->address_id )
                                     $query->where('shipping_address_id', $user->address_id);
                             } );
         }

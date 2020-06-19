@@ -22,3 +22,5 @@ composer.json_dist*
 composer.lock_dist*
 /database/backups
 /routes/abcc_dist.php
+
+*.php_dist

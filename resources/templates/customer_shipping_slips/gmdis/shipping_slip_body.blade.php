@@ -15,7 +15,7 @@
         @endif
 
 
-		<div class="banner" style="visibility:hidden">
+		<div class="banner">
 
 			&nbsp; {!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
 

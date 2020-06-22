@@ -54,6 +54,7 @@ return [
 	'Invoiced at:'     => 'Facturado el',
 	'Delivered at:'     => 'Entregado el:',
 	'Set delivered' => 'Click para entregado',
+	'With selected: Set delivered' => 'Con los seleccionados: Marcar como entregado',
 
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Próx. Vencimiento',

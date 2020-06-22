@@ -467,13 +467,13 @@ trait BillableDocumentLinesTrait
 
         } else {
 
-            $unit_customer_final_price = \App\Price::create([$document_line->unit_final_price, $document_line->unit_final_price_tax_inc, $pricetaxPolicy], $currency);
+            $unit_customer_final_price = \App\Price::create([$document_line->unit_customer_final_price, $document_line->unit_customer_final_price_tax_inc, $pricetaxPolicy], $currency);
         }
 
         // Discount
         $discount_percent = array_key_exists('discount_percent', $params) 
                             ? $params['discount_percent'] 
-                            : 0.0;
+                            : $document_line->discount_percent;
 
         // Final Price
         $unit_final_price = clone $unit_customer_final_price;

@@ -102,6 +102,7 @@ class ProductionSheetOrdersController extends BillableController
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
+                            ->orderBy('shipping_method_id', 'asc')
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 
@@ -426,6 +427,8 @@ class ProductionSheetOrdersController extends BillableController
             'status' => 'draft',
             'onhold' => 0,
             'locked' => 0,
+
+            'is_invoiceable' => $customer->is_invoiceable,
 
             'invoicing_address_id' => $customer->invoicing_address_id,
             'shipping_address_id' => $params['shipping_address_id'],

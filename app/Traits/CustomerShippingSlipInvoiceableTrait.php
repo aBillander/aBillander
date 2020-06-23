@@ -40,6 +40,7 @@ trait CustomerShippingSlipInvoiceableTrait
             $documents = CustomerShippingSlip::
 //                                  where('customer_id', $params['customer_id'])
                                   where('status', 'closed')
+                                ->where('is_invoiceable', '>', 0)
                                 ->where('invoiced_at', null)
                                 ->with('lines')
                                 ->with('lines.linetaxes')
@@ -48,7 +49,8 @@ trait CustomerShippingSlipInvoiceableTrait
     //                            ->with('paymentmethod')
                                 ->orderBy('document_date', 'asc')
                                 ->orderBy('id', 'asc')
-                                ->findOrFail( $list );
+                                ->find( $list );
+    //                            ->findOrFail( $list );
 
             // abi_r($documents, true);
             
@@ -94,17 +96,17 @@ trait CustomerShippingSlipInvoiceableTrait
 
                 // Every single document
 
-                foreach ($documents as $document) {
+                foreach ($documents_by_cid as $document) {
                     # code...
                     // Select Documents
                     $documents_by_doc = collect($document);
 
-                    return CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_doc, $params + $extra_params );
+                    CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_doc, $params + $extra_params );
                 }
 
             } else {
 
-                return CustomerShippingSlip::invoiceDocumentsByCustomer( $documents, $params + $extra_params );
+                CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_cid, $params + $extra_params );
             }
         }
 
@@ -178,12 +180,16 @@ trait CustomerShippingSlipInvoiceableTrait
     {
         // abi_r($params);die();
 
-//        1.- Recuperar los documntos
+//        1.- Recuperar los documntos. Skip not invoiceable
+        $documents = $documents->reject(function ($item, $key) {
+                                    return $item->is_invoiceable == 0;
+                                });
+
 //        2.- Comprobar que están todos los de la lista ( comparando count() )
 
-            $customer = Customer::
-                                  with('currency')
-                                ->findOrFail($params['customer_id']);
+        $customer = Customer::
+                              with('currency')
+                            ->findOrFail($params['customer_id']);
 
 
 //        4.- Cear cabecera
@@ -246,6 +252,14 @@ trait CustomerShippingSlipInvoiceableTrait
             'payment_status' => 'pending',
 //            'stock_status' => 'completed',
         ];
+
+        if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+        {
+            if ( array_key_exists('production_sheet_id', $params) && ( $params['production_sheet_id'] > 0 ) )
+            {
+                $extradata = $extradata + ['production_sheet_id' => $params['production_sheet_id']];
+            }
+        }
 
 
         // Let's get dirty

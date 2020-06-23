@@ -8,10 +8,25 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-
+{{--
         <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}" class="btn btn-info" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-truck"></i> {{ l('Shipping Slips') }}</a>
 
         <a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}" class="btn btn-success" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a>
+--}}
+
+
+                <div class="btn-group" style="margin-left: 32px; ">
+                    <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', 'layouts')}}" style="background-color: #31b0d5;
+border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu  pull-right">
+                      <li><a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}"><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a></li>
+                      <li><a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}"><i class="fa fa-truck"></i> {{ l('Shipping Slips') }}</a></li>
+                      <li><a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}"><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a></li>
+                      <li class="divider"></li>
+                      <!-- li class="divider"></li -->
+                      <!-- li><a href="#">Separated link</a></li -->
+                    </ul>
+                </div>
 
         <a href="{{ route('productionsheets.show', [$productionSheet->id]) }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheet') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
 
@@ -57,20 +72,26 @@
     <thead>
         <tr>
             <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-            <th class="text-left">{{ l('ID', 'layouts') }}</th>
+            <th class="text-left">{{-- l('ID', 'layouts') --}}
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf' )}}');$('#form-select-documents').submit();return false;" target="_blank"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
+
+            </th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th>{{l('Customer')}}</th>
-            <th class="text-left">{{ l('Warehouse') }}</th>
+            <!-- th class="text-left">{{ l('Warehouse') }}</th>
             <th class="text-left">{{ l('Invoice') }}</th>
             <th class="text-left">{{ l('Deliver to') }}
               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                         data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
                     <i class="fa fa-question-circle abi-help"></i>
               </a></th>
-            <th class="text-left">{{ l('Shipping Method') }}</th>
+            <th class="text-left">{{ l('Shipping Method') }}</th -->
             <!-- th class="text-left">{{ l('Created via') }}</th -->
             <th class="text-right"">{{ l('Total') }}</th>
+            <th class="text-right""> </th>
+            <th class="text-center">{{ l('Next Due Date') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
@@ -79,7 +100,7 @@
         @foreach ($documents as $document)
         <tr>
             <td class="text-center warning">
-@if ( 1 || $document->status == 'closed' )
+@if ( 0 && $document->status == 'closed' )
 @else
               {!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}
 @endif
@@ -98,12 +119,13 @@
 
 @if ( $document->status == 'closed' )
                 <a class="btn btn-xs alert-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
-@endif
+@else
 
 @if ($document->onhold>0)
                 <a class="btn btn-xs btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
 @else
                 <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
+@endif
 @endif
 
 @if ( $document->edocument_sent_at )
@@ -120,7 +142,7 @@
                           </button>
                        </a>
             </td>
-            <td>{{ optional($document->warehouse)->alias }}</td>
+            <!-- td>{{ optional($document->warehouse)->alias }}</td>
             <td>
 @if ( 0 && $document->status == 'closed' )
 @if ($document->shipping_slip_at && $document->shippingslip)
@@ -154,10 +176,26 @@
                 @endif
             </td>
             <td>{{ optional($document->shippingmethod)->name }}
-            </td>
+            </td -->
             <!-- td>{{ $document->created_via }}
             </td -->
             <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
+            <td>
+@if ( $document->status == 'closed' )
+@if ( $document->payment_status == 'pending' )
+                <a class="btn btn-xs alert-danger" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-window-close"></i>&nbsp;</a>
+@endif
+@if ( $document->payment_status == 'halfpaid' )
+                <a class="btn btn-xs alert-warning" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-star-half-o"></i>&nbsp;</a>
+@endif
+@if ( $document->payment_status == 'paid')
+                <a class="btn btn-xs alert-success" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-star"></i>&nbsp;</a>
+@endif
+@endif
+            </td>
+            <td class="text-center @if ( optional($document->nextPayment())->is_overdue ) danger @endif ">
+                {{ abi_date_short($document->next_due_date) }}
+            </td>
             <td class="text-center" width="20%">@if ($document->all_notes && 0)
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
@@ -239,20 +277,32 @@
    <div class="panel-heading">
 
                         <ul class="nav nav-tabs">
-                            <!-- li class="active"><a href="#tab1default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Group Orders') }}</a></li -->
-                            <li><a href="#tab2default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Create Invoices') }}</a></li>
+                            <li class="active"><a href="#tab1default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Close Documents') }}</a></li>
+                            <!-- li><a href="#tab2default_s" data-toggle="tab" style="font-size: 16px;">{{ l('Create Invoices') }}</a></li -->
                         </ul>
 
    </div>
 
   <div class="tab-content">
-      <div class="tab-pane fade" id="tab1default_s">
+      <div class="tab-pane fade in active" id="tab1default_s">
                 
-                @ include('production_sheet_orders.index_form_aggregate')
+          @if ($documents->where('status', '!=', 'closed')->count())
+
+                @include('production_sheet_invoices.index_form_close')
+          
+          @else
+              <div class="panel-body">
+              
+                  <div class="alert alert-warning alert-block">
+                      <i class="fa fa-warning"></i>
+                      {{l('Todas las Facturas están cerradas.')}}
+                  </div>              
+              </div>
+          @endif
 
       </div>
-      <div class="tab-pane fade in active" id="tab2default_s">
-                
+      <div class="tab-pane fade" id="tab2default_s">
+{{--
           @if ($documents->where('status', '!=', 'closed')->count())
 
                 @include('production_sheet_orders.index_form_group')
@@ -271,7 +321,7 @@
               
               </div>
           @endif
-
+--}}
       </div>
   </div>
 
@@ -315,6 +365,9 @@
 </div><!-- div class="row" ENDS -->
 
 </div><!-- div id="div_documents" ENDS -->
+
+
+@include('layouts/back_to_top_button')
 
 
 {!! Form::close() !!}

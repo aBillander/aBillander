@@ -227,6 +227,10 @@
         @else
                     <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
         @endif
+        @if ($document->document_id>0)
+                <a class="btn btn-xs alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{-- l('Close', 'layouts') --}}</a>
+        @endif
+
     @endif
 @endif
 

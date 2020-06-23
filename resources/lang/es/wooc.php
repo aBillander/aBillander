@@ -211,7 +211,7 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| WooCommerce Categories Language Lines :: show
+	| WooCommerce Products Language Lines :: show
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -227,6 +227,18 @@ return [
 	'Sale Price' => 'Precio en Oferta',
 	'Tax' => 'Impuesto',
 	'Weight' => 'Peso',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| WooCommerce Customers Language Lines :: show
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Customers' => 'Clientes',
 	
 
 	/*

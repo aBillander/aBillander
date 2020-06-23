@@ -9,7 +9,7 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <a href="{{ route('productionsheet.tourline', [$productionSheet->id]) }}" class="btn xbtn-sm btn-blue" title="{{l('Hoja Tourline :: Excel')}}" xstyle="margin-right: 32px;"><img src="{{ \App\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja Albaranes')}}</b></i></a>
+        <a href="{{ route('productionsheet.tourline', [$productionSheet->id]) }}" class="btn xbtn-sm btn-blue" title="{{l('Hoja Tourline :: Excel')}}" xstyle="margin-right: 32px;"><img src="{{ \App\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja de Envío')}}</b></i></a>
 {{--
         <button  name="b_search_filter" id="b_search_filter" class="btn xbtn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}" style="margin-left: 32px; ">
            <i class="fa fa-filter"></i>
@@ -45,10 +45,10 @@
 
 
 <div class="btn-group" style="margin-left: 32px; ">
-  <a href="{{ route('productionsheet.deliveryroute', [$productionSheet->id, 1]) }}" class="btn btn-info">{{ l('Delivery Routes')}}</a>
+  <a href="{{ route('productionsheet.deliveryroute', [$productionSheet->id, 1]) }}" class="btn btn-info" target="_new">{{ l('Delivery Routes')}}</a>
   <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
   <ul class="dropdown-menu">
-    <li><a href="{{ route('productionsheet.deliveryroute', [$productionSheet->id, 1]) }}">Sevilla</a></li>
+    <li><a href="{{ route('productionsheet.deliveryroute', [$productionSheet->id, 1]) }}" target="_new">Sevilla</a></li>
     <li class="divider"></li>
   </ul>
 </div>
@@ -172,14 +172,18 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
             </td>
             <td class="text-center">
 
-@if ( $document->status == 'closed' )
-                <a class="btn btn-xs alert-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
-@endif
-
-@if ($document->onhold>0)
-                <a class="btn btn-xs btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
+@if ($document->invoiced_at && $document->customerinvoice())
+                <a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{ l('Invoiced at:') }} {{abi_date_short( $document->invoiced_at )}}"><i class="fa fa-money"></i></a>
 @else
-                <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
+    @if ( $document->status == 'closed' )
+                    <a class="btn btn-xs alert-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
+    @else
+        @if ($document->onhold>0)
+                        <a class="btn btn-xs btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
+        @else
+                        <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
+        @endif
+    @endif
 @endif
 
 @if ( $document->edocument_sent_at )

@@ -4,7 +4,7 @@
 
 <div class="row">
 
-         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('should_group') ? 'has-error' : '' }}">
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('group_by_customer') ? 'has-error' : '' }}">
              {{ l('Should group?') }}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                         data-content="{{ l('Yes: One Invoice per Customer<br />No: One Invoice per Shipping Slip') }}">
@@ -13,13 +13,13 @@
              <div>
                <div class="radio-inline">
                  <label>
-                   {!! Form::radio('should_group', '1', true, ['id' => 'should_group_on']) !!}
+                   {!! Form::radio('group_by_customer', '1', true, ['id' => 'group_by_customer_on']) !!}
                    {!! l('Yes', [], 'layouts') !!}
                  </label>
                </div>
                <div class="radio-inline">
                  <label>
-                   {!! Form::radio('should_group', '0', false, ['id' => 'should_group_off']) !!}
+                   {!! Form::radio('group_by_customer', '0', false, ['id' => 'group_by_customer_off']) !!}
                    {!! l('No', [], 'layouts') !!}
                  </label>
                </div>
@@ -52,11 +52,11 @@
 --}}
 <div class="row">
 
-         <div class="col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shippingslip date') ? 'has-error' : '' }}">
+         <div class="col-lg-6 col-md-6 col-sm-6 {{ $errors->has('document_date') ? 'has-error' : '' }}">
             <div class="form-group">
                {{ l('Date') }}
                {!! Form::text('document_date_form', null, array('class' => 'form-control', 'id' => 'document_date_form', 'autocomplete' => 'off')) !!}
-               {!! $errors->first('shippingslip date', '<span class="help-block">:message</span>') !!}
+               {!! $errors->first('document_date', '<span class="help-block">:message</span>') !!}
             </div>
          </div>
 

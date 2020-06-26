@@ -137,6 +137,7 @@ return [
 	'Support & feed-back'     => 'Soporte y feed-back',
 	'About ...'     => 'Acerca de ...',
 	'Company'     => 'Empresa',
+	'Banks' => 'Bancos',
 	'Todos'     => 'Tareas',
 	'Pending Todos'     => 'Tareas Pendientes',
 	'Configuration - All keys'     => 'Configuración - Todas las claves',

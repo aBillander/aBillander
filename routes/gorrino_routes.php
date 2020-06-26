@@ -58,6 +58,14 @@ Route::get('mqueuer', 'MProbeController@queuer');
 Route::get('migratethis', function()
 {
 
+	// 2020-06-26
+	Illuminate\Support\Facades\DB::statement("create table `banks` (`id` int unsigned not null auto_increment primary key, `alias` varchar(32) not null, `name` varchar(128) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+
+	die('OK');
+
+	
+
 	// 2020-05-26
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoice_lines` ADD `customer_shipping_slip_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `customer_invoice_id`;");
 

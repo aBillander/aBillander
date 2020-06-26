@@ -483,6 +483,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('banks') }}">
+                                 {{l('Banks', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('dbbackups') }}">
                                  <i class="fa fa-database text-danger"></i> {{l('DB Backups', [], 'layouts')}}
                             </a>

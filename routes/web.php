@@ -215,6 +215,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('companies', 'CompaniesController');
         Route::post('companies/{id}/bankaccount', 'CompaniesController@updateBankAccount')->name('companies.bankaccount');
 
+        Route::resource('banks',         'BanksController');
+        Route::resource('cheques',       'ChequesController');
+        Route::resource('chequedetails', 'ChequeDetailsController');
+
         Route::resource('countries',        'CountriesController');
         Route::resource('countries.states', 'StatesController');
         Route::get('countries/{countryId}/getstates',   array('uses'=>'CountriesController@getStates', 

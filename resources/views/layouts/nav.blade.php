@@ -341,6 +341,12 @@
                             </a>
                         </li>
 @endif
+                         <li>
+                            <a href="{{ URL::to('cheques') }}">
+                                 <i class="fa fa-money btn-xs text-success"></i> 
+                                 {{l('Cheques', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('import') }}">

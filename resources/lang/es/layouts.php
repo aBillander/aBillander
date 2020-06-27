@@ -85,6 +85,7 @@ return [
 	'Payment Methods'     => 'Formas de Pago',
 	'Taxes'     => 'Impuestos',
 	'Ecotaxes'     => 'Eco-Impuestos',
+	'Cheques' => 'Cheques',
 	'Manufacturers'     => 'Fabricantes',
 	'Product Categories'     => 'Categorías de Productos',
 	'Customer Groups'     => 'Grupos de Clientes',

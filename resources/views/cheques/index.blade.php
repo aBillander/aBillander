@@ -166,10 +166,11 @@
                   {{ $cheque->customer->name_regular }}
               </a>
             </td>
-            <td xclass="text-center">{{ $cheque->bank->name }}</td>
+            <td xclass="text-center">{{ optional($cheque->bank)->name }}</td>
 
             <td>{{ $cheque->amount > 0.0 ? $cheque->as_money_amount('amount') : '-' }}</td>
             <td xclass="text-center">{{ $cheque->currency->name }}</td>
+            <td xclass="text-center">{{ $cheque->status_name }}</td>
 
               <td class="text-center">
                   @if ($cheque->notes)
@@ -184,9 +185,7 @@
 
 			<td class="text-right button-pad">
                 @if (  is_null($cheque->deleted_at))
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('cheques/' . $cheque->id . '/chequelines') }}" title="{{l('Show Customer Order Template Lines')}}"><i class="fa fa-folder-open-o"></i></a>
-
-                <a class="btn btn-sm btn-magick" href="{{ route('cheques.createcustomerorder', $cheque->id) }}" title="{{l('Create Customer Order')}}"><i class="fa fa-superpowers"></i></a>
+                <a class="btn btn-sm btn-blue" href="{{ URL::to('cheques/' . $cheque->id . '/chequelines') }}" title="{{l('Show Customer Cheque Lines')}}"><i class="fa fa-folder-open-o"></i></a>
 
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('cheques/' . $cheque->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
@@ -207,8 +206,8 @@
 
    </div><!-- div class="table-responsive" ENDS -->
 
-{{ $documents->appends( Request::all() )->render() }}
-<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
+{{ $cheques->appends( Request::all() )->render() }}
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $cheques->total() ], 'layouts')}} </span></li></ul>
 
 @else
 <div class="alert alert-warning alert-block">

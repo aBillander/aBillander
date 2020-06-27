@@ -59,8 +59,8 @@ Route::get('migratethis', function()
 {
 
 	// 2020-06-26
-	Illuminate\Support\Facades\DB::statement("create table `cheques` (`id` int unsigned not null auto_increment primary key, `document_number` varchar(32) not null, `place_of_issue` varchar(64) not null, `amount` decimal(20, 6) not null default '0', `date_of_issue` date null, `due_date` date null, `payment_date` date null, `posted_at` date null, `date_of_entry` date null, `memo` varchar(128) null, `notes` text null, `status` varchar(32) not null default 'pending', `currency_id` int unsigned not null, `customer_id` int unsigned not null, `drawee_bank_id` varchar(64) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
-	
+	Illuminate\Support\Facades\DB::statement("create table `cheques` (`id` int unsigned not null auto_increment primary key, `document_number` varchar(32) not null, `place_of_issue` varchar(64) not null, `amount` decimal(20, 6) not null default '0', `date_of_issue` date null, `due_date` date null, `payment_date` date null, `posted_at` date null, `date_of_entry` date null, `memo` varchar(128) null, `notes` text null, `status` varchar(32) not null default 'pending', `currency_id` int unsigned not null, `customer_id` int unsigned not null, `drawee_bank_id` varchar(64) null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
 	Illuminate\Support\Facades\DB::statement("create table `banks` (`id` int unsigned not null auto_increment primary key, `alias` varchar(32) not null, `name` varchar(128) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 
 

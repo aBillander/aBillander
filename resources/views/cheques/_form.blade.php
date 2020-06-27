@@ -1,15 +1,48 @@
 
 <div class="row">
-    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('alias') ? 'has-error' : '' }}">
-        {!! Form::label('alias', l('Alias')) !!}
-        {!! Form::text('alias', null, array('class' => 'form-control', 'id' => 'alias')) !!}
-        {!! $errors->first('alias', '<span class="help-block">:message</span>') !!}
+    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('document_number') ? 'has-error' : '' }}">
+        {!! Form::label('document_number', l('Document Number')) !!}
+        {!! Form::text('document_number', null, array('class' => 'form-control', 'id' => 'document_number')) !!}
+        {!! $errors->first('document_number', '<span class="help-block">:message</span>') !!}
     </div>
-    <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('name') ? 'has-error' : '' }}">
-        {!! Form::label('name', l('Customer Order Template name')) !!}
-        {!! Form::text('name', null, array('class' => 'form-control', 'id' => 'name')) !!}
-        {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
+    <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('place_of_issue') ? 'has-error' : '' }}">
+        {!! Form::label('place_of_issue', l('Place of Issue')) !!}
+        {!! Form::text('place_of_issue', null, array('class' => 'form-control', 'id' => 'place_of_issue')) !!}
+        {!! $errors->first('place_of_issue', '<span class="help-block">:message</span>') !!}
     </div>
+</div>
+
+<div class="row">
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date_of_issue') ? 'has-error' : '' }}">
+        {!! Form::label('date_of_issue_form', l('Date of Issue')) !!}
+        {!! Form::text('date_of_issue_form', null, array('id' => 'date_of_issue_form', 'class' => 'form-control')) !!}
+        {!! $errors->first('date_of_issue', '<span class="help-block">:message</span>') !!}
+    </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('due_date') ? 'has-error' : '' }}">
+        {!! Form::label('due_date_form', l('Due Date')) !!}
+        {!! Form::text('due_date_form', null, array('id' => 'due_date_form', 'class' => 'form-control')) !!}
+        {!! $errors->first('due_date', '<span class="help-block">:message</span>') !!}
+    </div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('status', l('Status', 'layouts')) !!}
+    {!! Form::select('status', $statusList, null, array('class' => 'form-control')) !!}
+</div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date_of_entry') ? 'has-error' : '' }}">
+        {!! Form::label('date_of_entry_form', l('Date of Entry')) !!}
+        {!! Form::text('date_of_entry_form', null, array('id' => 'date_of_entry_form', 'class' => 'form-control')) !!}
+        {!! $errors->first('date_of_entry', '<span class="help-block">:message</span>') !!}
+    </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('payment_date') ? 'has-error' : '' }}">
+        {!! Form::label('payment_date_form', l('Payment Date')) !!}
+        {!! Form::text('payment_date_form', null, array('id' => 'payment_date_form', 'class' => 'form-control')) !!}
+        {!! $errors->first('payment_date', '<span class="help-block">:message</span>') !!}
+    </div>
+
 </div>
 
 <div class="row">
@@ -26,40 +59,34 @@
         {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
     </div>
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
-            {!! Form::label('shipping_address_id', l('Shipping Address'), ['class' => 'control-label']) !!}
-            {!! Form::select('shipping_address_id', [], old('shipping_address_id'), array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
-            {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('drawee_bank_id') ? 'has-error' : '' }}">
+            {!! Form::label('drawee_bank_id', l('Drawee Bank'), ['class' => 'control-label']) !!}
+            {!! Form::select('drawee_bank_id', ['' => l('-- Please, select --', [], 'layouts')] + $bankList, null, array('class' => 'form-control', 'id' => 'drawee_bank_id')) !!}
+            {!! $errors->first('drawee_bank_id', '<span class="help-block">:message</span>') !!}
          </div>
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('template_id') ? 'has-error' : '' }}">
-            {!! Form::label('template_id', l('Document Template'), ['class' => 'control-label']) !!}
-            {!! Form::select('template_id', array('' => l('-- Please, select --', [], 'layouts')) + $templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
-            {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
+<div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('amount') ? 'has-error' : '' }}">
+    {!! Form::label('amount', l('Amount')) !!}
+    {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control')) !!}
+    {!! $errors->first('amount', '<span class="help-block">:message</span>') !!}
+</div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
+            {!! Form::label('currency_id', l('Currency'), ['class' => 'control-label']) !!}
+            {!! Form::select('currency_id', $currencyList, old('currency_id', \App\Configuration::getInt('DEF_CURRENCY')), array('class' => 'form-control', 'id' => 'currency_id')) !!}
+            {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
          </div>
 
 </div>
 
 <div class="row">
-    <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-active">
-     {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}
-     <div>
-       <div class="radio-inline">
-         <label>
-           {!! Form::radio('active', '1', true, ['id' => 'active_on']) !!}
-           {!! l('Yes', [], 'layouts') !!}
-         </label>
-       </div>
-       <div class="radio-inline">
-         <label>
-           {!! Form::radio('active', '0', false, ['id' => 'active_off']) !!}
-           {!! l('No', [], 'layouts') !!}
-         </label>
-       </div>
-     </div>
+    <div class="form-group col-lg-7 col-md-7 col-sm-7 {{ $errors->has('memo') ? 'has-error' : '' }}">
+        {!! Form::label('memo', l('Memo')) !!}
+        {!! Form::text('memo', null, array('class' => 'form-control', 'id' => 'memo')) !!}
+        {!! $errors->first('memo', '<span class="help-block">:message</span>') !!}
     </div>
 
-    <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('notes') ? 'has-error' : '' }}">
+    <div class="form-group col-lg-5 col-md-5 col-sm-5 {{ $errors->has('notes') ? 'has-error' : '' }}">
        {!! Form::label('notes', l('Notes', [], 'layouts')) !!}
        {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '3')) !!}
        {!! $errors->first('notes', '<span class="help-block">:message</span>') !!}
@@ -95,6 +122,13 @@
     z-index:100000000;
 }
  */
+  .ui-datepicker{ z-index: 9999 !important;}
+
+
+/* Undeliver dropdown effect */
+   .hover-item:hover {
+      background-color: #d3d3d3 !important;
+    }
 </style>
 
 @endsection
@@ -104,19 +138,21 @@
 
 
 {{-- Auto Complete --}}
+{{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
 
 <script type="text/javascript">
 
     $(document).ready(function() {
 
       @if ( $cheque ?? null )
-        getCustomerData( {{ $cheque->customer->id }}, {{ $cheque->shipping_address_id }} );
+        getCustomerData( {{ $cheque->customer->id }}, {{ $cheque->drawee_bank_id }} );
 
         $("#autocustomer_name").val('{{ $cheque->customer->name_regular }}');
         $("#customer_id").val('{{ $cheque->customer->id }}');
-        // $("#shipping_address_id").val('{{ $cheque->shipping_address_id }}');
+        // $("#drawee_bank_id").val('{{ $cheque->drawee_bank_id }}');
       @else
         $("#autocustomer_name").val('');
         $("#customer_id").val('');
@@ -135,7 +171,7 @@
                 // var str = '[' + value.item.identification+'] ' + value.item.name_regular + ' [' + value.item.reference_external +']';
                 var str = value.item.name_regular + ' [' + value.item.reference_external +']';
 
-                getCustomerData( value.item.id );
+                // ( value.item.id );
 
                 $("#autocustomer_name").val(str);
                 $('#customer_id').val(value.item.id );
@@ -149,7 +185,7 @@
             };
 
 
-        function getCustomerData( customer_id, shipping_address_id = 0 )
+        function getCustomerData( customer_id, drawee_bank_id = 0 )
         {
             var token = "{{ csrf_token() }}";
 
@@ -188,24 +224,24 @@
                     $('#down_payment').val('0.0');
 
                     $('#invoicing_address_id').val(response.invoicing_address_id);
-
+{{--
                     // https://www.youtube.com/watch?v=FHQh-IGT7KQ
-                    $('#shipping_address_id').empty();
+                    $('#drawee_bank_id').empty();
 
-    //                $('#shipping_address_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
+    //                $('#drawee_bank_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
 
                     $.each(response.addresses, function(index, element){
-                      $('#shipping_address_id').append('<option value="'+ element.id +'">'+ element.alias +'</option>');
+                      $('#drawee_bank_id').append('<option value="'+ element.id +'">'+ element.document_number +'</option>');
                     });
 
-                    if ( response.shipping_address_id > 0 ) {
-                      $('#shipping_address_id').val(response.shipping_address_id);
+                    if ( response.drawee_bank_id > 0 ) {
+                      $('#drawee_bank_id').val(response.drawee_bank_id);
                     } else {
-                      $('#shipping_address_id').val(response.invoicing_address_id);
+                      $('#drawee_bank_id').val(response.invoicing_address_id);
                     }
 
-                    if ( shipping_address_id > 0 )
-                      $("#shipping_address_id").val( shipping_address_id );
+                    if ( drawee_bank_id > 0 )
+                      $("#drawee_bank_id").val( drawee_bank_id );
 
                     $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
 
@@ -214,13 +250,44 @@
                         shipping_method_id = "{{ intval(\App\Configuration::get('DEF_SHIPPING_METHOD'))}}";
                     }
                     $('#shipping_method_id').val( shipping_method_id );
-
+--}}
                     $('#sales_rep_id').val(response.sales_rep_id);
 
                     console.log(response);
                 }
             });
         }
+
+
+
+
+    $( "#date_of_issue_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+
+
+    $( "#due_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+
+
+    $( "#payment_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+
+
+    $( "#date_of_entry_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+
 
     });
 

@@ -36,7 +36,7 @@ class Cheque extends Model
 
         'currency_id'   => 'required|exists:currencies,id',
         'customer_id'   => 'required|exists:customers,id',
-        'drawee_bank_id'   => 'required|exists:banks,id',
+        'drawee_bank_id'   => 'nullable|exists:banks,id',
     	];
     
 

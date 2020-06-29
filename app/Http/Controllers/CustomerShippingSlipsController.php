@@ -754,7 +754,7 @@ class CustomerShippingSlipsController extends BillableController
             'customer_id'   => $customer->id, 
             'template_id'   => $customer->getInvoiceTemplateId(), 
             'sequence_id'   => $customer->getInvoiceSequenceId(), 
-            'document_date' => \Carbon\Carbon::now()->toDateString(),
+            'document_date' => $document->document_date->toDateString(),
 
             'document_discount_percent' => $document->document_discount_percent,
             'document_ppd_percent'      => $document->document_ppd_percent,

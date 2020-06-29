@@ -114,7 +114,7 @@
          <div class="col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shippingslip_date') ? 'has-error' : '' }}">
             <div class="form-group">
                {{ l('Date') }}
-               {!! Form::text('shippingslip_date_form', abi_date_form_short( 'now' ), array('class' => 'form-control', 'id' => 'shippingslip_date_form', 'autocomplete' => 'off')) !!}
+               {!! Form::text('shippingslip_date_form', abi_date_short( $document->document_date ), array('class' => 'form-control', 'id' => 'shippingslip_date_form', 'autocomplete' => 'off')) !!}
                {!! $errors->first('shippingslip_date', '<span class="help-block">:message</span>') !!}
             </div>
          </div>

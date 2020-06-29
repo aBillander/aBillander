@@ -10,6 +10,8 @@ use App\Currency;
 use App\Bank;
 use App\Configuration;
 
+use Excel;
+
 use App\Traits\DateFormFormatterTrait;
 
 class ChequesController extends Controller
@@ -156,7 +158,12 @@ class ChequesController extends Controller
      */
     public function destroy(Cheque $cheque)
     {
-        //
+        $id = $cheque->id;
+
+        $cheque->delete();
+
+        return redirect('cheques')
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
 
@@ -178,4 +185,84 @@ class ChequesController extends Controller
         return response()->json($positions);
     }
 
+
+
+
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function export(Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_of_issue_from', 'date_of_issue_to', 'due_date_from', 'due_date_to'], $request );
+
+        // abi_r( $request->all(), true );
+
+        $cheques = $this->cheque
+                        ->filter( $request->all() )
+                        ->with('customer')
+                        ->with('currency')
+                        ->with('bank')
+                        ->orderBy('due_date', 'desc')
+                        ->get();
+
+        // Limit number of records
+        if ( ($count=$cheques->count()) > 1000 )
+            return redirect()->back()
+                    ->with('error', l('Too many Records for this Query &#58&#58 (:id) ', ['id' => $count], 'layouts'));
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = []; 
+
+        // Define the Excel spreadsheet headers
+        $headers = [ 
+                    'id', 'document_number', 'place_of_issue', 'amount', 
+                    'date_of_issue', 'due_date', 'payment_date', 'posted_at', 'date_of_entry', 'memo', 'notes', 
+                    'status', 'currency_id', 'CURRENCY_NAME', 'customer_id', 'CUSTOMER_NAME', 'drawee_bank_id', 'BANK_NAME',
+        ];
+
+        $data[] = $headers;
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the payments array.
+        foreach ($cheques as $cheque) {
+            // $data[] = $line->toArray();
+            $row = [];
+            foreach ($headers as $header)
+            {
+                $row[$header] = $cheque->{$header} ?? '';
+            }
+//            $row['TAX_NAME']          = $category->tax ? $category->tax->name : '';
+
+            $row['CURRENCY_NAME'] = optional($cheque->currency)->name;
+            $row['CUSTOMER_NAME'] = optional($cheque->customer)->name_regular;
+            $row['BANK_NAME'] = optional($cheque->bank)->name;
+
+            $data[] = $row;
+        }
+
+        $sheetName = 'Cheques' ;
+
+        // abi_r($data, true);
+
+        // Generate and return the spreadsheet
+        Excel::create('Cheques', function($excel) use ($sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');
+
+        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
+        // https://www.youtube.com/watch?v=s-ZeszfCoEs
+    }
 }

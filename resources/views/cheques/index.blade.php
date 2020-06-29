@@ -16,6 +16,9 @@
         <a href="{{ URL::to('cheques/create') }}" class="btn btn-sm btn-success" 
             title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
+        <a href="{{ route('cheques.export', Request::all()) }}" class="btn btn-sm btn-grey" 
+                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
 
         <button type="button" class="btn btn-sm btn-behance" 
                 data-toggle="modal" data-target="#chequesHelp"
@@ -185,8 +188,9 @@
 
 			<td class="text-right button-pad">
                 @if (  is_null($cheque->deleted_at))
+{{--
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('cheques/' . $cheque->id . '/chequelines') }}" title="{{l('Show Customer Cheque Lines')}}"><i class="fa fa-folder-open-o"></i></a>
-
+--}}
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('cheques/' . $cheque->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 

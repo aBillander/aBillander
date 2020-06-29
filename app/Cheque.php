@@ -41,6 +41,25 @@ class Cheque extends Model
     
 
 
+
+    public static function boot()
+    {
+        parent::boot();
+
+        // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
+        static::deleting(function ($document)
+        {
+            // before delete() method call this
+            foreach($document->details as $detail) {
+                $detail->delete();
+            }
+
+        });
+
+    }
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Methods

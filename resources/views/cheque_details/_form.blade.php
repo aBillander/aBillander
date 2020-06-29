@@ -46,10 +46,13 @@
 </div>
 
 <div class="row">
-    <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('customer_invoice_reference') ? 'has-error' : '' }}">
+    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('customer_invoice_id') ? 'has-error' : '' }}">
         {!! Form::label('auto_customer_invoice_reference', l('Customer Invoice')) !!}
-        {!! Form::text('auto_customer_invoice_reference', null, array('class' => 'form-control')) !!}
-        {!! $errors->first('customer_invoice_reference', '<span class="help-block">:message</span>') !!}
+        {!! Form::text('auto_customer_invoice_reference', old('auto_customer_invoice_reference', isset($chequedetail) ? $chequedetail->customer_invoice_reference : ''), array('class' => 'form-control')) !!}
+        {!! $errors->first('customer_invoice_id', '<span class="help-block">:message</span>') !!}
+
+        {{ Form::hidden('customer_invoice_id',        null, array('id' => 'customer_invoice_id'        )) }}
+        {{ Form::hidden('customer_invoice_reference', null, array('id' => 'customer_invoice_reference' )) }}
     </div>    
 
     <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('amount') ? 'has-error' : '' }}">
@@ -80,7 +83,7 @@
 
 
     $(document).ready(function() {
-
+{{--
       @if ( $chequedetail ?? null )
         $("#autoproduct_name").val('[{{ $chequedetail->product->reference }}] {{ $chequedetail->product->name }}');
         $("#product_id").val('{{ $chequedetail->product->id }}');
@@ -90,25 +93,25 @@
         $("#product_id").val('');
         $("#measure_unit_id").val('');
       @endif
-
+--}}
 
         // To get focus;
         $("#autoproduct_name").focus();
 
-        $("#autoproduct_name").autocomplete({
-            source : "{{ route('customerorders.searchproduct') }}?customer_id={{ $cheque->customer->id }}&currency_id={{ $cheque->customer->currency_id }}",
+        $("#auto_customer_invoice_reference").autocomplete({
+            source : "{{ route('chequedetail.searchinvoice', $cheque->id) }}?customer_id={{ $cheque->customer->id }}&currency_id={{ $cheque->currency_id }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 
             select : function(key, value) {
 
-                var str = '[' + value.item.reference+'] ' + value.item.name;
+                var str = '' + value.item.document_reference+' - ' + roundTo(value.item.total_tax_incl, 2);
 
-                $("#autoproduct_name").val(str);
-                $('#product_id').val(value.item.id);
-                $('#measure_unit_id').val(value.item.measure_unit_id);
+                $("#auto_customer_invoice_reference").val(str);
+                $('#customer_invoice_id').val(value.item.id);
+                $('#customer_invoice_reference').val(value.item.document_reference);
 
-                $('#quantity').focus();
+                $('#amount').focus();
 
                 // getCustomerData( value.item.id );
 
@@ -116,9 +119,23 @@
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
-                .append( '<div>[' + item.reference+'] ' + item.name + "</div>" )
+                .append( '<div>' + item.document_reference+' - ' + roundTo(item.total_tax_incl, 2) + "</div>" )
                 .appendTo( ul );
             };
+
+
+        $( "form" ).submit(function( event ) {
+              if ( $("#auto_customer_invoice_reference").val().trim() === "" ) {
+
+                  $("#auto_customer_invoice_reference").val("");
+                  $('#customer_invoice_id').val("");
+                  $('#customer_invoice_reference').val("");
+                  return;
+              }
+             
+              // $( "span" ).text( "Not valid!" ).show().fadeOut( 1000 );
+              // event.preventDefault();
+        });
 
     });
 
@@ -163,6 +180,29 @@
             }
         });
     }
+
+
+    // Round numbers
+    // https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
+    function roundTo(n, digits) {
+        var negative = false;
+        if (digits === undefined) {
+            digits = 0;
+        }
+            if( n < 0) {
+            negative = true;
+          n = n * -1;
+        }
+        var multiplicator = Math.pow(10, digits);
+        n = parseFloat((n * multiplicator).toFixed(11));
+        n = (Math.round(n) / multiplicator).toFixed(2);
+        if( negative ) {    
+            n = (n * -1).toFixed(2);
+        }
+        return n;
+    }
+
+
 
 </script>
 

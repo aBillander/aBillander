@@ -38,7 +38,16 @@
 
                         <td>{{ $detail->amount > 0.0 ? $detail->as_money_amount('amount') : '-' }}</td>
 
-                        <td>{{ $detail->customer_invoice_reference }}</td>
+                        <td>
+                            @if( $detail->customer_invoice_id > 0 )
+                                <a href="{{ route('customerinvoices.edit', $detail->customer_invoice_id) }}" title="{{l('Go to', 'layouts')}}" target="_blank"> {{ $detail->customer_invoice_reference }} </a>
+                            @else
+                                {{ $detail->customer_invoice_reference }}
+                            @endif
+
+                            {{-- $detail->customerinvoice->document_reference --}}
+
+                        </td>
 
 
                         <td class="text-right button-pad">

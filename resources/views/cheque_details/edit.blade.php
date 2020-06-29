@@ -8,7 +8,7 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3" style="margin-top: 50px">
 		<div class="panel panel-info">
-			<div class="panel-heading"><h3 class="panel-title">{{ l('Edit Customer Cheque Detail') }} :: ({{$chequedetail->id}}) </h3></div>
+			<div class="panel-heading"><h3 class="panel-title"><span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span> :: {{ l('Edit Customer Cheque Detail') }} :: ({{$chequedetail->id}}) </h3></div>
 			<div class="panel-body">
 				{!! Form::model($chequedetail, array('method' => 'PATCH', 'route' => array('cheques.chequedetails.update', $cheque->id, $chequedetail->id))) !!}
 

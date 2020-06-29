@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\ChequeDetail;
 use Illuminate\Http\Request;
+
+use App\Cheque;
+use App\ChequeDetail;
 
 class ChequeDetailsController extends Controller
 {
@@ -12,7 +14,7 @@ class ChequeDetailsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($chequeId)
     {
         //
     }
@@ -22,9 +24,15 @@ class ChequeDetailsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($chequeId)
     {
-        //
+        $cheque = Cheque::
+                      with('chequedetails')
+                    ->with('customer')
+                    ->with('currency')
+                    ->findOrFail($chequeId);
+        
+        return view('cheque_details.create', compact('cheque'));
     }
 
     /**
@@ -33,9 +41,28 @@ class ChequeDetailsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($chequeId, Request $request)
     {
-        //
+        $cheque = Cheque::with('chequedetails')->findOrFail($chequeId);
+
+        $this->validate($request, ChequeDetail::$rules);
+
+        // Handy conversions
+        if ( !$request->input('line_sort_order') ) 
+            $request->merge( ['line_sort_order' => $cheque->chequedetails->max('line_sort_order') + 10  ] );
+
+
+        $chequedetail = ChequeDetail::create($request->all());
+
+        $cheque->chequedetails()->save($chequedetail);
+
+        // $cheque->update([
+        //         'total_tax_incl' => 0.0,
+        //         'total_tax_excl' => 0.0,
+        // ]);
+
+        return redirect('cheques/'.$chequeId.'/edit')
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $chequedetail->id], 'layouts') . $chequedetail->line_sort_order);
     }
 
     /**
@@ -44,7 +71,7 @@ class ChequeDetailsController extends Controller
      * @param  \App\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
-    public function show(ChequeDetail $chequeDetail)
+    public function show($chequeId, ChequeDetail $chequeDetail)
     {
         //
     }
@@ -55,7 +82,7 @@ class ChequeDetailsController extends Controller
      * @param  \App\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
-    public function edit(ChequeDetail $chequeDetail)
+    public function edit($chequeId, ChequeDetail $chequeDetail)
     {
         //
     }
@@ -67,7 +94,7 @@ class ChequeDetailsController extends Controller
      * @param  \App\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ChequeDetail $chequeDetail)
+    public function update($chequeId, Request $request, ChequeDetail $chequeDetail)
     {
         //
     }
@@ -78,7 +105,7 @@ class ChequeDetailsController extends Controller
      * @param  \App\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ChequeDetail $chequeDetail)
+    public function destroy($chequeId, ChequeDetail $chequeDetail)
     {
         //
     }

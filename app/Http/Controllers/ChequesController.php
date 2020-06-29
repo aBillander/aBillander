@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Cheque;
+use App\ChequeDetail;
 use App\Currency;
 use App\Bank;
 use App\Configuration;
@@ -113,14 +114,16 @@ class ChequesController extends Controller
     {
         $statusList = $this->cheque::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();
-        $bankList = Bank::pluck('name', 'id')->toArray();        
+        $bankList = Bank::pluck('name', 'id')->toArray();   
+
+        $chequedetails = $cheque->details;     
 
         // abi_r($bankList);die();
 
         // Dates (cuen)
         $this->addFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $cheque );
 
-        return view('cheques.edit', compact('cheque', 'statusList', 'currencyList', 'bankList'));
+        return view('cheques.edit', compact('cheque', 'chequedetails', 'statusList', 'currencyList', 'bankList'));
     }
 
     /**
@@ -168,7 +171,7 @@ class ChequesController extends Controller
 
         \DB::transaction(function () use ($positions) {
             foreach ($positions as $position) {
-                CustomerOrderTemplateLine::where('id', '=', $position[0])->update(['line_sort_order' => $position[1]]);
+                ChequeDetail::where('id', '=', $position[0])->update(['line_sort_order' => $position[1]]);
             }
         });
 

@@ -83,7 +83,14 @@ class Cheque extends Model
     
     public function chequedetails()
     {
-    	return $this->hasMany( 'App\ChequeDetail' );
+        return $this->hasMany( 'App\ChequeDetail' )
+                    ->orderBy('line_sort_order', 'ASC');
+    }
+    
+    // Alias
+    public function details()
+    {
+        return $this->chequedetails();
     }
     
     public function currency()

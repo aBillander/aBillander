@@ -48,5 +48,14 @@ return [
 	'Last Customer Order' => '',
 	'Total Amount' => '',
 
+	/*
+	|--------------------------------------------------------------------------
+	| Cheques Language Lines :: Español
+	|--------------------------------------------------------------------------
+	|
+	*/
+
+	'Customer Cheque Details' => 'Detalle del Cheque',
+	'Add New Detail' => 'Nueva Línea de Detalle',
 
 ];

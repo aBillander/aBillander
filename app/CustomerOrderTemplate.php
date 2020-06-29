@@ -40,7 +40,8 @@ class CustomerOrderTemplate extends Model
     
     public function customerordertemplatelines()
     {
-    	return $this->hasMany( 'App\CustomerOrderTemplateLine', 'customer_order_template_id' );
+    	return $this->hasMany( 'App\CustomerOrderTemplateLine', 'customer_order_template_id' )
+                    ->orderBy('line_sort_order', 'ASC');
     }
     
     public function customer()

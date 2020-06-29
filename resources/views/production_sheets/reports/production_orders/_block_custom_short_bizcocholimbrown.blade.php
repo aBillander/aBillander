@@ -53,31 +53,44 @@ foreach ($lines_30100 as $line)
 
 $order_30102 = $sheet->productionorders->where('work_center_id', $work_center->id)->whereIn('product_reference', ['30102'])->first();
 
-$lines_30101 = $order_30102->productionorderlines->where('reference', '30101');
-
 $qty_30101 = 0;
 
-foreach ($lines_30101 as $line)
+if ( $order_30102 )
 {
-      $qty_30101 += $line->required_quantity;
+      $lines_30101 = $order_30102->productionorderlines->where('reference', '30101');
+
+      foreach ($lines_30101 as $line)
+      {
+            $qty_30101 += $line->required_quantity;
+      }
+
+} else {
+  //
 }
 
 
 
 $order_30101 = $sheet->productionorders->where('work_center_id', $work_center->id)->whereIn('product_reference', ['30101'])->first();
 
-$lines_30100 = $order_30101->productionorderlines->where('reference', '30100');
-
 $qty_30101_30100 = 0;
 
-foreach ($lines_30100 as $line)
+if ( $order_30101 )
 {
-      $qty_30101_30100 += $line->required_quantity;
+      $lines_30100 = $order_30101->productionorderlines->where('reference', '30100');
+
+      foreach ($lines_30100 as $line)
+      {
+            $qty_30101_30100 += $line->required_quantity;
+      }
+
+      $ratio = $qty_30101_30100 / $order_30101->planned_quantity;
+
+      $qty_30100['30102'] = $qty_30101 * $ratio;
+
+} else {
+
+      $qty_30100['30102'] = 0.0;
 }
-
-$ratio = $qty_30101_30100 / $order_30101->planned_quantity;
-
-$qty_30100['30102'] = $qty_30101 * $ratio;
 
 // Final touches
 ksort($qty_30100);

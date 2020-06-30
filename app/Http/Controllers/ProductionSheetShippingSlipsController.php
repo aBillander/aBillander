@@ -102,6 +102,7 @@ class ProductionSheetShippingSlipsController extends BillableController
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
+                            ->orderBy('shipping_method_id', 'asc')
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 
@@ -229,14 +230,20 @@ class ProductionSheetShippingSlipsController extends BillableController
         $request->merge( ['invoice_date' => $request->input('document_date')] );   // According to $rules_createinvoice
 
         // $rules = $this->document::$rules_createinvoice;
+        $rules = [
+                            'document_date' => 'required|date',
+//                            'customer_id' => 'exists:customers,id',
+                            'sequence_id' => 'exists:sequences,id',
+                            'template_id' => 'exists:templates,id',
+               ];
 
-        // $this->validate($request, $rules);
+        $this->validate($request, $rules);
 
         // abi_r($request->all(), true);
 
         // Set params for group
         // Excluded: 'template_id', 'sequence_id', 
-        $params = $request->only('production_sheet_id', 'should_group', 'group_by_shipping_address', 'document_date', 'status');
+        $params = $request->only('production_sheet_id', 'group_by_customer', 'group_by_shipping_address', 'document_date', 'status');
 
         // abi_r($params, true);
 
@@ -262,6 +269,7 @@ class ProductionSheetShippingSlipsController extends BillableController
 
             $documents = $this->document
                                 ->where('production_sheet_id', $params['production_sheet_id'])
+                                ->where('is_invoiceable', '>', 0)
                                 ->where('status', 'closed')
                                 ->where('invoiced_at', null)
                                 ->with('lines')
@@ -270,8 +278,10 @@ class ProductionSheetShippingSlipsController extends BillableController
     //                            ->with('currency')
     //                            ->with('paymentmethod')
     //                            ->orderBy('document_date', 'asc')
-    //                            ->orderBy('id', 'asc')
-                                ->findOrFail( $list );
+                                ->orderBy('id', 'asc')
+                                ->find( $list );
+
+                                // abi_r($documents->pluck('document_reference', 'id')->toArray());die();
             
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 
@@ -287,8 +297,6 @@ class ProductionSheetShippingSlipsController extends BillableController
 
         // abi_r($params);
         // abi_r($documents->pluck('id')->toArray());
-
-        // die();
 
         Document::invoiceDocumentCollection( $documents, $params );
 
@@ -358,7 +366,7 @@ class ProductionSheetShippingSlipsController extends BillableController
     //                            ->with('paymentmethod')
     //                            ->orderBy('document_date', 'asc')
     //                            ->orderBy('id', 'asc')
-                                ->findOrFail( $list );
+                                ->find( $list );
             
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 

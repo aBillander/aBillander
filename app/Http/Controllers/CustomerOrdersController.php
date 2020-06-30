@@ -805,6 +805,7 @@ class CustomerOrdersController extends BillableController
         $document = $this->document
                             ->with('customer')
                             ->with('currency')
+                            ->with('lines')
                             ->findOrFail( $request->input('document_id') );
         
         $customer = $document->customer;
@@ -813,7 +814,7 @@ class CustomerOrdersController extends BillableController
 
         // To do: check document status ???
 
-        if ( count( $dispatch ) == 0 ) 
+        if ( $document->lines->where('line_type', 'product')->count() != count( $dispatch ) ) 
             return redirect($this->model_path.'/'.$document->id.'/edit')
                 ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
         
@@ -1115,7 +1116,7 @@ class CustomerOrdersController extends BillableController
 
             $clone->lines()->save($clone_line);
 
-            $clone->updateProductLine( $clone_line->id, [ 'quantity' => $bo_quantity[$line->id] ] );
+            $clone->updateProductLine( $clone_line->id, [ 'quantity' => $bo_quantity[$line->id], 'use_measure_unit_id' => 'measure_unit_id' ] );
         }
 
         // Save Customer document

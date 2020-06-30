@@ -365,6 +365,8 @@ return [
 	''     => '',
 	''     => '',
 
+	'Close Documents' => 'Cerrar Facturas',
+
 	'Delivery Routes' => 'Rutas de Reparto',
 
 ];

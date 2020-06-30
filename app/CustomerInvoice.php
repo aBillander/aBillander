@@ -121,6 +121,57 @@ class CustomerInvoice extends Billable
     | Methods
     |--------------------------------------------------------------------------
     */
+    
+    public function customerCard()
+    {
+        $address = $this->customer->address;
+
+        $card = $customer->name .'<br />'.
+                $address->address_1 .'<br />'.
+                $address->city . ' - ' . $address->state->name.' <a href="javascript:void(0)" class="btn btn-grey btn-xs disabled">'. $$address->phone .'</a>';
+
+        return $card;
+    }
+    
+    public function customerCardFull()
+    {
+        $address = $this->customer->address;
+
+        $card = ($address->name_commercial ? $address->name_commercial .'<br />' : '').
+                ($address->firstname  ? $address->firstname . ' '.$address->lastname .'<br />' : '').
+                $address->address1 . ($address->address2 ? ' - ' : '') . $address->address2 .'<br />'.
+                $address->city . ' - ' . $address->state->name.' <a href="javascript:void(0)" class="btn btn-grey btn-xs disabled">'. $address->phone .'</a>';
+
+        return $card;
+    }
+    
+    public function customerCardMini()
+    {
+        $customer = unserialize( $this->customer );
+
+        $card = $customer["city"].' - '.($customer["state_name"] ?? '').' <a href="#" class="btn btn-grey btn-xs disabled">'. $customer["phone"] .'</a>';
+
+        return $card;
+    }
+    
+    public function customerInfo()
+    {
+        $customer = $this->customer;
+
+        $name = $customer->name_fiscal ?: $customer->name_commercial;
+
+        if ( !$name ) 
+            $name = $customer->name;
+
+        return $name;
+    }
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
 
     public static function getStockStatusList()
     {

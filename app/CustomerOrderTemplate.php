@@ -32,6 +32,26 @@ class CustomerOrderTemplate extends Model
     	];
     
 
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+        // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
+        static::deleting(function ($document)
+        {
+            // before delete() method call this
+            foreach($document->lines as $line) {
+                $line->delete();
+            }
+
+        });
+
+    }
+
+    
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -40,7 +60,14 @@ class CustomerOrderTemplate extends Model
     
     public function customerordertemplatelines()
     {
-    	return $this->hasMany( 'App\CustomerOrderTemplateLine', 'customer_order_template_id' );
+        return $this->hasMany( 'App\CustomerOrderTemplateLine', 'customer_order_template_id' )
+                    ->orderBy('line_sort_order', 'ASC');
+    }
+    
+    // Alias
+    public function lines()
+    {
+        return $this->customerordertemplatelines();
     }
     
     public function customer()

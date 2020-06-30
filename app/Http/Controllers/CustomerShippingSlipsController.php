@@ -549,6 +549,73 @@ class CustomerShippingSlipsController extends BillableController
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
+
+    protected function deliverBulk(Request $request)
+    {
+        //
+        // Get Document IDs & constraints
+        $document_list = $request->input('document_group', []);
+
+        if ( count( $document_list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // abi_r($document_list);
+
+        //
+        // Get Documents
+        try {
+
+            $documents = $this->document->findOrFail( $document_list );
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return redirect()->back()
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $document_list)], 'layouts'));
+            
+        }
+
+        $i_all = $documents->count();
+        $i_ok = $i_ko = 0;
+
+        foreach ($documents as $document) {
+            # code...
+
+            // Can I?
+            if ( $document->status != 'closed' )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+            }
+
+            if ( $document->onhold )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+            }
+
+            // Deliver
+            if ( $document->deliver() )
+            {
+                
+                $i_ok++;
+                // return redirect()->back()           // ->route($this->model_path.'.index')
+                //        ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+            } else {
+                //
+                $i_ko++;
+            }
+        }
+
+        return redirect()->back()           // ->route($this->model_path.'.index')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ' '.$i_ok.'ok + '.$i_ko.'ko = '.$i_all.' '], 'layouts'));
+
+    }
+
     protected function undeliver($id, Request $request)
     {
         $document = $this->document->findOrFail($id);
@@ -668,8 +735,10 @@ class CustomerShippingSlipsController extends BillableController
 
         $invoice = \App\CustomerShippingSlip::invoiceDocumentList( $document_list, $params );
 
-        return redirect('customerinvoices/'.optional($invoice)->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($invoice)->id], 'layouts'));
+        return redirect()->back()
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+//        return redirect('customerinvoices/'.optional($invoice)->id.'/edit')
+//                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($invoice)->id], 'layouts'));
 
     } 
 
@@ -685,7 +754,7 @@ class CustomerShippingSlipsController extends BillableController
             'customer_id'   => $customer->id, 
             'template_id'   => $customer->getInvoiceTemplateId(), 
             'sequence_id'   => $customer->getInvoiceSequenceId(), 
-            'document_date' => \Carbon\Carbon::now()->toDateString(),
+            'document_date' => $document->document_date->toDateString(),
 
             'document_discount_percent' => $document->document_discount_percent,
             'document_ppd_percent'      => $document->document_ppd_percent,

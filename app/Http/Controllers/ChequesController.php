@@ -216,6 +216,88 @@ class ChequesController extends Controller
         // Initialize the array which will be passed into the Excel generator.
         $data = []; 
 
+        if ( $request->input('date_of_issue_from_form') && $request->input('date_of_issue_to_form') )
+        {
+            $ribbon = 'entre ' . $request->input('date_of_issue_from_form') . ' y ' . $request->input('date_of_issue_to_form');
+
+        } else
+
+        if ( !$request->input('date_of_issue_from_form') && $request->input('date_of_issue_to_form') )
+        {
+            $ribbon = 'hasta ' . $request->input('date_of_issue_to_form');
+
+        } else
+
+        if ( $request->input('date_of_issue_from_form') && !$request->input('date_of_issue_to_form') )
+        {
+            $ribbon = 'desde ' . $request->input('date_of_issue_from_form');
+
+        } else
+
+        if ( !$request->input('date_of_issue_from_form') && !$request->input('date_of_issue_to_form') )
+        {
+            $ribbon = 'todas';
+
+        }
+
+        if ( $request->input('date_of_issue_from_form') && $request->input('date_of_issue_to_form') )
+        {
+            $ribbon = 'entre ' . $request->input('date_of_issue_from_form') . ' y ' . $request->input('date_of_issue_to_form');
+
+        } else
+
+        if ( !$request->input('date_of_issue_from_form') && $request->input('date_of_issue_to_form') )
+        {
+            $ribbon = 'hasta ' . $request->input('date_of_issue_to_form');
+
+        } else
+
+        if ( $request->input('date_of_issue_from_form') && !$request->input('date_of_issue_to_form') )
+        {
+            $ribbon = 'desde ' . $request->input('date_of_issue_from_form');
+
+        } else
+
+        if ( !$request->input('date_of_issue_from_form') && !$request->input('date_of_issue_to_form') )
+        {
+            $ribbon = 'todas';
+
+        }
+
+        //
+
+        if ( $request->input('due_date_from_form') && $request->input('due_date_to_form') )
+        {
+            $ribbon1 = 'entre ' . $request->input('due_date_from_form') . ' y ' . $request->input('due_date_to_form');
+
+        } else
+
+        if ( !$request->input('due_date_from_form') && $request->input('due_date_to_form') )
+        {
+            $ribbon1 = 'hasta ' . $request->input('due_date_to_form');
+
+        } else
+
+        if ( $request->input('due_date_from_form') && !$request->input('due_date_to_form') )
+        {
+            $ribbon1 = 'desde ' . $request->input('due_date_from_form');
+
+        } else
+
+        if ( !$request->input('due_date_from_form') && !$request->input('due_date_to_form') )
+        {
+            $ribbon1 = 'todas';
+
+        }
+
+        // Sheet Header Report Data
+        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = ['Cheques de Clientes', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Fecha de Emisión: ' . $ribbon];
+        $data[] = ['Fecha de Vencimiento: ' . $ribbon1];
+        $data[] = [''];
+
+
         // Define the Excel spreadsheet headers
         $headers = [ 
                     'id', 'document_number', 'place_of_issue', 'amount', 
@@ -224,6 +306,8 @@ class ChequesController extends Controller
         ];
 
         $data[] = $headers;
+
+        $total_amount = 0.0;
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
@@ -240,8 +324,18 @@ class ChequesController extends Controller
             $row['CUSTOMER_NAME'] = optional($cheque->customer)->name_regular;
             $row['BANK_NAME'] = optional($cheque->bank)->name;
 
+            $row['amount'] = (float) $cheque->amount;
+
             $data[] = $row;
+
+            $total_amount += $cheque->amount;
         }
+
+        // Totals
+
+        $data[] = [''];
+        $data[] = ['', '', 'Total:', $total_amount * 1.0];
+
 
         $sheetName = 'Cheques' ;
 
@@ -257,6 +351,33 @@ class ChequesController extends Controller
 
             // Build the spreadsheet, passing in the data array
             $excel->sheet($sheetName, function($sheet) use ($data) {
+                
+                $sheet->mergeCells('A1:C1');
+                $sheet->mergeCells('A2:C2');
+                $sheet->mergeCells('A3:C3');
+                $sheet->mergeCells('A4:C4');
+                
+                $sheet->getStyle('A6:R6')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->setColumnFormat(array(
+                    'B' => 'dd/mm/yyyy',
+//                    'E' => '0.00%',
+                    'D' => '0.00',
+//                    'F' => '@',
+                ));
+                
+                $n = count($data);
+                $m = $n - 1;
+                $sheet->getStyle("D$n:D$n")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
                 $sheet->fromArray($data, null, 'A1', false, false);
             });
 

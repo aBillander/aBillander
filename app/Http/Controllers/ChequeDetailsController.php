@@ -47,7 +47,8 @@ class ChequeDetailsController extends Controller
         $cheque = Cheque::with('chequedetails')->findOrFail($chequeId);
 
         $customer_id = $cheque->customer_id;
-/*
+
+        // Customer of Invoice is the same as Customer of Cheque
         $extra_rules = [
             'customer_invoice_id' => [                                                                  
                 'nullable',                                                            
@@ -57,8 +58,10 @@ class ChequeDetailsController extends Controller
                 }),                                                                    
             ],
         ];
-*/
-        $this->validate($request, ChequeDetail::$rules);        //  + $extra_rules);
+
+        // Two steps validation :: Validation with ChequeDetail::$rules + $extra_rules won't work
+        $this->validate($request, ChequeDetail::$rules);
+        $this->validate($request, $extra_rules);
 
         // Handy conversions
         if ( !$request->input('line_sort_order') ) 
@@ -116,7 +119,20 @@ class ChequeDetailsController extends Controller
 
         $customer_id = $cheque->customer_id;
 
+        // Customer of Invoice is the same as Customer of Cheque
+        $extra_rules = [
+            'customer_invoice_id' => [                                                                  
+                'nullable',                                                            
+                \Illuminate\Validation\Rule::exists('customer_invoices', 'id')                     
+                    ->where(function ($query) use ($customer_id) {                      
+                        $query->where('customer_id', $customer_id);                  
+                }),                                                                    
+            ],
+        ];
+
+        // Two steps validation :: Validation with ChequeDetail::$rules + $extra_rules won't work
         $this->validate($request, ChequeDetail::$rules);
+        $this->validate($request, $extra_rules);
 
         // Handy conversions
         if ( !$request->input('line_sort_order') ) 
@@ -168,7 +184,7 @@ class ChequeDetailsController extends Controller
                                     $query->where  ( 'id',                 'LIKE', '%'.$search.'%' );
                                     $query->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' );
                                 })
- //                               ->where('customer_id', $request->input('customer_id'))
+                                ->where('customer_id', $request->input('customer_id'))
                                 ->where('currency_id', $request->input('currency_id'))
                                 ->where('status', 'closed')
                                 ->where('total_tax_incl', '>', 0.0)

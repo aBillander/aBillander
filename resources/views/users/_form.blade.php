@@ -36,7 +36,7 @@
 
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('theme', l('User theme')) !!}
-    {!! Form::select('theme', $themeList, null, array('class' => 'form-control')) !!}
+    {!! Form::select('theme', ['' => l('-- Default --', 'layouts')] + $themeList, null, array('class' => 'form-control')) !!}
 </div>
 </div>
 

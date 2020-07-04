@@ -42,14 +42,13 @@
                   <a class="btn btn-sm btn-magick xbtn-pressure xbtn-sensitive lines_quick_form" title="{{l('Quick Add Lines')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
 
                   <a class="btn btn-sm btn-success create-document-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-shopping-basket"></i> </a>
-
 {{--
                   <a class="btn btn-sm btn-success create-document-service" title="{{l('Add Service')}}" style="background-color: #2bbbad;"><i class="fa fa-plus"></i> <i class="fa fa-handshake-o"></i> </a>
 --}}
 
                 <div class="btn-group">
                     <a href="#" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Service')}}" style="background-color: #2bbbad;"> <i class="fa fa-handshake-o"></i> &nbsp;<span class="caret"></span></a>
-                    <ul class="dropdown-menu  pull-right"">
+                    <ul class="dropdown-menu  pull-right" style="overflow: visible">
                       <li><a class="create-document-service"><i class="fa fa-handshake-o"></i> {{l('Add Service')}}</a></li>
                       <li><a class="create-document-comment"><i class="fa fa-file-text-o"></i> {{l('Add Text Line')}}</a></li>
                       <li class="divider"></li>
@@ -89,7 +88,7 @@
             <tr data-id="{{ $line->id }}" data-sort-order="{{ $line->line_sort_order }}">
                 <td>[{{ $line->id }}] {{$line->line_sort_order }}</td>
 @if($line->line_type=='comment')
-                <td>{{-- $line->reference --}}</td>
+                <td class="text-right">{{-- $line->reference --}}</td>
                 <td class="active" colspan=3><strong>{{ $line->name }}</strong></td>
                 <!-- td class="text-right"> </td>
                 <td class="text-right"> </td -->

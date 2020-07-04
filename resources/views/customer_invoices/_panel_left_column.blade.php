@@ -40,9 +40,9 @@ color: #c09853;">
                   </li>
 
             </ul>
-
-@if ( $document->created_via == 'aggregate_shipping_slips' )
-
+{{--
+@if ( ($document->created_via == 'aggregate_shipping_slips') && $document->leftShippingSlips()->count() )
+--}}
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">
 
@@ -51,7 +51,7 @@ color: #c09853;">
                 <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
             </div -->
             <ul class="list-group">
-              <li class="list-group-item" style="color: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
+              <li class="list-group-item" style="color: #333333;background-color: #e7e7e7;border-color: #cccccc;">
                 <h4>{{ l('Shipping Slips') }}</h4>
               </li>
               @foreach( $document->leftShippingSlips() as $document_item )
@@ -68,12 +68,35 @@ color: #c09853;">
                     
                   </li>
               @endforeach
+
+                          @if ($document->status != 'closed')
+
+                  <li class="list-group-item">
+                          
+                      {!! Form::open(array('route' => ['customerinvoice.shippingslip.add', $document->id], 'title' => l('Add Customer Shipping Slip to this Customer Invoice'), 'class' => '', 'id' => 'add-invoiceable-action')) !!}
+
+                      {!! Form::text('invoiceable', null, array('class' => 'form-control input-sm', 'style' => 'margin-top: 10px; margin-bottom: 10px;', 'id' => 'invoiceable')) !!}
+
+    <div class="text-center">
+                      {!! Form::submit(l('Add', 'layouts'), array('class' => 'btn btn-sm alert-success add-invoiceable-document')) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="bottom" data-html="true" data-container="body" 
+                                    data-content="{!! l('Use Customer Shipping Slip <i>ID</i> or ID as seen in Shipping Slip url on your browser.') !!}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+    </div>
+                      {!! Form::close() !!}
+
+                  </li>
+
+                          @endif
+
+
             </ul>
 
           </div>
           </div>
 
-@else
+@if ( $document->leftShippingSlips()->count() == 0 )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">

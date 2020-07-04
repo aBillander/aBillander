@@ -190,9 +190,10 @@ class SetContextMiddleware {
 			} else {
 				//
 				Context::getContext()->controller = $dominion;
-				/*
+				
 				if ($request->segment(3) == 'options' ) Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'states'  ) Context::getContext()->controller = $request->segment(3);
+				/*
 				if ($request->segment(3) == 'taxrules') Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'ecotaxrules') Context::getContext()->controller = $request->segment(3);
 				if ($request->segment(3) == 'pricelistlines') Context::getContext()->controller = $request->segment(3);

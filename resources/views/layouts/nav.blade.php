@@ -91,6 +91,16 @@
                             </a>
                         </li>
                         <li class="divider"></li>
+                        
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+                         <li>
+                            <a href="{{ URL::to('wooc/wcustomers') }}">
+                                 <i class="fa fa-cloud-download btn-xs alert-warning"></i> 
+                                 {{l('Customers', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+                        <!-- li class="divider"></li -->
+@endif
 
                          <li>
                             <a href="{{ URL::to('customers') }}">
@@ -331,6 +341,13 @@
                             </a>
                         </li>
 @endif
+                         <li>
+                            <a href="{{ URL::to('cheques') }}">
+                                 <i class="fa fa-money btn-xs text-success"></i> 
+                                 {{l('Cheques', [], 'layouts')}}
+                                 <img src="{{ asset('assets/theme/self-distract-button-20.png') }}"> 
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('import') }}">
@@ -413,11 +430,11 @@
                                  {{l('Documentation', [], 'layouts')}}
                             </a>
                         </li>
-                         <!-- li>
-                            <a data-target="#contactForm" data-toggle="modal" onclick="return false;" href="">
+                         <li>
+                            <a data-target="#feedbackForm" data-toggle="modal" onclick="return false;" href="">
                                  {{l('Support & feed-back', [], 'layouts')}}
                             </a>
-                        </li -->
+                        </li>
                          <li>
                             <a data-target="#aboutLaraBillander" data-toggle="modal" onclick="return false;" href="">
                                  {{l('About ...', [], 'layouts')}}
@@ -473,6 +490,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('banks') }}">
+                                 {{l('Banks', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('dbbackups') }}">
                                  <i class="fa fa-database text-danger"></i> {{l('DB Backups', [], 'layouts')}}
                             </a>
@@ -524,3 +546,5 @@ https://github.com/almasaeed2010/AdminLTE/issues/1275
 https://bootsnipp.com/snippets/featured/multi-level-dropdown-menu-bs3
 
 --}}
+
+@include('layouts/modal_feedback')

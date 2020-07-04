@@ -11,7 +11,7 @@
             </button>
 
             <!-- Branding Image -->
-            <a class="navbar-brand" href="{{ url('/') }}">
+            <a class="navbar-brand" href="{{ url( Auth::user()->home_page ) }}">
                 @if ( \App\Configuration::isEmpty('HEADER_TITLE') )
                     <?php $img = \App\Context::getContext()->company->company_logo ?? ''; ?>
                     @if ( Auth::check() && $img )
@@ -51,7 +51,7 @@
                         <li class="divider"></li>
 
                          <li>
-                            <a href="{{ URL::to('customers') }}">
+                            <a href="{{ route('accounting.customers.index') }}">
                                  {{l('Customers', [], 'layouts')}}
                             </a>
                         </li>

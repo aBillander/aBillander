@@ -297,6 +297,105 @@ class ProductionSheetsPdfController extends Controller
     }
 
 
+
+
+    public function getBulkPdfManufacturing($id, $wc, Request $request)
+    {
+        $sheet = $this->productionSheet->findOrFail($id);
+
+        $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
+        // $sheet->customerorders()->load(['customer', 'customerorderlines']);
+
+        // $work_center = \App\WorkCenter::find($family['work_center_id']);
+        $work_center = \App\WorkCenter::findOrFail( $wc );
+        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+
+        $key = $request->input('key');
+
+        // if ( !array_key_exists($key, $this->families))
+        //    return redirect()->back()->with('error', 'You naughty, naughty! ['.$key.']');
+
+        $families = collect($this->families)->where('work_center_id', $wc);
+
+        // abi_r($families->count());die();
+
+        //
+        // Do some house-keeping
+        $storage_folder = 'ProductionSheets/';
+        $currents =  \Storage::files($storage_folder);
+        // Empty folder
+        \Storage::delete( $currents );
+
+
+        //
+        // Loop through Documents
+        $names = [];
+
+        foreach ($families as $key => $family) {
+            # code...
+            // abi_r($key);
+
+            $pdf = \PDF::loadView('production_sheets.reports.production_orders.manufacturing', compact('sheet', 'work_center', 'family'))->setPaper('a4', 'vertical');
+
+            $pdfName    = 'ProductionSheets_'.$key . '_' . $sheet->due_date.'.pdf';
+
+            // if ($request->has('screen')) return view($template, compact('document', 'company'));
+
+            $file_content = $pdf->output();
+            \Storage::put($storage_folder.$pdfName, $file_content);
+
+            $names[] = $pdfName;
+        }
+
+
+        //
+        // It is time to merge Documents
+        // include '../../Helpers/PDFMerger.php';
+
+        $documents_path = storage_path().'/app/'.$storage_folder;
+        $merged_pdf = new \PDFMerger;
+
+        foreach ($names as $name) {
+            # code...
+            // $content = \Storage::get($storage_folder.$name);
+
+            $merged_pdf->addPDF($documents_path.$name, 'all');
+
+        }
+
+        // Ta-chan!!
+        $merged_pdf->merge('browser', 'samplepdfs/TEST2.pdf'); //REPLACE 'file' (first argument) WITH 'browser', 'download', 'string', or 'file' for output options. You do not need to give a file path for browser, string, or download - just the name.
+    
+
+        die();
+
+
+        //
+        // return view('production_sheets.reports.production_orders.manufacturing', compact('sheet', 'work_center', 'family'));
+
+        // PDF::setOptions(['dpi' => 150]);     // 'defaultFont' => 'sans-serif']);
+
+/*
+        if (!$request->has('new'))
+        {
+
+            if ($request->has('screen')) return view('production_sheets.reports.production_orders_MS1.manufacturing', compact('sheet', 'work_center', 'family'));
+
+            $pdf = \PDF::loadView('production_sheets.reports.production_orders_MS1.manufacturing', compact('sheet', 'work_center', 'family'))->setPaper('a4', 'vertical');
+
+            return $pdf->stream('manufacturing.pdf');
+
+        }
+*/
+
+        if ($request->has('screen')) return view('production_sheets.reports.production_orders.manufacturing', compact('sheet', 'work_center', 'family'));
+
+        $pdf = \PDF::loadView('production_sheets.reports.production_orders.manufacturing', compact('sheet', 'work_center', 'family'))->setPaper('a4', 'vertical');
+
+        return $pdf->stream('manufacturing_'.$key.'.pdf'); // $pdf->download('invoice.pdf');
+    }
+
+
 /* ********************************************************************************************* */    
 
 

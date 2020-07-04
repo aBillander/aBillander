@@ -108,6 +108,9 @@
 
 
 
+{!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents'] ) !!}
+
+{{-- !! Form::hidden('customer_id', $customer->id, array('id' => 'customer_id')) !! --}}
 
 <div id="div_documents">
 
@@ -117,7 +120,12 @@
 <table id="documents" class="table table-hover">
     <thead>
         <tr>
-            <th class="text-left">{{ l('ID', 'layouts') }}</th>
+            <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
+            <th class="text-left">{{ l('ID', 'layouts') }}
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('target', '_blank');$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf', ['event' => 'Posted'] )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
+
+            </th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Posted at') }}
@@ -137,6 +145,7 @@
     <tbody id="document_lines">
         @foreach ($documents as $document)
         <tr>
+            <td class="text-center warning">{!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}</td>
             <td title="{{ $document->id }}"> 
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
@@ -163,7 +172,7 @@
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>{{ abi_date_short($document->posted_at) }}</td>
-            <td><a class="" href="{{ URL::to('customers/' .$document->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
+            <td><a class="" href="{{ route('accounting.customers.edit', $document->customer->id ) }}" title="{{ l('Show Customer') }}" target="_new">
             	{{ $document->customer->name_regular }}
             	</a>
             </td>
@@ -236,6 +245,54 @@
 
 
 @section('scripts') @parent 
+
+<script>
+
+// check box selection -->
+// See: http://www.dotnetcurry.com/jquery/1272/select-deselect-multiple-checkbox-using-jquery
+
+$(function () {
+    var $tblChkBox = $("#document_lines input:checkbox");
+    $("#ckbCheckAll").on("click", function () {
+        $($tblChkBox).prop('checked', $(this).prop('checked'));
+    });
+});
+
+$("#document_lines").on("change", function () {
+    if (!$(this).prop("checked")) {
+        $("#ckbCheckAll").prop("checked", false);
+    }
+});
+
+// check box selection ENDS -->
+
+
+
+{{--
+    $(document).on('keydown','.items_per_page', function(e){
+  
+      if (e.keyCode == 13) {
+       // console.log("put function call here");
+       e.preventDefault();
+       getCustomerShippingSlips();
+       return false;
+      }
+
+    });
+
+    function getCustomerShippingSlips( items_per_page = 0 ){
+      
+      window.location = "{{ route('customer.shippingslips', $customer->id) }}"+"?items_per_page="+$("#items_per_page").val();
+
+      // 
+      // $('#form-select-documents-per-page').submit();
+
+    }
+--}}
+
+
+</script>
+
 
 <script type="text/javascript">
 

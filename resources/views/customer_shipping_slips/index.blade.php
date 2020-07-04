@@ -36,6 +36,9 @@
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
 
+        <a href="{{ route('customershippingslips.invoicer.create') }}" class="btn btn-sm btn-info" style="margin-left: 32px;" 
+                title="{{l('Filter and Invoice')}}"><i class="fa fa-money"></i> &nbsp; {{l('Filter and Invoice')}}</a>
+
     </div>
     <h2>
         {{ l('Documents') }}
@@ -161,6 +164,10 @@
 
 
 
+{!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents'] ) !!}
+
+{{-- !! Form::hidden('customer_id', $customer->id, array('id' => 'customer_id')) !! --}}
+
 <div id="div_documents">
 
    <div class="table-responsive">
@@ -169,15 +176,28 @@
 <table id="documents" class="table table-hover">
     <thead>
         <tr>
+            <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
             <th class="text-left">{{ l('ID', 'layouts') }}</th>
-            <th class="text-center"></th>
+            <th class="text-center">
+
+        @if ($documents->where('status', 'closed')->count() > 0)
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('With selected: Set delivered')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( $model_path.'.bulk.deliver' )}}');$('#form-select-documents').submit();return false;"> &nbsp; <i class="fa fa-truck"></i> &nbsp; </a>
+
+        @endif
+
+            </th>
             <th class="text-left">{{ l('Date') }}</th>
             <th> </th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </th>
             <th class="text-left">{{ l('Created via') }}</th>
-            <th class="text-right"">{{ l('Total') }}</th>
+            <th class="text-right">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
@@ -185,6 +205,7 @@
     <tbody id="document_lines">
         @foreach ($documents as $document)
         <tr>
+            <td class="text-center warning">{!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}</td>
             <td>{{ $document->id }} / 
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
@@ -206,6 +227,10 @@
         @else
                     <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
         @endif
+        @if ($document->document_id>0)
+                <a class="btn btn-xs alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{-- l('Close', 'layouts') --}}</a>
+        @endif
+
     @endif
 @endif
 
@@ -340,6 +365,10 @@
 
 </div><!-- div id="div_documents" ENDS -->
 
+
+{!! Form::close() !!}
+
+
 @include('layouts/back_to_top_button')
 
 @endsection
@@ -371,6 +400,26 @@
 @section('scripts') @parent 
 
 <script type="text/javascript">
+
+// check box selection -->
+// See: http://www.dotnetcurry.com/jquery/1272/select-deselect-multiple-checkbox-using-jquery
+
+$(function () {
+    var $tblChkBox = $("#document_lines input:checkbox");
+    $("#ckbCheckAll").on("click", function () {
+        $($tblChkBox).prop('checked', $(this).prop('checked'));
+    });
+});
+
+$("#document_lines").on("change", function () {
+    if (!$(this).prop("checked")) {
+        $("#ckbCheckAll").prop("checked", false);
+    }
+});
+
+// check box selection ENDS -->
+
+
 
 $(document).ready(function() {
    $("#b_search_filter").click(function() {

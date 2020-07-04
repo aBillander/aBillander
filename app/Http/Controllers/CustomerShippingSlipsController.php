@@ -92,6 +92,8 @@ class CustomerShippingSlipsController extends BillableController
 
         $templateList = Template::listFor( 'App\\CustomerInvoice' );
 
+        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
         $customer = $this->customer->findOrFail($id);
 
         $documents = $this->document
@@ -99,7 +101,7 @@ class CustomerShippingSlipsController extends BillableController
                             ->where('customer_id', $id)
 //                            ->with('customer')
                             ->with('currency')
-//                            ->with('paymentmethod')
+                            ->with('paymentmethod')
                             ->orderBy('document_date', 'desc')
 //                            ->orderBy('id', 'desc');        // ->get();
                             ->orderByRaw('document_reference IS NOT NULL, document_reference DESC');
@@ -114,7 +116,7 @@ class CustomerShippingSlipsController extends BillableController
 
         $shipment_statusList = $this->model_class::getShipmentStatusList();
 
-        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList', 'shipment_statusList'));
+        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList', 'shipment_statusList', 'payment_methodList'));
     }
 
     /**
@@ -547,6 +549,73 @@ class CustomerShippingSlipsController extends BillableController
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
+
+    protected function deliverBulk(Request $request)
+    {
+        //
+        // Get Document IDs & constraints
+        $document_list = $request->input('document_group', []);
+
+        if ( count( $document_list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // abi_r($document_list);
+
+        //
+        // Get Documents
+        try {
+
+            $documents = $this->document->findOrFail( $document_list );
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return redirect()->back()
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $document_list)], 'layouts'));
+            
+        }
+
+        $i_all = $documents->count();
+        $i_ok = $i_ko = 0;
+
+        foreach ($documents as $document) {
+            # code...
+
+            // Can I?
+            if ( $document->status != 'closed' )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+            }
+
+            if ( $document->onhold )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+            }
+
+            // Deliver
+            if ( $document->deliver() )
+            {
+                
+                $i_ok++;
+                // return redirect()->back()           // ->route($this->model_path.'.index')
+                //        ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+            } else {
+                //
+                $i_ko++;
+            }
+        }
+
+        return redirect()->back()           // ->route($this->model_path.'.index')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ' '.$i_ok.'ok + '.$i_ko.'ko = '.$i_all.' '], 'layouts'));
+
+    }
+
     protected function undeliver($id, Request $request)
     {
         $document = $this->document->findOrFail($id);
@@ -612,6 +681,8 @@ class CustomerShippingSlipsController extends BillableController
 
         $templateList = Template::listFor( 'App\\CustomerInvoice' );
 
+        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
         $statusList = CustomerInvoice::getStatusList();
 
         // Make sense:
@@ -635,16 +706,16 @@ class CustomerShippingSlipsController extends BillableController
 
         $documents->setPath('invoiceables');
 
-        return view($this->view_path.'.index_by_customer_invoiceables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page'));
+        return view($this->view_path.'.index_by_customer_invoiceables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page', 'payment_methodList'));
     }
 
 
     public function createGroupInvoice( Request $request )
     {
         //
-        $document_group = $request->input('document_group', []);
+        $document_list = $request->input('document_group', []);
 
-        if ( count( $document_group ) == 0 ) 
+        if ( count( $document_list ) == 0 ) 
             return redirect()->route('customer.invoiceable.shippingslips', $request->input('customer_id'))
                 ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
         
@@ -656,11 +727,19 @@ class CustomerShippingSlipsController extends BillableController
         $this->validate($request, $rules);
 
         // Set params for group
-        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status');
+        $params = $request->only('customer_id', 'template_id', 'sequence_id', 'document_date', 'status', 'group_by_shipping_address', 'payment_method_id', 'testing');
 
         // abi_r($params, true);
 
-        return $this->invoiceDocumentList( $document_group, $params );
+        // => old schools :: return $this->invoiceDocumentList( $document_list, $params );
+
+        $invoice = \App\CustomerShippingSlip::invoiceDocumentList( $document_list, $params );
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+//        return redirect('customerinvoices/'.optional($invoice)->id.'/edit')
+//                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($invoice)->id], 'layouts'));
+
     } 
 
     public function createInvoice($id)
@@ -675,7 +754,7 @@ class CustomerShippingSlipsController extends BillableController
             'customer_id'   => $customer->id, 
             'template_id'   => $customer->getInvoiceTemplateId(), 
             'sequence_id'   => $customer->getInvoiceSequenceId(), 
-            'document_date' => \Carbon\Carbon::now()->toDateString(),
+            'document_date' => $document->document_date->toDateString(),
 
             'document_discount_percent' => $document->document_discount_percent,
             'document_ppd_percent'      => $document->document_ppd_percent,
@@ -1006,6 +1085,57 @@ class CustomerShippingSlipsController extends BillableController
     }
 
 
+
+    public function undoInvoice($id)
+    {
+        $document = $this->document
+                            ->with('customer')
+                            ->findOrFail($id);
+        
+        // Get Invoice for this Shipping Slip
+        $invoice = $document->customerinvoice();
+
+        // Get Lines to delete
+        $lines = $invoice->lines->where('customer_shipping_slip_id', $document->id);
+
+        foreach ($lines as $line) {
+            # code...
+            $line->delete();
+        }
+
+        // Not so fast, Sony Boy
+        $invoice->makeTotals();
+
+        // Final touches
+        $document->invoiced_at = null;
+        $document->save();
+
+        // Document traceability
+        //     leftable  is this document
+        //     rightable is Customer Invoice Document
+        $link_data = [
+            'leftable_id'    => $document->id,
+            'leftable_type'  => $document->getClassName(),
+
+            'rightable_id'   => $invoice->id,
+            'rightable_type' => CustomerInvoice::class,
+
+            'type' => 'traceability',
+            ];
+
+        $link = \App\DocumentAscription::where( $link_data )->first();
+
+        $link->delete();
+
+        // Good boy, so far
+
+        // abi_r($lines->pluck('id')->toArray());die();
+
+        // abi_r($invoice);die();        
+        
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
 
 
 

@@ -446,6 +446,16 @@ class Billable extends Model implements ShippableInterface
         return Configuration::getInt('DEF_WAREHOUSE');
     }
     
+    public function getPaymentMethodId() 
+    {
+        if (   $this->payment_method_id
+            && \App\PaymentMethod::where('id', $this->payment_method_id)->exists()
+            )
+            return $this->payment_method_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD');
+    }
+    
 
 /*
 *
@@ -573,7 +583,10 @@ class Billable extends Model implements ShippableInterface
         // Can I ...?
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
         
-        if ( $this->status == 'closed' ) return false;
+        if ( $this->status == 'closed' ) return true;
+
+        // No lines?
+        if ( $this->lines->count() == 0 ) return false;
         
         // Customer blocked?
         if ( array_key_exists('customer_id', $this->getAttributes()) )

@@ -39,6 +39,8 @@ class Payment extends Model {
                             'auto_direct_debit', 'bank_order_id',
 
                             'down_payment', 'payment_document_id', 'payment_method_id',
+
+                            'payment_type_id',
                            ];
 
 	// Add your validation rules here
@@ -208,6 +210,11 @@ class Payment extends Model {
     public function paymentmethod()
     {
         return $this->belongsTo('App\PaymentMethod');
+    }
+
+    public function paymenttype()
+    {
+        return $this->belongsTo('App\PaymentType', 'payment_type_id');
     }
 
     public function bankorder()

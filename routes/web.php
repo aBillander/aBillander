@@ -601,6 +601,8 @@ foreach ($pairs as $pair) {
         Route::get( 'customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
         Route::post('customershippingslips/{id}/invoice/undo'  , 'CustomerShippingSlipsController@undoInvoice')->name('customershippingslip.invoice.undo');
 
+        Route::post('customershippingslips/setcarrier/bulk', 'CustomerShippingSlipsController@setCarrierBulk')->name('customershippingslips.bulk.set.carrier');
+
         Route::get('customershippingslips/{id}/deliver' , 'CustomerShippingSlipsController@deliver'    )->name('customershippingslip.deliver');
         Route::post('customershippingslips/deliver/bulk', 'CustomerShippingSlipsController@deliverBulk')->name('customershippingslips.bulk.deliver');
 

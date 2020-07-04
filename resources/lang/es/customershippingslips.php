@@ -159,6 +159,8 @@ return [
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',
 	'Carrier'     => 'Transportista',
+	'Select Carrier'     => 'Seleccione Transportista',
+	'With selected: Set Carrier' => 'Con los seleccionados: Actualizar Transportista',
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',
 	'Notes to Customer'     => 'Notas para el Cliente',

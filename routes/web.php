@@ -190,6 +190,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
             Route::resource('customerinvoices', 'AccountingCustomerInvoicesController')->names('accounting.customerinvoices');
             Route::get('customerinvoices/{id}/pdf', 'AccountingCustomerInvoicesController@showPdf')->name('accounting.customerinvoices.pdf');
+
+            Route::get('customerinvoices/invoice/search', 'AccountingCustomerInvoicesController@searchInvoice')->name('accounting.customerinvoices.searchinvoice');
+
+
+        // oute::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
         });
 
         // Helferin

@@ -221,9 +221,9 @@
         
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
             {{ l('Carrier') }}
-            <div class="form-control" id="carrier_id">{{ optional($document->carrier)->name }}</div>
-            {{-- !! Form::select('carrier_id', array('0' => l('-- Please, select --', [], 'layouts')) + ($carrierList = []), null, array('class' => 'form-control', 'id' => 'carrier_id')) !!}
-                        {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !! --}}
+            <!-- div class="form-control" id="carrier_id">{{ optional($document->carrier)->name }}</div -->
+            {!! Form::select('carrier_id', ['' => l('-- Please, select --', [], 'layouts'), '-1' => l('-- From Shipping Method')] + $carrierList, null, array('class' => 'form-control', 'id' => 'carrier_id')) !!}
+            {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !!}
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipment_service_type_tag') ? 'has-error' : '' }}">

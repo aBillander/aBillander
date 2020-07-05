@@ -338,11 +338,40 @@ class CustomerShippingSlipsController extends BillableController
 */
         $document = $customershippingslip;
 
+        // Manage Carrier
+        $carrier_id = $request->input('carrier_id', $document->carrier_id);
+
+        if ( $carrier_id != $document->carrier_id )
+        {
+            //            
+            // $carrier_id = $request->input('carrier_id');
+            if ( $carrier_id == -1 )
+            {
+                // Take from Shipping Method
+                if ($document->shippingmethod)
+                    $carrier_id = $document->shippingmethod->carrier_id;
+                else
+                    $carrier_id = null;
+            } 
+            else
+                if ( !((int) $carrier_id > 0) ) $carrier_id = null;
+
+            // Change Carrier
+            $document->force_carrier_id = true;
+            // $document->carrier_id = $carrier_id;
+        }
+
+        $request->merge( ['carrier_id' => $carrier_id] );
+
+        // abi_r($request->all());die();
+
         $need_update_totals = (
             $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
         ) ? true : false;
 
         $document->fill($request->all());
+
+        // abi_r($document);die();
 
         // Reset Export date
         // if ( $request->input('export_date_form') == '' ) $document->export_date = null;

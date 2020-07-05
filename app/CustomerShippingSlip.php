@@ -49,6 +49,8 @@ class CustomerShippingSlip extends Billable
     protected $document_fillable = [
                             'shipment_service_type_tag', 'is_invoiceable',
                             'prices_entered_with_tax', 'round_prices_with_tax',
+
+                            'carrier_id',
     ];
 
     public static $rules = [

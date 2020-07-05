@@ -279,7 +279,7 @@
                     <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
         @endif
         @if ($document->document_id>0)
-                <a class="btn btn-xs alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{-- l('Close', 'layouts') --}}</a>
+                <a class="btn btn-xs alert-success prevent-double-click" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{-- l('Close', 'layouts') --}}</a>
         @endif
 
     @endif
@@ -477,6 +477,16 @@ $(document).ready(function() {
    $("#b_search_filter").click(function() {
       $('#search_status').val(1);
       $('#search_filter').show();
+
+
+
+    // https://stackoverflow.com/questions/1681679/disabling-links-to-stop-double-clicks-in-jquery
+
+    $("a.prevent-double-click").one("click", function() {
+        $(this).click(function () { return false; });
+    });
+
+
    });
 
 

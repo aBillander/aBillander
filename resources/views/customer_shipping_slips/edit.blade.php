@@ -18,7 +18,7 @@
                 <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
     @endif
 @else
-                <a class="btn btn-sm alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a>
+                <a class="btn btn-sm alert-success prevent-double-click" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a>
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/pdf?preview') }}" title="{{l('Show Preview', [], 'layouts')}}" target="_blank"><i class="fa fa-eye"></i></a>
 @endif
@@ -153,11 +153,14 @@
 
 <script type="text/javascript">
 
+$(document).ready(function() {
     // https://stackoverflow.com/questions/1681679/disabling-links-to-stop-double-clicks-in-jquery
 
     $("a.prevent-double-click").one("click", function() {
         $(this).click(function () { return false; });
     });
+
+});
 
 </script>
 

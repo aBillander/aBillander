@@ -34,6 +34,7 @@
 <table id="carts" class="table table-hover">
     <thead>
         <tr>
+            <th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Date Updated') }}</th>
             <th class="text-left">{{ l('Items / Quantity')}}</th>
@@ -46,6 +47,7 @@
     <tbody id="cart_lines">
         @foreach ($carts as $cart)
         <tr>
+            <td>{{ $cart->id }}</td>
             
             <td><a class="" href="{{ URL::to('customers/' .$cart->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
                 {{ $cart->customer->name_regular }}
@@ -63,6 +65,9 @@ $address = optional($cart->user)->address_id
                         <i class="fa fa-address-card-o"></i>
                     </button>
                  </a>
+
+                <br />
+                <strong>{{ $cart->user->getFullName() }}</strong> :: {{ $cart->user->email }}
 
             </td>
             <td>{{ abi_date_short($cart->updated_at) }}</td>
@@ -91,6 +96,12 @@ $address = optional($cart->user)->address_id
                         onClick="return false;" title="{{l('Update Cart Prices')}}"><i class="fa fa-superpowers"></i></a>
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to('carts/' . $cart->id ) }}" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
+
+                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                        href="{{ URL::to('carts/' . $cart->id ) }}" 
+                        data-content="{{l('You are going to EMPTY this Cart. Are you sure?')}}" 
+                        data-title="{{ l('Carts') }} :: ({{$cart->id}}) {{ $cart->user->getFullName() }}</strong> - {{ $cart->user->email }} " 
+                        onClick="return false;" title="{{l('Empty Cart')}}"><i class="fa fa-trash-o"></i></a>
             </td>
         </tr>
         @endforeach
@@ -129,6 +140,8 @@ $address = optional($cart->user)->address_id
 
 @endsection
 
+
+@include('layouts/modal_delete')
 
 @include('carts/_modal_update_prices')
 

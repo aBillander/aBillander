@@ -15,6 +15,8 @@ class CustomerShippingSlip extends Billable
     use CustomerShippingSlipInvoiceableTrait;
 //    use BillableInvoiceableTrait;
 
+    public $force_carrier_id = false;
+
     public static $badges = [
             'a_class' => 'alert-info',
             'i_class' => 'fa-truck',
@@ -47,6 +49,8 @@ class CustomerShippingSlip extends Billable
     protected $document_fillable = [
                             'shipment_service_type_tag', 'is_invoiceable',
                             'prices_entered_with_tax', 'round_prices_with_tax',
+
+                            'carrier_id',
     ];
 
     public static $rules = [

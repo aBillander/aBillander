@@ -157,7 +157,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Carriers
-		view()->composer(array('shipping_methods._form'), function($view) {
+		view()->composer(array('shipping_methods._form', 'customer_shipping_slips.index', 'customer_shipping_slips.edit'), function($view) {
 		    
 		    $view->with('carrierList', \App\Carrier::pluck('name', 'id')->toArray());
 		    

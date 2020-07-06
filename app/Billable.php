@@ -150,8 +150,22 @@ class Billable extends Model implements ShippableInterface
 
         static::saving(function($document)
         {
-            if ( $document->shippingmethod )
-                $document->carrier_id = $document->shippingmethod->carrier_id;
+            if ( $document->force_carrier_id === true )
+            {
+                // $document->carrier_id = $document->force_carrier_id;
+                // unset($document->force_carrier_id);
+
+                // abi_r($document->carrier_id);
+            }
+            else
+            {
+
+                if ( $document->shippingmethod )
+                    $document->carrier_id = $document->shippingmethod->carrier_id;
+                
+            }
+
+            // abi_r($document->carrier_id);die();
         });
 
         // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
@@ -1037,6 +1051,11 @@ class Billable extends Model implements ShippableInterface
                     $query->  where( 'total_tax_excl', $amount );
                     $query->orWhere( 'total_tax_incl', $amount );
             } );
+        }
+
+        if (array_key_exists('carrier_id', $params) && $params['carrier_id'] )
+        {
+            $query->where('carrier_id', $params['carrier_id']);
         }
 
 

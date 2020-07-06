@@ -98,6 +98,30 @@
 
 </div>
 
+<div class="row">
+
+      <div class="form-group col-lg-2 col-md-2 col-sm-2">
+          {!! Form::label('autoinvoice_from', l('Invoice from')) !!}
+          {!! Form::text('autoinvoice_from', null, array('class' => 'form-control', 'id' => 'autoinvoice_from')) !!}
+
+          {!! Form::hidden('invoice_from_id', null, array('id' => 'invoice_from_id')) !!}
+      </div>
+
+      <div class="form-group col-lg-2 col-md-2 col-sm-2">
+          {!! Form::label('autoinvoice_to', l('Invoice to')) !!}
+          {!! Form::text('autoinvoice_to', null, array('class' => 'form-control', 'id' => 'autoinvoice_to')) !!}
+
+          {!! Form::hidden('invoice_to_id', null, array('id' => 'invoice_to_id')) !!}
+      </div>
+
+
+      <div class="form-group col-lg-2 col-md-2 col-sm-2">
+          {!! Form::label('items_per_page', l('Items per page', 'layouts')) !!}
+          {!! Form::text('items_per_page', null, array('class' => 'form-control', 'id' => 'items_per_page')) !!}
+      </div>
+
+</div>
+
                 {!! Form::close() !!}
             </div>
         </div>
@@ -124,6 +148,23 @@
             <th class="text-left">{{ l('ID', 'layouts') }}
 
 <a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('target', '_blank');$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf', ['event' => 'Posted'] )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
+
+{{--
+<div class="btn-group">
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('target', '_blank');$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf', ['event' => 'Posted'] )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
+
+  <a href="#" class="btn btn-xs btn-blue dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+  <ul class="dropdown-menu">
+    <li>
+
+<a xclass="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print Range of selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#print_range').val('1');$('#form-select-documents').attr('target', '_blank');$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf', ['event' => 'Posted'] )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-arrows-h"></i> &nbsp;{{l('Range', 'layouts')}}</a>
+
+    </li>
+  </ul>
+</div>
+            {{ Form::hidden('print_range', 0, array('id' => 'print_range')) }}
+--}}
 
             </th>
             <th class="text-center"></th>
@@ -315,6 +356,53 @@ $(document).ready(function() {
 <script>
   $(document).ready(function() {
 
+        $("#autoinvoice_from").autocomplete({
+            source : "{{ route('accounting.customerinvoices.searchinvoice') }}",
+            minLength : 2,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                var str = '' + value.item.document_reference+' - ' + roundTo(value.item.total_tax_incl, 2);
+
+                $("#autoinvoice_from").val(str);
+                $('#invoice_from_id').val(value.item.id);
+
+                // getCustomerData( value.item.id );
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>' + item.document_reference+' - ' + roundTo(item.total_tax_incl, 2) + "</div>" )
+                .appendTo( ul );
+            };
+
+
+        $("#autoinvoice_to").autocomplete({
+            source : "{{ route('accounting.customerinvoices.searchinvoice') }}",
+            minLength : 2,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                var str = '' + value.item.document_reference+' - ' + roundTo(value.item.total_tax_incl, 2);
+
+                $("#autoinvoice_to").val(str);
+                $('#invoice_to_id').val(value.item.id);
+
+                // getCustomerData( value.item.id );
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>' + item.document_reference+' - ' + roundTo(item.total_tax_incl, 2) + "</div>" )
+                .appendTo( ul );
+            };
+
+
+
         $("#autocustomer_name").autocomplete({
             source : "{{ route('home.searchcustomer') }}",
             minLength : 1,
@@ -355,10 +443,34 @@ $(document).ready(function() {
 
      if ( $("#autocustomer_name").val() == '' ) $('#customer_id').val('');
 
+     if ( $("#autoinvoice_from").val() == '' ) $('#invoice_from_id').val('');
+     if ( $("#autoinvoice_to"  ).val() == '' ) $('#invoice_to_id'  ).val('');
+
      return true;
 
    });
 
+
+
+    // Round numbers
+    // https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
+    function roundTo(n, digits) {
+        var negative = false;
+        if (digits === undefined) {
+            digits = 0;
+        }
+            if( n < 0) {
+            negative = true;
+          n = n * -1;
+        }
+        var multiplicator = Math.pow(10, digits);
+        n = parseFloat((n * multiplicator).toFixed(11));
+        n = (Math.round(n) / multiplicator).toFixed(2);
+        if( negative ) {    
+            n = (n * -1).toFixed(2);
+        }
+        return n;
+    }
 </script>
 
 @endsection

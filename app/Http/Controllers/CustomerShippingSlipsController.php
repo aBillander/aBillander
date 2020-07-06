@@ -338,11 +338,40 @@ class CustomerShippingSlipsController extends BillableController
 */
         $document = $customershippingslip;
 
+        // Manage Carrier
+        $carrier_id = $request->input('carrier_id', $document->carrier_id);
+
+        if ( $carrier_id != $document->carrier_id )
+        {
+            //            
+            // $carrier_id = $request->input('carrier_id');
+            if ( $carrier_id == -1 )
+            {
+                // Take from Shipping Method
+                if ($document->shippingmethod)
+                    $carrier_id = $document->shippingmethod->carrier_id;
+                else
+                    $carrier_id = null;
+            } 
+            else
+                if ( !((int) $carrier_id > 0) ) $carrier_id = null;
+
+            // Change Carrier
+            $document->force_carrier_id = true;
+            // $document->carrier_id = $carrier_id;
+        }
+
+        $request->merge( ['carrier_id' => $carrier_id] );
+
+        // abi_r($request->all());die();
+
         $need_update_totals = (
             $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
         ) ? true : false;
 
         $document->fill($request->all());
+
+        // abi_r($document);die();
 
         // Reset Export date
         // if ( $request->input('export_date_form') == '' ) $document->export_date = null;
@@ -519,6 +548,74 @@ class CustomerShippingSlipsController extends BillableController
 
         return redirect()->back()
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function setCarrierBulk(Request $request)
+    {
+        //
+        // Get Document IDs & constraints
+        $document_list = $request->input('document_group', []);
+
+        $carrier_id = $request->input('set_carrier_id');
+        if ( !((int) $carrier_id > 0) ) $carrier_id = null;
+
+        // abi_r($request->all());die();
+
+        if ( count( $document_list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // abi_r($document_list);
+
+        //
+        // Get Documents
+        try {
+
+            $documents = $this->document->findOrFail( $document_list );
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return redirect()->back()
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $document_list)], 'layouts'));
+            
+        }
+
+        $i_all = $documents->count();
+        $i_ok = $i_ko = 0;
+
+        foreach ($documents as $document) {
+            # code...
+
+            // Can I?
+            if ( $document->shipment_status == 'delivered' )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+            }
+
+            if ( 0 && $document->onhold )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+            }
+
+            // Change Carrier
+            $document->force_carrier_id = true;
+            $document->carrier_id = $carrier_id;
+
+            $document->save();            
+                
+            $i_ok++;
+        }
+
+        return redirect()->back()           // ->route($this->model_path.'.index')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ' '.$i_ok.'ok + '.$i_ko.'ko = '.$i_all.' '], 'layouts'));
+
     }
 
 

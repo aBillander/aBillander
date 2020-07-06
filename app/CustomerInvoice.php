@@ -115,6 +115,19 @@ class CustomerInvoice extends Billable
 
     }
 
+/*
+    // Not needed: it is a CustomerInvoice Model property
+    public function getOpenBalanceAttribute()
+    {
+        // $payments = $this->payments;
+
+        $open_balance = $this->payments()->where('status', 'pending')->sum('amount');
+        // Remember: 'down_payment' is a payment with status=paid
+
+        return $open_balance;
+
+    }
+*/
 
     /*
     |--------------------------------------------------------------------------

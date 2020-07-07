@@ -113,6 +113,7 @@ class ChartCustomerVouchersController extends Controller
 		return $monthly_order_data_array;
     }
 	
+	// Heavy lifting is done here, and returns vouchers data
 	function getMonthlyVouchersData(Request $request) {
 
 		$monthly_order_count_array = array();

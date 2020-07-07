@@ -25,18 +25,35 @@ class ChartCustomerSalesController extends Controller
 
 
 	function getAllMonths( $model = 'CustomerOrder' ){
-		$month_array = array();
 		$class = 'App\\'.$model;
-		$orders_dates = $class::orderBy( 'created_at', 'ASC' )->pluck( 'created_at' );
+		// 12 months (maximum) range
+		$last = $class::
+							  orderBy( 'document_date', 'DESC' )
+							->first()
+							->document_date;
+		
+		$first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
+
+		// abi_r( $date );
+		// abi_r( $first );die();
+
+		$month_array = array();
+		$orders_dates = $class::
+							  where( 'document_date', '>=', $first )
+							->orderBy( 'document_date', 'ASC' )
+							->pluck( 'document_date' );
+		// abi_r($orders_dates[0]);abi_r('*********************');
 		$orders_dates = json_decode( $orders_dates );
+		// abi_r($orders_dates[0]);abi_r('*********************');die();
 		if ( ! empty( $orders_dates ) ) {
 			foreach ( $orders_dates as $unformatted_date ) {
 				$date = new \DateTime( $unformatted_date->date );
 				$month_no = $date->format( 'm' );
 				$month_name = l('month.'.$month_no);	//$date->format( 'M' );
-				$month_array[ $month_no ] = $month_name;
+				$month_array[ $month_no ] = $month_name." ".$date->format( 'Y' );
 			}
 		}
+		// abi_r($month_array);die();
 		return $month_array;
 	}
 
@@ -68,6 +85,7 @@ class ChartCustomerSalesController extends Controller
 		return $monthly_order_data_array;
     }
 	
+	// Heavy lifting is done here, and returns vouchers data
 	function getMonthlySalesData(Request $request) {
 
 		$model = $this->getRequestModel($request);

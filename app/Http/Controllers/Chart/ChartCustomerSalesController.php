@@ -15,7 +15,8 @@ class ChartCustomerSalesController extends Controller
 
    protected $models = ['CustomerOrder', 'CustomerShippingSlip', 'CustomerInvoice'];
 
-	
+   public $first;
+
 	function getMonthlySales(Request $request) {
 
 		$model = $this->getRequestModel($request);
@@ -32,14 +33,14 @@ class ChartCustomerSalesController extends Controller
 							->first()
 							->document_date;
 		
-		$first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
+		$this->first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
 
 		// abi_r( $date );
-		// abi_r( $first );die();
+		// abi_r( $this->first );die();
 
 		$month_array = array();
 		$orders_dates = $class::
-							  where( 'document_date', '>=', $first )
+							  where( 'document_date', '>=', $this->first )
 							->orderBy( 'document_date', 'ASC' )
 							->pluck( 'document_date' );
 		// abi_r($orders_dates[0]);abi_r('*********************');
@@ -60,7 +61,12 @@ class ChartCustomerSalesController extends Controller
 	function getMonthlyPostCount( $month, $model = 'CustomerOrder' ) {
 //		$monthly_order_count = CustomerShippingSlip::whereMonth( 'created_at', $month )->get()->count();
 		$class = 'App\\'.$model;
-		$monthly_order_count = $class::select('total_tax_excl')->whereMonth( 'document_date', $month )->get()->sum('total_tax_excl');
+		$monthly_order_count = $class::
+									  select('total_tax_excl')
+									->whereMonth( 'document_date', $month )
+									->where( 'document_date', '>=', $this->first )
+									->get()
+									->sum('total_tax_excl');
 		return round($monthly_order_count, 2);
 	}
 	

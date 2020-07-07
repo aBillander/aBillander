@@ -13,7 +13,8 @@ class ChartCustomerVouchersController extends Controller
     // https://www.youtube.com/watch?v=HGPLf8JBDs4&t=469s
     // https://github.com/imranhsayed/laravel-charts
 
-	
+   public $first;
+
 	function getMonthlyVouchers(Request $request) {
 
 		return view('charts.customer_vouchers');
@@ -33,10 +34,10 @@ class ChartCustomerVouchersController extends Controller
 							->first()
 							->due_date;
 		
-		$first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
+		$this->first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
 
 		// abi_r( $date );
-		// abi_r( $first, true );
+		// abi_r( $this->first, true );
 
 		$month_array = array();
 		$orders_dates = Payment::
@@ -46,7 +47,7 @@ class ChartCustomerVouchersController extends Controller
                                     $query->where(  'status', 'pending');
                                     $query->orWhere('status', 'paid');
                             } )
-                            ->where( 'due_date', '>=', $first )
+                            ->where( 'due_date', '>=', $this->first )
 							->orderBy( 'due_date', 'ASC' )
 							->pluck( 'due_date' );
 		// abi_r($orders_dates[0]);abi_r('*********************');
@@ -75,6 +76,7 @@ class ChartCustomerVouchersController extends Controller
 		                            } )
 									->select('amount')
 									->whereMonth( 'due_date', $month )
+									->where( 'due_date', '>=', $this->first )
 									->get()
 									->sum('amount');
 		return round($monthly_order_count, 2);
@@ -87,6 +89,7 @@ class ChartCustomerVouchersController extends Controller
 									->where('status', 'pending')
 									->select('amount')
 									->whereMonth( 'due_date', $month )
+									->where( 'due_date', '>=', $this->first )
 									->get()
 									->sum('amount');
 		return round($monthly_order_count, 2);

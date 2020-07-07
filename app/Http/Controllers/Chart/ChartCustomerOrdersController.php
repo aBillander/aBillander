@@ -13,7 +13,8 @@ class ChartCustomerOrdersController extends Controller
     // https://www.youtube.com/watch?v=HGPLf8JBDs4&t=469s
     // https://github.com/imranhsayed/laravel-charts
 
-	
+   public $first;
+
 	function getMonthlySales(Request $request) {
 
 		return view('charts.customer_orders');
@@ -27,14 +28,14 @@ class ChartCustomerOrdersController extends Controller
 							->first()
 							->document_date;
 		
-		$first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
+		$this->first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
 
 		// abi_r( $date );
-		// abi_r( $first );die();
+		// abi_r( $this->first );die();
 
 		$month_array = array();
 		$orders_dates = CustomerOrder::
-							  where( 'document_date', '>=', $first )
+							  where( 'document_date', '>=', $this->first )
 							->orderBy( 'document_date', 'ASC' )
 							->pluck( 'document_date' );
 		// abi_r($orders_dates[0]);abi_r('*********************');
@@ -53,7 +54,12 @@ class ChartCustomerOrdersController extends Controller
 
 	function getMonthlyPostCount( $month ) {
 //		$monthly_order_count = CustomerOrder::whereMonth( 'document_date', $month )->get()->count();
-		$monthly_order_count = CustomerOrder::select('total_tax_excl')->whereMonth( 'document_date', $month )->get()->sum('total_tax_excl');
+		$monthly_order_count = CustomerOrder::
+									  select('total_tax_excl')
+									->whereMonth( 'document_date', $month )
+									->where( 'document_date', '>=', $this->first )
+									->get()
+									->sum('total_tax_excl');
 		return round($monthly_order_count, 2);
 	}
 	

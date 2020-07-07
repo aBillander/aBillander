@@ -58,7 +58,7 @@ class CustomerInvoice extends Billable
 
 	// Add your validation rules here
 	public static $rules = [
-                            'type' => 'in:invoice',
+                            'type' => 'in:invoice,corrective,credit,deposit',
                             'document_date' => 'required|date',
                             'payment_date'  => 'nullable|date',
                             'delivery_date' => 'nullable|date|after_or_equal:document_date',

@@ -377,6 +377,11 @@ class Billable extends Model implements ShippableInterface
             return l(get_called_class().'.'.$type, [], 'appmultilang');
     }
 
+    public function getTypeNameAttribute()
+    {
+            return l(get_called_class().'.'.$this->type, 'appmultilang');
+    }
+
 
     public static function getStatusList()
     {

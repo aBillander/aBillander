@@ -56,6 +56,8 @@
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            <strong>{{ l('Type') }}</strong>
+            <span class="label label-default">{{ $document->type_name }}</span>
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference') ? 'has-error' : '' }}">

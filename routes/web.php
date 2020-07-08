@@ -190,6 +190,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
             Route::resource('customerinvoices', 'AccountingCustomerInvoicesController')->names('accounting.customerinvoices');
             Route::get('customerinvoices/{id}/pdf', 'AccountingCustomerInvoicesController@showPdf')->name('accounting.customerinvoices.pdf');
+
+            Route::get('customerinvoices/invoice/search', 'AccountingCustomerInvoicesController@searchInvoice')->name('accounting.customerinvoices.searchinvoice');
+
+
+        // oute::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
         });
 
         // Helferin
@@ -214,6 +219,13 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('companies', 'CompaniesController');
         Route::post('companies/{id}/bankaccount', 'CompaniesController@updateBankAccount')->name('companies.bankaccount');
+
+        Route::resource('banks',         'BanksController');
+        Route::resource('cheques',               'ChequesController'      );
+        Route::resource('cheques.chequedetails', 'ChequeDetailsController');
+        Route::post('cheques/sortlines', 'ChequesController@sortLines')->name('cheque.sortlines');
+        Route::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
+        Route::get( 'export/cheques', 'ChequesController@export' )->name('cheques.export');
 
         Route::resource('countries',        'CountriesController');
         Route::resource('countries.states', 'StatesController');
@@ -594,7 +606,10 @@ foreach ($pairs as $pair) {
         Route::get( 'customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
         Route::post('customershippingslips/{id}/invoice/undo'  , 'CustomerShippingSlipsController@undoInvoice')->name('customershippingslip.invoice.undo');
 
-        Route::get('customershippingslips/{id}/deliver'  , 'CustomerShippingSlipsController@deliver')->name('customershippingslip.deliver');
+        Route::post('customershippingslips/setcarrier/bulk', 'CustomerShippingSlipsController@setCarrierBulk')->name('customershippingslips.bulk.set.carrier');
+
+        Route::get('customershippingslips/{id}/deliver' , 'CustomerShippingSlipsController@deliver'    )->name('customershippingslip.deliver');
+        Route::post('customershippingslips/deliver/bulk', 'CustomerShippingSlipsController@deliverBulk')->name('customershippingslips.bulk.deliver');
 
         Route::get('customershippingslips/{id}/undeliver'  , 'CustomerShippingSlipsController@undeliver')->name('customershippingslip.undeliver');
 

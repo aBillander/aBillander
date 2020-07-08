@@ -323,6 +323,21 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Cheque Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\Cheque.pending' => 'Pendiente',// Pendiente de depositar
+    'App\Cheque.deposited' => 'Depositado',	// Depositado
+    'App\Cheque.paid' => 'Pagado',			// or cleared: pagaddo (ingresado en el banco)
+    'App\Cheque.voided' => 'Anulado',		// Anulado
+    'App\Cheque.rejected' => 'Rechazado',		// or dishonored, or returned, or bounced
+
+	/*
+	|--------------------------------------------------------------------------
 	| Commission Settlement Statuses
 	|--------------------------------------------------------------------------
 	|

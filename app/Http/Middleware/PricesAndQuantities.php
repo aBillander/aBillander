@@ -14,6 +14,7 @@ class PricesAndQuantities extends TransformsRequest
     protected $check_with_stub = [
         'price',
         'quantity',
+        'amount',
     ];
 
     /**

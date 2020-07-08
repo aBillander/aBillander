@@ -51,6 +51,8 @@ class CreatePaymentsTable extends Migration {
 			$table->integer('paymentorable_id');
 			$table->string('paymentorable_type');
 
+			$table->integer('payment_type_id')->nullable();
+
 			// Money Order
 			$table->integer('bank_order_id')->nullable();	// For SEPA Direct Debit Bank Orders (remittances)
 

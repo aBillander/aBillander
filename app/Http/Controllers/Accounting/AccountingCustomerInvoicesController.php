@@ -43,8 +43,25 @@ class AccountingCustomerInvoicesController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
+        $invoice_from_id = $request->input('invoice_from_id', 0);
+        $invoice_to_id   = $request->input('invoice_to_id'  , 0);
+
+        $items_per_page = $request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE'));
+        if ($items_per_page <= 0)
+            $items_per_page = Configuration::get('DEF_ITEMS_PERPAGE');
+
         $documents = $this->document
                             ->filter( $request->all() )
+                            ->where(function($query) use ($invoice_from_id)
+                            {
+                                if ($invoice_from_id > 0)
+                                    $query->where( 'id', '>=', $invoice_from_id );
+                            })
+                            ->where(function($query) use ($invoice_to_id)
+                            {
+                                if ($invoice_to_id > 0)
+                                    $query->where( 'id', '<=', $invoice_to_id );
+                            })
                             ->with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
@@ -54,7 +71,7 @@ class AccountingCustomerInvoicesController extends Controller
 //                            ->orderByRaw('document_reference IS NOT NULL, document_reference DESC');
 //                          ->orderBy('id', 'desc');        // ->get();
 
-        $documents = $documents->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
+        $documents = $documents->paginate( $items_per_page );
 
         $documents->setPath('customerinvoices');
 
@@ -229,6 +246,41 @@ class AccountingCustomerInvoicesController extends Controller
 
         return  $pdf->stream($pdfName . '.pdf');
         return  $pdf->download( $pdfName . '.pdf');
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ajax Stuff
+    |--------------------------------------------------------------------------
+    */
+
+    public function searchInvoice(Request $request)
+    {
+        $search = $request->term;
+
+        // return response($request->term);
+
+        // $search = 'otur';
+
+        $invoices = CustomerInvoice::select('id', 'document_reference', 'total_tax_incl')
+                                ->where(function($query) use ($search)
+                                {
+                                    $query->where  ( 'id',                 'LIKE', '%'.$search.'%' );
+                                    $query->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' );
+                                })
+//                                ->where('customer_id', $request->input('customer_id'))
+//                                ->where('currency_id', $request->input('currency_id'))
+//                                ->where('status', 'closed')
+//                                ->where('total_tax_incl', '>', 0.0)
+//                                ->toSql();
+                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+
+
+//                                dd($products);
+
+        return response( $invoices );
     }
 
 }

@@ -18,15 +18,9 @@
                 <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
     @endif
 @else
-                <a class="btn btn-sm alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a>
+                <a class="btn btn-sm alert-success prevent-double-click" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a>
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/pdf?preview') }}" title="{{l('Show Preview', [], 'layouts')}}" target="_blank"><i class="fa fa-eye"></i></a>
-@endif
-
-@if ($document->document_id>0)
-                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
-
-                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 
 @if ( $document->status != 'closed' )
@@ -38,9 +32,15 @@
 @else
 
                     @if ( $document->status == 'closed' && !$document->invoiced_at)
-                    <a class="btn btn-sm btn-navy" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
+                    <a class="btn btn-sm btn-navy prevent-double-click" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}" style="margin-left: 16px; margin-right: 16px"><i class="fa fa-money"></i>
                     </a>
                     @endif
+@endif
+
+@if ($document->document_id>0)
+                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+
+                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
 @endif
 
                 @if( $document->deletable )
@@ -148,17 +148,46 @@
 {{--  --}}
 
 
+
+@section('scripts') @parent
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+    // https://stackoverflow.com/questions/1681679/disabling-links-to-stop-double-clicks-in-jquery
+
+    $("a.prevent-double-click").one("click", function() {
+        $(this).click(function () { return false; });
+    });
+
+});
+
+</script>
+
+@endsection
+
+
 @section('styles') @parent
 
     @include($view_path.'.css.panels')
 
+{{-- Stop Bootstrap drop menu's being cut off in responsive tables
+
+    https://dcblog.dev/stop-bootstrap-drop-menus-being-cut-off-in-responsive-tables
+--}}
+
+<style type="text/css">
+    @media (max-width: 767px) {
+        .table-responsive .dropdown-menu {
+            position: static !important;
+        }
+    }
+    @media (min-width: 768px) {
+        .table-responsive {
+            overflow: visible;
+        }
+    }
+</style>
+
 @endsection
 
-
-{{-- 
-@section('scripts') @parent
-
-    @include($view_path.'.js._dummy')
-
-@endsection
- --}}

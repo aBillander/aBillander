@@ -341,6 +341,13 @@
                             </a>
                         </li>
 @endif
+                         <li>
+                            <a href="{{ URL::to('cheques') }}">
+                                 <i class="fa fa-money btn-xs text-success"></i> 
+                                 {{l('Cheques', [], 'layouts')}}
+                                 <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('import') }}">
@@ -480,6 +487,11 @@
                          <li>
                             <a href="{{ URL::to('companies') }}">
                                  {{l('Company', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('banks') }}">
+                                 {{l('Banks', [], 'layouts')}}
                             </a>
                         </li>
                          <li>

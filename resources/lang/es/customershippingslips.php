@@ -54,6 +54,7 @@ return [
 	'Invoiced at:'     => 'Facturado el',
 	'Delivered at:'     => 'Entregado el:',
 	'Set delivered' => 'Click para entregado',
+	'With selected: Set delivered' => 'Con los seleccionados: Marcar como entregado',
 
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Próx. Vencimiento',
@@ -158,6 +159,9 @@ return [
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',
 	'Carrier'     => 'Transportista',
+	'-- From Shipping Method' => '-- Del Método de Envío',
+	'Select Carrier'     => 'Seleccione Transportista',
+	'With selected: Set Carrier' => 'Con los seleccionados: Actualizar Transportista',
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',
 	'Notes to Customer'     => 'Notas para el Cliente',
@@ -329,7 +333,7 @@ return [
 
 	'Create Invoice'     => 'Crear Factura',
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
-	'Shipping Slip: :id [dicount Tax :percent %]'     => 'Albarán: :id [descuento IVA :percent %]',
+	'Shipping Slip: :id [dicount Tax :percent %]'     => 'Albarán: :id [descuento '.\App\Configuration::get('CUSTOMER_INVOICE_TAX_LABEL').' :percent %]',
 
 	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
 

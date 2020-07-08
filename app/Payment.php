@@ -39,6 +39,8 @@ class Payment extends Model {
                             'auto_direct_debit', 'bank_order_id',
 
                             'down_payment', 'payment_document_id', 'payment_method_id',
+
+                            'payment_type_id',
                            ];
 
 	// Add your validation rules here
@@ -210,6 +212,11 @@ class Payment extends Model {
         return $this->belongsTo('App\PaymentMethod');
     }
 
+    public function paymenttype()
+    {
+        return $this->belongsTo('App\PaymentType', 'payment_type_id');
+    }
+
     public function bankorder()
     {
         return $this->belongsTo('aBillander\SepaSpain\SepaDirectDebit', 'bank_order_id');
@@ -234,11 +241,13 @@ class Payment extends Model {
         {
             $user = Auth::guard('customer')->user();
 
-            return $query->whereHas('customerinvoice', function ($query) use ($user) {
+            $addresses_count = $user->customer->addresses->count();
+
+            return $query->whereHas('customerinvoice', function ($query) use ($user, $addresses_count) {
                                 
                                 $query->where('customer_id', $user->customer_id);
 
-                                if ( $user->address_id )
+                                if ( ($addresses_count > 1) && $user->address_id )
                                     $query->where('shipping_address_id', $user->address_id);
                             } );
         }

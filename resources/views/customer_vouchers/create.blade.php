@@ -1,3 +1,4 @@
+{{--
 @extends('layouts.master')
 
 @section('title') {{ l('Currencies - Create') }} @parent @stop
@@ -24,3 +25,4 @@
 </div>
 
 @stop
+--}}

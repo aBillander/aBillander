@@ -115,7 +115,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// PaymentTypes
-		view()->composer(array('payment_methods._form'), function($view) {
+		view()->composer(array('payment_methods._form', 'customer_vouchers._form_edit', 'customer_vouchers._form_pay'), function($view) {
 		    
 		    $view->with('payment_typeList', \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
@@ -157,7 +157,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Carriers
-		view()->composer(array('shipping_methods._form'), function($view) {
+		view()->composer(array('shipping_methods._form', 'customer_shipping_slips.index', 'customer_shipping_slips.edit'), function($view) {
 		    
 		    $view->with('carrierList', \App\Carrier::pluck('name', 'id')->toArray());
 		    

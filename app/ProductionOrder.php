@@ -496,7 +496,7 @@ if ( $bomitem )
     public function finish()
     {
         // Can I ...?
-        if ( ($this->status == 'finished') ) return false;
+        if ( ($this->status == 'finished') ) return false;  // Any other status is good to go!?
 
         // onhold?
         // if ( $this->onhold ) return false;

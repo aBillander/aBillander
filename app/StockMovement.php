@@ -346,6 +346,9 @@ class StockMovement extends Model {
             // Better approach:
             $str = substr( $segments[0], 0, strpos($segments[0], "Line") );
 
+            if ( !$str ) 
+                $str = $segments[0];
+
             $segment = strtolower($str);
 
             return str_plural($segment);
@@ -1427,7 +1430,7 @@ class StockMovement extends Model {
 
         if ( isset($params['reference']) && trim($params['reference']) !== '' )
         {
-            $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
+            $query->where('document_reference', 'LIKE', '%' . trim($params['reference']) . '%');
             // $query->orWhere('combinations.reference', 'LIKE', '%' . trim($params['reference'] . '%'));
 /*
             // Moved from controller

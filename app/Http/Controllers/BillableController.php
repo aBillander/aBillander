@@ -10,6 +10,8 @@ use App\Combination;
 use App\Currency;
 use App\Address;
 
+use App\StockMovement;
+
 use App\Configuration;
 use App\Context;
 use App\Sequence;
@@ -604,7 +606,33 @@ class BillableController extends Controller
                         ->with('lines.product')
                         ->findOrFail($id);
 
-        return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document'));
+        $document_reference = $document->document_reference;
+
+        $stockmovements = collect([]);
+        if ( $document->status == 'closed' )
+            $stockmovements = StockMovement::
+                                  with('warehouse')
+                                ->with('product')
+                                ->with('combination')
+//                              ->with('stockmovementable')
+//                                ->with('stockmovementable.document')
+                                ->where(function($query) use ($document_reference)
+                                {
+//                                    $query->where  ( 'id',                 'LIKE', '%'.$document_reference.'%' );
+                                    $query->where( 'document_reference', 'LIKE', '%'.$document_reference.'%' );
+                                })
+                                ->where(function($query)
+                                {
+                                    $query->where  ( 'stockmovementable_type', '' );
+                                    $query->orWhere( 'stockmovementable_type', 'LIKE', '%ShippingSlip%' );
+                                })
+                                ->orderBy('created_at', 'DESC')
+                                ->orderBy('reference', 'ASC')
+                                ->get();
+
+        // abi_r($stockmovements);die();
+
+        return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document', 'stockmovements'));
     }
 
     public function getDocumentAvailabilityModal($id, Request $request)

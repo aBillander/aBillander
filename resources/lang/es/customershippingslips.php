@@ -366,4 +366,8 @@ return [
 	'Group by Address' => 'Agrupar por Dirección',
 	'Yes: One Invoice per Shipping Address' => 'Sí: Una Factura por Dirección de Envío',
 
+	
+	'Stock Movements' => 'Movimientos de Stock',
+	'Stock after'     => 'Stock final',
+
 ];

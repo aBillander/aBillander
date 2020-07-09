@@ -996,11 +996,11 @@ LIMIT 1
         $s_lines = CustomerShippingSlipLine::where('product_id', $id)
                             ->with('document')
                             ->with('document.customer')
-                            ->whereHas('document', function($q) use ($id) {
+//                            ->whereHas('document', function($q) use ($id) {
 //                                    $q->where('customer_id', $id);
-                                    $q->where('created_via', 'manual');
+//                                    $q->where('created_via', 'manual');
 //                                   $q->where('status', '!=', 'draft');
-                                })
+//                                })
                             ->join('customer_shipping_slips', 'customer_shipping_slip_lines.customer_shipping_slip_id', '=', 'customer_shipping_slips.id')
                             ->select('customer_shipping_slip_lines.*', 'customer_shipping_slips.document_date', \DB::raw('"customershippingslips" as route'))
                             ->orderBy('customer_shipping_slips.document_date', 'desc')
@@ -1031,7 +1031,8 @@ LIMIT 1
         $lines2 = collect($s_lines);
         $lines3 = collect($i_lines);
 
-        $lines = $lines1->merge($lines2)->merge($lines3)->sortByDesc('document_date');
+        $lines = $lines1->merge($lines2)->merge($lines3)->sortByDesc('document_date');        
+        $lines = $lines2;
 
         $lines = $lines->take( $items_per_page );
         

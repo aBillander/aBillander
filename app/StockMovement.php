@@ -1430,7 +1430,7 @@ class StockMovement extends Model {
 
         if ( isset($params['reference']) && trim($params['reference']) !== '' )
         {
-            $query->where('document_reference', 'LIKE', '%' . trim($params['reference']) . '%');
+            $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
             // $query->orWhere('combinations.reference', 'LIKE', '%' . trim($params['reference'] . '%'));
 /*
             // Moved from controller
@@ -1443,6 +1443,13 @@ class StockMovement extends Model {
             );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
 */
         }
+
+
+        if ( isset($params['document_reference']) && trim($params['document_reference']) !== '' )
+        {
+            $query->where('document_reference', 'LIKE', '%' . trim($params['document_reference']) . '%');
+        }
+        
 
         if ( isset($params['name']) && trim($params['name']) !== '' )
         {

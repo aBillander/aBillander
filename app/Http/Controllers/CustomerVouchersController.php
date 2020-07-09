@@ -291,6 +291,8 @@ class CustomerVouchersController extends Controller
 				$new_payment->payment_date = NULL;
 				$new_payment->amount = $diff;
 
+				$new_payment->payment_type_id = $payment->payment_type_id;
+
 				$new_payment->save();
 
 			}
@@ -301,6 +303,8 @@ class CustomerVouchersController extends Controller
 			$payment->notes    = $request->input('notes',    $payment->notes);
 
 			$payment->auto_direct_debit = $request->input('auto_direct_debit',    $payment->auto_direct_debit);
+
+			$payment->payment_type_id    = $request->input('payment_type_id',    $payment->payment_type_id);
 
 			$payment->save();
 
@@ -356,6 +360,8 @@ class CustomerVouchersController extends Controller
 				$new_payment->payment_date = NULL;
 				$new_payment->amount = $diff;
 
+				$new_payment->payment_type_id = $payment->payment_type_id;
+
 				$new_payment->save();
 
 			}
@@ -365,6 +371,8 @@ class CustomerVouchersController extends Controller
 			$payment->payment_date = $request->input('payment_date');
 			$payment->amount   = $request->input('amount',   $payment->amount);
 			$payment->notes    = $request->input('notes',    $payment->notes);
+
+			$payment->payment_type_id    = $request->input('payment_type_id',    $payment->payment_type_id);
 
 			$payment->status   = 'paid';
 			$payment->save();

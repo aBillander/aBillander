@@ -337,4 +337,7 @@ return [
 
 	'Posted at' => 'Contabilizado',
 
+	'Invoice from' => 'Factura desde',
+	'Invoice to' => 'Factura hasta',
+
 ];

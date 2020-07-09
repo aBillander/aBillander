@@ -79,6 +79,11 @@
         {!! Form::select('movement_type_id', array('' => l('-- All --', [], 'layouts')) + $movement_typeList, null, array('class' => 'form-control')) !!}
     </div>
 
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('document_reference', l('Document')) !!}
+    {!! Form::text('document_reference', null, array('class' => 'form-control')) !!}
+</div>
+
 </div>
 
                 {!! Form::close() !!}

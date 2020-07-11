@@ -201,6 +201,7 @@ class CustomerVouchersController extends Controller
 		// Validate input (to do)
 		$rules = [
             'payment_date' => 'required|date',
+            'payment_type_id' => 'nullable|exists:payment_types,id',
 		];
         $this->validate($request, $rules);
 
@@ -216,10 +217,16 @@ class CustomerVouchersController extends Controller
 		// abi_r($list);die();
         $payments = $this->payment->whereIn('id', $list)->where('status', 'pending')->get();
 
+        $payment_date = $request->input('payment_date');
+        $payment_type_id = $request->input('payment_type_id', null);
+
+        // abi_r($request->all());die();
+
         // Do the Mambo!
         foreach ( $payments as $payment ) 
         {
-        	$payment->payment_date = $request->input('payment_date');
+        	$payment->payment_date = $payment_date;
+        	$payment->payment_type_id = $payment_type_id;
 
 			$payment->status   = 'paid';
 			$payment->save();

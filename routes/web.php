@@ -293,6 +293,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('tools', 'ToolsController');
 
+        Route::resource('lots', 'LotsController');
+        Route::get( 'export/lots', 'LotsController@export' )->name('lots.export');
+
         Route::resource('products', 'ProductsController');
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
         Route::get('products/{id}/pendingmovements', 'ProductsController@getPendingMovements')->name('products.pendingmovements');

@@ -56,8 +56,16 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 
 Route::get('migratethis', function()
-{
+{	
+	// 2020-07-11
+	Illuminate\Support\Facades\DB::statement("create table `lots` (`id` int unsigned not null auto_increment primary key, `reference` varchar(32) null, `product_id` int unsigned not null, `combination_id` int unsigned null, `quantity_initial` decimal(20, 6) not null default '0', `quantity` decimal(20, 6) not null default '0', `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `manufactured_at` timestamp null, `expiry_at` timestamp null, `notes` text null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `expiry_time` INT(10) UNSIGNED NULL AFTER `active`;");
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `lot_tracking` tinyint not null default '0' AFTER `active`;");
+
+	die('OK');
+
+	
 	// 2020-07-01
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `payments` ADD `payment_type_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `paymentorable_type`;");
 

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Stock Movements') }} @parent @stop
+@section('title') {{ l('Lots') }} @parent @stop
 
 
 @section('content')
@@ -9,7 +9,7 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{ URL::to('stockmovements/create') }}" class="btn btn-sm btn-success" 
+        <a href="{{ URL::to('lots/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
         <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
@@ -17,12 +17,12 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ route('stockmovements.export', Request::all()) }}" class="btn btn-sm btn-grey" 
+        <a href="{{ route('lots.export', Request::all()) }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
     </div>
     <h2>
-        {{ l('Stock Movements') }}
+        {{ l('Lots') }}
     </h2>        
 </div>
 
@@ -35,7 +35,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => 'stockmovements.index', 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => 'lots.index', 'method' => 'GET')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -43,12 +43,12 @@
 <div class="row">
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('date_from_form', l('Date from')) !!}
+        {!! Form::label('date_from_form', l('Date from', 'layouts')) !!}
         {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
     </div>
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('date_to_form', l('Date to')) !!}
+        {!! Form::label('date_to_form', l('Date to', 'layouts')) !!}
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
 
@@ -60,25 +60,27 @@
     {!! Form::label('name', l('Product Name')) !!}
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('warehouse_id', l('Warehouse')) !!}
     {!! Form::select('warehouse_id', array('0' => l('All', [], 'layouts')) + $warehouseList, null, array('class' => 'form-control')) !!}
 </div>
+--}}
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route('stockmovements.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('lots.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>
 
 <div class="row">
-
+{{--
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('movement_type_id', l('Movement type')) !!}
         {!! Form::select('movement_type_id', array('' => l('-- All --', [], 'layouts')) + $movement_typeList, null, array('class' => 'form-control')) !!}
     </div>
-
+--}}
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('document_reference', l('Document')) !!}
     {!! Form::text('document_reference', null, array('class' => 'form-control')) !!}
@@ -95,99 +97,70 @@
 
 
 
-<div id="div_stockmovements">
+<div id="div_lots">
    <div class="table-responsive">
 
-@if ($stockmovements->count())
-<table id="stockmovements" class="table table-hover">
+@if ($lots->count())
+<table id="lots" class="table table-hover">
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
-			<th>{{l('Date')}}</th>
-			<th>{{l('Type')}}</th>
-			<th>{{l('Warehouse')}}</th>
-            <th>{{l('Reference')}}</th>
+            <th>{{l('Lot Number')}}</th>
             <th>{{l('Product')}}</th>
             <th class="text-right">{{l('Quantity')}}
-              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+              <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                         data-content="{{ l('A positive value means stock increases.') }}">
                     <i class="fa fa-question-circle abi-help"></i>
-              </a>
+              </a -->
             </th>
-            <th class="text-right">{{l('Stock after')}}</th>
-			<th class="text-right">{{l('Price')}}</th>
-			<th class="text-right">{{l('Document')}}</th>
+            <th>{{l('Measure Unit')}}</th>
+            <th>{{l('Manufacture Date')}}</th>
+            <th>{{l('Expiry Date')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
 	<tbody>
 
-	@foreach ($stockmovements as $stockmovement)
+	@foreach ($lots as $lot)
 		<tr>
-			<td>{{ $stockmovement->id }}</td>
-			<td>{{ abi_date_short( $stockmovement->date ) }}</td>
-      <td>[{{ $stockmovement->movement_type_id }}] - 
-           {{ \App\StockMovement::getTypeName($stockmovement->movement_type_id) }}
-      </td>
-
-			<td>{{ $stockmovement->warehouse->alias }}</td>
-      <td><a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->reference }}</a>
+      <td>{{ $lot->id }}</td>
+      <td>{{ $lot->reference }}</td>
+      <td>[{{ $lot->product->reference }}] <a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->name }}</a>
 {{--
-                    @if ( $stockmovement->combination_id > 0 )
-                        {{ $stockmovement->combination->reference }}
+                    @if ( $lot->combination_id > 0 )
+                        {{ $lot->combination->reference }}
                     @else
-                        {{ $stockmovement->product->reference }}
+                        {{ $lot->product->reference }}
                     @endif
 --}}
             </td>
-			<td>{{ $stockmovement->name }}
-{{--
-                    <a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ $stockmovement->product->name }}</a>
-                    @if ( $stockmovement->combination_id > 0 )
-                        <br />{{ $stockmovement->combination->name() }}
-                    @endif
---}}
-            </td>
-            <td class="text-right">{{ $stockmovement->as_quantityable( $stockmovement->quantity_after_movement - $stockmovement->quantity_before_movement ) }}</td>
-            <td class="text-right">{{ $stockmovement->as_quantity( 'quantity_after_movement' ) }}</td>
-			<td class="text-right">{{ $stockmovement->as_price( 'price' ) }}</td>
-			<td class="text-right">
-
-@if ( $route = $stockmovement->getStockmovementableDocumentRoute() )
-{{-- optional(optional($stockmovement->stockmovementable)->document)->id --} }
-        <!-- a href="{{ route($route.'.edit', ['0']).'?document_reference='.$stockmovement->document_reference }}" title="{{l('Open Document', [], 'layouts')}}" target="_new" -->  --}}
-        <a href="{{ route($route.'.edit', [optional(optional($stockmovement->stockmovementable)->document)->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->document_reference }}</a>
-    @if ( !optional(optional($stockmovement->stockmovementable)->document)->id ) 
-        <i class="fa fa-exclamation-triangle btn-xs btn-danger" title="Document ID not found"></i>
-    @endif
-@else
-      {{ $stockmovement->document_reference }}
-@endif
-
-      </td>
+      <td class="text-right">{{ $lot->as_quantity('quantity') }}</td>
+      <td>{{ optional($lot->measureunit)->sign }}</td>
+      <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
+      <td>{{ abi_date_short( $lot->expiry_at ) }}</td>
             <td class="text-center">
-                @if ($stockmovement->notes)
+                @if ($lot->notes)
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
-                            data-content="{{ $stockmovement->notes }}">
+                            data-content="{{ $lot->notes }}">
                         <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
                     </button>
                  </a>
                 @endif</td>
 
             <td class="text-right">
-                @if (  is_null($stockmovement->deleted_at))
-                <!-- a class="btn btn-sm btn-success" href="{{ URL::to('stockmovements/' . $stockmovement->id) }}" title=" Ver "><i class="fa fa-eye"></i></a>               
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('stockmovements/' . $stockmovement->id . '/edit') }}" title=" Modificar "><i class="fa fa-pencil"></i></a -->
+                @if (  is_null($lot->deleted_at))
+                <!-- a class="btn btn-sm btn-success" href="{{ URL::to('lots/' . $lot->id) }}" title=" Ver "><i class="fa fa-eye"></i></a>               
+                <a class="btn btn-sm btn-warning" href="{{ URL::to('lots/' . $lot->id . '/edit') }}" title=" Modificar "><i class="fa fa-pencil"></i></a -->
                 <!-- a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                		href="{{ URL::to('stockmovements/' . $stockmovement->id ) }}" 
+                		href="{{ URL::to('lots/' . $lot->id ) }}" 
                 		data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Stock Movements') }} ::  ({{$stockmovement->id}}) {{ $stockmovement->date }}" 
+                		data-title="{{ l('Stock Movements') }} ::  ({{$lot->id}}) {{ $lot->date }}" 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a -->
                 @else
-                <a class="btn btn-warning" href="{{ URL::to('stockmovements/' . $stockmovement->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
-                <a class="btn btn-danger" href="{{ URL::to('stockmovements/' . $stockmovement->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
+                <a class="btn btn-warning" href="{{ URL::to('lots/' . $lot->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
+                <a class="btn btn-danger" href="{{ URL::to('lots/' . $lot->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
                 @endif
 			</td>
 		</tr>
@@ -195,8 +168,8 @@
 
 	</tbody>
 </table>
-{!! $stockmovements->appends( Request::all() )->render() !!} 
-<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $stockmovements->total() ], 'layouts')}} </span></li></ul>
+{!! $lots->appends( Request::all() )->render() !!} 
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $lots->total() ], 'layouts')}} </span></li></ul>
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>

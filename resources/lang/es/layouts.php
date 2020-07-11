@@ -119,6 +119,7 @@ return [
 	'Invoices'     => 'Facturas',
 	'Quotations'     => 'Presupuestos',
 	'Stock Movements'     => 'Movimientos de Almacén',
+	'Lots' => 'Lotes',
 	'Inventory Count'     => 'Inventario de Almacén',
 	'Inventory Adjustments'     => 'Regularización de Almacén',
 

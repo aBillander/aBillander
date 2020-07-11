@@ -22,6 +22,7 @@ return [
     'View Order' => 'Ir al Pedido',
     'View Product' => 'Ir al Producto',
     'View Customer' => 'Ir a la Ficha del Cliente',
+    'View Category' => 'Ir a la Categoría',
 	'Products of Customer Order'     => 'Productos del Pedido',
 	'Move'     => 'Mover a otra Hoja',
     'Finished Product Requirements'     => 'Necesidades de Elaborados',

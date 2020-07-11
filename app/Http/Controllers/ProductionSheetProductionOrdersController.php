@@ -227,7 +227,7 @@ class ProductionSheetProductionOrdersController extends Controller
         // Set params for group
         $params = $request->only('production_sheet_id', 'should_group', 'template_id', 'sequence_id', 'document_date', 'delivery_date', 'status');
 */
-        $params = ['production_sheet_id' => $request->production_sheet_id];
+        $params = ['production_sheet_id' => $request->production_sheet_id, 'document_group' => $document_group];
 
         // abi_r($params, true);
 
@@ -253,11 +253,13 @@ class ProductionSheetProductionOrdersController extends Controller
 
             $documents = $this->productionOrder
                                 ->where('production_sheet_id', $params['production_sheet_id'])
+                                ->whereIn('id', $params['document_group'])
                                 ->where('status', '<>', 'finished')
                                 ->with('lines')
     //                            ->orderBy('document_date', 'asc')
     //                            ->orderBy('id', 'asc')
-                                ->findOrFail( $list );
+    //                            ->findOrFail( $list );
+                                ->find( $list );
 
             // Check document->status == onhold ???
             
@@ -274,6 +276,7 @@ class ProductionSheetProductionOrdersController extends Controller
         foreach ($documents as $document)
         {
             # code...
+            abi_r($document->id);
         }
 
 

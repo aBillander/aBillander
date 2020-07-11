@@ -113,7 +113,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 
 
 
-{!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents'] ) !!}
+{!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents', 'target' => '_blank'] ) !!}
 
 {!! Form::hidden('production_sheet_id', $productionSheet->id, array('id' => 'production_sheet_id')) !!}
 

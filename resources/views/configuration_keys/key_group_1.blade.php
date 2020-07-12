@@ -295,6 +295,26 @@
 
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ENABLE_LOTS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ENABLE_LOTS" id="ENABLE_LOTS_on" value="1" @if( old('ENABLE_LOTS', $key_group['ENABLE_LOTS']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ENABLE_LOTS" id="ENABLE_LOTS_off" value="0" @if( !old('ENABLE_LOTS', $key_group['ENABLE_LOTS']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ENABLE_LOTS.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('ENABLE_WEBSHOP_CONNECTOR.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

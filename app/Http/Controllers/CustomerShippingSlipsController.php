@@ -16,6 +16,8 @@ use App\CustomerInvoiceLine;
 use App\CustomerInvoiceLineTax;
 use App\DocumentAscription;
 
+use App\ShippingMethod;
+
 use App\Configuration;
 use App\Sequence;
 use App\Template;
@@ -338,6 +340,20 @@ class CustomerShippingSlipsController extends BillableController
 */
         $document = $customershippingslip;
 
+
+        // Manage Shipping Method
+        $shipping_method_id = $request->input('shipping_method_id', $document->shipping_method_id);
+
+        $def_carrier_id = $document->shippingmethod ? $document->shippingmethod->carrier_id : null;
+        if ( $shipping_method_id != $document->shipping_method_id )
+        {
+            // Need Carrier
+            $s_method = ShippingMethod::find( $shipping_method_id );
+
+            $def_carrier_id = $s_method ? $s_method->carrier_id : null;
+        }
+
+
         // Manage Carrier
         $carrier_id = $request->input('carrier_id', $document->carrier_id);
 
@@ -348,20 +364,17 @@ class CustomerShippingSlipsController extends BillableController
             if ( $carrier_id == -1 )
             {
                 // Take from Shipping Method
-                if ($document->shippingmethod)
-                    $carrier_id = $document->shippingmethod->carrier_id;
-                else
-                    $carrier_id = null;
+                $carrier_id = $def_carrier_id;
             } 
             else
-                if ( !((int) $carrier_id > 0) ) $carrier_id = null;
+                if ( (int) $carrier_id < 0 ) $carrier_id = null;
 
             // Change Carrier
-            $document->force_carrier_id = true;
+            // $document->force_carrier_id = true;
             // $document->carrier_id = $carrier_id;
-        }
 
-        $request->merge( ['carrier_id' => $carrier_id] );
+            $request->merge( ['carrier_id' => $carrier_id] );
+        }
 
         // abi_r($request->all());die();
 

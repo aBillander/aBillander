@@ -34,6 +34,7 @@ class ConfigurationKeysController extends Controller {
                         'ENABLE_MANUFACTURING',
                         'MRP_WITH_STOCK',
                         'MRP_WITH_ZERO_ORDERS',
+                        'ENABLE_LOTS',
                         'ENABLE_WEBSHOP_CONNECTOR',
                         'ENABLE_FSOL_CONNECTOR',
                         'SELL_ONLY_MANUFACTURED',

@@ -150,7 +150,8 @@ class Billable extends Model implements ShippableInterface
 
         static::saving(function($document)
         {
-            if ( $document->force_carrier_id === true )
+            // if ( $document->force_carrier_id === true )
+            if ( $document->carrier_id > 0 )
             {
                 // $document->carrier_id = $document->force_carrier_id;
                 // unset($document->force_carrier_id);
@@ -162,6 +163,8 @@ class Billable extends Model implements ShippableInterface
 
                 if ( $document->shippingmethod )
                     $document->carrier_id = $document->shippingmethod->carrier_id;
+                else
+                    $document->carrier_id = null;
                 
             }
 

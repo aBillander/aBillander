@@ -57,6 +57,14 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+
+	// 2020-07-14
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoice_lines` ADD `customer_shipping_slip_line_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `customer_shipping_slip_id`;");
+
+
+	Illuminate\Support\Facades\DB::statement("create table `lot_items` (`id` int unsigned not null auto_increment primary key, `lot_id` int unsigned not null, `quantity` decimal(20, 6) not null default '1', `is_reservation` tinyint not null default '0', `lotable_id` int not null, `lotable_type` varchar(191) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+
 	// 2020-07-11
 	Illuminate\Support\Facades\DB::statement("create table `lots` (`id` int unsigned not null auto_increment primary key, `reference` varchar(32) null, `product_id` int unsigned not null, `combination_id` int unsigned null, `quantity_initial` decimal(20, 6) not null default '0', `quantity` decimal(20, 6) not null default '0', `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `manufactured_at` timestamp null, `expiry_at` timestamp null, `notes` text null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 

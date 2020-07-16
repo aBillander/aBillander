@@ -243,6 +243,7 @@ return [
 	'Process' => 'Procesar',
 	'Cancel'     => 'Cancelar',
 	'Confirm'     => 'Confirmar',
+	'Finish' => 'Terminar',
 	'Undo Confirm'     => 'Deshacer Confirmar',
 	'Select'     => 'Seleccionar',
 	'Delete'     => 'Eliminar',

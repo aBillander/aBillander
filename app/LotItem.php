@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class LotItem extends Model
 {
 
-	protected $fillable = ['product_id', 'product_bom_id', 'quantity'
+	protected $fillable = ['lot_id', 'is_reservation', 'quantity'
     ];
 
     public static $rules = [
@@ -35,12 +35,13 @@ class LotItem extends Model
     // Reverse relation
     public function lotitems()
     {
-        return $this->morphMany('App\Lots', 'lotable');
+        return $this->morphMany('App\Lot', 'lotable');
     }
-
+/*
     // Alias
     public function lots()
     {
         return $this->lotitems();
     }
+*/
 }

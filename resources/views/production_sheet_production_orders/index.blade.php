@@ -144,6 +144,10 @@
 
            <td class="text-right" style="width:1px; white-space: nowrap;">
 
+@if ( $order->product->lot_tracking )
+                <a class="btn btn-sm btn-info finish-production-order" href="{{ route('productionsheet.productionorders.finish.withlot') }}" title="{{l('Finish', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" data-olottracking="{{ $order->product->lot_tracking }}" data-oexpirytime="{{ $order->product->expiry_time }}" data-oexpirydate="{{ $order->product->expiry_time }}" onClick="return false;"><i class="fa fa-outdent"></i></a>
+@endif
+
                 <a class="btn btn-sm btn-blue show-production-order-products" title="{{l('Show', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-folder-open-o"></i></a>
 
                 <a class="btn btn-sm btn-warning edit-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetedit') }}" title="{{l('Edit', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" onClick="return false;"><i class="fa fa-pencil"></i></a>
@@ -241,13 +245,19 @@
 
 {!! Form::close() !!}
 
+
+@include('production_sheet_production_orders._modal_production_order_finish')
+
 @include('layouts/back_to_top_button')
 
 
+{{-- What is this? =>
 
 <hr style="margin:72px;border-top: 5px solid #eee;" />
 
 @include('production_sheet_production_orders._block_legacy_stuff')
+
+--}}
 
 @endsection
 
@@ -323,6 +333,8 @@ $(document).ready(function() {
 //    $('#sequence_id').val('{ { $customer->getInvoiceSequenceId() }}');
 //    $('#template_id').val('{ { $customer->getInvoiceTemplateId() }}');
 
+    $('#orders_finish_date_form').val('{{ abi_date_short( \Carbon\Carbon::now() ) }}');
+
 });
 
 </script>
@@ -365,6 +377,25 @@ $(document).ready(function() {
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
   });
+
+
+  $(function() {
+    $( "#finish_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+
+  $(function() {
+    $( "#orders_finish_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
  /* 
   $(function() {
     $( "#date_from_form" ).datepicker({

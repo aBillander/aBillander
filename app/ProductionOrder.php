@@ -259,7 +259,7 @@ class ProductionOrder extends Model
         // if (!$bom) return NULL;
 
          $order_quantity = $data['planned_quantity'];
-         $order_required = $data['required_quantity'];
+         $order_required = $data['required_quantity'] ?? $data['planned_quantity'];
          $order_manufacturing_batch_size =  $product->manufacturing_batch_size;
 
         $order = \App\ProductionOrder::create([

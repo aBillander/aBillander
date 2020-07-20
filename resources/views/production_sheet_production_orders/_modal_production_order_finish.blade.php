@@ -51,7 +51,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-link" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-                {!! Form::submit(l('Confirm', [], 'layouts'), array('class' => 'btn btn-danger')) !!}
+                {!! Form::submit(l('Confirm', [], 'layouts'), array('class' => 'btn btn-danger',  'onclick' => 'this.disabled=true;this.form.submit();', 'id' => 'ProductionOrderFinish_submit')) !!}
             </div>
                 {!! Form::close() !!}
         </div>
@@ -93,6 +93,7 @@
 
             $('#dataConfirmModal .modal-body').text(message);
             $('#ProductionOrderFinish_action').attr('action', href);
+            $('#ProductionOrderFinish_submit').disabled = false;
             $('#ProductionOrderFinish').modal({show: true});
             return false;
         });

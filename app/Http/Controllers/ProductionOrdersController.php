@@ -214,7 +214,7 @@ class ProductionOrdersController extends Controller
 */
         $sheet_id = $request->input('current_production_sheet_id');
 
-        return redirect('productionsheets/'.$sheet_id)
+        return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -282,7 +282,8 @@ class ProductionOrdersController extends Controller
         });
         
 
-        if ($needle) return ['status' => 'ERROR', 'message' => 'No se puede crear una Orden de Fabricación para este Producto porque ya existe una.'];
+        if (0)         // Skip
+            if ($needle) return ['status' => 'ERROR', 'message' => 'No se puede crear una Orden de Fabricación para este Producto porque ya existe una.'];
 
         // So far, so good:
         $order = \App\ProductionOrder::createWithLines( $data );

@@ -214,17 +214,30 @@ class ProductionSheetProductionOrdersController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['finish_date'], $request );
 
-        // abi_r($request->all()); die();
+        $production_sheet_id = $request->input('production_sheet_id');
+        $production_order_id = $request->input('finish_production_order_id');
+
+        // abi_r($request->All());die();
+
+        // Do the Mambo!
+        $document = $this->productionOrder->with('product')->findOrFail($production_order_id);
+
+        $lot_tracking = $document->product->lot_tracking;
+
         $rules = [
-                'lot_reference'    => array('required', 'min:2', 'max:32'),
+            // To Do!
           //      'country_id' => 'exists:countries,id',
          //     'percent' => array('required', 'numeric', 'between:0,100')
         ];
+
+        if ( $lot_tracking )
+        {
+            $rules = $rules + [
+                'lot_reference'    => 'required|min:2|max:32',
+            ];
+        }
     
         $this->validate($request, $rules);
-
-        $production_sheet_id = $request->input('production_sheet_id');
-        $production_order_id = $request->input('finish_production_order_id');
 
         $finished_quantity = $request->input('quantity');
         $lot_reference = $request->input('lot_reference');
@@ -232,8 +245,6 @@ class ProductionSheetProductionOrdersController extends Controller
         $expiry_time = $request->input('expiry_time');
 
         // abi_r('OK');die();
-
-        $document = $this->productionOrder->with('product')->findOrFail($production_order_id);
 
         $params = [
             'finished_quantity' => $finished_quantity, 
@@ -260,32 +271,41 @@ class ProductionSheetProductionOrdersController extends Controller
 
         // abi_r($lot_params);
 
+        $message = 'success';
         $success =[];
 
         if ( $document->finish( $params ) )
         {
             $success[] = l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts');
 
-            // Create Lot
-            $lot = Lot::create($lot_params);
+            if ( $lot_tracking )
+            {
+                // Create Lot
+                $lot = Lot::create($lot_params);
+    
+                $lot_item = LotItem::create(['lot_id' => $lot->id]);
+    
+                $document->lotitems()->save($lot_item);
+    
+                $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot->reference], 'layouts') . 
+                    'para el Producto: ['.$document->product_reference.'] '.$document->product_name;
+            }
+        } 
+        else {
 
-            $lot_item = LotItem::create(['lot_id' => $lot->id]);
-
-            $document->lotitems()->save($lot_item);
-
-            $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot->reference], 'layouts') . 
-                'para el Producto: ['.$document->product_reference.'] '.$document->product_name;
+            $message = 'error';
+            $success[] = 'No se ha podido cerrar la Orden de Fabricación.';
         }
 
 
         return redirect()
                 ->route('productionsheet.productionorders', $production_sheet_id)
-                ->with('success', $success);
+                ->with($message, $success);
     }
 
 
     /**
-     * 
+     *  Maybe this function is obsolete ????
      *
      */
     public function finish($id, Request $request )
@@ -394,7 +414,7 @@ class ProductionSheetProductionOrdersController extends Controller
         foreach ($documents as $document)
         {
             # code...
-            abi_r($document->id);
+            // abi_r($document->id);
         }
 
 
@@ -412,10 +432,6 @@ class ProductionSheetProductionOrdersController extends Controller
             $document->finish( $params );
 
             $success[] = l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts');
-
-            // Lazy debugger lines. Should delete these:
-            $document->status = 'released';
-            $document->save();
         }
 
         // die();

@@ -196,7 +196,10 @@ $qty_20001 = [];
 
         @includeIf('production_sheets.reports.production_orders._block_custom_short_'.$family['key'], ['procurement_type' => 'manufacture'])
 
+@if ( \App\Configuration::isTrue('MANUFACTURING_PRINT_DEBUG') )
 
-<hr />
-Productos: {{ implode(', ', $family['references']) }}<br />
-Semielaborados Directos: {{ implode(', ', $family['assemblies']) }}
+        <hr />
+        Productos: {{ implode(', ', $family['references']) }}<br />
+        Semielaborados Directos: {{ implode(', ', $family['assemblies']) }}
+
+@endif

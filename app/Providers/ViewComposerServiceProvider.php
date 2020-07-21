@@ -115,7 +115,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// PaymentTypes
-		view()->composer(array('payment_methods._form'), function($view) {
+		view()->composer(array('payment_methods._form', 'customer_vouchers._form_edit', 'customer_vouchers._form_pay'), function($view) {
 		    
 		    $view->with('payment_typeList', \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    

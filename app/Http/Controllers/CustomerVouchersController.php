@@ -201,6 +201,7 @@ class CustomerVouchersController extends Controller
 		// Validate input (to do)
 		$rules = [
             'payment_date' => 'required|date',
+            'payment_type_id' => 'nullable|exists:payment_types,id',
 		];
         $this->validate($request, $rules);
 
@@ -216,10 +217,16 @@ class CustomerVouchersController extends Controller
 		// abi_r($list);die();
         $payments = $this->payment->whereIn('id', $list)->where('status', 'pending')->get();
 
+        $payment_date = $request->input('payment_date');
+        $payment_type_id = $request->input('payment_type_id', null);
+
+        // abi_r($request->all());die();
+
         // Do the Mambo!
         foreach ( $payments as $payment ) 
         {
-        	$payment->payment_date = $request->input('payment_date');
+        	$payment->payment_date = $payment_date;
+        	$payment->payment_type_id = $payment_type_id;
 
 			$payment->status   = 'paid';
 			$payment->save();
@@ -291,6 +298,8 @@ class CustomerVouchersController extends Controller
 				$new_payment->payment_date = NULL;
 				$new_payment->amount = $diff;
 
+				$new_payment->payment_type_id = $payment->payment_type_id;
+
 				$new_payment->save();
 
 			}
@@ -301,6 +310,8 @@ class CustomerVouchersController extends Controller
 			$payment->notes    = $request->input('notes',    $payment->notes);
 
 			$payment->auto_direct_debit = $request->input('auto_direct_debit',    $payment->auto_direct_debit);
+
+			$payment->payment_type_id    = $request->input('payment_type_id',    $payment->payment_type_id);
 
 			$payment->save();
 
@@ -356,6 +367,8 @@ class CustomerVouchersController extends Controller
 				$new_payment->payment_date = NULL;
 				$new_payment->amount = $diff;
 
+				$new_payment->payment_type_id = $payment->payment_type_id;
+
 				$new_payment->save();
 
 			}
@@ -365,6 +378,8 @@ class CustomerVouchersController extends Controller
 			$payment->payment_date = $request->input('payment_date');
 			$payment->amount   = $request->input('amount',   $payment->amount);
 			$payment->notes    = $request->input('notes',    $payment->notes);
+
+			$payment->payment_type_id    = $request->input('payment_type_id',    $payment->payment_type_id);
 
 			$payment->status   = 'paid';
 			$payment->save();

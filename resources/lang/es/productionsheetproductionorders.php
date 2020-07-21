@@ -22,6 +22,7 @@ return [
     'View Order' => 'Ir al Pedido',
     'View Product' => 'Ir al Producto',
     'View Customer' => 'Ir a la Ficha del Cliente',
+    'View Category' => 'Ir a la Categoría',
 	'Products of Customer Order'     => 'Productos del Pedido',
 	'Move'     => 'Mover a otra Hoja',
     'Finished Product Requirements'     => 'Necesidades de Elaborados',
@@ -61,6 +62,7 @@ return [
 	'Edit Production Sheet'     => 'Modificar Hoja de Producción',
 	
 	'Edit Production Order' => 'Modificar Orden de Fabricación',
+	'Finish Production Order' => 'Terminar Orden de Fabricación',
 
 	'Production Orders &#58&#58 Finished' => 'Ordenes de Fabricación &#58&#58 Elaborados',
 	'Production Orders &#58&#58 Assemblies' => 'Ordenes de Fabricación &#58&#58 Semi-Elaborados',
@@ -89,4 +91,10 @@ return [
 	'Finish Production Orders' => 'Terminar Ordenes de Producción',
 
 	'Category' => 'Categoría',
+
+
+	'Lot Number' => 'Número de Lote',
+	'Finish Date' => 'Fecha de Terminación',
+	'Expiry Time' => 'Plazo de Caducidad',
+	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
 ];

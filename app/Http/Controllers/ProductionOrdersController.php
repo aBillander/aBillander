@@ -112,6 +112,63 @@ class ProductionOrdersController extends Controller
     }
 
 
+    /**
+     * Manage Status.
+     *
+     * ******************************************************************************************************************************* *
+     * 
+     */
+
+
+    protected function finish(ProductionOrder $productionorder)
+    {
+        // Can I?
+        if ( $productionorder->lines->count() == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        // onhold?
+/*
+        if ( $productionorder->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+*/
+
+        // Close
+        if ( $productionorder->close() )
+            return redirect()->back()           // ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' ['.$productionorder->product_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts'));
+    }
+
+
+    protected function unfinish(ProductionOrder $productionorder)
+    {
+
+        if ( $productionorder->status != 'finished' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+        }
+
+        // Unclose (back to "confirmed" status)
+        if ( $productionorder->unfinish() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' ['.$productionorder->product_reference.']');
+
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts'));
+    }
+
+
 /* ********************************************************************************************* */    
 
 
@@ -157,7 +214,7 @@ class ProductionOrdersController extends Controller
 */
         $sheet_id = $request->input('current_production_sheet_id');
 
-        return redirect('productionsheets/'.$sheet_id)
+        return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -225,7 +282,8 @@ class ProductionOrdersController extends Controller
         });
         
 
-        if ($needle) return ['status' => 'ERROR', 'message' => 'No se puede crear una Orden de Fabricación para este Producto porque ya existe una.'];
+        if (0)         // Skip
+            if ($needle) return ['status' => 'ERROR', 'message' => 'No se puede crear una Orden de Fabricación para este Producto porque ya existe una.'];
 
         // So far, so good:
         $order = \App\ProductionOrder::createWithLines( $data );

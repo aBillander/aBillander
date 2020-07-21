@@ -119,6 +119,7 @@ return [
 	'Invoices'     => 'Facturas',
 	'Quotations'     => 'Presupuestos',
 	'Stock Movements'     => 'Movimientos de Almacén',
+	'Lots' => 'Lotes',
 	'Inventory Count'     => 'Inventario de Almacén',
 	'Inventory Adjustments'     => 'Regularización de Almacén',
 
@@ -242,6 +243,7 @@ return [
 	'Process' => 'Procesar',
 	'Cancel'     => 'Cancelar',
 	'Confirm'     => 'Confirmar',
+	'Finish' => 'Terminar',
 	'Undo Confirm'     => 'Deshacer Confirmar',
 	'Select'     => 'Seleccionar',
 	'Delete'     => 'Eliminar',

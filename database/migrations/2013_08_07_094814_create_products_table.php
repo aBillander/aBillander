@@ -108,6 +108,10 @@ class CreateProductsTable extends Migration {
 			$table->string('webshop_id', 16)->nullable();
 			$table->tinyInteger('blocked')->default(0);							// Sales not allowed
 			$table->tinyInteger('active')->default(1);
+
+			// Lot Control
+			$table->tinyInteger('lot_tracking')->default(0);			
+			$table->integer('expiry_time')->unsigned()->nullable();				// Days
 			
 			$table->integer('tax_id')->unsigned()->nullable(false);
 			$table->integer('ecotax_id')->unsigned()->nullable();

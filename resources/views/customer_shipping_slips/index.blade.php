@@ -169,7 +169,7 @@
 
 
 
-{!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents'] ) !!}
+{!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents', 'target' => '_blank'] ) !!}
 
 {{-- !! Form::hidden('customer_id', $customer->id, array('id' => 'customer_id')) !! --}}
 
@@ -182,7 +182,11 @@
     <thead>
         <tr>
             <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-            <th class="text-left">{{ l('ID', 'layouts') }}</th>
+            <th class="text-left">{{-- l('ID', 'layouts') --}}
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customershippingslips.bulk.pdf' )}}');$('#form-select-documents').submit();return false;" target="_blank"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
+
+            </th>
             <th class="text-center">
 
         @if ($documents->where('status', 'closed')->count() > 0)

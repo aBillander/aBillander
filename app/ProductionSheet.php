@@ -276,10 +276,12 @@ class ProductionSheet extends Model
         {
             if ( $line->product )
                 if ( ($line->product->procurement_type == 'manufacture') ||
-                 ($line->product->procurement_type == 'assembly') ) {
-
-                    $mystuff->push($line);
-                }
+                     ($line->product->procurement_type == 'assembly') 
+                 ) 
+                    if ( $line->product->mrp_type == 'onorder' )
+                    {
+                        $mystuff->push($line);
+                    }
 
         }
 

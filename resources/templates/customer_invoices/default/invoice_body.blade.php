@@ -43,7 +43,30 @@
 
 
 
-<h1 class="document-type-label"> FACTURA </h1>
+<h1 class="document-type-label">
+
+	@switch($document->type)
+	    @case( 'invoice' )
+	         FACTURA 
+	        @break
+
+	    @case( 'corrective' )
+	         FACTURA RECTIFICATIVA 
+	        @break
+
+	    @case( 'credit' )
+	         NOTA DE ABONO 
+	        @break
+
+	    @case( 'deposit' )
+	         ANTICIPO 
+	        @break
+
+	    @default
+	         FACTURA 
+	@endswitch
+
+</h1>
 
 <table class="order-data-addresses">
 

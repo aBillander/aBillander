@@ -259,7 +259,7 @@ class ProductionOrder extends Model
         // if (!$bom) return NULL;
 
          $order_quantity = $data['planned_quantity'];
-         $order_required = $data['required_quantity'];
+         $order_required = $data['required_quantity'] ?? $data['planned_quantity'];
          $order_manufacturing_batch_size =  $product->manufacturing_batch_size;
 
         $order = \App\ProductionOrder::create([
@@ -493,20 +493,20 @@ if ( $bomitem )
     |--------------------------------------------------------------------------
     */
     
-    public function finish()
+    public function finish( $params = [] )
     {
         // Can I ...?
-        if ( ($this->status == 'finished') ) return false;  // Any other status is good to go!?
+        if ( ($this->status == 'finished') ) return false;  // Any other status is good to go!??
 
         // onhold?
         // if ( $this->onhold ) return false;
 
         // Do stuf...
         $this->document_reference = $this->id;      // <= No sequences used!
-        $this->finished_quantity = $this->planned_quantity;     // By now... (need inteface to inform *real* finished quantity)
+        $this->finished_quantity = $params['finished_quantity'] ?? $this->planned_quantity;     // By now... (need inteface to inform *real* finished quantity)
         if ( $this->warehouse_id <= 0 ) $this->warehouse_id = Configuration::getInt('DEF_WAREHOUSE');
         $this->status = 'finished';
-        $this->finish_date = \Carbon\Carbon::now();
+        $this->finish_date = $params['finish_date'] ?? \Carbon\Carbon::now();
 
         $this->save();
 
@@ -582,6 +582,20 @@ if ( $bomitem )
     public function document()
     {
        return $this->belongsTo(ProductionOrder::class, 'id');
+    }
+
+    public function lotitems()
+    {
+        return $this->morphMany('App\LotItem', 'lotable');
+    }
+
+    public function getLotsAttribute()
+    {
+        if (!$this->relationLoaded('lotitems') || !$this->lotitems->first()->relationLoaded('lot')) {
+            $this->load('lotitems.lot');
+        }
+
+        return $this->lotitems->pluck('lot');       // ->collapse();
     }
 
 

@@ -75,7 +75,7 @@ return [
 	'Lot tracking?' => '¿Control de Lotes?',
 	'Use Lot and Expiry Date tracking for this Product.' => 'Usar Control de Lotes y de Fecha de Caducidad para este Producto.',
 	'Expiry Time' => 'Plazo de Caducidad',
-	'Number Days days before expiry.' => 'Número de Días antes de que el Producto caduque.',
+	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
 
 
 	/*

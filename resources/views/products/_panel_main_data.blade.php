@@ -152,11 +152,12 @@ border-left:1px solid #e95420;">
                     {!! Form::select('ecotax_id', array('' => l('-- Please, select --', [], 'layouts')) + $ecotaxList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('ecotax_id', '<span class="help-block">:message</span>') !!}
                  </div>
-@endif
 
-@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
                   </div>
+@endif
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
 
                    <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-lot_tracking">
                      {!! Form::label('lot_tracking', l('Lot tracking?'), ['class' => 'control-label']) !!}
@@ -183,7 +184,7 @@ border-left:1px solid #e95420;">
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('expiry_time') ? 'has-error' : '' }}">
                      {{ l('Expiry Time') }}
                              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                                data-content="{{ l('Number Days days before expiry.') }}">
+                                                data-content="{{ l('Number of Days before expiry.') }}">
                                     <i class="fa fa-question-circle abi-help"></i>
                              </a>
                      {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time')) !!}

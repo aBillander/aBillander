@@ -68,6 +68,19 @@
 
 {{-- --}}
 
+        <a href="{{ route('productionsheet.manufacturing.bulkpdf', [$sheet->id, $work_center_id, 'key' => 'pani']) }}" class="btn btn-blue" target="_blank" style="margin-top:16px;margin-left:32px;"><i class="fa fa-print"></i> {{ l('Imprimir PANI') }}</a>
+
+{{-- --}}
+
+        <a href="{{ route('productionsheet.manufacturing.bulkpdf', [$sheet->id, $work_center_id, 'key' => 'picoyregana']) }}" class="btn btn-blue" target="_blank" style="margin-top:16px;margin-left:32px;"><i class="fa fa-print"></i> {{ l('Imprimir Picos y Regañás') }}</a>
+
+{{-- --}}
+
+        <a href="{{ route('productionsheet.summary.pdf.pani', [$sheet->id, 'work_center_id' => 
+  $work_center_id]) }}" class="btn btn-success" target="_blank" style="margin-top:16px;margin-left:16px;"><i class="fa fa-file-pdf-o"></i> {{ l('Resumen PANI') }}</a>
+
+{{-- --}}
+
 
 
 @php

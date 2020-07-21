@@ -218,6 +218,104 @@ class Product extends Model {
         return $this->certifiedboms()->first();
     }
 
+
+
+    public function getChildToolQuantity( $product_id, $quantity = 1.0, $children = [] )
+    {
+        //
+        $all_children = $this->getChildToolQuantityWithChildren( $product_id, $quantity, $children );
+
+        return collect( $all_children )->sum('quantity');
+    }
+
+    public function getChildToolQuantityWithChildren( $tool_id, $quantity = 1.0, $children = [] )
+    {
+        if ( $this->tool_id == $tool_id )
+        {
+                $child = [
+                            'child_product_id' => $this->id,
+                            'quantity' => $quantity
+                ];
+
+                $children[] = $child;
+        }
+
+        $bom = $this->bom;
+
+        // BOM lines
+        if ( !$bom ) return $children;
+
+        foreach( $bom->BOMlines as $line ) {
+            
+            $line_product = $line->product;
+            $line_product_bom = $line_product->bom;
+
+                $children = $line_product->getChildToolQuantityWithChildren( $tool_id, $quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0), $children );
+
+
+            // if ( $line->product_id != $product_id ) continue;
+
+            // $quantity += $child_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
+        }
+
+        return $children;
+    }
+
+
+
+
+
+
+    public function getChildProductQuantity( $product_id, $quantity = 1.0, $children = [] )
+    {
+        //
+        $all_children = $this->getChildProductQuantityWithChildren( $product_id, $quantity, $children );
+
+        return collect( $all_children )->sum('quantity');
+    }
+
+    public function getChildProductQuantityWithChildren( $product_id, $quantity = 1.0, $children = [] )
+    {
+        // $product_id = $data['product_id'];
+        // $product = Product::findOrFail( $data['product_id'] );
+        // if ( !array_key_exists('child_quantity', $data) )
+        //     $data['child_quantity'] = 1.0;
+        $bom = $this->bom;
+
+        // BOM lines
+        if ( !$bom ) return null;
+
+        foreach( $bom->BOMlines as $line ) {
+            
+            $line_product = $line->product;
+            $line_product_bom = $line_product->bom;
+
+            if ( $line->product_id == $product_id )
+            {
+                $child = [
+                            'child_product_id' => $this->id,
+                            'quantity' => $quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0)
+                ];
+
+                $children[] = $child;
+            }
+            else
+
+            if ( $line_product_bom )
+            {
+                $children = $line_product->getChildProductQuantityWithChildren( $product_id, $quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0), $children );
+            }            
+
+            // if ( $line->product_id != $product_id ) continue;
+
+            // $quantity += $child_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
+        }
+
+        return $children;
+    }
+
+
+
     public function getQuantityAllocatedAttribute()
     {
         // Allocated by Customer Orders
@@ -1436,10 +1534,13 @@ class Product extends Model {
         return $query->where('blocked', 0);
     }
 
+
     public function scopeIsPublished($query)
     {
+        return $query;
         return $query->where('publish_to_web', '>', 0);
     }
+
 
     public function scopeIsNew($query, $apply = true)
     {

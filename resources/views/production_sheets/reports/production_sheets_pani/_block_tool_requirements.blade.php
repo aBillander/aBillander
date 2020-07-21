@@ -3,11 +3,26 @@
 
 // Long life to Gorrino Style!!!
 
-$pani_tools = ['90000', '90001', '90100', ];
+$pani_tool = ['90000', '90001', '90100', ];
+$pani_tool_id = [1, 2, 3, ];
+
+// Force-brute strategy:
+
+$pani_tool_qty = [];
+$pani_tool_qty['90000'] = $pani_tool_qty['90001'] = $pani_tool_qty['90100'] = 0.0;
+
+foreach ($sheet->productionorders->where('procurement_type', 'manufacture')->where('product_reference', '<', '2000') as $order)
+{
+    // $product = $order->product;
+    $product = \App\Product::find( $order->product_id );
+    $pani_tool_qty['90000'] += $product->getChildToolQuantity( $pani_tool_id[0], $order->planned_quantity );
+    $pani_tool_qty['90001'] += $product->getChildToolQuantity( $pani_tool_id[1], $order->planned_quantity );
+    $pani_tool_qty['90100'] += $product->getChildToolQuantity( $pani_tool_id[2], $order->planned_quantity );
+}
 
 @endphp
 
-@if ($sheet->productionordertoollinesGrouped()->whereIn('reference', $pani_tools)->count())
+@if ($sheet->productionordertoollinesGrouped()->whereIn('reference', $pani_tool)->count())
 
 
 <div class="xtax-summary-wrapper xprint-friendly text-left">
@@ -21,12 +36,12 @@ $pani_tools = ['90000', '90001', '90100', ];
         </tr>
   </thead>
   <tbody>
-  @foreach ($sheet->productionordertoollinesGrouped()->whereIn('reference', $pani_tools) as $order)
+  @foreach ($sheet->productionordertoollinesGrouped()->whereIn('reference', $pani_tool)->sortBy('product_reference') as $order)
 
     <tr>
       <td>{{ $order['reference'] }}</td>
       <td>{{ $order['name'] }}</td>
-      <td>{{ number_format( $order['quantity'], 0, '', '' ) }}</td>
+      <td>{{-- {{ number_format( $order['quantity'], 0, '', '' ) }}<br /> --}}{{ number_format($pani_tool_qty[$order['reference']], 0, '', '') }}</td>
       <td>{{ $order['location'] }}</td>
     </tr>
   @endforeach

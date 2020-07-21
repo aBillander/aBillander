@@ -23,6 +23,43 @@
 
 
 
+Route::get('child', function( )
+{
+	$product = \App\Product::find( 5 );		// 1000 Pan integral de espelta 100% 500g ECO
+
+	$needle_id = 190;		// 10601 Amasado de espelta integral
+	 $needle_id = 189;		// 80000 Agua
+
+	$result = $product->getChildProductQuantityWithChildren( $needle_id );
+
+	abi_r( $result );
+
+	$result = $product->getChildProductQuantity( $needle_id, 10 );
+
+	abi_r( $result );
+});
+
+Route::get('childt', function( )
+{
+	$product = \App\Product::find( 8 );		// 1003 Pan integral de trigo 500g ECO
+
+	$needle_id = 190;		// 10601 Amasado de espelta integral
+	 $needle_id = 1;		// 80000 Agua
+
+	$result = $product->getChildToolQuantityWithChildren( $needle_id );
+
+	abi_r( $result );
+
+	$result = $product->getChildToolQuantity( $needle_id );
+
+	abi_r( $result );
+});
+
+/* ********************************************************** */
+
+
+
+
 Route::get('segment', function( )
 {
 	$list = [617];

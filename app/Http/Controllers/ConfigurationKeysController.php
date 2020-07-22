@@ -35,6 +35,7 @@ class ConfigurationKeysController extends Controller {
                         'MRP_WITH_STOCK',
                         'MRP_WITH_ZERO_ORDERS',
                         'ENABLE_LOTS',
+                        'PRINT_LOT_NUMBER_ON_DOCUMENTS',
                         'ENABLE_WEBSHOP_CONNECTOR',
                         'ENABLE_FSOL_CONNECTOR',
                         'SELL_ONLY_MANUFACTURED',

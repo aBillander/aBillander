@@ -378,7 +378,7 @@
 
 @else
 
-                @if ( $document->status == 'closed' && !$document->invoiced_at)
+                @if ( $document->is_invoiceable && $document->status == 'closed' && !$document->invoiced_at)
                 <a class="btn btn-sm btn-navy" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
                 </a>
                 @endif

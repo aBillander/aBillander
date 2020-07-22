@@ -202,8 +202,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
             </td>
             <td>{{ optional($document->warehouse)->alias }}</td>
             <td>
-@if ( $document->status == 'closed' )
-@if ($document->invoiced_at && $document->customerinvoice())
+@if ( $document->is_invoiceable )
+    @if ( ( $document->status == 'closed' ) && $document->invoiced_at && $document->customerinvoice() )
 
                       <a href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
@@ -215,7 +215,9 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 
                       </a>
 
-@endif
+    @endif
+@else
+              <span class="label alert-warning">No facturable</span>
 @endif
             </td>
             <td>

@@ -804,6 +804,7 @@ class CustomerShippingSlipsController extends BillableController
                             ->where('customer_id', $id)
                             ->where('status', 'closed')
                             ->where('invoiced_at', null)
+                            ->where('is_invoiceable', '>', 0)
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')
@@ -895,6 +896,7 @@ class CustomerShippingSlipsController extends BillableController
             $documents = $this->document
                                 ->where('status', 'closed')
                                 ->where('invoiced_at', null)
+                                ->where('is_invoiceable', '>', 0)
                                 ->with('lines')
                                 ->with('lines.linetaxes')
     //                            ->with('customer')
@@ -902,7 +904,8 @@ class CustomerShippingSlipsController extends BillableController
     //                            ->with('paymentmethod')
                                 ->orderBy('document_date', 'asc')
                                 ->orderBy('id', 'asc')
-                                ->findOrFail( $list );
+    //                            ->findOrFail( $list );
+                                ->find( $list );
             
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
 

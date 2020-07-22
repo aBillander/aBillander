@@ -74,6 +74,25 @@ class CustomerShippingSlip extends Billable
                ];
 
 
+/*
+    Functionality moved to customer_shipping_slips._form_document_create.blade.php
+
+    - Create (manual) customer_shipping_slip : take is_invoiceable from Customer
+    - Create (automatic) customer_shipping_slip : ??? => should discard not invoiceable orders? => but Customer Order DOES NOT have an is_invoiceable field
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function($document)
+        {
+            $document->is_invoiceable = $document->customer->is_invoiceable;
+
+        });
+    }
+*/
+
+
     public function getDeletableAttribute()
     {
         return $this->status != 'closed' && !$this->invoiced_at && $this->rightAscriptions->isEmpty();

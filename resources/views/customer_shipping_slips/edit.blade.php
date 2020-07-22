@@ -31,10 +31,15 @@
     @endif
 @else
 
-                    @if ( $document->status == 'closed' && !$document->invoiced_at)
+            @if ( $document->status == 'closed' && !$document->invoiced_at)
+                    @if ( $document->is_invoiceable )
                     <a class="btn btn-sm btn-navy prevent-double-click" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}" style="margin-left: 16px; margin-right: 16px"><i class="fa fa-money"></i>
                     </a>
+                    @else
+                    <a class="btn btn-sm btn-navy" href="javascript::void(0);" title="{{l('Not Invoiceable Document')}}" style="opacity: 0.65; margin-left: 16px; margin-right: 16px" onclick="return false;"><i class="fa fa-money"></i>
+                    </a>
                     @endif
+            @endif
 @endif
 
 @if ($document->document_id>0)

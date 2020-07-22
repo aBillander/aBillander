@@ -370,4 +370,6 @@ return [
 	'Stock Movements' => 'Movimientos de Stock',
 	'Stock after'     => 'Stock final',
 
+	'Not Invoiceable Document' => 'Documento No Facturable',
+
 ];

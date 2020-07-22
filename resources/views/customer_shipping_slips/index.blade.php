@@ -271,6 +271,11 @@
                 @endif</td>
             <td class="text-center">
 
+        @if ( !$document->is_invoiceable )
+              <a class="btn btn-xs btn-warning" href="javascript::void(0);" title="{{l('Not Invoiceable Document')}}" style="opacity: 0.65;" onclick="return false;"><i class="fa fa-ban"></i>
+              </a>
+        @endif
+
 @if ($document->invoiced_at && $document->customerinvoice())
                 <a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{ l('Invoiced at:') }} {{abi_date_short( $document->invoiced_at )}}"><i class="fa fa-money"></i></a>
 @else

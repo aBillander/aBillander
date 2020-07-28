@@ -16,6 +16,8 @@ return [
 	'Address'     => 'Dirección',
 	'Contact'     => 'Contacto',
 
+	'Products in Warehouse' => 'Productos en Almacén',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Warehouses Language Lines :: create
@@ -47,6 +49,27 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+	''     => '',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Warehouses Language Lines :: indexProducts
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Warehouse Products'     => 'Productos en Almacén',
+
+
+	'Reference'     => 'Referencia',
+	'Product Name'     => 'Producto',
+	'Quantity'     => 'Cantidad',
 	''     => '',
 	''     => '',
 	''     => '',

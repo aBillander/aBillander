@@ -455,6 +455,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('ecotaxes.ecotaxrules', 'EcotaxRulesController');
 
         Route::resource('warehouses', 'WarehousesController');
+        Route::get('warehouses/{id}/inventory', 'WarehousesController@indexProducts')->name('warehouse.inventory');
+        Route::get('export/warehouses/{id}/inventory', 'WarehousesController@exportProducts' )->name('warehouse.inventory.export');
         
         Route::resource('salesreps', 'SalesRepsController');
 
@@ -639,6 +641,8 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('voucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
+
+        Route::get( 'export/customervouchers', 'CustomerVouchersController@export' )->name('customervouchers.export');
         
 
         Route::resource('pricelists',           'PriceListsController');

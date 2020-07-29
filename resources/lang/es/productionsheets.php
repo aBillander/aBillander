@@ -68,6 +68,7 @@ return [
     'Material Requirements'     => 'Requerimientos de Ingredientes',
 	'Packaging Requirements' => 'Requerimientos de Envases y Embalajes',
 	'Tool Requirements' => 'Requerimientos de Utillajes',
+	'Tray Requirements' => 'Requerimientos de Bandejas',
 
 	'Tool ID'     => 'ID',
 	'Tool Reference'     => 'Referencia',

@@ -38,6 +38,10 @@ foreach ($sheet->productionorders->where('procurement_type', 'manufacture')->whe
   <tbody>
   @foreach ($sheet->productionordertoollinesGrouped()->whereIn('reference', $pani_tool)->sortBy('product_reference') as $order)
 
+  @if ( $order['reference'] == '90100' )
+      @continue   {{-- Skip this "Bandeja" --}}
+  @endif
+
     <tr>
       <td>{{ $order['reference'] }}</td>
       <td>{{ $order['name'] }}</td>

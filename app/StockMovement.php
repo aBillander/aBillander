@@ -346,6 +346,9 @@ class StockMovement extends Model {
             // Better approach:
             $str = substr( $segments[0], 0, strpos($segments[0], "Line") );
 
+            if ( !$str ) 
+                $str = $segments[0];
+
             $segment = strtolower($str);
 
             return str_plural($segment);
@@ -1440,6 +1443,13 @@ class StockMovement extends Model {
             );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
 */
         }
+
+
+        if ( isset($params['document_reference']) && trim($params['document_reference']) !== '' )
+        {
+            $query->where('document_reference', 'LIKE', '%' . trim($params['document_reference']) . '%');
+        }
+        
 
         if ( isset($params['name']) && trim($params['name']) !== '' )
         {

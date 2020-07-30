@@ -150,8 +150,25 @@ class Billable extends Model implements ShippableInterface
 
         static::saving(function($document)
         {
-            if ( $document->shippingmethod )
-                $document->carrier_id = $document->shippingmethod->carrier_id;
+            // if ( $document->force_carrier_id === true )
+            if ( $document->carrier_id > 0 )
+            {
+                // $document->carrier_id = $document->force_carrier_id;
+                // unset($document->force_carrier_id);
+
+                // abi_r($document->carrier_id);
+            }
+            else
+            {
+
+                if ( $document->shippingmethod )
+                    $document->carrier_id = $document->shippingmethod->carrier_id;
+                else
+                    $document->carrier_id = null;
+                
+            }
+
+            // abi_r($document->carrier_id);die();
         });
 
         // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
@@ -361,6 +378,11 @@ class Billable extends Model implements ShippableInterface
     public static function getTypeName( $type )
     {
             return l(get_called_class().'.'.$type, [], 'appmultilang');
+    }
+
+    public function getTypeNameAttribute()
+    {
+            return l(get_called_class().'.'.$this->type, 'appmultilang');
     }
 
 
@@ -583,7 +605,7 @@ class Billable extends Model implements ShippableInterface
         // Can I ...?
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
         
-        if ( $this->status == 'closed' ) return true;
+        if ( $this->status == 'closed' ) return false;
 
         // No lines?
         if ( $this->lines->count() == 0 ) return false;
@@ -1037,6 +1059,11 @@ class Billable extends Model implements ShippableInterface
                     $query->  where( 'total_tax_excl', $amount );
                     $query->orWhere( 'total_tax_incl', $amount );
             } );
+        }
+
+        if (array_key_exists('carrier_id', $params) && $params['carrier_id'] )
+        {
+            $query->where('carrier_id', $params['carrier_id']);
         }
 
 

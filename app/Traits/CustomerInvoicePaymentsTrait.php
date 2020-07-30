@@ -62,6 +62,8 @@ trait CustomerInvoicePaymentsTrait
                         'payment_method_id' => $pmethod->id,
                         'auto_direct_debit' => $pmethod->auto_direct_debit,
                         'is_down_payment' => 0,
+
+                        'payment_type_id' => $pmethod->payment_type_id,
                     ];
 
             // abi_r( $data );die();

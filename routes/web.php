@@ -190,6 +190,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
             Route::resource('customerinvoices', 'AccountingCustomerInvoicesController')->names('accounting.customerinvoices');
             Route::get('customerinvoices/{id}/pdf', 'AccountingCustomerInvoicesController@showPdf')->name('accounting.customerinvoices.pdf');
+
+            Route::get('customerinvoices/invoice/search', 'AccountingCustomerInvoicesController@searchInvoice')->name('accounting.customerinvoices.searchinvoice');
+
+
+        // oute::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
         });
 
         // Helferin
@@ -214,6 +219,13 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('companies', 'CompaniesController');
         Route::post('companies/{id}/bankaccount', 'CompaniesController@updateBankAccount')->name('companies.bankaccount');
+
+        Route::resource('banks',         'BanksController');
+        Route::resource('cheques',               'ChequesController'      );
+        Route::resource('cheques.chequedetails', 'ChequeDetailsController');
+        Route::post('cheques/sortlines', 'ChequesController@sortLines')->name('cheque.sortlines');
+        Route::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
+        Route::get( 'export/cheques', 'ChequesController@export' )->name('cheques.export');
 
         Route::resource('countries',        'CountriesController');
         Route::resource('countries.states', 'StatesController');
@@ -280,6 +292,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('workcenters', 'WorkCentersController');
 
         Route::resource('tools', 'ToolsController');
+
+        Route::resource('lots', 'LotsController');
+        Route::get( 'export/lots', 'LotsController@export' )->name('lots.export');
 
         Route::resource('products', 'ProductsController');
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
@@ -357,6 +372,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('productionsheets/{id}/summary', 'ProductionSheetsController@getSummary')->name('productionsheet.summary');
 
         Route::get('productionsheets/{id}/summary/pdf', 'ProductionSheetsPdfController@getPdfSummary')->name('productionsheet.summary.pdf');
+        Route::get('productionsheets/{id}/pani/summary/pdf', 'ProductionSheetsPdfController@getPdfSummaryPani')->name('productionsheet.summary.pdf.pani');
         Route::get('productionsheets/{id}/preassemblies/pdf', 'ProductionSheetsPdfController@getPdfPreassemblies')->name('productionsheet.preassemblies.pdf');
         Route::get('productionsheets/{id}/manufacturing/pdf', 'ProductionSheetsPdfController@getPdfManufacturing')->name('productionsheet.manufacturing.pdf');
         Route::get('productionsheets/{id}/manufacturing/{wc}/bulkpdf', 'ProductionSheetsPdfController@getBulkPdfManufacturing')->name('productionsheet.manufacturing.bulkpdf');
@@ -393,7 +409,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         // Production Sheet Production Orders
         Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
 
-        Route::post('productionsheetproductionorders/finish', 'ProductionSheetProductionOrdersController@finishProductionOrders')->name('productionsheet.productionorders.finish');
+        Route::get('productionsheetproductionorders/{id}/finish' , 'ProductionSheetProductionOrdersController@finish'    )->name('productionsheet.productionorders.finish');
+
+        Route::post('productionsheetproductionorders/finish/bulk', 'ProductionSheetProductionOrdersController@finishBulk')->name('productionsheet.productionorders.bulk.finish');
+
+        Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');
 
 
 
@@ -435,6 +455,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('ecotaxes.ecotaxrules', 'EcotaxRulesController');
 
         Route::resource('warehouses', 'WarehousesController');
+        Route::get('warehouses/{id}/inventory', 'WarehousesController@indexProducts')->name('warehouse.inventory');
+        Route::get('export/warehouses/{id}/inventory', 'WarehousesController@exportProducts' )->name('warehouse.inventory.export');
         
         Route::resource('salesreps', 'SalesRepsController');
 
@@ -594,6 +616,8 @@ foreach ($pairs as $pair) {
         Route::get( 'customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
         Route::post('customershippingslips/{id}/invoice/undo'  , 'CustomerShippingSlipsController@undoInvoice')->name('customershippingslip.invoice.undo');
 
+        Route::post('customershippingslips/setcarrier/bulk', 'CustomerShippingSlipsController@setCarrierBulk')->name('customershippingslips.bulk.set.carrier');
+
         Route::get('customershippingslips/{id}/deliver' , 'CustomerShippingSlipsController@deliver'    )->name('customershippingslip.deliver');
         Route::post('customershippingslips/deliver/bulk', 'CustomerShippingSlipsController@deliverBulk')->name('customershippingslips.bulk.deliver');
 
@@ -617,6 +641,8 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('voucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
+
+        Route::get( 'export/customervouchers', 'CustomerVouchersController@export' )->name('customervouchers.export');
         
 
         Route::resource('pricelists',           'PriceListsController');

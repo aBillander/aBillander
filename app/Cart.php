@@ -180,6 +180,7 @@ class Cart extends Model implements ShippableInterface
             if ( $cart->persistance_left <= 0 )
             {
                 // Update Cart Prices
+                // This function seems to run an infinite loop resulting in line quantity = 99999999999999.999999
                 $cart->updateLinePrices();
 
             }
@@ -679,6 +680,14 @@ class Cart extends Model implements ShippableInterface
 
     public function updateLinePrices($byAdmin = false)
     {
+
+        // This function seems to run an infinite loop resulting in line quantity = 99999999999999.999999
+
+        // Do nothing, please
+        return ;
+
+
+
         // Update prices or remove from cart
         foreach ($this->cartlines as $line) {
             # code...

@@ -234,7 +234,7 @@ class CustomerOrdersController extends BillableController
 
         $statusList = $this->model_class::getStatusList();
 
-        return view($this->view_path.'.index_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList', 'manufacturing_statusList', 'wooc_statusList'));
+        return view($this->view_path.'.index'.$suffix.'_by_customer', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList', 'manufacturing_statusList', 'wooc_statusList'));
     }
 
     /**
@@ -706,7 +706,24 @@ class CustomerOrdersController extends BillableController
 
         $documents->setPath('shippingslipables');
 
-        return view($this->view_path.'.index_by_customer_shippingslipables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'order_sequenceList', 'templateList', 'statusList', 'order_statusList', 'items_per_page'));
+        
+        if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+        {
+            $suffix = '_export_mfg';
+
+            $manufacturing_statusList = [
+                            'unasigned' => 'No asignados',
+                            'asigned' => 'Asignados a Hojas de Producción abiertas',
+                            'ongoing' => 'Los dos anteriores (Pedidos en curso)',
+            ];
+            
+        } else {
+            $suffix = '';
+            
+            $manufacturing_statusList = [];
+        }
+
+        return view($this->view_path.'.index'.$suffix.'_by_customer_shippingslipables', $this->modelVars() + compact('customer', 'documents', 'sequenceList', 'order_sequenceList', 'templateList', 'statusList', 'order_statusList', 'items_per_page'));
     }
 
 

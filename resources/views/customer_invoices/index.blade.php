@@ -194,18 +194,27 @@
             </td>
             <td>{{ $document->created_via }}
             </td>
-            <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
+            <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}
+@if ( $document->status == 'closed' )
+    @if ( $document->payment_status == 'pending' )
+                    <p class="text-danger"><strong>{{ $document->as_money_amount('total_tax_incl') }}</strong></p>
+    @endif
+    @if ( $document->payment_status == 'halfpaid' )
+                    <p class="text-danger"><strong>{{ $document->as_money_amount('open_balance') }}</strong></p>
+    @endif
+@endif
+            </td>
             <td>
 @if ( $document->status == 'closed' )
-@if ( $document->payment_status == 'pending' )
-                <a class="btn btn-xs alert-danger" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-window-close"></i>&nbsp;</a>
-@endif
-@if ( $document->payment_status == 'halfpaid' )
-                <a class="btn btn-xs alert-warning" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-star-half-o"></i>&nbsp;</a>
-@endif
-@if ( $document->payment_status == 'paid')
-                <a class="btn btn-xs alert-success" href="#" title="{{ $document->payment_status_name }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-star"></i>&nbsp;</a>
-@endif
+    @if ( $document->payment_status == 'pending' )
+                    <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}#payments" target="_new" title="{{ $document->payment_status_name }}">&nbsp;<i class="fa fa-window-close"></i>&nbsp;</a>
+    @endif
+    @if ( $document->payment_status == 'halfpaid' )
+                    <a class="btn btn-xs alert-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}#payments" target="_new" title="{{ $document->payment_status_name }}">&nbsp;<i class="fa fa-star-half-o"></i>&nbsp;</a>
+    @endif
+    @if ( $document->payment_status == 'paid')
+                    <a class="btn btn-xs alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}#payments" target="_new" title="{{ $document->payment_status_name }}">&nbsp;<i class="fa fa-star"></i>&nbsp;</a>
+    @endif
 @endif
             </td>
             <td class="text-center @if ( optional($document->nextPayment())->is_overdue ) danger @endif ">

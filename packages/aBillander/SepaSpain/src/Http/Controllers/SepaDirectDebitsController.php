@@ -218,7 +218,9 @@ class SepaDirectDebitsController extends Controller
 	{
         $directdebit = $this->directdebit->findOrFail($id);
 
-        return view('sepa_es::direct_debits.show', compact('directdebit'));
+        $payment_typeList = \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+        return view('sepa_es::direct_debits.show', compact('directdebit', 'payment_typeList'));
 	}
 
 	/**

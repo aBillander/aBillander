@@ -159,6 +159,9 @@ return [
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',
 	'Carrier'     => 'Transportista',
+	'-- From Shipping Method' => '-- Del Método de Envío',
+	'Select Carrier'     => 'Seleccione Transportista',
+	'With selected: Set Carrier' => 'Con los seleccionados: Actualizar Transportista',
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',
 	'Notes to Customer'     => 'Notas para el Cliente',
@@ -362,5 +365,11 @@ return [
 
 	'Group by Address' => 'Agrupar por Dirección',
 	'Yes: One Invoice per Shipping Address' => 'Sí: Una Factura por Dirección de Envío',
+
+	
+	'Stock Movements' => 'Movimientos de Stock',
+	'Stock after'     => 'Stock final',
+
+	'Not Invoiceable Document' => 'Documento No Facturable',
 
 ];

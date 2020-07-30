@@ -52,6 +52,16 @@ Route::get('xtra_addrs', function()
 
 Route::get('migratethis_xtra', function()
 {
+  // 2020-07-09
+  Illuminate\Support\Facades\DB::statement("INSERT INTO `templates` ( `name`, `model_name`, `folder`, `file_name`, `paper`, `orientation`, `created_at`, `updated_at`, `deleted_at`) VALUES
+( 'xtranat Albaranes', 'CustomerShippingSlipPdf', 'templates::', 'xtranat', 'A4', 'portrait', '2020-07-09 07:30:53', '2020-07-09 07:30:53', NULL);");
+
+  $template = \App\Template::where('file_name', 'xtranat')->where('model_name', 'CustomerShippingSlipPdf')->first();
+
+  \App\Configuration::updateValue('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE', $template->id);
+
+
+  die('OK');
 
   // 2020-05-26
   Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoice_lines` ADD `customer_shipping_slip_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `customer_invoice_id`;");

@@ -101,6 +101,8 @@ class CustomerShippingSlipsInvoicerController
                             $query->where('status', 'closed');
 
                             $query->where('invoiced_at', null  );
+
+                            $query->where('is_invoiceable', '>', 0);
                     } )
                     ->get();
 

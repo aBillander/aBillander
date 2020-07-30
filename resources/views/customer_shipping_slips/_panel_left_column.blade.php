@@ -15,6 +15,8 @@
               
                   <li class="list-group-item">
 
+@if ( $document->is_invoiceable )
+
                       @if ( $document->invoiced_at )
 
                       <a href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
@@ -44,6 +46,10 @@
                       @else
                           <span class="btn btn-xs btn-grey">{{ l('Pending', 'layouts') }}</span>
                       @endif
+
+@else
+              <span class="label alert-warning">{{l('Not Invoiceable Document')}}</span>
+@endif
                     
                   </li>
 

@@ -230,6 +230,29 @@ class ProductionSheetsPdfController extends Controller
     }
 
 
+    public function getPdfSummaryPani(Request $request, $id)
+    {
+        $sheet = $this->productionSheet->findOrFail($id);
+        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+
+
+        $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
+        // $sheet->customerorders()->load(['customer', 'customerorderlines']);
+
+
+
+        //
+        // return view('production_sheets.reports.production_sheets.summary', compact('sheet', 'work_center'));
+
+        // PDF::setOptions(['dpi' => 150]);     // 'defaultFont' => 'sans-serif']);
+
+        $pdf = \PDF::loadView('production_sheets.reports.production_sheets_pani.summary', compact('sheet', 'work_center'))->setPaper('a4', 'vertical');
+
+        return $pdf->stream('pani_summary.pdf'); // $pdf->download('invoice.pdf');
+    }
+
+
     public function getPdfPreassemblies(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
@@ -316,6 +339,22 @@ class ProductionSheetsPdfController extends Controller
         //    return redirect()->back()->with('error', 'You naughty, naughty! ['.$key.']');
 
         $families = collect($this->families)->where('work_center_id', $wc);
+
+        if ( $key == 'pani')
+        {
+            $exclude = ['candeal', 'picoyreganats', 'picoyreganaesp'];
+
+            $families = $families->whereNotIn('key', $exclude);
+        }
+
+        else if ( $key == 'picoyregana')
+        {
+            $include = ['picoyreganats', 'picoyreganaesp'];
+
+            $families = $families->whereIn('key', $include);
+        }
+
+        // abi_r($wc);abi_r($families);die();
 
         // abi_r($families->count());die();
 

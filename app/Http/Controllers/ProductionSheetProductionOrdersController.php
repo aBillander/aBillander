@@ -7,11 +7,17 @@ use Illuminate\Http\Request;
 use App\ProductionSheet;
 use App\ProductionOrder;
 
+use App\Lot;
+use App\LotItem;
+
 use App\Configuration;
+
+use App\Traits\DateFormFormatterTrait;
 
 class ProductionSheetProductionOrdersController extends Controller
 {
 
+   use DateFormFormatterTrait;
 
    protected $productionSheet;
    protected $productionOrder;
@@ -39,6 +45,10 @@ class ProductionSheetProductionOrdersController extends Controller
      */
     public function productionordersIndex($id, Request $request)
     {
+        // $p = $this->productionOrder->find(13461);
+
+        // abi_r($p->lots);die();
+
         $work_center_id = $request->input('work_center_id', '');
         $category_id    = $request->input('category_id',    '');
 
@@ -196,14 +206,137 @@ class ProductionSheetProductionOrdersController extends Controller
 
 
     /**
-     * Create Shipping Slips for a Production Sheet (after Production Sheet Customer Orders).
-     * Prepare data for processCreateShippingSlips()
+     * 
      *
      */
-    public function finishProductionOrders( Request $request )
+    public function finishWithLot(Request $request )
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['finish_date'], $request );
+
+        $production_sheet_id = $request->input('production_sheet_id');
+        $production_order_id = $request->input('finish_production_order_id');
+
+        // abi_r($request->All());die();
+
+        // Do the Mambo!
+        $document = $this->productionOrder->with('product')->findOrFail($production_order_id);
+
+        $lot_tracking = $document->product->lot_tracking;
+
+        $rules = [
+            // To Do!
+          //      'country_id' => 'exists:countries,id',
+         //     'percent' => array('required', 'numeric', 'between:0,100')
+        ];
+
+        if ( $lot_tracking )
+        {
+            $rules = $rules + [
+                'lot_reference'    => 'required|min:2|max:32',
+            ];
+        }
+    
+        $this->validate($request, $rules);
+
+        $finished_quantity = $request->input('quantity');
+        $lot_reference = $request->input('lot_reference');
+        $finish_date = $request->input('finish_date');
+        $expiry_time = $request->input('expiry_time');
+
+        // abi_r('OK');die();
+
+        $params = [
+            'finished_quantity' => $finished_quantity, 
+            'finish_date'       => $finish_date,
+        ];
+
+        // abi_r($params, true);
+
+        // return $this->processFinishProductionOrders( $document_group, $params );
+
+        $lot_params = [
+            'reference' => $lot_reference,
+            'product_id' => $document->product_id, 
+//            'combination_id' => ,
+            'quantity_initial' => $finished_quantity, 
+            'quantity' => $finished_quantity, 
+            'measure_unit_id' => $document->product->measure_unit_id, 
+//            'package_measure_unit_id' => , 
+//            'pmu_conversion_rate' => ,
+            'manufactured_at' => $finish_date, 
+            'expiry_at' => \Carbon\Carbon::createFromFormat('Y-m-d', $finish_date)->addDays( $expiry_time ),
+            'notes' => '',
+        ];
+
+        // abi_r($lot_params);
+
+        $message = 'success';
+        $success =[];
+
+        if ( $document->finish( $params ) )
+        {
+            $success[] = l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts');
+
+            if ( $lot_tracking )
+            {
+                // Create Lot
+                $lot = Lot::create($lot_params);
+    
+                $lot_item = LotItem::create(['lot_id' => $lot->id]);
+    
+                $document->lotitems()->save($lot_item);
+    
+                $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot->reference], 'layouts') . 
+                    'para el Producto: ['.$document->product_reference.'] '.$document->product_name;
+            }
+        } 
+        else {
+
+            $message = 'error';
+            $success[] = 'No se ha podido cerrar la Orden de Fabricación.';
+        }
+
+
+        return redirect()
+                ->route('productionsheet.productionorders', $production_sheet_id)
+                ->with($message, $success);
+    }
+
+
+    /**
+     *  Maybe this function is obsolete ????
+     *
+     */
+    public function finish($id, Request $request )
+    {
+        $document = $this->productionOrder->findOrFail($id);
+
+        $document_group = [$document->id];
+
+        $params = [
+            'production_sheet_id' => $document->production_sheet_id, 
+            'document_group' => $document_group,
+        ];
+
+        // Default date??
+        // orders_finish_date_form
+
+        // abi_r($params, true);
+
+        return $this->processFinishProductionOrders( $document_group, $params );
+    }
+
+    
+    public function finishBulk( Request $request )
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['orders_finish_date'], $request );
+
         // ProductionSheetsController
         $document_group = $request->input('document_group', []);
+
+        $finish_date = $request->input('orders_finish_date');
 
         if ( count( $document_group ) == 0 ) 
             return redirect()->back()
@@ -227,7 +360,12 @@ class ProductionSheetProductionOrdersController extends Controller
         // Set params for group
         $params = $request->only('production_sheet_id', 'should_group', 'template_id', 'sequence_id', 'document_date', 'delivery_date', 'status');
 */
-        $params = ['production_sheet_id' => $request->production_sheet_id];
+        $params = [
+            'production_sheet_id' => $request->production_sheet_id, 
+            'document_group' => $document_group,
+
+            'finish_date' => $finish_date,
+        ];
 
         // abi_r($params, true);
 
@@ -253,11 +391,13 @@ class ProductionSheetProductionOrdersController extends Controller
 
             $documents = $this->productionOrder
                                 ->where('production_sheet_id', $params['production_sheet_id'])
+                                ->whereIn('id', $params['document_group'])
                                 ->where('status', '<>', 'finished')
                                 ->with('lines')
     //                            ->orderBy('document_date', 'asc')
     //                            ->orderBy('id', 'asc')
-                                ->findOrFail( $list );
+    //                            ->findOrFail( $list );
+                                ->find( $list );
 
             // Check document->status == onhold ???
             
@@ -274,6 +414,7 @@ class ProductionSheetProductionOrdersController extends Controller
         foreach ($documents as $document)
         {
             # code...
+            // abi_r($document->id);
         }
 
 
@@ -288,13 +429,9 @@ class ProductionSheetProductionOrdersController extends Controller
 
         foreach ($documents as $document) {
             # code...
-            $document->finish();
+            $document->finish( $params );
 
             $success[] = l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts');
-
-            // Lazy debugger lines. Should delete these:
-            $document->status = 'released';
-            $document->save();
         }
 
         // die();

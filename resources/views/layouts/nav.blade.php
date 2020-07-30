@@ -204,6 +204,14 @@
                                  {{l('Stock Movements', [], 'layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+                         <li>
+                            <a href="{{ URL::to('lots') }}">
+                                 <i class="fa fa-th btn-xs text-muted"></i> 
+                                 {{l('Lots', [], 'layouts')}}
+                            </a>
+                        </li>
+@endif
                          <li>
                             <a href="{{ URL::to('stockcounts') }}">
                                  {{l('Inventory Count', [], 'layouts')}}
@@ -341,6 +349,13 @@
                             </a>
                         </li>
 @endif
+                         <li>
+                            <a href="{{ URL::to('cheques') }}">
+                                 <i class="fa fa-money btn-xs text-success"></i> 
+                                 {{l('Cheques', [], 'layouts')}}
+                                 <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('import') }}">
@@ -480,6 +495,11 @@
                          <li>
                             <a href="{{ URL::to('companies') }}">
                                  {{l('Company', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('banks') }}">
+                                 {{l('Banks', [], 'layouts')}}
                             </a>
                         </li>
                          <li>

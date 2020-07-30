@@ -15,6 +15,8 @@ class CustomerShippingSlip extends Billable
     use CustomerShippingSlipInvoiceableTrait;
 //    use BillableInvoiceableTrait;
 
+    public $force_carrier_id = false;
+
     public static $badges = [
             'a_class' => 'alert-info',
             'i_class' => 'fa-truck',
@@ -47,6 +49,8 @@ class CustomerShippingSlip extends Billable
     protected $document_fillable = [
                             'shipment_service_type_tag', 'is_invoiceable',
                             'prices_entered_with_tax', 'round_prices_with_tax',
+
+                            'carrier_id',
     ];
 
     public static $rules = [
@@ -68,6 +72,25 @@ class CustomerShippingSlip extends Billable
                             'sequence_id' => 'exists:sequences,id',
                             'template_id' => 'exists:templates,id',
                ];
+
+
+/*
+    Functionality moved to customer_shipping_slips._form_document_create.blade.php
+
+    - Create (manual) customer_shipping_slip : take is_invoiceable from Customer
+    - Create (automatic) customer_shipping_slip : ??? => should discard not invoiceable orders? => but Customer Order DOES NOT have an is_invoiceable field
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function($document)
+        {
+            $document->is_invoiceable = $document->customer->is_invoiceable;
+
+        });
+    }
+*/
 
 
     public function getDeletableAttribute()

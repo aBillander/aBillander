@@ -15,7 +15,7 @@
 
 <div class="row">
 
-<div class="form-group col-lg-4 col-md-4 col-sm-4">
+<div class="form-group col-lg-3 col-md-3 col-sm-3">
     {!! Form::label('due_date_form', l('Due Date')) !!}
     {!! Form::text('due_date_form', null, array('class' => 'form-control')) !!}
 </div>
@@ -23,13 +23,13 @@
     {!! Form::label('payment_date_form', l('Payment Date')) !!}
     {!! Form::text('payment_date_form', null, array('class' => 'form-control')) !!}
 </div -->
-<div class="form-group col-lg-4 col-md-4 col-sm-4">
+<div class="form-group col-lg-3 col-md-3 col-sm-3">
     {!! Form::label('amount', l('Amount')) !!}
     {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control', 'onclick' => 'this.select()', 'onkeyup' => 'checkFields()', 'onchange' => 'checkFields()')) !!}
     {!! Form::hidden('amount_initial', $payment->amount, array('id' => 'amount_initial')) !!}
 </div>
 
-<div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-auto_direct_debit">
+<div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-auto_direct_debit">
      {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                         data-content="{{ l('Include in automatic payment remittances') }}">
@@ -49,6 +49,11 @@
          </label>
        </div>
      </div>
+</div>
+
+<div class="form-group col-lg-3 col-md-3 col-sm-3">
+    {!! Form::label('payment_type_id', l('Payment Type')) !!}
+    {!! Form::select('payment_type_id', ['' => l('-- None --', [], 'layouts')] + $payment_typeList, null, array('class' => 'form-control')) !!}
 </div>
 
 </div>

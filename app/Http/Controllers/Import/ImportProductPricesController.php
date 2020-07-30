@@ -91,6 +91,16 @@ class ImportProductPricesController extends Controller
                 'data_file' => 'required | max:8000',
                 'extension' => 'in:csv,xlsx,xls,ods', // all working except for ods
         ];
+        // https://github.com/Maatwebsite/Laravel-Excel/issues/1509
+/* ods :
+
+        simplexml_load_string(): Entity: line 1: parser error : Start tag expected, '<' not found
+
+It's because phpoffice/phpexcel is deprecated, I am looking for an update also.
+There's a guide to upgrade any packages using the PHPExcel library.
+
+https://phpspreadsheet.readthedocs.io/en/develop/topics/migration-from-PHPExcel/
+*/
 
         $this->validate($request->merge( $extra_data ), $rules);
 
@@ -298,6 +308,8 @@ class ImportProductPricesController extends Controller
                             // $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
 
 
+                            $data1 = [];
+
                             if (array_key_exists('tax_id', $data))
                             {
                                 // 
@@ -317,7 +329,17 @@ class ImportProductPricesController extends Controller
                                 $data1['cost_price']    = $data['cost_price'];
                             }
 
+                            if (array_key_exists('cost_average', $data))
+                            {
+                                // 
+                                $data1['cost_average']    = $data['cost_average'];
+                            }
+
+                            Product::unguard();
+
                             $product->update( $data1 );
+
+                            Product::reguard();
                         }
 
                         $i_ok++;
@@ -383,7 +405,7 @@ class ImportProductPricesController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference', 'NAME', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
+        $headers = [ 'id', 'reference', 'NAME', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'cost_average', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
         ];
 
         $data[] = $headers;

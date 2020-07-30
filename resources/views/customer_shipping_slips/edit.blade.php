@@ -43,7 +43,7 @@
 @endif
 
 @if ($document->document_id>0)
-                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank" onclick="open_in_new_tab_and_reload( this );return false;"><i class="fa fa-file-pdf-o"></i></a>
 
                 <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
 @endif
@@ -166,6 +166,25 @@ $(document).ready(function() {
     });
 
 });
+
+
+   // Open in new tab & reload
+
+    function open_in_new_tab_and_reload(link)
+    {
+      // Open in new tab
+      var href = link.href;
+      window.open(href, '_blank');
+      //focus to that window
+      window.focus();
+      //reload current page
+      // Delay
+      setTimeout(function() {
+          // alert('Was called after 2 seconds');
+          location.reload();
+      }, 4000);
+      
+    }
 
 </script>
 

@@ -605,7 +605,7 @@ class Billable extends Model implements ShippableInterface
         // Can I ...?
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
         
-        if ( $this->status == 'closed' ) return true;
+        if ( $this->status == 'closed' ) return false;
 
         // No lines?
         if ( $this->lines->count() == 0 ) return false;

@@ -457,6 +457,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('warehouses', 'WarehousesController');
         Route::get('warehouses/{id}/inventory', 'WarehousesController@indexProducts')->name('warehouse.inventory');
         Route::get('export/warehouses/{id}/inventory', 'WarehousesController@exportProducts' )->name('warehouse.inventory.export');
+
+        Route::resource('warehouseshippingslips', 'WarehouseShippingSlipsController');
         
         Route::resource('salesreps', 'SalesRepsController');
 

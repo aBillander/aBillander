@@ -94,6 +94,17 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-07-30
+
+		Illuminate\Support\Facades\DB::statement("create table `warehouse_shipping_slips` (`id` int unsigned not null auto_increment primary key, `company_id` int unsigned not null default '0', `warehouse_id` int unsigned not null, `warehouse_counterpart_id` int unsigned not null, `user_id` int unsigned not null default '0', `sequence_id` int unsigned null, `document_prefix` varchar(8) null, `document_id` int unsigned not null default '0', `document_reference` varchar(64) null, `reference` varchar(191) null, `created_via` varchar(32) null default 'manual', `document_date` datetime not null, `validation_date` datetime null, `delivery_date` datetime null, `delivery_date_real` datetime null, `close_date` datetime null, `number_of_packages` smallint unsigned not null default '1', `volume` decimal(20, 6) null default '0', `weight` decimal(20, 6) null default '0', `shipping_conditions` text null, `tracking_number` varchar(191) null, `notes` text null, `notes_to_counterpart` text null, `status` varchar(32) not null default 'draft', `onhold` tinyint not null default '0', `locked` tinyint not null default '0', `shipping_method_id` int unsigned null, `carrier_id` int unsigned null, `template_id` int null, `shipment_status` varchar(32) not null default 'pending', `shipment_service_type_tag` varchar(32) null, `printed_at` date null, `edocument_sent_at` date null, `export_date` datetime null, `secure_key` varchar(32) not null, `import_key` varchar(16) null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+		
+		Illuminate\Support\Facades\DB::statement("create table `warehouse_shipping_slip_lines` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `product_id` int unsigned null, `combination_id` int unsigned null, `reference` varchar(32) null, `name` varchar(128) not null, `quantity` decimal(20, 6) not null, `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `notes` text null, `locked` tinyint not null default '0', `created_at` timestamp null, `updated_at` timestamp null, `warehouse_shipping_slip_id` int unsigned not null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+	die('OK');
+
+
+
+
 
 	// 2020-07-14
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoice_lines` ADD `customer_shipping_slip_line_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `customer_shipping_slip_id`;");

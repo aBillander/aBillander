@@ -77,13 +77,20 @@ class WarehouseShippingSlipsController extends Controller
 
         $sequenceList = $this->document->sequenceList();
 
-        $templateList = $this->document->templateList();
-
         if ( !(count($sequenceList)>0) )
             return redirect('warehouseshippingslips')
                 ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
+
+
+        $templateList = $this->document->templateList();
+
+        $warehouseList =  Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
+
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
+
+        $carrierList = Carrier::pluck('name', 'id')->toArray();
         
-        return view('warehouse_shipping_slips.create', compact('sequenceList', 'templateList'));
+        return view('warehouse_shipping_slips.create', compact('sequenceList', 'templateList', 'warehouseList', 'shipping_methodList', 'carrierList'));
     }
 
     /**
@@ -94,16 +101,57 @@ class WarehouseShippingSlipsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
+
+        $rules = $this->document::$rules;
+
+//        $rules['shipping_address_id'] = str_replace('{customer_id}', $request->input('customer_id'), $rules['shipping_address_id']);
+//        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
+
+        $this->validate($request, $rules);
+
+        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+
+                        'sequence_id'          => $request->input('sequence_id'), //  ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
+
+                        'created_via'          => 'manual',
+                        'status'               =>  'draft',
+                        'locked'               => 0,
+                     ];
+
+        $request->merge( $extradata );
+
+        $document = $this->document->create($request->all());
+
+        // Move on
+        // Maybe ALLWAYS confirm
+        if ($request->has('nextAction'))
+        {
+            switch ( $request->input('nextAction') ) {
+                case 'saveAndConfirm':
+                    # code...
+                    $document->confirm();
+
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        return redirect('warehouseshippingslips/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\WarehouseShippingSlip  $warehouseShippingSlip
+     * @param  \App\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
-    public function show(WarehouseShippingSlip $warehouseShippingSlip)
+    public function show(Document $warehouseShippingSlip)
     {
         //
     }
@@ -111,22 +159,41 @@ class WarehouseShippingSlipsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\WarehouseShippingSlip  $warehouseShippingSlip
+     * @param  \App\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
-    public function edit(WarehouseShippingSlip $warehouseShippingSlip)
+    // public function edit(Document $warehouseShippingSlip)
+    public function edit($id)
     {
-        //
+        // $document = $warehouseShippingSlip;
+        $document = $this->document->findOrFail($id);
+
+        // Dates (cuen)
+        $this->addFormDates( ['document_date', 'delivery_date'], $document );
+
+        // Not needed, since document is saved as "confirmed":
+        $sequenceList = $this->document->sequenceList();
+
+
+        $templateList = $this->document->templateList();
+
+        $warehouseList =  Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
+
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
+
+        $carrierList = Carrier::pluck('name', 'id')->toArray();
+
+        return view('warehouse_shipping_slips.edit', compact('document', 'sequenceList', 'templateList', 'warehouseList', 'shipping_methodList', 'carrierList'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\WarehouseShippingSlip  $warehouseShippingSlip
+     * @param  \App\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, WarehouseShippingSlip $warehouseShippingSlip)
+    public function update(Request $request, Document $warehouseShippingSlip)
     {
         //
     }
@@ -134,10 +201,10 @@ class WarehouseShippingSlipsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\WarehouseShippingSlip  $warehouseShippingSlip
+     * @param  \App\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
-    public function destroy(WarehouseShippingSlip $warehouseShippingSlip)
+    public function destroy(Document $warehouseShippingSlip)
     {
         //
     }

@@ -87,12 +87,14 @@ class WarehouseShippingSlip extends Model
                             'document_date' => 'required|date',
 //                            'payment_date'  => 'date',
                             'delivery_date' => 'nullable|date|after_or_equal:document_date',
-                            'customer_id' => 'exists:customers,id',
-                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
+//                            'customer_id' => 'exists:customers,id',
+//                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
                             'sequence_id' => 'exists:sequences,id',
-//                            'warehouse_id' => 'exists:warehouses,id',
-//                            'carrier_id'   => 'exists:carriers,id',
-                            'currency_id' => 'exists:currencies,id',
+                            'warehouse_id' => 'exists:warehouses,id',
+                            'warehouse_counterpart_id' => 'different:warehouse_id|exists:warehouses,id',
+                            'shipping_method_id'   => 'nullable|exists:shipping_methods,id',
+//                            'carrier_id'   => 'nullable|exists:carriers,id',
+//                            'currency_id' => 'exists:currencies,id',
                ];
 
 
@@ -274,7 +276,7 @@ class WarehouseShippingSlip extends Model
 
         // abi_r($this->getClassName().'Line'.' - '. $this->getClassSnakeCase().'_id');die();
 
-        return $this->hasMany( $this->getClassName().'Line', $this->getClassSnakeCase().'_id' )
+        return $this->hasMany( 'App\WarehouseShippingSlipLine', 'warehouse_shipping_slip_id' )
                     ->orderBy('line_sort_order', 'ASC');
     }
     

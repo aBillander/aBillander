@@ -31,7 +31,7 @@
                </div>
                 {!! Form::open(array('route' => 'warehouseshippingslips.store', 'id' => 'create_warehouse_shipping_slip', 'name' => 'create_warehouse_shipping_slip', 'class' => 'form')) !!}
 
-                    @ include('warehouse_shipping_slips._form_document_create')
+                    @include('warehouse_shipping_slips._form_document_create')
 
                 {!! Form::close() !!}
             </div>

@@ -57,7 +57,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => 'customervouchers.index', 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => ['customer.vouchers', $customer->id], 'method' => 'GET')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}

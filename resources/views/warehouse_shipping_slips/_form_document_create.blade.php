@@ -71,7 +71,7 @@
 
       <div class="row">
         
-         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
+         <div class=" hide form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('carrier_id') ? 'has-error' : '' }}">
             {{ l('Carrier') }}
             <!-- div class="form-control" id="carrier_id">{ { optional($document->carrier)->name } }</div -->
             {!! Form::select('carrier_id', ['' => l('-- Please, select --', [], 'layouts'), '-1' => l('-- From Shipping Method')] + $carrierList, null, array('class' => 'form-control', 'id' => 'carrier_id')) !!}

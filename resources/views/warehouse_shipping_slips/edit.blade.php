@@ -54,8 +54,11 @@
                     <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Back to', 'layouts')}}"><i class="fa fa-mail-reply"></i> &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu  pull-right">
                       <li><a href="{{ URL::to('warehouseshippingslips') }}"><i class="fa {{ \App\WarehouseShippingSlip::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
-                      <li><a href="{{ route('customer.invoiceable.shippingslips', [1]) }}"><i class="fa fa-user-circle"></i> {{l('Invoice Shipping Slips')}}</a></li>
-                      <li><a href="{{ route('customer.shippingslips', [1]) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', 'layouts')}}</a></li>
+                      <li class="divider"></li>
+
+                      <li><a href="{{ route('warehouse.inventory', [$document->warehouse_id]) }}" target="_blank"><i class="fa fa-th-list" style="color: #38b44a;"></i> {{ l('Products in') }} [{{ $document->warehouse->alias }}] {{ $document->warehouse->name }}</a></li>
+
+                      <li><a href="{{ route('warehouse.inventory', [$document->warehouse_counterpart_id]) }}" target="_blank"><i class="fa fa-th-list" style="color: #38b44a;"></i> {{ l('Products in') }} [{{ $document->warehousecounterpart->alias }}] {{ $document->warehousecounterpart->name }}</a></li>
                       <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
@@ -67,11 +70,36 @@
             </div>
             
               <h2><a class="btn btn-sm {{ \App\WarehouseShippingSlip::getBadge('a_class') }}" href="{{ URL::to('warehouseshippingslips') }}" title="{{l('Documents')}}"><i class="fa {{ \App\WarehouseShippingSlip::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
-                  {{l('Document to')}} <span class="lead well well-sm">
+                  
+                  <span class="lead well well-sm">
 
-                  <a href="{{ URL::to('customers/' . 1 . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{ { $customer->name_regular } }</a>
+                  <a href="{{ URL::to('warehouses/' . $document->warehouse_id . '/edit') }}" title=" {{l('View Warehouse')}} " target="_blank">[{{ $document->warehouse->alias }}] {{ $document->warehouse->name }}</a>
 
-                 <a title=" {{l('View Invoicing Address')}} " href="javascript:void(0);">
+                 <a title=" {{l('View Warehouse Address')}} " href="javascript:void(0);">
+{{--
+                    <button type="button" class="btn btn-xs btn-success" data-toggle="popover" data-placement="right" 
+                            title="{{l('Invoicing Address')}}" data-content="
+                                  {{$customer->name_fiscal}}<br />
+                                  {{l('VAT ID')}}: {{1entification}}<br />
+                                  {{ $invoicing_address->address1 }} {{ $invoicing_address->address2 }}<br />
+                                  {{ $invoicing_address->postcode }} {{ $invoicing_address->city }}, {{ $invoicing_address->state->name }}<br />
+                                  {{ $invoicing_address->country->name }}
+                                  <br />
+                            ">
+                        <i class="fa fa-info-circle"></i>
+                    </button>
+--}}
+                 </a>
+
+                 </span> 
+
+                  <i class="fa fa-long-arrow-right" style="color: #bbbbbb;"></i>
+
+                  <span class="lead well well-sm">
+
+                  <a href="{{ URL::to('warehouses/' . $document->warehouse_counterpart_id . '/edit') }}" title=" {{l('View Warehouse')}} " target="_blank">[{{ $document->warehousecounterpart->alias }}] {{ $document->warehousecounterpart->name }}</a>
+
+                 <a title=" {{l('View Warehouse Address')}} " href="javascript:void(0);">
 {{--
                     <button type="button" class="btn btn-xs btn-success" data-toggle="popover" data-placement="right" 
                             title="{{l('Invoicing Address')}}" data-content="
@@ -88,6 +116,8 @@
                  </a>
 
                  </span>
+
+
                    &nbsp; 
                     @if ($document->document_id>0)
                     {{ $document->document_reference }}
@@ -105,9 +135,9 @@
                     </a>
                     @endif
                    &nbsp; 
-                  <span class="badge" style="background-color: #3a87ad;" title="{ { $customer->currentPricesEnteredWithTax( $document->document_currency ) ?
+                  <!-- span class="badge" style="background-color: #3a87ad;" title="{ { $customer->currentPricesEnteredWithTax( $document->document_currency ) ?
                                                         l('Prices are entered inclusive of tax', [], 'appmultilang') :
-                                                        l('Prices are entered exclusive of tax', [], 'appmultilang') } }">{ { $document->currency->iso_code } }</span>
+                                                        l('Prices are entered exclusive of tax', [], 'appmultilang') } }">{ { $document->currency->iso_code } }</span -->
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
              </h2>
 

@@ -104,12 +104,30 @@ class WarehouseShippingSlipsController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
 
+        $request->merge( [
+                                'number_of_packages'   => $request->input('number_of_packages', 1) > 0 ? (int) $request->input('number_of_packages') : 1,
+                    ] );
+
         $rules = $this->document::$rules;
 
 //        $rules['shipping_address_id'] = str_replace('{customer_id}', $request->input('customer_id'), $rules['shipping_address_id']);
 //        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
 
         $this->validate($request, $rules);
+
+
+        // Manage Shipping Method & Carrier
+        $shipping_method_id = $request->input('shipping_method_id');
+        $carrier_id = null;
+
+        if ( $shipping_method_id )
+        {
+            // Need Carrier
+            $s_method = ShippingMethod::find( $shipping_method_id );
+
+            $carrier_id = $s_method ? $s_method->carrier_id : null;
+        }
+
 
         $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
 
@@ -118,6 +136,8 @@ class WarehouseShippingSlipsController extends Controller
                         'created_via'          => 'manual',
                         'status'               =>  'draft',
                         'locked'               => 0,
+
+                        'carrier_id'           => $carrier_id,
                      ];
 
         $request->merge( $extradata );
@@ -166,7 +186,10 @@ class WarehouseShippingSlipsController extends Controller
     public function edit($id)
     {
         // $document = $warehouseShippingSlip;
-        $document = $this->document->findOrFail($id);
+        $document = $this->document
+                            ->with('warehouse')
+                            ->with('warehousecounterpart')
+                            ->findOrFail($id);
 
         // Dates (cuen)
         $this->addFormDates( ['document_date', 'delivery_date'], $document );
@@ -193,9 +216,118 @@ class WarehouseShippingSlipsController extends Controller
      * @param  \App\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Document $warehouseShippingSlip)
+    public function update(Request $request, Document $warehouseshippingslip)
     {
-        //
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
+
+        $rules = $this->document::$rules;
+
+//        $rules['shipping_address_id'] = str_replace('{customer_id}', $request->input('customer_id'), $rules['shipping_address_id']);
+//        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
+
+        $this->validate($request, $rules);
+/*
+        // Extra data
+        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
+        $doc_id = $seq->getNextDocumentId();
+
+        $extradata = [  'document_prefix'      => $seq->prefix,
+                        'document_id'          => $doc_id,
+                        'document_reference'   => $seq->getDocumentReference($doc_id),
+
+                        'user_id'              => \App\Context::getContext()->user->id,
+
+                        'created_via'          => 'manual',
+                        'status'               =>  \App\Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
+                        'locked'               => 0,
+                     ];
+
+        $request->merge( $extradata );
+*/
+        $document = $warehouseshippingslip;
+
+        // abi_r($document->id);
+
+
+        // Manage Shipping Method
+        $shipping_method_id = $request->input('shipping_method_id', $document->shipping_method_id);
+
+        $def_carrier_id = $document->shippingmethod ? $document->shippingmethod->carrier_id : null;
+        if ( $shipping_method_id != $document->shipping_method_id )
+        {
+            // Need Carrier
+            $s_method = ShippingMethod::find( $shipping_method_id );
+
+            $def_carrier_id = $s_method ? $s_method->carrier_id : null;
+        }
+
+
+        // Manage Carrier
+        $carrier_id = $request->input('carrier_id', $document->carrier_id);
+
+        if ( $carrier_id != $document->carrier_id )
+        {
+            //            
+            // $carrier_id = $request->input('carrier_id');
+            if ( $carrier_id == -1 )
+            {
+                // Take from Shipping Method
+                $carrier_id = $def_carrier_id;
+            } 
+            else
+                if ( (int) $carrier_id < 0 ) $carrier_id = null;
+
+            // Change Carrier
+            // $document->force_carrier_id = true;
+            // $document->carrier_id = $carrier_id;
+
+            $request->merge( ['carrier_id' => $carrier_id] );
+        }
+
+        // abi_r($request->all());die();
+
+        $document->fill($request->all());
+
+        // abi_r($document->id);die();
+
+        // abi_r($document);die();
+
+        // Reset Export date
+        // if ( $request->input('export_date_form') == '' ) $document->export_date = null;
+
+        $document->save();
+
+        // Move on
+        if ($request->has('nextAction'))
+        {
+            switch ( $request->input('nextAction') ) {
+                case 'saveAndConfirm':
+                    # code...
+                    $document->confirm();
+
+                    break;
+                
+                case 'saveAndContinue':
+                    # code...
+
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        $nextAction = $request->input('nextAction', '');
+        
+        if ( $nextAction == 'saveAndContinue' ) 
+            return redirect('warehouseshippingslips/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+        return redirect('warehouseshippingslips')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
     }
 
     /**
@@ -204,8 +336,24 @@ class WarehouseShippingSlipsController extends Controller
      * @param  \App\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
+    // public function destroy($id, Request $request)
     public function destroy(Document $warehouseShippingSlip)
     {
-        //
+        // $document = $this->document->findOrFail($id);
+        $document = $warehouseShippingSlip;
+
+        if( !$document->deletable )
+            return redirect()->back()
+                ->with('error', l('This record cannot be deleted because its Status &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+        if ($request->input('open_parents', 0))
+        {
+            // Open parent Documents (Purchase orders)
+        }
+
+        $document->delete();
+
+        return redirect('warehouseshippingslips')      // redirect()->back()
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 }

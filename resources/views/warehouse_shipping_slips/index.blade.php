@@ -153,78 +153,21 @@
 <table id="documents" class="table table-hover">
     <thead>
         <tr>
-            <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-            <th class="text-left">{{-- l('ID', 'layouts') --}}
-
-<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customershippingslips.bulk.pdf' )}}');$('#form-select-documents').submit();return false;" target="_blank"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
-
+            <!-- th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th -->
+            <th class="text-left">{{ l('ID', 'layouts') }}
             </th>
-            <th class="text-center">
-
-        @if ($documents->where('status', 'closed')->count() > 0)
-
-<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('With selected: Set delivered')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'warehouseshippingslips.bulk.deliver' )}}');$('#form-select-documents').submit();return false;"> &nbsp; <i class="fa fa-truck"></i> &nbsp; </a>
-
-        @endif
-
-            </th>
-            <th class="text-left">{{ l('Date') }}</th>
-            <th class="text-center" style="background-color: #e7e7e7;border-color: #cccccc;">
-
-        {!! Form::select('set_carrier_id', array('' => l('-- None --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control input-sm', 'style' => 'font-weight: normal;', 'id' => 'set_carrier_id')) !!}
-
-                <!-- button id="set_carrier_bulk" type="button" class="btn btn-xs btn-blue"><i class="fa fa-pencil"></i> {{ l('Carrier') }} </button -->
-
-
-<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('With selected: Set Carrier')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'warehouseshippingslips.bulk.set.carrier' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-pencil"></i> {{ l('Carrier') }} </a>
-
-{{--
-<div id="set_carrier_bulk_popover-form" class="hide">
-
-    <div class="form-group">
-        {!! Form::select('set_carrier_id', array('' => l('-- None --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control', 'id' => 'set_carrier_id')) !!}
-    </div>
-
-<a class="btn btn-warning" href="javascript:void(0);" title="{{l('With selected: Set Carrier')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'warehouseshippingslips.bulk.set.carrier' )}}');$('#form-select-documents').submit();return false;">{{l('Update', 'layouts')}}</a>
-
-</div>
---}}
-{{--
-<!-- Single button -->
-<div class="btn-group">
-  <button type="button" class="btn btn-xs btn-blue dropdown-toggle" data-toggle="dropdown">
-    <i class="fa fa-pencil"></i> {{ l('Carrier') }} <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu">
-    {!! Form::open(array('route' => 'warehouseshippingslips.set.carrier', 'id' => 'set_carrier_form')) !!}
-       <div class="form-group">
-         { { - - !! Form::text('document_id', null, ['class' => 'form-control', 'id' => 'document_id']) !! - - } }
-         {!! Form::select('set_carrier_id', array('' => l('-- None --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control', 'id' => 'set_carrier_id')) !!}
-       </div>
-
-       <div class="form-group">
-         <button type="submit" class="btn alert-success">{{l('Add', 'layouts')}}</button>
-                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Type an ID or Document Number.') }}">
-                        <i class="fa fa-question-circle abi-help"></i>
-                 </a>
-       </div>
-    {!! Form::close() !!}
-  </ul>
-</div>
---}}
-
-            </th>
-            <th> </th>
+            <th class="text-center"> </th>
+            <th class="text-left">{{ l('Warehouse') }}</th>
+            <th class="text-left">{{ l('Warehouse Counterpart') }}</th>
+            <th class="text-left">{{ l('Document Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
-            <th class="text-left">{{ l('Customer') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}
-              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+            <th class="text-left">{{ l('Sent Date') }}
+              <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                         data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
-                    <i class="fa fa-question-circle abi-help"></i>
+                    <i class="fa fa-question-circle abi-help"></i -->
               </th>
-            <th class="text-left">{{ l('Created via') }}</th>
-            <th class="text-right">{{ l('Total') }}</th>
+            <th class="text-left">{{ l('Shipping Method') }}</th>
+            <th class="text-left">{{ l('Carrier') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
@@ -232,25 +175,18 @@
     <tbody id="document_lines">
         @foreach ($documents as $document)
         <tr>
-            <td class="text-center warning">{!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}</td>
+            <!-- td class="text-center warning">{!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}</td -->
             <td>{{ $document->id }} / 
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
                 @else
                 <a class="btn btn-xs btn-grey" href="{{ URL::to('warehouseshippingslips/' . $document->id . '/confirm') }}" title="{{l('Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
-                <span xclass="label label-default">{{ l('Draft') }}</span>
+                <span xclass="label label-default">{{ l('Draft', 'layouts') }}</span>
                 </a>
                 @endif</td>
             <td class="text-center">
 
-        @if ( !$document->is_invoiceable )
-              <a class="btn btn-xs btn-warning" href="javascript::void(0);" title="{{l('Not Invoiceable Document')}}" style="opacity: 0.65;" onclick="return false;"><i class="fa fa-ban"></i>
-              </a>
-        @endif
 
-@if ($document->invoiced_at && $document->customerinvoice())
-                <a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{ l('Invoiced at:') }} {{abi_date_short( $document->invoiced_at )}}"><i class="fa fa-money"></i></a>
-@else
     @if ( $document->status == 'closed' )
                 <a class="btn btn-xs alert-danger" href="#" title="{{l('Document closed', 'layouts')}}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-lock"></i>&nbsp;</a>
     @else
@@ -264,16 +200,20 @@
         @endif
 
     @endif
-@endif
 
 @if ( $document->edocument_sent_at )
-                <a class="btn btn-xs alert-success" href="#" title="{{l('Email sent:')}} {{ abi_date_short($document->document_date) }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-envelope-o"></i>&nbsp;</a>
+                <a class="btn btn-xs alert-success" href="#" title="{{l('Email sent:')}} {{ abi_date_short($document->edocument_sent_at) }}" onclick="return false;" onfocus="this.blur();">&nbsp;<i class="fa fa-envelope-o"></i>&nbsp;</a>
 @endif
                 
             </td>
+            <td>[{{ $document->warehouse->alias }}] {{ $document->warehouse->name }}</td>
+            <td>[{{ $document->warehousecounterpart->alias }}] {{ $document->warehousecounterpart->name }}</td>
             <td>{{ abi_date_short($document->document_date) }}</td>
+            <td>{{ abi_date_short($document->delivery_date) }}</td>
+            <td>{{ abi_date_short($document->delivery_date_real) }}</td>
+            <td>{{ optional($document->shippingmethod)->name }}</td>
             <td>{{ optional($document->carrier)->name }}</td>
-            <td>
+            <!-- td>
     @if ( $document->shipment_status == 'delivered' )
         @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
 
@@ -300,7 +240,7 @@
             	</a>
             </td>
             <td>
-                @if ( $document->hasShippingAddress() )
+                @if ( $document->shippingaddress )
 
 
 
@@ -316,7 +256,7 @@
             </td>
             <td>{{ $document->created_via }}
             </td>
-            <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
+            <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td -->
             <td class="text-center">@if ($document->all_notes)
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 

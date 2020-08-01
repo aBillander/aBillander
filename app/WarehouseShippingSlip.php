@@ -95,6 +95,7 @@ class WarehouseShippingSlip extends Model
                             'shipping_method_id'   => 'nullable|exists:shipping_methods,id',
 //                            'carrier_id'   => 'nullable|exists:carriers,id',
 //                            'currency_id' => 'exists:currencies,id',
+                            'number_of_packages' => 'required|min:1',
                ];
 
 
@@ -160,6 +161,44 @@ class WarehouseShippingSlip extends Model
     | Methods
     |--------------------------------------------------------------------------
     */
+
+
+    public function getEditableAttribute()
+    {
+        return !( $this->locked || $this->status == 'closed' || $this->status == 'canceled' );
+    }
+
+    public function getDeletableAttribute()
+    {
+        return !( $this->status == 'closed' || $this->status == 'canceled' );
+    }
+
+    public function getNumberAttribute()
+    {
+        // WTF???  (ノಠ益ಠ)ノ彡┻━┻ 
+        return    $this->document_id > 0
+                ? $this->document_reference
+                : l($this->getClassName().'.'.'draft', [], 'appmultilang') ;
+    }
+
+    public function getAllNotesAttribute()
+    {
+        $notes = '';
+
+        // if ($this->notes_from_customer && (strlen($this->notes_from_customer) > 4)) $notes .= $this->notes_from_customer."\n\n";        // Prevent accidental whitespaces
+        if ($this->notes               ) $notes .= $this->notes."\n\n";
+        if ($this->notes_to_counterpart   ) $notes .= $this->notes_to_counterpart;  // ."\n\n";
+
+
+        return $notes;
+    }
+
+    public function getNbrLinesAttribute()
+    {
+        return $this->lines()->count();
+    }
+
+
 
 
     public static function getStatusList()

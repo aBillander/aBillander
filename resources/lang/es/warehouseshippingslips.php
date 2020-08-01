@@ -20,6 +20,10 @@ return [
 	'Carrier' => 'Transportista',
 
 
+	'View Warehouse'     => 'Ir a la Ficha del Almacén',
+	'View Warehouse Address'     => 'Ver Dirección del Almacén',
+	'Products in' => 'Productos en',
+
 	'Template'     => 'Plantilla',
 	'Sequence'     => 'Serie',	// 'Serie de Albaranes',
 	'Document Number'     => 'Número de Albarán',

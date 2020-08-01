@@ -459,6 +459,21 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('export/warehouses/{id}/inventory', 'WarehousesController@exportProducts' )->name('warehouse.inventory.export');
 
         Route::resource('warehouseshippingslips', 'WarehouseShippingSlipsController');
+        // See line 552
+        Route::get('warehouseshippingslips/{id}/getlines',             'WarehouseShippingSlipsController@getDocumentLines'  )->name('warehouseshippingslips.getlines' );
+        Route::get('warehouseshippingslips/{id}/getheader',            'WarehouseShippingSlipsController@getDocumentHeader' )->name('warehouseshippingslips.getheader');
+        Route::get('warehouseshippingslips/line/productform/{action}', 'WarehouseShippingSlipsController@FormForProduct')->name('warehouseshippingslips.productform');
+        Route::get('warehouseshippingslips/line/serviceform/{action}', 'WarehouseShippingSlipsController@FormForService')->name('warehouseshippingslips.serviceform');
+        Route::get('warehouseshippingslips/line/commentform/{action}', 'WarehouseShippingSlipsController@FormForComment')->name('warehouseshippingslips.commentform');
+        Route::get('warehouseshippingslips/line/searchproduct',        'WarehouseShippingSlipsController@searchProduct' )->name('warehouseshippingslips.searchproduct');
+        Route::get('warehouseshippingslips/line/searchservice',        'WarehouseShippingSlipsController@searchService' )->name('warehouseshippingslips.searchservice');
+        Route::get('warehouseshippingslips/line/getproduct',           'WarehouseShippingSlipsController@getProduct'      )->name('warehouseshippingslips.getproduct');
+        Route::get('warehouseshippingslips/line/getproduct/prices',    'WarehouseShippingSlipsController@getProductPrices')->name('warehouseshippingslips.getproduct.prices');
+
+        Route::post('warehouseshippingslips/{id}/quickaddlines',    'WarehouseShippingSlipsController@quickAddLines'   )->name('warehouseshippingslips.quickaddlines'  );
+
+        Route::post('warehouseshippingslips/sortlines', 'WarehouseShippingSlipsController@sortLines')->name('warehouseshippingslips.sortlines');
+        
         
         Route::resource('salesreps', 'SalesRepsController');
 

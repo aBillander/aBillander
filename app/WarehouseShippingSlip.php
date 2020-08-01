@@ -560,4 +560,116 @@ class WarehouseShippingSlip extends Model
         return $query->where( 'due_date', '>=', \Carbon\Carbon::now()->toDateString() );
     }
 
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Document Lines Stuff
+    |--------------------------------------------------------------------------
+    */
+    
+    
+
+    /**
+     * Add Product to ShippingSlip
+     *
+     *     'line_sort_order', NO!!! => 'line_type', 'product_id', 'combination_id', 'reference', 'name', 'quantity', 'measure_unit_id', 'package_measure_unit_id', 'pmu_conversion_rate', 'notes', 'locked'
+     *
+     */
+    public function addProductLine( $product_id, $combination_id = null, $quantity = 1.0, $params = [] )
+    {
+        // Do the Mambo!
+        // $line_type = 'product';
+
+        // Product
+        if ($combination_id>0) {
+            $combination = Combination::with('product')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = Product::findOrFail(intval($product_id));
+        }
+
+        $reference  = $product->reference;
+        $name = array_key_exists('name', $params) 
+                            ? $params['name'] 
+                            : $product->name;
+
+        $measure_unit_id = $product->measure_unit_id;
+
+        $package_measure_unit_id = array_key_exists('package_measure_unit_id', $params) 
+                            ? $params['package_measure_unit_id'] 
+                            : $product->measure_unit_id;
+
+        $pmu_conversion_rate = 1.0; // Temporarily default
+
+        // Measure unit stuff...
+        if ( $package_measure_unit_id != $measure_unit_id )
+        {
+            $mu  = $product->measureunits->where('id', $measure_unit_id        )->first();
+            $pmu = $product->measureunits->where('id', $package_measure_unit_id)->first();
+
+            $pmu_conversion_rate = $pmu->conversion_rate;
+
+            $quantity = $quantity * $pmu_conversion_rate;
+            
+        }
+
+
+
+        // Misc
+        $line_sort_order = array_key_exists('line_sort_order', $params) 
+                            ? $params['line_sort_order'] 
+                            : $this->getNextLineSortOrder();
+/*
+        $extra_quantity = array_key_exists('extra_quantity', $params) 
+                            ? $params['extra_quantity'] 
+                            : 0.0;
+
+        $extra_quantity_label = array_key_exists('extra_quantity_label', $params) 
+                            ? $params['extra_quantity_label'] 
+                            : '';
+*/
+        $notes = array_key_exists('notes', $params) 
+                            ? $params['notes'] 
+                            : '';
+
+        $locked = array_key_exists('locked', $params) 
+                            ? $params['locked'] 
+                            : 0;
+
+
+        // Build OrderLine Object
+        $data = [
+            'line_sort_order' => $line_sort_order,
+//            'line_type' => $line_type,
+            'product_id' => $product_id,
+            'combination_id' => $combination_id,
+            'reference' => $reference,
+            'name' => $name,
+            'quantity' => $quantity,
+            'measure_unit_id' => $measure_unit_id,
+
+            'package_measure_unit_id' => $package_measure_unit_id,
+            'pmu_conversion_rate'     => $pmu_conversion_rate,
+            
+            'notes' => $notes,
+            'locked' => $locked,
+        ];
+
+
+        // Finishing touches
+        $document_line = WarehouseShippingSlipLine::create( $data );
+
+        $this->lines()->save($document_line);
+
+
+        // Good boy, bye then
+        return $document_line;
+
+    }
+
 }

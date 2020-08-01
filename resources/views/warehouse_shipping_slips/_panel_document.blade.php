@@ -82,14 +82,15 @@
 
 @section('scripts')    @parent
 
-    @ include('warehouse_shipping_slips.js.document')
+    @include('warehouse_shipping_slips.js.document')
 
+{{--
     @ include('warehouse_shipping_slips.js.document_service_lines')
 
     @ include('warehouse_shipping_slips.js.document_comment_lines')
 
     @ include('warehouse_shipping_slips.js.document_shipping_cost_line')
-
+--}}
 
 <script>
 

@@ -28,9 +28,9 @@
 
                </div><!-- div class="panel-body" -->
 
-{{--
-@ include('warehouse_shipping_slips._modal_document_lines_quick_form')
+@include('warehouse_shipping_slips._modal_document_lines_quick_form')
 
+{{--
 @ include('warehouse_shipping_slips._modal_document_line_form')
 
 @ include('warehouse_shipping_slips._modal_document_line_delete')

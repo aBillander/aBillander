@@ -64,4 +64,24 @@ return [
 	'Available'     => 'Disponible',
 	'On hand'     => 'Stock',
 	'On order'     => 'Pendiente',
+
+
+
+
+	'Quick Add Lines'     => 'Entrada rápida de Productos',
+	'Add Product'     => 'Nuevo Producto',
+	'Add Service'     => 'Nuevo Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
+	'Add Shipping Cost'     => 'Añadir Costes de Envío',
+	'Search Products'     => 'Buscar Productos',
+	
+	'Product ID' => 'ID del Producto',
+	'Product Reference' => 'Referencia',
+	'Reference'     => 'Referencia',
+	'Measure Unit' => 'Unidad de Medida',
+	'View Product' => 'Ir a la Ficha del Producto',
+	'Product Name' => 'Nombre del Producto',
+	'Type a Product Name or Product Reference.'     => 'Escriba un Nombre de Producto o Referencia.',
+	'Description'     => 'Descripción',
+	'Quantity' => 'Cantidad',
 ];

@@ -702,58 +702,14 @@ class WarehouseShippingSlipsController extends Controller
     {
         $document_line = $this->document_line
                         ->with('product')
-                        ->with('product.tax')
-                        ->with('product.ecotax')
                         ->with('measureunit')
                         ->with('packagemeasureunit')
-                        ->with('tax')
                         ->find($line_id);
 
         if ( !$document_line )
             return response()->json( [] );
-/*
-        $unit_customer_final_price = Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                        $order_line->unit_customer_final_price * ( 1.0 + $order_line->tax_percent / 100.0 ) : 
-                                        $order_line->unit_customer_final_price ;
-*/
-        $product = $document_line->product;
-        $tax = $document_line->tax;
 
-        $currency = Context::getContext()->currency;
-
-        $ecotax_amount = $product && $product->ecotax ? 
-                              $product->as_priceable($product->ecotax->amount) :
-                              '0.00';
-
-        $ecotax_value_label = $ecotax_amount.' '.$currency->name;
-
-        if ( !$document_line->packagemeasureunit )
-        {
-            $document_line->package_measure_unit_id = $document_line->measure_unit_id;
-            $document_line->pmu_conversion_rate = 1.0;
-            $document_line->load('packagemeasureunit');
-        }
-
-        $pmu_conversion_rate = 1.0;
-        $package_label = '';
-
-        if ( $document_line->package_measure_unit_id != $document_line->measure_unit_id)
-        {
-            $pmu_conversion_rate = $document_line->pmu_conversion_rate;
-
-            $package_label = (int) $pmu_conversion_rate.'x'.$document_line->measureunit->name;
-        }
-
-        // abi_r($document_line->toArray());die();
-
-        return response()->json( $document_line->toArray() + [
-//            'unit_customer_final_price' => $unit_customer_final_price,
-            'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
-            'ecotax_value_label' => $ecotax_value_label,
-
-            'pmu_conversion_rate' => $pmu_conversion_rate,
-            'package_label' => $package_label,
-        ] );
+        return response()->json( $document_line->toArray() );
     }
 
     public function deleteDocumentLine($line_id)
@@ -761,21 +717,8 @@ class WarehouseShippingSlipsController extends Controller
 
         $document_line = $this->document_line
                         ->findOrFail($line_id);
-/*
-        $document = $this->customerOrder
-                        ->findOrFail($order_line->customer_order_id);
-*/
-
-        $theID = $this->model_snake_case.'_id';
-        $document = $this->document
-                        ->findOrFail($document_line->{$theID});
-
-
 
         $document_line->delete();
-
-        // Now, update Order Totals
-        $document->makeTotals();
 
         return response()->json( [
                 'msg' => 'OK',
@@ -874,6 +817,136 @@ class WarehouseShippingSlipsController extends Controller
                         ->findOrFail($id);
 
         return view('warehouse_shipping_slips._modal_document_availability_content', $this->modelVars() + compact('document'));
+    }
+
+
+/* ********************************************************************************************* */  
+
+
+    /**
+     * Forms Manager.
+     *
+     * 
+     */
+
+
+    public function FormForProduct( $action )
+    {
+
+        switch ( $action ) {
+            case 'edit':
+                # code...
+                return view('warehouse_shipping_slips._form_for_product_edit');
+                break;
+            
+            case 'create':
+                # code...
+                return view('warehouse_shipping_slips._form_for_product_create');
+                break;
+            
+            default:
+                # code...
+                // Form for action not supported
+                return response()->json( [
+                            'msg' => 'ERROR',
+                            'data' => $action
+                    ] );
+                break;
+        }
+        
+    }
+
+
+    public function updateDocumentLine(Request $request, $line_id)
+    {
+        // $line_type = $request->input('line_type', '');
+        $line_type = 'product';         // So far...
+
+        switch ( $line_type ) {
+            case 'product':
+                # code...
+                return $this->updateDocumentLineProduct($request, $line_id);
+                break;
+            
+            case 'service':
+            case 'shipping':
+                # code...
+                return $this->updateDocumentLineService($request, $line_id);
+                break;
+            
+            case 'comment':
+                # code...
+                return $this->updateDocumentLineComment($request, $line_id);
+                break;
+            
+            default:
+                # code...
+                // Document Line Type not supported
+                return response()->json( [
+                            'msg' => 'ERROR',
+                            'data' => $request->all()
+                    ] );
+                break;
+        }
+    }
+
+    public function updateDocumentLineProduct(Request $request, $line_id)
+    {
+
+        $params = [
+//            'prices_entered_with_tax' => $pricetaxPolicy,
+//            'discount_percent' => $request->input('discount_percent', 0.0),
+//            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
+
+//            'line_sort_order' => $request->input('line_sort_order'),
+//            'notes' => $request->input('notes'),
+        ];
+
+        // More stuff
+        if ($request->has('quantity')) 
+            $params['quantity'] = $request->input('quantity');
+
+        // Skip:
+        if (0 && $request->has('line_sort_order')) 
+            $params['line_sort_order'] = $request->input('line_sort_order');
+
+        if ($request->has('notes')) 
+            $params['notes'] = $request->input('notes');
+
+
+        // Skip:
+        if (0 && $request->has('name')) 
+            $params['name'] = $request->input('name');
+
+        // Skip:
+        if (0 && $request->has('measure_unit_id')) 
+            $params['measure_unit_id'] = $request->input('measure_unit_id');
+
+
+        // Let's Rock!
+        $document_line = $this->document_line
+                        ->with( 'document' )
+                        ->find($line_id);
+
+        if ( !$document_line )
+            return response()->json( [
+                    'msg' => 'ERROR',
+                    'data' => $line_id,
+            ] );
+
+        
+        $document = $document_line->document;
+//        $document = $this->document->where('id', $this->model_snake_case.'_id')->first();
+
+        // Not so fast, Sony boy!!
+        // $document_line = $document->updateProductLine( $line_id, $params );
+        $document_line->update( $params );
+
+
+        return response()->json( [
+                'msg' => 'OK',
+                'data' => $document_line->toArray()
+        ] );
     }
 
 

@@ -672,4 +672,186 @@ class WarehouseShippingSlip extends Model
 
     }
 
+    /**
+     * Update Product Line in Order
+     *
+     *     'line_sort_order', NO!!! => 'line_type', 'product_id', 'combination_id', 'reference', 'name', 'quantity', 'measure_unit_id', 'package_measure_unit_id', 'pmu_conversion_rate', 'notes', 'locked'
+     *
+     */
+    public function updateProductLine( $line_id, $params = [] )
+    {
+        // Do the Mambo!
+        $lineClass = $this->getClassName().'Line';
+
+        $document_line = WarehouseShippingSlipLine::where('warehouse_shipping_slip_id', $this->id)
+                        ->with('document')
+                        ->with('product')
+//                        ->with('combination')
+                        ->with('measureunit')
+//                        ->with('packagemeasureunit')
+                        ->findOrFail($line_id);
+
+
+        // Product
+        if ($document_line->combination_id>0) {
+//            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+//            $product = $combination->product;
+//            $product->reference = $combination->reference;
+//            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = $document_line->product;
+        }
+
+        $pmu_conversion_rate = 1.0; // Temporarily default
+
+        // Measure unit stuff...
+        if ( $document_line->package_measure_unit_id && ($document_line->package_measure_unit_id != $document_line->measure_unit_id) )
+        {
+            $pmu_conversion_rate = $document_line->pmu_conversion_rate;
+/*
+            $quantity = $quantity * $pmu_conversion_rate;
+
+            $pmu_label = array_key_exists('pmu_label', $params) && $params['pmu_label']
+                            ? $params['pmu_label'] 
+                            : $pmu->name.' : '.(int) $pmu_conversion_rate.'x'.$mu->name;
+*/            
+        }
+
+        // Warning: stored $quantity is ALLWAYS in "stock keeping unit"
+        if (array_key_exists('quantity', $params)) 
+        {
+            if (array_key_exists('use_measure_unit_id', $params) && ( $params['use_measure_unit_id'] == 'measure_unit_id' ))
+            {
+                // FORCE measure unit to default line measure unit
+                // See CustomerOrdersController@createSingleShippingSlip, section relative to back order creation
+                // No need of calculations
+                $quantity = $params['quantity'];
+
+            } else {
+                // "Input quantity" (from form, etc.) is expected in "line measure unit", i.e., in package_measure_unit,
+                // when $document_line->package_measure_unit_id != $document_line->measure_unit_id
+                $quantity = $params['quantity'] * $pmu_conversion_rate;
+            }
+        }
+        else
+            $quantity = $document_line->quantity;       // Already in "stock keeping unit"
+
+        // Product Price
+//        $price = $product->getPrice();
+//        $unit_price = $price->getPrice();
+
+
+/*      Not needed:
+
+        // Calculate price per $customer_id now!
+        $customer_price = $product->getPriceByCustomer( $customer, $quantity, $currency );
+
+        // Is there a Price for this Customer?
+        if (!$customer_price) return null;      // Product not allowed for this Customer
+        // What to do???
+
+        $customer_price->applyTaxPercent( $tax_percent );
+        $unit_customer_price = $customer_price->getPrice();
+*/
+        // Price Policy
+        $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
+                            ? $params['prices_entered_with_tax'] 
+                            : $document_line->price_is_tax_inc;
+
+        // Customer Final Price
+        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
+        {
+            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
+
+            $unit_customer_final_price->applyTaxPercent( $tax_percent );
+
+        } else {
+
+            $unit_customer_final_price = \App\Price::create([$document_line->unit_customer_final_price, $document_line->unit_customer_final_price_tax_inc, $pricetaxPolicy], $currency);
+        }
+
+        // Discount
+        $discount_percent = array_key_exists('discount_percent', $params) 
+                            ? $params['discount_percent'] 
+                            : $document_line->discount_percent;
+
+        // Final Price
+        $unit_final_price = clone $unit_customer_final_price;
+        if ( $discount_percent ) 
+            $unit_final_price->applyDiscountPercent( $discount_percent );
+
+        // Sales Rep
+        $sales_rep_id = array_key_exists('sales_rep_id', $params) 
+                            ? $params['sales_rep_id'] 
+                            : $document_line->sales_rep_id;
+        
+        $commission_percent = array_key_exists('sales_rep_id', $params) && array_key_exists('commission_percent', $params) 
+                            ? $params['commission_percent'] 
+                            : $document_line->commission_percent;
+
+        // Misc
+        $notes = array_key_exists('notes', $params) 
+                            ? $params['notes'] 
+                            : $document_line->notes;
+
+
+        // Build OrderLine Object
+        $data = [
+ //           'line_sort_order' => $line_sort_order,
+ //           'line_type' => $line_type,
+ //           'product_id' => $product_id,
+ //           'combination_id' => $combination_id,
+ //           'reference' => $reference,
+ //           'name' => $name,
+            'quantity' => $quantity,
+ //           'measure_unit_id' => $measure_unit_id,
+
+            'prices_entered_with_tax' => $pricetaxPolicy,
+    
+//            'cost_price' => $cost_price,
+//            'unit_price' => $unit_price,
+//            'unit_customer_price' => $unit_customer_price,
+            'unit_customer_final_price' => $unit_customer_final_price->getPrice(),
+            'unit_customer_final_price_tax_inc' => $unit_customer_final_price->getPriceWithTax(),
+            'unit_final_price' => $unit_final_price->getPrice(),
+            'unit_final_price_tax_inc' => $unit_final_price->getPriceWithTax(), 
+  //          'sales_equalization' => $sales_equalization,
+            'discount_percent' => $discount_percent,
+            'discount_amount_tax_incl' => 0.0,      // floatval( $request->input('discount_amount_tax_incl', 0.0) ),
+            'discount_amount_tax_excl' => 0.0,      // floatval( $request->input('discount_amount_tax_excl', 0.0) ),
+
+  //          'total_tax_incl' => $quantity * $unit_final_price->getPriceWithTax(),
+  //          'total_tax_excl' => $quantity * $unit_final_price->getPrice(),
+
+            'tax_percent' => $tax_percent,
+            'commission_percent' => $commission_percent,
+            'notes' => $notes,
+    //        'locked' => 0,
+    
+    //        'customer_order_id',
+    //        'tax_id' => $tax->id,
+            'sales_rep_id' => $sales_rep_id,
+        ];
+
+        // More stuff
+
+        if (array_key_exists('line_sort_order', $params)) 
+            $data['line_sort_order'] = $params['line_sort_order'];
+        
+        if (array_key_exists('name', $params)) 
+            $data['name'] = $params['name'];
+        
+        if (array_key_exists('measure_unit_id', $params)) 
+            $data['measure_unit_id'] = $params['measure_unit_id'];
+
+
+        // Finishing touches
+        $document_line->update( $data );
+
+
+        // Good boy, bye then
+        return $document_line;
+
+    }
+
 }

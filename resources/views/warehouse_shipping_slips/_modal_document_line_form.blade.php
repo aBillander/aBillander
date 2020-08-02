@@ -86,33 +86,6 @@ function calculate_service_price()
 
 function get_tax_percent_by_id(tax_id, se = 0) 
 {
-   // http://stackoverflow.com/questions/18910939/how-to-get-json-key-and-value-in-javascript
-   // var taxes = $.parseJSON( '{{ json_encode( $taxpercentList ) }}' );
-
-/*   var taxes = { ! ! json_encode( $customer->sales_equalization
-                                  ? $taxeqpercentList 
-                                  : $taxpercentList 
-                              ) ! ! } ;
-*/
-//   var se;
-   var taxes   = {!! json_encode( $document->taxingaddress->getTaxPercentList() ) !!} ;
-   var retaxes = {!! json_encode( $document->taxingaddress->getTaxWithREPercentList() ) !!} ;
-
-   // Skip sales equalization
-   // se = 0;
-
-   if (typeof taxes[tax_id] == "undefined")   // or if (taxes[tax_id] === undefined) {
-   {
-        // variable is undefined
-        alert('Tax code ['+tax_id+'] not found!');
-
-        return false;
-   }
-
-   if (se>0)
-        return parseFloat(retaxes[tax_id]);
-   else
-        return parseFloat(taxes[tax_id]);
 }
 
 

@@ -84,4 +84,10 @@ return [
 	'Type a Product Name or Product Reference.'     => 'Escriba un Nombre de Producto o Referencia.',
 	'Description'     => 'Descripción',
 	'Quantity' => 'Cantidad',
+
+	// Modal edit line
+	'Edit Line' => 'Modificar Línea',
+	'Text Line'     => 'Línea de texto',
+	''     => '',
+	''     => '',
 ];

@@ -468,7 +468,19 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('warehouseshippingslips/line/searchproduct',        'WarehouseShippingSlipsController@searchProduct' )->name('warehouseshippingslips.searchproduct');
         Route::get('warehouseshippingslips/line/searchservice',        'WarehouseShippingSlipsController@searchService' )->name('warehouseshippingslips.searchservice');
         Route::get('warehouseshippingslips/line/getproduct',           'WarehouseShippingSlipsController@getProduct'      )->name('warehouseshippingslips.getproduct');
-        Route::get('warehouseshippingslips/line/getproduct/prices',    'WarehouseShippingSlipsController@getProductPrices')->name('warehouseshippingslips.getproduct.prices');
+//        Route::get('warehouseshippingslips/line/getproduct/prices',    'WarehouseShippingSlipsController@getProductPrices')->name('warehouseshippingslips.getproduct.prices');
+
+        Route::post('warehouseshippingslips/{id}/storeline',    'WarehouseShippingSlipsController@storeDocumentLine'   )->name('warehouseshippingslips.storeline'  );
+//        Route::post('warehouseshippingslips/{id}/updatetotal',  'WarehouseShippingSlipsController@updateDocumentTotal' )->name('warehouseshippingslips.updatetotal');
+        Route::get('warehouseshippingslips/{id}/getline/{lid}', 'WarehouseShippingSlipsController@getDocumentLine'     )->name('warehouseshippingslips.getline'    );
+        Route::post('warehouseshippingslips/updateline/{lid}',  'WarehouseShippingSlipsController@updateDocumentLine'  )->name('warehouseshippingslips.updateline' );
+        Route::post('warehouseshippingslips/deleteline/{lid}',  'WarehouseShippingSlipsController@deleteDocumentLine'  )->name('warehouseshippingslips.deleteline' );
+//        Route::get('warehouseshippingslips/{id}/duplicate',     'WarehouseShippingSlipsController@duplicateDocument'   )->name('warehouseshippingslips.duplicate'  );
+//        Route::get('warehouseshippingslips/{id}/profit',        'WarehouseShippingSlipsController@getDocumentProfit'   )->name('warehouseshippingslips.profit'     );
+        Route::get('warehouseshippingslips/{id}/availability',  'WarehouseShippingSlipsController@getDocumentAvailability' )->name('warehouseshippingslips.availability' );
+        
+        Route::get('warehouseshippingslips/{id}/availability/modal',  'WarehouseShippingSlipsController@getDocumentAvailabilityModal' )->name('warehouseshippingslips.availability.modal' );
+
 
         Route::post('warehouseshippingslips/{id}/quickaddlines',    'WarehouseShippingSlipsController@quickAddLines'   )->name('warehouseshippingslips.quickaddlines'  );
 

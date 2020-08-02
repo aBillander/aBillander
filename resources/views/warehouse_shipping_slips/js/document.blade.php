@@ -79,7 +79,8 @@
           $(document).on('click', '.edit-document-line', function(evnt) {
 
               // What to do? Let's see:
-              var line_type = $(this).attr('data-type');
+              // var line_type = $(this).attr('data-type');
+              var line_type = 'product';
 
               switch( line_type ) {
                   case 'product':
@@ -112,7 +113,7 @@
 
             // Load form first
                var panel = $("#document_line_form");
-               var url = "{ { route('warehouseshippingslips.productform', ['edit']) }}";
+               var url = "{{ route('warehouseshippingslips.productform', ['edit']) }}";
 
                panel.html('');
                panel.addClass('loading');
@@ -141,7 +142,7 @@
                           
               var id = selector.attr('data-id');
               var line_type = selector.attr('data-type');
-              var url = "{ { route('warehouseshippingslips.getline', [$document->id, '']) }}/"+id;
+              var url = "{{ route('warehouseshippingslips.getline', [$document->id, '']) }}/"+id;
               var label = '';
 
               PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
@@ -515,7 +516,7 @@
         $("body").on('click', "#modal_edit_document_line_productSubmit", function() {
 
             var id = $('#line_id').val();
-            var url = "{ { route('warehouseshippingslips.updateline', ['']) }}/"+id;
+            var url = "{{ route('warehouseshippingslips.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
 //            if ( id == '' )

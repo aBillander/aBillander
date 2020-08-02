@@ -45,7 +45,7 @@
  //         alert('etgwer');
 
             var id = $('#delete_line_id').val();
-            var url = "{{ route($model_path.'.deleteline', ['']) }}/"+id;
+            var url = "{{ route('warehouseshippingslips.deleteline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
             var payload = {

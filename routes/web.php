@@ -485,6 +485,20 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('warehouseshippingslips/{id}/quickaddlines',    'WarehouseShippingSlipsController@quickAddLines'   )->name('warehouseshippingslips.quickaddlines'  );
 
         Route::post('warehouseshippingslips/sortlines', 'WarehouseShippingSlipsController@sortLines')->name('warehouseshippingslips.sortlines');
+
+
+        Route::get('warehouseshippingslips/{document}/confirm',   'WarehouseShippingSlipsController@confirm'  )->name('warehouseshippingslips.confirm'  );
+        Route::get('warehouseshippingslips/{document}/unconfirm', 'WarehouseShippingSlipsController@unConfirm')->name('warehouseshippingslips.unconfirm');
+
+        Route::get('warehouseshippingslips/{id}/pdf',         'WarehouseShippingSlipsController@showPdf'       )->name('warehouseshippingslips.pdf'        );
+//        Route::post('warehouseshippingslips/pdf/bulk',        'WarehouseShippingSlipsController@showBulkPdf'   )->name('warehouseshippingslips.bulk.pdf'   );
+        Route::match(array('GET', 'POST'), 
+                   'warehouseshippingslips/{id}/email',       'WarehouseShippingSlipsController@sendemail'     )->name('warehouseshippingslips.email'      );
+
+        Route::get('warehouseshippingslips/{document}/onhold/toggle', 'WarehouseShippingSlipsController@onholdToggle')->name('warehouseshippingslips.onhold.toggle');
+
+        Route::get('warehouseshippingslips/{document}/close',   'WarehouseShippingSlipsController@close'  )->name('warehouseshippingslips.close'  );
+        Route::get('warehouseshippingslips/{document}/unclose', 'WarehouseShippingSlipsController@unclose')->name('warehouseshippingslips.unclose');
         
         
         Route::resource('salesreps', 'SalesRepsController');

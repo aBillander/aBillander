@@ -370,6 +370,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 		
+		// Warehouse Shipping Slips Sequencess
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('warehouse_shipping_slips_sequenceList', \App\Sequence::listFor( \App\WarehouseShippingSlip::class ));
+		    
+		});
+		
 		// Customer Invoices Sequencess
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
@@ -397,6 +404,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		view()->composer(array('configuration_keys.key_group_2', 'customers.edit'), function($view) {
 		    
 		    $view->with('shipping_slips_templateList', \App\Template::listFor( \App\CustomerShippingSlip::class ));
+		    
+		});
+
+		// Warehouse Shipping Slips Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('warehouse_shipping_slips_templateList', \App\Template::listFor( \App\WarehouseShippingSlip::class ));
 		    
 		});
 

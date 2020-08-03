@@ -78,6 +78,13 @@ class EventServiceProvider extends ServiceProvider
 
 
 
+        'App\Events\WarehouseShippingSlipPrinted' => [
+            'App\Listeners\WarehouseShippingSlipPrintedListener',
+        ],
+
+
+
+
         'App\Events\SupplierShippingSlipConfirmed' => [
             'App\Listeners\SupplierShippingSlipConfirmedListener',
         ],

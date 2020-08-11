@@ -12,7 +12,7 @@
     <div class="pull-right" xstyle="padding-top: 4px;">
 
 @if ( $directdebit->status != "closed" && ( $directdebit->nbrItems() != 0 ) )
-        <a id="download_btn" href="{{ route('sepasp.directdebit.xml', $directdebit->id) }}" class="btn btn-success magick" style="margin-right: 22px;""><i class="fa fa-file-code-o"></i> &nbsp;{{ l('SEPA XML file') }}</a>
+        <a id="download_btn" href="{{ route('sepasp.directdebit.xml', $directdebit->id) }}" class="btn btn-success magick" style="margin-right: 22px;"><i class="fa fa-file-code-o"></i> &nbsp;{{ l('SEPA XML file') }}</a>
 @endif
 
         <a class=" hide btn xbtn btn-info create-production-order" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-money"></i> &nbsp;{{l('Set as Paid')}}</a>

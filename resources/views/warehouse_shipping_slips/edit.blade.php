@@ -38,7 +38,7 @@
 @if ($document->document_id>0)
                 <a class="btn btn-sm btn-grey" href="{{ URL::to('warehouseshippingslips/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank" onclick="open_in_new_tab_and_reload( this );return false;"><i class="fa fa-file-pdf-o"></i></a>
 
-                <a class="btn btn-sm btn-lightblue" href="{{ URL::to('warehouseshippingslips/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
+                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('warehouseshippingslips/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a -->
 @endif
 
                 @if( $document->deletable )

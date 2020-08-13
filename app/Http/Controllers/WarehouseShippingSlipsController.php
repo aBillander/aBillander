@@ -366,6 +366,315 @@ class WarehouseShippingSlipsController extends Controller
     }
 
 
+    /**
+     * Manage Status.
+     *
+     * ******************************************************************************************************************************* *
+     * 
+     */
+
+    protected function confirm(Document $document)
+    {
+        // Can I?
+        if ( $document->lines->count() == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Confirm
+        if ( $document->confirm() )
+            return redirect()->back()           // ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+    protected function unConfirm(Document $document)
+    {
+        // Can I?
+        if ( $document->status != 'confirmed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        // UnConfirm
+        if ( $document->unConfirmDocument() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function onholdToggle(Document $document)
+    {
+        // No checks. A closed document can be set to "onhold". Maybe usefull...
+
+        // Toggle
+        $toggle = $document->onhold > 0 ? 0 : 1;
+        $document->onhold = $toggle;
+        
+        $document->save();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+    }
+
+
+    protected function close(Document $document)
+    {
+        // abi_r($document);die();
+
+        // Can I?
+        if ( $document->lines->count() == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Close
+        if ( $document->close() )
+            return redirect()->back()           // ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function unclose(Document $document)
+    {
+
+        if ( $document->status != 'closed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+        }
+
+        // Unclose (back to "confirmed" status)
+        if ( $document->unclose() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function setCarrierBulk(Request $request)
+    {
+        //
+        // Get Document IDs & constraints
+        $document_list = $request->input('document_group', []);
+
+        $carrier_id = $request->input('set_carrier_id');
+        if ( !((int) $carrier_id > 0) ) $carrier_id = null;
+
+        // abi_r($request->all());die();
+
+        if ( count( $document_list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // abi_r($document_list);
+
+        //
+        // Get Documents
+        try {
+
+            $documents = $this->document->findOrFail( $document_list );
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return redirect()->back()
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $document_list)], 'layouts'));
+            
+        }
+
+        $i_all = $documents->count();
+        $i_ok = $i_ko = 0;
+
+        foreach ($documents as $document) {
+            # code...
+
+            // Can I?
+            if ( $document->shipment_status == 'delivered' )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+            }
+
+            if ( 0 && $document->onhold )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+            }
+
+            // Change Carrier
+            $document->force_carrier_id = true;
+            $document->carrier_id = $carrier_id;
+
+            $document->save();            
+                
+            $i_ok++;
+        }
+
+        return redirect()->back()           // ->route($this->model_path.'.index')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ' '.$i_ok.'ok + '.$i_ko.'ko = '.$i_all.' '], 'layouts'));
+
+    }
+
+
+    protected function deliver($id, Request $request)
+    {
+        $document = $this->document->findOrFail($id);
+
+        // Can I?
+        if ( $document->status != 'closed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Deliver
+        if ( $document->deliver() )
+            return redirect()->back()           // ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function deliverBulk(Request $request)
+    {
+        //
+        // Get Document IDs & constraints
+        $document_list = $request->input('document_group', []);
+
+        if ( count( $document_list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        // abi_r($document_list);
+
+        //
+        // Get Documents
+        try {
+
+            $documents = $this->document->findOrFail( $document_list );
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return redirect()->back()
+                    ->with('error', l('Some records in the list [ :id ] do not exist', ['id' => implode(', ', $document_list)], 'layouts'));
+            
+        }
+
+        $i_all = $documents->count();
+        $i_ok = $i_ko = 0;
+
+        foreach ($documents as $document) {
+            # code...
+
+            // Can I?
+            if ( $document->status != 'closed' )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+            }
+
+            if ( $document->onhold )
+            {
+                $i_ko++;
+                continue;
+                // return redirect()->back()
+                //    ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+            }
+
+            // Deliver
+            if ( $document->deliver() )
+            {
+                
+                $i_ok++;
+                // return redirect()->back()           // ->route($this->model_path.'.index')
+                //        ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+            } else {
+                //
+                $i_ko++;
+            }
+        }
+
+        return redirect()->back()           // ->route($this->model_path.'.index')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ' '.$i_ok.'ok + '.$i_ko.'ko = '.$i_all.' '], 'layouts'));
+
+    }
+
+    protected function undeliver($id, Request $request)
+    {
+        $document = $this->document->findOrFail($id);
+
+        // Can I?
+        if ( $document->status != 'closed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+        }
+/*
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+*/
+        // unDeliver
+        if ( $document->undeliver() )
+            return redirect()->back()           // ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+
+
+
+
 /* ********************************************************************************************* */  
 
 

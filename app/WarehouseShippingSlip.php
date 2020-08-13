@@ -163,6 +163,30 @@ class WarehouseShippingSlip extends Model
     */
 
 
+
+    public function getUncloseableAttribute()
+    {
+        if ( $this->status != 'closed' ) return false;
+
+        // On delivery
+        if (0)
+            if ( $this->shipment_status != 'pending' ) return false;
+
+        // if ( ! $this->rightAscriptions->isEmpty() ) return false;
+
+        return true;
+    }
+
+    public function getUnconfirmableAttribute()
+    {
+        if ( $this->status != 'confirmed' ) return false;
+
+        // if ( optional($this->rightAscriptions)->count() || optional($this->leftAscriptions)->count() ) return false;
+
+        return true;
+    }
+
+
     public function getEditableAttribute()
     {
         return !( $this->locked || $this->status == 'closed' || $this->status == 'canceled' );
@@ -170,7 +194,8 @@ class WarehouseShippingSlip extends Model
 
     public function getDeletableAttribute()
     {
-        return !( $this->status == 'closed' || $this->status == 'canceled' );
+        // return !( $this->status == 'closed' || $this->status == 'canceled' );
+        return $this->status != 'closed';
     }
 
     public function getNumberAttribute()
@@ -1081,10 +1106,10 @@ class WarehouseShippingSlip extends Model
         foreach ($this->lines as $line) {
             //
             // Only products, please!!!
-            if ( ! ( $line->line_type == 'product' ) ) continue;
+            // if ( ! ( $line->line_type == 'product' ) ) continue;
             if ( ! ( $line->product_id > 0 ) )         continue;
 
-            //
+            // Prepare StockMovement::TRANSFER_OUT
             $data = [
                     'date' => \Carbon\Carbon::now(),
 
@@ -1098,10 +1123,10 @@ class WarehouseShippingSlip extends Model
                     'measure_unit_id' => $line->measure_unit_id,
 //                    'quantity_after_movement' => $line->,
 
-                    'price' => $line->unit_final_price,
-                    'price_currency' => $line->unit_final_price,
-                    'currency_id' => $this->currency_id,
-                    'conversion_rate' => $this->currency_conversion_rate,
+                    'price' => $line->product->cost_price,
+                    'price_currency' => $line->product->cost_price,
+//                    'currency_id' => $this->currency_id,
+//                    'conversion_rate' => $this->currency_conversion_rate,
 
                     'notes' => '',
 
@@ -1111,9 +1136,9 @@ class WarehouseShippingSlip extends Model
                     'name' => $line->name,
 
                     'warehouse_id' => $this->warehouse_id,
-//                    'warehouse_counterpart_id' => $line->,
+                    'warehouse_counterpart_id' => $this->warehouse_counterpart_id,
 
-                    'movement_type_id' => StockMovement::SALE_ORDER,
+                    'movement_type_id' => StockMovement::TRANSFER_OUT,
 
 //                    'user_id' => $line->,
 
@@ -1121,6 +1146,25 @@ class WarehouseShippingSlip extends Model
             ];
 
             $stockmovement = StockMovement::createAndProcess( $data );
+
+            if ( $stockmovement )
+            {
+                //
+                $line->stockmovements()->save( $stockmovement );
+            }
+
+
+            // The show **MUST** go on
+
+            // Prepare StockMovement::TRANSFER_IN
+            $data1 = [
+                    'warehouse_id' => $this->warehouse_counterpart_id,
+                    'warehouse_counterpart_id' => $this->warehouse_id,
+
+                    'movement_type_id' => StockMovement::TRANSFER_IN,
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( array_merge($data, $data1) );
 
             if ( $stockmovement )
             {

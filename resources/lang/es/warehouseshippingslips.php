@@ -90,4 +90,6 @@ return [
 	'Text Line'     => 'Línea de texto',
 	''     => '',
 	''     => '',
+
+	'Not Invoiceable Document' => 'Documento No Facturable',
 ];

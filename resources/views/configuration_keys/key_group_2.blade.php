@@ -396,6 +396,26 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION" id="WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION_on" value="1" @if( old('WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION', $key_group['WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION" id="WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION_off" value="0" @if( !old('WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION', $key_group['WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION.help') !!}</span>
+      </div>
+    </div>
+
+
 
 
     <div class="form-group">

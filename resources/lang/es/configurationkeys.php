@@ -133,6 +133,8 @@ return [
 	'DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE.help' => '',
 	'DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE.name' => 'Plantilla de Albaranes para Transferencias entre Almacenes',
 	'DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE.help' => '',
+	'WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION.name' => 'Los Albaranes para Transferencias entre Almacenes necesitan Validación',
+	'WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION.help' => 'Sólo los Albaranes para Transferencias entre Almacenes que han sido validados podrán enviarse.<br />1: Los Albaranes para Transferencias entre Almacenes se crearán con Estado = "<strong>draft</strong>".<br />0: Los Albaranes para Transferencias entre Almacenes se crearán con Estado = "<strong>confirmed</strong>".',
 	'Other' => 'Otros',
 	'DEF_ITEMS_PERAJAX.name' => 'Items por consulta Ajax',
 	'DEF_ITEMS_PERAJAX.help' => 'Número de items (máximo) devuelto por una consulta Ajax.',

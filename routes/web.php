@@ -499,6 +499,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('warehouseshippingslips/{document}/close',   'WarehouseShippingSlipsController@close'  )->name('warehouseshippingslips.close'  );
         Route::get('warehouseshippingslips/{document}/unclose', 'WarehouseShippingSlipsController@unclose')->name('warehouseshippingslips.unclose');
+
+        Route::get('warehouseshippingslips/{id}/deliver' , 'WarehouseShippingSlipsController@deliver'    )->name('warehouseshippingslip.deliver');
+//        Route::post('warehouseshippingslips/deliver/bulk', 'WarehouseShippingSlipsController@deliverBulk')->name('warehouseshippingslips.bulk.deliver');
+
+        Route::get('warehouseshippingslips/{id}/undeliver'  , 'WarehouseShippingSlipsController@undeliver')->name('warehouseshippingslip.undeliver');
         
         
         Route::resource('salesreps', 'SalesRepsController');

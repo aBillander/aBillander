@@ -854,4 +854,351 @@ class WarehouseShippingSlip extends Model
 
     }
 
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Status Manager
+    |--------------------------------------------------------------------------
+    */
+
+    public function confirm()
+    {
+        // if ( ! parent::confirm() ) return false;
+
+        // Already confirmed?
+        if ( $this->document_reference || ( $this->status != 'draft' ) ) return false;
+
+        // onhold?
+        if ( $this->onhold ) return false;
+
+        // Sequence
+        $seq_id = $this->sequence_id > 0 ? $this->sequence_id : Configuration::get('DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE');
+        $seq = \App\Sequence::find( $seq_id );
+        $doc_id = $seq->getNextDocumentId();
+
+        $this->sequence_id = $seq_id;
+        // Not fillable
+        $this->document_prefix    = $seq->prefix;
+        // Not fillable
+        $this->document_id        = $doc_id;
+        // Not fillable. May come from external system ???
+        $this->document_reference = $seq->getDocumentReference($doc_id);
+
+        $this->status = 'confirmed';
+        $this->validation_date = \Carbon\Carbon::now();
+//        $this->document_date = $this->validation_date;
+
+        $this->save();
+
+        // So far, so good
+
+        // Dispatch event
+        event( new \App\Events\WarehouseShippingSlipConfirmed($this) );
+
+        return true;
+    }
+
+    public function unConfirm()
+    {
+        // if ( ! parent::unConfirmDocument() ) return false;
+
+        // Can I?
+        if ( $this->status != 'confirmed' ) return false;
+
+        // onhold? No problemo
+        // if ( $this->onhold ) return false;
+
+        // Not taking care of Secuence numbering, but try to save current number
+        // Can I "undo" last number in Sequence
+        $seq_id = $this->sequence_id;
+        $seq = \App\Sequence::find( $seq_id );
+        $next_id = $seq->next_id;
+        $doc_id = $this->document_id;
+
+        if ( ($next_id - $doc_id) == 1 ) {
+        
+                // Update Sequence
+                $seq->next_id = $doc_id;
+        // ???        $seq->last_date_used = \Carbon\Carbon::now();
+                $seq->save();
+        }
+
+        // Update Document
+        // Not fillable
+        $this->document_prefix    = NULL;
+        // Not fillable
+        $this->document_id        = 0;
+        // Not fillable. May come from external system ???
+        $this->document_reference = NULL;
+
+        $this->status = 'draft';
+        $this->validation_date = NULL;
+
+        $this->save();
+
+        // So far, so good
+
+        // Dispatch event
+        // event( new \App\Events\WarehouseShippingSlipUnConfirmed($this) );
+
+        return true;
+    }
+
+    public function close()
+    {
+        // if ( ! parent::close() ) return false;
+
+        // Can I ...?
+        if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
+        
+        if ( $this->status == 'closed' ) return false;
+
+        // No lines?
+        if ( $this->lines->count() == 0 ) return false;
+
+        // onhold?
+        if ( $this->onhold ) return false;
+
+        // Do stuf...
+        $this->status = 'closed';
+        $this->close_date = \Carbon\Carbon::now();
+
+        $this->save();
+
+        // So far, so good
+
+        // Dispatch event
+        event( new \App\Events\WarehouseShippingSlipClosed($this) );
+
+        return true;
+    }
+
+    public function unclose( $status = null )
+    {
+        // if ( ! parent::unclose() ) return false;
+
+        // Can I ...?
+        if ( $this->status != 'closed' ) return false;
+
+        // Do stuf...
+        $this->status = $status ?: 'confirmed';
+        $this->close_date =null;
+
+        $this->save();
+
+        // So far, so good
+
+        // Dispatch event
+        event( new \App\Events\WarehouseShippingSlipUnclosed($this) );
+
+        return true;
+    }
+
+    public function deliver()
+    {
+        // if ( ! parent::close() ) return false;
+
+        // Dispatch event
+        // event( new \App\Events\CustomerShippingSlipDelivered($this) );
+
+        // Can I ...?
+        if ( $this->status != 'closed' ) return false;
+
+        // onhold?
+        if ( $this->onhold ) return false;
+
+        // Do stuf...
+        $this->shipment_status = 'delivered';
+        $this->delivery_date_real = \Carbon\Carbon::now();
+
+        $this->save();
+
+        return true;
+    }
+
+    public function undeliver()
+    {
+        // if ( ! parent::close() ) return false;
+
+        // Dispatch event
+        // event( new \App\Events\CustomerShippingSlipDelivered($this) );
+
+        // Can I ...?
+        if ( $this->status != 'closed' ) return false;
+
+        // onhold?
+        // if ( $this->onhold ) return false;
+
+        // Do stuf...
+        $this->shipment_status = 'pending';
+        $this->delivery_date_real = null;
+
+        $this->save();
+
+        return true;
+    }
+
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stock Movements
+    |--------------------------------------------------------------------------
+    */
+
+    public function shouldPerformStockMovements()
+    {
+        return true;
+
+        if ( $this->created_via == 'manual' && $this->stock_status == 'pending' ) return true;
+/*
+        if ($this->stock_status == 'pending') return true;
+
+        if ($this->stock_status == 'completed') return false;
+
+        if ($this->created_via == 'aggregate_shipping_slips') return false;
+*/
+        return false;
+    }
+
+    public function canRevertStockMovements()
+    {
+        if ( $this->status == 'closed' ) return true;
+
+        return false;
+/*
+        if ($this->created_via == 'manual' && $this->stock_status == 'completed' ) return true;
+
+        return false;
+*/
+    }
+
+    
+    public function makeStockMovements()
+    {
+        // Let's rock!
+        foreach ($this->lines as $line) {
+            //
+            // Only products, please!!!
+            if ( ! ( $line->line_type == 'product' ) ) continue;
+            if ( ! ( $line->product_id > 0 ) )         continue;
+
+            //
+            $data = [
+                    'date' => \Carbon\Carbon::now(),
+
+//                    'stockmovementable_id' => $line->,
+//                    'stockmovementable_type' => $line->,
+
+                    'document_reference' => $this->document_reference,
+
+//                    'quantity_before_movement' => $line->,
+                    'quantity' => $line->quantity,
+                    'measure_unit_id' => $line->measure_unit_id,
+//                    'quantity_after_movement' => $line->,
+
+                    'price' => $line->unit_final_price,
+                    'price_currency' => $line->unit_final_price,
+                    'currency_id' => $this->currency_id,
+                    'conversion_rate' => $this->currency_conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $line->product_id,
+                    'combination_id' => $line->combination_id,
+                    'reference' => $line->reference,
+                    'name' => $line->name,
+
+                    'warehouse_id' => $this->warehouse_id,
+//                    'warehouse_counterpart_id' => $line->,
+
+                    'movement_type_id' => StockMovement::SALE_ORDER,
+
+//                    'user_id' => $line->,
+
+//                    'inventorycode'
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+
+            if ( $stockmovement )
+            {
+                //
+                $line->stockmovements()->save( $stockmovement );
+            }
+        }
+
+        // $this->stock_status = 'completed';
+        $this->save();
+
+        return true;
+    }
+
+    
+    public function revertStockMovements()
+    {
+        // Let's rock!
+        foreach ($this->lines as $line) {
+            //
+            // Only products, please!!!
+            if ( ! ( $line->product_id > 0 ) ) continue;
+
+            //
+            foreach ( $line->stockmovements as $mvt ) {
+                # code...
+                $data = [
+                        'date' => \Carbon\Carbon::now(),
+
+    //                    'stockmovementable_id' => $line->,
+    //                    'stockmovementable_type' => $line->,
+
+                        'document_reference' => $mvt->document_reference,
+
+    //                    'quantity_before_movement' => $line->,
+                        'quantity' => -$mvt->quantity,
+                        'measure_unit_id' => $mvt->measure_unit_id,
+    //                    'quantity_after_movement' => $line->,
+
+                        'price' => $mvt->price,
+                        'price_currency' => $mvt->price_currency,
+                        'currency_id' => $mvt->currency_id,
+                        'conversion_rate' => $mvt->conversion_rate,
+
+                        'notes' => '',
+
+                        'product_id' => $mvt->product_id,
+                        'combination_id' => $mvt->combination_id,
+                        'reference' => $mvt->reference,
+                        'name' => $mvt->name,
+
+                        'warehouse_id' => $mvt->warehouse_id,
+    //                    'warehouse_counterpart_id' => $line->,
+
+                        'movement_type_id' => $mvt->movement_type_id,
+
+    //                    'user_id' => $line->,
+
+    //                    'inventorycode'
+                ];
+
+                $stockmovement = StockMovement::createAndProcess( $data );
+
+                if ( $stockmovement )
+                {
+                    //
+                    $line->stockmovements()->save( $stockmovement );
+                }
+
+            }   // Movements loop ENDS
+
+        }   // Lines loop ENDS
+
+        // $this->stock_status = 'pending';
+        $this->save();
+
+        return true;
+    }
+
+
 }

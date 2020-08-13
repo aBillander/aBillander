@@ -148,8 +148,8 @@ class WarehouseShippingSlipsController extends Controller
         $document = $this->document->create($request->all());
 
         // Move on
-        // Maybe ALLWAYS confirm
-        if ($request->has('nextAction'))
+        // Skip
+        if (0 && $request->has('nextAction'))
         {
             switch ( $request->input('nextAction') ) {
                 case 'saveAndConfirm':
@@ -163,6 +163,11 @@ class WarehouseShippingSlipsController extends Controller
                     break;
             }
         }
+
+        // Final touches
+        // Need confirmation?
+        if (  Configuration::isFalse('WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION') )
+            $document->confirm();
 
         return redirect('warehouseshippingslips/'.$document->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));

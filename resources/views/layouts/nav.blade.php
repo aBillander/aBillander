@@ -223,6 +223,11 @@
                                  {{l('Inventory Adjustments', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ URL::to('warehouseshippingslips') }}">
+                                 {{l('Warehouse Transfers', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ route('suppliershippingslips.index') }}">

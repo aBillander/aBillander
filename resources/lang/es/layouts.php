@@ -122,6 +122,7 @@ return [
 	'Lots' => 'Lotes',
 	'Inventory Count'     => 'Inventario de Almacén',
 	'Inventory Adjustments'     => 'Regularización de Almacén',
+	'Warehouse Transfers' => 'Transferencias entre Almacenes',
 
 	'Invoicing'     => 'Facturación',
 	'Customer Invoices'     => 'Facturas de Clientes',

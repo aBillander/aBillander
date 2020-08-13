@@ -78,6 +78,25 @@ class EventServiceProvider extends ServiceProvider
 
 
 
+        'App\Events\WarehouseShippingSlipConfirmed' => [
+            'App\Listeners\WarehouseShippingSlipConfirmedListener',
+        ],
+    
+        'App\Events\WarehouseShippingSlipClosed' => [
+            'App\Listeners\WarehouseShippingSlipClosedListener',
+        ],
+    
+        'App\Events\WarehouseShippingSlipUnclosed' => [
+            'App\Listeners\WarehouseShippingSlipUnclosedListener',
+        ],
+    
+        'App\Events\WarehouseShippingSlipPrinted' => [
+            'App\Listeners\WarehouseShippingSlipPrintedListener',
+        ],
+
+
+
+
         'App\Events\SupplierShippingSlipConfirmed' => [
             'App\Listeners\SupplierShippingSlipConfirmedListener',
         ],

@@ -27,6 +27,7 @@ class Sequence extends Model {
             'SupplierInvoice',
 
             'StockCount',
+            'WarehouseShippingSlip',
 
             'SepaDirectDebit',
         );
@@ -46,6 +47,7 @@ class Sequence extends Model {
             SupplierInvoice::class      => 'SupplierInvoice',
             
             StockCount::class      => 'StockCount',
+            WarehouseShippingSlip::class => 'WarehouseShippingSlip',
 
             \aBillander\SepaSpain\SepaDirectDebit::class      => 'SepaDirectDebit',
         );

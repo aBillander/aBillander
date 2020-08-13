@@ -84,6 +84,7 @@ return array(
 	'SupplierInvoice' => 'Factura de Proveedor',
 
     'StockCount' => 'Inventario de Almacén',
+    'WarehouseShippingSlip' => 'Transferencias entre Almacenes',
 
 
 	/*
@@ -99,6 +100,7 @@ return array(
     'template.CustomerOrderPdf'   => 'Pedido de Cliente (Pdf)',
     'template.CustomerShippingSlipPdf'   => 'Albarán de Cliente (Pdf)',
 	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',
+    'template.WarehouseShippingSlipPdf' => 'Transferencias entre Almacenes (Pdf)',
     'template.Pdf' => 'Plantilla Pdf',
     'template.Mail' => 'Plantilla Mail',
 	

@@ -45,7 +45,8 @@ class StockMovementsController extends Controller
         						->with('combination')
 //        						->with('stockmovementable')
         						->with('stockmovementable.document')
-        						->orderBy('created_at', 'DESC');
+        						->orderBy('created_at', 'DESC')
+        						->orderBy('id', 'DESC');
 
 //         abi_r($mvts->toSql(), true);
 

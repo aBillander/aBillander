@@ -468,17 +468,17 @@ class JenniferController extends Controller
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Inventario histórico, hasta el ' . abi_date_short( $date ), '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Inventario histórico, hasta el ' . abi_date_short( $date ), '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
 
         // Define the Excel spreadsheet headers
         $headers = [ 'reference', 'name', 'price', 'cost_price' ];
 
-        $header_names = ['Código', 'Nombre', 'Val.Coste', 'Val.Venta', 'Stock'];
+        $header_names = ['Código', 'Nombre', 'Val.Medio', 'Val.Coste', 'Val.Venta', 'Stock'];
 
         $data[] = $header_names;
-        $total_cost = $total_price = 0.0;
+        $total_cost_average = $total_cost = $total_price = 0.0;
 
         // Convert each member of the returned collection into an array,
         // and append it to the data array.
@@ -488,6 +488,7 @@ class JenniferController extends Controller
             $row = [];
             $row[] = $product->reference;
             $row[] = $product->name;
+            $row[] = $stock * $product->cost_average;
             $row[] = $stock * $product->cost_price;
             $row[] = $stock * $product->price;
             $row[] = $stock;
@@ -499,13 +500,14 @@ class JenniferController extends Controller
 //            $row[] = $product->getStockToDateByWarehouse( 1, \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('inventory_date_to')) );
 
             $data[] = $row;
-            $total_cost  += $row[2];
-            $total_price += $row[3];
+            $total_cost_average  += $row[2];
+            $total_cost  += $row[3];
+            $total_price += $row[4];
         }
 
         // Totals
         $data[] = [''];
-        $data[] = ['', 'Total:', $total_cost, $total_price, ''];
+        $data[] = ['', 'Total:', $total_cost_average, $total_cost, $total_price, ''];
 
         $sheetName = 'Inventario';
 
@@ -523,6 +525,9 @@ class JenniferController extends Controller
             $excel->sheet($sheetName, function($sheet) use ($data) {
                 $sheet->fromArray($data, null, 'A1', false, false);
                 
+                $sheet->mergeCells('A1:B1');
+                $sheet->mergeCells('A2:B2');
+
                 $sheet->getStyle('A4:F4')->applyFromArray([
                     'font' => [
                         'bold' => true
@@ -539,7 +544,7 @@ class JenniferController extends Controller
                 ));
                 
                 $n = count($data); 
-                $sheet->getStyle("B$n:D$n")->applyFromArray([
+                $sheet->getStyle("B$n:E$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

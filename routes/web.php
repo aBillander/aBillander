@@ -457,6 +457,54 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('warehouses', 'WarehousesController');
         Route::get('warehouses/{id}/inventory', 'WarehousesController@indexProducts')->name('warehouse.inventory');
         Route::get('export/warehouses/{id}/inventory', 'WarehousesController@exportProducts' )->name('warehouse.inventory.export');
+
+        Route::resource('warehouseshippingslips', 'WarehouseShippingSlipsController');
+        // See line 552
+        Route::get('warehouseshippingslips/{id}/getlines',             'WarehouseShippingSlipsController@getDocumentLines'  )->name('warehouseshippingslips.getlines' );
+        Route::get('warehouseshippingslips/{id}/getheader',            'WarehouseShippingSlipsController@getDocumentHeader' )->name('warehouseshippingslips.getheader');
+        Route::get('warehouseshippingslips/line/productform/{action}', 'WarehouseShippingSlipsController@FormForProduct')->name('warehouseshippingslips.productform');
+        Route::get('warehouseshippingslips/line/serviceform/{action}', 'WarehouseShippingSlipsController@FormForService')->name('warehouseshippingslips.serviceform');
+        Route::get('warehouseshippingslips/line/commentform/{action}', 'WarehouseShippingSlipsController@FormForComment')->name('warehouseshippingslips.commentform');
+        Route::get('warehouseshippingslips/line/searchproduct',        'WarehouseShippingSlipsController@searchProduct' )->name('warehouseshippingslips.searchproduct');
+        Route::get('warehouseshippingslips/line/searchservice',        'WarehouseShippingSlipsController@searchService' )->name('warehouseshippingslips.searchservice');
+        Route::get('warehouseshippingslips/line/getproduct',           'WarehouseShippingSlipsController@getProduct'      )->name('warehouseshippingslips.getproduct');
+//        Route::get('warehouseshippingslips/line/getproduct/prices',    'WarehouseShippingSlipsController@getProductPrices')->name('warehouseshippingslips.getproduct.prices');
+
+        Route::post('warehouseshippingslips/{id}/storeline',    'WarehouseShippingSlipsController@storeDocumentLine'   )->name('warehouseshippingslips.storeline'  );
+//        Route::post('warehouseshippingslips/{id}/updatetotal',  'WarehouseShippingSlipsController@updateDocumentTotal' )->name('warehouseshippingslips.updatetotal');
+        Route::get('warehouseshippingslips/{id}/getline/{lid}', 'WarehouseShippingSlipsController@getDocumentLine'     )->name('warehouseshippingslips.getline'    );
+        Route::post('warehouseshippingslips/updateline/{lid}',  'WarehouseShippingSlipsController@updateDocumentLine'  )->name('warehouseshippingslips.updateline' );
+        Route::post('warehouseshippingslips/deleteline/{lid}',  'WarehouseShippingSlipsController@deleteDocumentLine'  )->name('warehouseshippingslips.deleteline' );
+//        Route::get('warehouseshippingslips/{id}/duplicate',     'WarehouseShippingSlipsController@duplicateDocument'   )->name('warehouseshippingslips.duplicate'  );
+//        Route::get('warehouseshippingslips/{id}/profit',        'WarehouseShippingSlipsController@getDocumentProfit'   )->name('warehouseshippingslips.profit'     );
+        Route::get('warehouseshippingslips/{id}/availability',  'WarehouseShippingSlipsController@getDocumentAvailability' )->name('warehouseshippingslips.availability' );
+        
+        Route::get('warehouseshippingslips/{id}/availability/modal',  'WarehouseShippingSlipsController@getDocumentAvailabilityModal' )->name('warehouseshippingslips.availability.modal' );
+
+
+        Route::post('warehouseshippingslips/{id}/quickaddlines',    'WarehouseShippingSlipsController@quickAddLines'   )->name('warehouseshippingslips.quickaddlines'  );
+
+        Route::post('warehouseshippingslips/sortlines', 'WarehouseShippingSlipsController@sortLines')->name('warehouseshippingslips.sortlines');
+
+
+        Route::get('warehouseshippingslips/{document}/confirm',   'WarehouseShippingSlipsController@confirm'  )->name('warehouseshippingslips.confirm'  );
+        Route::get('warehouseshippingslips/{document}/unconfirm', 'WarehouseShippingSlipsController@unConfirm')->name('warehouseshippingslips.unconfirm');
+
+        Route::get('warehouseshippingslips/{id}/pdf',         'WarehouseShippingSlipsController@showPdf'       )->name('warehouseshippingslips.pdf'        );
+//        Route::post('warehouseshippingslips/pdf/bulk',        'WarehouseShippingSlipsController@showBulkPdf'   )->name('warehouseshippingslips.bulk.pdf'   );
+        Route::match(array('GET', 'POST'), 
+                   'warehouseshippingslips/{id}/email',       'WarehouseShippingSlipsController@sendemail'     )->name('warehouseshippingslips.email'      );
+
+        Route::get('warehouseshippingslips/{document}/onhold/toggle', 'WarehouseShippingSlipsController@onholdToggle')->name('warehouseshippingslips.onhold.toggle');
+
+        Route::get('warehouseshippingslips/{document}/close',   'WarehouseShippingSlipsController@close'  )->name('warehouseshippingslips.close'  );
+        Route::get('warehouseshippingslips/{document}/unclose', 'WarehouseShippingSlipsController@unclose')->name('warehouseshippingslips.unclose');
+
+        Route::get('warehouseshippingslips/{id}/deliver' , 'WarehouseShippingSlipsController@deliver'    )->name('warehouseshippingslip.deliver');
+//        Route::post('warehouseshippingslips/deliver/bulk', 'WarehouseShippingSlipsController@deliverBulk')->name('warehouseshippingslips.bulk.deliver');
+
+        Route::get('warehouseshippingslips/{id}/undeliver'  , 'WarehouseShippingSlipsController@undeliver')->name('warehouseshippingslip.undeliver');
+        
         
         Route::resource('salesreps', 'SalesRepsController');
 

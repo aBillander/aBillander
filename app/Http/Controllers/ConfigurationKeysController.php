@@ -78,6 +78,9 @@ class ConfigurationKeysController extends Controller {
                         'DEF_OUTSTANDING_AMOUNT',
                         'DEF_TAX',
                         'DEF_WAREHOUSE',
+                        'DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE',
+                        'DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE',
+                        'WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION',
 
                     ],
 

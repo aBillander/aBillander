@@ -249,6 +249,18 @@ class StockMovement extends Model {
                 # code...
             return '\\App\\StockMovements\\PurchaseOrderStockMovement';
                 break;
+
+            
+            case self::TRANSFER_OUT:
+                # code...
+            return '\\App\\StockMovements\\WarehouseOutputStockMovement';
+                break;
+            
+            case self::TRANSFER_IN:
+                # code...
+            return '\\App\\StockMovements\\WarehouseInputStockMovement';
+                break;
+
             
             case self::MANUFACTURING_INPUT:
                 # code...
@@ -386,11 +398,13 @@ class StockMovement extends Model {
         \DB::beginTransaction();
 
         // https://laracasts.com/discuss/channels/general-discussion/multiple-services-implementing-same-interface-switching-at-runtime
-        if ( in_array($movement_type_id, [20, 50, 55]) )
+        if ( in_array($movement_type_id, [20, 40, 41, 50, 55]) )
         {
             $class = self::getClassByType( $movement_type_id );
             $movement = new $class;
             $movement->fill( $data );
+
+            // abi_r($movement);die();
         }
         else
             $movement = StockMovement::create( $data );

@@ -94,6 +94,12 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-08-14
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `sales_rep_users` ADD `warehouse_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `language_id`;");
+
+	die('OK');
+
+
 	// 2020-07-30
 	Illuminate\Support\Facades\DB::statement("INSERT INTO `templates` (`name`, `model_name`, `folder`, `file_name`, `paper`, `orientation`, `created_at`, `updated_at`, `deleted_at`) VALUES ('Albarán entre Almacenes', 'WarehouseShippingSlipPdf', 'templates::', 'default', 'A4', 'portrait', '2020-08-13 11:30:37', '2020-08-13 11:30:37', NULL);");
 

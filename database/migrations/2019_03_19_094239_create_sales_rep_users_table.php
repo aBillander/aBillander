@@ -32,6 +32,7 @@ class CreateSalesRepUsersTable extends Migration
             $table->tinyInteger('active')->default(1);
 
             $table->integer('language_id')->unsigned()->nullable(false); 
+            $table->integer('warehouse_id')->unsigned()->nullable()->default(null); 
             $table->integer('sales_rep_id')->unsigned()->nullable(false); 
 
             $table->timestamps();

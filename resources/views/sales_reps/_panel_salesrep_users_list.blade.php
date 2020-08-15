@@ -11,6 +11,7 @@
                     <th class="text-left">{{l('ID', [], 'layouts')}}</th>
                     <th class="text-left">{{ l('Name', 'salesrepusers') }}</th>
                     <th class="text-left">{{l('Language', 'salesrepusers')}}</th>
+                    <th class="text-left">{{l('Warehouse', 'salesrepusers')}}</th>
                     <th class="text-left">{{ l('Allow give Customers ABCC access?', 'salesrepusers') }}</th>
                     <th class="text-center">{{l('Active', [], 'layouts')}}</th>
                     <th class="text-right">
@@ -29,6 +30,7 @@
                             </div>
                             {{ $user->email }}</td>
                         <td>{{ $user->language->name }}</td>
+                        <td class="text-center">{{ optional($user->warehouse)->alias ?: '-' }}</td>
                         <td class="text-center">
                             @if ($user->canGiveAbccAccess())
                                 <i class="fa fa-check-square" style="color: #38b44a;"></i>

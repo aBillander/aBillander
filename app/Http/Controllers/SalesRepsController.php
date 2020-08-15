@@ -94,10 +94,11 @@ class SalesRepsController extends Controller {
 		$salesrep = $this->salesrep->findOrFail($id);
 
 		$languageList =  \App\Language::pluck('name', 'id')->toArray();
+		$warehouseList =  \App\Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
 
 		// abi_r($languageList);die();
 		
-		return view('sales_reps.edit', compact('salesrep', 'languageList'));
+		return view('sales_reps.edit', compact('salesrep', 'languageList', 'warehouseList'));
 	}
 
 	/**

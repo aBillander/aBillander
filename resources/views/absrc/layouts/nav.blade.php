@@ -89,7 +89,14 @@
                                  {{l('Products', [], 'absrc/layouts')}}
                             </a>
                         </li>
+@if ( Auth::user()->warehouse_id > 0 )
                         <li class="divider"></li>
+                         <li>
+                            <a href="{{ route('absrc.warehouse.inventory', Auth::user()->warehouse_id) }}">
+                                 {{l('Warehouse', [], 'absrc/layouts')}}
+                            </a>
+                        </li>
+@endif
                     </ul>
                 </li>
 

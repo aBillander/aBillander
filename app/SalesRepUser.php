@@ -41,7 +41,7 @@ class SalesRepUser extends Authenticatable
         'name', 'email', 'password', 'firstname', 'lastname', 
 //        'home_page', 'is_admin', 
         'active', 'allow_abcc_access', 
-        'language_id', 'sales_rep_id'
+        'language_id', 'warehouse_id', 'sales_rep_id'
     ];
 
     /**
@@ -62,6 +62,8 @@ class SalesRepUser extends Authenticatable
         'email' => 'required|email|unique:sales_rep_users,email',
         'password'    => array('required', 'min:6', 'max:32'),
 //        'language_id' => 'exists:languages,id',
+        'warehouse_id' => 'sometimes|nullable|exists:warehouses,id',        // https://stackoverflow.com/questions/52102021/laravel-validation-depending-on-the-value-of-field
+        // https://laravel.com/docs/5.5/validation#rule-exists
     );
 
     /**  trait CanResetPassword
@@ -125,6 +127,11 @@ class SalesRepUser extends Authenticatable
     public function language()
     {
         return $this->belongsTo('App\Language');
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo('App\Warehouse');
     }
 
     public function salesrep()

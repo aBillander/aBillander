@@ -94,7 +94,16 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-08-14
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `sales_rep_users` ADD `warehouse_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `language_id`;");
+
+	die('OK');
+
+
 	// 2020-07-30
+	Illuminate\Support\Facades\DB::statement("INSERT INTO `templates` (`name`, `model_name`, `folder`, `file_name`, `paper`, `orientation`, `created_at`, `updated_at`, `deleted_at`) VALUES ('Albarán entre Almacenes', 'WarehouseShippingSlipPdf', 'templates::', 'default', 'A4', 'portrait', '2020-08-13 11:30:37', '2020-08-13 11:30:37', NULL);");
+
+	Illuminate\Support\Facades\DB::statement("INSERT INTO `sequences` (`name`, `model_name`, `sequenceable_type`, `prefix`, `length`, `separator`, `next_id`, `last_date_used`, `active`, `created_at`, `updated_at`, `deleted_at`) VALUES ('Transferencias de Almacén', 'WarehouseShippingSlip', '', 'TRS', 4, '-', 1, NULL, 1, '2020-08-13 11:31:42', '2020-08-13 11:31:42', NULL);");
 
 		Illuminate\Support\Facades\DB::statement("create table `warehouse_shipping_slips` (`id` int unsigned not null auto_increment primary key, `company_id` int unsigned not null default '0', `warehouse_id` int unsigned not null, `warehouse_counterpart_id` int unsigned not null, `user_id` int unsigned not null default '0', `sequence_id` int unsigned null, `document_prefix` varchar(8) null, `document_id` int unsigned not null default '0', `document_reference` varchar(64) null, `reference` varchar(191) null, `created_via` varchar(32) null default 'manual', `document_date` datetime not null, `validation_date` datetime null, `delivery_date` datetime null, `delivery_date_real` datetime null, `close_date` datetime null, `number_of_packages` smallint unsigned not null default '1', `volume` decimal(20, 6) null default '0', `weight` decimal(20, 6) null default '0', `shipping_conditions` text null, `tracking_number` varchar(191) null, `notes` text null, `notes_to_counterpart` text null, `status` varchar(32) not null default 'draft', `onhold` tinyint not null default '0', `locked` tinyint not null default '0', `shipping_method_id` int unsigned null, `carrier_id` int unsigned null, `template_id` int null, `shipment_status` varchar(32) not null default 'pending', `shipment_service_type_tag` varchar(32) null, `printed_at` date null, `edocument_sent_at` date null, `export_date` datetime null, `secure_key` varchar(32) not null, `import_key` varchar(16) null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 		

@@ -43,6 +43,10 @@
             
 
             @foreach ($document->lines as $line)
+
+            @if ($line->line_type == 'comment')
+                @continue
+            @endif
 @php
 
 $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;

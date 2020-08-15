@@ -95,6 +95,10 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 //                                                        'as'   => 'products.ajax.optionsLookup' ));
 //        Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
 //                                                        'as'   => 'products.ajax.combinationLookup' ));
+        
+        Route::get('warehouses/{id}/inventory', 'AbsrcWarehousesController@indexProducts')->name('absrc.warehouse.inventory');
+        Route::get('export/warehouses/{id}/inventory', 'AbsrcWarehousesController@exportProducts' )->name('absrc.warehouse.inventory.export');
+
 
         Route::resource('customers', 'AbsrcCustomersController')->names('absrc.customers');
         Route::resource('customers.addresses', 'AbsrcCustomerAddressesController')->names('absrc.customers.addresses');

@@ -48,7 +48,7 @@ class SepaDirectDebitsController extends Controller
 
         $sdds = $sdds->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
 
-        $sdds->setPath('sepasp/directdebits');
+        $sdds->setPath('directdebits');
 
         return view('sepa_es::direct_debits.index', compact('sdds'));
     }

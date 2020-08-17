@@ -39,8 +39,8 @@ class CustomerShippingSlipsInvoicerController
         // $order_statusList = Document::getStatusList();
 
         // Make sense:
-        unset($statusList['confirmed']);
-        unset($statusList['closed']);
+        // unset($statusList['confirmed']);
+        // unset($statusList['closed']);
         unset($statusList['canceled']);
 
         return view('customer_shipping_slips_invoicer.create', compact('statusList'));

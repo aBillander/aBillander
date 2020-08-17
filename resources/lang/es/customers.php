@@ -88,6 +88,8 @@ return [
 	'Payment Currency'     => 'Divisa de Pago',
 	'Is Invoiceable?'     => '¿Es Facturable?',
 	'Accept e-Invoice?'     => '¿Admite Factura Electrónica?',
+	'Automatic Invoice?'  => '¿Factura Automática?',
+	'Include this Customer in Automatic Invoice Generation Process.'  => 'Incluir este Cliente en el Proceso de Facturación Automática.',
 	'Outstanding Amount Allowed'     => 'Riesgo Máximo Permitido',
 	'Outstanding Amount'     => 'Riesgo Alcanzado',
 	'Unresolved Amount'     => 'Impagado',

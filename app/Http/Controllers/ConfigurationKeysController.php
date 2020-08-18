@@ -41,6 +41,7 @@ class ConfigurationKeysController extends Controller {
                         'SELL_ONLY_MANUFACTURED',
                         'MARGIN_METHOD',
                         'INCLUDE_SHIPPING_COST_IN_PROFIT',
+                        'INVENTORY_VALUATION_METHOD',
                         'NEW_PRICE_LIST_POPULATE',
                         'NEW_PRODUCT_TO_ALL_PRICELISTS',
                         'PRICES_ENTERED_WITH_TAX',

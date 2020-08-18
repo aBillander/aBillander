@@ -94,6 +94,12 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-08-18
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `product_cost_price` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price_after_movement`;");
+
+	die('OK');
+
+
 	// 2020-08-15
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `automatic_invoice` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `is_invoiceable`;");
 

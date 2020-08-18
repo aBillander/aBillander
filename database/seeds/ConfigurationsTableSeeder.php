@@ -151,6 +151,7 @@ $confs = [
 ['HEADER_TITLE', '<span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>'],
 ['SELL_ONLY_MANUFACTURED', '0'],
 ['INCLUDE_SHIPPING_COST_IN_PROFIT', '0'],
+['INVENTORY_VALUATION_METHOD', 'AVERAGE'],
 ['MARGIN_METHOD', 'PRC'],
 ['MAX_DB_BACKUPS', '30'],
 ['MAX_DB_BACKUPS_ACTION', 'delete'],

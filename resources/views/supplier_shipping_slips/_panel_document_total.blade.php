@@ -86,7 +86,10 @@
             </tr>
 
 @if ( $document->currency_conversion_rate != 1.0 )
-            <tr>
+            <tr class="alert-warning">
+                <td>
+
+                </td>
                 <td class="text-center">
                     <span class="badge" style="background-color: #3a87ad;">{{ \App\Context::getContext()->currency->iso_code }}</span>
                 </td>
@@ -98,6 +101,9 @@
                     {{ $document->as_price('total_lines_tax_excl') }}
                     @endif
 -->
+                </td>
+                <td>
+
                 </td>
                 <td>
 

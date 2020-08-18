@@ -29,21 +29,26 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
         // Mean Average calculation
         // More at: https://www.linnworks.com/support/inventory-management-and-stock-control/inventory-management-and-stock-control-key-concepts/calculating-stock-value#mean
         if ( !($this->combination_id > 0) ) {
+            
+            // Cost Average stuff
             // $cost = $product->cost_average;
-            $this->cost_price_before_movement = $product->cost_price;
+            $this->cost_price_before_movement = $product->cost_average;
 
             if (   $this->quantity  > 0 	// if < 0 : This is not a purchase. Maybe a return??
             	&& $quantity_onhand > 0		// if = 0 : division by 0 error
             	)
             {
-            	$cost_average = ($product->quantity_onhand * $product->cost_price + $this->quantity * $price_in) / $quantity_onhand;
+            	$cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $price_in) / $quantity_onhand;
             
-                $product->cost_average = $cost_average;
-                $product->cost_price   = $cost_average;
+                $product->cost_average = $cost_average;         // <= calculated by the System
+//                $product->cost_price   = $cost_average;       // <= Entered by the User
                 $product->last_purchase_price = $price_in;
             }
 
             $this->cost_price_after_movement = $product->cost_price;
+
+            // Product cost stuff
+            $this->product_cost_price = $product->cost_price;
         }
 
         $product->quantity_onhand = $quantity_onhand;

@@ -113,7 +113,8 @@ trait SupplierBillableDocumentLinesTrait
                             : $supplier_price->price_is_tax_inc;
 
         // Supplier Final Price
-        if ( 0 && array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
+        // if ( 0 && array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
+        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
             $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
 

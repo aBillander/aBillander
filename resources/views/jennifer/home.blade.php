@@ -157,6 +157,12 @@
         {!! Form::text('inventory_date_to_form', null, array('id' => 'inventory_date_to_form', 'class' => 'form-control')) !!}
     </div>
 
+    <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('valuation_method') ? 'has-error' : '' }}">
+        {!! Form::label('valuation_method', 'Método de Valoración') !!}
+        {!! Form::select('valuation_method', $valuation_methodList, null, array('class' => 'form-control')) !!}
+       {!! $errors->first('valuation_method', '<span class="help-block">:message</span>') !!}
+    </div>
+
                   </div>
 
               </div>

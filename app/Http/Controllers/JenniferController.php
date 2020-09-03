@@ -544,6 +544,8 @@ class JenniferController extends Controller
             }
 
 
+            if ( $stock < 0.0 )
+                $stock = 0.0;
 
 
             $row[] = $stock * (float) $thePrice;

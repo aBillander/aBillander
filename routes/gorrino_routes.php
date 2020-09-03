@@ -23,6 +23,27 @@
 
 
 
+Route::get('tst', function( )
+{
+	$documents = \App\CustomerShippingSlip::whereIn('id', [4879, 4929, 4970, 5062])->get();
+
+        foreach ($documents as $document)
+        {
+            # code...
+            $document->payment_method_id = $document->getPaymentMethodId();
+        }
+
+	abi_r($documents->pluck('payment_method_id', 'id')->all());
+
+        // Group by payment method
+        $pmethods = $documents->unique('payment_method_id')->pluck('payment_method_id')->all();
+
+    abi_r($pmethods);
+});
+
+/* ********************************************************** */
+
+
 Route::get('child', function( )
 {
 	$product = \App\Product::find( 5 );		// 1000 Pan integral de espelta 100% 500g ECO

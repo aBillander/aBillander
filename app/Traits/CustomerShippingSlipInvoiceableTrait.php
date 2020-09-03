@@ -203,14 +203,14 @@ trait CustomerShippingSlipInvoiceableTrait
 
                     $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $documents_by_pm_by_addrr->pluck('id')->all())]);
 
-                    return CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm_by_addrr, $params );
+                    CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm_by_addrr, $params );
                 }
 
             } else {
 
                 $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $documents_by_pm->pluck('id')->all())]);
 
-                return CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm, $params );
+                CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm, $params );
             }
         }
 

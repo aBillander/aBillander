@@ -403,6 +403,12 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ route('chart.customerorders.daily', ['CustomerShippingSlip']) }}">
+                                <i class="fa fa-long-arrow-right text-info"></i> 
+                                 {{l('Sales Shipping Slips (daily)', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ route('chart.customerorders.monthly', ['CustomerInvoice']) }}">
                                  {{l('Sales Invoices', [], 'layouts')}}
                             </a>

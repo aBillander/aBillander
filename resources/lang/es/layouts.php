@@ -131,6 +131,7 @@ return [
 	'Reports'     => 'Informes',
 	'Sales Orders'     => 'Pedidos de Venta',
 	'Sales Shipping Slips'     => 'Albaranes de Venta',
+	'Sales Shipping Slips (daily)'     => 'Albaranes de Venta (diario)',
 	'Sales Invoices'     => 'Facturas de Venta',
 	'Accounting'     => 'Contabilidad',
 	'Earns & Profit'     => 'Rentabilidad',

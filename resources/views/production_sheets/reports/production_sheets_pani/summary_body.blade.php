@@ -52,6 +52,14 @@
 
 
 <br /><br />
+        
+
+        @include('production_sheets.reports.production_orders._section', ['section_icon' => 'bars', 'section_name' =>  l('Tray Requirements')])
+
+        @include('production_sheets.reports.production_sheets_pani._block_tray_requirements')
+
+
+<br /><br />
 
 @php
 

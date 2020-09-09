@@ -5,7 +5,23 @@
 
 @section('content')
 
+<div class="row hide" id="cssload">
+    <div class="col-md-12">
+
 <div class="page-header">
+    <h2>
+        {{ l('Products with Low Stock') }}
+
+        <a href="" class="btn btn-success disabled" onclick="return false;" style="margin-left: 72px;"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i> {{ l('Processing...', 'layouts') }}</a>
+
+    </h2>     
+</div>
+
+    </div>
+</div> 
+
+
+<div class="page-header" id="content-header">
     <div class="pull-right" style="padding-top: 4px;">
 
 {!! Form::model(Request::all(), array('route' => 'products.reorder.index', 'method' => 'GET', 
@@ -46,6 +62,8 @@
 </div>
 
 
+<div id="content-body">
+
 <div name="search_filter" id="search_filter" @if( Request::has('search_status') AND (Request::input('search_status')==1) ) style="display:block" @else style="display:none" @endif>
 <div class="row" style="padding: 0 20px">
     <div class="col-md-12 xcol-md-offset-3">
@@ -83,7 +101,7 @@
     </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
-{!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
+{!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success', 'onclick' => "loadingpage()")) !!}
 {!! link_to_route('products.reorder.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 </div>
 
@@ -104,6 +122,18 @@
     {!! Form::label('main_supplier_id', l('Main Supplier'), ['class' => 'control-label']) !!}
     {!! Form::select('main_supplier_id', ['' => l('All', [], 'layouts'), '-1' => l('None', [], 'layouts')] + $supplierList, null, array('class' => 'form-control')) !!}
 </div>
+
+
+      <div class="form-group col-lg-2 col-md-2 col-sm-2">
+          {{-- Poor man offset --}}
+      </div>
+
+
+      <div class="form-group col-lg-2 col-md-2 col-sm-2">
+          {!! Form::label('items_per_page', l('Items per page', 'layouts')) !!}
+          {!! Form::text('items_per_page', null, array('class' => 'form-control', 'id' => 'items_per_page')) !!}
+      </div>
+
 
 </div>
 
@@ -138,6 +168,8 @@
 
 @include('products_reorder._panel_block_products')
 
+</div><!-- div id="content-body" ENDS -->
+
 @endsection
 
 @section('scripts') @parent 
@@ -149,7 +181,23 @@ $(document).ready(function() {
       $('#search_status').val(1);
       $('#search_filter').show();
    });
+
+
+   $("#cssload").hide();
 });
+
+
+
+
+function loadingpage()
+{
+    $("#content-header").hide('slow');
+    $("#content-body").hide('slow');
+
+   $("#cssload").hide();
+   $("#cssload").removeClass('hide');
+   $("#cssload").slideDown( "slow" );
+}
 
 </script>
 

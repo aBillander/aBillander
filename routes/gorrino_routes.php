@@ -23,6 +23,27 @@
 
 
 
+Route::get('tst', function( )
+{
+	$documents = \App\CustomerShippingSlip::whereIn('id', [4879, 4929, 4970, 5062])->get();
+
+        foreach ($documents as $document)
+        {
+            # code...
+            $document->payment_method_id = $document->getPaymentMethodId();
+        }
+
+	abi_r($documents->pluck('payment_method_id', 'id')->all());
+
+        // Group by payment method
+        $pmethods = $documents->unique('payment_method_id')->pluck('payment_method_id')->all();
+
+    abi_r($pmethods);
+});
+
+/* ********************************************************** */
+
+
 Route::get('child', function( )
 {
 	$product = \App\Product::find( 5 );		// 1000 Pan integral de espelta 100% 500g ECO
@@ -94,6 +115,18 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-08-18
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `product_cost_price` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price_after_movement`;");
+
+	die('OK');
+
+
+	// 2020-08-15
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `automatic_invoice` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `is_invoiceable`;");
+
+	die('OK');
+
+
 	// 2020-08-14
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `sales_rep_users` ADD `warehouse_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `language_id`;");
 

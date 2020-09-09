@@ -637,6 +637,31 @@ class Product extends Model {
         return 0.0;
     }
 
+    public function getStockToDateFullByWarehouse(  $warehouse = null, Carbon $date = null  )
+    {
+        if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
+        $wh_id = is_numeric($warehouse)
+                    ? $warehouse
+                    : $warehouse->id ;
+        
+        if ( $date      == null ) $date      = Carbon::now();   //->endOfDay();
+        else                      $date      = $date->endOfDay();
+
+        // Last movement BEFORE requested date
+        $mvt = StockMovement::
+                      where('product_id', $this->id)
+                    ->where('warehouse_id', $wh_id)
+                    ->where('date', '<=', $date)
+                    ->orderBy('date', 'desc')           // Guess "well ordered" movements
+                    ->orderBy('id', 'DESC')
+                    ->first();
+
+        if ($mvt)
+            return $mvt;
+
+        return null;
+    }
+
 
 
     // Just to disappear
@@ -691,6 +716,65 @@ class Product extends Model {
         }
 
         return $count;
+    }
+
+    public function getStockToDateFull(  Carbon $date = null  )
+    {
+        if ( $date      == null ) $date      = Carbon::now();   //->endOfDay();
+        else                      $date      = $date->endOfDay();
+
+        $warehouses = Warehouse::get();
+        $count1 = 0;
+
+        $mvts = collect([]);
+
+        foreach ($warehouses as $warehouse) {
+            # code...
+            $ws_mvt = $this->getStockToDateFullByWarehouse( $warehouse->id, $date );
+            if ($ws_mvt)
+            {
+                $count1 += $ws_mvt->quantity_after_movement;
+
+                $mvts->push($ws_mvt);
+            }
+        }
+
+        // Prepare
+        $f_mvt = null;
+
+        $count = 0.0;
+
+        // Sort $mvts
+                    // ->orderBy('date', 'desc')           // Guess "well ordered" movements
+                    // ->orderBy('id', 'DESC')
+        if ( $mvts->count() )
+        {
+            if ( $mvts->count() > 1 )
+            $mvts = $mvts->sort(function($a, $b) {
+               if($a->date === $b->date) {
+                 if($a->id === $b->id) {
+                   return 0;
+                 }
+                 return $a->id > $b->id ? -1 : 1;           // If you return -1 that moves the $b variable down the array, return 1 moves $b up the array and return 0 keeps $b in the same place. 
+               } 
+               return $a->date > $b->date ? -1 : 1;
+            });
+            // https://stackoverflow.com/questions/33713392/how-to-sort-illuminate-collection-by-multiple-columns-in-laravel-5-1/33713443#33713443
+            // https://github.com/laravel/ideas/issues/11
+            // https://www.php.net/manual/en/function.usort.php#refsect1-function.usort-parameters
+
+            // First movement is the most recent one
+            $f_mvt = $mvts->first();
+
+            // Stock
+            $count = $mvts->sum('quantity_after_movement');
+        }
+
+        return [
+            'movement' => $f_mvt,
+            'stock'    => $count,
+            'stock1'   => $count1,
+        ];
     }
     
 

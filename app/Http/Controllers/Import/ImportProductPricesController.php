@@ -314,25 +314,26 @@ https://phpspreadsheet.readthedocs.io/en/develop/topics/migration-from-PHPExcel/
                             {
                                 // 
                                 $data1['tax_id']        = $data['tax_id'];
-                                $data1['price_tax_inc'] = $data['price_tax_inc'];
-                                $data1['price']         = $data['price'];
+                                $data1['price_tax_inc'] = trim($data['price_tax_inc']) == '' ? $product->price_tax_inc : $data['price_tax_inc'];
+                                $data1['price']         = trim($data['price'])         == '' ? $product->price         : $data['price'];
 
                                 $data1['recommended_retail_price_tax_inc'] = 
-                                    (float) $data['recommended_retail_price_tax_inc'] > 0.0 ? (float) $data['recommended_retail_price_tax_inc'] : null;
-                                $data1['recommended_retail_price']         = 
-                                    (float) $data['recommended_retail_price']         > 0.0 ? (float) $data['recommended_retail_price']         : null;
+                                    trim($data['recommended_retail_price_tax_inc']) == '' ? $product->recommended_retail_price_tax_inc : (float) $data['recommended_retail_price_tax_inc'];
+                                
+                                $data1['recommended_retail_price'] = 
+                                    trim($data['recommended_retail_price']) == '' ? $product->recommended_retail_price : (float) $data['recommended_retail_price'];
                             }
 
                             if (array_key_exists('cost_price', $data))
                             {
                                 // 
-                                $data1['cost_price']    = $data['cost_price'];
+                                $data1['cost_price']    = trim($data['cost_price']) == '' ? $product->cost_price : $data['cost_price'];
                             }
 
                             if (array_key_exists('cost_average', $data))
                             {
                                 // 
-                                $data1['cost_average']    = $data['cost_average'];
+                                $data1['cost_average']    = trim($data['cost_average']) == '' ? $product->cost_average : $data['cost_average'];
                             }
 
                             Product::unguard();

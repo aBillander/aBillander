@@ -92,6 +92,8 @@
 
     @include($view_path.'.js.document_service_lines')
 
+    @include($view_path.'.js.document_comment_lines')
+
 
 <script>
 

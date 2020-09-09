@@ -435,6 +435,28 @@
     </div>
 
 
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('INVENTORY_VALUATION_METHOD.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="INVENTORY_VALUATION_METHOD" id="INVENTORY_VALUATION_METHOD_AVERAGE" value="AVERAGE" @if( old('INVENTORY_VALUATION_METHOD', $key_group['INVENTORY_VALUATION_METHOD']) == 'AVERAGE' ) checked="checked" @endif type="radio">
+            {!! l('INVENTORY_VALUATION_METHOD.option.AVERAGE') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="INVENTORY_VALUATION_METHOD" id="INVENTORY_VALUATION_METHOD_PRICE" value="PRICE" @if( old('INVENTORY_VALUATION_METHOD', $key_group['INVENTORY_VALUATION_METHOD']) == 'PRICE' ) checked="checked" @endif type="radio">
+            {!! l('INVENTORY_VALUATION_METHOD.option.PRICE') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('INVENTORY_VALUATION_METHOD.help') !!}</span>
+      </div>
+    </div>
+
+
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('NEW_PRICE_LIST_POPULATE.name') !!}</label>
       <div class="col-lg-8">

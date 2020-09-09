@@ -123,7 +123,7 @@
             </td>
             <td>{{ $document->created_via }}
             </td>
-            <td>{{ $document->paymentmethod->name }}
+            <td>{{ optional($document->paymentmethod)->name }}
             </td>
             <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
             <td class="text-center">@if ($document->all_notes)

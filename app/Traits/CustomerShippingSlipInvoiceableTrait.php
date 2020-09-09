@@ -27,6 +27,22 @@ trait CustomerShippingSlipInvoiceableTrait
      */
     public static function invoiceDocumentList( $list, $params )
     {
+        if ( array_key_exists('logger', $params) && $params['logger'] )
+        {
+            // So far, so good. We have a Logger
+
+        } else {
+            // Start a Logger, and propagate
+            $logger = \App\ActivityLogger::setup( 'Invoice Some Shipping Slips', __METHOD__ );
+//                        ->backTo( route('productionsheet.shippingslips', $params['production_sheet_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+
+
+            $logger->empty();
+
+            $logger->log("ERROR", 'No se ha podido establecer el punto de llamada para este Logger');
+
+            $params['logger'] = $logger;
+        }
 
 //        1.- Recuperar los documntos
 //        2.- Comprobar que están todos los de la lista ( comparando count() )
@@ -79,6 +95,25 @@ trait CustomerShippingSlipInvoiceableTrait
      */
     public static function invoiceDocumentCollection( $documents, $params )
     {
+        if ( array_key_exists('logger', $params) && $params['logger'] )
+        {
+            // So far, so good. We have a Logger
+
+        } else {
+            // Start a Logger, and propagate
+            $logger = \App\ActivityLogger::setup( 'Invoice Some Shipping Slips', __METHOD__ );
+//                        ->backTo( route('productionsheet.shippingslips', $params['production_sheet_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+
+
+            $logger->empty();
+
+            $logger->log("ERROR", 'No se ha podido establecer el punto de llamada para este Logger');
+
+            $params['logger'] = $logger;
+        }
+
+        $logger = $params['logger'];
+
         // Group Shippiong Slips by Customer.
         $customers = $documents->unique('customer_id')->pluck('customer_id')->all();
 
@@ -87,9 +122,12 @@ trait CustomerShippingSlipInvoiceableTrait
             $documents_by_cid = $documents->where('customer_id', $customer_id);
 
             $extra_params = [
+                   
                         'customer_id'            => $customer_id,
                     ];
 
+
+            $logger->log("INFO", 'Comienza la facturación de la colección de los Albaranes del Cliente: <span class="log-showoff-format">{customer}</span> .', ['customer' => $customer_id]);
 
             // Should group? i.e.: One invoice per Customer?
             if ( array_key_exists('group_by_customer', $params) && ( $params['group_by_customer'] == 0 ) ) {
@@ -101,10 +139,14 @@ trait CustomerShippingSlipInvoiceableTrait
                     // Select Documents
                     $documents_by_doc = collect($document);
 
+                    $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $documents_by_doc->pluck('id')->all())]);
+
                     CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_doc, $params + $extra_params );
                 }
 
             } else {
+
+                $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $documents_by_cid->pluck('id')->all())]);
 
                 CustomerShippingSlip::invoiceDocumentsByCustomer( $documents_by_cid, $params + $extra_params );
             }
@@ -125,6 +167,8 @@ trait CustomerShippingSlipInvoiceableTrait
      */
     public static function invoiceDocumentsByCustomer( $documents, $params )
     {
+        $logger = $params['logger'];
+
         // Pre-process Documents
 
         foreach ($documents as $document)
@@ -137,6 +181,9 @@ trait CustomerShippingSlipInvoiceableTrait
         $pmethods = $documents->unique('payment_method_id')->pluck('payment_method_id')->all();
 
         foreach ($pmethods as $payment_method_id) {
+            
+            $logger->log("INFO", 'Comienza la facturación de Albaranes del Cliente por Método de Pago: <span class="log-showoff-format">{customer}</span> .', ['customer' => $payment_method_id]);
+
             # code...
             // Select Documents
             $documents_by_pm = $documents->where('payment_method_id', $payment_method_id);
@@ -154,12 +201,16 @@ trait CustomerShippingSlipInvoiceableTrait
                     // Select Documents
                     $documents_by_pm_by_addrr = $documents_by_pm->where('shipping_address_id', $address_id);
 
-                    return CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm_by_addrr, $params );
+                    $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $documents_by_pm_by_addrr->pluck('id')->all())]);
+
+                    CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm_by_addrr, $params );
                 }
 
             } else {
 
-                return CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm, $params );
+                $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $documents_by_pm->pluck('id')->all())]);
+
+                CustomerShippingSlip::invoiceCustomerDocuments( $documents_by_pm, $params );
             }
         }
 
@@ -178,6 +229,8 @@ trait CustomerShippingSlipInvoiceableTrait
      */
     public static function invoiceCustomerDocuments( $documents, $params )
     {
+        $logger = $params['logger'];
+
         // abi_r($params);die();
 
 //        1.- Recuperar los documntos. Skip not invoiceable
@@ -493,6 +546,10 @@ if ( ! $testing )
 
         $invoice->makeTotals();
 
+
+        $logger->log("INFO", 'Se ha creado la Factura: <span class="log-showoff-format">{customers}</span> .', ['customers' => $invoice->id]);
+
+
         $status = array_key_exists('status', $params) ?
                                 $params['status'] : 'draft';
 
@@ -522,6 +579,11 @@ if ( ! $testing )
                 # code...
                 break;
         }
+
+
+
+        // We are really hapy with our new-born Invoice!
+        $logger->log("INFO", 'Se ha cambiado el Estado de la Factura: <span class="log-showoff-format">{customers}</span> a <span class="log-showoff-format">{status}</span>.', ['customers' => $invoice->id, 'status' => $invoice->status]);
 
 
 

@@ -227,7 +227,10 @@ class ProductionSheetShippingSlipsController extends BillableController
         
         // Dates (cuen)
         $this->mergeFormDates( ['document_date'], $request );
-        $request->merge( ['invoice_date' => $request->input('document_date')] );   // According to $rules_createinvoice
+        $request->merge( [
+                'invoice_date' => $request->input('document_date'),   // According to $rules_createinvoice
+                'testing' => $request->input('testing', 0),
+        ] );
 
         // $rules = $this->document::$rules_createinvoice;
         $rules = [
@@ -243,10 +246,11 @@ class ProductionSheetShippingSlipsController extends BillableController
 
         // Set params for group
         // Excluded: 'template_id', 'sequence_id', 
-        $params = $request->only('production_sheet_id', 'group_by_customer', 'group_by_shipping_address', 'document_date', 'status');
+        $params = $request->only('production_sheet_id', 'group_by_customer', 'group_by_shipping_address', 'document_date', 'status', 'testing');
 
         // abi_r($params, true);
 
+        // Needed to check Production Sheet
         return $this->processCreateInvoices( $document_group, $params );
     }
 
@@ -298,11 +302,52 @@ class ProductionSheetShippingSlipsController extends BillableController
         // abi_r($params);
         // abi_r($documents->pluck('id')->toArray());
 
+
+        // Group by Customer
+        $customers = $documents->unique('customer_id')->pluck('customer_id')->all();
+
+
+        // Start Logger
+        $logger = \App\ActivityLogger::setup( 'Invoice Production Sheet Shipping Slips', __METHOD__ )
+                    ->backTo( route('productionsheet.shippingslips', $params['production_sheet_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+
+
+        $logger->empty();
+        $logger->start();
+
+        $logger->log("INFO", 'Se facturarán los Albaranes de la Hoja de Producción: <span class="log-showoff-format">{customers}</span> .', ['customers' => $params['production_sheet_id']]);
+
+        $logger->log("INFO", 'Se facturarán los Albaranes de los Clientes: <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $customers)]);
+
+        $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $documents->pluck('id')->all())]);
+
+        $logger->log("INFO", 'Se facturarán un total de <span class="log-showoff-format">{nbr}</span> Albaranes de los Clientes.', ['nbr' => $documents->count()]);
+
+        $flattened = $params;
+        array_walk($flattened, function(&$value, $key) {
+            $value = "{$key} => {$value}";
+        });
+
+        $logger->log("INFO", 'Opciones:  <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $flattened)]);
+
+
+        $params['logger'] = $logger;
+
         Document::invoiceDocumentCollection( $documents, $params );
 
-        return redirect()
-                ->route('productionsheet.shippingslips', $params['production_sheet_id'])
-                ->with('success', $success);
+
+
+        $logger->stop();
+
+
+        return redirect('activityloggers/'.$logger->id)
+                ->with('success', l('Se han facturado los Albaranes seleccionados <strong>:file</strong> .', ['file' => '']));
+
+
+
+        // return redirect()
+        //         ->route('productionsheet.shippingslips', $params['production_sheet_id'])
+        //         ->with('success', $success);
 
     }
 

@@ -1312,6 +1312,8 @@ class WarehouseShippingSlipsController extends Controller
 
         $paper = $t->paper;    // A4, letter
         $orientation = $t->orientation;    // 'portrait' or 'landscape'.
+
+        if ($request->has('screen')) return view($template, compact('document', 'company'));
         
         
         // Catch for errors

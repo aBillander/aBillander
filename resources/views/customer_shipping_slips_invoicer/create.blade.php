@@ -88,6 +88,15 @@ border-color: #772953;">
      </div>
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
+      
+            {{ l('testing') }}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Sí: se creará la Factura, pero no se marcarán los Albaranes como facturados') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+            {!! Form::select('testing', ['1' => 'Sí', '0' => 'No', ], 0, array('class' => 'form-control', 'id' => 'testing')) !!}
+            {!! $errors->first('testing', '<span class="help-block">:message</span>') !!}
+
     </div>
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">

@@ -217,7 +217,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 
     @endif
 @else
-              <span class="label alert-warning">{{l('Not Invoiceable Document', 'customershippingslips')}}</span>
+              <span class="label alert-warning" style="white-space: break-spaces !important; text-align: center !important;">{{l('Not Invoiceable Document', 'customershippingslips')}}</span>
 @endif
             </td>
             <td>

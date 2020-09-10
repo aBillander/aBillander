@@ -29,6 +29,7 @@ class ProductionOrderFinishedListener
     public function handle(ProductionOrderFinished $event)
     {
         $document = $event->document;
+        $params   = $event->params ?? [];
 
         // Perform Stock Movements
         // Only if invoice has not "left document(s)", i.e., only if it is manually generated
@@ -36,7 +37,7 @@ class ProductionOrderFinishedListener
         if ( $document->shouldPerformStockMovements() )
         {
             //
-            $document->makeStockMovements();
+            $document->makeStockMovements( $params );
         }
         
     }

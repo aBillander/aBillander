@@ -511,7 +511,7 @@ if ( $bomitem )
         $this->save();
 
         // Dispatch event
-        event( new \App\Events\ProductionOrderFinished($this) );
+        event( new \App\Events\ProductionOrderFinished($this, $params) );
 
         return true;
     }
@@ -548,6 +548,11 @@ if ( $bomitem )
     public function workcenter()
     {
         return $this->belongsTo('App\WorkCenter', 'work_center_id');
+    }
+    
+    public function warehouse()
+    {
+        return $this->belongsTo('App\Warehouse');
     }
     
     public function product()
@@ -622,9 +627,53 @@ if ( $bomitem )
     |--------------------------------------------------------------------------
     */
 
-    public function makeStockMovements()
+    public function makeStockMovements( $params = [] )
     {
         // Let's rock!
+
+        // Deal with Lots (ノಠ益ಠ)ノ彡┻━┻
+        $lot = null;
+        // Create Lot for finished product first
+        if ( Configuration::isTrue('ENABLE_LOTS') )
+        if ( array_key_exists('lot_tracking', $params) && $params['lot_tracking'] ) // Same as $this->product->lot_tracking (pero puede querer fabricarse alguna vez sin lote?)
+        {
+            if ( array_key_exists('lot_params', $params))
+            {
+                $lot_params = $params['lot_params'];
+
+            } else {
+                // Set some default...
+                $theDate = \Carbon\Carbon::now();
+                $lot_params = [
+                    'reference' => $theDate->format('Y-m-d'),
+                    'product_id' => $this->product_id, 
+        //            'combination_id' => ,
+                    'quantity_initial' => $this->finished_quantity, 
+                    'quantity' => $this->finished_quantity, 
+                    'measure_unit_id' => $this->product->measure_unit_id, 
+        //            'package_measure_unit_id' => , 
+        //            'pmu_conversion_rate' => ,
+                    'manufactured_at' => $theDate, 
+                    'expiry_at' => $theDate->addDays( $this->product->expiry_time ),
+                    'notes' => 'Production Order: #'.$this->id,
+
+                    'warehouse_id' => $this->warehouse_id,
+                ];
+            }
+
+            // Time for "some magic"
+            // Create Lot
+            $lot = Lot::create($lot_params);
+
+            // $lot_item = LotItem::create(['lot_id' => $lot->id]);
+
+            // $document->lotitems()->save($lot_item);
+
+            // Cannot return this back: not good practice:
+            // $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot->reference], 'layouts') . 
+            //    'para el Producto: ['.$document->product_reference.'] '.$document->product_name;
+        }
+
         // Production Order Header
             $data = [
                     'date' => \Carbon\Carbon::now(),
@@ -667,6 +716,9 @@ if ( $bomitem )
             {
                 //
                 $this->stockmovements()->save( $stockmovement );
+
+                if ($lot)
+                    $lot->stockmovements()->save( $stockmovement );
             }
 
         //
@@ -719,6 +771,11 @@ if ( $bomitem )
             {
                 //
                 $line->stockmovements()->save( $stockmovement );
+
+                // Time for "some magic"
+                // Discount quantities from Lots (if applicable)
+
+                // To Do...
             }
         }
 

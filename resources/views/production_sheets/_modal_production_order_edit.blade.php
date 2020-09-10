@@ -56,6 +56,13 @@ $categoryList = $tree;
                     {!! Form::select('schedule_sort_order', ['0' => l('-- Please, select --', [], 'layouts')] + $categoryList, null, array('class' => 'form-control', 'id' => 'schedule_sort_order_edit')) !!}
                     {!! $errors->first('schedule_sort_order', '<span class="help-block">:message</span>') !!}
                  </div>
+         
+         <div class="form-group col-lg-5 col-md-5 col-sm-5 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
+            {{ l('Warehouse') }}
+            {!! Form::select('warehouse_id', \App\Warehouse::selectorList(), null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
+            {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
         </div>
 
         <div class="row">
@@ -92,6 +99,8 @@ $categoryList = $tree;
             var category = $(this).attr('data-ocategory');
             var notes = $(this).attr('data-onotes');
 
+            var warehouse_id = $(this).attr('data-owarehouse');
+
             var label = '';
 
             label = id+' :: ['+reference+'] '+name;
@@ -102,6 +111,14 @@ $categoryList = $tree;
               $('#work_center_id_edit').val(workcenter);
               $('#schedule_sort_order_edit').val(category);
               $('#notes_edit').val(notes);
+
+              $('#warehouse_id option').each(function() {
+                  if($(this).val() == warehouse_id) {
+                      $(this).prop("selected", true);
+                  } else {
+                      $(this).prop("selected", false);
+                  }
+              });
 
             $('#ProductionOrderEdit_action').attr('action', href);
             $('#ProductionOrderEdit').modal({show: true});

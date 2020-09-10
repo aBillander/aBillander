@@ -11,6 +11,7 @@ return [
     |
     */
 
+	'Production Sheet - Production Orders' => 'Hoja de Producción - Ordenes de Fabricación',
 	'Production Sheet'     => 'Hoja de Producción',
 	'Reference'     => 'Referencia',
 	'Date'     => 'Fecha',
@@ -98,4 +99,6 @@ return [
 	'Finish Date' => 'Fecha de Terminación',
 	'Expiry Time' => 'Plazo de Caducidad',
 	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
+
+	'Warehouse' => 'Almacén',
 ];

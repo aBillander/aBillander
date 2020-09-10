@@ -79,6 +79,8 @@ class ProductionSheetProductionOrdersController extends Controller
             $categoryList =  \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray();
         }
 
+        $warehouseList = \App\Warehouse::selectorList();
+
 // \DB::enableQueryLog();
 
         $sheet = $this->productionSheet
@@ -128,7 +130,7 @@ class ProductionSheetProductionOrdersController extends Controller
                         ->with('productionorders.product')
                         ); // die();
 / * */
-        return view('production_sheet_production_orders.index', compact('sheet', 'work_centerList', 'categoryList'));
+        return view('production_sheet_production_orders.index', compact('sheet', 'work_centerList', 'categoryList', 'warehouseList'));
     }
 
     /**
@@ -234,6 +236,7 @@ class ProductionSheetProductionOrdersController extends Controller
         {
             $rules = $rules + [
                 'lot_reference'    => 'required|min:2|max:32',
+                'warehouse_id'     => 'exists:warehouses,id',
             ];
         }
     
@@ -244,11 +247,16 @@ class ProductionSheetProductionOrdersController extends Controller
         $finish_date = $request->input('finish_date');
         $expiry_time = $request->input('expiry_time');
 
+        $warehouse_id = $request->input('warehouse_id');
+
         // abi_r('OK');die();
 
         $params = [
             'finished_quantity' => $finished_quantity, 
             'finish_date'       => $finish_date,
+            'warehouse_id'      => $warehouse_id,
+
+            'lot_tracking'      => $lot_tracking,
         ];
 
         // abi_r($params, true);
@@ -266,10 +274,14 @@ class ProductionSheetProductionOrdersController extends Controller
 //            'pmu_conversion_rate' => ,
             'manufactured_at' => $finish_date, 
             'expiry_at' => \Carbon\Carbon::createFromFormat('Y-m-d', $finish_date)->addDays( $expiry_time ),
-            'notes' => '',
+            'notes' => 'Production Order: #'.$document->id,
+
+            'warehouse_id'      => $warehouse_id,
         ];
 
         // abi_r($lot_params);
+
+        $params['lot_params'] = $lot_params;
 
         $message = 'success';
         $success =[];
@@ -278,16 +290,16 @@ class ProductionSheetProductionOrdersController extends Controller
         {
             $success[] = l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts');
 
-            if ( $lot_tracking )
+            if ( $lot_tracking )       // Moved to ProductionOrderFinishedListener ( $document->makeStockMovements( $params ); )
             {
                 // Create Lot
-                $lot = Lot::create($lot_params);
+                // $lot = Lot::create($lot_params);
     
-                $lot_item = LotItem::create(['lot_id' => $lot->id]);
+                // $lot_item = LotItem::create(['lot_id' => $lot->id]);
     
-                $document->lotitems()->save($lot_item);
+                // $document->lotitems()->save($lot_item);
     
-                $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot->reference], 'layouts') . 
+                $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot_reference], 'layouts') . 
                     'para el Producto: ['.$document->product_reference.'] '.$document->product_name;
             }
         } 
@@ -336,7 +348,8 @@ class ProductionSheetProductionOrdersController extends Controller
         // ProductionSheetsController
         $document_group = $request->input('document_group', []);
 
-        $finish_date = $request->input('orders_finish_date');
+        $finish_date  = $request->input('orders_finish_date');
+        $warehouse_id = $request->input('orders_warehouse_id');
 
         if ( count( $document_group ) == 0 ) 
             return redirect()->back()
@@ -364,7 +377,8 @@ class ProductionSheetProductionOrdersController extends Controller
             'production_sheet_id' => $request->production_sheet_id, 
             'document_group' => $document_group,
 
-            'finish_date' => $finish_date,
+            'finish_date'  => $finish_date,
+            'warehouse_id' => $warehouse_id
         ];
 
         // abi_r($params, true);
@@ -429,6 +443,15 @@ class ProductionSheetProductionOrdersController extends Controller
 
         foreach ($documents as $document) {
             # code...
+            // Skip lot controlled orders
+            if ( $document->product->lot_tracking )
+            {
+                //
+                $success[] = '<strong>ERROR:</strong> Debe dar un Número de Lote &#58&#58 ('.$document->id.')';
+
+                continue;
+            }
+
             $document->finish( $params );
 
             $success[] = l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts');

@@ -10,9 +10,9 @@ return [
 	*/
 
 	'Lots' => 'Lotes',
-	'Reference' => '',
-	'Product Name' => '',
-	'Warehouse' => '',
+    'Product Name'                   => 'Nombre del Producto',
+    'Product Reference'                      => 'Referencia del Producto',
+	'Warehouse' => 'Almacén',
 	'Movement type' => '',
 	'Document' => '',
 	'Lot Number' => 'Número de Lote',
@@ -22,7 +22,7 @@ return [
 	'Measure Unit' => 'Unidad de Medida',
 	'Manufacture Date' => 'Fecha de Fabricación',
 	'Expiry Date' => 'Fecha de Caducidad',
-	'Stock Movements' => '',
+	'Stock Movements' => 'Movimientos de Stock',
 
 
 ];

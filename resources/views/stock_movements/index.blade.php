@@ -84,6 +84,18 @@
     {!! Form::text('document_reference', null, array('class' => 'form-control')) !!}
 </div>
 
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
+    {{-- Poor ma offset --}}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('lot_reference', l('Lot Number', 'lots')) !!}
+    {!! Form::text('lot_reference', null, array('class' => 'form-control')) !!}
+</div>
+@endif
+
 </div>
 
                 {!! Form::close() !!}

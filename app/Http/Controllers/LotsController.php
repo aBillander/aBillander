@@ -48,7 +48,9 @@ class LotsController extends Controller
 
         $lots->setPath('lots');     // Customize the URI used by the paginator
 
-        return view('lots.index')->with('lots', $lots);
+        $warehouseList = \App\Warehouse::selectorList();
+
+        return view('lots.index')->with(compact('lots', 'warehouseList'));
     }
 
     /**
@@ -58,7 +60,10 @@ class LotsController extends Controller
      */
     public function create()
     {
-        //
+        echo '<br>You naughty, naughty! Nothing to do here right now. <br><br><a href="'.route('lots.index').'">
+                                 Volver a Lotes
+                            </a>';
+        die();
     }
 
     /**

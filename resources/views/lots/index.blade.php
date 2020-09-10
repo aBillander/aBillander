@@ -42,8 +42,17 @@
 
 <div class="row">
 
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('reference', l('Lot Number')) !!}
+    {!! Form::text('reference', null, array('class' => 'form-control')) !!}
+</div>
+
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('date_from_form', l('Date from', 'layouts')) !!}
+                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                              data-content="{!! l('Manufacture Date') !!}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                       </a>
         {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
     </div>
 
@@ -52,13 +61,13 @@
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
 
-<div class="form-group col-lg-1 col-md-1 col-sm-1">
-    {!! Form::label('reference', l('Reference')) !!}
-    {!! Form::text('reference', null, array('class' => 'form-control')) !!}
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('product_reference', l('Product Reference')) !!}
+    {!! Form::text('product_reference', null, array('class' => 'form-control')) !!}
 </div>
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {!! Form::label('name', l('Product Name')) !!}
-    {!! Form::text('name', null, array('class' => 'form-control')) !!}
+    {!! Form::label('product_name', l('Product Name')) !!}
+    {!! Form::text('product_name', null, array('class' => 'form-control')) !!}
 </div>
 {{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
@@ -75,16 +84,23 @@
 </div>
 
 <div class="row">
+         
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
+            {{ l('Warehouse') }}
+            {!! Form::select('warehouse_id', ['0' => l('-- All --', [], 'layouts')] + $warehouseList, null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
+            {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
+         </div>
 {{--
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('movement_type_id', l('Movement type')) !!}
         {!! Form::select('movement_type_id', array('' => l('-- All --', [], 'layouts')) + $movement_typeList, null, array('class' => 'form-control')) !!}
     </div>
---}}
+
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('document_reference', l('Document')) !!}
     {!! Form::text('document_reference', null, array('class' => 'form-control')) !!}
 </div>
+--}}
 
 </div>
 
@@ -106,6 +122,7 @@
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{l('Lot Number')}}</th>
+            <th>{{l('Warehouse')}}</th>
             <th>{{l('Product')}}</th>
             <th class="text-right">{{l('Quantity')}}
               <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
@@ -126,7 +143,8 @@
 		<tr>
       <td>{{ $lot->id }}</td>
       <td>{{ $lot->reference }}</td>
-      <td>[{{ $lot->product->reference }}] <a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->name }}</a>
+      <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
+      <td>[<a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a>] {{ $lot->product->name }}
 {{--
                     @if ( $lot->combination_id > 0 )
                         {{ $lot->combination->reference }}
@@ -151,6 +169,8 @@
 
             <td class="text-right">
                 @if (  is_null($lot->deleted_at))
+                <a class="btn btn-sm btn-info" href="{{ route( 'stockmovements.index', ['search_status' => 1, 'lot_id' => $lot->id, 'lot_reference' => $lot->reference] ) }}" title="{{ l('Stock Movements') }}" target="_stockmovements"><i class="fa fa-outdent"></i></a>
+
                 <!-- a class="btn btn-sm btn-success" href="{{ URL::to('lots/' . $lot->id) }}" title=" Ver "><i class="fa fa-eye"></i></a>               
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('lots/' . $lot->id . '/edit') }}" title=" Modificar "><i class="fa fa-pencil"></i></a -->
                 <!-- a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 

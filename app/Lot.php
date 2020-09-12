@@ -33,7 +33,7 @@ class Lot extends Model
         'product_id'   => 'required|exists:products,id',
 //        'combination_id'   => 'nullable|sometimes|exists:combinations,id',  // <= Ensure Combination belongs to Product!!
 
-    	'quantity_initial'   => 'numeric|min:0',
+//    	'quantity_initial'   => 'numeric|min:0',
     	'quantity'   => 'numeric|min:0',
 
         'manufactured_at' => 'nullable|date',

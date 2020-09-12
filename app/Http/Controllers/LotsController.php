@@ -60,6 +60,8 @@ class LotsController extends Controller
      */
     public function create()
     {
+        return view('lots.create');
+
         echo '<br>You naughty, naughty! Nothing to do here right now. <br><br><a href="'.route('lots.index').'">
                                  Volver a Lotes
                             </a>';
@@ -74,7 +76,21 @@ class LotsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Dates (cuen)
+        $this->mergeFormDates( ['manufactured_at', 'expiry_at'], $request );
+
+        // abi_r($request->all(), true);
+
+        $this->validate($request, Lot::$rules);
+
+        $lot = $this->lot->create($request->all() + ['quantity_initial' => $request->input('quantity')]);
+
+        // Let's play a little bit with Stocks, now!
+        // (ノಠ益ಠ)ノ彡┻━┻
+        // New Lot is a Stock Adjustment (lot quantity "increases" overall stock)
+
+        return redirect('lots')
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $lot->id], 'layouts') . $request->input('reference'));
     }
 
     /**
@@ -96,7 +112,14 @@ class LotsController extends Controller
      */
     public function edit(Lot $lot)
     {
-        //
+        // Load Relation
+        $lot = $lot->load('product');
+        
+        // Dates (cuen)
+        $this->addFormDates( ['manufactured_at', 'expiry_at'], $lot );
+
+
+        return view('lots.edit', compact('lot'));
     }
 
     /**
@@ -108,7 +131,14 @@ class LotsController extends Controller
      */
     public function update(Request $request, Lot $lot)
     {
-        //
+        $currency = $this->currency->findOrFail($id);
+
+        $this->validate($request, Currency::$rules);
+
+        $currency->update($request->all());
+
+        return redirect('currencies')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     }
 
     /**
@@ -119,7 +149,12 @@ class LotsController extends Controller
      */
     public function destroy(Lot $lot)
     {
-        //
+        $this->currency->findOrFail($id)->delete();
+
+        // Delete currency conversion rate history
+
+        return redirect('currencies')
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
 

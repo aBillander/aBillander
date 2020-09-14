@@ -300,6 +300,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
         Route::get('products/{id}/pendingmovements', 'ProductsController@getPendingMovements')->name('products.pendingmovements');
         Route::get('products/{id}/stocksummary',     'ProductsController@getStockSummary'    )->name('products.stocksummary');
+        Route::get('products/{id}/lots',             'ProductsController@getLots'            )->name('products.lots');
 
         Route::get('products/{id}/recentsales',  'ProductsController@getRecentSales')->name('products.recentsales');
 

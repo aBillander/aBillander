@@ -153,6 +153,7 @@ return [
 
 	'Stock Movements' => 'Movimientos de Stock',
 	'Pending Movements' => 'Movimientos Pendientes',
+	'Lots' => 'Lotes',
 
 	'Recent Sales' => 'Ultimas Ventas',
 	'Date' => 'Fecha',

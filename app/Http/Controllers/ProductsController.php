@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Response;
 
 use App\Product;
 use App\StockMovement;
+use App\Lot;
 use App\PriceRule;
 
 use App\Configuration;
@@ -932,6 +933,37 @@ LIMIT 1
         // return $items_per_page_stockmovements ;
         
         return view('products._panel_stock_movements', compact('mvts', 'items_per_page_stockmovements'));
+    }
+
+
+
+
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function getLots($id, Request $request)
+    {
+        $items_per_page_lots = intval($request->input('items_per_page_lots', Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page_lots >= 0) ) 
+            $items_per_page_lots = Configuration::get('DEF_ITEMS_PERPAGE');
+
+        $lots = Lot::where('product_id', $id)
+                                ->with('product')
+                                ->with('combination')
+                                ->with('measureunit')
+                                ->with('warehouse')
+                                ->orderBy('warehouse_id', 'DESC')
+                                ->orderBy('created_at', 'DESC');
+
+        $lots = $lots->paginate( $items_per_page_lots );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
+
+        $lots->setPath('lots');
+
+        // return $items_per_page_lots ;
+        
+        return view('products._panel_lots', compact('lots', 'items_per_page_lots'));
     }
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Lot;
+use App\StockMovement;
 
 use Excel;
 
@@ -88,6 +89,47 @@ class LotsController extends Controller
         // Let's play a little bit with Stocks, now!
         // (ノಠ益ಠ)ノ彡┻━┻
         // New Lot is a Stock Adjustment (lot quantity "increases" overall stock)
+        
+        // $movement_type_id = StockMovement::INITIAL_STOCK;
+        $movement_type_id = StockMovement::ADJUSTMENT;
+        $product = $lot->product;
+
+        // Let's move on:
+        $data = [
+
+                'movement_type_id' => $movement_type_id,
+                'date' => \Carbon\Carbon::now(),
+
+//                   'stockmovementable_id' => ,
+//                   'stockmovementable_type' => ,
+
+                'document_reference' => l('New Adjustment by Lot (:id) ', ['id', $lot->id], 'lots').$lot->reference,
+//                   'quantity_before_movement' => ,
+                'quantity' => $lot->quantity_initial + $product->getStockByWarehouse( $lot->warehouse_id ),
+                'measure_unit_id' => $product->measure_unit_id,
+//                   'quantity_after_movement' => ,
+
+                'price' => $product->getPriceForStockValuation(),
+                'currency_id' => \App\Context::getContext()->company->currency->id,
+                'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
+                'notes' => '',
+
+                'product_id' => $product->id,
+                'combination_id' => '', // $line->combination_id,
+                'reference' => $product->reference,
+                'name' => $product->name,
+
+//                'lot_id' => $lot->id,
+
+                'warehouse_id' => $lot->warehouse_id,
+//                   'warehouse_counterpart_id' => ,
+                
+        ];
+
+        $stockmovement = StockMovement::createAndProcess( $data );
+
+        $lot->stockmovements()->save( $stockmovement );
 
         return redirect('lots')
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $lot->id], 'layouts') . $request->input('reference'));
@@ -149,12 +191,13 @@ class LotsController extends Controller
      */
     public function destroy(Lot $lot)
     {
-        $this->currency->findOrFail($id)->delete();
+        $id = $lot->id;
+        $reference = $lot->reference;
 
-        // Delete currency conversion rate history
+        $lot->delete();
 
-        return redirect('currencies')
-                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        return redirect('lots')
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts').$reference);
     }
 
 

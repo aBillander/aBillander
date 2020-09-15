@@ -16,6 +16,16 @@ trait StockableTrait
 
         return $line ? $line->quantity : 0.0;
     }
+
+    public function getLotStockByWarehouse( $warehouse_id = null )
+    {
+        return \App\Lot::
+                          where('product_id', $this->id)
+                        ->where('warehouse_id', $warehouse_id)
+                        ->where('quantity', '>', 0)
+                        ->get()
+                        ->sum('quantity');
+    }
     
 /*
     // Deprecated

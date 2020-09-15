@@ -25,6 +25,8 @@ return [
 	'Document' => '',
 
 	'Lot Number' => 'Número de Lote',
+	'Use Stock?' => '¿Usar Stock?',
+	'Use Stock not allocated to Lots, if there is enough quantity. If you choose "No", Lot quantity will appear as a Stock Adjustment.' => 'Usar Stock no asignado a Lotes, si hay cantidad suficiente. Si elige "No", la cantidad del Lote aparecerá como un Ajuste de Stock.',
 	'Finish Date' => 'Fecha de Terminación',
 	'Expiry Time' => 'Plazo de Caducidad',
 	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',

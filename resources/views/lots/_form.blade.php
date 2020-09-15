@@ -9,6 +9,33 @@
              {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
           </div>
 
+
+          <div class="form-group col-lg-4 col-md-4 col-sm-4">
+             {{-- Poor man offset --}}
+          </div>
+
+         <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-use_current_stock">
+           {!! Form::label('use_current_stock', l('Use Stock?'), ['class' => 'control-label']) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Use Stock not allocated to Lots, if there is enough quantity. If you choose "No", Lot quantity will appear as a Stock Adjustment.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+           <div>
+             <div class="radio-inline">
+               <label>
+                 {!! Form::radio('use_current_stock', '1', true, ['id' => 'use_current_stock_on']) !!}
+                 {!! l('Yes', [], 'layouts') !!}
+               </label>
+             </div>
+             <div class="radio-inline">
+               <label>
+                 {!! Form::radio('use_current_stock', '0', false, ['id' => 'use_current_stock_off']) !!}
+                 {!! l('No', [], 'layouts') !!}
+               </label>
+             </div>
+           </div>
+         </div>
+
 </div>
 
 <div class="row">

@@ -18,7 +18,7 @@ class StockCountLine extends Model
 
     protected $dates = ['date'];
     
-    protected $fillable = [ 'date', 'quantity', 'cost_price',  
+    protected $fillable = [ 'date', 'quantity', 'cost_price', 'cost_average', 'last_purchase_price', 
     						'product_id', 'combination_id', 'reference', 'name',
                             'user_id'
     						];
@@ -59,6 +59,37 @@ class StockCountLine extends Model
     | Methods
     |--------------------------------------------------------------------------
     */
+
+    
+
+    public function getPriceForStockValuation( $thePrice = null  )
+    {
+        if ( $thePrice !== null )
+            return $thePrice;
+
+        // Configuration::get('INVENTORY_VALUATION_METHOD') => STANDARD: AVERAGE: CURRENT: 
+
+        switch ( Configuration::get('INVENTORY_VALUATION_METHOD') ) {
+            case 'STANDARD':
+                # code...
+                return $this->cost_price;
+                break;
+            
+            case 'AVERAGE':
+                # code...
+                return $this->cost_average;
+                break;
+            
+            case 'CURRENT':
+                # code...
+                return $this->last_purchase_price;
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
 
 
     public function scopeFilter($query, $params)

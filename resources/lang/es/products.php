@@ -154,6 +154,7 @@ return [
 	'Stock Movements' => 'Movimientos de Stock',
 	'Pending Movements' => 'Movimientos Pendientes',
 	'Lots' => 'Lotes',
+	'Not in Lots' => 'Sin Lote',
 
 	'Recent Sales' => 'Ultimas Ventas',
 	'Date' => 'Fecha',

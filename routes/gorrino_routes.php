@@ -115,6 +115,12 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+
+	// 2020-09-15
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_count_lines` ADD `cost_average` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price;");
+
+	die('OK');
+
 	// 2020-09-10
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `lots` ADD `warehouse_id` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `notes`;");
 

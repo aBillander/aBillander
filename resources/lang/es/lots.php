@@ -16,6 +16,7 @@ return [
 
 	'Search by Name or Reference.'     => 'Busque por Nombre o Referencia.',
 
+	'Lot' => 'Lote',
 	'Lots' => 'Lotes',
     'Product Name'                   => 'Nombre del Producto',
     'Product Reference'                      => 'Referencia del Producto',
@@ -40,6 +41,8 @@ return [
 	'Manufacture Date' => 'Fecha de Fabricación',
 	'Expiry Date' => 'Fecha de Caducidad',
 	'Stock Movements' => 'Movimientos de Stock',
+
+	'New Adjustment by Lot (:id) ' => 'Nuevo Ajuste por el Lote (:id) ',
 
 
 ];

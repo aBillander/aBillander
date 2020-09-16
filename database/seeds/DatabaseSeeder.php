@@ -31,7 +31,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call(TemplatesTableSeeder::class);
 
-        $this->call(PaymentDocumentsTableSeeder::class);
+        // $this->call(PaymentDocumentsTableSeeder::class);
+
+        $this->call(PaymentTypesTableSeeder::class);
         
     }
 }

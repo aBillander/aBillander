@@ -10,10 +10,15 @@ use App\ShippingMethod;
 
 trait BillableFormsControllerTrait
 {
-   use SupplierBillableFormsControllerTrait;
+    use BillableLotFormsControllerTrait;
+
+    use SupplierBillableFormsControllerTrait;
+    
 
     public function FormForProduct( $action )
-    {
+    {;
+
+    
 
         switch ( $action ) {
             case 'edit':

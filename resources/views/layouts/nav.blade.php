@@ -208,7 +208,7 @@
                          <li>
                             <a href="{{ URL::to('lots') }}">
                                  <img src="{{ asset('assets/theme/self-distract-button-20.png') }}"> 
-                                 <i class="fa fa-th btn-xs text-muted"></i> 
+                                 <i class="fa fa-window-restore btn-xs text-muted"></i> 
                                  {{l('Lots', [], 'layouts')}}
                             </a>
                         </li>

@@ -600,6 +600,7 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/getlines',             $controller.'@getDocumentLines'  )->name($path.'.getlines' );
         Route::get($path.'/{id}/getheader',            $controller.'@getDocumentHeader' )->name($path.'.getheader');
         Route::get($path.'/line/productform/{action}', $controller.'@FormForProduct')->name($path.'.productform');
+        Route::get($path.'/line/productlotsform/{action}', $controller.'@FormForProductLots')->name($path.'.productlotsform');
         Route::get($path.'/line/serviceform/{action}', $controller.'@FormForService')->name($path.'.serviceform');
         Route::get($path.'/line/commentform/{action}', $controller.'@FormForComment')->name($path.'.commentform');
         Route::get($path.'/line/searchproduct',        $controller.'@searchProduct' )->name($path.'.searchproduct');
@@ -619,6 +620,9 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/duplicate',     $controller.'@duplicateDocument'   )->name($path.'.duplicate'  );
         Route::get($path.'/{id}/profit',        $controller.'@getDocumentProfit'   )->name($path.'.profit'     );
         Route::get($path.'/{id}/availability',  $controller.'@getDocumentAvailability' )->name($path.'.availability' );
+
+        Route::get($path.'/{id}/getlotsline/{lid}', $controller.'@getDocumentLotsLine'     )->name($path.'.getlotsline'    );
+        Route::post($path.'/updatelotsline/{lid}',  $controller.'@updateDocumentLotsLine'  )->name($path.'.updatelotsline' );
         
         Route::get($path.'/{id}/availability/modal',  $controller.'@getDocumentAvailabilityModal' )->name($path.'.availability.modal' );
 

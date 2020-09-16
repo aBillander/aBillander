@@ -1092,6 +1092,11 @@ class Product extends Model {
         return $this->hasMany('App\WarehouseProductLine');
     }
 
+    public function lots()
+    {
+        return $this->hasMany('App\Lot')->orderBy('expiry_at', 'DESC');
+    }
+
     public function pricelistlines()
     {
         return $this->hasMany('App\PriceListLine');

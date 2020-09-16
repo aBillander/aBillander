@@ -31,6 +31,7 @@ class BillableLine extends Model
     protected $fillable = ['line_sort_order', 'line_type', 
                     'product_id', 'combination_id', 'reference', 'name', 
                     'quantity', 'extra_quantity', 'extra_quantity_label', 'measure_unit_id',
+                    'lot_references', 
                     'package_measure_unit_id', 'pmu_conversion_rate', 'pmu_label', 
                     'cost_price', 'unit_price', 'unit_customer_price', 
                     'prices_entered_with_tax',
@@ -160,6 +161,12 @@ class BillableLine extends Model
     public function stockmovements()
     {
         return $this->morphMany( StockMovement::class, 'stockmovementable' );
+    }
+
+    public function lots()
+    {
+        // Document line -> stock movements (one or more) -> lot (one per movement)
+        // see: https://stackoverflow.com/questions/43285779/laravel-polymorphic-relations-has-many-through
     }
 
     

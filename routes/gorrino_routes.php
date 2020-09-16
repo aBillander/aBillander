@@ -116,6 +116,7 @@ Route::get('mqueuer', 'MProbeController@queuer');
 Route::get('migratethis', function()
 {	
 
+<<<<<<< HEAD
 	// 2020-09-16
 
 	$tables = ['customer_invoice', 'customer_shipping_slip', 'customer_quotation', 'customer_order'];
@@ -129,6 +130,10 @@ Route::get('migratethis', function()
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_count_lines` ADD `last_purchase_price` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price`;");
 
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_count_lines` ADD `cost_average` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price`;");
+=======
+	// 2020-09-15
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_count_lines` ADD `cost_average` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price;");
+>>>>>>> _service_
 
 	die('OK');
 

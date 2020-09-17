@@ -56,7 +56,7 @@ return [
 	'Next Due Date'     => 'Próx. Vencimiento',
 	'Show Customer'     => 'Ver Cliente',
 	'Show Payments'     => 'Ver Pagos',
-	'Draft'     => 'Borrador',
+
 	'D'     => 'B',
 	'Pending: Send by eMail'     => 'Pendiente: Enviar por eMail',
 	'eM'     => 'eM',
@@ -364,6 +364,11 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
+
+	'Draft'     => 'Borrador',
+	'Not closed' => 'Sin cerrar',
+
+	'Showing :a of :b in total' => 'Mostrando :a de :b en total',
 
 	'Close Documents' => 'Cerrar Facturas',
 

@@ -15,6 +15,29 @@
 --}}
 
 
+
+                <div class="btn-group" style="margin-left: 32px; ">
+                    <a href="#" class="btn xbtn-sm btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Filter Records', 'layouts')}}"><i class="fa fa-filter"></i> {{l('Filter', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu  pull-right">
+                      
+                      <li class="{{ Request::has('draft') ? 'alert-info' : '' }}">
+                        <a href="{{ route('productionsheet.invoices', [$productionSheet->id, 'draft']) }}">{{ l('Draft') }}</a></li>
+                      
+                      <li class="{{ Request::has('not_closed') ? 'alert-info' : '' }}">
+                        <a href="{{ route('productionsheet.invoices', [$productionSheet->id, 'not_closed']) }}">{{ l('Not closed') }}</a></li>
+                      
+                      <li class="{{ Request::has('closed') ? 'alert-info' : '' }}">
+                        <a href="{{ route('productionsheet.invoices', [$productionSheet->id, 'closed']) }}">{{ l('Closed') }}</a></li>
+                                            
+                      <li class="divider"></li>
+                      <li><a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}">{{ l('All', 'layouts') }}</a></li>
+                      <!-- li class="divider"></li -->
+                      <!-- li><a href="#">Separated link</a></li -->
+                    </ul>
+                </div>
+
+
+
                 <div class="btn-group" style="margin-left: 32px; ">
                     <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', 'layouts')}}" style="background-color: #31b0d5;
 border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'layouts')}} <span class="caret"></span></a>
@@ -49,8 +72,21 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 
     </h2>        
     <h2>     
+@php
+    $documents_total = $documents->total();
+
+    if ($documents_total == $documents_total_count)
+    {
+        $btn_class = 'grey';
+
+    } else 
+    {
+        $btn_class = 'success';
+
+    }
+@endphp
                   {{ l('Documents') }} 
-                   &nbsp; 
+                   &nbsp; <span class="btn btn-sm btn-{{ $btn_class }}" title="{{ l('Showing :a of :b in total', ['a' => $documents_total, 'b' => $documents_total_count]) }}">{{ $documents_total }} / {{ $documents_total_count }}</span> 
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
     </h2>
 </div>

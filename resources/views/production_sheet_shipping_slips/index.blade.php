@@ -94,8 +94,21 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 
     </h2>        
     <h2>     
+@php
+    $documents_total = $documents->total();
+
+    if ($documents_total == $documents_total_count)
+    {
+        $btn_class = 'grey';
+
+    } else 
+    {
+        $btn_class = 'success';
+
+    }
+@endphp
                   {{ l('Documents') }} 
-                   &nbsp; <span class="btn btn-sm btn-grey" title="{{ $documents_total_count }} {{ l('in total') }}">{{ $documents->total() }} / {{ $documents_total_count }}</span> 
+                   &nbsp; <span class="btn btn-sm btn-{{ $btn_class }}" title="{{ l('Showing :a of :b in total', ['a' => $documents_total, 'b' => $documents_total_count]) }}">{{ $documents_total }} / {{ $documents_total_count }}</span> 
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
     </h2>
 </div>

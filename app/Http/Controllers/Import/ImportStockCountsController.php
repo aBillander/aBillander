@@ -348,12 +348,44 @@ class ImportStockCountsController extends Controller
                             {
                                 if (  $data['cost_price'] === NULL || trim($data['cost_price']) === '' ) 
                                 {
-                                    unset( $data['cost_price'] );
+                                    // Use current
+                                    $data['cost_price'] = $product->cost_price;
                                 } else {
                                     $data['cost_price'] = floatval( trim($data['cost_price']) );
                                 }
                             } else {
+                                // Use current
                                 $data['cost_price'] = $product->cost_price;
+                            }
+
+                            // Cost Average
+                            if ( array_key_exists('cost_average', $data) )
+                            {
+                                if (  $data['cost_average'] === NULL || trim($data['cost_average']) === '' ) 
+                                {
+                                    // Use current
+                                    $data['cost_average'] = $product->cost_average;
+                                } else {
+                                    $data['cost_average'] = floatval( trim($data['cost_average']) );
+                                }
+                            } else {
+                                // Use current
+                                $data['cost_average'] = $product->cost_average;
+                            }
+
+                            // Last Purchase Price
+                            if ( array_key_exists('last_purchase_price', $data) )
+                            {
+                                if (  $data['last_purchase_price'] === NULL || trim($data['last_purchase_price']) === '' ) 
+                                {
+                                    // Use current
+                                    $data['last_purchase_price'] = $product->last_purchase_price;
+                                } else {
+                                    $data['last_purchase_price'] = floatval( trim($data['last_purchase_price']) );
+                                }
+                            } else {
+                                // Use current
+                                $data['last_purchase_price'] = $product->last_purchase_price;
                             }
                     } else {
                         
@@ -461,7 +493,7 @@ class ImportStockCountsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $data[] = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'cost_price', 'stock_count_id', 'stock_count_NAME' ];
+        $data[] = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'cost_price', 'cost_average', 'last_purchase_price', 'stock_count_id', 'stock_count_NAME' ];
         // removed: , 'cost_price',
 
         // Convert each member of the returned collection into an array,
@@ -472,8 +504,10 @@ class ImportStockCountsController extends Controller
                             'product_id' => $line->product_id,
                             'reference' => $line->reference,
                             'NOMBRE' => $line->name,
-                            'quantity'   => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->quantity  ),
-                            'cost_price' => str_replace('.', \App\Configuration::get('EXPORT_DECIMAL_SEPARATOR'), $line->cost_price),
+                            'quantity'   => (float) $line->quantity,
+                            'cost_price' => (float) $line->cost_price,
+                            'cost_average' => (float) $line->cost_average,
+                            'last_purchase_price' => (float) $line->last_purchase_price,
                             'stock_count_id' => $id,
                             'stock_count_NAME' => $stockcount->name,
             ];

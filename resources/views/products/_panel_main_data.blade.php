@@ -156,41 +156,6 @@ border-left:1px solid #e95420;">
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
                   </div>
 @endif
-
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
-
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-lot_tracking">
-                     {!! Form::label('lot_tracking', l('Lot tracking?'), ['class' => 'control-label']) !!}
-                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                                data-content="{{ l('Use Lot and Expiry Date tracking for this Product.') }}">
-                                    <i class="fa fa-question-circle abi-help"></i>
-                             </a>
-                     <div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('lot_tracking', '1', false, ['id' => 'lot_tracking_on']) !!}
-                           {!! l('Yes', [], 'layouts') !!}
-                         </label>
-                       </div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('lot_tracking', '0', true, ['id' => 'active_off']) !!}
-                           {!! l('No', [], 'layouts') !!}
-                         </label>
-                       </div>
-                     </div>
-                   </div>
-
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('expiry_time') ? 'has-error' : '' }}">
-                     {{ l('Expiry Time') }}
-                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                                data-content="{{ l('Number of Days before expiry.') }}">
-                                    <i class="fa fa-question-circle abi-help"></i>
-                             </a>
-                     {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time')) !!}
-                     {!! $errors->first('expiry_time', '<span class="help-block">:message</span>') !!}
-                  </div>
-@endif
         </div>
 
         <div class="row">

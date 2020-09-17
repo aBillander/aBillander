@@ -11,6 +11,7 @@ return [
     |
     */
 
+	'Production Sheet - Production Orders' => 'Hoja de Producción - Ordenes de Fabricación',
 	'Production Sheet'     => 'Hoja de Producción',
 	'Reference'     => 'Referencia',
 	'Date'     => 'Fecha',
@@ -69,6 +70,7 @@ return [
     'Material Requirements'     => 'Requerimientos de Ingredientes',
 	'Packaging Requirements' => 'Requerimientos de Envases y Embalajes',
 	'Tool Requirements' => 'Requerimientos de Utillajes',
+	'Tray Requirements' => 'Requerimientos de Bandejas',
 
 	'Tool ID'     => 'ID',
 	'Tool Reference'     => 'Referencia',
@@ -97,4 +99,6 @@ return [
 	'Finish Date' => 'Fecha de Terminación',
 	'Expiry Time' => 'Plazo de Caducidad',
 	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
+
+	'Warehouse' => 'Almacén',
 ];

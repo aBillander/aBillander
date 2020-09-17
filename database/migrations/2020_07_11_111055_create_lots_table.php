@@ -33,6 +33,8 @@ class CreateLotsTable extends Migration
 
             $table->text('notes')->nullable();
 
+            $table->integer('warehouse_id')->unsigned()->nullable(false);
+
             $table->timestamps();
         });
     }

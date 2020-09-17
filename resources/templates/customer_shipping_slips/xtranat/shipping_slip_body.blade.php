@@ -283,6 +283,20 @@
 				<span class="abi-line-rule-label">{!! $line->extra_quantity_label !!}
 				</span>
 @endif
+@if ( \App\Configuration::isTrue('PRINT_LOT_NUMBER_ON_DOCUMENTS') && $line->lot_references && $line->product->lot_tracking )
+@php
+	$names = [];
+	$lots = explode(',', str_replace(' ', '', $line->lot_references));
+	foreach ($lots as $lot) {
+		# code...
+		$parts = explode(':', $lot);
+		$names[] = $parts[0] . ' (' . ($parts[1] ?? '') . ') '; // . ($parts[2] ?? '');
+	}
+@endphp
+				<br />
+				<span class="abi-line-rule-label"><i>Lote(s):</i> {!! implode(', ', $names) !!}
+				</span>
+@endif
 			</td>
 			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
 			</td>

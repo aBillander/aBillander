@@ -115,6 +115,28 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+
+	// 2020-09-16
+
+	$tables = ['customer_invoice', 'customer_shipping_slip', 'customer_quotation', 'customer_order'];
+
+	foreach ($tables as $table) {
+		# code...
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `".$table."_lines` ADD `lot_references` varchar(128) NULL DEFAULT NULL AFTER `measure_unit_id`;");
+	}
+
+	// 2020-09-15
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_count_lines` ADD `last_purchase_price` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_count_lines` ADD `cost_average` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price`;");
+
+	die('OK');
+
+	// 2020-09-10
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `lots` ADD `warehouse_id` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `notes`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `lot_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `name`;");
+
 	// 2020-08-18
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `product_cost_price` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price_after_movement`;");
 

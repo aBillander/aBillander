@@ -23,9 +23,10 @@ class ProductionOrderFinished
      *
      * @return void
      */
-    public function __construct( Document $document )
+    public function __construct( Document $document, $params = [] )
     {
         $this->document = $document;
+        $this->params = $params;
     }
 
     /**

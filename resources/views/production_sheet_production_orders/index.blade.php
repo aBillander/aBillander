@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Production Sheets - Show') }} @parent @stop
+@section('title') {{ l('Production Sheet - Production Orders') }} @parent @stop
 
 
 @section('content')<div class="page-header">
@@ -103,7 +103,7 @@
             <th>{{l('Product Reference')}}&nbsp;/<br />{{l('Category')}}</th>
             <th>{{l('Product Name')}}</th>
             <th>{{l('Quantity')}}</th>
-            <th>{{l('Work Center')}}</th>
+            <th>{{l('Work Center')}}&nbsp;/<br />{{l('Warehouse')}}</th>
             <th>{{l('Provenience')}}</th>
             <th>{{l('Status', 'layouts')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
@@ -120,7 +120,10 @@
             <td class="text-center warning">
 @if ( $order->status == 'finished' )
 @else
+          @if ( $order->product->lot_tracking )
+          @else
               {!! Form::checkbox('document_group[]', $order->id, false, ['class' => 'case xcheckbox']) !!}
+          @endif
 @endif
 
             </td>
@@ -131,7 +134,10 @@
         <a href="{{ route('categories.subcategories.edit', [-1, $product->category_id]) }}" title="{{l('View Category')}}" target="_blank">{{ $product->category_id }}</a></td>
       <td>{{ $order->product_name }}</td>
       <td>{{ $product->as_quantityable($order->planned_quantity) }}</td>
-      <td>{{ $order->workcenter->name ?? '' }}</td>
+      <td>{{ $order->workcenter->name ?? '' }}
+        <br />
+        <span class="text-success">{{ $order->warehouse->alias_name ?? '-' }}</span>
+        </td>
       <td>{{ $order->created_via }}</td>
       <td>
 @if ( $order->status != 'finished' )
@@ -153,7 +159,7 @@
            <td class="text-right" style="width:1px; white-space: nowrap;">
 
 @if ( $order->status != 'finished' )
-                <a class="btn btn-sm btn-info finish-production-order" href="{{ route('productionsheet.productionorders.finish.withlot') }}" title="{{l('Finish', [], 'layouts')}} {{ $order->product->lot_tracking ? ' :: con Control de Lote' : '' }}" data-oid="{{ $order->id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" data-olottracking="{{ $order->product->lot_tracking }}" data-oexpirytime="{{ $order->product->expiry_time }}" data-oexpirydate="{{ $order->product->expiry_time }}" onClick="return false;">
+                <a class="btn btn-sm btn-info finish-production-order" href="{{ route('productionsheet.productionorders.finish.withlot') }}" title="{{l('Finish', [], 'layouts')}} {{ $order->product->lot_tracking ? ' :: con Control de Lote' : '' }}" data-oid="{{ $order->id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" data-olottracking="{{ $order->product->lot_tracking }}" data-oexpirytime="{{ $order->product->expiry_time }}" data-oexpirydate="{{ $order->product->expiry_time }}" data-owarehouse="{{ $order->warehouse_id > 0 ? $order->warehouse_id : \App\Configuration::getInt('DEF_WAREHOUSE') }}" onClick="return false;">
           @if ( $order->product->lot_tracking )
                   <i class="fa fa-outdent"></i>
           @else
@@ -165,7 +171,7 @@
                 <a class="btn btn-sm btn-blue show-production-order-products" title="{{l('Show', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-folder-open-o"></i></a>
 
 @if ( $order->status != 'finished' )
-                <a class="btn btn-sm btn-warning edit-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetedit') }}" title="{{l('Edit', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" onClick="return false;"><i class="fa fa-pencil"></i></a>
+                <a class="btn btn-sm btn-warning edit-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetedit') }}" title="{{l('Edit', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" data-owarehouse="{{ $order->warehouse_id > 0 ? $order->warehouse_id : \App\Configuration::getInt('DEF_WAREHOUSE') }}" onClick="return false;"><i class="fa fa-pencil"></i></a>
 
                 <a class="btn btn-sm btn-danger delete-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetdelete') }}" title="{{l('Delete', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-trash-o"></i></a>
 @endif
@@ -350,6 +356,7 @@ $(document).ready(function() {
 //    $('#template_id').val('{ { $customer->getInvoiceTemplateId() }}');
 
     $('#orders_finish_date_form').val('{{ abi_date_short( \Carbon\Carbon::now() ) }}');
+    $('#orders_warehouse_id').val('{{ \App\Configuration::getInt('DEF_WAREHOUSE') }}');
 
 });
 

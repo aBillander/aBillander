@@ -90,7 +90,6 @@ class ProductionSheetShippingSlipsController extends BillableController
         // $order_statusList = Document::getStatusList();
 
         // Make sense:
-        unset($statusList['closed']);
         unset($statusList['canceled']);
         // unset($order_statusList['closed']);
         // unset($order_statusList['canceled']);

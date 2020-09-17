@@ -10,6 +10,12 @@
                             <li><a href="#tab2default_m" data-toggle="tab">{{ l('Stock Movements') }}</a></li>
                             <li><a href="#tab3default_p" data-toggle="tab">{{ l('Pending Movements') }}</a></li>
 
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') && $product->lot_tracking)
+
+                            <li><a href="#tab4default_l" data-toggle="tab">{{ l('Lots') }}</a></li>
+
+@endif
+
                             <!-- li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
                             <li class="dropdown">
                                 <a href="#" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
@@ -38,6 +44,17 @@
                 @include('products._tab_pending_movements')
 
       </div>
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+
+      <div class="tab-pane fade" id="tab4default_l">
+                
+                @include('products._tab_lots')
+
+      </div>
+
+@endif
+
       <!-- div class="tab-pane fade" id="tab4default">
                 
                 @ include('products._tab_availability')

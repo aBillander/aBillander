@@ -56,6 +56,13 @@
                {!! $errors->first('orders_finish_date', '<span class="help-block">:message</span>') !!}
             </div>
          </div>
+         
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('orders_warehouse_id') ? 'has-error' : '' }}">
+            <br />
+            {{ l('Warehouse') }}
+            {!! Form::select('orders_warehouse_id', array('0' => l('-- Default --', [], 'layouts')) + $warehouseList, null, array('class' => 'form-control', 'id' => 'orders_warehouse_id')) !!}
+            {!! $errors->first('orders_warehouse_id', '<span class="help-block">:message</span>') !!}
+         </div>
 {{--
          <div class="col-lg-6 col-md-6 col-sm-6 {{ $errors->has('shippingslip_delivery_date') ? 'has-error' : '' }}">
             <div class="form-group">
@@ -66,6 +73,10 @@
          </div>
 --}}
 </div>
+
+         <div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>No pueden cerrarse automáticamente las órdenes con control de lote !!!</div>
+
+
                   </div>
 
                   <div class="panel-footer">

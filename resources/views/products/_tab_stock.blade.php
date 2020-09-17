@@ -32,16 +32,51 @@
                      {!! $errors->first('mrp_type', '<span class="help-block">:message</span>') !!}
                   </div>
 
-                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('reorder_point') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reorder_point') ? 'has-error' : '' }}">
                      {{ l('Reorder point') }}
                      {!! Form::text('reorder_point', null, array('class' => 'form-control', 'id' => 'reorder_point')) !!}
                      {!! $errors->first('reorder_point', '<span class="help-block">:message</span>') !!}
                   </div>
-                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('maximum_stock') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('maximum_stock') ? 'has-error' : '' }}">
                      {{ l('Maximum stock') }}
                      {!! Form::text('maximum_stock', null, array('class' => 'form-control', 'id' => 'maximum_stock')) !!}
                      {!! $errors->first('maximum_stock', '<span class="help-block">:message</span>') !!}
                   </div>
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-lot_tracking">
+                     {!! Form::label('lot_tracking', l('Lot tracking?'), ['class' => 'control-label']) !!}
+                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                                data-content="{{ l('Use Lot and Expiry Date tracking for this Product.') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                             </a>
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('lot_tracking', '1', false, ['id' => 'lot_tracking_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('lot_tracking', '0', true, ['id' => 'lot_tracking_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('expiry_time') ? 'has-error' : '' }}">
+                     {{ l('Expiry Time') }}
+                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                                data-content="{{ l('Number of Days before expiry.') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                             </a>
+                     {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time')) !!}
+                     {!! $errors->first('expiry_time', '<span class="help-block">:message</span>') !!}
+                  </div>
+@endif
         </div>
 
 

@@ -39,6 +39,8 @@ return [
 	'Document is on-hold'                                      =>  'El Documento está en espera',
 	'Document is not closed'                                      =>  'El Documento no está cerrado',
 	'Document has Payments'                                      =>  'El Documento tiene Pagos',
+	'Document not found'										=> 'Documento no encontrado',
+	'Document ID not found'										=> 'ID de Documento no encontrado',
 	'Unable to close this document &#58&#58 (:id) '              =>  'No se ha podido cerrar el documento solicitado &#58&#58 (:id) ',
 	'Unable to delete this record &#58&#58 (:id) '               =>  'No se ha podido borrar el registro solicitado &#58&#58 (:id) ',
 	'Unable to load PDF Document &#58&#58 (:id) '                =>  'No se puede cargar el documento PDF &#58&#58 (:id) ',

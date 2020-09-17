@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Lot;
+use App\Product;
+use App\StockMovement;
 
 use Excel;
 
@@ -16,10 +18,12 @@ class LotsController extends Controller
    use DateFormFormatterTrait;
 
    protected $lot;
+   protected $product;
 
-   public function __construct(Lot $lot)
+   public function __construct(Lot $lot, Product $product)
    {
         $this->lot = $lot;
+        $this->product = $product;
    }
 
     /**
@@ -48,7 +52,9 @@ class LotsController extends Controller
 
         $lots->setPath('lots');     // Customize the URI used by the paginator
 
-        return view('lots.index')->with('lots', $lots);
+        $warehouseList = \App\Warehouse::selectorList();
+
+        return view('lots.index')->with(compact('lots', 'warehouseList'));
     }
 
     /**
@@ -58,7 +64,12 @@ class LotsController extends Controller
      */
     public function create()
     {
-        //
+        return view('lots.create');
+
+        echo '<br>You naughty, naughty! Nothing to do here right now. <br><br><a href="'.route('lots.index').'">
+                                 Volver a Lotes
+                            </a>';
+        die();
     }
 
     /**
@@ -69,7 +80,150 @@ class LotsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Dates (cuen)
+        $this->mergeFormDates( ['manufactured_at', 'expiry_at'], $request );
+
+        // abi_r($request->all(), true);
+
+        $this->validate($request, Lot::$rules);
+
+        $use_current_stock = $request->input('use_current_stock', 0);
+
+        $product = $this->product->find( $request->input('product_id') );
+
+        $warehouse_id = $request->input('warehouse_id');
+
+        if ( $use_current_stock )
+        {
+            // Check unallocated quantity
+            $unallocated = $product->getStockByWarehouse( $warehouse_id ) - $product->getLotStockByWarehouse( $warehouse_id );
+            
+            if ( $unallocated < $request->input('quantity') )
+            {
+                // return with error
+                return redirect('lots')
+                        ->with('error', l('No se pudo crear el Lote porque no hay suficiente Stock. Stock sin asignar a Lotes: :u. Stock pedido para el Lote: :q.', ['u' => $unallocated, 'q' => $request->input('quantity')]));
+            }
+
+        }
+
+        $lot = $this->lot->create($request->all() + ['quantity_initial' => $request->input('quantity')]);
+
+        // Let's play a little bit with Stocks, now!
+        // (ノಠ益ಠ)ノ彡┻━┻
+        // New Lot is a Stock Adjustment (lot quantity "increases" overall stock)
+
+        if ( $use_current_stock )
+        {
+            // Stock Transfer inside Warehouse            
+
+            // Prepare StockMovement::TRANSFER_OUT
+            $data = [
+
+                    'movement_type_id' => StockMovement::TRANSFER_OUT,
+                    'date' => \Carbon\Carbon::now(),
+
+//                    'stockmovementable_id' => $line->,
+//                    'stockmovementable_type' => $line->,
+
+                    'document_reference' => l('New Adjustment by Lot (:id) ', ['id' => $lot->id], 'lots').$lot->reference,
+
+//                    'quantity_before_movement' => $line->,
+                    'quantity' => $lot->quantity_initial,
+                    'measure_unit_id' => $product->measure_unit_id,
+//                    'quantity_after_movement' => $line->,
+
+                    'price' => $product->getPriceForStockValuation(),
+                    'currency_id' => \App\Context::getContext()->company->currency->id,
+                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $product->id,
+                    'combination_id' => '', // $line->combination_id,
+                    'reference' => $product->reference,
+                    'name' => $product->name,
+
+    //                'lot_id' => $lot->id,
+
+                    'warehouse_id' => $lot->warehouse_id,
+                    'warehouse_counterpart_id' => $lot->warehouse_id,
+
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+
+            if ( $stockmovement )
+            {
+                //
+                // $line->stockmovements()->save( $stockmovement );
+            }
+
+
+            // The show **MUST** go on
+
+            // Prepare StockMovement::TRANSFER_IN
+            $data1 = [
+                    'warehouse_id' => $lot->warehouse_id,
+                    'warehouse_counterpart_id' => $lot->warehouse_id,
+
+                    'movement_type_id' => StockMovement::TRANSFER_IN,
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( array_merge($data, $data1) );
+
+            if ( $stockmovement )
+            {
+                //
+                $lot->stockmovements()->save( $stockmovement );
+            }
+
+
+        } else {
+        
+            // $movement_type_id = StockMovement::INITIAL_STOCK;
+            $movement_type_id = StockMovement::ADJUSTMENT;
+
+            // Let's move on:
+            $data = [
+
+                    'movement_type_id' => $movement_type_id,
+                    'date' => \Carbon\Carbon::now(),
+
+    //                   'stockmovementable_id' => ,
+    //                   'stockmovementable_type' => ,
+
+                    'document_reference' => l('New Adjustment by Lot (:id) ', ['id' => $lot->id], 'lots').$lot->reference,
+    //                   'quantity_before_movement' => ,
+                    'quantity' => $lot->quantity_initial + $product->getStockByWarehouse( $lot->warehouse_id ),
+                    'measure_unit_id' => $product->measure_unit_id,
+    //                   'quantity_after_movement' => ,
+
+                    'price' => $product->getPriceForStockValuation(),
+                    'currency_id' => \App\Context::getContext()->company->currency->id,
+                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $product->id,
+                    'combination_id' => '', // $line->combination_id,
+                    'reference' => $product->reference,
+                    'name' => $product->name,
+
+    //                'lot_id' => $lot->id,
+
+                    'warehouse_id' => $lot->warehouse_id,
+    //                   'warehouse_counterpart_id' => ,
+                    
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+
+            $lot->stockmovements()->save( $stockmovement );
+        }
+
+        return redirect('lots')
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $lot->id], 'layouts') . $request->input('reference'));
     }
 
     /**
@@ -91,7 +245,14 @@ class LotsController extends Controller
      */
     public function edit(Lot $lot)
     {
-        //
+        // Load Relation
+        $lot = $lot->load('product');
+        
+        // Dates (cuen)
+        $this->addFormDates( ['manufactured_at', 'expiry_at'], $lot );
+
+
+        return view('lots.edit', compact('lot'));
     }
 
     /**
@@ -103,7 +264,14 @@ class LotsController extends Controller
      */
     public function update(Request $request, Lot $lot)
     {
-        //
+        $currency = $this->currency->findOrFail($id);
+
+        $this->validate($request, Currency::$rules);
+
+        $currency->update($request->all());
+
+        return redirect('currencies')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     }
 
     /**
@@ -114,7 +282,13 @@ class LotsController extends Controller
      */
     public function destroy(Lot $lot)
     {
-        //
+        $id = $lot->id;
+        $reference = $lot->reference;
+
+        $lot->delete();
+
+        return redirect('lots')
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts').$reference);
     }
 
 

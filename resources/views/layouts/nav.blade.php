@@ -207,7 +207,8 @@
 @if ( \App\Configuration::isTrue('ENABLE_LOTS') )
                          <li>
                             <a href="{{ URL::to('lots') }}">
-                                 <i class="fa fa-th btn-xs text-muted"></i> 
+                                 <img src="{{ asset('assets/theme/self-distract-button-20.png') }}"> 
+                                 <i class="fa fa-window-restore btn-xs text-muted"></i> 
                                  {{l('Lots', [], 'layouts')}}
                             </a>
                         </li>

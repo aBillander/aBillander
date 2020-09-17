@@ -17,10 +17,10 @@
 <div id="div_stockmovements">
 
 
+@if ($mvts->count())
 
    <div class="table-responsive">
 
-@if ($mvts->count())
 <table id="stockmovements" class="table table-hover">
     <thead>
         <tr>
@@ -62,7 +62,7 @@
         <!-- a href="{{ route($route.'.edit', ['0']).'?document_reference='.$stockmovement->document_reference }}" title="{{l('View Document', [], 'layouts')}}" target="_new" -->  --}}
         <a href="{{ route($route.'.edit', [optional(optional($stockmovement->stockmovementable)->document)->id]) }}" title="{{l('View Document', [], 'layouts')}}" target="_new">{{ $stockmovement->document_reference }}</a>
     @if ( !optional(optional($stockmovement->stockmovementable)->document)->id ) 
-        <i class="fa fa-exclamation-triangle btn-xs btn-danger" title="Document ID not found"></i>
+        <i class="fa fa-exclamation-triangle btn-xs btn-danger" title="{{l('Document ID not found', 'layouts')}}"></i>
     @endif
 @else
       {{ $stockmovement->document_reference }}

@@ -374,7 +374,7 @@ return [
 	'Invoiced' => 'Facturados',
 
 
-	'in total' => 'en total',
+	'Showing :a of :b in total' => 'Mostrando :a de :b en total',
 
 
 	'Yes: One Invoice per Customer<br />No: One Invoice per Shipping Slip' => 'Sí: Una Factura por Cliente<br />No: Una Factura por Albarán',

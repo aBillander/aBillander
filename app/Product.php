@@ -637,6 +637,39 @@ class Product extends Model {
         return 0.0;
     }
 
+    
+
+    public function getPriceForStockValuation( $thePrice = null  )
+    {
+        if ( $thePrice !== null )
+            return $thePrice;
+
+        // Configuration::get('INVENTORY_VALUATION_METHOD') => STANDARD: AVERAGE: CURRENT: 
+
+        switch ( Configuration::get('INVENTORY_VALUATION_METHOD') ) {
+            case 'STANDARD':
+                # code...
+                return $this->cost_price;
+                break;
+            
+            case 'AVERAGE':
+                # code...
+                return $this->cost_average;
+                break;
+            
+            case 'CURRENT':
+                # code...
+                return $this->last_purchase_price;
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    
+
     public function getStockToDateFullByWarehouse(  $warehouse = null, Carbon $date = null  )
     {
         if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
@@ -1057,6 +1090,11 @@ class Product extends Model {
     public function warehouselines()
     {
         return $this->hasMany('App\WarehouseProductLine');
+    }
+
+    public function lots()
+    {
+        return $this->hasMany('App\Lot')->orderBy('expiry_at', 'DESC');
     }
 
     public function pricelistlines()

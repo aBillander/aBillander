@@ -106,6 +106,20 @@ class ProductionSheetInvoicesController extends BillableController
                             ->orderBy('document_date', 'desc')
                             ->orderBy('document_reference', 'desc');        // ->get();
 
+        $documents_total_count = $documents->count();
+
+        // Apply URL filters
+        if ( $request->has('draft') )
+            $documents->where('status', 'draft');
+        else
+        if ( $request->has('not_closed') )
+            $documents->where('status', 'confirmed');
+        else
+        if ( $request->has('closed') )
+            $documents->where('status', 'closed');
+
+        // abi_toSql($documents);die();
+
         $documents = $documents->paginate( $items_per_page );
 
         // abi_r($this->model_path, true);
@@ -116,7 +130,7 @@ class ProductionSheetInvoicesController extends BillableController
 
         $this->model_path = 'customerinvoices';
 
-        return view('production_sheet_invoices.index', $this->modelVars() + compact('productionSheet', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page'));
+        return view('production_sheet_invoices.index', $this->modelVars() + compact('productionSheet', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page', 'documents_total_count'));
     }
 
     /**

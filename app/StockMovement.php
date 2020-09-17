@@ -27,6 +27,8 @@ class StockMovement extends Model {
                             'notes',
                             'product_id', 'combination_id', 'reference', 'name', 'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id',
 
+                            'lot_id',
+
                             'user_id', 'inventorycode',
                            ];
 
@@ -245,6 +247,12 @@ class StockMovement extends Model {
     public static function getClassByType( $type )
     {
         switch ( $type ) {
+            case self::ADJUSTMENT:
+                # code...
+            return '\\App\\StockMovements\\AdjustmentStockMovement';
+                break;
+
+            
             case self::PURCHASE_ORDER:
                 # code...
             return '\\App\\StockMovements\\PurchaseOrderStockMovement';
@@ -398,7 +406,7 @@ class StockMovement extends Model {
         \DB::beginTransaction();
 
         // https://laracasts.com/discuss/channels/general-discussion/multiple-services-implementing-same-interface-switching-at-runtime
-        if ( in_array($movement_type_id, [20, 40, 41, 50, 55]) )
+        if ( in_array($movement_type_id, [12, 20, 40, 41, 50, 55]) )
         {
             $class = self::getClassByType( $movement_type_id );
             $movement = new $class;
@@ -1403,11 +1411,16 @@ class StockMovement extends Model {
     {
         return $this->belongsTo('App\Combination');
     }
-	
+    
+    public function lot()
+    {
+        return $this->belongsTo('App\Lot');
+    }
+    
     public function warehouse()
     {
         return $this->belongsTo('App\Warehouse');
-	}
+    }
     
 	public function movementtype()
     {
@@ -1478,6 +1491,22 @@ class StockMovement extends Model {
         if ( isset($params['movement_type_id']) && $params['movement_type_id'] > 0 )
         {
             $query->where('movement_type_id', '=', $params['movement_type_id']);
+        }
+
+        if ( isset($params['lot_id']) && $params['lot_id'] > 0 )
+        {
+            $query->where('lot_id', '=', $params['lot_id']);
+        }
+
+        if ( isset($params['lot_reference']) && $params['lot_reference'] !== '' )
+        {
+            $lot_reference = $params['lot_reference'];
+
+            $query->whereHas('lot', function($q) use ($lot_reference) 
+            {
+                $q->where('reference', 'LIKE', '%' . $lot_reference . '%');
+
+            });
         }
 
         return $query;

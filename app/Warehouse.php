@@ -22,6 +22,24 @@ class Warehouse extends Model {
 
     /*
     |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+    public static function selectorList()
+    {
+            return Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as selector_full_name"))->pluck('selector_full_name', 'id')->toArray();
+    }
+
+
+    public function getAliasNameAttribute()
+    {
+            return '['. $this->alias. '] '. $this->name;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
     */

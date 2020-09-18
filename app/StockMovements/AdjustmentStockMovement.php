@@ -55,7 +55,7 @@ class AdjustmentStockMovement extends StockMovement implements StockMovementInte
 //            if (   $this->quantity  > 0     // if < 0 : This is not a purchase. Maybe a return??
 //                && $quantity_onhand > 0     // if = 0 : division by 0 error
 //                )
-            if (1) {
+            if ( $current_quantity_onhand - $this->quantity_before_movement + $this->quantity ) {       // if = 0 : division by 0 error
                 $cost_average = (  $current_quantity_onhand        * $this->cost_price_before_movement 
                                  - $this->quantity_before_movement * $this->cost_price_before_movement
                                  + $this->quantity * $price_in
@@ -63,6 +63,12 @@ class AdjustmentStockMovement extends StockMovement implements StockMovementInte
                                    $current_quantity_onhand - $this->quantity_before_movement + $this->quantity
                                 );
             
+            } else 
+            {
+                // Heuristic !
+                $cost_average = (  $this->cost_price_before_movement
+                                 + $price_in
+                                ) / 2.0;
             }
 
             $product->cost_average = $cost_average;         // <= calculated by the System
@@ -96,7 +102,7 @@ class AdjustmentStockMovement extends StockMovement implements StockMovementInte
 
 
         // Update Product-Warehouse relationship (quantity)
-        $product->setStockByWarehouse( $this->warehouse_id, $this->quantity );
+        $product->setStockByWarehouse( $this->warehouse_id, $this->quantity_after_movement );
     }
 
 }

@@ -95,7 +95,7 @@ class InitialStockStockMovement extends StockMovement implements StockMovementIn
 
 
         // Update Product-Warehouse relationship (quantity)
-        $product->setStockByWarehouse( $this->warehouse_id, $this->quantity );
+        $product->setStockByWarehouse( $this->warehouse_id, $this->quantity_after_movement );
     }
 
 }

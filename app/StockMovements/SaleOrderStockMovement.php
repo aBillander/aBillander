@@ -21,6 +21,15 @@ class SaleOrderStockMovement extends StockMovement implements StockMovementInter
         $product = $this->product;                          // Relation loaded in prepareToProcess()
 
         // Price 4 Cost average calculations
+        if ($this->price === null) 
+        {
+            // $this->price = ($this->combination_id > 0) ? $combination->getPriceForStockValuation() : $product->getPriceForStockValuation();
+            // No combinations, so far:
+            // Reasonable guess for manufactured Products
+            $this->price = ($this->combination_id > 0) ? $product->cost_average : $product->cost_average;
+//            ^-- in order to cost average calculation makes sense
+        }
+
         $price_currency_in = $this->price_currency;	// Price in Stock Movement Currency
         $price_in = $this->price;						// Price in Company's Currency
 

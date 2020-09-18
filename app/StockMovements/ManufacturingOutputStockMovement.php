@@ -27,7 +27,7 @@ class ManufacturingOutputStockMovement extends StockMovement implements StockMov
             // $this->price = ($this->combination_id > 0) ? $combination->getPriceForStockValuation() : $product->getPriceForStockValuation();
             // No combinations, so far:
             // Reasonable guess for manufactured Products
-            $this->price = ($this->combination_id > 0) ? $product->cost_price : $product->cost_price;
+            $this->price = ($this->combination_id > 0) ? $product->cost_average : $product->cost_average;
 //            ^-- in order to cost average calculation makes sense
         }
 

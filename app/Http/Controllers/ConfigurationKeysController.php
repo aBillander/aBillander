@@ -39,6 +39,7 @@ class ConfigurationKeysController extends Controller {
                         'ENABLE_WEBSHOP_CONNECTOR',
                         'ENABLE_FSOL_CONNECTOR',
                         'SELL_ONLY_MANUFACTURED',
+                        'MARGIN_PRICE',
                         'MARGIN_METHOD',
                         'INCLUDE_SHIPPING_COST_IN_PROFIT',
                         'INVENTORY_VALUATION_METHOD',

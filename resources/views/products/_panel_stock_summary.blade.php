@@ -11,8 +11,14 @@
         <tr>
           <th>{{ l('Warehouse') }}</th>
           <th>{{ l('Quantity') }}</th>
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') && $product->lot_tracking)
+
           <th>{{ l('Lots') }}</th>
           <th>{{ l('Not in Lots') }}</th>
+
+@endif
+
           <th class="text-right"> </th>
         </tr>
       </thead>
@@ -21,8 +27,14 @@
         <tr>
           <td>{{ $wh->alias }}</td>
           <td>{{ $product->as_quantityable($wh->pivot->quantity) }}</td>
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') && $product->lot_tracking)
+
           <td>{{ $product->as_quantityable($product->getLotStockByWarehouse( $wh->id )) }}</td>
           <td>{{ $product->as_quantityable($wh->pivot->quantity - $product->getLotStockByWarehouse( $wh->id )) }}</td>
+
+@endif
+
                <td class="text-right">
                 </td>
         </tr>

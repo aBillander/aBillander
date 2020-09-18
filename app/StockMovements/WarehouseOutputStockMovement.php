@@ -18,26 +18,38 @@ class WarehouseOutputStockMovement extends StockMovement implements StockMovemen
     {
         $this->prepareToProcess();
 
+        // Update Product
+        $product = $this->product;                          // Relation loaded in prepareToProcess()
+
         // Price 4 Cost average calculations
         $price_currency_in = $this->price_currency;	// Price in Stock Movement Currency
         $price_in = $this->price;						// Price in Company's Currency
 
-        // Update Product
-        $product = $this->product;							// Relation loaded in prepareToProcess()
-        $quantity_onhand = $product->quantity_onhand - $this->quantity;
+        $current_quantity_onhand = $product->quantity_onhand;
+
+        $quantity_onhand = $current_quantity_onhand - $this->quantity;
         $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
+        $this->quantity_after_movement = $this->quantity_before_movement - $this->quantity;
 
         // Mean Average calculation
         // More at: https://www.linnworks.com/support/inventory-management-and-stock-control/inventory-management-and-stock-control-key-concepts/calculating-stock-value#mean
         if ( !($this->combination_id > 0) ) {
             // $cost = $product->cost_average;
-            $this->cost_price_before_movement = $product->cost_price;
+            $this->cost_price_before_movement = $product->cost_average;
 
-            // Recalculate Cost Average if needed
+            // Recalculate Cost Average not needed: doesnot change
+            // $product->cost_average = $cost_average;
 
-            $this->cost_price_after_movement = $product->cost_price;
+            $this->cost_price_after_movement = $product->cost_average;
+
+            // Product cost stuff
+            $this->product_cost_price = $product->cost_price;
         }
 
+        $this->save();
+
+
+        // All warehouses
         $product->quantity_onhand = $quantity_onhand;
         $product->save();
 
@@ -59,9 +71,10 @@ class WarehouseOutputStockMovement extends StockMovement implements StockMovemen
         }
 */
 
-        $this->quantity_after_movement = $this->quantity_before_movement - $this->quantity;
-        $this->save();
 
+        // Update Product-Warehouse relationship (quantity)
+        $product->setStockByWarehouse( $this->warehouse_id, $this->quantity_after_movement );
+/*
         // Update Product-Warehouse relationship (quantity)
 
         $warehouse = $this->warehouse;							// Relation loaded in prepareToProcess()
@@ -80,7 +93,7 @@ class WarehouseOutputStockMovement extends StockMovement implements StockMovemen
             	$wline->delete();
             // $item->wasRecentlyCreated === true => item created (stored) within current request cycle
         }
-
+*/
 /*
         // Update Combination-Warehouse relationship (quantity)
         if ($this->combination_id > 0) {

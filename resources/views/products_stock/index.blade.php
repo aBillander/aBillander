@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Products with Low Stock') }} @parent @stop
+@section('title') {{ l('Products with no Stock') }} @parent @stop
 
 
 @section('content')
@@ -10,7 +10,7 @@
 
 <div class="page-header">
     <h2>
-        {{ l('Products with Low Stock') }}
+        {{ l('Products with no Stock') }}
 
         <a href="" class="btn btn-success disabled" onclick="return false;" style="margin-left: 72px;"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i> {{ l('Processing...', 'layouts') }}</a>
 
@@ -25,7 +25,7 @@
     <div class="pull-right" style="padding-top: 4px;">
 
 <div class=" hidden ">
-{!! Form::model(Request::all(), array('route' => 'products.reorder.index', 'method' => 'GET', 
+{!! Form::model(Request::all(), array('route' => 'products.stock.index', 'method' => 'GET', 
 "class"=>"navbar-form navbar-left", "role"=>"search", "style"=>"margin-top: 0px !important; margin-bottom: 0px !important;")) !!}
            
                       <div class="form-group">
@@ -45,13 +45,12 @@
 {!! Form::close() !!}
 </div>
 
-
         <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ route('products.reorder.export', Request::all()) }}" class="btn btn-sm btn-grey" 
+        <a href="{{ route('products.stock.export', Request::all()) }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
         <a href="{{ route('helferin.home.mfg') }}" class=" hidden btn btn-sm btn-grey" 
@@ -59,7 +58,7 @@
 
     </div>
     <h2>
-        {{ l('Products with Low Stock') }}
+        {{ l('Products with no Stock') }}
     </h2>        
 </div>
 
@@ -73,7 +72,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => 'products.reorder.index', 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => 'products.stock.index', 'method' => 'GET')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -104,7 +103,7 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success', 'onclick' => "loadingpage()")) !!}
-{!! link_to_route('products.reorder.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('products.stock.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>
@@ -123,6 +122,11 @@
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('main_supplier_id', l('Main Supplier'), ['class' => 'control-label']) !!}
     {!! Form::select('main_supplier_id', ['' => l('All', [], 'layouts'), '-1' => l('None', [], 'layouts')] + $supplierList, null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('min_stock', l('Minimum Stock')) !!}
+    {!! Form::text('min_stock', old('min_stock', 0.0), array('class' => 'form-control')) !!}
 </div>
 
 
@@ -160,7 +164,7 @@
       
       <div class="col-lg-9 col-md-9 col-sm-9">
 
-          @include('products_reorder._panel_block_products')
+          @include('products_stock._panel_block_products')
 
       </div><!-- div class="col-lg-8 col-md-8 col-sm-8" -->
 
@@ -168,7 +172,7 @@
 </div>
 --}}
 
-@include('products_reorder._panel_block_products')
+@include('products_stock._panel_block_products')
 
 </div><!-- div id="content-body" ENDS -->
 

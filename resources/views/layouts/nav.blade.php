@@ -243,6 +243,12 @@
                                  {{l('Products with Low Stock', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ route('products.stock.index') }}">
+                                 <i class="fa fa-calculator btn-xs text-danger"></i> 
+                                 {{l('Products with no Stock', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('suppliers') }}">

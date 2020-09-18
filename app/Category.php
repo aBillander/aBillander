@@ -23,8 +23,20 @@ class Category extends Model {
     	);
     
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+    public static function getcategoryList()
+    {
+            return Category::selectorList();
+    }
     
-    static function getcategoryList()
+    static function selectorList()
     {            
         if ( Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
             $tree = [];

@@ -322,4 +322,18 @@ return [
     'Re-Order Point' => 'Punto de Pedido',
 	'Stock Control'     => 'Control de Stock',
 
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Nostock
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'Products with no Stock' => 'Productos sin Stock',
+    'Minimum Stock' => 'Stock Mínimo'
+
 ];

@@ -111,6 +111,7 @@ return [
 
 	'Warehouse'     => 'Almacén',
     'Products with Low Stock' => 'Productos con Bajo Stock',
+    'Products with no Stock' => 'Productos sin Stock',
 	'Suppliers' => 'Proveedores',
 	'Supplier Shipping Slips'     => 'Albaranes de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',

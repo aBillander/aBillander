@@ -247,6 +247,10 @@ class StockMovement extends Model {
     public static function getClassByType( $type )
     {
         switch ( $type ) {
+            case self::INITIAL_STOCK:
+                # code...
+            return '\\App\\StockMovements\\InitialStockStockMovement';
+                break;
             case self::ADJUSTMENT:
                 # code...
             return '\\App\\StockMovements\\AdjustmentStockMovement';
@@ -256,6 +260,12 @@ class StockMovement extends Model {
             case self::PURCHASE_ORDER:
                 # code...
             return '\\App\\StockMovements\\PurchaseOrderStockMovement';
+                break;
+
+            
+            case self::SALE_ORDER:
+                # code...
+            return '\\App\\StockMovements\\SaleOrderStockMovement';
                 break;
 
             
@@ -406,7 +416,7 @@ class StockMovement extends Model {
         \DB::beginTransaction();
 
         // https://laracasts.com/discuss/channels/general-discussion/multiple-services-implementing-same-interface-switching-at-runtime
-        if ( in_array($movement_type_id, [12, 20, 40, 41, 50, 55]) )
+        if ( in_array($movement_type_id, [10, 12, 20, 30, 40, 41, 50, 55]) )
         {
             $class = self::getClassByType( $movement_type_id );
             $movement = new $class;

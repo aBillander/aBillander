@@ -17,14 +17,18 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
     {
         $this->prepareToProcess();
 
+        // Update Product
+        $product = $this->product;                          // Relation loaded in prepareToProcess()
+
         // Price 4 Cost average calculations
         $price_currency_in = $this->price_currency;	// Price in Stock Movement Currency
         $price_in = $this->price;						// Price in Company's Currency
 
-        // Update Product
-        $product = $this->product;							// Relation loaded in prepareToProcess()
-        $quantity_onhand = $product->quantity_onhand + $this->quantity;
+        $current_quantity_onhand = $product->quantity_onhand;
+
+        $quantity_onhand = $current_quantity_onhand + $this->quantity;
         $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
+        $this->quantity_after_movement = $this->quantity_before_movement + $this->quantity;
 
         // Mean Average calculation
         // More at: https://www.linnworks.com/support/inventory-management-and-stock-control/inventory-management-and-stock-control-key-concepts/calculating-stock-value#mean
@@ -34,23 +38,33 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
             // $cost = $product->cost_average;
             $this->cost_price_before_movement = $product->cost_average;
 
-            if (   $this->quantity  > 0 	// if < 0 : This is not a purchase. Maybe a return??
-            	&& $quantity_onhand > 0		// if = 0 : division by 0 error
-            	)
+            if ( $quantity_onhand != 0 )		// if = 0 : division by 0 error
             {
-            	$cost_average = ($product->quantity_onhand * $product->cost_average + $this->quantity * $price_in) / $quantity_onhand;
-            
-                $product->cost_average = $cost_average;         // <= calculated by the System
-//                $product->cost_price   = $cost_average;       // <= Entered by the User
-                $product->last_purchase_price = $price_in;
+            	$cost_average = (  $current_quantity_onhand * $this->cost_price_before_movement
+                                 + $this->quantity * $price_in
+                                ) / $quantity_onhand;
+            } else 
+            {
+                // Heuristic !
+                $cost_average = (  $this->cost_price_before_movement
+                                 + $price_in
+                                ) / 2.0;
             }
+            
+            $product->cost_average = $cost_average;         // <= calculated by the System
+//                $product->cost_price   = $cost_average;       // <= Entered by the User
+            $product->last_purchase_price = $price_in;
 
-            $this->cost_price_after_movement = $product->cost_price;
+            $this->cost_price_after_movement = $cost_average;
 
             // Product cost stuff
             $this->product_cost_price = $product->cost_price;
         }
 
+        $this->save();
+
+
+        // All warehouses
         $product->quantity_onhand = $quantity_onhand;
         $product->save();
 
@@ -72,11 +86,10 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
         }
 */
 
-        $this->quantity_after_movement = $this->quantity_before_movement + $this->quantity;
-        $this->save();
 
         // Update Product-Warehouse relationship (quantity)
-
+        $product->setStockByWarehouse( $this->warehouse_id, $this->quantity_after_movement );
+/*
         $warehouse = $this->warehouse;							// Relation loaded in prepareToProcess()
         
         // Get a line even though product is not in wherhouse. In this case, quantityis 0.0
@@ -93,7 +106,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
             	$wline->delete();
             // $item->wasRecentlyCreated === true => item created (stored) within current request cycle
         }
-
+*/
 /*
         // Update Combination-Warehouse relationship (quantity)
         if ($this->combination_id > 0) {

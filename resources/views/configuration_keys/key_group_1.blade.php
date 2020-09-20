@@ -415,6 +415,36 @@
     </div>
 
 
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('MARGIN_PRICE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="MARGIN_PRICE" id="MARGIN_PRICE_STANDARD" value="STANDARD" @if( old('MARGIN_PRICE', $key_group['MARGIN_PRICE']) == 'STANDARD' ) checked="checked" @endif type="radio">
+            {!! l('MARGIN_PRICE.option.STANDARD') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="MARGIN_PRICE" id="MARGIN_PRICE_AVERAGE" value="AVERAGE" @if( old('MARGIN_PRICE', $key_group['MARGIN_PRICE']) == 'AVERAGE' ) checked="checked" @endif type="radio">
+            {!! l('MARGIN_PRICE.option.AVERAGE') !!}
+          </label>
+        </div>
+{{--
+        <div class="radio">
+          <label>
+            <input name="MARGIN_PRICE" id="MARGIN_PRICE_CURRENT" value="CURRENT" @if( old('MARGIN_PRICE', $key_group['MARGIN_PRICE']) == 'CURRENT' ) checked="checked" @endif type="radio">
+            {!! l('MARGIN_PRICE.option.CURRENT') !!}
+          </label>
+        </div>
+--}}
+        <span class="help-block">{!! l('MARGIN_PRICE.help') !!}</span>
+      </div>
+    </div>
+
+
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('INCLUDE_SHIPPING_COST_IN_PROFIT.name') !!}</label>
       <div class="col-lg-8">

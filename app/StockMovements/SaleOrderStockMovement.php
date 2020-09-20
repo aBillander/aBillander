@@ -5,8 +5,7 @@ namespace App\StockMovements;
 use App\StockMovement;
 use App\WarehouseProductLine;
 
-// 40
-class WarehouseOutputStockMovement extends StockMovement implements StockMovementInterface
+class SaleOrderStockMovement extends StockMovement implements StockMovementInterface
 {
 
     public function prepareToProcess()
@@ -31,7 +30,7 @@ class WarehouseOutputStockMovement extends StockMovement implements StockMovemen
 //            ^-- in order to cost average calculation makes sense
         }
 
-        // $price_currency_in = $this->price_currency;	// Price in Stock Movement Currency
+        $price_currency_in = $this->price_currency;	// Price in Stock Movement Currency
         $price_in = $this->price;						// Price in Company's Currency
 
         $current_quantity_onhand = $product->quantity_onhand;
@@ -84,13 +83,11 @@ class WarehouseOutputStockMovement extends StockMovement implements StockMovemen
         // Update Product-Warehouse relationship (quantity)
         $product->setStockByWarehouse( $this->warehouse_id, $this->quantity_after_movement );
 /*
-        // Update Product-Warehouse relationship (quantity)
-
         $warehouse = $this->warehouse;							// Relation loaded in prepareToProcess()
         
         // Get a line even though product is not in wherhouse. In this case, quantityis 0.0
         $wline = $warehouse->productline( $product->id );
-        $quantity = $wline->quantity - $this->quantity;        
+        $quantity = $wline->quantity + $this->quantity;        
             
         if ($quantity != 0) {
             $wline->quantity = $quantity;

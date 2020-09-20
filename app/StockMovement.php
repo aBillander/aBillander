@@ -247,6 +247,10 @@ class StockMovement extends Model {
     public static function getClassByType( $type )
     {
         switch ( $type ) {
+            case self::INITIAL_STOCK:
+                # code...
+            return '\\App\\StockMovements\\InitialStockStockMovement';
+                break;
             case self::ADJUSTMENT:
                 # code...
             return '\\App\\StockMovements\\AdjustmentStockMovement';
@@ -256,6 +260,20 @@ class StockMovement extends Model {
             case self::PURCHASE_ORDER:
                 # code...
             return '\\App\\StockMovements\\PurchaseOrderStockMovement';
+                break;
+            case self::PURCHASE_RETURN:
+                # code...
+            return '\\App\\StockMovements\\PurchaseReturnStockMovement';
+                break;
+
+            
+            case self::SALE_ORDER:
+                # code...
+            return '\\App\\StockMovements\\SaleOrderStockMovement';
+                break;
+            case self::SALE_RETURN:
+                # code...
+            return '\\App\\StockMovements\\SaleReturnStockMovement';
                 break;
 
             
@@ -274,7 +292,10 @@ class StockMovement extends Model {
                 # code...
             return '\\App\\StockMovements\\ManufacturingInputStockMovement';
                 break;
-            
+            case self::MANUFACTURING_RETURN:
+                # code...
+            return '\\App\\StockMovements\\ManufacturingReturnStockMovement';
+                break;            
             case self::MANUFACTURING_OUTPUT:
                 # code...
             return '\\App\\StockMovements\\ManufacturingOutputStockMovement';
@@ -406,7 +427,8 @@ class StockMovement extends Model {
         \DB::beginTransaction();
 
         // https://laracasts.com/discuss/channels/general-discussion/multiple-services-implementing-same-interface-switching-at-runtime
-        if ( in_array($movement_type_id, [12, 20, 40, 41, 50, 55]) )
+        // if ( in_array($movement_type_id, [10, 12, 20, 21, 30, 31, 40, 41, 50, 51, 55]) )
+        if (1)
         {
             $class = self::getClassByType( $movement_type_id );
             $movement = new $class;

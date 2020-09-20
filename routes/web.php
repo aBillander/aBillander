@@ -324,6 +324,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
                                                         'as'   => 'products.ajax.combinationLookup' ));
 
+        Route::get('products/stock/level',        'ProductsStockController@index' )->name('products.stock.index' );
+        Route::get('products/stock/level/export', 'ProductsStockController@export')->name('products.stock.export');
+
         Route::get('products/stock/reorder',        'ProductsReorderController@index' )->name('products.reorder.index' );
         Route::get('products/stock/reorder/export', 'ProductsReorderController@export')->name('products.reorder.export');
 

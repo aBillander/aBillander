@@ -5,8 +5,8 @@ namespace App\StockMovements;
 use App\StockMovement;
 use App\WarehouseProductLine;
 
-// 40
-class WarehouseOutputStockMovement extends StockMovement implements StockMovementInterface
+// 55
+class ManufacturingReturnStockMovement extends StockMovement implements StockMovementInterface
 {
 
     public function prepareToProcess()
@@ -36,20 +36,36 @@ class WarehouseOutputStockMovement extends StockMovement implements StockMovemen
 
         $current_quantity_onhand = $product->quantity_onhand;
 
-        $quantity_onhand = $current_quantity_onhand - $this->quantity;
+        $quantity_onhand = $current_quantity_onhand + $this->quantity;
         $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );
-        $this->quantity_after_movement = $this->quantity_before_movement - $this->quantity;
+        $this->quantity_after_movement = $this->quantity_before_movement + $this->quantity;
 
         // Mean Average calculation
         // More at: https://www.linnworks.com/support/inventory-management-and-stock-control/inventory-management-and-stock-control-key-concepts/calculating-stock-value#mean
         if ( !($this->combination_id > 0) ) {
+            
+            // Cost Average stuff
             // $cost = $product->cost_average;
             $this->cost_price_before_movement = $product->cost_average;
 
-            // Recalculate Cost Average not needed: doesnot change
-            // $product->cost_average = $cost_average;
+            if ( $quantity_onhand != 0 )        // if = 0 : division by 0 error
+            {
+                $cost_average = (  $current_quantity_onhand * $this->cost_price_before_movement
+                                 + $this->quantity * $price_in
+                                ) / $quantity_onhand;
+            } else 
+            {
+                // Heuristic !
+                $cost_average = (  $this->cost_price_before_movement
+                                 + $price_in
+                                ) / 2.0;
+            }
+            
+            $product->cost_average = $cost_average;         // <= calculated by the System
+//                $product->cost_price   = $cost_average;       // <= Entered by the User
+//            $product->last_purchase_price = $price_in;
 
-            $this->cost_price_after_movement = $product->cost_average;
+            $this->cost_price_after_movement = $cost_average;
 
             // Product cost stuff
             $this->product_cost_price = $product->cost_price;
@@ -84,13 +100,11 @@ class WarehouseOutputStockMovement extends StockMovement implements StockMovemen
         // Update Product-Warehouse relationship (quantity)
         $product->setStockByWarehouse( $this->warehouse_id, $this->quantity_after_movement );
 /*
-        // Update Product-Warehouse relationship (quantity)
-
         $warehouse = $this->warehouse;							// Relation loaded in prepareToProcess()
         
         // Get a line even though product is not in wherhouse. In this case, quantityis 0.0
         $wline = $warehouse->productline( $product->id );
-        $quantity = $wline->quantity - $this->quantity;        
+        $quantity = $wline->quantity + $this->quantity;        
             
         if ($quantity != 0) {
             $wline->quantity = $quantity;

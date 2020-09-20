@@ -59,10 +59,21 @@ class InitialStockStockMovement extends StockMovement implements StockMovementIn
 //            if (   $this->quantity  > 0     // if < 0 : This is not a purchase. Maybe a return??
 //                && $quantity_onhand > 0     // if = 0 : division by 0 error
 //                )
-            if (1) {
-                $cost_average = $price_in;
+            if ( $current_quantity_onhand - $this->quantity_before_movement + $this->quantity ) {       // if = 0 : division by 0 error
+                $cost_average = (  $current_quantity_onhand        * $this->cost_price_before_movement 
+                                 - $this->quantity_before_movement * $this->cost_price_before_movement
+                                 + $this->quantity * $price_in
+                                ) / (
+                                   $current_quantity_onhand - $this->quantity_before_movement + $this->quantity
+                                );
             
-            }
+            } else 
+            {
+                // Heuristic !
+                $cost_average = (  $this->cost_price_before_movement
+                                 + $price_in
+                                ) / 2.0;
+            }       // Taken from AdjustmentStockMovement
 
             $product->cost_average = $cost_average;         // <= calculated by the System
 //                $product->cost_price   = $cost_average;       // <= Entered by the User

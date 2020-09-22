@@ -92,6 +92,12 @@ class BillableLine extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function getQuantityTotalAttribute()
+    {
+        return $this->quantity + $this->extra_quantity;
+    }
+
+
     public static function getTypeList()
     {
             $list = [];

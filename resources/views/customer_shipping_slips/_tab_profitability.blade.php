@@ -79,6 +79,9 @@
 			}).done(function(data){
 				panel.html(data);
 				panel.removeClass('loading');
+
+                $("[data-toggle=popover]").popover();
+
 			});
                  
 		}

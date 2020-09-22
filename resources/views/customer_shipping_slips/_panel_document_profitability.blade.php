@@ -8,6 +8,13 @@
               <div xclass="page-header">
                   <h3>
                       <span style="color: #dd4814;">{{l('Cost-benefit per line')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
+                      <span class="label alert-warning" style="font-size: 55%;">
+
+                    {{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
+                          l('Margin calculation is based on Cost Price', [], 'layouts') :
+                          l('Margin calculation is based on Sales Price', [], 'layouts') }}
+
+                      </span>
                        
                   </h3><br>        
               </div>
@@ -23,15 +30,32 @@
                         <th class="text-center">{{l('Quantity')}}</th>
                         <th class="text-left">{{l('Reference')}}</th>
                <th class="text-left">{{l('Description')}}</th>
-                        <th class="text-left">{{l('Price')}}</th>
+                        <th class="text-left">{{l('Price')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body"
+                                    data-content="{{ l('Ecotax not included.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
                         <!-- th class="text-left">{{l('Disc. %')}}</th>
                         <th class="text-left">{{l('Net')}}</th -->
                         <th class="text-right">{{l('Cost')}}</th>
                         <th class="text-right">{{l('Margin 1 (%)')}}</th>
-                        <th class="text-right">{{l('Margin Amount')}}</th>
+                        <th class="text-right">{{l('Margin Amount')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body"
+                                    data-content="{{ l('Shown in Document Currency.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
 @if ($document->salesrep)
-                        <th class="text-right">{{l('Commission (%)')}}</th>
+                        <th class="text-right">{{l('Commission (%)')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body"
+                                    data-content="{{ l('Commission is supposed to be on Sale Price including Ecotax. Commission is higher when calculated on Sale Price excluding Ecotax.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
                         <th class="text-right">{{l('Margin 2 (%)')}}</th>
+                        <th class="text-right">{{l('Margin Amount 2')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body"
+                                    data-content="{{ l('Shown in Document Currency.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
 @endif
                       </tr>
                     </thead>
@@ -53,8 +77,20 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
 
 @endphp
             <tr>
-                <td>{{$line->line_sort_order }}</td>
-                <td class="text-center">{{ $line->as_quantity('quantity') }}</td>
+                <td title="{{ $line->id }}">{{ $line->line_sort_order }}</td>
+                <td class="text-center">{{ $line->as_quantity('quantity') }}
+                        @if ($line->extra_quantity > 0.0 && $line->extra_quantity_label != '')
+                            <p class="text-right text-info">
+                                +{{ $line->as_quantity('extra_quantity') }}{{ l(' extra') }}
+
+                                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                                    xdata-trigger="focus"
+                                    data-html="true" 
+                                    data-content="{{ $line->extra_quantity_label }}">
+                                    <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                                 </a>
+                            </p>
+                        @endif</td>
                 <td>
                 @if($line->line_type == 'shipping')
                   <i class="fa fa-truck abi-help" title="{{l('Shipping Cost')}}"></i> 
@@ -62,16 +98,20 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
                 <td>
                 {{ $line->name }}</td>
-                <td class="text-right" title="{{ $ecotax }}">{{ $line->as_priceable( $line->unit_final_price - $ecotax ) }}</td>
+                <td class="text-right button-pad" title="{{ $ecotax }}">{{ $line->as_priceable( $line->unit_final_price - $ecotax ) }}<br />
+                  <span class="alert-success">{{ $line->as_priceable( $line->unit_final_price ) }} - {{ $line->as_priceable( $ecotax ) }}</span></td>
                 <td class="text-right">{{ $line->as_price('cost_price') }}</td>
-                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price, $line->unit_final_price - $ecotax, $document->currency ) ) }}</td>
-                <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $ecotax - $line->cost_price )*$line->quantity ) }}</td>
+                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price * $line->quantity_total, ($line->unit_final_price - $ecotax) * $line->quantity, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $ecotax - $line->cost_price )*$line->quantity - $line->cost_price*$line->extra_quantity ) }}</td>
 
 
 
 @if ($document->salesrep)
-                        <th class="text-right"> </th>
-                        <th class="text-right"></th>
+                <td class="text-right">{{ $line->as_percentable( ($line->unit_final_price / ( $line->unit_final_price - $ecotax)) * $line->commission_percent ) }}<br />
+
+                  <span class="alert-success">{{ $line->as_percent('commission_percent') }}</span></td>
+                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price, $line->unit_final_price * (1.0 - $line->commission_percent/100.0) - $ecotax, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price * (1.0 - $line->commission_percent/100.0) - $ecotax - $line->cost_price )*$line->quantity - $line->cost_price*$line->extra_quantity ) }}</td>
 @endif
             </tr>
             
@@ -100,9 +140,9 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                       <span style="color: #dd4814;">{{l('Cost-Benefit Analysis')}}</span> 
 
                     @if ( \App\Configuration::get('INCLUDE_SHIPPING_COST_IN_PROFIT') > 0 )
-                      <span class="label label-danger" style="font-size: 55%;">{{ l('Shipping Cost included', [], 'layouts') }}</span>
+                      <span class="label alert-danger" style="font-size: 55%;">{{ l('Shipping Cost included', [], 'layouts') }}</span>
                     @else
-                      <span class="label label-warning" style="font-size: 55%;">{{ l('Shipping Cost excluded', [], 'layouts') }}</span>
+                      <span class="label alert-warning" style="font-size: 55%;">{{ l('Shipping Cost excluded', [], 'layouts') }}</span>
                     @endif
                        
                   </h3><br>        
@@ -118,33 +158,50 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
     <table id="document_profit" class="table table-hover">
         <thead>
             <tr>
-                          <th class="text-left">{{l('Value')}}</th>
-                          <th class="text-left">{{l('Total')}}</th>
-                          <th class="text-left">{{l('Disc. %')}}</th>
+                          <th class="text-left">{{l('Value')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body"
+                                    data-content="{{ l('Products Value after Product Records.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
+                          <th class="text-left">{{l('Total')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body"
+                                    data-content="{{ l('Document Products Total.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
+                          <th class="text-left">{{l('Disc. %')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body"
+                                    data-content="{{ l('Document Discounts: Document (Header) Discount plus Document Prompt Payment Discount.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
+                          <th class="text-left">{{l('Disc.')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body"
+                                    data-content="{{ l('Document Discount Lines.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
                           <th class="text-left">{{l('Net')}}</th>
                           <th class="text-left">{{l('Total Disc. %')}}</th>
                           <th class="text-right">{{l('Cost')}}</th>
                           <th class="text-right">{{l('Margin 1 (%)')}}</th>
                           <th class="text-right">{{l('Margin Amount')}}</th>
 @if ($document->salesrep)
-                        <th class="text-right">{{l('Commission (%)')}}</th>
+                        <th class="text-right">{{l('Commission (%)')}}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body"
+                                    data-content="{{ l('Calculated Commission for the entire Document (average).') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a></th>
                         <th class="text-right">{{l('Margin 2 (%)')}}</th>
+                        <th class="text-right">{{l('Margin Amount 2')}}</th>
 @endif
                       </tr>
                     </thead>
 
         <tbody>
-@php
-
-$document_total_discount_percent = $document->document_discount_percent + $document->document_ppd_percent
-                                 - $document->document_discount_percent * $document->document_ppd_percent / 100.0;
-
-@endphp
 
             <tr>
                 <td>{{ $document->as_priceable($document->total_target_revenue) }}</td>
                 <td>{{ $document->as_priceable($document->total_revenue) }}</td>
-                <td>{{ $document->as_percentable( $document_total_discount_percent ) }}</td>
+                <td>{{ $document->as_percentable( $document->document_total_discount_percent ) }}</td>
+                <td>{{ $document->as_percentable( $document->document_total_discount_lines ) }}</td>
                 <td>{{ $document->as_priceable($document->total_revenue_with_discount) }}</td>
 
                 <td>{{ $document->as_percentable( 100.0 * ($document->total_target_revenue - $document->total_revenue_with_discount) / $document->total_target_revenue ) }}</td>
@@ -156,8 +213,10 @@ $document_total_discount_percent = $document->document_discount_percent + $docum
 
 
 @if ($document->salesrep)
-                        <th class="text-right"> </th>
-                        <th class="text-right"></th>
+                <td class="text-right">{{ $document->as_percentable( $document->total_commission_percent ) }}</td>
+
+                <td class="text-right">{{ $document->as_percentable( \App\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount - $document->total_commission, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $document->as_priceable( $document->total_revenue_with_discount - $document->total_commission - $document->total_cost_price ) }}</td>
 @endif
             </tr>
 
@@ -174,11 +233,5 @@ $document_total_discount_percent = $document->document_discount_percent + $docum
                <br>
 
                <b>{{l('Margin')}}</b>: 
-                    {{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
-                          l('Margin calculation is based on Cost Price', [], 'layouts') :
-                          l('Margin calculation is based on Sales Price', [], 'layouts') }}
+                    {{ l('Only Product Lines and Discount Lines are considered, and Shipping Lines depending on Configuration.') }}
                <br>
-
-
-
-

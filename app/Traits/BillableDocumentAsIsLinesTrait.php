@@ -126,7 +126,7 @@ trait BillableDocumentAsIsLinesTrait
         
         $commission_percent = array_key_exists('sales_rep_id', $params) && array_key_exists('commission_percent', $params) 
                             ? $params['commission_percent'] 
-                            : optional($salesrep)->getCommision( $product, $customer ) ?? 0.0;
+                            : optional($salesrep)->getCommission( $product, $customer ) ?? 0.0;
 
 
 

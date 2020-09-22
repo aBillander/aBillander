@@ -649,7 +649,9 @@ foreach ($pairs as $pair) {
 
         Route::get($path.'/customers/{id}',  $controller.'@indexByCustomer')->name('customer.'.str_replace('customer', '', $path));
 
-        Route::get($path.'/{id}/reload/costs', $controller.'@reloadCosts')->name($path.'.reload.costs'        );
+        Route::get($path.'/{id}/reload/commissions', $controller.'@reloadCommissions')->name($path.'.reload.commissions');
+        Route::get($path.'/{id}/reload/ecotaxes',    $controller.'@reloadEcotaxes'   )->name($path.'.reload.ecotaxes'   );
+        Route::get($path.'/{id}/reload/costs',       $controller.'@reloadCosts'      )->name($path.'.reload.costs'      );
 }
 
         Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');

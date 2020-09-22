@@ -817,6 +817,29 @@ class Billable extends Model implements ShippableInterface
         return true;
     }
 
+    public function loadLineCommissions()
+    {
+        if ( !($salesrep = $this->salesrep) )
+            return false;
+
+        // Customer
+        $customer = $this->customer;
+
+        foreach ($this->lines as $line) {
+            # code...
+
+            if ( !($product = $line->product) ) continue;
+
+            $line->commission_percent = $salesrep->getCommission( $product, $customer );
+            
+            $line->save();
+        }
+
+        return true;
+    }
+
+
+
     public function calculateProfit()
     {
         $lines = $this->lines()->where('line_type', 'product')->get();

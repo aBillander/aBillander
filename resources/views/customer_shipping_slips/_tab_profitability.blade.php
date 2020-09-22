@@ -14,6 +14,14 @@
 
 	   <div class="panel-footer text-right">
 
+	    	<a class="btn xbtn-sm btn-success" style="margin-right: 36px;" href="{{ URL::to($model_path.'/' . $document->id . '/reload/commissions') }}" title="{{l('Update Commissions')}}"><i class="fa fa-refresh"></i> {{l('Update Commissions')}}</a>
+
+@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+
+	    	<a class="btn xbtn-sm btn-success" style="margin-right: 36px;" href="{{ URL::to($model_path.'/' . $document->id . '/reload/ecotaxes') }}" title="{{l('Update Line Ecotaxes')}}"><i class="fa fa-refresh"></i> {{l('Update Line Ecotaxes')}}</a>
+
+@endif
+
 	    	<a class="btn xbtn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/reload/costs') }}" title="{{l('Update Cost Prices')}}"><i class="fa fa-refresh"></i> {{l('Update Cost Prices')}}</a>
 
 	   </div>

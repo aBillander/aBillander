@@ -386,6 +386,9 @@ return [
 	|
 	*/
 
+	'Update Commissions' => 'Actualizar Comisiones',
+	'Update Line Ecotaxes' => 'Actualizar Ecoimpuesto en las Líneas',
+
 	'Disc.'     => 'Dto.',
 	'Total Disc.'     => 'Dto. Total',
 	'Total Disc. %'     => 'Dto. Total %',

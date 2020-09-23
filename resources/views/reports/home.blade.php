@@ -29,23 +29,11 @@
 
 @include('reports.reports_product_sales')
 
-{{--
+@include('reports.reports_customer_sales')
 
-@ include('helferin.reports_ecotaxes')
-
-
-
-@ include('helferin.reports_consumption')
+@include('reports.reports_category_sales')
 
 
-
-@ include('helferin.reports_customer_vouchers')
-
-
-
-@ include('helferin.reports_customer_invoices')
-
---}}
 
 
 {{-- ********************************************************** --}}

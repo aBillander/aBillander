@@ -7,34 +7,34 @@
               <div class="panel-heading" style="color: #ffffff;
 background-color: #772953;
 border-color: #772953;">
-                <h3 class="panel-title"><i class="fa fa-cubes"></i> &nbsp; <strong>Productos</strong> :: Ventas / Año en curso y año(s) anterior(es)</h3>
+                <h3 class="panel-title"><i class="fa fa-list"></i> &nbsp; <strong>Categorías</strong> :: Ventas / Año en curso y año(s) anterior(es)</h3>
               </div>
 
 
-{!! Form::open(array('route' => 'reports.products.sales', 'id' => 'product_sales_report_form', 'class' => 'form')) !!}
+{!! Form::open(array('route' => 'reports.categories.sales', 'id' => 'category_sales_report_form', 'class' => 'form')) !!}
 
               <div class="panel-body">
 
                   <div class="row">
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('product_sales_month_from', 'Mes desde') !!}
-        {!! Form::select('product_sales_month_from', $selectorMonthList, 1, array('id' => 'product_sales_month_from', 'class' => 'form-control')) !!}
+        {!! Form::label('category_sales_month_from', 'Mes desde') !!}
+        {!! Form::select('category_sales_month_from', $selectorMonthList, 1, array('id' => 'category_sales_month_from', 'class' => 'form-control')) !!}
     </div>
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('product_sales_month_to', 'Mes hasta') !!}
-        {!! Form::select('product_sales_month_to', $selectorMonthList, $current['month'], array('id' => 'product_sales_month_to', 'class' => 'form-control')) !!}
+        {!! Form::label('category_sales_month_to', 'Mes hasta') !!}
+        {!! Form::select('category_sales_month_to', $selectorMonthList, $current['month'], array('id' => 'category_sales_month_to', 'class' => 'form-control')) !!}
     </div>
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('product_sales_years_to_compare', 'Años para comparar') !!}
-        {!! Form::select('product_sales_years_to_compare', $selectorNumberYearsList, 1, array('id' => 'product_sales_years_to_compare', 'class' => 'form-control')) !!}
+        {!! Form::label('category_sales_years_to_compare', 'Años para comparar') !!}
+        {!! Form::select('category_sales_years_to_compare', $selectorNumberYearsList, 1, array('id' => 'category_sales_years_to_compare', 'class' => 'form-control')) !!}
     </div>
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('product_sales_value', 'Valor de las Ventas') !!}
-        {!! Form::select('product_sales_value', ['total_tax_incl' => 'Con Impuestos incluidos', 'total_tax_excl' => 'Sin Impuestos'], 'total_tax_incl', array('id' => 'product_sales_value', 'class' => 'form-control')) !!}
+        {!! Form::label('category_sales_value', 'Valor de las Ventas') !!}
+        {!! Form::select('category_sales_value', ['total_tax_incl' => 'Con Impuestos incluidos', 'total_tax_excl' => 'Sin Impuestos'], 'total_tax_incl', array('id' => 'category_sales_value', 'class' => 'form-control')) !!}
     </div>
 
 
@@ -44,8 +44,8 @@ border-color: #772953;">
 
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('product_sales_model', l('Document')) !!}
-        {!! Form::select('product_sales_model', $modelList, $default_model, array('id' => 'product_sales_model', 'class' => 'form-control')) !!}
+        {!! Form::label('category_sales_model', l('Document')) !!}
+        {!! Form::select('category_sales_model', $modelList, $default_model, array('id' => 'category_sales_model', 'class' => 'form-control')) !!}
     </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2 hide" id="div-sales_grouped">

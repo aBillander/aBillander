@@ -11,6 +11,7 @@ use App\CustomerOrder;
 use App\CustomerShippingSlip;
 use App\CustomerInvoice;
 
+use App\Category;
 use App\Product;
 use App\Ecotax;
 
@@ -97,6 +98,11 @@ view('some.view.name') // search in /app/views first, then custom locations
     }
 
 
+    /**
+     * Product Sales Report.
+     *
+     * @return Spread Sheet download
+     */
     public function reportProductSales(Request $request)
     {
         // abi_r(Carbon::now()->month);die();
@@ -112,7 +118,7 @@ view('some.view.name') // search in /app/views first, then custom locations
         if ( !in_array($document_total_tax, ['total_tax_incl', 'total_tax_excl']) )
             $document_total_tax = 'total_tax_incl';
  
-        $model = $request->input('sales_model', Configuration::get('RECENT_SALES_CLASS'));
+        $model = $request->input('product_sales_model', Configuration::get('RECENT_SALES_CLASS'));
 
         // calculate dates
         // http://zetcode.com/php/carbon/
@@ -255,7 +261,7 @@ foreach ($products as $product) {
         {
                 $row = [];
                 $row[] = (string) $product->reference;
-                $row[] = $product->name;
+                $row[] = (string) $product->name;
 
                 foreach ($list_of_years as $year) {
                     $row[] = (float) $product->{$year};
@@ -285,7 +291,7 @@ foreach ($products as $product) {
         $sheetName = 'Ventas ' . l($model);
 
         // Generate and return the spreadsheet
-        Excel::create('Ventas', function($excel) use ($sheetName, $data, $nbr_years) {
+        Excel::create('Ventas_Productos', function($excel) use ($sheetName, $data, $nbr_years) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');
@@ -336,165 +342,208 @@ foreach ($products as $product) {
     }
 
 
-    public function reportEcotaxes(Request $request)
+    /**
+     * Customer Sales Report.
+     *
+     * @return Spread Sheet download
+     */
+    public function reportCustomerSales(Request $request)
     {
-        // Dates (cuen)
-        $this->mergeFormDates( ['ecotaxes_date_from', 'ecotaxes_date_to'], $request );
+        // abi_r(Carbon::now()->month);die();
 
-        $date_from = $request->input('ecotaxes_date_from')
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('ecotaxes_date_from'))->startOfDay()
-                     : null;
+        $customer_sales_month_from = $request->input('customer_sales_month_from', 1);
         
-        $date_to   = $request->input('ecotaxes_date_to'  )
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('ecotaxes_date_to'  ))->endOfDay()
-                     : null;
+        $customer_sales_month_to   = $request->input('customer_sales_month_to', Carbon::now()->month );
 
-        $model = $request->input('ecotaxes_model', Configuration::get('RECENT_SALES_CLASS'));
+        $nbr_years = $request->input('customer_sales_years_to_compare', 1);
+
+        $document_total_tax = $request->input('customer_sales_value', 'total_tax_incl');
+
+        if ( !in_array($document_total_tax, ['total_tax_incl', 'total_tax_excl']) )
+            $document_total_tax = 'total_tax_incl';
+ 
+        $model = $request->input('customer_sales_model', Configuration::get('RECENT_SALES_CLASS'));
+
+        // calculate dates
+        // http://zetcode.com/php/carbon/
+        $years = [];
+        // Current year
+        $current_year = Carbon::now()->year;
+        $first_year = Carbon::now()->year - $nbr_years;
+        $month_from = $customer_sales_month_from;
+        $month_to   = $customer_sales_month_to;
+        $date_from = Carbon::create($first_year, $month_from, 1)->startOfDay();
+        $date_to   = Carbon::create($first_year, $month_to  , 1)->endOfMonth()->endOfDay();
+
+        $list_of_years = [];
+        for ($i=0; $i <= $nbr_years; $i++) { 
+            # code...
+            $list_of_years[] = $first_year + $i;
+        }
+
+        // abi_r($list_of_years, true);
+
+        // abi_r($date_from);
+        // abi_r($date_to, true);
+
 
         $models = $this->models;
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
-        $document_model = $model;
-        $document_class = '\App\\'.$document_model;
-        $model .= 'Line';
-        $class = '\App\\'.$model;
+        $class = '\App\\'.$model.'Line';
         $table = snake_case(str_plural($model));
         $route = str_replace('_', '', $table);
 
-        // Lets see ecotaxes
-        $all_ecotaxes = Ecotax::get()->sortByDesc('amount');
-        // $check=collect([]);
+        $selectorMonthList = Tools::selectorMonthList();
 
+        $document_reference_date = 'close_date';        // 'document_date'
 
+        $is_invoiceable_flag = ($model == 'CustomerShippingSlip') ? true : false;
+
+        // Wanna dance, Honey Bunny?
+
+        
+        // All customers. Lets see:
+        $customers = Customer::select('id', 'reference_external', 'name_fiscal', 'name_commercial')  // , 'measure_unit_id')
+//                            ->with('measureunit')
+                            ->orderBy('reference_external', 'asc')
+                            ->orderBy('id', 'asc')
+//                            ->take(4)
+                            ->get();
+
+        // abi_r($customers->count(), true);
+
+$k=0;
+// Nice! Lets move on and retrieve Documents
+foreach ($customers as $customer) {
+        # code...
+        // Initialize
+//        $customer-> = 0.0;
+
+    $customer_id = $customer->id;
+
+    $customer_date_from = $date_from->copy();
+    $customer_date_to   = $date_to->copy();
+
+    foreach ($list_of_years as $year) {
+
+        // abi_r($customer->name);
+        // abi_r($customer_date_from);
+        // abi_r($customer_date_to);
+
+        $customer->{$year} = $class::
+                          where('line_type', 'product')
+                        ->whereHas('document', function ($query) use ( $customer_date_from, $customer_date_to, $document_reference_date, $is_invoiceable_flag, $customer_id) {
+
+                                if ( $customer_id > 0 )
+                                    $query->where('customer_id', $customer_id);
+
+                                // Closed Documents only
+                                $query->where($document_reference_date, '!=', null);
+
+                                // Only invoiceable Documents when Documents are Customer Shipping Slips
+                                if ( $is_invoiceable_flag )
+                                    $query->where('is_invoiceable', '>', 0);
+
+                                if ( $customer_date_from )
+                                    $query->where($document_reference_date, '>=', $customer_date_from);
+                                
+                                if ( $customer_date_to )
+                                    $query->where($document_reference_date, '<=', $customer_date_to);
+                        })
+                        ->sum($document_total_tax);
+
+        $customer_date_from->addYear();
+        $customer_date_to->addYear();
+
+    }
+    $k++;
+    // if ($k==4) break;
+}
+// die();
+// abi_r($customers, true);
         // Lets get dirty!!
+        // See: https://laraveldaily.com/laravel-excel-export-formatting-and-styling-cells/
 
 
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
-        if ( $request->input('ecotaxes_date_from_form') && $request->input('ecotaxes_date_to_form') )
-        {
-            $ribbon = 'entre ' . $request->input('ecotaxes_date_from_form') . ' y ' . $request->input('ecotaxes_date_to_form');
-
-        } else
-
-        if ( !$request->input('ecotaxes_date_from_form') && $request->input('ecotaxes_date_to_form') )
-        {
-            $ribbon = 'hasta ' . $request->input('ecotaxes_date_to_form');
-
-        } else
-
-        if ( $request->input('ecotaxes_date_from_form') && !$request->input('ecotaxes_date_to_form') )
-        {
-            $ribbon = 'desde ' . $request->input('ecotaxes_date_from_form');
-
-        } else
-
-        if ( !$request->input('ecotaxes_date_from_form') && !$request->input('ecotaxes_date_to_form') )
-        {
-            $ribbon = 'todas';
-
-        }
-
-        $ribbon = 'fecha ' . $ribbon;
-
-        $nbr_documents = $document_class::
-                          whereHas('lines', function ($query) {
-
-                                $query->where('line_type', 'product');
-                                $query->where('ecotax_id', '>', 0);
-                        })
-                        ->when($date_from, function($query) use ($date_from) {
-
-                                $query->where('document_date', '>=', $date_from.' 00:00:00');
-                        })
-                        ->when($date_to, function($query) use ($date_to) {
-
-                                $query->where('document_date', '<=', $date_to.' 23:59:59');
-                        })
-//                        ->orderBy('document_date', 'asc')
-                        ->get()
-                        ->count();
-/*
-        foreach ($nbr_documents as $v) {
-            # code...
-            echo $v->id." &nbsp; ".$v->document_reference."<br />";
-        }
-            echo " &nbsp; Total Facturas: ".$nbr_documents->count()."<br />";die();
-*/
-
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Informe de RAEE ('.$nbr_documents.' '.l(str_replace("Line","",$model)).') ' . $ribbon, '', '', '', date('d M Y H:i:s')];
+
+        $row = [];
+        $row[] = 'Listado de Ventas comparativas por Cliente ('.l($model).') ';
+        foreach ($list_of_years as $year) {
+            // $row[] = '';
+        }
+        $row[] = '';
+        $row[] = '';
+        $row[] = date('d M Y H:i:s');
+        $data[] = $row;
+
+        $ribbon = $document_total_tax == 'total_tax_incl' ?
+                                            'Ventas son con Impuestos incluidos.' :
+                                            'Ventas son sin Impuestos.';
+        // $data[] = [ 'Listado de Ventas comparativas por customero ('.l($model).') ', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Meses: desde '.$selectorMonthList[$customer_sales_month_from].' hasta '.$selectorMonthList[$customer_sales_month_to].'. '.$ribbon];
         $data[] = [''];
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['ID', 'Nombre del Eco-Impuesto', 'Cantidad del Impuesto', 'Unidades', 'Cantidad Total'];
+        $header_names = ['ID', 'Referencia', 'Nombre', ];
+        foreach ($list_of_years as $year) {
+            $header_names[] = $year;
+        }
 
         $data[] = $header_names;
 
-        // Nice! Lets move on and retrieve Document Lines by Ecotax
-        $total =  0.0;
-        $nbr = 0;
-        
-        foreach ($all_ecotaxes as $all_ecotax) {
-            # code...
-            $ecotax_id = $all_ecotax->id;
+        // Convert each member of the returned collection into an array,
+        // and append it to the data array.
 
-            $lines =  $class::
-                          where('line_type', 'product')
-                        ->whereHas('ecotax', function ($query) use ($ecotax_id) {
+        // Initialize (colmn) totals
+        $totals = [];
+        foreach ($list_of_years as $year) {
+            $totals[$year] = 0.0;
+        }
 
-                                if ( (int) $ecotax_id > 0 )
-                                    $query->where('id', $ecotax_id);
-                        })
-                        ->whereHas('document', function ($query) use ($date_from, $date_to) {
+        foreach ($customers as $customer) 
+        {
+                $row = [];
+                $row[] = $customer->id;
+                $row[] = (string) $customer->reference_external;
+                $row[] = (string) $customer->name_regular;
 
-                                if ( $date_from )
-                                    $query->where('document_date', '>=', $date_from);
-                                
-                                if ( $date_to )
-                                    $query->where('document_date', '<=', $date_to);
-                        })
-                        ->get();
+                foreach ($list_of_years as $year) {
+                    $row[] = (float) $customer->{$year};
 
-            // abi_r($lines->toArray());   // die();
+                    $totals[$year] += (float) $customer->{$year};
+                }
+    
+                $data[] = $row;
 
-                        $total_lines = $lines->sum('ecotax_total_amount');
-                        $nbr_lines = round($total_lines / $all_ecotax->amount);
-
-                        // Do populate
-                        $row = [];
-                        $row[] = $all_ecotax->id;
-                        $row[] = (string) $all_ecotax->name;
-                        $row[] = $all_ecotax->amount * 1.0;
-                        $row[] = $nbr_lines * 1.0;
-                        $row[] = $total_lines * 1.0;
-                        $row[] = $lines->unique('customer_invoice_id')->count();
-            
-                        $data[] = $row;
-
-                        $total += $total_lines;
-                        $nbr   += $nbr_lines;
-
-                        // $check = $check->merge( $lines->unique('customer_invoice_id') );
         }
 
         // Totals
         $data[] = [''];
-        $data[] = ['', '', 'Total:', $nbr, $total ];
 
-        // check
-        // $data[] = [''];
-        // $data[] = ['', '', 'Total:', $check->unique('customer_invoice_id')->count() ];
+        $row = [];
+        $row[] = '';
+        $row[] = '';
+        $row[] = 'Total:';
+        foreach ($list_of_years as $year) {
+            $row[] = (float) $totals[$year];
+        }
+        $data[] = $row;
+
+        // abi_r($data, true);
 
 //        $i = count($data);
 
-        $sheetName = 'Informe RAEE ' . l(str_replace("Line","",$model));
+        $sheetName = 'Ventas ' . l($model);
 
         // Generate and return the spreadsheet
-        Excel::create('Informe RAEE', function($excel) use ($sheetName, $data) {
+        Excel::create('Ventas_Clientes', function($excel) use ($sheetName, $data, $nbr_years) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');
@@ -502,12 +551,16 @@ foreach ($products as $product) {
             // $excel->setDescription('Price List file');
 
             // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
+            $excel->sheet($sheetName, function($sheet) use ($data, $nbr_years) {
                 
                 $sheet->mergeCells('A1:C1');
                 $sheet->mergeCells('A2:C2');
+                $sheet->mergeCells('D2:'.chr(ord('D') + $nbr_years).'2');   // https://stackoverflow.com/questions/39314048/increment-letters-like-number-by-certain-value-in-php
+                $sheet->mergeCells('A3:C3');
 
-                $sheet->getStyle('A4:E4')->applyFromArray([
+                $w = count($data[5+1]);
+
+                $sheet->getStyle('A5:'.chr(ord('A') + $w - 1).'5')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -516,16 +569,264 @@ foreach ($products as $product) {
                 $sheet->setColumnFormat(array(
 //                    'B' => 'dd/mm/yyyy',
 //                    'C' => 'dd/mm/yyyy',
-                    'B' => '@',
-                    'C' => '0.00',
-                    'D' => '0',
-                    'E' => '0.00',
+                    'A' => '@',
+                    'D' => '0.00',
 
                 ));
                 
                 $n = count($data);
                 $m = $n;    //  - 3;
-                $sheet->getStyle("C$m:E$n")->applyFromArray([
+                $sheet->getStyle("C$m:".chr(ord('A') + $w - 1)."$n")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');
+
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+    }
+
+
+    /**
+     * Category Sales Report.
+     *
+     * @return Spread Sheet download
+     */
+    public function reportCategorySales(Request $request)
+    {
+        // abi_r(Carbon::now()->month);die();
+
+        $category_sales_month_from = $request->input('category_sales_month_from', 1);
+        
+        $category_sales_month_to   = $request->input('category_sales_month_to', Carbon::now()->month );
+
+        $nbr_years = $request->input('category_sales_years_to_compare', 1);
+
+        $document_total_tax = $request->input('category_sales_value', 'total_tax_incl');
+
+        if ( !in_array($document_total_tax, ['total_tax_incl', 'total_tax_excl']) )
+            $document_total_tax = 'total_tax_incl';
+ 
+        $model = $request->input('category_sales_model', Configuration::get('RECENT_SALES_CLASS'));
+
+        // calculate dates
+        // http://zetcode.com/php/carbon/
+        $years = [];
+        // Current year
+        $current_year = Carbon::now()->year;
+        $first_year = Carbon::now()->year - $nbr_years;
+        $month_from = $category_sales_month_from;
+        $month_to   = $category_sales_month_to;
+        $date_from = Carbon::create($first_year, $month_from, 1)->startOfDay();
+        $date_to   = Carbon::create($first_year, $month_to  , 1)->endOfMonth()->endOfDay();
+
+        $list_of_years = [];
+        for ($i=0; $i <= $nbr_years; $i++) { 
+            # code...
+            $list_of_years[] = $first_year + $i;
+        }
+
+        // abi_r($list_of_years, true);
+
+        // abi_r($date_from);
+        // abi_r($date_to, true);
+
+
+        $models = $this->models;
+        if ( !in_array($model, $models) )
+            $model = Configuration::get('RECENT_SALES_CLASS');
+        $class = '\App\\'.$model.'Line';
+        $table = snake_case(str_plural($model));
+        $route = str_replace('_', '', $table);
+
+        $selectorMonthList = Tools::selectorMonthList();
+
+        $document_reference_date = 'close_date';        // 'document_date'
+
+        $is_invoiceable_flag = ($model == 'CustomerShippingSlip') ? true : false;
+
+        // Wanna dance, Honey Bunny?
+
+        
+        // All categories. Lets see:
+        $categories = Category::select('id', 'name')  // , 'measure_unit_id')
+                            ->where('parent_id', '>', 0)    // Only "children"
+//                            ->with('measureunit')
+                            ->orderBy('name', 'asc')
+//                            ->take(4)
+                            ->get();
+
+        // abi_r($categories->count(), true);
+
+$k=0;
+// Nice! Lets move on and retrieve Documents
+foreach ($categories as $category) {
+        # code...
+        // Initialize
+//        $category-> = 0.0;
+
+    $category_id = $category->id;
+
+    $category_date_from = $date_from->copy();
+    $category_date_to   = $date_to->copy();
+
+    foreach ($list_of_years as $year) {
+
+        // abi_r($category->name);
+        // abi_r($category_date_from);
+        // abi_r($category_date_to);
+
+        $category->{$year} = $class::
+                          where('line_type', 'product')
+                        ->whereHas('product', function ($query) use ( $category_id ) {
+
+                                $query->where('category_id', $category_id);
+                        })
+                        ->whereHas('document', function ($query) use ( $category_date_from, $category_date_to, $document_reference_date, $is_invoiceable_flag) {
+
+                                // Closed Documents only
+                                $query->where($document_reference_date, '!=', null);
+
+                                // Only invoiceable Documents when Documents are Customer Shipping Slips
+                                if ( $is_invoiceable_flag )
+                                    $query->where('is_invoiceable', '>', 0);
+
+                                if ( $category_date_from )
+                                    $query->where($document_reference_date, '>=', $category_date_from);
+                                
+                                if ( $category_date_to )
+                                    $query->where($document_reference_date, '<=', $category_date_to);
+                        })
+                        ->sum($document_total_tax);
+
+        $category_date_from->addYear();
+        $category_date_to->addYear();
+
+    }
+    $k++;
+    // if ($k==4) break;
+}
+// die();
+// abi_r($categories, true);
+        // Lets get dirty!!
+        // See: https://laraveldaily.com/laravel-excel-export-formatting-and-styling-cells/
+
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = [];
+
+        // Sheet Header Report Data
+        $data[] = [\App\Context::getContext()->company->name_fiscal];
+
+        $row = [];
+        $row[] = 'Listado de Ventas comparativas por categoryo ('.l($model).') ';
+        foreach ($list_of_years as $year) {
+            // $row[] = '';
+        }
+        $row[] = '';
+        $row[] = date('d M Y H:i:s');
+        $data[] = $row;
+
+        $ribbon = $document_total_tax == 'total_tax_incl' ?
+                                            'Ventas son con Impuestos incluidos.' :
+                                            'Ventas son sin Impuestos.';
+        // $data[] = [ 'Listado de Ventas comparativas por categoryo ('.l($model).') ', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Meses: desde '.$selectorMonthList[$category_sales_month_from].' hasta '.$selectorMonthList[$category_sales_month_to].'. '.$ribbon];
+        $data[] = [''];
+
+
+        // Define the Excel spreadsheet headers
+        $header_names = ['ID', 'Nombre', ];
+        foreach ($list_of_years as $year) {
+            $header_names[] = $year;
+        }
+
+        $data[] = $header_names;
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the data array.
+
+        // Initialize (colmn) totals
+        $totals = [];
+        foreach ($list_of_years as $year) {
+            $totals[$year] = 0.0;
+        }
+
+        foreach ($categories as $category) 
+        {
+                $row = [];
+                $row[] = $category->id;
+                $row[] = (string) $category->name;
+
+                foreach ($list_of_years as $year) {
+                    $row[] = (float) $category->{$year};
+
+                    $totals[$year] += (float) $category->{$year};
+                }
+    
+                $data[] = $row;
+
+        }
+
+        // Totals
+        $data[] = [''];
+
+        $row = [];
+        $row[] = '';
+        $row[] = 'Total:';
+        foreach ($list_of_years as $year) {
+            $row[] = (float) $totals[$year];
+        }
+        $data[] = $row;
+
+        // abi_r($data, true);
+
+//        $i = count($data);
+
+        $sheetName = 'Ventas ' . l($model);
+
+        // Generate and return the spreadsheet
+        Excel::create('Ventas_Categorias', function($excel) use ($sheetName, $data, $nbr_years) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data, $nbr_years) {
+                
+                $sheet->mergeCells('A1:B1');
+                $sheet->mergeCells('A2:B2');
+                $sheet->mergeCells('C2:'.chr(ord('C') + $nbr_years).'2');   // https://stackoverflow.com/questions/39314048/increment-letters-like-number-by-certain-value-in-php
+                $sheet->mergeCells('A3:B3');
+
+                $w = count($data[5+1]);
+
+                $sheet->getStyle('A5:'.chr(ord('A') + $w - 1).'5')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->setColumnFormat(array(
+//                    'B' => 'dd/mm/yyyy',
+//                    'C' => 'dd/mm/yyyy',
+                    'A' => '@',
+                    'C' => '0.00',
+
+                ));
+                
+                $n = count($data);
+                $m = $n;    //  - 3;
+                $sheet->getStyle("B$m:".chr(ord('A') + $w - 1)."$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

@@ -212,6 +212,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         // Reports
         Route::get('/reports/home', 'ReportsController@index')->name('reports.home');
         Route::post('/reports/product/sales'  , 'ReportsController@reportProductSales'  )->name('reports.products.sales');
+        Route::post('/reports/customer/sales' , 'ReportsController@reportCustomerSales' )->name('reports.customers.sales');
+        Route::post('/reports/category/sales' , 'ReportsController@reportCategorySales' )->name('reports.categories.sales');
 
 
         Route::get( 'abccbillboard/edit',    'AbccBillboardController@edit'  )->name('abccbillboard.edit');

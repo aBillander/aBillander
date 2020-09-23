@@ -138,6 +138,7 @@ return [
 	'Sales Invoices'     => 'Facturas de Venta',
 	'Accounting'     => 'Contabilidad',
 	'Earns & Profit'     => 'Rentabilidad',
+	'Analysis' => 'Análisis',
 
 	'Login'     => 'Login',
 	'Documentation'     => 'Documentación',

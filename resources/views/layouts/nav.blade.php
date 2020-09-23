@@ -431,11 +431,28 @@
                                 <i class="fa fa-user-secret text-success"></i> 
                                 {{l('Accounting', [], 'layouts')}}</a>
                         </li>
+                         <li>
+                            <a href="{{ route('accounting.customerinvoices.index') }}">
+                                 {{l('Customer Invoices', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('accounting.customers.index') }}">
+                                 {{l('Customers', [], 'layouts')}}
+                            </a>
+                        </li>
+
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('helferin/home') }}">
                                 <i class="fa fa-gears text-info"></i> 
                                 {{l('Earns & Profit', [], 'layouts')}}</a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('reports/home') }}">
+                                <i class="fa fa-coffee text-danger"></i> 
+                                {{l('Analysis', [], 'layouts')}}</a>
                         </li>
                         <li class="divider"></li>
                     </ul>

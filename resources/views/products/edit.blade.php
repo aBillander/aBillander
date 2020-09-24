@@ -9,7 +9,7 @@
         <div class="page-header">
             <div class="pull-right">
 
-                <a class="btn xbtn-sm btn-success" target="_blank" href="{{ route('chart.product.sales.monthly', ['product_id' => $product->id]) }}" title="{{l('View Chart', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i></a>
+                <a class="btn xbtn-sm btn-info" target="_blank" href="{{ route('chart.product.sales.monthly', ['product_id' => $product->id]) }}" title="{{l('View Chart', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i></a>
 
                 <a class="btn xbtn-sm btn-success" href="{{ URL::to('products/' . $product->id . '/duplicate') }}" title="{{l('Duplicate', [], 'layouts')}}"><i class="fa fa-copy"></i></a>
 

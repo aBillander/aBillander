@@ -103,7 +103,7 @@
 
            <td class="text-right button-pad">
 
-                <a class="btn btn-sm btn-success" target="_blank" href="{{ route('chart.product.stock.monthly', ['product_id' => $product->id]) }}" title="{{l('View Chart', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i></a>
+                <a class="btn btn-sm btn-info" target="_blank" href="{{ route('chart.product.stock.monthly', ['product_id' => $product->id]) }}" title="{{l('View Chart', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i></a>
 
                 <a class="btn btn-sm btn-warning" target="_blank" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
             </td>

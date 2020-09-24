@@ -28,8 +28,10 @@
 
 
 @include('reports.reports_product_sales')
+@include('reports.reports_abc_product_sales')
 
 @include('reports.reports_customer_sales')
+@include('reports.reports_abc_customer_sales')
 
 @include('reports.reports_category_sales')
 

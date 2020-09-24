@@ -22,20 +22,16 @@ use Carbon\Carbon;
 use Excel;
 
 // Helferinnen
-use App\Http\Controllers\HelferinTraits\HelferinProductConsumptionTrait;
-use App\Http\Controllers\HelferinTraits\HelferinProductReorderTrait;
-use App\Http\Controllers\HelferinTraits\HelferinCustomerVouchersTrait;
-use App\Http\Controllers\HelferinTraits\HelferinCustomerInvoicesTrait;
+use App\Http\Controllers\HelferinTraits\ReportsABCProductSalesTrait;
+use App\Http\Controllers\HelferinTraits\ReportsABCCustomerSalesTrait;
 
 use App\Traits\DateFormFormatterTrait;
 
 class ReportsController extends Controller
 {
    
-   use HelferinProductConsumptionTrait;
-   use HelferinProductReorderTrait;
-   use HelferinCustomerVouchersTrait;
-   use HelferinCustomerInvoicesTrait;
+   use ReportsABCProductSalesTrait;
+   use ReportsABCCustomerSalesTrait;
 
    use DateFormFormatterTrait;
 

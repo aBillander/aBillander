@@ -226,6 +226,27 @@
         <span class="help-block">{!! l('ENABLE_SALESREP_CENTER.help') !!}</span>
       </div>
     </div>
+    
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('SALESREP_COMMISSION_METHOD.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="SALESREP_COMMISSION_METHOD" id="SALESREP_COMMISSION_METHOD_TAXEXC" value="TAXEXC" @if( old('SALESREP_COMMISSION_METHOD', $key_group['SALESREP_COMMISSION_METHOD']) == 'TAXEXC' ) checked="checked" @endif type="radio">
+            {!! l('SALESREP_COMMISSION_METHOD.option.TAXEXC') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="SALESREP_COMMISSION_METHOD" id="SALESREP_COMMISSION_METHOD_TAXINC" value="TAXINC" @if( old('SALESREP_COMMISSION_METHOD', $key_group['SALESREP_COMMISSION_METHOD']) == 'TAXINC' ) checked="checked" @endif type="radio">
+            {!! l('SALESREP_COMMISSION_METHOD.option.TAXINC') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('SALESREP_COMMISSION_METHOD.help') !!}</span>
+      </div>
+    </div>
+
 
     
 @if ( config('tenants.enable') )

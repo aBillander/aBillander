@@ -31,6 +31,7 @@ class ConfigurationKeysController extends Controller {
                         'PRICES_ENTERED_WITH_ECOTAX',
                         'ENABLE_CUSTOMER_CENTER',
                         'ENABLE_SALESREP_CENTER',
+                        'SALESREP_COMMISSION_METHOD',                        
                         'ENABLE_MANUFACTURING',
                         'MRP_WITH_STOCK',
                         'MRP_WITH_ZERO_ORDERS',

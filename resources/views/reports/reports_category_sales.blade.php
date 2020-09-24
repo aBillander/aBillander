@@ -39,7 +39,10 @@ border-color: #772953;">
 
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {{-- Poor man offset --}}
+        {!! Form::label('category_sales_autocustomer_name', 'Cliente') !!}
+        {!! Form::text('category_sales_autocustomer_name', '', array('class' => 'form-control', 'id' => 'category_sales_autocustomer_name')) !!}
+
+        {!! Form::hidden('category_sales_customer_id', '', array('id' => 'category_sales_customer_id')) !!}
     </div>
 
 

@@ -118,6 +118,8 @@ view('some.view.name') // search in /app/views first, then custom locations
         if ( !in_array($document_total_tax, ['total_tax_incl', 'total_tax_excl']) )
             $document_total_tax = 'total_tax_incl';
  
+        $customer_id = $request->input('product_sales_customer_id', 0);
+
         $model = $request->input('product_sales_model', Configuration::get('RECENT_SALES_CLASS'));
 
         // calculate dates
@@ -187,10 +189,13 @@ foreach ($products as $product) {
         $product->{$year} = $class::
                           where('line_type', 'product')
                         ->where('product_id', $product->id)
-                        ->whereHas('document', function ($query) use ( $product_date_from, $product_date_to, $document_reference_date, $is_invoiceable_flag) {
+                        ->whereHas('document', function ($query) use ( $customer_id, $product_date_from, $product_date_to, $document_reference_date, $is_invoiceable_flag) {
 
                                 // Closed Documents only
                                 $query->where($document_reference_date, '!=', null);
+
+                                if ( $customer_id > 0 )
+                                    $query->where('customer_id', $customer_id);
 
                                 // Only invoiceable Documents when Documents are Customer Shipping Slips
                                 if ( $is_invoiceable_flag )
@@ -220,6 +225,10 @@ foreach ($products as $product) {
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
+        $customer_label = (int) $customer_id > 0
+                        ? Customer::findOrFail($customer_id)->name_regular
+                        : 'todos';
+
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
 
@@ -231,6 +240,8 @@ foreach ($products as $product) {
         $row[] = '';
         $row[] = date('d M Y H:i:s');
         $data[] = $row;
+
+        $data[] = ['Cliente: '. $customer_label];
 
         $ribbon = $document_total_tax == 'total_tax_incl' ?
                                             'Ventas son con Impuestos incluidos.' :
@@ -305,10 +316,11 @@ foreach ($products as $product) {
                 $sheet->mergeCells('A2:B2');
                 $sheet->mergeCells('C2:'.chr(ord('C') + $nbr_years).'2');   // https://stackoverflow.com/questions/39314048/increment-letters-like-number-by-certain-value-in-php
                 $sheet->mergeCells('A3:B3');
+                $sheet->mergeCells('A4:B4');
 
                 $w = count($data[5+1]);
 
-                $sheet->getStyle('A5:'.chr(ord('A') + $w - 1).'5')->applyFromArray([
+                $sheet->getStyle('A6:'.chr(ord('A') + $w - 1).'6')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -362,6 +374,8 @@ foreach ($products as $product) {
         if ( !in_array($document_total_tax, ['total_tax_incl', 'total_tax_excl']) )
             $document_total_tax = 'total_tax_incl';
  
+        $customer_id = $request->input('customer_sales_customer_id', 0);
+ 
         $model = $request->input('customer_sales_model', Configuration::get('RECENT_SALES_CLASS'));
 
         // calculate dates
@@ -404,8 +418,11 @@ foreach ($products as $product) {
 
         
         // All customers. Lets see:
-        $customers = Customer::select('id', 'reference_external', 'name_fiscal', 'name_commercial')  // , 'measure_unit_id')
-//                            ->with('measureunit')
+        $customers = Customer::select('id', 'reference_external', 'name_fiscal', 'name_commercial')
+                            ->when($customer_id>0, function ($query) use ($customer_id) {
+
+                                    $query->where('id', $customer_id);
+                            })
                             ->orderBy('reference_external', 'asc')
                             ->orderBy('id', 'asc')
 //                            ->take(4)
@@ -433,7 +450,7 @@ foreach ($customers as $customer) {
 
         $customer->{$year} = $class::
                           where('line_type', 'product')
-                        ->whereHas('document', function ($query) use ( $customer_date_from, $customer_date_to, $document_reference_date, $is_invoiceable_flag, $customer_id) {
+                        ->whereHas('document', function ($query) use ( $customer_id, $customer_date_from, $customer_date_to, $document_reference_date, $is_invoiceable_flag ) {
 
                                 if ( $customer_id > 0 )
                                     $query->where('customer_id', $customer_id);
@@ -469,6 +486,10 @@ foreach ($customers as $customer) {
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
+        $customer_label = (int) $customer_id > 0
+                        ? Customer::findOrFail($customer_id)->name_regular
+                        : 'todos';
+
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
 
@@ -481,6 +502,8 @@ foreach ($customers as $customer) {
         $row[] = '';
         $row[] = date('d M Y H:i:s');
         $data[] = $row;
+
+        $data[] = ['Cliente: '. $customer_label];
 
         $ribbon = $document_total_tax == 'total_tax_incl' ?
                                             'Ventas son con Impuestos incluidos.' :
@@ -557,10 +580,11 @@ foreach ($customers as $customer) {
                 $sheet->mergeCells('A2:C2');
                 $sheet->mergeCells('D2:'.chr(ord('D') + $nbr_years).'2');   // https://stackoverflow.com/questions/39314048/increment-letters-like-number-by-certain-value-in-php
                 $sheet->mergeCells('A3:C3');
+                $sheet->mergeCells('A4:C4');
 
                 $w = count($data[5+1]);
 
-                $sheet->getStyle('A5:'.chr(ord('A') + $w - 1).'5')->applyFromArray([
+                $sheet->getStyle('A6:'.chr(ord('A') + $w - 1).'6')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -613,6 +637,8 @@ foreach ($customers as $customer) {
 
         if ( !in_array($document_total_tax, ['total_tax_incl', 'total_tax_excl']) )
             $document_total_tax = 'total_tax_incl';
+ 
+        $customer_id = $request->input('category_sales_customer_id', 0);
  
         $model = $request->input('category_sales_model', Configuration::get('RECENT_SALES_CLASS'));
 
@@ -689,10 +715,13 @@ foreach ($categories as $category) {
 
                                 $query->where('category_id', $category_id);
                         })
-                        ->whereHas('document', function ($query) use ( $category_date_from, $category_date_to, $document_reference_date, $is_invoiceable_flag) {
+                        ->whereHas('document', function ($query) use ( $customer_id, $category_date_from, $category_date_to, $document_reference_date, $is_invoiceable_flag) {
 
                                 // Closed Documents only
                                 $query->where($document_reference_date, '!=', null);
+
+                                if ( $customer_id > 0 )
+                                    $query->where('customer_id', $customer_id);
 
                                 // Only invoiceable Documents when Documents are Customer Shipping Slips
                                 if ( $is_invoiceable_flag )
@@ -722,6 +751,10 @@ foreach ($categories as $category) {
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
+        $customer_label = (int) $customer_id > 0
+                        ? Customer::findOrFail($customer_id)->name_regular
+                        : 'todos';
+
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
 
@@ -733,6 +766,8 @@ foreach ($categories as $category) {
         $row[] = '';
         $row[] = date('d M Y H:i:s');
         $data[] = $row;
+
+        $data[] = ['Cliente: '. $customer_label];
 
         $ribbon = $document_total_tax == 'total_tax_incl' ?
                                             'Ventas son con Impuestos incluidos.' :
@@ -807,10 +842,11 @@ foreach ($categories as $category) {
                 $sheet->mergeCells('A2:B2');
                 $sheet->mergeCells('C2:'.chr(ord('C') + $nbr_years).'2');   // https://stackoverflow.com/questions/39314048/increment-letters-like-number-by-certain-value-in-php
                 $sheet->mergeCells('A3:B3');
+                $sheet->mergeCells('A4:B4');
 
                 $w = count($data[5+1]);
 
-                $sheet->getStyle('A5:'.chr(ord('A') + $w - 1).'5')->applyFromArray([
+                $sheet->getStyle('A6:'.chr(ord('A') + $w - 1).'6')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

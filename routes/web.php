@@ -851,6 +851,9 @@ foreach ($pairs as $pair) {
             Route::get('/get-monthly-product-stock',      'ChartProductStockController@getMonthlyProductStock')->name('chart.product.stock.monthly');
             Route::get('/get-monthly-product-stock-data', 'ChartProductStockController@getMonthlyProductStockData')->name('chart.product.stock.monthly.data');
 
+            Route::get('/get-monthly-product-sales',      'ChartProductSalesController@getMonthlyProductSales')->name('chart.product.sales.monthly');
+            Route::get('/get-monthly-product-sales-data', 'ChartProductSalesController@getMonthlyProductSalesData')->name('chart.product.sales.monthly.data');
+
             Route::get('r', function()
                 {
                     return 'Hello, world!';

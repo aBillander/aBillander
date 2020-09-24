@@ -43,10 +43,15 @@ return [
 	'Chart - Product Stock' => 'Gráfico - Nivel de Inventario',
 	'Product Stock' => 'Nivel de Inventario',
 	'Pending V' => 'Recibos P',
+	
 	'Chart - Aggregated Stock Movements' => 'Gráfico - Resumen Movimientos de Stock',
 	'Aggregated Stock Movements' => 'Resumen Movimientos de Stock',
+	
+	'Chart - Aggregated Sales' => 'Gráfico - Resumen Ventas',
+	'Aggregated Sales' => 'Resumen Ventas',
 
 	'(daily)' => '(diario)',
+	'Cumulative' => 'Acumulado',
 
 	''     => '',
 

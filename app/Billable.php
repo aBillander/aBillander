@@ -315,25 +315,26 @@ class Billable extends Model implements ShippableInterface
         return $total_cost_price;
     }
 
-    public function getTotalCommissionAttribute()
+    public function getSalesRepCommission()
     {
         $lines = $this->lines;
         $filter = Configuration::isFalse('INCLUDE_SHIPPING_COST_IN_PROFIT');
 
         $total_commission = $lines->sum(function ($line) use ($filter) {
 
-                if ( ($line->line_type == 'shipping') && $filter ) return 0.0;
-
+                // if ( ($line->line_type == 'shipping') && $filter ) return 0.0;
+                if ( $line->line_type != 'product' ) return 0.0;
+/*
                 $ecotax = 0.0;
                 if (0)
                 if ( $line->line_type == 'product' ) 
                 {
                     $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 }
-
+*/
                 // abi_r($line->quantity * ( $line->unit_final_price - $ecotax ) * $line->commission_percent / 100.0);
 
-                return $line->quantity * ( $line->unit_final_price - $ecotax ) * $line->commission_percent / 100.0;
+                return $line->getSalesRepCommission();
 
             });
 

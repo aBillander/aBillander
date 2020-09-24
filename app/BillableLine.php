@@ -274,4 +274,27 @@ class BillableLine extends Model
         return $priceObject;
     }
 
+
+    public function getSalesRepCommission()
+    {
+        switch ( Configuration::get('SALESREP_COMMISSION_METHOD') ) {
+            case 'TAXINC':
+                # code...
+                $amount = $this->total_tax_incl * $this->commission_percent / 100.0;
+                break;
+            
+            case 'TAXEXC':
+                # code...
+                $amount = $this->total_tax_excl * $this->commission_percent / 100.0;
+                break;
+            
+            default:
+                # code..
+                $amount = 0.0;
+                break;
+        }
+
+        return $amount;
+    }
+
 }

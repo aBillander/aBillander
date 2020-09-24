@@ -209,6 +209,15 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/helferin/reports/reorder'       , 'HelferinController@reportProductReorder'       )->name('helferin.reports.reorder');
         Route::get( '/helferin/reports/reorder/headers', 'HelferinController@reportProductReorderHeaders' )->name('helferin.reports.reorder.headers');
 
+        // Reports
+        Route::get('/reports/home', 'ReportsController@index')->name('reports.home');
+        Route::post('/reports/product/sales'  , 'ReportsController@reportProductSales'  )->name('reports.products.sales');
+        Route::post('/reports/customer/sales' , 'ReportsController@reportCustomerSales' )->name('reports.customers.sales');
+        Route::post('/reports/category/sales' , 'ReportsController@reportCategorySales' )->name('reports.categories.sales');
+
+        Route::post('/reports/abc/product/sales'  , 'ReportsController@reportABCProductSales'  )->name('reports.abc.products.sales');
+        Route::post('/reports/abc/customer/sales' , 'ReportsController@reportABCCustomerSales' )->name('reports.abc.customers.sales');
+
 
         Route::get( 'abccbillboard/edit',    'AbccBillboardController@edit'  )->name('abccbillboard.edit');
         Route::post('abccbillboard/update',  'AbccBillboardController@update')->name('abccbillboard.update');
@@ -846,6 +855,9 @@ foreach ($pairs as $pair) {
 
             Route::get('/get-monthly-product-stock',      'ChartProductStockController@getMonthlyProductStock')->name('chart.product.stock.monthly');
             Route::get('/get-monthly-product-stock-data', 'ChartProductStockController@getMonthlyProductStockData')->name('chart.product.stock.monthly.data');
+
+            Route::get('/get-monthly-product-sales',      'ChartProductSalesController@getMonthlyProductSales')->name('chart.product.sales.monthly');
+            Route::get('/get-monthly-product-sales-data', 'ChartProductSalesController@getMonthlyProductSalesData')->name('chart.product.sales.monthly.data');
 
             Route::get('r', function()
                 {

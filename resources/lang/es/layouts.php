@@ -138,6 +138,7 @@ return [
 	'Sales Invoices'     => 'Facturas de Venta',
 	'Accounting'     => 'Contabilidad',
 	'Earns & Profit'     => 'Rentabilidad',
+	'Analysis' => 'Análisis',
 
 	'Login'     => 'Login',
 	'Documentation'     => 'Documentación',
@@ -228,8 +229,9 @@ return [
 	'File'     => 'Fichero',
 	'Load'     => 'Cargar',
 	'Reset'     => 'Reiniciar',
-	'View'     => 'Ver',
+	'View Chart'     => 'Ver Gráfico',
 	'View Document'     => 'Ver Documento',
+	'View'     => 'Ver',
 	'View more'     => 'Ver más',
 	'Edit'     => 'Modificar',
 	'Undo'     => 'Deshacer',

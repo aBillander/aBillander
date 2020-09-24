@@ -133,5 +133,27 @@ class Tools {
 
         return substr($result, 0, $length);
     }
+
+    /**
+     * Random bytes generator
+     *
+     * Thanks to Zend for entropy
+     *
+     * @param $length Desired length of random bytes
+     * @return bool|string Random bytes
+     */
+    public static function selectorMonthList( )
+    {
+        $list = [];
+
+        $monthNames = l('monthNames', 'appmultilang');
+
+        foreach ($monthNames as $key => $value) {
+            # code...
+            $list[$key + 1] = $value;
+        }
+
+        return $list;
+    }
 	
 }

@@ -83,6 +83,13 @@ border-color: #772953;">
                   </div>
 --}}
 
+    <div class="alert alert-dismissible alert-warning">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <h4>ABC analysis (from the term “The Pareto Principle”, also called 80/20 rule)</h4>
+          <p>When it comes to stock or inventory management, ABC analysis typically segregates inventory into three categories based on its revenue and control measures required: <strong>A is 20% of items with 80% of total revenue and hence asks for tight control; B is 30% items with 15% revenue; whereas ‘C’ is 50% of the things with least 5% revenue and hence treated as most liberal</strong>.</p>
+    </div>
+
+
               </div>
 
                <div class="panel-footer text-right">

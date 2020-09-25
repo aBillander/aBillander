@@ -15,9 +15,15 @@ class SalesRep extends Model {
 
     use SoftDeletes;
 
+    public static $types = [
+            'external',
+            'employee',
+        ];
+
     protected $dates = ['deleted_at'];
 	
-    protected $fillable = ['alias', 'identification', 'notes', 'reference_external', 
+    protected $fillable = ['sales_rep_type', 'alias', 'identification', 'notes', 
+                           'reference_external', 'accounting_id', 
                            'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax',
     					   'commission_percent', 'max_discount_allowed', 'pitw', 'active'];
 
@@ -38,7 +44,31 @@ class SalesRep extends Model {
     	);
 
 
-    // Get the full name of a User instance using Eloquent accessors
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+    public static function getTypeList()
+    {
+            $list = [];
+            foreach (self::$types as $type) {
+                $list[$type] = l('App\\SalesRep.'.$type, [], 'appmultilang');
+            }
+
+            return $list;
+    }
+
+    public static function getTypeName( $status )
+    {
+            return l('App\\SalesRep.'.$status, [], 'appmultilang');
+    }
+
+
+
+    // Get the full name of a SalesRep instance using Eloquent accessors
     
     public function getNameAttribute() 
     {

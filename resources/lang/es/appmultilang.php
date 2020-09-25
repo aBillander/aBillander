@@ -362,6 +362,18 @@ return array(
 	'App\ShippingMethod.price'  => 'Precio',
 	'App\ShippingMethod.weight' => 'Peso',
 
+	/*
+	|--------------------------------------------------------------------------
+	| Sales Representative Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SalesRep.external'  => 'Agente Externo',
+	'App\SalesRep.employee' => 'Empleado',
+
 
 	/*
 	|--------------------------------------------------------------------------

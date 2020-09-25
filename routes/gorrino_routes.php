@@ -116,6 +116,14 @@ Route::get('mqueuer', 'MProbeController@queuer');
 Route::get('migratethis', function()
 {	
 
+	// 2020-09-25
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `sales_reps` ADD `sales_rep_type` varchar(32) NOT NULL DEFAULT 'external' AFTER `id`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `sales_reps` ADD `accounting_id` varchar(32) NULL DEFAULT NULL AFTER `reference_external`;");
+
+	die('OK');
+
 	// 2020-09-16
 
 	$tables = ['customer_invoice', 'customer_shipping_slip', 'customer_quotation', 'customer_order'];

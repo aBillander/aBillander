@@ -23,6 +23,33 @@
 
 
 
+Route::get('lm', function( )
+{
+	// http://zetcode.com/php/carbon/
+
+	// $p = \App\Product::find(141);
+	$ps = \App\Product::with('latestStockmovement')->get();
+
+	foreach ($ps as $p) {
+		# code...
+		$m = $p->latestStockmovement;
+	
+		if ($m)
+		if ( \Carbon\Carbon::now()->subDays(2)->gte( $m->created_at ) ) {
+
+			$m->cost_price_after_movement = $p->cost_average;
+			$m->product_cost_price = $p->cost_price;
+			$m->save();
+
+			// abi_r($p);
+			// abi_r($m);
+		}
+	}
+});
+
+/* ********************************************************** */
+
+
 Route::get('tst', function( )
 {
 	$documents = \App\CustomerShippingSlip::whereIn('id', [4879, 4929, 4970, 5062])->get();

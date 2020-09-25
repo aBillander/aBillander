@@ -1065,6 +1065,15 @@ class Product extends Model {
         return $this->hasMany('App\StockMovement');
     }
 
+    // Latest Stock Movement
+    // https://p.softonsofa.com/tweaking-eloquent-relations-how-to-get-latest-related-model/
+    public function latestStockmovement()
+    {
+      return $this->hasOne('App\StockMovement')->latest();
+      // Same as: $this->hasOne('App\StockMovement')->orderBy('created_at', 'desc');
+    }
+
+
     public function mainsupplier()
     {
         return $this->belongsTo('App\Supplier', 'main_supplier_id');

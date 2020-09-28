@@ -51,6 +51,7 @@ return [
 
 	'Back to WooCommerce Orders'     => 'Volver a Pedidos Tienda Online',
 	'WooCommerce Orders'     => 'Pedidos Tienda Online',
+	'Aggregated WooCommerce Orders'     => 'Resumen de Pedidos Tienda Online',
 	'WooC Order #' => 'Pedido #',
 	'Status'     => 'Estado',
 	'Created at'     => 'Creado Fecha',

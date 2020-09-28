@@ -53,6 +53,7 @@ class Billable extends Model implements ShippableInterface
             'manual',
             'abcc',
             'absrc',
+            'webshop',
             'aggregate_orders',
             'aggregate_shipping_slips',
             'production_sheet',

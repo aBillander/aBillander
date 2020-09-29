@@ -159,6 +159,10 @@ return [
 	'DEF_PERCENT_DECIMALS.help' => 'Número de decimales para porcentajes.',
 	'DEF_QUANTITY_DECIMALS.name' => 'Decimales en Cantidades',
 	'DEF_QUANTITY_DECIMALS.help' => 'Número de decimales para cantidades (stock, etc.).',
+	'SHOW_PRODUCTS_ACTIVE_ONLY.name' => 'Mostrar en consultas sólo los Productos activos',
+	'SHOW_PRODUCTS_ACTIVE_ONLY.help' => '',
+	'SHOW_CUSTOMERS_ACTIVE_ONLY.name' => 'Mostrar en consultas sólo los Clientes activos',
+	'SHOW_CUSTOMERS_ACTIVE_ONLY.help' => '',
 
 	'BUSINESS_NAME_TO_SHOW.name' => 'Nombre de Proveedores y Clientes que se mostrará ',
 	'BUSINESS_NAME_TO_SHOW.option.fiscal' => '<strong>fiscal</strong>: Mostrar el Nombre Fiscal (Razón Soial)',

@@ -106,6 +106,46 @@
         <span class="help-block">{!! l('DEF_QUANTITY_DECIMALS.help') !!}</span>
       </div>
     </div>
+    
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('SHOW_PRODUCTS_ACTIVE_ONLY.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="SHOW_PRODUCTS_ACTIVE_ONLY" id="SHOW_PRODUCTS_ACTIVE_ONLY_on" value="1" @if( old('SHOW_PRODUCTS_ACTIVE_ONLY', $key_group['SHOW_PRODUCTS_ACTIVE_ONLY']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="SHOW_PRODUCTS_ACTIVE_ONLY" id="SHOW_PRODUCTS_ACTIVE_ONLY_off" value="0" @if( !old('SHOW_PRODUCTS_ACTIVE_ONLY', $key_group['SHOW_PRODUCTS_ACTIVE_ONLY']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('SHOW_PRODUCTS_ACTIVE_ONLY.help') !!}</span>
+      </div>
+    </div>
+    
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('SHOW_CUSTOMERS_ACTIVE_ONLY.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="SHOW_CUSTOMERS_ACTIVE_ONLY" id="SHOW_CUSTOMERS_ACTIVE_ONLY_on" value="1" @if( old('SHOW_CUSTOMERS_ACTIVE_ONLY', $key_group['SHOW_CUSTOMERS_ACTIVE_ONLY']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="SHOW_CUSTOMERS_ACTIVE_ONLY" id="SHOW_CUSTOMERS_ACTIVE_ONLY_off" value="0" @if( !old('SHOW_CUSTOMERS_ACTIVE_ONLY', $key_group['SHOW_CUSTOMERS_ACTIVE_ONLY']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('SHOW_CUSTOMERS_ACTIVE_ONLY.help') !!}</span>
+      </div>
+    </div>
 
 
     <div class="form-group">

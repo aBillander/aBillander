@@ -17,11 +17,22 @@ Route::group([
 
 Route::group([
 
-	'middleware' =>  ['web', 'auth', 'context'],
-	'namespace' => 'aBillander\WooConnect\Http\Controllers',
-	'prefix'    => 'wooc'
+    'middleware' =>  ['web', 'auth', 'context'],
+    'namespace' => 'aBillander\WooConnect\Http\Controllers',
+    'prefix'    => 'wooc'
 
 ], function () {
+
+        Route::group([
+
+            'namespace' => 'Chart',
+            'prefix'    => 'chart'
+
+        ], function () {
+
+            Route::get('/get-monthly-product-sales',      'ChartProductWebSalesController@getMonthlyProductWebSales')->name('wooc.chart.product.sales.monthly');
+            Route::get('/get-monthly-product-sales-data', 'ChartProductWebSalesController@getMonthlyProductWebSalesData')->name('wooc.chart.product.sales.monthly.data');
+        });
 
 //	Route::get('orders', ['as' => 'worders', 'uses' => 'WooOrdersController@index']);
 //	Route::get('orders/statuses', 'WooOrdersController@getStatuses');	// Semms this endpoint does not exist /!\

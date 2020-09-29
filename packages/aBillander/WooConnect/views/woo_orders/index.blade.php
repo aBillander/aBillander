@@ -16,6 +16,8 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
+        <a class="btn btn-sm btn-info" style="margin-right: 21px" target="_blank" href="{{ route('wooc.chart.product.sales.monthly') }}" title="{{l('View Chart', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i></a>
+
     <a class="btn btn-sm btn-success" style="margin-right: 152px" href="{{ URL::route('wooconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}}"><i class="fa fa-cog"></i> {{l('Configuration', [], 'layouts')}}</a> 
 
 {{--

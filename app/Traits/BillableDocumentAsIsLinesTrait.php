@@ -17,7 +17,9 @@ trait BillableDocumentAsIsLinesTrait
 
         // Customer
         $customer = $this->customer;
-        $salesrep = $customer->salesrep;
+        $salesrep = array_key_exists('sales_rep_id', $params) 
+                            ? SalesRep::find( (int) $params['sales_rep_id'] ) 
+                            : $customer->salesrep;
         
         // Currency
         $currency = $this->document_currency;

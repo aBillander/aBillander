@@ -47,4 +47,6 @@ return [
     'Comma separated list, as in: lot1:expiry1:quantity1,lot2:expiry2:quantity2.<br />Lot Expiration Date and Lot Quantity are optional, but a colon (:) must be still present, as in: lot1: :,lot2: : .' => 
 	'Lista separada por comas, como: lote1:caducidad1:cantidad1,lote2:caducidad2:cantidad2.<br />La Fecha de Caducidad y la Cantidad de cada Lote son opcionales, pero aún así debe usar dos puntos (:) como separador, como: lote1::,lote2:: .',
 
+	'Ecotax' => 'Ecotasa',
+
 ];

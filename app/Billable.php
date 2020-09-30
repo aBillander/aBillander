@@ -244,7 +244,9 @@ class Billable extends Model implements ShippableInterface
                     $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 }
 
-                return $line->quantity_total * ( $line->unit_price - $ecotax );
+                // return $line->quantity_total * ( $line->unit_price - $ecotax );
+                // Unit Price has NOT Ecotax included
+                return $line->quantity_total * $line->unit_price;
 
             });
 

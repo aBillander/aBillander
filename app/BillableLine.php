@@ -33,7 +33,7 @@ class BillableLine extends Model
                     'quantity', 'extra_quantity', 'extra_quantity_label', 'measure_unit_id',
                     'lot_references', 
                     'package_measure_unit_id', 'pmu_conversion_rate', 'pmu_label', 
-                    'cost_price', 'unit_price', 'unit_customer_price', 
+                    'cost_price', 'cost_average', 'unit_price', 'unit_customer_price', 
                     'prices_entered_with_tax',
                     'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
                     'unit_final_price', 'unit_final_price_tax_inc', 

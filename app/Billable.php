@@ -778,7 +778,8 @@ class Billable extends Model implements ShippableInterface
 
             if ( !($product = $line->product) ) continue;
 
-            $line->cost_price = $product->cost_price;
+            $line->cost_price   = $product->cost_price;
+            $line->cost_average = $product->cost_average;
 
             $line->save();
         }

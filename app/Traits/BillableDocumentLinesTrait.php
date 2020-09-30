@@ -5,6 +5,8 @@ namespace App\Traits;
 use App\SalesRep;
 use App\Price;
 
+use App\Configuration;
+
 trait BillableDocumentLinesTrait
 {
    use BillableDocumentAsIsLinesTrait;
@@ -116,7 +118,8 @@ trait BillableDocumentLinesTrait
 
         // $cost_price = $product->cost_price;
         // Do this ( because of getCostPriceAttribute($value) ):
-        $cost_price = $product->getOriginal('cost_price');
+        $cost_price   = $product->getOriginal('cost_price');
+        $cost_average = $product->cost_average;
 
         // Tax
         $tax = $product->tax;
@@ -275,8 +278,9 @@ trait BillableDocumentLinesTrait
 
             'prices_entered_with_tax' => $pricetaxPolicy,
     
-            'cost_price' => $cost_price,
-            'unit_price' => $unit_price,
+            'cost_price'   => $cost_price,
+            'cost_average' => $cost_average,
+            'unit_price'   => $unit_price,
             'unit_customer_price' => $unit_customer_price,
             'unit_customer_final_price' => $customer_final_price->getPrice(),
             'unit_customer_final_price_tax_inc' => $customer_final_price->getPriceWithTax(),
@@ -299,6 +303,21 @@ trait BillableDocumentLinesTrait
             'tax_id' => $tax->id,
             'sales_rep_id' => $sales_rep_id,
         ];
+
+        $extra_data = [];
+
+        // Ecotaxes stuff
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') && ($product->ecotax_id>0) )
+        {
+            //
+            $extra_data = [
+                'ecotax_id'           => $product->ecotax_id,
+                'ecotax_amount'       => $product->ecotax->amount,
+                'ecotax_total_amount' => $quantity * $product->ecotax->amount,
+            ];
+        }
+
+        $data += $extra_data;
 
 
         // Finishing touches

@@ -183,6 +183,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/jennifer/reports/invoices'  , 'JenniferController@reportInvoices'  )->name('jennifer.reports.invoices');
         Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
         Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
+        Route::post('/jennifer/reports/mod347'    , 'JenniferController@reportMod347'    )->name('jennifer.reports.mod347');
 
         Route::group(['prefix' => 'accounting', 'namespace' => '\Accounting'], function ()
         {

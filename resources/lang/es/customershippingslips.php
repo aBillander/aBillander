@@ -388,6 +388,8 @@ return [
 
 	'Update Commissions' => 'Actualizar Comisiones',
 	'Update Line Ecotaxes' => 'Actualizar Ecoimpuesto en las Líneas',
+	'Line Ecotax Amount is different from Product Ecotax Amount. You must "Update Line Ecotaxes" (button below).' => 
+	'La Cantidad del Ecoimpuesto en la Línea es diferente de la Cantidad del Ecoimpuesto del Producto. Debe "Actualizar Ecoimpuesto en las Líneas" (botón más abajo).',
 
 	'Disc.'     => 'Dto.',
 	'Total Disc.'     => 'Dto. Total',
@@ -403,6 +405,12 @@ return [
 	'Document Discount Lines.' => 'Líneas de Descuento del Documento.',
 	'Calculated Commission for the entire Document (average).' => 'Comisión calculada para el Documento en conjunto (promedio).',
 
-	'Only Product Lines and Discount Lines are considered, and Shipping Lines depending on Configuration.' => 'Sólo se consideran Líneas de Productos y Líneas de Descuentos, y las Líneas de Coste de Envío dependiendo de la Configuración.',
+	'Document Lines to be included in calculations' => 'Líneas del Documento que se incluirán en los cálculos',
+	'Product Lines.' => 'Líneas de Productos.',
+	'Discount Lines.' => 'Líneas de Descuentos.',
+	'Sevice Lines.' => 'Líneas de Servicios.',
+	'Shipping Lines.' => 'Líneas de Coste de Envío.',
+
+	'Depending on Configurations (:yn).' => 'Dependiendo de la Configuración (:yn).',
 
 ];

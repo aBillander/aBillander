@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use \App\Price;
 
 use App\Traits\BillableLineTrait;
+use App\Traits\BillableLineProfitabilityTrait;
 use App\Traits\ViewFormatterTrait;
 
 use App\Configuration;
@@ -16,6 +17,7 @@ use App\Configuration;
 class BillableLine extends Model
 {
     use BillableLineTrait;
+    use BillableLineProfitabilityTrait;
     use ViewFormatterTrait;
 
     public static $types = array(
@@ -92,6 +94,7 @@ class BillableLine extends Model
     |--------------------------------------------------------------------------
     */
 
+    // Kind of deprecated function. Try not to use.
     public function getQuantityTotalAttribute()
     {
         return $this->quantity + $this->extra_quantity;
@@ -115,7 +118,6 @@ class BillableLine extends Model
 
 
 
-    
 
     /*
     |--------------------------------------------------------------------------

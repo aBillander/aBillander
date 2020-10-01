@@ -1,59 +1,11 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c062e13600ef5990c029fb3f3ff7d0d3",
+    "content-hash": "c82730c5e9539639df1911950932ae89",
     "packages": [
-        {
-            "name": "abillander/abillander-installer",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/aBillander/abillander-installer.git",
-                "reference": "32f2f63e7f9dc3cb07f62eb971a3c7c3e1b93886"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/aBillander/abillander-installer/zipball/32f2f63e7f9dc3cb07f62eb971a3c7c3e1b93886",
-                "reference": "32f2f63e7f9dc3cb07f62eb971a3c7c3e1b93886",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "~5.5.0",
-                "php": ">=7.0"
-            },
-            "require-dev": {
-                "orchestra/testbench": "~3.5.0",
-                "phpunit/phpunit": "~6.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "aBillander\\Installer\\InstallerServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "aBillander\\Installer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Christian Fernández Cores",
-                    "email": "christian@cores.tech"
-                }
-            ],
-            "description": "aBillander Web Installer Package",
-            "time": "2018-08-22T12:57:56+00:00"
-        },
         {
             "name": "automattic/woocommerce",
             "version": "1.3.0",
@@ -725,6 +677,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -771,6 +724,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
@@ -829,6 +783,7 @@
                 "serialize",
                 "tokenizer"
             ],
+            "abandoned": "opis/closure",
             "time": "2018-03-21T22:21:57+00:00"
         },
         {
@@ -1490,6 +1445,7 @@
                 "cron",
                 "schedule"
             ],
+            "abandoned": "dragonmantank/cron-expression",
             "time": "2017-01-23T04:29:33+00:00"
         },
         {
@@ -4615,6 +4571,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2017-11-27T05:48:46+00:00"
         },
         {
@@ -4758,6 +4715,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2018-08-09T05:50:03+00:00"
         },
         {
@@ -5456,9 +5414,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "abillander/abillander-installer": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

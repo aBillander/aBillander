@@ -15,7 +15,7 @@ use App\User as User;
 use Config, App;
 use Request, Cookie;		// , DB, Session;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use aBillander\Installer\Helpers\Installer;
+// use aBillander\Installer\Helpers\Installer;
 
 class SetContextMiddleware {
 
@@ -28,7 +28,7 @@ class SetContextMiddleware {
 	 */
 	public function handle($request, Closure $next, $guard = null)
 	{
-		if (Installer::alreadyInstalled()) {
+		if (0) {	// Installer::alreadyInstalled()) {
 			/*
 			|--------------------------------------------------------------------------
 			| Application Configuration

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\ShowOnlyActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -46,6 +47,8 @@ class Customer extends Model {
     public static function boot()
     {
         parent::boot();
+
+        static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_CUSTOMERS_ACTIVE_ONLY') ));
 
         static::creating(function($client)
         {

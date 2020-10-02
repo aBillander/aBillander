@@ -95,6 +95,8 @@ class ConfigurationKeysController extends Controller {
                         'DEF_LOGS_PERPAGE',
                         'DEF_PERCENT_DECIMALS',
                         'DEF_QUANTITY_DECIMALS',
+                        'SHOW_PRODUCTS_ACTIVE_ONLY',
+                        'SHOW_CUSTOMERS_ACTIVE_ONLY',
                         'BUSINESS_NAME_TO_SHOW',
                         'ALLOW_IP_ADDRESSES', 
                         'MAX_DB_BACKUPS',

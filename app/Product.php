@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\ShowOnlyActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -180,6 +181,8 @@ class Product extends Model {
     public static function boot()
     {
         parent::boot();
+
+        static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') ));      // (new ManagerResolver());
 
         static::created(function($product)
         {

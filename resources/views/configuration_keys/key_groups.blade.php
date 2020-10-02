@@ -65,6 +65,9 @@
             <a href="https://woocommerce.github.io/woocommerce-rest-api-docs/" target="_blank" class="list-group-item">
                - {{ l('Woo Rest Api') }}
             </a>
+            <a href="http://zetcode.com/php/carbon/" target="_blank" class="list-group-item">
+               - {{ l('Carbon') }}
+            </a>
             <a id="b_tab_index_none_2" href="" class="list-group-item" style="padding: 3px 15px;">
             </a>
             <a href="{{ URL::to('translations') }}" class="list-group-item">

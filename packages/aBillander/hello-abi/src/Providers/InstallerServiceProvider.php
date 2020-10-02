@@ -2,7 +2,12 @@
 
 namespace aBillander\Installer;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+
+use aBillander\Installer\Middleware\CanInstall;
+use aBillander\Installer\Middleware\NegotiateLanguage;
+use aBillander\Installer\Middleware\RedirectIfNeedsInstallation;
 
 class InstallerServiceProvider extends ServiceProvider
 {
@@ -12,28 +17,41 @@ class InstallerServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
+     * @param \Illuminate\Routing\Router $router
+     *
      * @return void
      */
-    public function boot()
+    public function boot(Router $router)
     {
-        // Loading routes file
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        // Config
+        $this->publishes([
+            __DIR__.'/../../config/installer.php' => config_path('installer.php'),
+        ], 'config');
+
+        // Routes
+        $this->loadRoutesFrom(__DIR__ . '/../routes/routes.php');
+
+        // Translations
+        $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'installer');
+        $this->publishes([
+            __DIR__.'/../../resources/lang' => resource_path('lang/vendor/aBillander/installer'),
+        ]);
 
         // Load Views
-        $this->loadViewsFrom(__DIR__ . '/../../views', 'hello_abi');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'installer');
+        // Not publish
+        // $this->publishes([
+        //     __DIR__.'/../resources/views' => base_path('resources/views/vendor/abillander/installer'),
+        // ], 'views');
 
-        // Migrations
-        // Will be loaded when executing: php artisan migrate
-        // $this->loadMigrationsFrom(__DIR__ . '/../migrations');
+        // Assets [????]
+        // $this->publishes([
+        //     __DIR__.'/../resources/views' => public_path('vendor/abillander/installer'),
+        // ], 'public');
 
-/*
-        $this->publishes([
-            __DIR__ . '/migrations/migration_name.php' => base_path('database/migrations/migration_name.php'),
-        ]);
-        ^--Maybe inside register method <--runs OK
-*/
-        // php artisan vendor:publish [--force]
-        // Should publish translation files also: woocommerce.php
+        // Middleware
+        $router->middlewareGroup('installer',[CanInstall::class, NegotiateLanguage::class]);
+        $router->aliasMiddleware('redirectifneedsinstallation', RedirectIfNeedsInstallation::class);
     }
 
     /**
@@ -43,11 +61,11 @@ class InstallerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Devolver singleton de conexion según configuracion (ver Intervention/Image)
-        // Amitav Roy
-        // https://www.youtube.com/watch?v=SLeY-2IPEXk
-        // https://www.youtube.com/watch?v=SLeY-2IPEXk&list=PLkZU2rKh1mT_UmFeEqZiJep_vrFwLyR07
-        // Bitfumes
-        // https://www.youtube.com/watch?v=H-euNqEKACA
+        // Config
+        $this->mergeConfigFrom(__DIR__.'/../../config/installer.php', 'installer');
+
+        // Middleware
+        $kernel = $this->app->make('Illuminate\Contracts\Http\Kernel');
+        $kernel->prependMiddleware('\aBillander\Installer\Middleware\RedirectIfNeedsInstallation::class');
     }
 }

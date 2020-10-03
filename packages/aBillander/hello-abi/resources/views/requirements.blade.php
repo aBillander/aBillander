@@ -35,16 +35,16 @@
         </div>
 
         <div class="panel-body">
-            <p>A continuación se muestran los requerimientos de instalación de la aplicación. Si existiera alguna incompatibilidad consulte con su proveedor de hosting o administrador.</p>
+            <p>{{ __('installer::main.requirements.body') }}</p>
             <hr>
             <div class="col-md-6">
                 <div class="list-group">
                     <div class="list-group-item item-header">
-                        <strong>Requerimientos del servidor</strong>
+                        <strong>{{ __('installer::main.requirements.server') }}</strong>
                     </div>
                     <div class="list-group-item item-{{ $phpSupportInfo['supported'] ? 'success' : 'error' }}">
                         <i class="fa fa-fw fa-{{ $phpSupportInfo['supported'] ? 'check' : 'times' }} row-icon" aria-hidden="true"></i>
-                        <strong>PHP 7.2.5 (version {{ $phpSupportInfo['minimum'] }} required)</strong>
+                        <strong>PHP {{ $phpSupportInfo['current'] }} ({{ __('installer::main.requirements.php', ['ver' => $phpSupportInfo['minimum']]) }})</strong>
                     </div>
                     @foreach ($requirements['requirements']['php'] as $extension => $enabled)
                         <div class="list-group-item item-{{ $enabled ? 'success' : 'error' }}">
@@ -57,7 +57,7 @@
             <div class="col-md-6">
                 <div class="list-group">
                     <div class="list-group-item item-header">
-                        <strong>Permisos de las carpetas</strong>
+                        <strong>{{ __('installer::main.requirements.folders') }}</strong>
                     </div>
                     @foreach ($permissions['permissions'] as $permission)
                         <div class="list-group-item item-{{ $permission['isSet'] ? 'success' : 'error' }}">

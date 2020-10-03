@@ -9,7 +9,7 @@
     {{ Form::open(array('url' => route('installer::company'), 'id' => 'create_company', 'name' => 'create_company', 'class' => 'form')) }}
         <div class="panel panel-default" id="panel_generales">
             <div class="panel-heading">
-                <h3 class="panel-title">{{ l('Main Data') }}</h3>
+                <h3 class="panel-title">{{ __('installer::main.company.title') }}</h3>
             </div>
 
             @include('companies._form')

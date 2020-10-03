@@ -44,10 +44,10 @@ class InstallerServiceProvider extends ServiceProvider
         //     __DIR__.'/../resources/views' => base_path('resources/views/vendor/abillander/installer'),
         // ], 'views');
 
-        // Assets [????]
-        // $this->publishes([
-        //     __DIR__.'/../resources/views' => public_path('vendor/abillander/installer'),
-        // ], 'public');
+        // Assets
+        $this->publishes([
+            __DIR__.'/../../resources/views/assets' => public_path('assets/installer'),
+        ], 'public');
 
         // Middleware
         $router->middlewareGroup('installer',[CanInstall::class, NegotiateLanguage::class]);

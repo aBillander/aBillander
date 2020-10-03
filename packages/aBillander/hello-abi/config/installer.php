@@ -57,11 +57,11 @@ return [
     'supportedLocales' => [
         'en' => ['name' => 'English',    'native' => 'English'],
         'es' => ['name' => 'Spanish',    'native' => 'Español'],
-        'ca' => ['name' => 'Catalan',    'native' => 'Català'],
-        'fr' => ['name' => 'French',     'native' => 'Français'],
-        'de' => ['name' => 'German',     'native' => 'Deutsch'],
-        'it' => ['name' => 'Italian',    'native' => 'Italiano'],
-        'pt' => ['name' => 'Portuguese', 'native' => 'Português'],
+ //       'ca' => ['name' => 'Catalan',    'native' => 'Català'],
+ //       'fr' => ['name' => 'French',     'native' => 'Français'],
+ //       'de' => ['name' => 'German',     'native' => 'Deutsch'],
+ //       'it' => ['name' => 'Italian',    'native' => 'Italiano'],
+ //       'pt' => ['name' => 'Portuguese', 'native' => 'Português'],
     ],
 
 

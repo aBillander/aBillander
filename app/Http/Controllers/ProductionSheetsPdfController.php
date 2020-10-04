@@ -402,8 +402,10 @@ class ProductionSheetsPdfController extends Controller
 
         }
 
+        $pdfName    = $this->getParentClass() . '_' . \Carbon\Carbon::now()->format('Y-m-d H_i_s');
+
         // Ta-chan!!
-        $merged_pdf->merge('browser', 'samplepdfs/TEST2.pdf'); //REPLACE 'file' (first argument) WITH 'browser', 'download', 'string', or 'file' for output options. You do not need to give a file path for browser, string, or download - just the name.
+        $merged_pdf->merge('browser', $pdfName); //REPLACE 'file' (first argument) WITH 'browser', 'download', 'string', or 'file' for output options. You do not need to give a file path for browser, string, or download - just the name.
     
 
         die();

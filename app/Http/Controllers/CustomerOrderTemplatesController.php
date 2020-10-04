@@ -284,7 +284,7 @@ class CustomerOrderTemplatesController extends Controller
             'sales_rep_id' => $customer->sales_rep_id,
             'currency_id' => $customer->currency->id,
             'payment_method_id' => $customer->getPaymentMethodId(),
-            'template_id' => $customerordertemplate->template_id > 0 ? : Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE'),
+            'template_id' => $customerordertemplate->template_id > 0 ? $customerordertemplate->template_id : Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE'),
         ];
 
         // Model specific data

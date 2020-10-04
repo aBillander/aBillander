@@ -144,8 +144,10 @@ trait BillableDocumentControllerTrait
 
         }
 
+        $pdfName    = $this->getParentClass() . '_' . \Carbon\Carbon::now()->format('Y-m-d H_i_s');
+
         // Ta-chan!!
-        $merged_pdf->merge('browser', 'samplepdfs/TEST2.pdf'); //REPLACE 'file' (first argument) WITH 'browser', 'download', 'string', or 'file' for output options. You do not need to give a file path for browser, string, or download - just the name.
+        $merged_pdf->merge('browser', $pdfName); //REPLACE 'file' (first argument) WITH 'browser', 'download', 'string', or 'file' for output options. You do not need to give a file path for browser, string, or download - just the name.
     
 die();
         return  $pdf->stream();
@@ -221,17 +223,21 @@ die();
         // Lets try another strategy
         if ( $document->document_reference ) {
             //
-            $sanitizer = new \App\FilenameSanitizer( $document->document_reference );
-
-            $sanitizer->stripPhp()
-                ->stripRiskyCharacters()
-                ->stripIllegalFilesystemCharacters('_');
-                
-            $pdfName = $sanitizer->getFilename();
+            $file_name = $document->document_reference;
         } else {
             //
-            $pdfName = str_singular($this->getParentClassLowerCase()).'_'.'ID_' . (string) $document->id;
+            $file_name = str_singular($this->getParentClassLowerCase()).'_'.'ID_' . (string) $document->id;
         }
+
+        $file_name = $file_name . '_' . $document->customer->name_regular;
+
+        $sanitizer = new \App\FilenameSanitizer( $file_name );
+
+        $sanitizer->stripPhp()
+            ->stripRiskyCharacters()
+            ->stripIllegalFilesystemCharacters('_');
+            
+        $pdfName = $sanitizer->getFilename();
 
 
         if ($request->has('screen')) return view($template, compact('document', 'company'));
@@ -338,7 +344,7 @@ die();
             if ($request->isMethod('get'))
             {
                 // ... this is GET method (call from button)
-                $subject = l($this->getParentClassLowerCase().'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails');
+                $subject = l($this->getParentClassLowerCase().'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->customer->name_regular;
             }
 
             $template_vars = array(

@@ -160,7 +160,7 @@ foreach ($customers as $customer) {
                 $sheet->mergeCells('A2:C2');
                 $sheet->mergeCells('A3:C3');
 
-                $w = count($data[5+1]);
+                // $w = count($data[5+1]);
 
                 $sheet->getStyle('A5:L5')->applyFromArray([
                     'font' => [

@@ -25,6 +25,9 @@ return [
 	|
 	*/
 
+	'Welcome'     => 'Bienvenido',
+	'Home' => 'Inicio',
+
 	'Price Rules' => 'Precios Especiales',
 	'New Products' => 'Novedades',		// New arrivals -> Novedades
 	'Shopping Cart'     => 'Mi Pedido',
@@ -64,6 +67,7 @@ return [
 	'Shipping Slips'     => 'Albaranes',
 	'Invoices'     => 'Facturas',
 	'Vouchers'     => 'Pagos',
+	'Commissions' => 'Comisiones',
 
 	'Invoicing'     => 'Facturación',
 	'Customer Invoices'     => 'Facturas de Clientes',

@@ -211,6 +211,8 @@ foreach ($pairs as $pair) {
 
         Route::resource('/vouchers', 'AbsrcCustomerVouchersController')->names('absrc.vouchers');
 
+        Route::resource('/commissionsettlements', 'AbsrcCommissionSettlementsController')->names('absrc.commissionsettlements');
+
 //        Route::resource('pricerules', 'AbsrcPriceRulesController')->names('absrc.pricerules');
 
     });

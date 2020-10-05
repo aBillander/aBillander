@@ -1,6 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\SalesRepCenter;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\Request;
 
@@ -8,13 +12,14 @@ use App\Traits\ViewFormatterTrait;
 use App\Traits\DateFormFormatterTrait;
 
 use App\Configuration;
+use Illuminate\Support\Facades\Auth;
 
 use App\CommissionSettlement;
 use App\CommissionSettlementLine;
 use App\SalesRep;
 use App\CustomerInvoice;
 
-class CommissionSettlementsController extends Controller
+class AbsrcCommissionSettlementsController extends Controller
 {
     use ViewFormatterTrait;
     use DateFormFormatterTrait;
@@ -34,7 +39,7 @@ class CommissionSettlementsController extends Controller
      */
     public function index(Request $request)
     {
-        $sales_rep_id = $request->input('sales_rep_id', 0);
+        $sales_rep_id = Auth::user()->sales_rep_id;
         $salesrep = SalesRep::where('id', $sales_rep_id)->first();
 
         $settlements = $this->settlement
@@ -43,11 +48,11 @@ class CommissionSettlementsController extends Controller
                                 $query->where('sales_rep_id', $sales_rep_id);
                         })
                         ->orderBy('document_date', 'desc')
-                        ->orderBy('sales_rep_id', 'desc')
+//                        ->orderBy('sales_rep_id', 'desc')
                         ->orderBy('date_from', 'desc')
                         ->get();
 
-        return  view('commission_settlements.index', compact('settlements', 'salesrep'));
+        return  view('absrc.commission_settlements.index', compact('settlements', 'salesrep'));
     }
 
     /**
@@ -152,7 +157,7 @@ class CommissionSettlementsController extends Controller
                         ->with('commissionsettlementlines.commissionable.customer')
                         ->findOrFail($id);
 
-        return view('commission_settlements.show', compact('settlement'));
+        return view('absrc.commission_settlements.show', compact('settlement'));
     }
 
     /**

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('absrc.layouts.master')
 
 @section('title') {{ l('Commission Settlements') }} @parent @stop
 
@@ -7,20 +7,12 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{ URL::to('commissionsettlements/create') }}" class="btn btn-sm btn-success" 
-        		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
     </div>
-@if($salesrep)
     <h2>
-        <a href="{{ route('commissionsettlements.index') }}">{{ l('Commission Settlements') }}</a> <span style="color: #cccccc;">/</span> 
+        {{ l('Commission Settlements') }} <span style="color: #cccccc;">/</span> 
 
-        <a href="{{ route('salesreps.edit', [$salesrep->id]) }}" target="_new">{{$salesrep->name}} </a> <span class="btn btn-xs btn-grey" title="{{l('Commission Percent')}}">{{ $salesrep->as_percent( 'commission_percent' ) }}%</span>
+        {{$salesrep->name}} <span class="btn btn-xs btn-grey" title="{{l('Commission Percent')}}">{{ $salesrep->as_percent( 'commission_percent' ) }}%</span>
     </h2>
-@else
-    <h2>
-        {{ l('Commission Settlements') }}
-    </h2>
-@endif
 </div>
 
 <div id="div_settlements">
@@ -32,7 +24,6 @@
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{ l('Date') }}</th>
-            <th>{{ l('Sales Representative') }}</th>
             <th>{{ l('Documents from') }}</th>
             <th>{{ l('Documents to') }}</th>
             <th>{{ l('Commissionable') }}</th>
@@ -47,7 +38,6 @@
 		<tr>
 			<td>{{ $settlement->id }}</td>
 			<td title="{{ $settlement->name }}">{{ abi_date_short($settlement->document_date) }}</td>
-            <td>{{ $settlement->salesrep->name }}</td>
             <td>{{ abi_date_short($settlement->date_from) }}</td>
             <td>{{ abi_date_short($settlement->date_to) }}</td>
             <td>{{ $settlement->as_money_amount('total_commissionable') }}</td>
@@ -75,17 +65,9 @@
           @endif</td>
 
 			<td class="text-right">
-                @if (  is_null($settlement->deleted_at))
+                @if ( 1 || is_null($settlement->deleted_at))
 
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('commissionsettlements/' . $settlement->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-folder-open-o"></i></a>
-
-                <a class=" hide btn btn-sm btn-warning" href="{{ URL::to('commissionsettlementss/' . $settlement->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                		href="{{ URL::to('commissionsettlements/' . $settlement->id ) }}" 
-                		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Commission Settlements') }} :: ({{$settlement->id}}) {{{ $settlement->name }}} " 
-                		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+                <a class="btn btn-sm btn-blue" href="{{ URL::to('absrc/commissionsettlements/' . $settlement->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-folder-open-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('commissionsettlements/' . $settlement->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
                 <a class="btn btn-danger" href="{{ URL::to('commissionsettlements/' . $settlement->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
@@ -105,6 +87,4 @@
    </div>
 </div>
 
-@stop
-
-@include('layouts/modal_delete')
+@endsection

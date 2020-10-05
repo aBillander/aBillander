@@ -59,6 +59,8 @@ return [
 	'MARGIN_METHOD.option.CST' => '<strong>CST</strong>: Sobre el Precio de Coste<br />Margen = (Precio de Venta - Precio de Coste) / Precio de Coste X 100',
 	'MARGIN_METHOD.option.PRC' => '<strong>PRC</strong>: Sobre el Precio de Venta<br />Margen = (Precio de Venta - Precio de Coste) / Precio de Venta X 100',
 	'MARGIN_METHOD.help' => '',
+	'INCLUDE_SERVICE_LINES_IN_PROFIT.name' => 'Incluir las Líneas de tipo "Servicio" para calcular el Margen',
+	'INCLUDE_SERVICE_LINES_IN_PROFIT.help' => '',
 	'INCLUDE_SHIPPING_COST_IN_PROFIT.name' => 'Incluir el Coste de Envío para calcular el Margen',
 	'INCLUDE_SHIPPING_COST_IN_PROFIT.help' => '',
 	'INVENTORY_VALUATION_METHOD.name' => 'Método para Valorar el Inventario',

@@ -467,6 +467,27 @@
 
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('INCLUDE_SERVICE_LINES_IN_PROFIT.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="INCLUDE_SERVICE_LINES_IN_PROFIT" id="INCLUDE_SERVICE_LINES_IN_PROFIT_on" value="1" @if( old('INCLUDE_SERVICE_LINES_IN_PROFIT', $key_group['INCLUDE_SERVICE_LINES_IN_PROFIT']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="INCLUDE_SERVICE_LINES_IN_PROFIT" id="INCLUDE_SERVICE_LINES_IN_PROFIT_off" value="0" @if( !old('INCLUDE_SERVICE_LINES_IN_PROFIT', $key_group['INCLUDE_SERVICE_LINES_IN_PROFIT']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('INCLUDE_SERVICE_LINES_IN_PROFIT.help') !!}</span>
+      </div>
+    </div>
+
+
+
+    <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('INCLUDE_SHIPPING_COST_IN_PROFIT.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

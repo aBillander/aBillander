@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Customer;
+use App\SalesRep;
 use App\Product;
 use App\Combination;
 use App\Currency;
@@ -243,6 +244,7 @@ class BillableController extends Controller
         $product_id      = $request->input('product_id');
         $combination_id  = $request->input('combination_id');
         $customer_id     = $request->input('customer_id');
+        $sales_rep_id    = $request->input('sales_rep_id');
         $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 //        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
 
@@ -261,6 +263,9 @@ class BillableController extends Controller
 
         // Customer
         $customer = Customer::findOrFail(intval($customer_id));
+
+        // Sales Representative
+        $salesrep = SalesRep::find(intval($sales_rep_id));
         
         // Currency
         $currency = Currency::findOrFail(intval($currency_id));
@@ -290,6 +295,8 @@ class BillableController extends Controller
                                   0.0;
 
             $ecotax_value_label = $product->as_priceable($ecotax_amount).' '.$currency->name;
+
+            $commission_percent = $salesrep ? $salesrep->getCommission( $product, $customer ) : 0.0;
     
             $data = [
                 'product_id' => $product->id,
@@ -321,6 +328,8 @@ class BillableController extends Controller
                 'ecotax_value_label' => $ecotax_value_label,
                 'customer_id' => $customer_id,
                 'currency' => $currency,
+
+                'commission_percent' => $commission_percent,
     
                 'measure_unit_id' => $product->measure_unit_id,
                 'quantity_decimal_places' => $product->quantity_decimal_places,
@@ -569,7 +578,9 @@ class BillableController extends Controller
         foreach ($product_id_values as $key => $pid) {
             # code...
 
-            $line[] = $document->addProductLine( $pid, $combination_id_values[$key], $quantity_values[$key], [] );
+            $params['sales_rep_id'] = $document->sales_rep_id;
+
+            $line[] = $document->addProductLine( $pid, $combination_id_values[$key], $quantity_values[$key], $params );
 
             // abi_r($line, true);
         }

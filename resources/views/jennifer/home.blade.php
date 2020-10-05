@@ -182,6 +182,46 @@
 
 
 
+    <!-- /div>< ! -- div class="row" ENDS - - >
+    <div class="row" -->
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-files-o"></i> Acumulados Modelo 347</h3>
+              </div>
+
+
+{!! Form::open(array('route' => 'jennifer.reports.mod347', 'class' => 'form')) !!}
+
+              <div class="panel-body">
+
+                  <div class="row">
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+        {!! Form::label('mod347_year', 'Año') !!}
+        {!! Form::text('mod347_year', \Carbon\Carbon::now()->year, array('id' => 'mod347_year', 'class' => 'form-control')) !!}
+    </div>
+
+                  </div>
+
+              </div>
+
+               <div class="panel-footer text-right">
+                  <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
+                     <i class="fa fa-file-text-o"></i>
+                     &nbsp; Ver Listado
+                  </button>
+
+            </div>
+
+{!! Form::close() !!}
+
+            </div>
+            </div>
+
+
+
     </div><!-- div class="row" ENDS -->
 
 </div>

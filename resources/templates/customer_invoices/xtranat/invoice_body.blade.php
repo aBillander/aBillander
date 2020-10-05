@@ -50,51 +50,84 @@
 
 
 
-<h1 class="document-type-label"> ALBARAN </h1>
+<h1 class="document-type-label">
 
+	@switch($document->type)
+	    @case( 'invoice' )
+	         FACTURA 
+	        @break
 
+	    @case( 'corrective' )
+	         FACTURA RECTIFICATIVA 
+	        @break
+
+	    @case( 'credit' )
+	         NOTA DE ABONO 
+	        @break
+
+	    @case( 'deposit' )
+	         ANTICIPO 
+	        @break
+
+	    @default
+	         FACTURA 
+	@endswitch
+
+</h1>
 
 <table class="order-data-addresses">
 
 	<tr>
 
-		<td class="address shipping-address">
-
-			<!-- h3>Dirección de Entrega:</h3 -->
+		<td class="address billing-address" xstyle="background: red">
 
             <div class="shop-name"><h3>
 
-			@if ( $document->shippingaddress->name_commercial )
+			@if ( $document->customer->name_commercial )
 
-				{{ $document->shippingaddress->name_commercial }}
+				{{ $document->customer->name_commercial }}
 
 			@else
 
-            	{{ $document->shippingaddress->contact_name }}
+            	{{ $document->invoicingaddress->contact_name }}
 
 			@endif
 
 			</h3></div>
 
-            {{ $document->shippingaddress->address1 }} {{ $document->shippingaddress->address2 }}<br />
+			<strong>
 
-            {{ $document->shippingaddress->postcode}} {{ $document->shippingaddress->city }} <br />
+			@if ( $document->customer->name_fiscal )
 
-            {{ $document->shippingaddress->state->name }}
+				{{ $document->customer->name_fiscal }}
+
+			@else
+
+            	{{ $document->invoicingaddress->contact_name }}
+
+			@endif
+
+			</strong><br />
+
+            {{ $document->invoicingaddress->address1 }} {{ $document->invoicingaddress->address2 }}<br />
+
+            {{ $document->invoicingaddress->postcode}} {{ $document->invoicingaddress->city }} <br />
+
+            {{ $document->invoicingaddress->state->name }}
 
 
-			@if ( $document->shippingaddress->mail )
+			@if ( $document->invoicingaddress->mail )
 
-				<div class="billing-email">{{ $document->shippingaddress->mail }}</div>
+				<div class="billing-email">{{ $document->invoicingaddress->mail }}</div>
 
 			@endif
             
             <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
 
 			<div class="billing-phone">
-			@if ( $document->shippingaddress->phone )
+			@if ( $document->invoicingaddress->phone )
 
-				Tel. {{ $document->shippingaddress->phone }}
+				Tel. {{ $document->invoicingaddress->phone }}
 
 			@else
 
@@ -109,7 +142,7 @@
 			
 		</td>
 
-		<td xclass="address billing-address">
+		<td xclass="address shipping-address">
 {{--
 			< ? php if ( isset($wpo_wcpdf->settings->template_settings['packing_slip_billing_address']) && $wpo_wcpdf->ships_to_different_address() ) { ?>
 
@@ -127,7 +160,7 @@
 
 				<tr class="order-number">
 
-					<th>Albarán nº:</th>
+					<th>Factura nº:</th>
 
 					<td style="font-size: 11pt;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
 
@@ -143,11 +176,23 @@
 
 				<tr class="order-date">
 
-					<th>Fecha del Albarán:</th>
+					<th>Fecha de la Factura:</th>
 
-					<td>{{ abi_date_short($document->document_date) }}</td>
+					<td><strong>{{ abi_date_short($document->document_date) }}</strong></td>
 
 				</tr>
+
+				@if ( $document->shippingmethod && 0 )
+
+				<tr class="shipping-method">
+
+					<th>Método de Envío:</th>
+
+					<td>{{ $document->shippingmethod->name }}</td>
+
+				</tr>
+
+				@endif
 
 				<tr class="order-number">
 
@@ -165,25 +210,13 @@
 
 				</tr>
 
-				@if ( $document->shippingmethod && 0)
+				<tr class="payment-method">
 
-				<tr class="shipping-method">
+					<th>Forma de Pago:</th>
 
-					<th>Método de Envío:</th>
-
-					<td>{{ $document->shippingmethod->name }}</td>
+					<td>{{ optional($document->paymentmethod)->name }}</td>
 
 				</tr>
-
-				@endif
-
-				<!-- tr class="order-number">
-
-					<th>Albarán nº:</th>
-
-					<td>{{ $document->document_reference }}</td>
-
-				</tr -->
 
 			</table>			
 
@@ -238,8 +271,8 @@
                 @foreach ($document->documentlines->sortBy('line_sort_order') as $line)
 
 			    @if ( 
-			    			( $line->line_type != 'product' ) &&
-			    			( $line->line_type != 'service' ) &&
+			    			( $line->line_type != 'product'  ) &&
+			    			( $line->line_type != 'service'  ) &&
 			    			( $line->line_type != 'shipping' ) &&
 			    			( $line->line_type != 'comment' )
 			    )
@@ -247,6 +280,11 @@
 			    @endif
 
 @if( $line->line_type == 'comment' )
+
+@if (substr($line->name, 0, 7) === 'Pedido:')
+    @continue
+@endif
+
 		<tr class="3655">
 			<td class="sku first-column">
 				<span>{{-- $line->reference --}}</span>
@@ -261,7 +299,7 @@
 @else
 	@if ( optional($line->product)->ecotax )
 
-		@include('templates::customer_shipping_slips.xtranat.line_rae')
+		@include('templates::customer_invoices.xtranat.line_rae')
 	
 	@else
 		<tr class="3655">
@@ -351,7 +389,7 @@
 
 
 
-@include('templates::customer_shipping_slips.xtranat.totals')
+@include('templates::customer_invoices.xtranat.totals')
 
 
 
@@ -365,12 +403,11 @@
 
 				<div class="customer-notes">
 
-@if ($document->notes_from_customer && 0)
+@if( !optional($document->paymentmethod)->payment_is_cash || 1 )
 
-						<h3>Notas:</h3>
+						<h3>Numero de cuenta: {{ optional(\App\Context::getContext()->company->bankaccount)->iban_presenter(true) }}</h3>
 
-						{{ $document->notes_from_customer }}
-@endif
+@endif				
 				</div>	
 
 			</td>
@@ -407,6 +444,23 @@
 
 						?>
 --}}
+
+@if($document->document_discount_percent>0 && 0)								
+								<tr class="xtotal xgrand-total">
+
+									<th class="description"><span>Sub-Total</span></th>
+
+									<td class="price"><span class="totals-price"><span class="abi-Price-amount amount">{{ $document->as_priceable($document->total_currency_tax_incl/(1.0-$document->document_discount_percent/100.0)) }}</span></span></td>
+
+								</tr>
+								<tr class="xtotal xgrand-total">
+
+									<th class="description"><span>Descuento</span></th>
+
+									<td class="price"><span class="totals-price"><span class="abi-Price-amount amount">{{ $document->as_percent('document_discount_percent') }}%</span></span></td>
+
+								</tr>
+@endif
 								<tr class="total grand-total">
 
 									<th class="description" style="background-color: #f5f5f5;"><span>Total a pagar</span></th>
@@ -426,6 +480,11 @@
 	</tbody>
 
 </table>
+
+
+
+
+@include('templates::customer_invoices.xtranat.payments')
 
 
 
@@ -456,13 +515,93 @@
 
 
 
+{{--
+https://github.com/dompdf/dompdf/issues/1506
+http://eclecticgeek.com/dompdf/debug.php?identifier=toc-v0.6.x
+
+https://github.com/dompdf/dompdf/issues/1636
+https://codepen.io/Bhupinderkumar/pen/gKzKGw
+
+<div id="pageCounter">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+<div id="pageNumbers">
+  <div class="page-number"></div>
+  <div class="page-number"></div>
+  <div class="page-number"></div>
+  <div class="page-number"></div>
+</div>
+
+<style type="text/css">
+#pageCounter { 
+	counter-reset: pageTotal; 
+} 
+#pageCounter span { 
+	counter-increment: pageTotal; 
+} 
+#pageNumbers { 
+	counter-reset: currentPage; 
+} 
+#pageNumbers div:before 
+{ 
+	counter-increment: currentPage; 
+	content: "Page " counter(currentPage) " of "; 
+} 
+#pageNumbers div:after { 
+	content: counter(pageTotal); 
+}
+</style>
+--}}
 
 
-<!-- div>Firma del cliente<br>
-<br>
-<br>
-________________________________________
-</div -->
+{{--
+
+	<style type="text/css">
+	.tax-summary-wrapper {
+		/* padding-left: 2cm; */
+		margin-top: 15mm;
+	}
+	.tax-summary {
+		width: 100%;
+	}
+	.tax-summary td,
+	.tax-summary th {
+		text-align: right;
+	}
+	</style>
+	<div class="tax-summary-wrapper">
+		<table class="order-details tax-summary">
+			<tbody>
+				<tr>
+					<th>Desglose impuestos</th>
+					<th>Porcentaje impuesto</th>
+					<th>Total sin impuestos</th>
+					<th style="width:16%">Total impuestos</th>
+					<th style="width:25%">Total impuestos incluidos</th>
+				</tr>
+							<tr>
+					<td><span>Articulos</span></td>
+					<td><span>IVA 10,000%</span></td>
+					<td><span><span class="abi-Price-amount amount">11,75<span class="abi-Price-currencySymbol">€</span></span></span></td>
+					<td><span><span class="abi-Price-amount amount">1,18<span class="abi-Price-currencySymbol">€</span></span></span></td>
+					<td><span><span class="abi-Price-amount amount">12,93<span class="abi-Price-currencySymbol">€</span></span></span></td>
+				</tr>
+							<tr>
+					<td><span>Transportista</span></td>
+					<td><span>IVA 21,000%</span></td>
+					<td><span><span class="abi-Price-amount amount">11,75<span class="abi-Price-currencySymbol">€</span></span></span></td>
+					<td><span><span class="abi-Price-amount amount">1,18<span class="abi-Price-currencySymbol">€</span></span></span></td>
+					<td><span><span class="abi-Price-amount amount">12,93<span class="abi-Price-currencySymbol">€</span></span></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+--}}
+
 
 
 
@@ -503,7 +642,7 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
 @php
 
-$GLOBALS['var'] = 'Albarán nº:   ' . ($document->document_reference ?: 'BORRADOR');
+$GLOBALS['var'] = 'Factura nº:   ' . ($document->document_reference ?: 'BORRADOR');
 
 @endphp
 
@@ -528,7 +667,7 @@ $pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
                // $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 + 15.3), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
-               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 - 16.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
 }
 if ( $PAGE_NUM > 1 )
 {
@@ -551,6 +690,7 @@ if ( $PAGE_NUM > 1 )
 https://github.com/dompdf
 
 view-source:https://dompdf.net/test/print_header_footer.html
+
 https://groups.google.com/forum/#!forum/dompdf
 
 https://groups.google.com/forum/#!topic/dompdf/X9sl6KLYimM

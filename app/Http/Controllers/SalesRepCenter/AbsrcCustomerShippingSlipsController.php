@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Auth;
 use App\SalesRepUser;
 use App\SalesRep;
 
@@ -17,11 +17,16 @@ use App\Currency;
 use App\Customer;
 use App\CustomerShippingSlip;
 use App\CustomerShippingSlipLine;
+use App\Carrier;
 
 use Mail;
 
+use App\Traits\DateFormFormatterTrait;
+
 class AbsrcCustomerShippingSlipsController extends Controller
 {
+   use DateFormFormatterTrait;
+
     protected $customer, $customerShippingSlip, $customerShippingSlipLine;
 
     /**
@@ -43,14 +48,18 @@ class AbsrcCustomerShippingSlipsController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
         $documents = $this->customerShippingSlip    //CustomerInvoice::ofCustomer()      // Of Logged in Customer (see scope on Customer Model)
                             ->ofSalesRep()
                             ->where( function ($q) {
                                     $q->where('status', 'closed');
                                     $q->orWhere('status', 'confirmed');
                                 } )
+                            ->filter( $request->all() )
                             ->withCount('lines')
                             ->with('customer')
                             ->with('currency')
@@ -58,11 +67,17 @@ class AbsrcCustomerShippingSlipsController extends Controller
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');
 
-        $documents = $documents->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
+        $documents = $documents->paginate( Configuration::get('ABSRC_ITEMS_PERPAGE') );
 
         $documents->setPath('shippingslips');
 
-        return view('absrc.shipping_slips.index', compact('documents'));
+        $statusList = CustomerShippingSlip::getStatusList();
+
+        $shipment_statusList = CustomerShippingSlip::getShipmentStatusList();
+
+        $carrierList = Carrier::pluck('name', 'id')->toArray();;
+
+        return view('absrc.shipping_slips.index', compact('documents', 'statusList', 'shipment_statusList', 'carrierList'));
     }
 
     public function show($cinvoiceKey)

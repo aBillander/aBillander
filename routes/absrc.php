@@ -61,12 +61,14 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
                                                         'as' => 'absrc.currencies.ajax.rateLookup'));
 
     // Route::get('absrc/searchcustomer', 'HomeController@searchCustomer')->name('absrc.searchcustomer');
-    Route::get('absrc/ajax/customer_lookup', 'CustomerInvoicesController@ajaxCustomerSearch')->name('absrc.ajax.customerLookup');
+    // Route::get('absrc/ajax/customer_lookup', 'CustomerInvoicesController@ajaxCustomerSearch')->name('absrc.ajax.customerLookup');
 
     // Sales Reps routes here
 
     Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function ()
     {
+        // Ajax Search
+        Route::get('ajax/customer_lookup', 'AbsrcCustomersController@ajaxCustomerSearch')->name('absrc.ajax.customerLookup');
 
         Route::get('/', 'SalesRepHomeController@index')->name('salesrep.dashboard');
 

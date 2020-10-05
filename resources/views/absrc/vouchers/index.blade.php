@@ -60,18 +60,18 @@
 </div>
 
 
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('name', l('Customer')) !!}
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
-{{--
+--}}
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('autocustomer_name', l('Customer')) !!}
     {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
 
     {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
 </div>
---}}
 
 <div class=" hide form-group col-lg-2 col-md-2 col-sm-2" id="div-auto_direct_debit">
      {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}
@@ -272,7 +272,7 @@ $(document).ready(function() {
 
 <script>
   $(document).ready(function() {
-{{--
+{{-- --}}
         $("#autocustomer_name").autocomplete({
             source : "{{ route('absrc.ajax.customerLookup') }}",
             minLength : 1,
@@ -292,7 +292,7 @@ $(document).ready(function() {
                 .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
                 .appendTo( ul );
             };
---}}
+{{-- --}}
 
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,

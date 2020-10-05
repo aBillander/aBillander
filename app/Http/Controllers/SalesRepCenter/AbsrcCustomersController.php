@@ -382,11 +382,32 @@ class AbsrcCustomersController extends Controller {
      */
     public function ajaxCustomerSearch(Request $request)
     {
-        $params = array();
-        if (intval($request->input('name_commercial', ''))>0)
-            $params['name_commercial'] = 1;
-        
-        return Customer::searchByNameAutocomplete($request->input('query'), $params);
+        if ($request->has('term'))
+        {
+            $search = $request->term;
+
+            $customers = Customer::select('id', 'name_fiscal', 'name_commercial', 'identification')
+                                    ->where( 'sales_rep_id', Auth::user()->sales_rep_id )
+                                    ->where( function ($query) use ($search) {
+                                        $query->where(  'name_fiscal',     'LIKE', '%' . $search . '%')
+                                              ->OrWhere('name_commercial', 'LIKE', '%' . $search . '%')
+                                              ->OrWhere('identification',  'LIKE', '%' . $search . '%');
+                                    } )
+                                    ->isNotBlocked()
+//                                    ->with('currency')
+//                                    ->with('addresses')
+                                    ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+
+//            return $customers;
+//            return Product::searchByNameAutocomplete($query, $onhand_only);
+//            return Product::searchByNameAutocomplete($request->input('query'), $onhand_only);
+//            response( $customers );
+//            return json_encode( $customers );
+            return response()->json( $customers );
+        }
+
+        // Otherwise, die silently
+        return json_encode( [ 'query' => '', 'suggestions' => [] ] );
     }
 
     /**

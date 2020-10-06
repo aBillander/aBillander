@@ -109,7 +109,9 @@ class CommissionSettlement extends Model
 
         $this->load('salesrep');
         $commission_percent = $this->salesrep->commission_percent;
-        $commissionable = $document->total_tax_incl;
+        $commissionable = Configuration::get('SALESREP_COMMISSION_METHOD') == 'TAXEXC' ? 
+                                        $document->total_tax_excl : 
+                                        $document->total_tax_incl;
         $commission = $commissionable * $commission_percent / 100.0;
 
         $data = [

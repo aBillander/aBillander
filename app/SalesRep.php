@@ -9,9 +9,13 @@ use Auth;
 
 use App\Configuration;
 
+use App\Traits\ViewFormatterTrait;
+
 // See: https://www.salesforcesearch.com/blog/httpwww-salesforcesearch-combid185259the-difference-between-hiring-a-sales-rep-vs-a-sales-agent/
 
 class SalesRep extends Model {
+    
+    use ViewFormatterTrait;
 
     use SoftDeletes;
 

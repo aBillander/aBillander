@@ -20,8 +20,12 @@ use App\CustomerInvoiceLine;
 
 use Mail;
 
+use App\Traits\DateFormFormatterTrait;
+
 class AbsrcCustomerInvoicesController extends Controller
 {
+   use DateFormFormatterTrait;
+
     protected $customer, $customerInvoice, $customerInvoiceLine;
 
     /**
@@ -38,20 +42,29 @@ class AbsrcCustomerInvoicesController extends Controller
         $this->customerInvoiceLine = $customerInvoiceLine;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
         $customer_invoices = $this->customerInvoice
                             ->ofSalesRep()
+                            ->filter( $request->all() )
                             ->with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
+                            ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');
 
-        $customer_invoices = $customer_invoices->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+        $customer_invoices = $customer_invoices->paginate( Configuration::get('ABSRC_ITEMS_PERPAGE') );
 
         $customer_invoices->setPath('invoices');
 
-        return view('absrc.invoices.index', compact('customer_invoices'));
+        $statusList = CustomerInvoice::getStatusList();
+
+        $payment_statusList = CustomerInvoice::getPaymentStatusList();
+
+        return view('absrc.invoices.index', compact('customer_invoices', 'statusList', 'payment_statusList'));
     }
 
     public function show($cinvoiceKey)

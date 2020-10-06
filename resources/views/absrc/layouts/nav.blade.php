@@ -68,7 +68,12 @@
                                  {{l('Vouchers', [], 'absrc/layouts')}}
                             </a>
                         </li>
-                        <!-- li class="divider"></li -->
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ route('absrc.commissionsettlements.index') }}">
+                                 {{l('Commissions', [], 'absrc/layouts')}}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

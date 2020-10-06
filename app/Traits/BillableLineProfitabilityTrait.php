@@ -20,7 +20,7 @@ trait BillableLineProfitabilityTrait
         return $this->cost_price;
     }
 
-    // Get Cost Price for Profit calculations
+    // Get Final Price for Profit calculations
     public function getProfitFinalPriceAttribute()
     {
         if ( Configuration::isTrue('ENABLE_ECOTAXES') )

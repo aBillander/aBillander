@@ -215,6 +215,19 @@ class Product extends Model {
     |--------------------------------------------------------------------------
     */
 
+    // Get Cost Price for Profit calculations
+    public function getProfitCostAttribute()
+    {
+        if ( Configuration::get('MARGIN_PRICE') == 'STANDARD' )
+            return $this->cost_price;
+
+        if ( Configuration::get('MARGIN_PRICE') == 'AVERAGE' )
+            return $this->cost_average;
+
+        // Sensible default
+        return $this->cost_price;
+    }
+
     public function getBomAttribute()
     {
         // Easy get BOM

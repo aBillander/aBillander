@@ -44,8 +44,12 @@ class CommissionSettlementsController extends Controller
                         })
                         ->orderBy('document_date', 'desc')
                         ->orderBy('sales_rep_id', 'desc')
-                        ->orderBy('date_from', 'desc')
-                        ->get();
+                        ->orderBy('date_from', 'desc');
+//                        ->get();
+        
+        $settlements = $settlements->paginate( 10 );
+
+        $settlements->setPath('commissionsettlements');     // Customize the URI used by the paginator
 
         return  view('commission_settlements.index', compact('settlements', 'salesrep'));
     }

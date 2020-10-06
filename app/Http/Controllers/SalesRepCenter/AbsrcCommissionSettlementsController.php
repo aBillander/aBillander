@@ -49,8 +49,11 @@ class AbsrcCommissionSettlementsController extends Controller
                         })
                         ->orderBy('document_date', 'desc')
 //                        ->orderBy('sales_rep_id', 'desc')
-                        ->orderBy('date_from', 'desc')
-                        ->get();
+                        ->orderBy('date_from', 'desc');
+
+        $settlements = $settlements->paginate( Configuration::get('ABSRC_ITEMS_PERPAGE') );
+
+        $settlements->setPath('commissionsettlements');
 
         return  view('absrc.commission_settlements.index', compact('settlements', 'salesrep'));
     }

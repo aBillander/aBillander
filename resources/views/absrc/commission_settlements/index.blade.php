@@ -77,6 +77,8 @@
 	@endforeach
 	</tbody>
 </table>
+{!! $settlements->appends( Request::all() )->render() !!} 
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $settlements->total() ], 'layouts')}} </span></li></ul>
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>

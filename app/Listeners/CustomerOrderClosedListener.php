@@ -6,6 +6,8 @@ use App\Events\CustomerOrderClosed;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use App\Configuration;
+
 class CustomerOrderClosedListener
 {
     /**
@@ -37,5 +39,19 @@ class CustomerOrderClosedListener
             $document->makeStockMovements();
         }
 */        
+
+        // 
+        // Ecotaxes stuff
+        // 
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') )
+        {
+            $document->loadLineEcotaxes();
+        }
+
+        // 
+        // Cost stuff
+        // 
+        $document->loadLineCosts();
+        
     }
 }

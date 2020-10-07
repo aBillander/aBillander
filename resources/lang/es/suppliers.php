@@ -39,6 +39,7 @@ return [
 	'Fiscal Name'     => 'Nombre Fiscal',
 	'Commercial Name'     => 'Nombre Comercial',
 	'Identification'     => 'NIF / CIF',
+	'Approval Number' => 'Nº Registro Sanitario',
 	''     => '',
 	''     => '',
 	''     => '',

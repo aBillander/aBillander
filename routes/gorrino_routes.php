@@ -142,6 +142,11 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-10-07
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `suppliers` ADD `approval_number` varchar(64) NULL DEFAULT NULL AFTER `identification`;");
+
+	die('OK');
 
 	// 2020-09-30
 

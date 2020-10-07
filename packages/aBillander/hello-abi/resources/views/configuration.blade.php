@@ -15,7 +15,7 @@
                 <h3 class="panel-title">{{ __('installer::main.config.title') }}</h3>
             </div>
             <div class="panel-body">
-                <p>{{ __('installer::main.config.body') }}</p>
+                <p>{!! __('installer::main.config.body') !!}</p>
                 <hr>
                 <div class="form-group">
                     <p class="lead">{{ __('installer::main.config.database') }}:</p>
@@ -29,6 +29,7 @@
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.config.port') }}</label><br>
                             <input type="text" name="DB_PORT" class="form-control" value="{{ config('database.connections.mysql.port') }}" required>
+                            <span class="help-block">{{ __('installer::main.config.port_help') }}</span>
                         </div>
                     </div>
                     <div class="row">

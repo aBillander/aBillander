@@ -22,7 +22,7 @@ return [
 
     'license' => [
         'title' => 'License Agreements',
-        'body' => '',
+        'body' => 'To enjoy the many features that are offered by aBillander, please read the license terms below. ',
         'accept' => 'I agree to the above terms and conditions.',
 
         'license' => '
@@ -45,10 +45,11 @@ return [
 
     'config' => [
         'title' => 'Configuration',
-        'body' => '',
+        'body' => 'To use aBillander, you must create a database to collect all of your business data-related activities.<br />Please complete the fields below in order for aBillander to connect to your database.',
         'database' => 'Configure your database by filling out the following fields',
         'host' => 'Database host',
         'port' => 'Database port',
+        'port_help' => 'Default port is 3306.',
         'name' => 'Database name',
         'login' => 'Database login',
         'password' => 'Database password',
@@ -67,8 +68,8 @@ return [
 
     'done' => [
         'title' => 'Installation completed',
-        'body' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-        'success' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+        'body' => 'Please, remember your login information:',
+        'success' => 'You have just finished installing your System. Thank you for using aBillander!',
         'link' => 'Go to main page',
     ],
 

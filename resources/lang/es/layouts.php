@@ -388,6 +388,7 @@ return [
 	'Send Password Reset Link.'     => 'Si olvidó la contraseña de acceso, introduzca su dirección de correo electrónico. Una vez enviado este formulario, recibirá en su correo las instrucciones para actualizar la contraseña.',
 	'Reset Password'     => 'Cambiar Contraseña',
 	'Customer Reset Password'     => 'Cambiar Contraseña para el Centro de Clientes',
+	'Login information' => 'Datos de acceso',
 
 	'Customers' => 'Clientes',
 	'Customers - Create' => 'Clientes - Crear',

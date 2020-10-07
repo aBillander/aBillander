@@ -29,7 +29,6 @@ Route::group($installerGroup, function () {
 
     Route::get('/done', 'FinalController@show')->name('done');
 
-    // Routes of the main app that must be accessible during install without auth
-    Route::get('/countries/{countryId}/getstates', '\App\Http\Controllers\CountriesController@getStates');
+    Route::get('/countries/{countryId}/getstates', 'CountriesController@getStates');
 
 });

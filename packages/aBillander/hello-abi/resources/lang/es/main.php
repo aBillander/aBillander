@@ -16,7 +16,7 @@ return [
 
     'welcome' => [
         'title' => 'Bienvenido al asistente de instalación de aBillander',
-        'body' => '',
+        'body' => 'Para disfrutar de las numerosas funcionalidades ofrecidas por aBillander, por favor lea los términos de la licencia a continuación.',
         'select_lang' => 'Continuar la instalación en:',
     ],
 
@@ -45,10 +45,11 @@ return [
 
     'config' => [
         'title' => 'Configuración',
-        'body' => '',
+        'body' => 'Para usar aBillander, usted debe crear una base de datos para recolectar todas las actividades relacionadas con información de su negocio.<br />Por favor, rellene estos datos con el fin de que aBillander pueda conectarse a su base de datos.',
         'database' => 'Configure su Base de Datos rellenando los campos siguientes',
         'host' => 'Servidor de la base de datos',
         'port' => 'Puerto',
+        'port_help' => 'El Puerto por defecto es 3306.',
         'name' => 'Nombre de la base de datos',
         'login' => 'Nombre de usuario',
         'password' => 'Contraseña',
@@ -67,8 +68,8 @@ return [
 
     'done' => [
         'title' => 'Instalación terminada',
-        'body' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-        'success' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+        'body' => 'Por favor, recuerde sus datos de acceso:',
+        'success' => 'Acaba de terminar la instalación de su Sistema. ¡Gracias por utilizar aBillander!',
         'link' => 'Ir a la página principal',
     ],
 

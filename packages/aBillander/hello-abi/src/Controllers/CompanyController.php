@@ -28,7 +28,11 @@ class CompanyController extends Controller
      */
     public function show()
     {
-        return view('installer::company');
+        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
+        $languageList = \App\Language::pluck('name', 'id')->toArray();
+        $countryList  = \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray();
+
+        return view('installer::company', compact('currencyList', 'languageList', 'countryList'));
     }
 
     /**

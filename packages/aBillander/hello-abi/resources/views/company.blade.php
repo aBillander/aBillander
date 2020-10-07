@@ -12,7 +12,7 @@
                 <h3 class="panel-title">{{ __('installer::main.company.title') }}</h3>
             </div>
 
-            @include('companies._form')
+            @include('installer::partials.company_form')
 
         </div>
     {{ Form::close() }}
@@ -58,7 +58,7 @@
         var countryID = $('select[name="address[country_id]"]').val();
         var stateID   = $('#state_id').val();
 
-        populateStatesByCountryID( countryID, stateID );
+        // populateStatesByCountryID( countryID, stateID );
 
     </script>
 @endpush

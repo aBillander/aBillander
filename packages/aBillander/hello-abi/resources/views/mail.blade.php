@@ -6,7 +6,7 @@
 
 @section('panel')
 
-    <form class="" action="{{ route('installer::configuration') }}" method="post">
+    <form class="" action="{{ route('installer::mail') }}" method="post">
         <input type="hidden" name="APP_URL" value="{{ url('/') }}">
         {{ csrf_field() }}
 
@@ -49,9 +49,9 @@
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.mail.encryption') }}</label><br>
-                            <select class="form-control" name="MAIL_DRIVER">
-                              <option value="smtp" {{ config('mail.encryption') == 'tls' ? 'selected' : '' }}>tls</option>
-                              <option value="smtp" {{ config('mail.encryption') == 'ssl' ? 'selected' : '' }}>ssl</option>
+                            <select class="form-control" name="MAIL_ENCRYPTION">
+                              <option value="tls" {{ config('mail.encryption') == 'tls' ? 'selected' : '' }}>tls</option>
+                              <option value="ssl" {{ config('mail.encryption') == 'ssl' ? 'selected' : '' }}>ssl</option>
                             </select>
                         </div>
                     </div>
@@ -90,16 +90,16 @@
                 </div>
                 <hr>
                 <input type="hidden" name="action" id="action" value="continue">
-                <button class="btn btn-success" type="submit" onclick="$('#action').val('check');this.disabled=true;this.form.submit()">
+                <button class="btn btn-success" type="submit" onclick="$('#action').val('check');this.form.submit()">
                     {{ __('installer::main.mail.check') }}
                 </button>
 
             </div>
             <div class="panel-footer text-right">
                 <a class="btn btn-link" href="{{ route('installer::requirements') }}">{{ __('pagination.previous') }}</a>
-                <a class="btn btn-primary" href="{{ route('installer::install') }}">
+                <button class="btn btn-primary" type="submit">
                     {{ __('pagination.next') }}
-                </a>
+                </button>
             </div>
         </div>
 

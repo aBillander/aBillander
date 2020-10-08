@@ -25,6 +25,16 @@ class EnvironmentManager
         'DB_DATABASE' => 'database.connections.mysql.database',
         'DB_USERNAME' => 'database.connections.mysql.username',
         'DB_PASSWORD' => 'database.connections.mysql.password',
+
+        'MAIL_DRIVER' => 'mail.driver',
+        'MAIL_HOST'   => 'mail.host',
+        'MAIL_PORT'   => 'mail.port',
+        'MAIL_USERNAME'   => 'mail.username',
+        'MAIL_PASSWORD'   => 'mail.password',
+        'MAIL_ENCRYPTION' => 'mail.encryption',
+
+        'MAIL_FROM_ADDRESS' => 'mail.from.address',
+        'MAIL_FROM_NAME'    => 'mail.from.name',
     ];
 
     /**

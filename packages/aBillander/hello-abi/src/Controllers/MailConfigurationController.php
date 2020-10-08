@@ -6,6 +6,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
+use Mail;
+
 use aBillander\Installer\Helpers\EnvironmentManager;
 
 class MailConfigurationController extends Controller
@@ -52,18 +54,39 @@ class MailConfigurationController extends Controller
         $databaseInputs = array_keys($this->rules);
         $environmentNewValues = $request->only($databaseInputs);
 
+        // abi_r($environmentNewValues);die();
+
         $environmentManager->setValues($environmentNewValues);
 
-        // Check if the credentials of the database are valid
-        try {
-            DB::purge('mysql');
-            DB::connection()->getPdo();
 
-            return back()->with('success', __('installer::main.config.check_ok'));
-        }
-        catch (\PDOException $e) {
-            return back()->with('error', [__('installer::main.config.check_ko'), $e->getMessage()]);
-        }
+        if ( $request->has('action') && $request->action == 'check' )
+        {
+            // Check if the credentials of the email host are valid
+            try {
+                $language = app()->getLocale();
+                $subject = __('installer::main.mail.subject');
+                $message = __('installer::main.mail.message');
+
+                $send = Mail::send('installer::emails.basic',
+                    array(
+                        'language' => $language,
+                        'user_email'   => config('mail.from.address'),
+                        'user_name'    => config('mail.from.name'),
+                        'user_message' => $message,
+                    ), function($message) use ( $subject )
+                {
+                    $message->from( config('mail.from.address'), config('mail.from.name') );
+                    $message->to(   config('mail.from.address'), config('mail.from.name') )->subject( $subject );
+                });
+
+                return back()->with('success', __('installer::main.mail.check_ok'));
+            }
+            catch (\Exception $e) {
+                return back()->with('error', [__('installer::main.mail.check_ko'), $e->getMessage()]);
+            }
+        } 
+        else
+            return redirect()->route('installer::install');
 
         // return redirect()->route('installer::install');
     }

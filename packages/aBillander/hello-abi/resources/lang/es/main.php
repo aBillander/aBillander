@@ -17,13 +17,13 @@ return [
 
     'welcome' => [
         'title' => 'Bienvenido al asistente de instalación de aBillander',
-        'body' => 'Para disfrutar de las numerosas funcionalidades ofrecidas por aBillander, por favor lea los términos de la licencia a continuación.',
+        'body' => '',
         'select_lang' => 'Continuar la instalación en:',
     ],
 
     'license' => [
         'title' => 'Acuerdo de Licencia',
-        'body' => '',
+        'body' => 'Para disfrutar de las numerosas funcionalidades ofrecidas por aBillander, por favor lea los términos de la licencia a continuación.',
         'accept' => 'Estoy de acuerdo con los términos de la Licencia.',
 
         'license' => '
@@ -80,8 +80,10 @@ return [
         'from_name_help' => 'El nombre que aparece en los correos electrónicos enviados.',
 
         'check' => 'Enviar un correo de prueba',
-        'check_ok' => 'La configuración de la base de datos es correcta y ya está funcionando.',
-        'check_ko' => 'No se puede conectar con la base de datos. Compruebe los siguientes errores:',
+        'subject' => ' :_> Email enviado por aBillander',
+        'message' => 'aBillander está listo para enviar correo electrónico.',
+        'check_ok' => 'Su email ¡ha sido enviado!',
+        'check_ko' => 'Se ha producido un error, su mensaje no pudo enviarse. Compruebe los siguientes errores:',
     ],
 
     'install' => [

@@ -9,6 +9,7 @@ return [
         'license' => 'License Agreements',
         'requirements' => 'System compatibility',
         'config' => 'Configuration',
+        'mail' => 'Email Settings',
         'install' => 'Installation',
         'company' => 'Company',
         'done' => 'Installation completed',
@@ -79,8 +80,10 @@ return [
         'from_name_help' => 'The name which emails are sent from.',
 
         'check' => 'Send a test email',
-        'check_ok' => 'The database configuration is correct it is already working.',
-        'check_ko' => 'Cannot connect to Database. Check the following errors:',
+        'subject' => ' :_> Email sent by aBillander',
+        'message' => 'aBillander is ready to send email.',
+        'check_ok' => 'Your email has been sent!',
+        'check_ko' => 'There was an error, your message could not be sent. Check the following errors:',
     ],
 
     'install' => [

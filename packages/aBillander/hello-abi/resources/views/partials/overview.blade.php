@@ -15,6 +15,10 @@
         <i class="fa fa-database"></i>
         &nbsp; {{ __('installer::main.overview.config') }}
     </li>
+    <li class="list-group-item {{ Route::currentRouteName() == 'installer::mail' ? 'active' : '' }}">
+        <i class="fa fa-envelope"></i>
+        &nbsp; {{ __('installer::main.overview.mail') }}
+    </li>
     <li class="list-group-item {{ Route::currentRouteName() == 'installer::install' ? 'active' : '' }}">
         <i class="fa fa-wrench"></i>
         &nbsp; {{ __('installer::main.overview.install') }}

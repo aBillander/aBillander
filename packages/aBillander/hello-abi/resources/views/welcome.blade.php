@@ -19,9 +19,9 @@
                 <hr>
                 <div class="form-group col-sm-12 col-md-6">
                     <p class="lead">{{ __('installer::main.welcome.select_lang') }}</p>
-                    <select class="form-control" name="lang">
+                    <select class="form-control" name="lang" id="lang">
                         @foreach(config()->get('installer.supportedLocales') as $localeCode => $properties)
-                            <option value="{{ $localeCode }}" {{ app()->getLocale() == $localeCode ? 'selected' : '' }}>
+                            <option value="{{ $localeCode }}" {{ $language == $localeCode ? 'selected' : '' }}>
                                 {{ $properties['native'] }} ({{ $properties['name'] }})
                             </option>
                         @endforeach
@@ -39,3 +39,19 @@
     </form>
 
 @endsection
+
+@push('scripts')
+<script>
+    $(function(){
+      // bind change event to select
+      $('#lang').on('change', function () {
+          // var url = $(this).val(); // get selected value
+          var url = "{{ route('installer::welcome') }}?lang=" + $(this).val();
+          if (url) { // require a URL
+              window.location = url; // redirect
+          }
+          return false;
+      });
+    });
+</script>
+@endpush

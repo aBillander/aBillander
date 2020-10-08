@@ -28,6 +28,8 @@ class RequirementsController extends Controller
             config('installer.permissions')
         );
 
-        return view('installer::requirements', compact('phpSupportInfo', 'requirements', 'permissions'));
+        $noErrors = $phpSupportInfo['supported'] && !isset($requirements['errors']) && !isset($permissions['errors']);
+
+        return view('installer::requirements', compact('phpSupportInfo', 'requirements', 'permissions', 'noErrors'));
     }
 }

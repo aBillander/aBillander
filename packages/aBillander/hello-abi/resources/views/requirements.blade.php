@@ -37,18 +37,19 @@
         <div class="panel-body">
             <p>{{ __('installer::main.requirements.body') }}</p>
             <hr>
+            <div class="row">
             <div class="col-md-6">
                 <div class="list-group">
                     <div class="list-group-item item-header">
                         <strong>{{ __('installer::main.requirements.server') }}</strong>
                     </div>
                     <div class="list-group-item item-{{ $phpSupportInfo['supported'] ? 'success' : 'error' }}">
-                        <i class="fa fa-fw fa-{{ $phpSupportInfo['supported'] ? 'check' : 'times' }} row-icon" aria-hidden="true"></i>
+                        <i class="fa fa-fw fa-{{ $phpSupportInfo['supported'] ? 'check' : 'times text-danger' }} row-icon" aria-hidden="true"></i>
                         <strong>PHP {{ $phpSupportInfo['current'] }} ({{ __('installer::main.requirements.php', ['ver' => $phpSupportInfo['minimum']]) }})</strong>
                     </div>
                     @foreach ($requirements['requirements']['php'] as $extension => $enabled)
                         <div class="list-group-item item-{{ $enabled ? 'success' : 'error' }}">
-                            <i class="fa fa-fw fa-{{ $enabled ? 'check' : 'times' }} row-icon" aria-hidden="true"></i>
+                            <i class="fa fa-fw fa-{{ $enabled ? 'check' : 'times text-danger' }} row-icon" aria-hidden="true"></i>
                             {{ $extension }}
                         </div>
                     @endforeach
@@ -62,7 +63,7 @@
                     @foreach ($permissions['permissions'] as $permission)
                         <div class="list-group-item item-{{ $permission['isSet'] ? 'success' : 'error' }}">
                             <strong>
-                                <i class="fa fa-fw fa-{{ $permission['isSet'] ? 'check' : 'times' }} row-icon" aria-hidden="true"></i>
+                                <i class="fa fa-fw fa-{{ $permission['isSet'] ? 'check' : 'times text-danger' }} row-icon" aria-hidden="true"></i>
                                 {{ $permission['permission'] }}
                             </strong>
                             - {{ $permission['folder'] }}
@@ -70,10 +71,18 @@
                     @endforeach
                 </div>
             </div>
+            </div>
+
+@if ( !$noErrors )
+            <div class="alert alert-danger">
+                <p>{{ __('installer::main.requirements.error') }}</p>
+            </div>
+@endif
+
         </div>
         <div class="panel-footer text-right">
             <a class="btn btn-link" href="{{ route('installer::license') }}">{{ __('pagination.previous') }}</a>
-            <a class="btn btn-primary" href="{{ route('installer::configuration') }}" {{ $phpSupportInfo['supported'] && !isset($requirements['errors']) && !isset($permissions['errors']) ? '' : 'disabled' }}>
+            <a class="btn btn-primary" href="{{ route('installer::configuration') }}" {{ $noErrors ? '' : 'disabled' }}>
                 {{ __('pagination.next') }}
             </a>
         </div>

@@ -9,6 +9,7 @@ return [
         'license' => 'Acuerdo de Licencia',
         'requirements' => 'Compatibilidad del Sistema',
         'config' => 'Configuración',
+        'mail' => 'Correo Electrónico',
         'install' => 'Instalación',
         'company' => 'Información de la Empresa',
         'done' => 'Instalación terminada',
@@ -41,11 +42,12 @@ return [
         'server' => 'Requerimientos del Servidor',
         'folders' => 'Permisos de las Carpetas',
         'php' => 'min. :ver',
+        'error' => 'Se han encontrado errores. Debe resolverlos antes de continuar.',
     ],
 
     'config' => [
         'title' => 'Configuración',
-        'body' => 'Para usar aBillander, usted debe crear una base de datos para recolectar todas las actividades relacionadas con información de su negocio.<br />Por favor, rellene estos datos con el fin de que aBillander pueda conectarse a su base de datos.',
+        'body' => 'Para usar aBillander, usted debe crear una base de datos para recolectar todas las actividades relacionadas con información de su negocio.<br /><br />Por favor, rellene estos datos con el fin de que aBillander pueda conectarse a su base de datos.',
         'database' => 'Configure su Base de Datos rellenando los campos siguientes',
         'host' => 'Servidor de la base de datos',
         'port' => 'Puerto',
@@ -53,12 +55,39 @@ return [
         'name' => 'Nombre de la base de datos',
         'login' => 'Nombre de usuario',
         'password' => 'Contraseña',
+        'check' => 'Probar la conexión a la base de datos ahora',
+        'check_ok' => 'La configuración de la base de datos es correcta.',
+        'check_ko' => 'No se puede conectar con la base de datos. Compruebe los siguientes errores:',
+    ],
+
+    'mail' => [
+        'title' => 'Configuración del Correo Electrónico',
+        'body' => 'Por favor, rellene estos datos con el fin de que aBillander pueda enviar correo electrónico.<br /><br />La configuración del correo electrónico podrá cambiarse más adelante editando el fichero "<i>.env</i>".',
+        'mailhost' => 'Configure su Servidor de Correo rellenando los campos siguientes',
+        'driver' => 'Tipo de Servidor',
+        'driver_help' => 'Usuarios avanzados pueden cambiar esta configuración editando el fichero "<i>.env</i>".',
+        'host' => 'Servidor de Correo',
+        'port' => 'Puerto',
+        'port_help' => 'Normalmente 465 o 587.',
+        'encryption' => 'Método de encriptado',
+
+        'user' => 'Usuario',
+        'password' => 'Contraseña',
+
+        'from' => 'Email del remitente',
+        'from_help' => 'Es la dirección de correo que aparece en los correos electrónicos enviados.<br />Si está usando un proveedor decorreo electrónico (Gmail, Yahoo, Outlook.com, etc.) debe poner aquí la dirección de correo de su cuenta.',
+        'from_name' => 'Nombre del remitente',
+        'from_name_help' => 'El nombre que aparece en los correos electrónicos enviados.',
+
+        'check' => 'Enviar un correo de prueba',
+        'check_ok' => 'La configuración de la base de datos es correcta y ya está funcionando.',
+        'check_ko' => 'No se puede conectar con la base de datos. Compruebe los siguientes errores:',
     ],
 
     'install' => [
         'title' => 'Instalación',
-        'body' => '',
-        'success' => 'La configuración de la base de datos es correcta y ya está funcionando.',
+        'body' => 'Se crearán las tablas de la Base de Datos y aBillander estará listo para usarse.',
+        'success' => 'La configuración de aBillander es correcta y ya está funcionando.',
     ],
 
     'company' => [

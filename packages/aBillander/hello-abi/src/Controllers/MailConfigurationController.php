@@ -5,11 +5,10 @@ namespace aBillander\Installer\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 
 use aBillander\Installer\Helpers\EnvironmentManager;
 
-class ConfigurationController extends Controller
+class MailConfigurationController extends Controller
 {
     /**
      * The validation rules.
@@ -17,13 +16,15 @@ class ConfigurationController extends Controller
      * @var array
      */
     protected $rules = [
-        'APP_URL' => 'required|url',
-//        'DB_HOST' => 'required|ip',
-        'DB_HOST' => 'required|string',
-        'DB_PORT' => 'required|integer',
-        'DB_DATABASE' => 'required|string',
-        'DB_USERNAME' => 'required|string',
-        'DB_PASSWORD' => 'required|string',
+        'MAIL_DRIVER' => 'required',
+        'MAIL_HOST'   => 'required|string',
+        'MAIL_PORT'   => 'required|integer',
+        'MAIL_USERNAME'   => 'required|string',
+        'MAIL_PASSWORD'   => 'required|string',
+        'MAIL_ENCRYPTION' => 'required',
+
+        'MAIL_FROM_ADDRESS' => 'required|email',
+        'MAIL_FROM_NAME'    => 'required|string',
     ];
 
     /**
@@ -33,7 +34,7 @@ class ConfigurationController extends Controller
      */
     public function show()
     {
-        return view('installer::configuration');
+        return view('installer::mail');
     }
 
     /**

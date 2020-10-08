@@ -5,6 +5,8 @@ namespace aBillander\Installer\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 
+use aBillander\Installer\Helpers\LicenseReader;
+
 class LicenseController extends Controller
 {
     /**
@@ -14,7 +16,9 @@ class LicenseController extends Controller
      */
     public function show()
     {
-        return view('installer::license');
+        $license = LicenseReader::getText();
+
+        return view('installer::license', compact('license'));
     }
 
     /**

@@ -51,7 +51,7 @@
                 <div class="title">An error has occurred (500).</div>
                 <div>Make sure you meet the following requirements:</div>
                 <div class="requirements">
-                    <strong>PHP >= 7.0.0</strong><hr>
+                    <strong>PHP >= {{ config('installer.core.minPhpVersion') }}</strong><hr>
                     <em>OpenSSL PHP Extension</em><br>
                     <em>PDO PHP Extension</em><br>
                     <em>Mbstring PHP Extension</em><br>

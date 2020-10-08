@@ -5,6 +5,8 @@ namespace aBillander\Installer\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 
+use App;
+
 class WelcomeController extends Controller
 {
     /**
@@ -12,9 +14,24 @@ class WelcomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function welcome()
+    public function welcome(Request $request)
     {
-        return view('installer::welcome');
+        $langs = config()->get('installer.supportedLocales');
+
+        if ( $request->has('lang') )
+        {
+            if ( array_key_exists($request->input('lang'), $langs) )
+            {
+                $locale = $request->lang;
+                App::setLocale($locale);
+                $request->session()->put('installer.locale', $locale);
+            }
+
+        }
+
+        $language = app()->getLocale();
+
+        return view('installer::welcome', compact('language'));
     }
 
     /**

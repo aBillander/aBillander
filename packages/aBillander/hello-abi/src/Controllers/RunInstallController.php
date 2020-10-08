@@ -37,6 +37,10 @@ class RunInstallController extends Controller
         // Reload the cache
         Artisan::call("config:cache");
 
+        Artisan::call('route:clear');
+        
+        Artisan::call('view:clear');
+
         // Set symlinks
         Artisan::call("storage:link");
 

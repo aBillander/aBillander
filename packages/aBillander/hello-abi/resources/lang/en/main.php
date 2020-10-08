@@ -41,11 +41,12 @@ return [
         'server' => 'Server Requerimients',
         'folders' => 'Permissions of Folders',
         'php' => 'min. version :ver',
+        'error' => 'Some errors have been found. You must resolve them before continuing.',
     ],
 
     'config' => [
         'title' => 'Configuration',
-        'body' => 'To use aBillander, you must create a database to collect all of your business data-related activities.<br />Please complete the fields below in order for aBillander to connect to your database.',
+        'body' => 'To use aBillander, you must create a database to collect all of your business data-related activities.<br /><br />Please fill in these details so that aBillander can connect to your database.',
         'database' => 'Configure your database by filling out the following fields',
         'host' => 'Database host',
         'port' => 'Database port',
@@ -53,12 +54,39 @@ return [
         'name' => 'Database name',
         'login' => 'Database login',
         'password' => 'Database password',
+        'check' => 'Test Database connection now!',
+        'check_ok' => 'The database configuration is correct.',
+        'check_ko' => 'Cannot connect to Database. Check the following errors:',
+    ],
+
+    'mail' => [
+        'title' => 'Email Configuration',
+        'body' => 'Please fill in these details so that aBillander can send emails for you.<br /><br />These email settings can be changed later by editing the "<i> .env </i>" file.',
+        'mailhost' => 'Configure your Mail Host by filling out the following fields',
+        'driver' => 'Host type',
+        'driver_help' => 'Advanced users may change this by editing the "<i>.env</i>" file.',
+        'host' => 'Mail Host',
+        'port' => 'Mail Host port',
+        'port_help' => 'Usually 465 or 587.',
+        'encryption' => 'Encryption method',
+
+        'user' => 'Host Username',
+        'password' => 'Host Password',
+
+        'from' => 'From email',
+        'from_help' => 'The email address which emails are sent from.<br />If you are using an email provider (Gmail, Yahoo, Outlook.com, etc.) this should be your email address for that account.',
+        'from_name' => 'From name',
+        'from_name_help' => 'The name which emails are sent from.',
+
+        'check' => 'Send a test email',
+        'check_ok' => 'The database configuration is correct it is already working.',
+        'check_ko' => 'Cannot connect to Database. Check the following errors:',
     ],
 
     'install' => [
         'title' => 'Installation',
-        'body' => '',
-        'success' => 'The database configuration is correct and it is already working.',
+        'body' => 'Database tables will be created, and aBillander will be set ready for use.',
+        'success' => 'aBillander configuration is correct and it is already working.',
     ],
 
     'company' => [

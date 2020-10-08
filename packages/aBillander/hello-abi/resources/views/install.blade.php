@@ -15,12 +15,12 @@
             </div>
 
             <div class="panel-body">
-                <div class="alert alert-success">
+                <!-- div class="alert alert-success">
                     {{ __('installer::main.install.success') }}
                 </div>
-                <hr>
+                <hr -->
 
-                <p>{{ __('installer::main.install.body') }}</p>
+                <p>{!! __('installer::main.install.body') !!}</p>
             </div>
 
             <div class="panel-footer text-right">

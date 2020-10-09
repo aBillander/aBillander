@@ -75,10 +75,33 @@ class CompanyController extends Controller
         $user = $this->user->create($user_data);
 
         // Time for some defaults!
-        Configuration::updateValue( 'DEF_COMPANY',  $company->id          );
-        Configuration::updateValue( 'DEF_CURRENCY', $company->currency_id );
-        Configuration::updateValue( 'DEF_LANGUAGE', $company->language_id );
-        Configuration::updateValue( 'DEF_COUNTRY',  $address->country_id  );
+        // Configuration is not loaded so far...
+        $confs = Configuration::where('name', 'like', 'DEF_%')->get();
+
+        $infos = [
+
+                [ 'name' => 'DEF_COMPANY',  'value' => $company->id          ],
+                [ 'name' => 'DEF_CURRENCY', 'value' => $company->currency_id ],
+                [ 'name' => 'DEF_LANGUAGE', 'value' => $company->language_id ],
+                [ 'name' => 'DEF_COUNTRY',  'value' => $address->country_id  ],
+
+        ];
+
+        foreach ($infos as $info) {
+            # code...
+            $conf = $confs->where('name', $info['name'])->first();
+
+            if ($conf)
+            {
+                $conf->value = $info['value'];
+                $conf->save();
+
+            } else {
+                $newConfig = Configuration::create($info);
+                // Or:
+                // Configuration::updateValue( $info['name'], $info['value'] );
+            }
+        }
 
         return redirect()->route('installer::done')->with('install-finished');
     }

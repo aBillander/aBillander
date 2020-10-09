@@ -54,6 +54,10 @@ class MailConfigurationController extends Controller
         $databaseInputs = array_keys($this->rules);
         $environmentNewValues = $request->only($databaseInputs);
 
+        // Sanitize MAIL_FROM_NAME
+        if ( strpos($environmentNewValues['MAIL_FROM_NAME'], ' ') !== FALSE )
+            $environmentNewValues['MAIL_FROM_NAME'] = '"'.$environmentNewValues['MAIL_FROM_NAME'].'"';
+
         // abi_r($environmentNewValues);die();
 
         $environmentManager->setValues($environmentNewValues);

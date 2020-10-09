@@ -66,7 +66,7 @@
            </div>
 
             <div class="col-md-4">
-                <div class="form-group {{ $errors->has('company_logo_file') ? 'has-error' : '' }}">
+                <div class=" hide form-group {{ $errors->has('company_logo_file') ? 'has-error' : '' }}">
                     {{ l('Company logo', 'companies') }}
                     {{-- !! Form::text('company_logo', null, array('class' => 'form-control', 'id' => 'company_logo')) !! --}}
 

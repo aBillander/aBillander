@@ -21,7 +21,7 @@ class Configuration extends Model
 
 	public static function loadConfiguration()
 	{
-		if (Installer::alreadyInstalled()) {
+		// if (Installer::alreadyInstalled()) {
 			self::$_CONF = array();
 
 			try {
@@ -41,7 +41,7 @@ class Configuration extends Model
 				{
 					self::$_CONF[$result->name] = $result->value;
 				}
-		}
+		// }
 	}
 
 	/**

@@ -14,11 +14,16 @@
                 <h3 class="panel-title">{{ __('installer::main.install.title') }}</h3>
             </div>
 
+            @include('installer::partials.notifications')
+
+            @include('installer::partials.errors')
+
             <div class="panel-body">
-                <!-- div class="alert alert-success">
-                    {{ __('installer::main.install.success') }}
-                </div>
-                <hr -->
+                @if ( count($tables) > 0 )
+                    <div class="alert alert-danger">
+                        {!! __('installer::main.install.database_not_empty') !!}
+                    </div>
+                @endif
 
                 <p>{!! __('installer::main.install.body') !!}</p>
             </div>

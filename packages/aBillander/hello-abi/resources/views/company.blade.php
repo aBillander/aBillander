@@ -12,6 +12,8 @@
                 <h3 class="panel-title">{{ __('installer::main.company.title') }}</h3>
             </div>
 
+            @include('installer::partials.notifications')
+
             @include('installer::partials.company_form')
 
         </div>

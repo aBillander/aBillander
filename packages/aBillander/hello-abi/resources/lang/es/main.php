@@ -88,7 +88,8 @@ return [
 
     'install' => [
         'title' => 'Instalación',
-        'body' => 'Se crearán las tablas de la Base de Datos y aBillander estará listo para usarse.',
+        'body' => 'Se crearán las tablas en la Base de Datos y aBillander estará listo para usarse.<br /><br />Esta operación puede durar algunos minutos; no debe interrumpirla.',
+        'database_not_empty' => 'La Base de Datos contiene tablas. Debería borrarlas antes de continuar.',
         'success' => 'La configuración de aBillander es correcta y ya está funcionando.',
     ],
 

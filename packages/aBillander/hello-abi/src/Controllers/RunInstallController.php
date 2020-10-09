@@ -17,7 +17,9 @@ class RunInstallController extends Controller
      */
     public function show()
     {
-        return view('installer::install');
+        $tables = \DB::select('SHOW TABLES');
+        
+        return view('installer::install')->with(compact('tables'));
     }
 
     /**
@@ -30,6 +32,11 @@ class RunInstallController extends Controller
     {
         // Migrate and seed the database
         $response = $databaseManager->migrateAndSeed();
+
+        if( $response['status'] == 'error' )
+        {
+            return back()->with('error', $response['message'])->with('info', nl2br($response['dbOutputLog']));
+        }
 
         // Generate new application key
         Artisan::call("key:generate", ["--force"=> true]);
@@ -44,6 +51,7 @@ class RunInstallController extends Controller
         // Set symlinks
         Artisan::call("storage:link");
 
-        return redirect()->route('installer::company');
+        return redirect()->route('installer::company')->with('info', nl2br($response['dbOutputLog']));
+//                         ->with(['message' => $response]);
     }
 }

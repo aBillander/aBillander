@@ -192,7 +192,7 @@
               </div>
 
 
-{!! Form::open(array('route' => 'jennifer.reports.mod347', 'class' => 'form')) !!}
+{!! Form::open(array('route' => 'jennifer.reports.index347', 'class' => 'form')) !!}
 
               <div class="panel-body">
 

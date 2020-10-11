@@ -179,11 +179,15 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('/desktop', 'HomeController@desktop')->name('desktop');
 
         // Jennifer
-        Route::get('/jennifer/home', 'JenniferController@index')->name('jennifer.home');
+        Route::get( '/jennifer/home', 'JenniferController@index')->name('jennifer.home');
         Route::post('/jennifer/reports/invoices'  , 'JenniferController@reportInvoices'  )->name('jennifer.reports.invoices');
         Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
         Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
-        Route::post('/jennifer/reports/mod347'    , 'JenniferController@reportMod347'    )->name('jennifer.reports.mod347');
+        Route::post('/jennifer/reports/mod347'                   , 'JenniferController@index347'    )->name('jennifer.reports.index347');
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/show', 'JenniferController@index347Show'    )->name('jennifer.reports.index347.show');
+        Route::get( '/jennifer/reports/mod347/{mod347_year}'     , 'JenniferController@reportModelo347'    )->name('jennifer.reports.mod347');
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/email/{customer_id}', 'JenniferController@sendemail')->name('jennifer.reports.mod347.email'  );
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/customer/{customer_id}', 'JenniferController@reportModelo347Customer')->name('jennifer.reports.mod347.customer');
 
         Route::group(['prefix' => 'accounting', 'namespace' => '\Accounting'], function ()
         {

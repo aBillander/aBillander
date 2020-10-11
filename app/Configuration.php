@@ -67,7 +67,8 @@ class Configuration extends Model
 		/* Update classic values */
 
 			/* If the current value exists but the _CONF_IDS[$key] does not, it mean the value has been set but not save, we need to add */
-		 	if ( $current_value !== false )
+		 	// if ( $current_value !== false )
+		 	if ( self::exists($key) )
 		 	{
 		 		/* Do not update the database if the current value is the same one than the new one */
 				if ($values == $current_value)
@@ -92,6 +93,30 @@ class Configuration extends Model
 			}
 
 		return (bool)$result;
+	}
+
+	/**
+	  * Check if a configuration key exists
+	  *
+	  * @param string $key Key
+		*
+	  * @return boolean result
+	  */
+	public static function exists($key)
+	{
+		// Prevent NULL values
+		if (!Configuration::isConfigName($key))
+	 	 	return  false;
+
+		if (!self::$_CONF)
+		{
+			Configuration::loadConfiguration();
+		}
+		if (isset(self::$_CONF[$key]))
+			return true;
+		return false;
+
+		// return Configuration::where('name', $key)->exists();
 	}
 
 	/**

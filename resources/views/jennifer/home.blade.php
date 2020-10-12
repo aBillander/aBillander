@@ -51,6 +51,20 @@
     </div>
 
                   </div>
+
+                  <div class="row">
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+        {!! Form::label('invoices_report_format', 'Formato') !!}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-container="body" 
+                                      data-content="{{ l('El formato "Amplio" utiliza más columnas para mostrar la información. El formato "Compacto" muestra lo mismo, pero usando más filas y menos columnas.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+        {!! Form::select('invoices_report_format', $invoices_report_formatList, 'loose', array('class' => 'form-control')) !!}
+    </div>
+
+                  </div>
 {{--
                   <div class="row">
 

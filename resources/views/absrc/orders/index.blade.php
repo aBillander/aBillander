@@ -9,6 +9,11 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+           <i class="fa fa-filter"></i>
+           &nbsp; {{l('Filter', [], 'layouts')}}
+        </button>
+
         <a href="{{ route($model_path.'.create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
@@ -17,6 +22,16 @@
         {{ l('Documents') }}
     </h2>        
 </div>
+
+
+
+{{-- Search Stuff --}}
+
+          @include('absrc.orders.index_form_search')
+
+{{-- Search Stuff - ENDS --}}
+
+
 
 <div id="div_documents">
 
@@ -189,3 +204,138 @@
 @endif
 
 @endif
+
+
+{{-- *************************************** --}}
+
+
+@section('scripts') @parent 
+
+<script>
+
+$(document).ready(function () {
+   $("#b_search_filter").click(function() {
+      $('#search_status').val(1);
+      $('#search_filter').show();
+   });
+
+      // Select first element
+      $('#production_sheet_id option:first-child').attr("selected", "selected");
+});
+
+</script>
+
+{{-- Auto Complete --}}
+{{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
+
+<!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script>
+  $(document).ready(function() {
+{{-- --}}
+        $("#autocustomer_name").autocomplete({
+            source : "{{ route('absrc.ajax.customerLookup') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                customer_id = value.item.id;
+
+                $("#autocustomer_name").val(value.item.name_regular);
+                $("#customer_id").val(value.item.id);
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .appendTo( ul );
+            };
+{{-- --}}
+
+    $( "#date_from_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+
+
+    $( "#date_to_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+{{-- --}}
+   $('#process').submit(function(event) {
+
+     if ( $("#autocustomer_name").val() == '' ) $('#customer_id').val('');
+
+     return true;
+
+   });
+{{-- --}}
+</script>
+
+
+@endsection
+
+
+{{-- *************************************** --}}
+
+
+@section('scripts') @parent 
+
+{{-- Date Picker --}}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script>
+
+  $(function() {
+    $( "#due_date" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+  
+</script>
+
+@endsection
+
+
+
+
+@section('styles') @parent
+
+{{-- Date Picker --}}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+  .ui-autocomplete-loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+  }
+  .loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
+  }
+  {{-- See: https://stackoverflow.com/questions/6762174/jquery-uis-autocomplete-not-display-well-z-index-issue
+            https://stackoverflow.com/questions/7033420/jquery-date-picker-z-index-issue
+    --}}
+    .ui-datepicker { z-index: 10000 !important; }
+
+
+/* Undeliver dropdown effect */
+   .hover-item:hover {
+      background-color: #d3d3d3 !important;
+    }
+
+</style>
+
+@endsection

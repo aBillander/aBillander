@@ -32,14 +32,26 @@ class CommissionSettlementsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $settlements = $this->settlement
-                        ->orderBy('document_date', 'desc')
-                        ->orderBy('id', 'desc')
-                        ->get();
+        $sales_rep_id = $request->input('sales_rep_id', 0);
+        $salesrep = SalesRep::where('id', $sales_rep_id)->first();
 
-        return view('commission_settlements.index', compact('settlements'));
+        $settlements = $this->settlement
+                        ->when($sales_rep_id > 0, function($query) use ($sales_rep_id) {
+
+                                $query->where('sales_rep_id', $sales_rep_id);
+                        })
+                        ->orderBy('document_date', 'desc')
+                        ->orderBy('sales_rep_id', 'desc')
+                        ->orderBy('date_from', 'desc');
+//                        ->get();
+        
+        $settlements = $settlements->paginate( 10 );
+
+        $settlements->setPath('commissionsettlements');     // Customize the URI used by the paginator
+
+        return  view('commission_settlements.index', compact('settlements', 'salesrep'));
     }
 
     /**

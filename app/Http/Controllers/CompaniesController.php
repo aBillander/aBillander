@@ -156,6 +156,9 @@ class CompaniesController extends Controller {
 //			iImage::make($file)->resize(300,300)->save( public_path('/uploads/company/'.$filename) );
 			iImage::make($file)->save( public_path( \App\Company::imagesPath() . $filename ) );
 
+			// 'HEADER_TITLE' Not needed anymore
+			Configuration::updateValue('HEADER_TITLE', '');
+
 			// Delete old image
 			$old_file = public_path( \App\Company::imagesPath() . \App\Context::getContext()->company->company_logo );
 	        if ( \App\Context::getContext()->company->company_logo && file_exists( $old_file ) ) {

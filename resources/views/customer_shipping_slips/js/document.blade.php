@@ -647,6 +647,7 @@
                     product_id: product_id,
                     combination_id: combination_id,
                     customer_id: $("#customer_id").val(),
+                    sales_rep_id: $("#sales_rep_id").val(),                    
                     currency_id: $("#currency_id").val(),
                     conversion_rate: $("#currency_conversion_rate").val(),
                     taxing_address_id: $("#taxing_address_id").val()
@@ -721,6 +722,8 @@
                     $("#line_price").val( price );
 
                     $("#label_ecotax_value").html(response.ecotax_value_label);
+
+                    $('#line_commission_percent').val(response.commission_percent);
 
                     calculate_line_product();
 

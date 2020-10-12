@@ -66,16 +66,13 @@
             <!-- tr style="color: #3a87ad; background-color: #d9edf7;" -->
             
 
-            @foreach ($document->lines as $line)
-
-            @if ($line->line_type == 'comment')
-                @continue
-            @endif
+            @foreach ($document->profitablelines as $line)
 @php
 
 $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
 
 @endphp
+
             <tr>
                 <td title="{{ $line->id }}">{{ $line->line_sort_order }}</td>
                 <td class="text-center">{{ $line->as_quantity('quantity') }}
@@ -98,22 +95,42 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
                 <td>
                 {{ $line->name }}</td>
-                <td class="text-right button-pad" title="{{ $ecotax }}">{{ $line->as_priceable( $line->unit_final_price - $ecotax ) }}<br />
-                  <span class="alert-success">{{ $line->as_priceable( $line->unit_final_price ) }} - {{ $line->as_priceable( $ecotax ) }}</span></td>
+
+@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') && ($line->line_type == 'product') && $line->product->ecotax )
+
+                <td class="text-right button-pad" title="{{ l('Ecotax', 'customerdocuments') }}: {{ $line->as_priceable( $line->ecotax_amount ) }} {{ $document->currency->sign }}">
+
+        @if ( $line->ecotax_amount != $line->product->ecotax->amount )
+               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                  xdata-trigger="focus"
+                  data-html="true" 
+                  data-content="{{ l('Line Ecotax Amount is different from Product Ecotax Amount. You must "Update Line Ecotaxes" (button below).') }}">
+                  <i class="fa fa-warning abi-help" style="color: #df382c;"></i>
+               </a>
+        @endif
+
+                  {{ $line->as_priceable( $line->profit_final_price ) }}<br />
+                  <span class="alert-success">{{ $line->as_priceable( $line->unit_final_price ) }} - {{ $line->as_priceable( $line->ecotax_amount ) }}</span></td>
+@else
+
+                <td class="text-right button-pad" title="">{{ $line->as_priceable( $line->profit_final_price ) }}</td>
+@endif
                 <td class="text-right">{{ $line->as_price('cost_price') }}</td>
-                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price * $line->quantity_total, ($line->unit_final_price - $ecotax) * $line->quantity, $document->currency ) ) }}</td>
-                <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $ecotax - $line->cost_price )*$line->quantity - $line->cost_price*$line->extra_quantity ) }}</td>
+
+                <td class="text-right">{{ $line->as_percentable( $line->marginPercent() ) }}</td>
+
+                <td class="text-right">{{ $line->as_priceable( $line->marginAmount() ) }}</td>
 
 
 
 @if ($document->salesrep)
-                <td class="text-right">{{ $line->as_percentable( 100.0 * $line->getSalesRepCommission() / (( $line->unit_final_price - $ecotax )*$line->quantity) ) }}<br />
+                <td class="text-right">{{ $line->as_percentable( 100.0 * $line->getSalesRepCommission() / (( $line->profit_final_price )*$line->quantity) ) }}<br />
 
                   <span class="alert-success">{{ $line->as_percent('commission_percent') }}</span></td>
 
-                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price*$line->quantity, ( $line->unit_final_price - $ecotax )*$line->quantity - $line->cost_price*$line->extra_quantity - $line->getSalesRepCommission(), $document->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_percentable( $line->marginTwoPercent() ) }}</td>
 
-                <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $ecotax - $line->cost_price )*$line->quantity - $line->cost_price*$line->extra_quantity - $line->getSalesRepCommission() ) }}</td>
+                <td class="text-right">{{ $line->as_priceable( $line->marginTwoAmount() ) }}</td>
 @endif
             </tr>
             
@@ -200,25 +217,36 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
         <tbody>
 
             <tr>
-                <td>{{ $document->as_priceable($document->total_target_revenue) }}</td>
-                <td>{{ $document->as_priceable($document->total_revenue) }}</td>
+                <td>{{ $document->as_priceable($document->getTotalTargetRevenue()) }}</td>
+                <td>{{ $document->as_priceable($document->getTotalRevenue()) }}</td>
                 <td>{{ $document->as_percentable( $document->document_total_discount_percent ) }}</td>
                 <td>{{ $document->as_percentable( $document->document_total_discount_lines ) }}</td>
-                <td>{{ $document->as_priceable($document->total_revenue_with_discount) }}</td>
+                <td>{{ $document->as_priceable($document->getTotalRevenueWithDiscount()) }}</td>
 
-                <td>{{ $document->as_percentable( 100.0 * ($document->total_target_revenue - $document->total_revenue_with_discount) / $document->total_target_revenue ) }}</td>
+                <td>
+@if($document->getTotalTargetRevenue() != 0.0)
+                  {{ $document->as_percentable( 100.0 * ($document->getTotalTargetRevenue() - $document->getTotalRevenueWithDiscount()) / $document->getTotalTargetRevenue() ) }}
+@endif
+                </td>
 
-                <td class="text-right">{{ $document->as_priceable($document->total_cost_price) }}</td>
-                <td class="text-right">{{ $document->as_percentable( \App\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
-                <td class="text-right">{{ $document->as_priceable( $document->total_revenue_with_discount - $document->total_cost_price ) }}</td>
+                <td class="text-right">{{ $document->as_priceable($document->getTotalCostPrice()) }}</td>
+
+                <td class="text-right">{{ $document->as_percentable( $document->marginPercent() ) }}</td>
+
+                <td class="text-right">{{ $document->as_priceable( $document->marginAmount() ) }}</td>
 
 
 
 @if ($document->salesrep)
-                <td class="text-right">{{ $document->as_percentable( 100.0 * $document->getSalesRepCommission() / $document->total_revenue ) }}</td>
+                <td class="text-right">
+@if($document->getTotalTargetRevenue() != 0.0)
+                  {{ $document->as_percentable( 100.0 * $document->getSalesRepCommission() / $document->total_revenue ) }}
+@endif
+                </td>
 
-                <td class="text-right">{{ $document->as_percentable( \App\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount - $document->getSalesRepCommission(), $document->currency ) ) }}</td>
-                <td class="text-right">{{ $document->as_priceable( $document->total_revenue_with_discount - $document->getSalesRepCommission() - $document->total_cost_price ) }}</td>
+                <td class="text-right">{{ $document->as_percentable( $document->marginTwoPercent() ) }}</td>
+
+                <td class="text-right">{{ $document->as_priceable( $document->marginTwoAmount() ) }}</td>
 @endif
             </tr>
 
@@ -234,6 +262,14 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                <br>
                <br>
 
-               <b>{{l('Margin')}}</b>: 
-                    {{ l('Only Product Lines and Discount Lines are considered, and Shipping Lines depending on Configuration.') }}
+               <b>{{l('Margin')}}</b>. 
+                    {{ l('Document Lines to be included in calculations') }}: <br>
+
+                    <ul>
+                      <li>{{ l('Product Lines.') }}</li>
+                      <li>{{ l('Discount Lines.') }}</li>
+                      <li>{{ l('Sevice Lines.') }} {{ l('Depending on Configurations (:yn).', ['yn' => \App\Configuration::isTrue('INCLUDE_SERVICE_LINES_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')]) }}</li>
+                      <li>{{ l('Shipping Lines.') }} {{ l('Depending on Configurations (:yn).', ['yn' => \App\Configuration::isTrue('INCLUDE_SHIPPING_COST_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')]) }}</li>
+                    </ul>
+
                <br>

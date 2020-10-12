@@ -143,6 +143,15 @@ Route::get('mqueuer', 'MProbeController@queuer');
 Route::get('migratethis', function()
 {	
 
+	// 2020-09-30
+
+	$tables = ['customer_invoice', 'customer_shipping_slip', 'customer_quotation', 'customer_order'];
+
+	foreach ($tables as $table) {
+		# code...
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `".$table."_lines` ADD `cost_average`  DECIMAL(20,6) NOT NULL DEFAULT '0.0' AFTER `cost_price`;");
+	}
+
 	// 2020-09-25
 
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `sales_reps` ADD `sales_rep_type` varchar(32) NOT NULL DEFAULT 'external' AFTER `id`;");

@@ -6,10 +6,14 @@ use Illuminate\Http\Request;
 
 use Excel;
 
+// Helferinnen
+use App\Http\Controllers\HelferinTraits\JenniferMod347Trait;
+
 use App\Traits\DateFormFormatterTrait;
 
 class JenniferController extends Controller
 {
+    use JenniferMod347Trait;
    
    use DateFormFormatterTrait;
 

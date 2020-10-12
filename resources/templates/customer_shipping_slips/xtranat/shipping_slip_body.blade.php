@@ -309,7 +309,7 @@
 			</td>
 			<td class="price total last-column">
 				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_priceable( $line->product->recommended_retail_price ) }}
+					<span class="abi-Price-amount amount">{{ $line->as_priceable( optional($line->product)->recommended_retail_price ) }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>

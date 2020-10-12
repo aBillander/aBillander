@@ -81,6 +81,8 @@
                         data-from_email = "{{ abi_mail_from_address() }}" 
                         onClick="return false;" title="{{l('Send eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
 
+                <a href="{{ route('commissionsettlements.index', ['sales_rep_id' => $salesrep->id]) }}" class="btn btn-sm btn-navy" title="{{l('Settlement', 'commissionsettlements')}}"><i class="fa fa-flag-checkered"></i></a>
+
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('salesreps/' . $salesrep->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 

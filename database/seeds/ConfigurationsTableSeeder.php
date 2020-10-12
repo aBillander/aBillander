@@ -150,6 +150,7 @@ $confs = [
 ['FSX_PAYMENT_METHODS_CACHE', ''],
 ['HEADER_TITLE', '<span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>'],
 ['SELL_ONLY_MANUFACTURED', '0'],
+['INCLUDE_SERVICE_LINES_IN_PROFIT', '0'],
 ['INCLUDE_SHIPPING_COST_IN_PROFIT', '0'],
 ['INVENTORY_VALUATION_METHOD', 'AVERAGE'],
 ['MARGIN_PRICE', 'STANDARD'],

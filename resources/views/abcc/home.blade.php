@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('Welcome') }} @parent @stop
+@section('title') {{ l('Welcome', 'abcc/layouts') }} @parent @stop
 
 
 @section('content')
@@ -18,7 +18,7 @@
             {{ csrf_field() }}
         </form>
 
-         <!-- a href="{{{ URL::to('auth/logout') }}}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Home', [], 'customerhome') }}
+         <!-- a href="{{{ URL::to('auth/logout') }}}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Home', [], 'abccc/layouts') }}
     </h2>        
 </div>
 

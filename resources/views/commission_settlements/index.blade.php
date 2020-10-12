@@ -10,9 +10,17 @@
         <a href="{{ URL::to('commissionsettlements/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
     </div>
+@if($salesrep)
+    <h2>
+        <a href="{{ route('commissionsettlements.index') }}">{{ l('Commission Settlements') }}</a> <span style="color: #cccccc;">/</span> 
+
+        <a href="{{ route('salesreps.edit', [$salesrep->id]) }}" target="_new">{{$salesrep->name}} </a> <span class="btn btn-xs btn-grey" title="{{l('Commission Percent')}}">{{ $salesrep->as_percent( 'commission_percent' ) }}%</span>
+    </h2>
+@else
     <h2>
         {{ l('Commission Settlements') }}
-    </h2>        
+    </h2>
+@endif
 </div>
 
 <div id="div_settlements">
@@ -87,6 +95,8 @@
 	@endforeach
 	</tbody>
 </table>
+{!! $settlements->appends( Request::all() )->render() !!} 
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $settlements->total() ], 'layouts')}} </span></li></ul>
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>

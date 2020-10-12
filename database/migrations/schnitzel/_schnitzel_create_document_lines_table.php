@@ -29,6 +29,7 @@
             $table->tinyInteger('prices_entered_with_tax')->default(0);
 
 			$table->decimal('cost_price', 20, 6)->default(0.0);
+			$table->decimal('cost_average', 20, 6)->default(0.0);
 			$table->decimal('unit_price', 20, 6)->default(0.0);					// From Product data (initial price)
 			$table->decimal('unit_customer_price', 20, 6)->default(0.0);		// Calculated custom for customer (initial price for customer)
             $table->decimal('unit_customer_final_price', 20, 6)->default(0.0);  // Customer Price for this line

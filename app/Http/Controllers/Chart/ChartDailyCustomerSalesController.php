@@ -47,9 +47,9 @@ class ChartDailyCustomerSalesController extends Controller
 
 		$month_array = array();
 		$orders_dates = $class::
-							  where( 'document_date', '>=', $this->first )
-							->orderBy( 'document_date', 'ASC' )
-							->pluck( 'document_date' );
+//							  where( 'document_date', '>=', $this->first )
+							  where( 'close_date', 'ASC' )
+							->pluck( 'close_date' );
 		// abi_r($orders_dates[0]);abi_r('*********************');
 		$orders_dates = json_decode( $orders_dates );
 		// abi_r($orders_dates[0]);abi_r('*********************');die();
@@ -71,7 +71,8 @@ class ChartDailyCustomerSalesController extends Controller
 		$class = 'App\\'.$model;
 		$monthly_order_count = $class::
 									  select('total_tax_excl')
-									->where( 'document_date', $day )
+									->where( 'close_date', $day )
+//									->where( 'document_date', $day )
 //									->where( 'document_date', '>=', $this->first )
 									->get()
 									->sum('total_tax_excl');

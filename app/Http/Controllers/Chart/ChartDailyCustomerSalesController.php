@@ -47,8 +47,8 @@ class ChartDailyCustomerSalesController extends Controller
 
 		$month_array = array();
 		$orders_dates = $class::
-//							  where( 'document_date', '>=', $this->first )
-							  where( 'close_date', 'ASC' )
+							  where( 'close_date', '>=', $this->first )
+							->orderBy( 'close_date', 'ASC' )
 							->pluck( 'close_date' );
 		// abi_r($orders_dates[0]);abi_r('*********************');
 		$orders_dates = json_decode( $orders_dates );
@@ -71,8 +71,7 @@ class ChartDailyCustomerSalesController extends Controller
 		$class = 'App\\'.$model;
 		$monthly_order_count = $class::
 									  select('total_tax_excl')
-									->where( 'close_date', $day )
-//									->where( 'document_date', $day )
+									->whereDate( 'close_date', $day )	// See: https://stackoverflow.com/questions/25139948/laravel-eloquent-compare-date-from-datetime-field
 //									->where( 'document_date', '>=', $this->first )
 									->get()
 									->sum('total_tax_excl');

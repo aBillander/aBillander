@@ -12,3 +12,8 @@ https://laracasts.com/discuss/channels/laravel/how-to-properly-remove-package?pa
 
 
 composer remove abillander/abillander-installer
+
+
+https://www.google.com/search?channel=fs&client=ubuntu&q=gitkraken+file+mode+changes+from+217+to+14001
+https://stackoverflow.com/questions/1580596/how-do-i-make-git-ignore-file-mode-chmod-changes
+https://stackoverflow.com/questions/53399046/git-gitkraken-file-mode-changes-to-unknown-value-14001-after-restoring-repo

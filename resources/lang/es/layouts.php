@@ -66,8 +66,20 @@ return [
 	'Margin calculation is based on Cost Price'  => 'El Margen se calcula sobre el Precio de Coste',
 	'Margin calculation is based on Sales Price' => 'El Margen se calcula sobre el Precio de Venta',
 
+	'Cost for margin calculation is Product Average Cost Price' => 'El Coste para calcular el Margen es el Precio de Coste Promedio del Producto',
+	'Cost for margin calculation is Product Cost Price' => 'El Coste para calcular el Margen es el Precio de Coste del Producto',
+
 	'Shipping Cost included'     => 'Coste de Envío incluido',
 	'Shipping Cost excluded'     => 'Coste de Envío excluido',
+
+	'Margin'     => 'Margen',
+	'Document Lines to be included in calculations' => 'Líneas del Documento que se incluirán en los cálculos',
+	'Product Lines.' => 'Líneas de Productos.',
+	'Discount Lines.' => 'Líneas de Descuentos.',
+	'Sevice Lines.' => 'Líneas de Servicios.',
+	'Shipping Lines.' => 'Líneas de Coste de Envío.',
+
+	'Depending on Configurations (:yn).' => 'Dependiendo de la Configuración (:yn).',
 
 	'Discount on Product Price' => 'Descuento sobre el Precio del Producto',
 

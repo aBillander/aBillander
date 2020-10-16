@@ -79,8 +79,8 @@
                 </td>
                 <td>{{ $addr->name_commercial }}<br />
                     {{ $addr->address1 }} {{ $addr->address2 }}<br />
-                    {{ $addr->postcode }} {{ $addr->city }}, {{ $addr->state->name }}<br />
-                    {{ $addr->country->name }}
+                    {{ $addr->postcode }} {{ $addr->city }}, {{ optional($addr->state)->name }}<br />
+                    {{ optional($addr->country)->name }}
                 </td>
                 <td>{{ $addr->firstname }} {{ $addr->lastname }}<br />
                     {{ $addr->phone }} &nbsp; {{ $addr->phone_mobile }}<br />

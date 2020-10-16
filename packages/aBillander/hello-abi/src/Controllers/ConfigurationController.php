@@ -51,6 +51,10 @@ class ConfigurationController extends Controller
         $databaseInputs = array_keys($this->rules);
         $environmentNewValues = $request->only($databaseInputs);
 
+        $environmentNewValues['ABI_DOMAIN'] = $request->input('APP_URL');
+        $environmentNewValues['ABCC_DOMAIN'] = $request->input('APP_URL');
+        $environmentNewValues['ABSRC_DOMAIN'] = $request->input('APP_URL');
+
         $environmentManager->setValues($environmentNewValues);
 
         // Check if the credentials of the database are valid

@@ -7,7 +7,7 @@ use App\Tax;
 use App\TaxRule;
 use App\Country;
   
-class TaxesTableSeeder extends Seeder {
+class esTaxesTableSeeder extends Seeder {
   
     public function run() {
         TaxRule::truncate();
@@ -28,6 +28,7 @@ class TaxesTableSeeder extends Seeder {
  * Default
  */
         Configuration::updateValue('DEF_TAX', $tax->id);
+        // $conf = Configuration::where('name', 'DEF_TAX')->first()->update(['value' => $tax->id]);
   
         $taxRule = TaxRule::create( [
             'country_id' => $country_id ,

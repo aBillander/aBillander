@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 use App\PaymentType;
 use App\Configuration;
   
-class PaymentTypesTableSeeder extends Seeder {
+class esPaymentTypesTableSeeder extends Seeder {
   
     public function run() {
         PaymentType::truncate();

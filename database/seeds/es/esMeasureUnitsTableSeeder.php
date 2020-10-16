@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 use App\MeasureUnit;
 use App\Configuration;
   
-class MeasureUnitsTableSeeder extends Seeder {
+class esMeasureUnitsTableSeeder extends Seeder {
   
     public function run() {
         MeasureUnit::truncate();

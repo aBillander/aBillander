@@ -15,7 +15,7 @@
                 <p>{{ __('installer::main.done.success') }}</p>
             </div>
             <hr>
-            <p>{{ __('installer::main.done.body') }}</p>
+            <!-- p>{{ __('installer::main.done.body') }}</p -->
         </div>
         <div class="panel-footer text-right">
             <a class="btn btn-primary" href="{{ url('/') }}">

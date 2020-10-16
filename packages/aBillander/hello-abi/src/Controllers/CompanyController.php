@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Http\Requests;
 use App\Company;
+use App\Warehouse;
 use App\Address;
 use App\User;
 use App\Configuration;
@@ -19,10 +20,11 @@ class CompanyController extends Controller
     protected $address;
     protected $user;
 
-    public function __construct(Company $company, Address $address, User $user)
+    public function __construct(Company $company, Address $address, Warehouse $warehouse, User $user)
     {
         $this->company = $company;
         $this->address = $address;
+        $this->warehouse = $warehouse;
         $this->user    = $user;
     }
 
@@ -53,6 +55,7 @@ class CompanyController extends Controller
 
         $request->merge(['notes' => $request->input('address.notes'), 'name_commercial' => $request->input('address.name_commercial')]);
 
+        // Company
         $company = $this->company->create($request->all());
 
         $data = $request->input('address');
@@ -60,6 +63,16 @@ class CompanyController extends Controller
         $address = $this->address->create($data);
         $company->addresses()->save($address);
 
+        // Another step forward: default Warehouse
+        $warehouse = $this->warehouse->create([
+            'name'      => $company->name_commercial,
+            'alias'     => $company->alias,
+            'active'    => '1' ,
+        ]);
+        $addressw = $this->address->create($data);  // Same Address
+        $warehouse->addresses()->save($addressw);
+
+        // User
         $user_data = [
             'email'     => $address->email ,
             'password'  => Hash::make( $request->input('password') ) ,
@@ -80,10 +93,11 @@ class CompanyController extends Controller
 
         $infos = [
 
-                [ 'name' => 'DEF_COMPANY',  'value' => $company->id          ],
-                [ 'name' => 'DEF_CURRENCY', 'value' => $company->currency_id ],
-                [ 'name' => 'DEF_LANGUAGE', 'value' => $company->language_id ],
-                [ 'name' => 'DEF_COUNTRY',  'value' => $address->country_id  ],
+                [ 'name' => 'DEF_COMPANY',   'value' => $company->id          ],
+                [ 'name' => 'DEF_CURRENCY',  'value' => $company->currency_id ],
+                [ 'name' => 'DEF_LANGUAGE',  'value' => $company->language_id ],
+                [ 'name' => 'DEF_COUNTRY',   'value' => $address->country_id  ],
+                [ 'name' => 'DEF_WAREHOUSE', 'value' => $warehouse->id        ],
 
         ];
 

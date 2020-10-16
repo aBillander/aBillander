@@ -30,7 +30,7 @@
 
             <div class="panel-footer text-right">
                 <a class="btn btn-link" href="{{ route('installer::configuration') }}">{{ __('pagination.previous') }}</a>
-                <button class="btn btn-primary" type="submit">
+                <button class="btn btn-primary" type="submit" onclick="this.disabled=true;">
                     {{ 'Instalar' }}
                 </button>
             </div>

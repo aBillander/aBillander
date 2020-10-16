@@ -2,6 +2,7 @@
 
 namespace aBillander\Installer\Controllers;
 
+// use Illuminate\Support\Facades\Artisan;
 use Illuminate\Routing\Controller;
 
 use aBillander\Installer\Helpers\RequirementsChecker;
@@ -18,6 +19,9 @@ class RequirementsController extends Controller
      */
     public function check(RequirementsChecker $requirementsChecker, PermissionsChecker $permissionsChecker)
     {
+        // https://stackoverflow.com/questions/42560480/how-to-refresh-configuration-variables-from-package-in-laravel-5-3
+        // Artisan::call("config:cache");
+
         $phpSupportInfo = $requirementsChecker->checkPHPversion(
             config('installer.core.minPhpVersion')
         );

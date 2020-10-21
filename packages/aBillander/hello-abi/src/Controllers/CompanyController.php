@@ -66,7 +66,7 @@ class CompanyController extends Controller
         // Another step forward: default Warehouse
         $warehouse = $this->warehouse->create([
             'name'      => $company->name_commercial,
-            'alias'     => $company->alias,
+            'alias'     => $address->alias,
             'active'    => '1' ,
         ]);
         $addressw = $this->address->create($data);  // Same Address

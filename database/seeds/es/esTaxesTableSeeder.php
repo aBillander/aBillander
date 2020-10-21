@@ -165,5 +165,55 @@ class esTaxesTableSeeder extends Seeder {
         ] );
 
         $tax->taxrules()->save($taxRule);
+
+/*  
+        $tax = Tax::create( [
+            'id'      => '5' ,
+            'name'      => 'IGIC Normal' ,
+            'active'    => '1' ,
+                    'created_at'  => \Carbon\Carbon::now()->toDateTimeString(),
+                    'updated_at'  => \Carbon\Carbon::now()->toDateTimeString(),
+        ] );
+  
+        $taxRule = TaxRule::create( [
+            'country_id' => $country_id ,
+            'state_id'   => '0' ,
+            'rule_type' => 'sales' ,
+
+            'name'      => 'IGIC Normal (7%)' ,
+            'percent' => '7.0' ,
+
+            'position' => '10' ,
+            // 'tax_id'    => '4' ,
+                    'created_at'  => \Carbon\Carbon::now()->toDateTimeString(),
+                    'updated_at'  => \Carbon\Carbon::now()->toDateTimeString(),
+        ] );
+
+        $tax->taxrules()->save($taxRule);
+  
+        $tax = Tax::create( [
+            'id'      => '6' ,
+            'name'      => 'IGIC Reducido' ,
+            'active'    => '1' ,
+                    'created_at'  => \Carbon\Carbon::now()->toDateTimeString(),
+                    'updated_at'  => \Carbon\Carbon::now()->toDateTimeString(),
+        ] );
+  
+        $taxRule = TaxRule::create( [
+            'country_id' => $country_id ,
+            'state_id'   => '0' ,
+            'rule_type' => 'sales' ,
+
+            'name'      => 'IGIC Reducido (3%)' ,
+            'percent' => '3.0' ,
+
+            'position' => '10' ,
+            // 'tax_id'    => '4' ,
+                    'created_at'  => \Carbon\Carbon::now()->toDateTimeString(),
+                    'updated_at'  => \Carbon\Carbon::now()->toDateTimeString(),
+        ] );
+
+        $tax->taxrules()->save($taxRule);
+*/
     }
 }

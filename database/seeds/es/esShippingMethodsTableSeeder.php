@@ -52,6 +52,6 @@ class esShippingMethodsTableSeeder extends Seeder {
             'carrier_id' => 2,
         ] );
 
-        Configuration::updateValue('DEF_CUSTOMER_SHIPPING_METHOD', $pmeth->id);
+        Configuration::updateValue('DEF_SHIPPING_METHOD', $pmeth->id);
     }
 }

@@ -20,6 +20,9 @@ class EnvironmentManager
      */
     public $envToConfig = [
         'APP_URL' => 'app.url',
+        'ABI_DOMAIN'   => 'app.abi_domain',
+        'ABCC_DOMAIN'  => 'app.abcc_domain',
+        'ABSRC_DOMAIN' => 'app.absrc_domain',
         'DB_HOST' => 'database.connections.mysql.host',
         'DB_PORT' => 'database.connections.mysql.port',
         'DB_DATABASE' => 'database.connections.mysql.database',

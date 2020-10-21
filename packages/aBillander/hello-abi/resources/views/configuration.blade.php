@@ -53,7 +53,7 @@
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.config.password') }}</label><br>
                             <!--input type="password" name="DB_PASSWORD" class="form-control" value="{{ config('database.connections.mysql.password') }}" required -->
-                            <input type="text" name="DB_PASSWORD" class="form-control" value="{{ config('database.connections.mysql.password') }}" required>
+                            <input type="text" name="DB_PASSWORD" class="form-control" value="{{ config('database.connections.mysql.password') }}">
                         </div>
                     </div>
                 </div>

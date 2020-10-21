@@ -22,6 +22,12 @@ class RequirementsController extends Controller
         // https://stackoverflow.com/questions/42560480/how-to-refresh-configuration-variables-from-package-in-laravel-5-3
         // Artisan::call("config:cache");
 
+        if ( file_exists(storage_path('logs/laravel.log')) )
+        {
+            // Delete
+            @unlink(storage_path('logs/laravel.log'));
+        }
+
         $phpSupportInfo = $requirementsChecker->checkPHPversion(
             config('installer.core.minPhpVersion')
         );

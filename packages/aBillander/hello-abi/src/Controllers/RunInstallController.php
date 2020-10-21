@@ -49,7 +49,16 @@ class RunInstallController extends Controller
         Artisan::call('view:clear');
 
         // Set symlinks
-        Artisan::call("storage:link");
+        // Warning: symlink(): permission denied
+        try {
+            
+            // Artisan::call("storage:link");
+
+            // Check web.php :: Route::get('/linkstorage', function () { ...
+
+        } catch (Exception $e) {
+            
+        }
 
         return redirect()->route('installer::company')->with('info', nl2br($response['dbOutputLog']));
 //                         ->with(['message' => $response]);

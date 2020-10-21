@@ -45,7 +45,17 @@ class ConfigurationController extends Controller
      */
     public function save(Request $request, EnvironmentManager $environmentManager)
     {
-        $request->validate($this->rules);
+        $rules = $this->rules;
+
+        // Check local installation
+        if ( (strpos($request->input('APP_URL'), 'localhost') === false) || 
+             (strpos($request->input('APP_URL'), '127.0.0.1') === false)    )
+        {
+            unset( $rules['DB_PASSWORD'] );         // Local installation maynot have password
+        }
+
+
+        $request->validate($rules);
 
         // Save the config in the .env file
         $databaseInputs = array_keys($this->rules);

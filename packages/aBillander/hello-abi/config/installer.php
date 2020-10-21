@@ -40,13 +40,14 @@ return [
     |
     */
     'permissions' => [
-        'bootstrap/cache/'       => '775',
-        'storage/db_backups/'    => '775',
-        'storage/export/'        => '775',
-        'storage/fonts/'         => '775',
-        'storage/framework/'     => '775',
-        'storage/pdf/'           => '775',
-        'storage/logs/'          => '775',
+        'bootstrap/cache/'       => '755',
+        'storage/'               => '755',
+        'storage/db_backups/'    => '755',
+        'storage/export/'        => '755',
+        'storage/fonts/'         => '755',
+        'storage/framework/'     => '755',
+        'storage/pdf/'           => '755',
+        'storage/logs/'          => '755',
     ],
 
     /*

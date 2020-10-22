@@ -11,6 +11,7 @@ return [
 	|
 	*/
 
+	'Reports'     => 'Informes',
 
 	'Document' => 'Documento',
 

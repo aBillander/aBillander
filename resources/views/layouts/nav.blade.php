@@ -350,6 +350,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('paymenttypes') }}">
+                                 {{l('Payment Types', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('taxes') }}">
                                  {{l('Taxes', [], 'layouts')}}
                             </a>

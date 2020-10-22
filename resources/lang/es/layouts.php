@@ -106,6 +106,7 @@ return [
 	'Currencies' => 'Divisas',
 	'Shipping Methods'     => 'Métodos de Envío',
 	'Payment Methods'     => 'Formas de Pago',
+	'Payment Types' => 'Tipos de Pago',
 	'Taxes'     => 'Impuestos',
 	'Ecotaxes'     => 'Eco-Impuestos',
 	'Cheques' => 'Cheques',

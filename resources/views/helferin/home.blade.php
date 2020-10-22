@@ -18,7 +18,7 @@
             {{ csrf_field() }}
         </form>
 
-         <!-- a href="{{ URL::to('auth/logout') }}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Reports', [], 'layouts') }} 
+         <!-- a href="{{ URL::to('auth/logout') }}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Reports') }} 
          <span style="color: #cccccc;">/</span> {{ l('Sales', [], 'layouts') }}
     </h2>
 </div>

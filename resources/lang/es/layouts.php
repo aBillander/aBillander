@@ -81,6 +81,15 @@ return [
 
 	'Depending on Configurations (:yn).' => 'Dependiendo de la Configuración (:yn).',
 
+	'Margin'     => 'Margen',
+	'Document Lines to be included in calculations' => 'Líneas del Documento que se incluirán en los cálculos',
+	'Product Lines.' => 'Líneas de Productos.',
+	'Discount Lines.' => 'Líneas de Descuentos.',
+	'Sevice Lines.' => 'Líneas de Servicios.',
+	'Shipping Lines.' => 'Líneas de Coste de Envío.',
+
+	'Depending on Configurations (:yn).' => 'Dependiendo de la Configuración (:yn).',
+
 	'Discount on Product Price' => 'Descuento sobre el Precio del Producto',
 
 
@@ -400,6 +409,7 @@ return [
 	'Send Password Reset Link.'     => 'Si olvidó la contraseña de acceso, introduzca su dirección de correo electrónico. Una vez enviado este formulario, recibirá en su correo las instrucciones para actualizar la contraseña.',
 	'Reset Password'     => 'Cambiar Contraseña',
 	'Customer Reset Password'     => 'Cambiar Contraseña para el Centro de Clientes',
+	'Login information' => 'Datos de acceso',
 
 	'Customers' => 'Clientes',
 	'Customers - Create' => 'Clientes - Crear',

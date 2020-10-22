@@ -19,6 +19,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
+
+// In case Laravel storage link won't work on production
+Route::get('/linkstorage', function () {
+    Artisan::call('storage:link');
+});
+
+
 // Disable Registration Routes...
 // See:
 // https://stackoverflow.com/questions/29183348/how-to-disable-registration-new-user-in-laravel-5

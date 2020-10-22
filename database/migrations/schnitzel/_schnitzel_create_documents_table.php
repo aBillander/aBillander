@@ -1,9 +1,10 @@
 <?php
-
+            if ( !isset($entity) )
+                  $entity = 'customer';
 
             $table->increments('id');
             $table->integer('company_id')->unsigned()->default(0);              // For multi-Company setup
-            $table->integer('customer_id')->unsigned()->nullable();
+            $table->integer($entity . '_id')->unsigned()->nullable();
             $table->integer('user_id')->unsigned()->default(0);            // Maybe creator user, validator user, closer user
 
             $table->integer('sequence_id')->unsigned()->nullable();
@@ -12,7 +13,7 @@
             $table->string('document_reference', 64)->nullable();               // document_prefix + document_id of document
             $table->string('reference')->nullable();                            // Project reference, etc.
 
-            $table->string('reference_customer', 32)->nullable();         // Custumer order number 
+            $table->string('reference_' . $entity, 32)->nullable();         // Custumer order number 
             $table->string('reference_external', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
 
             $table->string('created_via', 32)->default('manual')->nullable();
@@ -80,9 +81,9 @@
 
             $table->decimal('commission_amount', 20, 6)->default(0.0);          // Sales Representative commission amount
 
-            $table->text('notes_from_customer')->nullable();          // Notes FROM the Customer
+            $table->text('notes_from_' . $entity)->nullable();          // Notes FROM the Customer
             $table->text('notes')->nullable();                  // Private notes ( notes to self ;) )
-            $table->text('notes_to_customer')->nullable();      // Notes for the Customer
+            $table->text('notes_to_' . $entity)->nullable();      // Notes for the Customer
 
 //          $table->enum('status', array('draft', 'confirmed', 'closed', 'canceled'))->default('draft');
             $table->string('status', 32)->nullable(false)->default('draft');

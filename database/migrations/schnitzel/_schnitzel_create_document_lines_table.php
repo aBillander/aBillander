@@ -5,6 +5,8 @@
 	 *
 	 * Common fields
 	 */
+            if ( !isset($entity) )
+                  $entity = 'customer';
 
 			$table->increments('id');
 			$table->integer('line_sort_order')->nullable();			// To sort lines 
@@ -31,9 +33,9 @@
 			$table->decimal('cost_price', 20, 6)->default(0.0);
 			$table->decimal('cost_average', 20, 6)->default(0.0);
 			$table->decimal('unit_price', 20, 6)->default(0.0);					// From Product data (initial price)
-			$table->decimal('unit_customer_price', 20, 6)->default(0.0);		// Calculated custom for customer (initial price for customer)
-            $table->decimal('unit_customer_final_price', 20, 6)->default(0.0);  // Customer Price for this line
-            $table->decimal('unit_customer_final_price_tax_inc', 20, 6)->default(0.0); 
+			$table->decimal('unit_' . $entity . '_price', 20, 6)->default(0.0);		// Calculated custom for customer (initial price for customer)
+            $table->decimal('unit_' . $entity . '_final_price', 20, 6)->default(0.0);  // Customer Price for this line
+            $table->decimal('unit_' . $entity . '_final_price_tax_inc', 20, 6)->default(0.0); 
             
 			$table->decimal('unit_final_price', 20, 6)->default(0.0);			// Just if you allow to modify customer price
 			$table->decimal('unit_final_price_tax_inc', 20, 6)->default(0.0);

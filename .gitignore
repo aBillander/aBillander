@@ -12,8 +12,7 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .env
-.env_*
-.env-*
+.env*
 commands_XN.txt
 commands_HUB.txt
 Screenshot at 2019-10-19 11:49:09.png
@@ -22,5 +21,7 @@ composer.json_dist*
 composer.lock_dist*
 /database/backups
 /routes/abcc_dist.php
+
+remove-pkg.txt
 
 *.php_dist

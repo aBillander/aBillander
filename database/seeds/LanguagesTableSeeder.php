@@ -17,8 +17,6 @@ class LanguagesTableSeeder extends Seeder {
             'date_format_lite_view'  => 'm/j/Y' ,
             'date_format_full_view'  => 'm/j/Y H:i:s' ,
             'active'    => '1' ,
-					'created_at'  => \Carbon\Carbon::now()->toDateTimeString(),
-					'updated_at'  => \Carbon\Carbon::now()->toDateTimeString(),
         ] );
   
         Language::create( [
@@ -30,8 +28,6 @@ class LanguagesTableSeeder extends Seeder {
             'date_format_lite_view'  => 'd/m/yy' ,
             'date_format_full_view'  => 'd/m/yy H:i:s' ,
             'active'    => '1' ,
-					'created_at'  => \Carbon\Carbon::now()->toDateTimeString(),
-					'updated_at'  => \Carbon\Carbon::now()->toDateTimeString(),
         ] );
     }
 }

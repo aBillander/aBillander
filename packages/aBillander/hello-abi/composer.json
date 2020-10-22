@@ -1,0 +1,22 @@
+{
+    "name": "aBillander/hello-abi",
+    "description": "aBillander Web Installer Package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lara Billander",
+            "email": "wasp@abillander.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.0",
+        "laravel/framework": "~5.5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "aBillander\\hello-abi\\": "src/"
+        }
+    },
+}

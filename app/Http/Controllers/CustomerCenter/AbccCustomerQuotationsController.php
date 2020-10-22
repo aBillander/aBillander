@@ -187,7 +187,7 @@ class AbccCustomerQuotationsController extends Controller {
 //			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
 //			'sales_rep_id' => $order[''],
 			'currency_id' => $cart->currency->id,
-			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_PAYMENT_METHOD'),
+			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'),
 //			'template_id' => \App\Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE'),
 		];
 
@@ -373,7 +373,7 @@ class AbccCustomerQuotationsController extends Controller {
 //			'shipping_method_id' => WooOrder::getShippingMethodId( $order['shipping_lines'][0]['method_id'] ),
 //			'sales_rep_id' => $order[''],
 			'currency_id' => $cart->currency->id,
-			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_PAYMENT_METHOD'),
+			'payment_method_id' => $customer->payment_method_id ?: Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'),
 //			'template_id' => \App\Configuration::get('DEF_CUSTOMER_INVOICE_TEMPLATE'),
 		];
 

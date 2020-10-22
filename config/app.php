@@ -54,6 +54,10 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'abi_domain'   => env('ABI_DOMAIN',   'http://localhost'),
+    'abcc_domain'  => env('ABCC_DOMAIN',  'http://localhost'),
+    'absrc_domain' => env('ABSRC_DOMAIN', 'http://localhost'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -198,6 +202,7 @@ return [
         /*
          * aBillander Package Service Providers...
          */
+        aBillander\Installer\InstallerServiceProvider::class,
         aBillander\SepaSpain\SepaSpainServiceProvider::class,
         aBillander\WooConnect\WooConnectServiceProvider::class,
         Queridiam\FSxConnector\FSxConnectorServiceProvider::class,

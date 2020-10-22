@@ -23,6 +23,17 @@
 
 
 
+Route::get('cc', function( )
+{
+	
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+});
+
+/* ********************************************************** */
+
 Route::get('lm', function( )
 {
 	// http://zetcode.com/php/carbon/

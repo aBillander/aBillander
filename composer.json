@@ -7,6 +7,7 @@
     "require": {
         "php": ">=7.0.0",
         "barryvdh/laravel-dompdf": "0.8.2",
+        "doctrine/dbal": "^2.5",
         "fideloper/proxy": "3.3.4",
         "intervention/image": "2.4.2",
         "laravel/framework": "5.5.*",
@@ -14,11 +15,9 @@
         "laravelcollective/html": "5.5.1",
         "maatwebsite/excel": "2.1.28",
         "mindsize/laravel5-woocommerce": "1.0.3",
-        "unisharp/laravel-ckeditor": "4.7.2",
-        "abillander/abillander-installer": "dev-master"
+        "unisharp/laravel-ckeditor": "4.7.2"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.2",
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
@@ -32,6 +31,7 @@
         ],
         "psr-4": {
             "App\\": "app/",
+            "aBillander\\Installer\\": "packages/aBillander/hello-abi/src",
             "aBillander\\SepaSpain\\": "packages/aBillander/SepaSpain/src",
             "aBillander\\WooConnect\\": "packages/aBillander/WooConnect/src",
             "Queridiam\\FSxConnector\\": "packages/Queridiam/FSxConnector/src"

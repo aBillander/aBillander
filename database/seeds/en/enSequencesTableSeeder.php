@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 use App\Sequence;
 use App\Configuration;
   
-class esSequencesTableSeeder extends Seeder {
+class enSequencesTableSeeder extends Seeder {
   
     public function run() {
         Sequence::truncate();
@@ -22,7 +22,7 @@ class esSequencesTableSeeder extends Seeder {
  */ 
   
         $t = Sequence::create( [
-            'name'    => 'Presupuestos de Clientes', 
+            'name'    => 'Customer Quotations', 
             'model_name'    => 'CustomerQuotation', 
             'prefix'    => 'PRE', 
             'length'    => '4', 
@@ -35,7 +35,7 @@ class esSequencesTableSeeder extends Seeder {
         Configuration::updateValue('ABCC_QUOTATIONS_SEQUENCE', $t->id);
   
         $t = Sequence::create( [
-            'name'    => 'Pedidos de Clientes', 
+            'name'    => 'Customer Orders', 
             'model_name'    => 'CustomerOrder', 
             'prefix'    => 'POT', 
             'length'    => '4', 
@@ -48,7 +48,7 @@ class esSequencesTableSeeder extends Seeder {
         Configuration::updateValue('ABCC_ORDERS_SEQUENCE', $t->id);
   
         $t = Sequence::create( [
-            'name'    => 'Albaranes de Clientes', 
+            'name'    => 'Customer Shipping Slips', 
             'model_name'    => 'CustomerShippingSlip', 
             'prefix'    => 'ALB', 
             'length'    => '4', 
@@ -60,7 +60,7 @@ class esSequencesTableSeeder extends Seeder {
         Configuration::updateValue('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE', $t->id);
 
         $t = Sequence::create( [
-            'name'    => 'Facturas Nacional', 
+            'name'    => 'Customer Invoices', 
             'model_name'    => 'CustomerInvoice', 
             'prefix'    => 'NAC', 
             'length'    => '4', 
@@ -72,7 +72,7 @@ class esSequencesTableSeeder extends Seeder {
         Configuration::updateValue('DEF_CUSTOMER_INVOICE_SEQUENCE', $t->id);
   
         $t = Sequence::create( [
-            'name'    => 'Transferencias de Almacén', 
+            'name'    => 'Warehouse Transfer Shipping Slips', 
             'model_name'    => 'WarehouseShippingSlip', 
             'prefix'    => 'TRS', 
             'length'    => '4', 
@@ -82,19 +82,10 @@ class esSequencesTableSeeder extends Seeder {
         ] );
 
         Configuration::updateValue('DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE', $t->id);
+
   
         $t = Sequence::create( [
-            'name'    => 'Remesas Clientes', 
-            'model_name'    => 'SepaDirectDebit', 
-            'prefix'    => 'RE', 
-            'length'    => '4', 
-            'separator'    => '-', 
-            'next_id'     => '1',
-            'active'    => '1' ,
-        ] );
-  
-        $t = Sequence::create( [
-            'name'    => 'Albaranes de Proveedores', 
+            'name'    => 'Supplier Shipping Slips', 
             'model_name'    => 'SupplierShippingSlip', 
             'prefix'    => 'ALP', 
             'length'    => '4', 

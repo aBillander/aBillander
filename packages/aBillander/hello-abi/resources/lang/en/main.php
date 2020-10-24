@@ -91,6 +91,8 @@ return [
         'body' => 'Database tables will be created, and aBillander will be set ready for use.<br /><br />This operation may take a few minutes; you must not interrupt it.',
         'database_not_empty' => 'Your Database contains tables. You should delete them before continuing.',
         'success' => 'aBillander configuration is correct and it is already working.',
+
+        'install' => 'Install',
     ],
 
     'company' => [

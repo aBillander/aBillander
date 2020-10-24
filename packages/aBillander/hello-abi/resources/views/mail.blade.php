@@ -90,7 +90,7 @@
                 </div>
                 <hr>
                 <input type="hidden" name="action" id="action" value="continue">
-                <button class="btn btn-success" type="submit" onclick="$('#action').val('check');this.form.submit()">
+                <button class="btn btn-success" type="submit" onclick="$('#action').val('check');this.disabled=true;this.form.submit()">
                     {{ __('installer::main.mail.check') }}
                 </button>
 

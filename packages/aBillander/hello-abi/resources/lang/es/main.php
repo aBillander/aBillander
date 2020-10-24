@@ -91,6 +91,8 @@ return [
         'body' => 'Se crearán las tablas en la Base de Datos y aBillander estará listo para usarse.<br /><br />Esta operación puede durar algunos minutos; no debe interrumpirla.',
         'database_not_empty' => 'La Base de Datos contiene tablas. Debería borrarlas antes de continuar.',
         'success' => 'La configuración de aBillander es correcta y ya está funcionando.',
+
+        'install' => 'Instalar',
     ],
 
     'company' => [

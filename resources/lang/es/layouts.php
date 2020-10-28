@@ -136,6 +136,8 @@ return [
     'Products with no Stock' => 'Productos sin Stock',
 	'Suppliers' => 'Proveedores',
 	'Supplier Shipping Slips'     => 'Albaranes de Proveedores',
+	'Supplier Invoices'     => 'Facturas de Proveedores',
+	'Supplier Vouchers'     => 'Recibos de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',
 	'Sale Orders'     => 'Pedidos de Clientes',
 	'Sale Order Templates'     => 'Plantillas Pedidos Venta',

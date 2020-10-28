@@ -415,13 +415,13 @@ class ImportProductsController extends Controller
                     $item = http_build_query($data, null, ', ');
 
                     // Let's see which Product
-                    if ( array_key_exists('id', $data) )
+                    if ( array_key_exists('id', $data) && ( (int) $data['id'] > 0) )
                     {
                         $key_name = 'id';
-                        $key_val = trim( $data['id'] );
+                        $key_val = (int) $data['id'];
 
                         unset( $data['id'] );
-                        // Unomment lines to prevent changes in reference value
+                        // Uncomment lines to prevent changes in reference value
                         // if ( array_key_exists('reference', $data) )
                         //     unset( $data['reference'] );
                         
@@ -451,6 +451,7 @@ class ImportProductsController extends Controller
 
                     try{
                         // Update Product
+                        // abi_toSql($this->product->where( $key_name, $key_val )); die();
                         $product = $this->product->where( $key_name, $key_val )->first();
 
                         if ( !$product )

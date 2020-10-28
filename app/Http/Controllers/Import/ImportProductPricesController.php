@@ -336,6 +336,12 @@ https://phpspreadsheet.readthedocs.io/en/develop/topics/migration-from-PHPExcel/
                                 $data1['cost_average']    = trim($data['cost_average']) == '' ? $product->cost_average : $data['cost_average'];
                             }
 
+                            if (array_key_exists('last_purchase_price', $data))
+                            {
+                                // 
+                                $data1['last_purchase_price']    = trim($data['last_purchase_price']) == '' ? $product->last_purchase_price : $data['last_purchase_price'];
+                            }
+
                             Product::unguard();
 
                             $product->update( $data1 );
@@ -406,7 +412,7 @@ https://phpspreadsheet.readthedocs.io/en/develop/topics/migration-from-PHPExcel/
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference', 'NAME', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'cost_average', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
+        $headers = [ 'id', 'reference', 'NAME', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
         ];
 
         $data[] = $headers;

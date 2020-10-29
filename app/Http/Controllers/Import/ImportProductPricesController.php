@@ -415,6 +415,9 @@ https://phpspreadsheet.readthedocs.io/en/develop/topics/migration-from-PHPExcel/
         $headers = [ 'id', 'reference', 'NAME', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
         ];
 
+        $float_headers = [ 'price_tax_inc', 'price', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
+        ];
+
         $data[] = $headers;
 
         // Convert each member of the returned collection into an array,
@@ -424,7 +427,10 @@ https://phpspreadsheet.readthedocs.io/en/develop/topics/migration-from-PHPExcel/
             $row = [];
             foreach ($headers as $header)
             {
-                $row[$header] = $product->{$header} ?? '';
+                if ( in_array($header, $float_headers) )
+                    $row[$header] = (float) $product->{$header} ?? '';
+                else
+                    $row[$header] = $product->{$header} ?? '';
             }
             $row['NAME']     = $product->name;
             $row['TAX_NAME'] = $product->tax ? $product->tax->name : '';

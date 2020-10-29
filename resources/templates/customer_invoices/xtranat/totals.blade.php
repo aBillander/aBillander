@@ -26,8 +26,8 @@ $totals = $document->totals();
 
 @endphp
 
-	<div class="tax-summary-wrapper">
-		<table class="order-details tax-summary print-friendly">
+	<div class="tax-summary-wrapper" style="margin-top: 2mm !important;">
+		<table class="order-details tax-summary print-friendly" style="margin-bottom: 2mm !important;;">
 			<tbody>
 				<tr>
 					<th>Tipo</th>

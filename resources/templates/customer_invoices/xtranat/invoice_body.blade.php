@@ -32,7 +32,7 @@
 	    $name = $str . '...';
 	}
 @endphp
-			<div class="shop-name"><h3>{{ $company->name_fiscal }}</h3></div>
+			<div class="shop-name"><h3>{{ $name }}{{-- $company->name_fiscal --}}</h3></div>
 
 			<div class="shop-address">
                         {{ $company->address->address1 }} {{ $company->address->address2 }}<br />
@@ -49,7 +49,7 @@
 </table>
 
 
-
+{{-- --} }
 <h1 class="document-type-label">
 
 	@switch($document->type)
@@ -74,6 +74,7 @@
 	@endswitch
 
 </h1>
+{ {-- --}}
 
 <table class="order-data-addresses">
 
@@ -122,9 +123,9 @@
 
 			@endif
             
-            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
+            <div class="cif">CIF/NIF: {{ $document->customer->identification }} &nbsp; {{--<span xstyle="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
 
-			<div class="billing-phone">
+			<div class="billing-phone"> --}}
 			@if ( $document->invoicingaddress->phone )
 
 				Tel. {{ $document->invoicingaddress->phone }}
@@ -135,7 +136,7 @@
 
 			@endif
 
-			@if ( $document->customer->reference_external )
+			@if ( 0 && $document->customer->reference_external )
 				<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span>
 			@endif
 			</div>
@@ -160,7 +161,7 @@
 
 				<tr class="order-number">
 
-					<th>Factura nº:</th>
+					<th style="width: 42%; font-weight: bold;font-size: 16pt;">FACTURA:</th>
 
 					<td style="font-size: 11pt;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
 
@@ -176,7 +177,7 @@
 
 				<tr class="order-date">
 
-					<th>Fecha de la Factura:</th>
+					<th>Fecha:</th>
 
 					<td><strong>{{ abi_date_short($document->document_date) }}</strong></td>
 
@@ -393,7 +394,7 @@
 
 
 
-<table class="notes-totals">
+<table class="notes-totals" style="margin-bottom: 2mm !important;">
 
 	<tbody>
 
@@ -667,7 +668,7 @@ $pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
                // $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 + 15.3), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
-               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 - 16.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 - 16.0 -34.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
 }
 if ( $PAGE_NUM > 1 )
 {

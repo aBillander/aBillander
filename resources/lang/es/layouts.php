@@ -66,8 +66,29 @@ return [
 	'Margin calculation is based on Cost Price'  => 'El Margen se calcula sobre el Precio de Coste',
 	'Margin calculation is based on Sales Price' => 'El Margen se calcula sobre el Precio de Venta',
 
+	'Cost for margin calculation is Product Average Cost Price' => 'El Coste para calcular el Margen es el Precio de Coste Promedio del Producto',
+	'Cost for margin calculation is Product Cost Price' => 'El Coste para calcular el Margen es el Precio de Coste del Producto',
+
 	'Shipping Cost included'     => 'Coste de Envío incluido',
-	'Shipping Cost excluded'     => 'Coste de Envío excluido',
+	'Shipping Cost excluded'     => 'Coste de Envío excluido',	
+
+	'Margin'     => 'Margen',
+	'Document Lines to be included in calculations' => 'Líneas del Documento que se incluirán en los cálculos',
+	'Product Lines.' => 'Líneas de Productos.',
+	'Discount Lines.' => 'Líneas de Descuentos.',
+	'Sevice Lines.' => 'Líneas de Servicios.',
+	'Shipping Lines.' => 'Líneas de Coste de Envío.',
+
+	'Depending on Configurations (:yn).' => 'Dependiendo de la Configuración (:yn).',
+
+	'Margin'     => 'Margen',
+	'Document Lines to be included in calculations' => 'Líneas del Documento que se incluirán en los cálculos',
+	'Product Lines.' => 'Líneas de Productos.',
+	'Discount Lines.' => 'Líneas de Descuentos.',
+	'Sevice Lines.' => 'Líneas de Servicios.',
+	'Shipping Lines.' => 'Líneas de Coste de Envío.',
+
+	'Depending on Configurations (:yn).' => 'Dependiendo de la Configuración (:yn).',
 
 	'Discount on Product Price' => 'Descuento sobre el Precio del Producto',
 
@@ -85,6 +106,7 @@ return [
 	'Currencies' => 'Divisas',
 	'Shipping Methods'     => 'Métodos de Envío',
 	'Payment Methods'     => 'Formas de Pago',
+	'Payment Types' => 'Tipos de Pago',
 	'Taxes'     => 'Impuestos',
 	'Ecotaxes'     => 'Eco-Impuestos',
 	'Cheques' => 'Cheques',
@@ -114,6 +136,8 @@ return [
     'Products with no Stock' => 'Productos sin Stock',
 	'Suppliers' => 'Proveedores',
 	'Supplier Shipping Slips'     => 'Albaranes de Proveedores',
+	'Supplier Invoices'     => 'Facturas de Proveedores',
+	'Supplier Vouchers'     => 'Recibos de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',
 	'Sale Orders'     => 'Pedidos de Clientes',
 	'Sale Order Templates'     => 'Plantillas Pedidos Venta',
@@ -388,6 +412,7 @@ return [
 	'Send Password Reset Link.'     => 'Si olvidó la contraseña de acceso, introduzca su dirección de correo electrónico. Una vez enviado este formulario, recibirá en su correo las instrucciones para actualizar la contraseña.',
 	'Reset Password'     => 'Cambiar Contraseña',
 	'Customer Reset Password'     => 'Cambiar Contraseña para el Centro de Clientes',
+	'Login information' => 'Datos de acceso',
 
 	'Customers' => 'Clientes',
 	'Customers - Create' => 'Clientes - Crear',

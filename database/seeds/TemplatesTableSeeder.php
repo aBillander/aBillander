@@ -67,6 +67,18 @@ class TemplatesTableSeeder extends Seeder {
         ] );
 
         Configuration::updateValue('DEF_CUSTOMER_INVOICE_TEMPLATE'      , $t->id);
+  
+        $t = Template::create( [
+//            'id' => 1,
+            'name' => 'Albarán entre Almacenes', 
+            'model_name' => 'WarehouseShippingSlipPdf', 
+            'folder' => 'templates::', 
+            'file_name' => 'default', 
+            'paper' => 'A4', 
+            'orientation' => 'portrait',
+        ] );
+
+        Configuration::updateValue('DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE', $t->id);
         
     }
 }

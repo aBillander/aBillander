@@ -16,6 +16,7 @@ class Company extends Model {
     // Add your validation rules here
     public static $rules = array(
     	'name_fiscal' => array('required', 'min:2', 'max:128'),
+        'identification' => 'required|min:4',
         'website'     => 'nullable|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/',     // See: https://laracasts.com/discuss/channels/general-discussion/url-validation
         'currency_id' => 'exists:currencies,id',
         'language_id' => 'exists:languages,id',

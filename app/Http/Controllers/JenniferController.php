@@ -7,16 +7,17 @@ use Illuminate\Http\Request;
 use Excel;
 
 // Helferinnen
-use App\Http\Controllers\HelferinTraits\JenniferMod347Trait;
+use App\Http\Controllers\HelferinTraits\JenniferModelo347Trait;
 
 use App\Traits\DateFormFormatterTrait;
 
 class JenniferController extends Controller
 {
-    use JenniferMod347Trait;
+    use JenniferModelo347Trait;
    
    use DateFormFormatterTrait;
 
+   private $invoices_report_formatList;
    private $valuation_methodList;
 
     /**
@@ -27,6 +28,11 @@ class JenniferController extends Controller
     public function __construct()
     {
         $this->middleware('auth:web');
+
+        $this->invoices_report_formatList = [
+                    'compact' => 'Compacto',
+                    'loose' => 'Amplio',
+        ];
 
         $this->valuation_methodList = [
                     'cost_average_on_date' => 'Precio Medio en la Fecha',
@@ -45,7 +51,9 @@ class JenniferController extends Controller
     {
         $valuation_methodList = $this->valuation_methodList;
 
-        return view('jennifer.home', compact('valuation_methodList'));
+        $invoices_report_formatList = $this->invoices_report_formatList;
+
+        return view('jennifer.home', compact('valuation_methodList', 'invoices_report_formatList'));
     }
 
 
@@ -61,6 +69,8 @@ class JenniferController extends Controller
         $date_to   = $request->input('invoices_date_to'  )
                      ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_to'  ))
                      : null;
+        
+        $invoices_report_format = $request->input('invoices_report_format');
 
         $documents = \App\CustomerInvoice::
                               with('customer')
@@ -116,19 +126,29 @@ class JenniferController extends Controller
         $data[] = ['Facturas de Clientes, ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
+        // All Taxes
+        $alltaxes = \App\Tax::get()->sortByDesc('percent');
+        $alltax_rules = \App\TaxRule::get();
+
 
         // Define the Excel spreadsheet headers
         $header_names = ['Número', 'Fecha', 'Cliente', 'Estado', 'Forma de Pago', 'Base', 'IVA', 'Rec', 'Total'];
 
+        // Add more headers
+        if ( $invoices_report_format != 'compact')
+        foreach ( $alltaxes as $alltax )
+        {
+            $header_names[] = 'Base IVA '.$alltax->percent;
+            $header_names[] = 'IVA '.$alltax->percent;
+            $header_names[] = 'RE '.$alltax->equalization_percent;
+        }
+
         $data[] = $header_names;
 
-        // Convert each member of the returned collection into an array,
-        // and append it to the data array.
-        $alltaxes = \App\Tax::get()->sortByDesc('percent');
-        $alltax_rules = \App\TaxRule::get();
-
         $sub_totals = [];
-        
+
+if ( $invoices_report_format == 'compact') {
+
         foreach ($documents as $document) {
             $row = [];
             $row[] = $document->document_reference;
@@ -186,10 +206,68 @@ class JenniferController extends Controller
                 // abi_r($sub_totals);
             }
 
-// abi_r('************************************');
-        }
+        }   // Document loop ends here
 
-//        die();
+} else {
+
+        foreach ($documents as $document) {
+            $row = [];
+            $row[] = $document->document_reference;
+            $row[] = abi_date_short($document->document_date);
+            $row[] = $document->customer->reference_accounting . '-' . $document->customer->name_fiscal;
+            $row[] = $document->payment_status_name;
+            $row[] = $document->paymentmethod->name;
+            $row[] = $document->total_tax_excl * 1.0;
+            $row[] = 0.0;
+            $row[] = 0.0;
+            $row[] = $document->total_tax_incl * 1.0;
+
+            $i = count($data);
+            // $data[] = $row;
+
+            // Taxes breakout
+            $totals = $document->totals();
+
+            foreach ( $alltaxes as $alltax )
+            {
+                if ( !( $total = $totals->where('tax_id', $alltax->id)->first() ) ) continue;
+                
+                $iva = $total['tax_lines']->where('tax_rule_type', 'sales')->first();
+                $re  = $total['tax_lines']->where('tax_rule_type', 'sales_equalization')->first();
+
+                $row[] = $iva->taxable_base * 1.0;
+                $row[] = $iva->total_line_tax * 1.0;
+                $row[] = optional($re)->total_line_tax ?? 0.0;
+                $row[] = '';
+    
+                // $data[] = $row;
+
+                $row[6] += $iva->total_line_tax;
+                $row[7] += optional($re)->total_line_tax ?? 0.0;
+
+                if ( array_key_exists($alltax->id, $sub_totals) )
+                {
+                    $sub_totals[$alltax->id]['base']    += $iva->taxable_base;
+                    $sub_totals[$alltax->id]['iva']     += $iva->total_line_tax;
+                    $sub_totals[$alltax->id]['re']      += optional($re)->total_line_tax ?? 0.0;
+                } else {
+                    $sub_totals[$alltax->id] = [];
+                    $sub_totals[$alltax->id]['percent'] = $alltax->percent;
+                    $sub_totals[$alltax->id]['base']    = $iva->taxable_base;
+                    $sub_totals[$alltax->id]['iva']     = $iva->total_line_tax;
+                    $sub_totals[$alltax->id]['re']      = optional($re)->total_line_tax ?? 0.0;
+                }
+
+                // abi_r($sub_totals);
+            }
+
+            $data[] = $row;
+
+        }   // Document loop ends here
+
+}
+
+
 
         // Totals
         $data[] = [''];
@@ -218,7 +296,10 @@ class JenniferController extends Controller
             // Build the spreadsheet, passing in the data array
             $excel->sheet($sheetName, function($sheet) use ($data) {
                 
-                $sheet->getStyle('A4:I4')->applyFromArray([
+                $sheet->mergeCells('A1:C1');
+                $sheet->mergeCells('A2:C2');
+                
+                $sheet->getStyle('A4:U4')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

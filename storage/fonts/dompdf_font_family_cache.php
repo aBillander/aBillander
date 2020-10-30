@@ -78,10 +78,10 @@
     'normal' => $rootDir . '/lib/fonts/DejaVuSerif',
   ),
   'open sans' => array(
-    'normal' => $fontDir . '/a32da215612cdbd93b93eb74bcab3b40',
-    'bold' => $fontDir . '/ec66c4851b9656cec2800868fb6ca4a3',
-    'italic' => $fontDir . '/e1ed1c78d201fe6255daee12e8820a6d',
-    'bold_italic' => $fontDir . '/c1583238aa915ad7e56d544a3a5f8f4e',
+    'normal' => $fontDir . '/open-sans-normal_a32da215612cdbd93b93eb74bcab3b40',
+    'bold' => $fontDir . '/open-sans-bold_ec66c4851b9656cec2800868fb6ca4a3',
+    'italic' => $fontDir . '/open-sans-italic_e1ed1c78d201fe6255daee12e8820a6d',
+    'bold_italic' => $fontDir . '/open-sans-bold-italic_c1583238aa915ad7e56d544a3a5f8f4e',
   ),
   'fontawesome' => array(
     'normal' => $fontDir . '/b6f7a7b3d0032398790eec8f5c7a9dd3',

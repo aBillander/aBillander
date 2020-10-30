@@ -47,6 +47,11 @@ class CustomerShippingSlipClosedListener
         {
             $document->loadLineEcotaxes();
         }
+
+        // 
+        // Cost stuff
+        // 
+        $document->loadLineCosts();
         
     }
 }

@@ -5,13 +5,13 @@ use Illuminate\Database\Seeder;
 use App\PaymentMethod;
 use App\Configuration;
   
-class PaymentMethodsTableSeeder extends Seeder {
+class enPaymentMethodsTableSeeder extends Seeder {
   
     public function run() {
         PaymentMethod::truncate();
   
         $pmeth = PaymentMethod::create( [
-            'name' => 'Contado / Cash', 
+            'name' => 'Cash', 
             'deadlines' => [['slot' => 0, 'percentage' => 100]],
             'payment_is_cash' => 1,
             'auto_direct_debit' => 0,

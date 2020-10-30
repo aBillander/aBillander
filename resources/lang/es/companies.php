@@ -73,6 +73,7 @@ return [
 	'Currency'     => 'Divisa',
 	'Language'     => 'Idioma',
 	'(cannot be changed)'     => '(no puede cambiarse)',
+	"(it can't be changed afterwards)" => '(no podrá cambiarse)',
 	'Company logo'     => 'Logotipo',
 	'Applies Equalization Tax?'     => '¿Aplica Recargo de Equivalencia?',
 	''     => '',

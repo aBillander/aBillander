@@ -11,7 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        $language = app()->getLocale();
+
+        // $this->call(UsersTableSeeder::class);        
 
         $this->call(ConfigurationsTableSeeder::class);
 
@@ -21,19 +23,25 @@ class DatabaseSeeder extends Seeder
 
         $this->call(LanguagesTableSeeder::class);
 
-        $this->call(TaxesTableSeeder::class);
-
-        $this->call(SequencesTableSeeder::class);
-
-        $this->call(MeasureUnitsTableSeeder::class);
-
-        $this->call(PaymentMethodsTableSeeder::class);
-
         $this->call(TemplatesTableSeeder::class);
 
-        // $this->call(PaymentDocumentsTableSeeder::class);
+        // $this->call(__NAMESPACE__ . '\\' . $language . 'TaxesTableSeeder');
 
-        $this->call(PaymentTypesTableSeeder::class);
+        // abi_r(esTaxesTableSeeder::class); die();
+
+        $this->call($language . 'TaxesTableSeeder');
+
+        $this->call($language . 'SequencesTableSeeder');
+
+        $this->call($language . 'MeasureUnitsTableSeeder');
+
+        $this->call($language . 'PaymentMethodsTableSeeder');
+
+        $this->call($language . 'PaymentTypesTableSeeder');
+
+        $this->call($language . 'CarriersTableSeeder');
+
+        $this->call($language . 'ShippingMethodsTableSeeder');
         
     }
 }

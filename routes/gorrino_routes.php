@@ -23,6 +23,17 @@
 
 
 
+Route::get('cc', function( )
+{
+	
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+});
+
+/* ********************************************************** */
+
 Route::get('lm', function( )
 {
 	// http://zetcode.com/php/carbon/
@@ -142,6 +153,16 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-10-28
+
+	\App\Configuration::updateValue('SW_VERSION', '0.10.23');
+	\App\Configuration::updateValue('SW_DATABASE_VERSION', '0.10.23');
+
+	// 2020-10-07
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `suppliers` ADD `approval_number` varchar(64) NULL DEFAULT NULL AFTER `identification`;");
+
+	die('OK');
 
 	// 2020-09-30
 

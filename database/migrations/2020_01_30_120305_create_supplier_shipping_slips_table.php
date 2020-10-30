@@ -17,6 +17,8 @@ class CreateSupplierShippingSlipsTable extends Migration
         
         Schema::create('supplier_shipping_slips', function (Blueprint $table) {
 
+            $entity = 'supplier';
+
             if (file_exists(__DIR__.'/schnitzel/_schnitzel_create_documents_table.php')) {
                 include __DIR__.'/schnitzel/_schnitzel_create_documents_table.php';
             }
@@ -31,10 +33,11 @@ class CreateSupplierShippingSlipsTable extends Migration
 
         });
 
-        Schema::table('supplier_shipping_slips', function ($table) {
-            $table->renameColumn('customer_id', 'supplier_id');
-            $table->renameColumn('notes_to_customer', 'notes_to_supplier');
-        });
+// composer require doctrine/dbal
+//        Schema::table('supplier_shipping_slips', function ($table) {
+//            $table->renameColumn('customer_id', 'supplier_id');
+//            $table->renameColumn('notes_to_customer', 'notes_to_supplier');
+//        });
     }
 
     /**

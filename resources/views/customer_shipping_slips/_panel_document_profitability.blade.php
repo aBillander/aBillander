@@ -8,11 +8,20 @@
               <div xclass="page-header">
                   <h3>
                       <span style="color: #dd4814;">{{l('Cost-benefit per line')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
+                      
                       <span class="label alert-warning" style="font-size: 55%;">
 
                     {{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
                           l('Margin calculation is based on Cost Price', [], 'layouts') :
                           l('Margin calculation is based on Sales Price', [], 'layouts') }}
+
+                      </span>
+                      &nbsp; 
+                      <span class="label alert-warning" style="font-size: 55%;">
+
+                    {{ \App\Configuration::get('MARGIN_PRICE') == 'AVERAGE' ?
+                          l('Cost for margin calculation is Product Average Cost Price', [], 'layouts') :
+                          l('Cost for margin calculation is Product Cost Price', [], 'layouts') }}
 
                       </span>
                        
@@ -115,7 +124,18 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
 
                 <td class="text-right button-pad" title="">{{ $line->as_priceable( $line->profit_final_price ) }}</td>
 @endif
-                <td class="text-right">{{ $line->as_price('cost_price') }}</td>
+                <td class="text-right">{{ $line->as_priceable($line->profit_cost) }}
+
+        @if ( ($line->line_type == 'product') && ($line->profit_cost != $line->product->profit_cost) )
+               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
+                  xdata-trigger="focus"
+                  data-html="true" 
+                  data-content="{{ l('Line Product Cost Price is different from Product Cost record. You must "Update Cost Prices" (button below).') }}">
+                  <i class="fa fa-warning abi-help" style="color: #df382c;"></i>
+               </a>
+        @endif
+
+                  </td>
 
                 <td class="text-right">{{ $line->as_percentable( $line->marginPercent() ) }}</td>
 
@@ -262,14 +282,14 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                <br>
                <br>
 
-               <b>{{l('Margin')}}</b>. 
-                    {{ l('Document Lines to be included in calculations') }}: <br>
+               <b>{{l('Margin', 'layouts')}}</b>. 
+                    {{ l('Document Lines to be included in calculations', 'layouts') }}: <br>
 
                     <ul>
-                      <li>{{ l('Product Lines.') }}</li>
-                      <li>{{ l('Discount Lines.') }}</li>
-                      <li>{{ l('Sevice Lines.') }} {{ l('Depending on Configurations (:yn).', ['yn' => \App\Configuration::isTrue('INCLUDE_SERVICE_LINES_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')]) }}</li>
-                      <li>{{ l('Shipping Lines.') }} {{ l('Depending on Configurations (:yn).', ['yn' => \App\Configuration::isTrue('INCLUDE_SHIPPING_COST_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')]) }}</li>
+                      <li>{{ l('Product Lines.', 'layouts') }}</li>
+                      <li>{{ l('Discount Lines.', 'layouts') }}</li>
+                      <li>{{ l('Sevice Lines.', 'layouts') }} {{ l('Depending on Configurations (:yn).', ['yn' => \App\Configuration::isTrue('INCLUDE_SERVICE_LINES_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')], 'layouts') }}</li>
+                      <li>{{ l('Shipping Lines.', 'layouts') }} {{ l('Depending on Configurations (:yn).', ['yn' => \App\Configuration::isTrue('INCLUDE_SHIPPING_COST_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')], 'layouts') }}</li>
                     </ul>
 
                <br>

@@ -770,6 +770,13 @@ class Billable extends Model implements ShippableInterface
 
         $products_margin = $this->as_percentable( \App\Calculator::margin( $products_cost, $products_final_price - $products_ecotax - $document_products_discount, $this->currency ) );
 
+        // Sales Rep Commission
+        $this->total_commission = 0.0;
+        if ( $this->sales_rep_id > 0 )
+        {
+            $this->total_commission = $this->getSalesRepCommission();
+        }
+
 
 
         return $products_margin;

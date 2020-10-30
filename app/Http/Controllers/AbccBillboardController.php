@@ -78,9 +78,9 @@ class AbccBillboardController extends Controller
 		$billboard = new \stdClass();
 
 		$billboard->image           = Configuration::get('ABCC_BB_IMAGE');
-		$billboard->image_default   = Configuration::get('ABCC_BB_IMAGE_DEFAULT');
+		$billboard->image_default   = Configuration::get('ABCC_BB_IMAGE_DEFAULT');	// No interface to store / update. Used here only.
 		$billboard->caption         = Configuration::get('ABCC_BB_CAPTION');
-		$billboard->caption_default = Configuration::get('ABCC_BB_CAPTION_DEFAULT');
+		$billboard->caption_default = Configuration::get('ABCC_BB_CAPTION_DEFAULT');	// No interface to store / update. Used here only.
 		$billboard->active          = Configuration::get('ABCC_BB_ACTIVE');
 		// $billboard-> = Configuration::get('ABCC_BB_');
 

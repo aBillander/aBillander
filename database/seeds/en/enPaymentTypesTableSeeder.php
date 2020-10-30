@@ -5,37 +5,37 @@ use Illuminate\Database\Seeder;
 use App\PaymentType;
 use App\Configuration;
   
-class PaymentTypesTableSeeder extends Seeder {
+class enPaymentTypesTableSeeder extends Seeder {
   
     public function run() {
         PaymentType::truncate();
   
         $ptype = PaymentType::create( [
-            'alias' => 'Efectivo', 
-            'name' => 'Efectivo', 
+            'alias' => 'Cash', 
+            'name' => 'Cash', 
             'active' => 1, 
-            'accounting_code' => '100',
+            'accounting_code' => '',
         ] );
   
         $ptype = PaymentType::create( [
-            'alias' => 'Remesa', 
-            'name' => 'Remesa', 
+            'alias' => 'Remitance', 
+            'name' => 'Remitance', 
             'active' => 1, 
-            'accounting_code' => '101',
+            'accounting_code' => '',
         ] );
   
         $ptype = PaymentType::create( [
             'alias' => 'Cheque', 
             'name' => 'Cheque', 
             'active' => 1, 
-            'accounting_code' => '102',
+            'accounting_code' => '',
         ] );
   
         $ptype = PaymentType::create( [
-            'alias' => 'Transferencia', 
-            'name' => 'Transferencia', 
+            'alias' => 'Bank Transfer', 
+            'name' => 'Transfer', 
             'active' => 1, 
-            'accounting_code' => '103',
+            'accounting_code' => '',
         ] );
 
     }

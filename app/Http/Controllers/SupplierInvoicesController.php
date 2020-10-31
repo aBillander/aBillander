@@ -47,4 +47,69 @@ class SupplierInvoicesController extends BillableController
         return view($this->view_path.'.index', $this->modelVars());
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\SupplierInvoice  $supplierInvoice
+     * @return \Illuminate\Http\Response
+     */
+    public function show(SupplierInvoice $supplierInvoice)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\SupplierInvoice  $supplierInvoice
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(SupplierInvoice $supplierInvoice)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\SupplierInvoice  $supplierInvoice
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, SupplierInvoice $supplierInvoice)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\SupplierInvoice  $supplierInvoice
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(SupplierInvoice $supplierInvoice)
+    {
+        //
+    }
 }

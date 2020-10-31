@@ -114,7 +114,7 @@ class Product extends Model {
                             'notes', 'stock_control', 'publish_to_web', 'webshop_id', 'blocked', 'active', 
                             'out_of_stock', 'out_of_stock_text', 'available_for_sale_date',
 
-                            'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
+                            'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 'purchase_measure_unit_id', 
 
                             'lot_tracking', 'expiry_time', 
 

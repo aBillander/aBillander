@@ -47,4 +47,69 @@ class SupplierOrdersController extends BillableController
         return view($this->view_path.'.index', $this->modelVars());
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\SupplierOrder  $supplierOrder
+     * @return \Illuminate\Http\Response
+     */
+    public function show(SupplierOrder $supplierOrder)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\SupplierOrder  $supplierOrder
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(SupplierOrder $supplierOrder)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\SupplierOrder  $supplierOrder
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, SupplierOrder $supplierOrder)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\SupplierOrder  $supplierOrder
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(SupplierOrder $supplierOrder)
+    {
+        //
+    }
 }

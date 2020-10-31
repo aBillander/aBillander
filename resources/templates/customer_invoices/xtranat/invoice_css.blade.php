@@ -232,12 +232,12 @@ td.order-data {
 
 .invoice .shipping-address {
 	xwidth: 30%;
-	width: 20%;
+	width: 10%;
 }
 
 .shipping-slip .billing-address {
 	xwidth: 30%;
-	width: 40%;
+	width: 50%;
 }
 
 td.order-data table th {

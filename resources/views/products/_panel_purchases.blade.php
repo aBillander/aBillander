@@ -29,11 +29,11 @@
                      {!! $errors->first('supplier_reference', '<span class="help-block">:message</span>') !!}
                   </div>
 
-             <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('manufacturer_id') ? 'has-error' : '' }}">
-                {{ l('Manufacturer') }}
-                {!! Form::select('manufacturer_id', array('' => l('-- Please, select --', [], 'layouts')) + $manufacturerList, null, array('class' => 'form-control')) !!}
-                {!! $errors->first('manufacturer_id', '<span class="help-block">:message</span>') !!}
-             </div>
+                 <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('purchase_measure_unit_id') ? 'has-error' : '' }}">
+                    {{ l('Purchase Measure Unit') }}
+                    {!! Form::select('purchase_measure_unit_id', $product_measure_unitList, null, array('class' => 'form-control')) !!}
+                    {!! $errors->first('purchase_measure_unit_id', '<span class="help-block">:message</span>') !!}
+                 </div>
         </div>
 
         <div class="row">
@@ -50,6 +50,12 @@
                      {{ l('Last Purchase Price') }} <span class="badge" style="background-color: #3a87ad;">{{ \App\Context::getContext()->currency->iso_code }}</span>
                      {!! Form::text('last_purchase_price', null, array('class' => 'form-control', 'id' => 'last_purchase_price', 'onfocus' => 'this.blur()')) !!}
                   </div>
+
+             <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('manufacturer_id') ? 'has-error' : '' }}">
+                {{ l('Manufacturer') }}
+                {!! Form::select('manufacturer_id', array('' => l('-- Please, select --', [], 'layouts')) + $manufacturerList, null, array('class' => 'form-control')) !!}
+                {!! $errors->first('manufacturer_id', '<span class="help-block">:message</span>') !!}
+             </div>
         </div>
 
         @include('products._panel_custom_fields')

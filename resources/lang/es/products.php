@@ -116,6 +116,7 @@ return [
 	'Lead Time'     => 'Plazo de entrega',
 	'Main Supplier' => 'Proveedor Principal',
 	'Supplier Reference'     => 'Referencia del Proveedor',
+	'Purchase Measure Unit' => 'Unidad de Medida Compras',
 	'Manufacturer'     => 'Fabricante / Marca',
 
 	'Price Lists'     => 'Tarifas',

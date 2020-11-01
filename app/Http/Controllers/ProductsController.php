@@ -199,6 +199,9 @@ class ProductsController extends Controller
             $request->merge( ['price_tax_inc' => $price_tax_inc] );
         }
 
+        // Purchase Measure Unit
+        $request->merge( ['purchase_measure_unit_id' => $request->input('measure_unit_id')] );
+
         // If sequences are used:
         //
         // $product_sequences = \App\Sequence::listFor(\App\Product::class);

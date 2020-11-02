@@ -297,6 +297,25 @@ return array(
     'App\CustomerInvoice.doubtful' => 'Pago Dudoso',
     'App\CustomerInvoice.archived' => 'Archivado',
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Order Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierOrder.draft' => 'Borrador',
+	'App\SupplierOrder.confirmed'    => 'Confirmado',
+	'App\SupplierOrder.closed'    => 'Cerrado',
+    'App\SupplierOrder.canceled' => 'Cancelado',    
+
+    'App\SupplierShippingSlip.pending' => 'Pendiente',
+    'App\SupplierShippingSlip.partial' => 'Parcialmente',
+    'App\SupplierShippingSlip.received ' => 'Recibido',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Payment Types

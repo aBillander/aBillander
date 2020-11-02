@@ -17,11 +17,11 @@
                     'controller' => 'SupplierQuotationsController',
                     'path' => 'supplierquotations',
                 ],
+            */
                 [
                     'controller' => 'SupplierOrdersController',
                     'path' => 'supplierorders',
                 ],
-            */
                 [
                     'controller' => 'SupplierShippingSlipsController',
                     'path' => 'suppliershippingslips',
@@ -95,7 +95,6 @@ foreach ($pairs as $pair) {
 
 // Temporarily
 
-    Route::resource('supplierorders', 'SupplierOrdersController');
     Route::resource('supplierinvoices', 'SupplierInvoicesController');
 
     Route::resource('suppliervouchers', 'SupplierVouchersController');

@@ -2,12 +2,12 @@
 
 return [
 
-	'Shipping Slip #'     => 'Número',
-	'Shipping Slip'     => 'Albarán',
+	'Order #'     => 'Número',
+	'Order'     => 'Pedido',
 
 	/*
 	|--------------------------------------------------------------------------
-	| Supplier orders Language Lines :: index (Production Sheets!!! ???)
+	| Customer orders Language Lines :: index (Production Sheets!!! ???)
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -21,7 +21,7 @@ return [
 	'Quantity' => 'Cantidad',
 	'Production Date'     => 'Fecha Producción',
 	'Export to FS'     => 'Exportado FSOL',
-	'Supplier Notes'     => 'Notas Proveedor',
+	'Customer Notes'     => 'Notas Cliente',
 	'Notes'     => 'Notas',
 	'Deliver to'     => 'Entregar en',
 
@@ -51,16 +51,13 @@ return [
 	'Document #'     => 'Número',
 	'Date'     => 'Fecha',
 	'Created via'     => 'Creado por',
-	'Invoiced at:'     => 'Facturado el',
-	'Delivered at:'     => 'Entregado el:',
-	'Set delivered' => 'Click para entregado',
 
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Próx. Vencimiento',
-	'Show Supplier'     => 'Ver Proveedor',
+	'Show Customer'     => 'Ver Cliente',
 	'Show Payments'     => 'Ver Pagos',
 	'Draft'     => 'Borrador',
-	'D'         => 'B',
+	'D'     => 'B',
 	'Pending: Send by eMail'     => 'Pendiente: Enviar por eMail',
 	'eM'     => 'eM',
 	'Pending: Print and Send'     => 'Pendiente: Imprimir y Enviar',
@@ -82,27 +79,25 @@ return [
 	|
 	*/
 
-	'Documents - Create'     => 'Albaranes de Proveedores - Crear',
-	'New Document'     => 'Nuevo Albarán de Proveedor',
+	'Documents - Create'     => 'Pedidos de Clientes - Crear',
+	'New Document'     => 'Nuevo Pedido de Cliente',
 	
-	// modal_supplier_search
-	'Supplier Search'     => 'Buscar Proveedor',
-	'Supplier'     => 'Proveedor',
+	// modal_customer_search
+	'Customer Search'     => 'Buscar Cliente',
+	'Customer'     => 'Cliente',
 	'Type a Name...'     => 'Escriba un Nombre...',
 	'Also search the Commercial Name'     => 'Buscar también en el Nombre Comercial',
-	'New Supplier'     => 'Nuevo Proveedor',
-	'You should choose a Supplier'     => 'Debe seleccionar un Proveedor',
+	'New Customer'     => 'Nuevo Cliente',
+	'You should choose a Customer'     => 'Debe seleccionar un Cliente',
 
-	'Documents'     => 'Pedidos a Proveedores',
-	'Document to'     => 'Pedidos a',
-	'Back to Documents'     => 'Volver a Albaranes de Proveedores',
-	'Back to Suppliers'     => 'Volver a Proveedores',
+//	'Documents'     => 'Pedidos de Clientes',
+	'Document to'     => 'Pedido a',
+	'Back to Documents'     => 'Volver a Pedidos de Clientes',
+	'Back to Customers'     => 'Volver a Clientes',
 	'Invoicing Address'     => 'Datos de Facturación',
 	'VAT ID'     => 'NIF',
-	'View Supplier'     => 'Ir a la Ficha del Proveedor',
+	'View Customer'     => 'Ir a la Ficha del Cliente',
 	'View Invoicing Address'     => 'Ver Dirección de Facturación',
-
-	'Group Shipping Slips'     => 'Agrupar Albaranes',
 
 
 	'Header'     => 'Cabecera',
@@ -134,12 +129,12 @@ return [
 	// _invoice_header
 	'Type'     => 'Tipo',
 	'Template'     => 'Plantilla',
-	'Sequence'     => 'Serie',	// 'Serie de Albaranes',
-	'Document Number'     => 'Número de Albarán',
+	'Sequence'     => 'Serie',	// 'Serie de Pedidos',
+	'Document Number'     => 'Número de Pedido',
 	'Reference / Project'     => 'Referencia / Proyecto',
 // 	'Invoice Date'     => 'Fecha Factura',
 	'Document Date'     => 'Fecha del Documento',
-	'Sent Date'     => 'Enviado al Proveedor',
+	'Sent Date'     => 'Enviado al Cliente',
 	'Payment status' => 'Estado de Pago',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Template for Printing'     => 'Plantilla para Imprimir',
@@ -151,15 +146,14 @@ return [
 	'Sales Representative'     => 'Agente Comercial',
 	'Down Payment'     => 'Anticipo',
 	'Number of Packages'     => 'Número de Bultos',
-	'Weight'     => 'Peso',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',
 	'Carrier'     => 'Transportista',
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',
-	'Notes to Supplier'     => 'Notas para el Proveedor',
-	'Notes from Supplier'     => 'Notas del Proveedor',
+	'Notes to Customer'     => 'Notas para el Cliente',
+	'Notes from Customer'     => 'Notas del Cliente',
 	
 	// _order_lines
 	'Quick Add Lines'     => 'Entrada rápida de Líneas',
@@ -178,14 +172,14 @@ return [
 	'Tax'     => 'Impuesto',
 	'Total'     => 'Total',
 	'Total with Tax'     => 'Total con IVA',
-	'Show Supplier consumption' => 'Ver consumo del Proveedor',
+	'Show Customer consumption' => 'Ver consumo del Cliente',
 	'New line...'     => 'Nueva línea...',
 	'Order Discount (%)'     => 'Descuento Especial (%)',
 	'Total Breakdown' => 'Desglose del Total',
 
 	''     => '',
 	'Header Data'     => 'Datos de Cabecera',
-	'Supplier Name'     => 'Nombre del Proveedor',
+	'Customer Name'     => 'Nombre del Cliente',
 	'Search by Name or Identification (VAT Number).'     => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
 	
 	'Product'     => 'Producto',
@@ -197,6 +191,8 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
 	'Add Product'     => 'Nuevo Producto',
 	'Add Service'     => 'Nuevo Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
+	'Add Shipping Cost'     => 'Añadir Costes de Envío',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -229,6 +225,9 @@ return [
 	'Margin 1 (%)'     => 'Margen 1 (%)',
 	'Margin Amount'     => 'Margen Neto',
 	'Margin 2 (%)'     => 'Margen 2 (%)',
+	'Margin 2 (%)'     => 'Margen 2 (%)',
+	'Margin Amount 2'     => 'Margen Neto 2',
+	'Value' => 'Valor',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',
 	'Cost-Benefit Analysis'     => 'Análisis de Rentabilidad',
@@ -237,8 +236,11 @@ return [
 
 	// Stock availability
 	'Stock Availability'     => 'Disponibilidad de Stock',
-	''     => '',
-	''     => '',
+	'Full quantity'     => 'Servir todo',
+	'Quantity on-hand only'     => 'Servir sólo stock disponible',
+	'Create Shipping Slip'     => 'Crear Albarán',
+	'Create Back-Order?'     => '¿Crear un retro-Pedido?',
+	'A new Customer Order will be created if Quantity on-hand is less than Order Quantity.'     => 'Se creará un nuevo Pedido si la Cantidad disponible es inferior a la Cantidad del Pedido.',
 
 	'Finish Up'     => 'Emitir',
 	'Invoice This'  => 'Albaranar',
@@ -259,14 +261,19 @@ return [
 	|
 	*/
 
-	'Documents - Edit'     => 'Albaranes de Proveedores - Modificar',
-	'Edit Document'     => 'Modificar Albarán de Proveedor',
+	'Documents - Edit'     => 'Pedidos de Clientes - Modificar',
+	'Edit Document'     => 'Modificar Pedido de Cliente',
 
 
+	'Backorder'     => 'Retro-Pedido',
+	'Backorder by'  => 'Retro-Pedido por',
 
-	'Supplier Infos'     => 'Info del Proveedor',
-	'Supplier Risk'     => 'Riesgo alcanzado',
-	'Supplier Group'     => 'Grupo de Proveedores',
+	'Aggregate Order'     => 'Pedido Agrupado',
+	'Aggregated by'     => 'Agrupado por',
+
+	'Customer Infos'     => 'Info del Cliente',
+	'Customer Risk'     => 'Riesgo alcanzado',
+	'Customer Group'     => 'Grupo de Clientes',
 	'Price List'     => 'Tarifa',
 
 	'Totals'     => 'Totales',
@@ -294,24 +301,25 @@ return [
 	|
 	*/
 
-	'Documents - Show'     => 'Albaranes de Proveedores - Mostrar',
+	'Documents - Show'     => 'Pedidos de Clientes - Mostrar',
 	''     => '',
 	''     => '',
 
 	''     => '',
-	'Show Supplier'     => 'Ver Proveedor',
-	'Your Document :num from :name'     => 'Su Albarán :num de :name',
+	'Show Customer'     => 'Ver Cliente',
+	'Your Document :num from :name'     => 'Su Pedido :num de :name',
 
 	'Payment Schedule'     => 'Vencimientos',
-	'Document'     => 'Albarán',
-	'Supplier'     => 'Proveedor',
+	'Document'     => 'Pedido',
+	'Customer'     => 'Cliente',
 	'Due Date'     => 'Fecha Vencimiento',
 	'Payment Date'     => 'Fecha de Pago',
 	'Amount'     => 'Cantidad',
 	'Subject'     => 'Concepto',
 	'Status'     => 'Estado',
+	'Reception Status' => 'Estado de Recepción',
 
-	'Document id=:id does not exist.'     => 'El Albarán de Proveedor id=:id no existe.',
+	'Document id=:id does not exist.'     => 'El Pedido de Cliente id=:id no existe.',
 	''     => '',
 	''     => '',
 	''     => '',
@@ -323,17 +331,58 @@ return [
 	''     => '',
 	''     => '',
 
+
+	'Group Orders'     => 'Agrupar Pedidos',
+//	'Create Shipping Slip'     => 'Crear Albarán',
 	'Create Invoice'     => 'Crear Factura',
+	'Order: :id [:date]'     => 'Pedido: :id [:date]',
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
+	'Invoice: :id [:date]'     => 'Factura: :id [:date]',
 
-	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
+	'Address is displayed if it is different from Customer Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Cliente',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 	'Prompt Payment'     => 'Pronto Pago',
 
-	'Shipment Status'     => 'Estado de Envío',
+	'Not Closed'     => 'No Cerrados',
+	'Closed'     => 'Cerrados',
 
-	'Not Invoiced'     => 'No Facturados',
-	'Invoiced'     => 'Facturados',
+	'New Customer Order' => 'Nuevo Pedido de Cliente',
+
+	'Customer Reference' => 'Referencia del Cliente',
+
+	'Manufacturing Status' => 'Estado de Fabricación',
+	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Documents Language Lines :: Profitability
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Update Commissions' => 'Actualizar Comisiones',
+	'Update Line Ecotaxes' => 'Actualizar Ecoimpuesto en las Líneas',
+	'Line Ecotax Amount is different from Product Ecotax Amount. You must "Update Line Ecotaxes" (button below).' => 
+	'La Cantidad del Ecoimpuesto en la Línea es diferente de la Cantidad del Ecoimpuesto del Producto. Debe "Actualizar Ecoimpuesto en las Líneas" (botón más abajo).',
+	'Line Product Cost Price is different from Product Cost record. You must "Update Cost Prices" (button below).' => 'El Coste del Producto en la línea es diferente del que se obtiene de la ficha del Producto. Debe "Actualizar Precios de Coste" (botón más abajo).',
+
+	'Disc.'     => 'Dto.',
+	'Total Disc.'     => 'Dto. Total',
+	'Total Disc. %'     => 'Dto. Total %',
+
+	'Ecotax not included.' => 'Ecotasa no incluida.',
+	'Shown in Document Currency.' => 'Mostrado en la Divisa del Documento.',
+	'Commission is supposed to be on Sale Price including Ecotax. Commission is higher when calculated on Sale Price excluding Ecotax.' => 'La Comisión se supone sobre el Precio de Venta incluida la Ecotasa. La Comisión será mayor si se calcula sobre el Precio de Venta excluida la Ecotasa.',
+
+	'Products Value after Product Records.' => 'Valor de los Productos según su Precio en la Ficha del Producto.',
+	'Document Products Total.' => 'Total de los Productos en el Documento',
+	'Document Discounts: Document (Header) Discount plus Document Prompt Payment Discount.' => 'Descuentos al Documento: Descuento al Documento (en cabecera) más Descuento por Pronto Pago.',
+	'Document Discount Lines.' => 'Líneas de Descuento del Documento.',
+	'Calculated Commission for the entire Document (average).' => 'Comisión calculada para el Documento en conjunto (promedio).',
 
 ];

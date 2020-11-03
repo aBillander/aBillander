@@ -7,7 +7,7 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Customer orders Language Lines :: index (Production Sheets!!! ???)
+	| Supplier orders Language Lines :: index (Production Sheets!!! ???)
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -21,7 +21,7 @@ return [
 	'Quantity' => 'Cantidad',
 	'Production Date'     => 'Fecha Producción',
 	'Export to FS'     => 'Exportado FSOL',
-	'Customer Notes'     => 'Notas Cliente',
+	'Supplier Notes'     => 'Notas Proveedor',
 	'Notes'     => 'Notas',
 	'Deliver to'     => 'Entregar en',
 
@@ -54,7 +54,7 @@ return [
 
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Próx. Vencimiento',
-	'Show Customer'     => 'Ver Cliente',
+	'Show Supplier'     => 'Ver Proveedor',
 	'Show Payments'     => 'Ver Pagos',
 	'Draft'     => 'Borrador',
 	'D'     => 'B',
@@ -79,24 +79,24 @@ return [
 	|
 	*/
 
-	'Documents - Create'     => 'Pedidos de Clientes - Crear',
-	'New Document'     => 'Nuevo Pedido de Cliente',
+	'Documents - Create'     => 'Pedidos a Proveedores - Crear',
+	'New Document'     => 'Nuevo Pedido a Proveedor',
 	
 	// modal_customer_search
-	'Customer Search'     => 'Buscar Cliente',
-	'Customer'     => 'Cliente',
+	'Supplier Search'     => 'Buscar Proveedor',
+	'Supplier'     => 'Proveedor',
 	'Type a Name...'     => 'Escriba un Nombre...',
 	'Also search the Commercial Name'     => 'Buscar también en el Nombre Comercial',
-	'New Customer'     => 'Nuevo Cliente',
-	'You should choose a Customer'     => 'Debe seleccionar un Cliente',
+	'New Supplier'     => 'Nuevo Proveedor',
+	'You should choose a Supplier'     => 'Debe seleccionar un Proveedor',
 
-//	'Documents'     => 'Pedidos de Clientes',
+//	'Documents'     => 'Pedidos a Proveedores',
 	'Document to'     => 'Pedido a',
-	'Back to Documents'     => 'Volver a Pedidos de Clientes',
-	'Back to Customers'     => 'Volver a Clientes',
+	'Back to Documents'     => 'Volver a Pedidos a Proveedores',
+	'Back to Suppliers'     => 'Volver a Proveedores',
 	'Invoicing Address'     => 'Datos de Facturación',
 	'VAT ID'     => 'NIF',
-	'View Customer'     => 'Ir a la Ficha del Cliente',
+	'View Supplier'     => 'Ir a la Ficha del Proveedor',
 	'View Invoicing Address'     => 'Ver Dirección de Facturación',
 
 
@@ -134,7 +134,7 @@ return [
 	'Reference / Project'     => 'Referencia / Proyecto',
 // 	'Invoice Date'     => 'Fecha Factura',
 	'Document Date'     => 'Fecha del Documento',
-	'Sent Date'     => 'Enviado al Cliente',
+	'Sent Date'     => 'Enviado al Proveedor',
 	'Payment status' => 'Estado de Pago',
 	'Delivery Date'     => 'Fecha Entrega',
 	'Template for Printing'     => 'Plantilla para Imprimir',
@@ -152,8 +152,8 @@ return [
 	'Carrier'     => 'Transportista',
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',
-	'Notes to Customer'     => 'Notas para el Cliente',
-	'Notes from Customer'     => 'Notas del Cliente',
+	'Notes to Supplier'     => 'Notas para el Proveedor',
+	'Notes from Supplier'     => 'Notas del Proveedor',
 	
 	// _order_lines
 	'Quick Add Lines'     => 'Entrada rápida de Líneas',
@@ -172,14 +172,14 @@ return [
 	'Tax'     => 'Impuesto',
 	'Total'     => 'Total',
 	'Total with Tax'     => 'Total con IVA',
-	'Show Customer consumption' => 'Ver consumo del Cliente',
+	'Show Supplier consumption' => 'Ver consumo del Proveedor',
 	'New line...'     => 'Nueva línea...',
 	'Order Discount (%)'     => 'Descuento Especial (%)',
 	'Total Breakdown' => 'Desglose del Total',
 
 	''     => '',
 	'Header Data'     => 'Datos de Cabecera',
-	'Customer Name'     => 'Nombre del Cliente',
+	'Supplier Name'     => 'Nombre del Proveedor',
 	'Search by Name or Identification (VAT Number).'     => 'Buscar por Nombre o Identificación (NIF / CIF / NIE).',
 	
 	'Product'     => 'Producto',
@@ -240,7 +240,7 @@ return [
 	'Quantity on-hand only'     => 'Servir sólo stock disponible',
 	'Create Shipping Slip'     => 'Crear Albarán',
 	'Create Back-Order?'     => '¿Crear un retro-Pedido?',
-	'A new Customer Order will be created if Quantity on-hand is less than Order Quantity.'     => 'Se creará un nuevo Pedido si la Cantidad disponible es inferior a la Cantidad del Pedido.',
+	'A new Supplier Order will be created if Quantity on-hand is less than Order Quantity.'     => 'Se creará un nuevo Pedido si la Cantidad disponible es inferior a la Cantidad del Pedido.',
 
 	'Finish Up'     => 'Emitir',
 	'Invoice This'  => 'Albaranar',
@@ -261,8 +261,8 @@ return [
 	|
 	*/
 
-	'Documents - Edit'     => 'Pedidos de Clientes - Modificar',
-	'Edit Document'     => 'Modificar Pedido de Cliente',
+	'Documents - Edit'     => 'Pedidos a Proveedores - Modificar',
+	'Edit Document'     => 'Modificar Pedido a Proveedor',
 
 
 	'Backorder'     => 'Retro-Pedido',
@@ -271,9 +271,9 @@ return [
 	'Aggregate Order'     => 'Pedido Agrupado',
 	'Aggregated by'     => 'Agrupado por',
 
-	'Customer Infos'     => 'Info del Cliente',
-	'Customer Risk'     => 'Riesgo alcanzado',
-	'Customer Group'     => 'Grupo de Clientes',
+	'Supplier Infos'     => 'Info del Proveedor',
+	'Supplier Risk'     => 'Riesgo alcanzado',
+	'Supplier Group'     => 'Grupo de Proveedores',
 	'Price List'     => 'Tarifa',
 
 	'Totals'     => 'Totales',
@@ -301,17 +301,17 @@ return [
 	|
 	*/
 
-	'Documents - Show'     => 'Pedidos de Clientes - Mostrar',
+	'Documents - Show'     => 'Pedidos a Proveedores - Mostrar',
 	''     => '',
 	''     => '',
 
 	''     => '',
-	'Show Customer'     => 'Ver Cliente',
+	'Show Supplier'     => 'Ver Proveedor',
 	'Your Document :num from :name'     => 'Su Pedido :num de :name',
 
 	'Payment Schedule'     => 'Vencimientos',
 	'Document'     => 'Pedido',
-	'Customer'     => 'Cliente',
+	'Supplier'     => 'Proveedor',
 	'Due Date'     => 'Fecha Vencimiento',
 	'Payment Date'     => 'Fecha de Pago',
 	'Amount'     => 'Cantidad',
@@ -319,7 +319,7 @@ return [
 	'Status'     => 'Estado',
 	'Reception Status' => 'Estado de Recepción',
 
-	'Document id=:id does not exist.'     => 'El Pedido de Cliente id=:id no existe.',
+	'Document id=:id does not exist.'     => 'El Pedido a Proveedor id=:id no existe.',
 	''     => '',
 	''     => '',
 	''     => '',
@@ -339,7 +339,7 @@ return [
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
 	'Invoice: :id [:date]'     => 'Factura: :id [:date]',
 
-	'Address is displayed if it is different from Customer Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Cliente',
+	'Address is displayed if it is different from Supplier Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Proveedor',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 	'Prompt Payment'     => 'Pronto Pago',
@@ -347,9 +347,9 @@ return [
 	'Not Closed'     => 'No Cerrados',
 	'Closed'     => 'Cerrados',
 
-	'New Customer Order' => 'Nuevo Pedido de Cliente',
+	'New Supplier Order' => 'Nuevo Pedido a Proveedor',
 
-	'Customer Reference' => 'Referencia del Cliente',
+	'Supplier Reference' => 'Referencia del Proveedor',
 
 	'Manufacturing Status' => 'Estado de Fabricación',
 	'Total Amount' => 'Importe',

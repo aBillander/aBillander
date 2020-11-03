@@ -183,7 +183,7 @@ class SupplierShippingSlipsController extends BillableController
 
         $this->validate($request, $rules);
 
-        $supplier = Supplier::with('addresses')->findOrFail(  $request->input('supplier_id') );
+        $supplier = $this->supplier->with('addresses')->findOrFail(  $request->input('supplier_id') );
 
         // Extra data
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );

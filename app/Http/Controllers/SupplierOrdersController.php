@@ -222,7 +222,65 @@ class SupplierOrdersController extends BillableController
      */
     public function store(Request $request)
     {
-        //
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
+
+        $rules = $this->document::$rules;
+
+        $rules['shipping_address_id'] = str_replace('{supplier_id}', $request->input('supplier_id'), $rules['shipping_address_id']);
+        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
+
+        $this->validate($request, $rules);
+
+        $supplier = $this->supplier->with('addresses')->find(  $request->input('supplier_id') );
+
+        // Extra data
+//        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
+//        $doc_id = $seq->getNextDocumentId();
+
+        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+
+                        'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
+                        
+                        'template_id'          => $request->input('template_id') ?? optional($supplier)->getOrderTemplateId(),
+
+                        'document_discount_percent' => (float) optional($supplier)->discount_percent,
+                        'document_ppd_percent'      => (float) optional($supplier)->discount_ppd_percent,
+
+                        'created_via'          => 'manual',
+                        'status'               =>  'draft',
+                        'locked'               => 0,
+
+                        'payment_method_id' => $supplier ? $supplier->getPaymentMethodId() : Configuration::getInt('DEF_SUPPLIER_PAYMENT_METHOD'),
+                     ];
+
+        $request->merge( $extradata );
+
+        $document = $this->document->create($request->all());
+
+        // Move on
+        if ($request->has('nextAction'))
+        {
+            switch ( $request->input('nextAction') ) {
+                case 'saveAndConfirm':
+                    # code...
+                    $document->confirm();
+
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        // Maybe...
+//        if (  Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') )
+//            $document->confirm();
+
+        return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
     }
 
     /**
@@ -231,7 +289,7 @@ class SupplierOrdersController extends BillableController
      * @param  \App\SupplierOrder  $supplierOrder
      * @return \Illuminate\Http\Response
      */
-    public function show(SupplierOrder $supplierOrder)
+    public function show(Document $supplierOrder)
     {
         //
     }
@@ -239,10 +297,10 @@ class SupplierOrdersController extends BillableController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\SupplierOrder  $supplierOrder
+     * @param  \App\Document  $supplierOrder
      * @return \Illuminate\Http\Response
      */
-    public function edit(SupplierOrder $supplierOrder)
+    public function edit(Document $supplierOrder)
     {
         //
     }
@@ -251,10 +309,10 @@ class SupplierOrdersController extends BillableController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\SupplierOrder  $supplierOrder
+     * @param  \App\Document  $supplierOrder
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SupplierOrder $supplierOrder)
+    public function update(Request $request, Document $supplierOrder)
     {
         //
     }
@@ -262,10 +320,10 @@ class SupplierOrdersController extends BillableController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\SupplierOrder  $supplierOrder
+     * @param  \App\Document  $supplierOrder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SupplierOrder $supplierOrder)
+    public function destroy(Document $supplierOrder)
     {
         //
     }

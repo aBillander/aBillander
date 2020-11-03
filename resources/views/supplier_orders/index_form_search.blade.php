@@ -38,10 +38,10 @@
 
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {!! Form::label('autocustomer_name', l('Customer')) !!}
-    {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
+    {!! Form::label('autosupplier_name', l('Supplier')) !!}
+    {!! Form::text('autosupplier_name', null, array('class' => 'form-control', 'id' => 'autosupplier_name')) !!}
 
-    {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+    {!! Form::hidden('supplier_id', null, array('id' => 'supplier_id')) !!}
 </div>
 
 

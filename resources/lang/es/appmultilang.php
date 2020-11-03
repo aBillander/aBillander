@@ -79,7 +79,7 @@ return array(
 	'CustomerInvoice' => 'Factura de Cliente',
 
     'SupplierQuotation' => 'Presupuesto de Proveedor',
-	'SupplierOrder' => 'Pedido de Proveedor',
+	'SupplierOrder' => 'Pedido a Proveedor',
 	'SupplierShippingSlip' => 'Albarán de Proveedor',
 	'SupplierInvoice' => 'Factura de Proveedor',
 

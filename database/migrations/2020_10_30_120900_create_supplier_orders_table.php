@@ -23,6 +23,9 @@ class CreateSupplierOrdersTable extends Migration
                 include __DIR__.'/schnitzel/_schnitzel_create_documents_table.php';
             }
 
+            // Suggested Orders may not have a Supplier!
+            // $table->integer('invoicing_address_id')->nullable()->change();
+
             $table->string('fulfillment_status', 32)->nullable(false)->default('pending');  // pending, partial, done
 
             // $table->dateTime('invoiced_at')->nullable();

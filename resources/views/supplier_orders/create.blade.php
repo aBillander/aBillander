@@ -9,12 +9,12 @@
         <div class="page-header">
             <div class="pull-right">
 
-@if ($customer_id ?? 0)
-               <a target="_top" class="btn btn-success" href="{{ URL::to('customers/'.$customer_id.'/edit') }}">{{l('View Customer')}}</a>
+@if ($supplier_id ?? 0)
+               <a target="_top" class="btn btn-success" href="{{ URL::to('suppliers/'.$supplier_id.'/edit') }}">{{l('View Supplier')}}</a>
 
-               <a href="{{ URL::to('customers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a>
+               <a href="{{ URL::to('suppliers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Suppliers') }}</a>
 @else
-               <a target="_top" class="btn btn-success" href="{{ URL::to('customers/create') }}">{{l('New Customer')}}</a>
+               <a target="_top" class="btn btn-success" href="{{ URL::to('suppliers/create') }}">{{l('New Supplier')}}</a>
 
                <a href="{{ URL::to($model_path) }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Documents') }}</a>
 @endif

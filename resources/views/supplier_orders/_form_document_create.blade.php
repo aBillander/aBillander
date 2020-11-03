@@ -3,24 +3,24 @@
 
       <div class="row">
 
-         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('customer_id') ? 'has-error' : '' }}">
-            {{ l('Customer Name') }} 
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('supplier_id') ? 'has-error' : '' }}">
+            {{ l('Supplier Name') }} 
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Search by Name or Identification (VAT Number).') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
             <span id="sales_equalization" class="label label-info" style="display: none;"> {{l('Equalization Tax')}} </span>
-            {!! Form::text('document_autocustomer_name', old('document_autocustomer_name'), array('class' => 'form-control', 'id' => 'document_autocustomer_name')) !!}
+            {!! Form::text('document_autosupplier_name', old('document_autosupplier_name'), array('class' => 'form-control', 'id' => 'document_autosupplier_name')) !!}
 
-            {!! Form::hidden('customer_id', old('customer_id'), array('id' => 'customer_id')) !!}
+            {!! Form::hidden('supplier_id', old('supplier_id'), array('id' => 'supplier_id')) !!}
             {!! Form::hidden('invoicing_address_id', old('invoicing_address_id'), array('id' => 'invoicing_address_id')) !!}
 
-            {!! $errors->first('customer_id', '<span class="help-block">:message</span>') !!}
+            {!! $errors->first('supplier_id', '<span class="help-block">:message</span>') !!}
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
             {{ l('Sequence') }}
-            {!! Form::select('sequence_id', $sequenceList, old('sequence_id'), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
+            {!! Form::select('sequence_id', $sequenceList, intval(\App\Configuration::get('DEF_SUPPLIER_ORDER_SEQUENCE')), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
             {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
          </div>
 
@@ -52,7 +52,7 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('payment_method_id') ? 'has-error' : '' }}">
             {{ l('Payment Method') }}
-            {!! Form::select('payment_method_id', array('' => l('-- Please, select --', [], 'layouts')) + $payment_methodList, old('payment_method_id'), array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
+            {!! Form::select('payment_method_id', array('' => l('-- Please, select --', [], 'layouts')) + $payment_methodList, intval(\App\Configuration::get('DEF_SUPPLIER_PAYMENT_METHOD')), array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
             {!! $errors->first('payment_method_id', '<span class="help-block">:message</span>') !!}
          </div>
 
@@ -77,12 +77,6 @@
             </div>
 
          </div>
-
-         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sales_rep_id') ? 'has-error' : '' }}">
-            {{ l('Sales Representative') }}
-            {!! Form::select('sales_rep_id', array('0' => l('-- Please, select --', [], 'layouts')) + $salesrepList, old('sales_rep_id'), array('class' => 'form-control', 'id' => 'sales_rep_id')) !!}
-            {!! $errors->first('sales_rep_id', '<span class="help-block">:message</span>') !!}
-         </div>
 {{--
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('down_payment') ? 'has-error' : '' }}">
             {{ l('Down Payment') }}
@@ -92,16 +86,16 @@
 --}}
       </div>
       <div class="row">
-
-         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
-            {{ l('Shipping Address') }}
-            {!! Form::select('shipping_address_id', [], old('shipping_address_id'), array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
-            {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
-         </div>
-         
+{{--
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
+                     {{ l('Shipping Address') }}
+                     {!! Form::select('shipping_address_id', [], old('shipping_address_id'), array('class' => 'form-control', 'id' => 'shipping_address_id')) !!}
+                     {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
+                  </div>
+--}}
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
             {{ l('Warehouse') }}
-            {!! Form::select('warehouse_id', ['0' => l('-- Please, select --', [], 'layouts')] + $warehouseList, old('warehouse_id'), array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
+            {!! Form::select('warehouse_id', $warehouseList, intval(\App\Configuration::get('DEF_WAREHOUSE')), array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
             {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
          </div>
          
@@ -126,10 +120,10 @@
             {{ $errors->first('notes', '<span class="help-block">:message</span>') }}
          </div>
 
-         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('notes_to_customer') ? 'has-error' : '' }}">
-            {{ l('Notes to Customer') }}
-            {!! Form::textarea('notes_to_customer', old('notes_to_customer'), array('class' => 'form-control', 'id' => 'notes_to_customer', 'rows' => '2')) !!}
-            {{ $errors->first('notes_to_customer', '<span class="help-block">:message</span>') }}
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('notes_to_supplier') ? 'has-error' : '' }}">
+            {{ l('Notes to Supplier') }}
+            {!! Form::textarea('notes_to_supplier', old('notes_to_supplier'), array('class' => 'form-control', 'id' => 'notes_to_supplier', 'rows' => '2')) !!}
+            {{ $errors->first('notes_to_supplier', '<span class="help-block">:message</span>') }}
          </div>
 
       </div>
@@ -193,10 +187,10 @@
 
         $(document).ready(function() {
 
-        @if ( ($cid = intval( old('customer_id') )) > 0 ) 
+        @if ( ($cid = intval( old('supplier_id') )) > 0 ) 
 
               var id = {{ $cid }};
-              var url = "{{ route($model_path.'.ajax.customer.AdressBookLookup', [$cid]) }}";
+              var url = "{{ route($model_path.'.ajax.supplier.AdressBookLookup', [$cid]) }}";
               
                $.get(url, function(result){
                     $('#shipping_address_id').empty();
@@ -274,23 +268,23 @@ function get_currency_rate(currency_id)
     $(document).ready(function() {
        
 //        $("#order_autocustomer_name").val('');
-// alert('{{ old('order_autocustomer_name') }}');
+// alert('{{ old('order_autosupplier_name') }}');
 
         // Cosmetic powder:
         get_currency_rate($('#currency_id').val());
 
         // To get focus;
-        $("#document_autocustomer_name").focus();
+        $("#document_autosupplier_name").focus();
 
-        $("#document_autocustomer_name").autocomplete({
-//            source : "{{ route('customers.ajax.nameLookup') }}",
-            source : "{{ route($model_path.'.ajax.customerLookup') }}",
+        $("#document_autosupplier_name").autocomplete({
+//            source : "{{ route('suppliers.ajax.nameLookup') }}",
+            source : "{{ route($model_path.'.ajax.supplierLookup') }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 
             select : function(key, value) {
 
-                getCustomerData( value.item.id );
+                getSupplierData( value.item.id );
 
                 return false;
             }
@@ -301,24 +295,24 @@ function get_currency_rate(currency_id)
             };
 
 
-        function getCustomerData( customer_id )
+        function getSupplierData( supplier_id )
         {
             var token = "{{ csrf_token() }}";
 
             $.ajax({
-                url: "{{ route($model_path.'.ajax.customerLookup') }}",
+                url: "{{ route($model_path.'.ajax.supplierLookup') }}",
                 headers : {'X-CSRF-TOKEN' : token},
                 method: 'GET',
                 dataType: 'json',
                 data: {
-                    customer_id: customer_id
+                    supplier_id: supplier_id
                 },
                 success: function (response) {
                     var str = '[' + response.identification+'] ' + response.name_fiscal + ' [' + response.reference_external +']';
                     var shipping_method_id;
 
-                    $("#document_autocustomer_name").val(str);
-                    $('#customer_id').val(response.id);
+                    $("#document_autosupplier_name").val(str);
+                    $('#supplier_id').val(response.id);
                     if (response.sales_equalization > 0) {
                         $('#sales_equalization').show();
                     } else {
@@ -371,8 +365,8 @@ function get_currency_rate(currency_id)
             });
         }
 
-        @if ($customer_id ?? 0)
-            getCustomerData( {{ $customer_id }} );
+        @if ($supplier_id ?? 0)
+            getSupplierData( {{ $supplier_id }} );
             
             // To get focus;
             $("#sequence_id").focus();

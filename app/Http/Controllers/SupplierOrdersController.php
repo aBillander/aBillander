@@ -242,7 +242,7 @@ class SupplierOrdersController extends BillableController
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
                         
-                        'template_id'          => $request->input('template_id') ?? optional($supplier)->getOrderTemplateId(),
+                        'template_id'          => $request->input('template_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE'),
 
                         'document_discount_percent' => (float) optional($supplier)->discount_percent,
                         'document_ppd_percent'      => (float) optional($supplier)->discount_ppd_percent,

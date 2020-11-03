@@ -101,6 +101,7 @@ return array(
     'template.CustomerShippingSlipPdf'   => 'Albarán de Cliente (Pdf)',
 	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',
     'template.WarehouseShippingSlipPdf' => 'Transferencias entre Almacenes (Pdf)',
+    'template.SupplierOrderPdf'   => 'Pedido a Proveedor (Pdf)',
     'template.Pdf' => 'Plantilla Pdf',
     'template.Mail' => 'Plantilla Mail',
 	

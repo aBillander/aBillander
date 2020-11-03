@@ -361,12 +361,16 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		    $view->with('orders_sequenceList', \App\Sequence::listFor( \App\CustomerOrder::class ));
 		    
+		    $view->with('supplier_orders_sequenceList', \App\Sequence::listFor( \App\SupplierOrder::class ));
+		    
 		});
 		
 		// Customer Shipping Slips Sequencess
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('shipping_slips_sequenceList', \App\Sequence::listFor( \App\CustomerShippingSlip::class ));
+		    
+		    $view->with('supplier_shipping_slips_sequenceList', \App\Sequence::listFor( \App\SupplierShippingSlip::class ));
 		    
 		});
 		
@@ -382,9 +386,18 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		    $view->with('invoices_sequenceList', \App\Sequence::listFor( \App\CustomerInvoice::class ));
 		    
+		    $view->with('supplier_invoices_sequenceList', \App\Sequence::listFor( \App\SupplierInvoice::class ));
+		    
 		});
 
 		// Templates
+
+		// Supplier Shipping Slips Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('supplier_orders_templateList', \App\Template::listFor( \App\SupplierOrder::class ));
+		    
+		});
 
 		// Customer Quotations Template
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {

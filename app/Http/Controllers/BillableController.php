@@ -350,6 +350,8 @@ class BillableController extends Controller
 
     public function getProductPrices(Request $request)
     {
+        if ( $request->has('supplier_id') )
+            return $this->getSupplierProductPrices($request);
         
         // Request data
         $product_id      = $request->input('product_id');

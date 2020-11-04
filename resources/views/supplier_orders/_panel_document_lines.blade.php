@@ -38,9 +38,9 @@
                <th class="text-left" xwidth="115">{{l('Notes', 'layouts')}}</th>
                 <th class="text-right button-pad"> 
                       @if ( $document->editable )
-
+{{--
                   <a class="btn btn-sm btn-magick xbtn-pressure xbtn-sensitive lines_quick_form" title="{{l('Quick Add Lines')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
-
+--}}
                   <a class="btn btn-sm btn-success create-document-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-shopping-basket"></i> </a>
 {{--
                   <a class="btn btn-sm btn-success create-document-service" title="{{l('Add Service')}}" style="background-color: #2bbbad;"><i class="fa fa-plus"></i> <i class="fa fa-handshake-o"></i> </a>
@@ -51,8 +51,7 @@
                     <ul class="dropdown-menu  pull-right" style="overflow: visible">
                       <li><a class="create-document-service"><i class="fa fa-handshake-o"></i> {{l('Add Service')}}</a></li>
                       <li><a class="create-document-comment"><i class="fa fa-file-text-o"></i> {{l('Add Text Line')}}</a></li>
-                      <li class="divider"></li>
-                      <li><a class="create-document-shipping"><i class="fa fa-truck"></i> {{l('Add Shipping Cost')}}</a></li>
+                      <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
                 </div>

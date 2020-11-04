@@ -763,7 +763,7 @@
                    $("[data-toggle=popover]").popover();
 
 
-                   $("#convinient_buttons").show();
+                   // $("#convinient_buttons").show();
 
 
                     console.log(response);

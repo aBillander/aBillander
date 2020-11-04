@@ -35,8 +35,8 @@
 			<div class="shop-name"><h3>{{ $name }}</h3></div>
 
 			<div class="shop-address">
-                        {{ $company->address->address1 }} {{ $company->address->address2 }}<br />
-                        {{ $company->address->postcode }} {{ $company->address->city }} ({{ $company->address->state->name }})<br />
+                        {{ $document->warehouse->address->address1 }} {{ $document->warehouse->address->address2 }}<br />
+                        {{ $document->warehouse->address->postcode }} {{ $document->warehouse->address->city }} ({{ $document->warehouse->address->state->name }})<br />
                         CIF: {{ $company->identification }} / Tel: {{ $company->address->phone }}<br />
                         {{ $company->address->email }}<br />
 				
@@ -50,7 +50,7 @@
 
 
 
-<h1 class="document-type-label"> PEDIDO </h1>
+<h1 class="document-type-label"> PEDIDO A PROVEEDOR</h1>
 
 
 
@@ -64,47 +64,33 @@
 
             <div class="shop-name"><h3>
 
-			@if ( $document->shippingaddress->name_commercial )
-
-				{{ $document->shippingaddress->name_commercial }}
-
-			@else
-
-            	{{ $document->shippingaddress->contact_name }}
-
-			@endif
+			{{ $document->supplier->name_commercial }}
 
 			</h3></div>
 
-            {{ $document->shippingaddress->address1 }} {{ $document->shippingaddress->address2 }}<br />
+            {{ $document->supplier->address->address1 }} {{ $document->supplier->address->address2 }}<br />
 
-            {{ $document->shippingaddress->postcode}} {{ $document->shippingaddress->city }} <br />
+            {{ $document->supplier->address->postcode}} {{ $document->supplier->address->city }} <br />
 
-            {{ $document->shippingaddress->state->name }}
+            {{ $document->supplier->address->state->name }} 
 
+            @if ($document->supplier->address->country_id != $company->address->country_id)
 
-			@if ( $document->shippingaddress->mail )
+            		- {{ $document->supplier->address->country->name }}
+            @endif
 
-				<div class="billing-email">{{ $document->shippingaddress->mail }}</div>
+			@if ( $document->supplier->mail )
+
+				<div class="billing-email">{{ $document->supplier->mail }}</div>
 
 			@endif
             
-            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
+            <div class="cif">CIF/NIF: {{ $document->supplier->identification }} &nbsp; <span xstyle="float: right; xmargin-left: 10mm">[{{ $document->supplier->id }}]</span></div>
 
 			<div class="billing-phone">
-			@if ( $document->shippingaddress->phone )
+			
+			Tel. {{ $document->supplier->phone }}
 
-				Tel. {{ $document->shippingaddress->phone }}
-
-			@else
-
-				Tel. {{ $document->customer->phone }}
-
-			@endif
-
-			@if ( $document->customer->reference_external )
-				<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span>
-			@endif
 			</div>
 			
 		</td>
@@ -157,21 +143,13 @@
 
 				</tr>
 
-				<tr class="order-date">
-
-					<th>Agente:</th>
-
-					<td>{{ optional($document->salesrep)->name }}</td>
-
-				</tr>
-
-				@if ( $document->shippingmethod && 0)
+				@if ( $document->paymentmethod )
 
 				<tr class="shipping-method">
 
-					<th>Método de Envío:</th>
+					<th>Forma de Pago:</th>
 
-					<td>{{ $document->shippingmethod->name }}</td>
+					<td>{{ $document->paymentmethod->name }}</td>
 
 				</tr>
 
@@ -260,7 +238,7 @@
 @else
 	@if ( optional($line->product)->ecotax )
 
-		@include('templates::customer_orders.default.line_rae')
+		@include('templates::supplier_orders.default.line_rae')
 	
 	@else
 		<tr class="3655">
@@ -292,7 +270,7 @@
 			</td>
 			<td class="price total last-column">
 				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_price('unit_customer_final_price') }}
+					<span class="abi-Price-amount amount">{{ $line->as_price('unit_supplier_final_price') }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>
@@ -334,11 +312,11 @@
 
 
 
-@include('templates::customer_orders.default.totals')
+@include('templates::supplier_orders.default.totals')
 
 
 
-<table class="notes-totals">
+<table class="notes-totals" style="border: none !important;">
 
 	<tbody>
 
@@ -346,13 +324,14 @@
 
 			<td class="no-borders">
 
-				<div class="customer-notes">
+				<div class="supplier-notes">
 
-@if ($document->notes_from_customer && 0)
+@if ($document->notes_to_supplier)
 
-						<h3>Notas:</h3>
+						<h3>OBSERVACIONES:</h3>
 
-						{{ $document->notes_from_customer }}
+						{{ $document->notes_to_supplier }}
+
 @endif
 				</div>	
 
@@ -363,33 +342,6 @@
 				<table class="totals">
 
 					<tfoot>
-{{--
-						< ? php
-
-						$totals = $wpo_wcpdf_templates->get_totals( $wpo_wcpdf->export->template_type );
-
-						if( sizeof( $totals ) > 0 ) {
-
-							foreach( $totals as $total_key => $total_data ) {
-
-								?>
-
-								<tr class="< ? php echo $total_data['class']; ?>">
-
-									<th class="description"><span>< ? php echo $total_data['label']; ?></span></th>
-
-									<td class="price"><span class="totals-price">< ? php echo $total_data['value']; ?></span></td>
-
-								</tr>
-
-								< ? php
-
-							}
-
-						}
-
-						?>
---}}
 								<tr class="total grand-total">
 
 									<th class="description" style="background-color: #f5f5f5;"><span>Total a pagar</span></th>
@@ -409,34 +361,6 @@
 	</tbody>
 
 </table>
-
-
-
-
-@if ($document->notes_to_customer)
-
-						<h3>OBSERVACIONES:</h3>
-
-<table class="order-details print-friendly" width="100%" style="border: 1px #ccc solid">
-
-	<tbody>
-
-		<tr xclass="no-borders">
-
-			<td xclass="no-borders" style="padding: 2mm;">
-
-						{{ $document->notes_to_customer }}
-
-			</td>
-
-		</tr>
-
-	</tbody>
-
-</table>
-
-@endif
-
 
 
 
@@ -510,7 +434,7 @@ $GLOBALS['var'] = 'Pedido nº: ' . ($document->document_reference ?: 'BORRADOR')
 $pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
-               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 - 6.5), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
 
                // $pdf->text(($pdf->get_width() - 260), ($pdf->get_height() - 26.89 - 790.0), $GLOBALS["var"], null, 9);
 }

@@ -1,11 +1,11 @@
 {{-- File name after template name --}}
 
-@extends('templates::customer_orders.default.master_order')
+@extends('templates::supplier_orders.default.master_order')
 
 
 @section('content')
 
-	@include('templates::customer_orders.default.order_body')
+	@include('templates::supplier_orders.default.order_body')
 
 @endsection
 
@@ -19,7 +19,7 @@
 
 <style>
 
-	@include('templates::customer_orders.default.order_css')
+	@include('templates::supplier_orders.default.order_css')
 
 </style>
 

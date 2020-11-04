@@ -28,7 +28,7 @@
 				</span>
 			</td>
 			<td class="price total last-column">
-@if ($line->unit_customer_final_price == 0.0)
+@if ($line->unit_supplier_final_price == 0.0)
 				<span>
 					<span class="abi-Price-amount amount">{{ $line->as_priceable( 0.0 )}}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
@@ -39,7 +39,7 @@
 				</span>
 @else
 				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_priceable( $line->as_price('unit_customer_final_price') - $line->product->ecotax->amount )}}
+					<span class="abi-Price-amount amount">{{ $line->as_priceable( $line->as_price('unit_supplier_final_price') - $line->product->ecotax->amount )}}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span><br />
 					<span class="abi-Price-amount amount">{{ $line->as_priceable( $line->product->ecotax->amount ) }}
@@ -63,7 +63,7 @@
 				</span>
 			</td>
 			<td class="total last-column">
-@if ($line->unit_customer_final_price == 0.0)
+@if ($line->unit_supplier_final_price == 0.0)
 				<span>
 					<span class="abi-Price-amount amount">{{ $line->as_price('total_tax_excl') }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->

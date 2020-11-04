@@ -272,7 +272,8 @@ return [
 	'New Measure Unit' => 'Nueva Unidad de Medida',
 	'Conversion rate' => 'Factor de Conversión',
 	'Conversion rates are calculated from one unit of your main Measura Unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, the Conversion rate will be "6" (since a pack of six bottles will contain six bottles).' => 'El Factor de Conversión se calcula a partir de la Unidad de Medida principal. Por ejemplo, si la unidad principal es "botella" y la unidad alternativa es "paquete-de-seis", el Factor de Conversión será "6" (ya que un paquete de seis botellas contendrá seis botellas).',
-	'' => '',
+	'Measure Units'     => 'Unidades de Medida',
+	'Change Main Measure Unit' => 'Cambiar la Unidad de Medida Principal',
 
 
 	/*

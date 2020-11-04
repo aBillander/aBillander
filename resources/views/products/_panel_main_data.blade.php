@@ -28,12 +28,23 @@
                      {!! Form::text('name', null, array('class' => 'form-control', 'id' => 'name')) !!}
                      {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
                   </div>
-
+{{--
                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('measure_unit_id') ? 'has-error' : '' }}">
                     {{ l('Measure Unit') }}
                     {!! Form::select('measure_unit_id', $product_measure_unitList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
+--}}
+                 <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                    {{ l('Measure Unit') }}
+                    <div class="input-group">
+                        <div class="form-control">{{ $product->measureunit->name }}</div>
+                      <span class="input-group-btn">
+                        <a href="{{ route('products.measureunits.index', [$product->id]) }}" class="btn btn-lightblue" title="{{ l('Change Main Measure Unit') }}"><i class="fa fa-wrench"></i></a>
+                      </span>
+                    </div>
+                 </div>
+
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('ean13') ? 'has-error' : '' }}">
                      {{ l('Ean13') }}
                      {!! Form::text('ean13', null, array('class' => 'form-control', 'id' => 'ean13') + $foo) !!}

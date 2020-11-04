@@ -35,7 +35,11 @@ class ProductMeasureUnitsController extends Controller {
 
         $product  = $this->product->with('measureunit')->with('productmeasureunits')->findOrFail($productId);
 
-        return view('product_measure_units.index', compact('product'));
+        // Measure Units
+        $product_measure_unitList = $product->getMeasureUnitList();
+
+
+        return view('product_measure_units.index', compact('product', 'product_measure_unitList'));
 	}
 
 	/**
@@ -187,4 +191,29 @@ class ProductMeasureUnitsController extends Controller {
         return response( $products );
     }
 
+
+	public function changeMainMeasureUnit($productId, Request $request)
+	{
+        $product = $this->product->findOrFail($productId);
+        $list = $product->productmeasureunits;
+
+        // abi_r($list);die();
+
+        $munit = $list->where('measure_unit_id', $request->input('measure_unit_id'))->first();
+        $measure_unit_id = $munit->measure_unit_id;
+        $conversion_rate = $munit->conversion_rate;
+
+        if ( $munit && ($munit->id != $product->measure_unit_id) )
+        {
+        	foreach ($list as $uvalue) {
+        		# code...
+        		$uvalue->update(['conversion_rate' => $uvalue->conversion_rate / $conversion_rate]);
+        	}
+        }
+
+        $product->update(['measure_unit_id' => $measure_unit_id]);
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $productId], 'layouts'));
+	}
 }

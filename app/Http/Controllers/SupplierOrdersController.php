@@ -291,7 +291,7 @@ class SupplierOrdersController extends BillableController
      */
     public function show(Document $supplierOrder)
     {
-        //
+        return redirect($this->model_path.'/'.$id.'/edit');
     }
 
     /**
@@ -300,9 +300,36 @@ class SupplierOrdersController extends BillableController
      * @param  \App\Document  $supplierOrder
      * @return \Illuminate\Http\Response
      */
-    public function edit(Document $supplierOrder)
+    public function edit($id, Request $request)
     {
-        //
+        // Little bit Gorrino style...
+        // Find by document_reference (if supplied one)
+        if ( $request->has('document_reference') )
+        {
+            $document = $this->document->where('document_reference', $request->input('document_reference'))->firstOrFail();
+
+            // $request->request->remove('document_reference');
+            // $this->edit($document->id, $request);
+
+            return redirect($this->model_path.'/'.$document->id.'/edit');
+        }
+        else
+        {
+            $document = $this->document->findOrFail($id);
+        }
+
+        $sequenceList = $this->document->sequenceList();
+
+        $templateList = $this->document->templateList();
+
+        $supplier = Supplier::find( $document->supplier_id );
+
+        $invoicing_address = $supplier->address;
+
+        // Dates (cuen)
+        $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
+
+        return view($this->view_path.'.edit', $this->modelVars() + compact('supplier', 'invoicing_address', 'document', 'sequenceList', 'templateList'));
     }
 
     /**
@@ -312,9 +339,81 @@ class SupplierOrdersController extends BillableController
      * @param  \App\Document  $supplierOrder
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Document $supplierOrder)
+    public function update(Request $request, Document $supplierorder)
     {
-        //
+        // Dates (cuen)
+        $this->mergeFormDates( ['document_date', 'delivery_date'], $request );
+
+        $rules = $this->document::$rules;
+
+        $rules['shipping_address_id'] = str_replace('{supplier_id}', $request->input('supplier_id'), $rules['shipping_address_id']);
+        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
+
+        $this->validate($request, $rules);
+/*
+        // Extra data
+        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
+        $doc_id = $seq->getNextDocumentId();
+
+        $extradata = [  'document_prefix'      => $seq->prefix,
+                        'document_id'          => $doc_id,
+                        'document_reference'   => $seq->getDocumentReference($doc_id),
+
+                        'user_id'              => \App\Context::getContext()->user->id,
+
+                        'created_via'          => 'manual',
+                        'status'               =>  \App\Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
+                        'locked'               => 0,
+                     ];
+
+        $request->merge( $extradata );
+*/
+        $document = $supplierorder;
+
+        $need_update_totals = (
+            $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+        ) ? true : false;
+
+        $document->fill($request->all());
+
+        // Reset Export date
+        if ( 0 && Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+        if ( $request->input('export_date_form', '') == '' ) $document->export_date = null;
+
+        $document->save();
+
+        if ( $need_update_totals ) $document->makeTotals();
+
+        // Move on
+        if ($request->has('nextAction'))
+        {
+            switch ( $request->input('nextAction') ) {
+                case 'saveAndConfirm':
+                    # code...
+                    $document->confirm();
+
+                    break;
+                
+                case 'saveAndContinue':
+                    # code...
+
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        $nextAction = $request->input('nextAction', '');
+        
+        if ( $nextAction == 'saveAndContinue' ) 
+            return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+        return redirect($this->model_path)
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
     }
 
     /**
@@ -323,8 +422,131 @@ class SupplierOrdersController extends BillableController
      * @param  \App\Document  $supplierOrder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Document $supplierOrder)
+    public function destroy($id)
     {
-        //
+        $document = $this->document->findOrFail($id);
+
+        if( !$document->deletable )
+            return redirect()->back()
+                ->with('error', l('This record cannot be deleted because its Status &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+        $document->delete();
+
+        return redirect($this->model_path)      // redirect()->back()
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
+
+
+    /**
+     * Manage Status.
+     *
+     * ******************************************************************************************************************************* *
+     * 
+     */
+
+    protected function confirm(Document $document)
+    {
+        // Can I?
+        if ( $document->lines->count() == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Confirm
+        if ( $document->confirm() )
+            return redirect()->back()       // ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+    protected function unConfirm(Document $document)
+    {
+        // Can I?
+        if ( $document->status != 'confirmed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: ');
+        }
+
+        // UnConfirm
+        if ( $document->unConfirmDocument() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function onholdToggle(Document $document)
+    {
+        // No checks. A closed document can be set to "onhold". Maybe usefull...
+
+        // Toggle
+        $toggle = $document->onhold > 0 ? 0 : 1;
+        $document->onhold = $toggle;
+        
+        $document->save();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+    }
+
+
+    protected function close(Document $document)
+    {
+        // Can I?
+        if ( $document->lines->count() == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
+        }
+
+        if ( $document->onhold )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
+        }
+
+        // Close
+        if ( $document->close() )
+            return redirect()->back()       // ->route($this->model_path.'.index')
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+        
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+    protected function unclose(Document $document)
+    {
+
+        if ( $document->status != 'closed' )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
+        }
+
+        // Unclose (back to "confirmed" status)
+        if ( $document->unclose() )
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' ['.$document->document_reference.']');
+
+
+        return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
 }

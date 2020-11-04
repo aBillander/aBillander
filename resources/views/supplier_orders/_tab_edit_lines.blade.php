@@ -11,7 +11,7 @@
 <div id="msg-error" class="alert alert-danger alert-block" style="display:none;">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
   <span id="msg-error-counter" class="badge"></span>
-  <strong>{!!  l('Unable to create this record &#58&#58 (:id) ', ['id' => l('Product not found', 'customerdocuments')], 'layouts') !!}</strong>
+  <strong>{!!  l('Unable to create this record &#58&#58 (:id) ', ['id' => l('Product not found', 'supplierdocuments')], 'layouts') !!}</strong>
 </div>
 
 <div id="msg-success-delete" class="alert alert-success alert-block" style="display:none;">
@@ -28,13 +28,13 @@
 
                </div><!-- div class="panel-body" -->
 
-
+{{--
 @include($view_path.'._modal_document_lines_quick_form')
-
+--}}
 @include($view_path.'._modal_document_line_form')
 
 @include($view_path.'._modal_document_line_delete')
 
-@include($view_path.'._modal_product_consumption')
+@ include($view_path.'._modal_product_consumption')
 
 <!-- Order Lines ENDS -->

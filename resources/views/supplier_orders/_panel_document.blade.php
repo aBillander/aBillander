@@ -9,11 +9,13 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab1default" data-toggle="tab">{{ l('Header Data') }}</a></li>
                             <li><a href="#tab2default" data-toggle="tab">{{ l('Lines') }}</a></li>
+{{--
                             <li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li>
 
 @if ( $document->status != 'closed' )
                             <li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
 @endif
+--}}
 
                             <!-- li><a href="#tab5default" data-toggle="tab">{{ l('Payments') }}</a></li -->
                             <!-- li class="dropdown">
@@ -47,9 +49,10 @@
                 @include($view_path.'._tab_edit_lines')
 
       </div>
+{{--
       <div class="tab-pane fade" id="tab3default">
                 
-                @include($view_path.'._tab_profitability')
+                @ include($view_path.'._tab_profitability')
 
       </div>
 
@@ -60,7 +63,7 @@
 
       </div>
 @endif
-
+--}}
       <!-- div class="tab-pane fade" id="tab5default">
                 
                 @ include($view_path.'._tab_edit_payments')
@@ -110,9 +113,9 @@
     @include($view_path.'.js.document_service_lines')
 
     @include($view_path.'.js.document_comment_lines')
-
-    @include($view_path.'.js.document_shipping_cost_line')
-
+{{--
+    @ include($view_path.'.js.document_shipping_cost_line')
+--}}
 
 <script>
 

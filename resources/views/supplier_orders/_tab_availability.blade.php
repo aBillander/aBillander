@@ -122,9 +122,6 @@ $(document).ready(function() {
 
     $('#shippingslip_date_form').val('{{ abi_date_form_short( 'now' ) }}');
 
-//    $('#sequence_id').val('{{ $customer->getInvoiceSequenceId() }}');
-//    $('#template_id').val('{{ $customer->getInvoiceTemplateId() }}');
-
 });
 
 </script>

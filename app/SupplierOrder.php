@@ -27,7 +27,8 @@ class SupplierOrder extends Billable
      * https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
      */
     protected $document_fillable = [
-            'fulfillment_status'
+                            'supplier_id', 'notes_to_supplier', 
+                            'fulfillment_status'
     ];
 
 
@@ -422,12 +423,14 @@ class SupplierOrder extends Billable
     {
         $ascriptions = $this->leftQuotationAscriptions();
 
-        return SupplierQuotation::find( $ascriptions->pluck('leftable_id') );
+        // return SupplierQuotation::find( $ascriptions->pluck('leftable_id') );
+        return null;    // Do not consider Quotations for now
     }
 
     public function supplierquotation()
     {
-        return $this->leftQuotations()->first();
+        // return $this->leftQuotations()->first();
+        return null;    // Do not consider Quotations for now
     }
     
 

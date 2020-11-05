@@ -331,8 +331,15 @@ class Supplier extends Model {
 
             $thePrice = $product->last_purchase_price * $currency->conversion_rate;   // last_purchase_price is stored in Company Currency
         }
+
+        // One last try
+        if ( $thePrice <= 0.0 ) 
+        {
+            # code...
+            $thePrice = $product->price;    // Cannot be worse!
+        }
         
-        $price = new Price( $thePrice, 0, $this->currency);
+        $price = new Price( $thePrice, 0, $this->currency);     // Price is tax excluded
 
         // Bonus data:
         $price->discount_percent = 0.0;

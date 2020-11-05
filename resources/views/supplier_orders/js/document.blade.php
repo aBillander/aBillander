@@ -65,9 +65,6 @@
                     $("#line_total_tax_exc").html( '' );
                     $("#line_total_tax_inc").html( '' );
 
-                    $('#line_sales_rep_id').val( $('#sales_rep_id').val() );
-                    $('#line_commission_percent').val( 0.0 );   // Use default
-
                     $('#line_pmu_label').val('');
                     $('#line_extra_quantity_label').val('');
 
@@ -233,9 +230,6 @@
                     }
 
                     calculate_line_product( );
-
-                    $('#line_sales_rep_id').val( result.sales_rep_id );
-                    $('#line_commission_percent').val( result.commission_percent );
                     
                     $('#line_pmu_label').val(result.pmu_label);
                     $('#line_extra_quantity_label').val(result.extra_quantity_label);
@@ -464,7 +458,8 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
-                              store_mode : store_mode,
+//                              store_mode : store_mode,
+                              supplier_id : {{ $document->supplier_id }},
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),
@@ -536,6 +531,7 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
+                              supplier_id : {{ $document->supplier_id }},
                               line_id : id,
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
@@ -559,8 +555,6 @@
                               discount_percent : $('#line_discount_percent').val(),
                               discount_amount_tax_incl : $('#line_discount_amount_tax_incl').val(),
                               discount_amount_tax_excl : $('#line_discount_amount_tax_excl').val(),
-                              sales_rep_id : $('#line_sales_rep_id').val(),
-                              commission_percent : $('#line_commission_percent').val(),
                               pmu_label : $('#line_pmu_label').val(),
                               extra_quantity_label : $('#line_extra_quantity_label').val(),
                               notes : $('#line_notes').val()
@@ -620,7 +614,7 @@
     
                         getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
     
-                        getProductPriceData( $('#line_product_id').val(), $('#line_combination_id').val(), $("#supplier_id").val() );
+                        // getProductPriceData( $('#line_product_id').val(), $('#line_combination_id').val(), $("#supplier_id").val() );
                     }
 
                     return false;
@@ -647,7 +641,6 @@
                     product_id: product_id,
                     combination_id: combination_id,
                     supplier_id: $("#supplier_id").val(),
-                    sales_rep_id: $("#sales_rep_id").val(),                    
                     currency_id: $("#currency_id").val(),
                     conversion_rate: $("#currency_conversion_rate").val(),
                     taxing_address_id: $("#taxing_address_id").val()
@@ -688,7 +681,7 @@
                     else
                         $('input:radio[name=line_is_sales_equalization][value=0]').prop('checked', true);
                     
-                    $('#line_discount_percent').val(0);
+                    $('#line_discount_percent').val(response.discount_percent);
 //                    price = parseFloat(response.unit_supplier_price.display);
 
                     $('#line_is_prices_entered_with_tax').val(response.unit_supplier_price.price_is_tax_inc);
@@ -723,7 +716,7 @@
 
                     $("#label_ecotax_value").html(response.ecotax_value_label);
 
-                    $('#line_commission_percent').val(response.commission_percent);
+                    // $('#line_commission_percent').val(response.commission_percent);
 
                     calculate_line_product();
 

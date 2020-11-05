@@ -1364,7 +1364,7 @@ class Product extends Model {
         $price = $supplier->getPrice( $this, $quantity, $currency );
 
         // Add Ecotax
-        if ( 0 && Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
 //            $ecoprice = Price::create([

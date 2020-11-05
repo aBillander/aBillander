@@ -183,6 +183,12 @@ trait SupplierBillableControllerTrait
         if ($supplier_price) 
         {
             $supplier_price->applyTaxPercentToPrice($tax_percent);        
+
+            $ecotax_amount = $product->ecotax ? 
+                                  $product->ecotax->amount :
+                                  0.0;
+
+            $ecotax_value_label = $product->as_priceable($ecotax_amount).' '.$currency->name;
     
             $data = [
                 'product_id' => $product->id,
@@ -213,6 +219,7 @@ trait SupplierBillableControllerTrait
                 'tax_percent' => $tax_percent,
                 'tax_id' => $product->tax_id,
                 'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
+                'ecotax_value_label' => $ecotax_value_label,
                 'supplier_id' => $supplier_id,
                 'currency' => $currency,
     

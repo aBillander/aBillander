@@ -228,7 +228,7 @@ class ProductionSheetInvoicesController extends BillableController
 
         // abi_r($params, true);
 
-        return $this->processCloseShippingSlips( $document_group, $params );
+        return $this->processCloseInvoices( $document_group, $params );
     }
 
     

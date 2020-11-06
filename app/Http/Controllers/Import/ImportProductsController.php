@@ -543,6 +543,9 @@ class ImportProductsController extends Controller
 //             'last_purchase_price', 'cost_average', // <= Easter Eggs!!!
         ];
 
+        $float_headers = [ 'price_tax_inc', 'price', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'width', 'height', 'depth', 'volume', 'weight', 
+        ];
+
         $data[] = $headers;
 
         // Convert each member of the returned collection into an array,
@@ -552,7 +555,10 @@ class ImportProductsController extends Controller
             $row = [];
             foreach ($headers as $header)
             {
-                $row[$header] = $product->{$header} ?? '';
+                if ( in_array($header, $float_headers) )
+                    $row[$header] = (float) $product->{$header} ?? '';
+                else
+                    $row[$header] = $product->{$header} ?? '';
             }
             $row['CATEGORY_NAME']     = $product->category ? $product->category->name : '';
             $row['TAX_NAME']          = $product->tax ? $product->tax->name : '';

@@ -90,9 +90,9 @@
                 <a class="btn btn-sm btn-grey" href="{{ route('abcc.order.pdf', [$order->id]) }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 
                 <a class="btn btn-sm btn-warning" href="{{ route('abcc.order.duplicate', [$order->id]) }}" title="{{l('Copy Order to Cart')}}"><i class="fa fa-copy"></i></a>
-
+{{--
                 <a class="btn btn-sm btn-success" href="{{ route('abcc.orders.show', [$order->id]) }}" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
-
+--}}
             </td>
         </tr>
         @endforeach

@@ -27,6 +27,7 @@ return [
 	'From Quantity' => 'Desde Cantidad',
 	'Last Purchase Price'     => 'Precio última Compra',
 
+	'Price' => 'Precio',
 	'Price is WITHOUT Taxes.' => 'El Precio es SIN Impuestos.',
 
 	'Price List Lines - Edit'     => 'Líneas de Tarifa - Modificar',

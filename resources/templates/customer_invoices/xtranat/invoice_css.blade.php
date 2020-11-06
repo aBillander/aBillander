@@ -231,11 +231,13 @@ td.order-data {
 }
 
 .invoice .shipping-address {
-	width: 30%;
+	xwidth: 30%;
+	width: 10%;
 }
 
 .shipping-slip .billing-address {
-	width: 30%;
+	xwidth: 30%;
+	width: 50%;
 }
 
 td.order-data table th {

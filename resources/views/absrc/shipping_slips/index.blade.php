@@ -194,10 +194,10 @@
             </td>
             <td class="text-right">{{ $document->lines_count }}</td>
             <td class="text-right">{{ $document->as_money_amount('total_tax_excl') }}</td>
-            <td class="text-center">@if ($document->notes_from_customer)
+            <td class="text-center">@if ($document->all_notes)
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
-                            data-content="{!! nl2br($document->notes_from_customer) !!}">
+                            data-content="{!! nl2br($document->all_notes) !!}">
                         <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
                     </button>
                  </a>

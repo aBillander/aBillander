@@ -232,8 +232,26 @@
                         <li class="divider"></li>
                          <li>
                             <a href="{{ route('suppliershippingslips.index') }}">
+                                 <i class="fa fa-shopping-cart btn-xs alert-success"></i> 
+                                 {{l('Purchase Orders', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('suppliershippingslips.index') }}">
                                  <i class="fa fa-truck btn-xs alert-info"></i> 
                                  {{l('Supplier Shipping Slips', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('suppliershippingslips.index') }}">
+                                 <!-- i class="fa fa-money btn-xs alert-warning"></i --> 
+                                 {{l('Supplier Invoices', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('suppliershippingslips.index') }}">
+                                 <!-- i class="fa fa-credit-card btn-xs alert-danger"></i --> 
+                                 {{l('Supplier Vouchers', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>
@@ -347,6 +365,12 @@
                          <li>
                             <a href="{{ URL::to('paymentmethods') }}">
                                  {{l('Payment Methods', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('paymenttypes') }}">
+                                 <i class="fa fa-btc btn-xs text-success"></i>
+                                 {{l('Payment Types', [], 'layouts')}}
                             </a>
                         </li>
                          <li>

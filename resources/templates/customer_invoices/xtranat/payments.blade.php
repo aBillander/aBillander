@@ -1,4 +1,6 @@
 
+@if ($document->payments->count() > 1 )
+
 	<style type="text/css">
 	.payments-wrapper {
 		/* padding-left: 2cm; */
@@ -121,4 +123,5 @@ $totals = $document->totals();
 
 
 	</div>
-	
+
+@endif

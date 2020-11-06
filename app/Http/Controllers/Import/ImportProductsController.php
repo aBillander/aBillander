@@ -415,13 +415,13 @@ class ImportProductsController extends Controller
                     $item = http_build_query($data, null, ', ');
 
                     // Let's see which Product
-                    if ( array_key_exists('id', $data) )
+                    if ( array_key_exists('id', $data) && ( (int) $data['id'] > 0) )
                     {
                         $key_name = 'id';
-                        $key_val = trim( $data['id'] );
+                        $key_val = (int) $data['id'];
 
                         unset( $data['id'] );
-                        // Unomment lines to prevent changes in reference value
+                        // Uncomment lines to prevent changes in reference value
                         // if ( array_key_exists('reference', $data) )
                         //     unset( $data['reference'] );
                         
@@ -451,6 +451,7 @@ class ImportProductsController extends Controller
 
                     try{
                         // Update Product
+                        // abi_toSql($this->product->where( $key_name, $key_val )); die();
                         $product = $this->product->where( $key_name, $key_val )->first();
 
                         if ( !$product )
@@ -542,6 +543,9 @@ class ImportProductsController extends Controller
 //             'last_purchase_price', 'cost_average', // <= Easter Eggs!!!
         ];
 
+        $float_headers = [ 'price_tax_inc', 'price', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'width', 'height', 'depth', 'volume', 'weight', 
+        ];
+
         $data[] = $headers;
 
         // Convert each member of the returned collection into an array,
@@ -551,7 +555,10 @@ class ImportProductsController extends Controller
             $row = [];
             foreach ($headers as $header)
             {
-                $row[$header] = $product->{$header} ?? '';
+                if ( in_array($header, $float_headers) )
+                    $row[$header] = (float) $product->{$header} ?? '';
+                else
+                    $row[$header] = $product->{$header} ?? '';
             }
             $row['CATEGORY_NAME']     = $product->category ? $product->category->name : '';
             $row['TAX_NAME']          = $product->tax ? $product->tax->name : '';

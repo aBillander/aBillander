@@ -122,6 +122,7 @@
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-right">{{ l('Open Balance') }}</th>
             <th class="text-right">{{ l('Next Due Date') }}</th>
+            <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
     </thead>
@@ -149,6 +150,15 @@
                 @else
                     @if ($invoice->next_due_date) {{ abi_date_short($invoice->next_due_date) }} @endif
                 @endif</td>
+            <td class="text-center">@if ($invoice->all_notes)
+                 <a href="javascript:void(0);">
+                    <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                            data-content="{!! nl2br($invoice->all_notes) !!}">
+                        <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                    </button>
+                 </a>
+                @endif
+            </td>
             <td class="text-right">
 
                 <a class='btn btn-sm btn-lightblue show-shippingslips' href="#" data-target='#myModalShowShippingSlips' data-id="{{ $invoice->secure_key }}" data-toggle="modal" onClick="return false;" title="{{l('Show Shipping Slips')}}"><i class="fa fa-truck"></i></a>

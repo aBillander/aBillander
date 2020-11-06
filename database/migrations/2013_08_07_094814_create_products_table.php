@@ -19,6 +19,9 @@ class CreateProductsTable extends Migration {
 
 		Schema::create('products', function(Blueprint $table)
 		{
+    		// Full Text 
+    		$table->engine = 'MyISAM';
+
 			$table->increments('id');
 //			$table->enum('product_type', \App\Product::$types)->default('simple');
 			$table->string('product_type', 32)->nullable(false)->default('simple');

@@ -161,9 +161,9 @@
 
 				<tr class="order-number">
 
-					<th style="width: 42%; font-weight: bold;font-size: 16pt;">FACTURA:</th>
+					<th style="width: 42%; font-weight: bold;font-size: 16pt;vertical-align: baseline !important;">FACTURA:</th>
 
-					<td style="font-size: 11pt;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
+					<td style="font-size: 11pt;vertical-align: baseline !important;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
 
 				</tr>
 

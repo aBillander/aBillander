@@ -368,6 +368,7 @@
                         </li>
                          <li>
                             <a href="{{ URL::to('paymenttypes') }}">
+                                 <i class="fa fa-btc btn-xs text-success"></i>
                                  {{l('Payment Types', [], 'layouts')}}
                             </a>
                         </li>

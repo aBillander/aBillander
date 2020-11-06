@@ -27,3 +27,6 @@ remove-pkg.txt
 *.php_dist
 
 composer.lock*
+
+.env.abillander
+.env.example

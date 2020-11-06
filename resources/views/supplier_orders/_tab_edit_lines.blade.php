@@ -34,7 +34,7 @@
 @include($view_path.'._modal_document_line_form')
 
 @include($view_path.'._modal_document_line_delete')
-
-@ include($view_path.'._modal_product_consumption')
-
+{{--
+@include($view_path.'._modal_product_consumption')
+--}}
 <!-- Order Lines ENDS -->

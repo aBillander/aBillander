@@ -2,9 +2,23 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class SupplierOrderLine extends Model
+class SupplierOrderLine extends BillableLine
 {
-    //
+
+    /**
+     * The fillable properties for this model.
+     *
+     * @var array
+     *
+     * 
+     */
+    protected $line_fillable = [
+        'unit_supplier_price', 'unit_supplier_final_price', 'unit_customer_final_price_tax_inc',
+    ];
+    
+
+    public static $rules = [
+//        'product_id'    => 'required',
+    ];
+    
 }

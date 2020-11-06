@@ -20,7 +20,7 @@
                      panel.removeClass('loading');
 
                      $("[data-toggle=popover]").popover();
-                     // sortableCustomerOrderLines();
+                     // sortableSupplierOrderLines();
                }, 'html').done( function() { 
 
                     var selector = "#line_autoservice_name";
@@ -112,6 +112,7 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
+                              supplier_id : {{ $document->supplier_id }},
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),
@@ -182,6 +183,7 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
+                              supplier_id : {{ $document->supplier_id }},
                               line_id : id,
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),

@@ -164,7 +164,7 @@
                       
                       @endif
                     
-                      @if ( $line->product_id )
+                      @if ( 0 && $line->product_id )
 
                     <a class="btn btn-sm btn-blue show-customer-consumption" data-id="{{$line->product_id}}" title="{{l('Show Customer consumption')}}" onClick="return false;"><i class="fa fa-dropbox"></i></a>
 

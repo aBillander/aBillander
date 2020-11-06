@@ -2,9 +2,22 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class SupplierOrderLineTax extends Model
+class SupplierOrderLineTax extends BillableLineTax
 {
-    //
+
+	//
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+/*
+    public function suppliershippingslipline()
+    {
+       return $this->line();
+    }
+*/
 }

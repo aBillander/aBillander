@@ -1,0 +1,19 @@
+Una solución al encabezado que no aparece en página 1:
+
+1.- Poner bloque logo empresa + datos fiscales de empresa en header asegurando un vacío debajo (lo que separa del siguiente bloque que empieza con "FACTURA").
+
+2.- en el espacio blanco debajo del bloque anterior, posicionar con php algo como "Factura: NAC-0012" a partir de la segunda hoja, como se dice en >>>
+
+https://stackoverflow.com/questions/7211256/dompdf-how-to-add-header-on-every-page-except-first
+>>> https://github.com/dompdf/dompdf/issues/347
+https://github.com/dompdf/dompdf/issues/1190
+
+
+https://demonuts.com/laravel-5-8-pdf-generator/
+https://rimorsoft.com/generar-reportes-pdf-en-laravel-5-5
+https://ourcodeworld.com/articles/read/687/how-to-configure-a-header-and-footer-in-dompdf
+
+
+
+https://github.com/barryvdh/laravel-snappy/issues/139
+

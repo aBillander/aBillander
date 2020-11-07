@@ -97,7 +97,7 @@ class WooOrder // extends Model
 
             // Get Customer reference in FactuSOL (if exists)
             $woo_customer = intval($this->data['customer_id']);
-            $this->data['customer_reference_external'] = FSxTools::translate_customers_fsol($woo_customer>0?$woo_customer:$this->data['billing']['email']);
+            $this->data['customer_reference_external'] = '';        // FSxTools::translate_customers_fsol($woo_customer>0?$woo_customer:$this->data['billing']['email']);
 
         }
 

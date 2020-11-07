@@ -91,6 +91,16 @@
                             </a>
                         </li>
                         <li class="divider"></li>
+                        
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+                         <li>
+                            <a href="{{ URL::to('wooc/wcustomers') }}">
+                                 <i class="fa fa-cloud-download btn-xs alert-warning"></i> 
+                                 {{l('Customers', [], 'layouts')}} [WooC]
+                            </a>
+                        </li>
+                        <!-- li class="divider"></li -->
+@endif
 
                          <li>
                             <a href="{{ URL::to('customers') }}">
@@ -194,6 +204,15 @@
                                  {{l('Stock Movements', [], 'layouts')}}
                             </a>
                         </li>
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+                         <li>
+                            <a href="{{ URL::to('lots') }}">
+                                 <img src="{{ asset('assets/theme/self-distract-button-20.png') }}"> 
+                                 <i class="fa fa-window-restore btn-xs text-muted"></i> 
+                                 {{l('Lots', [], 'layouts')}}
+                            </a>
+                        </li>
+@endif
                          <li>
                             <a href="{{ URL::to('stockcounts') }}">
                                  {{l('Inventory Count', [], 'layouts')}}
@@ -205,11 +224,34 @@
                                  {{l('Inventory Adjustments', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ URL::to('warehouseshippingslips') }}">
+                                 {{l('Warehouse Transfers', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
+                         <li>
+                            <a href="{{ route('suppliershippingslips.index') }}">
+                                 <i class="fa fa-shopping-cart btn-xs alert-success"></i> 
+                                 {{l('Purchase Orders', [], 'layouts')}}
+                            </a>
+                        </li>
                          <li>
                             <a href="{{ route('suppliershippingslips.index') }}">
                                  <i class="fa fa-truck btn-xs alert-info"></i> 
                                  {{l('Supplier Shipping Slips', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('suppliershippingslips.index') }}">
+                                 <!-- i class="fa fa-money btn-xs alert-warning"></i --> 
+                                 {{l('Supplier Invoices', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('suppliershippingslips.index') }}">
+                                 <!-- i class="fa fa-credit-card btn-xs alert-danger"></i --> 
+                                 {{l('Supplier Vouchers', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>
@@ -217,6 +259,12 @@
                             <a href="{{ route('products.reorder.index') }}">
                                  <i class="fa fa-calculator btn-xs text-warning"></i> 
                                  {{l('Products with Low Stock', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('products.stock.index') }}">
+                                 <i class="fa fa-calculator btn-xs text-danger"></i> 
+                                 {{l('Products with no Stock', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>
@@ -320,6 +368,12 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('paymenttypes') }}">
+                                 <i class="fa fa-btc btn-xs text-success"></i>
+                                 {{l('Payment Types', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('taxes') }}">
                                  {{l('Taxes', [], 'layouts')}}
                             </a>
@@ -331,6 +385,13 @@
                             </a>
                         </li>
 @endif
+                         <li>
+                            <a href="{{ URL::to('cheques') }}">
+                                 <i class="fa fa-money btn-xs text-success"></i> 
+                                 {{l('Cheques', [], 'layouts')}}
+                                 <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('import') }}">
@@ -373,6 +434,12 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ route('chart.customerorders.daily', ['CustomerShippingSlip']) }}">
+                                <i class="fa fa-long-arrow-right text-info"></i> 
+                                 {{l('Sales Shipping Slips (daily)', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ route('chart.customerorders.monthly', ['CustomerInvoice']) }}">
                                  {{l('Sales Invoices', [], 'layouts')}}
                             </a>
@@ -388,11 +455,28 @@
                                 <i class="fa fa-user-secret text-success"></i> 
                                 {{l('Accounting', [], 'layouts')}}</a>
                         </li>
+                         <li>
+                            <a href="{{ route('accounting.customerinvoices.index') }}">
+                                 {{l('Customer Invoices', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('accounting.customers.index') }}">
+                                 {{l('Customers', [], 'layouts')}}
+                            </a>
+                        </li>
+
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('helferin/home') }}">
                                 <i class="fa fa-gears text-info"></i> 
                                 {{l('Earns & Profit', [], 'layouts')}}</a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('reports/home') }}">
+                                <i class="fa fa-coffee text-danger"></i> 
+                                {{l('Analysis', [], 'layouts')}}</a>
                         </li>
                         <li class="divider"></li>
                     </ul>
@@ -413,11 +497,11 @@
                                  {{l('Documentation', [], 'layouts')}}
                             </a>
                         </li>
-                         <!-- li>
-                            <a data-target="#contactForm" data-toggle="modal" onclick="return false;" href="">
+                         <li>
+                            <a data-target="#feedbackForm" data-toggle="modal" onclick="return false;" href="">
                                  {{l('Support & feed-back', [], 'layouts')}}
                             </a>
-                        </li -->
+                        </li>
                          <li>
                             <a data-target="#aboutLaraBillander" data-toggle="modal" onclick="return false;" href="">
                                  {{l('About ...', [], 'layouts')}}
@@ -473,6 +557,11 @@
                             </a>
                         </li>
                          <li>
+                            <a href="{{ URL::to('banks') }}">
+                                 {{l('Banks', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ URL::to('dbbackups') }}">
                                  <i class="fa fa-database text-danger"></i> {{l('DB Backups', [], 'layouts')}}
                             </a>
@@ -524,3 +613,5 @@ https://github.com/almasaeed2010/AdminLTE/issues/1275
 https://bootsnipp.com/snippets/featured/multi-level-dropdown-menu-bs3
 
 --}}
+
+@include('layouts/modal_feedback')

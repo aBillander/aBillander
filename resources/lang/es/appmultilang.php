@@ -84,6 +84,7 @@ return array(
 	'SupplierInvoice' => 'Factura de Proveedor',
 
     'StockCount' => 'Inventario de Almacén',
+    'WarehouseShippingSlip' => 'Transferencias entre Almacenes',
 
 
 	/*
@@ -99,6 +100,7 @@ return array(
     'template.CustomerOrderPdf'   => 'Pedido de Cliente (Pdf)',
     'template.CustomerShippingSlipPdf'   => 'Albarán de Cliente (Pdf)',
 	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',
+    'template.WarehouseShippingSlipPdf' => 'Transferencias entre Almacenes (Pdf)',
     'template.Pdf' => 'Plantilla Pdf',
     'template.Mail' => 'Plantilla Mail',
 	
@@ -323,6 +325,21 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Cheque Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\Cheque.pending' => 'Pendiente',// Pendiente de depositar
+    'App\Cheque.deposited' => 'Depositado',	// Depositado
+    'App\Cheque.paid' => 'Pagado',			// or cleared: pagaddo (ingresado en el banco)
+    'App\Cheque.voided' => 'Anulado',		// Anulado
+    'App\Cheque.rejected' => 'Rechazado',		// or dishonored, or returned, or bounced
+
+	/*
+	|--------------------------------------------------------------------------
 	| Commission Settlement Statuses
 	|--------------------------------------------------------------------------
 	|
@@ -344,6 +361,18 @@ return array(
 
 	'App\ShippingMethod.price'  => 'Precio',
 	'App\ShippingMethod.weight' => 'Peso',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Sales Representative Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SalesRep.external'  => 'Agente Externo',
+	'App\SalesRep.employee' => 'Empleado',
 
 
 	/*

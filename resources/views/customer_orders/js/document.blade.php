@@ -175,7 +175,7 @@
                     $('#line_reference').val(result.reference);
 
                     pmu_conversion_rate = result.pmu_conversion_rate;
-                    pmu_quantity = result.quantity / pmu_conversion_rate
+                    pmu_quantity = result.quantity / pmu_conversion_rate;
 
                     $('#line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
                     $('#line_quantity').val(pmu_quantity.round( QUANTITY_DECIMAL_PLACES ));
@@ -235,7 +235,7 @@
                     calculate_line_product( );
 
                     $('#line_sales_rep_id').val( result.sales_rep_id );
-                    $('#line_commission_percent').val( result.commission_percent );line_extra_quantity_label
+                    $('#line_commission_percent').val( result.commission_percent );
                     
                     $('#line_pmu_label').val(result.pmu_label);
                     $('#line_extra_quantity_label').val(result.extra_quantity_label);
@@ -647,6 +647,7 @@
                     product_id: product_id,
                     combination_id: combination_id,
                     customer_id: $("#customer_id").val(),
+                    sales_rep_id: $("#sales_rep_id").val(),                    
                     currency_id: $("#currency_id").val(),
                     conversion_rate: $("#currency_conversion_rate").val(),
                     taxing_address_id: $("#taxing_address_id").val()
@@ -721,6 +722,8 @@
                     $("#line_price").val( price );
 
                     $("#label_ecotax_value").html(response.ecotax_value_label);
+
+                    $('#line_commission_percent').val(response.commission_percent);
 
                     calculate_line_product();
 

@@ -18,6 +18,11 @@
               {!! Form::text('identification', null, array('class' => 'form-control', 'id' => 'identification')) !!}
               {!! $errors->first('identification', '<span class="help-block">:message</span>') !!}
             </div>
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('approval_number') ? 'has-error' : '' !!}">
+              {{ l('Approval Number') }}
+              {!! Form::text('approval_number', null, array('class' => 'form-control', 'id' => 'approval_number')) !!}
+              {!! $errors->first('approval_number', '<span class="help-block">:message</span>') !!}
+            </div>
             <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('reference_external') ? 'has-error' : '' !!}">
               {{ l('External Reference') }}
               {!! Form::text('reference_external', null, array('class' => 'form-control', 'id' => 'reference_external')) !!}

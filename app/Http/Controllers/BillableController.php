@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Customer;
+use App\SalesRep;
 use App\Product;
 use App\Combination;
 use App\Currency;
 use App\Address;
+
+use App\StockMovement;
 
 use App\Configuration;
 use App\Context;
@@ -241,6 +244,7 @@ class BillableController extends Controller
         $product_id      = $request->input('product_id');
         $combination_id  = $request->input('combination_id');
         $customer_id     = $request->input('customer_id');
+        $sales_rep_id    = $request->input('sales_rep_id');
         $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 //        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
 
@@ -259,6 +263,9 @@ class BillableController extends Controller
 
         // Customer
         $customer = Customer::findOrFail(intval($customer_id));
+
+        // Sales Representative
+        $salesrep = SalesRep::find(intval($sales_rep_id));
         
         // Currency
         $currency = Currency::findOrFail(intval($currency_id));
@@ -288,6 +295,8 @@ class BillableController extends Controller
                                   0.0;
 
             $ecotax_value_label = $product->as_priceable($ecotax_amount).' '.$currency->name;
+
+            $commission_percent = $salesrep ? $salesrep->getCommission( $product, $customer ) : 0.0;
     
             $data = [
                 'product_id' => $product->id,
@@ -319,6 +328,8 @@ class BillableController extends Controller
                 'ecotax_value_label' => $ecotax_value_label,
                 'customer_id' => $customer_id,
                 'currency' => $currency,
+
+                'commission_percent' => $commission_percent,
     
                 'measure_unit_id' => $product->measure_unit_id,
                 'quantity_decimal_places' => $product->quantity_decimal_places,
@@ -567,7 +578,9 @@ class BillableController extends Controller
         foreach ($product_id_values as $key => $pid) {
             # code...
 
-            $line[] = $document->addProductLine( $pid, $combination_id_values[$key], $quantity_values[$key], [] );
+            $params['sales_rep_id'] = $document->sales_rep_id;
+
+            $line[] = $document->addProductLine( $pid, $combination_id_values[$key], $quantity_values[$key], $params );
 
             // abi_r($line, true);
         }
@@ -604,7 +617,33 @@ class BillableController extends Controller
                         ->with('lines.product')
                         ->findOrFail($id);
 
-        return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document'));
+        $document_reference = $document->document_reference;
+
+        $stockmovements = collect([]);
+        if ( $document->status == 'closed' )
+            $stockmovements = StockMovement::
+                                  with('warehouse')
+                                ->with('product')
+                                ->with('combination')
+//                              ->with('stockmovementable')
+//                                ->with('stockmovementable.document')
+                                ->where(function($query) use ($document_reference)
+                                {
+//                                    $query->where  ( 'id',                 'LIKE', '%'.$document_reference.'%' );
+                                    $query->where( 'document_reference', 'LIKE', '%'.$document_reference.'%' );
+                                })
+                                ->where(function($query)
+                                {
+                                    $query->where  ( 'stockmovementable_type', '' );
+                                    $query->orWhere( 'stockmovementable_type', 'LIKE', '%ShippingSlip%' );
+                                })
+                                ->orderBy('created_at', 'DESC')
+                                ->orderBy('reference', 'ASC')
+                                ->get();
+
+        // abi_r($stockmovements);die();
+
+        return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document', 'stockmovements'));
     }
 
     public function getDocumentAvailabilityModal($id, Request $request)
@@ -615,6 +654,42 @@ class BillableController extends Controller
                         ->findOrFail($id);
 
         return view($this->view_path.'._modal_document_availability_content', $this->modelVars() + compact('document'));
+    }
+
+
+
+    public function reloadCommissions($id, Request $request)
+    {
+        $document = $this->document
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->findOrFail($id);
+
+        $document->loadLineCommissions();
+
+        return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
+
+
+    public function reloadEcotaxes($id, Request $request)
+    {
+        $document = $this->document
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->findOrFail($id);
+
+        // 
+        // Ecotaxes stuff
+        // 
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') )
+        {
+            $document->loadLineEcotaxes();
+        }        
+
+        return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
     }
 
 

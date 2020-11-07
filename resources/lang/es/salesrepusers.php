@@ -36,6 +36,7 @@ return [
 	'Language'     => 'Idioma',
 	'Is Principal?'     => '¿Es Principal?',
 	'Language'     => 'Idioma',
+	'Warehouse' => 'Almacén',
 	''     => '',
 	''     => '',
 	'Allow Sales Representative Center access?'     => '¿Permitir acceso al Centro de Agentes?',

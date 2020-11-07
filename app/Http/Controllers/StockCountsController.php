@@ -332,12 +332,13 @@ class StockCountsController extends Controller
             }
 
             // Update Cost Price
-            if ( $line->cost_price > 0.0 )
-            {
+            // if ( $line->cost_price > 0.0 )
+            // {
                 $product->cost_price = $line->cost_price;
+                $product->cost_average = $line->cost_average;
 
                 $product->save();
-            }
+            // }
 
             // Let's move on:
             $data = [
@@ -352,8 +353,9 @@ class StockCountsController extends Controller
  //                   'quantity_before_movement' => ,
                     'quantity' => $line->quantity,
  //                   'quantity_after_movement' => ,
+                    'measure_unit_id' => $product->measure_unit_id,
 
-                    'price' => $product->cost_price,
+                    'price' => $line->getPriceForStockValuation(),
                     'currency_id' => \App\Context::getContext()->company->currency->id,
                     'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
 
@@ -363,6 +365,7 @@ class StockCountsController extends Controller
                     'combination_id' => '', // $line->combination_id,
                     'reference' => $product->reference,
                     'name' => $product->name,
+
                     'warehouse_id' => $stockcount->warehouse_id,
  //                   'warehouse_counterpart_id' => ,
                     

@@ -54,6 +54,7 @@ return [
 	'Invoiced at:'     => 'Facturado el',
 	'Delivered at:'     => 'Entregado el:',
 	'Set delivered' => 'Click para entregado',
+	'With selected: Set delivered' => 'Con los seleccionados: Marcar como entregado',
 
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Próx. Vencimiento',
@@ -103,6 +104,7 @@ return [
 	'View Invoicing Address'     => 'Ver Dirección de Facturación',
 
 	'Group Shipping Slips'     => 'Agrupar Albaranes',
+	'Invoice Shipping Slips' => 'Facturar Albaranes',
 
 
 	'Header'     => 'Cabecera',
@@ -152,10 +154,14 @@ return [
 	'Down Payment'     => 'Anticipo',
 	'Number of Packages'     => 'Número de Bultos',
 	'Weight'     => 'Peso',
+	'Volume' => 'Volumen',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',
 	'Carrier'     => 'Transportista',
+	'-- From Shipping Method' => '-- Del Método de Envío',
+	'Select Carrier'     => 'Seleccione Transportista',
+	'With selected: Set Carrier' => 'Con los seleccionados: Actualizar Transportista',
 	'Tracking Number'     => 'Número de Seguimiento (tracking)',
 	'Shipping Conditions'     => 'Condiciones de Entrega',
 	'Notes to Customer'     => 'Notas para el Cliente',
@@ -192,11 +198,15 @@ return [
 	'Service'     => 'Servicio',
 	'Discount Line'     => 'Línea de Descuento',
 	'Text Line'     => 'Línea de Texto',
+
+    'Add Lots to Line' => 'Añadir Lotes a la Línea',
 	
 	// modal_product_search
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
 	'Add Product'     => 'Nuevo Producto',
 	'Add Service'     => 'Nuevo Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
+	'Add Shipping Cost'     => 'Añadir Costes de Envío',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -229,6 +239,8 @@ return [
 	'Margin 1 (%)'     => 'Margen 1 (%)',
 	'Margin Amount'     => 'Margen Neto',
 	'Margin 2 (%)'     => 'Margen 2 (%)',
+	'Margin Amount 2'     => 'Margen Neto 2',
+	'Value' => 'Valor',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',
 	'Cost-Benefit Analysis'     => 'Análisis de Rentabilidad',
@@ -325,8 +337,11 @@ return [
 
 	'Create Invoice'     => 'Crear Factura',
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
+	'Shipping Slip: :id [dicount Tax :percent %]'     => 'Albarán: :id [descuento '.\App\Configuration::get('CUSTOMER_INVOICE_TAX_LABEL').' :percent %]',
 
 	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
+
+	'Address is displayed if it is different from Customer Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Cliente',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 	'Prompt Payment'     => 'Pronto Pago',
@@ -338,5 +353,57 @@ return [
 
 
 	'Shipment Service Type Tag' => 'Tipo de Envío',
+	
+	'Is Invoiceable?'     => '¿Es Facturable?',
+
+	'Undo Invoice' => 'Deshacer Factura',
+
+	'You are going to remove :slip from Invoice :inv . Are you sure?' => 'Está a punto de quitar :slip de la Factura :inv . ¿Está seguro?',
+
+	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos',
+
+	'Filter and Invoice' => 'Filtrar y Facturar',
+
+	'Invoiceable Shipping Slips' => 'Albaranes para Facturar',
+
+	'Group by Address' => 'Agrupar por Dirección',
+	'Yes: One Invoice per Shipping Address' => 'Sí: Una Factura por Dirección de Envío',
+
+	
+	'Stock Movements' => 'Movimientos de Stock',
+	'Stock after'     => 'Stock final',
+
+	'Not Invoiceable Document' => 'Documento No Facturable',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Documents Language Lines :: Profitability
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Update Commissions' => 'Actualizar Comisiones',
+	'Update Line Ecotaxes' => 'Actualizar Ecoimpuesto en las Líneas',
+	'Line Ecotax Amount is different from Product Ecotax Amount. You must "Update Line Ecotaxes" (button below).' => 
+	'La Cantidad del Ecoimpuesto en la Línea es diferente de la Cantidad del Ecoimpuesto del Producto. Debe "Actualizar Ecoimpuesto en las Líneas" (botón más abajo).',
+	'Line Product Cost Price is different from Product Cost record. You must "Update Cost Prices" (button below).' => 'El Coste del Producto en la línea es diferente del que se obtiene de la ficha del Producto. Debe "Actualizar Precios de Coste" (botón más abajo).',
+
+	'Disc.'     => 'Dto.',
+	'Total Disc.'     => 'Dto. Total',
+	'Total Disc. %'     => 'Dto. Total %',
+
+	'Ecotax not included.' => 'Ecotasa no incluida.',
+	'Shown in Document Currency.' => 'Mostrado en la Divisa del Documento.',
+	'Commission is supposed to be on Sale Price including Ecotax. Commission is higher when calculated on Sale Price excluding Ecotax.' => 'La Comisión se supone sobre el Precio de Venta incluida la Ecotasa. La Comisión será mayor si se calcula sobre el Precio de Venta excluida la Ecotasa.',
+
+	'Products Value after Product Records.' => 'Valor de los Productos según su Precio en la Ficha del Producto.',
+	'Document Products Total.' => 'Total de los Productos en el Documento',
+	'Document Discounts: Document (Header) Discount plus Document Prompt Payment Discount.' => 'Descuentos al Documento: Descuento al Documento (en cabecera) más Descuento por Pronto Pago.',
+	'Document Discount Lines.' => 'Líneas de Descuento del Documento.',
+	'Calculated Commission for the entire Document (average).' => 'Comisión calculada para el Documento en conjunto (promedio).',
 
 ];

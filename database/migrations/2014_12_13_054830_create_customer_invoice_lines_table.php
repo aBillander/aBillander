@@ -23,6 +23,12 @@ class CreateCustomerInvoiceLinesTable extends Migration {
 
 			// Parent Document
 			$table->integer('customer_invoice_id')->unsigned()->nullable(false);
+
+			// This line comes from this Customer Shipping Slip (when applicable!)
+			$table->integer('customer_shipping_slip_id')->unsigned()->nullable();
+
+			// This line comes from this Customer Shipping Slip Line (when applicable!)
+			$table->integer('customer_shipping_slip_line_id')->unsigned()->nullable();
 		});
 	}
 

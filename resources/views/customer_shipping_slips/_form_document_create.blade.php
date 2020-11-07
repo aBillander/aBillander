@@ -30,6 +30,24 @@
             {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
          </div>
 
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="is_invoiceable">
+                     {{ l('Is Invoiceable?') }}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '1', true, ['id' => 'is_invoiceable_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '0', false, ['id' => 'is_invoiceable_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
       </div>
       <div class="row">
 
@@ -365,6 +383,19 @@ function get_currency_rate(currency_id)
                     $('#shipping_method_id').val( shipping_method_id );
 
                     $('#sales_rep_id').val(response.sales_rep_id);
+
+                    if ( response.is_invoiceable ) 
+                    {
+                        //
+                        $("#is_invoiceable_on").attr('checked', true);
+                        $("#is_invoiceable_off").attr('checked', false);
+                        
+                    } else {
+                        //
+                        $("#is_invoiceable_on").attr('checked', false);
+                        $("#is_invoiceable_off").attr('checked', true);
+                        
+                    }
 
                     console.log(response);
                 }

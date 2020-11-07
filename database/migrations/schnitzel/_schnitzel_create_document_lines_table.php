@@ -5,6 +5,8 @@
 	 *
 	 * Common fields
 	 */
+            if ( !isset($entity) )
+                  $entity = 'customer';
 
 			$table->increments('id');
 			$table->integer('line_sort_order')->nullable();			// To sort lines 
@@ -20,6 +22,8 @@
             $table->string('extra_quantity_label', 128)->nullable();
             $table->integer('measure_unit_id')->unsigned()->nullable(false);
 
+			$table->string('lot_references', 128)->nullable();
+
 			$table->integer('package_measure_unit_id')->unsigned()->nullable();			// Measure unit used to bundle items
 			$table->decimal('pmu_conversion_rate', 20, 6)->nullable()->default(1.0);	// Conversion rates are calculated from one unit of your main measura unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, type "6" (since a pack of six bottles will contain six bottles)
             $table->string('pmu_label', 128)->nullable();
@@ -27,10 +31,11 @@
             $table->tinyInteger('prices_entered_with_tax')->default(0);
 
 			$table->decimal('cost_price', 20, 6)->default(0.0);
+			$table->decimal('cost_average', 20, 6)->default(0.0);
 			$table->decimal('unit_price', 20, 6)->default(0.0);					// From Product data (initial price)
-			$table->decimal('unit_customer_price', 20, 6)->default(0.0);		// Calculated custom for customer (initial price for customer)
-            $table->decimal('unit_customer_final_price', 20, 6)->default(0.0);  // Customer Price for this line
-            $table->decimal('unit_customer_final_price_tax_inc', 20, 6)->default(0.0); 
+			$table->decimal('unit_' . $entity . '_price', 20, 6)->default(0.0);		// Calculated custom for customer (initial price for customer)
+            $table->decimal('unit_' . $entity . '_final_price', 20, 6)->default(0.0);  // Customer Price for this line
+            $table->decimal('unit_' . $entity . '_final_price_tax_inc', 20, 6)->default(0.0); 
             
 			$table->decimal('unit_final_price', 20, 6)->default(0.0);			// Just if you allow to modify customer price
 			$table->decimal('unit_final_price_tax_inc', 20, 6)->default(0.0);

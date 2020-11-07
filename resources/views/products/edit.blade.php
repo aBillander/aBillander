@@ -8,6 +8,9 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
+
+                <a class="btn xbtn-sm btn-info" target="_blank" href="{{ route('chart.product.sales.monthly', ['product_id' => $product->id]) }}" title="{{l('View Chart', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i></a>
+
                 <a class="btn xbtn-sm btn-success" href="{{ URL::to('products/' . $product->id . '/duplicate') }}" title="{{l('Duplicate', [], 'layouts')}}"><i class="fa fa-copy"></i></a>
 
                 <a class="btn xbtn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
@@ -126,7 +129,12 @@
 
           @include('products._panel_inventory')
 
+
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+
           @include('products._panel_webshop')
+
+@endif
 
 
 @if ( ($product->product_type == 'simple') || ($product->product_type == 'combinable') )

@@ -95,15 +95,15 @@
             <td>{{ $product->as_quantityable($product->quantity_reorder_suggested) }}</td>
             <!-- td>{{ $product->as_price('cost_price') }}</td -->
             <!-- td>{{ $product->displayPrice }}</td -->
-            <!-- td>{{ $product->tax->name }}</td -->
-            <!-- td>{{ $product->as_percentable($product->tax->percent) }}</td -->
-            <!-- td>@if (isset($product->category)) {{-- $product->category->name --}} @else - @endif</td -->
+            <!-- td>{ { $product->tax->name } }</td -->
+            <!-- td>{ { $product->as_percentable($product->tax->percent) } }</td -->
+            <!-- td>@ if (isset($ product->category)) {{-- $product->category->name --}} @ else - @ endif</td -->
             <!-- td>{{ $product->quantity_decimal_places }}</td>
             <td>{{ $product->manufacturing_batch_size }}</td -->
 
            <td class="text-right button-pad">
 
-                <a class="btn btn-sm btn-success" target="_blank" href="{{ route('chart.product.stock.monthly', ['product_id' => $product->id]) }}" title="{{l('View', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i></a>
+                <a class="btn btn-sm btn-info" target="_blank" href="{{ route('chart.product.stock.monthly', ['product_id' => $product->id]) }}" title="{{l('View Chart', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i></a>
 
                 <a class="btn btn-sm btn-warning" target="_blank" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
             </td>
@@ -114,10 +114,13 @@
 {!! $products->appends( Request::all() )->render() !!} 
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $products->total() ], 'layouts')}} </span></li></ul>
 @else
-<div class="alert alert-warning alert-block">
-    <i class="fa fa-warning"></i>
-    {{l('No records found', [], 'layouts')}}
-</div>
+      @if( Request::has('search_query') AND (Request::input('search_query')==0) )
+      @else
+            <div class="alert alert-warning alert-block">
+                <i class="fa fa-warning"></i>
+                {{l('No records found', [], 'layouts')}}
+            </div>
+      @endif
 @endif
 
    </div>

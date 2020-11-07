@@ -31,8 +31,10 @@ class CreateStockMovementsTable extends Migration {
 			$table->decimal('quantity_after_movement', 20, 6);
 
 			// For tracking
-			$table->decimal('cost_price_before_movement', 20, 6)->nullable();
-			$table->decimal('cost_price_after_movement', 20, 6)->nullable();
+			$table->decimal('cost_price_before_movement', 20, 6)->nullable();	// Usually Average Cost Price (previous), calculated by the System
+			$table->decimal('cost_price_after_movement', 20, 6)->nullable();	// Usually Average Cost Price (new), calculated by the System
+
+			$table->decimal('product_cost_price', 20, 6)->nullable();	// Directly from Product record
 			
 			// Unit price
 			$table->decimal('price', 20, 6)->nullable();				// Company Currency
@@ -46,6 +48,8 @@ class CreateStockMovementsTable extends Migration {
 			$table->integer('combination_id')->unsigned()->nullable();
             $table->string('reference', 32)->nullable();
             $table->string('name', 128)->nullable(false);
+			
+			$table->integer('lot_id')->unsigned()->nullable();
 
 			$table->integer('warehouse_id')->unsigned()->nullable(false);
 			$table->integer('warehouse_counterpart_id')->unsigned()->nullable();			// For Stock Transfers between Warehouses

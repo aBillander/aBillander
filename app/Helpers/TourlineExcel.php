@@ -31,6 +31,8 @@ class TourlineExcel {
 'SenderAddress',
 'SenderAddress2',
 'RecipientName',
+// Free new field ;)
+'RecipientContactName',     // Dirección de Envío, persona de contacto
 'RecipientAddress',
 'RecipientPhone',
 'RecipientAddres2',

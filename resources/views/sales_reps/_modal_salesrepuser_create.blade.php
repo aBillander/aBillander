@@ -71,9 +71,14 @@
 
 <div class="row" style="border-top: 1px solid #dddddd; padding-top: 15px;">
 
-      <div class="form-group col-lg-4 col-md-4 col-sm-4">
+      <div class="form-group col-lg-2 col-md-2 col-sm-2">
           {!! Form::label('salesrepuser_language_id', l('Language', 'salesrepusers')) !!}
           {!! Form::select('salesrepuser_language_id', $languageList, null, array('class' => 'form-control')) !!}
+      </div>
+
+      <div class="form-group col-lg-2 col-md-2 col-sm-2">
+          {!! Form::label('salesrepuser_warehouse_id', l('Warehouse', 'salesrepusers')) !!}
+          {!! Form::select('salesrepuser_warehouse_id', ["" => l('-- None --', 'layouts')] + $warehouseList, null, array('class' => 'form-control')) !!}
       </div>
 
       <div class="form-group col-lg-4 col-md-4 col-sm-4">
@@ -200,6 +205,7 @@
                               password :  $('#password').val(),
 
                               language_id :     $('#salesrepuser_language_id').val(),
+                              warehouse_id :     $('#salesrepuser_warehouse_id').val(),
 
                               active : $("input[name='salesrepuser_active']:checked").val(),
                               allow_abcc_access : $("input[name='allow_abcc_access']:checked").val(),

@@ -58,7 +58,7 @@ class CustomerInvoice extends Billable
 
 	// Add your validation rules here
 	public static $rules = [
-                            'type' => 'in:invoice',
+                            'type' => 'in:invoice,corrective,credit,deposit',
                             'document_date' => 'required|date',
                             'payment_date'  => 'nullable|date',
                             'delivery_date' => 'nullable|date|after_or_equal:document_date',
@@ -115,6 +115,70 @@ class CustomerInvoice extends Billable
 
     }
 
+/*
+    // Not needed: it is a CustomerInvoice Model property
+    public function getOpenBalanceAttribute()
+    {
+        // $payments = $this->payments;
+
+        $open_balance = $this->payments()->where('status', 'pending')->sum('amount');
+        // Remember: 'down_payment' is a payment with status=paid
+
+        return $open_balance;
+
+    }
+*/
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+    
+    public function customerCard()
+    {
+        $address = $this->customer->address;
+
+        $card = $customer->name .'<br />'.
+                $address->address_1 .'<br />'.
+                $address->city . ' - ' . $address->state->name.' <a href="javascript:void(0)" class="btn btn-grey btn-xs disabled">'. $$address->phone .'</a>';
+
+        return $card;
+    }
+    
+    public function customerCardFull()
+    {
+        $address = $this->customer->address;
+
+        $card = ($address->name_commercial ? $address->name_commercial .'<br />' : '').
+                ($address->firstname  ? $address->firstname . ' '.$address->lastname .'<br />' : '').
+                $address->address1 . ($address->address2 ? ' - ' : '') . $address->address2 .'<br />'.
+                $address->city . ' - ' . $address->state->name.' <a href="javascript:void(0)" class="btn btn-grey btn-xs disabled">'. $address->phone .'</a>';
+
+        return $card;
+    }
+    
+    public function customerCardMini()
+    {
+        $customer = unserialize( $this->customer );
+
+        $card = $customer["city"].' - '.($customer["state_name"] ?? '').' <a href="#" class="btn btn-grey btn-xs disabled">'. $customer["phone"] .'</a>';
+
+        return $card;
+    }
+    
+    public function customerInfo()
+    {
+        $customer = $this->customer;
+
+        $name = $customer->name_fiscal ?: $customer->name_commercial;
+
+        if ( !$name ) 
+            $name = $customer->name;
+
+        return $name;
+    }
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -213,6 +277,11 @@ class CustomerInvoice extends Billable
     public static function getPaymentStatusName( $status )
     {
             return l(get_called_class().'.'.$status, [], 'appmultilang');
+    }
+
+    public static function isPaymentStatus( $status )
+    {
+            return in_array($status, self::$payment_statuses);
     }
 
     public function getPaymentStatusNameAttribute()
@@ -338,6 +407,8 @@ class CustomerInvoice extends Billable
 
         $this->wc_orders()->attach($document->id, ['parentable_type' => 'aBillander\WooConnect\WooOrder', 'childable_type' => 'App\CustomerInvoice']);
     }
+    
+
 
 
     /*
@@ -345,5 +416,19 @@ class CustomerInvoice extends Billable
     | Data Factory :: Scopes
     |--------------------------------------------------------------------------
     */
+
+
+    public function scopeFilter($query, $params)
+    {
+        $query = parent::scopeFilter($query, $params);
+
+
+        if (array_key_exists('payment_status', $params) && $params['payment_status'] && self::isPaymentStatus($params['payment_status']))
+        {
+            $query->where('payment_status', $params['payment_status']);
+        }
+
+        return $query;
+    }
 
 }

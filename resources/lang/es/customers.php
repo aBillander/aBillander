@@ -73,6 +73,7 @@ return [
 	'Special Prices'     => 'Precios Especiales',
 	'Statistics'     => 'Estadísticas',
 	'ABCC Access'     => 'Acceso ABCC',
+	'Web Shop'	=> 'Tienda Online',
 
 	'Website'     => 'Web',
 	'Misc'     => 'Otros',
@@ -85,7 +86,10 @@ return [
 
 	'Payment Method'     => 'Forma de Pago',
 	'Payment Currency'     => 'Divisa de Pago',
+	'Is Invoiceable?'     => '¿Es Facturable?',
 	'Accept e-Invoice?'     => '¿Admite Factura Electrónica?',
+	'Automatic Invoice?'  => '¿Factura Automática?',
+	'Include this Customer in Automatic Invoice Generation Process.'  => 'Incluir este Cliente en el Proceso de Facturación Automática.',
 	'Outstanding Amount Allowed'     => 'Riesgo Máximo Permitido',
 	'Outstanding Amount'     => 'Riesgo Alcanzado',
 	'Unresolved Amount'     => 'Impagado',
@@ -189,4 +193,9 @@ return [
 	'Add New User' => 'Nuevo Usuario para este Cliente',
 	'Create User' => 'Crear Usuario',
 	'Update User' => 'Modificar Usuario',
+
+
+	'Invoice Shipping Slips' => 'Facturar Albaranes',
+
+	'Accounting ID' => 'Código Contabilidad',
 ];

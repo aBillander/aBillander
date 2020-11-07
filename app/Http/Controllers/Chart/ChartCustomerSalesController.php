@@ -15,7 +15,8 @@ class ChartCustomerSalesController extends Controller
 
    protected $models = ['CustomerOrder', 'CustomerShippingSlip', 'CustomerInvoice'];
 
-	
+   public $first;
+
 	function getMonthlySales(Request $request) {
 
 		$model = $this->getRequestModel($request);
@@ -25,25 +26,47 @@ class ChartCustomerSalesController extends Controller
 
 
 	function getAllMonths( $model = 'CustomerOrder' ){
-		$month_array = array();
 		$class = 'App\\'.$model;
-		$orders_dates = $class::orderBy( 'created_at', 'ASC' )->pluck( 'created_at' );
+		// 12 months (maximum) range
+		$last = $class::
+							  orderBy( 'document_date', 'DESC' )
+							->first()
+							->document_date;
+		
+		$this->first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
+
+		// abi_r( $date );
+		// abi_r( $this->first );die();
+
+		$month_array = array();
+		$orders_dates = $class::
+							  where( 'document_date', '>=', $this->first )
+							->orderBy( 'document_date', 'ASC' )
+							->pluck( 'document_date' );
+		// abi_r($orders_dates[0]);abi_r('*********************');
 		$orders_dates = json_decode( $orders_dates );
+		// abi_r($orders_dates[0]);abi_r('*********************');die();
 		if ( ! empty( $orders_dates ) ) {
 			foreach ( $orders_dates as $unformatted_date ) {
 				$date = new \DateTime( $unformatted_date->date );
 				$month_no = $date->format( 'm' );
 				$month_name = l('month.'.$month_no);	//$date->format( 'M' );
-				$month_array[ $month_no ] = $month_name;
+				$month_array[ $month_no ] = $month_name." ".$date->format( 'Y' );
 			}
 		}
+		// abi_r($month_array);die();
 		return $month_array;
 	}
 
 	function getMonthlyPostCount( $month, $model = 'CustomerOrder' ) {
 //		$monthly_order_count = CustomerShippingSlip::whereMonth( 'created_at', $month )->get()->count();
 		$class = 'App\\'.$model;
-		$monthly_order_count = $class::select('total_tax_excl')->whereMonth( 'document_date', $month )->get()->sum('total_tax_excl');
+		$monthly_order_count = $class::
+									  select('total_tax_excl')
+									->whereMonth( 'document_date', $month )
+									->where( 'document_date', '>=', $this->first )
+									->get()
+									->sum('total_tax_excl');
 		return round($monthly_order_count, 2);
 	}
 	
@@ -68,6 +91,7 @@ class ChartCustomerSalesController extends Controller
 		return $monthly_order_data_array;
     }
 	
+	// Heavy lifting is done here, and returns vouchers data
 	function getMonthlySalesData(Request $request) {
 
 		$model = $this->getRequestModel($request);

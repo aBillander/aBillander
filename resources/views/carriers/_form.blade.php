@@ -6,9 +6,10 @@
                       {!! $errors->first('alias', '<span class="help-block">:message</span>') !!}
                   </div>
 
-<div class="form-group col-lg-7 col-md-7 col-sm-7">
+<div class="form-group col-lg-7 col-md-7 col-sm-7" {{ $errors->has('name') ? 'has-error' : '' }}">
     {!! Form::label('name', l('Carrier name')) !!}
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
+    {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
 </div>
 
 <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-active">

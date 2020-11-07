@@ -24,7 +24,14 @@
 		</td>
 
 		<td class="shop-info">
+@php
+	$name = $str = $company->name_fiscal;
 
+	if( strlen( $str) > 33) {
+	    $str = substr( $str, 0, 30);
+	    $name = $str . '...';
+	}
+@endphp
 			<div class="shop-name"><h3>{{ $company->name_fiscal }}</h3></div>
 
 			<div class="shop-address">
@@ -43,7 +50,30 @@
 
 
 
-<h1 class="document-type-label"> FACTURA </h1>
+<h1 class="document-type-label">
+
+	@switch($document->type)
+	    @case( 'invoice' )
+	         FACTURA 
+	        @break
+
+	    @case( 'corrective' )
+	         FACTURA RECTIFICATIVA 
+	        @break
+
+	    @case( 'credit' )
+	         NOTA DE ABONO 
+	        @break
+
+	    @case( 'deposit' )
+	         ANTICIPO 
+	        @break
+
+	    @default
+	         FACTURA 
+	@endswitch
+
+</h1>
 
 <table class="order-data-addresses">
 
@@ -244,7 +274,8 @@
 			    			( $line->line_type != 'product'  ) &&
 			    			( $line->line_type != 'service'  ) &&
 			    			( $line->line_type != 'shipping' ) &&
-			    			( $line->line_type != 'comment' )
+			    			( $line->line_type != 'comment'  ) &&
+			    			( $line->line_type != 'discount' )
 			    )
 			        @continue
 			    @endif
@@ -277,6 +308,16 @@
 					<span class="item-combination-options"></span>
 				</span>
 			</td>
+@if ( $line->package_measure_unit_id != $line->measure_unit_id && $line->pmu_label != '' )
+				<br />
+				<span class="abi-line-rule-label">{!! $line->pmu_label !!}
+				</span>
+@endif
+@if ( $line->extra_quantity > 0 && $line->extra_quantity_label != '' )
+				<br />
+				<span class="abi-line-rule-label">{!! $line->extra_quantity_label !!}
+				</span>
+@endif
 			<td class="quantity"><span>{{ $line->as_quantity('quantity') }}</span>
 			</td>
 			<td class="barcode">

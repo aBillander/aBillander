@@ -51,6 +51,7 @@ return [
 
 	'Back to WooCommerce Orders'     => 'Volver a Pedidos Tienda Online',
 	'WooCommerce Orders'     => 'Pedidos Tienda Online',
+	'Aggregated WooCommerce Orders'     => 'Resumen de Pedidos Tienda Online',
 	'WooC Order #' => 'Pedido #',
 	'Status'     => 'Estado',
 	'Created at'     => 'Creado Fecha',
@@ -211,7 +212,7 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| WooCommerce Categories Language Lines :: show
+	| WooCommerce Products Language Lines :: show
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -227,6 +228,18 @@ return [
 	'Sale Price' => 'Precio en Oferta',
 	'Tax' => 'Impuesto',
 	'Weight' => 'Peso',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| WooCommerce Customers Language Lines :: show
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Customers' => 'Clientes',
 	
 
 	/*

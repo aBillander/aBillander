@@ -2,7 +2,10 @@
 
 namespace App\Traits;
 
+use App\SalesRep;
 use App\Price;
+
+use App\Configuration;
 
 trait BillableDocumentLinesTrait
 {
@@ -65,7 +68,9 @@ trait BillableDocumentLinesTrait
 
         // Customer
         $customer = $this->customer;
-        $salesrep = $customer->salesrep;
+        $salesrep = array_key_exists('sales_rep_id', $params) 
+                            ? SalesRep::find( (int) $params['sales_rep_id'] ) 
+                            : $customer->salesrep;
         
         // Currency
         $currency = $this->document_currency;
@@ -113,7 +118,8 @@ trait BillableDocumentLinesTrait
 
         // $cost_price = $product->cost_price;
         // Do this ( because of getCostPriceAttribute($value) ):
-        $cost_price = $product->getOriginal('cost_price');
+        $cost_price   = $product->getOriginal('cost_price');
+        $cost_average = $product->cost_average;
 
         // Tax
         $tax = $product->tax;
@@ -231,7 +237,7 @@ trait BillableDocumentLinesTrait
         
         $commission_percent = array_key_exists('sales_rep_id', $params) && array_key_exists('commission_percent', $params) 
                             ? $params['commission_percent'] 
-                            : optional($salesrep)->getCommision( $product, $customer ) ?? 0.0;
+                            : optional($salesrep)->getCommission( $product, $customer ) ?? 0.0;
 
 
 
@@ -272,8 +278,9 @@ trait BillableDocumentLinesTrait
 
             'prices_entered_with_tax' => $pricetaxPolicy,
     
-            'cost_price' => $cost_price,
-            'unit_price' => $unit_price,
+            'cost_price'   => $cost_price,
+            'cost_average' => $cost_average,
+            'unit_price'   => $unit_price,
             'unit_customer_price' => $unit_customer_price,
             'unit_customer_final_price' => $customer_final_price->getPrice(),
             'unit_customer_final_price_tax_inc' => $customer_final_price->getPriceWithTax(),
@@ -296,6 +303,21 @@ trait BillableDocumentLinesTrait
             'tax_id' => $tax->id,
             'sales_rep_id' => $sales_rep_id,
         ];
+
+        $extra_data = [];
+
+        // Ecotaxes stuff
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') && ($product->ecotax_id>0) )
+        {
+            //
+            $extra_data = [
+                'ecotax_id'           => $product->ecotax_id,
+                'ecotax_amount'       => $product->ecotax->amount,
+                'ecotax_total_amount' => $quantity * $product->ecotax->amount,
+            ];
+        }
+
+        $data += $extra_data;
 
 
         // Finishing touches
@@ -396,7 +418,7 @@ trait BillableDocumentLinesTrait
         $pmu_conversion_rate = 1.0; // Temporarily default
 
         // Measure unit stuff...
-        if ( $document_line->package_measure_unit_id && $document_line->package_measure_unit_id != $document_line->measure_unit_id )
+        if ( $document_line->package_measure_unit_id && ($document_line->package_measure_unit_id != $document_line->measure_unit_id) )
         {
             $pmu_conversion_rate = $document_line->pmu_conversion_rate;
 /*
@@ -407,6 +429,25 @@ trait BillableDocumentLinesTrait
                             : $pmu->name.' : '.(int) $pmu_conversion_rate.'x'.$mu->name;
 */            
         }
+
+        // Warning: stored $quantity is ALLWAYS in "stock keeping unit"
+        if (array_key_exists('quantity', $params)) 
+        {
+            if (array_key_exists('use_measure_unit_id', $params) && ( $params['use_measure_unit_id'] == 'measure_unit_id' ))
+            {
+                // FORCE measure unit to default line measure unit
+                // See CustomerOrdersController@createSingleShippingSlip, section relative to back order creation
+                // No need of calculations
+                $quantity = $params['quantity'];
+
+            } else {
+                // "Input quantity" (from form, etc.) is expected in "line measure unit", i.e., in package_measure_unit,
+                // when $document_line->package_measure_unit_id != $document_line->measure_unit_id
+                $quantity = $params['quantity'] * $pmu_conversion_rate;
+            }
+        }
+        else
+            $quantity = $document_line->quantity;       // Already in "stock keeping unit"
 
         // Tax
         $tax = $product->tax;
@@ -420,14 +461,7 @@ trait BillableDocumentLinesTrait
         // Product Price
 //        $price = $product->getPrice();
 //        $unit_price = $price->getPrice();
-        
-        if (array_key_exists('quantity', $params)) 
-            $quantity = $params['quantity'];
-        else
-            $quantity = $document_line->quantity;
 
-        // Mistake: $quantity is ALLWAYS in "stock keeping unit"
-        // $quantity = $quantity * $pmu_conversion_rate;
 
 /*      Not needed:
 
@@ -455,13 +489,13 @@ trait BillableDocumentLinesTrait
 
         } else {
 
-            $unit_customer_final_price = \App\Price::create([$document_line->unit_final_price, $document_line->unit_final_price_tax_inc, $pricetaxPolicy], $currency);
+            $unit_customer_final_price = \App\Price::create([$document_line->unit_customer_final_price, $document_line->unit_customer_final_price_tax_inc, $pricetaxPolicy], $currency);
         }
 
         // Discount
         $discount_percent = array_key_exists('discount_percent', $params) 
                             ? $params['discount_percent'] 
-                            : 0.0;
+                            : $document_line->discount_percent;
 
         // Final Price
         $unit_final_price = clone $unit_customer_final_price;

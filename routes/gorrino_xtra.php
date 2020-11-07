@@ -26,8 +26,66 @@
 /* ********************************************************** */
 
 
+Route::get('xtra_addrs', function()
+{
+  // 2020-05-31
+  $addrs = \App\Address::get();
+
+
+  foreach ($addrs as $addr) {
+    # code...
+    if ( $addr->email != trim($addr->email) ){
+      abi_r( '*'.$addr->email .'* - '. trim($addr->email) );
+      $addr->email = trim($addr->email);
+      $addr->save();
+    }
+  }
+
+
+  die('OK');
+
+});
+
+
+/* ********************************************************** */
+
+
 Route::get('migratethis_xtra', function()
 {
+  // 2020-07-09
+  Illuminate\Support\Facades\DB::statement("INSERT INTO `templates` ( `name`, `model_name`, `folder`, `file_name`, `paper`, `orientation`, `created_at`, `updated_at`, `deleted_at`) VALUES
+( 'xtranat Albaranes', 'CustomerShippingSlipPdf', 'templates::', 'xtranat', 'A4', 'portrait', '2020-07-09 07:30:53', '2020-07-09 07:30:53', NULL);");
+
+  $template = \App\Template::where('file_name', 'xtranat')->where('model_name', 'CustomerShippingSlipPdf')->first();
+
+  \App\Configuration::updateValue('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE', $template->id);
+
+
+  die('OK');
+
+  // 2020-05-26
+  Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoice_lines` ADD `customer_shipping_slip_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `customer_invoice_id`;");
+
+
+  // 2020-05-25
+
+  // $table->string('shipment_service_type_tag', 32)->nullable();
+  
+  // Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_shipping_slips` ADD `shipment_service_type_tag` varchar(32) NULL DEFAULT NULL AFTER `shipment_status`;");
+  
+  Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `is_invoiceable` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `customer_logo`;");
+  
+  Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_shipping_slips` ADD `is_invoiceable` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `shipment_service_type_tag`;");
+
+
+
+  // 2020-05-22
+    Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoices` ADD `production_sheet_id` INT(10) UNSIGNED NULL AFTER `posted_at`;");
+
+
+  die('OK');
+
+
   // 2020-03-11
   \App\Configuration::updateValue('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY', '0');
 
@@ -96,7 +154,7 @@ Route::get('migratethis_xtra', function()
 
 
 
-	die('OK');
+  die('OK');
 
 });
 

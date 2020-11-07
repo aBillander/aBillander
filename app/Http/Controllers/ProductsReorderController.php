@@ -44,7 +44,7 @@ class ProductsReorderController extends Controller
 //                              ->with('tax')
 //                            ->orderBy('position', 'asc')
 //                            ->orderBy('name', 'asc')
-                              ->orderByRaw('(quantity_onhand - reorder_point) asc')
+//                              ->orderByRaw('(quantity_onhand - reorder_point) asc')
                               ->orderBy('reference', 'asc')
                               ;
     }
@@ -61,17 +61,43 @@ class ProductsReorderController extends Controller
 		// $category_id = $request->input('category_id', 0);
 		// $category = 
 
-        $products = $this->indexQueryRaw( $request );
-        
-        $products = $products->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
+        // Set default query
+        if ( ! $request->has('search_status') )
+        {
+            // return redirect()->route('products.reorder.index', [
+            //     'search_status' => 1,
+            //     'mrp_type'      => 'reorder', // 'onorder',
+            // ]);
+
+            $request->merge([
+                'search_status' => 1,
+                'search_query'  => 0,
+                'items_per_page' => 25,
+            ]);
+
+            $products = collect([]);
+        } else {
+
+            $items_per_page = $request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE'));
+            if ($items_per_page <= 0)
+            {
+                    $items_per_page = Configuration::get('DEF_ITEMS_PERPAGE');
+                    // Lots of duplicated queries, so let's stay short:
+                    $items_perpage = 25;
+            }
+            
+            $products = $this->indexQueryRaw( $request );
+            
+            $products = $products->paginate( $items_per_page );
+
+            $products->setPath('reorder');     // Customize the URI used by the paginator
+        }
 
         $supplierList = Supplier::select('id', \DB::raw("concat('[', id, '] ', name_fiscal) as full_name"))->pluck('full_name', 'id')->toArray();
 
         // abi_r($supplierList);die();
 
         // abi_r($products, true);
-
-        $products->setPath('reorder');     // Customize the URI used by the paginator
 
         // $categoryList = ;		<= See ViewComposerServiceProvider
 

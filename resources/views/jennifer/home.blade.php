@@ -51,6 +51,20 @@
     </div>
 
                   </div>
+
+                  <div class="row">
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+        {!! Form::label('invoices_report_format', 'Formato') !!}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-container="body" 
+                                      data-content="{{ l('El formato "Amplio" utiliza más columnas para mostrar la información. El formato "Compacto" muestra lo mismo, pero usando más filas y menos columnas.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+        {!! Form::select('invoices_report_format', $invoices_report_formatList, 'loose', array('class' => 'form-control')) !!}
+    </div>
+
+                  </div>
 {{--
                   <div class="row">
 
@@ -155,6 +169,52 @@
     <div class="form-group col-lg-6 col-md-6 col-sm-6">
         {!! Form::label('inventory_date_to_form', 'Inventario a Fecha') !!}
         {!! Form::text('inventory_date_to_form', null, array('id' => 'inventory_date_to_form', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('valuation_method') ? 'has-error' : '' }}">
+        {!! Form::label('valuation_method', 'Método de Valoración') !!}
+        {!! Form::select('valuation_method', $valuation_methodList, null, array('class' => 'form-control')) !!}
+       {!! $errors->first('valuation_method', '<span class="help-block">:message</span>') !!}
+    </div>
+
+                  </div>
+
+              </div>
+
+               <div class="panel-footer text-right">
+                  <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
+                     <i class="fa fa-file-text-o"></i>
+                     &nbsp; Ver Listado
+                  </button>
+
+            </div>
+
+{!! Form::close() !!}
+
+            </div>
+            </div>
+
+
+
+    <!-- /div>< ! -- div class="row" ENDS - - >
+    <div class="row" -->
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-files-o"></i> Acumulados Modelo 347</h3>
+              </div>
+
+
+{!! Form::open(array('route' => 'jennifer.reports.index347', 'class' => 'form')) !!}
+
+              <div class="panel-body">
+
+                  <div class="row">
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+        {!! Form::label('mod347_year', 'Año') !!}
+        {!! Form::text('mod347_year', \Carbon\Carbon::now()->year, array('id' => 'mod347_year', 'class' => 'form-control')) !!}
     </div>
 
                   </div>

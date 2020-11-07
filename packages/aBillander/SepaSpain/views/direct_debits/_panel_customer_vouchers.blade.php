@@ -19,6 +19,7 @@
 			<th>{{l('Due Date')}}</th>
 			<th>{{l('Payment Date')}}</th>
 			<th>{{l('Amount')}}</th>
+      <th style="text-transform: none;">{{l('Payment Type', 'customervouchers')}}</th>
       <th class="text-center">{{l('Status', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
@@ -50,6 +51,8 @@
 
 
           {{ $payment->as_money_amount('amount') }}</td>
+
+      <td>{{ optional($payment->paymenttype)->name }}</td>
 
             <td class="text-center">
             	@if     ( $payment->status == 'pending' )
@@ -125,6 +128,13 @@
 <div class="panel-footer text-right">
 
 @if ( $directdebit->vouchers->where('status', 'pending')->count() )
+
+               <strong class="{{ $errors->has('payment_type_id') ? 'text-danger' : '' }}">{{ l('Payment Type', 'customervouchers') }}</strong>: &nbsp;
+
+
+               {!! Form::select('payment_type_id', ['' => l('-- None --', [], 'layouts')] + $payment_typeList, null, array('class' => 'xform-control', 'id' => 'payment_type_id',  'style' => 'xwidth:96px')) !!}
+
+
 
                <strong class="{{ $errors->has('payment_date') ? 'text-danger' : '' }}">{{ l('Payment Date', 'customervouchers') }}</strong>: &nbsp;
 

@@ -22,6 +22,8 @@ return [
 	'Notes'     => 'Notas',
 	'Invoiced at'     => 'Facturado',
 	'Delivered at'     => 'Entregado',
+
+	'Show Customer'     => 'Ver Cliente',
 	''     => '',
 	''     => '',
 	''     => '',
@@ -66,5 +68,17 @@ return [
 	'Product Images'     => 'Imágenes de Productos',
 	
 	'Customer'     => 'Cliente',
+
+	'Status'     => 'Estado',
+	'Shipment Status'     => 'Estado de Envío',
+	
+	'Not Invoiced'     => 'No Facturados',
+	'Invoiced'     => 'Facturados',
+
+	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos',
+	'Carrier'     => 'Transportista',
+
+
 
 ];

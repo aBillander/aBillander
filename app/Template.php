@@ -16,6 +16,7 @@ class Template extends Model {
             'CustomerOrderPdf',
             'CustomerShippingSlipPdf',
             'CustomerInvoicePdf',
+            'WarehouseShippingSlipPdf',
             'Pdf',
             'Mail',
         );
@@ -26,6 +27,7 @@ class Template extends Model {
             CustomerOrder::class        => 'CustomerOrderPdf', // Maybe string or array ???
             CustomerShippingSlip::class => 'CustomerShippingSlipPdf',
             CustomerInvoice::class      => 'CustomerInvoicePdf',
+            WarehouseShippingSlip::class => 'WarehouseShippingSlipPdf',
         );
 
     protected $dates = ['deleted_at'];

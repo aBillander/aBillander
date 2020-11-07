@@ -17,6 +17,9 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
+        <a href="{{ route('customervouchers.export', Request::all()) }}" class="btn btn-sm btn-grey" 
+                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
         <a href="{{ route('sepasp.directdebits.index') }}" class="btn xbtn-sm btn-navy" 
         		title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
     </div>
@@ -143,6 +146,7 @@
 			<th>{{l('Due Date')}}</th>
 			<th>{{l('Payment Date')}}</th>
 			<th class="text-right">{{l('Amount')}}</th>
+      <th style="text-transform: none;">{{l('Payment Type', 'customervouchers')}}</th>
       <th style="text-transform: none;">{{l('Auto Direct Debit', 'customervouchers')}}
                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Include in automatic payment remittances', 'customervouchers') }}">
@@ -167,6 +171,8 @@
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
 			<td class="text-right">{{ $payment->as_money_amount('amount') }}</td>
+
+      <td>{{ optional($payment->paymenttype)->name }}</td>
 
       <td class="text-center">
         @if ($payment->auto_direct_debit) 
@@ -265,7 +271,7 @@
           @endif
       </td>
 
-      <td class="text-right">
+      <td class="text-right button-pad">
 
               @if (  ( $payment->status == 'paid' ) 
                   || ( $payment->status == 'bounced' ) 

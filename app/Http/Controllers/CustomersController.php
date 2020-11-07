@@ -458,7 +458,7 @@ class CustomersController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function productConsumption($id, $productid, Request $request)
+    public function productConsumption_old_good_stuff($id, $productid, Request $request)
     {
         $customer = $this->customer::findOrFail($id);
 
@@ -620,6 +620,97 @@ class CustomersController extends Controller {
 
         return view('customers._panel_recent_sales', compact('lines', 'customer', 'items_per_page_products'));
     }
+
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function productConsumption($id, $productid, Request $request)
+    {
+        $customer = $this->customer::findOrFail($id);
+
+        $product = \App\Product::findOrFail($productid);
+
+        $items_per_page = intval($request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::get('DEF_ITEMS_PERPAGE');
+
+        // Recent Sales
+        $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
+        $class = '\App\\'.$model.'Line';
+        $table = snake_case(str_plural($model));
+        $route = str_replace('_', '', $table);
+        $tableLines = snake_case($model).'_lines';
+
+
+        $lines = $class::where('product_id', $productid)
+                            ->with('document')
+//                            ->with(['currency' => function($q) {
+//                                    $q->orderBy('document_date', 'desc');
+//                                }])
+                            ->whereHas('document', function($q) use ($id) {
+                                    $q->where('customer_id', $id);
+                                })
+                            ->join($table, $tableLines.'.'.snake_case($model).'_id', '=', $table.'.id')
+                            ->select($tableLines.'.*', $table.'.document_date', \DB::raw('"'.$route.'" as route'))
+                            ->orderBy($table.'.document_date', 'desc')
+                            ->take( $items_per_page )
+                            ->get();
+
+/*
+        $s_lines = CustomerShippingSlipLine::where('product_id', $productid)
+                            ->with('document')
+//                            ->with(['currency' => function($q) {
+//                                    $q->orderBy('document_date', 'desc');
+//                                }])
+                            ->whereHas('document', function($q) use ($id) {
+                                    $q->where('customer_id', $id);
+                                    $q->where('created_via', 'manual');
+ //                                   $q->where('status', '!=', 'draft');
+                                })
+                            ->join('customer_shipping_slips', 'customer_shipping_slip_lines.customer_shipping_slip_id', '=', 'customer_shipping_slips.id')
+                            ->select('customer_shipping_slip_lines.*', 'customer_shipping_slips.document_date', \DB::raw('"customershippingslips" as route'))
+                            ->orderBy('customer_shipping_slips.document_date', 'desc')
+                            ->take( $items_per_page )
+                            ->get();
+
+
+        $i_lines = CustomerInvoiceLine::where('product_id', $productid)
+                            ->with('document')
+//                            ->with(['currency' => function($q) {
+//                                    $q->orderBy('document_date', 'desc');
+//                                }])
+                            ->whereHas('document', function($q) use ($id) {
+                                    $q->where('customer_id', $id);
+                                    $q->where('created_via', 'manual');
+ //                                   $q->where('status', '!=', 'draft');
+                                })
+                            ->join('customer_invoices', 'customer_invoice_lines.customer_invoice_id', '=', 'customer_invoices.id')
+                            ->select('customer_invoice_lines.*', 'customer_invoices.document_date', \DB::raw('"customerinvoices" as route'))
+                            ->orderBy('customer_invoices.document_date', 'desc')
+                            ->take( $items_per_page )
+                            ->get();
+*/        
+        // See: https://stackoverflow.com/questions/23083572/merge-and-sort-two-eloquent-collections
+        // $lines1 = collect($o_lines);
+        // $lines2 = collect($s_lines);
+        // $lines3 = collect($i_lines);
+/*
+        This way you can just merge them, even when there are duplicate ID's.
+
+        Eloquent returns an Eloquent Collection and collect() returns a normal Collection. 
+        A 'normal' collection has different methods than the Eloquent Collection
+*/
+
+        // $lines = $lines1->merge($lines2)->merge($lines3)->sortByDesc('document_date');
+
+        return view('customers._modal_product_consumption', compact('customer', 'product', 'lines'));
+    }
+
+
 
     /**
      * Store a newly created resource in storage.

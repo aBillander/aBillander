@@ -15,7 +15,7 @@
     </div>
     <h2>
         <a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Documents')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
-                  {{ l('Documents') }} <span class="lead well well-sm">
+                  {{ l('Invoiceable Shipping Slips') }} <span class="lead well well-sm">
 
                   <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
 
@@ -51,7 +51,7 @@
 
 <div class="row">
 
-   <div class="col-lg-8 col-md-8">
+   <div class="col-lg-9 col-md-9">
    <div class="table-responsive">
 
 @if ($documents->count())
@@ -63,8 +63,13 @@
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </th>
             <th class="text-left">{{ l('Created via') }}</th>
+            <th class="text-left">{{ l('Payment Method') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
@@ -117,6 +122,8 @@
                 @endif
             </td>
             <td>{{ $document->created_via }}
+            </td>
+            <td>{{ optional($document->paymentmethod)->name }}
             </td>
             <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
             <td class="text-center">@if ($document->all_notes)
@@ -190,7 +197,7 @@
 
 @if ($documents->count())
 
-   <div class="col-lg-4 col-md-4">
+   <div class="col-lg-43 col-md-3 col-sm-3">
 
             <div class="panel panel-info">
               <div class="panel-heading">
@@ -200,7 +207,7 @@
 
 <div class="row">
 
-         <div class="col-lg-4 col-md-4 col-sm-4 {{ $errors->has('document_date') ? 'has-error' : '' }}">
+         <div class="col-lg-6 col-md-6 col-sm-6 {{ $errors->has('document_date') ? 'has-error' : '' }}">
             <div class="form-group">
                {{ l('Date') }}
                {!! Form::text('document_date_form', null, array('class' => 'form-control', 'id' => 'document_date_form', 'autocomplete' => 'off')) !!}
@@ -208,26 +215,74 @@
             </div>
          </div>
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('template_id') ? 'has-error' : '' }}">
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('template_id') ? 'has-error' : '' }}">
             {{ l('Template') }}
             {!! Form::select('template_id', $templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
             {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
-         </div>
-
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
-            {{ l('Sequence') }}
-            {!! Form::select('sequence_id', $sequenceList, old('sequence_id'), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
-            {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
          </div>
 
 </div>
 
 <div class="row">
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('status') ? 'has-error' : '' }}">
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('sequence_id') ? 'has-error' : '' }}">
+            {{ l('Sequence') }}
+            {!! Form::select('sequence_id', $sequenceList, old('sequence_id'), array('class' => 'form-control', 'id' => 'sequence_id')) !!}
+            {!! $errors->first('sequence_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('status') ? 'has-error' : '' }}">
             {{ l('Status') }}
             {!! Form::select('status', $statusList, null, array('class' => 'form-control', 'id' => 'status')) !!}
             {!! $errors->first('status', '<span class="help-block">:message</span>') !!}
+         </div>
+
+</div>
+
+<div class="row">
+
+
+
+<div class="form-group col-lg-6 col-md-6 col-sm-6">
+  {{ l('Group by Address') }}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                        data-content="{{ l('Yes: One Invoice per Shipping Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+ <div>
+   <div class="radio-inline">
+     <label>
+       {!! Form::radio('group_by_shipping_address', '1', false, ['id' => 'group_by_shipping_address_on']) !!}
+       {!! l('Yes', [], 'layouts') !!}
+     </label>
+   </div>
+   <div class="radio-inline">
+     <label>
+       {!! Form::radio('group_by_shipping_address', '0', true, ['id' => 'group_by_shipping_address_off']) !!}
+       {!! l('No', [], 'layouts') !!}
+     </label>
+   </div>
+ </div>
+</div>
+
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('payment_method_id') ? 'has-error' : '' }}">
+            {{ l('Payment Method') }}
+            {!! Form::select('payment_method_id', $payment_methodList, null, array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
+            {!! $errors->first('payment_method_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+</div>
+
+<div class="row">
+
+         <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('testing') ? 'has-error' : '' }}">
+            {{ l('testing') }}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Sí: se creará la Factura, pero no se marcarán los Albaranes como facturados') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+            {!! Form::select('testing', ['1' => 'Sí', '0' => 'No', ], 0, array('class' => 'form-control', 'id' => 'testing')) !!}
+            {!! $errors->first('testing', '<span class="help-block">:message</span>') !!}
          </div>
 
 </div>
@@ -284,6 +339,33 @@
 @section('scripts') @parent 
 
 <script>
+
+{{--
+var focused = true;
+
+window.onfocus = function() {
+    focused = true;
+};
+window.onblur = function() {
+    focused = false;
+};
+
+
+$(function() {
+    $(window).focus(function() {
+        if ( focused == true ) return;
+
+        window.location.reload();
+        focused = true;
+        // console.log('Focus event');
+    });
+
+    $(window).blur(function() {
+        focused = false;
+        // console.log('un focus');
+    });
+});
+--}}
 
 // check box selection -->
 // See: http://www.dotnetcurry.com/jquery/1272/select-deselect-multiple-checkbox-using-jquery
@@ -345,6 +427,7 @@ $(document).ready(function() {
 
     $('#sequence_id').val('{{ $customer->getInvoiceSequenceId() }}');
     $('#template_id').val('{{ $customer->getInvoiceTemplateId() }}');
+    $('#payment_method_id').val('{{ $customer->getPaymentMethodId() }}');
     $('#status').val('confirmed');
 
 });

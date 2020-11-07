@@ -225,6 +225,9 @@ return [
 	'Margin 1 (%)'     => 'Margen 1 (%)',
 	'Margin Amount'     => 'Margen Neto',
 	'Margin 2 (%)'     => 'Margen 2 (%)',
+	'Margin 2 (%)'     => 'Margen 2 (%)',
+	'Margin Amount 2'     => 'Margen Neto 2',
+	'Value' => 'Valor',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',
 	'Cost-Benefit Analysis'     => 'Análisis de Rentabilidad',
@@ -349,5 +352,36 @@ return [
 
 	'Manufacturing Status' => 'Estado de Fabricación',
 	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Documents Language Lines :: Profitability
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Update Commissions' => 'Actualizar Comisiones',
+	'Update Line Ecotaxes' => 'Actualizar Ecoimpuesto en las Líneas',
+	'Line Ecotax Amount is different from Product Ecotax Amount. You must "Update Line Ecotaxes" (button below).' => 
+	'La Cantidad del Ecoimpuesto en la Línea es diferente de la Cantidad del Ecoimpuesto del Producto. Debe "Actualizar Ecoimpuesto en las Líneas" (botón más abajo).',
+	'Line Product Cost Price is different from Product Cost record. You must "Update Cost Prices" (button below).' => 'El Coste del Producto en la línea es diferente del que se obtiene de la ficha del Producto. Debe "Actualizar Precios de Coste" (botón más abajo).',
+
+	'Disc.'     => 'Dto.',
+	'Total Disc.'     => 'Dto. Total',
+	'Total Disc. %'     => 'Dto. Total %',
+
+	'Ecotax not included.' => 'Ecotasa no incluida.',
+	'Shown in Document Currency.' => 'Mostrado en la Divisa del Documento.',
+	'Commission is supposed to be on Sale Price including Ecotax. Commission is higher when calculated on Sale Price excluding Ecotax.' => 'La Comisión se supone sobre el Precio de Venta incluida la Ecotasa. La Comisión será mayor si se calcula sobre el Precio de Venta excluida la Ecotasa.',
+
+	'Products Value after Product Records.' => 'Valor de los Productos según su Precio en la Ficha del Producto.',
+	'Document Products Total.' => 'Total de los Productos en el Documento',
+	'Document Discounts: Document (Header) Discount plus Document Prompt Payment Discount.' => 'Descuentos al Documento: Descuento al Documento (en cabecera) más Descuento por Pronto Pago.',
+	'Document Discount Lines.' => 'Líneas de Descuento del Documento.',
+	'Calculated Commission for the entire Document (average).' => 'Comisión calculada para el Documento en conjunto (promedio).',
 
 ];

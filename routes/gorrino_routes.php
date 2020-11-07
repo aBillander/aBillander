@@ -23,9 +23,112 @@
 
 
 
+Route::get('cc', function( )
+{
+	
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+});
+
+/* ********************************************************** */
+
+Route::get('lm', function( )
+{
+	// http://zetcode.com/php/carbon/
+
+	// $p = \App\Product::find(141);
+	$ps = \App\Product::with('latestStockmovement')->get();
+
+	foreach ($ps as $p) {
+		# code...
+		$m = $p->latestStockmovement;
+	
+		if ($m)
+		if ( \Carbon\Carbon::now()->subDays(2)->gte( $m->created_at ) ) {
+
+			$m->cost_price_after_movement = $p->cost_average;
+			$m->product_cost_price = $p->cost_price;
+			$m->save();
+
+			// abi_r($p);
+			// abi_r($m);
+		}
+	}
+});
+
+/* ********************************************************** */
+
+
+Route::get('tst', function( )
+{
+	$documents = \App\CustomerShippingSlip::whereIn('id', [4879, 4929, 4970, 5062])->get();
+
+        foreach ($documents as $document)
+        {
+            # code...
+            $document->payment_method_id = $document->getPaymentMethodId();
+        }
+
+	abi_r($documents->pluck('payment_method_id', 'id')->all());
+
+        // Group by payment method
+        $pmethods = $documents->unique('payment_method_id')->pluck('payment_method_id')->all();
+
+    abi_r($pmethods);
+});
+
+/* ********************************************************** */
+
+
+Route::get('child', function( )
+{
+	$product = \App\Product::find( 5 );		// 1000 Pan integral de espelta 100% 500g ECO
+
+	$needle_id = 190;		// 10601 Amasado de espelta integral
+	 $needle_id = 189;		// 80000 Agua
+
+	$result = $product->getChildProductQuantityWithChildren( $needle_id );
+
+	abi_r( $result );
+
+	$result = $product->getChildProductQuantity( $needle_id, 10 );
+
+	abi_r( $result );
+});
+
+Route::get('childt', function( )
+{
+	$product = \App\Product::find( 8 );		// 1003 Pan integral de trigo 500g ECO
+
+	$needle_id = 190;		// 10601 Amasado de espelta integral
+	 $needle_id = 1;		// 80000 Agua
+
+	$result = $product->getChildToolQuantityWithChildren( $needle_id );
+
+	abi_r( $result );
+
+	$result = $product->getChildToolQuantity( $needle_id );
+
+	abi_r( $result );
+});
+
+/* ********************************************************** */
+
+
+
+
 Route::get('segment', function( )
 {
-	return '';
+	$list = [617];
+	$params = [];
+	$params['customer_id'] = 586;
+	$params['status'] = 'draft';
+
+	$invoice = \App\CustomerShippingSlip::invoiceDocumentList( $list, $params );
+
+	abi_r($invoice);
 });
 
 /* ********************************************************** */
@@ -49,7 +152,145 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 
 Route::get('migratethis', function()
-{
+{	
+	// 2020-10-28
+
+	\App\Configuration::updateValue('SW_VERSION', '0.10.23');
+	\App\Configuration::updateValue('SW_DATABASE_VERSION', '0.10.23');
+
+	// 2020-10-07
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `suppliers` ADD `approval_number` varchar(64) NULL DEFAULT NULL AFTER `identification`;");
+
+	die('OK');
+
+	// 2020-09-30
+
+	$tables = ['customer_invoice', 'customer_shipping_slip', 'customer_quotation', 'customer_order'];
+
+	foreach ($tables as $table) {
+		# code...
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `".$table."_lines` ADD `cost_average`  DECIMAL(20,6) NOT NULL DEFAULT '0.0' AFTER `cost_price`;");
+	}
+
+	// 2020-09-25
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `sales_reps` ADD `sales_rep_type` varchar(32) NOT NULL DEFAULT 'external' AFTER `id`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `sales_reps` ADD `accounting_id` varchar(32) NULL DEFAULT NULL AFTER `reference_external`;");
+
+	die('OK');
+
+	// 2020-09-16
+
+	$tables = ['customer_invoice', 'customer_shipping_slip', 'customer_quotation', 'customer_order'];
+
+	foreach ($tables as $table) {
+		# code...
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `".$table."_lines` ADD `lot_references` varchar(128) NULL DEFAULT NULL AFTER `measure_unit_id`;");
+	}
+
+	// 2020-09-15
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_count_lines` ADD `last_purchase_price` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_count_lines` ADD `cost_average` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price`;");
+
+	die('OK');
+
+	// 2020-09-10
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `lots` ADD `warehouse_id` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `notes`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `lot_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `name`;");
+
+	// 2020-08-18
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `product_cost_price` DECIMAL(20,6) NULL DEFAULT NULL AFTER `cost_price_after_movement`;");
+
+	die('OK');
+
+
+	// 2020-08-15
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `automatic_invoice` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `is_invoiceable`;");
+
+	die('OK');
+
+
+	// 2020-08-14
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `sales_rep_users` ADD `warehouse_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `language_id`;");
+
+	die('OK');
+
+
+	// 2020-07-30
+	Illuminate\Support\Facades\DB::statement("INSERT INTO `templates` (`name`, `model_name`, `folder`, `file_name`, `paper`, `orientation`, `created_at`, `updated_at`, `deleted_at`) VALUES ('Albarán entre Almacenes', 'WarehouseShippingSlipPdf', 'templates::', 'default', 'A4', 'portrait', '2020-08-13 11:30:37', '2020-08-13 11:30:37', NULL);");
+
+	Illuminate\Support\Facades\DB::statement("INSERT INTO `sequences` (`name`, `model_name`, `sequenceable_type`, `prefix`, `length`, `separator`, `next_id`, `last_date_used`, `active`, `created_at`, `updated_at`, `deleted_at`) VALUES ('Transferencias de Almacén', 'WarehouseShippingSlip', '', 'TRS', 4, '-', 1, NULL, 1, '2020-08-13 11:31:42', '2020-08-13 11:31:42', NULL);");
+
+		Illuminate\Support\Facades\DB::statement("create table `warehouse_shipping_slips` (`id` int unsigned not null auto_increment primary key, `company_id` int unsigned not null default '0', `warehouse_id` int unsigned not null, `warehouse_counterpart_id` int unsigned not null, `user_id` int unsigned not null default '0', `sequence_id` int unsigned null, `document_prefix` varchar(8) null, `document_id` int unsigned not null default '0', `document_reference` varchar(64) null, `reference` varchar(191) null, `created_via` varchar(32) null default 'manual', `document_date` datetime not null, `validation_date` datetime null, `delivery_date` datetime null, `delivery_date_real` datetime null, `close_date` datetime null, `number_of_packages` smallint unsigned not null default '1', `volume` decimal(20, 6) null default '0', `weight` decimal(20, 6) null default '0', `shipping_conditions` text null, `tracking_number` varchar(191) null, `notes` text null, `notes_to_counterpart` text null, `status` varchar(32) not null default 'draft', `onhold` tinyint not null default '0', `locked` tinyint not null default '0', `shipping_method_id` int unsigned null, `carrier_id` int unsigned null, `template_id` int null, `shipment_status` varchar(32) not null default 'pending', `shipment_service_type_tag` varchar(32) null, `printed_at` date null, `edocument_sent_at` date null, `export_date` datetime null, `secure_key` varchar(32) not null, `import_key` varchar(16) null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+		
+		Illuminate\Support\Facades\DB::statement("create table `warehouse_shipping_slip_lines` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `product_id` int unsigned null, `combination_id` int unsigned null, `reference` varchar(32) null, `name` varchar(128) not null, `quantity` decimal(20, 6) not null, `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `notes` text null, `locked` tinyint not null default '0', `created_at` timestamp null, `updated_at` timestamp null, `warehouse_shipping_slip_id` int unsigned not null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+	die('OK');
+
+
+
+
+
+	// 2020-07-14
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoice_lines` ADD `customer_shipping_slip_line_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `customer_shipping_slip_id`;");
+
+
+	Illuminate\Support\Facades\DB::statement("create table `lot_items` (`id` int unsigned not null auto_increment primary key, `lot_id` int unsigned not null, `quantity` decimal(20, 6) not null default '1', `is_reservation` tinyint not null default '0', `lotable_id` int not null, `lotable_type` varchar(191) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+
+	// 2020-07-11
+	Illuminate\Support\Facades\DB::statement("create table `lots` (`id` int unsigned not null auto_increment primary key, `reference` varchar(32) null, `product_id` int unsigned not null, `combination_id` int unsigned null, `quantity_initial` decimal(20, 6) not null default '0', `quantity` decimal(20, 6) not null default '0', `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `manufactured_at` timestamp null, `expiry_at` timestamp null, `notes` text null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `expiry_time` INT(10) UNSIGNED NULL AFTER `active`;");
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `lot_tracking` tinyint not null default '0' AFTER `active`;");
+
+	die('OK');
+
+	
+	// 2020-07-01
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `payments` ADD `payment_type_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `paymentorable_type`;");
+
+
+	// 2020-06-26
+	Illuminate\Support\Facades\DB::statement("create table `cheque_details` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `name` varchar(128) not null, `amount` decimal(20, 6) not null default '0', `customer_invoice_id` int unsigned null, `customer_invoice_reference` varchar(64) null, `cheque_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	
+	Illuminate\Support\Facades\DB::statement("create table `cheques` (`id` int unsigned not null auto_increment primary key, `document_number` varchar(32) not null, `place_of_issue` varchar(64) not null, `amount` decimal(20, 6) not null default '0', `date_of_issue` date null, `due_date` date null, `payment_date` date null, `posted_at` date null, `date_of_entry` date null, `memo` varchar(128) null, `notes` text null, `status` varchar(32) not null default 'pending', `currency_id` int unsigned not null, `customer_id` int unsigned not null, `drawee_bank_id` varchar(64) null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+	Illuminate\Support\Facades\DB::statement("create table `banks` (`id` int unsigned not null auto_increment primary key, `alias` varchar(32) not null, `name` varchar(128) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+
+	die('OK');
+
+	
+
+	// 2020-05-26
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoice_lines` ADD `customer_shipping_slip_id` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `customer_invoice_id`;");
+
+
+	// 2020-05-25
+
+	// $table->string('shipment_service_type_tag', 32)->nullable();
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_shipping_slips` ADD `shipment_service_type_tag` varchar(32) NULL DEFAULT NULL AFTER `shipment_status`;");
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `is_invoiceable` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `customer_logo`;");
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_shipping_slips` ADD `is_invoiceable` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `shipment_service_type_tag`;");
+
+
+
+	// 2020-05-22
+		Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_invoices` ADD `production_sheet_id` INT(10) UNSIGNED NULL AFTER `posted_at`;");
+
+
+	die('OK');
+
+	
+	\App\Configuration::updateValue('ABCC_MAX_ORDER_VALUE', 10000);
 
 
 	// 2020-05-14

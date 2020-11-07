@@ -57,7 +57,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => 'customervouchers.index', 'method' => 'GET')) !!}
+                {!! Form::model(Request::all(), array('route' => ['customer.vouchers', $customer->id], 'method' => 'GET')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -119,7 +119,7 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route('customervouchers.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('customer.vouchers', l('Reset', [], 'layouts'), [$customer->id], array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>
@@ -148,6 +148,7 @@
 			<th>{{l('Due Date')}}</th>
 			<th>{{l('Payment Date')}}</th>
 			<th class="text-right">{{l('Amount')}}</th>
+      <th style="text-transform: none;">{{l('Payment Type', 'customervouchers')}}</th>
       <th style="text-transform: none;">{{l('Auto Direct Debit', 'customervouchers')}}
                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Include in automatic payment remittances', 'customervouchers') }}">
@@ -172,6 +173,8 @@
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
 			<td class="text-right">{{ $payment->as_money_amount('amount') }}</td>
+
+      <td>{{ optional($payment->paymenttype)->name }}</td>
 
       <td class="text-center">
         @if ($payment->auto_direct_debit) 
@@ -220,11 +223,11 @@
 
             	@else
 
-                	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit' ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit?back_route=' . urlencode('customervouchers/customers/' . $customer->id ) ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
  
       @if ($payment->bankorder && ($payment->bankorder->status == 'pending'))
       @else
-	                <a class="btn btn-sm btn-blue" href="{{ URL::to('customervouchers/' . $payment->id  . '/pay' ) }}" title="{{l('Make Payment', 'customervouchers')}}"><i class="fa fa-money"></i>
+	                <a class="btn btn-sm btn-blue" href="{{ URL::to('customervouchers/' . $payment->id  . '/pay?back_route=' . urlencode('customervouchers/customers/' . $customer->id ) ) }}" title="{{l('Make Payment', 'customervouchers')}}"><i class="fa fa-money"></i>
 	                </a>
       @endif
 

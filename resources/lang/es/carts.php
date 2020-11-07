@@ -21,7 +21,9 @@ return [
 	'Update Prices'     => 'Actualizar Precios',
 
 	'You are going to UPDATE all Product Prices in this Cart. Are you sure?'     => 'Está a punto de ACTUALIZAR el Precio de los Productos de este Carrito. ¿Está seguro?',
-	''     => '',
+
+	'Empty Cart'     => 'Vaciar el Carro',
+	'You are going to EMPTY this Cart. Are you sure?' => 'Está a punto VACIAR este Carrito. ¿Está seguro?',
 
 	/*
 	|--------------------------------------------------------------------------

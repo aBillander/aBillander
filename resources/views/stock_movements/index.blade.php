@@ -79,6 +79,23 @@
         {!! Form::select('movement_type_id', array('' => l('-- All --', [], 'layouts')) + $movement_typeList, null, array('class' => 'form-control')) !!}
     </div>
 
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('document_reference', l('Document')) !!}
+    {!! Form::text('document_reference', null, array('class' => 'form-control')) !!}
+</div>
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
+    {{-- Poor ma offset --}}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('lot_reference', l('Lot Number', 'lots')) !!}
+    {!! Form::text('lot_reference', null, array('class' => 'form-control')) !!}
+</div>
+@endif
+
 </div>
 
                 {!! Form::close() !!}
@@ -98,7 +115,7 @@
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
-			<th>{{l('Date')}}</th>{{l('')}}
+			<th>{{l('Date')}}</th>
 			<th>{{l('Type')}}</th>
 			<th>{{l('Warehouse')}}</th>
             <th>{{l('Reference')}}</th>
@@ -154,7 +171,7 @@
         <!-- a href="{{ route($route.'.edit', ['0']).'?document_reference='.$stockmovement->document_reference }}" title="{{l('Open Document', [], 'layouts')}}" target="_new" -->  --}}
         <a href="{{ route($route.'.edit', [optional(optional($stockmovement->stockmovementable)->document)->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->document_reference }}</a>
     @if ( !optional(optional($stockmovement->stockmovementable)->document)->id ) 
-        <i class="fa fa-exclamation-triangle btn-xs btn-danger" title="Document ID not found"></i>
+        <i class="fa fa-exclamation-triangle btn-xs btn-danger" title="{{l('Document ID not found', 'layouts')}}"></i>
     @endif
 @else
       {{ $stockmovement->document_reference }}

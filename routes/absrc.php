@@ -61,12 +61,14 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
                                                         'as' => 'absrc.currencies.ajax.rateLookup'));
 
     // Route::get('absrc/searchcustomer', 'HomeController@searchCustomer')->name('absrc.searchcustomer');
-    Route::get('absrc/ajax/customer_lookup', 'CustomerInvoicesController@ajaxCustomerSearch')->name('absrc.ajax.customerLookup');
+    // Route::get('absrc/ajax/customer_lookup', 'CustomerInvoicesController@ajaxCustomerSearch')->name('absrc.ajax.customerLookup');
 
     // Sales Reps routes here
 
     Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function ()
     {
+        // Ajax Search
+        Route::get('ajax/customer_lookup', 'AbsrcCustomersController@ajaxCustomerSearch')->name('absrc.ajax.customerLookup');
 
         Route::get('/', 'SalesRepHomeController@index')->name('salesrep.dashboard');
 
@@ -95,6 +97,10 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 //                                                        'as'   => 'products.ajax.optionsLookup' ));
 //        Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
 //                                                        'as'   => 'products.ajax.combinationLookup' ));
+        
+        Route::get('warehouses/{id}/inventory', 'AbsrcWarehousesController@indexProducts')->name('absrc.warehouse.inventory');
+        Route::get('export/warehouses/{id}/inventory', 'AbsrcWarehousesController@exportProducts' )->name('absrc.warehouse.inventory.export');
+
 
         Route::resource('customers', 'AbsrcCustomersController')->names('absrc.customers');
         Route::resource('customers.addresses', 'AbsrcCustomerAddressesController')->names('absrc.customers.addresses');
@@ -206,6 +212,8 @@ foreach ($pairs as $pair) {
 
 
         Route::resource('/vouchers', 'AbsrcCustomerVouchersController')->names('absrc.vouchers');
+
+        Route::resource('/commissionsettlements', 'AbsrcCommissionSettlementsController')->names('absrc.commissionsettlements');
 
 //        Route::resource('pricerules', 'AbsrcPriceRulesController')->names('absrc.pricerules');
 

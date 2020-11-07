@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Response;
 
 use App\Product;
 use App\StockMovement;
+use App\Lot;
 use App\PriceRule;
 
 use App\Configuration;
@@ -935,6 +936,37 @@ LIMIT 1
     }
 
 
+
+
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function getLots($id, Request $request)
+    {
+        $items_per_page_lots = intval($request->input('items_per_page_lots', Configuration::get('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page_lots >= 0) ) 
+            $items_per_page_lots = Configuration::get('DEF_ITEMS_PERPAGE');
+
+        $lots = Lot::where('product_id', $id)
+                                ->with('product')
+                                ->with('combination')
+                                ->with('measureunit')
+                                ->with('warehouse')
+                                ->orderBy('warehouse_id', 'DESC')
+                                ->orderBy('created_at', 'DESC');
+
+        $lots = $lots->paginate( $items_per_page_lots );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
+
+        $lots->setPath('lots');
+
+        // return $items_per_page_lots ;
+        
+        return view('products._panel_lots', compact('lots', 'items_per_page_lots'));
+    }
+
+
     public function getPendingMovements($id, Request $request)
     {
         $items_per_page_pendingmovements = intval($request->input('items_per_page_pendingmovements', Configuration::get('DEF_ITEMS_PERPAGE')));
@@ -996,11 +1028,11 @@ LIMIT 1
         $s_lines = CustomerShippingSlipLine::where('product_id', $id)
                             ->with('document')
                             ->with('document.customer')
-                            ->whereHas('document', function($q) use ($id) {
+//                            ->whereHas('document', function($q) use ($id) {
 //                                    $q->where('customer_id', $id);
-                                    $q->where('created_via', 'manual');
+//                                    $q->where('created_via', 'manual');
 //                                   $q->where('status', '!=', 'draft');
-                                })
+//                                })
                             ->join('customer_shipping_slips', 'customer_shipping_slip_lines.customer_shipping_slip_id', '=', 'customer_shipping_slips.id')
                             ->select('customer_shipping_slip_lines.*', 'customer_shipping_slips.document_date', \DB::raw('"customershippingslips" as route'))
                             ->orderBy('customer_shipping_slips.document_date', 'desc')
@@ -1031,7 +1063,8 @@ LIMIT 1
         $lines2 = collect($s_lines);
         $lines3 = collect($i_lines);
 
-        $lines = $lines1->merge($lines2)->merge($lines3)->sortByDesc('document_date');
+        $lines = $lines1->merge($lines2)->merge($lines3)->sortByDesc('document_date');        
+        $lines = $lines2;
 
         $lines = $lines->take( $items_per_page );
         

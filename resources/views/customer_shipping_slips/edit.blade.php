@@ -18,15 +18,9 @@
                 <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
     @endif
 @else
-                <a class="btn btn-sm alert-success" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a>
+                <a class="btn btn-sm alert-success prevent-double-click" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}"><i class="fa fa-unlock"></i> {{l('Close', 'layouts')}}</a>
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/pdf?preview') }}" title="{{l('Show Preview', [], 'layouts')}}" target="_blank"><i class="fa fa-eye"></i></a>
-@endif
-
-@if ($document->document_id>0)
-                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
-
-                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 
 @if ( $document->status != 'closed' )
@@ -37,10 +31,21 @@
     @endif
 @else
 
-                    @if ( $document->status == 'closed' && !$document->invoiced_at)
-                    <a class="btn btn-sm btn-navy" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
+            @if ( $document->status == 'closed' && !$document->invoiced_at)
+                    @if ( $document->is_invoiceable )
+                    <a class="btn btn-sm btn-navy prevent-double-click" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}" style="margin-left: 16px; margin-right: 16px"><i class="fa fa-money"></i>
+                    </a>
+                    @else
+                    <a class="btn btn-sm btn-navy" href="javascript::void(0);" title="{{l('Not Invoiceable Document')}}" style="opacity: 0.65; margin-left: 16px; margin-right: 16px" onclick="return false;"><i class="fa fa-money"></i>
                     </a>
                     @endif
+            @endif
+@endif
+
+@if ($document->document_id>0)
+                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank" onclick="open_in_new_tab_and_reload( this );return false;"><i class="fa fa-file-pdf-o"></i></a>
+
+                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
 @endif
 
                 @if( $document->deletable )
@@ -56,7 +61,7 @@
                     <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Back to', 'layouts')}}"><i class="fa fa-mail-reply"></i> &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu  pull-right">
                       <li><a href="{{ URL::to($model_path.'') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
-                      <li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Group Shipping Slips')}}</a></li>
+                      <li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Invoice Shipping Slips')}}</a></li>
                       <li><a href="{{ route('customer.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', 'layouts')}}</a></li>
                       <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
@@ -148,17 +153,65 @@
 {{--  --}}
 
 
+
+@section('scripts') @parent
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+    // https://stackoverflow.com/questions/1681679/disabling-links-to-stop-double-clicks-in-jquery
+
+    $("a.prevent-double-click").one("click", function() {
+        $(this).click(function () { return false; });
+    });
+
+});
+
+
+   // Open in new tab & reload
+
+    function open_in_new_tab_and_reload(link)
+    {
+      // Open in new tab
+      var href = link.href;
+      window.open(href, '_blank');
+      //focus to that window
+      window.focus();
+      //reload current page
+      // Delay
+      setTimeout(function() {
+          // alert('Was called after 2 seconds');
+          location.reload();
+      }, 4000);
+      
+    }
+
+</script>
+
+@endsection
+
+
 @section('styles') @parent
 
     @include($view_path.'.css.panels')
 
+{{-- Stop Bootstrap drop menu's being cut off in responsive tables
+
+    https://dcblog.dev/stop-bootstrap-drop-menus-being-cut-off-in-responsive-tables
+--}}
+
+<style type="text/css">
+    @media (max-width: 767px) {
+        .table-responsive .dropdown-menu {
+            position: static !important;
+        }
+    }
+    @media (min-width: 768px) {
+        .table-responsive {
+            overflow: visible;
+        }
+    }
+</style>
+
 @endsection
 
-
-{{-- 
-@section('scripts') @parent
-
-    @include($view_path.'.js._dummy')
-
-@endsection
- --}}

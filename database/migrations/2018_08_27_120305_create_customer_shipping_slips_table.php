@@ -25,6 +25,7 @@ class CreateCustomerShippingSlipsTable extends Migration
 
             $table->string('shipment_service_type_tag', 32)->nullable();
 
+            $table->tinyInteger('is_invoiceable')->default(1);      // Useful for stock movements between warehouses, warraty free of charge repairs, or internal departments demand
             $table->date('invoiced_at')->nullable();
 
             $table->date('printed_at')->nullable();                             // Printed at

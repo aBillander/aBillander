@@ -91,6 +91,16 @@ class ImportProductPricesController extends Controller
                 'data_file' => 'required | max:8000',
                 'extension' => 'in:csv,xlsx,xls,ods', // all working except for ods
         ];
+        // https://github.com/Maatwebsite/Laravel-Excel/issues/1509
+/* ods :
+
+        simplexml_load_string(): Entity: line 1: parser error : Start tag expected, '<' not found
+
+It's because phpoffice/phpexcel is deprecated, I am looking for an update also.
+There's a guide to upgrade any packages using the PHPExcel library.
+
+https://phpspreadsheet.readthedocs.io/en/develop/topics/migration-from-PHPExcel/
+*/
 
         $this->validate($request->merge( $extra_data ), $rules);
 
@@ -298,26 +308,45 @@ class ImportProductPricesController extends Controller
                             // $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
 
 
+                            $data1 = [];
+
                             if (array_key_exists('tax_id', $data))
                             {
                                 // 
                                 $data1['tax_id']        = $data['tax_id'];
-                                $data1['price_tax_inc'] = $data['price_tax_inc'];
-                                $data1['price']         = $data['price'];
+                                $data1['price_tax_inc'] = trim($data['price_tax_inc']) == '' ? $product->price_tax_inc : $data['price_tax_inc'];
+                                $data1['price']         = trim($data['price'])         == '' ? $product->price         : $data['price'];
 
                                 $data1['recommended_retail_price_tax_inc'] = 
-                                    (float) $data['recommended_retail_price_tax_inc'] > 0.0 ? (float) $data['recommended_retail_price_tax_inc'] : null;
-                                $data1['recommended_retail_price']         = 
-                                    (float) $data['recommended_retail_price']         > 0.0 ? (float) $data['recommended_retail_price']         : null;
+                                    trim($data['recommended_retail_price_tax_inc']) == '' ? $product->recommended_retail_price_tax_inc : (float) $data['recommended_retail_price_tax_inc'];
+                                
+                                $data1['recommended_retail_price'] = 
+                                    trim($data['recommended_retail_price']) == '' ? $product->recommended_retail_price : (float) $data['recommended_retail_price'];
                             }
 
                             if (array_key_exists('cost_price', $data))
                             {
                                 // 
-                                $data1['cost_price']    = $data['cost_price'];
+                                $data1['cost_price']    = trim($data['cost_price']) == '' ? $product->cost_price : $data['cost_price'];
                             }
 
+                            if (array_key_exists('cost_average', $data))
+                            {
+                                // 
+                                $data1['cost_average']    = trim($data['cost_average']) == '' ? $product->cost_average : $data['cost_average'];
+                            }
+
+                            if (array_key_exists('last_purchase_price', $data))
+                            {
+                                // 
+                                $data1['last_purchase_price']    = trim($data['last_purchase_price']) == '' ? $product->last_purchase_price : $data['last_purchase_price'];
+                            }
+
+                            Product::unguard();
+
                             $product->update( $data1 );
+
+                            Product::reguard();
                         }
 
                         $i_ok++;
@@ -383,7 +412,10 @@ class ImportProductPricesController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference', 'NAME', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
+        $headers = [ 'id', 'reference', 'NAME', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
+        ];
+
+        $float_headers = [ 'price_tax_inc', 'price', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price_tax_inc', 'recommended_retail_price'
         ];
 
         $data[] = $headers;
@@ -395,7 +427,10 @@ class ImportProductPricesController extends Controller
             $row = [];
             foreach ($headers as $header)
             {
-                $row[$header] = $product->{$header} ?? '';
+                if ( in_array($header, $float_headers) )
+                    $row[$header] = (float) $product->{$header} ?? '';
+                else
+                    $row[$header] = $product->{$header} ?? '';
             }
             $row['NAME']     = $product->name;
             $row['TAX_NAME'] = $product->tax ? $product->tax->name : '';

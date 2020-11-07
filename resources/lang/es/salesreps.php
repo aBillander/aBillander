@@ -33,10 +33,12 @@ return [
 	'ABSRC Access'     => 'Acceso ABSRC',
 
 	'Identification'     => 'NIF / CIF',
+	'Sales Rep type' => 'Tipo de Agente',
 	'External Reference'  => 'Referencia Externa',
 	'Commission (%)'     => 'Comisión (%)',
 	'Max. Discount allowed (%)'     => 'Máx. Descuento permitido (%)',
 	'Withholdings (%)'     => 'IRPF (%)',
+	'Accounting ID' => 'Código Contabilidad',
 	''     => '',
 
 

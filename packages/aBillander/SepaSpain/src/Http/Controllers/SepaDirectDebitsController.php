@@ -48,7 +48,7 @@ class SepaDirectDebitsController extends Controller
 
         $sdds = $sdds->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
 
-        $sdds->setPath('sepasp/directdebits');
+        $sdds->setPath('directdebits');
 
         return view('sepa_es::direct_debits.index', compact('sdds'));
     }
@@ -218,7 +218,9 @@ class SepaDirectDebitsController extends Controller
 	{
         $directdebit = $this->directdebit->findOrFail($id);
 
-        return view('sepa_es::direct_debits.show', compact('directdebit'));
+        $payment_typeList = \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+        return view('sepa_es::direct_debits.show', compact('directdebit', 'payment_typeList'));
 	}
 
 	/**
@@ -241,7 +243,8 @@ class SepaDirectDebitsController extends Controller
 
         // $document_date = abi_date_short( \Carbon\Carbon::now() );
 
-        return view('sepa_es::direct_debits.edit', compact('directdebit', 'sepa_sp_schemeList', 'bank_accountList', 'sequenceList'));
+        // return view('sepa_es::direct_debits.edit', compact('directdebit', 'sepa_sp_schemeList', 'bank_accountList', 'sequenceList'));
+        return view('sepa_es::direct_debits.edit', compact('directdebit', 'sepa_sp_schemeList', 'bank_accountList'));
 	}
 
 	/**

@@ -415,13 +415,13 @@ class ImportProductsController extends Controller
                     $item = http_build_query($data, null, ', ');
 
                     // Let's see which Product
-                    if ( array_key_exists('id', $data) )
+                    if ( array_key_exists('id', $data) && ( (int) $data['id'] > 0) )
                     {
                         $key_name = 'id';
-                        $key_val = trim( $data['id'] );
+                        $key_val = (int) $data['id'];
 
                         unset( $data['id'] );
-                        // Unomment lines to prevent changes in reference value
+                        // Uncomment lines to prevent changes in reference value
                         // if ( array_key_exists('reference', $data) )
                         //     unset( $data['reference'] );
                         
@@ -451,6 +451,7 @@ class ImportProductsController extends Controller
 
                     try{
                         // Update Product
+                        // abi_toSql($this->product->where( $key_name, $key_val )); die();
                         $product = $this->product->where( $key_name, $key_val )->first();
 
                         if ( !$product )
@@ -537,9 +538,12 @@ class ImportProductsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference', 'name', 'product_type', 'procurement_type', 'mrp_type', 'phantom_assembly', 'ean13', 'position', 'description', 'description_short', 'category_id', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'ecotax_id', 'ECOTAX_NAME', 'cost_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'available_for_sale_date', 'location', 'width', 'height', 'depth', 'volume', 'weight', 'notes', 'stock_control', 'reorder_point', 'maximum_stock', 'out_of_stock', 'out_of_stock_text', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'machine_capacity', 'units_per_tray', 'route_notes', 'main_supplier_id', 'SUPPLIER_NAME', 'supplier_reference', 'supply_lead_time', 'manufacturer_id', 'MANUFACTURER_NAME',
+        $headers = [ 'id', 'reference', 'name', 'product_type', 'procurement_type', 'mrp_type', 'phantom_assembly', 'ean13', 'position', 'description', 'description_short', 'category_id', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'ecotax_id', 'ECOTAX_NAME', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'available_for_sale_date', 'location', 'width', 'height', 'depth', 'volume', 'weight', 'notes', 'stock_control', 'reorder_point', 'maximum_stock', 'lot_tracking', 'expiry_time', 'out_of_stock', 'out_of_stock_text', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'machine_capacity', 'units_per_tray', 'route_notes', 'main_supplier_id', 'SUPPLIER_NAME', 'supplier_reference', 'supply_lead_time', 'manufacturer_id', 'MANUFACTURER_NAME',
 
 //             'last_purchase_price', 'cost_average', // <= Easter Eggs!!!
+        ];
+
+        $float_headers = [ 'price_tax_inc', 'price', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'width', 'height', 'depth', 'volume', 'weight', 
         ];
 
         $data[] = $headers;
@@ -551,7 +555,10 @@ class ImportProductsController extends Controller
             $row = [];
             foreach ($headers as $header)
             {
-                $row[$header] = $product->{$header} ?? '';
+                if ( in_array($header, $float_headers) )
+                    $row[$header] = (float) $product->{$header} ?? '';
+                else
+                    $row[$header] = $product->{$header} ?? '';
             }
             $row['CATEGORY_NAME']     = $product->category ? $product->category->name : '';
             $row['TAX_NAME']          = $product->tax ? $product->tax->name : '';

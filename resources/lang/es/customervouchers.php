@@ -38,6 +38,7 @@ return [
 
 	'Customer Vouchers - Edit'     => 'Recibos de Clientes - Modificar',
 	'Edit Customer Voucher'     => 'Modificar Recibo',
+	'Pay Customer Voucher'     => 'Pagar Recibo',
 	'Customer Voucher'     => 'Recibo',
 	'Invoice'     => 'Factura',
 	'Due Date'     => 'Fecha Vencimiento',
@@ -74,5 +75,7 @@ return [
 	'Set as Uncollectible' => 'Guardar como Incobrable',
 
 	'There is a Bank Order with this Voucher: :bo' => 'Hay una Remesa que incluye este Recibo: :bo',
+
+	'Payment Type' => 'Tipo de Pago',
 
 ];

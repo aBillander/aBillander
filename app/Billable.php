@@ -11,6 +11,7 @@ use App\Traits\BillableCustomTrait;
 use App\Traits\BillableDocumentLinesTrait;
 use App\Traits\BillableEcotaxableTrait;
 use App\Traits\BillableTotalsTrait;
+use App\Traits\BillableProfitabilityTrait;
 use App\Traits\ViewFormatterTrait;
 
 use App\Configuration;
@@ -24,6 +25,7 @@ class Billable extends Model implements ShippableInterface
     use BillableDocumentLinesTrait;
     use BillableEcotaxableTrait;
     use BillableTotalsTrait;
+    use BillableProfitabilityTrait;
     use ViewFormatterTrait;
 
 
@@ -53,6 +55,7 @@ class Billable extends Model implements ShippableInterface
             'manual',
             'abcc',
             'absrc',
+            'webshop',
             'aggregate_orders',
             'aggregate_shipping_slips',
             'production_sheet',
@@ -70,7 +73,9 @@ class Billable extends Model implements ShippableInterface
 
                         'printed_at',
                         'edocument_sent_at',
-                        'customer_viewed_at'
+                        'customer_viewed_at',
+
+                        'posted_at',
                        ];
 
     protected $document_dates = [
@@ -148,8 +153,25 @@ class Billable extends Model implements ShippableInterface
 
         static::saving(function($document)
         {
-            if ( $document->shippingmethod )
-                $document->carrier_id = $document->shippingmethod->carrier_id;
+            // if ( $document->force_carrier_id === true )
+            if ( $document->carrier_id > 0 )
+            {
+                // $document->carrier_id = $document->force_carrier_id;
+                // unset($document->force_carrier_id);
+
+                // abi_r($document->carrier_id);
+            }
+            else
+            {
+
+                if ( $document->shippingmethod )
+                    $document->carrier_id = $document->shippingmethod->carrier_id;
+                else
+                    $document->carrier_id = null;
+                
+            }
+
+            // abi_r($document->carrier_id);die();
         });
 
         // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
@@ -207,70 +229,7 @@ class Billable extends Model implements ShippableInterface
         return $flag;
     }
 
-    public function getTotalTargetRevenueAttribute()
-    {
-        $lines = $this->lines;
-        $filter = Configuration::isFalse('INCLUDE_SHIPPING_COST_IN_PROFIT');
 
-        $total_revenue = $lines->sum(function ($line) use ($filter) {
-
-                if ( ($line->line_type == 'shipping') && $filter ) return 0.0;
-
-                $ecotax = 0.0;
-                if ( $line->line_type == 'product' ) 
-                {
-                    $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
-                }
-
-                return $line->quantity * ( $line->unit_price - $ecotax );
-
-            });
-
-        return $total_revenue;
-    }
-
-    public function getTotalRevenueAttribute()
-    {
-        $lines = $this->lines;
-        $filter = Configuration::isFalse('INCLUDE_SHIPPING_COST_IN_PROFIT');
-
-        $total_revenue = $lines->sum(function ($line) use ($filter) {
-
-                if ( ($line->line_type == 'shipping') && $filter ) return 0.0;
-
-                $ecotax = 0.0;
-                if ( $line->line_type == 'product' ) 
-                {
-                    $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
-                }
-
-                return $line->quantity * ( $line->unit_final_price - $ecotax );
-
-            });
-
-        return $total_revenue;
-    }
-
-    public function getTotalRevenueWithDiscountAttribute()
-    {
-        return $this->total_revenue * ( 1.0 - $this->document_discount_percent / 100.0 ) * ( 1.0 - $this->document_ppd_percent / 100.0 );
-    }
-
-    public function getTotalCostPriceAttribute()
-    {
-        $lines = $this->lines;
-        $filter = Configuration::isFalse('INCLUDE_SHIPPING_COST_IN_PROFIT');
-
-        $total_cost_price = $lines->sum(function ($line) use ($filter) {
-
-                if ( ($line->line_type == 'shipping') && $filter ) return 0.0;
-
-                return $line->quantity * $line->cost_price;
-
-            });
-
-        return $total_cost_price;
-    }
 
     public function getEditableAttribute()
     {
@@ -361,6 +320,11 @@ class Billable extends Model implements ShippableInterface
             return l(get_called_class().'.'.$type, [], 'appmultilang');
     }
 
+    public function getTypeNameAttribute()
+    {
+            return l(get_called_class().'.'.$this->type, 'appmultilang');
+    }
+
 
     public static function getStatusList()
     {
@@ -442,6 +406,16 @@ class Billable extends Model implements ShippableInterface
             return $this->warehouse_id;
 
         return Configuration::getInt('DEF_WAREHOUSE');
+    }
+    
+    public function getPaymentMethodId() 
+    {
+        if (   $this->payment_method_id
+            && \App\PaymentMethod::where('id', $this->payment_method_id)->exists()
+            )
+            return $this->payment_method_id;
+
+        return Configuration::getInt('DEF_CUSTOMER_PAYMENT_METHOD');
     }
     
 
@@ -572,6 +546,9 @@ class Billable extends Model implements ShippableInterface
         if ( ($this->status == 'draft') || ($this->status == 'canceled') ) return false;
         
         if ( $this->status == 'closed' ) return false;
+
+        // No lines?
+        if ( $this->lines->count() == 0 ) return false;
         
         // Customer blocked?
         if ( array_key_exists('customer_id', $this->getAttributes()) )
@@ -679,7 +656,8 @@ class Billable extends Model implements ShippableInterface
 
             if ( !($product = $line->product) ) continue;
 
-            $line->cost_price = $product->cost_price;
+            $line->cost_price   = $product->cost_price;
+            $line->cost_average = $product->cost_average;
 
             $line->save();
         }
@@ -721,6 +699,29 @@ class Billable extends Model implements ShippableInterface
 
         return true;
     }
+
+    public function loadLineCommissions()
+    {
+        if ( !($salesrep = $this->salesrep) )
+            return false;
+
+        // Customer
+        $customer = $this->customer;
+
+        foreach ($this->lines as $line) {
+            # code...
+
+            if ( !($product = $line->product) ) continue;
+
+            $line->commission_percent = $salesrep->getCommission( $product, $customer );
+            
+            $line->save();
+        }
+
+        return true;
+    }
+
+
 
     public function calculateProfit()
     {
@@ -769,6 +770,13 @@ class Billable extends Model implements ShippableInterface
 
         $products_margin = $this->as_percentable( \App\Calculator::margin( $products_cost, $products_final_price - $products_ecotax - $document_products_discount, $this->currency ) );
 
+        // Sales Rep Commission
+        $this->total_commission = 0.0;
+        if ( $this->sales_rep_id > 0 )
+        {
+            $this->total_commission = $this->getSalesRepCommission();
+        }
+
 
 
         return $products_margin;
@@ -797,6 +805,13 @@ class Billable extends Model implements ShippableInterface
     public function lines()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
         return $this->documentlines();
+    }
+    
+    public function getProfitablelinesAttribute()
+    {
+        return $this->documentlines->filter(function ($line, $key) {
+                                            return $line->is_profitable;
+                                        });
     }
     
     public function documentlinetaxes()      // http://advancedlaravel.com/eloquent-relationships-examples
@@ -1014,7 +1029,7 @@ class Billable extends Model implements ShippableInterface
             $query->where('customer_id', $params['customer_id']);
         }
 
-        if (array_key_exists('price_amount', $params) && $params['price_amount'])
+        if (array_key_exists('price_amount', $params) && is_numeric($params['price_amount']))
         {
             $amount = $params['price_amount'];
 
@@ -1022,6 +1037,11 @@ class Billable extends Model implements ShippableInterface
                     $query->  where( 'total_tax_excl', $amount );
                     $query->orWhere( 'total_tax_incl', $amount );
             } );
+        }
+
+        if (array_key_exists('carrier_id', $params) && $params['carrier_id'] )
+        {
+            $query->where('carrier_id', $params['carrier_id']);
         }
 
 
@@ -1166,7 +1186,7 @@ class Billable extends Model implements ShippableInterface
 
         return $total_products_tax_excl;
     }
-
+/*
     public function getWeightAttribute() 
     {
         $line_products = $this->lines->where('line_type', 'product')->load('product');
@@ -1177,4 +1197,5 @@ class Billable extends Model implements ShippableInterface
 
         return $total_weight;
     }
+*/
 }

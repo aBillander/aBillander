@@ -29,9 +29,6 @@
             {{ Form::hidden('line_discount_amount_tax_incl', null, array('id' => 'line_discount_amount_tax_incl')) }}
             {{ Form::hidden('line_discount_amount_tax_excl', null, array('id' => 'line_discount_amount_tax_excl')) }}
 
-            {{ Form::hidden('line_sales_rep_id',       null, array('id' => 'line_sales_rep_id'      )) }}
-            {{ Form::hidden('line_commission_percent', null, array('id' => 'line_commission_percent')) }}
-
             {{ Form::hidden('line_is_prices_entered_with_tax', null, array('id' => 'line_is_prices_entered_with_tax')) }}
                
 
@@ -181,11 +178,20 @@
 
 
         <div class="row">
-                  <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('line_notes') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-10 col-md-10 col-sm-10 {{ $errors->has('line_notes') ? 'has-error' : '' }}">
                      {{ l('Notes', [], 'layouts') }}
                      {!! Form::textarea('line_notes', null, array('class' => 'form-control', 'id' => 'line_notes', 'rows' => '3')) !!}
                      {!! $errors->first('line_notes', '<span class="help-block">:message</span>') !!}
                   </div>
+
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('line_commission_percent') ? 'has-error' : '' }}">
+                    {{ l('Commission (%)') }}
+                    {!! Form::text('line_commission_percent', null, array('class' => 'form-control', 'id' => 'line_commission_percent', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
+                    {!! $errors->first('line_commission_percent', '<span class="help-block">:message</span>') !!}
+
+                    {{ Form::hidden('line_sales_rep_id', null, array('id' => 'line_sales_rep_id')) }}
+
+                 </div>
         </div>
 
          </div><!-- div class="modal-body" ENDS -->

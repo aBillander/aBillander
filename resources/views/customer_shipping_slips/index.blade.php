@@ -36,6 +36,9 @@
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
 
+        <a href="{{ route('customershippingslips.invoicer.create') }}" class="btn btn-sm btn-info" style="margin-left: 32px;" 
+                title="{{l('Filter and Invoice')}}"><i class="fa fa-money"></i> &nbsp; {{l('Filter and Invoice')}}</a>
+
     </div>
     <h2>
         {{ l('Documents') }}
@@ -132,6 +135,22 @@
 </div>
 --}}
 
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('price_amount', l('Total Amount')) !!}
+                              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" xdata-container="body" 
+                                        data-content="{{ l('With or without Taxes') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                              </a>
+    {!! Form::text('price_amount', null, array('class' => 'form-control', 'id' => 'price_amount')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('carrier_id', l('Carrier')) !!}
+    {!! Form::select('carrier_id', array('' => l('All', [], 'layouts')) + $carrierList, null, array('class' => 'form-control')) !!}
+</div>
+
+
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 {!! link_to_route($model_path.'.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
@@ -150,6 +169,10 @@
 
 
 
+{!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents', 'target' => '_blank'] ) !!}
+
+{{-- !! Form::hidden('customer_id', $customer->id, array('id' => 'customer_id')) !! --}}
+
 <div id="div_documents">
 
    <div class="table-responsive">
@@ -158,15 +181,78 @@
 <table id="documents" class="table table-hover">
     <thead>
         <tr>
-            <th class="text-left">{{ l('ID', 'layouts') }}</th>
-            <th class="text-center"></th>
+            <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
+            <th class="text-left">{{-- l('ID', 'layouts') --}}
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customershippingslips.bulk.pdf' )}}');$('#form-select-documents').submit();return false;" target="_blank"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
+
+            </th>
+            <th class="text-center">
+
+        @if ($documents->where('status', 'closed')->count() > 0)
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('With selected: Set delivered')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( $model_path.'.bulk.deliver' )}}');$('#form-select-documents').submit();return false;"> &nbsp; <i class="fa fa-truck"></i> &nbsp; </a>
+
+        @endif
+
+            </th>
             <th class="text-left">{{ l('Date') }}</th>
+            <th class="text-center" style="background-color: #e7e7e7;border-color: #cccccc;">
+
+        {!! Form::select('set_carrier_id', array('' => l('-- None --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control input-sm', 'style' => 'font-weight: normal;', 'id' => 'set_carrier_id')) !!}
+
+                <!-- button id="set_carrier_bulk" type="button" class="btn btn-xs btn-blue"><i class="fa fa-pencil"></i> {{ l('Carrier') }} </button -->
+
+
+<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('With selected: Set Carrier')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( $model_path.'.bulk.set.carrier' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-pencil"></i> {{ l('Carrier') }} </a>
+
+{{--
+<div id="set_carrier_bulk_popover-form" class="hide">
+
+    <div class="form-group">
+        {!! Form::select('set_carrier_id', array('' => l('-- None --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control', 'id' => 'set_carrier_id')) !!}
+    </div>
+
+<a class="btn btn-warning" href="javascript:void(0);" title="{{l('With selected: Set Carrier')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( $model_path.'.bulk.set.carrier' )}}');$('#form-select-documents').submit();return false;">{{l('Update', 'layouts')}}</a>
+
+</div>
+--}}
+{{--
+<!-- Single button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-xs btn-blue dropdown-toggle" data-toggle="dropdown">
+    <i class="fa fa-pencil"></i> {{ l('Carrier') }} <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    {!! Form::open(array('route' => $model_path.'.set.carrier', 'id' => 'set_carrier_form')) !!}
+       <div class="form-group">
+         { { - - !! Form::text('document_id', null, ['class' => 'form-control', 'id' => 'document_id']) !! - - } }
+         {!! Form::select('set_carrier_id', array('' => l('-- None --', [], 'layouts')) + $carrierList, null, array('class' => 'form-control', 'id' => 'set_carrier_id')) !!}
+       </div>
+
+       <div class="form-group">
+         <button type="submit" class="btn alert-success">{{l('Add', 'layouts')}}</button>
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Type an ID or Document Number.') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+       </div>
+    {!! Form::close() !!}
+  </ul>
+</div>
+--}}
+
+            </th>
             <th> </th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Customer') }}</th>
-            <th class="text-left">{{ l('Deliver to') }}</th>
+            <th class="text-left">{{ l('Deliver to') }}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </th>
             <th class="text-left">{{ l('Created via') }}</th>
-            <th class="text-right"">{{ l('Total') }}</th>
+            <th class="text-right">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>
         </tr>
@@ -174,6 +260,7 @@
     <tbody id="document_lines">
         @foreach ($documents as $document)
         <tr>
+            <td class="text-center warning">{!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}</td>
             <td>{{ $document->id }} / 
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
@@ -183,6 +270,11 @@
                 </a>
                 @endif</td>
             <td class="text-center">
+
+        @if ( !$document->is_invoiceable )
+              <a class="btn btn-xs btn-warning" href="javascript::void(0);" title="{{l('Not Invoiceable Document')}}" style="opacity: 0.65;" onclick="return false;"><i class="fa fa-ban"></i>
+              </a>
+        @endif
 
 @if ($document->invoiced_at && $document->customerinvoice())
                 <a class="btn btn-xs btn-success" href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{ l('Invoiced at:') }} {{abi_date_short( $document->invoiced_at )}}"><i class="fa fa-money"></i></a>
@@ -195,6 +287,10 @@
         @else
                     <a class="btn btn-xs alert-info" href="{{ URL::to($model_path.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
         @endif
+        @if ($document->document_id>0)
+                <a class="btn btn-xs alert-success prevent-double-click" href="{{ URL::to($model_path.'/' . $document->id . '/close') }}" title="{{l('Close Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{-- l('Close', 'layouts') --}}</a>
+        @endif
+
     @endif
 @endif
 
@@ -204,6 +300,7 @@
                 
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
+            <td>{{ optional($document->carrier)->name }}</td>
             <td>
     @if ( $document->shipment_status == 'delivered' )
         @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
@@ -276,7 +373,7 @@
 @if ($document->document_id>0)
                 <a class="btn btn-sm btn-lightblue"    href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send by eMail', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
 
-                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank" onclick="open_in_new_tab_and_reload( this );return false;"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 
                 <!-- a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a -->
@@ -286,7 +383,7 @@
 
 @else
 
-                @if ( $document->status == 'closed' && !$document->invoiced_at)
+                @if ( $document->is_invoiceable && $document->status == 'closed' && !$document->invoiced_at)
                 <a class="btn btn-sm btn-navy" href="{{ route('customershippingslip.invoice', [$document->id]) }}" title="{{l('Create Invoice')}}"><i class="fa fa-money"></i>
                 </a>
                 @endif
@@ -329,6 +426,10 @@
 
 </div><!-- div id="div_documents" ENDS -->
 
+
+{!! Form::close() !!}
+
+
 @include('layouts/back_to_top_button')
 
 @endsection
@@ -361,11 +462,70 @@
 
 <script type="text/javascript">
 
+// check box selection -->
+// See: http://www.dotnetcurry.com/jquery/1272/select-deselect-multiple-checkbox-using-jquery
+
+$(function () {
+    var $tblChkBox = $("#document_lines input:checkbox");
+    $("#ckbCheckAll").on("click", function () {
+        $($tblChkBox).prop('checked', $(this).prop('checked'));
+    });
+});
+
+$("#document_lines").on("change", function () {
+    if (!$(this).prop("checked")) {
+        $("#ckbCheckAll").prop("checked", false);
+    }
+});
+
+// check box selection ENDS -->
+
+
+
 $(document).ready(function() {
    $("#b_search_filter").click(function() {
       $('#search_status').val(1);
       $('#search_filter').show();
+
+
+
+    // https://stackoverflow.com/questions/1681679/disabling-links-to-stop-double-clicks-in-jquery
+
+    $("a.prevent-double-click").one("click", function() {
+        $(this).click(function () { return false; });
+    });
+
+
    });
+
+
+
+{{-- https://www.kodingmadesimple.com/2016/10/bootstrap-popover-form-example.html
+
+If you double-initialize and your popover uses values that may change or custom content, etc., you will be in a world of hurt:
+https://stackoverflow.com/questions/26562366/bootstrap-popover-is-not-working
+
+^--  use:  rel="popover"
+
+
+
+
+// popovers Initialization
+$(function () {
+$("#set_carrier_bulk").popover({
+    title: '<strong>{{ l('Select Carrier') }}</strong>',
+    container: 'body',
+    placement: 'right',
+    html: true, 
+    content: function(){
+          return $('#set_carrier_bulk_popover-form').html();
+    }
+    
+});
+});
+ --}}
+
+
 });
 
 </script>
@@ -423,6 +583,25 @@ $(document).ready(function() {
      return true;
 
    });
+
+
+   // Open in new tab & reload
+
+    function open_in_new_tab_and_reload(link)
+    {
+      // Open in new tab
+      var href = link.href;
+      window.open(href, '_blank');
+      //focus to that window
+      window.focus();
+      //reload current page
+      // Delay
+      setTimeout(function() {
+          // alert('Was called after 2 seconds');
+          location.reload();
+      }, 4000);
+      
+    }
 
 </script>
 

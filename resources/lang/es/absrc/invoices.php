@@ -223,4 +223,7 @@ return [
 	''     => '',
 	''     => '',
 
+	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos',
+	'Payment Status' => 'Estado de Pago',
 ];

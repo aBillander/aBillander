@@ -43,8 +43,15 @@ return [
 	'Chart - Product Stock' => 'Gráfico - Nivel de Inventario',
 	'Product Stock' => 'Nivel de Inventario',
 	'Pending V' => 'Recibos P',
+	
 	'Chart - Aggregated Stock Movements' => 'Gráfico - Resumen Movimientos de Stock',
 	'Aggregated Stock Movements' => 'Resumen Movimientos de Stock',
+	
+	'Chart - Aggregated Sales' => 'Gráfico - Resumen Ventas',
+	'Aggregated Sales' => 'Resumen Ventas',
+
+	'(daily)' => '(diario)',
+	'Cumulative' => 'Acumulado',
 
 	''     => '',
 
@@ -71,6 +78,25 @@ return [
 	'month.10'     => 'Octubre',
 	'month.11'     => 'Noviembre',
 	'month.12'     => 'Diciembre',
+
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Days
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'day.1'     => 'Lunes',
+	'day.2'     => 'Martes',
+	'day.3'     => 'Miércoles',
+	'day.4'     => 'Jueves',
+	'day.5'     => 'Viernes',
+	'day.6'     => 'Sábado',
+	'day.7'     => 'Domingo',
 
 
 ];

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use \App\Price;
 
 use App\Traits\BillableLineTrait;
+use App\Traits\BillableLineProfitabilityTrait;
 use App\Traits\ViewFormatterTrait;
 
 use App\Configuration;
@@ -16,6 +17,7 @@ use App\Configuration;
 class BillableLine extends Model
 {
     use BillableLineTrait;
+    use BillableLineProfitabilityTrait;
     use ViewFormatterTrait;
 
     public static $types = array(
@@ -31,8 +33,9 @@ class BillableLine extends Model
     protected $fillable = ['line_sort_order', 'line_type', 
                     'product_id', 'combination_id', 'reference', 'name', 
                     'quantity', 'extra_quantity', 'extra_quantity_label', 'measure_unit_id',
+                    'lot_references', 
                     'package_measure_unit_id', 'pmu_conversion_rate', 'pmu_label', 
-                    'cost_price', 'unit_price', 'unit_customer_price', 
+                    'cost_price', 'cost_average', 'unit_price', 'unit_customer_price', 
                     'prices_entered_with_tax',
                     'unit_customer_final_price', 'unit_customer_final_price_tax_inc', 
                     'unit_final_price', 'unit_final_price_tax_inc', 
@@ -91,6 +94,13 @@ class BillableLine extends Model
     |--------------------------------------------------------------------------
     */
 
+    // Kind of deprecated function. Try not to use.
+    public function getQuantityTotalAttribute()
+    {
+        return $this->quantity + $this->extra_quantity;
+    }
+
+
     public static function getTypeList()
     {
             $list = [];
@@ -108,7 +118,6 @@ class BillableLine extends Model
 
 
 
-    
 
     /*
     |--------------------------------------------------------------------------
@@ -160,6 +169,12 @@ class BillableLine extends Model
     public function stockmovements()
     {
         return $this->morphMany( StockMovement::class, 'stockmovementable' );
+    }
+
+    public function lots()
+    {
+        // Document line -> stock movements (one or more) -> lot (one per movement)
+        // see: https://stackoverflow.com/questions/43285779/laravel-polymorphic-relations-has-many-through
     }
 
     
@@ -259,6 +274,29 @@ class BillableLine extends Model
         $priceObject = \App\Price::create( $price, $this->currency );
 
         return $priceObject;
+    }
+
+
+    public function getSalesRepCommission()
+    {
+        switch ( Configuration::get('SALESREP_COMMISSION_METHOD') ) {
+            case 'TAXINC':
+                # code...
+                $amount = $this->total_tax_incl * $this->commission_percent / 100.0;
+                break;
+            
+            case 'TAXEXC':
+                # code...
+                $amount = $this->total_tax_excl * $this->commission_percent / 100.0;
+                break;
+            
+            default:
+                # code..
+                $amount = 0.0;
+                break;
+        }
+
+        return $amount;
     }
 
 }

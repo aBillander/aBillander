@@ -353,9 +353,12 @@ return [
 	'Production Sheet'     => 'Hoja de Producción',
 	'Back to Production Sheet'     => 'Volver a la Hoja de Producción',
 	'Shipping Slip'     => 'Albarán',
+	'Shipping Slips'     => 'Albaranes',
 	'Invoice'     => 'Factura',
 	'Customer Orders'     => 'Pedidos de Clientes',
-	'Create Shipping Slips'     => 'Crear Albaranes',
+	'Customer Shipping Slips'     => 'Albaranes de Clientes',
+	'Customer Invoices'     => 'Facturas de Clientes',
+	'Create Invoices'     => 'Crear Facturas',
 	'Should group?'     => '¿Agrupar?',
 	''     => '',
 	''     => '',
@@ -364,4 +367,18 @@ return [
 
 	'Delivery Routes' => 'Rutas de Reparto',
 
+	'Close Documents' => 'Cerrar Albaranes',
+
+	'Not closed' => 'Sin cerrar',
+	'Closed not invoiced' => 'Cerrados no facturados',
+	'Invoiced' => 'Facturados',
+
+
+	'Showing :a of :b in total' => 'Mostrando :a de :b en total',
+
+
+	'Yes: One Invoice per Customer<br />No: One Invoice per Shipping Slip' => 'Sí: Una Factura por Cliente<br />No: Una Factura por Albarán',
+
+	'Group by Address' => 'Agrupar por Dirección',
+	'Yes: One Invoice per Shipping Address' => 'Sí: Una Factura por Dirección de Envío',
 ];

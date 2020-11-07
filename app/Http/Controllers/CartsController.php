@@ -26,6 +26,7 @@ class CartsController extends Controller
                             ->whereHas('customer')
                             ->whereHas('cartlines')
                             ->with('customer')
+                            ->with('customeruser')
                             ->with('currency')
 //                            ->with('paymentmethod')
 //                            ->orderBy('document_date', 'desc')
@@ -127,7 +128,12 @@ class CartsController extends Controller
      */
     public function destroy(Cart $cart)
     {
-        //
+        $id = $cart->id;
+
+        $cart->delete();
+
+        return redirect('carts')
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
 

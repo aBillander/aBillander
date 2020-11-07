@@ -7,13 +7,13 @@ namespace App\Http\Controllers\SalesRepCenter;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-use App\Configuration;
-use App\Currency;
-use App\Todo;
-
 use Illuminate\Support\Facades\Auth;
 use App\SalesRepUser;
 use App\SalesRep;
+
+use App\Configuration;
+use App\Currency;
+use App\Todo;
 
 use App\Customer;
 use App\CustomerOrder as Document;
@@ -28,8 +28,11 @@ use App\Http\Controllers\BillableController;
 use App\Traits\BillableGroupableControllerTrait;
 use App\Traits\BillableShippingSlipableControllerTrait;
 
+use App\Traits\DateFormFormatterTrait;
+
 class AbsrcCustomerOrdersController extends BillableController
 {
+   use DateFormFormatterTrait;
 
    use BillableGroupableControllerTrait;
    use BillableShippingSlipableControllerTrait;
@@ -74,14 +77,18 @@ class AbsrcCustomerOrdersController extends BillableController
 	 *
 	 * @return Response
 	 */
-	public function index()
-	{
+	public function index(Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
         $documents = $this->document
                             ->ofSalesRep()      // Of Logged in Sales Rep (see scope on Billable 
 //                            ->where('salesrep_id', $salesrep->id)
+                            ->filter( $request->all() )
                             ->with('customer')
                             ->withCount('lines')
 //                            ->with('customer')
@@ -94,7 +101,9 @@ class AbsrcCustomerOrdersController extends BillableController
 
         $documents->setPath('orders');
 
-        return view($this->view_path.'.index', $this->modelVars() +  compact('documents'));
+        $statusList = Document::getStatusList();
+
+        return view($this->view_path.'.index', $this->modelVars() +  compact('documents', 'statusList'));
 	}
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\ShowOnlyActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,8 +27,8 @@ class Customer extends Model {
     protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'webshop_id', 'reference_external', 
                            'accounting_id',
                            'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
-                           'outstanding_amount_allowed', 'unresolved_amount', 
-                           'notes', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
+                           'outstanding_amount_allowed', 'unresolved_amount', 'notes', 
+                           'is_invoiceable', 'automatic_invoice', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
                            'invoice_sequence_id', 
                            'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id', 
@@ -46,6 +47,8 @@ class Customer extends Model {
     public static function boot()
     {
         parent::boot();
+
+        static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_CUSTOMERS_ACTIVE_ONLY') ));
 
         static::creating(function($client)
         {
@@ -275,6 +278,11 @@ class Customer extends Model {
         if ( isset($params['reference_external']) && $params['reference_external'] != '' )
         {
             $query->where('reference_external', 'LIKE', '%' . $params['reference_external'] . '%');
+        }
+
+        if ( isset($params['accounting_id']) && $params['accounting_id'] != '' )
+        {
+            $query->where('accounting_id', 'LIKE', '%' . $params['accounting_id'] . '%');
         }
 
         if ( isset($params['identification']) && $params['identification'] != '' )

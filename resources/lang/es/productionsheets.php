@@ -68,6 +68,7 @@ return [
     'Material Requirements'     => 'Requerimientos de Ingredientes',
 	'Packaging Requirements' => 'Requerimientos de Envases y Embalajes',
 	'Tool Requirements' => 'Requerimientos de Utillajes',
+	'Tray Requirements' => 'Requerimientos de Bandejas',
 
 	'Tool ID'     => 'ID',
 	'Tool Reference'     => 'Referencia',
@@ -86,6 +87,7 @@ return [
 	'Address'     => 'Dirección',
 
 	'Customer Shipping Slips' => 'Albaranes de Clientes',
+	'Customer Invoices'     => 'Facturas de Clientes',
 
 	'This record cannot be deleted because it belongs to a Production Sheet &#58&#58 (:id) ' => 'El registro no puede ser eliminado porque pertenece a una Hoja de producción &#58&#58 (:id) ',
 ];

@@ -38,7 +38,9 @@ class CustomerOrderTemplatesController extends Controller
      */
     public function create()
     {
-        return view('customer_order_templates.create');
+        $templateList = Template::listFor( 'App\CustomerOrder' );
+
+        return view('customer_order_templates.create', compact('templateList'));
     }
 
     public function createAfterOrder($id)
@@ -97,6 +99,7 @@ class CustomerOrderTemplatesController extends Controller
         $data = [
                 'customer_id' => $document->customer_id,
                 'shipping_address_id' => $document->shipping_address_id,
+                'template_id' => $document->template_id,
         ];
 
         $request->merge( $data );
@@ -159,7 +162,9 @@ class CustomerOrderTemplatesController extends Controller
      */
     public function edit(CustomerOrderTemplate $customerordertemplate)
     {
-        return view('customer_order_templates.edit', compact('customerordertemplate'));
+        $templateList = Template::listFor( 'App\CustomerOrder' );
+
+        return view('customer_order_templates.edit', compact('customerordertemplate', 'templateList'));
     }
 
     /**
@@ -279,7 +284,7 @@ class CustomerOrderTemplatesController extends Controller
             'sales_rep_id' => $customer->sales_rep_id,
             'currency_id' => $customer->currency->id,
             'payment_method_id' => $customer->getPaymentMethodId(),
-            'template_id' => $customerordertemplate->template_id > 0 ? : Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE'),
+            'template_id' => $customerordertemplate->template_id > 0 ? $customerordertemplate->template_id : Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE'),
         ];
 
         // Model specific data
@@ -298,7 +303,7 @@ class CustomerOrderTemplatesController extends Controller
         foreach ($cotlines as $cotline) {
             # code...
 
-            $line[] = $order->addProductLine( $cotline->product_id, null, $cotline->quantity, [] );
+            $line[] = $order->addProductLine( $cotline->product_id, null, $cotline->quantity, ['notes' => $cotline->notes] );
 
             // ^- Document totals are calculated when a line is added   
         }

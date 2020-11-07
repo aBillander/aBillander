@@ -259,7 +259,7 @@ class ProductionOrder extends Model
         // if (!$bom) return NULL;
 
          $order_quantity = $data['planned_quantity'];
-         $order_required = $data['required_quantity'];
+         $order_required = $data['required_quantity'] ?? $data['planned_quantity'];
          $order_manufacturing_batch_size =  $product->manufacturing_batch_size;
 
         $order = \App\ProductionOrder::create([
@@ -493,25 +493,25 @@ if ( $bomitem )
     |--------------------------------------------------------------------------
     */
     
-    public function finish()
+    public function finish( $params = [] )
     {
         // Can I ...?
-        if ( ($this->status == 'finished') ) return false;
+        if ( ($this->status == 'finished') ) return false;  // Any other status is good to go!??
 
         // onhold?
         // if ( $this->onhold ) return false;
 
         // Do stuf...
         $this->document_reference = $this->id;      // <= No sequences used!
-        $this->finished_quantity = $this->planned_quantity;     // By now... (need inteface to inform *real* finished quantity)
+        $this->finished_quantity = $params['finished_quantity'] ?? $this->planned_quantity;     // By now... (need inteface to inform *real* finished quantity)
         if ( $this->warehouse_id <= 0 ) $this->warehouse_id = Configuration::getInt('DEF_WAREHOUSE');
         $this->status = 'finished';
-        $this->finish_date = \Carbon\Carbon::now();
+        $this->finish_date = $params['finish_date'] ?? \Carbon\Carbon::now();
 
         $this->save();
 
         // Dispatch event
-        event( new \App\Events\ProductionOrderFinished($this) );
+        event( new \App\Events\ProductionOrderFinished($this, $params) );
 
         return true;
     }
@@ -550,6 +550,11 @@ if ( $bomitem )
         return $this->belongsTo('App\WorkCenter', 'work_center_id');
     }
     
+    public function warehouse()
+    {
+        return $this->belongsTo('App\Warehouse');
+    }
+    
     public function product()
     {
         return $this->belongsTo('App\Product', 'product_id');
@@ -584,6 +589,20 @@ if ( $bomitem )
        return $this->belongsTo(ProductionOrder::class, 'id');
     }
 
+    public function lotitems()
+    {
+        return $this->morphMany('App\LotItem', 'lotable');
+    }
+
+    public function getLotsAttribute()
+    {
+        if (!$this->relationLoaded('lotitems') || !$this->lotitems->first()->relationLoaded('lot')) {
+            $this->load('lotitems.lot');
+        }
+
+        return $this->lotitems->pluck('lot');       // ->collapse();
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -608,9 +627,53 @@ if ( $bomitem )
     |--------------------------------------------------------------------------
     */
 
-    public function makeStockMovements()
+    public function makeStockMovements( $params = [] )
     {
         // Let's rock!
+
+        // Deal with Lots (ノಠ益ಠ)ノ彡┻━┻
+        $lot = null;
+        // Create Lot for finished product first
+        if ( Configuration::isTrue('ENABLE_LOTS') )
+        if ( array_key_exists('lot_tracking', $params) && $params['lot_tracking'] ) // Same as $this->product->lot_tracking (pero puede querer fabricarse alguna vez sin lote?)
+        {
+            if ( array_key_exists('lot_params', $params))
+            {
+                $lot_params = $params['lot_params'];
+
+            } else {
+                // Set some default...
+                $theDate = \Carbon\Carbon::now();
+                $lot_params = [
+                    'reference' => $theDate->format('Y-m-d'),
+                    'product_id' => $this->product_id, 
+        //            'combination_id' => ,
+                    'quantity_initial' => $this->finished_quantity, 
+                    'quantity' => $this->finished_quantity, 
+                    'measure_unit_id' => $this->product->measure_unit_id, 
+        //            'package_measure_unit_id' => , 
+        //            'pmu_conversion_rate' => ,
+                    'manufactured_at' => $theDate, 
+                    'expiry_at' => $theDate->addDays( $this->product->expiry_time ),
+                    'notes' => 'Production Order: #'.$this->id,
+
+                    'warehouse_id' => $this->warehouse_id,
+                ];
+            }
+
+            // Time for "some magic"
+            // Create Lot
+            $lot = Lot::create($lot_params);
+
+            // $lot_item = LotItem::create(['lot_id' => $lot->id]);
+
+            // $document->lotitems()->save($lot_item);
+
+            // Cannot return this back: not good practice:
+            // $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot->reference], 'layouts') . 
+            //    'para el Producto: ['.$document->product_reference.'] '.$document->product_name;
+        }
+
         // Production Order Header
             $data = [
                     'date' => \Carbon\Carbon::now(),
@@ -653,6 +716,9 @@ if ( $bomitem )
             {
                 //
                 $this->stockmovements()->save( $stockmovement );
+
+                if ($lot)
+                    $lot->stockmovements()->save( $stockmovement );
             }
 
         //
@@ -705,6 +771,11 @@ if ( $bomitem )
             {
                 //
                 $line->stockmovements()->save( $stockmovement );
+
+                // Time for "some magic"
+                // Discount quantities from Lots (if applicable)
+
+                // To Do...
             }
         }
 

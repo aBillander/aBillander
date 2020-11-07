@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\ShowOnlyActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -115,6 +116,8 @@ class Product extends Model {
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
 
+                            'lot_tracking', 'expiry_time', 
+
                             'measure_unit_id', 'work_center_id', 'route_notes', 'machine_capacity', 'units_per_tray', 
 
                             'name_en', 'price_usd', 'price_usd_conversion_rate',
@@ -179,6 +182,8 @@ class Product extends Model {
     {
         parent::boot();
 
+        static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') ));      // (new ManagerResolver());
+
         static::created(function($product)
         {
             if ( Configuration::get('SKU_AUTOGENERATE') )
@@ -210,11 +215,122 @@ class Product extends Model {
     |--------------------------------------------------------------------------
     */
 
+    // Get Cost Price for Profit calculations
+    public function getProfitCostAttribute()
+    {
+        if ( Configuration::get('MARGIN_PRICE') == 'STANDARD' )
+            return $this->cost_price;
+
+        if ( Configuration::get('MARGIN_PRICE') == 'AVERAGE' )
+            return $this->cost_average;
+
+        // Sensible default
+        return $this->cost_price;
+    }
+
     public function getBomAttribute()
     {
         // Easy get BOM
         return $this->certifiedboms()->first();
     }
+
+
+
+    public function getChildToolQuantity( $product_id, $quantity = 1.0, $children = [] )
+    {
+        //
+        $all_children = $this->getChildToolQuantityWithChildren( $product_id, $quantity, $children );
+
+        return collect( $all_children )->sum('quantity');
+    }
+
+    public function getChildToolQuantityWithChildren( $tool_id, $quantity = 1.0, $children = [] )
+    {
+        if ( $this->tool_id == $tool_id )
+        {
+                $child = [
+                            'child_product_id' => $this->id,
+                            'quantity' => $quantity
+                ];
+
+                $children[] = $child;
+        }
+
+        $bom = $this->bom;
+
+        // BOM lines
+        if ( !$bom ) return $children;
+
+        foreach( $bom->BOMlines as $line ) {
+            
+            $line_product = $line->product;
+            $line_product_bom = $line_product->bom;
+
+                $children = $line_product->getChildToolQuantityWithChildren( $tool_id, $quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0), $children );
+
+
+            // if ( $line->product_id != $product_id ) continue;
+
+            // $quantity += $child_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
+        }
+
+        return $children;
+    }
+
+
+
+
+
+
+    public function getChildProductQuantity( $product_id, $quantity = 1.0, $children = [] )
+    {
+        //
+        $all_children = $this->getChildProductQuantityWithChildren( $product_id, $quantity, $children );
+
+        return collect( $all_children )->sum('quantity');
+    }
+
+    public function getChildProductQuantityWithChildren( $product_id, $quantity = 1.0, $children = [] )
+    {
+        // $product_id = $data['product_id'];
+        // $product = Product::findOrFail( $data['product_id'] );
+        // if ( !array_key_exists('child_quantity', $data) )
+        //     $data['child_quantity'] = 1.0;
+        $bom = $this->bom;
+
+        // BOM lines
+        if ( !$bom ) return null;
+
+        foreach( $bom->BOMlines as $line ) {
+            
+            $line_product = $line->product;
+            $line_product_bom = $line_product->bom;
+
+            if ( $line->product_id == $product_id )
+            {
+                $child = [
+                            'child_product_id' => $this->id,
+                            'quantity' => $quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0)
+                ];
+
+                $children[] = $child;
+            }
+            else
+
+            if ( $line_product_bom )
+            {
+                $children = $line_product->getChildProductQuantityWithChildren( $product_id, $quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0), $children );
+            }            
+
+            // if ( $line->product_id != $product_id ) continue;
+
+            // $quantity += $child_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
+        }
+
+        return $children;
+    }
+
+
 
     public function getQuantityAllocatedAttribute()
     {
@@ -537,6 +653,64 @@ class Product extends Model {
         return 0.0;
     }
 
+    
+
+    public function getPriceForStockValuation( $thePrice = null  )
+    {
+        if ( $thePrice !== null )
+            return $thePrice;
+
+        // Configuration::get('INVENTORY_VALUATION_METHOD') => STANDARD: AVERAGE: CURRENT: 
+
+        switch ( Configuration::get('INVENTORY_VALUATION_METHOD') ) {
+            case 'STANDARD':
+                # code...
+                return $this->cost_price;
+                break;
+            
+            case 'AVERAGE':
+                # code...
+                return $this->cost_average;
+                break;
+            
+            case 'CURRENT':
+                # code...
+                return $this->last_purchase_price;
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    
+
+    public function getStockToDateFullByWarehouse(  $warehouse = null, Carbon $date = null  )
+    {
+        if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
+        $wh_id = is_numeric($warehouse)
+                    ? $warehouse
+                    : $warehouse->id ;
+        
+        if ( $date      == null ) $date      = Carbon::now();   //->endOfDay();
+        else                      $date      = $date->endOfDay();
+
+        // Last movement BEFORE requested date
+        $mvt = StockMovement::
+                      where('product_id', $this->id)
+                    ->where('warehouse_id', $wh_id)
+                    ->where('date', '<=', $date)
+                    ->orderBy('date', 'desc')           // Guess "well ordered" movements
+                    ->orderBy('id', 'DESC')
+                    ->first();
+
+        if ($mvt)
+            return $mvt;
+
+        return null;
+    }
+
 
 
     // Just to disappear
@@ -591,6 +765,65 @@ class Product extends Model {
         }
 
         return $count;
+    }
+
+    public function getStockToDateFull(  Carbon $date = null  )
+    {
+        if ( $date      == null ) $date      = Carbon::now();   //->endOfDay();
+        else                      $date      = $date->endOfDay();
+
+        $warehouses = Warehouse::get();
+        $count1 = 0;
+
+        $mvts = collect([]);
+
+        foreach ($warehouses as $warehouse) {
+            # code...
+            $ws_mvt = $this->getStockToDateFullByWarehouse( $warehouse->id, $date );
+            if ($ws_mvt)
+            {
+                $count1 += $ws_mvt->quantity_after_movement;
+
+                $mvts->push($ws_mvt);
+            }
+        }
+
+        // Prepare
+        $f_mvt = null;
+
+        $count = 0.0;
+
+        // Sort $mvts
+                    // ->orderBy('date', 'desc')           // Guess "well ordered" movements
+                    // ->orderBy('id', 'DESC')
+        if ( $mvts->count() )
+        {
+            if ( $mvts->count() > 1 )
+            $mvts = $mvts->sort(function($a, $b) {
+               if($a->date === $b->date) {
+                 if($a->id === $b->id) {
+                   return 0;
+                 }
+                 return $a->id > $b->id ? -1 : 1;           // If you return -1 that moves the $b variable down the array, return 1 moves $b up the array and return 0 keeps $b in the same place. 
+               } 
+               return $a->date > $b->date ? -1 : 1;
+            });
+            // https://stackoverflow.com/questions/33713392/how-to-sort-illuminate-collection-by-multiple-columns-in-laravel-5-1/33713443#33713443
+            // https://github.com/laravel/ideas/issues/11
+            // https://www.php.net/manual/en/function.usort.php#refsect1-function.usort-parameters
+
+            // First movement is the most recent one
+            $f_mvt = $mvts->first();
+
+            // Stock
+            $count = $mvts->sum('quantity_after_movement');
+        }
+
+        return [
+            'movement' => $f_mvt,
+            'stock'    => $count,
+            'stock1'   => $count1,
+        ];
     }
     
 
@@ -848,6 +1081,15 @@ class Product extends Model {
         return $this->hasMany('App\StockMovement');
     }
 
+    // Latest Stock Movement
+    // https://p.softonsofa.com/tweaking-eloquent-relations-how-to-get-latest-related-model/
+    public function latestStockmovement()
+    {
+      return $this->hasOne('App\StockMovement')->latest();
+      // Same as: $this->hasOne('App\StockMovement')->orderBy('created_at', 'desc');
+    }
+
+
     public function mainsupplier()
     {
         return $this->belongsTo('App\Supplier', 'main_supplier_id');
@@ -873,6 +1115,11 @@ class Product extends Model {
     public function warehouselines()
     {
         return $this->hasMany('App\WarehouseProductLine');
+    }
+
+    public function lots()
+    {
+        return $this->hasMany('App\Lot')->orderBy('expiry_at', 'DESC');
     }
 
     public function pricelistlines()
@@ -1426,10 +1673,21 @@ class Product extends Model {
         return $query->where('active', '>', 0);
     }
 
+    public function scopeIsBlocked($query, $apply = true)
+    {
+        if ( $apply )
+            return $query->where('blocked', '>', 0);
+
+        return $query->where('blocked', 0);
+    }
+
+
     public function scopeIsPublished($query)
     {
+        return $query;
         return $query->where('publish_to_web', '>', 0);
     }
+
 
     public function scopeIsNew($query, $apply = true)
     {

@@ -19,6 +19,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
+
+// In case Laravel storage link won't work on production
+Route::get('/linkstorage', function () {
+    Artisan::call('storage:link');
+});
+
+
 // Disable Registration Routes...
 // See:
 // https://stackoverflow.com/questions/29183348/how-to-disable-registration-new-user-in-laravel-5
@@ -179,10 +186,28 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('/desktop', 'HomeController@desktop')->name('desktop');
 
         // Jennifer
-        Route::get('/jennifer/home', 'JenniferController@index')->name('jennifer.home');
+        Route::get( '/jennifer/home', 'JenniferController@index')->name('jennifer.home');
         Route::post('/jennifer/reports/invoices'  , 'JenniferController@reportInvoices'  )->name('jennifer.reports.invoices');
         Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
         Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
+        Route::post('/jennifer/reports/mod347'                   , 'JenniferController@index347'    )->name('jennifer.reports.index347');
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/show', 'JenniferController@index347Show'    )->name('jennifer.reports.index347.show');
+        Route::get( '/jennifer/reports/mod347/{mod347_year}'     , 'JenniferController@reportModelo347'    )->name('jennifer.reports.mod347');
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/email/{customer_id}', 'JenniferController@sendemail')->name('jennifer.reports.mod347.email'  );
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/customer/{customer_id}', 'JenniferController@reportModelo347Customer')->name('jennifer.reports.mod347.customer');
+
+        Route::group(['prefix' => 'accounting', 'namespace' => '\Accounting'], function ()
+        {
+            Route::resource('customers', 'AccountingCustomersController')->names('accounting.customers');
+
+            Route::resource('customerinvoices', 'AccountingCustomerInvoicesController')->names('accounting.customerinvoices');
+            Route::get('customerinvoices/{id}/pdf', 'AccountingCustomerInvoicesController@showPdf')->name('accounting.customerinvoices.pdf');
+
+            Route::get('customerinvoices/invoice/search', 'AccountingCustomerInvoicesController@searchInvoice')->name('accounting.customerinvoices.searchinvoice');
+
+
+        // oute::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
+        });
 
         // Helferin
         Route::get('/helferin/home', 'HelferinController@index')->name('helferin.home');
@@ -196,6 +221,15 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/helferin/reports/reorder'       , 'HelferinController@reportProductReorder'       )->name('helferin.reports.reorder');
         Route::get( '/helferin/reports/reorder/headers', 'HelferinController@reportProductReorderHeaders' )->name('helferin.reports.reorder.headers');
 
+        // Reports
+        Route::get('/reports/home', 'ReportsController@index')->name('reports.home');
+        Route::post('/reports/product/sales'  , 'ReportsController@reportProductSales'  )->name('reports.products.sales');
+        Route::post('/reports/customer/sales' , 'ReportsController@reportCustomerSales' )->name('reports.customers.sales');
+        Route::post('/reports/category/sales' , 'ReportsController@reportCategorySales' )->name('reports.categories.sales');
+
+        Route::post('/reports/abc/product/sales'  , 'ReportsController@reportABCProductSales'  )->name('reports.abc.products.sales');
+        Route::post('/reports/abc/customer/sales' , 'ReportsController@reportABCCustomerSales' )->name('reports.abc.customers.sales');
+
 
         Route::get( 'abccbillboard/edit',    'AbccBillboardController@edit'  )->name('abccbillboard.edit');
         Route::post('abccbillboard/update',  'AbccBillboardController@update')->name('abccbillboard.update');
@@ -206,6 +240,13 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('companies', 'CompaniesController');
         Route::post('companies/{id}/bankaccount', 'CompaniesController@updateBankAccount')->name('companies.bankaccount');
+
+        Route::resource('banks',         'BanksController');
+        Route::resource('cheques',               'ChequesController'      );
+        Route::resource('cheques.chequedetails', 'ChequeDetailsController');
+        Route::post('cheques/sortlines', 'ChequesController@sortLines')->name('cheque.sortlines');
+        Route::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
+        Route::get( 'export/cheques', 'ChequesController@export' )->name('cheques.export');
 
         Route::resource('countries',        'CountriesController');
         Route::resource('countries.states', 'StatesController');
@@ -273,10 +314,14 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('tools', 'ToolsController');
 
+        Route::resource('lots', 'LotsController');
+        Route::get( 'export/lots', 'LotsController@export' )->name('lots.export');
+
         Route::resource('products', 'ProductsController');
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
         Route::get('products/{id}/pendingmovements', 'ProductsController@getPendingMovements')->name('products.pendingmovements');
         Route::get('products/{id}/stocksummary',     'ProductsController@getStockSummary'    )->name('products.stocksummary');
+        Route::get('products/{id}/lots',             'ProductsController@getLots'            )->name('products.lots');
 
         Route::get('products/{id}/recentsales',  'ProductsController@getRecentSales')->name('products.recentsales');
 
@@ -299,6 +344,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
                                                         'as'   => 'products.ajax.optionsLookup' ));
         Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
                                                         'as'   => 'products.ajax.combinationLookup' ));
+
+        Route::get('products/stock/level',        'ProductsStockController@index' )->name('products.stock.index' );
+        Route::get('products/stock/level/export', 'ProductsStockController@export')->name('products.stock.export');
 
         Route::get('products/stock/reorder',        'ProductsReorderController@index' )->name('products.reorder.index' );
         Route::get('products/stock/reorder/export', 'ProductsReorderController@export')->name('products.reorder.export');
@@ -349,8 +397,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('productionsheets/{id}/summary', 'ProductionSheetsController@getSummary')->name('productionsheet.summary');
 
         Route::get('productionsheets/{id}/summary/pdf', 'ProductionSheetsPdfController@getPdfSummary')->name('productionsheet.summary.pdf');
+        Route::get('productionsheets/{id}/pani/summary/pdf', 'ProductionSheetsPdfController@getPdfSummaryPani')->name('productionsheet.summary.pdf.pani');
         Route::get('productionsheets/{id}/preassemblies/pdf', 'ProductionSheetsPdfController@getPdfPreassemblies')->name('productionsheet.preassemblies.pdf');
         Route::get('productionsheets/{id}/manufacturing/pdf', 'ProductionSheetsPdfController@getPdfManufacturing')->name('productionsheet.manufacturing.pdf');
+        Route::get('productionsheets/{id}/manufacturing/{wc}/bulkpdf', 'ProductionSheetsPdfController@getBulkPdfManufacturing')->name('productionsheet.manufacturing.bulkpdf');
 
         Route::get('productionsheets/{id}/orders/pdf', 'ProductionSheetsPdfController@getPdfOrders')->name('productionsheet.orders.pdf');
 
@@ -364,7 +414,18 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
 
         // Production Sheet Shipping Slips
-        Route::get('productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+        Route::get( 'productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
+
+        Route::post('productionsheetshippingslips/close',  'ProductionSheetShippingSlipsController@closeShippingSlips')->name('productionsheet.close.shippingslips');
+
+        Route::post('productionsheetshippingslips/invoices',  'ProductionSheetShippingSlipsController@createInvoices')->name('productionsheet.create.invoices');
+
+        // Production Sheet Invoices
+        Route::get( 'productionsheetinvoices/{id}',  'ProductionSheetInvoicesController@invoicesIndex')->name('productionsheet.invoices');
+
+        Route::post('productionsheetinvoices/close',  'ProductionSheetInvoicesController@closeInvoices')->name('productionsheet.close.invoices');
+
+
 
         Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
 
@@ -373,7 +434,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         // Production Sheet Production Orders
         Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
 
-        Route::post('productionsheetproductionorders/finish', 'ProductionSheetProductionOrdersController@finishProductionOrders')->name('productionsheet.productionorders.finish');
+        Route::get('productionsheetproductionorders/{id}/finish' , 'ProductionSheetProductionOrdersController@finish'    )->name('productionsheet.productionorders.finish');
+
+        Route::post('productionsheetproductionorders/finish/bulk', 'ProductionSheetProductionOrdersController@finishBulk')->name('productionsheet.productionorders.bulk.finish');
+
+        Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');
 
 
 
@@ -397,6 +462,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('customers.addresses', 'CustomerAddressesController');
 
         Route::post('mail', 'MailController@store');
+        Route::post('mail/feedback', 'MailController@storeFeedback');
 
         Route::resource('paymentmethods', 'PaymentMethodsController');
         Route::resource('paymenttypes', 'PaymentTypesController');
@@ -414,6 +480,56 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('ecotaxes.ecotaxrules', 'EcotaxRulesController');
 
         Route::resource('warehouses', 'WarehousesController');
+        Route::get('warehouses/{id}/inventory', 'WarehousesController@indexProducts')->name('warehouse.inventory');
+        Route::get('export/warehouses/{id}/inventory', 'WarehousesController@exportProducts' )->name('warehouse.inventory.export');
+
+        Route::resource('warehouseshippingslips', 'WarehouseShippingSlipsController');
+        // See line 552
+        Route::get('warehouseshippingslips/{id}/getlines',             'WarehouseShippingSlipsController@getDocumentLines'  )->name('warehouseshippingslips.getlines' );
+        Route::get('warehouseshippingslips/{id}/getheader',            'WarehouseShippingSlipsController@getDocumentHeader' )->name('warehouseshippingslips.getheader');
+        Route::get('warehouseshippingslips/line/productform/{action}', 'WarehouseShippingSlipsController@FormForProduct')->name('warehouseshippingslips.productform');
+        Route::get('warehouseshippingslips/line/serviceform/{action}', 'WarehouseShippingSlipsController@FormForService')->name('warehouseshippingslips.serviceform');
+        Route::get('warehouseshippingslips/line/commentform/{action}', 'WarehouseShippingSlipsController@FormForComment')->name('warehouseshippingslips.commentform');
+        Route::get('warehouseshippingslips/line/searchproduct',        'WarehouseShippingSlipsController@searchProduct' )->name('warehouseshippingslips.searchproduct');
+        Route::get('warehouseshippingslips/line/searchservice',        'WarehouseShippingSlipsController@searchService' )->name('warehouseshippingslips.searchservice');
+        Route::get('warehouseshippingslips/line/getproduct',           'WarehouseShippingSlipsController@getProduct'      )->name('warehouseshippingslips.getproduct');
+//        Route::get('warehouseshippingslips/line/getproduct/prices',    'WarehouseShippingSlipsController@getProductPrices')->name('warehouseshippingslips.getproduct.prices');
+
+        Route::post('warehouseshippingslips/{id}/storeline',    'WarehouseShippingSlipsController@storeDocumentLine'   )->name('warehouseshippingslips.storeline'  );
+//        Route::post('warehouseshippingslips/{id}/updatetotal',  'WarehouseShippingSlipsController@updateDocumentTotal' )->name('warehouseshippingslips.updatetotal');
+        Route::get('warehouseshippingslips/{id}/getline/{lid}', 'WarehouseShippingSlipsController@getDocumentLine'     )->name('warehouseshippingslips.getline'    );
+        Route::post('warehouseshippingslips/updateline/{lid}',  'WarehouseShippingSlipsController@updateDocumentLine'  )->name('warehouseshippingslips.updateline' );
+        Route::post('warehouseshippingslips/deleteline/{lid}',  'WarehouseShippingSlipsController@deleteDocumentLine'  )->name('warehouseshippingslips.deleteline' );
+//        Route::get('warehouseshippingslips/{id}/duplicate',     'WarehouseShippingSlipsController@duplicateDocument'   )->name('warehouseshippingslips.duplicate'  );
+//        Route::get('warehouseshippingslips/{id}/profit',        'WarehouseShippingSlipsController@getDocumentProfit'   )->name('warehouseshippingslips.profit'     );
+        Route::get('warehouseshippingslips/{id}/availability',  'WarehouseShippingSlipsController@getDocumentAvailability' )->name('warehouseshippingslips.availability' );
+        
+        Route::get('warehouseshippingslips/{id}/availability/modal',  'WarehouseShippingSlipsController@getDocumentAvailabilityModal' )->name('warehouseshippingslips.availability.modal' );
+
+
+        Route::post('warehouseshippingslips/{id}/quickaddlines',    'WarehouseShippingSlipsController@quickAddLines'   )->name('warehouseshippingslips.quickaddlines'  );
+
+        Route::post('warehouseshippingslips/sortlines', 'WarehouseShippingSlipsController@sortLines')->name('warehouseshippingslips.sortlines');
+
+
+        Route::get('warehouseshippingslips/{document}/confirm',   'WarehouseShippingSlipsController@confirm'  )->name('warehouseshippingslips.confirm'  );
+        Route::get('warehouseshippingslips/{document}/unconfirm', 'WarehouseShippingSlipsController@unConfirm')->name('warehouseshippingslips.unconfirm');
+
+        Route::get('warehouseshippingslips/{id}/pdf',         'WarehouseShippingSlipsController@showPdf'       )->name('warehouseshippingslips.pdf'        );
+//        Route::post('warehouseshippingslips/pdf/bulk',        'WarehouseShippingSlipsController@showBulkPdf'   )->name('warehouseshippingslips.bulk.pdf'   );
+        Route::match(array('GET', 'POST'), 
+                   'warehouseshippingslips/{id}/email',       'WarehouseShippingSlipsController@sendemail'     )->name('warehouseshippingslips.email'      );
+
+        Route::get('warehouseshippingslips/{document}/onhold/toggle', 'WarehouseShippingSlipsController@onholdToggle')->name('warehouseshippingslips.onhold.toggle');
+
+        Route::get('warehouseshippingslips/{document}/close',   'WarehouseShippingSlipsController@close'  )->name('warehouseshippingslips.close'  );
+        Route::get('warehouseshippingslips/{document}/unclose', 'WarehouseShippingSlipsController@unclose')->name('warehouseshippingslips.unclose');
+
+        Route::get('warehouseshippingslips/{id}/deliver' , 'WarehouseShippingSlipsController@deliver'    )->name('warehouseshippingslip.deliver');
+//        Route::post('warehouseshippingslips/deliver/bulk', 'WarehouseShippingSlipsController@deliverBulk')->name('warehouseshippingslips.bulk.deliver');
+
+        Route::get('warehouseshippingslips/{id}/undeliver'  , 'WarehouseShippingSlipsController@undeliver')->name('warehouseshippingslip.undeliver');
+        
         
         Route::resource('salesreps', 'SalesRepsController');
 
@@ -508,6 +624,7 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/getlines',             $controller.'@getDocumentLines'  )->name($path.'.getlines' );
         Route::get($path.'/{id}/getheader',            $controller.'@getDocumentHeader' )->name($path.'.getheader');
         Route::get($path.'/line/productform/{action}', $controller.'@FormForProduct')->name($path.'.productform');
+        Route::get($path.'/line/productlotsform/{action}', $controller.'@FormForProductLots')->name($path.'.productlotsform');
         Route::get($path.'/line/serviceform/{action}', $controller.'@FormForService')->name($path.'.serviceform');
         Route::get($path.'/line/commentform/{action}', $controller.'@FormForComment')->name($path.'.commentform');
         Route::get($path.'/line/searchproduct',        $controller.'@searchProduct' )->name($path.'.searchproduct');
@@ -527,6 +644,9 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/duplicate',     $controller.'@duplicateDocument'   )->name($path.'.duplicate'  );
         Route::get($path.'/{id}/profit',        $controller.'@getDocumentProfit'   )->name($path.'.profit'     );
         Route::get($path.'/{id}/availability',  $controller.'@getDocumentAvailability' )->name($path.'.availability' );
+
+        Route::get($path.'/{id}/getlotsline/{lid}', $controller.'@getDocumentLotsLine'     )->name($path.'.getlotsline'    );
+        Route::post($path.'/updatelotsline/{lid}',  $controller.'@updateDocumentLotsLine'  )->name($path.'.updatelotsline' );
         
         Route::get($path.'/{id}/availability/modal',  $controller.'@getDocumentAvailabilityModal' )->name($path.'.availability.modal' );
 
@@ -538,6 +658,7 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{document}/unconfirm', $controller.'@unConfirm')->name($path.'.unconfirm');
 
         Route::get($path.'/{id}/pdf',         $controller.'@showPdf'       )->name($path.'.pdf'        );
+        Route::post($path.'/pdf/bulk',        $controller.'@showBulkPdf'   )->name($path.'.bulk.pdf'   );
         Route::get($path.'/{id}/invoice/pdf', $controller.'@showPdfInvoice')->name($path.'.invoice.pdf');
         Route::match(array('GET', 'POST'), 
                    $path.'/{id}/email',       $controller.'@sendemail'     )->name($path.'.email'      );
@@ -549,7 +670,9 @@ foreach ($pairs as $pair) {
 
         Route::get($path.'/customers/{id}',  $controller.'@indexByCustomer')->name('customer.'.str_replace('customer', '', $path));
 
-        Route::get($path.'/{id}/reload/costs', $controller.'@reloadCosts')->name($path.'.reload.costs'        );
+        Route::get($path.'/{id}/reload/commissions', $controller.'@reloadCommissions')->name($path.'.reload.commissions');
+        Route::get($path.'/{id}/reload/ecotaxes',    $controller.'@reloadEcotaxes'   )->name($path.'.reload.ecotaxes'   );
+        Route::get($path.'/{id}/reload/costs',       $controller.'@reloadCosts'      )->name($path.'.reload.costs'      );
 }
 
         Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');
@@ -563,15 +686,26 @@ foreach ($pairs as $pair) {
 
         Route::post('customerorders/create/shippingslip/single',  'CustomerOrdersController@createSingleShippingSlip')->name('customerorder.single.shippingslip');
 
+
+        Route::get( 'customershippingslipsinvoicer',          'CustomerShippingSlipsInvoicerController@create' )->name('customershippingslips.invoicer.create' );
+        Route::post('customershippingslipsinvoicer/process',  'CustomerShippingSlipsInvoicerController@process')->name('customershippingslips.invoicer.process');
+
         Route::get( 'customershippingslips/customers/{id}/invoiceables',  'CustomerShippingSlipsController@getInvoiceableShippingSlips')->name('customer.invoiceable.shippingslips');
         Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');
-        Route::get('customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
+        Route::get( 'customershippingslips/{id}/invoice'  , 'CustomerShippingSlipsController@createInvoice')->name('customershippingslip.invoice');
+        Route::post('customershippingslips/{id}/invoice/undo'  , 'CustomerShippingSlipsController@undoInvoice')->name('customershippingslip.invoice.undo');
 
-        Route::get('customershippingslips/{id}/deliver'  , 'CustomerShippingSlipsController@deliver')->name('customershippingslip.deliver');
+        Route::post('customershippingslips/setcarrier/bulk', 'CustomerShippingSlipsController@setCarrierBulk')->name('customershippingslips.bulk.set.carrier');
+
+        Route::get('customershippingslips/{id}/deliver' , 'CustomerShippingSlipsController@deliver'    )->name('customershippingslip.deliver');
+        Route::post('customershippingslips/deliver/bulk', 'CustomerShippingSlipsController@deliverBulk')->name('customershippingslips.bulk.deliver');
 
         Route::get('customershippingslips/{id}/undeliver'  , 'CustomerShippingSlipsController@undeliver')->name('customershippingslip.undeliver');
 
         Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('customershippingslips.for.today');
+
+
+        Route::post('customerinvoices/{id}/shippingslip/add'  , 'CustomerInvoicesController@addShippingSlipToInvoice')->name('customerinvoice.shippingslip.add');
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');
         Route::get('customervouchers/{id}/setduedate'  , 'CustomerVouchersController@setduedate');
@@ -586,6 +720,8 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('voucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
+
+        Route::get( 'export/customervouchers', 'CustomerVouchersController@export' )->name('customervouchers.export');
         
 
         Route::resource('pricelists',           'PriceListsController');
@@ -723,11 +859,17 @@ foreach ($pairs as $pair) {
             Route::get('/get-monthly-sales',      'ChartCustomerSalesController@getMonthlySales')->name('chart.customerorders.monthly');
             Route::get('/get-monthly-sales-data', 'ChartCustomerSalesController@getMonthlySalesData')->name('chart.customerorders.monthly.data');
 
+            Route::get('/get-daily-sales',      'ChartDailyCustomerSalesController@getDailySales')->name('chart.customerorders.daily');
+            Route::get('/get-daily-sales-data', 'ChartDailyCustomerSalesController@getDailySalesData')->name('chart.customerorders.daily.data');
+
             Route::get('/get-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('chart.customervouchers.monthly');
             Route::get('/get-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('chart.customervouchers.monthly.data');
 
             Route::get('/get-monthly-product-stock',      'ChartProductStockController@getMonthlyProductStock')->name('chart.product.stock.monthly');
             Route::get('/get-monthly-product-stock-data', 'ChartProductStockController@getMonthlyProductStockData')->name('chart.product.stock.monthly.data');
+
+            Route::get('/get-monthly-product-sales',      'ChartProductSalesController@getMonthlyProductSales')->name('chart.product.sales.monthly');
+            Route::get('/get-monthly-product-sales-data', 'ChartProductSalesController@getMonthlyProductSalesData')->name('chart.product.sales.monthly.data');
 
             Route::get('r', function()
                 {

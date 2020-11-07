@@ -32,6 +32,7 @@ return [
 	'Email'     => 'Correo Electrónico',
 	'your@email.com'     => 'su@email.es',
 	'User home page'     => 'Su Página de Inicio',
+	'User theme'     => 'Su Plantilla',
 	'Language'     => 'Idioma',
 	'Is Administrator?'     => '¿Es Administrador?',
 	''     => '',

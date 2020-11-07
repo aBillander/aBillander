@@ -35,6 +35,10 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\CustomerInvoicePrintedListener',
         ],
     
+        'App\Events\CustomerInvoicePosted' => [
+            'App\Listeners\CustomerInvoicePostedListener',
+        ],
+    
         'App\Events\CustomerInvoiceEmailed' => [
             'App\Listeners\CustomerInvoiceEmailedListener',
         ],
@@ -69,6 +73,25 @@ class EventServiceProvider extends ServiceProvider
     
         'App\Events\CustomerShippingSlipEmailed' => [
             'App\Listeners\CustomerShippingSlipEmailedListener',
+        ],
+
+
+
+
+        'App\Events\WarehouseShippingSlipConfirmed' => [
+            'App\Listeners\WarehouseShippingSlipConfirmedListener',
+        ],
+    
+        'App\Events\WarehouseShippingSlipClosed' => [
+            'App\Listeners\WarehouseShippingSlipClosedListener',
+        ],
+    
+        'App\Events\WarehouseShippingSlipUnclosed' => [
+            'App\Listeners\WarehouseShippingSlipUnclosedListener',
+        ],
+    
+        'App\Events\WarehouseShippingSlipPrinted' => [
+            'App\Listeners\WarehouseShippingSlipPrintedListener',
         ],
 
 

@@ -122,6 +122,7 @@
             $('#password').val('');
 
             $('#salesrepuser_language_id').val(user.language_id);
+            $('#salesrepuser_warehouse_id').val(user.warehouse_id);
 
             $("input[name='salesrepuser_active'][value='" + user.active + "']").prop('checked', true);
             $("input[name='allow_abcc_access'][value='" + user.allow_abcc_access + "']").prop('checked', true);

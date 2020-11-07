@@ -1,0 +1,19 @@
+
+https://www.google.com/search?channel=fs&client=ubuntu&q=laravel+remove+package
+https://laracasts.com/discuss/channels/laravel/remove-package-using-composer-remove
+		php artisan config:cache
+		php artisan config:clear
+
+https://www.google.com/search?client=ubuntu&hs=i8B&channel=fs&sxsrf=ALeKk031G4u-t5ZgfGDS3Cn8MytLIMhEiw%3A1601120797691&ei=HSpvX4vbKeLkgwffmarAAQ&q=composer+remove+package&oq=composer+remove+package&gs_lcp=CgZwc3ktYWIQAzIFCAAQywEyBQgAEMsBMgIIADICCAAyAggAMgcIABAUEIcCMgIIADICCAAyAggAMgUIABDLAToECAAQRzoECCMQJzoECAAQQzoFCAAQkQJQiNMKWIKYC2C4owtoAHABeACAAWOIAcAMkgECMjCYAQCgAQGqAQdnd3Mtd2l6yAEIwAEB&sclient=psy-ab&ved=0ahUKEwjL3Y3j34bsAhVi8uAKHd-MChgQ4dUDCAw&uact=5
+https://stackoverflow.com/questions/23126562/how-to-remove-a-package-from-laravel-using-composer
+https://stackoverflow.com/questions/26930816/how-to-remove-unused-dependencies-from-composer/26935729
+https://getcomposer.org/doc/01-basic-usage.md
+https://laracasts.com/discuss/channels/laravel/how-to-properly-remove-package?page=1
+
+
+composer remove abillander/abillander-installer
+
+
+https://www.google.com/search?channel=fs&client=ubuntu&q=gitkraken+file+mode+changes+from+217+to+14001
+https://stackoverflow.com/questions/1580596/how-do-i-make-git-ignore-file-mode-chmod-changes
+https://stackoverflow.com/questions/53399046/git-gitkraken-file-mode-changes-to-unknown-value-14001-after-restoring-repo

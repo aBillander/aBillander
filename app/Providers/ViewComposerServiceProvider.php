@@ -115,7 +115,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// PaymentTypes
-		view()->composer(array('payment_methods._form'), function($view) {
+		view()->composer(array('payment_methods._form', 'customer_vouchers._form_edit', 'customer_vouchers._form_pay'), function($view) {
 		    
 		    $view->with('payment_typeList', \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
@@ -157,7 +157,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Carriers
-		view()->composer(array('shipping_methods._form'), function($view) {
+		view()->composer(array('shipping_methods._form', 'customer_shipping_slips.index', 'customer_shipping_slips.edit'), function($view) {
 		    
 		    $view->with('carrierList', \App\Carrier::pluck('name', 'id')->toArray());
 		    
@@ -327,7 +327,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Themes
-		view()->composer(array('configuration_keys.key_group_3'), function($view) {
+		view()->composer(array('users.create', 'users.edit', 'configuration_keys.key_group_3'), function($view) {
 		    
 		    
 			$directories = \File::directories(resource_path().'/theme');
@@ -370,6 +370,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		});
 		
+		// Warehouse Shipping Slips Sequencess
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('warehouse_shipping_slips_sequenceList', \App\Sequence::listFor( \App\WarehouseShippingSlip::class ));
+		    
+		});
+		
 		// Customer Invoices Sequencess
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
@@ -397,6 +404,13 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		view()->composer(array('configuration_keys.key_group_2', 'customers.edit'), function($view) {
 		    
 		    $view->with('shipping_slips_templateList', \App\Template::listFor( \App\CustomerShippingSlip::class ));
+		    
+		});
+
+		// Warehouse Shipping Slips Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('warehouse_shipping_slips_templateList', \App\Template::listFor( \App\WarehouseShippingSlip::class ));
 		    
 		});
 

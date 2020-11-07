@@ -6,12 +6,19 @@ use Illuminate\Http\Request;
 
 use Excel;
 
+// Helferinnen
+use App\Http\Controllers\HelferinTraits\JenniferModelo347Trait;
+
 use App\Traits\DateFormFormatterTrait;
 
 class JenniferController extends Controller
 {
+    use JenniferModelo347Trait;
    
    use DateFormFormatterTrait;
+
+   private $invoices_report_formatList;
+   private $valuation_methodList;
 
     /**
      * Create a new controller instance.
@@ -21,6 +28,18 @@ class JenniferController extends Controller
     public function __construct()
     {
         $this->middleware('auth:web');
+
+        $this->invoices_report_formatList = [
+                    'compact' => 'Compacto',
+                    'loose' => 'Amplio',
+        ];
+
+        $this->valuation_methodList = [
+                    'cost_average_on_date' => 'Precio Medio en la Fecha',
+                    'cost_average_current' => 'Precio Medio Actual',
+                    'cost_price_on_date' => 'Precio de Coste en la Fecha',
+                    'cost_price_current' => 'Precio de Coste Actual',
+        ];
     }
 
     /**
@@ -30,9 +49,11 @@ class JenniferController extends Controller
      */
     public function index()
     {
+        $valuation_methodList = $this->valuation_methodList;
 
+        $invoices_report_formatList = $this->invoices_report_formatList;
 
-        return view('jennifer.home');
+        return view('jennifer.home', compact('valuation_methodList', 'invoices_report_formatList'));
     }
 
 
@@ -48,6 +69,8 @@ class JenniferController extends Controller
         $date_to   = $request->input('invoices_date_to'  )
                      ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_to'  ))
                      : null;
+        
+        $invoices_report_format = $request->input('invoices_report_format');
 
         $documents = \App\CustomerInvoice::
                               with('customer')
@@ -103,19 +126,29 @@ class JenniferController extends Controller
         $data[] = ['Facturas de Clientes, ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
+        // All Taxes
+        $alltaxes = \App\Tax::get()->sortByDesc('percent');
+        $alltax_rules = \App\TaxRule::get();
+
 
         // Define the Excel spreadsheet headers
         $header_names = ['Número', 'Fecha', 'Cliente', 'Estado', 'Forma de Pago', 'Base', 'IVA', 'Rec', 'Total'];
 
+        // Add more headers
+        if ( $invoices_report_format != 'compact')
+        foreach ( $alltaxes as $alltax )
+        {
+            $header_names[] = 'Base IVA '.$alltax->percent;
+            $header_names[] = 'IVA '.$alltax->percent;
+            $header_names[] = 'RE '.$alltax->equalization_percent;
+        }
+
         $data[] = $header_names;
 
-        // Convert each member of the returned collection into an array,
-        // and append it to the data array.
-        $alltaxes = \App\Tax::get()->sortByDesc('percent');
-        $alltax_rules = \App\TaxRule::get();
-
         $sub_totals = [];
-        
+
+if ( $invoices_report_format == 'compact') {
+
         foreach ($documents as $document) {
             $row = [];
             $row[] = $document->document_reference;
@@ -173,10 +206,68 @@ class JenniferController extends Controller
                 // abi_r($sub_totals);
             }
 
-// abi_r('************************************');
-        }
+        }   // Document loop ends here
 
-//        die();
+} else {
+
+        foreach ($documents as $document) {
+            $row = [];
+            $row[] = $document->document_reference;
+            $row[] = abi_date_short($document->document_date);
+            $row[] = $document->customer->reference_accounting . '-' . $document->customer->name_fiscal;
+            $row[] = $document->payment_status_name;
+            $row[] = $document->paymentmethod->name;
+            $row[] = $document->total_tax_excl * 1.0;
+            $row[] = 0.0;
+            $row[] = 0.0;
+            $row[] = $document->total_tax_incl * 1.0;
+
+            $i = count($data);
+            // $data[] = $row;
+
+            // Taxes breakout
+            $totals = $document->totals();
+
+            foreach ( $alltaxes as $alltax )
+            {
+                if ( !( $total = $totals->where('tax_id', $alltax->id)->first() ) ) continue;
+                
+                $iva = $total['tax_lines']->where('tax_rule_type', 'sales')->first();
+                $re  = $total['tax_lines']->where('tax_rule_type', 'sales_equalization')->first();
+
+                $row[] = $iva->taxable_base * 1.0;
+                $row[] = $iva->total_line_tax * 1.0;
+                $row[] = optional($re)->total_line_tax ?? 0.0;
+                $row[] = '';
+    
+                // $data[] = $row;
+
+                $row[6] += $iva->total_line_tax;
+                $row[7] += optional($re)->total_line_tax ?? 0.0;
+
+                if ( array_key_exists($alltax->id, $sub_totals) )
+                {
+                    $sub_totals[$alltax->id]['base']    += $iva->taxable_base;
+                    $sub_totals[$alltax->id]['iva']     += $iva->total_line_tax;
+                    $sub_totals[$alltax->id]['re']      += optional($re)->total_line_tax ?? 0.0;
+                } else {
+                    $sub_totals[$alltax->id] = [];
+                    $sub_totals[$alltax->id]['percent'] = $alltax->percent;
+                    $sub_totals[$alltax->id]['base']    = $iva->taxable_base;
+                    $sub_totals[$alltax->id]['iva']     = $iva->total_line_tax;
+                    $sub_totals[$alltax->id]['re']      = optional($re)->total_line_tax ?? 0.0;
+                }
+
+                // abi_r($sub_totals);
+            }
+
+            $data[] = $row;
+
+        }   // Document loop ends here
+
+}
+
+
 
         // Totals
         $data[] = [''];
@@ -205,7 +296,10 @@ class JenniferController extends Controller
             // Build the spreadsheet, passing in the data array
             $excel->sheet($sheetName, function($sheet) use ($data) {
                 
-                $sheet->getStyle('A4:I4')->applyFromArray([
+                $sheet->mergeCells('A1:C1');
+                $sheet->mergeCells('A2:C2');
+                
+                $sheet->getStyle('A4:U4')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -447,6 +541,13 @@ class JenniferController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['inventory_date_to'], $request );
 
+        $valuation_methodList = $this->valuation_methodList;
+
+        $valuation_method = $request->input('valuation_method');
+
+        if ( !array_key_exists($valuation_method, $valuation_methodList))
+            $valuation_method = array_keys($valuation_methodList)[0];     // count($arr) ? array_keys($arr)[0] : null;
+
 
         $products = \App\Product::
                             with('measureunit')
@@ -468,29 +569,73 @@ class JenniferController extends Controller
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Inventario histórico, hasta el ' . abi_date_short( $date ), '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Inventario histórico, hasta el ' . abi_date_short( $date ), '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Método de Valoración: '.$valuation_methodList[$valuation_method]];
         $data[] = [''];
 
 
         // Define the Excel spreadsheet headers
         $headers = [ 'reference', 'name', 'price', 'cost_price' ];
 
-        $header_names = ['Código', 'Nombre', 'Val.Coste', 'Val.Venta', 'Stock'];
+        $header_names = ['Código', 'Nombre', 'Precio Medio en la Fecha', 'Precio Medio Actual', 'Precio de Coste en la Fecha', 'Precio de Coste Actual', 'Precio Ultima Compra', 'Stock', 'Valor', 'Valor a Coste Actual', 'Valor a Precio Venta'];
 
         $data[] = $header_names;
-        $total_cost = $total_price = 0.0;
+        $total_value = $total_cost_average = $total_cost = $total_price = 0.0;
+
 
         // Convert each member of the returned collection into an array,
         // and append it to the data array.
         foreach ($products as $product) {
             // $data[] = $line->toArray();
-            $stock = $product->getStockToDate( $date );
+            // $stock = $product->getStockToDate( $date );
+            $arr = $product->getStockToDateFull( $date );
+            $stock = $arr['stock'];
             $row = [];
             $row[] = $product->reference;
             $row[] = $product->name;
+            $row[] = $arr['movement'] ? (float) $arr['movement']->cost_price_after_movement : '';
+            $row[] = (float) $product->cost_average;
+            $row[] = $arr['movement'] ? (float) $arr['movement']->product_cost_price : '';
+            $row[] = (float) $product->cost_price;
+            $row[] = (float) $product->last_purchase_price;
+
+            $row[] = (float) $stock;
+
+            switch ($valuation_method) {
+                case 'cost_average_on_date':
+                    # code...
+                    $thePrice = $arr['movement'] ? $arr['movement']->cost_price_after_movement : '';
+                    break;
+                
+                case 'cost_average_current':
+                    # code...
+                    $thePrice = $product->cost_average;
+                    break;
+                
+                case 'cost_price_on_date':
+                    # code...
+                    $thePrice = $arr['movement'] ? $arr['movement']->product_cost_price : '';
+                    break;
+                
+                case 'cost_price_current':
+                    # code...
+                    $thePrice = $product->cost_price;
+                    break;
+                
+                default:
+                    # code...
+                    $thePrice = 0.0;
+                    break;
+            }
+
+
+            if ( $stock < 0.0 )
+                $stock = 0.0;
+
+
+            $row[] = $stock * (float) $thePrice;
             $row[] = $stock * $product->cost_price;
             $row[] = $stock * $product->price;
-            $row[] = $stock;
 /*
             $row[] = '';
             $row[] = $product->cost_price;
@@ -499,13 +644,22 @@ class JenniferController extends Controller
 //            $row[] = $product->getStockToDateByWarehouse( 1, \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('inventory_date_to')) );
 
             $data[] = $row;
-            $total_cost  += $row[2];
-            $total_price += $row[3];
+            // $total_cost_average  += $row[2];
+            // $total_cost  += $row[3];
+            // $total_price += $row[4];
+            $total_value += $row[8];
+
+            // $arr = $product->getStockToDateFull( $date );
+            // if ( $arr['stock'] != $arr['stock1'] )
+            //     abi_r($product->reference.' - '.$arr['stock'].' - '.$arr['stock1']);
         }
+
+//    die('OK>');
 
         // Totals
         $data[] = [''];
-        $data[] = ['', 'Total:', $total_cost, $total_price, ''];
+        // $data[] = ['', 'Total:', $total_cost_average, $total_cost, $total_price, ''];
+        $data[] = ['', '', '', '', '', '', '', 'Total:', $total_value, ''];
 
         $sheetName = 'Inventario';
 
@@ -523,7 +677,10 @@ class JenniferController extends Controller
             $excel->sheet($sheetName, function($sheet) use ($data) {
                 $sheet->fromArray($data, null, 'A1', false, false);
                 
-                $sheet->getStyle('A4:F4')->applyFromArray([
+                $sheet->mergeCells('A1:B1');
+                $sheet->mergeCells('A2:B2');
+
+                $sheet->getStyle('A5:K5')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -539,7 +696,7 @@ class JenniferController extends Controller
                 ));
                 
                 $n = count($data); 
-                $sheet->getStyle("B$n:D$n")->applyFromArray([
+                $sheet->getStyle("B$n:I$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

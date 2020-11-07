@@ -17,11 +17,22 @@ Route::group([
 
 Route::group([
 
-	'middleware' =>  ['web', 'auth', 'context'],
-	'namespace' => 'aBillander\WooConnect\Http\Controllers',
-	'prefix'    => 'wooc'
+    'middleware' =>  ['web', 'auth', 'context'],
+    'namespace' => 'aBillander\WooConnect\Http\Controllers',
+    'prefix'    => 'wooc'
 
 ], function () {
+
+        Route::group([
+
+            'namespace' => 'Chart',
+            'prefix'    => 'chart'
+
+        ], function () {
+
+            Route::get('/get-monthly-product-sales',      'ChartProductWebSalesController@getMonthlyProductWebSales')->name('wooc.chart.product.sales.monthly');
+            Route::get('/get-monthly-product-sales-data', 'ChartProductWebSalesController@getMonthlyProductWebSalesData')->name('wooc.chart.product.sales.monthly.data');
+        });
 
 //	Route::get('orders', ['as' => 'worders', 'uses' => 'WooOrdersController@index']);
 //	Route::get('orders/statuses', 'WooOrdersController@getStatuses');	// Semms this endpoint does not exist /!\
@@ -88,6 +99,20 @@ Route::group([
     Route::get('wcategories/{id}/fetch' , 'WooCategoriesController@fetch')->name('wcategories.fetch' );
 
     Route::post('wcategories/ascription' , 'WooCategoriesController@ascription')->name('wcategories.ascription' );
+
+
+    Route::resource('wcustomers', 'WooCustomersController');
+
+    Route::get('wcustomer/{id}/import' , array('uses' => 'WooCustomersController@import', 
+                                                        'as'   => 'wcustomers.import' ));
+
+    Route::get('wcustomers/{id}/fetch' , 'WooCustomersController@fetch')->name('wcustomers.fetch' );
+
+    Route::get('wcustomers/fetch/abiorphans' , 'WooCustomersController@fetchAbiOrphans')->name('wcustomers.fetch.abi.orphans' );
+
+    Route::get('wcustomers/fetch/woocorphans' , 'WooCustomersController@fetchWoocOrphans')->name('wcustomers.fetch.wooc.orphans' );
+
+    Route::post('wcustomers/ascription' , 'WooCustomersController@ascription')->name('wcustomers.ascription' );
 
 });
 

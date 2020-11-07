@@ -226,6 +226,27 @@
         <span class="help-block">{!! l('ENABLE_SALESREP_CENTER.help') !!}</span>
       </div>
     </div>
+    
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('SALESREP_COMMISSION_METHOD.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="SALESREP_COMMISSION_METHOD" id="SALESREP_COMMISSION_METHOD_TAXEXC" value="TAXEXC" @if( old('SALESREP_COMMISSION_METHOD', $key_group['SALESREP_COMMISSION_METHOD']) == 'TAXEXC' ) checked="checked" @endif type="radio">
+            {!! l('SALESREP_COMMISSION_METHOD.option.TAXEXC') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="SALESREP_COMMISSION_METHOD" id="SALESREP_COMMISSION_METHOD_TAXINC" value="TAXINC" @if( old('SALESREP_COMMISSION_METHOD', $key_group['SALESREP_COMMISSION_METHOD']) == 'TAXINC' ) checked="checked" @endif type="radio">
+            {!! l('SALESREP_COMMISSION_METHOD.option.TAXINC') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('SALESREP_COMMISSION_METHOD.help') !!}</span>
+      </div>
+    </div>
+
 
     
 @if ( config('tenants.enable') )
@@ -292,6 +313,46 @@
     </div>
 
 @endif
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ENABLE_LOTS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ENABLE_LOTS" id="ENABLE_LOTS_on" value="1" @if( old('ENABLE_LOTS', $key_group['ENABLE_LOTS']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ENABLE_LOTS" id="ENABLE_LOTS_off" value="0" @if( !old('ENABLE_LOTS', $key_group['ENABLE_LOTS']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ENABLE_LOTS.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('PRINT_LOT_NUMBER_ON_DOCUMENTS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="PRINT_LOT_NUMBER_ON_DOCUMENTS" id="PRINT_LOT_NUMBER_ON_DOCUMENTS_on" value="1" @if( old('PRINT_LOT_NUMBER_ON_DOCUMENTS', $key_group['PRINT_LOT_NUMBER_ON_DOCUMENTS']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="PRINT_LOT_NUMBER_ON_DOCUMENTS" id="PRINT_LOT_NUMBER_ON_DOCUMENTS_off" value="0" @if( !old('PRINT_LOT_NUMBER_ON_DOCUMENTS', $key_group['PRINT_LOT_NUMBER_ON_DOCUMENTS']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('PRINT_LOT_NUMBER_ON_DOCUMENTS.help') !!}</span>
+      </div>
+    </div>
 
 
     <div class="form-group">
@@ -375,6 +436,57 @@
     </div>
 
 
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('MARGIN_PRICE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="MARGIN_PRICE" id="MARGIN_PRICE_STANDARD" value="STANDARD" @if( old('MARGIN_PRICE', $key_group['MARGIN_PRICE']) == 'STANDARD' ) checked="checked" @endif type="radio">
+            {!! l('MARGIN_PRICE.option.STANDARD') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="MARGIN_PRICE" id="MARGIN_PRICE_AVERAGE" value="AVERAGE" @if( old('MARGIN_PRICE', $key_group['MARGIN_PRICE']) == 'AVERAGE' ) checked="checked" @endif type="radio">
+            {!! l('MARGIN_PRICE.option.AVERAGE') !!}
+          </label>
+        </div>
+{{--
+        <div class="radio">
+          <label>
+            <input name="MARGIN_PRICE" id="MARGIN_PRICE_CURRENT" value="CURRENT" @if( old('MARGIN_PRICE', $key_group['MARGIN_PRICE']) == 'CURRENT' ) checked="checked" @endif type="radio">
+            {!! l('MARGIN_PRICE.option.CURRENT') !!}
+          </label>
+        </div>
+--}}
+        <span class="help-block">{!! l('MARGIN_PRICE.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('INCLUDE_SERVICE_LINES_IN_PROFIT.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="INCLUDE_SERVICE_LINES_IN_PROFIT" id="INCLUDE_SERVICE_LINES_IN_PROFIT_on" value="1" @if( old('INCLUDE_SERVICE_LINES_IN_PROFIT', $key_group['INCLUDE_SERVICE_LINES_IN_PROFIT']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="INCLUDE_SERVICE_LINES_IN_PROFIT" id="INCLUDE_SERVICE_LINES_IN_PROFIT_off" value="0" @if( !old('INCLUDE_SERVICE_LINES_IN_PROFIT', $key_group['INCLUDE_SERVICE_LINES_IN_PROFIT']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('INCLUDE_SERVICE_LINES_IN_PROFIT.help') !!}</span>
+      </div>
+    </div>
+
+
+
     <div class="form-group">
       <label class="col-lg-4 control-label">{!! l('INCLUDE_SHIPPING_COST_IN_PROFIT.name') !!}</label>
       <div class="col-lg-8">
@@ -391,6 +503,34 @@
           </label>
         </div>
         <span class="help-block">{!! l('INCLUDE_SHIPPING_COST_IN_PROFIT.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('INVENTORY_VALUATION_METHOD.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="INVENTORY_VALUATION_METHOD" id="INVENTORY_VALUATION_METHOD_STANDARD" value="STANDARD" @if( old('INVENTORY_VALUATION_METHOD', $key_group['INVENTORY_VALUATION_METHOD']) == 'STANDARD' ) checked="checked" @endif type="radio">
+            {!! l('INVENTORY_VALUATION_METHOD.option.STANDARD') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="INVENTORY_VALUATION_METHOD" id="INVENTORY_VALUATION_METHOD_AVERAGE" value="AVERAGE" @if( old('INVENTORY_VALUATION_METHOD', $key_group['INVENTORY_VALUATION_METHOD']) == 'AVERAGE' ) checked="checked" @endif type="radio">
+            {!! l('INVENTORY_VALUATION_METHOD.option.AVERAGE') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="INVENTORY_VALUATION_METHOD" id="INVENTORY_VALUATION_METHOD_CURRENT" value="CURRENT" @if( old('INVENTORY_VALUATION_METHOD', $key_group['INVENTORY_VALUATION_METHOD']) == 'CURRENT' ) checked="checked" @endif type="radio">
+            {!! l('INVENTORY_VALUATION_METHOD.option.CURRENT') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('INVENTORY_VALUATION_METHOD.help') !!}</span>
       </div>
     </div>
 

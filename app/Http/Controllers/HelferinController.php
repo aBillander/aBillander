@@ -168,8 +168,9 @@ foreach ($customers as $customer) {
             $customer->products_price  += $document->products_price;
             $customer->products_final_price       += $document->products_final_price;
             $customer->document_products_discount += $document->document_products_discount;
-            $customer->products_total += ($document->products_final_price - $document->products_ecotax - $document->document_products_discount);
-            $customer->products_profit += $document->products_profit;
+            $customer->document_commission += $document->total_commission;
+            $customer->products_total += ($document->products_final_price - $document->products_ecotax - $document->document_products_discount - $document->total_commission);
+            $customer->products_profit += $document->products_profit - $document->total_commission;
 
             $customer->grand_total += $document->total_tax_incl;
 
@@ -236,7 +237,7 @@ foreach ($customers as $customer) {
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['Cliente', '', 'Operaciones', 'Valor', 'Ventas', '%Desc.', 'Coste', '%Rent', 'Beneficio', 'Ranking Vtas. %', 'Ranking Benef. %', 'Ventas con Impuestos'];
+        $header_names = ['Cliente', '', 'Agente', 'Operaciones', 'Valor', 'Ventas', '%Desc.', 'Coste', 'Comisión', '%Rent', 'Beneficio', 'Ranking Vtas. %', 'Ranking Benef. %', 'Ventas con Impuestos'];
 
         $data[] = $header_names;
 
@@ -245,6 +246,7 @@ foreach ($customers as $customer) {
 
         $total_price = $customers->sum('products_price');
         $total_cost = $customers->sum('products_cost');
+        $total_commission = $customers->sum('document_commission');
         $total_profit = $customers->sum('products_profit');
         $total =  $total_cost + $total_profit;
 
@@ -253,6 +255,9 @@ foreach ($customers as $customer) {
                 $row = [];
                 $row[] = (string) $customer->reference_accounting;
                 $row[] = $customer->name_regular;
+                $row[] = $customer->sales_rep_id > 0 
+                                ? '['.$customer->sales_rep_id.'] '.$customer->salesrep->alias
+                                : '';
                 $row[] = $customer->nbr_documents;
                 $row[] = $customer->products_price * 1.0;
                 $row[] = $customer->products_total * 1.0;
@@ -260,6 +265,7 @@ foreach ($customers as $customer) {
                             ? 100.0 * ($customer->products_price - $customer->products_total) / $customer->products_price
                             : 0.0;
                 $row[] = $customer->products_cost * 1.0;
+                $row[] = $customer->document_commission * 1.0;
                 $row[] = \App\Calculator::margin( $customer->products_cost, $customer->products_total, $customer->currency ) * 1.0;
                 $row[] = $customer->products_profit * 1.0;
                 $row[] = abi_safe_division( $customer->products_cost + $customer->products_profit, $total ) * 100.0;
@@ -273,7 +279,7 @@ foreach ($customers as $customer) {
 
         // Totals
         $data[] = [''];
-        $data[] = ['', '', 'Total:', $total_price * 1.0, $total * 1.0, 100.0 * ($total_price - $total) / $total_price, $total_cost * 1.00, \App\Calculator::margin( $total_cost, $total, $customer->currency ) * 1.0, $total_profit ];
+        $data[] = ['', '', '', 'Total:', $total_price * 1.0, $total * 1.0, 100.0 * ($total_price - $total) / $total_price, $total_cost * 1.00, $total_commission * 1.00, \App\Calculator::margin( $total_cost, $total, $customer->currency ) * 1.0, $total_profit ];
 
 //        $i = count($data);
 
@@ -293,7 +299,7 @@ foreach ($customers as $customer) {
                 $sheet->mergeCells('A1:F1');
                 $sheet->mergeCells('A2:F2');
 
-                $sheet->getStyle('A4:L4')->applyFromArray([
+                $sheet->getStyle('A4:N4')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -303,7 +309,6 @@ foreach ($customers as $customer) {
 //                    'B' => 'dd/mm/yyyy',
 //                    'C' => 'dd/mm/yyyy',
                     'A' => '@',
-                    'C' => '0.00',
                     'D' => '0.00',
                     'E' => '0.00',
                     'F' => '0.00',
@@ -313,12 +318,14 @@ foreach ($customers as $customer) {
                     'J' => '0.00',
                     'K' => '0.00',
                     'L' => '0.00',
+                    'M' => '0.00',
+                    'N' => '0.00',
 
                 ));
                 
                 $n = count($data);
                 $m = $n;    //  - 3;
-                $sheet->getStyle("C$m:I$n")->applyFromArray([
+                $sheet->getStyle("D$m:K$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

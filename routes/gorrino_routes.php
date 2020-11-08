@@ -20,8 +20,18 @@
 |
 */
 
+Route::get('iban', function( )
+{
+	
+    $iban = 'ES7620770024003102575766';
+
+    $result = (int) \App\BankAccount::esCheckIBAN($iban);
+
+    echo $result;
+});
 
 
+/* ********************************************************** */
 
 Route::get('cc', function( )
 {

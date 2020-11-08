@@ -22,16 +22,16 @@ class BankAccount extends Model {
 
         'suffix'   => 'sometimes|nullable|min:3|max:3',
 //        'swift' => array('min:8', 'max:11'),
-/*
+
         'bank_name'   => 'required|min:4|max:64',
         'ccc_entidad' => 'required|min:4|max:4',
         'ccc_oficina' => 'required|min:4|max:4',
         'ccc_control' => 'required|min:2|max:2',
         'ccc_cuenta'  => 'required|min:10|max:10',
-*/
 
-//        'mandate_reference' => 'max:35',
-//        'mandate_date' => 'date',
+
+        'mandate_reference' => 'sometimes|nullable|max:35',
+        'mandate_date' => 'sometimes|nullable|date',
 //        'first_recurring_date' => 'date',
 	];
     
@@ -42,6 +42,101 @@ class BankAccount extends Model {
     | Methods
     |--------------------------------------------------------------------------
     */
+
+    // Calculate Iban for Spain (es)
+    // A more general approach: https://github.com/globalcitizen/php-iban
+    // https://www.proinf.net/permalink/calculo_del_iban_a_partir_del_ccc
+
+    /**
+     * Funcion para calcular IBAN es correcta
+     * @param 1 parámetro: el código de cuenta bancaria completo ($ccc_entidad . $ccc_oficina . $ccc_control . $ccc_cuenta)
+              4 parámetros: $ccc_entidad , $ccc_oficina , $ccc_control , $ccc_cuenta
+     * @return string
+     */
+    public static function esIbanCalculator($ccc_entidad, $ccc_oficina = '', $ccc_control = '', $ccc_cuenta = '')
+    {
+        //
+        $codigoPais = 'ES';
+        $ccc = $ccc_entidad . $ccc_oficina . $ccc_control . $ccc_cuenta;
+
+        $digitoControl =  self::getCodigoControl_IBAN($codigoPais, $ccc); 
+
+        return $codigoPais.$digitoControl.$ccc;
+    }
+
+    public static function getCodigoControl_IBAN($codigoPais, $ccc)
+    {
+        //
+        // $codigoPais = 'ES';
+        // $ccc = $ccc_entidad . $ccc_oficina . $ccc_control . $ccc_cuenta;
+
+          $pesos = array(
+                 'A' => '10',
+                 'B' => '11',
+                 'C' => '12',
+                 'D' => '13',
+                 'E' => '14',
+                 'F' => '15',
+                 'G' => '16',
+                 'H' => '17',
+                 'I' => '18',
+                 'J' => '19',
+                 'K' => '20',
+                 'L' => '21',
+                 'M' => '22',
+                 'N' => '23',
+                 'O' => '24',
+                 'P' => '25',
+                 'Q' => '26',
+                 'R' => '27',
+                 'S' => '28',
+                 'T' => '29',
+                 'U' => '30',
+                 'V' => '31',
+                 'W' => '32',
+                 'X' => '33',
+                 'Y' => '34',
+                 'Z' => '35', 
+             );
+          
+          $dividendo = $ccc.$pesos[substr($codigoPais, 0 , 1)].$pesos[substr($codigoPais, 1 , 1)].'00'; 
+
+          $digitoControl =  98 - bcmod($dividendo, '97');
+
+          if(strlen($digitoControl)==1) $digitoControl = '0'.$digitoControl;
+
+          return $digitoControl;
+    }
+
+    /**
+     * Funcion para verificar si una cuenta IBAN es correcta
+     * @param string $iban
+     * @return boolean
+     */
+    public static function esCheckIBAN($iban)
+    {
+        if(strlen($iban)==24)
+        {
+            $codigoPais = strtoupper(substr($iban,0,2));
+
+            if ($codigoPais != 'ES')
+                return false;
+
+            $digitoControl = self::getCodigoControl_IBAN($codigoPais, substr($iban,4));
+
+            if($digitoControl==substr($iban,2,2))
+                return true;
+        }
+
+        return false;
+
+    }
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////
+
 
     // https://es.wikipedia.org/wiki/C%C3%B3digo_cuenta_cliente
     public function valcuenta_bancaria($cuenta1,$cuenta2,$cuenta3,$cuenta4)

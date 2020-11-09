@@ -163,6 +163,11 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+
+	// 2020-11-09
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `new_since_date` date NULL DEFAULT NULL AFTER `available_for_sale_date`;");
+
 	// 2020-10-28
 
 	\App\Configuration::updateValue('SW_VERSION', '0.10.23');

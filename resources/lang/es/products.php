@@ -112,6 +112,8 @@ return [
 	'Warranty period'     => 'Período Garantía',
 	'Measure Unit'     => 'Unidad de Medida',
 	'Scrap (%)'     => 'Merma (%)',
+	'New since Date' => 'Nuevo desde',
+	'The period to consider the Product as "New" begins from this Date.' => 'El período para considerar el Producto como "Nuevo" empieza a partir de esta Fecha.',
 
 	'Lead Time'     => 'Plazo de entrega',
 	'Main Supplier' => 'Proveedor Principal',

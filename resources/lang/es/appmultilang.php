@@ -79,7 +79,7 @@ return array(
 	'CustomerInvoice' => 'Factura de Cliente',
 
     'SupplierQuotation' => 'Presupuesto de Proveedor',
-	'SupplierOrder' => 'Pedido de Proveedor',
+	'SupplierOrder' => 'Pedido a Proveedor',
 	'SupplierShippingSlip' => 'Albarán de Proveedor',
 	'SupplierInvoice' => 'Factura de Proveedor',
 
@@ -101,6 +101,7 @@ return array(
     'template.CustomerShippingSlipPdf'   => 'Albarán de Cliente (Pdf)',
 	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',
     'template.WarehouseShippingSlipPdf' => 'Transferencias entre Almacenes (Pdf)',
+    'template.SupplierOrderPdf'   => 'Pedido a Proveedor (Pdf)',
     'template.Pdf' => 'Plantilla Pdf',
     'template.Mail' => 'Plantilla Mail',
 	
@@ -296,6 +297,25 @@ return array(
     'App\CustomerInvoice.overdue'  => 'Vencido',
     'App\CustomerInvoice.doubtful' => 'Pago Dudoso',
     'App\CustomerInvoice.archived' => 'Archivado',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Order Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierOrder.draft' => 'Borrador',
+	'App\SupplierOrder.confirmed'    => 'Confirmado',
+	'App\SupplierOrder.closed'    => 'Cerrado',
+    'App\SupplierOrder.canceled' => 'Cancelado',    
+
+    'App\SupplierShippingSlip.pending' => 'Pendiente',
+    'App\SupplierShippingSlip.partial' => 'Parcialmente',
+    'App\SupplierShippingSlip.received ' => 'Recibido',
 
 	/*
 	|--------------------------------------------------------------------------

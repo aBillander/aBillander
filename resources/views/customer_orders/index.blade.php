@@ -243,8 +243,6 @@
     </tbody>
 </table>
 
-   </div><!-- div class="table-responsive" ENDS -->
-
 {{-- $documents->appends( collect(Request::all())
                             ->map(function($item) {
                                     // Take empty keys, otherwise skipped!
@@ -259,6 +257,8 @@
     {{l('No records found', [], 'layouts')}}
 </div>
 @endif
+
+   </div><!-- div class="table-responsive" ENDS -->
 
 </div><!-- div id="div_documents" ENDS -->
 

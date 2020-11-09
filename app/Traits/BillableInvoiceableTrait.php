@@ -75,7 +75,7 @@ trait BillableInvoiceableTrait
 
         // Let's get dirty
         CustomerInvoice::unguard();
-        $invoice = new CustomerInvoice::create( $data + $extradata );
+        $invoice = CustomerInvoice::create( $data + $extradata );
         CustomerInvoice::reguard();
 
 

@@ -130,6 +130,18 @@ return [
 	'CUSTOMER_INVOICE_CAPTION.help' => 'Este texto aparece en el pie de las Facturas de Clientes.',
 	'DEF_CUSTOMER_PAYMENT_METHOD.name' => 'Forma de Pago para Clientes',
 	'DEF_CUSTOMER_PAYMENT_METHOD.help' => '',
+	
+	'DEF_SUPPLIER_ORDER_SEQUENCE.name' => 'Serie de Pedidos para Proveedores',
+	'DEF_SUPPLIER_ORDER_SEQUENCE.help' => '',
+	'DEF_SUPPLIER_ORDER_TEMPLATE.name' => 'Plantilla de Pedidos para Proveedores',
+	'DEF_SUPPLIER_ORDER_TEMPLATE.help' => '',
+	'DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE.name' => 'Serie de Albaranes para Proveedores',
+	'DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE.help' => '',
+	'DEF_SUPPLIER_INVOICE_SEQUENCE.name' => 'Serie de Facturas para Proveedores',
+	'DEF_SUPPLIER_INVOICE_SEQUENCE.help' => '',	
+	'DEF_SUPPLIER_PAYMENT_METHOD.name' => 'Forma de Pago para Proveedores',
+	'DEF_SUPPLIER_PAYMENT_METHOD.help' => '',
+
 	'DEF_LANGUAGE.name' => 'Idioma',
 	'DEF_LANGUAGE.help' => '',
 	'DEF_CATEGORY.name' => 'Categoría de Productos',

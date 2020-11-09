@@ -75,6 +75,13 @@ class ConfigurationKeysController extends Controller {
                         'CUSTOMER_INVOICE_CAPTION',
                         'DEF_CUSTOMER_PAYMENT_METHOD',
                         'DEF_SHIPPING_METHOD',
+
+                        'DEF_SUPPLIER_ORDER_SEQUENCE',
+                        'DEF_SUPPLIER_ORDER_TEMPLATE',
+                        'DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE',
+                        'DEF_SUPPLIER_INVOICE_SEQUENCE',
+                        'DEF_SUPPLIER_PAYMENT_METHOD',
+                        
                         'DEF_LANGUAGE',
                         'DEF_CATEGORY',
                         'DEF_MEASURE_UNIT_FOR_BOMS',

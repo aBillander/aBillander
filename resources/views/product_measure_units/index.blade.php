@@ -20,7 +20,7 @@ text-decoration: none;"> {{ $product->measureunit->name }} </span>
 <div id="div_taxes">
    <div class="table-responsive">
 
-@if ($product->productmeasureunits->count())
+@if ($product->productmeasureunits->count() > 1 )
 <table id="taxes" class="table table-hover">
 	<thead>
 		<tr>
@@ -83,8 +83,13 @@ text-decoration: none;"> {{ $product->measureunit->name }} </span>
             <td>{{ $line->measureunit->name }}</td>
             <td>{{ $line->conversion_rate }}</td>
             <td class="text-right">
+@php
+    $digits = $line->conversion_rate > 1.0
+            ? 2
+            : 4;
+@endphp
                 @if ( $product->measure_unit_id != $line->measureunit->id )
-                    1 {{ $line->measureunit->name }} = {{ $line->as_percent('conversion_rate') }} x {{ $product->measureunit->name }}
+                    1 {{ $line->measureunit->name }} = {{ $line->as_percent('conversion_rate', $digits) }} x {{ $product->measureunit->name }}
                 @endif
             </td>
             <td class="text-center">@if ($line->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
@@ -110,6 +115,68 @@ text-decoration: none;"> {{ $product->measureunit->name }} </span>
     @endforeach
 	</tbody>
 </table>
+
+
+
+<div class="container" style= "margin-top: 20px;">
+    <div class="row">
+
+            <div class="col-lg-4 col-md-4 col-sm-4">
+            <div class="panel panel-info" >
+              <div class="panel-heading" style="color: #ffffff;
+background-color: #772953;
+border-color: #772953;">
+                <h3 class="panel-title"><i class="fa fa-wrench"></i> &nbsp; {{ l('Change Main Measure Unit') }}</h3>
+              </div>
+
+
+{!! Form::open(array('route' => ['product.measureunit.change', $product->id], 'class' => 'form')) !!}
+
+              <div class="panel-body">
+
+                  <div class="row">
+
+
+                 <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('measure_unit_id') ? 'has-error' : '' }}">
+                    {{ l('Measure Units') }}
+                    {!! Form::select('measure_unit_id', $product_measure_unitList, $product->measure_unit_id, array('class' => 'form-control')) !!}
+                    {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
+                 </div>
+
+                  </div>
+{{--
+                  <div class="row">
+
+                     <div class="form-group col-lg-12 text-center" xstyle="padding-top: 22px">
+                          {!! Form::submit('Ver Listado', array('class' => 'btn btn-success')) !!}
+                    </div>
+
+                  </div>
+--}}
+
+              </div>
+
+               <div class="panel-footer text-right">
+                  <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
+                     <i class="fa fa-hdd-o"></i>
+                     &nbsp; {{l('Save', [], 'layouts')}}
+                  </button>
+               </div>
+
+{!! Form::close() !!}
+
+            </div>
+
+            </div>
+
+    </div><!-- div class="row" ENDS -->
+
+</div>
+
+
+
+
+
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>

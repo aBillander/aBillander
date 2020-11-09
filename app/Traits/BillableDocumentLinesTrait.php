@@ -12,6 +12,7 @@ trait BillableDocumentLinesTrait
    use BillableDocumentAsIsLinesTrait;
 
    use SupplierBillableDocumentLinesTrait;      // <<< ???
+   use SupplierBillableDocumentAsIsLinesTrait;  // <<< ???
 
     /*
     |--------------------------------------------------------------------------

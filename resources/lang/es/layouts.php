@@ -284,6 +284,7 @@ return [
 	'Go to'     => 'Ir a',
 	'Send'     => 'Enviar',
 	'Send to Customer'     => 'Enviar al Cliente',
+	'Send to Supplier'     => 'Enviar al Proveedor',
 	'Sending...'     => 'Enviando...',
 	'Send eMail'     => 'Enviar eMail',
 	'Send by eMail'     => 'Enviar por eMail',

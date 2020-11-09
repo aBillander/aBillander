@@ -69,7 +69,7 @@
                 @endif
             </td>
             <td class="text-right">{{ $order->lines_count }}</td>
-            <td class="text-right">{{ $order->as_money_amount('total_tax_excl') }}</td>
+            <td class="text-right">{{ $order->as_money_amount('total_tax_incl') }}</td>
             <td class="text-center">@if ($order->notes_from_customer)
                  <a href="javascript:void(0);">
                     <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 

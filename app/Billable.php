@@ -1044,6 +1044,11 @@ class Billable extends Model implements ShippableInterface
             $query->where('carrier_id', $params['carrier_id']);
         }
 
+        if (array_key_exists('payment_method_id', $params) && $params['payment_method_id'] )
+        {
+            $query->where('payment_method_id', $params['payment_method_id']);
+        }
+
 
 /*
         if ( isset($params['reference']) && trim($params['reference']) !== '' )

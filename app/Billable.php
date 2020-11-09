@@ -1029,6 +1029,11 @@ class Billable extends Model implements ShippableInterface
             $query->where('customer_id', $params['customer_id']);
         }
 
+        if (array_key_exists('supplier_id', $params) && $params['supplier_id'])
+        {
+            $query->where('supplier_id', $params['supplier_id']);
+        }
+
         if (array_key_exists('price_amount', $params) && is_numeric($params['price_amount']))
         {
             $amount = $params['price_amount'];

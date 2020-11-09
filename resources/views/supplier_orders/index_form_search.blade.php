@@ -28,12 +28,12 @@
     {!! Form::label('status', l('Status')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
-
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('status', l('Reception Status')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
-
+--}}
 
 
 

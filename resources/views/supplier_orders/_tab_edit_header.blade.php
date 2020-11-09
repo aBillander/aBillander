@@ -37,12 +37,12 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2">
          </div>
-
+{{--
          <div class="form-group col-lg-2 col-md-2 col-sm-2">
             <strong>{{ l('Supplier Reference') }}</strong>
             <div class="form-control">{{ $document->reference_supplier}}</div>
          </div>
-
+--}}
       </div>
       <div class="row">
 

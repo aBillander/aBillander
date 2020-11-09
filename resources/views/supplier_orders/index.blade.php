@@ -23,7 +23,7 @@
 
           <a href="#" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
 
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="{{ route($model_path.'.index', ['closed' => '0']) }}"><i class="fa fa-exclamation-triangle text-danger"></i> &nbsp; {{l('Not Closed')}}</a>
             </li>
 
@@ -33,10 +33,10 @@
             <li class="divider"></li>
           </ul>
         </div>
-
+{{--
         <a href="{{ route('chart.customerorders.monthly') }}" class="btn btn-sm btn-warning" 
                 title="{{l('Reports', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'layouts')}}</a>
-
+--}}
     </div>
     <h2>
         {{ l('Documents') }}

@@ -92,6 +92,19 @@ class esSequencesTableSeeder extends Seeder {
             'next_id'     => '1',
             'active'    => '1' ,
         ] );
+
+  
+        $t = Sequence::create( [
+            'name'    => 'Pedidos a Proveedores', 
+            'model_name'    => 'SupplierOrder', 
+            'prefix'    => 'PEP', 
+            'length'    => '4', 
+            'separator'    => '-', 
+            'next_id'     => '1',
+            'active'    => '1' ,
+        ] );
+
+        Configuration::updateValue('DEF_SUPPLIER_ORDER_SEQUENCE', $t->id);
   
         $t = Sequence::create( [
             'name'    => 'Albaranes de Proveedores', 
@@ -102,6 +115,20 @@ class esSequencesTableSeeder extends Seeder {
             'next_id'     => '1',
             'active'    => '1' ,
         ] );
+
+        Configuration::updateValue('DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE', $t->id);
+
+        $t = Sequence::create( [
+            'name'    => 'Facturas de Proveedores', 
+            'model_name'    => 'SupplierInvoice', 
+            'prefix'    => 'FAP', 
+            'length'    => '4', 
+            'separator'    => '-', 
+            'next_id'     => '1',
+            'active'    => '1' ,
+        ] );
+
+        Configuration::updateValue('DEF_SUPPLIER_INVOICE_SEQUENCE', $t->id);
 
     }
 }

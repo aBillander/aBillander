@@ -106,6 +106,7 @@ class CreateProductsTable extends Migration {
 			$table->text('out_of_stock_text')->nullable();
 
 			$table->dateTime('available_for_sale_date')->nullable();
+			$table->date('new_since_date')->nullable();
 			
 			$table->tinyInteger('publish_to_web')->default(0);
 			$table->string('webshop_id', 16)->nullable();

@@ -223,6 +223,16 @@ border-left:1px solid #e95420;">
                      </div>
                    </div>
 
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('new_since_date_form') ? 'has-error' : '' }}">
+                     {{ l('New since Date') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('The period to consider the Product as "New" begins from this Date.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                     {!! Form::text('new_since_date_form', null, array('class' => 'form-control', 'id' => 'new_since_date_form') + $foo) !!}
+                     {!! $errors->first('new_since_date_form', '<span class="help-block">:message</span>') !!}
+                  </div>
+
         </div>
 
         <div class="row">
@@ -247,3 +257,41 @@ border-left:1px solid #e95420;">
 </div>
 
 {!! Form::close() !!}
+
+
+
+
+@section('styles')    @parent
+
+{{-- Date Picker --}}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+    .ui-datepicker { z-index: 10000 !important; }
+</style>
+
+@endsection
+
+
+@section('scripts')    @parent
+
+
+{{-- Date Picker --}}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script>
+
+  $(function() {
+    $( "#new_since_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+  
+</script>
+
+@endsection

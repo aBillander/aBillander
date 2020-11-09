@@ -19,5 +19,6 @@ class esPaymentMethodsTableSeeder extends Seeder {
         ] );
 
         Configuration::updateValue('DEF_CUSTOMER_PAYMENT_METHOD', $pmeth->id);
+        Configuration::updateValue('DEF_SUPPLIER_PAYMENT_METHOD', $pmeth->id);
     }
 }

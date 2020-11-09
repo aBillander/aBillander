@@ -34,7 +34,7 @@ class CustomerInvoice extends Billable
             'pending',
             'halfpaid',
             'paid',
-            'overdue',
+//            'overdue',
             'doubtful',
             'archived',
         );

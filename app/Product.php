@@ -95,7 +95,7 @@ class Product extends Model {
     ];
 */
 
-    protected $dates = ['deleted_at', 'available_for_sale_date'];
+    protected $dates = ['deleted_at', 'available_for_sale_date', 'new_since_date'];
 
     protected $appends = ['extra_measureunits', 'tool_id', 'quantity_available'];
     
@@ -112,7 +112,7 @@ class Product extends Model {
                             'location', 'width', 'height', 'depth', 'volume', 'weight',
 
                             'notes', 'stock_control', 'publish_to_web', 'webshop_id', 'blocked', 'active', 
-                            'out_of_stock', 'out_of_stock_text', 'available_for_sale_date',
+                            'out_of_stock', 'out_of_stock_text', 'available_for_sale_date', 'new_since_date', 
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 'purchase_measure_unit_id', 
 
@@ -1693,7 +1693,9 @@ class Product extends Model {
     {
         if ( !$apply ) return $query;
 
-        return $query->whereDate('created_at', '>=', Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
+        $column = $this->new_since_date ? 'new_since_date' : 'created_at';
+
+        return $query->whereDate($column, '>=', Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
     }
 
     public function scopeManufacturer($query, $manufacturer_id)

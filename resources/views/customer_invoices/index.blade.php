@@ -49,7 +49,7 @@
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('status', l('Status')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
@@ -57,6 +57,11 @@
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('payment_status', l('Payment Status')) !!}
     {!! Form::select('payment_status', array('' => l('All', [], 'layouts')) + $payment_statusList, null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('payment_method_id', l('Payment Method')) !!}
+    {!! Form::select('payment_method_id', array('' => l('All', [], 'layouts')) + $payment_methodList, null, array('class' => 'form-control')) !!}
 </div>
 
 
@@ -100,6 +105,11 @@
 </div>
 
 </div>
+
+<div class="row">
+
+</div>
+
 
                 {!! Form::close() !!}
             </div>

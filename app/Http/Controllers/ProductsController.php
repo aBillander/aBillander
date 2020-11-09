@@ -351,7 +351,7 @@ class ProductsController extends Controller
 
 
         // Dates (cuen)
-        $this->addFormDates( ['available_for_sale_date'], $product );
+        $this->addFormDates( ['available_for_sale_date', 'new_since_date'], $product );
         
         // Price Lists
         // See: https://stackoverflow.com/questions/44029961/laravel-search-relation-including-null-in-wherehas
@@ -381,6 +381,10 @@ class ProductsController extends Controller
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     } */
     {
+
+        // Dates (cuen)
+        $this->mergeFormDates( ['new_since_date'], $request );
+
         $product = Product::findOrFail($id);
 
         $rules_tab = $request->input('tab_name', 'main_data');
@@ -465,7 +469,7 @@ class ProductsController extends Controller
         if ($request->input('tab_name') == 'sales') {
 
             // Dates (cuen)
-            $this->mergeFormDates( ['available_for_sale_date'], $request );
+            $this->mergeFormDates( ['available_for_sale_date', 'new_since_date'], $request );
             
             $tax = \App\Tax::find( $product->tax_id );
             if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){

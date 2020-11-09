@@ -23,8 +23,12 @@ use App\PriceRule;
 
 use App\Configuration;
 
-class CustomersController extends Controller {
+use App\Traits\DateFormFormatterTrait;
 
+class CustomersController extends Controller
+{
+   
+   use DateFormFormatterTrait;
 
    protected $customer, $address;
 
@@ -148,11 +152,17 @@ class CustomersController extends Controller {
     {
         $sequenceList = \App\Sequence::listFor( \App\CustomerInvoice::class );
 
-        $customer = $this->customer->with('addresses', 'address', 'address.country', 'address.state')->findOrFail($id); 
+        $customer = $this->customer->with('addresses', 'address', 'address.country', 'address.state', 'bankaccount')->findOrFail($id); 
 
         $aBook       = $customer->addresses;
         $mainAddressIndex = -1;
         $aBookCount = $aBook->count();
+
+        $bankaccount = $customer->bankaccount;
+
+        // Dates (cuen)
+        $this->addFormDates( ['mandate_date'], $bankaccount );
+        
 
         if ( !($aBookCount>0) )
         {
@@ -168,7 +178,7 @@ class CustomersController extends Controller {
             }
 
             // Issue Warning!
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount'))
                 ->with('warning', l('You need one Address at list, for Customer (:id) :name', ['id' => $customer->id, 'name' => $customer->name_fiscal]));
         };
 
@@ -193,7 +203,7 @@ class CustomersController extends Controller {
 
             $mainAddressIndex = 0;
 
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'sequenceList'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList'))
                 ->with('warning', $warning);
 
         } else {
@@ -236,7 +246,9 @@ class CustomersController extends Controller {
 
 //        abi_r($sequenceList1, true);
 
-        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'sequenceList'))
+        abi_r( $bankaccount );die();
+
+        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList'))
                 ->with('warning', $warning);
     }
 
@@ -322,6 +334,8 @@ class CustomersController extends Controller {
      */
     public function updateBankAccount($id, Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['mandate_date'], $request );
 
         $section = '#bankaccounts';
 

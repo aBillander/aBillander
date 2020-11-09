@@ -20,8 +20,18 @@
 |
 */
 
+Route::get('iban', function( )
+{
+	
+    $iban = 'ES7620770024003102575766';
+
+    $result = (int) \App\BankAccount::esCheckIBAN($iban);
+
+    echo $result;
+});
 
 
+/* ********************************************************** */
 
 Route::get('cc', function( )
 {
@@ -153,6 +163,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+
+
+	// 2020-11-09
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `new_since_date` date NULL DEFAULT NULL AFTER `available_for_sale_date`;");
+
+
 	// 2020-10-31
 
 	Illuminate\Support\Facades\DB::statement("create table `supplier_orders` (`id` int unsigned not null auto_increment primary key, `company_id` int unsigned not null default '0', `supplier_id` int unsigned null, `user_id` int unsigned not null default '0', `sequence_id` int unsigned null, `document_prefix` varchar(8) null, `document_id` int unsigned not null default '0', `document_reference` varchar(64) null, `reference` varchar(191) null, `reference_supplier` varchar(32) null, `reference_external` varchar(32) null, `created_via` varchar(32) null default 'manual', `document_date` datetime not null, `payment_date` datetime null, `validation_date` datetime null, `delivery_date` datetime null, `delivery_date_real` datetime null, `close_date` datetime null, `document_discount_percent` decimal(20, 6) not null default '0', `document_discount_amount_tax_incl` decimal(20, 6) not null default '0', `document_discount_amount_tax_excl` decimal(20, 6) not null default '0', `document_ppd_percent` decimal(20, 6) not null default '0', `document_ppd_amount_tax_incl` decimal(20, 6) not null default '0', `document_ppd_amount_tax_excl` decimal(20, 6) not null default '0', `number_of_packages` smallint unsigned not null default '1', `volume` decimal(20, 6) null default '0', `weight` decimal(20, 6) null default '0', `shipping_conditions` text null, `tracking_number` varchar(191) null, `currency_conversion_rate` decimal(20, 6) not null default '1', `down_payment` decimal(20, 6) not null default '0', `total_discounts_tax_incl` decimal(20, 6) not null default '0', `total_discounts_tax_excl` decimal(20, 6) not null default '0', `total_products_tax_incl` decimal(20, 6) not null default '0', `total_products_tax_excl` decimal(20, 6) not null default '0', `total_shipping_tax_incl` decimal(20, 6) not null default '0', `total_shipping_tax_excl` decimal(20, 6) not null default '0', `total_other_tax_incl` decimal(20, 6) not null default '0', `total_other_tax_excl` decimal(20, 6) not null default '0', `total_lines_tax_incl` decimal(20, 6) not null default '0', `total_lines_tax_excl` decimal(20, 6) not null default '0', `total_currency_tax_incl` decimal(20, 6) not null default '0', `total_currency_tax_excl` decimal(20, 6) not null default '0', `total_currency_paid` decimal(20, 6) not null default '0', `total_tax_incl` decimal(20, 6) not null default '0', `total_tax_excl` decimal(20, 6) not null default '0', `commission_amount` decimal(20, 6) not null default '0', `notes_from_supplier` text null, `notes` text null, `notes_to_supplier` text null, `status` varchar(32) not null default 'draft', `onhold` tinyint not null default '0', `locked` tinyint not null default '0', `invoicing_address_id` int unsigned null, `shipping_address_id` int unsigned null, `warehouse_id` int unsigned null, `shipping_method_id` int unsigned null, `carrier_id` int unsigned null, `sales_rep_id` int unsigned null, `currency_id` int unsigned not null, `payment_method_id` int unsigned not null, `template_id` int null, `export_date` datetime null, `secure_key` varchar(32) not null, `import_key` varchar(16) null, `created_at` timestamp null, `updated_at` timestamp null, `fulfillment_status` varchar(32) not null default 'pending') default character set utf8mb4 collate utf8mb4_unicode_ci;");

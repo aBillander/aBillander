@@ -28,12 +28,23 @@
                      {!! Form::text('name', null, array('class' => 'form-control', 'id' => 'name')) !!}
                      {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
                   </div>
-
+{{--
                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('measure_unit_id') ? 'has-error' : '' }}">
                     {{ l('Measure Unit') }}
                     {!! Form::select('measure_unit_id', $product_measure_unitList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
+--}}
+                 <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                    {{ l('Measure Unit') }}
+                    <div class="input-group">
+                        <div class="form-control">{{ $product->measureunit->name }}</div>
+                      <span class="input-group-btn">
+                        <a href="{{ route('products.measureunits.index', [$product->id]) }}" class="btn btn-lightblue" title="{{ l('Change Main Measure Unit') }}"><i class="fa fa-wrench"></i></a>
+                      </span>
+                    </div>
+                 </div>
+
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('ean13') ? 'has-error' : '' }}">
                      {{ l('Ean13') }}
                      {!! Form::text('ean13', null, array('class' => 'form-control', 'id' => 'ean13') + $foo) !!}
@@ -122,30 +133,39 @@ border-left:1px solid #e95420;">
                      {!! $errors->first('location', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('width') ? 'has-error' : '' }}">
-                     {{ l('Width') }}
+                     {{ l('Width') }} (<span class="text-success">{{ optional($length_unit)->sign }}</span>)
                      {!! Form::text('width', null, array('class' => 'form-control', 'id' => 'width')) !!}
                      {!! $errors->first('width', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('height') ? 'has-error' : '' }}">
-                     {{ l('Height') }}
+                     {{ l('Height') }} (<span class="text-success">{{ optional($length_unit)->sign }}</span>)
                      {!! Form::text('height', null, array('class' => 'form-control', 'id' => 'height')) !!}
                      {!! $errors->first('height', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('depth') ? 'has-error' : '' }}">
-                     {{ l('Depth') }}
+                     {{ l('Depth') }} (<span class="text-success">{{ optional($length_unit)->sign }}</span>)
                      {!! Form::text('depth', null, array('class' => 'form-control', 'id' => 'depth')) !!}
                      {!! $errors->first('depth', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('weight') ? 'has-error' : '' }}">
-                     {{ l('Weight') }}
+                     {{ l('Weight') }} (<span class="text-success">{{ optional($weight_unit)->sign }}</span>)
                      {!! Form::text('weight', null, array('class' => 'form-control', 'id' => 'weight')) !!}
                      {!! $errors->first('weight', '<span class="help-block">:message</span>') !!}
                   </div>
+
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('volume') ? 'has-error' : '' }}">
-                     {{ l('Volume') }}
+                     {{ l('Volume') }} (<span class="text-success">{{ optional($length_unit)->sign }}<sup>3</sup></span>)
+  <div class="input-group">
                      {!! Form::text('volume', null, array('class' => 'form-control', 'id' => 'volume')) !!}
+    <span class="input-group-btn">
+      <button class="btn btn-success" type="button" onclick="makeVolume();" title="{{ l('Calculate volume') }}"><i class="fa fa-calculator"></i></button>
+    </span>
+  </div>
                      {!! $errors->first('volume', '<span class="help-block">:message</span>') !!}
                   </div>
+
+</div>
+
 @if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('ecotax_id') ? 'has-error' : '' }}">
                     {{ l('Eco-Tax') }}
@@ -212,6 +232,16 @@ border-left:1px solid #e95420;">
                      </div>
                    </div>
 
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('new_since_date_form') ? 'has-error' : '' }}">
+                     {{ l('New since Date') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('The period to consider the Product as "New" begins from this Date.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                     {!! Form::text('new_since_date_form', null, array('class' => 'form-control', 'id' => 'new_since_date_form') + $foo) !!}
+                     {!! $errors->first('new_since_date_form', '<span class="help-block">:message</span>') !!}
+                  </div>
+
         </div>
 
         <div class="row">
@@ -236,3 +266,54 @@ border-left:1px solid #e95420;">
 </div>
 
 {!! Form::close() !!}
+
+
+
+
+@section('styles')    @parent
+
+{{-- Date Picker --}}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+    .ui-datepicker { z-index: 10000 !important; }
+</style>
+
+@endsection
+
+
+@section('scripts')    @parent
+
+
+{{-- Date Picker --}}
+
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script>
+
+  $(function() {
+    $( "#new_since_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+  // More Stuff
+  function makeVolume()
+  {
+        var volume = '';
+
+        if ( $.isNumeric( $("#width").val() ) && $.isNumeric( $("#height").val() ) && $.isNumeric( $("#depth").val() ) )
+        {
+            volume = $("#width").val() * $("#height").val() * $("#depth").val();
+        }
+
+        $("#volume").val(volume);
+  }
+  
+</script>
+
+@endsection

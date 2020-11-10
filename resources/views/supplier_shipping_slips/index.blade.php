@@ -231,19 +231,7 @@
             	</a>
             </td>
             <td>
-                @if ( $document->hasShippingAddress() )
-
-
-
-                {{ $document->shippingaddress->alias }} 
-                 <a href="javascript:void(0);">
-                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $document->shippingaddress->firstname }} {{ $document->shippingaddress->lastname }}<br />{{ $document->shippingaddress->address1 }}<br />{{ $document->shippingaddress->city }} - {{ $document->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $document->shippingaddress->phone }}</a>" data-original-title="" title="">
-                        <i class="fa fa-address-card-o"></i>
-                    </button>
-                 </a>
-      
-
-                @endif
+                {{ optional($document->warehouse)->alias }} - {{ optional($document->warehouse)->name }}
             </td>
             <td>{{ $document->created_via }}
             </td>

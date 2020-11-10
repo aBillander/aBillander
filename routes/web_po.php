@@ -17,11 +17,11 @@
                     'controller' => 'SupplierQuotationsController',
                     'path' => 'supplierquotations',
                 ],
+            */
                 [
                     'controller' => 'SupplierOrdersController',
                     'path' => 'supplierorders',
                 ],
-            */
                 [
                     'controller' => 'SupplierShippingSlipsController',
                     'path' => 'suppliershippingslips',
@@ -92,3 +92,9 @@ foreach ($pairs as $pair) {
 
         Route::get($path.'/{id}/reload/costs', $controller.'@reloadCosts')->name($path.'.reload.costs'        );
 }
+
+// Temporarily
+
+    Route::resource('supplierinvoices', 'SupplierInvoicesController');
+
+    Route::resource('suppliervouchers', 'SupplierVouchersController');

@@ -108,14 +108,18 @@ return [
 	'Height'     => 'Altura',
 	'Depth'     => 'Profundidad',
 	'Volume'     => 'Volumen',
+	'Calculate volume' => 'Calcular el volumen',
 	'Weight'     => 'Peso',
 	'Warranty period'     => 'Período Garantía',
 	'Measure Unit'     => 'Unidad de Medida',
 	'Scrap (%)'     => 'Merma (%)',
+	'New since Date' => 'Nuevo desde',
+	'The period to consider the Product as "New" begins from this Date.' => 'El período para considerar el Producto como "Nuevo" empieza a partir de esta Fecha.',
 
 	'Lead Time'     => 'Plazo de entrega',
 	'Main Supplier' => 'Proveedor Principal',
 	'Supplier Reference'     => 'Referencia del Proveedor',
+	'Purchase Measure Unit' => 'Unidad de Medida Compras',
 	'Manufacturer'     => 'Fabricante / Marca',
 
 	'Price Lists'     => 'Tarifas',
@@ -271,7 +275,8 @@ return [
 	'New Measure Unit' => 'Nueva Unidad de Medida',
 	'Conversion rate' => 'Factor de Conversión',
 	'Conversion rates are calculated from one unit of your main Measura Unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, the Conversion rate will be "6" (since a pack of six bottles will contain six bottles).' => 'El Factor de Conversión se calcula a partir de la Unidad de Medida principal. Por ejemplo, si la unidad principal es "botella" y la unidad alternativa es "paquete-de-seis", el Factor de Conversión será "6" (ya que un paquete de seis botellas contendrá seis botellas).',
-	'' => '',
+	'Measure Units'     => 'Unidades de Medida',
+	'Change Main Measure Unit' => 'Cambiar la Unidad de Medida Principal',
 
 
 	/*

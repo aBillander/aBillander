@@ -231,8 +231,7 @@
                         </li>
                         <li class="divider"></li>
                          <li>
-                            <a href="{{ route('suppliershippingslips.index') }}">
-                                 <i class="fa fa-shopping-cart btn-xs alert-success"></i> 
+                            <a href="{{ route('supplierorders.index') }}"> 
                                  {{l('Purchase Orders', [], 'layouts')}}
                             </a>
                         </li>
@@ -243,14 +242,14 @@
                             </a>
                         </li>
                          <li>
-                            <a href="{{ route('suppliershippingslips.index') }}">
+                            <a href="{{ route('supplierinvoices.index') }}">
                                  <!-- i class="fa fa-money btn-xs alert-warning"></i --> 
                                  {{l('Supplier Invoices', [], 'layouts')}}
                             </a>
                         </li>
                          <li>
-                            <a href="{{ route('suppliershippingslips.index') }}">
-                                 <!-- i class="fa fa-credit-card btn-xs alert-danger"></i --> 
+                            <a href="{{ route('suppliervouchers.index') }}">
+                                 <i class="fa fa-credit-card btn-xs alert-success"></i> 
                                  {{l('Supplier Vouchers', [], 'layouts')}}
                             </a>
                         </li>

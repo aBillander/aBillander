@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Customer;
 use App\SalesRep;
 use App\Product;
+use App\MeasureUnit;
 use App\Combination;
 use App\Currency;
 use App\Address;
@@ -164,7 +165,11 @@ class BillableController extends Controller
 
         return $document;
 */
-        return view($this->view_path.'._panel_document_lines', $this->modelVars() + compact('document'));
+        $units = MeasureUnit::whereIn('id', [Configuration::getInt('DEF_VOLUME_UNIT'), Configuration::getInt('DEF_WEIGHT_UNIT')])->get();
+        $volume_unit = $units->where('id', Configuration::getInt('DEF_VOLUME_UNIT'))->first();
+        $weight_unit = $units->where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+
+        return view($this->view_path.'._panel_document_lines', $this->modelVars() + compact('document', 'volume_unit', 'weight_unit'));
     }
 
     public function sortLines(Request $request)
@@ -350,6 +355,8 @@ class BillableController extends Controller
 
     public function getProductPrices(Request $request)
     {
+        if ( $request->has('supplier_id') )
+            return $this->getSupplierProductPrices($request);
         
         // Request data
         $product_id      = $request->input('product_id');

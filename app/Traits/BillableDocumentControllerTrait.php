@@ -163,10 +163,15 @@ die();
     {
         // return $id;
 
+        // https://github.com/laravel/framework/pull/22250
+        // if( array_key_exists($key, $model->attributesToArray()) )  array_key_exists($key, $model->getAttributes())
+        // Another option: if (array_key_exists('country', $pais->toArray())) 
+
         // PDF stuff
         try {
             $document = $this->document
                             ->with('customer')
+                            ->with('supplier')
 //                            ->with('invoicingAddress')
 //                            ->with('customerInvoiceLines')
 //                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
@@ -182,6 +187,15 @@ die();
                      ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         }
 
+        // Let's see what we have:
+        if ($document->customer)
+            $entity = 'customer';
+        else
+        if ($document->supplier)
+            $entity = 'supplier';
+        else
+            $entity = 'none';
+
         // abi_r($document->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
 
         // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
@@ -192,7 +206,7 @@ die();
              \App\Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
 
         if ( !$t )
-            return redirect()->route('customerorders.show', $id)
+            return redirect()->back()
                 ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
 
 
@@ -229,7 +243,7 @@ die();
             $file_name = str_singular($this->getParentClassLowerCase()).'_'.'ID_' . (string) $document->id;
         }
 
-        $file_name = $file_name . '_' . $document->customer->name_regular;
+        $file_name = $file_name . '_' . $document->{$entity}->name_regular;
 
         $sanitizer = new \App\FilenameSanitizer( $file_name );
 

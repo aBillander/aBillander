@@ -1196,16 +1196,30 @@ class Billable extends Model implements ShippableInterface
 
         return $total_products_tax_excl;
     }
-/*
+
     public function getWeightAttribute() 
     {
         $line_products = $this->lines->where('line_type', 'product')->load('product');
 
         $total_weight = $line_products->sum(function ($line) {
-            return $line->product->weight;
+            return $line->quantity * $line->product->weight;
         });
 
         return $total_weight;
     }
-*/
+
+    public function getVolumeAttribute() 
+    {
+        $line_products = $this->lines->where('line_type', 'product')->load('product');
+
+        $total_volume = $line_products->sum(function ($line) {
+            if ($line->product->volume > 0.0)
+                return $line->quantity * $line->product->volume;
+            else
+                return $line->quantity * $line->product->width * $line->product->height * $line->product->depth;
+        });
+
+        return $total_volume / Configuration::getNumber('DEF_VOLUME_UNIT_CONVERSION_RATE');
+    }
+
 }

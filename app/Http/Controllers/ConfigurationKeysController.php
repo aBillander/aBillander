@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use \App\Configuration as Configuration;
+use App\Configuration as Configuration;
+use App\MeasureUnit;
 use View;
 
 class ConfigurationKeysController extends Controller {
@@ -92,6 +93,11 @@ class ConfigurationKeysController extends Controller {
                         'DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE',
                         'DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE',
                         'WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION',
+
+                        'DEF_LENGTH_UNIT',
+                        'DEF_VOLUME_UNIT',
+                        'DEF_VOLUME_UNIT_CONVERSION_RATE',
+                        'DEF_WEIGHT_UNIT',
 
                     ],
 
@@ -219,7 +225,18 @@ class ConfigurationKeysController extends Controller {
         foreach ($this->conf_keys[51] as $key)
             $key_group[$key]= Configuration::get($key);
 
-        return view( $tab_view, compact('tab_index', 'key_group') );
+        $length_unitList = MeasureUnit::where('type', 'Length')->pluck('name', 'id')->toArray();
+        $volume_unitList = MeasureUnit::where('type', 'Dry Volume')->pluck('name', 'id')->toArray();
+        $weight_unitList = MeasureUnit::where('type', 'Mass')->pluck('name', 'id')->toArray();
+        $vu_conversion_rateList = [
+                '1'       => '1',
+                '1000'    => '1000',
+                '1000000' => '1000000',
+        ];
+
+
+
+        return view( $tab_view, compact('tab_index', 'key_group', 'length_unitList', 'volume_unitList', 'vu_conversion_rateList', 'weight_unitList') );
 
         // https://bootsnipp.com/snippets/M27e3
     }

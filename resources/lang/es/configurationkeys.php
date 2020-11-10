@@ -162,6 +162,16 @@ return [
 	'DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE.help' => '',
 	'WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION.name' => 'Los Albaranes para Transferencias entre Almacenes necesitan Validación',
 	'WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION.help' => 'Sólo los Albaranes para Transferencias entre Almacenes que han sido validados podrán enviarse.<br />1: Los Albaranes para Transferencias entre Almacenes se crearán con Estado = "<strong>draft</strong>".<br />0: Los Albaranes para Transferencias entre Almacenes se crearán con Estado = "<strong>confirmed</strong>".',
+
+	'DEF_LENGTH_UNIT.name' => 'Unidad de Longitud',
+	'DEF_LENGTH_UNIT.help' => 'Esta Unidad se utiliza para expresar las medidas (Anchura, Altura, Profundidad) y el Volumen de un Producto.',
+	'DEF_VOLUME_UNIT.name' => 'Unidad de Volumen',
+	'DEF_VOLUME_UNIT.help' => 'Esta Unidad se utiliza en Documentos (Presupuesto, Pedido, Albarán, Factura) para expresar el Volumen total de los Productos contenidos en el Documento.',
+	'DEF_VOLUME_UNIT_CONVERSION_RATE.name' => 'Factor de Conversión de la unidad de Volumen',
+	'DEF_VOLUME_UNIT_CONVERSION_RATE.help' => 'Si la Unidad de Longitud es "cm" y la Unidad de Volumen es "m<sup>3</sup>", ponga 1000000, ya que 1m<sup>3</sup> = 1000000cm<sup>3</sup>.',
+	'DEF_WEIGHT_UNIT.name' => 'Unidad de Peso',
+	'DEF_WEIGHT_UNIT.help' => 'Esta Unidad se utiliza para expresar el peso de un Producto, y en Documentos para expresar el Peso total de los Productos contenidos en el Documento.',
+
 	'Other' => 'Otros',
 	'DEF_ITEMS_PERAJAX.name' => 'Items por consulta Ajax',
 	'DEF_ITEMS_PERAJAX.help' => 'Número de items (máximo) devuelto por una consulta Ajax.',

@@ -1216,10 +1216,10 @@ class Billable extends Model implements ShippableInterface
             if ($line->product->volume > 0.0)
                 return $line->quantity * $line->product->volume;
             else
-                return $line->quantity * $line->product->width * $line->product->height * $line->product->depth;
+                return $line->quantity * $line->product->width * $line->product->height * $line->product->depth / Configuration::getNumber('DEF_VOLUME_UNIT_CONVERSION_RATE');
         });
 
-        return $total_volume / Configuration::getNumber('DEF_VOLUME_UNIT_CONVERSION_RATE');
+        return $total_volume;
     }
 
 }

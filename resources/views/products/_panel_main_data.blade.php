@@ -152,11 +152,20 @@ border-left:1px solid #e95420;">
                      {!! Form::text('weight', null, array('class' => 'form-control', 'id' => 'weight')) !!}
                      {!! $errors->first('weight', '<span class="help-block">:message</span>') !!}
                   </div>
+
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('volume') ? 'has-error' : '' }}">
                      {{ l('Volume') }} (<span class="text-success">{{ optional($length_unit)->sign }}<sup>3</sup></span>)
+  <div class="input-group">
                      {!! Form::text('volume', null, array('class' => 'form-control', 'id' => 'volume')) !!}
+    <span class="input-group-btn">
+      <button class="btn btn-success" type="button" onclick="makeVolume();" title="{{ l('Calculate volume') }}"><i class="fa fa-calculator"></i></button>
+    </span>
+  </div>
                      {!! $errors->first('volume', '<span class="help-block">:message</span>') !!}
                   </div>
+
+</div>
+
 @if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('ecotax_id') ? 'has-error' : '' }}">
                     {{ l('Eco-Tax') }}
@@ -291,6 +300,19 @@ border-left:1px solid #e95420;">
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
     });
   });
+
+  // More Stuff
+  function makeVolume()
+  {
+        var volume = '';
+
+        if ( $.isNumeric( $("#width").val() ) && $.isNumeric( $("#height").val() ) && $.isNumeric( $("#depth").val() ) )
+        {
+            volume = $("#width").val() * $("#height").val() * $("#depth").val();
+        }
+
+        $("#volume").val(volume);
+  }
   
 </script>
 

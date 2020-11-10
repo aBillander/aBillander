@@ -108,6 +108,7 @@ return [
 	'Height'     => 'Altura',
 	'Depth'     => 'Profundidad',
 	'Volume'     => 'Volumen',
+	'Calculate volume' => 'Calcular el volumen',
 	'Weight'     => 'Peso',
 	'Warranty period'     => 'Período Garantía',
 	'Measure Unit'     => 'Unidad de Medida',

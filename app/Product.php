@@ -927,7 +927,8 @@ class Product extends Model {
 
     public function getMeasureUnitList()
     {
-        if ( Configuration::isTrue('ENABLE_MANUFACTURING') && $this->measureunits->count() )
+        // if ( Configuration::isTrue('ENABLE_MANUFACTURING') && $this->measureunits->count() )
+        if ( $this->measureunits->count() )
             return $this->measureunits->pluck('name', 'id')->toArray();
 
         return MeasureUnit::pluck('name', 'id')->toArray();

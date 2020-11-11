@@ -161,7 +161,8 @@ class CustomersController extends Controller
         $bankaccount = $customer->bankaccount;
 
         // Dates (cuen)
-        $this->addFormDates( ['mandate_date'], $bankaccount );
+        if ($bankaccount)
+            $this->addFormDates( ['mandate_date'], $bankaccount );
         
 
         if ( !($aBookCount>0) )

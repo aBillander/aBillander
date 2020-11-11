@@ -1197,7 +1197,7 @@ class Billable extends Model implements ShippableInterface
         return $total_products_tax_excl;
     }
 
-    public function getWeightAttribute() 
+    public function getWeight() 
     {
         $line_products = $this->lines->where('line_type', 'product')->load('product');
 
@@ -1208,7 +1208,7 @@ class Billable extends Model implements ShippableInterface
         return $total_weight;
     }
 
-    public function getVolumeAttribute() 
+    public function getVolume() 
     {
         $line_products = $this->lines->where('line_type', 'product')->load('product');
 

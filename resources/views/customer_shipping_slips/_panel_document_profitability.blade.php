@@ -144,7 +144,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
 
 
 @if ($document->salesrep)
-                <td class="text-right">{{ $line->as_percentable( 100.0 * $line->getSalesRepCommission() / (( $line->profit_final_price )*$line->quantity) ) }}<br />
+                <td class="text-right">{{ $line->as_percentable( 100.0 * abi_safe_division( $line->getSalesRepCommission(), (( $line->profit_final_price )*$line->quantity) ) ) }}<br />
 
                   <span class="alert-success">{{ $line->as_percent('commission_percent') }}</span></td>
 
@@ -260,7 +260,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
 @if ($document->salesrep)
                 <td class="text-right">
 @if($document->getTotalTargetRevenue() != 0.0)
-                  {{ $document->as_percentable( 100.0 * $document->getSalesRepCommission() / $document->total_revenue ) }}
+                  {{ $document->as_percentable( 100.0 * abi_safe_division( $document->getSalesRepCommission(), $document->total_revenue ) ) }}
 @endif
                 </td>
 

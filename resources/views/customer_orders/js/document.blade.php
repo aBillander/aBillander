@@ -688,7 +688,7 @@
                     else
                         $('input:radio[name=line_is_sales_equalization][value=0]').prop('checked', true);
                     
-                    $('#line_discount_percent').val(0);
+                    $('#line_discount_percent').val(response.discount_percent);
 //                    price = parseFloat(response.unit_customer_price.display);
 
                     $('#line_is_prices_entered_with_tax').val(response.unit_customer_price.price_is_tax_inc);

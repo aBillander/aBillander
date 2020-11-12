@@ -129,7 +129,7 @@
                             </p>
                         @endif
                 </td>
-                <td class="text-right">{{ $line->as_price('unit_customer_final_price') }}</td>
+                <td class="text-right" title="{{ $line->unit_supplier_final_price }}">{{ $line->as_price('unit_supplier_final_price') }}</td>
                 <td class="text-right">{{ $line->as_percent('discount_percent') }}</td>
                 <td class="text-right">{{ $line->as_price('total_tax_excl') }}</td>
                 <td class="text-right">{{ $line->as_price('total_tax_incl') }}</td>
@@ -151,7 +151,7 @@
                 @endif</td>
                 <td class="text-right">
                       @if ( $document->editable )
-                    <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerdocumentlines();"><i class="fa fa-pencil"></i></a -->
+                    <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadsupplierdocumentlines();"><i class="fa fa-pencil"></i></a -->
                     
                     <a class="btn btn-sm btn-warning edit-document-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
                     
@@ -166,7 +166,7 @@
                     
                       @if ( 0 && $line->product_id )
 
-                    <a class="btn btn-sm btn-blue show-customer-consumption" data-id="{{$line->product_id}}" title="{{l('Show Customer consumption')}}" onClick="return false;"><i class="fa fa-dropbox"></i></a>
+                    <a class="btn btn-sm btn-blue show-supplier-consumption" data-id="{{$line->product_id}}" title="{{l('Show Customer consumption')}}" onClick="return false;"><i class="fa fa-dropbox"></i></a>
 
                       @endif
 

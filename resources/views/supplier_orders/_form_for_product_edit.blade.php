@@ -23,7 +23,7 @@
 
             {{ Form::hidden('line_cost_price',          null, array('id' => 'line_cost_price'         )) }}
             {{ Form::hidden('line_unit_price',          null, array('id' => 'line_unit_price'         )) }}
-            {{ Form::hidden('line_unit_customer_price', null, array('id' => 'line_unit_customer_price')) }}
+            {{ Form::hidden('line_unit_supplier_price', null, array('id' => 'line_unit_supplier_price')) }}
 
             {{-- Not in use so far --}}
             {{ Form::hidden('line_discount_amount_tax_incl', null, array('id' => 'line_discount_amount_tax_incl')) }}
@@ -183,15 +183,6 @@
                      {!! Form::textarea('line_notes', null, array('class' => 'form-control', 'id' => 'line_notes', 'rows' => '3')) !!}
                      {!! $errors->first('line_notes', '<span class="help-block">:message</span>') !!}
                   </div>
-
-                 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('line_commission_percent') ? 'has-error' : '' }}">
-                    {{ l('Commission (%)') }}
-                    {!! Form::text('line_commission_percent', null, array('class' => 'form-control', 'id' => 'line_commission_percent', 'onclick' => 'this.select()', 'autocomplete' => 'off')) !!}
-                    {!! $errors->first('line_commission_percent', '<span class="help-block">:message</span>') !!}
-
-                    {{ Form::hidden('line_sales_rep_id', null, array('id' => 'line_sales_rep_id')) }}
-
-                 </div>
         </div>
 
          </div><!-- div class="modal-body" ENDS -->
@@ -199,7 +190,7 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-info" name="modal_edit_document_line_productSubmit" id="modal_edit_document_line_productSubmit" title="{{l('Save line "as is", and WILL NOT apply Customer Price List and/or Price Rules.', 'customerdocuments')}}">
+               <button type="submit" class="btn btn-info" name="modal_edit_document_line_productSubmit" id="modal_edit_document_line_productSubmit" title="{{l('Save line "as is", and WILL NOT apply Supplier Price List and/or Price Rules.', 'supplierdocuments')}}">
                 <i class="fa fa-hdd-o"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 

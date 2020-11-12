@@ -247,7 +247,7 @@ class CustomersController extends Controller
 
 //        abi_r($sequenceList1, true);
 
-        abi_r( $bankaccount );die();
+//        abi_r( $bankaccount );die();
 
         return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList'))
                 ->with('warning', $warning);

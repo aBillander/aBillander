@@ -130,12 +130,6 @@ trait SupplierBillableFormsControllerTrait
                         ->with('currency')
                         ->find($document_id);
 
-        if ( !$document )
-            return response()->json( [
-                    'msg' => 'ERROR',
-                    'data' => $document_id,
-            ] );
-
 
         $product_id     = $request->input('product_id');
         $combination_id = $request->input('combination_id', null);
@@ -170,6 +164,9 @@ trait SupplierBillableFormsControllerTrait
 
         if ($request->has('measure_unit_id')) 
             $params['measure_unit_id'] = $request->input('measure_unit_id');
+
+        if ($request->has('package_measure_unit_id')) 
+            $params['package_measure_unit_id'] = $request->input('package_measure_unit_id');
 
 
         // Let's Rock!

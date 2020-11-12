@@ -12,6 +12,7 @@ use App\Product;
 use App\StockMovement;
 use App\Lot;
 use App\PriceRule;
+use App\MeasureUnit;
 
 use App\Configuration;
 
@@ -357,7 +358,14 @@ class ProductsController extends Controller
         // See: https://stackoverflow.com/questions/44029961/laravel-search-relation-including-null-in-wherehas
         $pricelists = $product->pricelists; //  \App\PriceList::with('currency')->orderBy('id', 'ASC')->get();
 
-        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists'));
+        $units = MeasureUnit::whereIn('id', [Configuration::getInt('DEF_LENGTH_UNIT'), Configuration::getInt('DEF_WEIGHT_UNIT'), Configuration::getInt('DEF_VOLUME_UNIT')])->get();
+        $length_unit = $units->where('id', Configuration::getInt('DEF_LENGTH_UNIT'))->first();
+        $weight_unit = $units->where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+        $volume_unit = $units->where('id', Configuration::getInt('DEF_VOLUME_UNIT'))->first();
+
+        $volume_conversion = Configuration::getNumber('DEF_VOLUME_UNIT_CONVERSION_RATE');
+
+        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists', 'length_unit', 'weight_unit', 'volume_unit', 'volume_conversion'));
     }
 
     /**

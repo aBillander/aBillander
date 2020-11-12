@@ -216,7 +216,7 @@ trait SupplierBillableDocumentAsIsLinesTrait
 
         // Let's deal with taxes
         $product->sales_equalization = $sales_equalization;
-        $rules = $product->getTaxRules( $this->taxingaddress,  $this->supplier );
+        $rules = $product->getSupplierTaxRules( $this->taxingaddress,  $this->supplier );
 
         $document_line->applyTaxRules( $rules );
 

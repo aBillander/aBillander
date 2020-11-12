@@ -23,7 +23,7 @@
 
             {{-- Form::hidden('line_cost_price',          null, array('id' => 'line_cost_price'         )) --}}
             {{ Form::hidden('line_unit_price',          null, array('id' => 'line_unit_price'         )) }}
-            {{ Form::hidden('line_unit_customer_price', null, array('id' => 'line_unit_customer_price')) }}
+            {{ Form::hidden('line_unit_supplier_price', null, array('id' => 'line_unit_supplier_price')) }}
 
             {{-- Not in use so far --}}
             {{ Form::hidden('line_discount_amount_tax_incl', null, array('id' => 'line_discount_amount_tax_incl')) }}

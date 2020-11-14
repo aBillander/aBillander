@@ -8,7 +8,7 @@
     <div class="modal-content">
       <div class="modal-header alert-info modal-header-help">
         <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title" id="_myModalLabel">Pedidos de Clientes</h3>
+        <h3 class="modal-title" id="_myModalLabel">Pedidos de Proveedores</h3>
       </div>
       <div class="modal-body">
 
@@ -20,18 +20,14 @@
 
 <p>2.- Modificar la cabecera, añadir / modificar / borrar líneas.</p>
 
-<p>3.- Confirmar el Pedido. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada, y se hace la reserva de Stock. Aún es posible modificar la cabecera y las líneas.</p>
+<p>3.- Confirmar el Pedido. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada, y se incrementa Stock Pendiente de recibir. Aún es posible modificar la cabecera y las líneas.</p>
 
 <p>4.- Cerrar el Pedido. El estado del Documento pasa a <strong>“Cerrado”</strong>.</p>
 
 <div class="alert alert-warning">
     <p><strong>Cómo afecta al Stock</strong></p>
     <p></p>
-  <p>El Pedido nunca tiene efecto sobre el Stock Físico. Sólo mientras está en Estado “Confirmado” afecta al Stock Reservado.</p>
-</div>
-
-<div class="alert alert-warning">
-  <p>Todos los Pedidos (en cualquier Estado) son visibles por el Cliente en el Centro de Clientes.</p>
+  <p>El Pedido nunca tiene efecto sobre el Stock Físico. Sólo mientras está en Estado “Confirmado” afecta al Stock Pendiente de recibir.</p>
 </div>
 
 <h3>Estado “Borrador”</h3>
@@ -59,7 +55,7 @@
 <div class="alert alert-info">
     <p><strong>El Documento se cierra cuando:</strong></p>
     <p></p>
-    <p>* Se crea un Albarán. En este momento se libera la reserva de Productos.</p>
+    <p>* Se crea un Albarán. En este momento se decrementa del Stock Pendiente de recibir.</p>
 </div>
 
 <p>- No se puede modificar la cabecera y tampoco las líneas del Documento.</p>

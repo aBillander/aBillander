@@ -456,9 +456,6 @@ class BillableController extends Controller
         $route = str_replace('_', '', $table);
         $tableLines = snake_case($model).'_lines';
         $lines = $class::where('product_id', $product->id)
-                            ->with(["document" => function($q){
-                                $q->where('customerorders.customer_id', $customer->id);
-                            }])
                             ->with('document')
                             ->with('document.customer')
                             ->whereHas('document', function($q) use ($customer_id, $recent_sales_this_customer) {

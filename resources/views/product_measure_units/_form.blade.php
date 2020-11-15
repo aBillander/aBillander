@@ -38,6 +38,8 @@
                    </div>
 </div>
 
+                <a href="{{ route('measureunits.create') }}" class="btn btn-info pull-right"><i class="fa fa-magic"></i> {{ l('New Measure Unit') }}</a>
+
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 	{!! link_to_route('products.measureunits.index', l('Cancel', [], 'layouts'), array($product->id), array('class' => 'btn btn-warning')) !!}
 

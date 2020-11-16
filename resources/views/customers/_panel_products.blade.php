@@ -29,7 +29,7 @@
     {!! Form::text('reference', null, array('class' => 'form-control')) !!}
 </div>
 --}}
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('name', l('Product Name')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-target="body" 
                                     data-content="{{ l('Search by Name or Reference.') }}">
@@ -43,6 +43,11 @@
 
     {{ Form::hidden('line_product_id',     null, array('id' => 'line_product_id'    )) }}
 </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('line_sales_model', l('Document')) !!}
+        {!! Form::select('line_sales_model', ['' => l('-- All --', 'layouts')] + $modelList, $default_model, array('id' => 'line_sales_model', 'class' => 'form-control')) !!}
+    </div>
 {{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('stock', l('Stock')) !!}
@@ -110,6 +115,8 @@
    $(document).ready(function() {
 
 
+        $("#line_autoproduct_name").val();
+        $('#line_product_id').val();
         // To get focus;
         $("#line_autoproduct_name").focus();
 
@@ -178,7 +185,8 @@
 				type: "GET",
 				url: url,
 				data: {
-					items_per_page_products: $("#items_per_page_products").val()
+					items_per_page_products: $("#items_per_page_products").val(),
+					sales_model: $("#line_sales_model").val()
 				}
 			}).done(function(data){
 				panel.html(data);
@@ -211,6 +219,12 @@
 		   return false;
 		  }
 
+		});
+
+		$('#line_sales_model').change(function(){
+		    getCustomerProducts();
+
+		   return false;
 		});
 
 

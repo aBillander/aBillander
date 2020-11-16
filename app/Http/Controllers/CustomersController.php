@@ -555,6 +555,8 @@ class CustomersController extends Controller
      */
     public function getRecentSales($id, Request $request)
     {
+        $product_id = (int) $request->input('product_id', '');
+
         $customer = $this->customer::findOrFail($id);
 
         // return 'OK';
@@ -570,7 +572,10 @@ class CustomersController extends Controller
         // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
         $o_lines = CustomerOrderLine::
                             with('document')
-                            ->whereHas('product')
+                            ->whereHas('product', function($q) use ($product_id) {
+                                    if ( $product_id > 0 )
+                                        $q->where('id', $product_id);
+                                })
                             ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');

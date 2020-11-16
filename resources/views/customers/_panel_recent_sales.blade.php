@@ -1,6 +1,5 @@
 
 
-
        <div class="table-responsive">
 
 <table id="liness" name="liness" class="table table-hover">
@@ -34,7 +33,8 @@
 		                @endif
         		</a>
         	</td>
-			<td>{{ $line->product->name }}</td>
+			<td>
+				[<a href="{{ URL::to('products/' . $line->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}">{{ $line->product->reference }}</a>] {{ $line->product->name }}</td>
 			<td>{{ $line->as_quantity('quantity') }}</td>
 
 			<td>{{ $line->as_price('unit_price') }}</td>
@@ -60,8 +60,17 @@
 
 
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $lines->count() ], 'layouts')}} </span></li></ul>
-<ul class="pagination" style="float:right;"><li xclass="active" style="float:right;"><span style="color:#333333;border-color:#ffffff"> <div class="input-group"><span class="input-group-addon" style="border: 0;background-color: #ffffff" title="{{l('Items per page', 'layouts')}}">{{l('Show records:', 'layouts')}}</span><input id="items_per_page_products" name="items_per_page_products" class="form-control input-sm items_per_page_products" style="width: 50px !important;" type="text" value="{{ $items_per_page_products }}" onclick="this.select()">
-    <span class="input-group-btn">
-      <button class="btn btn-info btn-sm" type="button" title="{{l('Refresh', 'layouts')}}" onclick="getCustomerProducts(); return false;"><i class="fa fa-refresh"></i></button>
-    </span>
-  </div></span></li></ul>
+
+<ul class="pagination" style="float:right;">
+	<li xclass="active" style="float:right;">
+	<span style="color:#333333;border-color:#ffffff"> 
+		<div class="input-group">
+			<span class="input-group-addon" style="border: 0;background-color: #ffffff" title="{{l('Items per page', 'layouts')}}">{{l('Show records:', 'layouts')}}</span>
+			<input id="items_per_page_products" name="items_per_page_products" class="form-control input-sm items_per_page_products" style="width: 50px !important;" type="text" value="{{ $items_per_page_products }}" onclick="this.select()">
+		    <span class="input-group-btn">
+		      <button class="btn btn-info btn-sm" type="button" title="{{l('Refresh', 'layouts')}}" onclick="getCustomerProducts(); return false;"><i class="fa fa-refresh"></i></button>
+		    </span>
+  		</div>
+  	</span>
+	</li>
+</ul>

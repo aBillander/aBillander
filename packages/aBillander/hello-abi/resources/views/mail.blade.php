@@ -67,7 +67,12 @@
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.mail.password') }}</label><br>
                             <!--input type="password" name="DB_PASSWORD" class="form-control" value="{{ config('database.connections.mysql.password') }}" required -->
-                            <input type="text" name="MAIL_PASSWORD" class="form-control" value="{{ config('mail.password') }}" required>
+  <div class="input-group">
+                            <input id="password-field" type="password" name="MAIL_PASSWORD" class="form-control" value="{{ config('mail.password') }}" required>
+    <span class="input-group-btn">
+      <button class="btn btn-grey" type="button"><span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span></button>
+    </span>
+  </div>
                         </div>
                     </div>
 
@@ -106,3 +111,5 @@
     </form>
 
 @endsection
+
+@include('installer::partials.toggle_password')

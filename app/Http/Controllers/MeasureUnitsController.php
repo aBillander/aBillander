@@ -56,7 +56,11 @@ class MeasureUnitsController extends Controller {
 
 		$measureunit = $this->measureunit->create($request->all());
 
-		return redirect('measureunits')
+		$url = 'measureunits';
+		if ( $caller = $request->input('caller_url', '') )
+			$url = $caller;
+		
+		return redirect($url)
 				->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $measureunit->id], 'layouts') . $request->input('name'));
 	}
 

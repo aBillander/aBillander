@@ -124,8 +124,8 @@
                               measure_unit_id : $('#line_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_price').val(),
-                              unit_supplier_price : $('#line_price').val(),
-                              unit_supplier_final_price : $('#line_price').val(),
+                              unit_customer_price : $('#line_price').val(),
+                              unit_customer_final_price : $('#line_price').val(),
                               prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
@@ -195,8 +195,8 @@
                               measure_unit_id : $('#line_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_unit_price').val(),
-                              unit_supplier_price : $('#line_unit_supplier_price').val(),
-                              unit_supplier_final_price : $('#line_price').val(),
+                              unit_customer_price : $('#line_unit_customer_price').val(),
+                              unit_customer_final_price : $('#line_price').val(),
                               prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
@@ -315,14 +315,14 @@
 
                     $('#line_cost_price').val(result.cost_price);
                     $('#line_unit_price').val(result.unit_price);
-                    $('#line_unit_supplier_price').val(result.unit_supplier_price);
+                    $('#line_unit_customer_price').val(result.unit_customer_price);
 
                     $('#line_is_prices_entered_with_tax').val(result.prices_entered_with_tax);
 
                     if ( $('#line_is_prices_entered_with_tax').val() > 0 )
                     {
                         //
-                        price = result.unit_supplier_final_price_tax_inc;
+                        price = result.unit_customer_final_price_tax_inc;
 
                         // set labels
                         $(".label_tax_exc").hide();
@@ -331,7 +331,7 @@
                     } else {
 
                         //
-                        price = result.unit_supplier_final_price;
+                        price = result.unit_customer_final_price;
 
                         // set labels
                         $(".label_tax_inc").hide();
@@ -396,7 +396,7 @@
         function auto_service_line( selector = "#line_autoservice_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route($model_path.'.searchservice') }}?supplier_id="+$('#supplier_id').val()+"&currency_id="+$('#currency_id').val(),
+                source : "{{ route($model_path.'.searchservice') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
                 appendTo : "#modal_document_line",
 

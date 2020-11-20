@@ -144,7 +144,7 @@ trait BillableDocumentControllerTrait
 
         }
 
-        $pdfName    = $this->getParentClass() . '_' . \Carbon\Carbon::now()->format('Y-m-d H_i_s');
+        $pdfName    = $this->getParentClass() . '_' . \Carbon\Carbon::now()->format('Y-m-d H_i_s').'.pdf';
 
         // Ta-chan!!
         $merged_pdf->merge('browser', $pdfName); //REPLACE 'file' (first argument) WITH 'browser', 'download', 'string', or 'file' for output options. You do not need to give a file path for browser, string, or download - just the name.

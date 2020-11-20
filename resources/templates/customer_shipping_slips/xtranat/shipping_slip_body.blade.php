@@ -215,10 +215,10 @@
 				<span>Cantidad</span>
 			</th>
 			<th class="price" width="8%" style="border: 1px #ccc solid">
-				<span>Precio</span>
+				<span>Precio Coste</span>
 			</th>
 			<th class="price" width="8%" style="border: 1px #ccc solid">
-				<span>Precio Recomend.</span>
+				<span>PVP Recomend.</span>
 			</th>
 			<th class="discount" width="6%" style="border: 1px #ccc solid">
 				<span>Dto.</span>
@@ -309,7 +309,7 @@
 			</td>
 			<td class="price total last-column">
 				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_priceable( optional($line->product)->recommended_retail_price ) }}
+					<span class="abi-Price-amount amount">{{ $line->as_priceable( optional($line->product)->recommended_retail_price_tax_inc ) }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>

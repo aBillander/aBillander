@@ -161,9 +161,9 @@
 
 				<tr class="order-number">
 
-					<th style="width: 42%; font-weight: bold;font-size: 16pt;vertical-align: baseline !important;">FACTURA:</th>
+					<th style="width: 45%; font-weight: bold;font-size: 16pt;vertical-align: baseline !important;">FACTURA:</th>
 
-					<td style="font-size: 11pt;vertical-align: baseline !important;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
+					<td style="width: 55%; font-weight: bold;font-size: 11pt;vertical-align: baseline !important;">{!! $document->document_reference ?? 'BORRADOR' !!}</td>
 
 				</tr>
 
@@ -249,10 +249,10 @@
 				<span>Cantidad</span>
 			</th>
 			<th class="price" width="8%" style="border: 1px #ccc solid">
-				<span>Precio</span>
+				<span>Precio Coste</span>
 			</th>
 			<th class="price" width="8%" style="border: 1px #ccc solid">
-				<span>Precio Recomend.</span>
+				<span>PVP Recomend.</span>
 			</th>
 			<th class="discount" width="6%" style="border: 1px #ccc solid">
 				<span>Dto.</span>
@@ -348,7 +348,7 @@
 			</td>
 			<td class="price total last-column">
 				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_priceable( optional($line->product)->recommended_retail_price ) }}
+					<span class="abi-Price-amount amount">{{ $line->as_priceable( optional($line->product)->recommended_retail_price_tax_inc ) }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>
@@ -668,7 +668,7 @@ $pdf->page_script('
 if ( $PAGE_NUM == 1 )
 {
                // $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 + 15.3), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
-               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 - 16.0 -34.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
+               $pdf->text(($pdf->get_width() - 150), ($pdf->get_height() - 26.89 - 635.0 - 16.0 - 31.0), $PAGE_NUM." de ".$PAGE_COUNT, null, 9);
 }
 if ( $PAGE_NUM > 1 )
 {

@@ -272,6 +272,7 @@ class ImportCategoriesController extends Controller
                     
 
                     // Parent Category
+                    if (0)      // Not useful code, I guess
                     if ( !array_key_exists('parent_id', $data) )
                     {
                         if (  array_key_exists('parent_REFERENCE_EXTERNAL', $data) ) 
@@ -352,7 +353,8 @@ class ImportCategoriesController extends Controller
     {
         $categories = $this->category
                           ->orderBy('parent_id', 'asc')
-                          ->orderBy('name', 'asc')
+                          ->orderBy('id', 'asc')
+//                          ->orderBy('name', 'asc')
                           ->get();
 
 /*        $pricelist = $this->pricelist
@@ -374,8 +376,8 @@ class ImportCategoriesController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference_external', 'name', 'publish_to_web', 'webshop_id', 
-                     'active', 'parent_id', 'parent_REFERENCE_EXTERNAL', 'position',
+        $headers = [ 'id', 'name', 'description', 'position', 'publish_to_web', 'webshop_id', 'reference_external', 
+                     'active', 'parent_id',
 //                    'position', 'is_root', 
         ];
 

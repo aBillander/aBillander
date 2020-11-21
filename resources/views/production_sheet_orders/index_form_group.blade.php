@@ -34,7 +34,11 @@
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('template_id') ? 'has-error' : '' }}">
             {{ l('Template') }}
-            {!! Form::select('template_id', $templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
+             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                        data-content="{{ l('Si selecciona "Por defecto", se tomará para el Albarán la Plantilla de la Ficha del Cliente. Si un Cliente no tiene Plantilla, se tomará la Plantilla por Defecto definida en Configuraciones.') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+             </a>
+            {!! Form::select('template_id', ['' => l('-- Default --', 'layouts')] + $templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
             {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
          </div>
 

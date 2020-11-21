@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\MeasureUnit as MeasureUnit;
+use App\MeasureUnit;
 use View;
 
 class MeasureUnitsController extends Controller {
@@ -28,7 +28,18 @@ class MeasureUnitsController extends Controller {
 	 */
 	public function index()
 	{
-		$measureunits = $this->measureunit->orderBy('type', 'asc')->get();
+		$measureunits = $this->measureunit->get();	// ->orderBy('type', 'asc')->get();
+
+		// Sort collection
+		$measureunits = $measureunits->sort(function ($a, $b) {
+		    if ($a->type_name == $b->type_name) {
+			    if ($a->name == $b->name) {
+			        return 0;
+			    }
+			    return ($a->name < $b->name) ? -1 : 1;
+		    }
+		    return ($a->type_name < $b->type_name) ? -1 : 1;
+		});
 
         return view('measure_units.index', compact('measureunits'));
 	}

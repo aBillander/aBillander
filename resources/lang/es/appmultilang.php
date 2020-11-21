@@ -422,13 +422,13 @@ return array(
 	|
 	*/
 
-    'Quantity'     => 'Cantidad',
-	'Length'     => 'Longitud',
-	'Area'     => 'Superficie',
-	'Liquid Volume'     => 'Volumen (líquidos)',
-	'Dry Volume'     => 'Volumen (sólidos)',
-	'Mass'     => 'Masa',
-	'Time'     => 'Tiempo',
+    'App\MeasureUnit.Quantity'     => 'Cantidad',
+	'App\MeasureUnit.Length'     => 'Longitud',
+	'App\MeasureUnit.Area'     => 'Superficie',
+	'App\MeasureUnit.Liquid Volume'     => 'Volumen (líquidos)',
+	'App\MeasureUnit.Dry Volume'     => 'Volumen (sólidos)',
+	'App\MeasureUnit.Mass'     => 'Masa',
+	'App\MeasureUnit.Time'     => 'Tiempo',
 
 
 	/*

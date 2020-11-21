@@ -125,7 +125,7 @@ return [
 	'CUSTOMER_INVOICE_BANNER.name' => 'Banner en Factura',
 	'CUSTOMER_INVOICE_BANNER.help' => 'Este texto aparece en la Cabecera de las Facturas de Clientes.',
 	'CUSTOMER_INVOICE_TAX_LABEL.name' => 'Etiqueta para Impuestos',
-	'CUSTOMER_INVOICE_TAX_LABEL.help' => 'Este texto aparece en la Cabecera de las columnas de Impuesto en las Facturas de Clientes.',
+	'CUSTOMER_INVOICE_TAX_LABEL.help' => 'Este texto aparece en la Cabecera de las columnas de Impuesto en las Facturas de Clientes. En España suele ser <i>IVA</i> o  <i>IGIC</i>.',
 	'CUSTOMER_INVOICE_CAPTION.name' => 'Pie de Factura',
 	'CUSTOMER_INVOICE_CAPTION.help' => 'Este texto aparece en el pie de las Facturas de Clientes.',
 	'DEF_CUSTOMER_PAYMENT_METHOD.name' => 'Forma de Pago para Clientes',

@@ -152,6 +152,8 @@ return [
 	'Down Payment'     => 'Anticipo',
 	'Number of Packages'     => 'Número de Bultos',
 	'Weight'     => 'Peso',
+	'Volume' => 'Volumen',
+	'Weight'     => 'Peso',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',

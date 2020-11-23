@@ -32,6 +32,9 @@
                <th class="text-left">{{l('Taxes')}}</th>
 
                <th class="text-right">{{l('Total')}}</th>
+
+               <th class="text-right">{{l('Weight')}} (<span class="text-success">{{ optional($weight_unit)->sign }}</span>)</th>
+               <th class="text-right">{{l('Volume')}} (<span class="text-success">{{ optional($volume_unit)->sign }}</span>)</th>
             </tr>
         </thead>
 
@@ -83,6 +86,9 @@
                 <td style="vertical-align: middle;">{{ $document->as_price('total_currency_tax_excl', $document->currency) }}</td>
                 <td style="vertical-align: middle;">{{ $document->as_priceable($document->total_currency_tax_incl - $document->total_currency_tax_excl) }}</td>
                 <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $document->as_price('total_currency_tax_incl') }}</strong></td>
+
+                <td class="text-right lead" style="vertical-align: middle;">{{ $document->getWeight() }}</td>
+                <td class="text-right lead" style="vertical-align: middle;">{{ $document->getVolume() }}</td>
             </tr>
 
 @if ( $document->currency_conversion_rate != 1.0 )
@@ -111,6 +117,9 @@
                 <td style="vertical-align: middle;">{{ $document->as_price('total_tax_excl', $document->currency) }}</td>
                 <td style="vertical-align: middle;">{{ $document->as_priceable($document->total_tax_incl - $document->total_tax_excl) }}</td>
                 <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $document->as_price('total_tax_incl') }}</strong></td>
+
+                <td></td>
+                <td></td>
             </tr>
 @endif
 

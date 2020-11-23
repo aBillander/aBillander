@@ -147,14 +147,9 @@ border-left:1px solid #e95420;">
                      {!! Form::text('depth', null, array('class' => 'form-control', 'id' => 'depth')) !!}
                      {!! $errors->first('depth', '<span class="help-block">:message</span>') !!}
                   </div>
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('weight') ? 'has-error' : '' }}">
-                     {{ l('Weight') }} (<span class="text-success">{{ optional($weight_unit)->sign }}</span>)
-                     {!! Form::text('weight', null, array('class' => 'form-control', 'id' => 'weight')) !!}
-                     {!! $errors->first('weight', '<span class="help-block">:message</span>') !!}
-                  </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('volume') ? 'has-error' : '' }}">
-                     {{ l('Volume') }} (<span class="text-success">{{ optional($length_unit)->sign }}<sup>3</sup></span>)
+                     {{ l('Volume') }} (<span class="text-success">{{ optional($volume_unit)->sign }}</span>)
   <div class="input-group">
                      {!! Form::text('volume', null, array('class' => 'form-control', 'id' => 'volume')) !!}
     <span class="input-group-btn">
@@ -164,7 +159,11 @@ border-left:1px solid #e95420;">
                      {!! $errors->first('volume', '<span class="help-block">:message</span>') !!}
                   </div>
 
-</div>
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('weight') ? 'has-error' : '' }}">
+                     {{ l('Weight') }} (<span class="text-success">{{ optional($weight_unit)->sign }}</span>)
+                     {!! Form::text('weight', null, array('class' => 'form-control', 'id' => 'weight')) !!}
+                     {!! $errors->first('weight', '<span class="help-block">:message</span>') !!}
+                  </div>
 
 @if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('ecotax_id') ? 'has-error' : '' }}">
@@ -308,7 +307,7 @@ border-left:1px solid #e95420;">
 
         if ( $.isNumeric( $("#width").val() ) && $.isNumeric( $("#height").val() ) && $.isNumeric( $("#depth").val() ) )
         {
-            volume = $("#width").val() * $("#height").val() * $("#depth").val();
+            volume = ( $("#width").val() * $("#height").val() * $("#depth").val() ) / {{ $volume_conversion }};
         }
 
         $("#volume").val(volume);

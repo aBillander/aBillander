@@ -26,7 +26,7 @@
 
                 {{ Form::hidden('product_line_cost_price',          null, array('id' => 'product_line_cost_price'         )) }}
                 {{ Form::hidden('product_line_unit_price',          null, array('id' => 'product_line_unit_price'         )) }}
-                {{ Form::hidden('product_line_unit_customer_price', null, array('id' => 'product_line_unit_customer_price')) }}
+                {{ Form::hidden('product_line_unit_supplier_price', null, array('id' => 'product_line_unit_supplier_price')) }}
 
                 {{-- Not in use so far --}}
                 {{ Form::hidden('product_discount_amount_tax_incl', null, array('id' => 'product_discount_amount_tax_incl')) }}
@@ -113,7 +113,7 @@
                      {{ Form::hidden('product_line_quantity_decimal_places', null, array('id' => 'product_line_quantity_decimal_places')) }}
                   </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                    @if( $customer->currentPricesEnteredWithTax( $document->document_currency ) )
+                    @if( $supplier->currentPricesEnteredWithTax( $document->document_currency ) )
                     {{ l('Price with Tax') }}
                     @else
                     {{ l('Price') }}
@@ -127,7 +127,7 @@
                     {!! $errors->first('product_line_discount_percent', '<span class="help-block">:message</span>') !!}
                  </div>
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                    @if( $customer->currentPricesEnteredWithTax( $document->document_currency ) )
+                    @if( $supplier->currentPricesEnteredWithTax( $document->document_currency ) )
                     {{ l('Final Price with Tax') }}
                     @else
                     {{ l('Final Price') }}

@@ -418,6 +418,20 @@
       </div>
     </div>
 
+    <div class="form-group {{ $errors->has('DEF_SEPA_PAYMENT_TYPE') ? 'has-error' : '' }}">
+      <label for="DEF_SEPA_PAYMENT_TYPE" class="col-lg-4 control-label">{!! l('DEF_SEPA_PAYMENT_TYPE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SEPA_PAYMENT_TYPE', ['0' => l('-- Please, select --', [], 'layouts')] + $payment_typeList, old('DEF_SEPA_PAYMENT_TYPE', $key_group['DEF_SEPA_PAYMENT_TYPE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SEPA_PAYMENT_TYPE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SEPA_PAYMENT_TYPE.help') !!}</span>
+      </div>
+    </div>
+
     <div class="form-group {{ $errors->has('DEF_TAX') ? 'has-error' : '' }}">
       <label for="DEF_TAX" class="col-lg-4 control-label">{!! l('DEF_TAX.name') !!}</label>
       <div class="col-lg-8">

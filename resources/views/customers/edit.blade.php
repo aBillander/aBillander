@@ -271,3 +271,31 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
 </script>
 @endsection
+
+
+@section('styles')    @parent
+
+{{-- Auto Complete --}}
+
+  {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script -->
+
+<style>
+
+  .ui-autocomplete-loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+  }
+  .loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
+  }
+
+
+/* See: http://fellowtuts.com/twitter-bootstrap/bootstrap-popover-and-tooltip-not-working-with-ajax-content/ 
+.modal .popover, .modal .tooltip {
+    z-index:100000000;
+}
+ */
+</style>
+
+@endsection

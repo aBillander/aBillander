@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -7,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\Tax as Tax;
 use App\TaxRule as TaxRule;
+use App\State;
 use View;
 
 class TaxRulesController extends Controller {
@@ -90,7 +93,9 @@ class TaxRulesController extends Controller {
         $tax = $this->tax->findOrFail($taxId);
         $taxrule = $this->taxrule->findOrFail($id);
 
-        return view('tax_rules.edit', compact('tax', 'taxrule'));
+        $stateList = State::where('country_id', $taxrule->country_id)->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+
+        return view('tax_rules.edit', compact('tax', 'taxrule', 'stateList'));
     }
 
     /**

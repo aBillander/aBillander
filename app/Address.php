@@ -103,7 +103,7 @@ class Address extends Model {
         $country_id = $this->country_id;
         $state_id   = $this->state_id;
 
-        $rules = $tax->taxrules()
+        $country_rules = $tax->taxrules()
                     ->where(function ($query) use ($country_id, $state_id) {
                         $query->where('country_id', '=', $country_id);
                         
@@ -116,7 +116,12 @@ class Address extends Model {
 //                                ->orderBy('position', 'asc')     // $tax->taxrules() is already sorted by position asc
                     ->get();
 
-        return $rules;
+        $state_rules = $country_rules->where('state_id', '=', $state_id);
+
+        if ( $state_rules->count() > 0 )
+            return $state_rules;
+
+        return $country_rules;
     }
 
     public function getTaxes( )

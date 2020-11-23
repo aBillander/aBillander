@@ -213,4 +213,15 @@ return [
 	'Invoice Shipping Slips' => 'Facturar Albaranes',
 
 	'Accounting ID' => 'Código Contabilidad',
+
+
+   
+
+   'Search by Name or Reference.'     => 'Busque por Nombre o Referencia.',
+
+   'Reset search: empty field plus press [return].' => 'Reiniciar búsqueda: vacíe el campo y pulse [intro].',
+
+	'CustomerOrder'   => 'Pedidos',
+	'CustomerShippingSlip'   => 'Albaranes',
+	'CustomerInvoice'   => 'Facturas',
 ];

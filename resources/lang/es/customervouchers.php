@@ -58,6 +58,7 @@ return [
 	'This Voucher is paid and cannot be modified' => 'Este Recibo está pagado y no puede modificarse',
 
 	'Amount must be greater than :min and not greater than :max'     => 'La Cantidad debe ser mayor que :min y menor que :max',
+	'Amount must be greater than 0 and not greater than :value'     => 'La Cantidad debe ser mayor que 0 y menor que :value',
 	'Bounce'     => 'Devolver Recibo',
 	'Amount Bounced'     => 'Cantidad Devuelta',
 	'Bounce Date'     => 'Devuelto el',

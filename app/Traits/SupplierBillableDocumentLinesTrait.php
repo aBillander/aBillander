@@ -149,7 +149,7 @@ trait SupplierBillableDocumentLinesTrait
         if ( 0 && array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         // if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
 
             $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 

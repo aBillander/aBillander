@@ -87,8 +87,8 @@
                 <td style="vertical-align: middle;">{{ $document->as_priceable($document->total_currency_tax_incl - $document->total_currency_tax_excl) }}</td>
                 <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $document->as_price('total_currency_tax_incl') }}</strong></td>
 
-                <td class="text-right lead" style="vertical-align: middle;">{{ $document->weight }}</td>
-                <td class="text-right lead" style="vertical-align: middle;">{{ $document->volume }}</td>
+                <td class="text-right lead" style="vertical-align: middle;">{{ $document->getWeight() }}</td>
+                <td class="text-right lead" style="vertical-align: middle;">{{ $document->getVolume() }}</td>
             </tr>
 
 @if ( $document->currency_conversion_rate != 1.0 )

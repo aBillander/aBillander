@@ -47,10 +47,16 @@ class MeasureUnit extends Model {
     {
             $list = [];
             foreach (self::$types as $type) {
-                $list[$type] = l($type, [], 'appmultilang');
+                $list[$type] = l(get_called_class().'.'.$type, [], 'appmultilang');
             }
 
             return $list;
+    }
+
+    public function getTypeNameAttribute()
+    {
+//            return l(get_called_class().'.'.$this->type, 'appmultilang');
+            return l(get_called_class().'.'.$this->type, 'appmultilang');
     }
     
 

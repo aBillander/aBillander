@@ -22,7 +22,7 @@
 
 <div id="panel_{{ $model_snake_case }}_lines" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('customer_orders._panel_order_lines') --}}
+{{--  @ include('supplier_orders._panel_order_lines') --}}
 
 </div>
 

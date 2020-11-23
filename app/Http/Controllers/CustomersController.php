@@ -161,7 +161,19 @@ class CustomersController extends Controller
         $bankaccount = $customer->bankaccount;
 
         // Dates (cuen)
-        $this->addFormDates( ['mandate_date'], $bankaccount );
+        if ($bankaccount)
+            $this->addFormDates( ['mandate_date'], $bankaccount );
+
+        // Models for Products tab
+        $models = ['CustomerOrder', 'CustomerShippingSlip', 'CustomerInvoice'];
+
+        $modelList = [];
+        foreach ($models as $model) {
+            # code...
+            $modelList[$model] = l($model);
+        }
+
+        $default_model = Configuration::get('RECENT_SALES_CLASS');
         
 
         if ( !($aBookCount>0) )
@@ -178,7 +190,7 @@ class CustomersController extends Controller
             }
 
             // Issue Warning!
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'modelList', 'default_model'))
                 ->with('warning', l('You need one Address at list, for Customer (:id) :name', ['id' => $customer->id, 'name' => $customer->name_fiscal]));
         };
 
@@ -203,7 +215,7 @@ class CustomersController extends Controller
 
             $mainAddressIndex = 0;
 
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
 
         } else {
@@ -246,9 +258,9 @@ class CustomersController extends Controller
 
 //        abi_r($sequenceList1, true);
 
-        abi_r( $bankaccount );die();
+//        abi_r( $bankaccount );die();
 
-        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList'))
+        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
     }
 
@@ -554,6 +566,10 @@ class CustomersController extends Controller
      */
     public function getRecentSales($id, Request $request)
     {
+        $product_id = (int) $request->input('product_id', '');
+
+        $sales_model = $request->input('sales_model', '');
+
         $customer = $this->customer::findOrFail($id);
 
         // return 'OK';
@@ -566,10 +582,16 @@ class CustomersController extends Controller
         if ( !($items_per_page_products >= 0) ) 
             $items_per_page_products = Configuration::get('DEF_ITEMS_PERPAGE');
 
+        $o_lines = $s_lines = $i_lines = collect([]);
+
         // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
+        if ( $sales_model == '' || $sales_model == 'CustomerOrder' )
         $o_lines = CustomerOrderLine::
                             with('document')
-                            ->whereHas('product')
+                            ->whereHas('product', function($q) use ($product_id) {
+                                    if ( $product_id > 0 )
+                                        $q->where('product_id', $product_id);
+                                })
                             ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');
@@ -584,9 +606,13 @@ class CustomersController extends Controller
                             ->get();
 
 /* */
+        if ( $sales_model == '' || $sales_model == 'CustomerShippingSlip' )
         $s_lines = CustomerShippingSlipLine::
                             with('document')
-                            ->whereHas('product')
+                            ->whereHas('product', function($q) use ($product_id) {
+                                    if ( $product_id > 0 )
+                                        $q->where('product_id', $product_id);
+                                })
                             ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');
@@ -601,9 +627,13 @@ class CustomersController extends Controller
                             ->get();
 
 
+        if ( $sales_model == '' || $sales_model == 'CustomerInvoice' )
         $i_lines = CustomerInvoiceLine::
                             with('document')
-                            ->whereHas('product')
+                            ->whereHas('product', function($q) use ($product_id) {
+                                    if ( $product_id > 0 )
+                                        $q->where('product_id', $product_id);
+                                })
                             ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');

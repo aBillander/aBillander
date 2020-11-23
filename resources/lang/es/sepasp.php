@@ -87,6 +87,8 @@ return [
 
 	'Unlink'     => 'Quitar Recibo de la Remesa',
 	'Unlink Voucher'     => 'Quitar Recibo',
+	'Unlink Vouchers'     => 'Quitar Recibos',
+	'Unlink selected Vouchers from Remittance'     => 'Quitar Recibos seleccionados de la Remesa',
 	'You are going to unlink a Voucher from Bank Order: <b>:boid</b>. Are you sure?' => 'Está a punto de quitar un Recibo de la Remesa: <b>:boid</b>. ¿Está seguro?',
 
 	'Unable to create XML File &#58&#58 (:id) ' => 'No se puede crear el Fichero XML &#58&#58 (:id) ',

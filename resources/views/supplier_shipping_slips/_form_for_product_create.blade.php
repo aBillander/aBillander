@@ -152,7 +152,7 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="modal_document_line_productSubmit" id="modal_document_line_productSubmit">
+               <button type="submit" class="btn btn-success modal_document_line_productSubmit" name="modal_document_line_productSubmit" id="modal_document_line_productSubmit">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 

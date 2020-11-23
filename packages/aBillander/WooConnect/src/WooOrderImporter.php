@@ -448,6 +448,23 @@ class WooOrderImporter {
         {
         	return ;
         }
+
+
+        // Try to fix rounding differences
+        if(0)   // <- Disable this for now
+        if ( $this->order->total_tax_incl != $order['total'] ) 
+        {
+            // aBillander calculations don't match WooCommerce order
+            $this->order->total_currency_paid = $this->raw_data['total'];
+            $this->order->total_currency_tax_incl = $this->raw_data['total'];
+            $this->order->total_currency_tax_excl = $this->raw_data['total'] - $this->raw_data['total_tax'];
+
+            $this->order->total_tax_incl = $this->raw_data['total'];
+            $this->order->total_tax_excl = $this->raw_data['total'] - $this->raw_data['total_tax'];
+
+
+            $this->order->save();
+        }
     }
 
     /**

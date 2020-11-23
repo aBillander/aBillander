@@ -458,7 +458,7 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
-//                              store_mode : store_mode,
+                              store_mode : store_mode,
                               supplier_id : {{ $document->supplier_id }},
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
@@ -482,8 +482,6 @@
                               discount_percent : $('#line_discount_percent').val(),
                               discount_amount_tax_incl : $('#line_discount_amount_tax_incl').val(),
                               discount_amount_tax_excl : $('#line_discount_amount_tax_excl').val(),
-                              sales_rep_id : $('#line_sales_rep_id').val(),
-                              commission_percent : $('#line_commission_percent').val(),
                               notes : $('#line_notes').val()
                           };
 
@@ -715,8 +713,6 @@
                     $("#line_price").val( price );
 
                     $("#label_ecotax_value").html(response.ecotax_value_label);
-
-                    // $('#line_commission_percent').val(response.commission_percent);
 
                     calculate_line_product();
 

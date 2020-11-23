@@ -88,6 +88,7 @@ class ConfigurationKeysController extends Controller {
                         'DEF_MEASURE_UNIT_FOR_BOMS',
                         'DEF_MEASURE_UNIT_FOR_PRODUCTS',
                         'DEF_OUTSTANDING_AMOUNT',
+                        'DEF_SEPA_PAYMENT_TYPE',
                         'DEF_TAX',
                         'DEF_WAREHOUSE',
                         'DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE',

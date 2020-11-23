@@ -164,6 +164,15 @@ Route::get('mqueuer', 'MProbeController@queuer');
 Route::get('migratethis', function()
 {	
 
+	// 2020-11-22
+
+	$payment_type = \App\PaymentType::where('name', 'Remesa')->first();
+	if ($payment_type)
+		\App\Configuration::updateValue('DEF_SEPA_PAYMENT_TYPE', $payment_type->id);
+
+abi_r($payment_type);
+	die('OK');
+
 
 	// 2020-11-18
 

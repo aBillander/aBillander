@@ -82,7 +82,11 @@
       <div class="col-lg-10 col-md-10 col-sm-10">
             <div class="panel panel-success" id="panel_production_orders">
                <div class="panel-heading">
-                  <h3 class="panel-title"><i class="fa fa-th-list"></i> &nbsp; {{ l('Customer Vouchers') }}</h3>
+                  <h3 class="panel-title"><i class="fa fa-th-list"></i> &nbsp; {{ l('Customer Vouchers') }}
+
+                        <span class=" pull-right label alert-info"  style="margin-right: 15px; font-size: 14px;">{{ l('Amount') }}: {{ $directdebit->as_money('total') }} &nbsp;/&nbsp; {{ l('Vouchers') }}: {{ $directdebit->nbrItems() }}</span>
+
+                  </h3>
                </div>
                     @include('sepa_es::direct_debits._panel_customer_vouchers')
             </div>

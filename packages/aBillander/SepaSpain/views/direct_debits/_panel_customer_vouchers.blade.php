@@ -2,6 +2,7 @@
 
 {!! Form::open( ['route' => ['customervouchers.payvouchers'], 'method' => 'POST', 'id' => 'form-payvouchers'] ) !!}
 
+{{ Form::hidden('bank_order_id', $directdebit->id, array('id' => 'bank_order_id')) }}
 
 <div class="panel-body" id="div_payments">
    <div class="table-responsive">
@@ -125,9 +126,18 @@
    </div>
 </div><!-- div class="panel-body" -->
 
-<div class="panel-footer text-right">
+<div class="panel-footer">
+
+
+
+
+<div class="text-right">
 
 @if ( $directdebit->vouchers->where('status', 'pending')->count() )
+
+  <button class=" btn xbtn btn-info create-production-order pull-left" title="{{l('Unlink selected Vouchers from Remittance')}}" onclick = "this.disabled=true;$('#form-payvouchers').attr('action', '{{ route( 'customervouchers.unlinkvouchers' )}}');$('#form-payvouchers').submit();return false;">
+    <i class="fa fa-unlink"></i> &nbsp;{{l('Unlink Vouchers')}}
+  </button>
 
                <strong class="{{ $errors->has('payment_type_id') ? 'text-danger' : '' }}">{{ l('Payment Type', 'customervouchers') }}</strong>: &nbsp;
 
@@ -150,12 +160,8 @@
   </button>
 
 @endif
+</div>
 
-
-
-{{--
-  <a class=" hide btn xbtn btn-info create-production-order" title="{{l('Set as Paid')}}"><i class="fa fa-money"></i> &nbsp;{{l('Set as Paid')}}</a>
---}}
 </div>
 
 {!! Form::close() !!}
@@ -174,6 +180,9 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
+
+    // Payment Type = "Remesa"
+    $("#payment_type_id").val("{{ \App\Configuration::getInt("DEF_SEPA_PAYMENT_TYPE") }}");
 
 });
 

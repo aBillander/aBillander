@@ -225,7 +225,7 @@
         @endif
       </td>
 
-            <td class="text-center">
+            <td class="text-center button-pad">
             	@if     ( $payment->status == 'pending' )
             		<span class="label label-info">
             	@elseif ( $payment->status == 'bounced' )

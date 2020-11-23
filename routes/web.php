@@ -717,6 +717,8 @@ foreach ($pairs as $pair) {
 
         Route::post('customervouchers/payvouchers'  , 'CustomerVouchersController@payVouchers')->name('customervouchers.payvouchers');
 
+        Route::post('customervouchers/unlinkvouchers'  , 'CustomerVouchersController@unlinkVouchers')->name('customervouchers.unlinkvouchers');
+
         Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('voucher.expresspay');
         Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('voucher.unpay');
         

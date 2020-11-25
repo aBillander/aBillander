@@ -27,11 +27,11 @@
                 <!-- a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/pdf?preview') }}" title="{{l('Show Preview', [], 'layouts')}}" target="_blank"><i class="fa fa-eye"></i></a -->
 @endif
 
-@if ( $document->document_id>0 || 1 )
+@if ( $document->status != 'draft' )
                 <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Supplier', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
+@endif
 
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
-@endif
 
 @if ( $document->status != 'closed' )
 @if ($document->onhold>0)
@@ -60,7 +60,7 @@
                     <ul class="dropdown-menu  pull-right">
                       <li><a href="{{ URL::to($model_path.'') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
                       <li><a href="{{ URL::to($model_path.'/create') }}"><i class="fa fa-plus-square alert-success"></i> {{l('New Supplier Order')}}</a></li>
-                      <li><a href="{{ route('supplier.orders', [$supplier->id]) }}"><i class="fa fa-user-circle"></i> {{l('Orders', 'layouts')}}</a></li>
+                      <li><a href="{{ route('supplier.orders', [(int) optional($supplier)->id]) }}"><i class="fa fa-user-circle"></i> {{l('Orders', 'layouts')}}</a></li>
                       <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
@@ -72,8 +72,11 @@
             </div>
             
               <h2><a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Documents')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
-                  {{l('Document to')}} <span class="lead well well-sm">
+                  {{l('Document to')}} 
 
+                <span class="lead well well-sm">
+
+@if ( $supplier )
                   <a href="{{ URL::to('suppliers/' . $supplier->id . '/edit') }}" title=" {{l('View Supplier')}} " target="_blank">{{ $supplier->name_regular }}</a>
 
                  <a title=" {{l('View Invoicing Address')}} " href="javascript:void(0);">
@@ -92,6 +95,9 @@
                  @if($supplier->sales_equalization)
                   <span id="sales_equalization_badge" class="badge" title="{{l('Equalization Tax')}}"> RE </span>
                  @endif
+@else
+                {{l('Not asigned')}}
+@endif
                  </span>
                    &nbsp; 
                     @if ($document->document_id>0)

@@ -223,11 +223,11 @@ die();
         }
         catch(\Exception $e){
 
-                abi_r($template);
-                abi_r($e->getMessage(), true);
+//                abi_r($template);
+//                abi_r($e->getMessage(), true);
 
-                // return redirect()->route('customerorders.show', $id)
-                //    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+                return redirect()->back()
+                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
         }
 
         // PDF stuff ENDS
@@ -282,6 +282,7 @@ die();
         try {
             $document = $this->document
                             ->with('customer')
+                            ->with('supplier')
 //                            ->with('invoicingAddress')
 //                            ->with('customerInvoiceLines')
 //                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
@@ -296,6 +297,15 @@ die();
                      ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
             // return Redirect::to('invoice')->with('message', trans('invoice.access_denied'));
         }
+
+        // Let's see what we have:
+        if ($document->customer)
+            $entity = 'customer';
+        else
+        if ($document->supplier)
+            $entity = 'supplier';
+        else
+            $entity = 'none';
 
         $document->close();
 
@@ -358,7 +368,7 @@ die();
             if ($request->isMethod('get'))
             {
                 // ... this is GET method (call from button)
-                $subject = l($this->getParentClassLowerCase().'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->customer->name_regular;
+                $subject = l($this->getParentClassLowerCase().'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->{$entity}->name_regular;
             }
 
             $template_vars = array(
@@ -373,8 +383,8 @@ die();
             $data = array(
                 'from'     => $company->address->email,
                 'fromName' => $company->name_fiscal,
-                'to'       => $document->customer->address->email,
-                'toName'   => $document->customer->name_fiscal,
+                'to'       => $document->{$entity}->address->email,
+                'toName'   => $document->{$entity}->name_fiscal,
                 'subject'  => $subject,
                 );
 

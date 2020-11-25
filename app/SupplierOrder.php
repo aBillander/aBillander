@@ -36,7 +36,7 @@ class SupplierOrder extends Billable
                             'document_date' => 'required|date',
 //                            'payment_date'  => 'date',
                             'delivery_date' => 'nullable|date|after_or_equal:document_date',
-//                            'supplier_id' => 'exists:suppliers,id',
+                            'supplier_id' => 'exists:suppliers,id',
                             'invoicing_address_id' => '',
                             'shipping_address_id' => 'nullable|exists:addresses,id,addressable_id,{supplier_id},addressable_type,App\Supplier',
                             'sequence_id' => 'exists:sequences,id',

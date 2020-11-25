@@ -163,9 +163,9 @@
                 </a>
                 @endif
 @endif
-
+{{-- Click this link throws an error: "unknown column reference_customer". Sorry to comment this line, but this is a "to do" for later
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy Order')}}"><i class="fa fa-copy"></i></a>
-
+--}}
                 <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
                 @if( $document->deletable )

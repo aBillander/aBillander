@@ -26,12 +26,10 @@
                     'controller' => 'SupplierShippingSlipsController',
                     'path' => 'suppliershippingslips',
                 ],
-        	/*
                 [
                     'controller' => 'SupplierInvoicesController',
                     'path' => 'supplierinvoices',
                 ],
-            */
         ];
 
 
@@ -95,6 +93,6 @@ foreach ($pairs as $pair) {
 
 // Temporarily
 
-    Route::resource('supplierinvoices', 'SupplierInvoicesController');
-
     Route::resource('suppliervouchers', 'SupplierVouchersController');
+
+        Route::get('suppliervouchers/suppliers/{id}',  'SupplierVouchersController@indexByCustomer')->name('supplier.vouchers');

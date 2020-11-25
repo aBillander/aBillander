@@ -14,7 +14,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ route('customerorders.create.withcustomer', $customer->id) }}" class="btn btn-sm btn-success" 
+        <a href="{{ route('supplierorders.create.withsupplier', $supplier->id) }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
     </div>
@@ -22,27 +22,27 @@
         <a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Documents')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
                   {{ l('Documents') }} <span class="lead well well-sm">
 
-                  <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
+                  <a href="{{ URL::to('suppliers/' . $supplier->id . '/edit') }}" title=" {{l('View Supplier')}} " target="_blank">{{ $supplier->name_regular }}</a>
 
                  <a title=" {{l('View Invoicing Address')}} " href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-success" data-toggle="popover" data-placement="right" 
                             title="{{l('Invoicing Address')}}" data-content="
-                                  {{$customer->name_fiscal}}<br />
-                                  {{l('VAT ID')}}: {{$customer->identification}}<br />
-                                  {{ $customer->address->address1 }} {{ $customer->address->address2 }}<br />
-                                  {{ $customer->address->postcode }} {{ $customer->address->city }}, {{ $customer->address->state->name }}<br />
-                                  {{ $customer->address->country->name }}
+                                  {{$supplier->name_fiscal}}<br />
+                                  {{l('VAT ID')}}: {{$supplier->identification}}<br />
+                                  {{ $supplier->address->address1 }} {{ $supplier->address->address2 }}<br />
+                                  {{ $supplier->address->postcode }} {{ $supplier->address->city }}, {{ $supplier->address->state->name }}<br />
+                                  {{ $supplier->address->country->name }}
                                   <br />
                             ">
                         <i class="fa fa-info-circle"></i>
                     </button>
                  </a>
-                 @if($customer->sales_equalization)
+                 @if($supplier->sales_equalization)
                   <span id="sales_equalization_badge" class="badge" title="{{l('Equalization Tax')}}"> RE </span>
                  @endif
                  </span>
                    &nbsp; 
-                  <span class="badge" style="background-color: #3a87ad;" title="{{ $customer->currency->name }}">{{ $customer->currency->iso_code }}</span>
+                  <span class="badge" style="background-color: #3a87ad;" title="{{ $supplier->currency->name }}">{{ $supplier->currency->iso_code }}</span>
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
     </h2>        
 </div>
@@ -56,7 +56,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => ['customer.'.str_replace('customer', '', $model_path ), $customer->id], 'method' => 'GET', 'id' => 'process')) !!}
+                {!! Form::model(Request::all(), array('route' => ['supplier.'.str_replace('supplier', '', $model_path ), $supplier->id], 'method' => 'GET', 'id' => 'process')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -78,40 +78,6 @@
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
 
-
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
-            <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                {!! Form::label('manufacturing_status', l('Manufacturing Status')) !!}
-                {!! Form::select('manufacturing_status', ['' => l('All', [], 'layouts')] + $manufacturing_statusList, null, array('class' => 'form-control')) !!}
-            </div>
-@endif
-
-
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
-            <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                {!! Form::label('is_wooc', l('WooCommerce'), ['class' => 'control-label']) !!}
-                {!! Form::select('is_wooc', ['' => l('All', [], 'layouts')] + $wooc_statusList, null, array('class' => 'form-control')) !!}
-            </div>
-{{--
-            <div class=" form-group col-lg-2 col-md-2 col-sm-2" id="div-is_wooc">
-                 {!! Form::label('is_wooc', l('WooCommerce'), ['class' => 'control-label']) !!}
-                 <div>
-                   <div class="radio-inline">
-                     <label>
-                       {!! Form::radio('is_wooc', '1', false, ['id' => 'is_wooc_on']) !!}
-                       {!! l('WooCommerce Orders only') !!}
-                     </label>
-                   </div>
-                   <div class="radio-inline">
-                     <label>
-                       {!! Form::radio('is_wooc', '0', true, ['id' => 'is_wooc_all']) !!}
-                       {!! l('All', [], 'layouts') !!}
-                     </label>
-                   </div>
-                 </div>
-            </div>
---}}
-@endif
 
 {{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
@@ -151,7 +117,7 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route('customer.'.str_replace('customer', '', $model_path ), l('Reset', [], 'layouts'), $customer->id, array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('supplier.'.str_replace('supplier', '', $model_path ), l('Reset', [], 'layouts'), $supplier->id, array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>
@@ -170,7 +136,7 @@
 
 {!! Form::open( ['method' => 'POST', 'id' => 'form-select-documents'] ) !!}
 
-{!! Form::hidden('customer_id', $customer->id, array('id' => 'customer_id')) !!}
+{!! Form::hidden('supplier_id', $supplier->id, array('id' => 'supplier_id')) !!}
 
 <div id="div_documents">
 
@@ -187,7 +153,7 @@
             <th class="text-left">{{ l('Delivery Date') }}</th>
             <th class="text-left">{{ l('Deliver to') }}
               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                        data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
+                        data-content="{{ l('Address is displayed if it is different from Supplier Main Address') }}">
                     <i class="fa fa-question-circle abi-help"></i>
               </th>
             <th class="text-left">{{ l('Created via') }}</th>
@@ -281,17 +247,9 @@
 
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
-
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
-                @if ($document->export_date)
-                <a class="btn btn-sm btn-default" style="display:none;" href="javascript:void(0);" title="{{$document->export_date}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
-                @else
-                <a class="btn btn-sm btn-grey" href="{{ URL::route('fsxorders.export', [$document->id] ) }}" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
-                @endif
-@endif
-
+{{--
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy Order')}}"><i class="fa fa-copy"></i></a>
-
+--}}
                 <a class="btn btn-sm btn-warning" href="{{ URL::to($model_path.'/' . $document->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
                 <!-- a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a -->
@@ -369,7 +327,7 @@
 
                   <div class="panel-footer">
 
-                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customershippingslips.create.invoice' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-money"></i> {{l('Confirm', 'layouts')}}</a>
+                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'suppliershippingslips.create.invoice' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-money"></i> {{l('Confirm', 'layouts')}}</a>
                   
                   </div>
                   
@@ -393,20 +351,6 @@
 
 
 {{-- *************************************** --}}
-
-
-
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
-
-@if ($model_path=='customerorders')
-
-
-        @include('customer_documents._chunck_manufacturing')
-
-
-@endif
-
-@endif
 
 
 {{-- *************************************** --}}
@@ -442,15 +386,15 @@ $("#document_lines").on("change", function () {
       if (e.keyCode == 13) {
        // console.log("put function call here");
        e.preventDefault();
-       getCustomerShippingSlips();
+       getSupplierShippingSlips();
        return false;
       }
 
     });
 
-    function getCustomerShippingSlips( items_per_page = 0 ){
+    function getSupplierShippingSlips( items_per_page = 0 ){
       
-      window.location = "{{ route('customer.shippingslips', $customer->id) }}"+"?items_per_page="+$("#items_per_page").val();
+      window.location = "{{ route('supplier.shippingslips', $supplier->id) }}"+"?items_per_page="+$("#items_per_page").val();
 
       // 
       // $('#form-select-documents-per-page').submit();
@@ -541,7 +485,7 @@ $(document).ready(function() {
 
    $('#process').submit(function(event) {
 
-     if ( $("#autocustomer_name").val() == '' ) $('#customer_id').val('');
+     if ( $("#autosupplier_name").val() == '' ) $('#supplier_id').val('');
 
      return true;
 

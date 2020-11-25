@@ -123,39 +123,10 @@ class SupplierOrdersController extends BillableController
 
         $documents->setPath($id);
 
-        
-        if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
-        {
-            $suffix = '_export_mfg';
-
-            $manufacturing_statusList = [
-                            'unasigned' => 'No asignados',
-                            'asigned' => 'Asignados a Hojas de Producción abiertas',
-                            'ongoing' => 'Los dos anteriores (Pedidos en curso)',
-            ];
-            
-        } else {
-            $suffix = '';
-            
-            $manufacturing_statusList = [];
-        }
-
-        
-        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
-        {
-            $wooc_statusList = [
-                        '1' => 'Sólo Pedidos WooCommerce',
-            ];
-
-        } else {
-
-            $wooc_statusList = [];
-        }
-
 
         $statusList = $this->model_class::getStatusList();
 
-        return view($this->view_path.'.index'.$suffix.'_by_supplier', $this->modelVars() + compact('supplier', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList', 'manufacturing_statusList', 'wooc_statusList'));
+        return view($this->view_path.'.index_by_supplier', $this->modelVars() + compact('supplier', 'documents', 'sequenceList', 'templateList', 'items_per_page', 'statusList'));
     }
 
     /**
@@ -325,7 +296,7 @@ class SupplierOrdersController extends BillableController
 
         $supplier = Supplier::find( $document->supplier_id );
 
-        $invoicing_address = $supplier->address;
+        $invoicing_address = $supplier ? $supplier->address : null;
 
         // Dates (cuen)
         $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );

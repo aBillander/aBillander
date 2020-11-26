@@ -26,8 +26,10 @@
                 <div class="btn-group">
                     <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
+{{--s
                       <li><a href="{ { route('supplierquotations.create.withsupplier', $supplier->id) }}">{{l('Quotation', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
+--}}
                       <li><a href="{ { route('supplierorders.create.withsupplier', $supplier->id) }}">{{l('Order', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('suppliershippingslips.create.withsupplier', $supplier->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>

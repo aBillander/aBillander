@@ -2,7 +2,7 @@
 
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="modal_document_line_Label">{{ l('Add Service') }}</h4>
+            <h4 class="modal-title">{{ l('Edit Line') }} :: <span  id="modal_comment_document_line_Label"></span></h4>
          </div>
 
          <div class="modal-body">
@@ -36,14 +36,14 @@
 
 
 
-        <div class="row" id="service-search-autocomplete">
+        <div class="row" id="comment-search-autocomplete">
                  <div class="form-group col-lg-8 col-md-8 col-sm-8">
                     {{ l('Description') }}
-                    {!! Form::text('line_autoservice_name', null, array('class' => 'form-control', 'id' => 'line_autoservice_name', 'autocomplete' => 'off', 'onclick' => 'this.select()')) !!}
-                    {!! $errors->first('line_autoservice_name', '<span class="help-block">:message</span>') !!}
+                    {!! Form::text('line_autocomment_name', null, array('class' => 'form-control', 'id' => 'line_autocomment_name', 'autocomplete' => 'off', 'xonclick' => 'this.select()')) !!}
+                    {!! $errors->first('line_autocomment_name', '<span class="help-block">:message</span>') !!}
                  </div>
 
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 hidden">
                           {{ l('Is Shipping Cost?') }}
                      <div>
                        <div class="radio-inline">
@@ -62,7 +62,7 @@
                    </div>
                  
 
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2" id="line_sales_equalization" style="display:none">
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 hidden">
                           {{ l('Apply Sales Equalization?') }}
 
                               <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
@@ -87,10 +87,11 @@
 
                    
                </div>
-               <div class="row">
+               <div class="row hidden">
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
-
-                    {{ Form::hidden('line_cost_price', 0.0, array('id' => 'line_cost_price')) }}
+                    {{ l('Cost Price') }}
+                    {!! Form::text('line_cost_price', null, array('class' => 'form-control', 'id' => 'line_cost_price', 'autocomplete' => 'off')) !!}
+                    {!! $errors->first('line_cost_price', '<span class="help-block">:message</span>') !!}
                  </div>
 
                  {{ Form::hidden('line_quantity', null, array('id' => 'line_quantity')) }}
@@ -146,7 +147,7 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="modal_document_line_serviceSubmit" id="modal_document_line_serviceSubmit">
+               <button type="submit" class="btn btn-success" name="modal_edit_document_line_commentSubmit" id="modal_edit_document_line_commentSubmit">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 

@@ -567,9 +567,6 @@ trait BillableDocumentLinesTrait
         if (array_key_exists('extra_quantity_label', $params)) 
             $data['extra_quantity_label'] = $params['extra_quantity_label'];
         
-        if (array_key_exists('name', $params)) 
-            $data['name'] = $params['name'];
-        
 
         if (array_key_exists('name', $params)) 
             $data['name'] = $params['name'];

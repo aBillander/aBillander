@@ -314,6 +314,7 @@ class Supplier extends Model {
         if (!$currency)
             $currency = Context::getContext()->currency;
 
+        // Measure unit ???
         $line = SupplierPriceListLine::
                               where('supplier_id', $this->id)
                             ->where('product_id', $product->id)
@@ -333,6 +334,7 @@ class Supplier extends Model {
         }
 
         // One last try
+        if (0)  // Hummm! Too restrictive! =>
         if ( $thePrice <= 0.0 ) 
         {
             # code...

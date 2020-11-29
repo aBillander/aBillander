@@ -163,6 +163,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-11-29
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `lots` ADD `blocked` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `expiry_at`;");
+	
+
+
+	die('OK');
 
 	// 2020-11-22
 

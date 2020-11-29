@@ -31,6 +31,8 @@ class CreateLotsTable extends Migration
             $table->timestamp('manufactured_at')->nullable()->default(NULL);
             $table->timestamp('expiry_at')->nullable()->default(NULL);            
 
+            $table->tinyInteger('blocked')->default(1);                 // Stock Movements not allowed
+
             $table->text('notes')->nullable();
 
             $table->integer('warehouse_id')->unsigned()->nullable(false);

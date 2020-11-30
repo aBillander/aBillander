@@ -85,6 +85,12 @@
     @include($view_path.'.js.document')
 
     @include($view_path.'.js.document_service_lines')
+                    
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+
+    @include($view_path.'.js.document_lots')
+
+@endif
 
 
 <script>

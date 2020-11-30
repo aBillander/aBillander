@@ -91,6 +91,10 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/reload/costs', $controller.'@reloadCosts')->name($path.'.reload.costs'        );
 }
 
+    
+        Route::resource('suppliershippingsliplines.lots', 'SupplierShippingSlipLineLotsController');
+
+
 // Temporarily
 
     Route::resource('suppliervouchers', 'SupplierVouchersController');

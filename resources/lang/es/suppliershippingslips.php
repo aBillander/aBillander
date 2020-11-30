@@ -94,7 +94,7 @@ return [
 	'You should choose a Supplier'     => 'Debe seleccionar un Proveedor',
 
 	'Documents'     => 'Albaranes de Proveedores',
-	'Document to'     => 'Albarán a',
+	'Document from'     => 'Albarán de',
 	'Back to Documents'     => 'Volver a Albaranes de Proveedores',
 	'Back to Suppliers'     => 'Volver a Proveedores',
 	'Invoicing Address'     => 'Datos de Facturación',
@@ -337,5 +337,7 @@ return [
 
 	'Not Invoiced'     => 'No Facturados',
 	'Invoiced'     => 'Facturados',
+
+	'Add Lots to Line' => 'Añadir Lotes a la Línea',
 
 ];

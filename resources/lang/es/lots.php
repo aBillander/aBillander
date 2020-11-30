@@ -47,4 +47,10 @@ return [
 	'New Adjustment by Lot (:id) ' => 'Nuevo Ajuste por el Lote (:id) ',
 
 
+	'Add Lots to Line' => 'Añadir Lotes a la Línea',
+	'Quantity referred to the Measure Unit of the Line.' => 'Cantidad referida a la Unidad de Medida de la Línea.',
+
+	'Must be less than :qty' => 'Debe ser menor que :qty',
+
+
 ];

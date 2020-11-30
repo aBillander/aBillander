@@ -33,6 +33,12 @@
 
 @include($view_path.'._modal_document_line_form')
 
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+
+    @include($view_path.'._modal_document_line_lots_form')
+
+@endif
+
 @include($view_path.'._modal_document_line_delete')
 
 {{--

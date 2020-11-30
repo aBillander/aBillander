@@ -58,6 +58,12 @@ class MeasureUnit extends Model {
 //            return l(get_called_class().'.'.$this->type, 'appmultilang');
             return l(get_called_class().'.'.$this->type, 'appmultilang');
     }
+
+
+    public function quantityable( $qty = 0.0, $decimalSeparator = '.' )
+    {
+            return number_format($qty, $this->decimalPlaces, $decimalSeparator, '');
+    }
     
 
     /*

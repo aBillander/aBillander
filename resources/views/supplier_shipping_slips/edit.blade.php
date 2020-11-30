@@ -69,7 +69,7 @@
             </div>
             
               <h2><a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Documents')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
-                  {{l('Document to')}} <span class="lead well well-sm">
+                  {{l('Document from')}} <span class="lead well well-sm">
 
                   <a href="{{ URL::to('suppliers/' . $supplier->id . '/edit') }}" title=" {{l('View Supplier')}} " target="_blank">{{ $supplier->name_regular }}</a>
 

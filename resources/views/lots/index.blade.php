@@ -177,7 +177,7 @@
                        
                 <a class=" hide  btn btn-sm btn-warning " href="{{ URL::to('lots/' . $lot->id . '/edit') }}"  title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                <a class=" hide btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('lots/' . $lot->id ) }}" 
                 		data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
                 		data-title="{{ l('Lots') }} ::  ({{$lot->id}}) {{ $lot->reference }}" 

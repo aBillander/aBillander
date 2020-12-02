@@ -180,6 +180,19 @@ class Billable extends Model implements ShippableInterface
             // before delete() method call this
             // if ($document->has('customershippingsliplines'))
             foreach($document->lines as $line) {
+                
+                if ( Configuration::isTrue('ENABLE_LOTS') )
+                {
+                    foreach ($line->lotitems as $lotitem) {
+                        # code...
+                        $lot = $lotitem->lot;
+                        if ( $lot->quantity == $lot->quantity_initial ) // Guess no stock movements (as it should be!)
+                            $lot->delete();
+
+                        $lotitem->delete();
+                    }
+                }
+
                 $line->delete();
             }
 
@@ -1220,6 +1233,37 @@ class Billable extends Model implements ShippableInterface
         });
 
         return $total_volume;
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shippable Interface
+    |--------------------------------------------------------------------------
+    */
+
+    public function getLinesHasRequiredLotsAttribute()
+    {
+        if ( Configuration::isFalse('ENABLE_LOTS') )
+            return true;
+
+        foreach ($this->lines as $line) {
+            //
+            // Only products, please!!!
+            if ( ! ( $line->line_type == 'product' ) ) continue;
+            if ( ! ( $line->product_id > 0 ) )         continue;
+
+            if ( !optional($line->product)->lot_tracking) continue;
+
+            $pending = $line->quantity - $line->lots->sum('quantity_initial');
+
+            if ( $pending > 0.0 )
+                return false;
+
+        }
+
+        return true;
     }
 
 }

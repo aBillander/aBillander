@@ -39,7 +39,7 @@ class SupplierShippingSlipLineLotsController extends Controller
     {
         // return $lineId.l('xxx').snake_case('SupplierShippingSlipLineLots');
 
-        $document_line = $this->document_line->with('lotitems')->findOrFail($lineId);
+        $document_line = $this->document_line->with('document')->with('lotitems')->findOrFail($lineId);
 
         // abi_r($document_line->lots);die();
 

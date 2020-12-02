@@ -22,7 +22,7 @@ class Lot extends Model
     protected $fillable = ['reference', 'product_id', 'combination_id',
     					   'quantity_initial', 'quantity', 
     					   'measure_unit_id', 'package_measure_unit_id', 'pmu_conversion_rate',
-    					   'manufactured_at', 'expiry_at',
+    					   'manufactured_at', 'expiry_at', 'blocked', 
     					   'notes',
                            'warehouse_id',
     					];

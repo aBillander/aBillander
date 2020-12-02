@@ -174,7 +174,7 @@ class BillableController extends Controller
                 $line->pending = null;
                 if ( !optional($line->product)->lot_tracking) continue;
 
-                $line->pending = $line->quantity - $line->lots->sum('quantity');
+                $line->pending = $line->quantity - $line->lots->sum('quantity_initial');
             }
         }
 

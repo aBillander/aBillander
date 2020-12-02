@@ -150,8 +150,6 @@
                  </a>
                 @endif</td>
                 <td class="text-right button-pad">
-                      @if ( $document->editable )
-                    <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadsupplierdocumentlines();"><i class="fa fa-pencil"></i></a -->
                     
 @if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->line_type == 'product') && ($line->product->lot_tracking > 0) )
 @php
@@ -165,6 +163,8 @@
                       data-type="{{$line->line_type}}" title="{{l('Add Lots to Line')}}" onClick="return false;"><i class="fa fa-window-restore"></i>{{ $msg }}</a>
                     
 @endif
+                      @if ( $document->editable )
+                    <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadsupplierdocumentlines();"><i class="fa fa-pencil"></i></a -->
                     
                     <a class="btn btn-sm btn-warning edit-document-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
 

@@ -206,6 +206,7 @@
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>
+{{--
     @if ( $document->shipment_status == 'delivered' )
         @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
 
@@ -225,6 +226,7 @@
                 <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/deliver') }}" title="{{l('Set delivered')}}">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
         @endif
     @endif
+--}}
             </td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
             <td><a class="" href="{{ URL::to('suppliers/' . optional($document->supplier)->id . '/edit') }}" title="{{ l('Show Supplier') }}" target="_new">
@@ -262,7 +264,7 @@
                 <a class="btn btn-sm btn-lightblue xbtn-info" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
 @endif
 
-@if ($document->document_id>0)
+@if (0 && $document->document_id>0)
                 <a class="btn btn-sm btn-lightblue"    href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send by eMail', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
 
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>

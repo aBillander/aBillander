@@ -486,6 +486,12 @@ class SupplierShippingSlipsController extends BillableController
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
         }
 
+        if ( Configuration::isTrue('ENABLE_LOTS') && !$document->lines_has_required_lots )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document Lines do not have enough Lots', 'layouts'));
+        }
+
         // Close
         if ( $document->close() )
             return redirect()->back()           // ->route($this->model_path.'.index')

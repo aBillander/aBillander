@@ -43,8 +43,12 @@
                         {{ $document_line->measureunit->quantityable($lot->quantity)  }}
                 </td>
                 <td class="text-right">
+
+@if ($document_line->document->editable)
                     <button class="btn btn-md btn-danger remove-line-lot" data-lot_id="{{ $lot->id  }}" type="button" title="{{l('Delete', [], 'layouts')}}">
                    <i class="fa fa-trash"></i></button>
+@endif
+
                 </td>
             </tr>
             
@@ -60,7 +64,7 @@
     <td></td></tr>
     @endif
 
-            @if ( $pending > 0.0 )
+            @if ( ($pending > 0.0) && $document_line->document->editable )
 
             <tr>
                 <td class="text-left">

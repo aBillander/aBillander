@@ -37,6 +37,7 @@ return [
 	'Document has no Lines'                                      =>  'El Documento no contiene Líneas',
 	'Document amount should be more than: :amount'               =>  'El Importe del Documento debe ser superior a: :amount',
 	'Document is on-hold'                                      =>  'El Documento está en espera',
+	'Document Lines do not have enough Lots'					=> 'Las Lineas del Documento no tienen Lotes suficientes',
 	'Document is not closed'                                      =>  'El Documento no está cerrado',
 	'Document has Payments'                                      =>  'El Documento tiene Pagos',
 	'Document not found'										=> 'Documento no encontrado',

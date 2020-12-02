@@ -233,6 +233,17 @@
         });
 
 
+        $('#modal_document_line_lots').on('hide.bs.modal', function() {
+
+            var line_id = $("#line_lotable_line_id").val();
+
+            // alert(line_id);
+
+            loadDocumentlines();
+
+        });
+
+
 
     });
 

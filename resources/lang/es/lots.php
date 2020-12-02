@@ -51,6 +51,9 @@ return [
 	'Quantity referred to the Measure Unit of the Line.' => 'Cantidad referida a la Unidad de Medida de la Línea.',
 
 	'Must be less than :qty' => 'Debe ser menor que :qty',
+	'Must be a valid Date' => 'Debe ser una fecha válida',
+
+	'Duplicate Lot Number: :lot' => 'Número de Lote duplicado: :lot',
 
 
 ];

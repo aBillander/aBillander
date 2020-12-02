@@ -154,11 +154,15 @@
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadsupplierdocumentlines();"><i class="fa fa-pencil"></i></a -->
                     
 @if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->line_type == 'product') && ($line->product->lot_tracking > 0) )
+@php
+  $color = $line->pending > 0 ? 'danger' : 'grey';
+  $msg   = $line->pending > 0 ? ' ('.$line->measureunit->quantityable( $line->pending ).')' : '';
+@endphp
                     
-                    <a class="btn btn-sm btn-grey lotable-document-line" data-id="{{$line->id}}" 
+                    <a class="btn btn-sm btn-{{ $color }} lotable-document-line" data-id="{{$line->id}}" 
                       data-title="{{ '['.$line->reference.'] '.$line->name }}" 
-                      data-quantity_label="{{ $line->packagemeasureunit->quantityable($line->quantity) .' ('.$line->measureunit->name.')'}}" 
-                      data-type="{{$line->line_type}}" title="{{l('Add Lots to Line')}}" onClick="return false;"><i class="fa fa-window-restore"></i></a>
+                      data-quantity_label="{{ $line->measureunit->quantityable($line->quantity) .' ('.$line->measureunit->name.')'}}" 
+                      data-type="{{$line->line_type}}" title="{{l('Add Lots to Line')}}" onClick="return false;"><i class="fa fa-window-restore"></i>{{ $msg }}</a>
                     
 @endif
                     

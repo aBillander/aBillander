@@ -4,6 +4,13 @@
 
     <div id="div_lot_lines">
        <div class="table-responsive">
+@php
+    $pending = $document_line->quantity - $document_line->lots->sum('quantity');
+@endphp
+
+            {!! Form::hidden('line_lotable_line_id',  $document_line->id,       array('id' => 'line_lotable_line_id' )) !!}
+            {!! Form::hidden('line_lotable_quantity', $document_line->quantity, array('id' => 'line_lotable_quantity')) !!}
+            {!! Form::hidden('line_lotable_pending',  $pending,                 array('id' => 'line_lotable_pending' )) !!}
 
     <table id="document_lines" class="table table-hover">
         <thead>
@@ -33,7 +40,7 @@
                         {{ abi_date_short($lot->expiry_at)  }}
                 </td>
                 <td class="text-left">
-                        {{ $document_line->packagemeasureunit->quantityable($lot->quantity)  }}
+                        {{ $document_line->measureunit->quantityable($lot->quantity)  }}
                 </td>
                 <td class="text-right">
                     <button class="btn btn-md btn-danger remove-line-lot" data-lot_id="{{ $lot->id  }}" type="button" title="{{l('Delete', [], 'layouts')}}">
@@ -53,19 +60,17 @@
     <td></td></tr>
     @endif
 
-            @if ( ( $pending = $document_line->quantity - $document_line->lots->sum('quantity') ) > 0.0 )
+            @if ( $pending > 0.0 )
 
             <tr>
                 <td class="text-left">
-                    {!! Form::hidden('line_lotable_line_id',  $document_line->id,       array('id' => 'line_lotable_line_id' )) !!}
-                    {!! Form::hidden('line_lotable_quantity', $document_line->quantity, array('id' => 'line_lotable_quantity')) !!}
-                    {!! Form::hidden('line_lotable_pending',  $pending,                 array('id' => 'line_lotable_pending' )) !!}
                 </td>
                 <td class="text-left">
                     {!! Form::text('lot_reference', null, array('class' => 'form-control', 'id' => 'lot_reference')) !!}
                 </td>
                 <td class="text-left">
                         {!! Form::text('lot_expiry_at_form', null, array('class' => 'form-control', 'id' => 'lot_expiry_at_form')) !!}
+                    <span class="help-block hide" id="lot_expiry_at_form_error">{{l('Must be a valid Date')}}</span>
                 </td>
                 <td class="text-left">
                     {!! Form::text('lot_quantity', $document_line->measureunit->quantityable( $pending ), array('class' => 'form-control', 'id' => 'lot_quantity', 'onclick' => 'this.select()')) !!}
@@ -86,6 +91,12 @@
 
 
        </div>
+
+<div class="alert alert-dismissible alert-danger hide" id="div-lot-error">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong><span id="lot-error-messages"></span></strong>
+</div>
+
     </div><!-- div id="div_lot_lines" ENDS -->
 
       </div>

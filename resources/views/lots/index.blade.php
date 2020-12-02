@@ -133,6 +133,7 @@
             <th>{{l('Measure Unit')}}</th>
             <th>{{l('Manufacture Date')}}</th>
             <th>{{l('Expiry Date')}}</th>
+            <th class="text-center">{{ l('Blocked', [], 'layouts') }}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
@@ -157,6 +158,9 @@
       <td>{{ optional($lot->measureunit)->sign }}</td>
       <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
       <td>{{ abi_date_short( $lot->expiry_at ) }}</td>
+
+            <td class="text-center">@if ($lot->blocked) <i class="fa fa-lock" style="color: #df382c;"></i> @else <i class="fa fa-unlock" style="color: #38b44a;"></i> @endif</td>
+
             <td class="text-center">
                 @if ($lot->notes)
                  <a href="javascript:void(0);">

@@ -165,6 +165,19 @@ class BillableController extends Controller
 
         return $document;
 */
+        if ( Configuration::isTrue('ENABLE_LOTS') )
+        if ( strpos($this->model, 'ShippingSlip') !== false )
+        {
+            // Do document lines have lots added?
+            foreach ($document->lines as $line) {
+                # code...
+                $line->pending = null;
+                if ( !optional($line->product)->lot_tracking) continue;
+
+                $line->pending = $line->quantity - $line->lots->sum('quantity');
+            }
+        }
+
         $units = MeasureUnit::whereIn('id', [Configuration::getInt('DEF_VOLUME_UNIT'), Configuration::getInt('DEF_WEIGHT_UNIT')])->get();
         $volume_unit = $units->where('id', Configuration::getInt('DEF_VOLUME_UNIT'))->first();
         $weight_unit = $units->where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();

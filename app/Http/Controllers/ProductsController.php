@@ -964,9 +964,11 @@ LIMIT 1
         if ( !($items_per_page_lots >= 0) ) 
             $items_per_page_lots = Configuration::get('DEF_ITEMS_PERPAGE');
 
+        $product = $this->product->findOrFail($id);
+
         $lots = Lot::where('product_id', $id)
-                                ->with('product')
-                                ->with('combination')
+//                                ->with('product')
+//                                ->with('combination')
                                 ->with('measureunit')
                                 ->with('warehouse')
                                 ->orderBy('warehouse_id', 'DESC')
@@ -978,7 +980,7 @@ LIMIT 1
 
         // return $items_per_page_lots ;
         
-        return view('products._panel_lots', compact('lots', 'items_per_page_lots'));
+        return view('products._panel_lots', compact('product', 'lots', 'items_per_page_lots'));
     }
 
 

@@ -106,10 +106,18 @@
 			// Let's check quantity before submit:
 			var max_qty = $('#line_lotable_pending').val();
 
-			if ( $('#lot_quantity').val() > max_qty )
+			if ( (($('#lot_quantity').val() - max_qty) > 0) || ($('#lot_quantity').val() <= 0) )
 			{
 				$('#lot_quantity_error').parent().addClass('has-error');
 				$('#lot_quantity_error').removeClass('hide');
+
+				return false;
+			}
+
+			if ( $('#lot_expiry_at_form').val().trim().length < 8 )	// Poor man check, but maybe enough
+			{
+				$('#lot_expiry_at_form_error').parent().addClass('has-error');
+				$('#lot_expiry_at_form_error').removeClass('hide');
 
 				return false;
 			}
@@ -135,12 +143,29 @@
 
               		console.log(response);
 
-              		// alert(line_id);
-
               		getProductLineLotsData( line_id );
 
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
+
+					// https://stackoverflow.com/questions/16149431/make-function-wait-until-element-exists
+					var checkExist = setInterval(function() {
+					   if ($('#lot-error-messages').length) {
+					      console.log("Exists!");
+					      clearInterval(checkExist);
+
+		              		// Let's see if threre are errors
+		              		if ( response.msg == 'KO' )
+		              		{
+		              			$('#lot-error-messages').html(response.error);
+		              			$('#div-lot-error').removeClass('hide');
+		              		}
+					   }
+					}, 100); // check every 100ms
+
+					// ^-- For a better approach:
+					// https://stackoverflow.com/questions/57391677/how-to-wait-until-an-element-exists-with-javascript
+
 
 //                    if ( response.msg == 'OK' )
 //                      showAlertDivWithDelay("#msg-success");

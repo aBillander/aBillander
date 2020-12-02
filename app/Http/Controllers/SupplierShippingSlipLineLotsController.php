@@ -73,6 +73,17 @@ class SupplierShippingSlipLineLotsController extends Controller
         $document_line = $this->document_line->with('document')->with('product')->with('lotitems')->findOrFail($lineId);
 
         // Should validate data... But I am lazy today :(
+        // Lot number should be unique
+        if ( Lot::where('reference', $request->input('reference'))->exists() )
+        {
+            return response()->json( [
+                    'msg' => 'KO',
+                    'data' => $request->toArray(),
+                    'error' => l('Duplicate Lot Number: :lot', ['lot' => $request->input('reference')], 'lots')
+            ] );
+        }
+
+        // Should validate date anf quantity perhaps... But I am lazy today :(
 
 
         $lot_params = [
@@ -86,6 +97,7 @@ class SupplierShippingSlipLineLotsController extends Controller
 //            'pmu_conversion_rate' => ,
             'manufactured_at' => null, 
             'expiry_at' => $request->input('expiry_at'),
+            'blocked' => 1,                                 // Will be unblocked when Shipping Slip is closed
             'notes' => '',
 
             'warehouse_id' => $document_line->document->warehouse_id,

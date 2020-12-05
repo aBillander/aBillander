@@ -89,6 +89,10 @@ foreach ($pairs as $pair) {
         Route::get($path.'/suppliers/{id}',  $controller.'@indexBySupplier')->name('supplier.'.str_replace('supplier', '', $path));
 
         Route::get($path.'/{id}/reload/costs', $controller.'@reloadCosts')->name($path.'.reload.costs'        );
+
+        Route::post($path.'/{id}/attachment',         $controller.'@attachmentStore'  )->name($path.'.attachment.store'  );
+        Route::get($path.'/{id}/attachment/{aid}',    $controller.'@attachmentShow'   )->name($path.'.attachment.show'   );
+        Route::delete($path.'/{id}/attachment/{aid}',   $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
 }
 
     

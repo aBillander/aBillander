@@ -9,6 +9,7 @@ use App\Configuration;
 
 trait BillableDocumentControllerTrait
 {
+    use ModelAttachmentControllerTrait;
 
 
     protected function showBulkPdf(Request $request)

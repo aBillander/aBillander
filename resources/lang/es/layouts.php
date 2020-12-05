@@ -93,6 +93,9 @@ return [
 
 	'Discount on Product Price' => 'Descuento sobre el Precio del Producto',
 
+	'Attachments' => 'Adjuntos',
+	'Upload an Attach Files' => 'Subir y Adjuntar Ficheros',
+
 
 	/*
 	|--------------------------------------------------------------------------

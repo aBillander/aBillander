@@ -469,6 +469,39 @@ if (! function_exists('abi_tenant_db_backups_path')) {
 }
 
 
+if (! function_exists('abi_tenant_full_attachments_path')) {
+    /**
+     * Get the path to the public folder.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function abi_tenant_attachments_full_path($path = '')
+    {
+        $tenant = \App\Context::getContext()->tenant;
+
+        // tenants/localhost/attachments
+
+        $abi_tenant_attachments_path = 'tenants/' . $tenant . '/attachments' . ($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
+
+        return storage_path( $abi_tenant_attachments_path );
+    }
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Helper functions - Other.
+|--------------------------------------------------------------------------
+|
+| Other 
+| .
+|
+*/
+
+
+
 if (! function_exists('abi_safe_division')) {
     /**
      * Safe division for statistice & profitability.

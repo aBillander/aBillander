@@ -112,6 +112,8 @@ trait SupplierBillableStockMovementsTrait
                         'reference' => $mvt->reference,
                         'name' => $mvt->name,
 
+                        'lot_id' => $mvt->lot_id,
+
                         'warehouse_id' => $mvt->warehouse_id,
     //                    'warehouse_counterpart_id' => $line->,
 
@@ -131,6 +133,14 @@ trait SupplierBillableStockMovementsTrait
                 }
 
             }   // Movements loop ENDS
+
+            
+            // Line Lots stuff
+            if ( Configuration::isTrue('ENABLE_LOTS') && ($line->product->lot_tracking > 0)  )
+            foreach ( $line->lots as $lot ) {
+                # code...
+                $lot->update(['blocked' => 1]);
+            }
 
         }   // Lines loop ENDS
 

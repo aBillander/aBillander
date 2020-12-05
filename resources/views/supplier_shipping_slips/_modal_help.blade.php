@@ -20,10 +20,10 @@
 
 <p>2.- Modificar la cabecera, añadir / modificar / borrar líneas.</p>
 
-<p>3.- Confirmar el Albarán. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada, y se hace la reserva de Stock. Aún es posible modificar la cabecera y las líneas.</p>
+<p>3.- Confirmar el Albarán. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada{{--, y se hace la reserva de Stock--}}. Aún es posible modificar la cabecera y las líneas.</p>
 
 <p>4.- Cerrar el Albarán. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock.</p>
-
+{{--
 <div class="alert alert-warning">
     <p><strong>Cómo afecta al Stock</strong></p>
     <p></p>
@@ -91,7 +91,7 @@
 <p>- <strong>Excepción</strong>. El Albarán pasa a este estado si la entrega falla (entrega rehusada, pérdida de paquetes, etc.).</p>
 
 <p>- <strong>Entregado</strong>. La mercancía se entregó y el Albarán está firmado por el Cliente y el Transportista.</p>
-
+--}}
 
 
 

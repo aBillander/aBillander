@@ -676,6 +676,10 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/reload/commissions', $controller.'@reloadCommissions')->name($path.'.reload.commissions');
         Route::get($path.'/{id}/reload/ecotaxes',    $controller.'@reloadEcotaxes'   )->name($path.'.reload.ecotaxes'   );
         Route::get($path.'/{id}/reload/costs',       $controller.'@reloadCosts'      )->name($path.'.reload.costs'      );
+
+        Route::post($path.'/{id}/attachment',         $controller.'@attachmentStore'  )->name($path.'.attachment.store'  );
+        Route::get($path.'/{id}/attachment/{aid}',    $controller.'@attachmentShow'   )->name($path.'.attachment.show'   );
+        Route::post($path.'/{id}/attachment/{aid}',   $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
 }
 
         Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');

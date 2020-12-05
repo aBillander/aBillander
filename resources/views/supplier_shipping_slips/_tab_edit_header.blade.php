@@ -35,6 +35,15 @@
            {!! $errors->first('document_ppd_percent', '<span class="help-block">:message</span>') !!}
         </div>
 
+         <div class="form-group col-lg-2 col-md-2 col-sm-2">
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference_supplier') ? 'has-error' : '' }}">
+            <strong>{{ l('Supplier Reference') }}</strong>
+           {!! Form::text('reference_supplier', null, array('class' => 'form-control', 'id' => 'reference_supplier')) !!}
+           {!! $errors->first('reference_supplier', '<span class="help-block">:message</span>') !!}
+         </div>
+
       </div>
       <div class="row">
 

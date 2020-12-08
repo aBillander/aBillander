@@ -2,10 +2,6 @@
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">
 
-            <!-- h4>{{ l('Customer Risk') }}</h4>
-            <div class="progress progress-striped">
-                <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
-            </div -->
             <ul class="list-group">
               <li class="list-group-item" style="color: #333333;background-color: #e7e7e7;border-color: #cccccc;">
                 <h4>{{ l('Attachments', 'layouts') }}</h4>
@@ -72,44 +68,7 @@ $label_short = strlen($label) > 11 ? substr($label, 0, 11)."&hellip;" : $label;
           </div>
 
 
-@include('layouts/modal_delete')
-
-
-@section('scripts') @parent 
-
-<script type="text/javascript">
-
-$(function() {
-
-  // See: https://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3
-  // We can attach the `fileselect` event to all file inputs on the page
-  $(document).on('change', ':file', function() {
-    var input = $(this),
-        numFiles = input.get(0).files ? input.get(0).files.length : 1,
-        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-    input.trigger('fileselect', [numFiles, label]);
-  });
-
-  // We can watch for our custom `fileselect` event like this
-  $(document).ready( function() {
-      $(':file').on('fileselect', function(event, numFiles, label) {
-
-          var input = $(this).parents('.input-group').find(':text'),
-              log = numFiles > 1 ? numFiles + ' files selected' : label;
-
-          if( input.length ) {
-              input.val(log);
-          } else {
-              if( log ) alert(log);
-          }
-
-      });
-  });
-  
-});
-</script>
-
-@endsection
+@include('model_attachments/_form_attachments')
 
 
 {{--

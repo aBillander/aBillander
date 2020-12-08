@@ -13,6 +13,7 @@ use App\Traits\BillableEcotaxableTrait;
 use App\Traits\BillableTotalsTrait;
 use App\Traits\BillableProfitabilityTrait;
 use App\Traits\ViewFormatterTrait;
+use App\Traits\ModelAttachmentableTrait;
 
 use App\Configuration;
 
@@ -27,6 +28,7 @@ class Billable extends Model implements ShippableInterface
     use BillableTotalsTrait;
     use BillableProfitabilityTrait;
     use ViewFormatterTrait;
+    use ModelAttachmentableTrait;
 
 
     public static $billable_types = array(
@@ -973,7 +975,7 @@ class Billable extends Model implements ShippableInterface
             $this->invoicingaddress() ;
     }
 
-
+/*
     // Attachments
     public function attachments()
     {
@@ -985,7 +987,7 @@ class Billable extends Model implements ShippableInterface
     {
         return $this->attachments();
     }
-
+*/
 
 
 

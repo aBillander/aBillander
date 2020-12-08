@@ -2,7 +2,10 @@
 
 namespace App;
 
+// use Illuminate\Http\File;
 use Illuminate\Database\Eloquent\Model;
+
+use File;
 
 class ModelAttachment extends Model
 {
@@ -12,11 +15,26 @@ class ModelAttachment extends Model
 
     /**
      * Get Path for Attachments.
-     * public static $products_path = '/uploads/images_p/';
+     * public static <storage_path>/tenants/<tenant>/attachments
      */
-    public static function full_pathAttachments()
+    public static function full_pathAttachments( $classname = 'other' )
     {
-        return abi_tenant_attachments_full_path();
+        $directoryPath = abi_tenant_attachments_full_path( '/'.$classname);
+
+        if(!File::isDirectory($directoryPath)){
+            //make the directory because it doesn't exists
+            File::makeDirectory($directoryPath);    // , 0777, true, true);
+        }
+
+        return $directoryPath;
+    }
+    
+    
+    public static function getClassFolder( $classname = 'other' )
+    {
+        $segments = array_reverse(explode('\\', $classname));
+
+        return $segments[0];
     }
     
 

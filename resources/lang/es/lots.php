@@ -13,6 +13,7 @@ return [
 	'New Lot' => 'Nuevo Lote',
 	'Lots - Edit' => 'Lotes - Modificar',	
 	'Edit Lot' => 'Modificar Lote',
+	'Back to Lots' => 'Volver a Lotes',
 
 	'Search by Name or Reference.'     => 'Busque por Nombre o Referencia.',
 
@@ -20,9 +21,14 @@ return [
 	'Lots' => 'Lotes',
     'Product Name'                   => 'Nombre del Producto',
     'Product Reference'                      => 'Referencia del Producto',
+	'Type'     => 'Tipo',
+	'Movement type'     => 'Tipo de movimiento',
 	'Warehouse' => 'Almacén',
 	'Movement type' => '',
-	'Document' => '',
+	'Date'     => 'Fecha',
+	'Document' => 'Documento',
+	'Stock after'     => 'Stock final',
+	'Lot Stock after'     => 'Stock final del Lote',
 
 	'Lot Number' => 'Número de Lote',
 	'Use Stock?' => '¿Usar Stock?',
@@ -43,6 +49,7 @@ return [
 	'Manufacture Date' => 'Fecha de Fabricación',
 	'Expiry Date' => 'Fecha de Caducidad',
 	'Stock Movements' => 'Movimientos de Stock',
+	'Lot Stock Movements' => 'Movimientos de Stock de Lote',
 
 	'New Adjustment by Lot (:id) ' => 'Nuevo Ajuste por el Lote (:id) ',
 
@@ -54,6 +61,12 @@ return [
 	'Must be a valid Date' => 'Debe ser una fecha válida',
 
 	'Duplicate Lot Number: :lot' => 'Número de Lote duplicado: :lot',
+
+
+
+	'Lot Attachments' => 'Ficheros Adjuntos',
+	'Attachments' => 'Adjuntos',
+	'Description' => 'Descripción',
 
 
 ];

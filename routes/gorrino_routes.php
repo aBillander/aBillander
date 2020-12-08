@@ -163,9 +163,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-12-07
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `lot_quantity_after_movement` DECIMAL(20,6) NULL DEFAULT NULL AFTER `quantity_after_movement`;");
+	
 	// 2020-12-04
 	
-	Illuminate\Support\Facades\DB::statement("drop table if exists `model_attachments`;");
+//	Illuminate\Support\Facades\DB::statement("drop table if exists `model_attachments`;");
 	
 	Illuminate\Support\Facades\DB::statement("create table `model_attachments` (`id` int unsigned not null auto_increment primary key, `name` varchar(128) null, `description` text null, `position` int unsigned not null default '0', `filename` varchar(128) not null, `attachmentable_id` int unsigned not null, `attachmentable_type` varchar(191) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 	

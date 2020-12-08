@@ -318,6 +318,12 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('lots', 'LotsController');
         Route::get( 'export/lots', 'LotsController@export' )->name('lots.export');
+        Route::get( 'lots/{lot}/stockmovements',        'LotsController@stockmovements' )->name('lot.stockmovements'       );
+        Route::get( 'export/lots/{lot}/stockmovements', 'LotsController@export' )->name('lot.stockmovements.export');
+
+        Route::post('lots/{id}/attachment',         'LotsController@attachmentStore'  )->name('lots.attachment.store'  );
+        Route::get( 'lots/{id}/attachment/{aid}',   'LotsController@attachmentShow'   )->name('lots.attachment.show'   );
+        Route::delete('lots/{id}/attachment/{aid}',   'LotsController@attachmentDestroy')->name('lots.attachment.destroy');
 
         Route::resource('products', 'ProductsController');
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
@@ -679,7 +685,7 @@ foreach ($pairs as $pair) {
 
         Route::post($path.'/{id}/attachment',         $controller.'@attachmentStore'  )->name($path.'.attachment.store'  );
         Route::get($path.'/{id}/attachment/{aid}',    $controller.'@attachmentShow'   )->name($path.'.attachment.show'   );
-        Route::post($path.'/{id}/attachment/{aid}',   $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
+        Route::delete($path.'/{id}/attachment/{aid}', $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
 }
 
         Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');

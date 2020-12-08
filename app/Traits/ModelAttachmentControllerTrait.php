@@ -26,10 +26,13 @@ trait ModelAttachmentControllerTrait
 //                'name' => 'required',
 //                'attachment_file' => 'required | mimes:jpeg,jpg,gif,png,svg | max:8000',
 //                'attachment_file' => 'required|mimes:'.implode(',', $allowedfileExtension).'|max:8000',
+                'model_class' => 'required',
                 'attachment_file' => 'required|max:8000',
         ]);
 
         $file = $request->file('attachment_file');
+
+        $class = ModelAttachment::getClassFolder( $request->input('model_class') );
 
         $filename = $file->getClientOriginalName();
         $extension = $file->getClientOriginalExtension();
@@ -46,7 +49,7 @@ trait ModelAttachmentControllerTrait
 //                $file->move(storage_path('app/attachments'), $file_Name);
 
             $fname = $filename;
-            $file->move( ModelAttachment::full_pathAttachments(), $fname);
+            $file->move( ModelAttachment::full_pathAttachments( $class ), $fname);
 
             ModelAttachment::create([
                     'name' => $request->input('attachment_name'), 
@@ -78,8 +81,10 @@ trait ModelAttachmentControllerTrait
     {
         $attachment = ModelAttachment::findOrFail($aid);
 
+        $class = ModelAttachment::getClassFolder( $attachment->attachmentable_type );
+
         // Delete file from storage
-        $fname = ModelAttachment::full_pathAttachments() .'/'. $attachment->filename;
+        $fname = ModelAttachment::full_pathAttachments( $class ) .'/'. $attachment->filename;
 
         return response()->download( $fname );
     }
@@ -89,10 +94,12 @@ trait ModelAttachmentControllerTrait
     {
         $attachment = ModelAttachment::findOrFail($aid);
 
+        $class = ModelAttachment::getClassFolder( $attachment->attachmentable_type );
+
         // Delete file from storage
-        $fname = ModelAttachment::full_pathAttachments() .'/'. $attachment->filename;
+        $fname = ModelAttachment::full_pathAttachments( $class ) .'/'. $attachment->filename;
         if ($fname)
-            unlink($fname);
+            @unlink($fname);
 
 
         // Delete now!

@@ -27,6 +27,7 @@ return [
 	'Movement type' => '',
 	'Date'     => 'Fecha',
 	'Document' => 'Documento',
+	'Initial Stock'     => 'Stock Inicial',
 	'Stock after'     => 'Stock final',
 	'Lot Stock after'     => 'Stock final del Lote',
 

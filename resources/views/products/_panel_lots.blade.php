@@ -28,7 +28,9 @@
         @foreach ($lots as $lot)
         <tr>
       <td>{{ $lot->id }}</td>
-      <td>{{ $lot->reference }}</td>
+      <td>
+        <a href="{{ route( 'lot.stockmovements', $lot->id ) }}" title="{{ l('Go to', 'layouts') }}" target="_blank">{{ $lot->reference }}</a>
+      </td>
       <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
       <td>[<a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a>] {{ $lot->product->name }}
 {{--

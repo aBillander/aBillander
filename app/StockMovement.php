@@ -27,7 +27,7 @@ class StockMovement extends Model {
                             'notes',
                             'product_id', 'combination_id', 'reference', 'name', 'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id',
 
-                            'lot_id',
+                            'lot_id', 'lot_quantity_after_movement', 
 
                             'user_id', 'inventorycode',
                            ];

@@ -26,9 +26,10 @@
 
     </div>
     <h2>
-        {{ l('Stock Movements') }} <span style="color: #cccccc;">::</span> <a href="javascript:void(0);"" }}">{{ $lot->reference }}</a> <br />
-        <span class="lead well well-sm alert-warning"><a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a></span>  {{ $lot->product->name }} ({{ optional($lot->measureunit)->sign }})
-    </h2>        
+        {{ l('Lot Stock Movements') }} <span style="color: #cccccc;">::</span> <a href="{{ route( 'lots.edit', $lot->id ) }}" title="{{l('Go to', [], 'layouts')}}">{{ $lot->reference }}</a>   </h2><h3>
+        <span class="lead well well-sm alert-warning"><a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a></span>  {{ $lot->product->name }} </h3><h3>
+        {{ l('Initial Stock') }}: {{ $lot->measureunit->quantityable($lot->quantity_initial) }} ({{ optional($lot->measureunit)->sign }})
+    </h3>        
 </div>
 
 
@@ -147,7 +148,7 @@
 
 			<td>{{ $stockmovement->warehouse->alias }}</td>
             <td class="text-right">{{ $stockmovement->as_quantityable( $stockmovement->quantity_after_movement - $stockmovement->quantity_before_movement ) }}</td>
-            <td class="text-right">{{ $stockmovement->as_quantity( 'quantity_after_movement' ) }}</td>
+            <td class="text-right">{{ $stockmovement->as_quantity( 'lot_quantity_after_movement' ) }}</td>
 			<td class="text-right">
 
 @if ( $route = $stockmovement->getStockmovementableDocumentRoute() )

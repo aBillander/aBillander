@@ -113,6 +113,7 @@ trait SupplierBillableStockMovementsTrait
                         'name' => $mvt->name,
 
                         'lot_id' => $mvt->lot_id,
+                        'lot_quantity_after_movement' => null,
 
                         'warehouse_id' => $mvt->warehouse_id,
     //                    'warehouse_counterpart_id' => $line->,
@@ -203,6 +204,7 @@ trait SupplierBillableStockMovementsTrait
                 $line->stockmovements()->save( $stockmovement );
 
                 $lot->stockmovements()->save( $stockmovement );
+                $stockmovement->update(['lot_quantity_after_movement' => $stockmovement->quantity]);
                 $lot->update(['blocked' => 0]);
             }
         }

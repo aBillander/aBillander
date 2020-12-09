@@ -24,11 +24,13 @@ use App\PriceRule;
 use App\Configuration;
 
 use App\Traits\DateFormFormatterTrait;
+use App\Traits\ModelAttachmentControllerTrait;
 
 class CustomersController extends Controller
 {
    
    use DateFormFormatterTrait;
+   use ModelAttachmentControllerTrait;
 
    protected $customer, $address;
 

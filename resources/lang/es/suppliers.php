@@ -193,6 +193,8 @@ return [
 	'Delivery Time'     => 'Plazo de entrega',
 	'Delivery Time in business days.'     => 'Plazo de entrega en días laborables.',
 
+	'Description'     => 'Descripción',
+
 
 	/*
 	|--------------------------------------------------------------------------

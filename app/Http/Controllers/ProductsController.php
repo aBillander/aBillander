@@ -28,11 +28,13 @@ use App\CustomerShippingSlipLine;
 use App\Events\ProductCreated;
 
 use App\Traits\DateFormFormatterTrait;
+use App\Traits\ModelAttachmentControllerTrait;
 
 class ProductsController extends Controller
 {
    
    use DateFormFormatterTrait;
+   use ModelAttachmentControllerTrait;
 
 
    protected $product;

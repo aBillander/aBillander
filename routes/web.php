@@ -300,6 +300,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('suppliers/{id}/getreference/{pid}', 'SupplierPriceListLinesController@getSupplierProductReference')->name('supplier.product.reference');
 
+        Route::post('suppliers/{id}/attachment',         'SuppliersController@attachmentStore'  )->name('suppliers.attachment.store'  );
+        Route::get( 'suppliers/{id}/attachment/{aid}',   'SuppliersController@attachmentShow'   )->name('suppliers.attachment.show'   );
+        Route::delete('suppliers/{id}/attachment/{aid}', 'SuppliersController@attachmentDestroy')->name('suppliers.attachment.destroy');
+
 
 
         Route::resource('templates', 'TemplatesController');
@@ -323,7 +327,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::post('lots/{id}/attachment',         'LotsController@attachmentStore'  )->name('lots.attachment.store'  );
         Route::get( 'lots/{id}/attachment/{aid}',   'LotsController@attachmentShow'   )->name('lots.attachment.show'   );
-        Route::delete('lots/{id}/attachment/{aid}',   'LotsController@attachmentDestroy')->name('lots.attachment.destroy');
+        Route::delete('lots/{id}/attachment/{aid}', 'LotsController@attachmentDestroy')->name('lots.attachment.destroy');
 
         Route::resource('products', 'ProductsController');
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
@@ -359,6 +363,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('products/stock/reorder',        'ProductsReorderController@index' )->name('products.reorder.index' );
         Route::get('products/stock/reorder/export', 'ProductsReorderController@export')->name('products.reorder.export');
+
+        Route::post('products/{id}/attachment',         'ProductsController@attachmentStore'  )->name('products.attachment.store'  );
+        Route::get( 'products/{id}/attachment/{aid}',   'ProductsController@attachmentShow'   )->name('products.attachment.show'   );
+        Route::delete('products/{id}/attachment/{aid}', 'ProductsController@attachmentDestroy')->name('products.attachment.destroy');
 
         Route::resource('ingredients', 'IngredientsController');
 
@@ -469,6 +477,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
 //        Route::resource('addresses', 'AddressesController');
         Route::resource('customers.addresses', 'CustomerAddressesController');
+
+        Route::post('customers/{id}/attachment',         'CustomersController@attachmentStore'  )->name('customers.attachment.store'  );
+        Route::get( 'customers/{id}/attachment/{aid}',   'CustomersController@attachmentShow'   )->name('customers.attachment.show'   );
+        Route::delete('customers/{id}/attachment/{aid}', 'CustomersController@attachmentDestroy')->name('customers.attachment.destroy');
+        
 
         Route::post('mail', 'MailController@store');
         Route::post('mail/feedback', 'MailController@storeFeedback');

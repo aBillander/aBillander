@@ -88,6 +88,10 @@
                <i class="fa fa-picture-o"></i>
                &nbsp; {{ l('Images') }}
             </a>
+            <a id="b_attachments" href="#attachments" class="list-group-item">
+               <i class="fa fa-paperclip"></i>
+               &nbsp; {{ l('Attachments', 'layouts') }}
+            </a>
 
 @if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
@@ -146,6 +150,8 @@
 
           @include('products._panel_images')
 
+          @include('products._panel_attachments')
+
       </div>
 
    </div>
@@ -171,6 +177,7 @@
       $("#product-webshop-data").hide();
       $("#panel_combinations").hide();
       $("#panel_images").hide();
+      $("#panel_attachments").hide();
 
       $("#b_main_data").removeClass('active');
       $("#b_purchases").removeClass('active');
@@ -181,6 +188,7 @@
       $("#b_internet").removeClass('active');
       $("#b_combinations").removeClass('active');
       $("#b_images").removeClass('active');
+      $("#b_attachments").removeClass('active');
       
       if(window.location.hash.substring(1) == 'purchases')
       {
@@ -231,6 +239,11 @@
       {
          $("#panel_images").show();
          $("#b_images").addClass('active');
+      }
+      else if(window.location.hash.substring(1) == 'attachments')
+      {
+         $("#panel_attachments").show();
+         $("#b_attachments").addClass('active');
       }
       else  
       {

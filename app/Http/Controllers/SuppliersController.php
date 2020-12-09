@@ -16,8 +16,12 @@ use App\BankAccount;
 
 use App\Configuration;
 
-class SuppliersController extends Controller {
+use App\Traits\ModelAttachmentControllerTrait;
 
+class SuppliersController extends Controller
+{
+
+   use ModelAttachmentControllerTrait;
 
    protected $supplier, $address;
 

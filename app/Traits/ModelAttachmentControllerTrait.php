@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\ModelAttachment;
 use App\Configuration;
 
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
+
 trait ModelAttachmentControllerTrait
 {
 
@@ -30,6 +33,9 @@ trait ModelAttachmentControllerTrait
                 'attachment_file' => 'required|max:8000',
         ]);
 
+        $anchor = $request->input('previous_anchor', '');
+        $anchor = ($anchor ? "#".ltrim($anchor, "#") : $anchor);
+
         $file = $request->file('attachment_file');
 
         $class = ModelAttachment::getClassFolder( $request->input('model_class') );
@@ -52,7 +58,7 @@ trait ModelAttachmentControllerTrait
             $file->move( ModelAttachment::full_pathAttachments( $class ), $fname);
 
             ModelAttachment::create([
-                    'name' => $request->input('attachment_name'), 
+                    'name' => $request->input('attachment_name') ?: substr($filename, 0 , (strrpos($filename, "."))), // File name with extension removed
  //                   'description'
                     'filename' => $filename, 
                     'attachmentable_id' => $id,
@@ -66,12 +72,12 @@ trait ModelAttachmentControllerTrait
 //                    'filename' => $filename
 //                ]);
 
-            return redirect()->back()
+            return Redirect::to(URL::previous() . $anchor)
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
         }
         else
         {
-            return redirect()->back()
+            return Redirect::to(URL::previous() . $anchor)
                     ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . 'Sorry Only Upload pdf, png , jpg , doc');
         }
     }
@@ -90,8 +96,11 @@ trait ModelAttachmentControllerTrait
     }
 
 
-    protected function attachmentDestroy($id, $aid)
+    protected function attachmentDestroy($id, $aid, Request $request)
     {
+        $anchor = $request->input('delete_previous_anchor', '');
+        $anchor = ($anchor ? "#".ltrim($anchor, "#") : $anchor);
+
         $attachment = ModelAttachment::findOrFail($aid);
 
         $class = ModelAttachment::getClassFolder( $attachment->attachmentable_type );
@@ -105,7 +114,7 @@ trait ModelAttachmentControllerTrait
         // Delete now!
         $attachment->delete();
 
-        return redirect()->back()
+        return Redirect::to(URL::previous() . $anchor)
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $aid], 'layouts'));
     }
 

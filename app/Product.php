@@ -6,6 +6,8 @@ use App\Scopes\ShowOnlyActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\ModelAttachmentableTrait;
+
 // use Illuminate\Validation\Rule;
 
 use Auth;
@@ -27,6 +29,8 @@ class Product extends Model {
     use ViewFormatterTrait;
     use AutoSkuTrait;
     use SoftDeletes;
+    
+    use ModelAttachmentableTrait;
 
     use StockableTrait;
 

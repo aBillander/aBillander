@@ -91,6 +91,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-address-book"></i>
                &nbsp; {{ l('Address Book') }}
             </a>
+            <a id="b_attachments" href="#attachments" class="list-group-item">
+               <i class="fa fa-paperclip"></i>
+               &nbsp; {{ l('Attachments', 'layouts') }}
+            </a>
             <!-- a id="b_specialprices" href="#specialprices" class="list-group-item">
                <i class="fa fa-list-alt"></i>
                &nbsp; Precios Especiales
@@ -129,6 +133,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
           @include('suppliers._panel_bankaccounts')
 
           @include('suppliers._panel_addressbook')
+
+          @include('suppliers._panel_attachments')
 {{--
           @include('suppliers._panel_orders')
 
@@ -153,6 +159,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#panel_commercial").hide();
       $("#panel_bankaccounts").hide();
       $("#panel_addressbook").hide();
+      $("#panel_attachments").hide();
  //     $("#panel_specialprices").hide();
  //     $("#panel_accounting").hide();
       $("#panel_orders").hide();
@@ -165,6 +172,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#b_commercial").removeClass('active');
       $("#b_bankaccounts").removeClass('active');
       $("#b_addressbook").removeClass('active');
+      $("#b_attachments").removeClass('active');
  //     $("#b_specialprices").removeClass('active');
  //     $("#b_accounting").removeClass('active');
       $("#b_orders").removeClass('active');
@@ -188,6 +196,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       {
          $("#panel_addressbook").show();
          $("#b_addressbook").addClass('active');
+      }
+      else if(window.location.hash.substring(1) == 'attachments')
+      {
+         $("#panel_attachments").show();
+         $("#b_attachments").addClass('active');
       }
       else if(window.location.hash.substring(1) == 'orders')
       {

@@ -255,6 +255,7 @@ return [
 	'Export Headers'     => 'Exportar Encabezados',
 	'Import'     => 'Importar',
 	'File'     => 'Fichero',
+	'File Name'     => 'Nombre del Fichero',
 	'Load'     => 'Cargar',
 	'Reset'     => 'Reiniciar',
 	'View Chart'     => 'Ver Gráfico',
@@ -329,6 +330,9 @@ return [
 	'Add Document'     => 'Añadir Documento',
 
 	'View Carts'     => 'Ver Carritos',
+
+	'File Attachments' => 'Ficheros Adjuntos',
+	'Attachments' => 'Adjuntos',
 
 	''     => '',
 

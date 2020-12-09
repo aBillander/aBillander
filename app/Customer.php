@@ -10,11 +10,13 @@ use Auth;
 use Carbon\Carbon;
 
 use App\Traits\ViewFormatterTrait;
+use App\Traits\ModelAttachmentableTrait;
 
 class Customer extends Model {
 
-    use ViewFormatterTrait;
     use SoftDeletes;
+    use ViewFormatterTrait;
+    use ModelAttachmentableTrait;
 
     protected $dates = ['deleted_at'];
 

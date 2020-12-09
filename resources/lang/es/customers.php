@@ -224,4 +224,8 @@ return [
 	'CustomerOrder'   => 'Pedidos',
 	'CustomerShippingSlip'   => 'Albaranes',
 	'CustomerInvoice'   => 'Facturas',
+
+	
+
+	'Description'     => 'Descripción',
 ];

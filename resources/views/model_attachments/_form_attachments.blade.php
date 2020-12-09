@@ -73,8 +73,9 @@ $label_short = strlen($label) > 11 ? substr($label, 0, 11)."&hellip;" : $label;
 {{-- Case use / Example ENDS --}}
 
 
-
-@include('layouts/modal_delete')
+@if ( $modal_delete ?? true)
+  @include('layouts/modal_delete')
+@endif
 
 
 @section('scripts') @parent 

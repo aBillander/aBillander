@@ -200,7 +200,7 @@ class Supplier extends Model {
     
     public function products()
     {
-        return $this->hasMany('App\Product', 'main_supplier_id')->orderby('name', 'asc');
+        return $this->hasMany('App\Product', 'main_supplier_id')->orderby('reference', 'asc');
     }
     
     public function supplierpricelistlines()

@@ -291,6 +291,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
 
+        Route::get('suppliers/{id}/products',  'SuppliersController@getProducts')->name('supplier.products');
+
         Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
 
         Route::get( 'suppliers/{id}/product/{pid}/reference/edit', 'SupplierPriceListLinesController@editReference')->name('supplier.product.update.reference.edit');

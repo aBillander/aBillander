@@ -20,6 +20,9 @@
 
         <a href="{{ route('suppliers.export') }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
+        <a href="{{ route('suppliers.products.export') }}" class="btn btn-sm btn-grey" 
+                title="{{l('Products by Supplier')}}"><i class="fa fa-file-excel-o"></i> {{l('Products')}}</a>
     </div>
     <h2>
         {{ l('Suppliers') }}

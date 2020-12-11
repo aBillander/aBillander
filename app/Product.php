@@ -1703,9 +1703,16 @@ class Product extends Model {
     {
         if ( !$apply ) return $query;
 
-        $column = $this->new_since_date ? 'new_since_date' : 'created_at';
+        $theDate = Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') );
 
-        return $query->whereDate($column, '>=', Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
+        return $query->where(function ($query) use ($theDate) {
+                $query->whereDate('new_since_date', '>=', $theDate)
+                      ->orWhereDate('created_at',   '>=', $theDate);
+            });
+
+        // $column = $this->new_since_date ? 'new_since_date' : 'created_at';
+
+        // return $query->whereDate($column, '>=', Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
     }
 
     public function scopeManufacturer($query, $manufacturer_id)

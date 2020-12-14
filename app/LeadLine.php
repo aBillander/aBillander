@@ -1,0 +1,85 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class LeadLine extends Model
+{
+
+    public static $statuses = array(
+            'open',			// 
+            'completed',	// 
+        );
+
+    protected $dates = ['start_date', 'due_date', 'finish_date'];
+
+//    protected $appends = ['percent'];
+    
+    protected $fillable = [ 'name', 'description', 'status', 'start_date', 'due_date', 'finish_date', 'results', 
+                            'user_created_by_id', 'user_assigned_to_id', 'lead_id' 
+    ];
+
+    public static $rules = [
+ //     'name'    => array('required', 'min:2', 'max:64'),
+ //       'country_id' => 'exists:countries,id',
+ //     'percent' => array('required', 'numeric', 'between:0,100')
+        ];
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+    public static function getStatusList()
+    {
+            $list = [];
+            foreach (static::$statuses as $status) {
+                $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
+                // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
+            }
+
+            return $list;
+    }
+
+    public static function getStatusName( $status )
+    {
+            return l(get_called_class().'.'.$status, [], 'appmultilang');
+    }
+
+    public static function isStatus( $status )
+    {
+            return in_array($status, self::$statuses);
+    }
+
+    public function getStatusNameAttribute()
+    {
+            return l(get_called_class().'.'.$this->status, 'appmultilang');
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+    public function lead()
+    {
+        return $this->belongsTo('App\Lead');
+	}
+
+    public function createdby()
+    {
+        return $this->belongsTo('App\User', 'user_created_by_id');
+	}
+
+    public function assignedto()
+    {
+        return $this->belongsTo('App\User', 'user_assigned_to_id');
+	}
+}

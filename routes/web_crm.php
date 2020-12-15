@@ -19,4 +19,7 @@
         Route::resource('parties.contacts', 'ContactsController');
 
         Route::resource('leads',           'LeadsController');
+        Route::get('leads/create/withparty/{party}', 'LeadsController@createWithParty')->name('leads.create.withparty');
+        Route::get('leads/parties/{party}',  'LeadsController@indexByCustomer')->name('party.leads');
+
         Route::resource('leads.leadlines', 'LeadLinesController');

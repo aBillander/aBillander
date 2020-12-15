@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Party;
 use App\User;
 
-use DB;
 use Auth;
 
 class PartiesController extends Controller
@@ -40,7 +39,7 @@ class PartiesController extends Controller
     {
         $party_typeList = $this->party->getTypeList();
 
-        $userList = User::select('id', DB::raw("concat( firstname, ' ', lastname) as user_name"))->pluck('user_name', 'id')->toArray();
+        $userList = User::getUserList();
 
         // abi_r(User::select('id', DB::raw("concat( firstname, ' ', lastname) as full_name"))->pluck('full_name', 'id'), true);
 
@@ -90,7 +89,7 @@ class PartiesController extends Controller
     {
         $party_typeList = $this->party->getTypeList();
 
-        $userList = User::select('id', DB::raw("concat( firstname, ' ', lastname) as user_name"))->pluck('user_name', 'id')->toArray();
+        $userList = User::getUserList();
         
         $party = $this->party->findOrFail($id);
 

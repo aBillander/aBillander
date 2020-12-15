@@ -27,6 +27,7 @@ class Lead extends Model
  //     'name'    => array('required', 'min:2', 'max:64'),
  //       'country_id' => 'exists:countries,id',
  //     'percent' => array('required', 'numeric', 'between:0,100')
+        'party_id' => 'exists:parties,id',
         ];
 
 
@@ -41,7 +42,8 @@ class Lead extends Model
     {
             $list = [];
             foreach (static::$statuses as $status) {
-                $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
+                // $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
+                $list[$status] = l(get_called_class().'.'.$status);
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -50,7 +52,8 @@ class Lead extends Model
 
     public static function getStatusName( $status )
     {
-            return l(get_called_class().'.'.$status, [], 'appmultilang');
+            // return l(get_called_class().'.'.$status, [], 'appmultilang');
+            return l(get_called_class().'.'.$status);
     }
 
     public static function isStatus( $status )
@@ -60,7 +63,8 @@ class Lead extends Model
 
     public function getStatusNameAttribute()
     {
-            return l(get_called_class().'.'.$this->status, 'appmultilang');
+            // return l(get_called_class().'.'.$this->status, 'appmultilang');
+            return l(get_called_class().'.'.$this->status);
     }
 
 

@@ -19,15 +19,15 @@ class CreateLeadsTable extends Migration
             $table->text('description')->nullable();
             $table->string('status', 32)->nullable(false)->default('pending');
 
-            $table->datetime('lead_date');
-            $table->datetime('lead_end_date');
+            $table->datetime('lead_date')->nullable();
+            $table->datetime('lead_end_date')->nullable();
 
             $table->text('notes')->nullable();
 
             $table->integer('user_created_by_id')->unsigned();
             $table->integer('user_assigned_to_id')->unsigned()->nullable();
-            $table->integer('party_id')->unsigned()->nullable();
-            $table->integer('contact_id')->unsigned();
+            $table->integer('party_id')->unsigned();
+            $table->integer('contact_id')->unsigned()->nullable();
 
             $table->timestamps();
         });

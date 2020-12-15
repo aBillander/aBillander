@@ -10,6 +10,8 @@ use \App\Notifications\ResetPasswordNotification;
 
 use App\Configuration;
 
+use DB;
+
 
 class User extends Authenticatable
 {
@@ -99,6 +101,12 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->is_admin;
+    }
+
+
+    public static function getUserList()
+    {
+            return User::select('id', DB::raw("concat( firstname, ' ', lastname) as user_name"))->pluck('user_name', 'id')->toArray();
     }
 
 

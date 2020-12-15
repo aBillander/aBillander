@@ -35,6 +35,8 @@ return [
 	'SALESREP_COMMISSION_METHOD.option.TAXEXC' => '<strong>TAXEXC</strong>: Sobre el Precio de Venta Neto (sin Impuestos).',
 	'SALESREP_COMMISSION_METHOD.option.TAXINC' => '<strong>TAXINC</strong>: Sobre el Precio de Venta (con Impuestos incluidos).',
 	'SALESREP_COMMISSION_METHOD.help' => '',
+	'ENABLE_MCRM.name' => 'Activar microCRM',
+	'ENABLE_MCRM.help' => '',
 	'ENABLE_MANUFACTURING.name' => 'ENABLE_MANUFACTURING',
 	'ENABLE_MANUFACTURING.help' => '',
 	'MRP_WITH_STOCK.name' => 'MRP_WITH_STOCK',

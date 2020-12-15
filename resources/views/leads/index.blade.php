@@ -68,7 +68,7 @@
 
 			<td class="text-right">
                 @if (  is_null($lead->deleted_at))
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('leads/' . $lead->id . '/leadrules') }}" title="{{l('Show Lead Rules')}}"><i class="fa fa-folder-open-o"></i></a>
+                <a class="btn btn-sm btn-blue" href="{{ URL::to('leads/' . $lead->id . '/leadlines') }}" title="{{l('Show Lead Rules')}}"><i class="fa fa-folder-open-o"></i></a>
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('leads/' . $lead->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('leads/' . $lead->id ) }}" 

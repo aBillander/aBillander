@@ -16,7 +16,7 @@ class LeadLine extends Model
 
 //    protected $appends = ['percent'];
     
-    protected $fillable = [ 'name', 'description', 'status', 'start_date', 'due_date', 'finish_date', 'results', 
+    protected $fillable = [ 'name', 'description', 'status', 'start_date', 'due_date', 'finish_date', 'results', 'position', 
                             'user_created_by_id', 'user_assigned_to_id', 'lead_id' 
     ];
 
@@ -38,7 +38,8 @@ class LeadLine extends Model
     {
             $list = [];
             foreach (static::$statuses as $status) {
-                $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
+                // $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
+                $list[$status] = l(get_called_class().'.'.$status);
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -47,7 +48,8 @@ class LeadLine extends Model
 
     public static function getStatusName( $status )
     {
-            return l(get_called_class().'.'.$status, [], 'appmultilang');
+            // return l(get_called_class().'.'.$status, [], 'appmultilang');
+            return l(get_called_class().'.'.$status);
     }
 
     public static function isStatus( $status )
@@ -57,7 +59,8 @@ class LeadLine extends Model
 
     public function getStatusNameAttribute()
     {
-            return l(get_called_class().'.'.$this->status, 'appmultilang');
+            // return l(get_called_class().'.'.$this->status, 'appmultilang');
+            return l(get_called_class().'.'.$this->status);
     }
 
 

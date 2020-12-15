@@ -8,7 +8,6 @@ use App\Party;
 use App\Lead;
 use App\User;
 
-use DB;
 use Auth;
 
 use App\Traits\DateFormFormatterTrait;

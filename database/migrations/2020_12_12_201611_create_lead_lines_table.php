@@ -19,11 +19,13 @@ class CreateLeadLinesTable extends Migration
             $table->text('description')->nullable();
             $table->string('status', 32)->nullable(false)->default('pending');
             
-            $table->datetime('start_date');
-            $table->datetime('due_date');
-            $table->datetime('finish_date');
+            $table->datetime('start_date')->nullable();
+            $table->datetime('due_date')->nullable();
+            $table->datetime('finish_date')->nullable();
 
             $table->text('results')->nullable();
+
+            $table->integer('position')->unsigned()->default(0);
 
             $table->integer('user_created_by_id')->unsigned();
             $table->integer('user_assigned_to_id')->unsigned()->nullable();

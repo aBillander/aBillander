@@ -12,7 +12,7 @@
 */
 
 
-        // tinyCRM
+        // microCRM
         Route::get('/crm/home', 'CRMHomeController@index')->name('crm.home');
         
         Route::resource('parties',          'PartiesController');

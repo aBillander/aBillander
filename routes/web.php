@@ -856,7 +856,7 @@ foreach ($pairs as $pair) {
         /* ******************************************************************************************************** */
 
         
-        // tinyCRM
+        // microCRM
 
         if (file_exists(__DIR__.'/web_crm.php')) {
             include __DIR__.'/web_crm.php';

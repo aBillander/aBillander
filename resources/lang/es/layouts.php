@@ -213,7 +213,7 @@ return [
 	'Delivery Routes'     => 'Rutas de Reparto',
 	'Delivery Sheets'     => 'Hojas de Reparto',
 
-	'tinyCRM'     => '&micro;CRM',
+	'microCRM'     => '&micro;CRM',
 	'Dashboard' => 'Tablero',
 	'Parties' => 'Terceros',
 	'Leads' => 'Oportunidades',

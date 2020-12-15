@@ -41,7 +41,7 @@ class CreatePartiesTable extends Migration
             
             $table->integer('user_created_by_id')->unsigned();
             $table->integer('user_assigned_to_id')->unsigned()->nullable();
-            $table->integer('customer_id')->unsigned();         // When converted to Customer
+            $table->integer('customer_id')->unsigned()->nullable();         // When converted to Customer
 //            $table->integer('industry_id')->unsigned();
 
             $table->timestamps();

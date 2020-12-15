@@ -1,0 +1,132 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use App\Party;
+use App\User;
+
+use DB;
+use Auth;
+
+class PartiesController extends Controller
+{
+   protected $party;
+
+   public function __construct(Party $party)
+   {
+        $this->party = $party;
+   }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $parties = $this->party->with('assignedto')->orderBy('name_commercial', 'asc')->get();
+
+        return view('parties.index', compact('parties'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $party_typeList = $this->party->getTypeList();
+
+        $userList = User::select('id', DB::raw("concat( firstname, ' ', lastname) as user_name"))->pluck('user_name', 'id')->toArray();
+
+        // abi_r(User::select('id', DB::raw("concat( firstname, ' ', lastname) as full_name"))->pluck('full_name', 'id'), true);
+
+        // abi_r($party_typeList);die();
+
+        return view('parties.create', compact('party_typeList', 'userList'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request, Party::$rules);
+
+        $request->merge(['user_created_by_id' => Auth::id()]);
+
+        // abi_r($request->all());die();
+
+        $party = $this->party->create($request->all());
+
+        return redirect('parties')
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $party->id], 'layouts') . $request->input('name'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Party  $party
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        return $this->edit($id);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Party  $party
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $party_typeList = $this->party->getTypeList();
+
+        $userList = User::select('id', DB::raw("concat( firstname, ' ', lastname) as user_name"))->pluck('user_name', 'id')->toArray();
+        
+        $party = $this->party->findOrFail($id);
+
+        return view('parties.edit', compact('party', 'party_typeList', 'userList'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Party  $party
+     * @return \Illuminate\Http\Response
+     */
+    public function update($id, Request $request)
+    {
+        $party = $this->party->findOrFail($id);
+
+        $this->validate($request, Party::$rules);
+
+        $party->update($request->all());
+
+        return redirect('parties')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Party  $party
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $this->party->findOrFail($id)->delete();
+
+        return redirect('parties')
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+}

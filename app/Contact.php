@@ -23,6 +23,13 @@ class Contact extends Model
         ];
 
     
+
+
+    public function getFullNameAttribute()
+    {
+        return $this->firstname.' '.$this->lastname;
+
+    }
     /*
     |--------------------------------------------------------------------------
     | Relationships

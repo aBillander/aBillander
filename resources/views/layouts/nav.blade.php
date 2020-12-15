@@ -39,6 +39,34 @@
 
                 @if( Auth::check() )
 
+@if ( \App\Configuration::isTrue('ENABLE_MCRM') )
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users"></i> {{l('tinyCRM', [], 'layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li>
+                            <a href="{{ URL::to('crm/home') }}">
+                                 <i class="fa fa-dashboard btn-xs alert-info"></i> 
+                                 {{l('Dashboard', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('parties') }}">
+                                 <!-- i class="fa fa-exclamation-triangle btn-xs btn-danger"></i --> 
+                                 {{l('Parties', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('leads') }}">
+                                 <!-- i class="fa fa-exclamation-triangle btn-xs btn-danger"></i --> 
+                                 {{l('Leads', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+@endif
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-bag"></i> {{l('Sales', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">

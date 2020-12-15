@@ -10,8 +10,12 @@ class Party extends Model
 {
 
     public static $types = array(
-            'sales', 
-            'sales_equalization',
+            'partner', 
+            'prescriptor',
+            'reseller',
+            'prospect',
+            'agency',
+            'other',
         );
 
 //    protected $dates = ['deleted_at'];
@@ -35,10 +39,23 @@ class Party extends Model
     {
             $list = [];
             foreach (self::$types as $type) {
-                $list[$type] = l($type, [], 'appmultilang');
+                // $list[$type] = l(get_called_class().'.'.$type, [], 'appmultilang');
+                $list[$type] = l(get_called_class().'.'.$type);
             }
 
             return $list;
+    }
+
+    public static function getTypeName( $type )
+    {
+            // return l(get_called_class().'.'.$type, [], 'appmultilang');
+            return l(get_called_class().'.'.$type);
+    }
+
+    public function getTypeNameAttribute()
+    {
+            // return l(get_called_class().'.'.$this->type, 'appmultilang');
+            return l(get_called_class().'.'.$this->type);
     }
 	
     

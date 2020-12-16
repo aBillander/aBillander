@@ -20,7 +20,7 @@
 
 <p>2.- Modificar la cabecera, añadir / modificar / borrar líneas.</p>
 
-<p>3.- Confirmar el Albarán. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada, y se hace la reserva de Stock. Aún es posible modificar la cabecera y las líneas.</p>
+<p>3.- Confirmar el Albarán. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asociada, y se hace la reserva de Stock. Aún es posible modificar la cabecera y las líneas.</p>
 
 <p>4.- Cerrar el Albarán. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock.</p>
 
@@ -50,7 +50,7 @@
 
 <h3>Estado “Confirmado”</h3>
 
-<p>- No se puede borrar el documento.</p>
+<p>- Se puede borrar el documento.</p>
 
 <p>- No se pueden modificar algunos campos de la cabecera del Albarán.</p>
 

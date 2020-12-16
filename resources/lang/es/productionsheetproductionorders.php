@@ -90,7 +90,7 @@ return [
 
 	'Customer Shipping Slips' => 'Albaranes de Clientes',
 
-	'Finish Production Orders' => 'Terminar Ordenes de Producción',
+	'Finish Production Orders' => 'Terminar Ordenes de Fabricacón',
 
 	'Category' => 'Categoría',
 

@@ -367,7 +367,12 @@ class ProductionSheet extends Model
     
     public function productionorders()
     {
-        return $this->hasMany('App\ProductionOrder')->orderBy('work_center_id', 'asc')->orderBy('product_reference', 'asc');
+        return $this->hasMany('App\ProductionOrder')->orderBy('work_center_id', 'asc')->orderBy('schedule_sort_order', 'ASC')->orderBy('product_reference', 'asc');
+    }
+    
+    public function productionordersraw()
+    {
+        return $this->hasMany('App\ProductionOrder');
     }
     
     public function productionordersGrouped( $status = null )

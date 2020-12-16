@@ -83,6 +83,9 @@ class ProductionSheetProductionOrdersController extends Controller
 
 // \DB::enableQueryLog();
 
+        // Custom colletion sort order
+        // https://stackoverflow.com/questions/40731863/sort-collection-by-custom-order-in-eloquent
+
         $sheet = $this->productionSheet
                         ->with(['productionorders' => function($query) use ($work_center_id, $category_id) {
 

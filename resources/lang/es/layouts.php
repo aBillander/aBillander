@@ -217,6 +217,7 @@ return [
 	'Dashboard' => 'Tablero',
 	'Parties' => 'Terceros',
 	'Leads' => 'Oportunidades',
+	'Contacts' => 'Contactos',
 	
 
 

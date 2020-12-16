@@ -1,29 +1,37 @@
 
 <div class="row">
-            <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('name_fiscal') ? 'has-error' : '' !!}">
-              {{ l('Fiscal Name') }}
-              {!! Form::text('name_fiscal', null, array('class' => 'form-control', 'id' => 'name_fiscal')) !!}
-              {!! $errors->first('name_fiscal', '<span class="help-block">:message</span>') !!}
+            <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('firstname') ? 'has-error' : '' !!}">
+              {{ l('First Name') }}
+              {!! Form::text('firstname', null, array('class' => 'form-control', 'id' => 'firstname')) !!}
+              {!! $errors->first('firstname', '<span class="help-block">:message</span>') !!}
             </div>
-            <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('name_commercial') ? 'has-error' : '' }}">
-              {{ l('Commercial Name') }}
-              {!! Form::text('name_commercial', null, array('class' => 'form-control', 'id' => 'name_commercial')) !!}
-              {!! $errors->first('name_commercial', '<span class="help-block">:message</span>') !!}
+            <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('lastname') ? 'has-error' : '' }}">
+              {{ l('Last Name') }}
+              {!! Form::text('lastname', null, array('class' => 'form-control', 'id' => 'lastname')) !!}
+              {!! $errors->first('lastname', '<span class="help-block">:message</span>') !!}
             </div>
 
-         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('type') ? 'has-error' : '' }}">
-            {{ l('Type') }}
-            {!! Form::select('type', $party_typeList, null, array('class' => 'form-control', 'id' => 'type')) !!}
-            {!! $errors->first('type', '<span class="help-block">:message</span>') !!}
+         <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('party_id') ? 'has-error' : '' }}">
+
+@if ($party ?? null)
+            {{ Form::hidden('party_id', $party->id, array('id' => 'party_id')) }}
+@else
+            {{ l('Party') }}
+            {!! Form::select('party_id', ['' => l('-- Please, select --', 'layouts')] + $partyList, null, array('class' => 'form-control', 'id' => 'party_id')) !!}
+            {!! $errors->first('party_id', '<span class="help-block">:message</span>') !!}
+@endif
+
          </div>
-            <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('identification') ? 'has-error' : '' !!}">
-              {{ l('Identification') }}
-              {!! Form::text('identification', null, array('class' => 'form-control', 'id' => 'identification')) !!}
-              {!! $errors->first('identification', '<span class="help-block">:message</span>') !!}
-            </div>
 </div>
 
 <div class="row">
+
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('job_title') ? 'has-error' : '' !!}">
+              {{ l('Job Title') }}
+              {!! Form::text('job_title', null, array('class' => 'form-control', 'id' => 'job_title')) !!}
+              {!! $errors->first('job_title', '<span class="help-block">:message</span>') !!}
+            </div>
+
       <div class="col-md-4">
           <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
               {{ l('Email') }}
@@ -46,6 +54,10 @@
           </div>
       </div>
 
+</div>
+
+<div class="row">
+
         <div class="form-group col-lg-6 col-md-6 col-sm-6 {!! $errors->has('address') ? 'has-error' : '' !!}">
           {{ l('Address') }}
           {!! Form::text('address', null, array('class' => 'form-control', 'id' => 'address')) !!}
@@ -57,9 +69,6 @@
           {!! Form::text('website', null, array('class' => 'form-control', 'id' => 'website')) !!}
           {!! $errors->first('website', '<span class="help-block">:message</span>') !!}
         </div>
-</div>
-
-<div class="row">
 </div>
 
 <div class="row">
@@ -100,13 +109,6 @@
      </div>
     </div>
 
-
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('user_assigned_to_id') ? 'has-error' : '' }}">
-            {{ l('Assigned to') }}
-            {!! Form::select('user_assigned_to_id', $userList, null, array('class' => 'form-control', 'id' => 'user_assigned_to_id')) !!}
-            {!! $errors->first('user_assigned_to_id', '<span class="help-block">:message</span>') !!}
-         </div>
-
 </div>
 
   <div class="row">
@@ -118,4 +120,5 @@
   </div>
 
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-	{!! link_to_route('parties.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+	{!! link_to_route('contacts.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+

@@ -11,7 +11,7 @@ class Contact extends Model
 
 //    protected $appends = ['percent'];
     
-    protected $fillable = [ 'firstname', 'lastname', 'job_title', 'email', 'phone', 'phone_mobile', 'address' 
+    protected $fillable = [ 'firstname', 'lastname', 'job_title', 'email', 'phone', 'phone_mobile', 'address', 
                             'website', 'blocked', 'active', 'notes', 
                             'user_created_by_id', 'party_id'
     ];
@@ -46,8 +46,8 @@ class Contact extends Model
         return $this->belongsTo('App\Party');
 	}
     
-    public function leads()
-    {
-        return $this->hasMany('App\Lead');
-    }
+//    public function leads()
+//    {
+//        return $this->hasMany('App\Lead');
+//    }
 }

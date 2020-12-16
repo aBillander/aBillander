@@ -45,7 +45,7 @@
                     <ul class="dropdown-menu" role="menu">
                          <li>
                             <a href="{{ URL::to('crm/home') }}">
-                                 <i class="fa fa-dashboard btn-xs alert-info"></i> 
+                                 <i class="fa fa-dashboard text-info"></i> 
                                  {{l('Dashboard', [], 'layouts')}}
                             </a>
                         </li>
@@ -63,6 +63,12 @@
                             </a>
                         </li>
                         <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('contacts') }}">
+                                 <i class="fa fa-address-card-o text-success"></i --> 
+                                 {{l('Contacts', [], 'layouts')}}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 @endif

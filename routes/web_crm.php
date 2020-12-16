@@ -15,11 +15,14 @@
         // microCRM
         Route::get('/crm/home', 'CRMHomeController@index')->name('crm.home');
         
-        Route::resource('parties',          'PartiesController');
-        Route::resource('parties.contacts', 'ContactsController');
+        Route::resource('parties',  'PartiesController');
 
-        Route::resource('leads',           'LeadsController');
+        Route::resource('contacts',                     'ContactsController');
+        Route::get('contacts/create/withparty/{party}', 'ContactsController@createWithParty')->name('contacts.create.withparty');
+        Route::get('contacts/parties/{party}',          'ContactsController@indexByParty'   )->name('party.contacts');
+
+        Route::resource('leads',                     'LeadsController');
         Route::get('leads/create/withparty/{party}', 'LeadsController@createWithParty')->name('leads.create.withparty');
-        Route::get('leads/parties/{party}',  'LeadsController@indexByCustomer')->name('party.leads');
+        Route::get('leads/parties/{party}',          'LeadsController@indexByParty'   )->name('party.leads');
 
         Route::resource('leads.leadlines', 'LeadLinesController');

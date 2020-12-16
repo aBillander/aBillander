@@ -36,6 +36,7 @@ return [
 	'App\Lead.completed' => 'Terminado',
 	'App\Lead.failed' => 'Fallido',
 
+	'Show Lead Lines'     => 'Mostrar Líneas de Oportunidad',
 
 
 
@@ -58,4 +59,9 @@ return [
 	''     => '',
 	''     => '',
 
+
+
+	'Add New Lead to :party' => 'Añadir Nueva Oportunidad a :party',
+	'Add New Lead' => 'Añadir Nueva Oportunidad',
+	'Back to Parties' => 'Volver a Oportunidades',
 ];

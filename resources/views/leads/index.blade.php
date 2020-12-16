@@ -39,7 +39,13 @@
 		<tr>
             <td>{{ $lead->id }}</td>
             <td>{{ $lead->name }}</td>
-			<td>{{ $lead->party->name_commercial }}</td>
+			<td>
+@if ( $lead->party )
+                <a href="{{ route('parties.edit', $lead->party->id) }}" target="_party" title="{{l('Go to', [], 'layouts')}}">{{ $lead->party->name_commercial }}</a>
+@else
+                -
+@endif
+            </td>
             <td>{{ $lead->status_name }}</td>
 
             <td class="text-center">@if ($lead->description)
@@ -68,7 +74,7 @@
 
 			<td class="text-right">
                 @if (  is_null($lead->deleted_at))
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('leads/' . $lead->id . '/leadlines') }}" title="{{l('Show Lead Rules')}}"><i class="fa fa-folder-open-o"></i></a>
+                <a class="btn btn-sm btn-blue" href="{{ URL::to('leads/' . $lead->id . '/leadlines') }}" title="{{l('Show Lead Lines')}}"><i class="fa fa-folder-open-o"></i></a>
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('leads/' . $lead->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('leads/' . $lead->id ) }}" 

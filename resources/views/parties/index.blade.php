@@ -62,7 +62,10 @@
 
 			<td class="text-right">
                 @if (  is_null($party->deleted_at))
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('parties/' . $party->id . '/partyrules') }}" title="{{l('Show Party Rules')}}"><i class="fa fa-folder-open-o"></i></a>
+                <a class="btn btn-sm btn-grey" href="{{ URL::to('contacts/parties/' . $party->id ) }}" title="{{l('Show Contacts')}}"><i class="fa fa-address-book-o"></i></a>
+
+                <a class="btn btn-sm btn-blue" href="{{ URL::to('leads/parties/' . $party->id ) }}" title="{{l('Show Leads')}}"><i class="fa fa-rebel"></i></a>
+
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('parties/' . $party->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('parties/' . $party->id ) }}" 

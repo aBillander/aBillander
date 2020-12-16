@@ -40,7 +40,7 @@ class ContactsController extends Controller
     protected function indexByParty($party_id)
     {
         // $contacts = $this->contact->with('assignedto')->orderBy('id', 'asc')->get();
-        $party = Party::with('contacts')->with('contacts.assignedto')->findOrFail($party_id);
+        $party = Party::with('contacts')->findOrFail($party_id);
 
         $contacts = $party->contacts;
 

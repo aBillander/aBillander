@@ -13,7 +13,8 @@ return [
 
 	'Parties' => 'Terceros',
 
-	'Show Party Rules'     => 'Ver Reglas del Tercero',
+	'Show Contacts'     => 'Ver Contactos',
+	'Show Leads'     => 'Ver Oportunidades',
 
 	/*
 	|--------------------------------------------------------------------------

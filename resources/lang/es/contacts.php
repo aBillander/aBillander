@@ -73,4 +73,9 @@ return [
 	''     => '',
 	''     => '',
 
+
+	'Add New Contact to :party' => 'Añadir Nuevo Contacto a :party',
+	'Add New Contact' => 'Añadir Nuevo Contacto',
+	'Back to Parties' => 'Volver a Oportunidades',
+
 ];

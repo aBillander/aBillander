@@ -28,197 +28,26 @@
 
 
 
-<div class="container hide">
+<div xclass="container">
     <div class="row">
-        <div xclass="col-lg-3 col-md-6">
+        <div xclass="col-lg-6 col-md-6">
 
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-6 col-md-6">
             <div class="panel panel-info">
               <div class="panel-heading">
-                <h3 class="panel-title">Buscar Cliente</h3>
+                <h3 class="panel-title">{{ l('Lead Lines', 'leadlines') }}</h3>
               </div>
               <div class="panel-body">
 
-                  <div class="row">
-
-                     <div class="form-group col-lg-12">
-                        {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
-
-                        {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
-                     </div>
-
-                  </div>
+                  @include('crm._block_lead_lines')
                   
               </div>
             </div>
             </div>
-
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-success">
-              <div class="panel-heading">
-                <h3 class="panel-title">Buscar Producto</h3>
-              </div>
-              <div class="panel-body">
-
-                  <div class="row">
-
-                     <div class="form-group col-lg-12">
-                        {!! Form::text('autoproduct_name', null, array('class' => 'form-control', 'id' => 'autoproduct_name')) !!}
-
-                        {!! Form::hidden('product_id', null, array('id' => 'product_id')) !!}
-                     </div>
-
-                  </div>
-
-              </div>
-            </div>
-            </div>
-{{-- 
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-danger">
-              <div class="panel-heading">
-                <h3 class="panel-title">Panel danger</h3>
-              </div>
-              <div class="panel-body">
-                Panel content
-              </div>
-            </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <h3 class="panel-title">Panel primary</h3>
-              </div>
-              <div class="panel-body">
-                Panel content
-              </div>
-            </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-warning">
-              <div class="panel-heading">
-                <h3 class="panel-title">Panel warning</h3>
-              </div>
-              <div class="panel-body">
-                Panel content
-              </div>
-            </div>
-            </div>
---}}
         </div>
     </div>
 
 
-    <div class="row">
-
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <h3 class="panel-title">Pedidos</h3>
-              </div>
-              <div class="panel-body">
-
-                  <div class="row">
-
-                     <div class="form-group col-lg-12 text-center">
-                        
-                        <a href="{{ route('customerorders.for.today') }}" class="btn xbtn-sm btn-success" 
-                                title=" Pedidos de hoy "><i class="fa fa-shopping-bag"></i> Pedidos de hoy</a>
-
-                     </div>
-
-                  </div>
-
-                  <div class="row">
-
-                     <div class="form-group col-lg-12">
-
-                        <label for="autocustomerorder_name" class="control-label">Buscar</label>
-                        {!! Form::text('autocustomerorder_name', null, array('class' => 'form-control', 'id' => 'autocustomerorder_name')) !!}
-
-                        {!! Form::hidden('customerorder_id', null, array('id' => 'customerorder_id')) !!}
-
-                     </div>
-
-                  </div>
-                  
-              </div>
-            </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <h3 class="panel-title">Albaranes</h3>
-              </div>
-              <div class="panel-body">
-
-                  <div class="row">
-
-                     <div class="form-group col-lg-12 text-center">
-                        
-                        <a href="{{ route('customershippingslips.for.today') }}" class="btn xbtn-sm btn-success" 
-                                title=" Albaranes de hoy "><i class="fa fa-truck"></i> Albaranes de hoy</a>
-
-                     </div>
-
-                  </div>
-
-                  <div class="row">
-
-                     <div class="form-group col-lg-12">
-
-                        <label for="autocustomershippingslip_name" class="control-label">Buscar</label>
-                        {!! Form::text('autocustomershippingslip_name', null, array('class' => 'form-control', 'id' => 'autocustomershippingslip_name')) !!}
-
-                        {!! Form::hidden('customershippingslip_id', null, array('id' => 'customershippingslip_id')) !!}
-
-                     </div>
-
-                  </div>
-                  
-              </div>
-            </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <h3 class="panel-title">Facturas</h3>
-              </div>
-              <div class="panel-body">
-
-                  <!-- div class="row">
-
-                     <div class="form-group col-lg-12 text-center">
-                        
-                        <a href="{ { route('customerinvoices.for.today') } }" class="btn xbtn-sm btn-success" 
-                                title=" Albaranes de hoy "><i class="fa fa-truck"></i> Albaranes de hoy</a>
-
-                     </div>
-
-                  </div -->
-
-                  <div class="row">
-
-                     <div class="form-group col-lg-12">
-
-                        <label for="autocustomerinvoice_name" class="control-label">Buscar</label>
-                        {!! Form::text('autocustomerinvoice_name', null, array('class' => 'form-control', 'id' => 'autocustomerinvoice_name')) !!}
-
-                        {!! Form::hidden('customerinvoice_id', null, array('id' => 'customerinvoice_id')) !!}
-
-                     </div>
-
-                  </div>
-                  
-              </div>
-            </div>
-            </div>
-
-    </div><!-- div class="row" ENDS -->
 </div>
 
 

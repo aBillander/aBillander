@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use App\Lead;
+use App\LeadLine;
+
 use Excel;
 
 use App\Traits\DateFormFormatterTrait;
@@ -37,7 +40,15 @@ class CRMHomeController extends Controller
         if ( 0 && checkRoute( Auth::user()->home_page ) )
             return redirect( Auth::user()->home_page );
 
-        return view('crm.home');
+        $leadlines = LeadLine::
+                          where('status', 'open')
+                        ->with('lead')
+                        ->with('lead.party')
+                        ->with('assignedto')
+                        ->orderBy('due_date', 'desc')
+                        ->get();
+
+        return view('crm.home', compact('leadlines'));
     }
 
     /**

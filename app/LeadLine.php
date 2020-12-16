@@ -39,7 +39,7 @@ class LeadLine extends Model
             $list = [];
             foreach (static::$statuses as $status) {
                 // $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
-                $list[$status] = l(get_called_class().'.'.$status);
+                $list[$status] = l(get_called_class().'.'.$status, 'leadlines');
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -49,7 +49,7 @@ class LeadLine extends Model
     public static function getStatusName( $status )
     {
             // return l(get_called_class().'.'.$status, [], 'appmultilang');
-            return l(get_called_class().'.'.$status);
+            return l(get_called_class().'.'.$status, 'leadlines');
     }
 
     public static function isStatus( $status )
@@ -60,9 +60,17 @@ class LeadLine extends Model
     public function getStatusNameAttribute()
     {
             // return l(get_called_class().'.'.$this->status, 'appmultilang');
-            return l(get_called_class().'.'.$this->status);
+            return l(get_called_class().'.'.$this->status, 'leadlines');
     }
 
+
+    public function getIsOverdueAttribute()
+    {
+        if ( !$this->finish_date && ($this->status == 'open') )
+            return $this->due_date < \Carbon\Carbon::now();
+
+        return false;
+    }
 
 
     /*

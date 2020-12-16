@@ -39,7 +39,13 @@
 		<tr>
             <td>{{ $contact->id }}</td>
             <td>{{ $contact->firstname }} {{ $contact->lastname }}<br />{{ $contact->job_title }}</td>
-			<td>{{ optional($contact->party)->name_commercial }}</td>
+			<td>
+@if ( $contact->party )
+                <a href="{{ route('parties.edit', $contact->party->id) }}" target="_party" title="{{l('Go to', [], 'layouts')}}">{{ $contact->party->name_commercial }}</a>
+@else
+                -
+@endif
+            </td>
             <td>{{ $contact->email }}</td>
             <td>{{ $contact->phone }}</td>
             <td>{{ $contact->phone_mobile }}</td>
@@ -60,7 +66,6 @@
 
 			<td class="text-right">
                 @if (  is_null($contact->deleted_at))
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('contacts/' . $contact->id . '/contactlines') }}" title="{{l('Show Contact Rules')}}"><i class="fa fa-folder-open-o"></i></a>
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('contacts/' . $contact->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('contacts/' . $contact->id ) }}" 

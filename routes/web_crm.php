@@ -12,6 +12,9 @@
 */
 
 
+// Secure-Routes
+Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
+{
         // microCRM
         Route::get('/crm/home', 'CRMHomeController@index')->name('crm.home');
         
@@ -26,3 +29,5 @@
         Route::get('leads/parties/{party}',          'LeadsController@indexByParty'   )->name('party.leads');
 
         Route::resource('leads.leadlines', 'LeadLinesController');
+
+});

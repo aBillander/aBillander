@@ -858,9 +858,9 @@ foreach ($pairs as $pair) {
         
         // microCRM
 
-        if (file_exists(__DIR__.'/web_crm.php')) {
-            include __DIR__.'/web_crm.php';
-        }
+//        if (file_exists(__DIR__.'/web_crm.php')) {
+//            include __DIR__.'/web_crm.php';
+//        }
 
 
 

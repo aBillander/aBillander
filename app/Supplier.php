@@ -428,11 +428,6 @@ class Supplier extends Model {
             });
         }
 
-        if ( isset($params['customer_group_id']) && $params['customer_group_id'] > 0 )
-        {
-            $query->where('customer_group_id', '=', $params['customer_group_id']);
-        }
-
         if ( isset($params['active']) )
         {
             if ( $params['active'] == 0 )

@@ -80,7 +80,9 @@ class ConfigurationKeysController extends Controller {
                         'DEF_SUPPLIER_ORDER_SEQUENCE',
                         'DEF_SUPPLIER_ORDER_TEMPLATE',
                         'DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE',
+                        'DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE',
                         'DEF_SUPPLIER_INVOICE_SEQUENCE',
+                        'DEF_SUPPLIER_INVOICE_TEMPLATE',
                         'DEF_SUPPLIER_PAYMENT_METHOD',
                         
                         'DEF_LANGUAGE',

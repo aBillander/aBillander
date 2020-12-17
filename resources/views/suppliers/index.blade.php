@@ -10,7 +10,7 @@
         <a href="{{{ URL::to('suppliers/create') }}}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
-        <button  name="b_search_filter" id="b_search_filter" class=" hidden btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
@@ -48,7 +48,7 @@
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class=" hidden form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('reference_external', l('External Reference')) !!}
     {!! Form::text('reference_external', null, array('class' => 'form-control')) !!}
 </div>

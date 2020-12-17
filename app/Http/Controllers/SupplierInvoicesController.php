@@ -111,5 +111,16 @@ class SupplierInvoicesController extends BillableController
     public function destroy(SupplierInvoice $supplierInvoice)
     {
         //
+    
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createWithSupplier($supplier_id)
+    {
+        return view($this->view_path.'.index', $this->modelVars());
     }
 }

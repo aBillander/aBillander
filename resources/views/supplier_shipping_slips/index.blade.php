@@ -78,12 +78,12 @@
     {!! Form::label('status', l('Status')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
-
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('shipment_status', l('Shipment Status')) !!}
     {!! Form::select('shipment_status', array('' => l('All', [], 'layouts')) + $shipment_statusList, null, array('class' => 'form-control')) !!}
 </div>
-
+--}}
 <div class=" form-group col-lg-2 col-md-2 col-sm-2" id="div-is_invoiced">
      {!! Form::label('is_invoiced', l('Invoiced'), ['class' => 'control-label']) !!}
      <div>

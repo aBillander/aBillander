@@ -93,6 +93,30 @@ class TemplatesTableSeeder extends Seeder {
         ] );
 
         Configuration::updateValue('DEF_SUPPLIER_ORDER_TEMPLATE', $t->id);
+  
+        $t = Template::create( [
+//            'id' => 1,
+            'name' => 'Plantilla Albaranes de Proveedor', 
+            'model_name' => 'CustomerShippingSlipPdf', 
+            'folder' => 'templates::', 
+            'file_name' => 'default', 
+            'paper' => 'A4', 
+            'orientation' => 'portrait',
+        ] );
+
+        Configuration::updateValue('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE', $t->id);
+  
+        $t = Template::create( [
+//            'id' => 1,
+            'name' => 'Plantilla Facturas de Proveedor', 
+            'model_name' => 'CustomerInvoicePdf', 
+            'folder' => 'templates::', 
+            'file_name' => 'default', 
+            'paper' => 'A4', 
+            'orientation' => 'portrait',
+        ] );
+
+        Configuration::updateValue('DEF_SUPPLIER_INVOICE_TEMPLATE'      , $t->id);
         
     }
 }

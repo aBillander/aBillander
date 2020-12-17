@@ -311,6 +311,20 @@
       </div>
     </div>
 
+    <div class="form-group {{ $errors->has('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE') ? 'has-error' : '' }}">
+      <label for="DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE" class="col-lg-4 control-label">{!! l('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE', $supplier_shipping_slips_templateList, old('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE', $key_group['DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE.help') !!}</span>
+      </div>
+    </div>
+
 
 
     <div class="form-group {{ $errors->has('DEF_SUPPLIER_INVOICE_SEQUENCE') ? 'has-error' : '' }}">
@@ -324,6 +338,20 @@
         <div class="col-lg-4"> </div>
         </div>
         <span class="help-block">{!! l('DEF_SUPPLIER_INVOICE_SEQUENCE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_SUPPLIER_INVOICE_TEMPLATE') ? 'has-error' : '' }}">
+      <label for="DEF_SUPPLIER_INVOICE_TEMPLATE" class="col-lg-4 control-label">{!! l('DEF_SUPPLIER_INVOICE_TEMPLATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SUPPLIER_INVOICE_TEMPLATE', $supplier_invoices_templateList, old('DEF_SUPPLIER_INVOICE_TEMPLATE', $key_group['DEF_SUPPLIER_INVOICE_TEMPLATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SUPPLIER_INVOICE_TEMPLATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SUPPLIER_INVOICE_TEMPLATE.help') !!}</span>
       </div>
     </div>
 

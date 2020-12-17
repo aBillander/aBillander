@@ -100,8 +100,12 @@ return array(
     'template.CustomerOrderPdf'   => 'Pedido de Cliente (Pdf)',
     'template.CustomerShippingSlipPdf'   => 'Albarán de Cliente (Pdf)',
 	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',
+
     'template.WarehouseShippingSlipPdf' => 'Transferencias entre Almacenes (Pdf)',
+
     'template.SupplierOrderPdf'   => 'Pedido a Proveedor (Pdf)',
+    'template.SupplierShippingSlipPdf'   => 'Albarán de Proveedor (Pdf)',
+
     'template.Pdf' => 'Plantilla Pdf',
     'template.Mail' => 'Plantilla Mail',
 	
@@ -313,9 +317,29 @@ return array(
 	'App\SupplierOrder.closed'    => 'Cerrado',
     'App\SupplierOrder.canceled' => 'Cancelado',    
 
+    'App\SupplierOrder.pending' => 'Pendiente',
+    'App\SupplierOrder.partial' => 'Parcialmente',
+    'App\SupplierOrder.received ' => 'Recibido',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Shipping Slip Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierShippingSlip.draft' => 'Borrador',
+	'App\SupplierShippingSlip.confirmed'    => 'Confirmado',
+	'App\SupplierShippingSlip.closed'    => 'Cerrado',
+    'App\SupplierShippingSlip.canceled' => 'Cancelado',
+
     'App\SupplierShippingSlip.pending' => 'Pendiente',
-    'App\SupplierShippingSlip.partial' => 'Parcialmente',
-    'App\SupplierShippingSlip.received ' => 'Recibido',
+    'App\SupplierShippingSlip.processing' => 'Preparación',
+    'App\SupplierShippingSlip.transit' => 'Reparto',
+    'App\SupplierShippingSlip.exception' => 'Excepción',
+    'App\SupplierShippingSlip.delivered' => 'Entregado',
 
 	/*
 	|--------------------------------------------------------------------------

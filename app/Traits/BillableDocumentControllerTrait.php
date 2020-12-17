@@ -308,7 +308,7 @@ die();
         else
             $entity = 'none';
 
-        $document->close();
+        // $document->close();
 
         if ( $document->status != 'closed' )
             return redirect()->back()

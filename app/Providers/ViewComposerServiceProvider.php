@@ -392,12 +392,27 @@ class ViewComposerServiceProvider extends ServiceProvider {
 
 		// Templates
 
-		// Supplier Shipping Slips Template
+		// Supplier Orders Template
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('supplier_orders_templateList', \App\Template::listFor( \App\SupplierOrder::class ));
 		    
 		});
+
+		// Supplier Shipping Slips Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('supplier_shipping_slips_templateList', \App\Template::listFor( \App\SupplierShippingSlip::class ));
+		    
+		});
+
+		// Supplier Invoices Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('supplier_invoices_templateList', \App\Template::listFor( \App\SupplierInvoice::class ));
+		    
+		});
+
 
 		// Customer Quotations Template
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {

@@ -40,7 +40,7 @@ class SuppliersController extends Controller
     public function index(Request $request)
     {
         $suppliers = $this->supplier
- //                       ->filter( $request->all() )
+                        ->filter( $request->all() )
                         ->with('address')
                         ->with('address.country')
                         ->with('address.state')

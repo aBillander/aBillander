@@ -137,8 +137,12 @@ return [
 	'DEF_SUPPLIER_ORDER_TEMPLATE.help' => '',
 	'DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE.name' => 'Serie de Albaranes para Proveedores',
 	'DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE.help' => '',
+	'DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE.name' => 'Plantilla de Albaranes para Proveedores',
+	'DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE.help' => '',
 	'DEF_SUPPLIER_INVOICE_SEQUENCE.name' => 'Serie de Facturas para Proveedores',
 	'DEF_SUPPLIER_INVOICE_SEQUENCE.help' => '',	
+	'DEF_SUPPLIER_INVOICE_TEMPLATE.name' => 'Plantilla de Facturas para Proveedores',
+	'DEF_SUPPLIER_INVOICE_TEMPLATE.help' => '',
 	'DEF_SUPPLIER_PAYMENT_METHOD.name' => 'Forma de Pago para Proveedores',
 	'DEF_SUPPLIER_PAYMENT_METHOD.help' => '',
 

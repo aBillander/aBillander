@@ -3,9 +3,9 @@
                <div class="panel-body">
 
 
-<div id="panel_document_availability" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
+<div id="panel_document_entries" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('customer_orders._panel_customer_order_availability') --}}
+{{--  @ include('customer_orders._panel_supplier_order_entries') --}}
 
 </div>
 
@@ -58,10 +58,10 @@
 --}}
 
 
-		function getDocumentAvailability(onhand_only=0)
+		function getDocumentEntries(onhand_only=0)
 		{
-           var panel = $("#panel_document_availability");
-           var url = "{{ route( $model_path.'.availability', [$document->id] ) }}";
+           var panel = $("#panel_document_entries");
+           var url = "{{ route( $model_path.'.entries', [$document->id] ) }}";
 
            panel.addClass('loading');
 
@@ -86,7 +86,7 @@
 		  var target = $(e.target).attr("href") // activated tab
 		  if (target == '#tab4default')
 		  {
-		  		getDocumentAvailability();
+		  		getDocumentEntries();
 		  }
 		  /*
 		  if ($(target).is(':empty')) {

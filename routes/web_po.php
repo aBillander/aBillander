@@ -65,7 +65,8 @@ foreach ($pairs as $pair) {
         Route::post($path.'/deleteline/{lid}',  $controller.'@deleteDocumentLine'  )->name($path.'.deleteline' );
         Route::get($path.'/{id}/duplicate',     $controller.'@duplicateDocument'   )->name($path.'.duplicate'  );
         Route::get($path.'/{id}/profit',        $controller.'@getDocumentProfit'   )->name($path.'.profit'     );
-        Route::get($path.'/{id}/availability',  $controller.'@getDocumentAvailability' )->name($path.'.availability' );
+
+        Route::get($path.'/{id}/entries',       $controller.'@getDocumentEntries'  )->name($path.'.entries'    );
         
         Route::get($path.'/{id}/availability/modal',  $controller.'@getDocumentAvailabilityModal' )->name($path.'.availability.modal' );
 
@@ -94,6 +95,8 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/attachment/{aid}',    $controller.'@attachmentShow'   )->name($path.'.attachment.show'   );
         Route::delete($path.'/{id}/attachment/{aid}',   $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
 }
+
+        Route::post('supplierorders/create/shippingslip/single',  'SupplierOrdersController@createSingleShippingSlip')->name('supplierorder.single.shippingslip');
 
     
         Route::resource('suppliershippingsliplines.lots', 'SupplierShippingSlipLineLotsController');

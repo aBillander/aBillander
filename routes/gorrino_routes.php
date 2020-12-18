@@ -163,6 +163,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+	// 2020-12-17
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_orders` ADD `backordered_at` datetime NULL AFTER `fulfillment_status`;");
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_orders` ADD `aggregated_at` datetime NULL AFTER `fulfillment_status`;");
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_orders` ADD `shipping_slip_at` datetime NULL AFTER `fulfillment_status`;");
+
+
 	// 2020-12-07
 	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `lot_quantity_after_movement` DECIMAL(20,6) NULL DEFAULT NULL AFTER `quantity_after_movement`;");

@@ -115,6 +115,7 @@ class ConfigurationKeysController extends Controller {
                         'SHOW_PRODUCTS_ACTIVE_ONLY',
                         'SHOW_CUSTOMERS_ACTIVE_ONLY',
                         'BUSINESS_NAME_TO_SHOW',
+                        'FILE_ALLOWED_EXTENSIONS',
                         'ALLOW_IP_ADDRESSES', 
                         'MAX_DB_BACKUPS',
                         'MAX_DB_BACKUPS_ACTION',

@@ -164,6 +164,11 @@ Route::get('mqueuer', 'MProbeController@queuer');
 Route::get('migratethis', function()
 {	
 
+	// 2020-12-18
+
+	\App\Configuration::updateValue('FILE_ALLOWED_EXTENSIONS', 'pdf,jpg,jpeg,png,docx');
+	
+
 	// 2020-12-17
 	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_orders` ADD `backordered_at` datetime NULL AFTER `fulfillment_status`;");

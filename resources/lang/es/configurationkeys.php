@@ -200,6 +200,8 @@ return [
 	'BUSINESS_NAME_TO_SHOW.option.fiscal' => '<strong>fiscal</strong>: Mostrar el Nombre Fiscal (Razón Soial)',
 	'BUSINESS_NAME_TO_SHOW.option.commercial' => '<strong>commercial</strong>: Mostrar el Nombre Commercial',
 	'BUSINESS_NAME_TO_SHOW.help' => 'Este nombre se mostrará en informes y campos de búsqueda.',
+	'FILE_ALLOWED_EXTENSIONS.name' => 'Extensiones de Fichero permitidas',
+	'FILE_ALLOWED_EXTENSIONS.help' => 'Sólo podrán subirse al Servidor Ficheros con estas Extensiones. Lista separada por comas.',
 	'ALLOW_IP_ADDRESSES.name' => 'Acceso por Dirección IP',
 	'ALLOW_IP_ADDRESSES.help' => 'Sólo estas Direcciones IP tendrán acceso a aBillander. Lista separada por comas.',
 	'MAX_DB_BACKUPS.name' => 'Número Máximo de Copias de la Base de Datos en el Servidor',

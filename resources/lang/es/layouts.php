@@ -212,7 +212,12 @@ return [
 	'Manufacturing'     => 'Fabricación',
 	'Delivery Routes'     => 'Rutas de Reparto',
 	'Delivery Sheets'     => 'Hojas de Reparto',
-	''     => '',
+
+	'microCRM'     => '&micro;CRM',
+	'Dashboard' => 'Tablero',
+	'Parties' => 'Terceros',
+	'Leads' => 'Oportunidades',
+	'Contacts' => 'Contactos',
 	
 
 

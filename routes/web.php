@@ -855,6 +855,18 @@ foreach ($pairs as $pair) {
         Route::get('dbbackups/{filename}/download', 'DbBackupsController@download')->name('dbbackups.download');
 
 
+
+        /* ******************************************************************************************************** */
+
+        
+        // microCRM
+
+        if (file_exists(__DIR__.'/web_crm.php')) {
+            include __DIR__.'/web_crm.php';
+        }
+
+
+
         /* ******************************************************************************************************** */
 
 

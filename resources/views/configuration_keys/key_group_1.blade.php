@@ -248,6 +248,26 @@
     </div>
 
 
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('ENABLE_MCRM.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="ENABLE_MCRM" id="ENABLE_MCRM_on" value="1" @if( old('ENABLE_MCRM', $key_group['ENABLE_MCRM']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="ENABLE_MCRM" id="ENABLE_MCRM_off" value="0" @if( !old('ENABLE_MCRM', $key_group['ENABLE_MCRM']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('ENABLE_MCRM.help') !!}</span>
+      </div>
+    </div>
+
+
     
 @if ( config('tenants.enable') )
 

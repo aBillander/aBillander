@@ -163,6 +163,7 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {	
+
 	// 2020-12-17
 	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_orders` ADD `backordered_at` datetime NULL AFTER `fulfillment_status`;");
@@ -170,10 +171,18 @@ Route::get('migratethis', function()
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_orders` ADD `shipping_slip_at` datetime NULL AFTER `fulfillment_status`;");
 
 
+	// 2020-12-16
+	
+	Illuminate\Support\Facades\DB::statement("create table `parties` (`id` int unsigned not null auto_increment primary key, `name_fiscal` varchar(128) not null, `name_commercial` varchar(64) null, `type` varchar(32) not null default 'partner', `identification` varchar(64) null, `email` varchar(191) not null, `phone` varchar(32) null, `phone_mobile` varchar(32) null, `address` varchar(191) null, `website` varchar(128) null, `blocked` tinyint not null default '0', `active` tinyint not null default '1', `notes` text null, `user_created_by_id` int unsigned not null, `user_assigned_to_id` int unsigned null, `customer_id` int unsigned null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	Illuminate\Support\Facades\DB::statement("create table `contacts` (`id` int unsigned not null auto_increment primary key, `firstname` varchar(32) not null, `lastname` varchar(32) null, `job_title` varchar(191) null, `email` varchar(191) not null, `phone` varchar(32) null, `phone_mobile` varchar(32) null, `address` varchar(191) null, `website` varchar(128) null, `blocked` tinyint not null default '0', `active` tinyint not null default '1', `notes` text null, `user_created_by_id` int unsigned not null, `party_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	Illuminate\Support\Facades\DB::statement("create table `leads` (`id` int unsigned not null auto_increment primary key, `name` varchar(191) not null, `description` text null, `status` varchar(32) not null default 'pending', `lead_date` datetime null, `lead_end_date` datetime null, `notes` text null, `user_created_by_id` int unsigned not null, `user_assigned_to_id` int unsigned null, `party_id` int unsigned not null, `contact_id` int unsigned null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	Illuminate\Support\Facades\DB::statement("create table `lead_lines` (`id` int unsigned not null auto_increment primary key, `name` varchar(191) not null, `description` text null, `status` varchar(32) not null default 'pending', `start_date` datetime null, `due_date` datetime null, `finish_date` datetime null, `results` text null, `position` int unsigned not null default '0', `user_created_by_id` int unsigned not null, `user_assigned_to_id` int unsigned null, `lead_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+
 	// 2020-12-07
 	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `stock_movements` ADD `lot_quantity_after_movement` DECIMAL(20,6) NULL DEFAULT NULL AFTER `quantity_after_movement`;");
-	
+
 	// 2020-12-04
 	
 //	Illuminate\Support\Facades\DB::statement("drop table if exists `model_attachments`;");

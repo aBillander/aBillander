@@ -18,6 +18,7 @@ class CreateSupplierInvoicesTable extends Migration
         Schema::create('supplier_invoices', function (Blueprint $table) {
 
             $entity = 'supplier';
+            
             if (file_exists(__DIR__.'/schnitzel/_schnitzel_create_documents_table.php')) {
                 include __DIR__.'/schnitzel/_schnitzel_create_documents_table.php';
             }

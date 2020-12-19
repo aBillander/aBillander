@@ -2,8 +2,8 @@
 
 return [
 
-	'Shipping Slip #'     => 'Número',
-	'Shipping Slip'     => 'Albarán',
+	'Invoice #'     => 'Número',
+	'Invoice'     => 'Factura',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -51,16 +51,13 @@ return [
 	'Document #'     => 'Número',
 	'Date'     => 'Fecha',
 	'Created via'     => 'Creado por',
-	'Invoiced at:'     => 'Facturado el',
-	'Delivered at:'     => 'Entregado el:',
-	'Set delivered' => 'Click para entregado',
 
 	'Open Balance'     => 'Pendiente',
 	'Next Due Date'     => 'Próx. Vencimiento',
 	'Show Supplier'     => 'Ver Proveedor',
 	'Show Payments'     => 'Ver Pagos',
 	'Draft'     => 'Borrador',
-	'D'         => 'B',
+	'D'     => 'B',
 	'Pending: Send by eMail'     => 'Pendiente: Enviar por eMail',
 	'eM'     => 'eM',
 	'Pending: Print and Send'     => 'Pendiente: Imprimir y Enviar',
@@ -82,8 +79,8 @@ return [
 	|
 	*/
 
-	'Documents - Create'     => 'Albaranes de Proveedores - Crear',
-	'New Document'     => 'Nuevo Albarán de Proveedor',
+	'Documents - Create'     => 'Facturas de Proveedores - Crear',
+	'New Document'     => 'Nueva Factura de Proveedor',
 	
 	// modal_supplier_search
 	'Supplier Search'     => 'Buscar Proveedor',
@@ -94,15 +91,13 @@ return [
 	'You should choose a Supplier'     => 'Debe seleccionar un Proveedor',
 
 	'Documents'     => 'Facturas de Proveedores',
-	'Document to'     => 'Pedidos a',
-	'Back to Documents'     => 'Volver a Albaranes de Proveedores',
+	'Document to'     => 'Factura a',
+	'Back to Documents'     => 'Volver a Facturas de Proveedores',
 	'Back to Suppliers'     => 'Volver a Proveedores',
 	'Invoicing Address'     => 'Datos de Facturación',
 	'VAT ID'     => 'NIF',
 	'View Supplier'     => 'Ir a la Ficha del Proveedor',
 	'View Invoicing Address'     => 'Ver Dirección de Facturación',
-
-	'Group Shipping Slips'     => 'Agrupar Albaranes',
 
 
 	'Header'     => 'Cabecera',
@@ -127,15 +122,13 @@ return [
 	'On Order'     => 'Pendiente',
 	'Allocated'     => 'Reservado',
 	'Available'     => 'Disponible',
-	'On hand'     => 'Stock',
-	'On order'     => 'Pendiente',
 	''     => '',
 
 	// _invoice_header
 	'Type'     => 'Tipo',
 	'Template'     => 'Plantilla',
-	'Sequence'     => 'Serie',	// 'Serie de Albaranes',
-	'Document Number'     => 'Número de Albarán',
+	'Sequence'     => 'Serie',	// 'Serie de Facturas',
+	'Document Number'     => 'Número de Factura',
 	'Reference / Project'     => 'Referencia / Proyecto',
 // 	'Invoice Date'     => 'Fecha Factura',
 	'Document Date'     => 'Fecha del Documento',
@@ -151,7 +144,6 @@ return [
 	'Sales Representative'     => 'Agente Comercial',
 	'Down Payment'     => 'Anticipo',
 	'Number of Packages'     => 'Número de Bultos',
-	'Weight'     => 'Peso',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
 	'Shipping Method'     => 'Método de Envío',
@@ -197,6 +189,7 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
 	'Add Product'     => 'Nuevo Producto',
 	'Add Service'     => 'Nuevo Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -235,13 +228,21 @@ return [
 	'Margin'     => 'Margen',
 	'Update Cost Prices'     => 'Actualizar Precios de Coste',
 
+	// Ecotaxes
+	'Ecotaxes' => 'Eco-Impuestos',
+	'Ecotax Name'     => 'Nombre del Eco-Impuesto',
+	'Ecotax Type'     => 'Tipo',
+	'Ecotax Percent'     => 'Porcentaje ',
+	'Ecotax Amount'     => 'Cantidad del Impuesto',
+	'Ecotax Document Amount'     => 'Total Documento',
+
 	// Stock availability
 	'Stock Availability'     => 'Disponibilidad de Stock',
 	''     => '',
 	''     => '',
 
 	'Finish Up'     => 'Emitir',
-	'Invoice This'  => 'Albaranar',
+	'Invoice This'  => 'Facturar',
 
 	'This Invoice will be saved with a Number for its Sequence, and may not be modified later on. Are you sure?' 
 	=> 'La Factura se guardará como Emitida y ya no podrá modificarse. ¿Está seguro?',
@@ -259,8 +260,8 @@ return [
 	|
 	*/
 
-	'Documents - Edit'     => 'Albaranes de Proveedores - Modificar',
-	'Edit Document'     => 'Modificar Albarán de Proveedor',
+	'Documents - Edit'     => 'Facturas de Proveedores - Modificar',
+	'Edit Document'     => 'Modificar Factura de Proveedor',
 
 
 
@@ -268,6 +269,8 @@ return [
 	'Supplier Risk'     => 'Riesgo alcanzado',
 	'Supplier Group'     => 'Grupo de Proveedores',
 	'Price List'     => 'Tarifa',
+
+	'Shipping Slips'     => 'Albaranes',
 
 	'Totals'     => 'Totales',
 	'Total Lines'     => 'Total Líneas',
@@ -294,16 +297,16 @@ return [
 	|
 	*/
 
-	'Documents - Show'     => 'Albaranes de Proveedores - Mostrar',
+	'Documents - Show'     => 'Facturas de Proveedores - Mostrar',
 	''     => '',
 	''     => '',
 
 	''     => '',
 	'Show Supplier'     => 'Ver Proveedor',
-	'Your Document :num from :name'     => 'Su Albarán :num de :name',
+	'Your Document :num from :name'     => 'Su Factura :num de :name',
 
 	'Payment Schedule'     => 'Vencimientos',
-	'Document'     => 'Albarán',
+	'Document'     => 'Factura',
 	'Supplier'     => 'Proveedor',
 	'Due Date'     => 'Fecha Vencimiento',
 	'Payment Date'     => 'Fecha de Pago',
@@ -311,7 +314,7 @@ return [
 	'Subject'     => 'Concepto',
 	'Status'     => 'Estado',
 
-	'Document id=:id does not exist.'     => 'El Albarán de Proveedor id=:id no existe.',
+	'Document id=:id does not exist.'     => 'La Factura de Proveedor id=:id no existe.',
 	''     => '',
 	''     => '',
 	''     => '',
@@ -322,18 +325,18 @@ return [
 	''     => '',
 	''     => '',
 	''     => '',
-
-	'Create Invoice'     => 'Crear Factura',
-	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
-
-	'Open parent Documents?' => '¿Abrir Pedidos de este Albarán?',
 	
 	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
 	'Prompt Payment'     => 'Pronto Pago',
+	
+	'Overdue Payment(s)!' => 'Hay Pago(s) vencido(s)!',
 
-	'Shipment Status'     => 'Estado de Envío',
+	'Total Amount' => 'Importe',
+	'With or without Taxes' => 'Con o sin Impuestos incluidos',
+	'Payment Status' => 'Estado de Pago',
 
-	'Not Invoiced'     => 'No Facturados',
-	'Invoiced'     => 'Facturados',
+	'Add Supplier Shipping Slip to this Supplier Invoice' => 'Añadir Albarán esta Factura',
+	'Use Supplier Shipping Slip <i>ID</i> or ID as seen in Shipping Slip url on your browser.' => 
+		'Introduzca el <i>ID</i> del Albarán o el ID que aparece en la url del Albarán, cuando éste se muestra en su navegador.',
 
 ];

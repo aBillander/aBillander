@@ -47,6 +47,7 @@ Route::get('/', 'WelcomeController@index');     // ->name('home');
 
 // Route::get('/home', 'HomeController@index')->name('home');
 Route::get('home/searchcustomer', 'HomeController@searchCustomer')->name('home.searchcustomer');
+Route::get('home/searchsupplier', 'HomeController@searchSupplier')->name('home.searchsupplier');
 Route::get('home/searchproduct' , 'HomeController@searchProduct' )->name('home.searchproduct' );
 Route::get('home/searchcustomerorder' , 'HomeController@searchCustomerOrder' )->name('home.searchcustomerorder' );
 Route::get('home/searchcustomershippingslip' , 'HomeController@searchCustomerShippingSlip' )->name('home.searchcustomershippingslip' );

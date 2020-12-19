@@ -343,6 +343,50 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Supplier Invoice Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'App\SupplierInvoice.invoice'    => 'Factura',
+    'App\SupplierInvoice.corrective' => 'Factura Rectificativa',
+    'App\SupplierInvoice.credit'     => 'Nota de Abono',
+    'App\SupplierInvoice.deposit'    => 'Anticipo',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Invoice Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierInvoice.draft'     => 'Borrador',
+	'App\SupplierInvoice.confirmed' => 'Confirmado',
+	'App\SupplierInvoice.closed'    => 'Cerrado',
+    'App\SupplierInvoice.canceled'  => 'Cancelado',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Invoice Payment Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierInvoice.pending'  => 'Pendiente',
+	'App\SupplierInvoice.halfpaid' => 'Parcialmente Pagado',
+	'App\SupplierInvoice.paid'     => 'Pagado',
+    'App\SupplierInvoice.overdue'  => 'Vencido',
+    'App\SupplierInvoice.doubtful' => 'Pago Dudoso',
+    'App\SupplierInvoice.archived' => 'Archivado',
+
+	/*
+	|--------------------------------------------------------------------------
 	| Payment Types
 	|--------------------------------------------------------------------------
 	|

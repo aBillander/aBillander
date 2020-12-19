@@ -45,6 +45,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapAbsrcRoutes();
 
+        $this->mapCrmRoutes();
+
     }
 
     /**
@@ -119,5 +121,21 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/absrc.php'));
 
         // Maybe need: php artisan config:clear
+    }
+
+    /**
+     * Define the CRM routes for the application.
+     *
+     *
+     * @return void
+     */
+    protected function mapCrmRoutes()
+    {
+        
+        if ( \App\Configuration::isFalse('ENABLE_MCRM') ) return;
+
+        Route::middleware('web')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/web_crm.php'));
     }
 }

@@ -30,9 +30,9 @@
 
 <div xclass="container">
     <div class="row">
-        <div xclass="col-lg-6 col-md-6">
+        <div xclass="col-lg-8 col-md-8">
 
-            <div class="col-lg-6 col-md-6">
+            <div class="col-lg-8 col-md-8">
             <div class="panel panel-info">
               <div class="panel-heading">
                 <h3 class="panel-title">{{ l('Lead Lines', 'leadlines') }}</h3>

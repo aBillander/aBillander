@@ -52,6 +52,7 @@ return [
 	'App\Party.reseller' => 'Distribuidor',
 	'App\Party.prospect' => 'Prospecto',
 	'App\Party.agency' => 'Agencia',
+	'App\Party.developer' => 'Desarrollador',
 	'App\Party.other' => 'Otro',
 
 

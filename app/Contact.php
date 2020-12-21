@@ -21,7 +21,7 @@ class Contact extends Model
  //       'country_id' => 'exists:countries,id',
  //   	'percent' => array('required', 'numeric', 'between:0,100')
         'firstname'        => 'required|min:2|max:32',
-        'email' => 'unique:contacts',
+ //       'email' => 'sometimes|unique:contacts,email',
         'party_id' => 'exists:parties,id',
         ];
 

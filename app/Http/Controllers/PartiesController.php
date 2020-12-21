@@ -107,7 +107,11 @@ class PartiesController extends Controller
     {
         $party = $this->party->findOrFail($id);
 
-        $this->validate($request, Party::$rules);
+        $vrules = Party::$rules;
+
+        if ( isset($vrules['email']) ) $vrules['email'] .= ','. $party->id.',id';  // Unique
+
+        $this->validate($request, $vrules);
 
         $party->update($request->all());
 

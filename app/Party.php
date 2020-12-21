@@ -15,6 +15,7 @@ class Party extends Model
             'reseller',
             'prospect',
             'agency',
+            'developer',
             'other',
         );
 
@@ -28,11 +29,11 @@ class Party extends Model
                             'user_created_by_id', 'user_assigned_to_id', 'customer_id' ];
 
     public static $rules = [
-        'name_fiscal'        => 'required|min:2|max:128',
-        'name_commercial'    => 'nullable|min:2|max:64',
+        'name_fiscal'        => 'nullable|min:2|max:128',
+        'name_commercial'    => 'required|min:2|max:64',
  //       'country_id' => 'exists:countries,id',
  //   	'percent' => array('required', 'numeric', 'between:0,100')
-        'email' => 'unique:parties',
+ //       'email' => 'sometimes|unique:parties,email',
     	];
 
 

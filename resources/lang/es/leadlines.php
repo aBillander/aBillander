@@ -11,6 +11,7 @@ return [
 	|
 	*/
 
+	'Lead' => 'Oportunidad',
 	'Leads' => 'Oportunidades',
 	'Back to Leads'     => 'Volver a Oportunidades',
 	'Lead Lines' => 'Líneas de Oportunidad',

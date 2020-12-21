@@ -67,7 +67,8 @@ class ContactsController extends Controller
         if ($party_id > 0)
         {
             $party = Party::findOrFail($party_id);
-            $partyList = $party->pluck('name_commercial', 'id')->toArray();
+            // $partyList = $party->pluck('name_commercial', 'id')->toArray();
+            $partyList = [$party->id => $party->name_commercial];
         } else {
             $party = null;
             $partyList = Party::orderBy('name_commercial', 'asc')->pluck('name_commercial', 'id')->toArray();
@@ -114,12 +115,26 @@ class ContactsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        $partyList = Party::where('id', $id)->pluck('name_commercial', 'id')->toArray();
-        
+    {        
         $contact = $this->contact->findOrFail($id);
 
-        return view('contacts.edit', compact('contact', 'partyList'));
+        $party_id = $contact->party_id;
+
+        // abi_r($party_id); // die();
+
+        if ($party_id > 0)
+        {
+            $party = Party::findOrFail($party_id);
+            // abi_r($party->pluck('name_commercial', 'id'));
+            $partyList = [$party->id => $party->name_commercial];       //  $party->pluck('name_commercial', 'id')->toArray();
+        } else {
+            $party = null;
+            $partyList = Party::orderBy('name_commercial', 'asc')->pluck('name_commercial', 'id')->toArray();
+        }
+
+        // abi_r($partyList);die();
+
+        return view('contacts.edit', compact('contact', 'partyList', 'party'));
     }
 
     /**
@@ -133,7 +148,11 @@ class ContactsController extends Controller
     {
         $contact = $this->contact->findOrFail($id);
 
-        $this->validate($request, Contact::$rules);
+        $vrules = Contact::$rules;
+
+        if ( isset($vrules['email']) ) $vrules['email'] .= ','. $contact->id.',id';  // Unique
+
+        $this->validate($request, $vrules);
 
         $contact->update($request->all());
 

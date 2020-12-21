@@ -20,6 +20,9 @@ class Contact extends Model
  //   	'name'    => array('required', 'min:2', 'max:64'),
  //       'country_id' => 'exists:countries,id',
  //   	'percent' => array('required', 'numeric', 'between:0,100')
+        'firstname'        => 'required|min:2|max:32',
+        'email' => 'unique:contacts',
+        'party_id' => 'exists:parties,id',
         ];
 
     

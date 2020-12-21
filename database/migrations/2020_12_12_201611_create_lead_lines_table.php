@@ -15,7 +15,7 @@ class CreateLeadLinesTable extends Migration
     {
         Schema::create('lead_lines', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->nullable(false);
             $table->text('description')->nullable();
             $table->string('status', 32)->nullable(false)->default('pending');
             
@@ -29,7 +29,7 @@ class CreateLeadLinesTable extends Migration
 
             $table->integer('user_created_by_id')->unsigned();
             $table->integer('user_assigned_to_id')->unsigned()->nullable();
-            $table->integer('lead_id')->unsigned();
+            $table->integer('lead_id')->unsigned()->nullable(false);
 
             $table->timestamps();
         });

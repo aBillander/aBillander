@@ -15,7 +15,7 @@ class CreateContactsTable extends Migration
     {
         Schema::create('contacts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('firstname', 32);            // Contact information
+            $table->string('firstname', 32)->nullable(false);            // Contact information
             $table->string('lastname', 32)->nullable();
             $table->string('job_title')->nullable();
             $table->string('email')->unique();
@@ -40,7 +40,7 @@ class CreateContactsTable extends Migration
             $table->text('notes')->nullable();
 
             $table->integer('user_created_by_id')->unsigned();
-            $table->integer('party_id')->unsigned();
+            $table->integer('party_id')->unsigned()->nullable(false);
             
             $table->timestamps();
         });

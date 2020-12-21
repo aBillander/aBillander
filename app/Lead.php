@@ -27,6 +27,7 @@ class Lead extends Model
  //     'name'    => array('required', 'min:2', 'max:64'),
  //       'country_id' => 'exists:countries,id',
  //     'percent' => array('required', 'numeric', 'between:0,100')
+        'name'        => 'required|min:2',
         'party_id' => 'exists:parties,id',
         ];
 

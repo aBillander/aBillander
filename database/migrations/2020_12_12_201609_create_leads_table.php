@@ -15,7 +15,7 @@ class CreateLeadsTable extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->nullable(false);
             $table->text('description')->nullable();
             $table->string('status', 32)->nullable(false)->default('pending');
 
@@ -26,7 +26,7 @@ class CreateLeadsTable extends Migration
 
             $table->integer('user_created_by_id')->unsigned();
             $table->integer('user_assigned_to_id')->unsigned()->nullable();
-            $table->integer('party_id')->unsigned();
+            $table->integer('party_id')->unsigned()->nullable(false);
             $table->integer('contact_id')->unsigned()->nullable();
 
             $table->timestamps();

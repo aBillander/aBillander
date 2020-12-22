@@ -65,8 +65,17 @@
           </div>
   </div>
 
+  {{  Form::hidden('caller_url', URL::previous())  }}
+
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-	{!! link_to_route('leads.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+  {!! link_to(url()->previous(), l('Cancel', [], 'layouts'), array('class' => 'btn btn-warning')) !!}  
+
+  <input type="hidden" id="nextAction" name="nextAction" value="" />
+
+  <button class="btn btn-info pull-right" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndContinue');this.form.submit();" title="{{ l('Save & Add new Lead Line') }}">
+     <i class="fa fa-hdd-o"></i>
+     &nbsp; {{l('Save & Add Line')}}
+  </button>
 
 
 

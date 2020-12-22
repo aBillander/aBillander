@@ -124,6 +124,8 @@
           </div>
   </div>
 
+  {{  Form::hidden('caller_url', URL::previous())  }}
+
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-	{!! link_to_route('contacts.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+	{!! link_to(url()->previous(), l('Cancel', [], 'layouts'), array('class' => 'btn btn-warning')) !!}
 

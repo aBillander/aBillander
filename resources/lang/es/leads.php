@@ -64,4 +64,21 @@ return [
 	'Add New Lead to :party' => 'Añadir Nueva Oportunidad a :party',
 	'Add New Lead' => 'Añadir Nueva Oportunidad',
 	'Back to Parties' => 'Volver a Oportunidades',
+
+	'Save & Add Line' => 'Guardar y Añadir Línea',
+	'Save & Add new Lead Line' => 'Guardar y Añadir nueva Línea de Oportunidad',
+
+
+	'Main Data'     => 'Datos Generales',
+	'Lead Lines' => 'Líneas Oportunidad',
+	
+	'Add New Lead Line' => 'Añadir Nueva Línea de Oportunidad',
+
+	'Name'     => 'Nombre',
+	'Start' => 'Inicio',
+	'Due' => 'Vencimiento',
+	'Finish' => 'Terminación',
+
+	'Results' => 'Resultados',
+
 ];

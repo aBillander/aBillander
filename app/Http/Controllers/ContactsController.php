@@ -93,7 +93,9 @@ class ContactsController extends Controller
 
         $contact = $this->contact->create($request->all());
 
-        return redirect('contacts')
+        $url = $request->input('caller_url', 'contacts') ?: 'contacts';
+
+        return redirect($url)
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $contact->id], 'layouts') . $request->input('name'));
     }
 
@@ -156,7 +158,9 @@ class ContactsController extends Controller
 
         $contact->update($request->all());
 
-        return redirect('contacts')
+        $url = $request->input('caller_url', 'contacts') ?: 'contacts';
+
+        return redirect($url)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     }
 

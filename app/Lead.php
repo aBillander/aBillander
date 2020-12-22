@@ -44,7 +44,7 @@ class Lead extends Model
             $list = [];
             foreach (static::$statuses as $status) {
                 // $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
-                $list[$status] = l(get_called_class().'.'.$status);
+                $list[$status] = l(get_called_class().'.'.$status, 'leads');
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -54,7 +54,7 @@ class Lead extends Model
     public static function getStatusName( $status )
     {
             // return l(get_called_class().'.'.$status, [], 'appmultilang');
-            return l(get_called_class().'.'.$status);
+            return l(get_called_class().'.'.$status, 'leads');
     }
 
     public static function isStatus( $status )
@@ -65,7 +65,7 @@ class Lead extends Model
     public function getStatusNameAttribute()
     {
             // return l(get_called_class().'.'.$this->status, 'appmultilang');
-            return l(get_called_class().'.'.$this->status);
+            return l(get_called_class().'.'.$this->status, 'leads');
     }
 
 

@@ -91,9 +91,12 @@ class PartiesController extends Controller
 
         $userList = User::getUserList();
         
-        $party = $this->party->findOrFail($id);
+        $party = $this->party->with('leads')->with('contacts')->findOrFail($id);
 
-        return view('parties.edit', compact('party', 'party_typeList', 'userList'));
+        $leads = $party->leads;
+        $contacts = $party->contacts;
+
+        return view('parties.edit', compact('party', 'party_typeList', 'userList', 'leads', 'contacts'));
     }
 
     /**

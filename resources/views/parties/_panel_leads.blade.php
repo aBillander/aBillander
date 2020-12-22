@@ -1,31 +1,11 @@
-@extends('layouts.master')
 
-@section('title') {{ l('Leads') }} @parent @stop
+            <div class="panel panel-primary" id="panel_leads">
+               <div class="panel-heading">
+                  <h3 class="panel-title">{{ l('Leads') }}</h3>
+               </div>
 
+              <div class="panel-body">
 
-@section('content')
-
-<div class="page-header">
-    <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{ URL::to('leads/create') }}" class=" hide  btn btn-sm btn-success" 
-        		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
-
-        <a href="{{ route('leads.create.withparty', $party->id) }}" class="btn xbtn-sm btn-success" 
-                title="{{l('Add New', [], 'layouts')}}"><i class="fa fa-plus"></i> &nbsp;{{l('Add New Lead')}}</a>
-
-                <a href="{{ route('parties.index') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Parties') }}</a>
-    </div>
-    <h2>
-        <a href="{{ URL::to('leads') }}">{{ l('Leads') }}</a> <span style="color: #cccccc;">::</span> 
-                <span class="lead well well-sm">
-
-                    {{ $party->name_commercial }} &nbsp;
-
-                 <a href="{{ route('parties.edit', $party->id) }}" class="btn btn-xs btn-warning" title="{{ l('Go to', 'layouts') }}" target="_blank"><i class="fa fa-external-link"></i></a>
-
-                 </span>
-    </h2>        
-</div>
 
 <div id="div_leads">
    <div class="table-responsive">
@@ -43,7 +23,10 @@
             <th>{{l('Lead End Date')}}</th>
             <th>{{l('Assigned to')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
-			<th> </th>
+			<th class="text-right"> 
+              <a href="{{ route('leads.create.withparty', $party->id) }}" class="btn btn-sm btn-success" 
+                title="{{l('Add New Lead')}}"><i class="fa fa-plus"></i> &nbsp;{{l('Add New', [], 'layouts')}}</a>
+            </th>
 		</tr>
 	</thead>
 	<tbody>
@@ -106,12 +89,16 @@
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
     {{l('No records found', [], 'layouts')}}
+    
+              <a href="{{ route('leads.create.withparty', $party->id) }}" class="btn btn-sm btn-success pull-right" 
+                style="text-decoration: none !important" 
+                title="{{l('Add New Lead')}}"><i class="fa fa-plus"></i> &nbsp;{{l('Add New', [], 'layouts')}}</a>
 </div>
 @endif
 
    </div>
 </div>
 
-@stop
+              </div>
 
-@include('layouts/modal_delete')
+            </div>

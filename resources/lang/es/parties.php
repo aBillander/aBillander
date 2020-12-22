@@ -77,4 +77,18 @@ return [
 	''     => '',
 	''     => '',
 
+	'Main Data'     => 'Datos Generales',
+	'Leads' => 'Oportunidades',
+	'Contacts' => 'Contactos',
+
+	'Lead Name'     => 'Nombre de la Oportunidad',
+	'Description' => 'Descripción',
+	'Lead Date' => 'Fecha',
+	'Lead End Date' => 'Fecha Terminación',
+	'Show Lead Lines'     => 'Mostrar Líneas de Oportunidad',
+	'Add New Lead' => 'Añadir Nueva Oportunidad',
+	
+	'Contact Name'     => 'Nombre del Contacto',
+	'Add New Contact' => 'Añadir Nuevo Contacto',
+
 ];

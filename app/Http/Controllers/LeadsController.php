@@ -75,13 +75,14 @@ class LeadsController extends Controller
         if ($party_id > 0)
         {
             $party = Party::findOrFail($party_id);
-            $leadList = $party->pluck('name_commercial', 'id')->toArray();
+            // $leadList = $party->pluck('name_commercial', 'id')->toArray();
+            $partyList = [$party->id => $party->name_commercial];
         } else {
             $party = null;
-            $leadList = Party::orderBy('name_commercial', 'asc')->pluck('name_commercial', 'id')->toArray();
+            $partyList = Party::orderBy('name_commercial', 'asc')->pluck('name_commercial', 'id')->toArray();
         }        
 
-        return view('leads.create', compact('statusList', 'userList', 'leadList', 'party'));
+        return view('leads.create', compact('statusList', 'userList', 'partyList', 'party'));
     }
 
     /**
@@ -103,8 +104,29 @@ class LeadsController extends Controller
 
         $lead = $this->lead->create($request->all());
 
-        return redirect('leads')
+        // Move on
+        if ($request->has('nextAction'))
+        {
+            switch ( $request->input('nextAction') ) {
+                case 'saveAndContinue':
+                    # code...
+                    return redirect()->route('leads.leadlines.create', $lead->id)
+                        ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $lead->id], 'layouts') . $request->input('name'));
+
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        $url = $request->input('caller_url', 'lead') ?: 'leads';
+
+        return redirect($url)
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $lead->id], 'layouts') . $request->input('name'));
+
+        
     }
 
     /**
@@ -130,14 +152,16 @@ class LeadsController extends Controller
 
         $userList = User::getUserList();
 
-        $leadList = Party::where('id', $id)->pluck('name_commercial', 'id')->toArray();
+        $partyList = Party::where('id', $id)->pluck('name_commercial', 'id')->toArray();
         
-        $lead = $this->lead->findOrFail($id);
+        $lead = $this->lead->with('leadlines')->findOrFail($id);
 
         // Dates (cuen)
         $this->addFormDates( ['lead_date', 'lead_end_date'], $lead );
 
-        return view('leads.edit', compact('lead', 'statusList', 'userList', 'leadList'));
+        $leadlines = $lead->leadlines;
+
+        return view('leads.edit', compact('lead', 'statusList', 'userList', 'partyList', 'leadlines'));
     }
 
     /**
@@ -158,7 +182,9 @@ class LeadsController extends Controller
 
         $lead->update($request->all());
 
-        return redirect('leads')
+        $url = $request->input('caller_url', 'lead') ?: 'leads';
+
+        return redirect($url)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     }
 

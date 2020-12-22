@@ -15,13 +15,13 @@ class CreatePartiesTable extends Migration
     {
         Schema::create('parties', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name_fiscal', 128)->nullable(false);                     // Company
-            $table->string('name_commercial', 64)->nullable();
+            $table->string('name_fiscal', 128)->nullable();                     // Company
+            $table->string('name_commercial', 64)->nullable(false);
             $table->string('type', 32)->nullable(false)->default('partner');
             
             $table->string('identification', 64)->nullable();
 
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->string('phone', 32)->nullable();
             $table->string('phone_mobile', 32)->nullable();
 

@@ -91,9 +91,12 @@ class PartiesController extends Controller
 
         $userList = User::getUserList();
         
-        $party = $this->party->findOrFail($id);
+        $party = $this->party->with('leads')->with('contacts')->findOrFail($id);
 
-        return view('parties.edit', compact('party', 'party_typeList', 'userList'));
+        $leads = $party->leads;
+        $contacts = $party->contacts;
+
+        return view('parties.edit', compact('party', 'party_typeList', 'userList', 'leads', 'contacts'));
     }
 
     /**
@@ -107,7 +110,11 @@ class PartiesController extends Controller
     {
         $party = $this->party->findOrFail($id);
 
-        $this->validate($request, Party::$rules);
+        $vrules = Party::$rules;
+
+        if ( isset($vrules['email']) ) $vrules['email'] .= ','. $party->id.',id';  // Unique
+
+        $this->validate($request, $vrules);
 
         $party->update($request->all());
 

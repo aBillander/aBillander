@@ -13,6 +13,7 @@
 
          <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('party_id') ? 'has-error' : '' }}">
 
+{{--
 @if ($party ?? null)
             {{ Form::hidden('party_id', $party->id, array('id' => 'party_id')) }}
 @else
@@ -20,6 +21,10 @@
             {!! Form::select('party_id', ['' => l('-- Please, select --', 'layouts')] + $partyList, null, array('class' => 'form-control', 'id' => 'party_id')) !!}
             {!! $errors->first('party_id', '<span class="help-block">:message</span>') !!}
 @endif
+--}}
+            {{ l('Party') }}
+            {!! Form::select('party_id', (count($partyList) >1 ? ['' => l('-- Please, select --', 'layouts')] : []) + $partyList, null, array('class' => 'form-control', 'id' => 'party_id')) !!}
+            {!! $errors->first('party_id', '<span class="help-block">:message</span>') !!}
 
          </div>
 </div>
@@ -119,6 +124,8 @@
           </div>
   </div>
 
+  {{  Form::hidden('caller_url', URL::previous())  }}
+
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-	{!! link_to_route('contacts.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+	{!! link_to(url()->previous(), l('Cancel', [], 'layouts'), array('class' => 'btn btn-warning')) !!}
 

@@ -9,6 +9,7 @@
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <!-- th>{{l('Position')}}</th -->
             <th>{{l('Name', 'leadlines')}}</th>
+            <th>{{l('Party', 'leadlines')}}</th>
             <th>{{l('Status', 'layouts')}}</th>
             <!-- th class="text-center">{{l('Description')}}</th -->
             <th>{{l('Start', 'leadlines')}} /<br />{{l('Finish', 'leadlines')}}</th>
@@ -22,7 +23,12 @@
 		<tr>
             <td>{{ $leadline->id }}</td>
             <!-- td>{{ $leadline->position }}</td -->
-            <td>{{ $leadline->name }}
+            <td title="">
+                <strong>{{ $leadline->lead->name }}</strong>
+                <br />{{ $leadline->name }}
+
+            </td>
+            <td>{{ $leadline->lead->party->name_commercial }}
 
             </td>
 

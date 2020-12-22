@@ -743,7 +743,12 @@ class BillableController extends Controller
 
         $view_path = $this->view_path;
 
-        return view($view_path.'._panel_document_total', compact('document', 'view_path'));
+        // Need this when updating totals, or $volume_unit and $weight_unit will no be available
+        $units = MeasureUnit::whereIn('id', [Configuration::getInt('DEF_VOLUME_UNIT'), Configuration::getInt('DEF_WEIGHT_UNIT')])->get();
+        $volume_unit = $units->where('id', Configuration::getInt('DEF_VOLUME_UNIT'))->first();
+        $weight_unit = $units->where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+
+        return view($view_path.'._panel_document_total', compact('document', 'view_path', 'volume_unit', 'weight_unit'));
     }
 
 

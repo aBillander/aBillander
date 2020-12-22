@@ -949,6 +949,11 @@ class Product extends Model {
     {
         return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
     }
+
+    public function purchasemeasureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'purchase_measure_unit_id');
+    }
     
     public function productmeasureunits()      // http://advancedlaravel.com/eloquent-relationships-examples
     {

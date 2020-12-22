@@ -5,13 +5,13 @@
 {!! Form::open( ['method' => 'POST', 'id' => 'form-quantity-selector'] ) !!}
 
 {!! Form::hidden('document_id', $document->id, array('id' => 'document_id')) !!}
-{!! Form::hidden('customer_id', $document->customer_id, array('id' => 'customer_id')) !!}
+{!! Form::hidden('supplier_id', $document->supplier_id, array('id' => 'supplier_id')) !!}
 
 
                <!-- br><h4  class="text-info" xclass="panel-title">
                    {{l('Stock Availability')}}
                </h4><br -->
-              <div xclass="page-header">
+              <div class=" hide  xpage-header">
                   <div class="pull-right" xstyle="padding-top: 4px;">
 
                       <!-- a href="{{ URL::to($model_path.'/create') }}" class="btn xbtn-sm btn-info" 
@@ -25,10 +25,10 @@
               </div>
 
 
-    <div id="div_document_availability_details">
+    <div id="div_document_entries_details" class=" hide ">
        <div class="table-responsive">
 
-    <table id="document_lines_availability" class="table table-hover">
+    <table id="document_lines_entries" class="table table-hover">
         <thead>
             <tr>
                <th class="text-left">{{l('Line #')}}</th>
@@ -135,22 +135,22 @@
 
 <div class="row">
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-backorder">
+         <div class=" hide  form-group col-lg-4 col-md-4 col-sm-4" id="div-backorder">
            {!! Form::label('backorder', l('Create Back-Order?'), ['class' => 'control-label']) !!}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                      data-content="{{ l('A new Customer Order will be created if Quantity on-hand is less than Order Quantity.') }}">
+                                      data-content="{{ l('A new Supplier Order will be created if entry Quantity is less than Order Quantity.') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
                            </a>
            <div>
              <div class="radio-inline">
                <label>
-                 {!! Form::radio('backorder', '1', \App\Configuration::isTrue('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_on']) !!}
+                 {!! Form::radio('backorder', '1', false, ['id' => 'backorder_on']) !!}
                  {!! l('Yes', [], 'layouts') !!}
                </label>
              </div>
              <div class="radio-inline">
                <label>
-                 {!! Form::radio('backorder', '0', \App\Configuration::isFalse('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_off']) !!}
+                 {!! Form::radio('backorder', '0', true, ['id' => 'backorder_off']) !!}
                  {!! l('No', [], 'layouts') !!}
                </label>
              </div>
@@ -162,7 +162,7 @@
 
                   <div class="xpanel-footer pull-right" style="margin-top: 10px">
 
-                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-quantity-selector').attr('action', '{{ route( 'customerorder.single.shippingslip' )}}');$('#form-quantity-selector').submit();return false;"><i class="fa fa-truck"></i> &nbsp;{{l('Confirm', 'layouts')}}</a>
+                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-quantity-selector').attr('action', '{{ route( 'supplierorder.single.shippingslip' )}}');$('#form-quantity-selector').submit();return false;"><i class="fa fa-truck"></i> &nbsp;{{l('Confirm', 'layouts')}}</a>
                   
                   </div>
 

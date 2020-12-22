@@ -132,6 +132,7 @@ return [
 	'Total'     => 'Total',
 
 	'Products' => 'Productos',
+	'Products by Supplier' => 'Productos por Proveedor',
 	'Product' => 'Producto',
 	'Document' => 'Documento',
 

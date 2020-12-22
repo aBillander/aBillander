@@ -103,7 +103,7 @@ return [
 	'Header'     => 'Cabecera',
 	'Lines'     => 'Líneas',
 	'Profitability'     => 'Rentabilidad',
-	'Availability'     => 'Disponibilidad',
+	'Entries'     => 'Entradas',
 	'Payments'     => 'Pagos',
 
 	'Accepts eInvoice'     => 'Acepta Factura Electrónica',
@@ -236,13 +236,13 @@ return [
 	'Margin'     => 'Margen',
 	'Update Cost Prices'     => 'Actualizar Precios de Coste',
 
-	// Stock availability
+	// Stock entries
 	'Stock Availability'     => 'Disponibilidad de Stock',
 	'Full quantity'     => 'Servir todo',
 	'Quantity on-hand only'     => 'Servir sólo stock disponible',
 	'Create Shipping Slip'     => 'Crear Albarán',
 	'Create Back-Order?'     => '¿Crear un retro-Pedido?',
-	'A new Supplier Order will be created if Quantity on-hand is less than Order Quantity.'     => 'Se creará un nuevo Pedido si la Cantidad disponible es inferior a la Cantidad del Pedido.',
+	'A new Supplier Order will be created if entry Quantity is less than Order Quantity.'     => 'Se creará un nuevo Pedido si la Cantidad entrada es inferior a la Cantidad del Pedido.',
 
 	'Finish Up'     => 'Emitir',
 	'Invoice This'  => 'Albaranar',

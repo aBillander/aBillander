@@ -23,7 +23,7 @@ trait ModelAttachmentControllerTrait
         // https://therichpost.com/upload-file-laravel-ajax-jquery/
 
 
-        $allowedfileExtension = ['pdf','jpg','jpeg','png','docx'];
+        $allowedfileExtension = explode(',', str_replace(' ', '', Configuration::get('FILE_ALLOWED_EXTENSIONS')));   // ['pdf','jpg','jpeg','png','docx'];
 
         $this->validate($request, [
 //                'name' => 'required',
@@ -78,7 +78,7 @@ trait ModelAttachmentControllerTrait
         else
         {
             return Redirect::to(URL::previous() . $anchor)
-                    ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . 'Sorry Only Upload pdf, png , jpg , doc');
+                    ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . 'Sorry Only Upload: '.implode(', ', $allowedfileExtension));
         }
     }
 

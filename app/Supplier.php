@@ -200,7 +200,7 @@ class Supplier extends Model {
     
     public function products()
     {
-        return $this->hasMany('App\Product', 'main_supplier_id')->orderby('name', 'asc');
+        return $this->hasMany('App\Product', 'main_supplier_id')->orderby('reference', 'asc');
     }
     
     public function supplierpricelistlines()
@@ -426,11 +426,6 @@ class Supplier extends Model {
                 $q->where('email', 'LIKE', '%' . $email . '%');
 
             });
-        }
-
-        if ( isset($params['customer_group_id']) && $params['customer_group_id'] > 0 )
-        {
-            $query->where('customer_group_id', '=', $params['customer_group_id']);
         }
 
         if ( isset($params['active']) )

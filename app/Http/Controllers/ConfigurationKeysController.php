@@ -81,7 +81,9 @@ class ConfigurationKeysController extends Controller {
                         'DEF_SUPPLIER_ORDER_SEQUENCE',
                         'DEF_SUPPLIER_ORDER_TEMPLATE',
                         'DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE',
+                        'DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE',
                         'DEF_SUPPLIER_INVOICE_SEQUENCE',
+                        'DEF_SUPPLIER_INVOICE_TEMPLATE',
                         'DEF_SUPPLIER_PAYMENT_METHOD',
                         
                         'DEF_LANGUAGE',
@@ -113,6 +115,7 @@ class ConfigurationKeysController extends Controller {
                         'SHOW_PRODUCTS_ACTIVE_ONLY',
                         'SHOW_CUSTOMERS_ACTIVE_ONLY',
                         'BUSINESS_NAME_TO_SHOW',
+                        'FILE_ALLOWED_EXTENSIONS',
                         'ALLOW_IP_ADDRESSES', 
                         'MAX_DB_BACKUPS',
                         'MAX_DB_BACKUPS_ACTION',

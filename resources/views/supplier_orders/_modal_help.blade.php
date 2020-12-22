@@ -20,9 +20,9 @@
 
 <p>2.- Modificar la cabecera, añadir / modificar / borrar líneas.</p>
 
-<p>3.- Confirmar el Pedido. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asignada, y se incrementa Stock Pendiente de recibir. Aún es posible modificar la cabecera y las líneas.</p>
+<p>3.- Confirmar el Pedido. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asociada, y se incrementa Stock Pendiente de recibir. Aún es posible modificar la cabecera y las líneas.</p>
 
-<p>4.- Cerrar el Pedido. El estado del Documento pasa a <strong>“Cerrado”</strong>.</p>
+<p>4.- Cerrar el Pedido. El estado del Documento pasa a <strong>“Cerrado”</strong> cuando el Pedido pasa a Albarán.</p>
 
 <div class="alert alert-warning">
     <p><strong>Cómo afecta al Stock</strong></p>

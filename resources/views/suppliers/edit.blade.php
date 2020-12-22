@@ -30,11 +30,11 @@
                       <li><a href="{ { route('supplierquotations.create.withsupplier', $supplier->id) }}">{{l('Quotation', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
 --}}
-                      <li><a href="{ { route('supplierorders.create.withsupplier', $supplier->id) }}">{{l('Order', [], 'layouts')}}</a></li>
+                      <li><a href="{{ route('supplierorders.create.withsupplier', $supplier->id) }}">{{l('Order', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('suppliershippingslips.create.withsupplier', $supplier->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
-                      <li><a href="{ { route('supplierinvoices.create.withsupplier', $supplier->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
+                      <li><a href="{{ route('supplierinvoices.create.withsupplier', $supplier->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
                 </div>
@@ -83,6 +83,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-gavel text-success"></i>
                &nbsp; {{ l('Price List') }}
             </a>
+            <a id="b_products" href="#products" class="list-group-item">
+               <i class="fa fa-th"></i>
+               &nbsp; {{ l('Products') }}
+            </a>
             <a id="b_bankaccounts" href="#bankaccounts" class="list-group-item">
                <i class="fa fa-briefcase"></i>
                &nbsp; {{ l('Bank Accounts') }}
@@ -130,6 +134,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
          {!! Form::close() !!}
 
+          @include('suppliers._panel_products')
+
           @include('suppliers._panel_bankaccounts')
 
           @include('suppliers._panel_addressbook')
@@ -157,6 +163,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
    {
       $("#panel_main").hide();
       $("#panel_commercial").hide();
+      $("#panel_products").hide();
       $("#panel_bankaccounts").hide();
       $("#panel_addressbook").hide();
       $("#panel_attachments").hide();
@@ -170,6 +177,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
       $("#b_main").removeClass('active');
       $("#b_commercial").removeClass('active');
+      $("#b_products").removeClass('active');
       $("#b_bankaccounts").removeClass('active');
       $("#b_addressbook").removeClass('active');
       $("#b_attachments").removeClass('active');
@@ -186,6 +194,12 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
          $("#panel_commercial").show();
          $("#b_commercial").addClass('active');
          // document.f_cliente.codgrupo.focus();
+      }
+      else if(window.location.hash.substring(1) == 'products')
+      {
+         $("#panel_products").show();
+         $("#b_products").addClass('active');
+         getSupplierProducts();
       }
       else if(window.location.hash.substring(1) == 'bankaccounts')
       {
@@ -208,12 +222,12 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
          $("#b_orders").addClass('active');
          getSupplierOrders();
       }
-      else if(window.location.hash.substring(1) == 'products')
-      {
-         $("#panel_products").show();
-         $("#b_products").addClass('active');
-         getSupplierProducts();
-      }
+//      else if(window.location.hash.substring(1) == 'products')
+//      {
+//         $("#panel_products").show();
+//         $("#b_products").addClass('active');
+//         getSupplierProducts();
+//      }
       else if(window.location.hash.substring(1) == 'pricerules')
       {
          $("#panel_pricerules").show();

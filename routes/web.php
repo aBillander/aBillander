@@ -47,6 +47,7 @@ Route::get('/', 'WelcomeController@index');     // ->name('home');
 
 // Route::get('/home', 'HomeController@index')->name('home');
 Route::get('home/searchcustomer', 'HomeController@searchCustomer')->name('home.searchcustomer');
+Route::get('home/searchsupplier', 'HomeController@searchSupplier')->name('home.searchsupplier');
 Route::get('home/searchproduct' , 'HomeController@searchProduct' )->name('home.searchproduct' );
 Route::get('home/searchcustomerorder' , 'HomeController@searchCustomerOrder' )->name('home.searchcustomerorder' );
 Route::get('home/searchcustomershippingslip' , 'HomeController@searchCustomerShippingSlip' )->name('home.searchcustomershippingslip' );
@@ -290,6 +291,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('suppliers/{id}/bankaccount', 'SuppliersController@updateBankAccount')->name('suppliers.bankaccount');
 
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
+
+        Route::get('suppliers/{id}/products',  'SuppliersController@getProducts')->name('supplier.products');
 
         Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
 
@@ -826,6 +829,7 @@ foreach ($pairs as $pair) {
         Route::get( 'import/suppliers', 'Import\ImportSuppliersController@import' )->name('suppliers.import');
         Route::post('import/suppliers', 'Import\ImportSuppliersController@process')->name('suppliers.import.process');
         Route::get( 'export/suppliers', 'Import\ImportSuppliersController@export' )->name('suppliers.export');
+        Route::get( 'export/suppliers/products', 'Import\ImportSuppliersController@exportProducts' )->name('suppliers.products.export');
 
         Route::get( 'import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@import' )->name('suppliers.pricelist.import');
         Route::post('import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@process')->name('suppliers.pricelist.import.process');

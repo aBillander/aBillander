@@ -225,7 +225,7 @@
 
     @endif
     
-@if ( $document->status != 'closed' )
+@if ( 0 && $document->status != 'closed' )
 
 
           <div class="xpanel xpanel-default">

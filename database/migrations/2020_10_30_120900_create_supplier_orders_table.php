@@ -27,8 +27,11 @@ class CreateSupplierOrdersTable extends Migration
             // $table->integer('invoicing_address_id')->nullable()->change();
 
             $table->string('fulfillment_status', 32)->nullable(false)->default('pending');  // pending, partial, done
-
-            // $table->dateTime('invoiced_at')->nullable();
+            
+            $table->dateTime('shipping_slip_at')->nullable();
+//             $table->dateTime('invoiced_at')->nullable();
+            $table->dateTime('aggregated_at')->nullable();
+            $table->dateTime('backordered_at')->nullable();
 
         });
     }

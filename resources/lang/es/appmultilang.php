@@ -100,8 +100,12 @@ return array(
     'template.CustomerOrderPdf'   => 'Pedido de Cliente (Pdf)',
     'template.CustomerShippingSlipPdf'   => 'Albarán de Cliente (Pdf)',
 	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',
+
     'template.WarehouseShippingSlipPdf' => 'Transferencias entre Almacenes (Pdf)',
+
     'template.SupplierOrderPdf'   => 'Pedido a Proveedor (Pdf)',
+    'template.SupplierShippingSlipPdf'   => 'Albarán de Proveedor (Pdf)',
+
     'template.Pdf' => 'Plantilla Pdf',
     'template.Mail' => 'Plantilla Mail',
 	
@@ -313,9 +317,73 @@ return array(
 	'App\SupplierOrder.closed'    => 'Cerrado',
     'App\SupplierOrder.canceled' => 'Cancelado',    
 
+    'App\SupplierOrder.pending' => 'Pendiente',
+    'App\SupplierOrder.partial' => 'Parcialmente',
+    'App\SupplierOrder.received ' => 'Recibido',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Shipping Slip Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierShippingSlip.draft' => 'Borrador',
+	'App\SupplierShippingSlip.confirmed'    => 'Confirmado',
+	'App\SupplierShippingSlip.closed'    => 'Cerrado',
+    'App\SupplierShippingSlip.canceled' => 'Cancelado',
+
     'App\SupplierShippingSlip.pending' => 'Pendiente',
-    'App\SupplierShippingSlip.partial' => 'Parcialmente',
-    'App\SupplierShippingSlip.received ' => 'Recibido',
+    'App\SupplierShippingSlip.processing' => 'Preparación',
+    'App\SupplierShippingSlip.transit' => 'Reparto',
+    'App\SupplierShippingSlip.exception' => 'Excepción',
+    'App\SupplierShippingSlip.delivered' => 'Entregado',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Invoice Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'App\SupplierInvoice.invoice'    => 'Factura',
+    'App\SupplierInvoice.corrective' => 'Factura Rectificativa',
+    'App\SupplierInvoice.credit'     => 'Nota de Abono',
+    'App\SupplierInvoice.deposit'    => 'Anticipo',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Invoice Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierInvoice.draft'     => 'Borrador',
+	'App\SupplierInvoice.confirmed' => 'Confirmado',
+	'App\SupplierInvoice.closed'    => 'Cerrado',
+    'App\SupplierInvoice.canceled'  => 'Cancelado',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Invoice Payment Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierInvoice.pending'  => 'Pendiente',
+	'App\SupplierInvoice.halfpaid' => 'Parcialmente Pagado',
+	'App\SupplierInvoice.paid'     => 'Pagado',
+    'App\SupplierInvoice.overdue'  => 'Vencido',
+    'App\SupplierInvoice.doubtful' => 'Pago Dudoso',
+    'App\SupplierInvoice.archived' => 'Archivado',
 
 	/*
 	|--------------------------------------------------------------------------

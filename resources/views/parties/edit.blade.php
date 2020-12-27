@@ -162,3 +162,5 @@
 
 </script>
 @endsection
+
+@include('layouts/modal_delete')

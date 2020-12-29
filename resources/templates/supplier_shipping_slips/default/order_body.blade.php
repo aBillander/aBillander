@@ -113,7 +113,7 @@
 
 				<tr class="order-number">
 
-					<th>Pedido nº:</th>
+					<th>Albarán nº:</th>
 
 					<td style="font-size: 11pt;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
 

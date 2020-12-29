@@ -9,7 +9,7 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <button  name="b_search_filter" id="b_search_filter" class=" hidden  btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
@@ -50,7 +50,7 @@
 </div>
 
 
-{{--
+
 <div name="search_filter" id="search_filter" @if( Request::has('search_status') AND (Request::input('search_status')==1) ) style="display:block" @else style="display:none" @endif>
 <div class="row" style="padding: 0 20px">
     <div class="col-md-12 xcol-md-offset-3">
@@ -79,12 +79,12 @@
     {!! Form::label('status', l('Status')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
-
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('shipment_status', l('Shipment Status')) !!}
     {!! Form::select('shipment_status', array('' => l('All', [], 'layouts')) + $shipment_statusList, null, array('class' => 'form-control')) !!}
 </div>
-
+--}}
 <div class=" form-group col-lg-2 col-md-2 col-sm-2" id="div-is_invoiced">
      {!! Form::label('is_invoiced', l('Invoiced'), ['class' => 'control-label']) !!}
      <div>
@@ -109,7 +109,7 @@
      </div>
 </div>
 
-{ {--
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('autosupplier_name', l('Supplier')) !!}
     {!! Form::text('autosupplier_name', null, array('class' => 'form-control', 'id' => 'autosupplier_name')) !!}
@@ -131,7 +131,7 @@
     {!! Form::label('warehouse_id', l('Warehouse')) !!}
     {!! Form::select('warehouse_id', array('0' => l('All', [], 'layouts')) + $warehouseList, null, array('class' => 'form-control')) !!}
 </div>
---} }
+
 
 
 <div class="form-group col-lg-1 col-md-1 col-sm-1">
@@ -142,7 +142,7 @@
                               </a>
     {!! Form::text('price_amount', null, array('class' => 'form-control', 'id' => 'price_amount')) !!}
 </div>
-
+--}}
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
@@ -157,7 +157,7 @@
     </div>
 </div>
 </div>
---}}
+
 
 
 

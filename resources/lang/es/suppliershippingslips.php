@@ -343,5 +343,9 @@ return [
 	'Invoiceable Shipping Slips' => 'Albaranes para Facturar',
 
 	'Add Lots to Line' => 'Añadir Lotes a la Línea',
+	
+	'Is Invoiceable?'     => '¿Es Facturable?',
+
+	'Not Invoiceable Document' => 'Documento No Facturable',
 
 ];

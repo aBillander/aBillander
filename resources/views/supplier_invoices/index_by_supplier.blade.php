@@ -73,7 +73,7 @@
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('status', l('Status')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
@@ -81,6 +81,11 @@
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('payment_status', l('Payment Status')) !!}
     {!! Form::select('payment_status', array('' => l('All', [], 'layouts')) + $payment_statusList, null, array('class' => 'form-control')) !!}
+</div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('payment_method_id', l('Payment Method')) !!}
+    {!! Form::select('payment_method_id', array('' => l('All', [], 'layouts')) + $payment_methodList, null, array('class' => 'form-control')) !!}
 </div>
 
 {{--
@@ -148,11 +153,7 @@
     <thead>
         <tr>
             <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-            <th class="text-left">{{ l('ID', 'layouts') }}
-
-<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('target', '_blank');$('#form-select-documents').attr('action', '{{ route( 'supplierinvoices.bulk.pdf' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
-
-            </th>
+            <th class="text-left">{{ l('ID', 'layouts') }}</th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>

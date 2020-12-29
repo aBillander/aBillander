@@ -1,5 +1,5 @@
 
-{{--
+
   
 @if ( $document->status == 'closed' )
 
@@ -17,21 +17,27 @@
               
                   <li class="list-group-item">
 
+@if ( $document->is_invoiceable )
+
                       @if ( $document->invoiced_at )
 
-                      <a href="{{ URL::to('customerinvoices/' . $document->customerinvoice()->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
+                      <a href="{{ URL::to('supplierinvoices/' . $document->supplierinvoice()->id . '/edit') }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
-                          @if ($document->customerinvoice()->document_reference)
-                            {{ $document->customerinvoice()->document_reference }}
+                          @if ($document->supplierinvoice()->document_reference)
+                            {{ $document->supplierinvoice()->document_reference }}
                           @else
                             <span class="btn btn-xs btn-grey">{{ l('Draft', 'layouts') }}</span>
                           @endif
 
-                      </a> - {{ abi_date_short( $document->customerinvoice()->document_date ) }}
+                      </a> - {{ abi_date_short( $document->supplierinvoice()->document_date ) }}
 
                       @else
                           <span class="btn btn-xs btn-grey">{{ l('Pending', 'layouts') }}</span>
                       @endif
+
+@else
+              <span class="label alert-warning">{{l('Not Invoiceable Document')}}</span>
+@endif
                     
                   </li>
 
@@ -41,7 +47,8 @@
           </div>
 
 @endif
---}}
+
+
 @if ( $document->created_via == 'aggregate_orders' )
 
           <div class="xpanel xpanel-default">

@@ -35,8 +35,8 @@
 			<div class="shop-name"><h3>{{ $name }}</h3></div>
 
 			<div class="shop-address">
-                        {{ $document->warehouse->address->address1 }} {{ $document->warehouse->address->address2 }}<br />
-                        {{ $document->warehouse->address->postcode }} {{ $document->warehouse->address->city }} ({{ $document->warehouse->address->state->name }})<br />
+                        {{ $company->address->address1 }} {{ $company->address->address2 }}<br />
+                        {{ $company->address->postcode }} {{ $company->address->city }} ({{ $company->address->state->name }})<br />
                         CIF: {{ $company->identification }} / Tel: {{ $company->address->phone }}<br />
                         {{ $company->address->email }}<br />
 				
@@ -50,7 +50,7 @@
 
 
 
-<h1 class="document-type-label"> ALBARAN DE PROVEEDOR</h1>
+<h1 class="document-type-label"> FACTURA DE PROVEEDOR</h1>
 
 
 
@@ -113,7 +113,7 @@
 
 				<tr class="order-number">
 
-					<th>Pedido nº:</th>
+					<th>Factura nº:</th>
 
 					<td style="font-size: 11pt;"><strong>{{ $document->document_reference ?? 'BORRADOR' }}</strong></td>
 

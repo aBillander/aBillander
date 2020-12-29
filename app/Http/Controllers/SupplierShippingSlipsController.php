@@ -79,6 +79,9 @@ class SupplierShippingSlipsController extends BillableController
      */
     protected function indexBySupplier($id, Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+        
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
@@ -93,6 +96,7 @@ class SupplierShippingSlipsController extends BillableController
         $supplier = $this->supplier->findOrFail($id);
 
         $documents = $this->document
+                            ->filter( $request->all() )
                             ->where('supplier_id', $id)
 //                            ->with('supplier')
                             ->with('currency')
@@ -106,7 +110,11 @@ class SupplierShippingSlipsController extends BillableController
 
         $documents->setPath($id);
 
-        return view($this->view_path.'.index_by_supplier', $this->modelVars() + compact('supplier', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
+        $statusList = $this->model_class::getStatusList();
+
+//        $shipment_statusList = $this->model_class::getShipmentStatusList();
+
+        return view($this->view_path.'.index_by_supplier', $this->modelVars() + compact('supplier', 'documents', 'statusList', 'sequenceList', 'templateList', 'items_per_page'));
     }
 
     /**

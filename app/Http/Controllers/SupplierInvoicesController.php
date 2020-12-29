@@ -106,7 +106,9 @@ class SupplierInvoicesController extends BillableController
 
         $payment_statusList = $this->model_class::getPaymentStatusList();
 
-        return view($this->view_path.'.index_by_supplier', $this->modelVars() + compact('supplier', 'documents', 'items_per_page', 'statusList', 'payment_statusList'));
+        $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+        return view($this->view_path.'.index_by_supplier', $this->modelVars() + compact('supplier', 'documents', 'items_per_page', 'statusList', 'payment_statusList', 'payment_methodList'));
     }
 
     /**

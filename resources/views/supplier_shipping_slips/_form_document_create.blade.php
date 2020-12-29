@@ -30,6 +30,11 @@
             {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
          </div>
 
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference_supplier') ? 'has-error' : '' }}">
+            <strong>{{ l('Supplier Reference') }}</strong>
+           {!! Form::text('reference_supplier', null, array('class' => 'form-control', 'id' => 'reference_supplier')) !!}
+           {!! $errors->first('reference_supplier', '<span class="help-block">:message</span>') !!}
+         </div>
       </div>
       <div class="row">
 
@@ -77,6 +82,25 @@
             </div>
 
          </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="is_invoiceable">
+                     {{ l('Is Invoiceable?') }}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '1', true, ['id' => 'is_invoiceable_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '0', false, ['id' => 'is_invoiceable_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
 {{--
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sales_rep_id') ? 'has-error' : '' }}">
             {{ l('Sales Representative') }}

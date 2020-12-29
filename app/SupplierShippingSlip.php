@@ -45,7 +45,7 @@ class SupplierShippingSlip extends Billable
      * https://gist.github.com/JordanDalton/f952b053ef188e8750177bf0260ce166
      */
     protected $document_fillable = [
-                            'supplier_id', 'reference_supplier', 'notes_to_supplier', 
+                            'supplier_id', 'reference_supplier', 'is_invoiceable', 'notes_to_supplier', 
                             'prices_entered_with_tax', 'round_prices_with_tax',
     ];
 

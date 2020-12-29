@@ -49,7 +49,7 @@
                     }
 
                     // set labels
-                    @if( $customer->currentPricesEnteredWithTax( $document->document_currency ) )
+                    @if( $supplier->currentPricesEnteredWithTax( $document->document_currency ) )
                         $('#line_is_prices_entered_with_tax').val(1);
                         $(".label_tax_exc").hide();
                         $(".label_tax_inc").show();
@@ -186,14 +186,14 @@
 
                     $('#line_cost_price').val(result.cost_price);
                     $('#line_unit_price').val(result.unit_price);
-                    $('#line_unit_customer_price').val(result.unit_customer_price);
+                    $('#line_unit_supplier_price').val(result.unit_supplier_price);
 
                     $('#line_is_prices_entered_with_tax').val(result.prices_entered_with_tax);
 
                     if ( $('#line_is_prices_entered_with_tax').val() > 0 )
                     {
                         //
-                        price = result.unit_customer_final_price_tax_inc;
+                        price = result.unit_supplier_final_price_tax_inc;
 
                         // set labels
                         $(".label_tax_exc").hide();
@@ -202,7 +202,7 @@
                     } else {
 
                         //
-                        price = result.unit_customer_final_price;
+                        price = result.unit_supplier_final_price;
 
                         // set labels
                         $(".label_tax_inc").hide();
@@ -214,8 +214,8 @@
 
                     $("#label_ecotax_value").html(result.ecotax_value_label);
                     
-                    // $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
-                    // $("#line_price").val( result.unit_customer_final_price );
+                    // $("#line_price").val( result.unit_supplier_final_price.round( PRICE_DECIMAL_PLACES ) );
+                    // $("#line_price").val( result.unit_supplier_final_price );
 
                     $('#line_discount_percent').val(result.discount_percent);
 
@@ -476,8 +476,8 @@
                               package_measure_unit_id : $('#line_package_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_unit_price').val(),
-                              unit_customer_price : $('#line_unit_customer_price').val(),
-                              unit_customer_final_price : $('#line_price').val(),
+                              unit_supplier_price : $('#line_unit_supplier_price').val(),
+                              unit_supplier_final_price : $('#line_price').val(),
                               prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
@@ -494,7 +494,7 @@
 
 
 
-//    pload = pload + "&customer_id="+$("#customer_id").val();
+//    pload = pload + "&supplier_id="+$("#supplier_id").val();
 //    pload = pload + "&currency_id="+$("#currency_id").val()+"&conversion_rate="+$("#currency_conversion_rate").val();
 //    pload = pload + "&_token="+$('[name="_token"]').val();
 
@@ -548,8 +548,8 @@
                               measure_unit_id : $('#line_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_unit_price').val(),
-                              unit_customer_price : $('#line_unit_customer_price').val(),
-                              unit_customer_final_price : $('#line_price').val(),
+                              unit_supplier_price : $('#line_unit_supplier_price').val(),
+                              unit_supplier_final_price : $('#line_price').val(),
                               prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
@@ -593,7 +593,7 @@
             // See: http://jsfiddle.net/chridam/hfre25pf/
 
             $( selector ).autocomplete({
-                source : "{{ route($model_path.'.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
+                source : "{{ route($model_path.'.searchproduct') }}?supplier_id="+$('#supplier_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
                 appendTo : "#modal_document_line",
 
@@ -620,7 +620,7 @@
     
                         getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
     
-                        getProductPriceData( $('#line_product_id').val(), $('#line_combination_id').val(), $("#customer_id").val() );
+                        getProductPriceData( $('#line_product_id').val(), $('#line_combination_id').val(), $("#supplier_id").val() );
                     }
 
                     return false;
@@ -646,7 +646,7 @@
                 data: {
                     product_id: product_id,
                     combination_id: combination_id,
-                    customer_id: $("#customer_id").val(),
+                    supplier_id: $("#supplier_id").val(),
                     currency_id: $("#currency_id").val(),
                     conversion_rate: $("#currency_conversion_rate").val(),
                     taxing_address_id: $("#taxing_address_id").val()
@@ -688,16 +688,16 @@
                         $('input:radio[name=line_is_sales_equalization][value=0]').prop('checked', true);
                     
                     $('#line_discount_percent').val(0);
-//                    price = parseFloat(response.unit_customer_price.display);
+//                    price = parseFloat(response.unit_supplier_price.display);
 
-                    $('#line_is_prices_entered_with_tax').val(response.unit_customer_price.price_is_tax_inc);
+                    $('#line_is_prices_entered_with_tax').val(response.unit_supplier_price.price_is_tax_inc);
 
                     if ( $('#line_is_prices_entered_with_tax').val() > 0 )
                     {
                         
                         unit_price = response.unit_price.tax_inc;
                         //
-                        price = response.unit_customer_price.tax_inc;
+                        price = response.unit_supplier_price.tax_inc;
 
                         // set labels
                         $(".label_tax_exc").hide();
@@ -707,7 +707,7 @@
 
                         unit_price = response.unit_price.tax_exc;
                         //
-                        price = response.unit_customer_price.tax_exc;
+                        price = response.unit_supplier_price.tax_exc;
 
                         // set labels
                         $(".label_tax_inc").hide();
@@ -716,7 +716,7 @@
                     }
 
                     $('#line_unit_price').val( unit_price );
-                    $("#line_unit_customer_price").val( price );
+                    $("#line_unit_supplier_price").val( price );
                     // $("#line_price").val( price.round( PRICE_DECIMAL_PLACES ) );
                     $("#line_price").val( price );
 
@@ -730,7 +730,7 @@
         }
 
 
-        function getProductPriceData( product_id, combination_id, customer_id ) {
+        function getProductPriceData( product_id, combination_id, supplier_id ) {
             var token = "{{ csrf_token() }}";
            
             var panel = $("#product_price_data");
@@ -745,8 +745,8 @@
                 data: {
                     product_id: product_id,
                     combination_id: combination_id,
-                    customer_id: $("#customer_id").val(),
-                    recent_sales_this_customer: 1,
+                    supplier_id: $("#supplier_id").val(),
+                    recent_sales_this_supplier: 1,
                     currency_id: $("#currency_id").val(),
                     conversion_rate: $("#currency_conversion_rate").val(),
                     taxing_address_id: $("#taxing_address_id").val()

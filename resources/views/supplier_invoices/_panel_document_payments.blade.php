@@ -16,10 +16,10 @@
 			<th style="text-transform: none;">{{l('Due Date')}}</th>
 			<th style="text-transform: none;">{{l('Payment Date')}}</th>
 			<th style="text-transform: none;">{{l('Amount')}}</th>
-			<th style="text-transform: none;">{{l('Payment Type', 'customervouchers')}}</th>
-			<th style="text-transform: none;">{{l('Auto Direct Debit', 'customervouchers')}}
+			<th style="text-transform: none;">{{l('Payment Type', 'suppliervouchers')}}</th>
+			<th style="text-transform: none;">{{l('Auto Direct Debit', 'suppliervouchers')}}
                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Include in automatic payment remittances', 'customervouchers') }}">
+                                    data-content="{{ l('Include in automatic payment remittances', 'suppliervouchers') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                </a>
         	</th>
@@ -75,23 +75,23 @@
 
 			<td class="text-right">
                 @if ( $payment->status == 'paid' )
-                	<!-- a class="btn btn-sm btn-danger" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
+                	<!-- a class="btn btn-sm btn-danger" href="{{ URL::to('suppliervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('supplierinvoices/' . $document->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
             	@else
 
                 @if ( $payment->status == 'bounced' )
 
             	@else
 
-                	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '/edit#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                	<a class="btn btn-sm btn-warning" href="{{ URL::to('suppliervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('supplierinvoices/' . $document->id . '/edit#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
-	                <a class="btn btn-sm btn-blue" href="{{ URL::to('customervouchers/' . $payment->id  . '/pay?back_route=' . urlencode('customerinvoices/' . $document->id . '/edit#payments') ) }}" title="{{l('Make Payment', 'customervouchers')}}"><i class="fa fa-money"></i>
+	                <a class="btn btn-sm btn-blue" href="{{ URL::to('suppliervouchers/' . $payment->id  . '/pay?back_route=' . urlencode('supplierinvoices/' . $document->id . '/edit#payments') ) }}" title="{{l('Make Payment', 'suppliervouchers')}}"><i class="fa fa-money"></i>
 	                </a>
 
 	                @if($payment->amount==0.0)
 	                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-	                    href="{{ URL::to('customervouchers/' . $payment->id ) }}" 
+	                    href="{{ URL::to('suppliervouchers/' . $payment->id ) }}" 
 	                    data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-	                    data-title="{{ l('Customer Voucher', 'customervouchers') }} :: {{ l('Invoice') }}: {{ $payment->paymentable->document_reference }} . {{ l('Due Date') }}: {{ $payment->due_date }}" 
+	                    data-title="{{ l('Supplier Voucher', 'suppliervouchers') }} :: {{ l('Invoice') }}: {{ $payment->paymentable->document_reference }} . {{ l('Due Date') }}: {{ $payment->due_date }}" 
 	                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
 	                @endif
 

@@ -615,6 +615,8 @@ class SupplierShippingSlipsController extends BillableController
 
         $templateList = Template::listFor( 'App\\SupplierInvoice' );
 
+        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
         $statusList = SupplierInvoice::getStatusList();
 
         // Make sense:
@@ -638,16 +640,16 @@ class SupplierShippingSlipsController extends BillableController
 
         $documents->setPath('invoiceables');
 
-        return view($this->view_path.'.index_by_supplier_invoiceables', $this->modelVars() + compact('supplier', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page'));
+        return view($this->view_path.'.index_by_supplier_invoiceables', $this->modelVars() + compact('supplier', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page', 'payment_methodList'));
     }
 
 
     public function createGroupInvoice( Request $request )
     {
         //
-        $document_group = $request->input('document_group', []);
+        $document_list = $request->input('document_group', []);
 
-        if ( count( $document_group ) == 0 ) 
+        if ( count( $document_list ) == 0 ) 
             return redirect()->route('supplier.invoiceable.shippingslips', $request->input('supplier_id'))
                 ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
         
@@ -659,11 +661,53 @@ class SupplierShippingSlipsController extends BillableController
         $this->validate($request, $rules);
 
         // Set params for group
-        $params = $request->only('supplier_id', 'template_id', 'sequence_id', 'document_date', 'status');
+        $params = $request->only('supplier_id', 'template_id', 'sequence_id', 'document_date', 'status', 'group_by_shipping_address', 'payment_method_id', 'testing');
 
         // abi_r($params, true);
 
-        return $this->invoiceDocumentList( $document_group, $params );
+        // => old schools :: return $this->invoiceDocumentList( $document_list, $params );
+
+
+        // Start Logger
+        $logger = \App\ActivityLogger::setup( 'Invoice Supplier Shipping Slips', __METHOD__ )
+                    ->backTo( route('supplier.invoiceable.shippingslips', $params['supplier_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+
+
+        $logger->empty();
+        $logger->start();
+
+        $logger->log("INFO", 'Se facturarán los Albaranes del Proveedor: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => $params['supplier_id']]);
+
+        $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $document_list)]);
+
+        $logger->log("INFO", 'Se facturarán un total de <span class="log-showoff-format">{nbr}</span> Albaranes del Proveedor.', ['nbr' => count($document_list)]);
+
+        $flattened = $params;
+        array_walk($flattened, function(&$value, $key) {
+            $value = "{$key} => {$value}";
+        });
+
+        $logger->log("INFO", 'Opciones:  <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $flattened)]);
+
+
+        $params['logger'] = $logger;
+
+
+        $invoice = \App\SupplierShippingSlip::invoiceDocumentList( $document_list, $params );
+
+
+
+        $logger->stop();
+
+
+        return redirect('activityloggers/'.$logger->id)
+                ->with('success', l('Se han facturado los Albaranes seleccionados <strong>:file</strong> .', ['file' => '']));
+
+        // return redirect()->back()
+        //         ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+//        return redirect('supplierinvoices/'.optional($invoice)->id.'/edit')
+//                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($invoice)->id], 'layouts'));
     } 
 
     public function createInvoice($id)

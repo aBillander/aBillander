@@ -16,7 +16,7 @@
 
 <div id="panel_{{ $model_snake_case }}_payments" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('customer_orders._panel_order_payments') --}}
+{{--  @ include('supplier_orders._panel_order_payments') --}}
 
 </div>
 

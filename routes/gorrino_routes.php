@@ -164,6 +164,12 @@ Route::get('mqueuer', 'MProbeController@queuer');
 Route::get('migratethis', function()
 {
 
+	// 2020-12-29	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_shipping_slips` ADD `is_invoiceable` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `shipment_status`;");
+
+	die('OK');
+
+
 	// 2020-12-21
 /*
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `contacts` CHANGE `email` `email` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;");

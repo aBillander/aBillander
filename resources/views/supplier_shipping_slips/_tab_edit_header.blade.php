@@ -241,13 +241,13 @@
             {!! Form::textarea('notes_to_supplier', null, array('class' => 'form-control', 'id' => 'notes_to_supplier', 'rows' => '2')) !!}
             {{ $errors->first('notes_to_supplier', '<span class="help-block">:message</span>') }}
          </div>
-{{--
+
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes_from_supplier') ? 'has-error' : '' }}">
             {{ l('Notes from Supplier') }}
             {!! Form::textarea('notes_from_supplier', null, array('class' => 'form-control', 'id' => 'notes_from_supplier', 'rows' => '2')) !!}
             {{ $errors->first('notes_from_supplier', '<span class="help-block">:message</span>') }}
          </div>
---}}
+
       </div>
 
                </div><!-- div class="panel-body" -->

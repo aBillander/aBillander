@@ -95,7 +95,7 @@ function get_tax_percent_by_id(tax_id, se = 0)
    // http://stackoverflow.com/questions/18910939/how-to-get-json-key-and-value-in-javascript
    // var taxes = $.parseJSON( '{{ json_encode( $taxpercentList ) }}' );
 
-/*   var taxes = { ! ! json_encode( $customer->sales_equalization
+/*   var taxes = { ! ! json_encode( $supplier->sales_equalization
                                   ? $taxeqpercentList 
                                   : $taxpercentList 
                               ) ! ! } ;

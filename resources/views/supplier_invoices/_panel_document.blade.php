@@ -9,9 +9,9 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab1default" data-toggle="tab">{{ l('Header Data') }}</a></li>
                             <li><a href="#tab2default" data-toggle="tab">{{ l('Lines') }}</a></li>
-                            <li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li>
+                            <!-- li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li>
 
-                            <li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
+                            <li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li -->
 
                             <li><a href="#tab5default" data-toggle="tab">{{ l('Payments') }}
                               @if( $document->is_overdue )
@@ -50,14 +50,14 @@
                 @include($view_path.'._tab_edit_lines')
 
       </div>
-      <div class="tab-pane fade" id="tab3default">
+      <div class=" hide  tab-pane fade" id="tab3default">
                 
-                @include($view_path.'._tab_profitability')
+                @ include($view_path.'._tab_profitability')
 
       </div>
-      <div class="tab-pane fade" id="tab4default">
+      <div class="hide  tab-pane fade" id="tab4default">
                 
-                @include($view_path.'._tab_availability')
+                @ include($view_path.'._tab_availability')
 
       </div>
       <div class="tab-pane fade" id="tab5default">

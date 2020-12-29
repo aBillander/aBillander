@@ -5,9 +5,9 @@
 <!-- Order header -->
 
 {!! Form::hidden('document_id', $document->id, array('id' => 'document_id')) !!}
-{!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
-          {!! Form::hidden('customer_price_is_tax_inc', $customer->currentPricesEnteredWithTax( $document->document_currency ), array('id' => 'customer_price_is_tax_inc')) !!}
-{!! Form::hidden('sales_equalization', $customer->sales_equalization, array('id' => 'sales_equalization')) !!}
+{!! Form::hidden('supplier_id', null, array('id' => 'supplier_id')) !!}
+          {!! Form::hidden('supplier_price_is_tax_inc', $supplier->currentPricesEnteredWithTax( $document->document_currency ), array('id' => 'supplier_price_is_tax_inc')) !!}
+{!! Form::hidden('sales_equalization', $supplier->sales_equalization, array('id' => 'sales_equalization')) !!}
 {!! Form::hidden('invoicing_address_id', null, array('id' => 'invoicing_address_id')) !!}
 {!! Form::hidden('taxing_address_id', $document->taxingaddress->id, array('id' => 'taxing_address_id')) !!}
 
@@ -40,6 +40,15 @@
            {!! $errors->first('document_ppd_percent', '<span class="help-block">:message</span>') !!}
         </div>
 
+         <div class="form-group col-lg-1 col-md-1 col-sm-1">
+         </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference_supplier') ? 'has-error' : '' }}">
+            <strong>{{ l('Supplier Reference') }}</strong>
+           {!! Form::text('reference_supplier', null, array('class' => 'form-control', 'id' => 'reference_supplier')) !!}
+           {!! $errors->first('reference_supplier', '<span class="help-block">:message</span>') !!}
+         </div>
+
       </div>
       <div class="row">
 
@@ -66,15 +75,9 @@
             {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
          </div>
 
-         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sales_rep_id') ? 'has-error' : '' }}">
-            {{ l('Sales Representative') }}
-            {!! Form::select('sales_rep_id', array('0' => l('-- Please, select --', [], 'layouts')) + $salesrepList, null, array('class' => 'form-control', 'id' => 'sales_rep_id')) !!}
-            {!! $errors->first('sales_rep_id', '<span class="help-block">:message</span>') !!}
-         </div>
-
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('export_date') ? 'has-error' : '' }}">
                
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') && $model_path=='customerorders' )
+@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') && $model_path=='supplierorders' )
 
             <label for="export_date_form">{{ l('Export to FS') }}</label>
             <div  class="input-group">
@@ -179,7 +182,7 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('shipping_address_id') ? 'has-error' : '' }}">
             {{ l('Shipping Address') }}
-            {!! Form::select('shipping_address_id', $customer->getAddressList(), null, array('class' => 'form-control', 'id' => 'shipping_address_id', 'onchange' => 'set_invoicing_address($(this).val())')) !!}
+            {!! Form::select('shipping_address_id', $supplier->getAddressList(), null, array('class' => 'form-control', 'id' => 'shipping_address_id', 'onchange' => 'set_invoicing_address($(this).val())')) !!}
             {!! $errors->first('shipping_address_id', '<span class="help-block">:message</span>') !!}
          </div>
          
@@ -228,16 +231,16 @@
             {{ $errors->first('notes', '<span class="help-block">:message</span>') }}
          </div>
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes_to_customer') ? 'has-error' : '' }}">
-            {{ l('Notes to Customer') }}
-            {!! Form::textarea('notes_to_customer', null, array('class' => 'form-control', 'id' => 'notes_to_customer', 'rows' => '2')) !!}
-            {{ $errors->first('notes_to_customer', '<span class="help-block">:message</span>') }}
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes_to_supplier') ? 'has-error' : '' }}">
+            {{ l('Notes to Supplier') }}
+            {!! Form::textarea('notes_to_supplier', null, array('class' => 'form-control', 'id' => 'notes_to_supplier', 'rows' => '2')) !!}
+            {{ $errors->first('notes_to_supplier', '<span class="help-block">:message</span>') }}
          </div>
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes_from_customer') ? 'has-error' : '' }}">
-            {{ l('Notes from Customer') }}
-            {!! Form::textarea('notes_from_customer', null, array('class' => 'form-control', 'id' => 'notes_from_customer', 'rows' => '2')) !!}
-            {{ $errors->first('notes_from_customer', '<span class="help-block">:message</span>') }}
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes_from_supplier') ? 'has-error' : '' }}">
+            {{ l('Notes from Supplier') }}
+            {!! Form::textarea('notes_from_supplier', null, array('class' => 'form-control', 'id' => 'notes_from_supplier', 'rows' => '2')) !!}
+            {{ $errors->first('notes_from_supplier', '<span class="help-block">:message</span>') }}
          </div>
 
       </div>

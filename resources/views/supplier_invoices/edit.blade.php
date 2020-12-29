@@ -38,8 +38,8 @@
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/pdf?preview') }}" title="{{l('Show Preview', [], 'layouts')}}" target="_blank"><i class="fa fa-eye"></i></a>
 @endif
 
-@if ($document->document_id>0)
-                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
+@if (0 && $document->document_id>0)
+                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Supplier', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
 
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
@@ -69,7 +69,7 @@
 border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
 
                     <ul class="dropdown-menu pull-right">
-                      <li><a href="{{ route('customer.invoices', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Invoices', [], 'layouts')}}</a></li>
+                      <li><a href="{{ route('supplier.invoices', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Invoices', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ URL::to($model_path.'') }}">{{ l('Back to Documents') }}</a></li>
                     </ul>
@@ -83,13 +83,13 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
               <h2><a class="btn btn-sm {{ $model_class::getBadge('a_class') }}" href="{{ URL::to($model_path.'') }}" title="{{l('Documents')}}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
                   {{l('Document to')}} <span class="lead well well-sm">
 
-                  <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
+                  <a href="{{ URL::to('suppliers/' . $supplier->id . '/edit') }}" title=" {{l('View Supplier')}} " target="_blank">{{ $supplier->name_regular }}</a>
 
                  <a title=" {{l('View Invoicing Address')}} " href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-success" data-toggle="popover" data-placement="right" 
                             title="{{l('Invoicing Address')}}" data-content="
-                                  {{$customer->name_fiscal}}<br />
-                                  {{l('VAT ID')}}: {{$customer->identification}}<br />
+                                  {{$supplier->name_fiscal}}<br />
+                                  {{l('VAT ID')}}: {{$supplier->identification}}<br />
                                   {{ $invoicing_address->address1 }} {{ $invoicing_address->address2 }}<br />
                                   {{ $invoicing_address->postcode }} {{ $invoicing_address->city }}, {{ $invoicing_address->state->name }}<br />
                                   {{ $invoicing_address->country->name }}
@@ -98,7 +98,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                         <i class="fa fa-info-circle"></i>
                     </button>
                  </a>
-                 @if($customer->sales_equalization)
+                 @if($supplier->sales_equalization)
                   <span id="sales_equalization_badge" class="badge" title="{{l('Equalization Tax')}}"> RE </span>
                  @endif
                  </span>
@@ -119,7 +119,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                     </a>
                     @endif
                    &nbsp; 
-                  <span class="badge" style="background-color: #3a87ad;" title="{{ $customer->currentPricesEnteredWithTax( $document->document_currency ) ?
+                  <span class="badge" style="background-color: #3a87ad;" title="{{ $supplier->currentPricesEnteredWithTax( $document->document_currency ) ?
                                                         l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                                         l('Prices are entered exclusive of tax', [], 'appmultilang') }}">{{ $document->currency->iso_code }}</span>
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}

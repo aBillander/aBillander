@@ -23,7 +23,7 @@
 
             {{ Form::hidden('line_cost_price',          null, array('id' => 'line_cost_price'         )) }}
             {{ Form::hidden('line_unit_price',          null, array('id' => 'line_unit_price'         )) }}
-            {{ Form::hidden('line_unit_customer_price', null, array('id' => 'line_unit_customer_price')) }}
+            {{ Form::hidden('line_unit_supplier_price', null, array('id' => 'line_unit_supplier_price')) }}
 
             {{-- Not in use so far --}}
             {{ Form::hidden('line_discount_amount_tax_incl', null, array('id' => 'line_discount_amount_tax_incl')) }}
@@ -160,11 +160,11 @@
            <div class="modal-footer" style="display: none;" id="convinient_buttons">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success modal_document_line_productSubmit" name="modal_document_line_productSubmit" id="modal_document_line_productSubmit" title="{{l('Save line and apply Customer Price List and/or Price Rules.', 'customerdocuments')}}">
+               <button type="submit" class="btn btn-success modal_document_line_productSubmit" name="modal_document_line_productSubmit" id="modal_document_line_productSubmit" title="{{l('Save line and apply Supplier Price List and/or Price Rules.', 'supplierdocuments')}}">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', 'layouts')}}</button>
 
-               <button type="submit" class="btn btn-info modal_document_line_productSubmit" name="modal_document_line_productSubmitAsIs" id="modal_document_line_productSubmitAsIs" title="{{l('Save line "as is", and WILL NOT apply Customer Price List and/or Price Rules.', 'customerdocuments')}}">
+               <button type="submit" class="btn btn-info modal_document_line_productSubmit" name="modal_document_line_productSubmitAsIs" id="modal_document_line_productSubmitAsIs" title="{{l('Save line "as is", and WILL NOT apply Supplier Price List and/or Price Rules.', 'supplierdocuments')}}">
                 <i class="fa fa-hdd-o"></i>
                 &nbsp; {{l('Save', 'layouts')}}</button>
 
@@ -189,11 +189,11 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success modal_document_line_productSubmit" name="modal_document_line_productSubmit" id="modal_document_line_productSubmit" title="{{l('Save line and apply Customer Price List and/or Price Rules.', 'customerdocuments')}}">
+               <button type="submit" class="btn btn-success modal_document_line_productSubmit" name="modal_document_line_productSubmit" id="modal_document_line_productSubmit" title="{{l('Save line and apply Supplier Price List and/or Price Rules.', 'supplierdocuments')}}">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', 'layouts')}}</button>
 
-               <button type="submit" class="btn btn-info modal_document_line_productSubmit" name="modal_document_line_productSubmitAsIs" id="modal_document_line_productSubmitAsIs" title="{{l('Save line "as is", and WILL NOT apply Customer Price List and/or Price Rules.', 'customerdocuments')}}">
+               <button type="submit" class="btn btn-info modal_document_line_productSubmit" name="modal_document_line_productSubmitAsIs" id="modal_document_line_productSubmitAsIs" title="{{l('Save line "as is", and WILL NOT apply Supplier Price List and/or Price Rules.', 'supplierdocuments')}}">
                 <i class="fa fa-hdd-o"></i>
                 &nbsp; {{l('Save', 'layouts')}}</button>
 

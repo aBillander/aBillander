@@ -129,6 +129,7 @@ return [
 	'Template'     => 'Plantilla',
 	'Sequence'     => 'Serie',	// 'Serie de Facturas',
 	'Document Number'     => 'Número de Factura',
+	'Supplier Reference'     => 'Referencia Proveedor',
 	'Reference / Project'     => 'Referencia / Proyecto',
 // 	'Invoice Date'     => 'Fecha Factura',
 	'Document Date'     => 'Fecha del Documento',

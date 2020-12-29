@@ -227,6 +227,8 @@ return [
 
 	'Edit Supplier Reference' => 'Modificar Referencia del Proveedor',
 
+	'Invoice Shipping Slips' => 'Facturar Albaranes',
+
 	''     => '',
 	''     => '',
 ];

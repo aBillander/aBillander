@@ -52,7 +52,7 @@ color: #c09853;">
             </div -->
             <ul class="list-group">
               <li class="list-group-item" style="color: #333333;background-color: #e7e7e7;border-color: #cccccc;">
-                <h4>{{ l('Shipping Slips') }}</h4>
+                <h4><span class="btn btn-xs btn-grey" style="background-color: whitesmoke"><i class="fa fa-truck" style="color: #3a87ad"></i></span> {{ l('Shipping Slips') }}</h4>
               </li>
               @foreach( $document->leftShippingSlips() as $document_item )
                   <li class="list-group-item">

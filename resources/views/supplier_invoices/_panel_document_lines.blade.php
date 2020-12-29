@@ -38,9 +38,9 @@
                <th class="text-left" xwidth="115">{{l('Notes', 'layouts')}}</th>
                 <th class="text-right button-pad"> 
                       @if ( $document->editable )
-
+{{--
                   <a class="btn btn-sm btn-magick xbtn-pressure xbtn-sensitive lines_quick_form" title="{{l('Quick Add Lines')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
-
+--}}
                   <a class="btn btn-sm btn-success create-document-product" title="{{l('Add Product')}}"><i class="fa fa-plus"></i> <i class="fa fa-shopping-basket"></i> </a>
 {{--
                   <a class="btn btn-sm btn-success create-document-service" title="{{l('Add Service')}}" style="background-color: #2bbbad;"><i class="fa fa-plus"></i> <i class="fa fa-handshake-o"></i> </a>
@@ -51,8 +51,7 @@
                     <ul class="dropdown-menu  pull-right" style="overflow: visible">
                       <li><a class="create-document-service"><i class="fa fa-handshake-o"></i> {{l('Add Service')}}</a></li>
                       <li><a class="create-document-comment"><i class="fa fa-file-text-o"></i> {{l('Add Text Line')}}</a></li>
-                      <li class="divider"></li>
-                      <li><a class="create-document-shipping"><i class="fa fa-truck"></i> {{l('Add Shipping Cost')}}</a></li>
+                      <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
                 </div>
@@ -130,7 +129,7 @@
                             </p>
                         @endif
                 </td>
-                <td class="text-right">{{ $line->as_price('unit_customer_final_price') }}</td>
+                <td class="text-right">{{ $line->as_price('unit_supplier_final_price') }}</td>
                 <td class="text-right">{{ $line->as_percent('discount_percent') }}</td>
                 <td class="text-right">{{ $line->as_price('total_tax_excl') }}</td>
                 <td class="text-right">{{ $line->as_price('total_tax_incl') }}</td>
@@ -150,11 +149,24 @@
                     </button>
                  </a>
                 @endif</td>
-                <td class="text-right">
-                      @if ( $document->editable )
-                    <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerdocumentlines();"><i class="fa fa-pencil"></i></a -->
+                <td class="text-right button-pad">
                     
-                      @if ( !$line->locked || \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->line_type == 'product') && ($line->product->lot_tracking > 0) )
+@php
+  $color = $line->pending > 0 ? 'alert-danger' : 'btn-grey';
+  $msg   = $line->pending > 0 ? ' ('.$line->measureunit->quantityable( $line->pending ).')' : '';
+@endphp
+                    
+                    <a class="btn btn-sm {{ $color }} lotable-document-line" data-id="{{$line->id}}" 
+                      data-title="{{ '['.$line->reference.'] '.$line->name }}" 
+                      data-quantity_label="{{ $line->measureunit->quantityable($line->quantity) .' ('.$line->measureunit->name.')'}}" 
+                      data-type="{{$line->line_type}}" title="{{l('Add Lots to Line')}}" onClick="return false;"><i class="fa fa-window-restore"></i>{{ $msg }}</a>
+                    
+@endif
+                      @if ( $document->editable )
+                    <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadsupplierdocumentlines();"><i class="fa fa-pencil"></i></a -->
+                    
+                      @if ( !$line->locked || (0 && \App\Configuration::isTrue('ENABLE_CRAZY_IVAN')) )
 
                     <a class="btn btn-sm btn-warning edit-document-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
                     
@@ -169,9 +181,9 @@
                       
                       @endif
                     
-                      @if ( $line->product_id )
+                      @if ( 0 && $line->product_id )
 
-                    <a class="btn btn-sm btn-blue show-customer-consumption" data-id="{{$line->product_id}}" title="{{l('Show Customer consumption')}}" onClick="return false;"><i class="fa fa-dropbox"></i></a>
+                    <a class="btn btn-sm btn-blue show-supplier-consumption" data-id="{{$line->product_id}}" title="{{l('Show Supplier consumption')}}" onClick="return false;"><i class="fa fa-dropbox"></i></a>
 
                       @endif
 

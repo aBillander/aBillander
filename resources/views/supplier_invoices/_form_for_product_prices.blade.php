@@ -5,7 +5,7 @@
 
          <div class="col-lg-12 col-md-12 col-sm-12 ">
 
-                  @include('customer_documents._chunck_stock')
+                  @include('supplier_documents._chunck_stock')
             
          </div>
 
@@ -21,7 +21,7 @@
 
          <div class="col-lg-12 col-md-12 col-sm-12 ">
 
-					        @include('customer_documents._chunck_prices_rules')
+					        @include('supplier_documents._chunck_prices_rules')
             
          </div>
 
@@ -35,7 +35,7 @@
 
          <div class="col-lg-12 col-md-12 col-sm-12 ">
 
-					        @include('customer_documents._chunck_prices_recent_sales')
+					        @include('supplier_documents._chunck_prices_recent_sales')
             
          </div>
 
@@ -54,13 +54,13 @@
                        
                   </h4 -->
 
-                       @include('customer_documents._chunck_prices_by_pricelist')
+                       @include('supplier_documents._chunck_prices_by_pricelist')
             
          </div>
 {{--
          <div class="col-lg-6 col-md-6 col-sm-6 ">
 
-                       @include('customer_quotations._chunck_prices_rules')
+                       @include('supplier_quotations._chunck_prices_rules')
             
          </div>
 --}}

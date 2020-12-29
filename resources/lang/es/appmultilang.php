@@ -105,6 +105,7 @@ return array(
 
     'template.SupplierOrderPdf'   => 'Pedido a Proveedor (Pdf)',
     'template.SupplierShippingSlipPdf'   => 'Albarán de Proveedor (Pdf)',
+	'template.SupplierInvoicePdf' => 'Factura de Proveedor (Pdf)',
 
     'template.Pdf' => 'Plantilla Pdf',
     'template.Mail' => 'Plantilla Mail',

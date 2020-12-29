@@ -66,10 +66,10 @@
 
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {!! Form::label('autocustomer_name', l('Customer')) !!}
-    {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
+    {!! Form::label('autosupplier_name', l('Supplier')) !!}
+    {!! Form::text('autosupplier_name', null, array('class' => 'form-control', 'id' => 'autosupplier_name')) !!}
 
-    {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+    {!! Form::hidden('supplier_id', null, array('id' => 'supplier_id')) !!}
 </div>
 
 
@@ -134,15 +134,11 @@
     <thead>
         <tr>
             <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-            <th class="text-left">{{-- l('ID', 'layouts') --}}
-
-<a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf' )}}');$('#form-select-documents').submit();return false;" target="_blank"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
-
-            </th>
+            <th class="text-left">{{ l('ID', 'layouts') }}</th>
             <th class="text-center"></th>
             <th class="text-left">{{ l('Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
-            <th class="text-left">{{ l('Customer') }}</th>
+            <th class="text-left">{{ l('Supplier') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
             <th class="text-right"">{{ l('Total') }}</th>
@@ -192,8 +188,8 @@
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
-            <td><a class="" href="{{ URL::to('customers/' .$document->customer->id . '/edit') }}" title="{{ l('Show Customer') }}" target="_new">
-            	{{ $document->customer->name_regular }}
+            <td><a class="" href="{{ URL::to('suppliers/' .$document->supplier->id . '/edit') }}" title="{{ l('Show Supplier') }}" target="_new">
+            	{{ $document->supplier->name_regular }}
             	</a>
             </td>
             <td>
@@ -250,8 +246,8 @@
             </td>
             <td class="text-right button-pad">
                 <!--
-                <a class="btn btn-sm btn-blue"    href="{{ URL::to('customeror ders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
-                <a class="btn btn-sm btn-success" href="{ { URL::to('customer orders/' . $document->id) } }" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
+                <a class="btn btn-sm btn-blue"    href="{{ URL::to('supplieror ders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
+                <a class="btn btn-sm btn-success" href="{ { URL::to('supplier orders/' . $document->id) } }" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
                 -->
 @if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0)
 
@@ -259,15 +255,15 @@
 
                 <a class="btn btn-sm btn-info" href="{{ URL::to($model_path.'/' . $document->id . '/invoice/pdf') }}" title="{{l('PDF Invoice', [], 'layouts')}}"><i class="fa fa-money"></i></a>
 
-                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('customer orders/' . $document->id . '/shippingslip') }}" title="{{l('Document', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
+                <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('supplier orders/' . $document->id . '/shippingslip') }}" title="{{l('Document', [], 'layouts')}}"><i class="fa fa-file-pdf-otruck"></i></a -->
 
                 <a class="btn btn-sm btn-lightblue xbtn-info" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
 @endif
 
 @if ($document->document_id>0)
-                <a class="btn btn-sm btn-lightblue"    href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send by eMail', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
+                <a class=" hide  btn btn-sm btn-lightblue"    href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send by eMail', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
 
-                <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+                <a class=" hide  btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 
                 <a class=" hide btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
@@ -318,7 +314,7 @@
 
 @if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
 
-@if ($model_path=='customerorders')
+@if ($model_path=='supplierorders')
 
 
         @include($view_path.'._chunck_manufacturing')
@@ -376,17 +372,17 @@ $(document).ready(function() {
 <script>
   $(document).ready(function() {
 
-        $("#autocustomer_name").autocomplete({
-            source : "{{ route('home.searchcustomer') }}",
+        $("#autosupplier_name").autocomplete({
+            source : "{{ route('home.searchsupplier') }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 
             select : function(key, value) {
 
-                customer_id = value.item.id;
+                supplier_id = value.item.id;
 
-                $("#autocustomer_name").val(value.item.name_regular);
-                $("#customer_id").val(value.item.id);
+                $("#autosupplier_name").val(value.item.name_regular);
+                $("#supplier_id").val(value.item.id);
 
                 return false;
             }
@@ -414,7 +410,7 @@ $(document).ready(function() {
 
    $('#process').submit(function(event) {
 
-     if ( $("#autocustomer_name").val() == '' ) $('#customer_id').val('');
+     if ( $("#autosupplier_name").val() == '' ) $('#supplier_id').val('');
 
      return true;
 

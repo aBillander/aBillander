@@ -5,7 +5,7 @@
 
 <div id="panel_document_availability" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('customer_orders._panel_customer_order_availability') --}}
+{{--  @ include('supplier_orders._panel_supplier_order_availability') --}}
 
 </div>
 
@@ -28,7 +28,7 @@
    		/*
    		$(window).on('hashchange',function(){
 			page = window.location.hash.replace('#','');
-			getCustomerOrders(page);
+			getSupplierOrders(page);
 		});
 
 		$(document).on('click','.pagination a', function(e){
@@ -39,7 +39,7 @@
 			stubs = $(this).attr('href').split('page=');
 			page = stubs[ stubs.length - 1 ];	// Like a BOSS!!!!
 
-			getCustomerOrders(page);
+			getSupplierOrders(page);
 			// location.hash = page;
 		});
 
@@ -49,7 +49,7 @@
 		  if (e.keyCode == 13) {
 		   // console.log("put function call here");
 		   e.preventDefault();
-		   getCustomerOrders();
+		   getSupplierOrders();
 		   return false;
 		  }
 

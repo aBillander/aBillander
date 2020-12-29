@@ -20,7 +20,7 @@
                      panel.removeClass('loading');
 
                      $("[data-toggle=popover]").popover();
-                     // sortableCustomerOrderLines();
+                     // sortableSupplierOrderLines();
                }, 'html').done( function() { 
 
                     var selector = "#line_autoservice_name";
@@ -124,8 +124,8 @@
                               measure_unit_id : $('#line_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_price').val(),
-                              unit_customer_price : $('#line_price').val(),
-                              unit_customer_final_price : $('#line_price').val(),
+                              unit_supplier_price : $('#line_price').val(),
+                              unit_supplier_final_price : $('#line_price').val(),
                               prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
@@ -142,7 +142,7 @@
 
 
 
-//    pload = pload + "&customer_id="+$("#customer_id").val();
+//    pload = pload + "&supplier_id="+$("#supplier_id").val();
 //    pload = pload + "&currency_id="+$("#currency_id").val()+"&conversion_rate="+$("#currency_conversion_rate").val();
 //    pload = pload + "&_token="+$('[name="_token"]').val();
 
@@ -195,8 +195,8 @@
                               measure_unit_id : $('#line_measure_unit_id').val(),
                               cost_price : $('#line_cost_price').val(),
                               unit_price : $('#line_unit_price').val(),
-                              unit_customer_price : $('#line_unit_customer_price').val(),
-                              unit_customer_final_price : $('#line_price').val(),
+                              unit_supplier_price : $('#line_unit_supplier_price').val(),
+                              unit_supplier_final_price : $('#line_price').val(),
                               prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
                               tax_id : $('#line_tax_id').val(),
                               tax_percent : $('#line_tax_percent').val(),
@@ -315,14 +315,14 @@
 
                     $('#line_cost_price').val(result.cost_price);
                     $('#line_unit_price').val(result.unit_price);
-                    $('#line_unit_customer_price').val(result.unit_customer_price);
+                    $('#line_unit_supplier_price').val(result.unit_supplier_price);
 
                     $('#line_is_prices_entered_with_tax').val(result.prices_entered_with_tax);
 
                     if ( $('#line_is_prices_entered_with_tax').val() > 0 )
                     {
                         //
-                        price = result.unit_customer_final_price_tax_inc;
+                        price = result.unit_supplier_final_price_tax_inc;
 
                         // set labels
                         $(".label_tax_exc").hide();
@@ -331,7 +331,7 @@
                     } else {
 
                         //
-                        price = result.unit_customer_final_price;
+                        price = result.unit_supplier_final_price;
 
                         // set labels
                         $(".label_tax_inc").hide();
@@ -341,8 +341,8 @@
 
                     $("#line_price").val( price );
                     
-                    // $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
-                    // $("#line_price").val( result.unit_customer_final_price );
+                    // $("#line_price").val( result.unit_supplier_final_price.round( PRICE_DECIMAL_PLACES ) );
+                    // $("#line_price").val( result.unit_supplier_final_price );
 
                     $('#line_discount_percent').val(result.discount_percent);
 
@@ -396,7 +396,7 @@
         function auto_service_line( selector = "#line_autoservice_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route($model_path.'.searchservice') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
+                source : "{{ route($model_path.'.searchservice') }}?supplier_id="+$('#supplier_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
                 appendTo : "#modal_document_line",
 
@@ -440,14 +440,14 @@
             // https://stackoverflow.com/questions/28417781/jquery-add-csrf-token-to-all-post-requests-data/28418032#28418032
 
             $.ajax({
-                url: "{{ route('customerorderline.getproduct') }}",
+                url: "{{ route('supplierorderline.getproduct') }}",
                 headers : {'X-CSRF-TOKEN' : token},
                 method: 'GET',
                 dataType: 'json',
                 data: {
                     product_id: product_id,
                     combination_id: combination_id,
-                    customer_id: $("#customer_id").val(),
+                    supplier_id: $("#supplier_id").val(),
                     currency_id: $("#currency_id").val(),
                     conversion_rate: $("#currency_conversion_rate").val(),
                     taxing_address_id: $("#taxing_address_id").val()
@@ -479,9 +479,9 @@
                         $('input:radio[name=line_is_sales_equalization][value=0]').prop('checked', true);
 */                    
                     $('#line_discount_percent').val(0);
-//                    price = parseFloat(response.unit_customer_price.display);
-                    price = response.unit_customer_price.display;
-                    $("#line_unit_customer_price").val( price );
+//                    price = parseFloat(response.unit_supplier_price.display);
+                    price = response.unit_supplier_price.display;
+                    $("#line_unit_supplier_price").val( price );
                     $("#line_price").val( price.round( PRICE_DECIMAL_PLACES ) );
                     $("#line_price").val( price );
 

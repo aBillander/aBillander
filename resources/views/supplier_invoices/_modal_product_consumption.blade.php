@@ -24,15 +24,15 @@
 
     $(document).ready(function () {
 
-            $(document).on('click', '.show-customer-consumption', function (evnt) {
+            $(document).on('click', '.show-supplier-consumption', function (evnt) {
 
                var panel = $("#product_consumption");
                var id = $(this).attr('data-id');
-               var customer_id = $("#customer_id").val();
-               var url = "{{ route('customer.product.consumption', [":customer_id", ":id"]) }}";
+               var supplier_id = $("#supplier_id").val();
+               var url = "{{ route('supplier.product.consumption', [":supplier_id", ":id"]) }}";
 
                url = url.replace(":id", id);
-               url = url.replace(":customer_id", customer_id);
+               url = url.replace(":supplier_id", supplier_id);
 
                panel.addClass('loading');
 

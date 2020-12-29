@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\BillableStockMovementsTrait;
+use App\Traits\SupplierShippingSlipInvoiceableTrait;
 // use App\Traits\BillableInvoiceableTrait;
 
 use \App\SupplierShippingSlipLine;
@@ -11,6 +12,7 @@ class SupplierShippingSlip extends Billable
 {
     
     use BillableStockMovementsTrait;
+    use SupplierShippingSlipInvoiceableTrait;
 //    use BillableInvoiceableTrait;
 
     public static $badges = [

@@ -161,7 +161,7 @@ table.border td {
 			</div>
 			
 			<div class="col-md-2">
-				<span class="label label-info ">{{ \App\CustomerInvoice::getStatusList()[ $cinvoice->status ] }}</span>
+				<span class="label label-info ">{{ \App\SupplierInvoice::getStatusList()[ $cinvoice->status ] }}</span>
 			</div>
 			
 			<div class="col-md-4">
@@ -199,8 +199,8 @@ table.border td {
 			</div>
 			
 			<div class="col-md-6 top20">
-				<h2>Cliente: <span class="h4">{{ $cinvoice->customer->name_fiscal }}</span></h2>
-				<p class="details">NIF/CIF: {{ $cinvoice->customer->identification }}</p>
+				<h2>Cliente: <span class="h4">{{ $cinvoice->supplier->name_fiscal }}</span></h2>
+				<p class="details">NIF/CIF: {{ $cinvoice->supplier->identification }}</p>
 				<p class="details">{{ $cinvoice->invoicingAddress->address1 }} {{ $cinvoice->invoicingAddress->address2 }}</p>
 				<p class="details">{{ $cinvoice->invoicingAddress->city }}, {{ $cinvoice->invoicingAddress->postcode}} {{ $cinvoice->invoicingAddress->state->name }}, {{ $cinvoice->invoicingAddress->country->name }}</p>
 				<p class="details">{{-- $cinvoice->invoicingAddress->firstname } } { { $cinvoice->invoicingAddress->lastname --}}</p>
@@ -347,25 +347,25 @@ table.border td {
 	<div class="row">
 		<div class="col-md-12">
 			
-	        <a href="{{{ URL::to('customerinvoices') }}}" class="btn btn-sm btn-default pull-right"><i class="fa fa-mail-reply"></i> {{l('Back to Documents')}}</a>
+	        <a href="{{{ URL::to('supplierinvoices') }}}" class="btn btn-sm btn-default pull-right"><i class="fa fa-mail-reply"></i> {{l('Back to Documents')}}</a>
             
-            <a href="{{ URL::to('customerinvoices/' . $cinvoice->id . '/edit') }}" class="btn btn-sm btn-warning pull-right" style="margin-right:5px;"><i class="fa fa-pencil"></i>
+            <a href="{{ URL::to('supplierinvoices/' . $cinvoice->id . '/edit') }}" class="btn btn-sm btn-warning pull-right" style="margin-right:5px;"><i class="fa fa-pencil"></i>
             {{l('Edit', [], 'layouts')}}</a> 
 
-	        <a class="btn btn-grey" href="{{ URL::to('customerinvoices/' . $cinvoice->id) . '/pdf' }}" target="_blank"><i class="fa fa-file-pdf-o"></i> {{l('PDF Export', [], 'layouts')}}</a>
+	        <a class="btn btn-grey" href="{{ URL::to('supplierinvoices/' . $cinvoice->id) . '/pdf' }}" target="_blank"><i class="fa fa-file-pdf-o"></i> {{l('PDF Export', [], 'layouts')}}</a>
 
-			<button class="btn btn-info" data-toggle="modal" data-target="#sendEmailCustomerInvoice">
+			<button class="btn btn-info" data-toggle="modal" data-target="#sendEmailSupplierInvoice">
 				<i class="fa fa-envelope"></i> {{l('Send', [], 'layouts')}}
 			</button>
 
-			<a class="btn btn-success" href="{{ URL::to('customers/' . $cinvoice->customer_id) }}" target="_blank"><i class="fa fa-user"></i> {{l('Show Customer')}}</a>		
+			<a class="btn btn-success" href="{{ URL::to('suppliers/' . $cinvoice->supplier_id) }}" target="_blank"><i class="fa fa-user"></i> {{l('Show Supplier')}}</a>		
 			
 		</div>
 	</div>	
 	</div>
 
 
-<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="sendEmailCustomerInvoice" class="modal fade">
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="sendEmailSupplierInvoice" class="modal fade">
 	<div class="modal-dialog">
 	    <div class="modal-content">
 
@@ -378,7 +378,7 @@ table.border td {
 
                <div id="modal-status-placeholder"></div>
 				
-{!! Form::open(array('url' => 'customerinvoices/'.$cinvoice->id.'/email', 'id' => 'form_sendEmailCustomerInvoice', 'name' => 'form_sendEmailCustomerInvoice', 'class' => 'form')) !!}
+{!! Form::open(array('url' => 'supplierinvoices/'.$cinvoice->id.'/email', 'id' => 'form_sendEmailSupplierInvoice', 'name' => 'form_sendEmailSupplierInvoice', 'class' => 'form')) !!}
                
                <fieldset>
                	  <input type="hidden" id="invoice_id" name="invoice_id" value="{{$cinvoice->id}}"/>
@@ -423,7 +423,7 @@ table.border td {
 
                <div class="well well-sm" style="background-color: #d9edf7; border-color: #bce8f1; color: #3a87ad;">
 	               <b>{{l('Document')}}</b>: {{$cinvoice->document_reference}} <br>
-	               <b>{{l('Customer')}}</b>: <a href="{$fsc->factura->cliente_url()}">{{ $cinvoice->customer->name_fiscal }}</a><br>
+	               <b>{{l('Supplier')}}</b>: <a href="{$fsc->factura->cliente_url()}">{{ $cinvoice->supplier->name_fiscal }}</a><br>
                </div>
 
             <div class="panel-body">
@@ -464,9 +464,9 @@ table.border td {
 
 			<td class="text-right">
                 @if ( $payment->status == 'paid' )
-                	<!-- a class="btn btn-sm btn-danger" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $cinvoice->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
+                	<!-- a class="btn btn-sm btn-danger" href="{{ URL::to('suppliervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('supplierinvoices/' . $cinvoice->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
             	@else
-                	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $cinvoice->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                	<a class="btn btn-sm btn-warning" href="{{ URL::to('suppliervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('supplierinvoices/' . $cinvoice->id . '#payments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
             	@endif
 			</td>
 		</tr>

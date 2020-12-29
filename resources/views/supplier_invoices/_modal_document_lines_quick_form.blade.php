@@ -158,7 +158,7 @@ $(document).ready(function() {
 
  /*          
                var panel = $("#order_line_form");
-               var url = "{ { route('customeror derline.productform', ['create']) } }";
+               var url = "{ { route('supplieror derline.productform', ['create']) } }";
 
                panel.addClass('loading');
 
@@ -167,7 +167,7 @@ $(document).ready(function() {
                      panel.removeClass('loading');
 
                      $("[data-toggle=popover]").popover();
-                     // sortableCustomerOrderLines();
+                     // sortableSupplierOrderLines();
                }, 'html').done( function() { 
 
                     var selector = "#line_autoproduct_name";
@@ -195,7 +195,7 @@ $(document).ready(function() {
                     }
 
                     // set labels
-                    @if( $customer->currentPricesEnteredWithTax( $document->document_currency ) )
+                    @if( $supplier->currentPricesEnteredWithTax( $document->document_currency ) )
                         $('#line_is_prices_entered_with_tax').val(1);
                         $(".label_tax_exc").hide();
                         $(".label_tax_inc").show();
@@ -346,7 +346,7 @@ function quick_formSubmit()
 
 
 
-//    pload = pload + "&customer_id="+$("#customer_id").val();
+//    pload = pload + "&supplier_id="+$("#supplier_id").val();
 //    pload = pload + "&currency_id="+$("#currency_id").val()+"&conversion_rate="+$("#currency_conversion_rate").val();
 //    pload = pload + "&_token="+$('[name="_token"]').val();
 
@@ -421,7 +421,7 @@ function quick_formSubmit()
         function auto_product_row( selector = "#row_autoproduct_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route($model_path.'.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
+                source : "{{ route($model_path.'.searchproduct') }}?supplier_id="+$('#supplier_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
                 appendTo : "#modal_document_lines_quick_form",
 

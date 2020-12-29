@@ -98,6 +98,16 @@ foreach ($pairs as $pair) {
 
         Route::post('supplierorders/create/shippingslip/single',  'SupplierOrdersController@createSingleShippingSlip')->name('supplierorder.single.shippingslip');
 
+        Route::get( 'suppliershippingslips/suppliers/{id}/invoiceables',  'SupplierShippingSlipsController@getInvoiceableShippingSlips')->name('supplier.invoiceable.shippingslips');
+        Route::post('suppliershippingslips/create/invoice',  'SupplierShippingSlipsController@createGroupInvoice')->name('suppliershippingslips.create.invoice');
+        Route::get( 'suppliershippingslips/{id}/invoice'  , 'SupplierShippingSlipsController@createInvoice')->name('suppliershippingslip.invoice');
+        Route::post('suppliershippingslips/{id}/invoice/undo'  , 'SupplierShippingSlipsController@undoInvoice')->name('suppliershippingslip.invoice.undo');
+
+        Route::get('suppliershippingslips/pending/today',  'SupplierShippingSlipsController@getTodaysShippingSlips')->name('suppliershippingslips.for.today');
+
+
+        Route::post('supplierinvoices/{id}/shippingslip/add'  , 'SupplierInvoicesController@addShippingSlipToInvoice')->name('supplierinvoice.shippingslip.add');
+
     
         Route::resource('suppliershippingsliplines.lots', 'SupplierShippingSlipLineLotsController');
 

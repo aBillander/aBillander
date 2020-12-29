@@ -340,6 +340,8 @@ return [
 	'Not Invoiced'     => 'No Facturados',
 	'Invoiced'     => 'Facturados',
 
+	'Invoiceable Shipping Slips' => 'Albaranes para Facturar',
+
 	'Add Lots to Line' => 'Añadir Lotes a la Línea',
 
 ];

@@ -87,10 +87,12 @@
 
         $(document).ready(function() {
 
+@if ( $party ?? false )
 @if ( count($partyList) == 1 )
 
     $( "#user_assigned_to_id" ).val("{{ $party->user_assigned_to_id }}");
 
+@endif
 @endif
 
         });

@@ -392,7 +392,7 @@ $(document).ready(function() {
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
-                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .append( '<div>[' + (item.active > 0 ? (item.identification == null ? ' - ' : item.identification) : '<span class="alert-danger">{{ l('Not Active', 'layouts') }}</span>') + '] ' + item.name_regular + "</div>" )
                 .appendTo( ul );
             };
 

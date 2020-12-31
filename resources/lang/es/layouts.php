@@ -232,6 +232,7 @@ return [
 
 	'ID'      => 'ID',
 	'Active'  => 'Activo',
+	'Not Active'  => 'No Activo',
 	'Active?' => '¿Activo?',
 	'Blocked'     => 'Bloqueado',
 	'Blocked?'     => '¿Bloqueado?',

@@ -151,10 +151,10 @@ class LeadsController extends Controller
         $statusList = $this->lead->getStatusList();
 
         $userList = User::getUserList();
-
-        $partyList = Party::where('id', $id)->pluck('name_commercial', 'id')->toArray();
         
         $lead = $this->lead->with('leadlines')->findOrFail($id);
+
+        $partyList = Party::where('id', $lead->party_id)->pluck('name_commercial', 'id')->toArray();
 
         // Dates (cuen)
         $this->addFormDates( ['lead_date', 'lead_end_date'], $lead );

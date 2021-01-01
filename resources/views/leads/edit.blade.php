@@ -15,7 +15,14 @@
 
             </div>
 
-            <h2><a href="{{ URL::to('leads') }}">{{ l('Leads') }}</a> <span style="color: #cccccc;">/</span> {{$lead->name}}</h2>
+            <h2><a href="{{ URL::to('leads') }}">{{ l('Leads') }}</a> <span style="color: #cccccc;">/</span> 
+               <span class="lead well well-sm">
+
+            {{ $lead->party->name_commercial }} &nbsp;
+            <a href="{{ route('parties.edit', $lead->party->id) }}" class="btn btn-xs btn-warning" title="{{ l('Go to', 'layouts') }}" target="_blank"><i class="fa fa-external-link"></i></a> 
+
+         </span> 
+               <span style="color: #cccccc;">::</span> {{$lead->name}}</h2>
         </div>
     </div>
 </div>
@@ -156,3 +163,5 @@
 
 </script>
 @endsection
+
+@include('layouts/modal_delete')

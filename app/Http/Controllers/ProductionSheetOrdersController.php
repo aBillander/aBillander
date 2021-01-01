@@ -441,7 +441,7 @@ class ProductionSheetOrdersController extends BillableController
             'sales_rep_id' => $customer->sales_rep_id,
             'currency_id' => $customer->currency->id,
             'payment_method_id' => $customer->getPaymentMethodId(),
-            'template_id' => (int) $params['template_id'] > 0 ? $params['template_id'] : $customer->shipping_slip_template_id ,
+            'template_id' => (int) $params['template_id'] > 0 ? $params['template_id'] : $customer->getShippingSlipTemplateId() ,
         ];
 
         // Model specific data

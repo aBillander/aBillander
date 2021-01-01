@@ -20,6 +20,21 @@
 |
 */
 
+Route::get('f0', function( )
+{
+	
+    $f=\App\CustomerInvoice::find(153);
+
+    echo $f->open_balance;
+    
+    $f->checkPaymentStatus();
+
+    echo $f->open_balance;
+});
+
+
+/* ********************************************************** */
+
 Route::get('iban', function( )
 {
 	

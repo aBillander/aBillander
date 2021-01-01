@@ -233,9 +233,17 @@ class SupplierInvoice extends Billable
     public function checkPaymentStatus()
     {
         
-        $open_balance = $this->payments()->where('status', 'pending')->sum('amount');
+        $pendings = $this->payments()->where('status', 'pending')->get();
+
+        $open_balance = $pendings->sum('amount');
         // Remember: 'down_payment' is a payment with status=paid
 
+        if ( $pendings->count() == 0 )  // Check this or zero amount invoices will never set to "paid"
+        {
+            $this->open_balance = 0.0;
+            $this->payment_status = 'paid';
+        }
+        else
         if ( $this->currency->round($this->total_tax_incl - $open_balance) == 0.0 )
         {
             $this->open_balance = $open_balance;

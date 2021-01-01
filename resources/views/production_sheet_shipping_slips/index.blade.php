@@ -37,6 +37,15 @@
                         <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id, 'invoiced']) }}">{{ l('Invoiced') }}</a></li>
                       
                       <li class="divider"></li>
+
+@foreach ( $shipping_methodList as $key => $smethod )
+                      
+                      <li class="{{ Request::has('shipping_method_id') && (Request::input('shipping_method_id') == $key) ? 'alert-info' : '' }}">
+                        <a href="{{ route('productionsheet.shippingslips', [$productionSheet->id, 'shipping_method_id' => $key]) }}">{{ $smethod }}</a></li>
+
+@endforeach
+                      
+                      <li class="divider"></li>
                       <li><a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}">{{ l('All', 'layouts') }}</a></li>
                       <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->

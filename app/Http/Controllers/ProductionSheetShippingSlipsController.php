@@ -23,6 +23,7 @@ use App\DocumentAscription;
 use App\Configuration;
 use App\Sequence;
 use App\Template;
+use App\ShippingMethod;
 
 // use App\Events\CustomerOrderConfirmed;
 
@@ -94,6 +95,8 @@ class ProductionSheetShippingSlipsController extends BillableController
         // unset($order_statusList['closed']);
         // unset($order_statusList['canceled']);
 
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
+
         $productionSheet = $this->productionSheet->findOrFail($id);
 
         $documents = $this->document
@@ -120,6 +123,9 @@ class ProductionSheetShippingSlipsController extends BillableController
         else
         if ( $request->has('invoiced') )
             $documents->where('invoiced_at', '!=', null);
+        else
+        if ( $request->has('shipping_method_id') )
+            $documents->where('shipping_method_id', $request->input('shipping_method_id'));
 
         // abi_toSql($documents);die();
 
@@ -133,7 +139,7 @@ class ProductionSheetShippingSlipsController extends BillableController
 
         $this->model_path = 'customershippingslips';
 
-        return view('production_sheet_shipping_slips.index', $this->modelVars() + compact('productionSheet', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page', 'documents_total_count'));
+        return view('production_sheet_shipping_slips.index', $this->modelVars() + compact('productionSheet', 'documents', 'sequenceList', 'templateList', 'statusList', 'shipping_methodList', 'items_per_page', 'documents_total_count'));
     }
 
     /**

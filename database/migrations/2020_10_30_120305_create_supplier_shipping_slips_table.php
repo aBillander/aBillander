@@ -25,6 +25,7 @@ class CreateSupplierShippingSlipsTable extends Migration
 
             $table->string('shipment_status', 32)->nullable(false)->default('pending');
 
+            $table->tinyInteger('is_invoiceable')->default(1);
             $table->date('invoiced_at')->nullable();
 
 

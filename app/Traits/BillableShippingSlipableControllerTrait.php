@@ -115,6 +115,18 @@ trait BillableShippingSlipableControllerTrait
             
         }
 
+        // Hummmm!
+        // Lets check Production Sheet!
+        if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+        {
+            //
+            $sheets = $documents->unique('production_sheet_id')->pluck('production_sheet_id')->all();
+
+            if ( count($sheets) > 1 )   // More than one Production Sheet
+                return redirect()->back()
+                    ->with('error', l('Los Registros seleccionados pertenecen a varias Hojas de prodcucción: [:ps] ', ['ps' => implode(', ', $sheets)]).l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        }
+
 
 //        3a.- Pre-process Orders
 

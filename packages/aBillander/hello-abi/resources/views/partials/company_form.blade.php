@@ -100,7 +100,12 @@
             <div class="col-md-3">
                 <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
                     {{ l('Password', 'layouts') }}
-                    {!! Form::text('password', null, array('class' => 'form-control', 'id' => 'password')) !!}
+  <div class="input-group">
+                    {!! Form::password('password', null, array('class' => 'form-control', 'id' => 'password-field')) !!}
+    <span class="input-group-btn">
+      <button class="btn btn-grey" type="button"><span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span></button>
+    </span>
+  </div>
                     {!! $errors->first('password', '<span class="help-block">:message</span>') !!}
                 </div>
             </div>

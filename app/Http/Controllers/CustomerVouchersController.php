@@ -529,6 +529,37 @@ class CustomerVouchersController extends Controller
 
 		return redirect()->back()
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+	}
+
+	public function unlinkVouchers(Request $request)
+	{
+        $bankorder = SepaDirectDebit::findOrFail($request->input('bank_order_id'));
+
+		$list = $request->input('vouchers', []);
+
+        $payments = $this->payment
+        				 ->whereIn('id', $list)
+        				 ->where('status', 'pending')
+        				 ->where('bank_order_id', $bankorder->id)
+        				 ->get();
+
+        if ( $payments->count() == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts') . l('No action is taken &#58&#58 (:id) ', ['id' => $bankorder->id], 'layouts'));
+
+
+        // Do the Mambo!
+        foreach ( $payments as $payment ) 
+        {
+        	$payment->update(['bank_order_id' => null]);
+        }
+
+        // Update bankorder
+//        if ( $bankorder )
+        	$bankorder->checkStatus();
+
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $bankorder->id], 'layouts'));
     }
 
 

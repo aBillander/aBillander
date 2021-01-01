@@ -23,6 +23,9 @@ class esPaymentTypesTableSeeder extends Seeder {
             'active' => 1, 
             'accounting_code' => '101',
         ] );
+
+        Configuration::updateValue('DEF_SEPA_PAYMENT_TYPE', $ptype->id);
+
   
         $ptype = PaymentType::create( [
             'alias' => 'Cheque', 

@@ -94,7 +94,7 @@ return [
 	'You should choose a Supplier'     => 'Debe seleccionar un Proveedor',
 
 	'Documents'     => 'Albaranes de Proveedores',
-	'Document to'     => 'Albarán a',
+	'Document from'     => 'Albarán de',
 	'Back to Documents'     => 'Volver a Albaranes de Proveedores',
 	'Back to Suppliers'     => 'Volver a Proveedores',
 	'Invoicing Address'     => 'Datos de Facturación',
@@ -136,6 +136,7 @@ return [
 	'Template'     => 'Plantilla',
 	'Sequence'     => 'Serie',	// 'Serie de Albaranes',
 	'Document Number'     => 'Número de Albarán',
+	'Supplier Reference'     => 'Referencia Proveedor',
 	'Reference / Project'     => 'Referencia / Proyecto',
 // 	'Invoice Date'     => 'Fecha Factura',
 	'Document Date'     => 'Fecha del Documento',
@@ -151,6 +152,8 @@ return [
 	'Sales Representative'     => 'Agente Comercial',
 	'Down Payment'     => 'Anticipo',
 	'Number of Packages'     => 'Número de Bultos',
+	'Weight'     => 'Peso',
+	'Volume' => 'Volumen',
 	'Weight'     => 'Peso',
 	'Shipping Address'     => 'Dirección de Envío',
 	'Warehouse'     => 'Almacén',
@@ -197,6 +200,7 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
 	'Add Product'     => 'Nuevo Producto',
 	'Add Service'     => 'Nuevo Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
 	'Search Products'     => 'Buscar Productos',
 	'Coded Product'     => 'Producto codificado',
 	'Service (not coded)'     => 'Servicio SIN codificar',
@@ -335,5 +339,13 @@ return [
 
 	'Not Invoiced'     => 'No Facturados',
 	'Invoiced'     => 'Facturados',
+
+	'Invoiceable Shipping Slips' => 'Albaranes para Facturar',
+
+	'Add Lots to Line' => 'Añadir Lotes a la Línea',
+	
+	'Is Invoiceable?'     => '¿Es Facturable?',
+
+	'Not Invoiceable Document' => 'Documento No Facturable',
 
 ];

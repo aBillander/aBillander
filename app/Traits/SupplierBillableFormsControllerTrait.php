@@ -4,6 +4,10 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
+use App\Configuration;
+use App\Product;
+use App\ShippingMethod;
+
 trait SupplierBillableFormsControllerTrait
 {
 
@@ -126,15 +130,16 @@ trait SupplierBillableFormsControllerTrait
                         ->with('currency')
                         ->find($document_id);
 
-        if ( !$document )
+
+        $product_id     = $request->input('product_id');
+        $combination_id = $request->input('combination_id', null);
+
+        if ( !$document || !Product::where('id', $product_id)->exists() )
             return response()->json( [
                     'msg' => 'ERROR',
                     'data' => $document_id,
             ] );
-
-
-        $product_id     = $request->input('product_id');
-        $combination_id = $request->input('combination_id', null);
+        
         $quantity       = $request->input('quantity', 1.0);
 
         $pricetaxPolicy = intval( $request->input('prices_entered_with_tax', $document->supplier->currentPricesEnteredWithTax( $document->document_currency )) );
@@ -146,6 +151,8 @@ trait SupplierBillableFormsControllerTrait
 
             'line_sort_order' => $request->input('line_sort_order'),
             'notes' => $request->input('notes', ''),
+
+            'store_mode' => $request->input('store_mode', ''),
         ];
 
         // More stuff
@@ -158,10 +165,20 @@ trait SupplierBillableFormsControllerTrait
         if ($request->has('measure_unit_id')) 
             $params['measure_unit_id'] = $request->input('measure_unit_id');
 
+        if ($request->has('package_measure_unit_id')) 
+            $params['package_measure_unit_id'] = $request->input('package_measure_unit_id');
+
 
         // Let's Rock!
 
-        $document_line = $document->addSupplierProductLine( $product_id, $combination_id, $quantity, $params );
+        $store_mode = $request->input('store_mode', '');
+
+        if ( $store_mode == 'asis' )
+            // Force product price from imput
+            $document_line = $document->addSupplierProductAsIsLine( $product_id, $combination_id, $quantity, $params );
+        else
+            // Calculate product price according to Customer Price List and Price Rules
+            $document_line = $document->addSupplierProductLine( $product_id, $combination_id, $quantity, $params );
 
 
         return response()->json( [

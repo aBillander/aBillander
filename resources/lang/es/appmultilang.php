@@ -79,7 +79,7 @@ return array(
 	'CustomerInvoice' => 'Factura de Cliente',
 
     'SupplierQuotation' => 'Presupuesto de Proveedor',
-	'SupplierOrder' => 'Pedido de Proveedor',
+	'SupplierOrder' => 'Pedido a Proveedor',
 	'SupplierShippingSlip' => 'Albarán de Proveedor',
 	'SupplierInvoice' => 'Factura de Proveedor',
 
@@ -100,7 +100,13 @@ return array(
     'template.CustomerOrderPdf'   => 'Pedido de Cliente (Pdf)',
     'template.CustomerShippingSlipPdf'   => 'Albarán de Cliente (Pdf)',
 	'template.CustomerInvoicePdf' => 'Factura de Cliente (Pdf)',
+
     'template.WarehouseShippingSlipPdf' => 'Transferencias entre Almacenes (Pdf)',
+
+    'template.SupplierOrderPdf'   => 'Pedido a Proveedor (Pdf)',
+    'template.SupplierShippingSlipPdf'   => 'Albarán de Proveedor (Pdf)',
+	'template.SupplierInvoicePdf' => 'Factura de Proveedor (Pdf)',
+
     'template.Pdf' => 'Plantilla Pdf',
     'template.Mail' => 'Plantilla Mail',
 	
@@ -297,6 +303,89 @@ return array(
     'App\CustomerInvoice.doubtful' => 'Pago Dudoso',
     'App\CustomerInvoice.archived' => 'Archivado',
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Order Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierOrder.draft' => 'Borrador',
+	'App\SupplierOrder.confirmed'    => 'Confirmado',
+	'App\SupplierOrder.closed'    => 'Cerrado',
+    'App\SupplierOrder.canceled' => 'Cancelado',    
+
+    'App\SupplierOrder.pending' => 'Pendiente',
+    'App\SupplierOrder.partial' => 'Parcialmente',
+    'App\SupplierOrder.received ' => 'Recibido',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Shipping Slip Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierShippingSlip.draft' => 'Borrador',
+	'App\SupplierShippingSlip.confirmed'    => 'Confirmado',
+	'App\SupplierShippingSlip.closed'    => 'Cerrado',
+    'App\SupplierShippingSlip.canceled' => 'Cancelado',
+
+    'App\SupplierShippingSlip.pending' => 'Pendiente',
+    'App\SupplierShippingSlip.processing' => 'Preparación',
+    'App\SupplierShippingSlip.transit' => 'Reparto',
+    'App\SupplierShippingSlip.exception' => 'Excepción',
+    'App\SupplierShippingSlip.delivered' => 'Entregado',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Invoice Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+    'App\SupplierInvoice.invoice'    => 'Factura',
+    'App\SupplierInvoice.corrective' => 'Factura Rectificativa',
+    'App\SupplierInvoice.credit'     => 'Nota de Abono',
+    'App\SupplierInvoice.deposit'    => 'Anticipo',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Invoice Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierInvoice.draft'     => 'Borrador',
+	'App\SupplierInvoice.confirmed' => 'Confirmado',
+	'App\SupplierInvoice.closed'    => 'Cerrado',
+    'App\SupplierInvoice.canceled'  => 'Cancelado',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Supplier Invoice Payment Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\SupplierInvoice.pending'  => 'Pendiente',
+	'App\SupplierInvoice.halfpaid' => 'Parcialmente Pagado',
+	'App\SupplierInvoice.paid'     => 'Pagado',
+    'App\SupplierInvoice.overdue'  => 'Vencido',
+    'App\SupplierInvoice.doubtful' => 'Pago Dudoso',
+    'App\SupplierInvoice.archived' => 'Archivado',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Payment Types
@@ -402,13 +491,13 @@ return array(
 	|
 	*/
 
-    'Quantity'     => 'Cantidad',
-	'Length'     => 'Longitud',
-	'Area'     => 'Superficie',
-	'Liquid Volume'     => 'Volumen (líquidos)',
-	'Dry Volume'     => 'Volumen (sólidos)',
-	'Mass'     => 'Masa',
-	'Time'     => 'Tiempo',
+    'App\MeasureUnit.Quantity'     => 'Cantidad',
+	'App\MeasureUnit.Length'     => 'Longitud',
+	'App\MeasureUnit.Area'     => 'Superficie',
+	'App\MeasureUnit.Liquid Volume'     => 'Volumen (líquidos)',
+	'App\MeasureUnit.Dry Volume'     => 'Volumen (sólidos)',
+	'App\MeasureUnit.Mass'     => 'Masa',
+	'App\MeasureUnit.Time'     => 'Tiempo',
 
 
 	/*

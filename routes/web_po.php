@@ -17,21 +17,19 @@
                     'controller' => 'SupplierQuotationsController',
                     'path' => 'supplierquotations',
                 ],
+            */
                 [
                     'controller' => 'SupplierOrdersController',
                     'path' => 'supplierorders',
                 ],
-            */
                 [
                     'controller' => 'SupplierShippingSlipsController',
                     'path' => 'suppliershippingslips',
                 ],
-        	/*
                 [
                     'controller' => 'SupplierInvoicesController',
                     'path' => 'supplierinvoices',
                 ],
-            */
         ];
 
 
@@ -67,7 +65,8 @@ foreach ($pairs as $pair) {
         Route::post($path.'/deleteline/{lid}',  $controller.'@deleteDocumentLine'  )->name($path.'.deleteline' );
         Route::get($path.'/{id}/duplicate',     $controller.'@duplicateDocument'   )->name($path.'.duplicate'  );
         Route::get($path.'/{id}/profit',        $controller.'@getDocumentProfit'   )->name($path.'.profit'     );
-        Route::get($path.'/{id}/availability',  $controller.'@getDocumentAvailability' )->name($path.'.availability' );
+
+        Route::get($path.'/{id}/entries',       $controller.'@getDocumentEntries'  )->name($path.'.entries'    );
         
         Route::get($path.'/{id}/availability/modal',  $controller.'@getDocumentAvailabilityModal' )->name($path.'.availability.modal' );
 
@@ -91,4 +90,44 @@ foreach ($pairs as $pair) {
         Route::get($path.'/suppliers/{id}',  $controller.'@indexBySupplier')->name('supplier.'.str_replace('supplier', '', $path));
 
         Route::get($path.'/{id}/reload/costs', $controller.'@reloadCosts')->name($path.'.reload.costs'        );
+
+        Route::post($path.'/{id}/attachment',         $controller.'@attachmentStore'  )->name($path.'.attachment.store'  );
+        Route::get($path.'/{id}/attachment/{aid}',    $controller.'@attachmentShow'   )->name($path.'.attachment.show'   );
+        Route::delete($path.'/{id}/attachment/{aid}',   $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
 }
+
+        Route::post('supplierorders/create/shippingslip/single',  'SupplierOrdersController@createSingleShippingSlip')->name('supplierorder.single.shippingslip');
+
+        Route::get( 'suppliershippingslips/suppliers/{id}/invoiceables',  'SupplierShippingSlipsController@getInvoiceableShippingSlips')->name('supplier.invoiceable.shippingslips');
+        Route::post('suppliershippingslips/create/invoice',  'SupplierShippingSlipsController@createGroupInvoice')->name('suppliershippingslips.create.invoice');
+        Route::get( 'suppliershippingslips/{id}/invoice'  , 'SupplierShippingSlipsController@createInvoice')->name('suppliershippingslip.invoice');
+        Route::post('suppliershippingslips/{id}/invoice/undo'  , 'SupplierShippingSlipsController@undoInvoice')->name('suppliershippingslip.invoice.undo');
+
+        Route::get('suppliershippingslips/pending/today',  'SupplierShippingSlipsController@getTodaysShippingSlips')->name('suppliershippingslips.for.today');
+
+
+        Route::post('supplierinvoices/{id}/shippingslip/add'  , 'SupplierInvoicesController@addShippingSlipToInvoice')->name('supplierinvoice.shippingslip.add');
+
+    
+        Route::resource('suppliershippingsliplines.lots', 'SupplierShippingSlipLineLotsController');
+
+
+
+        Route::resource('suppliervouchers'      , 'SupplierVouchersController');
+        Route::get('suppliervouchers/{id}/setduedate'  , 'SupplierVouchersController@setduedate');
+        Route::get('suppliervouchers/{id}/pay'  , 'SupplierVouchersController@pay');
+        Route::post('suppliervouchers/{id}/unlink', 'SupplierVouchersController@unlink')->name('voucher.unlink');
+
+        Route::post('suppliervouchers/payvouchers'  , 'SupplierVouchersController@payVouchers')->name('suppliervouchers.payvouchers');
+
+        Route::post('suppliervouchers/unlinkvouchers'  , 'SupplierVouchersController@unlinkVouchers')->name('suppliervouchers.unlinkvouchers');
+
+        Route::get('suppliervouchers/{id}/expresspay', 'SupplierVouchersController@expressPayVoucher')->name('voucher.expresspay');
+        Route::get('suppliervouchers/{id}/unpay', 'SupplierVouchersController@unPayVoucher')->name('voucher.unpay');
+        
+        Route::get('suppliervouchers/{id}/collectible', 'SupplierVouchersController@collectibleVoucher')->name('voucher.collectible');
+
+        Route::get('suppliervouchers/suppliers/{id}',  'SupplierVouchersController@indexBySupplier')->name('supplier.vouchers');
+
+        Route::get( 'export/suppliervouchers', 'SupplierVouchersController@export' )->name('suppliervouchers.export');
+

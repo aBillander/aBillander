@@ -24,11 +24,46 @@ class enMeasureUnitsTableSeeder extends Seeder {
         
         Configuration::updateValue('DEF_QUANTITY_DECIMALS'        , $munit->decimalPlaces);
 
+  
+        $munit = MeasureUnit::create( [
+            'type' => 'Length', 
+            'type_conversion_rate' => 1.0,
+            'sign' => 'cm', 
+            'name' => 'centimeter', 
+            'decimalPlaces' => 2, 
+            'active' => 1,
+        ] );
 
+        Configuration::updateValue('DEF_LENGTH_UNIT', $munit->id);
+
+  
+        $munit = MeasureUnit::create( [
+            'type' => 'Dry Volume', 
+            'type_conversion_rate' => 1.0,
+            'sign' => 'm3', 
+            'name' => 'cubic meter', 
+            'decimalPlaces' => 2, 
+            'active' => 1,
+        ] );
+
+        Configuration::updateValue('DEF_VOLUME_UNIT', $munit->id);
+        Configuration::updateValue('DEF_VOLUME_UNIT_CONVERSION_RATE', 1000000); // 1m3 = 1000000cm3        
+
+  
+        $munit = MeasureUnit::create( [
+            'type' => 'Mass', 
+            'type_conversion_rate' => 1.0,
+            'sign' => 'kg', 
+            'name' => 'kilogram', 
+            'decimalPlaces' => 2, 
+            'active' => 1,
+        ] );
+
+        Configuration::updateValue('DEF_WEIGHT_UNIT', $munit->id);
+
+
+        // Other
         Configuration::updateValue('DEF_DIMENSION_UNIT', 'cm');
         Configuration::updateValue('DEF_DISTANCE_UNIT',  'km');
-
-        Configuration::updateValue('DEF_VOLUME_UNIT', 'cl');
-        Configuration::updateValue('DEF_WEIGHT_UNIT', 'kg');
     }
 }

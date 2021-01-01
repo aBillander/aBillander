@@ -307,14 +307,24 @@ class ImportProductsController extends Controller
 
                     // Ecotax
                     $data['ecotax_id'] = intval( $data['ecotax_id'] );
-                    if ( ! \App\Ecotax::where('id', $data['ecotax_id'])->exists() )
-                        $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'ecotax_id' es inválido: " . ($data['ecotax_id'] ?? ''));
+                    if ( $data['ecotax_id'] > 0 )
+                        if ( ! \App\Ecotax::where('id', $data['ecotax_id'])->exists() )
+                            $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'ecotax_id' es inválido: " . ($data['ecotax_id'] ?? ''));
+                    else
+                        unset($data['ecotax_id']);
 
                     // Check E13
                     $data['ean13'] = trim( $data['ean13'] );
                     // Should be unique? => check your spreadsheet
                     if ( $data['ean13'] && \App\Product::where('ean13', $data['ean13'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'ean13' ya existe: " . ($data['ean13'] ?? ''));
+
+                    // Prices
+                    $data['cost_price'] = (float) $data['cost_price'];
+                    $data['price'] = (float) $data['price'];
+                    $data['price_tax_inc'] = (float) $data['price_tax_inc'];
+                    $data['recommended_retail_price'] = (float) $data['recommended_retail_price'];
+                    $data['recommended_retail_price_tax_inc'] = (float) $data['recommended_retail_price_tax_inc'];
 
 
 
@@ -543,7 +553,7 @@ class ImportProductsController extends Controller
 //             'last_purchase_price', 'cost_average', // <= Easter Eggs!!!
         ];
 
-        $float_headers = [ 'price_tax_inc', 'price', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'width', 'height', 'depth', 'volume', 'weight', 
+        $float_headers = [ 'price_tax_inc', 'price', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'width', 'height', 'depth', 'volume', 'weight', 'reorder_point', 'maximum_stock', 
         ];
 
         $data[] = $headers;

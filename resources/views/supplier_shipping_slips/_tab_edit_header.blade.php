@@ -35,6 +35,33 @@
            {!! $errors->first('document_ppd_percent', '<span class="help-block">:message</span>') !!}
         </div>
 
+         <div class="form-group col-lg-1 col-md-1 col-sm-1">
+         </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="is_invoiceable">
+                     {{ l('Is Invoiceable?') }}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '1', true, ['id' => 'is_invoiceable_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('is_invoiceable', '0', false, ['id' => 'is_invoiceable_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference_supplier') ? 'has-error' : '' }}">
+            <strong>{{ l('Supplier Reference') }}</strong>
+           {!! Form::text('reference_supplier', null, array('class' => 'form-control', 'id' => 'reference_supplier')) !!}
+           {!! $errors->first('reference_supplier', '<span class="help-block">:message</span>') !!}
+         </div>
+
       </div>
       <div class="row">
 
@@ -198,6 +225,18 @@
             {{-- !! Form::select('carrier_id', array('0' => l('-- Please, select --', [], 'layouts')) + ($carrierList = []), null, array('class' => 'form-control', 'id' => 'carrier_id')) !!}
                         {!! $errors->first('carrier_id', '<span class="help-block">:message</span>') !! --}}
          </div>
+         
+        <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('weight') ? 'has-error' : '' }}">
+           {{ l('Weight') }} (<span class="text-success">{{ optional($weight_unit)->sign }}</span>)
+           {!! Form::text('weight', null, array('class' => 'form-control', 'id' => 'weight')) !!}
+           {!! $errors->first('weight', '<span class="help-block">:message</span>') !!}
+        </div>
+
+        <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('volume') ? 'has-error' : '' }}">
+           {{ l('Volume') }} (<span class="text-success">{{ optional($volume_unit)->sign }}</span>)
+           {!! Form::text('volume', null, array('class' => 'form-control', 'id' => 'volume')) !!}
+           {!! $errors->first('volume', '<span class="help-block">:message</span>') !!}
+        </div>
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('tracking_number') ? 'has-error' : '' }}">
             {{ l('Tracking Number') }}
@@ -220,13 +259,13 @@
             {!! Form::textarea('notes_to_supplier', null, array('class' => 'form-control', 'id' => 'notes_to_supplier', 'rows' => '2')) !!}
             {{ $errors->first('notes_to_supplier', '<span class="help-block">:message</span>') }}
          </div>
-{{--
+
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('notes_from_supplier') ? 'has-error' : '' }}">
             {{ l('Notes from Supplier') }}
             {!! Form::textarea('notes_from_supplier', null, array('class' => 'form-control', 'id' => 'notes_from_supplier', 'rows' => '2')) !!}
             {{ $errors->first('notes_from_supplier', '<span class="help-block">:message</span>') }}
          </div>
---}}
+
       </div>
 
                </div><!-- div class="panel-body" -->

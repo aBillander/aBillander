@@ -91,7 +91,7 @@
 
             $table->tinyInteger('locked')->default(0);            // 0 -> NO; 1 -> Yes (Order cannot be modified if retrieved from external system, i.e., webshop)
 
-            $table->integer('invoicing_address_id')->unsigned()->nullable(false);
+            $table->integer('invoicing_address_id')->unsigned()->nullable();    // Suggested Documents do not have Customer or Supplier
             $table->integer('shipping_address_id')->unsigned()->nullable();     // For Shipping Slip!
             $table->integer('warehouse_id')->unsigned()->nullable();
             $table->integer('shipping_method_id')->unsigned()->nullable();

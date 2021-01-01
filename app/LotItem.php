@@ -33,10 +33,10 @@ class LotItem extends Model
     }
 
     // Reverse relation
-    public function lotitems()
-    {
-        return $this->morphMany('App\Lot', 'lotable');
-    }
+//    public function lotitems()
+//    {
+//        return $this->morphMany('App\Lot', 'lotable');
+//    }
 /*
     // Alias
     public function lots()

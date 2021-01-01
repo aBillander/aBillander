@@ -47,6 +47,7 @@ Route::get('/', 'WelcomeController@index');     // ->name('home');
 
 // Route::get('/home', 'HomeController@index')->name('home');
 Route::get('home/searchcustomer', 'HomeController@searchCustomer')->name('home.searchcustomer');
+Route::get('home/searchsupplier', 'HomeController@searchSupplier')->name('home.searchsupplier');
 Route::get('home/searchproduct' , 'HomeController@searchProduct' )->name('home.searchproduct' );
 Route::get('home/searchcustomerorder' , 'HomeController@searchCustomerOrder' )->name('home.searchcustomerorder' );
 Route::get('home/searchcustomershippingslip' , 'HomeController@searchCustomerShippingSlip' )->name('home.searchcustomershippingslip' );
@@ -241,6 +242,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('companies', 'CompaniesController');
         Route::post('companies/{id}/bankaccount', 'CompaniesController@updateBankAccount')->name('companies.bankaccount');
 
+        Route::post('bankaccounts/iban/calculate', 'BankAccountsController@ibanCalculate')->name('bankaccounts.iban.calculate' );
+
         Route::resource('banks',         'BanksController');
         Route::resource('cheques',               'ChequesController'      );
         Route::resource('cheques.chequedetails', 'ChequeDetailsController');
@@ -289,6 +292,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
 
+        Route::get('suppliers/{id}/products',  'SuppliersController@getProducts')->name('supplier.products');
+
         Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
 
         Route::get( 'suppliers/{id}/product/{pid}/reference/edit', 'SupplierPriceListLinesController@editReference')->name('supplier.product.update.reference.edit');
@@ -297,6 +302,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('suppliers/{id}/supplierpricelistline/searchproduct', 'SupplierPriceListLinesController@searchProduct')->name('supplier.pricelistline.searchproduct');
 
         Route::get('suppliers/{id}/getreference/{pid}', 'SupplierPriceListLinesController@getSupplierProductReference')->name('supplier.product.reference');
+
+        Route::post('suppliers/{id}/attachment',         'SuppliersController@attachmentStore'  )->name('suppliers.attachment.store'  );
+        Route::get( 'suppliers/{id}/attachment/{aid}',   'SuppliersController@attachmentShow'   )->name('suppliers.attachment.show'   );
+        Route::delete('suppliers/{id}/attachment/{aid}', 'SuppliersController@attachmentDestroy')->name('suppliers.attachment.destroy');
 
 
 
@@ -316,6 +325,12 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('lots', 'LotsController');
         Route::get( 'export/lots', 'LotsController@export' )->name('lots.export');
+        Route::get( 'lots/{lot}/stockmovements',        'LotsController@stockmovements' )->name('lot.stockmovements'       );
+        Route::get( 'export/lots/{lot}/stockmovements', 'LotsController@export' )->name('lot.stockmovements.export');
+
+        Route::post('lots/{id}/attachment',         'LotsController@attachmentStore'  )->name('lots.attachment.store'  );
+        Route::get( 'lots/{id}/attachment/{aid}',   'LotsController@attachmentShow'   )->name('lots.attachment.show'   );
+        Route::delete('lots/{id}/attachment/{aid}', 'LotsController@attachmentDestroy')->name('lots.attachment.destroy');
 
         Route::resource('products', 'ProductsController');
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
@@ -328,7 +343,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('products/{id}/getpricerules',         'ProductsController@getPriceRules')->name('product.getpricerules');
 
         Route::resource('products.measureunits', 'ProductMeasureUnitsController');
-        Route::get('product/{id}/getmeasureunits', 'ProductsController@getMeasureUnits')->name('product.measureunits');
+        Route::post('product/{id}/measureunit/change', 'ProductMeasureUnitsController@changeMainMeasureUnit')->name('product.measureunit.change');
+        Route::get('product/{id}/getmeasureunits', 'ProductsController@getMeasureUnits')->name('product.measureunits'); // JSON response
 
         Route::resource('products.images', 'ProductImagesController');
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
@@ -350,6 +366,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('products/stock/reorder',        'ProductsReorderController@index' )->name('products.reorder.index' );
         Route::get('products/stock/reorder/export', 'ProductsReorderController@export')->name('products.reorder.export');
+
+        Route::post('products/{id}/attachment',         'ProductsController@attachmentStore'  )->name('products.attachment.store'  );
+        Route::get( 'products/{id}/attachment/{aid}',   'ProductsController@attachmentShow'   )->name('products.attachment.show'   );
+        Route::delete('products/{id}/attachment/{aid}', 'ProductsController@attachmentDestroy')->name('products.attachment.destroy');
 
         Route::resource('ingredients', 'IngredientsController');
 
@@ -460,6 +480,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
 //        Route::resource('addresses', 'AddressesController');
         Route::resource('customers.addresses', 'CustomerAddressesController');
+
+        Route::post('customers/{id}/attachment',         'CustomersController@attachmentStore'  )->name('customers.attachment.store'  );
+        Route::get( 'customers/{id}/attachment/{aid}',   'CustomersController@attachmentShow'   )->name('customers.attachment.show'   );
+        Route::delete('customers/{id}/attachment/{aid}', 'CustomersController@attachmentDestroy')->name('customers.attachment.destroy');
+        
 
         Route::post('mail', 'MailController@store');
         Route::post('mail/feedback', 'MailController@storeFeedback');
@@ -673,6 +698,10 @@ foreach ($pairs as $pair) {
         Route::get($path.'/{id}/reload/commissions', $controller.'@reloadCommissions')->name($path.'.reload.commissions');
         Route::get($path.'/{id}/reload/ecotaxes',    $controller.'@reloadEcotaxes'   )->name($path.'.reload.ecotaxes'   );
         Route::get($path.'/{id}/reload/costs',       $controller.'@reloadCosts'      )->name($path.'.reload.costs'      );
+
+        Route::post($path.'/{id}/attachment',         $controller.'@attachmentStore'  )->name($path.'.attachment.store'  );
+        Route::get($path.'/{id}/attachment/{aid}',    $controller.'@attachmentShow'   )->name($path.'.attachment.show'   );
+        Route::delete($path.'/{id}/attachment/{aid}', $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
 }
 
         Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');
@@ -713,6 +742,8 @@ foreach ($pairs as $pair) {
         Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('voucher.unlink');
 
         Route::post('customervouchers/payvouchers'  , 'CustomerVouchersController@payVouchers')->name('customervouchers.payvouchers');
+
+        Route::post('customervouchers/unlinkvouchers'  , 'CustomerVouchersController@unlinkVouchers')->name('customervouchers.unlinkvouchers');
 
         Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('voucher.expresspay');
         Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('voucher.unpay');
@@ -798,6 +829,7 @@ foreach ($pairs as $pair) {
         Route::get( 'import/suppliers', 'Import\ImportSuppliersController@import' )->name('suppliers.import');
         Route::post('import/suppliers', 'Import\ImportSuppliersController@process')->name('suppliers.import.process');
         Route::get( 'export/suppliers', 'Import\ImportSuppliersController@export' )->name('suppliers.export');
+        Route::get( 'export/suppliers/products', 'Import\ImportSuppliersController@exportProducts' )->name('suppliers.products.export');
 
         Route::get( 'import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@import' )->name('suppliers.pricelist.import');
         Route::post('import/suppliers/{id}/pricelist', 'Import\ImportSupplierPriceListLinesController@process')->name('suppliers.pricelist.import.process');
@@ -822,6 +854,18 @@ foreach ($pairs as $pair) {
 
         Route::delete('dbbackups/{filename}/delete',   'DbBackupsController@delete'  )->name('dbbackups.delete'  );
         Route::get('dbbackups/{filename}/download', 'DbBackupsController@download')->name('dbbackups.download');
+
+
+
+        /* ******************************************************************************************************** */
+
+        
+        // microCRM
+
+//        if (file_exists(__DIR__.'/web_crm.php')) {
+//            include __DIR__.'/web_crm.php';
+//        }
+
 
 
         /* ******************************************************************************************************** */

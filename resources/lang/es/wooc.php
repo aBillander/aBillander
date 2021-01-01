@@ -121,7 +121,8 @@ return [
 
 	'WOOC_DECIMAL_PLACES.name'     => 'Número de decimales',
 //	'WOOC_DECIMAL_PLACES.help'     => 'Los Precios de WooCommerce se recuperan con este número de posiciones decimales. Para no perder precisión, poner un número superior al número de posiciones decimales con que se ha configurado WooCommerce (<span style="font-style: italic;">\'woocommerce_price_num_decimals\'</span>).',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
-	'WOOC_DECIMAL_PLACES.help'     => 'Number of decimal points to use in each resource. Default is 2. Used when retrieving a Customer Order through REST API.',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
+	'WOOC_DECIMAL_PLACES.help'     => 'Número de posiciones decimales a utilizar en cada recurso. El valor predeterminado es 2. Se utiliza al recuperar un Pedido de Cliente a través de la API REST.',
+	// Number of decimal positions to use in each resource. Default is 2. Used when retrieving a Customer Order through REST API.',	// Number of decimal places WooCommerce works with. It is a WooCommerce Store Setting.',
 	'WOOC_DEF_CURRENCY.name'     => 'Divisa',
 	'WOOC_DEF_CURRENCY.help'     => 'Moneda de la Tienda WooCommerce.',
 	'WOOC_DEF_CUSTOMER_GROUP.name'     => 'Grupo de Clientes',
@@ -130,7 +131,7 @@ return [
 	'WOOC_DEF_CUSTOMER_PRICE_LIST.help'     => 'Esta Tarifa se usará para actualizar el Precio de los Productos en la Tienda. También, los Clientes que se importan desde WooCommerce se les asignará esta Tarifa.',	// Imported Customers will be asigned this Price List
 
 	'WOOC_DEF_WAREHOUSE.name'     => 'Almacén',
-	'WOOC_DEF_WAREHOUSE.help'     => 'Estae Almacén se usará para actualizar el Stock Físico de los Productos en la Tienda.',
+	'WOOC_DEF_WAREHOUSE.help'     => 'Este Almacén se usará para actualizar el Stock Físico de los Productos en la Tienda.',
 
 	'WOOC_DEF_LANGUAGE.name'     => 'Idioma',
 	'WOOC_DEF_LANGUAGE.help'     => 'Idioma de la Tienda WooCommerce.',

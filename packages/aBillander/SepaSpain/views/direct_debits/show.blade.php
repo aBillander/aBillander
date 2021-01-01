@@ -23,8 +23,11 @@
         <a href="{{ route('sepasp.directdebits.index') }}">{{ l('SEPA Direct Debits') }}</a> <span style="color: #cccccc;">/</span> {{$directdebit->document_reference}} 
 
         <span class="lead well well-sm">
+
+        <a class="btn btn-xs btn-warning" href="{{ URL::to('sepasp/directdebits/' . $directdebit->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
         <a title=" {{ l('Bank') }} " href="javascript:void(0);">
-                    <button type="button" class="btn btn-xs btn-success text-center" data-toggle="popover" data-placement="right" title="" data-content="{{ optional($directdebit->bankaccount)->bank_name }}" xdata-original-title="Datos de Facturación">
+                    <button type="button" class="btn btn-xs btn-success text-center" data-toggle="popover" data-placement="right" title="" data-content="{{ l('Bank') }}: {{ optional($directdebit->bankaccount)->bank_name }}<br />{{ l('Group Vouchers?') }}&nbsp; {{ $directdebit->group_vouchers > 0 ? l('Yes', [], 'layouts') : l('No', [], 'layouts') }}<br />{{ l('Discount Remittance?') }}&nbsp; {{ $directdebit->discount_dd > 0 ? l('Yes', [], 'layouts') : l('No', [], 'layouts') }}" xdata-original-title="Datos de Facturación">
                         <i class="fa fa-info-circle"></i>
                     </button>
                  </a> 
@@ -82,7 +85,11 @@
       <div class="col-lg-10 col-md-10 col-sm-10">
             <div class="panel panel-success" id="panel_production_orders">
                <div class="panel-heading">
-                  <h3 class="panel-title"><i class="fa fa-th-list"></i> &nbsp; {{ l('Customer Vouchers') }}</h3>
+                  <h3 class="panel-title"><i class="fa fa-th-list"></i> &nbsp; {{ l('Customer Vouchers') }}
+
+                        <span class=" pull-right label alert-info"  style="margin-right: 15px; font-size: 14px;">{{ l('Amount') }}: {{ $directdebit->as_money('total') }} &nbsp;/&nbsp; {{ l('Vouchers') }}: {{ $directdebit->nbrItems() }}</span>
+
+                  </h3>
                </div>
                     @include('sepa_es::direct_debits._panel_customer_vouchers')
             </div>

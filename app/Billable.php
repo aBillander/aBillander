@@ -13,6 +13,7 @@ use App\Traits\BillableEcotaxableTrait;
 use App\Traits\BillableTotalsTrait;
 use App\Traits\BillableProfitabilityTrait;
 use App\Traits\ViewFormatterTrait;
+use App\Traits\ModelAttachmentableTrait;
 
 use App\Configuration;
 
@@ -27,6 +28,7 @@ class Billable extends Model implements ShippableInterface
     use BillableTotalsTrait;
     use BillableProfitabilityTrait;
     use ViewFormatterTrait;
+    use ModelAttachmentableTrait;
 
 
     public static $billable_types = array(
@@ -180,6 +182,19 @@ class Billable extends Model implements ShippableInterface
             // before delete() method call this
             // if ($document->has('customershippingsliplines'))
             foreach($document->lines as $line) {
+                
+                if ( Configuration::isTrue('ENABLE_LOTS') )
+                {
+                    foreach ($line->lotitems as $lotitem) {
+                        # code...
+                        $lot = $lotitem->lot;
+                        if ( $lot->quantity == $lot->quantity_initial ) // Guess no stock movements (as it should be!)
+                            $lot->delete();
+
+                        $lotitem->delete();
+                    }
+                }
+
                 $line->delete();
             }
 
@@ -960,6 +975,20 @@ class Billable extends Model implements ShippableInterface
             $this->invoicingaddress() ;
     }
 
+/*
+    // Attachments
+    public function attachments()
+    {
+        return $this->morphMany('App\ModelAttachment', 'attachmentable');
+    }
+
+    // Alias
+    public function modelattachments()
+    {
+        return $this->attachments();
+    }
+*/
+
 
 
     /*
@@ -1029,6 +1058,11 @@ class Billable extends Model implements ShippableInterface
             $query->where('customer_id', $params['customer_id']);
         }
 
+        if (array_key_exists('supplier_id', $params) && $params['supplier_id'])
+        {
+            $query->where('supplier_id', $params['supplier_id']);
+        }
+
         if (array_key_exists('price_amount', $params) && is_numeric($params['price_amount']))
         {
             $amount = $params['price_amount'];
@@ -1042,6 +1076,11 @@ class Billable extends Model implements ShippableInterface
         if (array_key_exists('carrier_id', $params) && $params['carrier_id'] )
         {
             $query->where('carrier_id', $params['carrier_id']);
+        }
+
+        if (array_key_exists('payment_method_id', $params) && $params['payment_method_id'] )
+        {
+            $query->where('payment_method_id', $params['payment_method_id']);
         }
 
 
@@ -1186,16 +1225,61 @@ class Billable extends Model implements ShippableInterface
 
         return $total_products_tax_excl;
     }
-/*
-    public function getWeightAttribute() 
+
+    public function getWeight() 
     {
         $line_products = $this->lines->where('line_type', 'product')->load('product');
 
         $total_weight = $line_products->sum(function ($line) {
-            return $line->product->weight;
+            return $line->quantity * $line->product->weight;
         });
 
         return $total_weight;
     }
-*/
+
+    public function getVolume() 
+    {
+        $line_products = $this->lines->where('line_type', 'product')->load('product');
+
+        $total_volume = $line_products->sum(function ($line) {
+            if ($line->product->volume > 0.0)
+                return $line->quantity * $line->product->volume;
+            else
+                return $line->quantity * $line->product->width * $line->product->height * $line->product->depth / Configuration::getNumber('DEF_VOLUME_UNIT_CONVERSION_RATE');
+        });
+
+        return $total_volume;
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shippable Interface
+    |--------------------------------------------------------------------------
+    */
+
+    public function getLinesHasRequiredLotsAttribute()
+    {
+        if ( Configuration::isFalse('ENABLE_LOTS') )
+            return true;
+
+        foreach ($this->lines as $line) {
+            //
+            // Only products, please!!!
+            if ( ! ( $line->line_type == 'product' ) ) continue;
+            if ( ! ( $line->product_id > 0 ) )         continue;
+
+            if ( !optional($line->product)->lot_tracking) continue;
+
+            $pending = $line->quantity - $line->lots->sum('quantity_initial');
+
+            if ( $pending > 0.0 )
+                return false;
+
+        }
+
+        return true;
+    }
+
 }

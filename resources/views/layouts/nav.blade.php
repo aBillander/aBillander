@@ -39,6 +39,40 @@
 
                 @if( Auth::check() )
 
+@if ( \App\Configuration::isTrue('ENABLE_MCRM') )
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users"></i> {{l('microCRM', [], 'layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li>
+                            <a href="{{ URL::to('crm/home') }}">
+                                 <i class="fa fa-dashboard text-info"></i> 
+                                 {{l('Dashboard', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('parties') }}">
+                                 <!-- i class="fa fa-exclamation-triangle btn-xs btn-danger"></i --> 
+                                 {{l('Parties', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('leads') }}">
+                                 <!-- i class="fa fa-exclamation-triangle btn-xs btn-danger"></i --> 
+                                 {{l('Leads', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('contacts') }}">
+                                 <i class="fa fa-address-card-o text-success"></i --> 
+                                 {{l('Contacts', [], 'layouts')}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+@endif
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-bag"></i> {{l('Sales', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -207,7 +241,7 @@
 @if ( \App\Configuration::isTrue('ENABLE_LOTS') )
                          <li>
                             <a href="{{ URL::to('lots') }}">
-                                 <img src="{{ asset('assets/theme/self-distract-button-20.png') }}"> 
+                                 <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
                                  <i class="fa fa-window-restore btn-xs text-muted"></i> 
                                  {{l('Lots', [], 'layouts')}}
                             </a>
@@ -231,8 +265,7 @@
                         </li>
                         <li class="divider"></li>
                          <li>
-                            <a href="{{ route('suppliershippingslips.index') }}">
-                                 <i class="fa fa-shopping-cart btn-xs alert-success"></i> 
+                            <a href="{{ route('supplierorders.index') }}"> 
                                  {{l('Purchase Orders', [], 'layouts')}}
                             </a>
                         </li>
@@ -243,14 +276,14 @@
                             </a>
                         </li>
                          <li>
-                            <a href="{{ route('suppliershippingslips.index') }}">
+                            <a href="{{ route('supplierinvoices.index') }}">
                                  <!-- i class="fa fa-money btn-xs alert-warning"></i --> 
                                  {{l('Supplier Invoices', [], 'layouts')}}
                             </a>
                         </li>
                          <li>
-                            <a href="{{ route('suppliershippingslips.index') }}">
-                                 <!-- i class="fa fa-credit-card btn-xs alert-danger"></i --> 
+                            <a href="{{ route('suppliervouchers.index') }}">
+                                 <i class="fa fa-credit-card btn-xs alert-success"></i> 
                                  {{l('Supplier Vouchers', [], 'layouts')}}
                             </a>
                         </li>

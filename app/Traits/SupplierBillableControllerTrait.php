@@ -183,6 +183,12 @@ trait SupplierBillableControllerTrait
         if ($supplier_price) 
         {
             $supplier_price->applyTaxPercentToPrice($tax_percent);        
+
+            $ecotax_amount = $product->ecotax ? 
+                                  $product->ecotax->amount :
+                                  0.0;
+
+            $ecotax_value_label = $product->as_priceable($ecotax_amount).' '.$currency->name;
     
             $data = [
                 'product_id' => $product->id,
@@ -213,6 +219,7 @@ trait SupplierBillableControllerTrait
                 'tax_percent' => $tax_percent,
                 'tax_id' => $product->tax_id,
                 'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
+                'ecotax_value_label' => $ecotax_value_label,
                 'supplier_id' => $supplier_id,
                 'currency' => $currency,
     
@@ -224,6 +231,8 @@ trait SupplierBillableControllerTrait
                 'quantity_allocated' => $product->quantity_allocated, 
                 'blocked' => $product->blocked, 
                 'active'  => $product->active, 
+
+                'measure_units' => $product->measureunits->pluck('name', 'id')->toArray(),
             ];
         } else
             $data = [];
@@ -231,4 +240,125 @@ trait SupplierBillableControllerTrait
         return response()->json( $data );
     }
 
+
+    public function getSupplierProductPrices(Request $request)
+    {
+        // Temporarily
+        return '';
+        
+        // Request data
+        $product_id      = $request->input('product_id');
+        $combination_id  = $request->input('combination_id');
+        $supplier_id     = $request->input('supplier_id');
+        $recent_sales_this_supplier = $request->input('recent_sales_this_supplier', 0);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
+//        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
+
+ //       return response()->json( [ $product_id, $combination_id, $supplier_id, $currency_id ] );
+
+        // Do the Mambo!
+        // Product
+        if ($combination_id>0) {
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = Product::with('tax')->findOrFail(intval($product_id));
+        }
+
+        $category_id = $product->category_id;
+
+        // Customer
+        $supplier = Supplier::findOrFail(intval($supplier_id));
+        $supplier_group_id = $supplier->supplier_group_id;
+        
+        // Currency
+        $currency = Currency::findOrFail(intval($currency_id));
+        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
+
+        // Pricelists
+        $pricelists = $product->pricelists; //  PriceList::with('currency')->orderBy('id', 'ASC')->get();
+
+        // Price Rules
+        $supplier_rules = $product->getPriceRulesByCustomer( $supplier );
+/*      Old stuff
+        $supplier_rules = PriceRule::
+//                                  where('supplier_id', $supplier->id)
+                                  where(function($q) use ($supplier_id, $supplier_group_id) {
+
+                                    $q->where('supplier_id', $supplier_id);
+
+                                    $q->orWhere('supplier_group_id', NULL);
+
+                                    $q->orWhere('supplier_group_id', 0);
+
+                                    if ( $supplier_group_id > 0 )
+                                    $q->orWhere('supplier_group_id', $supplier_group_id);
+
+                                })
+                                ->where(function($q) use ($product_id, $category_id) {
+
+                                    $q->where('product_id', $product_id);
+
+                                    // $q->orWhere('category_id', NULL);
+
+                                    // $q->orWhere('category_id', 0);
+
+                                    if ( $category_id > 0 )
+                                    $q->orWhere('category_id', $category_id);
+
+                                })
+                                ->with('category')
+                                ->with('product')
+                                ->with('combination')
+                                ->with('suppliergroup')
+                                ->with('currency')
+                                ->orderBy('product_id', 'ASC')
+                                ->orderBy('supplier_id', 'ASC')
+                                ->orderBy('from_quantity', 'ASC')
+                                ->take(7)->get();
+*/
+
+/*
+        // Recent Sales
+        $lines = CustomerOrderLine::where('product_id', $product->id)
+                            ->with(["document" => function($q){
+                                $q->where('supplierorders.supplier_id', $supplier->id);
+                            }])
+                            ->with('document')
+                            ->with('document.supplier')
+                            ->whereHas('document', function($q) use ($supplier_id, $recent_sales_this_supplier) {
+                                    if ( $recent_sales_this_supplier > 0 )
+                                        $q->where('supplier_id', $supplier_id);
+                                })
+                            ->join('supplier_orders', 'supplier_order_lines.supplier_order_id', '=', 'supplier_orders.id')
+                            ->select('supplier_order_lines.*', 'supplier_orders.document_date', \DB::raw('"supplierorders" as route'))
+                            ->orderBy('supplier_orders.document_date', 'desc')
+                            ->take(7)->get();
+*/
+        // Recent Sales
+        $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
+        $class = '\App\\'.$model.'Line';
+        $table = snake_case(str_plural($model));
+        $route = str_replace('_', '', $table);
+        $tableLines = snake_case($model).'_lines';
+        $lines = $class::where('product_id', $product->id)
+                            ->with(["document" => function($q){
+                                $q->where('supplierorders.supplier_id', $supplier->id);
+                            }])
+                            ->with('document')
+                            ->with('document.supplier')
+                            ->whereHas('document', function($q) use ($supplier_id, $recent_sales_this_supplier) {
+                                    if ( $recent_sales_this_supplier > 0 )
+                                        $q->where('supplier_id', $supplier_id);
+                                })
+                            ->join($table, $tableLines.'.'.snake_case($model).'_id', '=', $table.'.id')
+                            ->select($tableLines.'.*', $table.'.document_date', \DB::raw('"'.$route.'" as route'))
+                            ->orderBy($table.'.document_date', 'desc')
+                            ->take(7)->get();
+
+
+        return view($this->view_path.'._form_for_product_prices', $this->modelVars() + compact('product', 'pricelists', 'supplier_rules', 'lines'));
+    }
 }

@@ -25,6 +25,7 @@ use App\DocumentAscription;
 use App\Configuration;
 use App\Sequence;
 use App\Template;
+use App\MeasureUnit;
 
 use App\Events\CustomerOrderConfirmed;
 
@@ -417,7 +418,11 @@ class CustomerOrdersController extends BillableController
         // Dates (cuen)
         $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
 
-        return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList'));
+        $units = MeasureUnit::whereIn('id', [Configuration::getInt('DEF_VOLUME_UNIT'), Configuration::getInt('DEF_WEIGHT_UNIT')])->get();
+        $volume_unit = $units->where('id', Configuration::getInt('DEF_VOLUME_UNIT'))->first();
+        $weight_unit = $units->where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+
+        return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList', 'volume_unit', 'weight_unit'));
     }
 
     /**

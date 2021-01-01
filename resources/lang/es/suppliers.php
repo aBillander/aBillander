@@ -132,6 +132,7 @@ return [
 	'Total'     => 'Total',
 
 	'Products' => 'Productos',
+	'Products by Supplier' => 'Productos por Proveedor',
 	'Product' => 'Producto',
 	'Document' => 'Documento',
 
@@ -193,6 +194,8 @@ return [
 	'Delivery Time'     => 'Plazo de entrega',
 	'Delivery Time in business days.'     => 'Plazo de entrega en días laborables.',
 
+	'Description'     => 'Descripción',
+
 
 	/*
 	|--------------------------------------------------------------------------
@@ -223,6 +226,8 @@ return [
 	'Edit Price List Line'     => 'Modificar Línea de Tarifa',
 
 	'Edit Supplier Reference' => 'Modificar Referencia del Proveedor',
+
+	'Invoice Shipping Slips' => 'Facturar Albaranes',
 
 	''     => '',
 	''     => '',

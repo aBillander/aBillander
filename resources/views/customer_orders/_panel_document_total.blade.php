@@ -12,6 +12,7 @@
     <table id="document_total" class="table table-hover">
         <thead>
             <tr>
+               <th class="text-center">{{ l('Lines') }}</th>
                <th> </th>
                <th class="text-left">
 
@@ -31,11 +32,17 @@
                <th class="text-left">{{l('Taxes')}}</th>
 
                <th class="text-right">{{l('Total')}}</th>
+
+               <th class="text-right">{{l('Weight')}} (<span class="text-success">{{ optional($weight_unit)->sign }}</span>)</th>
+               <th class="text-right">{{l('Volume')}} (<span class="text-success">{{ optional($volume_unit)->sign }}</span>)</th>
             </tr>
         </thead>
 
         <tbody>
             <tr>
+                <td class="text-center">
+                    {{ $document->nbr_lines }}
+                </td>
                 <td class="text-center">
                     <span class="badge" style="background-color: #3a87ad;">{{ $document->currency->iso_code }}</span>
                 </td>
@@ -79,6 +86,9 @@
                 <td style="vertical-align: middle;">{{ $document->as_price('total_currency_tax_excl', $document->currency) }}</td>
                 <td style="vertical-align: middle;">{{ $document->as_priceable($document->total_currency_tax_incl - $document->total_currency_tax_excl) }}</td>
                 <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $document->as_price('total_currency_tax_incl') }}</strong></td>
+
+                <td class="text-right lead" style="vertical-align: middle;">{{ $document->getWeight() }}</td>
+                <td class="text-right lead" style="vertical-align: middle;">{{ $document->getVolume() }}</td>
             </tr>
 
 @if ( $document->currency_conversion_rate != 1.0 )
@@ -101,6 +111,9 @@
                 <td style="vertical-align: middle;">{{ $document->as_price('total_tax_excl', $document->currency) }}</td>
                 <td style="vertical-align: middle;">{{ $document->as_priceable($document->total_tax_incl - $document->total_tax_excl) }}</td>
                 <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $document->as_price('total_tax_incl') }}</strong></td>
+
+                <td></td>
+                <td></td>
             </tr>
 @endif
 

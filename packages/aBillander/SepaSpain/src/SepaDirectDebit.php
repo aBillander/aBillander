@@ -373,17 +373,22 @@ class SepaDirectDebit extends Model
 
 
 
+                $bankaccount = $voucher->customer->bankaccount;
+
+                $mndtId    = $bankaccount->mandate_reference ?: $voucher->reference;
+                $dtOfSgntr = $bankaccount->mandate_date      ? $bankaccount->mandate_date->toDateString() : $voucher->created_at->toDateString();
+
                 $payment = [
                 // needed information about the 
                     'pmtId'         => $voucher->reference,     // ID of the payment (EndToEndId)
                     'instdAmt'      => $voucher->amount,                    // amount
     //                'mndtId'        => 'Mandate-Id',            // Mandate ID
     //                'dtOfSgntr'     => '2010-04-12',            // Date of signature
-                    'mndtId'        => $voucher->reference,            // Mandate ID
-                    'dtOfSgntr'     => $voucher->created_at->toDateString(),            // Date of signature
+                    'mndtId'        => $mndtId,            // Mandate ID
+                    'dtOfSgntr'     => $dtOfSgntr,            // Date of signature
     //                'bic'           => $voucher->customer->bankaccount->swift,           // BIC of the Debtor
                     'dbtr'          => $this->sanitize_name( $voucher->customer->name_fiscal ),        // (max 70 characters)
-                    'iban'          => $this->sanitize_iban( $voucher->customer->bankaccount->iban ),     // IBAN of the Debtor
+                    'iban'          => $this->sanitize_iban( $bankaccount->iban ),     // IBAN of the Debtor
                 // optional
     //                'amdmntInd'     => 'false',                 // Did the mandate change
                     //'elctrncSgntr'  => 'tests',                  // do not use this if there is a paper-based mandate

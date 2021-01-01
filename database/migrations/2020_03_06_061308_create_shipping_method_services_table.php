@@ -26,12 +26,12 @@ class CreateShippingMethodServicesTable extends Migration {
 
 			$table->decimal('free_shipping_from', 20, 6)->default(0.0);
 
-			$table->integer('tax_id')->unsigned()->nulable();		// Future use, maybe
+			$table->integer('tax_id')->unsigned()->nullable();		// Future use, maybe
 
 			// bonus
 			$table->integer('position')->unsigned()->default(0);	// Future use, maybe
 
-			$table->integer('shipping_method_id')->unsigned()->nulable();
+			$table->integer('shipping_method_id')->unsigned();
 			
 			$table->timestamps();
 		});

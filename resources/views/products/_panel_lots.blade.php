@@ -15,8 +15,11 @@
             <th>{{l('Product', 'lots')}}</th>
             <th class="text-right">{{l('Quantity', 'lots')}}</th>
             <th>{{l('Measure Unit', 'lots')}}</th>
+@if ( $product->procurement_type != 'purchase' )
             <th>{{l('Manufacture Date', 'lots')}}</th>
+@endif
             <th>{{l('Expiry Date', 'lots')}}</th>
+            <th class="text-center">{{ l('Blocked', [], 'layouts') }}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
             <th> </th>
         </tr>
@@ -25,7 +28,9 @@
         @foreach ($lots as $lot)
         <tr>
       <td>{{ $lot->id }}</td>
-      <td>{{ $lot->reference }}</td>
+      <td>
+        <a href="{{ route( 'lot.stockmovements', $lot->id ) }}" title="{{ l('Go to', 'layouts') }}" target="_blank">{{ $lot->reference }}</a>
+      </td>
       <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
       <td>[<a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a>] {{ $lot->product->name }}
 {{--
@@ -38,8 +43,13 @@
             </td>
       <td class="text-right">{{ $lot->as_quantity('quantity') }}</td>
       <td>{{ optional($lot->measureunit)->sign }}</td>
+@if ( $product->procurement_type != 'purchase' )
       <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
+@endif
       <td>{{ abi_date_short( $lot->expiry_at ) }}</td>
+
+            <td class="text-center">@if ($lot->blocked) <i class="fa fa-lock" style="color: #df382c;"></i> @else <i class="fa fa-unlock" style="color: #38b44a;"></i> @endif</td>
+
             <td class="text-center">
                 @if ($lot->notes)
                  <a href="javascript:void(0);">

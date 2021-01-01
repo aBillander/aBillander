@@ -19,6 +19,9 @@ return [
 	'Date from'     => 'Fecha desde',
 	'Date to'     => 'Fecha hasta',
 
+	'Lot' => 'Lote',
+	'Lot Number' => 'Número de Lote',
+
 	/*
 	|--------------------------------------------------------------------------
 	| Stockmovements Language Lines :: create

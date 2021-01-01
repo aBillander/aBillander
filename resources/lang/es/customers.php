@@ -188,6 +188,21 @@ return [
 
 	'Bank Accounts'     => 'Cuentas Bancarias',
 	'Bank Name'     => 'Nombre del Banco',
+	'Bank Account Code' => 'Código Cuenta Cliente',
+	'Bank code' => 'Entidad',
+	'Bank Branch code'  => 'Oficina',
+	'Control'  => 'Control',
+	'Account' => 'Cuenta',
+	'Calculate Iban' => 'Calcular Iban',
+	'Iban' => 'Iban',
+	'To make it more readable, you can enter spaces.' => 'Para que sea mas legible, puede introducir espacios.',
+	'Swift' => 'Swift',
+	'Mandate (for automatic payment remittances)' => 'Mandato (para Remesas de pago automático)',
+	'Mandate Reference' => 'Referencia única',
+	'You can use Customer Identification (only letters and digits) plus space plus Mandate Date.' => 'Puede usar el NIF/CIF del Cliente, más un espacio, más la Fecha del Mandato.',
+	'Mandate Date' => 'Fecha de Firma',
+
+
 
 	'View Cart'     => 'Ver Carrito',
 	'Add New User' => 'Nuevo Usuario para este Cliente',
@@ -198,4 +213,19 @@ return [
 	'Invoice Shipping Slips' => 'Facturar Albaranes',
 
 	'Accounting ID' => 'Código Contabilidad',
+
+
+   
+
+   'Search by Name or Reference.'     => 'Busque por Nombre o Referencia.',
+
+   'Reset search: empty field plus press [return].' => 'Reiniciar búsqueda: vacíe el campo y pulse [intro].',
+
+	'CustomerOrder'   => 'Pedidos',
+	'CustomerShippingSlip'   => 'Albaranes',
+	'CustomerInvoice'   => 'Facturas',
+
+	
+
+	'Description'     => 'Descripción',
 ];

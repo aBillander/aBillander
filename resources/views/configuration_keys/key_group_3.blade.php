@@ -170,6 +170,23 @@
 
 
 
+    <div class="form-group {{ $errors->has('FILE_ALLOWED_EXTENSIONS') ? 'has-error' : '' }}">
+      <label for="FILE_ALLOWED_EXTENSIONS" class="col-lg-4 control-label">{!! l('FILE_ALLOWED_EXTENSIONS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-10">
+        <input class="form-control" type="text" id="FILE_ALLOWED_EXTENSIONS" name="FILE_ALLOWED_EXTENSIONS" placeholder="" value="{{ old('FILE_ALLOWED_EXTENSIONS', $key_group['FILE_ALLOWED_EXTENSIONS']) }}" />
+        {{ $errors->first('FILE_ALLOWED_EXTENSIONS', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('FILE_ALLOWED_EXTENSIONS.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
     <div class="form-group {{ $errors->has('ALLOW_IP_ADDRESSES') ? 'has-error' : '' }}">
       <label for="ALLOW_IP_ADDRESSES" class="col-lg-4 control-label">{!! l('ALLOW_IP_ADDRESSES.name') !!}</label>
       <div class="col-lg-8">

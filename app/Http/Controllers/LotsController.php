@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Configuration;
 use App\Lot;
 use App\Product;
 use App\StockMovement;
@@ -11,19 +12,22 @@ use App\StockMovement;
 use Excel;
 
 use App\Traits\DateFormFormatterTrait;
+use App\Traits\ModelAttachmentControllerTrait;
 
 class LotsController extends Controller
 {
    
    use DateFormFormatterTrait;
+   use ModelAttachmentControllerTrait;
 
    protected $lot;
    protected $product;
 
-   public function __construct(Lot $lot, Product $product)
+   public function __construct(Lot $lot, Product $product, StockMovement $stockmovement)
    {
         $this->lot = $lot;
         $this->product = $product;
+        $this->stockmovement = $stockmovement;
    }
 
     /**
@@ -264,14 +268,21 @@ class LotsController extends Controller
      */
     public function update(Request $request, Lot $lot)
     {
-        $currency = $this->currency->findOrFail($id);
+        // Dates (cuen)
+        $this->mergeFormDates( ['manufactured_at', 'expiry_at'], $request );
 
-        $this->validate($request, Currency::$rules);
+        $rules = [
+            'reference'         => 'required|min:2|max:32',
+            'manufactured_at' => 'nullable|date',
+            'expiry_at'  => 'nullable|date',
+        ];
 
-        $currency->update($request->all());
+        $this->validate($request, $rules);
 
-        return redirect('currencies')
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
+        $lot->update($request->only(['reference', 'manufactured_at', 'expiry_at', 'blocked', 'notes']));
+
+        return redirect('lots')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $lot->id], 'layouts') . $request->input('reference'));
     }
 
     /**
@@ -298,15 +309,21 @@ class LotsController extends Controller
      *
      * @return 
      */
-    public function export(Request $request)
+    public function export(Lot $lot, Request $request)
     {
+        // See: StockMovementsController
+
+        // Load Relation
+        $lot = $lot->load(['product', 'measureunit']);
+
         // Dates (cuen)
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
-        abi_r($request->all(), true);       // To do method!!!
+//        abi_r($request->all(), true);       // To do method!!!
 
         $mvts = $this->stockmovement
                                 ->filter( $request->all() )
+                                ->where('lot_id', $lot->id)
 //                              ->with('warehouse')
 //                              ->with('product')
 //                              ->with('combination')
@@ -377,4 +394,31 @@ class LotsController extends Controller
         // https://www.youtube.com/watch?v=LWLN4p7Cn4E
         // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
+
+
+
+    public function stockmovements(Lot $lot, Request $request)
+    {
+        // Load Relation
+        $lot = $lot->load(['product', 'measureunit']);
+
+        $stockmovements = $this->stockmovement
+                                ->where('lot_id', $lot->id)
+ //                               ->filter( $request->all() )
+ //                               ->with('measureunit')
+                                ->orderBy('date', 'ASC')
+                                ->orderBy('created_at', 'ASC');
+
+        $stockmovements = $stockmovements->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
+        // $lots = $lots->paginate( 1 );
+
+        $stockmovements->setPath('stockmovements');     // Customize the URI used by the paginator
+        
+        // Dates (cuen)
+        // $this->addFormDates( ['manufactured_at', 'expiry_at'], $lot );
+
+
+        return view('lots.lot_stock_movements', compact('lot', 'stockmovements'));
+    }
+
 }

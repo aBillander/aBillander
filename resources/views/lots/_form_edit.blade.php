@@ -37,10 +37,17 @@
         </div>
     </div>
 
+         <div class="form-group col-lg-3 col-md-3 col-sm-3">
+            {!! Form::label('measure_unit', l('Measure Unit')) !!}
+            <div class="form-control" style="background-color: #eeeeee; opacity: 1;">
+                {{ $lot->measureunit->sign }}
+            </div>
+         </div>
+
     <div class="form-group col-lg-1 col-md-1 col-sm-1">
     </div>
 
-    <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('quantity') ? 'has-error' : '' }}">
+    <div class=" hidden form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('quantity') ? 'has-error' : '' }}">
         {!! Form::label('quantity', l('New Quantity')) !!}
         {!! Form::text('quantity', null, array('class' => 'form-control')) !!}
         {!! $errors->first('quantity', '<span class="help-block">:message</span>') !!}
@@ -77,8 +84,12 @@
          
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
             {{ l('Warehouse') }}
-            {!! Form::select('warehouse_id', \App\Warehouse::selectorList(), null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
-            {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
+            {!! Form::select('warehouse_id', \App\Warehouse::selectorList(), null, array('class' => ' hide form-control', 'id' => 'warehouse_id')) !!}
+            {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}            
+
+            <div class="form-control" style="background-color: #eeeeee; opacity: 1;">
+                {{ $lot->warehouse->alias_name }}
+            </div>
          </div>
 
 
@@ -86,15 +97,36 @@
 </div>
 
 <div class="row">
-    <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('notes') ? 'has-error' : '' }}">
+    <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('notes') ? 'has-error' : '' }}">
        {!! Form::label('notes', l('Notes', [], 'layouts')) !!}
        {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '3')) !!}
        {!! $errors->first('notes', '<span class="help-block">:message</span>') !!}
     </div>
+
+                   <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-active">
+                     {!! Form::label('blocked', l('Blocked?', [], 'layouts'), ['class' => 'control-label']) !!}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('blocked', '1', false, ['id' => 'blocked_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('blocked', '0', true, ['id' => 'blocked_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
 </div>
 
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-	{!! link_to_route('lots.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+  {!! link_to_route('lots.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+
+  {!! link_to_route('lot.stockmovements', l('Stock Movements'), $lot->id, array('class' => 'pull-right btn btn-blue')) !!}
 
 
 

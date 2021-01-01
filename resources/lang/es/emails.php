@@ -20,4 +20,5 @@ return [
 	''     => '',
 	''     => '',
 
+	'supplierorders.default.subject :num :date'     => ' :_> Nuestro Pedido: :num (:date)',
 ];

@@ -10,11 +10,13 @@ use Auth;
 use Carbon\Carbon;
 
 use App\Traits\ViewFormatterTrait;
+use App\Traits\ModelAttachmentableTrait;
 
 class Customer extends Model {
 
-    use ViewFormatterTrait;
     use SoftDeletes;
+    use ViewFormatterTrait;
+    use ModelAttachmentableTrait;
 
     protected $dates = ['deleted_at'];
 
@@ -1057,7 +1059,15 @@ class Customer extends Model {
                                      ->where('rule_type', '=', 'sales_equalization')
                                      ->get();
 
-            if ( $rules_re->isNotEmpty() ) $rules = $rules->merge( $rules_re );
+            if ( $rules_re->isNotEmpty() ) 
+            {
+                $state_rules = $rules_re->where('state_id', '=', $state_id);
+
+                if ( $state_rules->count() > 0 )
+                    $rules = $rules->merge( $state_rules );
+                else
+                    $rules = $rules->merge( $rules_re );
+            }
 
         }
 

@@ -6,6 +6,8 @@ use App\Scopes\ShowOnlyActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\ModelAttachmentableTrait;
+
 // use Illuminate\Validation\Rule;
 
 use Auth;
@@ -27,6 +29,8 @@ class Product extends Model {
     use ViewFormatterTrait;
     use AutoSkuTrait;
     use SoftDeletes;
+    
+    use ModelAttachmentableTrait;
 
     use StockableTrait;
 
@@ -95,7 +99,7 @@ class Product extends Model {
     ];
 */
 
-    protected $dates = ['deleted_at', 'available_for_sale_date'];
+    protected $dates = ['deleted_at', 'available_for_sale_date', 'new_since_date'];
 
     protected $appends = ['extra_measureunits', 'tool_id', 'quantity_available'];
     
@@ -112,9 +116,9 @@ class Product extends Model {
                             'location', 'width', 'height', 'depth', 'volume', 'weight',
 
                             'notes', 'stock_control', 'publish_to_web', 'webshop_id', 'blocked', 'active', 
-                            'out_of_stock', 'out_of_stock_text', 'available_for_sale_date',
+                            'out_of_stock', 'out_of_stock_text', 'available_for_sale_date', 'new_since_date', 
 
-                            'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 
+                            'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 'purchase_measure_unit_id', 
 
                             'lot_tracking', 'expiry_time', 
 
@@ -927,7 +931,8 @@ class Product extends Model {
 
     public function getMeasureUnitList()
     {
-        if ( Configuration::isTrue('ENABLE_MANUFACTURING') && $this->measureunits->count() )
+        // if ( Configuration::isTrue('ENABLE_MANUFACTURING') && $this->measureunits->count() )
+        if ( $this->measureunits->count() )
             return $this->measureunits->pluck('name', 'id')->toArray();
 
         return MeasureUnit::pluck('name', 'id')->toArray();
@@ -943,6 +948,11 @@ class Product extends Model {
     public function measureunit()
     {
         return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+    }
+
+    public function purchasemeasureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'purchase_measure_unit_id');
     }
     
     public function productmeasureunits()      // http://advancedlaravel.com/eloquent-relationships-examples
@@ -1364,7 +1374,7 @@ class Product extends Model {
         $price = $supplier->getPrice( $this, $quantity, $currency );
 
         // Add Ecotax
-        if ( 0 && Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
 //            $ecoprice = Price::create([
@@ -1693,7 +1703,16 @@ class Product extends Model {
     {
         if ( !$apply ) return $query;
 
-        return $query->whereDate('created_at', '>=', Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
+        $theDate = Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') );
+
+        return $query->where(function ($query) use ($theDate) {
+                $query->whereDate('new_since_date', '>=', $theDate)
+                      ->orWhereDate('created_at',   '>=', $theDate);
+            });
+
+        // $column = $this->new_since_date ? 'new_since_date' : 'created_at';
+
+        // return $query->whereDate($column, '>=', Carbon::now()->subDays( Configuration::getInt('ABCC_NBR_DAYS_NEW_PRODUCT') ));
     }
 
     public function scopeManufacturer($query, $manufacturer_id)

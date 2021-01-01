@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Customer;
 use App\SalesRep;
 use App\Product;
+use App\MeasureUnit;
 use App\Combination;
 use App\Currency;
 use App\Address;
@@ -164,7 +165,24 @@ class BillableController extends Controller
 
         return $document;
 */
-        return view($this->view_path.'._panel_document_lines', $this->modelVars() + compact('document'));
+        if ( Configuration::isTrue('ENABLE_LOTS') )
+        if ( strpos($this->model, 'ShippingSlip') !== false )
+        {
+            // Do document lines have lots added?
+            foreach ($document->lines as $line) {
+                # code...
+                $line->pending = null;
+                if ( !optional($line->product)->lot_tracking) continue;
+
+                $line->pending = $line->quantity - $line->lots->sum('quantity_initial');
+            }
+        }
+
+        $units = MeasureUnit::whereIn('id', [Configuration::getInt('DEF_VOLUME_UNIT'), Configuration::getInt('DEF_WEIGHT_UNIT')])->get();
+        $volume_unit = $units->where('id', Configuration::getInt('DEF_VOLUME_UNIT'))->first();
+        $weight_unit = $units->where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+
+        return view($this->view_path.'._panel_document_lines', $this->modelVars() + compact('document', 'volume_unit', 'weight_unit'));
     }
 
     public function sortLines(Request $request)
@@ -350,6 +368,8 @@ class BillableController extends Controller
 
     public function getProductPrices(Request $request)
     {
+        if ( $request->has('supplier_id') )
+            return $this->getSupplierProductPrices($request);
         
         // Request data
         $product_id      = $request->input('product_id');
@@ -449,9 +469,6 @@ class BillableController extends Controller
         $route = str_replace('_', '', $table);
         $tableLines = snake_case($model).'_lines';
         $lines = $class::where('product_id', $product->id)
-                            ->with(["document" => function($q){
-                                $q->where('customerorders.customer_id', $customer->id);
-                            }])
                             ->with('document')
                             ->with('document.customer')
                             ->whereHas('document', function($q) use ($customer_id, $recent_sales_this_customer) {
@@ -726,7 +743,12 @@ class BillableController extends Controller
 
         $view_path = $this->view_path;
 
-        return view($view_path.'._panel_document_total', compact('document', 'view_path'));
+        // Need this when updating totals, or $volume_unit and $weight_unit will no be available
+        $units = MeasureUnit::whereIn('id', [Configuration::getInt('DEF_VOLUME_UNIT'), Configuration::getInt('DEF_WEIGHT_UNIT')])->get();
+        $volume_unit = $units->where('id', Configuration::getInt('DEF_VOLUME_UNIT'))->first();
+        $weight_unit = $units->where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+
+        return view($view_path.'._panel_document_total', compact('document', 'view_path', 'volume_unit', 'weight_unit'));
     }
 
 

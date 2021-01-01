@@ -18,25 +18,24 @@
                 
                 <a href="{{ URL::to('suppliers') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Suppliers') }}</a>
 @else
-                <!-- a href="{ { route('supplier.shippingslipable.orders', [$supplier->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Orders')}}</a -->
+{{--
+                <a href="{ { route('supplier.shippingslipable.orders', [$supplier->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Orders')}}</a>
 
                 <a href="{ { route('supplier.invoiceable.shippingslips', [$supplier->id]) }}" class="btn btn-navy" style="margin-right: 72px;" onclick="alert('You naughty, naughty!!');return false;"><i class="fa fa-object-group"></i> {{l('Group Shipping Slips')}}</a>
-
+--}}
                 <div class="btn-group">
                     <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-{{--
+{{--s
                       <li><a href="{ { route('supplierquotations.create.withsupplier', $supplier->id) }}">{{l('Quotation', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
-                      <li><a href="{ { route('supplierorders.create.withsupplier', $supplier->id) }}">{{l('Order', [], 'layouts')}}</a></li>
 --}}
+                      <li><a href="{{ route('supplierorders.create.withsupplier', $supplier->id) }}">{{l('Order', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('suppliershippingslips.create.withsupplier', $supplier->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
-{{--
-                      <li><a href="{ { route('supplierinvoices.create.withsupplier', $supplier->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
+                      <li><a href="{{ route('supplierinvoices.create.withsupplier', $supplier->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
                       <!-- li><a href="#">Separated link</a></li -->
---}}
                     </ul>
                 </div>
 @endif
@@ -48,16 +47,14 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 {{--
                       <li><a href="{{ route('supplier.quotations', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Quotations', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
-                      <li><a href="{{ route('supplier.orders', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Orders', [], 'layouts')}}</a></li>
 --}}
+                      <li><a href="{{ route('supplier.orders', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Orders', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('supplier.shippingslips', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
-{{--
                       <li><a href="{{ route('supplier.invoices', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Invoices', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('supplier.vouchers', $supplier->id) }}"><i class="fa fa-user-circle"></i> {{l('Supplier Vouchers', [], 'layouts')}}</a></li>
---}}
                       <li class="divider"></li>
                       <li><a href="{{ URL::to('suppliers') }}">{{ l('Back to Suppliers') }}</a></li>
                     </ul>
@@ -86,6 +83,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-gavel text-success"></i>
                &nbsp; {{ l('Price List') }}
             </a>
+            <a id="b_products" href="#products" class="list-group-item">
+               <i class="fa fa-th"></i>
+               &nbsp; {{ l('Products') }}
+            </a>
             <a id="b_bankaccounts" href="#bankaccounts" class="list-group-item">
                <i class="fa fa-briefcase"></i>
                &nbsp; {{ l('Bank Accounts') }}
@@ -93,6 +94,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
             <a id="b_addressbook" href="#addressbook" class="list-group-item">
                <i class="fa fa-address-book"></i>
                &nbsp; {{ l('Address Book') }}
+            </a>
+            <a id="b_attachments" href="#attachments" class="list-group-item">
+               <i class="fa fa-paperclip"></i>
+               &nbsp; {{ l('Attachments', 'layouts') }}
             </a>
             <!-- a id="b_specialprices" href="#specialprices" class="list-group-item">
                <i class="fa fa-list-alt"></i>
@@ -129,9 +134,13 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
          {!! Form::close() !!}
 
+          @include('suppliers._panel_products')
+
           @include('suppliers._panel_bankaccounts')
 
           @include('suppliers._panel_addressbook')
+
+          @include('suppliers._panel_attachments')
 {{--
           @include('suppliers._panel_orders')
 
@@ -154,8 +163,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
    {
       $("#panel_main").hide();
       $("#panel_commercial").hide();
+      $("#panel_products").hide();
       $("#panel_bankaccounts").hide();
       $("#panel_addressbook").hide();
+      $("#panel_attachments").hide();
  //     $("#panel_specialprices").hide();
  //     $("#panel_accounting").hide();
       $("#panel_orders").hide();
@@ -166,8 +177,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
       $("#b_main").removeClass('active');
       $("#b_commercial").removeClass('active');
+      $("#b_products").removeClass('active');
       $("#b_bankaccounts").removeClass('active');
       $("#b_addressbook").removeClass('active');
+      $("#b_attachments").removeClass('active');
  //     $("#b_specialprices").removeClass('active');
  //     $("#b_accounting").removeClass('active');
       $("#b_orders").removeClass('active');
@@ -182,6 +195,12 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
          $("#b_commercial").addClass('active');
          // document.f_cliente.codgrupo.focus();
       }
+      else if(window.location.hash.substring(1) == 'products')
+      {
+         $("#panel_products").show();
+         $("#b_products").addClass('active');
+         getSupplierProducts();
+      }
       else if(window.location.hash.substring(1) == 'bankaccounts')
       {
          $("#panel_bankaccounts").show();
@@ -192,18 +211,23 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
          $("#panel_addressbook").show();
          $("#b_addressbook").addClass('active');
       }
+      else if(window.location.hash.substring(1) == 'attachments')
+      {
+         $("#panel_attachments").show();
+         $("#b_attachments").addClass('active');
+      }
       else if(window.location.hash.substring(1) == 'orders')
       {
          $("#panel_orders").show();
          $("#b_orders").addClass('active');
          getSupplierOrders();
       }
-      else if(window.location.hash.substring(1) == 'products')
-      {
-         $("#panel_products").show();
-         $("#b_products").addClass('active');
-         getSupplierProducts();
-      }
+//      else if(window.location.hash.substring(1) == 'products')
+//      {
+//         $("#panel_products").show();
+//         $("#b_products").addClass('active');
+//         getSupplierProducts();
+//      }
       else if(window.location.hash.substring(1) == 'pricerules')
       {
          $("#panel_pricerules").show();

@@ -74,8 +74,9 @@
 
 function checkFields() 
 {
+  // https://blog.abelotech.com/posts/number-currency-formatting-javascript/
 
-  var amount = parseFloat($("#amount").val());
+  var amount = parseFloat($("#amount").val().replace(',', '.'));
   var amount_initial = parseFloat($("#amount_initial").val());
 
   amount = +amount || 0; // See: https://stackoverflow.com/questions/7540397/convert-nan-to-0-in-javascript

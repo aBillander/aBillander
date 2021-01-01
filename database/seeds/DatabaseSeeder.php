@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
 
         // abi_r(esTaxesTableSeeder::class); die();
 
+        $this->call($language . 'ConfigurationsTableSeeder');
+
         $this->call($language . 'TaxesTableSeeder');
 
         $this->call($language . 'SequencesTableSeeder');

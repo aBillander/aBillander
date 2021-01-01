@@ -10,7 +10,7 @@
         <a href="{{{ URL::to('suppliers/create') }}}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
-        <button  name="b_search_filter" id="b_search_filter" class=" hidden btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
+        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
@@ -20,6 +20,9 @@
 
         <a href="{{ route('suppliers.export') }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
+        <a href="{{ route('suppliers.products.export') }}" class="btn btn-sm btn-grey" 
+                title="{{l('Products by Supplier')}}"><i class="fa fa-file-excel-o"></i> {{l('Products')}}</a>
     </div>
     <h2>
         {{ l('Suppliers') }}
@@ -45,7 +48,7 @@
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class=" hidden form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('reference_external', l('External Reference')) !!}
     {!! Form::text('reference_external', null, array('class' => 'form-control')) !!}
 </div>

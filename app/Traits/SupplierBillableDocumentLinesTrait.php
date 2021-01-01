@@ -2,6 +2,10 @@
 
 namespace App\Traits;
 
+use App\Price;
+
+use App\Configuration;
+
 trait SupplierBillableDocumentLinesTrait
 {
 
@@ -79,9 +83,36 @@ trait SupplierBillableDocumentLinesTrait
                             ? $params['name'] 
                             : $product->name;
 
+        $measure_unit_id = $product->measure_unit_id;
+
+        $package_measure_unit_id = array_key_exists('package_measure_unit_id', $params) 
+                            ? $params['package_measure_unit_id'] 
+                            : $product->measure_unit_id;
+
+        $pmu_conversion_rate = 1.0; // Temporarily default
+
+        $pmu_label = ''; // Temporarily default
+
+        // Measure unit stuff...
+        if ( $package_measure_unit_id != $measure_unit_id )
+        {
+            $mu  = $product->measureunits->where('id', $measure_unit_id        )->first();
+            $pmu = $product->measureunits->where('id', $package_measure_unit_id)->first();
+
+            $pmu_conversion_rate = $pmu->conversion_rate;
+
+            $quantity = $quantity * $pmu_conversion_rate;
+
+            $pmu_label = array_key_exists('pmu_label', $params) && $params['pmu_label']
+                            ? $params['pmu_label'] 
+                            : $pmu->name.' : '.(int) $pmu_conversion_rate.'x'.$mu->name;
+            
+        }
+
         // $cost_price = $product->cost_price;
         // Do this ( because of getCostPriceAttribute($value) ):
         $cost_price = $product->getOriginal('cost_price');
+        $cost_average = $product->cost_average;
 
         // Tax
         $tax = $product->tax;
@@ -102,7 +133,8 @@ trait SupplierBillableDocumentLinesTrait
         $supplier_price = $product->getPriceBySupplier( $supplier, $quantity, $currency );
 
         // Is there a Price for this Supplier?
-        if (!$supplier_price) return null;      // Product not allowed for this Supplier
+        // if (!$supplier_price) return null;      // Product not allowed for this Supplier
+        // ^-- Too restrictive
 
         $supplier_price->applyTaxPercent( $tax_percent );
         $unit_supplier_price = $supplier_price->getPrice();
@@ -113,10 +145,11 @@ trait SupplierBillableDocumentLinesTrait
                             : $supplier_price->price_is_tax_inc;
 
         // Supplier Final Price
-        // if ( 0 && array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
-        if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
+        // Force Supplier Price after $product->getPriceBySupplier
+        if ( 0 && array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
+        // if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
 
             $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 
@@ -138,9 +171,9 @@ trait SupplierBillableDocumentLinesTrait
 
 
         // Misc
-        $measure_unit_id = array_key_exists('measure_unit_id', $params) 
-                            ? $params['measure_unit_id'] 
-                            : $product->measure_unit_id;
+//        $measure_unit_id = array_key_exists('measure_unit_id', $params) 
+//                            ? $params['measure_unit_id'] 
+//                            : $product->measure_unit_id;
 
         $line_sort_order = array_key_exists('line_sort_order', $params) 
                             ? $params['line_sort_order'] 
@@ -172,10 +205,15 @@ trait SupplierBillableDocumentLinesTrait
             'extra_quantity'       => $extra_quantity,
             'extra_quantity_label' => $extra_quantity_label,
 
+            'package_measure_unit_id' => $package_measure_unit_id,
+            'pmu_conversion_rate'     => $pmu_conversion_rate,
+            'pmu_label'               => $pmu_label,
+
             'prices_entered_with_tax' => $pricetaxPolicy,
     
-            'cost_price' => $cost_price,
-            'unit_price' => $unit_price,
+            'cost_price'   => $cost_price,
+            'cost_average' => $cost_average,
+            'unit_price'   => $unit_price,
             'unit_supplier_price' => $unit_supplier_price,
             'unit_supplier_final_price' => $unit_supplier_final_price->getPrice(),
             'unit_supplier_final_price_tax_inc' => $unit_supplier_final_price->getPriceWithTax(),
@@ -196,6 +234,21 @@ trait SupplierBillableDocumentLinesTrait
     //        'supplier_order_id',
             'tax_id' => $tax->id,
         ];
+
+        $extra_data = [];
+
+        // Ecotaxes stuff
+        if ( Configuration::isTrue('ENABLE_ECOTAXES') && ($product->ecotax_id>0) )
+        {
+            //
+            $extra_data = [
+                'ecotax_id'           => $product->ecotax_id,
+                'ecotax_amount'       => $product->ecotax->amount,
+                'ecotax_total_amount' => $quantity * $product->ecotax->amount,
+            ];
+        }
+
+        $data += $extra_data;
 
 
         // Finishing touches
@@ -267,13 +320,17 @@ trait SupplierBillableDocumentLinesTrait
                         ->with($relation)
                         ->with($relation.'.supplier')
                         ->with('product')
-                        ->with('combination')
+//                        ->with('combination')
+                        ->with('product.tax')
+                        ->with('product.ecotax')
+                        ->with('measureunit')
+                        ->with('packagemeasureunit')
+                        ->with('tax')
                         ->findOrFail($line_id);
 
 
         // Supplier
         $supplier = $this->supplier;
-        $salesrep = $this->salesrep;
         
         // Currency
         $currency = $this->document_currency;
@@ -288,6 +345,40 @@ trait SupplierBillableDocumentLinesTrait
             $product = $document_line->product;
         }
 
+        $pmu_conversion_rate = 1.0; // Temporarily default
+
+        // Measure unit stuff...
+        if ( $document_line->package_measure_unit_id && ($document_line->package_measure_unit_id != $document_line->measure_unit_id) )
+        {
+            $pmu_conversion_rate = $document_line->pmu_conversion_rate;
+/*
+            $quantity = $quantity * $pmu_conversion_rate;
+
+            $pmu_label = array_key_exists('pmu_label', $params) && $params['pmu_label']
+                            ? $params['pmu_label'] 
+                            : $pmu->name.' : '.(int) $pmu_conversion_rate.'x'.$mu->name;
+*/            
+        }
+
+        // Warning: stored $quantity is ALLWAYS in "stock keeping unit"
+        if (array_key_exists('quantity', $params)) 
+        {
+            if (array_key_exists('use_measure_unit_id', $params) && ( $params['use_measure_unit_id'] == 'measure_unit_id' ))
+            {
+                // FORCE measure unit to default line measure unit
+                // See CustomerOrdersController@createSingleShippingSlip, section relative to back order creation
+                // No need of calculations
+                $quantity = $params['quantity'];
+
+            } else {
+                // "Input quantity" (from form, etc.) is expected in "line measure unit", i.e., in package_measure_unit,
+                // when $document_line->package_measure_unit_id != $document_line->measure_unit_id
+                $quantity = $params['quantity'] * $pmu_conversion_rate;
+            }
+        }
+        else
+            $quantity = $document_line->quantity;       // Already in "stock keeping unit"
+
         // Tax
         $tax = $product->tax;
         $taxing_address = $this->taxingaddress;
@@ -300,7 +391,10 @@ trait SupplierBillableDocumentLinesTrait
         // Product Price
 //        $price = $product->getPrice();
 //        $unit_price = $price->getPrice();
-        
+
+
+/*      Not needed:
+
         if (array_key_exists('quantity', $params)) 
             $quantity = $params['quantity'];
         else
@@ -315,7 +409,7 @@ trait SupplierBillableDocumentLinesTrait
 
         $supplier_price->applyTaxPercent( $tax_percent );
         $unit_supplier_price = $supplier_price->getPrice();
-
+*/
         // Price Policy
         $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
                             ? $params['prices_entered_with_tax'] 
@@ -324,7 +418,7 @@ trait SupplierBillableDocumentLinesTrait
         // Supplier Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'], $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
 
             $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 
@@ -357,7 +451,7 @@ trait SupplierBillableDocumentLinesTrait
  //           'combination_id' => $combination_id,
  //           'reference' => $reference,
  //           'name' => $name,
- //           'quantity' => $quantity,
+            'quantity' => $quantity,
  //           'measure_unit_id' => $measure_unit_id,
 
             'prices_entered_with_tax' => $pricetaxPolicy,
@@ -386,16 +480,15 @@ trait SupplierBillableDocumentLinesTrait
         ];
 
         // More stuff
-        if (array_key_exists('quantity', $params)) 
-            $data['quantity'] = $params['quantity'];
-        
-
         if (array_key_exists('line_sort_order', $params)) 
             $data['line_sort_order'] = $params['line_sort_order'];
         
-        if (array_key_exists('notes', $params)) 
-            $data['notes'] = $params['notes'];
+        if (array_key_exists('pmu_label', $params)) 
+            $data['pmu_label'] = $params['pmu_label'];
         
+        if (array_key_exists('extra_quantity_label', $params)) 
+            $data['extra_quantity_label'] = $params['extra_quantity_label'];
+
 
         if (array_key_exists('name', $params)) 
             $data['name'] = $params['name'];
@@ -405,12 +498,6 @@ trait SupplierBillableDocumentLinesTrait
         
         if (array_key_exists('measure_unit_id', $params)) 
             $data['measure_unit_id'] = $params['measure_unit_id'];
-        
-        if (array_key_exists('sales_rep_id', $params)) 
-            $data['sales_rep_id'] = $params['sales_rep_id'];
-        
-        if (array_key_exists('commission_percent', $params)) 
-            $data['commission_percent'] = $params['commission_percent'];
 
 
         // Finishing touches

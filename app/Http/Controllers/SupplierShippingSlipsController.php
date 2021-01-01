@@ -19,6 +19,7 @@ use App\DocumentAscription;
 use App\Configuration;
 use App\Sequence;
 use App\Template;
+use App\MeasureUnit;
 
 use App\Events\SupplierShippingSlipConfirmed;
 
@@ -78,6 +79,9 @@ class SupplierShippingSlipsController extends BillableController
      */
     protected function indexBySupplier($id, Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+        
         $model_path = $this->model_path;
         $view_path = $this->view_path;
 
@@ -92,6 +96,7 @@ class SupplierShippingSlipsController extends BillableController
         $supplier = $this->supplier->findOrFail($id);
 
         $documents = $this->document
+                            ->filter( $request->all() )
                             ->where('supplier_id', $id)
 //                            ->with('supplier')
                             ->with('currency')
@@ -105,7 +110,11 @@ class SupplierShippingSlipsController extends BillableController
 
         $documents->setPath($id);
 
-        return view($this->view_path.'.index_by_supplier', $this->modelVars() + compact('supplier', 'documents', 'sequenceList', 'templateList', 'items_per_page'));
+        $statusList = $this->model_class::getStatusList();
+
+//        $shipment_statusList = $this->model_class::getShipmentStatusList();
+
+        return view($this->view_path.'.index_by_supplier', $this->modelVars() + compact('supplier', 'documents', 'statusList', 'sequenceList', 'templateList', 'items_per_page'));
     }
 
     /**
@@ -183,7 +192,7 @@ class SupplierShippingSlipsController extends BillableController
 
         $this->validate($request, $rules);
 
-        $supplier = Supplier::with('addresses')->findOrFail(  $request->input('supplier_id') );
+        $supplier = $this->supplier->with('addresses')->findOrFail(  $request->input('supplier_id') );
 
         // Extra data
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
@@ -286,7 +295,12 @@ class SupplierShippingSlipsController extends BillableController
         // Dates (cuen)
         $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
 
-        return view($this->view_path.'.edit', $this->modelVars() + compact('supplier', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList'));
+        $units = MeasureUnit::whereIn('id', [Configuration::getInt('DEF_VOLUME_UNIT'), Configuration::getInt('DEF_WEIGHT_UNIT')])->get();
+        $volume_unit = $units->where('id', Configuration::getInt('DEF_VOLUME_UNIT'))->first();
+        $weight_unit = $units->where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+
+
+        return view($this->view_path.'.edit', $this->modelVars() + compact('supplier', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList', 'volume_unit', 'weight_unit'));
     }
 
     /**
@@ -480,6 +494,12 @@ class SupplierShippingSlipsController extends BillableController
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is on-hold', 'layouts'));
         }
 
+        if ( Configuration::isTrue('ENABLE_LOTS') && !$document->lines_has_required_lots )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document Lines do not have enough Lots', 'layouts'));
+        }
+
         // Close
         if ( $document->close() )
             return redirect()->back()           // ->route($this->model_path.'.index')
@@ -603,6 +623,8 @@ class SupplierShippingSlipsController extends BillableController
 
         $templateList = Template::listFor( 'App\\SupplierInvoice' );
 
+        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
         $statusList = SupplierInvoice::getStatusList();
 
         // Make sense:
@@ -626,16 +648,16 @@ class SupplierShippingSlipsController extends BillableController
 
         $documents->setPath('invoiceables');
 
-        return view($this->view_path.'.index_by_supplier_invoiceables', $this->modelVars() + compact('supplier', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page'));
+        return view($this->view_path.'.index_by_supplier_invoiceables', $this->modelVars() + compact('supplier', 'documents', 'sequenceList', 'templateList', 'statusList', 'items_per_page', 'payment_methodList'));
     }
 
 
     public function createGroupInvoice( Request $request )
     {
         //
-        $document_group = $request->input('document_group', []);
+        $document_list = $request->input('document_group', []);
 
-        if ( count( $document_group ) == 0 ) 
+        if ( count( $document_list ) == 0 ) 
             return redirect()->route('supplier.invoiceable.shippingslips', $request->input('supplier_id'))
                 ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
         
@@ -647,11 +669,53 @@ class SupplierShippingSlipsController extends BillableController
         $this->validate($request, $rules);
 
         // Set params for group
-        $params = $request->only('supplier_id', 'template_id', 'sequence_id', 'document_date', 'status');
+        $params = $request->only('supplier_id', 'template_id', 'sequence_id', 'document_date', 'status', 'group_by_shipping_address', 'payment_method_id', 'testing');
 
         // abi_r($params, true);
 
-        return $this->invoiceDocumentList( $document_group, $params );
+        // => old schools :: return $this->invoiceDocumentList( $document_list, $params );
+
+
+        // Start Logger
+        $logger = \App\ActivityLogger::setup( 'Invoice Supplier Shipping Slips', __METHOD__ )
+                    ->backTo( route('supplier.invoiceable.shippingslips', $params['supplier_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+
+
+        $logger->empty();
+        $logger->start();
+
+        $logger->log("INFO", 'Se facturarán los Albaranes del Proveedor: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => $params['supplier_id']]);
+
+        $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $document_list)]);
+
+        $logger->log("INFO", 'Se facturarán un total de <span class="log-showoff-format">{nbr}</span> Albaranes del Proveedor.', ['nbr' => count($document_list)]);
+
+        $flattened = $params;
+        array_walk($flattened, function(&$value, $key) {
+            $value = "{$key} => {$value}";
+        });
+
+        $logger->log("INFO", 'Opciones:  <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $flattened)]);
+
+
+        $params['logger'] = $logger;
+
+
+        $invoice = \App\SupplierShippingSlip::invoiceDocumentList( $document_list, $params );
+
+
+
+        $logger->stop();
+
+
+        return redirect('activityloggers/'.$logger->id)
+                ->with('success', l('Se han facturado los Albaranes seleccionados <strong>:file</strong> .', ['file' => '']));
+
+        // return redirect()->back()
+        //         ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+//        return redirect('supplierinvoices/'.optional($invoice)->id.'/edit')
+//                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => optional($invoice)->id], 'layouts'));
     } 
 
     public function createInvoice($id)

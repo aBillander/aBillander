@@ -23,6 +23,10 @@
 
 @endsection
 
+
+@include('installer::partials.toggle_password')
+
+
 @push('scripts')
     <script type="text/javascript">
 

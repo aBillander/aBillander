@@ -9,6 +9,7 @@ use App\Configuration;
 
 trait BillableDocumentControllerTrait
 {
+    use ModelAttachmentControllerTrait;
 
 
     protected function showBulkPdf(Request $request)
@@ -144,7 +145,7 @@ trait BillableDocumentControllerTrait
 
         }
 
-        $pdfName    = $this->getParentClass() . '_' . \Carbon\Carbon::now()->format('Y-m-d H_i_s');
+        $pdfName    = $this->getParentClass() . '_' . \Carbon\Carbon::now()->format('Y-m-d H_i_s').'.pdf';
 
         // Ta-chan!!
         $merged_pdf->merge('browser', $pdfName); //REPLACE 'file' (first argument) WITH 'browser', 'download', 'string', or 'file' for output options. You do not need to give a file path for browser, string, or download - just the name.
@@ -163,10 +164,15 @@ die();
     {
         // return $id;
 
+        // https://github.com/laravel/framework/pull/22250
+        // if( array_key_exists($key, $model->attributesToArray()) )  array_key_exists($key, $model->getAttributes())
+        // Another option: if (array_key_exists('country', $pais->toArray())) 
+
         // PDF stuff
         try {
             $document = $this->document
                             ->with('customer')
+                            ->with('supplier')
 //                            ->with('invoicingAddress')
 //                            ->with('customerInvoiceLines')
 //                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
@@ -182,6 +188,15 @@ die();
                      ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         }
 
+        // Let's see what we have:
+        if ($document->customer)
+            $entity = 'customer';
+        else
+        if ($document->supplier)
+            $entity = 'supplier';
+        else
+            $entity = 'none';
+
         // abi_r($document->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
 
         // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
@@ -192,7 +207,7 @@ die();
              \App\Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
 
         if ( !$t )
-            return redirect()->route('customerorders.show', $id)
+            return redirect()->back()
                 ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
 
 
@@ -209,11 +224,11 @@ die();
         }
         catch(\Exception $e){
 
-                abi_r($template);
-                abi_r($e->getMessage(), true);
+//                abi_r($template);
+//                abi_r($e->getMessage(), true);
 
-                // return redirect()->route('customerorders.show', $id)
-                //    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+                return redirect()->back()
+                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
         }
 
         // PDF stuff ENDS
@@ -229,7 +244,7 @@ die();
             $file_name = str_singular($this->getParentClassLowerCase()).'_'.'ID_' . (string) $document->id;
         }
 
-        $file_name = $file_name . '_' . $document->customer->name_regular;
+        $file_name = $file_name . '_' . $document->{$entity}->name_regular;
 
         $sanitizer = new \App\FilenameSanitizer( $file_name );
 
@@ -268,6 +283,7 @@ die();
         try {
             $document = $this->document
                             ->with('customer')
+                            ->with('supplier')
 //                            ->with('invoicingAddress')
 //                            ->with('customerInvoiceLines')
 //                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
@@ -283,7 +299,16 @@ die();
             // return Redirect::to('invoice')->with('message', trans('invoice.access_denied'));
         }
 
-        $document->close();
+        // Let's see what we have:
+        if ($document->customer)
+            $entity = 'customer';
+        else
+        if ($document->supplier)
+            $entity = 'supplier';
+        else
+            $entity = 'none';
+
+        // $document->close();
 
         if ( $document->status != 'closed' )
             return redirect()->back()
@@ -344,7 +369,7 @@ die();
             if ($request->isMethod('get'))
             {
                 // ... this is GET method (call from button)
-                $subject = l($this->getParentClassLowerCase().'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->customer->name_regular;
+                $subject = l($this->getParentClassLowerCase().'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->{$entity}->name_regular;
             }
 
             $template_vars = array(
@@ -359,8 +384,8 @@ die();
             $data = array(
                 'from'     => $company->address->email,
                 'fromName' => $company->name_fiscal,
-                'to'       => $document->customer->address->email,
-                'toName'   => $document->customer->name_fiscal,
+                'to'       => $document->{$entity}->address->email,
+                'toName'   => $document->{$entity}->name_fiscal,
                 'subject'  => $subject,
                 );
 

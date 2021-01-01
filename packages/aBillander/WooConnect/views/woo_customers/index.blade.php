@@ -162,8 +162,8 @@
           {{ $customer["billing"]["phone"] }}</td>
 
 
-      <td>{{ $customer["orders_count"] }}</td>
-      <td>{{ $customer["total_spent"] }}</td>
+      <td>{{ $customer["orders_count"] ?? '' }}</td>
+      <td>{{ $customer["total_spent"] ?? '' }}</td>
 
 			<td class="text-right" style="width:1px; white-space: nowrap;">
 {{--

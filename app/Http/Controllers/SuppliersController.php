@@ -16,8 +16,12 @@ use App\BankAccount;
 
 use App\Configuration;
 
-class SuppliersController extends Controller {
+use App\Traits\ModelAttachmentControllerTrait;
 
+class SuppliersController extends Controller
+{
+
+   use ModelAttachmentControllerTrait;
 
    protected $supplier, $address;
 
@@ -36,7 +40,7 @@ class SuppliersController extends Controller {
     public function index(Request $request)
     {
         $suppliers = $this->supplier
- //                       ->filter( $request->all() )
+                        ->filter( $request->all() )
                         ->with('address')
                         ->with('address.country')
                         ->with('address.state')
@@ -290,4 +294,30 @@ class SuppliersController extends Controller {
         return Supplier::searchByNameAutocomplete($request->input('query'), $params);
     }
 
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getProducts($id, Request $request)
+    {
+        $supplier = $this->supplier->with('products')->findOrFail($id);
+        $products = $supplier->products;
+
+        // return 'OK';
+
+        $items_per_page_products = intval($request->input('items_per_page_products', Configuration::get('DEF_ITEMS_PERPAGE')));
+        // return $items_per_page_products;
+
+
+        if ( !($items_per_page_products >= 0) ) 
+            $items_per_page_products = Configuration::get('DEF_ITEMS_PERPAGE');
+
+//        $products = $supplier->products->take($items_per_page_products);
+
+        
+
+        return view('suppliers._panel_products_list', compact('products', 'supplier', 'items_per_page_products'));
+    }
 }

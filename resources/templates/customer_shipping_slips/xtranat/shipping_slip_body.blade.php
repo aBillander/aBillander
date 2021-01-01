@@ -89,20 +89,21 @@
 
 			@endif
             
-            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">[{{ $document->customer->id }}]</span></div>
+            <div class="cif">CIF/NIF: {{ $document->customer->identification }} <span style="float: right; xmargin-left: 10mm">
+				@if ( $document->shippingaddress->phone )
 
-			<div class="billing-phone">
-			@if ( $document->shippingaddress->phone )
+					Tel. {{ $document->shippingaddress->phone }}
 
-				Tel. {{ $document->shippingaddress->phone }}
+				@else
 
-			@else
+					Tel. {{ $document->customer->phone }}
 
-				Tel. {{ $document->customer->phone }}
+				@endif
+			</span></div>
 
-			@endif
+			<div class="billing-phone" style="float: left;">[{{ $document->customer->id }}] <strong>{{ $document->customer->name_fiscal }}</strong>
 
-			@if ( $document->customer->reference_external )
+			@if ( 0 && $document->customer->reference_external )
 				<span style="float: right; xmargin-left: 10mm">[{{ $document->customer->reference_external }}]</span>
 			@endif
 			</div>
@@ -215,10 +216,10 @@
 				<span>Cantidad</span>
 			</th>
 			<th class="price" width="8%" style="border: 1px #ccc solid">
-				<span>Precio</span>
+				<span>Precio Coste</span>
 			</th>
 			<th class="price" width="8%" style="border: 1px #ccc solid">
-				<span>Precio Recomend.</span>
+				<span>PVP Recomend.</span>
 			</th>
 			<th class="discount" width="6%" style="border: 1px #ccc solid">
 				<span>Dto.</span>
@@ -309,7 +310,7 @@
 			</td>
 			<td class="price total last-column">
 				<span>
-					<span class="abi-Price-amount amount">{{ $line->as_priceable( optional($line->product)->recommended_retail_price ) }}
+					<span class="abi-Price-amount amount">{{ $line->as_priceable( optional($line->product)->recommended_retail_price_tax_inc ) }}
 						<!-- span class="abi-Price-currencySymbol">€</span -->
 					</span>
 				</span>

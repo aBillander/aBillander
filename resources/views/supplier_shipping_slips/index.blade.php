@@ -78,12 +78,12 @@
     {!! Form::label('status', l('Status')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
-
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('shipment_status', l('Shipment Status')) !!}
     {!! Form::select('shipment_status', array('' => l('All', [], 'layouts')) + $shipment_statusList, null, array('class' => 'form-control')) !!}
 </div>
-
+--}}
 <div class=" form-group col-lg-2 col-md-2 col-sm-2" id="div-is_invoiced">
      {!! Form::label('is_invoiced', l('Invoiced'), ['class' => 'control-label']) !!}
      <div>
@@ -152,9 +152,10 @@
 
 <div id="div_documents">
 
+@if ($documents->count())
+
    <div class="table-responsive">
 
-@if ($documents->count())
 <table id="documents" class="table table-hover">
     <thead>
         <tr>
@@ -205,6 +206,7 @@
             </td>
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>
+{{--
     @if ( $document->shipment_status == 'delivered' )
         @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
 
@@ -224,6 +226,7 @@
                 <a class="btn btn-xs alert-danger" href="{{ URL::to($model_path.'/' . $document->id . '/deliver') }}" title="{{l('Set delivered')}}">&nbsp;<i class="fa fa-truck"></i>&nbsp;</a>
         @endif
     @endif
+--}}
             </td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
             <td><a class="" href="{{ URL::to('suppliers/' . optional($document->supplier)->id . '/edit') }}" title="{{ l('Show Supplier') }}" target="_new">
@@ -231,19 +234,7 @@
             	</a>
             </td>
             <td>
-                @if ( $document->hasShippingAddress() )
-
-
-
-                {{ $document->shippingaddress->alias }} 
-                 <a href="javascript:void(0);">
-                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $document->shippingaddress->firstname }} {{ $document->shippingaddress->lastname }}<br />{{ $document->shippingaddress->address1 }}<br />{{ $document->shippingaddress->city }} - {{ $document->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $document->shippingaddress->phone }}</a>" data-original-title="" title="">
-                        <i class="fa fa-address-card-o"></i>
-                    </button>
-                 </a>
-      
-
-                @endif
+                {{ optional($document->warehouse)->alias }} - {{ optional($document->warehouse)->name }}
             </td>
             <td>{{ $document->created_via }}
             </td>
@@ -273,7 +264,7 @@
                 <a class="btn btn-sm btn-lightblue xbtn-info" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-truck"></i></a>
 @endif
 
-@if ($document->document_id>0)
+@if (0 && $document->document_id>0)
                 <a class="btn btn-sm btn-lightblue"    href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send by eMail', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
 
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>

@@ -37,6 +37,7 @@ return [
 	'Document has no Lines'                                      =>  'El Documento no contiene Líneas',
 	'Document amount should be more than: :amount'               =>  'El Importe del Documento debe ser superior a: :amount',
 	'Document is on-hold'                                      =>  'El Documento está en espera',
+	'Document Lines do not have enough Lots'					=> 'Las Lineas del Documento no tienen Lotes suficientes',
 	'Document is not closed'                                      =>  'El Documento no está cerrado',
 	'Document has Payments'                                      =>  'El Documento tiene Pagos',
 	'Document not found'										=> 'Documento no encontrado',
@@ -91,6 +92,9 @@ return [
 	'Depending on Configurations (:yn).' => 'Dependiendo de la Configuración (:yn).',
 
 	'Discount on Product Price' => 'Descuento sobre el Precio del Producto',
+
+	'Attachments' => 'Adjuntos',
+	'Upload an Attach Files' => 'Subir y Adjuntar Ficheros',
 
 
 	/*
@@ -208,7 +212,12 @@ return [
 	'Manufacturing'     => 'Fabricación',
 	'Delivery Routes'     => 'Rutas de Reparto',
 	'Delivery Sheets'     => 'Hojas de Reparto',
-	''     => '',
+
+	'microCRM'     => '&micro;CRM',
+	'Dashboard' => 'Tablero',
+	'Parties' => 'Terceros',
+	'Leads' => 'Oportunidades',
+	'Contacts' => 'Contactos',
 	
 
 
@@ -223,6 +232,7 @@ return [
 
 	'ID'      => 'ID',
 	'Active'  => 'Activo',
+	'Not Active'  => 'No Activo',
 	'Active?' => '¿Activo?',
 	'Blocked'     => 'Bloqueado',
 	'Blocked?'     => '¿Bloqueado?',
@@ -251,6 +261,7 @@ return [
 	'Export Headers'     => 'Exportar Encabezados',
 	'Import'     => 'Importar',
 	'File'     => 'Fichero',
+	'File Name'     => 'Nombre del Fichero',
 	'Load'     => 'Cargar',
 	'Reset'     => 'Reiniciar',
 	'View Chart'     => 'Ver Gráfico',
@@ -284,6 +295,7 @@ return [
 	'Go to'     => 'Ir a',
 	'Send'     => 'Enviar',
 	'Send to Customer'     => 'Enviar al Cliente',
+	'Send to Supplier'     => 'Enviar al Proveedor',
 	'Sending...'     => 'Enviando...',
 	'Send eMail'     => 'Enviar eMail',
 	'Send by eMail'     => 'Enviar por eMail',
@@ -324,6 +336,9 @@ return [
 	'Add Document'     => 'Añadir Documento',
 
 	'View Carts'     => 'Ver Carritos',
+
+	'File Attachments' => 'Ficheros Adjuntos',
+	'Attachments' => 'Adjuntos',
 
 	''     => '',
 

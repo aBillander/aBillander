@@ -10,6 +10,7 @@ use App\Supplier;
 use App\Address;
 use App\Country;
 use App\State;
+use App\Product;
 
 use Excel;
 
@@ -52,11 +53,13 @@ class ImportSuppliersController extends Controller
 
    protected $supplier;
    protected $address;
+   protected $product;
 
-   public function __construct(Supplier $supplier, Address $address)
+   public function __construct(Supplier $supplier, Address $address, Product $product)
    {
         $this->supplier = $supplier;
         $this->address  = $address;
+        $this->product = $product;
    }
 
 
@@ -757,6 +760,115 @@ if ($country) {
 
         // Generate and return the spreadsheet
         Excel::create('Suppliers', function($excel) use ($sheetName, $data) {
+
+            // Set the spreadsheet title, creator, and description
+            // $excel->setTitle('Payments');
+            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
+            // $excel->setDescription('Price List file');
+
+            // Build the spreadsheet, passing in the data array
+            $excel->sheet($sheetName, function($sheet) use ($data) {
+                $sheet->fromArray($data, null, 'A1', false, false);
+            });
+
+        })->download('xlsx');           // ->export('pdf');  <= Does not work. See: https://laracasts.com/discuss/channels/general-discussion/dompdf-07-on-maatwebsiteexcel-autoloading-issue
+
+        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
+        // https://www.youtube.com/watch?v=s-ZeszfCoEs
+    }
+
+
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function exportProducts()
+    {
+ /*       
+        $suppliers = $this->supplier
+                        ->with('paymentmethod')
+                        ->with('address')
+                        ->with('address.country')
+                        ->with('address.state')
+//                        ->with('currency');
+                        ->orderBy('name_fiscal', 'asc')
+                        ->get();
+*/
+        $products = $this->product
+                          ->where('procurement_type', 'purchase')
+                          ->with('measureunit')
+                          ->with('purchasemeasureunit')
+//                          ->with('combinations')                                  
+                          ->with('category')
+                          ->with('supplier')
+                          ->orderBy('main_supplier_id', 'asc')
+                          ->orderBy('category_id', 'asc')
+                          ->orderBy('reference', 'asc')
+                          ->get();
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = [];  
+
+        // Define the Excel spreadsheet headers
+        $headers = [ 
+                    'id', 'reference', 'name', 'ean13', 'category_id', 'CATEGORY_NAME', 
+                    'cost_price', 'cost_average', 'last_purchase_price', 
+                    'stock_control', 'reorder_point', 'maximum_stock', 'lot_tracking', 'expiry_time', 'out_of_stock', 'out_of_stock_text', 
+                    'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'purchase_measure_unit_id', 'PURCHASE_MEASURE_UNIT_NAME', 
+                    'main_supplier_id', 'SUPPLIER_IDENTIFICATION', 'SUPPLIER_NAME', 'supplier_reference', 'supply_lead_time', 
+
+/*
+                    'id', 'name_fiscal', 'name_commercial', 'identification', 'reference_external', 'accounting_id', 
+                    // 'sales_equalization', 
+                    'website', // 'customer_center_url', 'customer_center_user', 'customer_center_password', 
+
+                    'payment_method_id', 'PAYMENT_METHOD_NAME', 'discount_percent', 'discount_ppd_percent', 'payment_days', 'delivery_time', 
+                    'creditor', 'customer_id',
+                    'notes', 'approved', 'blocked', 'active', 
+                    'currency_id', 'CURRENCY_NAME', 'language_id', 'LANGUAGE_NAME',  
+                    'invoice_sequence_id', 
+
+                    'address1', 'address2', 'postcode', 'city', 'state_id', 'STATE_NAME', 'country_id', 'COUNTRY_NAME', 
+                    'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax', 
+*/
+        ];
+
+        $float_headers = [ 'price_tax_inc', 'price', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'width', 'height', 'depth', 'volume', 'weight', 'reorder_point', 'maximum_stock', 
+
+        ];
+
+        $data[] = $headers;
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the payments array.
+        foreach ($products as $product) {
+            // $data[] = $line->toArray();
+            $row = [];
+            foreach ($headers as $header)
+            {
+                // $row[$header] = $supplier->{$header} ?? ( $supplier->address->{$header} ?? '');
+
+                if ( in_array($header, $float_headers) )
+                    $row[$header] = (float) $product->{$header} ?? '';
+                else
+                    $row[$header] = $product->{$header} ?? '';
+            }
+            $row['CATEGORY_NAME']     = $product->category ? $product->category->name : '';
+            $row['MEASURE_UNIT_NAME'] = $product->measureunit ? $product->measureunit->name : '';
+            $row['PURCHASE_MEASURE_UNIT_NAME'] = $product->purchasemeasureunit ? $product->purchasemeasureunit->name : '';
+            $row['SUPPLIER_NAME']     = $product->supplier ? $product->supplier->name_fiscal : '';
+            $row['SUPPLIER_IDENTIFICATION']     = $product->supplier ? $product->supplier->identification : '';
+
+            $data[] = $row;
+        }
+
+        $sheetName = 'Supplier Products' ;
+
+        // abi_r($data, true);
+
+        // Generate and return the spreadsheet
+        Excel::create('Supplier_Products', function($excel) use ($sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');

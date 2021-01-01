@@ -12,6 +12,7 @@ use App\Product;
 use App\StockMovement;
 use App\Lot;
 use App\PriceRule;
+use App\MeasureUnit;
 
 use App\Configuration;
 
@@ -27,11 +28,13 @@ use App\CustomerShippingSlipLine;
 use App\Events\ProductCreated;
 
 use App\Traits\DateFormFormatterTrait;
+use App\Traits\ModelAttachmentControllerTrait;
 
 class ProductsController extends Controller
 {
    
    use DateFormFormatterTrait;
+   use ModelAttachmentControllerTrait;
 
 
    protected $product;
@@ -199,6 +202,9 @@ class ProductsController extends Controller
             $request->merge( ['price_tax_inc' => $price_tax_inc] );
         }
 
+        // Purchase Measure Unit
+        $request->merge( ['purchase_measure_unit_id' => $request->input('measure_unit_id')] );
+
         // If sequences are used:
         //
         // $product_sequences = \App\Sequence::listFor(\App\Product::class);
@@ -348,13 +354,20 @@ class ProductsController extends Controller
 
 
         // Dates (cuen)
-        $this->addFormDates( ['available_for_sale_date'], $product );
+        $this->addFormDates( ['available_for_sale_date', 'new_since_date'], $product );
         
         // Price Lists
         // See: https://stackoverflow.com/questions/44029961/laravel-search-relation-including-null-in-wherehas
         $pricelists = $product->pricelists; //  \App\PriceList::with('currency')->orderBy('id', 'ASC')->get();
 
-        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists'));
+        $units = MeasureUnit::whereIn('id', [Configuration::getInt('DEF_LENGTH_UNIT'), Configuration::getInt('DEF_WEIGHT_UNIT'), Configuration::getInt('DEF_VOLUME_UNIT')])->get();
+        $length_unit = $units->where('id', Configuration::getInt('DEF_LENGTH_UNIT'))->first();
+        $weight_unit = $units->where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+        $volume_unit = $units->where('id', Configuration::getInt('DEF_VOLUME_UNIT'))->first();
+
+        $volume_conversion = Configuration::getNumber('DEF_VOLUME_UNIT_CONVERSION_RATE');
+
+        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists', 'length_unit', 'weight_unit', 'volume_unit', 'volume_conversion'));
     }
 
     /**
@@ -378,6 +391,10 @@ class ProductsController extends Controller
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     } */
     {
+
+        // Dates (cuen)
+        $this->mergeFormDates( ['new_since_date'], $request );
+
         $product = Product::findOrFail($id);
 
         $rules_tab = $request->input('tab_name', 'main_data');
@@ -462,7 +479,7 @@ class ProductsController extends Controller
         if ($request->input('tab_name') == 'sales') {
 
             // Dates (cuen)
-            $this->mergeFormDates( ['available_for_sale_date'], $request );
+            $this->mergeFormDates( ['available_for_sale_date', 'new_since_date'], $request );
             
             $tax = \App\Tax::find( $product->tax_id );
             if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
@@ -949,9 +966,11 @@ LIMIT 1
         if ( !($items_per_page_lots >= 0) ) 
             $items_per_page_lots = Configuration::get('DEF_ITEMS_PERPAGE');
 
+        $product = $this->product->findOrFail($id);
+
         $lots = Lot::where('product_id', $id)
-                                ->with('product')
-                                ->with('combination')
+//                                ->with('product')
+//                                ->with('combination')
                                 ->with('measureunit')
                                 ->with('warehouse')
                                 ->orderBy('warehouse_id', 'DESC')
@@ -963,7 +982,7 @@ LIMIT 1
 
         // return $items_per_page_lots ;
         
-        return view('products._panel_lots', compact('lots', 'items_per_page_lots'));
+        return view('products._panel_lots', compact('product', 'lots', 'items_per_page_lots'));
     }
 
 

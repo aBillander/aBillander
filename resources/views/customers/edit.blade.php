@@ -100,6 +100,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-gavel"></i>
                &nbsp; {{ l('Price Rules') }}
             </a>
+            <a id="b_attachments" href="#attachments" class="list-group-item">
+               <i class="fa fa-paperclip"></i>
+               &nbsp; {{ l('Attachments', 'layouts') }}
+            </a>
             <!-- a id="b_statistics" href="#statistics" class="list-group-item">
                <i class="fa fa-bar-chart"></i>
                &nbsp; {{ l('Statistics') }}
@@ -145,6 +149,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
           @include('customers._panel_products')
 
           @include('customers._panel_pricerules')
+
+          @include('customers._panel_attachments')
 {{--
           @include('customers._panel_statistics')
 --}}
@@ -181,6 +187,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#panel_orders").hide();
       $("#panel_products").hide();
       $("#panel_pricerules").hide();
+      $("#panel_attachments").hide();
  //     $("#panel_statistics").hide();
       $("#panel_customerusers").hide();
       $("#panel_webshop").hide();
@@ -194,6 +201,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#b_orders").removeClass('active');
       $("#b_products").removeClass('active');
       $("#b_pricerules").removeClass('active');
+      $("#b_attachments").removeClass('active');
 //      $("#b_statistics").removeClass('active');
       $("#b_customerusers").removeClass('active');
       $("#b_webshop").removeClass('active');
@@ -231,6 +239,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
          $("#panel_pricerules").show();
          $("#b_pricerules").addClass('active');
          getCustomerPriceRules();
+      }
+      else if(window.location.hash.substring(1) == 'attachments')
+      {
+         $("#panel_attachments").show();
+         $("#b_attachments").addClass('active');
       }
       else if(window.location.hash.substring(1) == 'statistics')
       {
@@ -270,4 +283,32 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
    });
 
 </script>
+@endsection
+
+
+@section('styles')    @parent
+
+{{-- Auto Complete --}}
+
+  {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script -->
+
+<style>
+
+  .ui-autocomplete-loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+  }
+  .loading{
+    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
+  }
+
+
+/* See: http://fellowtuts.com/twitter-bootstrap/bootstrap-popover-and-tooltip-not-working-with-ajax-content/ 
+.modal .popover, .modal .tooltip {
+    z-index:100000000;
+}
+ */
+</style>
+
 @endsection

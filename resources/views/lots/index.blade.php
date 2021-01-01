@@ -133,7 +133,9 @@
             <th>{{l('Measure Unit')}}</th>
             <th>{{l('Manufacture Date')}}</th>
             <th>{{l('Expiry Date')}}</th>
+            <th class="text-center">{{ l('Blocked', [], 'layouts') }}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
+            <th class="text-center">{{l('Attachments')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -157,6 +159,9 @@
       <td>{{ optional($lot->measureunit)->sign }}</td>
       <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
       <td>{{ abi_date_short( $lot->expiry_at ) }}</td>
+
+            <td class="text-center">@if ($lot->blocked) <i class="fa fa-lock" style="color: #df382c;"></i> @else <i class="fa fa-unlock" style="color: #38b44a;"></i> @endif</td>
+
             <td class="text-center">
                 @if ($lot->notes)
                  <a href="javascript:void(0);">
@@ -167,13 +172,21 @@
                  </a>
                 @endif</td>
 
+
+            <td class="text-center">
+                @if ($lot->attachments->count()>0)
+                      <a class="btn btn-xs btn-blue" href="{{ URL::to('lots/' . $lot->id . '/edit') }}"  title="{{l('Show', [], 'layouts')}}"><i class="fa fa-copy"></i></a>
+                @endif</td>
+
             <td class="text-right button-pad">
                 @if (  is_null($lot->deleted_at))
+                <a class="btn btn-sm alert-info" href="{{ route( 'lot.stockmovements', [$lot->id] ) }}" title="{{ l('Lot Stock Movements') }}" xtarget="_stockmovements"><i class="fa fa-outdent"></i></a>
+                       
                 <a class="btn btn-sm btn-info" href="{{ route( 'stockmovements.index', ['search_status' => 1, 'lot_id' => $lot->id, 'lot_reference' => $lot->reference] ) }}" title="{{ l('Stock Movements') }}" target="_stockmovements"><i class="fa fa-outdent"></i></a>
                        
-                <a class=" hide  btn btn-sm btn-warning " href="{{ URL::to('lots/' . $lot->id . '/edit') }}"  title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                <a class="btn btn-sm btn-warning " href="{{ URL::to('lots/' . $lot->id . '/edit') }}"  title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                <a class=" hide btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('lots/' . $lot->id ) }}" 
                 		data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
                 		data-title="{{ l('Lots') }} ::  ({{$lot->id}}) {{ $lot->reference }}" 

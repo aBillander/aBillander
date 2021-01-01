@@ -53,7 +53,7 @@ class CreateShippingMethodsTable extends Migration {
 
 			$table->decimal('free_shipping_from', 20, 6)->default(0.0);
 
-			$table->integer('tax_id')->unsigned()->nulable();
+			$table->integer('tax_id')->unsigned();
 
 			// bonus
 			$table->integer('position')->unsigned()->default(0);

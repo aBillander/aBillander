@@ -5,9 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\ModelAttachmentableTrait;
+
 class Supplier extends Model {
 
     use SoftDeletes;
+    
+    use ModelAttachmentableTrait;
 
     protected $dates = ['deleted_at'];
 
@@ -196,7 +200,7 @@ class Supplier extends Model {
     
     public function products()
     {
-        return $this->hasMany('App\Product', 'main_supplier_id')->orderby('name', 'asc');
+        return $this->hasMany('App\Product', 'main_supplier_id')->orderby('reference', 'asc');
     }
     
     public function supplierpricelistlines()
@@ -314,6 +318,7 @@ class Supplier extends Model {
         if (!$currency)
             $currency = Context::getContext()->currency;
 
+        // Measure unit ???
         $line = SupplierPriceListLine::
                               where('supplier_id', $this->id)
                             ->where('product_id', $product->id)
@@ -331,8 +336,16 @@ class Supplier extends Model {
 
             $thePrice = $product->last_purchase_price * $currency->conversion_rate;   // last_purchase_price is stored in Company Currency
         }
+
+        // One last try
+        if (0)  // Hummm! Too restrictive! =>
+        if ( $thePrice <= 0.0 ) 
+        {
+            # code...
+            $thePrice = $product->price;    // Cannot be worse!
+        }
         
-        $price = new Price( $thePrice, 0, $this->currency);
+        $price = new Price( $thePrice, 0, $this->currency);     // Price is tax excluded
 
         // Bonus data:
         $price->discount_percent = 0.0;
@@ -413,11 +426,6 @@ class Supplier extends Model {
                 $q->where('email', 'LIKE', '%' . $email . '%');
 
             });
-        }
-
-        if ( isset($params['customer_group_id']) && $params['customer_group_id'] > 0 )
-        {
-            $query->where('customer_group_id', '=', $params['customer_group_id']);
         }
 
         if ( isset($params['active']) )

@@ -127,6 +127,11 @@
               </a>
             </th>
             <th class="text-right">{{l('Stock after')}}</th>
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+      <th>{{l('Lot')}}</th>
+@endif
+
 			<th class="text-right">{{l('Price')}}</th>
 			<th class="text-right">{{l('Document')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
@@ -163,6 +168,17 @@
             </td>
             <td class="text-right">{{ $stockmovement->as_quantityable( $stockmovement->quantity_after_movement - $stockmovement->quantity_before_movement ) }}</td>
             <td class="text-right">{{ $stockmovement->as_quantity( 'quantity_after_movement' ) }}</td>
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+      @if ($stockmovement->lot)
+        <td>
+          <a href="{{ route( 'stockmovements.index', ['search_status' => 1, 'lot_id' => $stockmovement->lot->id, 'lot_reference' => $stockmovement->lot->reference] ) }}" xtitle="{{ l('Stock Movements') }}">{{ optional($stockmovement->lot)->reference ?? '-'}}</a>
+        </td>
+      @else
+        <td class="text-center">{{ '-'}}</td>
+      @endif
+@endif
+
 			<td class="text-right">{{ $stockmovement->as_price( 'price' ) }}</td>
 			<td class="text-right">
 

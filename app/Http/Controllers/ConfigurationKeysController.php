@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use \App\Configuration as Configuration;
+use App\Configuration as Configuration;
+use App\MeasureUnit;
 use View;
 
 class ConfigurationKeysController extends Controller {
@@ -31,7 +32,8 @@ class ConfigurationKeysController extends Controller {
                         'PRICES_ENTERED_WITH_ECOTAX',
                         'ENABLE_CUSTOMER_CENTER',
                         'ENABLE_SALESREP_CENTER',
-                        'SALESREP_COMMISSION_METHOD',                        
+                        'SALESREP_COMMISSION_METHOD',
+                        'ENABLE_MCRM',
                         'ENABLE_MANUFACTURING',
                         'MRP_WITH_STOCK',
                         'MRP_WITH_ZERO_ORDERS',
@@ -75,16 +77,31 @@ class ConfigurationKeysController extends Controller {
                         'CUSTOMER_INVOICE_CAPTION',
                         'DEF_CUSTOMER_PAYMENT_METHOD',
                         'DEF_SHIPPING_METHOD',
+
+                        'DEF_SUPPLIER_ORDER_SEQUENCE',
+                        'DEF_SUPPLIER_ORDER_TEMPLATE',
+                        'DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE',
+                        'DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE',
+                        'DEF_SUPPLIER_INVOICE_SEQUENCE',
+                        'DEF_SUPPLIER_INVOICE_TEMPLATE',
+                        'DEF_SUPPLIER_PAYMENT_METHOD',
+                        
                         'DEF_LANGUAGE',
                         'DEF_CATEGORY',
                         'DEF_MEASURE_UNIT_FOR_BOMS',
                         'DEF_MEASURE_UNIT_FOR_PRODUCTS',
                         'DEF_OUTSTANDING_AMOUNT',
+                        'DEF_SEPA_PAYMENT_TYPE',
                         'DEF_TAX',
                         'DEF_WAREHOUSE',
                         'DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE',
                         'DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE',
                         'WAREHOUSE_SHIPPING_SLIPS_NEED_VALIDATION',
+
+                        'DEF_LENGTH_UNIT',
+                        'DEF_VOLUME_UNIT',
+                        'DEF_VOLUME_UNIT_CONVERSION_RATE',
+                        'DEF_WEIGHT_UNIT',
 
                     ],
 
@@ -98,6 +115,7 @@ class ConfigurationKeysController extends Controller {
                         'SHOW_PRODUCTS_ACTIVE_ONLY',
                         'SHOW_CUSTOMERS_ACTIVE_ONLY',
                         'BUSINESS_NAME_TO_SHOW',
+                        'FILE_ALLOWED_EXTENSIONS',
                         'ALLOW_IP_ADDRESSES', 
                         'MAX_DB_BACKUPS',
                         'MAX_DB_BACKUPS_ACTION',
@@ -212,7 +230,18 @@ class ConfigurationKeysController extends Controller {
         foreach ($this->conf_keys[51] as $key)
             $key_group[$key]= Configuration::get($key);
 
-        return view( $tab_view, compact('tab_index', 'key_group') );
+        $length_unitList = MeasureUnit::where('type', 'Length')->pluck('name', 'id')->toArray();
+        $volume_unitList = MeasureUnit::where('type', 'Dry Volume')->pluck('name', 'id')->toArray();
+        $weight_unitList = MeasureUnit::where('type', 'Mass')->pluck('name', 'id')->toArray();
+        $vu_conversion_rateList = [
+                '1'       => '1',
+                '1000'    => '1000',
+                '1000000' => '1000000',
+        ];
+
+
+
+        return view( $tab_view, compact('tab_index', 'key_group', 'length_unitList', 'volume_unitList', 'vu_conversion_rateList', 'weight_unitList') );
 
         // https://bootsnipp.com/snippets/M27e3
     }

@@ -268,6 +268,113 @@
     </div>
 
 
+
+    <div class="form-group {{ $errors->has('DEF_SUPPLIER_ORDER_SEQUENCE') ? 'has-error' : '' }}">
+      <label for="DEF_SUPPLIER_ORDER_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_SUPPLIER_ORDER_SEQUENCE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SUPPLIER_ORDER_SEQUENCE', $supplier_orders_sequenceList, old('DEF_SUPPLIER_ORDER_SEQUENCE', $key_group['DEF_SUPPLIER_ORDER_SEQUENCE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SUPPLIER_ORDER_SEQUENCE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SUPPLIER_ORDER_SEQUENCE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_SUPPLIER_ORDER_TEMPLATE') ? 'has-error' : '' }}">
+      <label for="DEF_SUPPLIER_ORDER_TEMPLATE" class="col-lg-4 control-label">{!! l('DEF_SUPPLIER_ORDER_TEMPLATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SUPPLIER_ORDER_TEMPLATE', $supplier_orders_templateList, old('DEF_SUPPLIER_ORDER_TEMPLATE', $key_group['DEF_SUPPLIER_ORDER_TEMPLATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SUPPLIER_ORDER_TEMPLATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SUPPLIER_ORDER_TEMPLATE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE') ? 'has-error' : '' }}">
+      <label for="DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE', $supplier_shipping_slips_sequenceList, old('DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE', $key_group['DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SUPPLIER_SHIPPING_SLIP_SEQUENCE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE') ? 'has-error' : '' }}">
+      <label for="DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE" class="col-lg-4 control-label">{!! l('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE', $supplier_shipping_slips_templateList, old('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE', $key_group['DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SUPPLIER_SHIPPING_SLIP_TEMPLATE.help') !!}</span>
+      </div>
+    </div>
+
+
+
+    <div class="form-group {{ $errors->has('DEF_SUPPLIER_INVOICE_SEQUENCE') ? 'has-error' : '' }}">
+      <label for="DEF_SUPPLIER_INVOICE_SEQUENCE" class="col-lg-4 control-label">{!! l('DEF_SUPPLIER_INVOICE_SEQUENCE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SUPPLIER_INVOICE_SEQUENCE', $supplier_invoices_sequenceList, old('DEF_SUPPLIER_INVOICE_SEQUENCE', $key_group['DEF_SUPPLIER_INVOICE_SEQUENCE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SUPPLIER_INVOICE_SEQUENCE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SUPPLIER_INVOICE_SEQUENCE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_SUPPLIER_INVOICE_TEMPLATE') ? 'has-error' : '' }}">
+      <label for="DEF_SUPPLIER_INVOICE_TEMPLATE" class="col-lg-4 control-label">{!! l('DEF_SUPPLIER_INVOICE_TEMPLATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SUPPLIER_INVOICE_TEMPLATE', $supplier_invoices_templateList, old('DEF_SUPPLIER_INVOICE_TEMPLATE', $key_group['DEF_SUPPLIER_INVOICE_TEMPLATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SUPPLIER_INVOICE_TEMPLATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SUPPLIER_INVOICE_TEMPLATE.help') !!}</span>
+      </div>
+    </div>
+
+
+
+    <div class="form-group {{ $errors->has('DEF_SUPPLIER_PAYMENT_METHOD') ? 'has-error' : '' }}">
+      <label for="DEF_SUPPLIER_PAYMENT_METHOD" class="col-lg-4 control-label">{!! l('DEF_SUPPLIER_PAYMENT_METHOD.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SUPPLIER_PAYMENT_METHOD', ['0' => l('-- Please, select --', [], 'layouts')] + $payment_methodList, old('DEF_SUPPLIER_PAYMENT_METHOD', $key_group['DEF_SUPPLIER_PAYMENT_METHOD']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SUPPLIER_PAYMENT_METHOD', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SUPPLIER_PAYMENT_METHOD.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
+
     <div class="form-group {{ $errors->has('DEF_LANGUAGE') ? 'has-error' : '' }}">
       <label for="DEF_LANGUAGE" class="col-lg-4 control-label">{!! l('DEF_LANGUAGE.name') !!}</label>
       <div class="col-lg-8">
@@ -336,6 +443,20 @@
         <div class="col-lg-6"> </div>
         </div>
         <span class="help-block">{!! l('DEF_OUTSTANDING_AMOUNT.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_SEPA_PAYMENT_TYPE') ? 'has-error' : '' }}">
+      <label for="DEF_SEPA_PAYMENT_TYPE" class="col-lg-4 control-label">{!! l('DEF_SEPA_PAYMENT_TYPE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_SEPA_PAYMENT_TYPE', ['0' => l('-- Please, select --', [], 'layouts')] + $payment_typeList, old('DEF_SEPA_PAYMENT_TYPE', $key_group['DEF_SEPA_PAYMENT_TYPE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_SEPA_PAYMENT_TYPE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_SEPA_PAYMENT_TYPE.help') !!}</span>
       </div>
     </div>
 
@@ -415,6 +536,64 @@
       </div>
     </div>
 
+
+
+
+    <div class="form-group {{ $errors->has('DEF_LENGTH_UNIT') ? 'has-error' : '' }}">
+      <label for="DEF_LENGTH_UNIT" class="col-lg-4 control-label">{!! l('DEF_LENGTH_UNIT.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_LENGTH_UNIT', $length_unitList, old('DEF_LENGTH_UNIT', $key_group['DEF_LENGTH_UNIT']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_LENGTH_UNIT', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_LENGTH_UNIT.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_VOLUME_UNIT') ? 'has-error' : '' }}">
+      <label for="DEF_VOLUME_UNIT" class="col-lg-4 control-label">{!! l('DEF_VOLUME_UNIT.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_VOLUME_UNIT', $volume_unitList, old('DEF_VOLUME_UNIT', $key_group['DEF_VOLUME_UNIT']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_VOLUME_UNIT', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_VOLUME_UNIT.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_VOLUME_UNIT_CONVERSION_RATE') ? 'has-error' : '' }}">
+      <label for="DEF_VOLUME_UNIT_CONVERSION_RATE" class="col-lg-4 control-label">{!! l('DEF_VOLUME_UNIT_CONVERSION_RATE.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_VOLUME_UNIT_CONVERSION_RATE', $vu_conversion_rateList, old('DEF_VOLUME_UNIT_CONVERSION_RATE', $key_group['DEF_VOLUME_UNIT_CONVERSION_RATE']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_VOLUME_UNIT_CONVERSION_RATE', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_VOLUME_UNIT_CONVERSION_RATE.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group {{ $errors->has('DEF_WEIGHT_UNIT') ? 'has-error' : '' }}">
+      <label for="DEF_WEIGHT_UNIT" class="col-lg-4 control-label">{!! l('DEF_WEIGHT_UNIT.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('DEF_WEIGHT_UNIT', $weight_unitList, old('DEF_WEIGHT_UNIT', $key_group['DEF_WEIGHT_UNIT']), array('class' => 'form-control')) !!}
+        {{ $errors->first('DEF_WEIGHT_UNIT', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('DEF_WEIGHT_UNIT.help') !!}</span>
+      </div>
+    </div>
 
 
 

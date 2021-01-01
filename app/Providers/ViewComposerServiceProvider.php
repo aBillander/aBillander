@@ -115,7 +115,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// PaymentTypes
-		view()->composer(array('payment_methods._form', 'customer_vouchers._form_edit', 'customer_vouchers._form_pay'), function($view) {
+		view()->composer(array('configuration_keys.key_group_2', 'payment_methods._form', 'customer_vouchers._form_edit', 'customer_vouchers._form_pay'), function($view) {
 		    
 		    $view->with('payment_typeList', \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
@@ -361,12 +361,16 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		    $view->with('orders_sequenceList', \App\Sequence::listFor( \App\CustomerOrder::class ));
 		    
+		    $view->with('supplier_orders_sequenceList', \App\Sequence::listFor( \App\SupplierOrder::class ));
+		    
 		});
 		
 		// Customer Shipping Slips Sequencess
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
 		    $view->with('shipping_slips_sequenceList', \App\Sequence::listFor( \App\CustomerShippingSlip::class ));
+		    
+		    $view->with('supplier_shipping_slips_sequenceList', \App\Sequence::listFor( \App\SupplierShippingSlip::class ));
 		    
 		});
 		
@@ -382,9 +386,33 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		    
 		    $view->with('invoices_sequenceList', \App\Sequence::listFor( \App\CustomerInvoice::class ));
 		    
+		    $view->with('supplier_invoices_sequenceList', \App\Sequence::listFor( \App\SupplierInvoice::class ));
+		    
 		});
 
 		// Templates
+
+		// Supplier Orders Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('supplier_orders_templateList', \App\Template::listFor( \App\SupplierOrder::class ));
+		    
+		});
+
+		// Supplier Shipping Slips Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('supplier_shipping_slips_templateList', \App\Template::listFor( \App\SupplierShippingSlip::class ));
+		    
+		});
+
+		// Supplier Invoices Template
+		view()->composer(array('configuration_keys.key_group_2'), function($view) {
+		    
+		    $view->with('supplier_invoices_templateList', \App\Template::listFor( \App\SupplierInvoice::class ));
+		    
+		});
+
 
 		// Customer Quotations Template
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {

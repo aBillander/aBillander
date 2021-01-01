@@ -29,6 +29,8 @@ class CreateStockMovementsTable extends Migration {
 			$table->decimal('quantity', 20, 6);
 			$table->integer('measure_unit_id')->unsigned()->nullable(false);
 			$table->decimal('quantity_after_movement', 20, 6);
+			
+			$table->decimal('lot_quantity_after_movement', 20, 6)->nullable();
 
 			// For tracking
 			$table->decimal('cost_price_before_movement', 20, 6)->nullable();	// Usually Average Cost Price (previous), calculated by the System

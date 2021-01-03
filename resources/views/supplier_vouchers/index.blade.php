@@ -220,7 +220,7 @@
         @else 
           <i class="fa fa-square-o" style="color: #df382c;"></i>
         @endif
-      </td>
+      </td -->
 
             <td class="text-center button-pad">
             	@if     ( $payment->status == 'pending' )
@@ -254,7 +254,7 @@
                 @endif
               @endif
 
-            </td -->
+            </td>
 
 
       <td class="text-center">

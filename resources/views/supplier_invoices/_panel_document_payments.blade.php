@@ -17,12 +17,12 @@
 			<th style="text-transform: none;">{{l('Payment Date')}}</th>
 			<th style="text-transform: none;">{{l('Amount')}}</th>
 			<th style="text-transform: none;">{{l('Payment Type', 'suppliervouchers')}}</th>
-			<th style="text-transform: none;">{{l('Auto Direct Debit', 'suppliervouchers')}}
+			<!-- th style="text-transform: none;">{{l('Auto Direct Debit', 'suppliervouchers')}}
                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Include in automatic payment remittances', 'suppliervouchers') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                </a>
-        	</th>
+        	</th -->
             <th style="text-transform: none;" class="text-center">{{l('Status', [], 'layouts')}}</th>
 			<th> </th>
 		</tr>
@@ -45,7 +45,7 @@
 
 			<td>{{ optional($payment->paymenttype)->name }}</td>
 
-			<td class="text-center">
+			<!-- td class="text-center">
 				@if ($payment->auto_direct_debit) 
 					@if ($payment->bankorder)
 						<a class="btn btn-xs btn-grey" href={{ route('sepasp.directdebits.show', $payment->bankorder->id) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-bank"></i>
@@ -57,7 +57,7 @@
 				@else 
 					<i class="fa fa-square-o" style="color: #df382c;"></i>
 				@endif
-			</td>
+			</td -->
 
             <td class="text-center">
             	@if     ( $payment->status == 'pending' )

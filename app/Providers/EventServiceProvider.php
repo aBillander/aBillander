@@ -126,8 +126,8 @@ class EventServiceProvider extends ServiceProvider
         ],
 
     
-        'App\Events\SupplierPaymentReceived' => [
-            'App\Listeners\SupplierPaymentReceivedListener',
+        'App\Events\SupplierPaymentPaid' => [
+            'App\Listeners\SupplierPaymentPaidListener',
         ],
     
         'App\Events\SupplierPaymentBounced' => [

@@ -50,7 +50,7 @@ class SupplierVouchersController extends Controller
                         ->with('paymentable')
                         ->with('paymentable.supplier')
                         ->with('paymentable.supplier.bankaccount')
-                        ->where('payment_type', 'receivable')
+                        ->where('payment_type', 'payable')
                         ->with('bankorder')
                         ->orderBy('due_date', 'desc');      // ->get();
 
@@ -99,7 +99,7 @@ class SupplierVouchersController extends Controller
                     ->with('paymentable')
                     ->with('paymentable.supplier')
                     ->with('paymentable.supplier.bankaccount')
-                    ->where('payment_type', 'receivable')
+                        ->where('payment_type', 'payable')
                     ->with('bankorder')
                     ->orderBy('due_date', 'desc');
 

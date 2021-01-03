@@ -906,8 +906,14 @@ foreach ($pairs as $pair) {
             Route::get('/get-daily-sales',      'ChartDailyCustomerSalesController@getDailySales')->name('chart.customerorders.daily');
             Route::get('/get-daily-sales-data', 'ChartDailyCustomerSalesController@getDailySalesData')->name('chart.customerorders.daily.data');
 
-            Route::get('/get-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('chart.customervouchers.monthly');
-            Route::get('/get-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('chart.customervouchers.monthly.data');
+            Route::get('/get-customer-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('chart.customervouchers.monthly');
+            Route::get('/get-customer-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('chart.customervouchers.monthly.data');
+
+            Route::get('/get-supplier-monthly-vouchers',      'ChartSupplierVouchersController@getMonthlyVouchers')->name('chart.suppliervouchers.monthly');
+            Route::get('/get-supplier-monthly-vouchers-data', 'ChartSupplierVouchersController@getMonthlyVouchersData')->name('chart.suppliervouchers.monthly.data');
+
+            Route::get('/get-all-monthly-vouchers',      'ChartAllVouchersController@getMonthlyVouchers')->name('chart.allvouchers.monthly');
+            Route::get('/get-all-monthly-vouchers-data', 'ChartAllVouchersController@getMonthlyVouchersData')->name('chart.allvouchers.monthly.data');
 
             Route::get('/get-monthly-product-stock',      'ChartProductStockController@getMonthlyProductStock')->name('chart.product.stock.monthly');
             Route::get('/get-monthly-product-stock-data', 'ChartProductStockController@getMonthlyProductStockData')->name('chart.product.stock.monthly.data');

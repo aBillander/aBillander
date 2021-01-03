@@ -123,6 +123,62 @@ class Supplier extends Model {
         return Configuration::getInt('DEF_SHIPPING_METHOD');
     }
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function addRisk( $amount, Currency $currency = null ) 
+    {
+        if ($currency != null)
+            $amount = $amount / $currency->conversion_rate;
+
+        $this->outstanding_amount += $amount;
+        $this->save();
+
+        return true;
+    }
+
+
+    public function removeRisk( $amount, Currency $currency = null ) 
+    {
+        if ($currency != null)
+            $amount = $amount / $currency->conversion_rate;
+
+        $this->outstanding_amount -= $amount;
+        $this->save();
+
+        return true;
+    }
+
+
+    public function addUnresolved( $amount, Currency $currency = null ) 
+    {
+        if ($currency != null)
+            $amount = $amount / $currency->conversion_rate;
+
+        $this->unresolved_amount += $amount;
+        $this->save();
+
+        return true;
+    }
+
+
+    public function removeUnresolved( $amount, Currency $currency = null ) 
+    {
+        if ($currency != null)
+            $amount = $amount / $currency->conversion_rate;
+
+        $this->unresolved_amount -= $amount;
+        $this->save();
+
+        return true;
+    }
+
     
     
     
@@ -249,6 +305,12 @@ class Supplier extends Model {
         else
             return null;
     }
+    
+    // To be same as Customer:
+    public function shipping_address()
+    {
+        return $this->invoicing_address();
+    }
 
     public function currency()
     {
@@ -263,6 +325,57 @@ class Supplier extends Model {
     public function paymentmethod()
     {
         return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
+    }
+
+    // To be same as Customer:
+    public function shippingmethod()
+    {
+        // return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+
+        // Return what?
+        return ;
+    }
+
+    // To be same as Customer:
+    public function suppliergroup()
+    {
+        // return $this->belongsTo('App\SupplierGroup', 'supplier_group_id');
+
+        // Return what?
+        return ;
+    }
+
+    
+    public function supplierorders()
+    {
+        return $this->hasMany('App\SupplierOrder');
+    }
+
+    public function supplierordertemplates()
+    {
+        return $this->hasMany('App\SupplierOrderTemplate');
+    }
+
+    public function getSupplierordertemplateAttribute()
+    {
+        return $this->supplierordertemplates()->first();
+    }
+
+    public function suppliershippingslips()
+    {
+        return $this->hasMany('App\SupplierShippingSlip');
+    }
+
+    public function supplierinvoices()
+    {
+        return $this->hasMany('App\SupplierInvoice');
+    }
+    
+    public function payments()
+    {
+        // return $this->hasMany('App\Payment', 'owner_id')->where('payment.owner_model_name', '=', 'Supplier');
+
+        return $this->morphMany('App\Payment', 'paymentorable');
     }
     
 

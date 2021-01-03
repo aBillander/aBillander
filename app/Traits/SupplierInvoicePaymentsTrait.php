@@ -5,7 +5,7 @@ namespace App\Traits;
 use App\Configuration;
 use App\Payment;
 
-trait CustomerInvoicePaymentsTrait
+trait SupplierInvoicePaymentsTrait
 {
     
     public function makePaymentDeadlines()
@@ -35,7 +35,9 @@ trait CustomerInvoicePaymentsTrait
             $next_date = $base_date->copy()->addDays($dlines[$i]['slot']);
 
             // Calculate installment due date
-            $due_date = $this->customer->paymentDate( $next_date );
+            // $due_date = $this->customer->paymentDate( $next_date );
+            // ^-- Should use Company Payment Days!
+            $due_date = $next_date;
 
             if ( $i != (count($pmethod->deadlines)-1) ) {
                 $installment = $this->as_priceable( $ototal * $dlines[$i]['percentage'] / 100.0, $this->currency, true );
@@ -46,7 +48,7 @@ trait CustomerInvoicePaymentsTrait
             }
 
             // Create Voucher
-            $data = [   'payment_type' => 'receivable', 
+            $data = [   'payment_type' => 'payable', 
                         'reference' => $this->document_reference . ' :: ' . ($i+1) . ' / ' . count($pmethod->deadlines), 
                         'name' => ($i+1) . ' / ' . count($pmethod->deadlines), 
 //                          'due_date' => \App\FP::date_short( \Carbon\Carbon::parse( $due_date ), \App\Context::getContext()->language->date_format_lite ), 
@@ -71,12 +73,12 @@ trait CustomerInvoicePaymentsTrait
 
             $payment = Payment::create( $data );
             $this->payments()->save($payment);
-            $this->customer->payments()->save($payment);
+            $this->supplier->payments()->save($payment);
 /*
             $payment->invoice_id = $this->id;
-            $payment->model_name = 'CustomerInvoice';
-            $payment->owner_id = $document->customer->id;
-            $payment->owner_model_name = 'Customer';
+            $payment->model_name = 'SupplierInvoice';
+            $payment->owner_id = $document->supplier->id;
+            $payment->owner_model_name = 'Supplier';
 
             $payment->save();
 */

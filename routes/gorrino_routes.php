@@ -178,6 +178,10 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 2021-01-02
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `suppliers` ADD `outstanding_amount` DECIMAL(20,6) NOT NULL DEFAULT '0.0' AFTER `creditor`;");
+
 
 	// 2020-12-29	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `supplier_shipping_slips` ADD `is_invoiceable` INT(10) UNSIGNED NOT NULL DEFAULT '1' AFTER `shipment_status`;");

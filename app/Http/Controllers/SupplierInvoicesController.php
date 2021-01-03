@@ -522,8 +522,8 @@ class SupplierInvoicesController extends BillableController
 
         $rules = $this->document::$rules;
 
-        $rules['shipping_address_id'] = str_replace('{supplier_id}', $request->input('supplier_id'), $rules['shipping_address_id']);
-        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
+//        $rules['shipping_address_id'] = str_replace('{supplier_id}', $request->input('supplier_id'), $rules['shipping_address_id']);
+//        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
 
         $this->validate($request, $rules);
 /*

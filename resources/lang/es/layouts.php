@@ -333,6 +333,7 @@ return [
 	'Shipping Slip'     => 'Albarán',
 	'Invoice'     => 'Factura',
 	'Voucher'     => 'Recibo',
+	'All Vouchers'     => 'Todos los Recibos',
 	'Add Document'     => 'Añadir Documento',
 
 	'View Carts'     => 'Ver Carritos',

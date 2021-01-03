@@ -477,9 +477,20 @@
                                  {{l('Sales Invoices', [], 'layouts')}}
                             </a>
                         </li>
+                        <li class="divider"></li>
                          <li>
                             <a href="{{ route('chart.customervouchers.monthly') }}">
                                  {{l('Customer Vouchers', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('chart.suppliervouchers.monthly') }}">
+                                 {{l('Supplier Vouchers', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('chart.allvouchers.monthly') }}">
+                                 {{l('All Vouchers', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>

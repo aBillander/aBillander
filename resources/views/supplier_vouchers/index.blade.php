@@ -68,7 +68,7 @@
 
     {!! Form::hidden('supplier_id', null, array('id' => 'supplier_id')) !!}
 </div>
-
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-auto_direct_debit">
      {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
@@ -96,7 +96,7 @@
        </div>
      </div>
 </div>
-
+--}}
 {{--
 <div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('reference', l('Reference')) !!}
@@ -144,12 +144,12 @@
 			<th>{{l('Payment Date')}}</th>
 			<th class="text-right">{{l('Amount')}}</th>
       <th style="text-transform: none;">{{l('Payment Type', 'suppliervouchers')}}</th>
-      <th style="text-transform: none;">{{l('Auto Direct Debit', 'suppliervouchers')}}
+      <!-- th style="text-transform: none;">{{l('Auto Direct Debit', 'suppliervouchers')}}
                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Include in automatic payment remittances', 'suppliervouchers') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                </a>
-          </th>
+          </th -->
       <th class="text-center">{{l('Status', [], 'layouts')}}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th> </th>
@@ -171,7 +171,7 @@
 
       <td>{{ optional($payment->paymenttype)->name }}</td>
 
-      <td class="text-center">
+      <!-- td class="text-center">
         @if ($payment->auto_direct_debit) 
           @if ($payment->bankorder)
             <a class="btn btn-xs btn-grey" href={{ route('sepasp.directdebits.show', $payment->bankorder->id) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-bank"></i>
@@ -254,7 +254,7 @@
                 @endif
               @endif
 
-            </td>
+            </td -->
 
 
       <td class="text-center">
@@ -280,7 +280,7 @@
 
                 	<a class="btn btn-sm btn-warning" href="{{ URL::to('suppliervouchers/' . $payment->id . '/edit' ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
-      @if ($payment->auto_direct_debit && !$payment->bankorder)
+      @if (0 && $payment->auto_direct_debit && !$payment->bankorder)
 
                   <a class="btn btn-sm btn-navy add-voucher-to-sdd" data-id="{{$payment->id}}" data-type=""  title="{{l('Add Voucher to SEPA Direct Debit', 'sepasp')}}" onClick="return false;"><i class="fa fa-bank"></i></a>
       @endif

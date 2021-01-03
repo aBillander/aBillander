@@ -20,9 +20,9 @@
 @else
 {{--
                 <a href="{ { route('supplier.shippingslipable.orders', [$supplier->id]) }}" class="btn btn-navy" style="margin-right: 72px;"><i class="fa fa-object-group"></i> {{l('Group Orders')}}</a>
-
-                <a href="{ { route('supplier.invoiceable.shippingslips', [$supplier->id]) }}" class="btn btn-navy" style="margin-right: 72px;" onclick="alert('You naughty, naughty!!');return false;"><i class="fa fa-object-group"></i> {{l('Group Shipping Slips')}}</a>
 --}}
+                <a href="{{ route('supplier.invoiceable.shippingslips', [$supplier->id]) }}" class="btn btn-info" style="margin-right: 72px;"><i class="fa fa-money"></i> &nbsp;{{l('Invoice Shipping Slips')}}</a>
+
                 <div class="btn-group">
                     <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">

@@ -197,6 +197,17 @@ class Payment extends Model {
         return $this->belongsTo('App\CustomerInvoice', 'paymentable_id');     // ->where('paymentable_type', 'App\CustomerInvoice');        // Only if it is a Customer Invoice...
     }
 
+
+    public function supplier()
+    {
+        return $this->belongsTo('App\Supplier', 'paymentorable_id');
+    }
+
+    public function supplierinvoice()
+    {
+        return $this->belongsTo('App\SupplierInvoice', 'paymentable_id');     // ->where('paymentable_type', 'App\SupplierInvoice');        // Only if it is a Supplier Invoice...
+    }
+
     public function currency()
     {
         return $this->belongsTo('App\Currency');

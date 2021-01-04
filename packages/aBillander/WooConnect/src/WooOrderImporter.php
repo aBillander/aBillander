@@ -488,6 +488,8 @@ foreach ( $order['line_items'] as $i => $item ) {
 		$name = $item['name'];
 //		$cost_price = $item['price'];
 		$final_price = $item['price']; // ( $item['subtotal'] )/$item['quantity'];	// Approximation. Maybe better: $item['price']  (price before discount) ???
+        $woo_unit_customer_final_price_tax_inc = ($item['subtotal'] + $item['subtotal_tax']) / $item['quantity'];
+        $woo_unit_final_price_tax_inc          = ($item['total']    + $item['total_tax']   ) / $item['quantity'];
 		$line_tax_id = WooOrder::getTaxId($item['tax_class']);
 /*
 		if ( !$tax_id ) {
@@ -564,11 +566,14 @@ foreach ( $order['line_items'] as $i => $item ) {
 */
 
 		// Let's get (really) dirty, you naughty!
-		$cost_price = $product->cost_price;
+        $cost_price = $product->getOriginal('cost_price');
+        $cost_average = $product->cost_average;
 		$unit_price = $product->price;
 
         $tax = $product->tax;
         $tax_id = $product->tax_id;
+        $taxing_address = $this->order->taxingaddress;
+        $tax_percent = $tax->getTaxPercent( $taxing_address );
         $sales_equalization = $this->customer->sales_equalization;
 
         if ( $line_tax_id != $tax_id ) {
@@ -581,6 +586,8 @@ foreach ( $order['line_items'] as $i => $item ) {
 			return ;
         }
 
+        $woo_unit_customer_final_price = $woo_unit_customer_final_price_tax_inc / (1.0 + $tax_percent/100.0);
+        $woo_unit_final_price          = $woo_unit_final_price_tax_inc          / (1.0 + $tax_percent/100.0);;
 
 		$data = [
 			'line_sort_order' => $this->getNextLineSortOrder(),		// 10*($i+1),
@@ -595,12 +602,14 @@ foreach ( $order['line_items'] as $i => $item ) {
 			'measure_unit_id' => $product->measure_unit_id,
 
 			'cost_price' => $cost_price,
+            'cost_average' => $cost_average,
 			'unit_price' => $unit_price,
-            'unit_customer_price' => $unit_price,	// To Do: if Customer existed, can search for these prices
-            'unit_customer_final_price' => $unit_price,
+            'unit_customer_price' => $woo_unit_customer_final_price,	// To Do: if Customer existed, can search for these prices
+            'unit_customer_final_price' => $woo_unit_customer_final_price,
+            'unit_customer_final_price_tax_inc' => $woo_unit_customer_final_price_tax_inc,
 
-			'unit_final_price' => $final_price,
-			'unit_final_price_tax_inc' => $final_price+$item['subtotal_tax']/$item['quantity'],	// Approximation
+			'unit_final_price' => $woo_unit_final_price,
+			'unit_final_price_tax_inc' => $woo_unit_final_price_tax_inc,	// Approximation
 
 			'sales_equalization' => $sales_equalization,				// Charge Sales equalization tax? (only Spain)
 
@@ -611,7 +620,8 @@ foreach ( $order['line_items'] as $i => $item ) {
 			'total_tax_incl' => $item['total'] + $item['total_tax'],
 			'total_tax_excl' => $item['total'],
 
-			'tax_percent' => ($item['total'] != 0.0) ? ($item['total_tax']/$item['total'])*100.0 : 0.0,
+			// 'tax_percent' => ($item['total'] != 0.0) ? ($item['total_tax']/$item['total'])*100.0 : 0.0,
+            'tax_percent' => $tax_percent,
 //			'commission_percent' => $item[''],
 
 //			'notes' => $item[''],

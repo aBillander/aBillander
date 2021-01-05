@@ -1,0 +1,46 @@
+Modelo: pedido woo #6530 : Parece que Woo redondea las líneas y luego suma. Por eso en este pedido se pierde un céntimo en el total. 
+
+¿Ayudaría poner en la cnfiguración de WooC que redondee en el total y no en las líneas?
+
+Issue
+
+Some users run into an issue where orders charged tax in WooCommerce sync to QuickBooks with a different total (often different by $.01) - even though tax rates are correctly mapped in MyWorks Sync > Map > Tax Rates.
+
+Resolution
+
+This can occur due to how QuickBooks rounds tax calculations at a subtotal level, vs how WooCommerce round taxes by default - on a line item level.
+
+However, there is a setting in WooCommerce that resolves this by forcing WooCommerce to round on a subtotal level.
+
+To turn this setting on, go to WooCommerce > Settings > Tax > Tax Options and then select the Round tax at a subtotal level check box.
+
+WooCommerce > Ajustes > Impuesto > Opciones de impuestos > Redondeo (Redondeo de impuesto en el subtotal, en lugar de redondeo por cada línea) 
+
+
+¿Ayudaría meter los precios con el impuesto incluido y redondeados a dos decimales
+
+¿Ayudaría aumentar el número de decimales con que Woo trabaja?
+
+https://www.google.com/search?channel=fs&client=ubuntu&q=import+orders+woocommerce+rounding+errors
+
+https://wordpress.org/support/topic/problem-with-woocommerce-rounding-2/
+
+https://wordpress.org/support/topic/woocommerce-incorrectly-rounding-total-price-tax-values/
+
+https://github.com/woocommerce/woocommerce/issues/24184
+
+https://github.com/woocommerce/woocommerce/issues/23694
+
+https://support.myworks.software/hc/en-us/articles/360047979994-Orders-synced-into-QuickBooks-have-01-different-total-due-to-tax-rounding
+
+https://www.google.com/search?channel=fs&client=ubuntu&q=contabilizar+diferencias+redondeo+euro
+
+https://www.plangeneralcontable.com/?tit=ajustes-de-centimos-en-cuentas-de-clientes-o-proveedores&name=GeTia&contentId=art_ajustecen
+
+https://foros.plangeneralcontable.com/viewtopic.php?f=1&t=71922
+
+pérdidas por redondeo a: 659. Otras pérdidas en gestión corriente
+
+
+
+

@@ -237,7 +237,7 @@ foreach ($customers as $customer) {
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['Cliente', '', 'Agente', 'Operaciones', 'Valor', 'Ventas', '%Desc.', 'Coste', 'Comisión', '%Rent', 'Beneficio', 'Ranking Vtas. %', 'Ranking Benef. %', 'Ventas con Impuestos'];
+        $header_names = ['Cliente', '', 'Agente', 'Operaciones', 'Valor', 'Ventas', '%Desc.', 'Coste', 'Comisión', '%Rent', 'Beneficio', 'Ranking Vtas. %', 'Ranking Benef. %', 'Ventas con Impuestos', 'ID', 'Referencia Externa'];
 
         $data[] = $header_names;
 
@@ -272,6 +272,9 @@ foreach ($customers as $customer) {
                 $row[] = abi_safe_division($customer->products_profit, $total_profit) * 100.0;
 
                 $row[] = $customer->grand_total * 1.0;
+
+                $row[] = (string) $customer->id;
+                $row[] = (string) $customer->reference_external;
     
                 $data[] = $row;
 

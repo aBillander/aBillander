@@ -68,6 +68,7 @@ return [
 	'Invoices'     => 'Facturas',
 	'Vouchers'     => 'Pagos',
 	'Commissions' => 'Comisiones',
+	'Cheques' => 'Cheques',
 
 	'Invoicing'     => 'Facturación',
 	'Customer Invoices'     => 'Facturas de Clientes',

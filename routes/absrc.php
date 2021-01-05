@@ -215,6 +215,12 @@ foreach ($pairs as $pair) {
 
         Route::resource('/commissionsettlements', 'AbsrcCommissionSettlementsController')->names('absrc.commissionsettlements');
 
+        Route::resource('/cheques',               'AbsrcChequesController'      )->names('absrc.cheques');
+        Route::resource('/cheques.chequedetails', 'AbsrcChequeDetailsController')->names('absrc.cheques.chequedetails');
+        Route::post('cheques/sortlines',          'AbsrcChequesController@sortLines')->name('absrc.cheque.sortlines');
+        Route::get('cheques/{id}/chequedetail/searchinvoice', 'AbsrcChequeDetailsController@searchInvoice')->name('absrc.chequedetail.searchinvoice');
+        Route::get( 'export/cheques',             'AbsrcChequesController@export' )->name('absrc.cheques.export');
+
 //        Route::resource('pricerules', 'AbsrcPriceRulesController')->names('absrc.pricerules');
 
     });

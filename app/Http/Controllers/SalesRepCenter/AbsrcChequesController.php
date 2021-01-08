@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\SalesRepCenter;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Cheque;
 use App\ChequeDetail;
@@ -14,7 +18,7 @@ use Excel;
 
 use App\Traits\DateFormFormatterTrait;
 
-class ChequesController extends Controller
+class AbsrcChequesController extends Controller
 {
    
    use DateFormFormatterTrait;
@@ -39,12 +43,13 @@ class ChequesController extends Controller
 
         $cheques = $this->cheque
                         ->filter( $request->all() )
+                        ->ofSalesRep()
                         ->with('customer')
                         ->with('currency')
                         ->with('bank')
                         ->orderBy('due_date', 'desc');
 
-        $cheques = $cheques->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
+        $cheques = $cheques->paginate( Configuration::get('ABSRC_ITEMS_PERPAGE') );
 
         $cheques->setPath('cheques');
 
@@ -57,7 +62,7 @@ class ChequesController extends Controller
 
         $statusList = $this->cheque::getStatusList();
 
-        return view('cheques.index', compact('cheques', 'statusList'));
+        return view('absrc.cheques.index', compact('cheques', 'statusList'));
     }
 
     /**
@@ -71,7 +76,7 @@ class ChequesController extends Controller
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $bankList = Bank::pluck('name', 'id')->toArray();
 
-        return view('cheques.create', compact('statusList', 'currencyList', 'bankList'));
+        return view('absrc.cheques.create', compact('statusList', 'currencyList', 'bankList'));
     }
 
     /**
@@ -91,7 +96,7 @@ class ChequesController extends Controller
 
         $cheque = Cheque::create($request->all());
 
-        return redirect()->route('cheques.index')
+        return redirect()->route('absrc.cheques.index')
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
     }
 
@@ -125,7 +130,7 @@ class ChequesController extends Controller
         // Dates (cuen)
         $this->addFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $cheque );
 
-        return view('cheques.edit', compact('cheque', 'chequedetails', 'statusList', 'currencyList', 'bankList'));
+        return view('absrc.cheques.edit', compact('cheque', 'chequedetails', 'statusList', 'currencyList', 'bankList'));
     }
 
     /**
@@ -146,7 +151,7 @@ class ChequesController extends Controller
 
         $cheque->update($request->all());
 
-        return redirect()->route('cheques.index')
+        return redirect()->route('absrc.cheques.index')
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
     }
 

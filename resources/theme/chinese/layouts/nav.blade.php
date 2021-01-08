@@ -168,6 +168,12 @@
                         </li>
                         <li class="divider"></li>
                          <li>
+                            <a href="{{ route('supplierorders.index') }}"> 
+                                 {{l('Purchase Orders', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
                             <a href="{{ URL::to('suppliers') }}">
                                  {{l('Suppliers', [], 'layouts')}}
                             </a>

@@ -113,7 +113,9 @@ class CustomerVouchersController extends Controller
 
         $payments->setPath($id);
 
-        return view('customer_vouchers.index_by_customer', compact('customer', 'payments', 'items_per_page'));
+        $statusList = Payment::getStatusList();
+
+        return view('customer_vouchers.index_by_customer', compact('customer', 'payments', 'statusList', 'items_per_page'));
     }
 
 	/**

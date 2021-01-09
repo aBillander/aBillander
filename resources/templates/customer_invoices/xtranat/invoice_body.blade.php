@@ -84,9 +84,9 @@
 
             <div class="shop-name"><h3>
 
-			@if ( $document->customer->name_commercial )
+			@if ( $document->customer->name_fiscal )
 
-				{{ $document->customer->name_commercial }}
+				{{ $document->customer->name_fiscal }}
 
 			@else
 
@@ -98,9 +98,9 @@
 
 			<strong>
 
-			@if ( $document->customer->name_fiscal )
+			@if ( $document->customer->name_commercial )
 
-				{{ $document->customer->name_fiscal }}
+				{{ $document->customer->name_commercial }}
 
 			@else
 

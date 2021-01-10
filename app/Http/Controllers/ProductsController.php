@@ -481,7 +481,7 @@ class ProductsController extends Controller
             // Dates (cuen)
             $this->mergeFormDates( ['available_for_sale_date', 'new_since_date'], $request );
             
-            $tax = \App\Tax::find( $product->tax_id );
+            $tax = \App\Tax::find( $product->tax_id > 0 ? $product->tax_id : $request->input('tax_id') );
             if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
                 $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
                 $request->merge( ['price' => $price] );

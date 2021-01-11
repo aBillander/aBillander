@@ -48,6 +48,7 @@ return [
 	'This record cannot be created because it already exists &#58&#58 (:id) '  =>  'El registro no puede ser creado porque ya existe &#58&#58 (:id) ',
 	'The record with id=:id does not exist'                      =>  'El registro con id=:id no existe',
 	'Some records in the list [ :id ] do not exist'              =>  'Algunos registros en la lista [ :id ] no existen',
+	'Records in the list [ :id ] are not groupable, because ":field" is not the same. ' => 'Los Registros en la lista [ :id ] no pueden agruparse, porque ":field" no es el mismo para todos. ',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
 
 	'Too many Records for this Query &#58&#58 (:id) ' => 'Demasiados Registros para esta Consulta &#58&#58 (:id) ',

@@ -415,6 +415,7 @@ foreach ($customers as $customer) {
 
             $subject = l('Informacion 347 de :year', [ 'year' => $mod347_year ]);
 
+            $company = \App\Context::getContext()->company;
 
             $template_vars = array(
                 'customer'   => $customer,
@@ -427,8 +428,8 @@ foreach ($customers as $customer) {
             $data = array(
                 'from'     => $company->address->email,
                 'fromName' => $company->name_fiscal,
-                'to'       => $document->customer->address->email,
-                'toName'   => $document->customer->name_fiscal,
+                'to'       => $customer->address->email,
+                'toName'   => $customer->name_fiscal,
                 'subject'  => $subject,
                 );
 
@@ -451,7 +452,7 @@ foreach ($customers as $customer) {
 
  //               abi_r($e->getMessage(), true);
 
-            return redirect()->back()->with('error', l('Your Document could not be sent &#58&#58 (:id) ', ['id' => $document->number], 'layouts').'<br />'.$e->getMessage());
+            return redirect()->back()->with('error', l('Your Document could not be sent &#58&#58 (:id) ', ['id' => ''], 'layouts').'<br />'.$e->getMessage());
         }
         // MAIL stuff ENDS
 
@@ -461,7 +462,7 @@ foreach ($customers as $customer) {
         // event( new $event_class( $document ) );
         
 
-        return redirect()->back()->with('success', l('Your Document has been sent! &#58&#58 (:id) ', ['id' => $document->number], 'layouts'));
+        return redirect()->back()->with('success', l('Your Document has been sent! &#58&#58 (:id) ', ['id' => ''], 'layouts'));
     }
 
 

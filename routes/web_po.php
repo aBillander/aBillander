@@ -116,16 +116,16 @@ foreach ($pairs as $pair) {
         Route::resource('suppliervouchers'      , 'SupplierVouchersController');
         Route::get('suppliervouchers/{id}/setduedate'  , 'SupplierVouchersController@setduedate');
         Route::get('suppliervouchers/{id}/pay'  , 'SupplierVouchersController@pay');
-        Route::post('suppliervouchers/{id}/unlink', 'SupplierVouchersController@unlink')->name('voucher.unlink');
+        Route::post('suppliervouchers/{id}/unlink', 'SupplierVouchersController@unlink')->name('suppliervoucher.unlink');
 
         Route::post('suppliervouchers/payvouchers'  , 'SupplierVouchersController@payVouchers')->name('suppliervouchers.payvouchers');
 
         Route::post('suppliervouchers/unlinkvouchers'  , 'SupplierVouchersController@unlinkVouchers')->name('suppliervouchers.unlinkvouchers');
 
-        Route::get('suppliervouchers/{id}/expresspay', 'SupplierVouchersController@expressPayVoucher')->name('voucher.expresspay');
-        Route::get('suppliervouchers/{id}/unpay', 'SupplierVouchersController@unPayVoucher')->name('voucher.unpay');
+        Route::get('suppliervouchers/{id}/expresspay', 'SupplierVouchersController@expressPayVoucher')->name('suppliervoucher.expresspay');
+        Route::get('suppliervouchers/{id}/unpay', 'SupplierVouchersController@unPayVoucher')->name('suppliervoucher.unpay');
         
-        Route::get('suppliervouchers/{id}/collectible', 'SupplierVouchersController@collectibleVoucher')->name('voucher.collectible');
+        Route::get('suppliervouchers/{id}/collectible', 'SupplierVouchersController@collectibleVoucher')->name('suppliervoucher.collectible');
 
         Route::get('suppliervouchers/suppliers/{id}',  'SupplierVouchersController@indexBySupplier')->name('supplier.vouchers');
 

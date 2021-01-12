@@ -239,7 +239,7 @@
               @if ( $payment->status == 'paid' )
                 @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
 
-                    <a href="{{ route('voucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
+                    <a href="{{ route('suppliervoucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
                
                 @endif
@@ -248,7 +248,7 @@
               @if ( $payment->status == 'uncollectible' )
                 @if ( 1 )
 
-                    <a href="{{ route('voucher.collectible', [$payment->id]) }}" class="btn btn-xs btn-danger" 
+                    <a href="{{ route('suppliervoucher.collectible', [$payment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
                
                 @endif

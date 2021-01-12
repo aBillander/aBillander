@@ -40,5 +40,24 @@ return [
 	'This rate is to be defined according to your Company\'s default currency. For example, if the default currency is the Euro, and this currency is Dollar, type "1.31", since 1€ usually is worth $1.31 (at the time of this writing). Use the converter here for help: http://www.xe.com/ucc/.' 
 	=> 	'El Tipo de Cambio se define de acuerdo con la Divisa por defecto de su Compañía. Por ejemplo, si la Divisa por defecto es Euro, y la Divisa actual es Dollar, escriba "1.31", ya que 1€ normalmente se valora a $1.31 (en el momento de escribir esto). Puede ayudarse usando este conversor: http://www.xe.com/ucc/.',
 
+	'Currency Converter' => 'Conversor de Divisas',
+	'From' => 'De',
+	'Amount' => 'Importe',
+	'To' => 'Para',
+	'Convert' => 'Convertir',
+	'converting ...' => 'convirtiendo ...',
+
+	'Error: Please select different Currency' => 'Error: Por favor, seleccione una Divisa diferente',
+	'Error: Please try again' => 'Error: Por favor, inténelo de nuevo',
+	'Error: API Key missing' => 'Error: falta la Clave API',
+	'Error: Bad API Key' =>  'Error: Clave API incorrecta',
+	'Exchange Rate' => 'Tipo de cambio',
+	'Converted Amount' => 'Importe convetido',
+	'No Result' => 'Ningún resultado',
+
+
+
+
+
 
 ];

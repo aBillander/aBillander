@@ -108,7 +108,8 @@ return [
 	*/
 
 	'Basic Data'     => 'Tablas Generales',
-	'Currencies' => 'Divisas',
+	'Currencies' => 'Divisas',	
+	'Currency Converter' => 'Conversor de Divisas',
 	'Shipping Methods'     => 'Métodos de Envío',
 	'Payment Methods'     => 'Formas de Pago',
 	'Payment Types' => 'Tipos de Pago',

@@ -311,7 +311,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('templates', 'TemplatesController');
 
-        Route::resource('currencies', 'CurrenciesController');
+        Route::resource('currencies',      'CurrenciesController');
+        Route::get( 'currencies/currency/converter', 'CurrenciesController@converter')->name('currencies.converter');
+        Route::post('currencies/currency/converter/result', 'CurrenciesController@converterResult')->name('currencies.converter.result');
+
         Route::get('currencies/{id}/exchange',   array('uses'=>'CurrenciesController@exchange', 
                                                                 'as' => 'currencies.exchange' ) );  
         Route::post('currencies/ajax/rate_lookup', array('uses' => 'CurrenciesController@ajaxCurrencyRateSearch', 

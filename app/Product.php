@@ -1375,6 +1375,10 @@ class Product extends Model {
 
         // Add Ecotax
         if ( Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        // Homeland Suppliers only
+        // To do: Ecotax depends on location(in the same way that regular Taxes)
+        // Check Product->getTaxRulesByProduct
+        if ( $supplier->address->country_id == Context::getContext()->company->address->country_id )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
 //            $ecoprice = Price::create([

@@ -80,6 +80,21 @@ trait SupplierShippingSlipInvoiceableTrait
         }
 
 
+        // Check Currency Conversion Rate. Must be the same for Shipping Slips bundled into a Invoice
+        $rates = $documents->unique('currency_conversion_rate')->pluck('currency_conversion_rate')->all();  // Array
+
+        if( count($rates) > 1 )
+        {
+            $list = $documents->pluck('id')->all();
+
+            $params['logger']->log("ERROR", 'No todos los Albaranes tienen el mismo tipo de cambio: '.implode(', ', $list));
+
+            return [
+                'error' => l('Records in the list [ :id ] are not groupable, because ":field" is not the same. ', ['id' => implode(', ', $list), 'field' => 'currency_conversion_rate'], 'layouts')
+            ];
+        }
+
+
         return SupplierShippingSlip::invoiceDocumentCollection( $documents, $params );
     }
 
@@ -115,7 +130,9 @@ trait SupplierShippingSlipInvoiceableTrait
         $logger = $params['logger'];
 
         // Group Shippiong Slips by Supplier.
-        $suppliers = $documents->unique('supplier_id')->pluck('supplier_id')->all();
+        $suppliers  = $documents->unique('supplier_id')->pluck('supplier_id')->all();
+        $currencies = $documents->unique('currency_id')->pluck('currency_id')->all();   // Should be only one
+        $rates      = $documents->unique('currency_conversion_rate')->pluck('currency_conversion_rate')->all();   // Should be only one
 
         foreach ($suppliers as $supplier_id) {
             # code...
@@ -123,7 +140,9 @@ trait SupplierShippingSlipInvoiceableTrait
 
             $extra_params = [
                    
-                        'supplier_id'            => $supplier_id,
+                        'supplier_id'              => $supplier_id,
+                        'currency_id'              => $currencies[0],
+                        'currency_conversion_rate' => $rates[0],
                     ];
 
 
@@ -139,14 +158,14 @@ trait SupplierShippingSlipInvoiceableTrait
                     // Select Documents
                     $documents_by_doc = collect($document);
 
-                    $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $documents_by_doc->pluck('id')->all())]);
+                    $logger->log("INFO", 'Se facturará el Albarán: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $documents_by_doc->pluck('id')->all())]);
 
                     SupplierShippingSlip::invoiceDocumentsBySupplier( $documents_by_doc, $params + $extra_params );
                 }
 
             } else {
 
-                $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $documents_by_cid->pluck('id')->all())]);
+                $logger->log("INFO", 'Se facturarán agrupados los Albaranes: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $documents_by_cid->pluck('id')->all())]);
 
                 SupplierShippingSlip::invoiceDocumentsBySupplier( $documents_by_cid, $params + $extra_params );
             }
@@ -231,6 +250,8 @@ trait SupplierShippingSlipInvoiceableTrait
     {
         $logger = $params['logger'];
 
+        // abi_r($params, true);
+
         // abi_r($params);die();
 
 //        1.- Recuperar los documntos. Skip not invoiceable
@@ -263,7 +284,8 @@ trait SupplierShippingSlipInvoiceableTrait
             'document_date' => array_key_exists('document_date', $params) ?
                                     $params['document_date'] : \Carbon\Carbon::now()->toDateString(),
 
-            'currency_conversion_rate' => $supplier->currency->conversion_rate,
+            'currency_conversion_rate' => array_key_exists('currency_conversion_rate', $params) ?
+                                    $params['currency_conversion_rate'] : $supplier->currency->conversion_rate,
 //            'down_payment' => $this->down_payment,
 
             'document_discount_percent' => 0.0,
@@ -292,7 +314,8 @@ trait SupplierShippingSlipInvoiceableTrait
 //            'shipping_method_id' => $this->shipping_method_id ?? $this->supplier->shipping_method_id ?? Configuration::getInt('DEF_SUPPLIER_SHIPPING_METHOD'),
 //            'carrier_id' => $this->carrier_id,
 //            'sales_rep_id' => $supplier->sales_rep_id,
-            'currency_id' => $supplier->currency->id,
+            'currency_id' => array_key_exists('currency_id', $params) ?
+                                    $params['currency_id'] : $supplier->currency->id,
             'payment_method_id' => array_key_exists('payment_method_id', $params) ?
                                     $params['payment_method_id'] : $supplier->getPaymentMethodId(),
             'template_id' => array_key_exists('template_id', $params) ?
@@ -427,7 +450,7 @@ trait SupplierShippingSlipInvoiceableTrait
 //                        'supplier_shipping_slip_id' => $document->id,
                     ];
 
-                    $invoice_line = $invoice->addServiceLine( $product_id, $combination_id, $quantity, $line_data );
+                    $invoice_line = $invoice->addSupplierServiceLine( $product_id, $combination_id, $quantity, $line_data );
 
                     $invoice_line->update(['supplier_shipping_slip_id' => $document->id]);
                 }

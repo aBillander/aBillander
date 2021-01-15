@@ -342,7 +342,8 @@ class SupplierShippingSlipsController extends BillableController
         $document = $suppliershippingslip;
 
         $need_update_totals = (
-            $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+            ($request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent) ||
+            ($request->input('currency_conversion_rate', $document->currency_conversion_rate) != $document->currency_conversion_rate)
         ) ? true : false;
 
         $document->fill($request->all());
@@ -701,7 +702,12 @@ class SupplierShippingSlipsController extends BillableController
         $params['logger'] = $logger;
 
 
-        $invoice = \App\SupplierShippingSlip::invoiceDocumentList( $document_list, $params );
+        $result = \App\SupplierShippingSlip::invoiceDocumentList( $document_list, $params );
+        if ( is_array($result) && array_key_exists('error', $result))
+        {
+            return redirect()->back()
+                    ->with('error', $result['error']);
+        }
 
 
 
@@ -724,6 +730,8 @@ class SupplierShippingSlipsController extends BillableController
                             ->with('supplier')
                             ->findOrFail($id);
         
+        $document_list = [$id];
+
         $supplier = $document->supplier;
 
         $params = [
@@ -731,21 +739,59 @@ class SupplierShippingSlipsController extends BillableController
             'template_id'   => $supplier->getInvoiceTemplateId(), 
             'sequence_id'   => $supplier->getInvoiceSequenceId(), 
             'document_date' => \Carbon\Carbon::now()->toDateString(),
-
-            'document_discount_percent' => $document->document_discount_percent,
-            'document_ppd_percent'      => $document->document_ppd_percent,
             
             'status'        => 'closed', 
+            'payment_method_id' => $document->getPaymentMethodId(),
         ];
-
-        // abi_r($params, true);
         
-        return $this->invoiceDocumentList( [$id], $params );
+
+        // Start Logger
+        $logger = \App\ActivityLogger::setup( 'Invoice Supplier Shipping Slips', __METHOD__ )
+                    ->backTo( route('supplier.invoiceable.shippingslips', $params['supplier_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+
+
+        $logger->empty();
+        $logger->start();
+
+        $logger->log("INFO", 'Se facturarán los Albaranes del Proveedor: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => $params['supplier_id']]);
+
+        $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $document_list)]);
+
+        $logger->log("INFO", 'Se facturarán un total de <span class="log-showoff-format">{nbr}</span> Albaranes del Proveedor.', ['nbr' => count($document_list)]);
+
+        $flattened = $params;
+        array_walk($flattened, function(&$value, $key) {
+            $value = "{$key} => {$value}";
+        });
+
+        $logger->log("INFO", 'Opciones:  <span class="log-showoff-format">{suppliers}</span> .', ['suppliers' => implode(', ', $flattened)]);
+
+
+        $params['logger'] = $logger;
+
+
+        $result = \App\SupplierShippingSlip::invoiceDocumentList( $document_list, $params );
+        if ( is_array($result) && array_key_exists('error', $result))
+        {
+            return redirect()->back()
+                    ->with('error', $result['error']);
+        }
+        
+        // return $this->invoiceDocumentList( [$id], $params );
+
+
+        $logger->stop();
+
+        $invoice = $document->supplierinvoice();
+
+        return redirect('supplierinvoices/'.$invoice->id.'/edit')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $invoice->id], 'layouts'));
     }
 
 
 
     
+    // Deprecated?
     public function invoiceDocumentList( $list, $params )
     {
 

@@ -89,9 +89,8 @@
                </div>
                <div class="row">
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
-                    {{ l('Cost Price') }}
-                    {!! Form::text('line_cost_price', null, array('class' => 'form-control', 'id' => 'line_cost_price', 'autocomplete' => 'off')) !!}
-                    {!! $errors->first('line_cost_price', '<span class="help-block">:message</span>') !!}
+
+                    {{ Form::hidden('line_cost_price', 0.0, array('id' => 'line_cost_price')) }}
                  </div>
 
                  {{ Form::hidden('line_quantity', null, array('id' => 'line_quantity')) }}

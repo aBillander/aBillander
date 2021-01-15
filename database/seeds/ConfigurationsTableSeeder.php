@@ -68,6 +68,7 @@ $confs = [
 ['ALLOW_SALES_RISK_EXCEEDED', '0'],
 ['ALLOW_SALES_WITHOUT_STOCK', '0'],
 ['BUSINESS_NAME_TO_SHOW', 'fiscal'],
+['CURRENCY_CONVERTER_API_KEY', '']
 ['CUSTOMER_INVOICE_BANNER', 'Place your Order at www.mystore.com'],	// 'Haga su pedido en www.mitienda.es' or &nbsp; (otherwise header pagenumber not well located)
 ['CUSTOMER_INVOICE_CAPTION', 'Registered with the Commercial Registry of City.'],	// 'Sociedad inscrita en el Registro Mercantil de Ciudad.'
 ['CUSTOMER_INVOICE_TAX_LABEL', 'VAT'],

@@ -34,7 +34,7 @@
                       <li class="divider"></li>
                       <li><a href="{{ route('suppliershippingslips.create.withsupplier', $supplier->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
-                      <li><a href="{{ route('supplierinvoices.create.withsupplier', $supplier->id) }}">{{l('Invoice', [], 'layouts')}}</a></li>
+                      <!-- li><a href="{{ route('supplierinvoices.create.withsupplier', $supplier->id) }}">{{l('Invoice', [], 'layouts')}}</a></li -->
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>
                 </div>

@@ -311,7 +311,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('templates', 'TemplatesController');
 
-        Route::resource('currencies', 'CurrenciesController');
+        Route::resource('currencies',      'CurrenciesController');
+        Route::get( 'currencies/currency/converter', 'CurrenciesController@converter')->name('currencies.converter');
+        Route::post('currencies/currency/converter/result', 'CurrenciesController@converterResult')->name('currencies.converter.result');
+
         Route::get('currencies/{id}/exchange',   array('uses'=>'CurrenciesController@exchange', 
                                                                 'as' => 'currencies.exchange' ) );  
         Route::post('currencies/ajax/rate_lookup', array('uses' => 'CurrenciesController@ajaxCurrencyRateSearch', 
@@ -739,16 +742,16 @@ foreach ($pairs as $pair) {
         Route::resource('customervouchers'      , 'CustomerVouchersController');
         Route::get('customervouchers/{id}/setduedate'  , 'CustomerVouchersController@setduedate');
         Route::get('customervouchers/{id}/pay'  , 'CustomerVouchersController@pay');
-        Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('voucher.unlink');
+        Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('customervoucher.unlink');
 
         Route::post('customervouchers/payvouchers'  , 'CustomerVouchersController@payVouchers')->name('customervouchers.payvouchers');
 
         Route::post('customervouchers/unlinkvouchers'  , 'CustomerVouchersController@unlinkVouchers')->name('customervouchers.unlinkvouchers');
 
-        Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('voucher.expresspay');
-        Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('voucher.unpay');
+        Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('customervoucher.expresspay');
+        Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('customervoucher.unpay');
         
-        Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('voucher.collectible');
+        Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('customervoucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
 

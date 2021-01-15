@@ -348,7 +348,8 @@ class SupplierOrdersController extends BillableController
         $document = $supplierorder;
 
         $need_update_totals = (
-            $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+            ($request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent) ||
+            ($request->input('currency_conversion_rate', $document->currency_conversion_rate) != $document->currency_conversion_rate)
         ) ? true : false;
 
         $document->fill($request->all());
@@ -627,7 +628,7 @@ class SupplierOrdersController extends BillableController
 
             'document_date' => $params['document_date'],
 
-            'currency_conversion_rate' => $document->currency->conversion_rate,
+            'currency_conversion_rate' => $document->currency_conversion_rate,
 //            'down_payment' => $this->down_payment,
 
             'document_discount_percent' => $document->document_discount_percent,

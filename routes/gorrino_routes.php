@@ -178,6 +178,14 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 2021-01-12
+
+	\App\Configuration::updateValue('CURRENCY_CONVERTER_API_KEY', 'b16ed3cf847d6dbed728');
+
+
+	die('OK');
+	
+
 	// 2021-01-02
 
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `suppliers` ADD `outstanding_amount` DECIMAL(20,6) NOT NULL DEFAULT '0.0' AFTER `creditor`;");

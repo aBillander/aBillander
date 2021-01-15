@@ -14,7 +14,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ URL::to($model_path.'/create') }}" class="btn btn-sm btn-success" 
+        <a href="{{ URL::to($model_path.'/create') }}" class=" hide  btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
     </div>

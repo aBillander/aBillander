@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Currency as Currency;
+use App\Currency;
+use App\Configuration;
+
 use View;
 
 class CurrenciesController extends Controller {
@@ -177,4 +179,147 @@ class CurrenciesController extends Controller {
         return $currency->conversion_rate;
     }
 
+
+/* ********************************************************************************************* */    
+
+
+    /**
+     * Currency Converter
+     *
+     * @return 
+     */
+	public function converter()
+	{
+		return view('currencies.currency_converter');
+	}
+
+    public function converterResult(Request $request)
+    {
+        // return $request->input('amount');
+
+        // Request dataif(isset($_POST['convert'])) {
+		if($request->has('convert')) {
+			$from_currency = $request->input('from_currency');
+			$to_currency = $request->input('to_currency');
+			$amount = $request->input('amount');	
+			if($from_currency == $to_currency) {
+			 	$data = array('error' => '1');
+				echo json_encode( $data );	
+				exit;
+			}
+			$converted_currency=$this->currencyConverter($from_currency, $to_currency, $amount);
+
+			echo $converted_currency;
+		}
+
+	}
+
+    // To Do: move this to a Class
+    public function currencyConverter($fromCurrency,$toCurrency,$amount) 
+    {	
+		// https://free.currencyconverterapi.com/
+
+		  $apikey =  Configuration::get('CURRENCY_CONVERTER_API_KEY');
+
+		if ( !$apikey )
+		{
+			$data = ['error' => '3'];
+			return json_encode( $data );
+		}
+
+		  $from_Currency = urlencode($fromCurrency);
+		  $to_Currency = urlencode($toCurrency);
+		  $query =  "{$from_Currency}_{$to_Currency}";
+
+		  
+        // Catch for errors
+        try{
+		  $json = file_get_contents("https://free.currconv.com/api/v7/convert?q={$query}&compact=ultra&apiKey={$apikey}");
+        }
+        catch(\Exception $e){
+
+                // abi_r($e->getMessage(), true);
+			$data = ['error' => '4'];
+			return json_encode( $data );
+        }
+
+		  $obj = json_decode($json, true);
+
+		  // $val = floatval($obj["$query"]);
+
+
+		  // $total = $val * $amount;
+		  // return number_format($total, 2, '.', '');
+
+		// return $json;
+
+		// Decode JSON response:
+		$conversionResult = json_decode($json, true);
+
+		// access the conversion result
+		// echo $conversionResult['result'];
+
+		$exhangeRate = floatval($obj["$query"]);
+		$convertedAmount = ((float) $amount)*$exhangeRate;
+		$data = array( 'exhangeRate' => $exhangeRate, 'convertedAmount' =>$convertedAmount, 'fromCurrency' => strtoupper($fromCurrency), 'toCurrency' => strtoupper($toCurrency));
+		return json_encode( $data );	
+    }
+
+
+    // https://www.phpzag.com/convert-currency-using-google-api/
+    // https://artisansweb.net/foreign-exchange-rates-api-with-currency-conversion-in-php/
+    public function currencyConverter_google($fromCurrency,$toCurrency,$amount) 
+    {	
+		$fromCurrency = urlencode($fromCurrency);
+		$toCurrency = urlencode($toCurrency);	
+		$encode_amount = 1;
+		$url  = "https://www.google.com/search?q=".$fromCurrency."+to+".$toCurrency;
+		$get = file_get_contents($url);
+		$data = preg_split('/\D\s(.*?)\s=\s/',$get);
+//	abi_r($data);
+//	abi_r((float) substr($data[1],0,7));
+		if ( !isset($data[1]))
+		{
+			$data = ['error' => '2'];
+			return json_encode( $data );
+		}
+
+		$exhangeRate = (float) substr($data[1],0,7);
+		$convertedAmount = ((float) $amount)*$exhangeRate;
+		$data = array( 'exhangeRate' => $exhangeRate, 'convertedAmount' =>$convertedAmount, 'fromCurrency' => strtoupper($fromCurrency), 'toCurrency' => strtoupper($toCurrency));
+		return json_encode( $data );	
+    }
+
+
+
+    // https://gist.github.com/dcblogdev/8067095
+    // https://currency-api.appspot.com/
+    // https://medium.com/@MicroPyramid/free-foreign-currency-exchange-rates-api-2a93195649fb
+    public function currencyConverter_nowork($fromCurrency,$toCurrency,$amount) 
+    {	
+	    $url = "https://www.google.com/search?q=".$fromCurrency.$toCurrency;
+	    $request = curl_init();
+	    $timeOut = 0;
+	    curl_setopt ($request, CURLOPT_URL, $url);
+	    curl_setopt ($request, CURLOPT_RETURNTRANSFER, 1);
+	    curl_setopt ($request, CURLOPT_USERAGENT,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
+	    curl_setopt ($request, CURLOPT_CONNECTTIMEOUT, $timeOut);
+	    $response = curl_exec($request);
+	    curl_close($request);
+
+	    return json_encode( $response );
+
+	    preg_match('~<span [^>]* id="knowledge-currency__tgt-amount"[^>]*>(.*?)</span>~si', $response, $finalData);
+
+	    // return floatval((floatval(preg_replace("/[^-0-9\.]/","", $finalData[1]))/100) * $amount);
+
+	    return json_encode( $finalData );
+
+
+		$exhangeRate = floatval((floatval(preg_replace("/[^-0-9\.]/","", $finalData[1]))/100));
+		$convertedAmount = $amount*$exhangeRate;
+		$data = array( 'exhangeRate' => $exhangeRate, 'convertedAmount' =>$convertedAmount, 'fromCurrency' => strtoupper($fromCurrency), 'toCurrency' => strtoupper($toCurrency));
+
+		return json_encode( $data );	
+    }
 }

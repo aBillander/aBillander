@@ -548,7 +548,8 @@ class SupplierInvoicesController extends BillableController
         $document = $supplierinvoice;
 
         $need_update_totals = (
-            $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+            ($request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent) ||
+            ($request->input('currency_conversion_rate', $document->currency_conversion_rate) != $document->currency_conversion_rate)
         ) ? true : false;
 
         $document->fill($request->all());

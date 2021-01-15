@@ -30,7 +30,7 @@ class Customer extends Model {
                            'accounting_id',
                            'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
                            'outstanding_amount_allowed', 'unresolved_amount', 'notes', 
-                           'is_invoiceable', 'automatic_invoice', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
+                           'is_invoiceable', 'automatic_invoice', 'vat_regime', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
                            'invoice_sequence_id', 
                            'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id', 
@@ -207,6 +207,24 @@ class Customer extends Model {
             return $this->shipping_method_id;
 
         return Configuration::getInt('DEF_SHIPPING_METHOD');
+    }
+
+
+    public static function getVatRegimeList()
+    {
+            $list = [];
+//            foreach (self::$types as $type) {
+//                $list[$type] = l(get_called_class().'.'.$type, [], 'appmultilang');
+//            }
+
+            $list = [
+                0 => l('General', 'customers'),
+                1 => l('Intra-Community', 'customers'),
+                2 => l('Export', 'customers'),
+                3 => l('Exempt', 'customers'),
+            ];
+
+            return $list;
     }
 
 

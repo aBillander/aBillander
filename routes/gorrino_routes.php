@@ -178,6 +178,10 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 2021-01-15
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `vat_regime` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `automatic_invoice`;");
+
 	// 2021-01-12
 
 	\App\Configuration::updateValue('CURRENCY_CONVERTER_API_KEY', 'b16ed3cf847d6dbed728');

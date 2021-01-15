@@ -54,6 +54,7 @@ class CreateCustomersTable extends Migration {
 			$table->tinyInteger('is_invoiceable')->default(1);				// Useful for internal customers & departments (is_invoiceable = false)
 			$table->tinyInteger('automatic_invoice')->default(1);			// Include Customer Shipping Slips in automatic Invoicing process
 
+			$table->tinyInteger('vat_regime')->default(0);
 			$table->tinyInteger('sales_equalization')->default(0);				// Charge Sales equalization tax? (only Spain)
 			$table->tinyInteger('allow_login')->default(0);						// Allow login to Customer Center
 			$table->tinyInteger('accept_einvoice')->default(0);					// Accept electronic invoice

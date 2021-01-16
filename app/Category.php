@@ -23,6 +23,39 @@ class Category extends Model {
     	);
     
 
+    public static function boot()
+    {
+        parent::boot();
+
+        // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
+        static::deleting(function ($category)
+        {
+            // before delete() method call this
+
+
+            // Check Children
+            if ( $category->children->count() > 0 )
+            {
+                throw new \Exception( l('Category has Sub-Categories') );
+            }
+
+            // Check Products
+            if ( $category->roducts->count() > 0 )
+            {
+                throw new \Exception( l('Category has Products') );
+            }
+
+            // Check Price Rules
+            if ( PriceRule::where('category_id', $category->id)->get()->count() > 0 )
+            {
+                throw new \Exception( l('Category has Price Rules') );
+            }
+
+        });
+
+    }
+    
+
 
 
     /*

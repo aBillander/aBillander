@@ -7,7 +7,7 @@
               <div class="panel-heading" style="color: #ffffff;
 background-color: #772953;
 border-color: #772953;">
-                <h3 class="panel-title"><i class="fa fa-user"></i> &nbsp; <strong>Clientes</strong> :: Ventas / Año en curso y año(s) anterior(es)</h3>
+                <h3 class="panel-title"><i class="fa fa-user"></i> &nbsp; <strong>Clientes</strong> :: Ventas de Productos / Año en curso y año(s) anterior(es)</h3>
               </div>
 
 

@@ -151,6 +151,7 @@ view('some.view.name') // search in /app/views first, then custom locations
         $selectorMonthList = Tools::selectorMonthList();
 
         $document_reference_date = 'close_date';        // 'document_date'
+        $document_reference_date = 'document_date';        // 'document_date'
 
         $is_invoiceable_flag = ($model == 'CustomerShippingSlip') ? true : false;
 
@@ -407,6 +408,7 @@ foreach ($products as $product) {
         $selectorMonthList = Tools::selectorMonthList();
 
         $document_reference_date = 'close_date';        // 'document_date'
+        $document_reference_date = 'document_date';        // 'document_date'
 
         $is_invoiceable_flag = ($model == 'CustomerShippingSlip') ? true : false;
 
@@ -452,7 +454,7 @@ foreach ($customers as $customer) {
                                     $query->where('customer_id', $customer_id);
 
                                 // Closed Documents only
-                                $query->where($document_reference_date, '!=', null);
+                                // $query->where($document_reference_date, '!=', null);
 
                                 // Only invoiceable Documents when Documents are Customer Shipping Slips
                                 if ( $is_invoiceable_flag )
@@ -671,6 +673,7 @@ foreach ($customers as $customer) {
         $selectorMonthList = Tools::selectorMonthList();
 
         $document_reference_date = 'close_date';        // 'document_date'
+        $document_reference_date = 'document_date';        // 'document_date'
 
         $is_invoiceable_flag = ($model == 'CustomerShippingSlip') ? true : false;
 
@@ -755,7 +758,7 @@ foreach ($categories as $category) {
         $data[] = [\App\Context::getContext()->company->name_fiscal];
 
         $row = [];
-        $row[] = 'Listado de Ventas comparativas por categoryo ('.l($model).') ';
+        $row[] = 'Listado de Ventas comparativas por Categoría ('.l($model).') ';
         foreach ($list_of_years as $year) {
             // $row[] = '';
         }

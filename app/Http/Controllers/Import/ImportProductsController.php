@@ -327,6 +327,16 @@ class ImportProductsController extends Controller
                     $data['recommended_retail_price_tax_inc'] = (float) $data['recommended_retail_price_tax_inc'];
 
 
+                    // handy conversions:
+                    $data['reorder_point'] = (float) $data['reorder_point'];
+                    $data['maximum_stock'] = (float) $data['maximum_stock'];
+
+                    $data['lot_tracking'] = (int) $data['lot_tracking'];
+                    $data['blocked'] = (int) $data['blocked'];
+                    $data['supply_lead_time'] = (int) $data['supply_lead_time'];
+                    $data['publish_to_web'] = (int) $data['publish_to_web'];
+                    $data['active'] = (int) $data['active'];
+                    $data['position'] = (int) $data['position'];
 
 
 

@@ -84,9 +84,9 @@
     'bold_italic' => $fontDir . '/open-sans-bold-italic_c1583238aa915ad7e56d544a3a5f8f4e',
   ),
   'fontawesome' => array(
-    'normal' => $fontDir . '/b6f7a7b3d0032398790eec8f5c7a9dd3',
+    'normal' => $fontDir . '/fontawesome-normal_10d837014ecd7d6149bf5359c2d9f6f2',
   ),
   'glyphicons halflings' => array(
-    'normal' => $fontDir . '/41b21f4036c770332e9508d320f9f558',
+    'normal' => $fontDir . '/glyphicons-halflings-normal_57191f539ff021a0c0929b92fc5a6824',
   ),
 ) ?>

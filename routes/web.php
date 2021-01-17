@@ -226,6 +226,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('/reports/home', 'ReportsController@index')->name('reports.home');
         Route::post('/reports/product/sales'  , 'ReportsController@reportProductSales'  )->name('reports.products.sales');
         Route::post('/reports/customer/sales' , 'ReportsController@reportCustomerSales' )->name('reports.customers.sales');
+        Route::post('/reports/customer/services' , 'ReportsController@reportCustomerServices' )->name('reports.customers.services');
         Route::post('/reports/category/sales' , 'ReportsController@reportCategorySales' )->name('reports.categories.sales');
 
         Route::post('/reports/abc/product/sales'  , 'ReportsController@reportABCProductSales'  )->name('reports.abc.products.sales');

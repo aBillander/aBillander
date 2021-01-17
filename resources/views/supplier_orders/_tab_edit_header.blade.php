@@ -97,6 +97,7 @@
             {!! $errors->first('payment_method_id', '<span class="help-block">:message</span>') !!}
          </div>
 
+{{--
 @if ( $document->lines->count() == 0 )
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
             {{ l('Currency') }}
@@ -105,7 +106,6 @@
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
-
             {{ l('Conversion Rate') }}
             <div  class="input-group">
               {!! Form::text('currency_conversion_rate', null, array('class' => 'form-control', 'id' => 'currency_conversion_rate')) !!}
@@ -117,7 +117,6 @@
               </button>
               </span>
             </div>
-
          </div>
 @else
 
@@ -145,6 +144,36 @@
     @endif
 
 @endif
+--}}
+
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
+            {{ l('Currency') }}
+            {!! Form::select('currency_id', $currencyList, null, array('class' => 'form-control', 'id' => 'currency_id', 'onchange' => 'get_currency_rate($("#currency_id").val())')) !!}
+            {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+
+    @if( $document->currency_id != \App\Configuration::get('DEF_CURRENCY') )
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
+            {{ l('Conversion Rate') }}
+            <div  class="input-group">
+              {!! Form::text('currency_conversion_rate', null, array('class' => 'form-control', 'id' => 'currency_conversion_rate')) !!}
+              {!! $errors->first('currency_conversion_rate', '<span class="help-block">:message</span>') !!}
+
+              <span class="input-group-btn" title="{{ l('Update Conversion Rate') }}">
+              <button class="btn btn-md btn-lightblue" type="button" onclick="get_currency_rate($('#currency_id').val());">
+                  <span class="fa fa-money"></span>
+              </button>
+              </span>
+            </div>
+         </div>
+    @endif
+
+
+
+
+
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('down_payment') ? 'has-error' : '' }}">
             {{ l('Down Payment') }}

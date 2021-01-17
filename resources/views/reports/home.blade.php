@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Reports') }} @parent @stop
+@section('title') {{ l('Reports', [], 'layouts') }} @parent @stop
 
 
 @section('content')
@@ -31,6 +31,7 @@
 @include('reports.reports_abc_product_sales')
 
 @include('reports.reports_customer_sales')
+@include('reports.reports_customer_services')
 @include('reports.reports_abc_customer_sales')
 
 @include('reports.reports_category_sales')

@@ -446,6 +446,8 @@ $(document).ready(function() {
 
     $('#status').val('confirmed');
 
+    $('#sequence_id').val('{{ \App\Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE') }}');
+
 //    $('#sequence_id').val('{ { $customer->getInvoiceSequenceId() }}');
 //    $('#template_id').val('{ { $customer->getInvoiceTemplateId() }}');
 

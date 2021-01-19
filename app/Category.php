@@ -36,19 +36,19 @@ class Category extends Model {
             // Check Children
             if ( $category->children->count() > 0 )
             {
-                throw new \Exception( l('Category has Sub-Categories') );
+                throw new \Exception( l('Category has Sub-Categories', 'exceptions') );
             }
 
             // Check Products
-            if ( $category->roducts->count() > 0 )
+            if ( $category->products->count() > 0 )
             {
-                throw new \Exception( l('Category has Products') );
+                throw new \Exception( l('Category has Products', 'exceptions') );
             }
 
             // Check Price Rules
             if ( PriceRule::where('category_id', $category->id)->get()->count() > 0 )
             {
-                throw new \Exception( l('Category has Price Rules') );
+                throw new \Exception( l('Category has Price Rules', 'exceptions') );
             }
 
         });

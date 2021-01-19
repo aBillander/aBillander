@@ -57,6 +57,37 @@ class Customer extends Model {
             $client->secure_key = md5(uniqid(rand(), true));
         });
 
+
+        static::deleting(function ($client)
+        {
+            // before delete() method call this
+            $relations = [
+                    'customerquotations',
+                    'customerorders',
+                    'customershippingslips',
+                    'customerinvoices',
+                    'payments',
+                    'cheques',
+            ];
+
+            if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+                $relations = $relations + ['deliverysheetlines'];
+
+            // load relations
+            $client->load( $relations );
+
+            // Check Relations
+            foreach ($relations as $relation) {
+                # code...
+                if ( $client->{$relation}->count() > 0 )
+                    throw new \Exception( l('Customer has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+            // To do: manage models: Supplier, Party
+
+        });
+
+
         // cause a delete of a Customer to cascade to children so they are also deleted
         static::deleted(function($client)
         {
@@ -78,6 +109,11 @@ class Customer extends Model {
 
 
             $client->users()->delete();
+            $client->cart()->delete();
+            $client->bankaccount()->delete();
+            $client->customerordertemplates()->delete();
+            $client->deliveryroutelines()->delete();
+            $client->pricerules()->delete();
         });
     }
 
@@ -652,6 +688,11 @@ class Customer extends Model {
     }
 
     
+    public function customerquotations()
+    {
+        return $this->hasMany('App\CustomerQuotation');
+    }
+
     public function customerorders()
     {
         return $this->hasMany('App\CustomerOrder');
@@ -683,6 +724,29 @@ class Customer extends Model {
 
         return $this->morphMany('App\Payment', 'paymentorable');
     }
+
+    public function cheques()
+    {
+        return $this->hasMany('App\Cheque');
+    }
+
+
+    public function deliveryroutelines()
+    {
+        return $this->hasMany('App\DeliveryRouteLine');
+    }
+
+    public function deliverysheetlines()
+    {
+        return $this->hasMany('App\DeliverySheetLine');
+    }
+
+
+    public function pricerules()
+    {
+        return $this->hasMany('App\PriceRule');
+    }
+
 
     /**
      * Get the user record associated with the user.

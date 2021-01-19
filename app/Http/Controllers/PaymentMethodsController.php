@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -160,7 +162,19 @@ class PaymentMethodsController extends Controller {
 	 */
 	public function destroy($id)
 	{
-        $this->paymentmethod->findOrFail($id)->delete();
+        $method = $this->paymentmethod->findOrFail($id);
+
+        try {
+
+            $method->delete();
+            
+        } catch (\Exception $e) {
+
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
+
 
         return redirect('paymentmethods')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

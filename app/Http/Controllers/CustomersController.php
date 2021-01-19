@@ -387,13 +387,18 @@ class CustomersController extends Controller
      */
     public function destroy($id)
     {
-        $c = $this->customer->find($id);
+        $customer = $this->customer->findOrFail($id);
 
-        // Addresses
-        $c->addresses()->delete();
+        try {
 
-        // Customer
-        $c->delete();
+            $customer->delete();
+            
+        } catch (\Exception $e) {
+
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
 
         return redirect('customers')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

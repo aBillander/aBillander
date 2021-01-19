@@ -347,6 +347,18 @@ class ImportProductsController extends Controller
                             // Create Product
                             // $product = $this->product->create( $data );
                             $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
+
+                            if ( $product->price_tax_inc == 0.0 )
+                            {
+                                $product->price_tax_inc = $product->price * ( 1.0 + $product->tax->percent / 100.0 );
+                                $product->save();
+                            }
+
+                            if ( $product->price == 0.0 )
+                            {
+                                $product->price = $product->price_tax_inc / ( 1.0 + $product->tax->percent / 100.0 );
+                                $product->save();
+                            }
                         }
 
                         $i_ok++;

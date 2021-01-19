@@ -19,6 +19,12 @@ return [
 	// Customers
 	'Customer has :relation' => 'El Cliente tiene :relation',
 
+	// Payment Methods
+	'Payment Method has :relation' => 'La Forma de Pago tiene :relation',
+
+	// Payment Types
+	'Payment Type has :relation' => 'El Tipo de Pago tiene :relation',
+
 	''     => '',
 	''     => '',
 	''     => '',

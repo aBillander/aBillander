@@ -25,6 +25,9 @@ return [
 	// Payment Types
 	'Payment Type has :relation' => 'El Tipo de Pago tiene :relation',
 
+	// Products
+	'Product has :relation' => 'El Producto tiene :relation',
+
 	''     => '',
 	''     => '',
 	''     => '',

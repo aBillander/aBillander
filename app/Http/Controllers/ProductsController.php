@@ -528,15 +528,18 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        // Any Documents? If any, cannot delete, only disable
+        $product = $this->product->findOrFail($id);
 
-        // Delete Product & Combinations Warehouse lines
+        try {
 
-        // Delete Combinations
+            $product->delete();
+            
+        } catch (\Exception $e) {
 
-        // Delete Images
-
-        $this->product->findOrFail($id)->delete();
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
 
         return redirect('products')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

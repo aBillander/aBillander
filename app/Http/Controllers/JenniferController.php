@@ -34,6 +34,11 @@ class JenniferController extends Controller
                     'loose' => 'Amplio',
         ];
 
+        $this->mod347_claveList = [
+                    'A' => 'Proveedores',
+                    'B' => 'Clientes',
+        ];
+
         $this->valuation_methodList = [
                     'cost_average_on_date' => 'Precio Medio en la Fecha',
                     'cost_average_current' => 'Precio Medio Actual',
@@ -53,7 +58,9 @@ class JenniferController extends Controller
 
         $invoices_report_formatList = $this->invoices_report_formatList;
 
-        return view('jennifer.home', compact('valuation_methodList', 'invoices_report_formatList'));
+        $mod347_claveList = $this->mod347_claveList;
+
+        return view('jennifer.home', compact('valuation_methodList', 'invoices_report_formatList', 'mod347_claveList'));
     }
 
 

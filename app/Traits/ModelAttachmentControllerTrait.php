@@ -102,14 +102,15 @@ trait ModelAttachmentControllerTrait
         $anchor = ($anchor ? "#".ltrim($anchor, "#") : $anchor);
 
         $attachment = ModelAttachment::findOrFail($aid);
-
+/*
+        MOVED TO MODEL:
         $class = ModelAttachment::getClassFolder( $attachment->attachmentable_type );
 
         // Delete file from storage
         $fname = ModelAttachment::full_pathAttachments( $class ) .'/'. $attachment->filename;
         if ($fname)
             @unlink($fname);
-
+*/
 
         // Delete now!
         $attachment->delete();

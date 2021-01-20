@@ -41,6 +41,34 @@ class ShippingMethod extends Model {
     {
         parent::boot();
 
+
+        static::deleting(function ($method)
+        {
+            // before delete() method call this
+            $relations = [
+                    'addresses',
+                    'customers',
+                    'customerquotations',
+                    'customerorders',
+                    'customershippingslips',
+                    'customerinvoices',
+                    'warehouseshippingslips',
+                    'carts',
+            ];
+            // To do: some of above relations maybe set to null instatic::deleted and does not need check for existence (addresses, customers, carts)
+
+            // load relations
+            $method->load( $relations );
+
+            // Check Relations
+            foreach ($relations as $relation) {
+                # code...
+                if ( $method->{$relation}->count() > 0 )
+                    throw new \Exception( l('Shipping Method has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+        });
+
         static::deleted(function($method)
         {
             $method->servicelines()->delete(); // Not calling the events on each child
@@ -103,11 +131,6 @@ class ShippingMethod extends Model {
         return $this->belongsTo('App\Carrier', 'carrier_id');
     }
     
-    public function customerorders()
-    {
-        return $this->hasMany('App\CustomerOrder');
-    }
-    
 
     public function services()
     {
@@ -126,6 +149,47 @@ class ShippingMethod extends Model {
     {
         // Only if 'type' == 'basic'
         return $this->servicelines();
+    }
+    
+    
+    public function customers()
+    {
+        return $this->hasMany('App\Customer');
+    }
+
+    public function customerquotations()
+    {
+        return $this->hasMany('App\CustomerQuotation');
+    }
+
+    public function customerorders()
+    {
+        return $this->hasMany('App\CustomerOrder');
+    }
+
+    public function customershippingslips()
+    {
+        return $this->hasMany('App\CustomerShippingSlip');
+    }
+    
+    public function customerinvoices()
+    {
+        return $this->hasMany('App\CustomerInvoice');
+    }
+
+    public function warehouseshippingslips()
+    {
+        return $this->hasMany('App\WarehouseShippingSlip');
+    }
+
+    public function carts()
+    {
+        return $this->hasMany('App\Cart');
+    }
+    
+    public function addresses()
+    {
+        return $this->hasMany('App\Address');
     }
 
 

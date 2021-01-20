@@ -137,7 +137,18 @@ class ShippingMethodsController extends Controller {
 	 */
 	public function destroy($id)
 	{
-        $this->shippingmethod->findOrFail($id)->delete();
+        $method = $this->shippingmethod->findOrFail($id);
+
+        try {
+
+            $method->delete();
+            
+        } catch (\Exception $e) {
+
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
 
         return redirect('shippingmethods')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

@@ -132,6 +132,21 @@ class Payment extends Model {
         return $value;
     }
 
+    public function getAmountCurrencyAttribute()
+    {
+        // return abi_money_amount( $value, $currency = null);
+        return $this->amount * $this->currency_conversion_rate;
+    }
+
+
+    public function getPaymentCurrencyAttribute()
+    {
+        $currency = $this->currency;
+        $currency->conversion_rate = $this->currency_conversion_rate;
+
+        return $currency;
+    }
+
 
     public function getAbiccPaymentDateAttribute($value)
     {

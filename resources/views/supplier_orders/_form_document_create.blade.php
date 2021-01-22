@@ -326,7 +326,7 @@ function get_currency_rate(currency_id)
                     if ( response.payment_method_id > 0 ) {
                       $('#payment_method_id').val(response.payment_method_id);
                     } else {
-                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
+                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_SUPPLIER_PAYMENT_METHOD'))}});
                     }
 
                     $('#currency_id').val(response.currency_id);

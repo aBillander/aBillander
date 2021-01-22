@@ -167,7 +167,15 @@
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
-			<td class="text-right">{{ $payment->as_money_amount('amount') }}</td>
+			<td class="text-right">{{ $payment->as_money_amount('amount') }}
+
+@if ( $payment->currency_conversion_rate != 1.0 )
+        <br />
+        <span class="text-warning">{{ \App\Currency::viewMoneyWithSign($payment->amount_currency, $payment->currency) }}</span>
+
+@endif
+
+            </td>
 
       <td>{{ optional($payment->paymenttype)->name }}</td>
 

@@ -116,7 +116,15 @@
             </td>
             <td>{{ $document->created_via }}
             </td>
-            <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}</td>
+            <td class="text-right">{{ $document->as_money_amount('total_tax_incl') }}
+
+@if ( $document->currency_conversion_rate != 1.0 )
+        <br />
+        <span class="text-warning">{{ \App\Currency::viewMoneyWithSign($document->total_currency_tax_incl, $document->currency) }}</span>
+
+@endif
+
+            </td>
             <td class="text-center">@if ($document->all_notes)
                  <a href="javascript:void(0);">
                     <button type="button" 

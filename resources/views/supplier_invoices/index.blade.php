@@ -218,6 +218,13 @@
                     <p class="text-danger"><strong>{{ $document->as_money_amount('open_balance') }}</strong></p>
     @endif
 @endif
+
+@if ( $document->currency_conversion_rate != 1.0 )
+        <br />
+        <span class="text-warning">{{ \App\Currency::viewMoneyWithSign($document->total_currency_tax_incl, $document->currency) }}</span>
+
+@endif
+
             </td>
             <td>
 @if ( $document->status == 'closed' )

@@ -135,7 +135,11 @@ class Address extends Model {
                         
                         $query->where(function ($query1) use ($state_id) {
                             $query1->where(  'state_id', '=', 0)
-                                    ->OrWhere('state_id', '=', $state_id);
+                                    ->orWhere('state_id', '=', $state_id);
+// Notes to self:
+//                                    ->orWhereNull('state_id');
+// Alternative: COALESCE : Return the first non-null value in a list
+//                                    ->where(DB::raw('COALESCE(state_id,0)'), '=', 0)
                         });
                     })
                     ->orderBy('id', 'asc')->get();

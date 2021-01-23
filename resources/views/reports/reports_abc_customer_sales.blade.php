@@ -7,7 +7,7 @@
               <div class="panel-heading panel-info" xstyle="color: #ffffff;
 background-color: #772953;
 border-color: #772953;">
-                <h3 class="panel-title"><i class="fa fa-users"></i> &nbsp; <strong>ABC Clientes</strong> :: Ventas / Año en curso</h3>
+                <h3 class="panel-title"><i class="fa fa-users"></i> &nbsp; <strong>ABC Clientes</strong> :: Ventas de Productos / Año en curso</h3>
               </div>
 
 

@@ -30,7 +30,7 @@ class Customer extends Model {
                            'accounting_id',
                            'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
                            'outstanding_amount_allowed', 'unresolved_amount', 'notes', 
-                           'is_invoiceable', 'automatic_invoice', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
+                           'is_invoiceable', 'automatic_invoice', 'vat_regime', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
                            'invoice_sequence_id', 
                            'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id', 
@@ -57,6 +57,37 @@ class Customer extends Model {
             $client->secure_key = md5(uniqid(rand(), true));
         });
 
+
+        static::deleting(function ($client)
+        {
+            // before delete() method call this
+            $relations = [
+                    'customerquotations',
+                    'customerorders',
+                    'customershippingslips',
+                    'customerinvoices',
+                    'payments',
+                    'cheques',
+            ];
+
+            if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+                $relations = $relations + ['deliverysheetlines'];
+
+            // load relations
+            $client->load( $relations );
+
+            // Check Relations
+            foreach ($relations as $relation) {
+                # code...
+                if ( $client->{$relation}->count() > 0 )
+                    throw new \Exception( l('Customer has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+            // To do: manage models: Supplier, Party
+
+        });
+
+
         // cause a delete of a Customer to cascade to children so they are also deleted
         static::deleted(function($client)
         {
@@ -78,6 +109,11 @@ class Customer extends Model {
 
 
             $client->users()->delete();
+            $client->cart()->delete();
+            $client->bankaccount()->delete();
+            $client->customerordertemplates()->delete();
+            $client->deliveryroutelines()->delete();
+            $client->pricerules()->delete();
         });
     }
 
@@ -207,6 +243,24 @@ class Customer extends Model {
             return $this->shipping_method_id;
 
         return Configuration::getInt('DEF_SHIPPING_METHOD');
+    }
+
+
+    public static function getVatRegimeList()
+    {
+            $list = [];
+//            foreach (self::$types as $type) {
+//                $list[$type] = l(get_called_class().'.'.$type, [], 'appmultilang');
+//            }
+
+            $list = [
+                0 => l('General', 'customers'),
+                1 => l('Intra-Community', 'customers'),
+                2 => l('Export', 'customers'),
+                3 => l('Exempt', 'customers'),
+            ];
+
+            return $list;
     }
 
 
@@ -634,6 +688,11 @@ class Customer extends Model {
     }
 
     
+    public function customerquotations()
+    {
+        return $this->hasMany('App\CustomerQuotation');
+    }
+
     public function customerorders()
     {
         return $this->hasMany('App\CustomerOrder');
@@ -665,6 +724,29 @@ class Customer extends Model {
 
         return $this->morphMany('App\Payment', 'paymentorable');
     }
+
+    public function cheques()
+    {
+        return $this->hasMany('App\Cheque');
+    }
+
+
+    public function deliveryroutelines()
+    {
+        return $this->hasMany('App\DeliveryRouteLine');
+    }
+
+    public function deliverysheetlines()
+    {
+        return $this->hasMany('App\DeliverySheetLine');
+    }
+
+
+    public function pricerules()
+    {
+        return $this->hasMany('App\PriceRule');
+    }
+
 
     /**
      * Get the user record associated with the user.

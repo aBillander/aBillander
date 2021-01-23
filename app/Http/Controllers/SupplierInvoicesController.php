@@ -522,8 +522,8 @@ class SupplierInvoicesController extends BillableController
 
         $rules = $this->document::$rules;
 
-        $rules['shipping_address_id'] = str_replace('{supplier_id}', $request->input('supplier_id'), $rules['shipping_address_id']);
-        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
+//        $rules['shipping_address_id'] = str_replace('{supplier_id}', $request->input('supplier_id'), $rules['shipping_address_id']);
+//        $rules['invoicing_address_id'] = $rules['shipping_address_id'];
 
         $this->validate($request, $rules);
 /*
@@ -548,7 +548,8 @@ class SupplierInvoicesController extends BillableController
         $document = $supplierinvoice;
 
         $need_update_totals = (
-            $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+            ($request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent) ||
+            ($request->input('currency_conversion_rate', $document->currency_conversion_rate) != $document->currency_conversion_rate)
         ) ? true : false;
 
         $document->fill($request->all());

@@ -153,11 +153,18 @@ class CategoriesController extends Controller {
      */
     public function destroy($parentId=0, $id)
     {
-        // ToDo:
-        // - Delete category children (if any)
-        // - Delete categories Products?
+        $category = $this->category->findOrFail($id);
 
-        $this->category->findOrFail($id)->delete();
+        try {
+
+            $category->delete();
+            
+        } catch (\Exception $e) {
+
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
 
         if ($parentId>0) {
 

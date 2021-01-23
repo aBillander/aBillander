@@ -57,7 +57,7 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('payment_method_id') ? 'has-error' : '' }}">
             {{ l('Payment Method') }}
-            {!! Form::select('payment_method_id', array('' => l('-- Please, select --', [], 'layouts')) + $payment_methodList, old('payment_method_id'), array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
+            {!! Form::select('payment_method_id', array('' => l('-- Please, select --', [], 'layouts')) + $payment_methodList, intval(\App\Configuration::get('DEF_SUPPLIER_PAYMENT_METHOD')), array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
             {!! $errors->first('payment_method_id', '<span class="help-block">:message</span>') !!}
          </div>
 
@@ -356,7 +356,7 @@ function get_currency_rate(currency_id)
                     if ( response.payment_method_id > 0 ) {
                       $('#payment_method_id').val(response.payment_method_id);
                     } else {
-                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
+                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_SUPPLIER_PAYMENT_METHOD'))}});
                     }
 
                     $('#currency_id').val(response.currency_id);

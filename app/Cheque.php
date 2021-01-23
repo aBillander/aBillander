@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Auth;
+
 use App\Traits\ViewFormatterTrait;
 
 class Cheque extends Model
@@ -31,6 +33,7 @@ class Cheque extends Model
 
     public static $rules = [
         'document_number'         => 'required|min:2|max:32',
+        'place_of_issue'         => 'required',
 
     	'amount'   => 'numeric|min:0',
 
@@ -141,6 +144,23 @@ class Cheque extends Model
     |--------------------------------------------------------------------------
     */
 
+
+    public function scopeOfSalesRep($query)
+    {
+//        return $query->where('customer_id', Auth::user()->customer_id);
+
+        if ( isset(Auth::user()->sales_rep_id) && ( Auth::user()->sales_rep_id != NULL ) )
+        {
+                $sales_rep_id = Auth::user()->sales_rep_id;
+
+                return $query->whereHas('customer', function ($query) use ($sales_rep_id) {
+                                    $query->where('sales_rep_id', $sales_rep_id);
+                                } );
+        }
+
+        // Not allow to see resource
+        return $query->where('sales_rep_id', 0);
+    }
 
     public function scopeFilter($query, $params)
     {

@@ -29,7 +29,9 @@ trait JenniferModelo347Trait
     {        
         $mod347_year = $request->input('mod347_year') > 0 ? $request->input('mod347_year') : Carbon::now()->year;
 
-        return redirect()->route('jennifer.reports.index347.show', $mod347_year);
+        $mod347_clave = strtoupper($request->input('mod347_clave')) == 'A' ? 'A' : 'B';
+
+        return redirect()->route('jennifer.reports.index347.show', [$mod347_year, 'mod347_clave' => $mod347_clave]);
     }
         
 
@@ -41,6 +43,8 @@ trait JenniferModelo347Trait
     public function index347Show($mod347_year, Request $request)
     {        
         // $mod347_year = $request->input('mod347_year') > 0 ? $request->input('mod347_year') : Carbon::now()->year;
+
+        $mod347_clave = strtoupper($request->input('mod347_clave')) == 'A' ? 'A' : 'B';
         
         // Wanna dance, Honey Bunny?
         $mod347 = new Modelo347( $mod347_year );
@@ -52,13 +56,19 @@ trait JenniferModelo347Trait
         $customers = $mod347->getCustomers();
 
         // Nice! Lets move on and retrieve Documents
+        foreach ($suppliers as $supplier) {
+
+            $supplier->yearly_sales = $mod347->getSupplierYearlySales($supplier->id);
+
+        }
+
         foreach ($customers as $customer) {
 
             $customer->yearly_sales = $mod347->getCustomerYearlySales($customer->id);
 
         }
 
-        return view('jennifer.347.index', compact('mod347_year', 'customers', 'suppliers'));
+        return view('jennifer.347.'.$mod347_clave.'_index', compact('mod347_year', 'customers', 'suppliers'));
     }
 
 
@@ -67,9 +77,9 @@ trait JenniferModelo347Trait
      *
      * @return Spread Sheet download
      */
-    public function reportModelo347(Request $request)
+    public function reportModelo347($mod347_year = 0, Request $request)
     {
-        $mod347_year = $request->input('mod347_year') > 0 ? $request->input('mod347_year') : Carbon::now()->year;
+        $mod347_year = $mod347_year > 0 ? $mod347_year : Carbon::now()->year;
 
         // abi_r((new Modelo347(2020, 1000))->getCustomers()->count());
 
@@ -84,7 +94,31 @@ trait JenniferModelo347Trait
         $customers = $mod347->getCustomers();
 
 
-// Nice! Lets move on and retrieve Documents
+        // Nice! Lets move on and retrieve Documents
+
+// Suppliers
+foreach ($suppliers as $supplier) {
+        # code...
+    $supplier_id = $supplier->id;
+
+    // $supplier->quarterly_sales = [];
+
+    for ($quarter=1; $quarter <= 4 ; $quarter++) { 
+        # code...
+        // supplier->quarterly_sales[$quarter] = $mod347->getSupplierQuarterlySales($supplier_id, $quarter);
+        $supplier->{"Q$quarter"} = $mod347->getSupplierQuarterlySales($supplier_id, $quarter);
+
+        // abi_r($supplier->{"Q$quarter"});
+    }
+
+    $supplier->yearly_sales = $mod347->getSupplierYearlySales($supplier_id);
+
+    
+    // abi_r($supplier->yearly_sales);die();
+
+}
+
+// Customers
 foreach ($customers as $customer) {
         # code...
     $customer_id = $customer->id;
@@ -126,15 +160,53 @@ foreach ($customers as $customer) {
                          'Trimeste 1', 'Trimeste 2', 'Trimeste 3', 'Trimeste 4', 
             ];
 
-        $data[] = $header_names;
-
-        // Convert each member of the returned collection into an array,
-        // and append it to the data array.
-
         // Initialize (colmn) totals
-        $total_A = 0.0;
+        $total_A = $suppliers->sum('yearly_sales');
         $total_B = $customers->sum('yearly_sales');
         $total =  $total_A + $total_B;
+        $suppliers_count = $suppliers->count();
+
+        // Suppliers
+        $data[] = $header_names;
+
+        foreach ($suppliers as $supplier) 
+        {
+                $row = [];
+                $row[] = 'A';
+                $row[] = (string) $supplier->identification;
+                $row[] = (string) $supplier->name_fiscal;
+                $row[] = (string) $supplier->address->postcode;
+                $row[] = (string) $supplier->address->city;
+                $row[] = (float) $supplier->yearly_sales;
+                $row[] = '';
+                $row[] = '';
+
+                for ($quarter=1; $quarter <= 4 ; $quarter++) {
+                    $row[] = (float) $supplier->{"Q$quarter"};
+                }
+
+                $data[] = $row;
+
+        }
+
+        // Total
+        $row = [];
+        $row[] = '';
+        $row[] = '';
+        $row[] = '';
+        $row[] = '';
+        $row[] = 'Total Clave A:';
+        $row[] = (float) $total_A;
+        
+        $data[] = $row;
+
+        // Separator
+
+        $data[] = [''];
+
+
+        // Customers
+        $data[] = $header_names;
 
         foreach ($customers as $customer) 
         {
@@ -162,7 +234,7 @@ foreach ($customers as $customer) {
         $row[] = '';
         $row[] = '';
         $row[] = '';
-        $row[] = 'Total Clave:';
+        $row[] = 'Total Clave B:';
         $row[] = (float) $total_B;
         
         $data[] = $row;
@@ -188,7 +260,7 @@ foreach ($customers as $customer) {
         $nbr_years = 0;
 
         // Generate and return the spreadsheet
-        Excel::create('Acumulados 347 - '.$mod347_year, function($excel) use ($sheetName, $data, $nbr_years) {
+        Excel::create('Acumulados 347 - '.$mod347_year, function($excel) use ($sheetName, $data, $nbr_years, $suppliers_count) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');
@@ -196,7 +268,7 @@ foreach ($customers as $customer) {
             // $excel->setDescription('Price List file');
 
             // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data, $nbr_years) {
+            $excel->sheet($sheetName, function($sheet) use ($data, $nbr_years, $suppliers_count) {
                 
                 $sheet->mergeCells('A1:C1');
                 $sheet->mergeCells('A2:C2');
@@ -205,6 +277,13 @@ foreach ($customers as $customer) {
                 // $w = count($data[5+1]);
 
                 $sheet->getStyle('A5:L5')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $n = 5+1+$suppliers_count+2;
+                $sheet->getStyle("A$n:L$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -221,6 +300,14 @@ foreach ($customers as $customer) {
                     'L' => '0.00',
 
                 ));
+                
+                $n = 5+1+$suppliers_count;
+                $m = $n;    //  - 3;
+                $sheet->getStyle("E$m:F$n")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
                 
                 $n = count($data);
                 $m = $n;    //  - 3;
@@ -248,6 +335,15 @@ foreach ($customers as $customer) {
 
         // Attached file stuff
         $data = $mod347->getCustomerInvoicesAttachment($customer_id, true);
+    }   
+
+
+    public function reportModelo347Supplier( $mod347_year, $supplier_id, Request $request )
+    {
+        $mod347 = new Modelo347( $mod347_year );
+
+        // Attached file stuff
+        $data = $mod347->getSupplierInvoicesAttachment($supplier_id, true);
     }
 
 
@@ -415,6 +511,7 @@ foreach ($customers as $customer) {
 
             $subject = l('Informacion 347 de :year', [ 'year' => $mod347_year ]);
 
+            $company = \App\Context::getContext()->company;
 
             $template_vars = array(
                 'customer'   => $customer,
@@ -427,8 +524,8 @@ foreach ($customers as $customer) {
             $data = array(
                 'from'     => $company->address->email,
                 'fromName' => $company->name_fiscal,
-                'to'       => $document->customer->address->email,
-                'toName'   => $document->customer->name_fiscal,
+                'to'       => $customer->address->email,
+                'toName'   => $customer->name_fiscal,
                 'subject'  => $subject,
                 );
 
@@ -451,7 +548,7 @@ foreach ($customers as $customer) {
 
  //               abi_r($e->getMessage(), true);
 
-            return redirect()->back()->with('error', l('Your Document could not be sent &#58&#58 (:id) ', ['id' => $document->number], 'layouts').'<br />'.$e->getMessage());
+            return redirect()->back()->with('error', l('Your Document could not be sent &#58&#58 (:id) ', ['id' => ''], 'layouts').'<br />'.$e->getMessage());
         }
         // MAIL stuff ENDS
 
@@ -461,7 +558,7 @@ foreach ($customers as $customer) {
         // event( new $event_class( $document ) );
         
 
-        return redirect()->back()->with('success', l('Your Document has been sent! &#58&#58 (:id) ', ['id' => $document->number], 'layouts'));
+        return redirect()->back()->with('success', l('Your Document has been sent! &#58&#58 (:id) ', ['id' => ''], 'layouts'));
     }
 
 

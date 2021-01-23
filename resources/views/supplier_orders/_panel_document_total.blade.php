@@ -88,7 +88,7 @@
             </tr>
 
 @if ( $document->currency_conversion_rate != 1.0 )
-            <tr>
+            <tr class="alert-warning">
                 <td class="text-center">
                     <span class="badge" style="background-color: #3a87ad;">{{ \App\Context::getContext()->currency->iso_code }}</span>
                 </td>
@@ -101,9 +101,9 @@
                     @endif
 -->
                 </td>
-                <td>
+                <td></td>
+                <td></td>
 
-                </td>
                 <td style="vertical-align: middle;">{{ $document->as_price('total_tax_excl', $document->currency) }}</td>
                 <td style="vertical-align: middle;">{{ $document->as_priceable($document->total_tax_incl - $document->total_tax_excl) }}</td>
                 <td class="text-right lead" style="vertical-align: middle;"><strong>{{ $document->as_price('total_tax_incl') }}</strong></td>

@@ -29,7 +29,7 @@ return [
 	'Price is WITHOUT Taxes.' => 'El Precio es SIN Impuestos.',
 	'Price is WITHOUT Ecotaxes.' => 'El Precio es SIN la Ecotasa.',
 
-	'Prices are inclusive of Ecotax.' => 'El Precio incluye la Ecotasa.',
+	'Prices are inclusive of Ecotax.' => 'El Precio incluye la Ecotasa, si aplica.',
 	'Prices are exclusive of Ecotax.' => 'El Precio NO incluye la Ecotasa.',
 
 	'Ecotax: ' => 'Ecotasa: ',

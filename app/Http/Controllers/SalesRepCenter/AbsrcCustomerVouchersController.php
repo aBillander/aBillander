@@ -60,7 +60,7 @@ class AbsrcCustomerVouchersController extends Controller
 					->with('bankorder')
 					->orderBy('due_date', 'asc');		// ->get();
 
-        $payments = $payments->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
+        $payments = $payments->paginate( Configuration::get('ABSRC_ITEMS_PERPAGE') );
 
         $payments->setPath('vouchers');
 

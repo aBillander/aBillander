@@ -229,6 +229,14 @@
                      {!! $errors->first('shipping_slip_template_id', '<span class="help-block">:message</span>') !!}
                      
                   </div>
+
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('vat_regime') ? 'has-error' : '' }}">
+                     
+                     {{ l('VAT Regime') }}
+                     {!! Form::select('vat_regime', \App\Customer::getVatRegimeList(), null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('vat_regime', '<span class="help-block">:message</span>') !!}
+                     
+                  </div>
         </div>
 
 <!-- Comercial ENDS -->

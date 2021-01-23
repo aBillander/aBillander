@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Traits\CustomerInvoicePaymentsTrait;
+use App\Traits\SupplierInvoicePaymentsTrait;
 // use App\Traits\BillableStockMovementsTrait;
 
 use \App\SupplierInvoiceLine;
@@ -10,7 +10,7 @@ use \App\SupplierInvoiceLine;
 class SupplierInvoice extends Billable
 {
     
-    use CustomerInvoicePaymentsTrait;
+    use SupplierInvoicePaymentsTrait;
 //    use BillableStockMovementsTrait;
 
     public static $badges = [

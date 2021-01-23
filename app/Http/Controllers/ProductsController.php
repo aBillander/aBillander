@@ -481,7 +481,7 @@ class ProductsController extends Controller
             // Dates (cuen)
             $this->mergeFormDates( ['available_for_sale_date', 'new_since_date'], $request );
             
-            $tax = \App\Tax::find( $product->tax_id );
+            $tax = \App\Tax::find( $product->tax_id > 0 ? $product->tax_id : $request->input('tax_id') );
             if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
                 $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
                 $request->merge( ['price' => $price] );
@@ -528,15 +528,18 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        // Any Documents? If any, cannot delete, only disable
+        $product = $this->product->findOrFail($id);
 
-        // Delete Product & Combinations Warehouse lines
+        try {
 
-        // Delete Combinations
+            $product->delete();
+            
+        } catch (\Exception $e) {
 
-        // Delete Images
-
-        $this->product->findOrFail($id)->delete();
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
 
         return redirect('products')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

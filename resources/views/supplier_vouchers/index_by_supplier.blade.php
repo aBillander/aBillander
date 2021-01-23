@@ -17,7 +17,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ route('sepasp.directdebits.index') }}" class="btn xbtn-sm btn-navy" 
+        <a href="{{ route('sepasp.directdebits.index') }}" class=" hide  btn xbtn-sm btn-navy" 
         		title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
     </div>
     <h2>
@@ -73,7 +73,7 @@
         {!! Form::label('date_to_form', l('Date to', 'layouts')) !!}
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
-
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-auto_direct_debit">
      {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
@@ -101,7 +101,7 @@
        </div>
      </div>
 </div>
-
+--}}
 {{--
 <div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('reference', l('Reference')) !!}
@@ -149,12 +149,12 @@
 			<th>{{l('Payment Date')}}</th>
 			<th class="text-right">{{l('Amount')}}</th>
       <th style="text-transform: none;">{{l('Payment Type', 'suppliervouchers')}}</th>
-      <th style="text-transform: none;">{{l('Auto Direct Debit', 'suppliervouchers')}}
+      <!-- th style="text-transform: none;">{{l('Auto Direct Debit', 'suppliervouchers')}}
                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Include in automatic payment remittances', 'suppliervouchers') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                </a>
-          </th>
+          </th -->
       <th class="text-center">{{l('Status', [], 'layouts')}}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th> </th>
@@ -172,11 +172,19 @@
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
-			<td class="text-right">{{ $payment->as_money_amount('amount') }}</td>
+			<td class="text-right">{{ $payment->as_money_amount('amount') }}
+
+@if ( $payment->currency_conversion_rate != 1.0 )
+        <br />
+        <span class="text-warning">{{ \App\Currency::viewMoneyWithSign($payment->amount_currency, $payment->currency) }}</span>
+
+@endif
+
+            </td>
 
       <td>{{ optional($payment->paymenttype)->name }}</td>
 
-      <td class="text-center">
+      <!-- td class="text-center">
         @if ($payment->auto_direct_debit) 
           @if ($payment->bankorder)
             <a class="btn btn-xs btn-grey" href={{ route('sepasp.directdebits.show', $payment->bankorder->id) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-bank"></i>
@@ -191,7 +199,7 @@
         @else 
           <i class="fa fa-square-o" style="color: #df382c;"></i>
         @endif
-      </td>
+      </td -->
 
             <td class="text-center">
             	@if     ( $payment->status == 'pending' )

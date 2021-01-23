@@ -11,6 +11,25 @@ class ModelAttachment extends Model
 {
 	
     protected $fillable = [ 'name', 'description', 'position', 'filename', 'attachmentable_id', 'attachmentable_type' ];
+    
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($attachment)
+        {
+            // before delete() method call this 
+            $class = ModelAttachment::getClassFolder( $attachment->attachmentable_type );
+
+            // Delete file from storage
+            $fname = ModelAttachment::full_pathAttachments( $class ) .'/'. $attachment->filename;
+            if ($fname)
+                @unlink($fname);
+
+            });
+
+    }
 
 
     /**

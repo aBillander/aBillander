@@ -29,9 +29,6 @@
             {{ Form::hidden('line_discount_amount_tax_incl', null, array('id' => 'line_discount_amount_tax_incl')) }}
             {{ Form::hidden('line_discount_amount_tax_excl', null, array('id' => 'line_discount_amount_tax_excl')) }}
 
-            {{ Form::hidden('line_sales_rep_id',       null, array('id' => 'line_sales_rep_id'      )) }}
-            {{ Form::hidden('line_commission_percent', null, array('id' => 'line_commission_percent')) }}
-
             {{ Form::hidden('line_is_prices_entered_with_tax', null, array('id' => 'line_is_prices_entered_with_tax')) }}
 
 
@@ -189,10 +186,11 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
+{{--
                <button type="submit" class="btn btn-success modal_document_line_productSubmit" name="modal_document_line_productSubmit" id="modal_document_line_productSubmit" title="{{l('Save line and apply Supplier Price List and/or Price Rules.', 'supplierdocuments')}}">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', 'layouts')}}</button>
-
+--}}
                <button type="submit" class="btn btn-info modal_document_line_productSubmit" name="modal_document_line_productSubmitAsIs" id="modal_document_line_productSubmitAsIs" title="{{l('Save line "as is", and WILL NOT apply Supplier Price List and/or Price Rules.', 'supplierdocuments')}}">
                 <i class="fa fa-hdd-o"></i>
                 &nbsp; {{l('Save', 'layouts')}}</button>

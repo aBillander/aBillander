@@ -9,6 +9,9 @@
     <div class="pull-right" style="padding-top: 4px;">
         <a href="{{ URL::to('currencies/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+        <a href="{{ route('currencies.converter') }}" class="btn btn-sm btn-navy" xstyle="margin-right: 72px; margin-left: 72px; "
+        		title="{{l('Currency Converter', [], 'layouts')}}" target="_currency"><i class="fa fa-exchange"></i> {{l('Currency Converter', [], 'layouts')}}</a>
     </div>
     <h2>
         {{ l('Currencies') }}

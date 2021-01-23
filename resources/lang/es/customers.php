@@ -228,4 +228,20 @@ return [
 	
 
 	'Description'     => 'Descripción',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customers Language Lines :: VAT Regime List
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'VAT Regime' => 'Régimen de IVA',
+	'General' => 'General',
+	'Intra-Community' => 'Intracomunitario',
+	'Export' => 'Exportación',
+	'Exempt' => 'Exento',
 ];

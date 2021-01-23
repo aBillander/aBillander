@@ -137,9 +137,9 @@
 
 				<tr class="order-number">
 
-					<th> </th>
+					<th>Divisa:</th>
 
-					<td> </td>
+					<td>{{ $document->currency->name }}</td>
 
 				</tr>
 
@@ -212,6 +212,10 @@
 
 	<tbody>
 
+@php
+		$do_apply_ecotaxes = ($document->supplier->address->country_id == \App\Context::getContext()->company->address->country_id);
+@endphp
+
                 @foreach ($document->documentlines->sortBy('line_sort_order') as $line)
 
 			    @if ( 
@@ -236,7 +240,7 @@
 			</td>
 		</tr>
 @else
-	@if ( optional($line->product)->ecotax )
+	@if ( optional($line->product)->ecotax && $do_apply_ecotaxes )
 
 		@include('templates::supplier_shipping_slips.default.line_rae')
 	

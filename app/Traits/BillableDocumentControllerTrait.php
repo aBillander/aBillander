@@ -308,12 +308,15 @@ die();
         else
             $entity = 'none';
 
+/*
+        To do: clarify status to allow send email, and if sending email should change status
+
         // $document->close();
 
         if ( $document->status != 'closed' )
             return redirect()->back()
                 ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document is NOT closed.');
-
+*/
 
 
         // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );

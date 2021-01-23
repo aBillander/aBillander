@@ -101,6 +101,6 @@
 <!-- a href="{ { url()->previous() } }" class="btn btn-warning">{{ l('Cancel', [], 'layouts') }}</a -->
 
 @if(0 && $payment->status != 'paid')
-<a href="{{ route('voucher.expresspay', [$payment->id]) }}" class="btn xbtn-sm btn-blue pull-right" 
+<a href="{{ route('customervoucher.expresspay', [$payment->id]) }}" class="btn xbtn-sm btn-blue pull-right" 
         title="{{l('Make Payment')}}" style="margin-left: 22px;"><i class="fa fa-money"></i> &nbsp;{{l('Make Payment')}}</a>
 @endif

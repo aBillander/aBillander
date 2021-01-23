@@ -84,9 +84,9 @@
 
             <div class="shop-name"><h3>
 
-			@if ( $document->customer->name_commercial )
+			@if ( $document->customer->name_fiscal )
 
-				{{ $document->customer->name_commercial }}
+				{{ $document->customer->name_fiscal }}
 
 			@else
 
@@ -98,9 +98,9 @@
 
 			<strong>
 
-			@if ( $document->customer->name_fiscal )
+			@if ( $document->customer->name_commercial )
 
-				{{ $document->customer->name_fiscal }}
+				{{ $document->customer->name_commercial }}
 
 			@else
 
@@ -381,6 +381,37 @@
 @endif
 
                 @endforeach
+
+{{-- VAT Regime :: Intra-Communit --}}
+@if ( $document->customer->vat_regime == 1 )
+
+		<tr class="3655">
+			<td class="sku first-column">
+				<span>{{-- $line->reference --}}</span>
+			</td>
+			<td class="description" colspan="7">
+				<span>
+					<span class="item-name"><strong> Entrega intracomunitaria exenta por aplicación del art. 25 de la Ley 37/1992,  del IVA. </strong></span>
+					<span class="item-combination-options"></span>
+				</span>
+			</td>
+		</tr>
+
+@elseif ( $document->customer->vat_regime == 2 )
+
+		<tr class="3655">
+			<td class="sku first-column">
+				<span>{{-- $line->reference --}}</span>
+			</td>
+			<td class="description" colspan="7">
+				<span>
+					<span class="item-name"><strong> Operación exenta por exportación en virtud del art. 21 de la Ley 37/1992, del IVA. </strong></span>
+					<span class="item-combination-options"></span>
+				</span>
+			</td>
+		</tr>
+
+@endif
 
 	</tbody>
 

@@ -14,7 +14,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ route('supplierinvoices.create.withsupplier', $supplier->id) }}" class="btn btn-sm btn-success" 
+        <a href="{{ route('supplierinvoices.create.withsupplier', $supplier->id) }}" class=" hide  btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
     </div>

@@ -187,6 +187,23 @@
 
 
 
+    <div class="form-group {{ $errors->has('CURRENCY_CONVERTER_API_KEY') ? 'has-error' : '' }}">
+      <label for="CURRENCY_CONVERTER_API_KEY" class="col-lg-4 control-label">{!! l('CURRENCY_CONVERTER_API_KEY.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-10">
+        <input class="form-control" type="text" id="CURRENCY_CONVERTER_API_KEY" name="CURRENCY_CONVERTER_API_KEY" placeholder="" value="{{ old('CURRENCY_CONVERTER_API_KEY', $key_group['CURRENCY_CONVERTER_API_KEY']) }}" />
+        {{ $errors->first('CURRENCY_CONVERTER_API_KEY', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('CURRENCY_CONVERTER_API_KEY.help') !!}</span>
+      </div>
+    </div>
+
+
+
+
     <div class="form-group {{ $errors->has('ALLOW_IP_ADDRESSES') ? 'has-error' : '' }}">
       <label for="ALLOW_IP_ADDRESSES" class="col-lg-4 control-label">{!! l('ALLOW_IP_ADDRESSES.name') !!}</label>
       <div class="col-lg-8">

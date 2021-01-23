@@ -53,6 +53,7 @@ class CreateSuppliersTable extends Migration {
 		/* */
 
 			$table->tinyInteger('creditor')->default(0);					// This is a Creditor, not a Supplier. A debtor is the opposite of a creditor – it refers to the person or entity who owes money.
+			$table->decimal('outstanding_amount', 20, 6)->default(0.0);	        // Actual balance
 
 			$table->tinyInteger('approved')->default(1);						// Approved (or ertified) Supplier
 			$table->tinyInteger('blocked')->default(0);							// Sales not allowed

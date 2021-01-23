@@ -34,6 +34,11 @@ class JenniferController extends Controller
                     'loose' => 'Amplio',
         ];
 
+        $this->mod347_claveList = [
+                    'A' => 'Proveedores',
+                    'B' => 'Clientes',
+        ];
+
         $this->valuation_methodList = [
                     'cost_average_on_date' => 'Precio Medio en la Fecha',
                     'cost_average_current' => 'Precio Medio Actual',
@@ -53,7 +58,9 @@ class JenniferController extends Controller
 
         $invoices_report_formatList = $this->invoices_report_formatList;
 
-        return view('jennifer.home', compact('valuation_methodList', 'invoices_report_formatList'));
+        $mod347_claveList = $this->mod347_claveList;
+
+        return view('jennifer.home', compact('valuation_methodList', 'invoices_report_formatList', 'mod347_claveList'));
     }
 
 
@@ -230,7 +237,15 @@ if ( $invoices_report_format == 'compact') {
 
             foreach ( $alltaxes as $alltax )
             {
-                if ( !( $total = $totals->where('tax_id', $alltax->id)->first() ) ) continue;
+                if ( !( $total = $totals->where('tax_id', $alltax->id)->first() ) ) 
+                {
+                    // Empty Group
+                    $row[] = '';
+                    $row[] = '';
+                    $row[] = '';
+
+                    continue;
+                }
                 
                 $iva = $total['tax_lines']->where('tax_rule_type', 'sales')->first();
                 $re  = $total['tax_lines']->where('tax_rule_type', 'sales_equalization')->first();
@@ -238,7 +253,6 @@ if ( $invoices_report_format == 'compact') {
                 $row[] = $iva->taxable_base * 1.0;
                 $row[] = $iva->total_line_tax * 1.0;
                 $row[] = optional($re)->total_line_tax ?? 0.0;
-                $row[] = '';
     
                 // $data[] = $row;
 

@@ -269,6 +269,9 @@ class ImportCategoriesController extends Controller
 
                     $data['parent_id'] = intval( $data['parent_id'] );
                     if ( $data['parent_id'] <= 0 ) $data['parent_id'] = 0;
+
+                    // Handy conversions
+                    $data['position'] = (int) $data['position'];
                     
 
                     // Parent Category

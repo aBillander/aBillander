@@ -361,7 +361,7 @@ $(document).ready(function() {
   $(document).ready(function() {
 
         $("#autosupplier_name").autocomplete({
-            source : "{{ route('home.searchsupplier') }}",
+            source : "{{ route('supplierinvoices.ajax.supplierLookup') }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 

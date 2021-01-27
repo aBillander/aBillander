@@ -339,6 +339,23 @@ return [
 	*/
 
     'Products with no Stock' => 'Productos sin Stock',
-    'Minimum Stock' => 'Stock Mínimo'
+    'Minimum Stock' => 'Stock Mínimo',
+
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Packs
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Pack'     => 'Pack',
+	'Products in this Pack' => 'Productos en este Pack',
+	'Add Product to this Pack' => 'Añadir Producto a este Pack',
+	'Search by Name or Reference' => 'Buscar por Nombre o Referencia',
+	'Unit'     => 'Unidad',
 
 ];

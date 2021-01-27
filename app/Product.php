@@ -6,6 +6,7 @@ use App\Scopes\ShowOnlyActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\ProductPackableTrait;
 use App\Traits\ModelAttachmentableTrait;
 
 // use Illuminate\Validation\Rule;
@@ -30,6 +31,7 @@ class Product extends Model {
     use AutoSkuTrait;
     use SoftDeletes;
     
+    use ProductPackableTrait;
     use ModelAttachmentableTrait;
 
     use StockableTrait;

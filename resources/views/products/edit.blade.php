@@ -80,6 +80,15 @@
 
 @endif
 
+    @if ( $product->isPack() )
+
+            <a id="b_pack" href="#pack" class="list-group-item">
+               <i class="fa fa-gift"></i>
+               &nbsp; {{ l('Pack') }}
+            </a>
+
+    @endif
+
             <a id="b_pricerules" href="#pricerules" class="list-group-item">
                <i class="fa fa-gavel"></i>
                &nbsp; {{ l('Price Rules') }}
@@ -123,6 +132,13 @@
 @if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
 
           @include('products._panel_manufacturing')
+
+@endif
+
+
+@if ( $product->ispack() )
+
+          @include('products._panel_pack')
 
 @endif
 
@@ -173,6 +189,7 @@
       $("#panel_pricerules").hide();
       $("#panel_inventory").hide();
       $("#panel_manufacturing").hide();
+      $("#panel_pack").hide();
       $("#panel_internet").hide();
       $("#product-webshop-data").hide();
       $("#panel_combinations").hide();
@@ -185,6 +202,7 @@
       $("#b_pricerules").removeClass('active');
       $("#b_inventory").removeClass('active');
       $("#b_manufacturing").removeClass('active');
+      $("#b_pack").removeClass('active');
       $("#b_internet").removeClass('active');
       $("#b_combinations").removeClass('active');
       $("#b_images").removeClass('active');
@@ -220,6 +238,13 @@
       {
          $("#panel_manufacturing").show();
          $("#b_manufacturing").addClass('active');
+      }
+      else if(window.location.hash.substring(1) == 'pack')
+      {
+         $("#panel_pack").show();
+         $("#b_pack").addClass('active');
+
+         getProductPackItems();
       }
       else if(window.location.hash.substring(1) == 'internet')
       {

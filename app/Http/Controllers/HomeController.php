@@ -104,7 +104,7 @@ class HomeController extends Controller
 //                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
                                 ->IsActive()
                                 ->Isblocked( false )
-//                                ->with('measureunit')
+                                ->with('measureunit')
 //                                ->toSql();
                                 ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
 

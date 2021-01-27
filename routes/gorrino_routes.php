@@ -178,6 +178,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+
+	// 2020-12-29	
+	Illuminate\Support\Facades\DB::statement("create table `pack_items` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `item_product_id` int unsigned null, `item_combination_id` int unsigned null, `reference` varchar(32) null, `name` varchar(128) not null, `quantity` decimal(20, 6) not null, `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `notes` text null, `product_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+	die('OK');
+
+
 	// 2021-01-15
 
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `vat_regime` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `automatic_invoice`;");

@@ -280,6 +280,10 @@ class ProductsController extends Controller
         // Th-th-th-that's all folks!
 
 
+        if ( $product->isPack() )
+        return redirect('products/'.$product->id.'/edit#pack')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $request->input('name'));
+        else 
         if ($action == 'completeProductData')
         return redirect('products/'.$product->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $request->input('name'));
@@ -1116,6 +1120,18 @@ LIMIT 1
         //return $items_per_page ;
         
         return view('products._panel_pricerules_list', compact('id', 'product_rules', 'items_per_page_pricerules'));
+    }
+
+    
+    public function getPackItems($id, Request $request)
+    {
+        $product = $this->product
+                        ->with('packitems')
+                        ->findOrFail($id);
+        
+        $packitems = $product->packitems;
+
+        return view('products._panel_packitems_list', compact('product', 'packitems'));
     }
 
 

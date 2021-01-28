@@ -67,9 +67,21 @@
         <div class="row">
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('recommended_retail_price') ? 'has-error' : '' }}">
                      {{ l('Recommended Retail Price') }}
-                     {!! Form::text('recommended_retail_price', null, array('class' => 'form-control', 'id' => 'recommended_retail_price')) !!}
+                     {!! Form::text('recommended_retail_price', null, array('class' => 'form-control', 'id' => 'recommended_retail_price',
+                                      'onclick' => 'this.select()', 'onkeyup' => 'new_recommended_price()', 'onchange' => 'new_recommended_price()')) !!}
                      {!! $errors->first('recommended_retail_price', '<span class="help-block">:message</span>') !!}
                   </div>
+                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('recommended_retail_price_tax_inc') ? 'has-error' : '' }}">
+                     {{ l('Recommended Retail Price (with Tax)') }}
+                     {!! Form::text('recommended_retail_price_tax_inc', null, array('class' => 'form-control', 'id' => 'recommended_retail_price_tax_inc',
+                                      'onclick' => 'this.select()', 'onkeyup' => 'new_recommended_price_tax_inc()', 'onchange' => 'new_recommended_price_tax_inc()')) !!}
+                     {!! $errors->first('recommended_retail_price_tax_inc', '<span class="help-block">:message</span>') !!}
+                  </div>
+                  
+                  <div class="form-group col-lg-1 col-md-1 col-sm-1">
+                    {{-- Poor man offset! --}}
+                  </div>
+
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('available_for_sale_date') ? 'has-error' : '' }}">
                      {{ l('Available for sale') }}
                      {!! Form::text('available_for_sale_date_form', null, array('class' => 'form-control', 'id' => 'available_for_sale_date_form')) !!}

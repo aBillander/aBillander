@@ -52,6 +52,7 @@ return [
 	'Margin'     => 'Margen',
 	'Margin calculation method'     => 'Método de cálculo del Margen',
 	'Recommended Retail Price'     => 'Precio de Venta Recomendado',
+	'Recommended Retail Price (with Tax)'     => 'Precio de Venta Recomendado (con IVA)',
 	'Available for sale'     => 'Disponible para Venta',
 	'Price input method'     => 'Método de entrada de Precios',
 	'Save tax included?'     => '¿Guardar con IVA incluido?',

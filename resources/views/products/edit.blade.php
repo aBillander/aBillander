@@ -291,7 +291,13 @@
 <script src="{{ asset('vendor/unisharp/laravel-ckeditor/ckeditor.js') }}"></script>
 <script>
     CKEDITOR.replace( 'description' );
+
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+
     CKEDITOR.replace( 'description_short' );
+
+@endif
+
     CKEDITOR.replace( 'route_notes' );
 </script>
 

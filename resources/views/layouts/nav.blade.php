@@ -306,6 +306,13 @@
                                  {{l('Suppliers', [], 'layouts')}}
                             </a>
                         </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('assemblyorders') }}">
+                                 <i class="fa fa-gift text-info"></i> 
+                                 {{l('Assembly Orders', [], 'layouts')}}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

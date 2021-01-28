@@ -358,5 +358,7 @@ return [
 	'Add Product to this Pack' => 'Añadir Producto a este Pack',
 	'Search by Name or Reference' => 'Buscar por Nombre o Referencia',
 	'Unit'     => 'Unidad',
+	
+    'View Product' => 'Ir al Producto',
 
 ];

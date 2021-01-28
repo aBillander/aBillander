@@ -22,14 +22,47 @@
 
 Route::get('f0', function( )
 {
+	// $f=\App\AssemblyOrder::find(3)->delete();
+	// $f=\App\AssemblyOrder::find(2)->delete();
+
+	// die();
+	$product = \App\Product::with('packitems')
+        					   ->with('packitems.product')
+                               ->findOrFail( 322 );
+
+        // if (!$bom) return NULL;
+
+         $order_quantity = -12;
 	
-    $f=\App\CustomerInvoice::find(153);
+	$data = [
+//            'created_via' => $data['created_via'] ?? 'manual',
+//            'status'      => $data['status']      ?? 'released',
 
-    echo $f->open_balance;
-    
-    $f->checkPaymentStatus();
+            'product_id' => $product->id,
+            'product_reference' => $product->reference,
+            'product_name' => $product->name,
 
-    echo $f->open_balance;
+//            'required_quantity' => $order_required,
+            'planned_quantity' => $order_quantity,
+            // 'finished_quantity'
+
+            'measure_unit_id' => $product->measure_unit_id,
+
+            'due_date' => \Carbon\Carbon::now(),
+            // 'finish_date'
+
+//            'notes' => $data['notes'] ?? null,
+
+            'work_center_id' => $product->work_center_id,
+
+//            'manufacturing_batch_size' => $order_manufacturing_batch_size,
+            'warehouse_id' => \App\Configuration::get('DEF_WAREHOUSE'),
+        ];
+	
+    $f=\App\AssemblyOrder::createWithLines($data);
+
+    $f->finish();
+
 });
 
 
@@ -178,6 +211,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+
+	// 2021-01-28
+
+	Illuminate\Support\Facades\DB::statement("create table `assembly_orders` (`id` int unsigned not null auto_increment primary key, `sequence_id` int unsigned null, `document_prefix` varchar(8) null, `document_id` int unsigned not null default '0', `document_reference` varchar(64) null, `reference` varchar(191) null, `created_via` varchar(32) null default 'manual', `status` varchar(32) not null default 'released', `product_id` int unsigned null, `combination_id` int unsigned null, `product_reference` varchar(32) null, `product_name` varchar(128) not null, `required_quantity` decimal(20, 6) not null, `planned_quantity` decimal(20, 6) not null, `finished_quantity` decimal(20, 6) not null, `measure_unit_id` int unsigned null, `due_date` date null, `finish_date` timestamp null, `notes` text null, `work_center_id` int unsigned null, `manufacturing_batch_size` int unsigned not null default '1', `warehouse_id` int unsigned null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+	Illuminate\Support\Facades\DB::statement("create table `assembly_order_lines` (`id` int unsigned not null auto_increment primary key, `product_id` int unsigned not null, `combination_id` int unsigned null, `reference` varchar(32) null, `name` varchar(128) not null, `pack_item_quantity` decimal(20, 6) not null, `required_quantity` decimal(20, 6) not null, `real_quantity` decimal(20, 6) not null, `measure_unit_id` int unsigned not null, `warehouse_id` int unsigned null, `assembly_order_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
 
 	// 2020-12-29	
 	Illuminate\Support\Facades\DB::statement("create table `pack_items` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `item_product_id` int unsigned null, `item_combination_id` int unsigned null, `reference` varchar(32) null, `name` varchar(128) not null, `quantity` decimal(20, 6) not null, `measure_unit_id` int unsigned not null, `package_measure_unit_id` int unsigned null, `pmu_conversion_rate` decimal(20, 6) null default '1', `notes` text null, `product_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");

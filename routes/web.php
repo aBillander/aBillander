@@ -401,6 +401,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');
         Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
 
+        Route::resource('assemblyorders', 'AssemblyOrdersController');
+
         Route::resource('categories', 'CategoriesController');
         Route::get('category-tree-view', ['uses'=>'CategoriesController@manageCategory']);
         Route::post('add-category',['as'=>'add.category','uses'=>'CategoriesController@create']);

@@ -145,6 +145,7 @@ return [
 	'Supplier Invoices'     => 'Facturas de Proveedores',
 	'Supplier Vouchers'     => 'Recibos de Proveedores',
 	'Purchase Orders'     => 'Pedidos de Compra',
+	'Assembly Orders' => 'Ordenes de Montaje',
 	'Sale Orders'     => 'Pedidos de Clientes',
 	'Sale Order Templates'     => 'Plantillas Pedidos Venta',
 	'Orders'     => 'Pedidos',

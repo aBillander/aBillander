@@ -188,6 +188,14 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\ProductionOrderUnfinished' => [
             'App\Listeners\ProductionOrderUnfinishedListener',
         ],
+    
+        'App\Events\AssemblyOrderFinished' => [
+            'App\Listeners\AssemblyOrderFinishedListener',
+        ],
+    
+        'App\Events\AssemblyOrderUnfinished' => [
+            'App\Listeners\AssemblyOrderUnfinishedListener',
+        ],
 
 /*
         'App\Events\CustomerInvoiceViewed' => [

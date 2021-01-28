@@ -57,6 +57,8 @@ return [
 	'(daily)' => '(diario)',
 	'Cumulative' => 'Acumulado',
 
+	'Closed Documents'     => 'Documentos Cerrados',
+
 	''     => '',
 
 

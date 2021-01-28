@@ -19,7 +19,7 @@ class ProductionOrder extends Model
         );
 
     protected $dates = [
-                        'finish_date'
+                        'due_date', 'finish_date'
                        ];
 	
     protected $fillable = [ 'sequence_id', 'reference', 'created_via', 
@@ -558,6 +558,11 @@ if ( $bomitem )
     public function product()
     {
         return $this->belongsTo('App\Product', 'product_id');
+    }
+
+    public function measureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
     }
     
     public function productionorderlines()

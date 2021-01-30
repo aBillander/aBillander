@@ -538,9 +538,10 @@ class ImportProductsController extends Controller
      *
      * @return 
      */
-    public function export()
+    public function export(Request $request)
     {
         $products = $this->product
+                          ->filter( $request->all() )
                           ->with('measureunit')
 //                          ->with('combinations')                                  
                           ->with('category')

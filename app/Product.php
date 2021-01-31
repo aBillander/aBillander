@@ -257,6 +257,8 @@ class Product extends Model {
             $product->productmeasureunits()->delete();
             $product->producttools()->delete();
             $product->customerordertemplatelines()->delete();
+
+            $product->packitems()->delete();
         });
 
     }

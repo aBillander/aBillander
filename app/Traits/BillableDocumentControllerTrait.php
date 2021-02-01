@@ -275,9 +275,20 @@ die();
 
     public function sendemail( $id, Request $request )
     {
-        // $id = $request->input('id');
+        // Fire before send event
+        try {
+            // Dispatch event
+            $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Emailing';
+            event( new $event_class( $document ) );
+                    
+        } catch (\Exception $e) {
 
-        // abi_r($id);die();
+        } catch (\Throwable $e) {
+            // Just event class not defined. Do not worry, so far
+            // Code is throwing an error, not an exception.
+            // The object being thrown is an Error. Both the Exception and Error classes implement a common interface, Throwable.
+            // https://stackoverflow.com/questions/49564188/laravel-5-5-try-catch-is-not-working-its-execute-the-exception-handle
+        }
 
         // PDF stuff
         try {

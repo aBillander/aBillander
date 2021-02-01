@@ -136,7 +136,7 @@
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
-                .append( '<div>[' + item.reference+'] ' + item.name + "</div>" )
+                .append( item.product_type == 'grouped' ? '' : '<div>[' + item.reference+'] ' + item.name + "</div>" )
                 .appendTo( ul );
             };
 

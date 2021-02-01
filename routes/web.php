@@ -345,13 +345,19 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('products/{id}/recentsales',  'ProductsController@getRecentSales')->name('products.recentsales');
 
-        Route::get('products/{id}/getpricerules',         'ProductsController@getPriceRules')->name('product.getpricerules');
+        Route::get('products/{id}/getpricerules',        'ProductsController@getPriceRules')->name('product.getpricerules');
+
+        Route::get('products/{id}/getpackitems',         'ProductsController@getPackItems' )->name('product.getpackitems' );
 
         Route::resource('products.measureunits', 'ProductMeasureUnitsController');
         Route::post('product/{id}/measureunit/change', 'ProductMeasureUnitsController@changeMainMeasureUnit')->name('product.measureunit.change');
         Route::get('product/{id}/getmeasureunits', 'ProductsController@getMeasureUnits')->name('product.measureunits'); // JSON response
 
-        Route::resource('products.images', 'ProductImagesController');
+        Route::resource('products.images',    'ProductImagesController');
+
+        Route::resource('products.packitems',       'PackItemsController'    );
+        Route::post('products/packitems/sortlines', 'PackItemsController@sortLines')->name('products.packitems.sortlines');
+
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
 //        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
         Route::get('products/{id}/bom/pdf', 'ProductsController@getPdfBom')->name('product.bom.pdf');
@@ -394,6 +400,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('productionorders', 'ProductionOrdersController');
         Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');
         Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
+
+        Route::resource('assemblyorders', 'AssemblyOrdersController');
 
         Route::resource('categories', 'CategoriesController');
         Route::get('category-tree-view', ['uses'=>'CategoriesController@manageCategory']);

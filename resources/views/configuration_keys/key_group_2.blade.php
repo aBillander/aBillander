@@ -479,7 +479,7 @@
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-8">
-        {!! Form::select('DEF_WAREHOUSE', ['0' => l('-- Please, select --', [], 'layouts')] + $warehouseList, old('DEF_WAREHOUSE', $key_group['DEF_WAREHOUSE']), array('class' => 'form-control')) !!}
+        {!! Form::select('DEF_WAREHOUSE', $warehouseList, old('DEF_WAREHOUSE', $key_group['DEF_WAREHOUSE']), array('class' => 'form-control')) !!}
         {{ $errors->first('DEF_WAREHOUSE', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-4"> </div>

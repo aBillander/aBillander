@@ -257,6 +257,8 @@ class Product extends Model {
             $product->productmeasureunits()->delete();
             $product->producttools()->delete();
             $product->customerordertemplatelines()->delete();
+
+            $product->packitems()->delete();
         });
 
     }
@@ -1954,6 +1956,12 @@ class Product extends Model {
         if ( Configuration::isTrue('ALLOW_SALES_WITHOUT_STOCK') ) 
             return $query;
 
-        return $query->where('quantity_onhand', '>', 0);
+//        return $query->where('quantity_onhand', '>', 0);
+
+        return $query->where(function ($query) {
+                            $query->where('quantity_onhand', '>', 0);
+                            // Pack Products are assembled "on order", and stock is zero
+                            $query->orWhere('product_type', 'grouped');
+        });
     }
 }

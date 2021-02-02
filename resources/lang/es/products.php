@@ -361,4 +361,6 @@ return [
 	
     'View Product' => 'Ir al Producto',
 
+    'This Product is of Type "Grouped"' => 'Este Producto es de Tipo "Agrupado"',
+
 ];

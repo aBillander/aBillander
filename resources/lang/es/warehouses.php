@@ -46,6 +46,7 @@ return [
 
 	'Warehouses - Edit'     => 'Almacenes - Modificar',
 	'Edit Warehouse'     => 'Modificar Almacén',
+	'Products' => 'Productos',
 	''     => '',
 	''     => '',
 	''     => '',

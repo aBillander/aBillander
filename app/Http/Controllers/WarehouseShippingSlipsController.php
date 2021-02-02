@@ -45,7 +45,7 @@ class WarehouseShippingSlipsController extends Controller
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
         $documents = $this->document
-//                            ->filter( $request->all() )
+                            ->filter( $request->all() )
                             ->with('warehouse')
                             ->with('warehousecounterpart')
                             ->with('shippingmethod')
@@ -752,7 +752,21 @@ class WarehouseShippingSlipsController extends Controller
 
         $search = $request->term;
 
-        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $warehouse_id = (int) $request->input('warehouse_id', 0);
+
+        if ( $warehouse_id > 0 )
+        {
+            $warehouse = Warehouse::findOrFail($warehouse_id);
+
+            $products = $warehouse->products()
+                                ->where(   'name',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get( );
+
+        } else {
+
+            $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
 //                                ->IsSaleable()
@@ -761,7 +775,9 @@ class WarehouseShippingSlipsController extends Controller
 //                                ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get( );
+        }
 
 
 //                                dd($products);
@@ -1376,12 +1392,10 @@ class WarehouseShippingSlipsController extends Controller
         // PDF stuff
         try {
             $document = $this->document
-                            ->with('customer')
-//                            ->with('invoicingAddress')
-//                            ->with('customerInvoiceLines')
-//                            ->with('customerInvoiceLines.CustomerInvoiceLineTaxes')
-                            ->with('currency')
-                            ->with('paymentmethod')
+                            ->with('warehouse')
+                            ->with('warehousecounterpart')
+                            ->with('shippingmethod')
+                            ->with('carrier')
                             ->with('template')
                             ->findOrFail($id);
 
@@ -1468,8 +1482,8 @@ class WarehouseShippingSlipsController extends Controller
             $data = array(
                 'from'     => $company->address->email,
                 'fromName' => $company->name_fiscal,
-                'to'       => $document->customer->address->email,
-                'toName'   => $document->customer->name_fiscal,
+                'to'       => $document->warehousecounterpart->address->email,
+                'toName'   => $document->warehousecounterpart->name_fiscal,
                 'subject'  => $subject,
                 );
 
@@ -1498,8 +1512,8 @@ class WarehouseShippingSlipsController extends Controller
 
 
         // Dispatch event
-        $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Emailed';
-        event( new $event_class( $document ) );
+//        $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Emailed';
+//        event( new $event_class( $document ) );
         
 
         return redirect()->back()->with('success', l('Your Document has been sent! &#58&#58 (:id) ', ['id' => $document->number], 'layouts'));

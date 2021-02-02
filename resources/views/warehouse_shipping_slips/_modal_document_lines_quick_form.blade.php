@@ -410,7 +410,7 @@ function quick_formSubmit()
         function auto_product_row( selector = "#row_autoproduct_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route('warehouseshippingslips.searchproduct') }}",    // ?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
+                source : "{{ route('warehouseshippingslips.searchproduct') }}?warehouse_id="+$('#warehouse_id').val(),    // ?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
                 minLength : 1,
                 appendTo : "#modal_document_lines_quick_form",
 

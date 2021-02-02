@@ -380,7 +380,7 @@ $(document).ready(function() {
   $(document).ready(function() {
 
         $("#autosupplier_name").autocomplete({
-            source : "{{ route('home.searchsupplier') }}",
+            source : "{{ route($model_path.'.ajax.supplierLookup') }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 

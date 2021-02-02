@@ -58,7 +58,7 @@
 
 
 
-        <a href="{{ route('products.export') }}" class="btn btn-sm btn-grey" 
+        <a href="{{ route('products.export', Request::all()) }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
         <a href="{{ route('wproducts.import.product.images') }}" class="btn btn-sm btn-info" style="display:none;"
@@ -83,7 +83,7 @@
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
 
 <div class="row">
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('reference', l('Reference')) !!}
     {!! Form::text('reference', null, array('class' => 'form-control')) !!}
 </div>
@@ -108,19 +108,27 @@
     {!! Form::select('procurement_type', ['' => l('All', [], 'layouts')] + $product_procurementtypeList, null, array('class' => 'form-control')) !!}
 </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2" style="display: none">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}
-    {!! Form::select('active', array('-1' => l('All', [], 'layouts'),
-                                          '0'  => l('No' , [], 'layouts'),
+    {!! Form::select('active', array(
                                           '1'  => l('Yes', [], 'layouts'),
-                                          ), null, array('class' => 'form-control')) !!}
+                                          '0'  => l('No' , [], 'layouts'),
+                                          '-1' => l('All', [], 'layouts'),
+                                          ), -1, array('class' => 'form-control')) !!}
 </div>
 
+@if( \App\Configuration::isFalse('SHOW_PRODUCTS_ACTIVE_ONLY') )
+  
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 {!! link_to_route('products.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 </div>
 
+@endif
+  
+</div>
+
+<div class="row">
 </div>
 
                 {!! Form::close() !!}

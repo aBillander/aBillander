@@ -96,8 +96,10 @@
 
     $(document).ready(function() {
 
-        // To get focus;
-        $("#autopackitem_name").focus();
+        // To get focus;        
+        $('#packitemModal').on('shown.bs.modal', function () {
+            $("#autopackitem_name").focus();
+        })
 
     });
 
@@ -115,7 +117,26 @@
 
 
         $("#autopackitem_name").autocomplete({
-            source : "{{ route('home.searchproduct') }}",
+
+            source : function(request, response) {
+                $.get("{{ route('home.searchproduct') }}", {
+                    term : request.term
+                }, function (data) {
+                    // Filter data here
+                    var final_data = $(data).filter( function( i, n ) {
+
+                        return n.product_type != "grouped";
+                    });
+
+                    // Better: $.grep( [{"name":"Lenovo Thinkpad 41A4298","website":"google"},{"name":"Lenovo Thinkpad 41A2222","website":"google"}], function( n, i ) {
+                    //  return n.website==='google';
+                    // });
+                    // https://stackoverflow.com/questions/23720988/how-to-filter-json-data-in-javascript-or-jquery
+
+                    response(final_data);
+                });
+            },
+
             minLength : 1,
             appendTo : "#packitemModal",
 
@@ -136,7 +157,7 @@
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
-                .append( item.product_type == 'grouped' ? '' : '<div>[' + item.reference+'] ' + item.name + "</div>" )
+                .append( '<div>[' + item.reference+'] ' + item.name + "</div>" )
                 .appendTo( ul );
             };
 

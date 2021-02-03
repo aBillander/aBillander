@@ -134,17 +134,17 @@
 
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('customer_group_id') ? 'has-error' : '' }}">
                      {{ l('Customer Group') }}
-                     {!! Form::select('customer_group_id', array('0' => l('-- Please, select --', [], 'layouts')) + $customer_groupList, null, array('class' => 'form-control')) !!}
+                     {!! Form::select('customer_group_id', array('' => l('-- Please, select --', [], 'layouts')) + $customer_groupList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('customer_group_id', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('price_list_id') ? 'has-error' : '' }}">
                      {{ l('Price List') }}
-                     {!! Form::select('price_list_id', array('0' => l('-- Please, select --', [], 'layouts')) + $price_listList, null, array('class' => 'form-control')) !!}
+                     {!! Form::select('price_list_id', array('' => l('-- Please, select --', [], 'layouts')) + $price_listList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('price_list_id', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('sales_rep_id') ? 'has-error' : '' }}">
                      {{ l('Sales Representative') }}
-                     {!! Form::select('sales_rep_id', array('0' => l('-- Please, select --', [], 'layouts')) + $salesrepList, null, array('class' => 'form-control')) !!}
+                     {!! Form::select('sales_rep_id', array('' => l('-- Please, select --', [], 'layouts')) + $salesrepList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('sales_rep_id', '<span class="help-block">:message</span>') !!}
                   </div>
         </div>
@@ -227,6 +227,14 @@
                      {{ l('Template for Shipping Slips') }}
                      {!! Form::select('shipping_slip_template_id', array('' => l('-- Please, select --', [], 'layouts')) + $shipping_slips_templateList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('shipping_slip_template_id', '<span class="help-block">:message</span>') !!}
+                     
+                  </div>
+
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('vat_regime') ? 'has-error' : '' }}">
+                     
+                     {{ l('VAT Regime') }}
+                     {!! Form::select('vat_regime', \App\Customer::getVatRegimeList(), null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('vat_regime', '<span class="help-block">:message</span>') !!}
                      
                   </div>
         </div>

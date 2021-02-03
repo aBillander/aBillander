@@ -11,7 +11,7 @@
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a -->
     </div>
     <h2>
-        {{ l('Sales') }} ::  {{ l($model) }} {{ l('(daily)') }}
+        {{ l('Sales') }} ::  {{ l($model) }} {{ l('(daily)') }} :: {{ l('Closed Documents') }}
     </h2>        
 </div>
 

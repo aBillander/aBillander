@@ -5,7 +5,7 @@
 
 @section('content')
 
-	@include('templates::supplier_invoices.default.order_body')
+	@include('templates::supplier_invoices.default.invoice_body')
 
 @endsection
 
@@ -19,7 +19,7 @@
 
 <style>
 
-	@include('templates::supplier_invoices.default.order_css')
+	@include('templates::supplier_invoices.default.invoice_css')
 
 </style>
 

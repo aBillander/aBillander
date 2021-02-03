@@ -1,10 +1,10 @@
 
 {!! Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'class' => 'form')) !!}
 <input type="hidden" value="main_data" name="tab_name" id="tab_name">
-
+{{--
                 {!! Form::hidden('product_type',     'simple',      array('id' => 'product_type')) !!}
                 {!! Form::hidden('procurement_type', 'manufacture', array('id' => 'procurement_type')) !!}
-
+--}}
 
 <div class="panel panel-primary" id="panel_main_data">
    <div class="panel-heading">
@@ -53,7 +53,8 @@
                   
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
                      {{ l('Product type') }}
-                     {!! Form::text('product_type_name', \App\Product::getTypeName($product->product_type), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
+                     <div class="form-control">{{ \App\Product::getTypeName($product->product_type) }}</div>
+                     {{-- !! Form::text('product_type_name', \App\Product::getTypeName($product->product_type), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !! --}}
                   </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('procurement_type') ? 'has-error' : '' }}"">

@@ -196,6 +196,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get( '/jennifer/reports/mod347/{mod347_year}'     , 'JenniferController@reportModelo347'    )->name('jennifer.reports.mod347');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/email/{customer_id}', 'JenniferController@sendemail')->name('jennifer.reports.mod347.email'  );
         Route::get( '/jennifer/reports/mod347/{mod347_year}/customer/{customer_id}', 'JenniferController@reportModelo347Customer')->name('jennifer.reports.mod347.customer');
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/supplier/{supplier_id}', 'JenniferController@reportModelo347Supplier')->name('jennifer.reports.mod347.supplier');
 
         Route::group(['prefix' => 'accounting', 'namespace' => '\Accounting'], function ()
         {
@@ -226,6 +227,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('/reports/home', 'ReportsController@index')->name('reports.home');
         Route::post('/reports/product/sales'  , 'ReportsController@reportProductSales'  )->name('reports.products.sales');
         Route::post('/reports/customer/sales' , 'ReportsController@reportCustomerSales' )->name('reports.customers.sales');
+        Route::post('/reports/customer/services' , 'ReportsController@reportCustomerServices' )->name('reports.customers.services');
         Route::post('/reports/category/sales' , 'ReportsController@reportCategorySales' )->name('reports.categories.sales');
 
         Route::post('/reports/abc/product/sales'  , 'ReportsController@reportABCProductSales'  )->name('reports.abc.products.sales');
@@ -311,7 +313,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('templates', 'TemplatesController');
 
-        Route::resource('currencies', 'CurrenciesController');
+        Route::resource('currencies',      'CurrenciesController');
+        Route::get( 'currencies/currency/converter', 'CurrenciesController@converter')->name('currencies.converter');
+        Route::post('currencies/currency/converter/result', 'CurrenciesController@converterResult')->name('currencies.converter.result');
+
         Route::get('currencies/{id}/exchange',   array('uses'=>'CurrenciesController@exchange', 
                                                                 'as' => 'currencies.exchange' ) );  
         Route::post('currencies/ajax/rate_lookup', array('uses' => 'CurrenciesController@ajaxCurrencyRateSearch', 
@@ -340,13 +345,19 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('products/{id}/recentsales',  'ProductsController@getRecentSales')->name('products.recentsales');
 
-        Route::get('products/{id}/getpricerules',         'ProductsController@getPriceRules')->name('product.getpricerules');
+        Route::get('products/{id}/getpricerules',        'ProductsController@getPriceRules')->name('product.getpricerules');
+
+        Route::get('products/{id}/getpackitems',         'ProductsController@getPackItems' )->name('product.getpackitems' );
 
         Route::resource('products.measureunits', 'ProductMeasureUnitsController');
         Route::post('product/{id}/measureunit/change', 'ProductMeasureUnitsController@changeMainMeasureUnit')->name('product.measureunit.change');
         Route::get('product/{id}/getmeasureunits', 'ProductsController@getMeasureUnits')->name('product.measureunits'); // JSON response
 
-        Route::resource('products.images', 'ProductImagesController');
+        Route::resource('products.images',    'ProductImagesController');
+
+        Route::resource('products.packitems',       'PackItemsController'    );
+        Route::post('products/packitems/sortlines', 'PackItemsController@sortLines')->name('products.packitems.sortlines');
+
         Route::get('product/searchbom', 'ProductsController@searchBOM')->name('product.searchbom');
 //        Route::post('product/{id}/attachbom', 'ProductsController@attachBOM')->name('product.attachbom');
         Route::get('products/{id}/bom/pdf', 'ProductsController@getPdfBom')->name('product.bom.pdf');
@@ -389,6 +400,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('productionorders', 'ProductionOrdersController');
         Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');
         Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
+
+        Route::resource('assemblyorders', 'AssemblyOrdersController');
 
         Route::resource('categories', 'CategoriesController');
         Route::get('category-tree-view', ['uses'=>'CategoriesController@manageCategory']);
@@ -739,16 +752,16 @@ foreach ($pairs as $pair) {
         Route::resource('customervouchers'      , 'CustomerVouchersController');
         Route::get('customervouchers/{id}/setduedate'  , 'CustomerVouchersController@setduedate');
         Route::get('customervouchers/{id}/pay'  , 'CustomerVouchersController@pay');
-        Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('voucher.unlink');
+        Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('customervoucher.unlink');
 
         Route::post('customervouchers/payvouchers'  , 'CustomerVouchersController@payVouchers')->name('customervouchers.payvouchers');
 
         Route::post('customervouchers/unlinkvouchers'  , 'CustomerVouchersController@unlinkVouchers')->name('customervouchers.unlinkvouchers');
 
-        Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('voucher.expresspay');
-        Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('voucher.unpay');
+        Route::get('customervouchers/{id}/expresspay', 'CustomerVouchersController@expressPayVoucher')->name('customervoucher.expresspay');
+        Route::get('customervouchers/{id}/unpay', 'CustomerVouchersController@unPayVoucher')->name('customervoucher.unpay');
         
-        Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('voucher.collectible');
+        Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('customervoucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
 
@@ -906,8 +919,14 @@ foreach ($pairs as $pair) {
             Route::get('/get-daily-sales',      'ChartDailyCustomerSalesController@getDailySales')->name('chart.customerorders.daily');
             Route::get('/get-daily-sales-data', 'ChartDailyCustomerSalesController@getDailySalesData')->name('chart.customerorders.daily.data');
 
-            Route::get('/get-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('chart.customervouchers.monthly');
-            Route::get('/get-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('chart.customervouchers.monthly.data');
+            Route::get('/get-customer-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('chart.customervouchers.monthly');
+            Route::get('/get-customer-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('chart.customervouchers.monthly.data');
+
+            Route::get('/get-supplier-monthly-vouchers',      'ChartSupplierVouchersController@getMonthlyVouchers')->name('chart.suppliervouchers.monthly');
+            Route::get('/get-supplier-monthly-vouchers-data', 'ChartSupplierVouchersController@getMonthlyVouchersData')->name('chart.suppliervouchers.monthly.data');
+
+            Route::get('/get-all-monthly-vouchers',      'ChartAllVouchersController@getMonthlyVouchers')->name('chart.allvouchers.monthly');
+            Route::get('/get-all-monthly-vouchers-data', 'ChartAllVouchersController@getMonthlyVouchersData')->name('chart.allvouchers.monthly.data');
 
             Route::get('/get-monthly-product-stock',      'ChartProductStockController@getMonthlyProductStock')->name('chart.product.stock.monthly');
             Route::get('/get-monthly-product-stock-data', 'ChartProductStockController@getMonthlyProductStockData')->name('chart.product.stock.monthly.data');

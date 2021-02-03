@@ -5,7 +5,7 @@
 
 @section('content')
 
-	@include('templates::supplier_shipping_slips.default.order_body')
+	@include('templates::supplier_shipping_slips.default.shipping_slip_body')
 
 @endsection
 
@@ -19,7 +19,7 @@
 
 <style>
 
-	@include('templates::supplier_shipping_slips.default.order_css')
+	@include('templates::supplier_shipping_slips.default.shipping_slip_css')
 
 </style>
 

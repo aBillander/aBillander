@@ -6,6 +6,7 @@ use App\Scopes\ShowOnlyActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\ProductPackableTrait;
 use App\Traits\ModelAttachmentableTrait;
 
 // use Illuminate\Validation\Rule;
@@ -30,6 +31,7 @@ class Product extends Model {
     use AutoSkuTrait;
     use SoftDeletes;
     
+    use ProductPackableTrait;
     use ModelAttachmentableTrait;
 
     use StockableTrait;
@@ -195,8 +197,41 @@ class Product extends Model {
                     $product->autoSKU();
         });
 
-        // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
+
         static::deleting(function ($product)
+        {
+            // before delete() method call this
+            $relations = [
+                    'customerquotationlines',
+                    'customerorderlines',
+                    'customershippingsliplines',
+                    'customerinvoicelines',
+                    'warehouseshippingsliplines',
+                    'lots',
+                    'boms',
+                    'productBOMlines',
+            ];
+
+            if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+                $relations = $relations + ['productionorders', 'productionorderlines'];
+
+            // load relations
+            $product->load( $relations );
+
+            // Check Relations
+            foreach ($relations as $relation) {
+                # code...
+                if ( $product->{$relation}->count() > 0 )
+                    throw new \Exception( l('Product has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+            // To do: manage models: Supplier Price list line
+
+        });
+
+        // https://laracasts.com/discuss/channels/general-discussion/deleting-related-models
+        // cause a delete of a Customer to cascade to children so they are also deleted
+        static::deleted(function ($product)
         {
             // before delete() method call this
             foreach($product->images as $line) {
@@ -208,6 +243,22 @@ class Product extends Model {
             foreach($product->stockmovements as $mvt) {
                 $mvt->delete();
             }
+            
+            // Attachments
+            foreach($product->attachments as $line) {
+                $line->delete();
+            }
+
+            $product->warehouselines()->delete();
+            $product->pricelistlines()->delete();
+            $product->stockcountlines()->delete();
+            $product->cartlines()->delete();
+            $product->pricerules()->delete();
+            $product->productmeasureunits()->delete();
+            $product->producttools()->delete();
+            $product->customerordertemplatelines()->delete();
+
+            $product->packitems()->delete();
         });
 
     }
@@ -591,18 +642,19 @@ class Product extends Model {
         return $query;
     }
 
-
+/* Moved to StockableTrait 
     public function getStockByWarehouse( $warehouse_id = null  )
     {
+        // By convention
         if ( $warehouse_id === null ) return $this->quantity_onhand;
 
         $warehouse = $this->warehouses->where('id', $warehouse_id)->first();
 
-        if ( !$warehouse ) return $this->quantity_onhand;
+        if ( !$warehouse ) return 0.0;
 
         return $warehouse->pivot ? $warehouse->pivot->quantity : 0.0;
     }
-    
+*/    
 
     public function getLastStockTakingByWarehouse( $warehouse = null )
     {
@@ -1057,7 +1109,7 @@ class Product extends Model {
 
     public function productBOMlines()
     {
-        return $this->hasMany('App\ProductBOMline', 'product_id');
+        return $this->hasMany('App\ProductBOMLine', 'product_id');
     }
     
 
@@ -1125,6 +1177,61 @@ class Product extends Model {
     public function warehouselines()
     {
         return $this->hasMany('App\WarehouseProductLine');
+    }
+
+    public function stockcountlines()
+    {
+        return $this->hasMany('App\StockCountLine');
+    }
+
+    public function cartlines()
+    {
+        return $this->hasMany('App\CartLine');
+    }
+
+    public function pricerules()
+    {
+        return $this->hasMany('App\PriceRule');
+    }
+
+    public function customerordertemplatelines()
+    {
+        return $this->hasMany('App\CustomerOrderTemplateLine');
+    }
+
+    public function customerquotationlines()
+    {
+        return $this->hasMany('App\CustomerQuotationLine');
+    }
+
+    public function customerorderlines()
+    {
+        return $this->hasMany('App\CustomerOrderLine');
+    }
+
+    public function customershippingsliplines()
+    {
+        return $this->hasMany('App\CustomerShippingSlipLine');
+    }
+
+    public function customerinvoicelines()
+    {
+        return $this->hasMany('App\CustomerInvoiceLine');
+    }
+
+    public function warehouseshippingsliplines()
+    {
+        return $this->hasMany('App\WarehouseShippingSlipLine');
+    }
+
+    public function productionorders()
+    {
+        return $this->hasMany('App\ProductionOrder');
+    }
+
+    public function productionorderlines()
+    {
+        return $this->hasMany('App\ProductionOrderLine');
     }
 
     public function lots()
@@ -1375,6 +1482,10 @@ class Product extends Model {
 
         // Add Ecotax
         if ( Configuration::isTrue('ENABLE_ECOTAXES') && $this->ecotax )
+        // Homeland Suppliers only
+        // To do: Ecotax depends on location(in the same way that regular Taxes)
+        // Check Product->getTaxRulesByProduct
+        if ( $supplier->address->country_id == Context::getContext()->company->address->country_id )
         {
             // Template: $price = [ price, price_tax_inc, price_is_tax_inc ]
 //            $ecoprice = Price::create([
@@ -1845,6 +1956,12 @@ class Product extends Model {
         if ( Configuration::isTrue('ALLOW_SALES_WITHOUT_STOCK') ) 
             return $query;
 
-        return $query->where('quantity_onhand', '>', 0);
+//        return $query->where('quantity_onhand', '>', 0);
+
+        return $query->where(function ($query) {
+                            $query->where('quantity_onhand', '>', 0);
+                            // Pack Products are assembled "on order", and stock is zero
+                            $query->orWhere('product_type', 'grouped');
+        });
     }
 }

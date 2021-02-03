@@ -84,8 +84,8 @@
             <td>{{ $product->as_quantity('quantity_onhand') }}</td>
             <!-- td>{{ $product->as_price('cost_price') }}</td -->
             <td>{{ $product->displayPrice }}</td>
-            <!-- td>{{ $product->tax->name }}</td -->
-            <!-- td>{{ $product->as_percentable($product->tax->percent) }}</td -->
+            <!-- td>{ { $product->tax->name }}</td -->
+            <!-- td>{ { $product->as_percentable($product->tax->percent) }}</td -->
             <!-- td>@if (isset($product->category)) {{-- $product->category->name --}} @else - @endif</td -->
             <!-- td>{{ $product->quantity_decimal_places }}</td>
             <td>{{ $product->manufacturing_batch_size }}</td -->

@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\StockMovement;
+use App\AssemblyOrder;
 
 use App\Configuration;
 
@@ -18,6 +19,41 @@ trait BillableStockMovementsTrait
             // Only products, please!!!
             if ( ! ( $line->line_type == 'product' ) ) continue;
             if ( ! ( $line->product_id > 0 ) )         continue;
+
+            if ( $line->product->isPack() ) {
+                // Issue Assembly Order in backstage!
+                $product = $line->product;
+                $order_quantity = $line->quantity;
+    
+                $assembly_data = [
+            //            'created_via' => $data['created_via'] ?? 'manual',
+            //            'status'      => $data['status']      ?? 'released',
+
+                        'product_id' => $product->id,
+                        'product_reference' => $product->reference,
+                        'product_name' => $product->name,
+
+            //            'required_quantity' => $order_required,
+                        'planned_quantity' => $order_quantity,
+                        // 'finished_quantity'
+
+                        'measure_unit_id' => $product->measure_unit_id,
+
+                        'due_date' => \Carbon\Carbon::now(),
+                        // 'finish_date'
+
+            //            'notes' => $data['notes'] ?? null,
+
+                        'work_center_id' => $product->work_center_id,
+
+            //            'manufacturing_batch_size' => $order_manufacturing_batch_size,
+                        'warehouse_id' => $this->warehouse_id,      // Configuration::get('DEF_WAREHOUSE')
+                    ];
+
+                    $assemblyorder = AssemblyOrder::createWithLines($assembly_data);
+
+                    $assemblyorder->finish();
+            }
 
             //
             $data = [
@@ -126,6 +162,42 @@ trait BillableStockMovementsTrait
                 }
 
             }   // Movements loop ENDS
+
+            
+            if ( $line->product->isPack() ) {
+                // Issue Assembly Order in backstage!
+                $product = $line->product;
+                $order_quantity = -$line->quantity;
+    
+                $assembly_data = [
+            //            'created_via' => $data['created_via'] ?? 'manual',
+            //            'status'      => $data['status']      ?? 'released',
+
+                        'product_id' => $product->id,
+                        'product_reference' => $product->reference,
+                        'product_name' => $product->name,
+
+            //            'required_quantity' => $order_required,
+                        'planned_quantity' => $order_quantity,
+                        // 'finished_quantity'
+
+                        'measure_unit_id' => $product->measure_unit_id,
+
+                        'due_date' => \Carbon\Carbon::now(),
+                        // 'finish_date'
+
+            //            'notes' => $data['notes'] ?? null,
+
+                        'work_center_id' => $product->work_center_id,
+
+            //            'manufacturing_batch_size' => $order_manufacturing_batch_size,
+                        'warehouse_id' => $this->warehouse_id,      // Configuration::get('DEF_WAREHOUSE')
+                    ];
+
+                    $assemblyorder = AssemblyOrder::createWithLines($assembly_data);
+
+                    $assemblyorder->finish();
+            }
 
         }   // Lines loop ENDS
 

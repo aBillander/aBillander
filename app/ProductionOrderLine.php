@@ -43,6 +43,11 @@ class ProductionOrderLine extends Model
        return $this->belongsTo('App\Product');
     }
 
+    public function measureunit()
+    {
+        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+    }
+
     /**
      * Get all of the Production Order line's Stock Movements.
      */

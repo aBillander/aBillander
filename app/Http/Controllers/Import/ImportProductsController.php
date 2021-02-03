@@ -327,6 +327,16 @@ class ImportProductsController extends Controller
                     $data['recommended_retail_price_tax_inc'] = (float) $data['recommended_retail_price_tax_inc'];
 
 
+                    // handy conversions:
+                    $data['reorder_point'] = (float) $data['reorder_point'];
+                    $data['maximum_stock'] = (float) $data['maximum_stock'];
+
+                    $data['lot_tracking'] = (int) $data['lot_tracking'];
+                    $data['blocked'] = (int) $data['blocked'];
+                    $data['supply_lead_time'] = (int) $data['supply_lead_time'];
+                    $data['publish_to_web'] = (int) $data['publish_to_web'];
+                    $data['active'] = (int) $data['active'];
+                    $data['position'] = (int) $data['position'];
 
 
 
@@ -337,6 +347,18 @@ class ImportProductsController extends Controller
                             // Create Product
                             // $product = $this->product->create( $data );
                             $product = $this->product->updateOrCreate( [ 'reference' => $data['reference'] ], $data );
+
+                            if ( $product->price_tax_inc == 0.0 )
+                            {
+                                $product->price_tax_inc = $product->price * ( 1.0 + $product->tax->percent / 100.0 );
+                                $product->save();
+                            }
+
+                            if ( $product->price == 0.0 )
+                            {
+                                $product->price = $product->price_tax_inc / ( 1.0 + $product->tax->percent / 100.0 );
+                                $product->save();
+                            }
                         }
 
                         $i_ok++;
@@ -516,9 +538,10 @@ class ImportProductsController extends Controller
      *
      * @return 
      */
-    public function export()
+    public function export(Request $request)
     {
         $products = $this->product
+                          ->filter( $request->all() )
                           ->with('measureunit')
 //                          ->with('combinations')                                  
                           ->with('category')

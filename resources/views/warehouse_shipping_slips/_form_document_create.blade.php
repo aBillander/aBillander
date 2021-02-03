@@ -5,7 +5,7 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('template_id') ? 'has-error' : '' }}">
             {{ l('Template') }}
-            {!! Form::select('template_id', array('' => l('-- Please, select --', [], 'layouts')) + $templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
+            {!! Form::select('template_id', $templateList, null, array('class' => 'form-control', 'id' => 'template_id')) !!}
             {!! $errors->first('template_id', '<span class="help-block">:message</span>') !!}
          </div>
 
@@ -183,6 +183,12 @@
     <script type="text/javascript">
 
         $(document).ready(function() {
+
+          $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
+
+          $('#template_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE'))}});
+
+          $('#sequence_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE'))}});
 
         });
 

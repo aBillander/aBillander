@@ -280,6 +280,10 @@ class ProductsController extends Controller
         // Th-th-th-that's all folks!
 
 
+        if ( $product->isPack() )
+        return redirect('products/'.$product->id.'/edit#pack')
+                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $request->input('name'));
+        else 
         if ($action == 'completeProductData')
         return redirect('products/'.$product->id.'/edit')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $request->input('name'));
@@ -481,7 +485,7 @@ class ProductsController extends Controller
             // Dates (cuen)
             $this->mergeFormDates( ['available_for_sale_date', 'new_since_date'], $request );
             
-            $tax = \App\Tax::find( $product->tax_id );
+            $tax = \App\Tax::find( $product->tax_id > 0 ? $product->tax_id : $request->input('tax_id') );
             if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
                 $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
                 $request->merge( ['price' => $price] );
@@ -528,15 +532,18 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        // Any Documents? If any, cannot delete, only disable
+        $product = $this->product->findOrFail($id);
 
-        // Delete Product & Combinations Warehouse lines
+        try {
 
-        // Delete Combinations
+            $product->delete();
+            
+        } catch (\Exception $e) {
 
-        // Delete Images
-
-        $this->product->findOrFail($id)->delete();
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
 
         return redirect('products')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
@@ -1113,6 +1120,18 @@ LIMIT 1
         //return $items_per_page ;
         
         return view('products._panel_pricerules_list', compact('id', 'product_rules', 'items_per_page_pricerules'));
+    }
+
+    
+    public function getPackItems($id, Request $request)
+    {
+        $product = $this->product
+                        ->with('packitems')
+                        ->findOrFail($id);
+        
+        $packitems = $product->packitems;
+
+        return view('products._panel_packitems_list', compact('product', 'packitems'));
     }
 
 

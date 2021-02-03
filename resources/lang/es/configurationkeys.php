@@ -202,6 +202,8 @@ return [
 	'BUSINESS_NAME_TO_SHOW.help' => 'Este nombre se mostrará en informes y campos de búsqueda.',
 	'FILE_ALLOWED_EXTENSIONS.name' => 'Extensiones de Fichero permitidas',
 	'FILE_ALLOWED_EXTENSIONS.help' => 'Sólo podrán subirse al Servidor Ficheros con estas Extensiones. Lista separada por comas.',
+	'CURRENCY_CONVERTER_API_KEY.name' => 'Clave API para el Conversor de Divisas',
+	'CURRENCY_CONVERTER_API_KEY.help' => 'Obtenga una Clave API gratis en: <i>www.currencyconverterapi.com</i>.',
 	'ALLOW_IP_ADDRESSES.name' => 'Acceso por Dirección IP',
 	'ALLOW_IP_ADDRESSES.help' => 'Sólo estas Direcciones IP tendrán acceso a aBillander. Lista separada por comas.',
 	'MAX_DB_BACKUPS.name' => 'Número Máximo de Copias de la Base de Datos en el Servidor',
@@ -231,6 +233,11 @@ return [
 	'USE_CUSTOM_THEME.help' => 'El Tema personalizado está en la carpeta <i>/resources/theme/</i>.',
 	'DEVELOPER_MODE.name' => 'DEVELOPER_MODE',
 	'DEVELOPER_MODE.help' => '',
+
+	'URL_ABILLANDER_DOCS.name' => 'Url Documentación de aBillander',
+	'URL_ABILLANDER_DOCS.help' => '',
+	'URL_ABILLANDER_SUPPORT.name' => 'Url Centro de Soporte de aBillander',
+	'URL_ABILLANDER_SUPPORT.help' => '',
 
 	'Auto-SKU' => 'Auto-SKU',
 	'SKU_PREFIX_LENGTH.name' => 'Prefijo',

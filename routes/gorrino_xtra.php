@@ -25,6 +25,28 @@
 
 /* ********************************************************** */
 
+Route::get('f3', function( )
+{
+	$fs=[486, 205, 136];
+
+	foreach ($fs as $fi)
+	{
+	    $f=\App\CustomerInvoice::find($fi);
+	
+	    echo $f->id.' - '.$f->open_balance.' - '.$f->payment_status;
+	    
+	    $f->checkPaymentStatus();
+	
+	    abi_r($f->open_balance);
+	    abi_r($f->payment_status);
+	    abi_r($f->payment_status_name);
+	    abi_r('**********');
+	}
+});
+
+
+/* ********************************************************** */
+
 
 Route::get('xtra_state_id', function()
 {

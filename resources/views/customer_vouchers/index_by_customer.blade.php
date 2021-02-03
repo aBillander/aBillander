@@ -17,6 +17,9 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
+        <a href="{{ route('customervouchers.export', ['customer_id' => $customer->id, 'autocustomer_name' => $customer->name_regular] + Request::all()) }}" class="btn btn-sm btn-grey" 
+                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
         <a href="{{ route('sepasp.directdebits.index') }}" class="btn xbtn-sm btn-navy" 
         		title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
     </div>
@@ -73,6 +76,18 @@
         {!! Form::label('date_to_form', l('Date to', 'layouts')) !!}
         {!! Form::text('date_to_form', null, array('id' => 'date_to_form', 'class' => 'form-control')) !!}
     </div>
+
+
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('amount', l('Amount')) !!}
+        {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control')) !!}
+    </div>
+
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
+    {!! Form::label('status', l('Status')) !!}
+    {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
+</div>
+
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-auto_direct_debit">
      {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}

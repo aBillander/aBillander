@@ -52,6 +52,7 @@ return [
 	'Margin'     => 'Margen',
 	'Margin calculation method'     => 'Método de cálculo del Margen',
 	'Recommended Retail Price'     => 'Precio de Venta Recomendado',
+	'Recommended Retail Price (with Tax)'     => 'Precio de Venta Recomendado (con IVA)',
 	'Available for sale'     => 'Disponible para Venta',
 	'Price input method'     => 'Método de entrada de Precios',
 	'Save tax included?'     => '¿Guardar con IVA incluido?',
@@ -339,6 +340,27 @@ return [
 	*/
 
     'Products with no Stock' => 'Productos sin Stock',
-    'Minimum Stock' => 'Stock Mínimo'
+    'Minimum Stock' => 'Stock Mínimo',
+
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Products Language Lines :: Packs
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Pack'     => 'Pack',
+	'Products in this Pack' => 'Productos en este Pack',
+	'Add Product to this Pack' => 'Añadir Producto a este Pack',
+	'Search by Name or Reference' => 'Buscar por Nombre o Referencia',
+	'Unit'     => 'Unidad',
+	
+    'View Product' => 'Ir al Producto',
+
+    'This Product is of Type "Grouped"' => 'Este Producto es de Tipo "Agrupado"',
 
 ];

@@ -18,6 +18,33 @@ class PaymentType extends Model {
         'alias'    => ['required', 'min:2', 'max:32'],
         'accounting_code'    => ['required', 'min:2', 'max:32'],
     ];
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+
+        static::deleting(function ($method)
+        {
+            // before delete() method call this
+            $relations = [
+                    'paymentmethods',
+                    'payments',
+            ];
+
+            // load relations
+            $method->load( $relations );
+
+            // Check Relations
+            foreach ($relations as $relation) {
+                # code...
+                if ( $method->{$relation}->count() > 0 )
+                    throw new \Exception( l('Payment Type has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+        });
+    }
     
 
     /*
@@ -25,6 +52,11 @@ class PaymentType extends Model {
     | Relationships
     |--------------------------------------------------------------------------
     */
+    
+    public function paymentmethods()
+    {
+        return $this->hasMany('App\PaymentMethod');
+    }
     
     public function payments()
     {

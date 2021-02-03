@@ -74,6 +74,13 @@
                                  {{l('Commissions', [], 'absrc/layouts')}}
                             </a>
                         </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ route('absrc.cheques.index') }}">
+                                 <i class="fa fa-money btn-xs text-success"></i> 
+                                 {{l('Cheques', [], 'absrc/layouts')}}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

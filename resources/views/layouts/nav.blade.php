@@ -306,6 +306,13 @@
                                  {{l('Suppliers', [], 'layouts')}}
                             </a>
                         </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('assemblyorders') }}">
+                                 <i class="fa fa-gift text-info"></i> 
+                                 {{l('Assembly Orders', [], 'layouts')}}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -477,9 +484,20 @@
                                  {{l('Sales Invoices', [], 'layouts')}}
                             </a>
                         </li>
+                        <li class="divider"></li>
                          <li>
                             <a href="{{ route('chart.customervouchers.monthly') }}">
                                  {{l('Customer Vouchers', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('chart.suppliervouchers.monthly') }}">
+                                 {{l('Supplier Vouchers', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('chart.allvouchers.monthly') }}">
+                                 {{l('All Vouchers', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>
@@ -526,12 +544,15 @@
                     <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
-                            <a href="https://abillander.gitbook.io" target="_blank">
+                            <a href="{{ App\Configuration::get('URL_ABILLANDER_DOCS') }}" target="_blank">
                                  {{l('Documentation', [], 'layouts')}}
                             </a>
                         </li>
                          <li>
+{{--
                             <a data-target="#feedbackForm" data-toggle="modal" onclick="return false;" href="">
+--}}
+                            <a href="{{ App\Configuration::get('URL_ABILLANDER_SUPPORT') }}" target="_blank">
                                  {{l('Support & feed-back', [], 'layouts')}}
                             </a>
                         </li>
@@ -647,4 +668,6 @@ https://bootsnipp.com/snippets/featured/multi-level-dropdown-menu-bs3
 
 --}}
 
-@include('layouts/modal_feedback')
+{{--
+    @include('layouts/modal_feedback')
+--}}

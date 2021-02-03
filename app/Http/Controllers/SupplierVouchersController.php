@@ -16,6 +16,7 @@ use Excel;
 use App\Traits\DateFormFormatterTrait;
 
 use App\Events\SupplierPaymentPaid;
+use App\Events\SupplierPaymentBounced;      // <= Just to be the same as CustomerVouchersController, and maybe future use
 
 class SupplierVouchersController extends Controller
 {
@@ -50,7 +51,7 @@ class SupplierVouchersController extends Controller
                         ->with('paymentable')
                         ->with('paymentable.supplier')
                         ->with('paymentable.supplier.bankaccount')
-                        ->where('payment_type', 'receivable')
+                        ->where('payment_type', 'payable')
                         ->with('bankorder')
                         ->orderBy('due_date', 'desc');      // ->get();
 
@@ -99,7 +100,7 @@ class SupplierVouchersController extends Controller
                     ->with('paymentable')
                     ->with('paymentable.supplier')
                     ->with('paymentable.supplier.bankaccount')
-                    ->where('payment_type', 'receivable')
+                        ->where('payment_type', 'payable')
                     ->with('bankorder')
                     ->orderBy('due_date', 'desc');
 
@@ -677,7 +678,7 @@ class SupplierVouchersController extends Controller
                         ->with('paymentable')
                         ->with('paymentable.supplier')
                         ->with('paymentable.supplier.bankaccount')
-                        ->where('payment_type', 'receivable')
+                        ->where('payment_type', 'payable')
                         ->with('bankorder')
                         ->orderBy('due_date', 'desc')
                         ->get();

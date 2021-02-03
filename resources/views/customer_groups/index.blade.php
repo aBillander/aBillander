@@ -25,6 +25,7 @@
             <th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th class="text-left">{{l('Customer Group Name')}}</th>
             <th class="text-left">{{l('Price List')}}</th>
+            <th class="text-left">{{l('Shipping Method')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
             <th class="text-right"> </th>
         </tr>
@@ -35,6 +36,7 @@
             <td>{{ $group->id }}</td>
             <td>{{ $group->name }}</td>
             <td>{{ optional($group->pricelist)->name }}</td>
+            <td>{{ optional($group->shippingmethod)->name }}</td>
             
             <td class="text-center">@if ($group->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 

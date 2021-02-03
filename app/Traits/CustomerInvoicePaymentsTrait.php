@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Configuration;
+use App\Payment;
 
 trait CustomerInvoicePaymentsTrait
 {
@@ -25,7 +26,7 @@ trait CustomerInvoicePaymentsTrait
         $ptotal = 0;
         $pmethod = $this->paymentmethod;
         $dlines = $pmethod->deadlines;
-        $pdays = $this->customer->paymentDays();
+        // $pdays = $this->customer->paymentDays();     <= Not used in this method
         // $base_date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $this->document_date );
         $base_date = $this->document_date;
 
@@ -68,7 +69,7 @@ trait CustomerInvoicePaymentsTrait
 
             // abi_r( $data );die();
 
-            $payment = \App\Payment::create( $data );
+            $payment = Payment::create( $data );
             $this->payments()->save($payment);
             $this->customer->payments()->save($payment);
 /*

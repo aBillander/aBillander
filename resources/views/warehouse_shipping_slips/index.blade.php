@@ -72,7 +72,7 @@
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class=" hidden  form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('shipment_status', l('Shipment Status')) !!}
     {!! Form::select('shipment_status', array('' => l('All', [], 'layouts')) + $shipment_statusList, null, array('class' => 'form-control')) !!}
 </div>
@@ -162,7 +162,7 @@
             <th class="text-left">{{ l('Warehouse Counterpart') }}</th>
             <th class="text-left">{{ l('Document Date') }}</th>
             <th class="text-left">{{ l('Delivery Date') }}</th>
-            <th class="text-left">{{ l('Sent Date') }}
+            <th class=" hidden  text-left">{{ l('Shipment Status') }}
               <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                         data-content="{{ l('Address is displayed if it is different from Customer Main Address') }}">
                     <i class="fa fa-question-circle abi-help"></i -->
@@ -211,7 +211,7 @@
             <td>[{{ $document->warehousecounterpart->alias }}] {{ $document->warehousecounterpart->name }}</td>
             <td>{{ abi_date_short($document->document_date) }}</td>
             <td>{{ abi_date_short($document->delivery_date) }}</td>
-            <td>{{ abi_date_short($document->delivery_date_real) }}</td>
+            <td class="hidden">{{ $document->shipment_status }}</td>
             <td>{{ optional($document->shippingmethod)->name }}</td>
             <td>{{ optional($document->carrier)->name }}</td>
             <!-- td>
@@ -439,7 +439,7 @@ $("#set_carrier_bulk").popover({
 
 <script>
   $(document).ready(function() {
-
+/*
         $("#autocustomer_name").autocomplete({
             source : "{{ route('home.searchcustomer') }}",
             minLength : 1,
@@ -459,7 +459,7 @@ $("#set_carrier_bulk").popover({
                 .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
                 .appendTo( ul );
             };
-
+*/
 
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,

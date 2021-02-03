@@ -149,13 +149,13 @@
 
 				</tr>
 
-				<tr class="order-number">
+				<!-- tr class="order-number">
 
 					<th> </th>
 
 					<td> </td>
 
-				</tr>
+				</tr -->
 
 				<tr class="order-date">
 
@@ -176,6 +176,31 @@
 				</tr>
 
 				@endif
+
+				<tr class="order-date">
+
+					<th>Bultos:</th>
+
+					<td>{{ $document->number_of_packages }}</td>
+
+				</tr>
+
+				<tr class="order-date">
+
+					<th>Peso / Volumen:</th>
+
+					<td>@if ($document->weight > 0.0)
+							{{ $document->as_quantityable( $document->weight, 2 ) }} kg.
+						@else
+						 - 
+						@endif / 
+						@if ($document->volume > 0.0)
+							{{ $document->as_quantityable( $document->volume, 3 ) }} m<sup>3</sup>
+						@else
+						 - 
+						@endif </td>
+
+				</tr>
 
 				<!-- tr class="order-number">
 

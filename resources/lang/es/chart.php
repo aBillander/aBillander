@@ -38,6 +38,10 @@ return [
 
 	'Chart - Customer Vouchers' => 'Gráfico - Recibos de Clientes',
 	'Customer Vouchers' => 'Recibos de Clientes',
+	'Chart - Supplier Vouchers' => 'Gráfico - Recibos de Proveedores',
+	'Supplier Vouchers' => 'Recibos de Proveedores',
+	'Chart - All Vouchers' => 'Gráfico - Todos los Recibos',
+	'All Vouchers' => 'Todos los Recibos',
 	'Pending Vouchers' => 'Recibos Pendientes',
 
 	'Chart - Product Stock' => 'Gráfico - Nivel de Inventario',
@@ -52,6 +56,8 @@ return [
 
 	'(daily)' => '(diario)',
 	'Cumulative' => 'Acumulado',
+
+	'Closed Documents'     => 'Documentos Cerrados',
 
 	''     => '',
 

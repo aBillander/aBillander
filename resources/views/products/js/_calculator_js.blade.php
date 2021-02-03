@@ -137,4 +137,25 @@ function new_price_tax_inc()
   $("#margin").val( margin );
 }
 
+
+function new_recommended_price()
+{
+  var price = parseFloat( $("#recommended_retail_price").val() );
+  var tax = parseFloat(  get_tax_percent_by_id( $("#tax_id").val() ) );
+
+  var price_tax_inc = price*(1.0+tax/100.0);
+
+  $("#recommended_retail_price_tax_inc").val( price_tax_inc );
+}
+
+function new_recommended_price_tax_inc()
+{
+  var price_tax_inc = parseFloat( $("#recommended_retail_price_tax_inc").val() );
+  var tax = parseFloat(  get_tax_percent_by_id( $("#tax_id").val() ) );
+
+  var price = price_tax_inc/(1.0+tax/100.0);
+
+  $("#recommended_retail_price").val( price );
+}
+
 </script>

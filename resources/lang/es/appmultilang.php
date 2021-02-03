@@ -261,6 +261,26 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Warehouse Shipping Slip Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\WarehouseShippingSlip.draft' => 'Borrador',
+	'App\WarehouseShippingSlip.confirmed'    => 'Confirmado',
+	'App\WarehouseShippingSlip.closed'    => 'Cerrado',
+    'App\WarehouseShippingSlip.canceled' => 'Cancelado',
+
+    'App\WarehouseShippingSlip.pending' => 'Pendiente',
+    'App\WarehouseShippingSlip.processing' => 'Preparación',
+    'App\WarehouseShippingSlip.transit' => 'Reparto',
+    'App\WarehouseShippingSlip.exception' => 'Excepción',
+    'App\WarehouseShippingSlip.delivered' => 'Entregado',
+
+	/*
+	|--------------------------------------------------------------------------
 	| Customer Invoice Types
 	|--------------------------------------------------------------------------
 	|

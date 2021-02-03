@@ -132,6 +132,21 @@ class Payment extends Model {
         return $value;
     }
 
+    public function getAmountCurrencyAttribute()
+    {
+        // return abi_money_amount( $value, $currency = null);
+        return $this->amount * $this->currency_conversion_rate;
+    }
+
+
+    public function getPaymentCurrencyAttribute()
+    {
+        $currency = $this->currency;
+        $currency->conversion_rate = $this->currency_conversion_rate;
+
+        return $currency;
+    }
+
 
     public function getAbiccPaymentDateAttribute($value)
     {
@@ -195,6 +210,17 @@ class Payment extends Model {
     public function customerinvoice()
     {
         return $this->belongsTo('App\CustomerInvoice', 'paymentable_id');     // ->where('paymentable_type', 'App\CustomerInvoice');        // Only if it is a Customer Invoice...
+    }
+
+
+    public function supplier()
+    {
+        return $this->belongsTo('App\Supplier', 'paymentorable_id');
+    }
+
+    public function supplierinvoice()
+    {
+        return $this->belongsTo('App\SupplierInvoice', 'paymentable_id');     // ->where('paymentable_type', 'App\SupplierInvoice');        // Only if it is a Supplier Invoice...
     }
 
     public function currency()

@@ -217,6 +217,11 @@
         {!! Form::text('mod347_year', \Carbon\Carbon::now()->year, array('id' => 'mod347_year', 'class' => 'form-control')) !!}
     </div>
 
+    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+        {!! Form::label('mod347_clave', 'Clave') !!}
+        {!! Form::select('mod347_clave', $mod347_claveList, 'B', array('class' => 'form-control')) !!}
+    </div>
+
                   </div>
 
               </div>

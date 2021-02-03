@@ -179,6 +179,9 @@ class WarehouseShippingSlip extends Model
 
     public function getUnconfirmableAttribute()
     {
+        // Convention: Cannot unconfirm warehouse shipping slip documents
+        return false;
+
         if ( $this->status != 'confirmed' ) return false;
 
         // if ( optional($this->rightAscriptions)->count() || optional($this->leftAscriptions)->count() ) return false;

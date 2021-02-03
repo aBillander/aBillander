@@ -18,6 +18,8 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Mail\Events\MessageSent' => [
             'App\Listeners\LogSentMessageListener',
         ],
+
+// Customer Documents
     
         'App\Events\CustomerInvoiceConfirmed' => [
             'App\Listeners\CustomerInvoiceConfirmedListener',
@@ -41,6 +43,10 @@ class EventServiceProvider extends ServiceProvider
     
         'App\Events\CustomerInvoiceEmailed' => [
             'App\Listeners\CustomerInvoiceEmailedListener',
+        ],
+
+        'App\Events\CustomerInvoiceEmailing' => [
+            'App\Listeners\CustomerInvoiceEmailingListener',
         ],
 
     
@@ -77,6 +83,7 @@ class EventServiceProvider extends ServiceProvider
 
 
 
+// Warehouse Transfer Documents
 
         'App\Events\WarehouseShippingSlipConfirmed' => [
             'App\Listeners\WarehouseShippingSlipConfirmedListener',
@@ -96,6 +103,43 @@ class EventServiceProvider extends ServiceProvider
 
 
 
+// Supplier Documents
+    
+        'App\Events\SupplierInvoiceConfirmed' => [
+            'App\Listeners\SupplierInvoiceConfirmedListener',
+        ],
+    
+        'App\Events\SupplierInvoiceClosed' => [
+            'App\Listeners\SupplierInvoiceClosedListener',
+        ],
+    
+        'App\Events\SupplierInvoiceUnclosed' => [
+            'App\Listeners\SupplierInvoiceUnclosedListener',
+        ],
+    
+        'App\Events\SupplierInvoicePrinted' => [
+            'App\Listeners\SupplierInvoicePrintedListener',
+        ],
+    
+        'App\Events\SupplierInvoicePosted' => [
+            'App\Listeners\SupplierInvoicePostedListener',
+        ],
+    
+        'App\Events\SupplierInvoiceEmailed' => [
+            'App\Listeners\SupplierInvoiceEmailedListener',
+        ],
+
+    
+        'App\Events\SupplierPaymentPaid' => [
+            'App\Listeners\SupplierPaymentPaidListener',
+        ],
+    
+        'App\Events\SupplierPaymentBounced' => [
+            'App\Listeners\SupplierPaymentBouncedListener',
+        ],
+
+        
+
 
         'App\Events\SupplierShippingSlipConfirmed' => [
             'App\Listeners\SupplierShippingSlipConfirmedListener',
@@ -109,10 +153,19 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\SupplierShippingSlipUnclosedListener',
         ],
     
+        'App\Events\SupplierShippingSlipPrinted' => [
+            'App\Listeners\SupplierShippingSlipPrintedListener',
+        ],
+    
+        'App\Events\SupplierShippingSlipEmailed' => [
+            'App\Listeners\SupplierShippingSlipEmailedListener',
+        ],
+
+
 
 
         
-        
+// Miscellaneous        
 
         'App\Events\DatabaseBackup' => [
             'App\Listeners\DatabaseBackupListener',
@@ -138,6 +191,14 @@ class EventServiceProvider extends ServiceProvider
     
         'App\Events\ProductionOrderUnfinished' => [
             'App\Listeners\ProductionOrderUnfinishedListener',
+        ],
+    
+        'App\Events\AssemblyOrderFinished' => [
+            'App\Listeners\AssemblyOrderFinishedListener',
+        ],
+    
+        'App\Events\AssemblyOrderUnfinished' => [
+            'App\Listeners\AssemblyOrderUnfinishedListener',
         ],
 
 /*

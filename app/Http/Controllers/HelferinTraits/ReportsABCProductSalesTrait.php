@@ -77,6 +77,7 @@ trait ReportsABCProductSalesTrait
         $selectorMonthList = Tools::selectorMonthList();
 
         $document_reference_date = 'close_date';        // 'document_date'
+        $document_reference_date = 'document_date';        // 'document_date'
 
         $is_invoiceable_flag = ($model == 'CustomerShippingSlip') ? true : false;
 

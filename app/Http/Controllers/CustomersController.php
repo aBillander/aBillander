@@ -12,6 +12,7 @@ use View, Mail;
 
 use App\Customer;
 use App\Address;
+use App\CustomerGroup;
 use App\BankAccount;
 use App\CustomerOrder;
 use App\CustomerOrderLine;
@@ -113,6 +114,17 @@ class CustomersController extends Controller
         if ( !$request->has('language_id') ) $request->merge( ['language_id' => Configuration::get('DEF_LANGUAGE')] );
 
         // ToDO: put default accept einvoice in a configuration key
+
+        // Let's see if we can retrieve some default values from Customer Group
+        if ( $request->input('customer_group_id') > 0 )
+        if ( $group = CustomerGroup::find( $request->input('customer_group_id') ) )
+        {
+            if ($group->price_list_id > 0)
+                $request->merge( ['price_list_id' => $group->price_list_id] );
+            
+            if ($group->shipping_method_id > 0)
+                $request->merge( ['shipping_method_id' => $group->shipping_method_id] );
+        }
         
         $customer = $this->customer->create($request->all());
 
@@ -387,13 +399,18 @@ class CustomersController extends Controller
      */
     public function destroy($id)
     {
-        $c = $this->customer->find($id);
+        $customer = $this->customer->findOrFail($id);
 
-        // Addresses
-        $c->addresses()->delete();
+        try {
 
-        // Customer
-        $c->delete();
+            $customer->delete();
+            
+        } catch (\Exception $e) {
+
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
 
         return redirect('customers')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

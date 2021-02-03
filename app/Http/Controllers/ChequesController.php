@@ -147,7 +147,7 @@ class ChequesController extends Controller
         $cheque->update($request->all());
 
         return redirect()->route('cheques.index')
-                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
+                ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
     }
 
     /**

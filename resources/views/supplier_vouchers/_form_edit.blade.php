@@ -29,7 +29,7 @@
     {!! Form::hidden('amount_initial', $payment->amount, array('id' => 'amount_initial')) !!}
 </div>
 
-<div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-auto_direct_debit">
+<div class=" hide  form-group col-lg-3 col-md-3 col-sm-3" id="div-auto_direct_debit">
      {!! Form::label('auto_direct_debit', l('Auto Direct Debit'), ['class' => 'control-label']) !!}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                         data-content="{{ l('Include in automatic payment remittances') }}">
@@ -103,7 +103,7 @@
 @if($payment->status == 'paid')
 <a href="#" class="btn btn-danger btn-sm">{{ l('This Voucher is paid and cannot be modified') }}</a>
 @else
-  @if($payment->status == 'pending')
+  @if( 0 && $payment->status == 'pending')
             <input type="hidden" id="nextAction" name="nextAction" value="" />
             <button class="pull-right btn btn-danger" type="submit" onclick="this.disabled=true;$('#action').val('uncollectible');this.form.submit();">
                <i class="fa fa-exclamation-triangle"></i>

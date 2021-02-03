@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\SupplierPaymentReceived;
+use App\Events\SupplierPaymentPaid;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -24,7 +24,7 @@ class SupplierPaymentPaidListener
      * @param  SupplierInvoiceClosed  $event
      * @return void
      */
-    public function handle(SupplierPaymentReceived $event)
+    public function handle(SupplierPaymentPaid $event)
     {
         $payment = $event->payment;
         $document = $payment->supplierinvoice;

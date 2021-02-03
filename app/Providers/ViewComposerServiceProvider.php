@@ -115,7 +115,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// PaymentTypes
-		view()->composer(array('configuration_keys.key_group_2', 'payment_methods._form', 'customer_vouchers._form_edit', 'customer_vouchers._form_pay'), function($view) {
+		view()->composer(array('configuration_keys.key_group_2', 'payment_methods._form', 'customer_vouchers._form_edit', 'customer_vouchers._form_pay', 'supplier_vouchers._form_edit', 'supplier_vouchers._form_pay'), function($view) {
 		    
 		    $view->with('payment_typeList', \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
@@ -179,7 +179,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Customer Groups
-		view()->composer(array('customers.index', 'customers.edit', 'price_rules.index', 'price_rules.create'), function($view) {
+		view()->composer(array('customers.index', 'customers.create', 'customers.edit', 'price_rules.index', 'price_rules.create'), function($view) {
 		    
 		    $view->with('customer_groupList', \App\CustomerGroup::pluck('name', 'id')->toArray());
 		    
@@ -243,7 +243,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Price Lists
-		view()->composer(array('customers.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
+		view()->composer(array('customers.edit'), function($view) {
 		    
 		    $view->with('price_listList', \App\PriceList::pluck('name', 'id')->toArray());
 		    

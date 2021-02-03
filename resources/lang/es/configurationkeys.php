@@ -234,6 +234,11 @@ return [
 	'DEVELOPER_MODE.name' => 'DEVELOPER_MODE',
 	'DEVELOPER_MODE.help' => '',
 
+	'URL_ABILLANDER_DOCS.name' => 'Url Documentación de aBillander',
+	'URL_ABILLANDER_DOCS.help' => '',
+	'URL_ABILLANDER_SUPPORT.name' => 'Url Centro de Soporte de aBillander',
+	'URL_ABILLANDER_SUPPORT.help' => '',
+
 	'Auto-SKU' => 'Auto-SKU',
 	'SKU_PREFIX_LENGTH.name' => 'Prefijo',
 	'SKU_PREFIX_LENGTH.help' => 'Se toma el ID del Producto. Si tiene una longitud (número de cifras) menor que este valor, se rellena con ceros por la izquierda hasta esta longitud.',

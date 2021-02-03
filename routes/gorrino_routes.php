@@ -214,6 +214,12 @@ Route::get('migratethis', function()
 
 	// 2021-02-03
 
+	\App\Configuration::updateValue('URL_ABILLANDER_DOCS', 'https://abillander.gitbook.io');
+	\App\Configuration::updateValue('URL_ABILLANDER_SUPPORT', 'https://support.abillander.com');
+
+	\App\Configuration::updateValue('SW_VERSION', '1.2.5');
+	\App\Configuration::updateValue('SW_DATABASE_VERSION', '1.2.5');
+
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_groups` ADD `shipping_method_id` INT(10) UNSIGNED NULL AFTER `invoice_template_id`;");
 
 

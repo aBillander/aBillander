@@ -414,6 +414,19 @@ function quick_formSubmit()
                 minLength : 1,
                 appendTo : "#modal_document_lines_quick_form",
 
+                response: function(event, ui) {
+                    if (!ui.content.length) {
+                        var noResult = { 
+                             id: "", 
+                             reference: "",
+                             name: "{{ l('No records found', 'layouts') }}" 
+                         };
+                         ui.content.push(noResult);                    
+                     } else {
+                        // $("#message").empty();
+                     }
+                },
+
                 select : function(key, value) {
                     var str = '[' + value.item.reference+'] ' + value.item.name;
 

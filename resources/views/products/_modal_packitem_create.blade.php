@@ -133,6 +133,17 @@
                     // });
                     // https://stackoverflow.com/questions/23720988/how-to-filter-json-data-in-javascript-or-jquery
 
+                    if (!final_data.length) {
+                        var noResult = { 
+                             id: "", 
+                             reference: "",
+                             name: "{{ l('No records found', 'layouts') }}" 
+                         };
+                         final_data.push(noResult);                    
+//                     } else {
+                        // $("#message").empty();
+                     }
+
                     response(final_data);
                 });
             },

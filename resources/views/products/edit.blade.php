@@ -298,7 +298,11 @@
 
 @endif
 
+@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+
     CKEDITOR.replace( 'route_notes' );
+
+@endif
 </script>
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>

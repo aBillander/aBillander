@@ -179,7 +179,7 @@ class WarehouseShippingSlipsController extends Controller
      * @param  \App\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
-    public function show(Document $warehouseShippingSlip)
+    public function show(Document $warehouseshippingslip)
     {
         //
     }
@@ -345,10 +345,11 @@ class WarehouseShippingSlipsController extends Controller
      * @return \Illuminate\Http\Response
      */
     // public function destroy($id, Request $request)
-    public function destroy(Document $warehouseShippingSlip)
+    public function destroy(Document $warehouseshippingslip, Request $request)
     {
         // $document = $this->document->findOrFail($id);
-        $document = $warehouseShippingSlip;
+        $document = $warehouseshippingslip;
+        $id = $document->id;
 
         if( !$document->deletable )
             return redirect()->back()

@@ -14,12 +14,13 @@ class CustomerGroup extends Model {
     protected $guarded = array('id');
 
 	protected $fillable = [ 'name', 'webshop_id', 'active', 
-                            'invoice_template_id', 'price_list_id',
+                            'invoice_template_id', 'shipping_method_id', 'price_list_id',
                           ];
 
     // Add your validation rules here
     public static $rules = array(
         'name' => 'required',
+        'shipping_method_id' => 'sometimes|nullable|exists:shipping_methods,id',
         'price_list_id' => 'sometimes|nullable|exists:price_lists,id',
     	);
 
@@ -42,6 +43,11 @@ class CustomerGroup extends Model {
     public function template()
     {
         return $this->belongsTo('App\Template', 'invoice_template_id');
+    }
+
+    public function shippingmethod()
+    {
+        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
     }
 
     public function pricelist()

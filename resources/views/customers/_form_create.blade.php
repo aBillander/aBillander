@@ -12,6 +12,20 @@
               {!! Form::text('identification', null, array('class' => 'form-control', 'id' => 'identification')) !!}
               {!! $errors->first('identification', '<span class="help-block">:message</span>') !!}
             </div>
+
+            <div class="form-group col-lg-1 col-md-1 col-sm-1">
+              {{-- Poor Man offset --}}
+            </div>
+
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('customer_group_id') ? 'has-error' : '' }}">
+                     {{ l('Customer Group') }}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                            data-content="{{ l('New Customers will take values from the Customer Group, but you can change these values later on.') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a>
+                     {!! Form::select('customer_group_id', array('' => l('-- Please, select --', [], 'layouts')) + $customer_groupList, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('customer_group_id', '<span class="help-block">:message</span>') !!}
+                  </div>
   </div>
 
         <div class="row">

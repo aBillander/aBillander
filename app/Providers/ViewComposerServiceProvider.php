@@ -179,7 +179,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Customer Groups
-		view()->composer(array('customers.index', 'customers.edit', 'price_rules.index', 'price_rules.create'), function($view) {
+		view()->composer(array('customers.index', 'customers.create', 'customers.edit', 'price_rules.index', 'price_rules.create'), function($view) {
 		    
 		    $view->with('customer_groupList', \App\CustomerGroup::pluck('name', 'id')->toArray());
 		    
@@ -243,7 +243,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 		});
 
 		// Price Lists
-		view()->composer(array('customers.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
+		view()->composer(array('customers.edit'), function($view) {
 		    
 		    $view->with('price_listList', \App\PriceList::pluck('name', 'id')->toArray());
 		    

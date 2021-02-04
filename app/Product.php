@@ -1910,6 +1910,8 @@ class Product extends Model {
                     });
         });
 
+        $query->orWhere('product_type', 'grouped');
+
         return $query;
     }
 
@@ -1945,6 +1947,8 @@ class Product extends Model {
                             $query->where('out_of_stock', 'allow');
                     });
         });
+
+        $query->orWhere('product_type', 'grouped');
 
         return $query;
     }

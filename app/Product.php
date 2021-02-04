@@ -1791,7 +1791,11 @@ class Product extends Model {
 
     public function scopeIsActive($query)
     {
-        return $query->where('active', '>', 0);
+        if ( Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') )
+            // Scope already applied as Global Scope
+            return $query;
+        else
+            return $query->where('active', '>', 0);
     }
 
     public function scopeIsBlocked($query, $apply = true)

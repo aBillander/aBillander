@@ -249,7 +249,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('banks',         'BanksController');
         Route::resource('cheques',               'ChequesController'      );
         Route::resource('cheques.chequedetails', 'ChequeDetailsController');
+
+        Route::get('cheques/{id}/getdetails',         'ChequesController@getDetails' )->name('cheque.getdetails' );
         Route::post('cheques/sortlines', 'ChequesController@sortLines')->name('cheque.sortlines');
+
         Route::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
         Route::get( 'export/cheques', 'ChequesController@export' )->name('cheques.export');
 
@@ -764,6 +767,8 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('customervoucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
+
+        Route::get('customervouchers/customers/{id}/pending',  'CustomerVouchersController@indexByCustomerPending')->name('customer.vouchers.pending');
 
         Route::get( 'export/customervouchers', 'CustomerVouchersController@export' )->name('customervouchers.export');
         

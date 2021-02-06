@@ -4,156 +4,118 @@
 
 
 @section('content')
-
 <div class="row">
-	<div class="col-md-10 col-md-offset-1" style="margin-top: 20px">
-		<div class="panel panel-info">
-			<div class="panel-heading"><h3 class="panel-title">{{ l('Edit Customer Cheque') }} :: ({{$cheque->id}}) <span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span></h3></div>
-			<div class="panel-body">
+    <div class="col-md-12">
+        <div class="page-header">
+            <div class="pull-right">
+                <!-- Button trigger modal -->
+                <!-- button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal_new_address" title=" Nueva Dirección Postal ">
+                  <i class="fa fa-plus"></i> Dirección
+                </button -->
 
-				@include('errors.list')
+            </div>
 
-				{!! Form::model($cheque, array('method' => 'PATCH', 'route' => array('cheques.update', $cheque->id))) !!}
+            <h2><a href="{{ URL::to('cheques') }}">{{ l('Customer Cheques') }}</a> <span style="color: #cccccc;">/</span> <span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span> <span style="color: #cccccc;">/</span> 
 
-					@include('cheques._form')
+                  <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
 
-				{!! Form::close() !!}
-			</div>
-		</div>
-	</div>
+                 <a title=" {{l('View Invoicing Address')}} " href="javascript:void(0);">
+                    <button type="button" class="btn btn-xs btn-success" data-toggle="popover" data-placement="right" 
+                            title="{{l('Invoicing Address', 'customerinvoices')}}" data-content="
+                                  {{$customer->name_fiscal}}<br />
+                                  {{l('VAT ID')}}: {{$customer->identification}}<br />
+                                  {{ $customer->address->address1 }} {{ $customer->address->address2 }}<br />
+                                  {{ $customer->address->postcode }} {{ $customer->address->city }}, {{ $customer->address->state->name }}<br />
+                                  {{ $customer->address->country->name }}
+                                  <br />
+                            ">
+                        <i class="fa fa-info-circle"></i>
+                    </button>
+                 </a>
+            </h2>
+        </div>
+    </div>
 </div>
 
-<div class="row">
-	<div class="col-md-10 col-md-offset-1" style="margin-top: 20px">
+<div class="container-fluid">
+   <div class="row">
 
-					@include('cheque_details.embed_index')
+      <div class="col-lg-2 col-md-2 col-sm-3">
+         <div class="list-group">
+            <a id="b_main" href="#" class="list-group-item active">
+               <i class="fa fa-asterisk"></i>
+               &nbsp; {{ l('Main Data') }}
+            </a>
+            <a id="b_details" href="#details" class="list-group-item">
+               <i class="fa fa-tasks"></i>
+               &nbsp; {{ l('Details') }}
+            </a>
+            <a id="b_attachments" href="#attachments" class=" hide  list-group-item">
+               <i class="fa fa-paperclip"></i>
+               &nbsp; {{ l('Attachments', 'layouts') }}
+            </a>
+         </div>
+      </div>
+      
+      <div class="col-lg-10 col-md-10 col-sm-9">
+            
+          @include('cheques._panel_main_data')
 
-	</div>
+          @include('cheques._panel_details')
+
+          @include('cheques._panel_attachments')
+
+
+      </div><!-- div class="col-lg-10 col-md-10 col-sm-9" -->
+
+   </div>
 </div>
+@endsection
 
+@section('scripts')     @parent
+<script type="text/javascript">
+   function route_url()
+   {
+      $("#panel_main").hide();
+      $("#panel_details").hide();
+      $("#panel_attachments").hide();
+
+      $("#b_main").removeClass('active');
+      $("#b_details").removeClass('active');
+      $("#b_attachments").removeClass('active');
+      
+      if(window.location.hash.substring(1) == 'details')
+      {
+         $("#panel_details").show();
+         $("#b_details").addClass('active');
+         getChequeDetails();
+         // document.f_cliente.codgrupo.focus();
+      }
+      else if(window.location.hash.substring(1) == 'attachments')
+      {
+         $("#panel_attachments").show();
+         $("#b_attachments").addClass('active');
+         // getSupplierUsers();
+      }
+      else  
+      {
+         $("#panel_main").show();
+         $("#b_main").addClass('active');
+         // document.f_cliente.nombre.focus();
+      }
+
+      // Gracefully scrolls to the top of the page
+      $("html, body").animate({ scrollTop: 0 }, "slow");
+   }
+   
+   $(document).ready(function() {
+      route_url();
+      window.onpopstate = function(){
+         route_url();
+      }
+   });
+
+</script>
 @endsection
 
 @include('layouts/modal_delete')
-
-
-@section('scripts')    @parent
-
-    <!-- script src="https://code.jquery.com/jquery-1.12.4.js"></script -->
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!-- script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script -->
-
-    <script type="text/javascript">
-
-        $(document).ready(function() {
-
-          // Sortable :: http://codingpassiveincome.com/jquery-ui-sortable-tutorial-save-positions-with-ajax-php-mysql
-          // See: https://stackoverflow.com/questions/24858549/jquery-sortable-not-functioning-when-ajax-loaded
-          $('.sortable').sortable({
-              cursor: "move",
-              update:function( event, ui )
-              {
-                  $(this).children().each(function(index) {
-                      if ( $(this).attr('data-sort-order') != ((index+1)*10) ) {
-                          $(this).attr('data-sort-order', (index+1)*10).addClass('updated');
-                      }
-                  });
-
-                  saveNewPositions();
-              }
-          });
-
-
-
-        });     // ENDS      $(document).ready(function() {
-
-
-        function saveNewPositions() {
-            var positions = [];
-            var token = "{{ csrf_token() }}";
-
-            $('.updated').each(function() {
-                positions.push([$(this).attr('data-id'), $(this).attr('data-sort-order')]);
-                $(this).removeClass('updated');
-            });
-
-            $.ajax({
-                url: "{{ route('cheque.sortlines') }}",
-                headers : {'X-CSRF-TOKEN' : token},
-                method: 'POST',
-                dataType: 'json',
-                data: {
-                    positions: positions
-                },
-                success: function (response) {
-                    console.log(response);
-                }
-            });
-        }
-
-{{--
-        function loadBOMlines() {
-           
-           var panel = $("#panel_bom_lines");
-           var url = "{{ route('productbom.getlines', $bom->id) }}";
-
-           panel.addClass('loading');
-
-           $.get(url, {}, function(result){
-                 panel.html(result);
-                 panel.removeClass('loading');
-
-                 $("[data-toggle=popover]").popover();
-                 sortableBOMlines();
-           }, 'html');
-
-        }
-
-        function sortableBOMlines() {
-
-          // Sortable :: http://codingpassiveincome.com/jquery-ui-sortable-tutorial-save-positions-with-ajax-php-mysql
-          // See: https://stackoverflow.com/questions/24858549/jquery-sortable-not-functioning-when-ajax-loaded
-          $('.sortable').sortable({
-              cursor: "move",
-              update:function( event, ui )
-              {
-                  $(this).children().each(function(index) {
-                      if ( $(this).attr('data-sort-order') != ((index+1)*10) ) {
-                          $(this).attr('data-sort-order', (index+1)*10).addClass('updated');
-                      }
-                  });
-
-                  saveNewPositions();
-              }
-          });
-
-        }
---}}
-    </script>
-
-@endsection
-
-@section('styles')    @parent
-
-  {!! HTML::style('assets/plugins/AutoComplete/styles.css') !!}
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script -->
-
-<style>
-
-  .ui-autocomplete-loading{
-    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
-  }
-  .loading{
-    background: white url("{{ asset('assets/theme/images/ui-anim_basic_16x16.gif') }}") left center no-repeat;
-  }
-
-
-/* See: http://fellowtuts.com/twitter-bootstrap/bootstrap-popover-and-tooltip-not-working-with-ajax-content/ 
-.modal .popover, .modal .tooltip {
-    z-index:100000000;
-}
- */
-</style>
-
-@endsection
-

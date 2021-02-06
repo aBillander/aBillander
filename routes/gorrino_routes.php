@@ -212,6 +212,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 Route::get('migratethis', function()
 {
 
+	// 2021-02-05
+
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheque_details` ADD `payment_id` INT(10) UNSIGNED NULL AFTER `amount`;");
+
+	die('OK');
+
 	// 2021-01-28
 
 	Illuminate\Support\Facades\DB::statement("create table `assembly_orders` (`id` int unsigned not null auto_increment primary key, `sequence_id` int unsigned null, `document_prefix` varchar(8) null, `document_id` int unsigned not null default '0', `document_reference` varchar(64) null, `reference` varchar(191) null, `created_via` varchar(32) null default 'manual', `status` varchar(32) not null default 'released', `product_id` int unsigned null, `combination_id` int unsigned null, `product_reference` varchar(32) null, `product_name` varchar(128) not null, `required_quantity` decimal(20, 6) not null, `planned_quantity` decimal(20, 6) not null, `finished_quantity` decimal(20, 6) not null, `measure_unit_id` int unsigned null, `due_date` date null, `finish_date` timestamp null, `notes` text null, `work_center_id` int unsigned null, `manufacturing_batch_size` int unsigned not null default '1', `warehouse_id` int unsigned null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");

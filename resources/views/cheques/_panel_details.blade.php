@@ -11,9 +11,9 @@
               <div class="panel-body">
 
 
-<div id="msg-pack-success" class="alert alert-success alert-block" style="display:none;">
+<div id="msg-detail-success" class="alert alert-success alert-block" style="display:none;">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <span id="msg-pack-success-counter" class="badge"></span>
+  <span id="msg-detail-success-counter" class="badge"></span>
   <strong>{!!  l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
 </div>
 

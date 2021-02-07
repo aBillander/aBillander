@@ -9,13 +9,27 @@
                 <thead>
                 <tr>
                     <th class="text-left">{{l('ID', [], 'layouts')}}</th>
-                    <th>{{l('Position')}}</th>
+                    <th>{{l('Position', 'layouts')}}</th>
                     <th class="text-left">{{ l('Name', 'chequedetails') }}</th>
-                    <th class="text-left">{{ l('Amount') }}</th>
+                    <th class="text-left">{{ l('Amount') }}<br />
+                        <span class="
+
+@if( $open_balance == 0.0)
+                        alert-success
+@else
+                        alert-danger
+@endif
+                        ">{{ $cheque->as_money_amountable( $chequedetails->sum('amount'), $cheque->currency ) }}</span>
+                    </th>
                     <th class="text-left">{{ l('Customer Invoice', 'chequedetails') }}</th>
+                    <th class="text-left">{{ l('Customer Voucher', 'customervouchers') }}</th>
+                    <th>{{l('Payment Date')}}</th>
                     <th class="text-right">
-                        <a href="{{ URL::to('cheques/'.$cheque->id.'/chequedetails/create') }}" class="btn btn-sm btn-success xxcreate-customerdetail pull-right"
+
+@if( $open_balance > 0.0)
+                        <a href="{{ URL::to('cheques/'.$cheque->id.'/chequedetails/create') }}" class="btn btn-sm btn-success create-chequedetail pull-right"
                             title="{{l('Add New Detail')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+@endif
                     </th>
                 </tr>
                 </thead>
@@ -39,17 +53,25 @@
 
                         </td>
 
+                        <td>[{{ $detail->customerpayment->id }}] {{ $detail->customerpayment->name }} 
+                          ({{ $detail->customerpayment->as_money_amount_with_sign('amount') }})
+                          <a class="btn btn-xs btn-warning" href="{{ URL::to('customervouchers/' . $detail->payment_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
+
+                        </td>
+
+                        <td>{{ abi_date_short($detail->customerpayment->payment_date) }}</td>
+
 
                         <td class="text-right button-pad">
 {{-- --}}
-                            <a class="btn btn-sm btn-warning" href="{{ URL::to('cheques/' . $cheque->id.'/chequedetails/' . $detail->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-
+                            <!-- a class="btn btn-sm btn-warning" href="{{ URL::to('cheques/' . $cheque->id.'/chequedetails/' . $detail->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
+@if ($detail->deletable)
                             <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                                     href="{{ URL::to('cheques/' . $cheque->id.'/chequedetails/' . $detail->id ) }}" 
                                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                                     data-title="{{ l('Customer Cheque Details') }} :: ({{$detail->id}}) {{{ $detail->name }}} " 
                                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-{{-- --}}
+@endif
                         </td>
                     </tr>
                 @endforeach
@@ -58,7 +80,7 @@
 @else
             <div class="modal-footer">
                 <a href="javascript:void(0);" class="btn xbtn-sm btn-success create-chequedetail pull-right" 
-                title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+                title="{{l('Add New Detail')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
             </div>
 

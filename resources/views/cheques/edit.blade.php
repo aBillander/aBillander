@@ -15,7 +15,13 @@
 
             </div>
 
-            <h2><a href="{{ URL::to('cheques') }}">{{ l('Customer Cheques') }}</a> <span style="color: #cccccc;">/</span> <span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span> <span style="color: #cccccc;">/</span> 
+            <h2><a href="{{ URL::to('cheques') }}">{{ l('Customer Cheques') }}</a> <span style="color: #cccccc;">/</span> <span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span> 
+
+               {{ $cheque->as_money_amount('amount') }} 
+               
+                  <span class="badge" style="background-color: #3a87ad;" title="{{ $cheque->currency->name }}">{{ $cheque->currency->iso_code }}</span>
+
+               <span style="color: #cccccc;">/</span> 
 
                   <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
 

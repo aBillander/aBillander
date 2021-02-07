@@ -60,7 +60,7 @@ return [
 	'Add New Detail' => 'Nueva Línea de Detalle',
 
 	'Main Data'     => 'Datos Generales',
-	
+
 	'New Customer Cheque Detail' => 'Nuevo Detalle del Cheque de Cliente',
 
 ];

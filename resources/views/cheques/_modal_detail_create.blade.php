@@ -10,7 +10,11 @@
         <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="detailModalLabel">{{ l('New Customer Cheque Detail') }} :: <span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span> {{ \App\Currency::viewMoneyWithSign($cheque->amount, $cheque->currency) }}</h4>
       </div>
-      <div class="modal-body" id="price_rule">
+
+      <form id="cheque_payment_details">
+
+      <div class="modal-body">
+
           {!! Form::hidden('cheque_id', $cheque->id, array('id' => 'cheque_id')) !!}
 
     
@@ -24,11 +28,13 @@
       <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="modal_chequedetailSubmit" id="modal_chequedetailSubmit">
+               <button type="submit" class="btn btn-success" name="modal_chequedetailsSubmit" id="modal_chequedetailsSubmit">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Save', [], 'layouts')}}</button>
 
       </div>
+
+      </form>
 
     </div>
   </div>
@@ -40,130 +46,45 @@
 @section('scripts')    @parent
 
 
-{{-- Auto Complete --}}
-
-
 <script type="text/javascript">
 
-    $(document).ready(function() {
-
-        // To get focus;
-        $("#autodetail_name").focus();
-
+// check box selection -->
+// See: http://www.dotnetcurry.com/jquery/1272/select-deselect-multiple-checkbox-using-jquery
+{{--
+$(function () {
+    var $tblChkBox = $("#document_lines input:checkbox");
+    $("#ckbCheckAll").on("click", function () {
+        $($tblChkBox).prop('checked', $(this).prop('checked'));
     });
+});
+--}}
+$("#xxdocument_lines").on("change", function () {
+    // if (!$(this).prop("checked")) {
+    //    $("#ckbCheckAll").prop("checked", false);
+    // }
+    calculateSelectedAmount();
+});
 
-</script> 
+// check box selection ENDS -->
 
+// $(".selectedamount").on("keyup", function () {
+$(".xxxselectedamount").on("keyup", function () {
+// $(".selectedamount").keyup( function () {
+    // if (!$(this).prop("checked")) {
+    //    $("#ckbCheckAll").prop("checked", false);
+    // }
+    calculateSelectedAmount();
+});
 
-{{-- AutoComplete :: https://jqueryui.com/autocomplete/--}}
+        function calculateSelectedAmount() {
+            var total = 0;
+            $('.xcheckbox:checked').each(function(index,value){
 
-<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+                total += parseFloat($(this).closest('tr').find('.selectedamount').val().replace(',', '.'));
 
-<script>
-
-
-  $(function() {
-
-
-        $("#autodetail_name").autocomplete({
-            source : "{{ route('home.searchproduct') }}",
-            minLength : 1,
-            appendTo : "#detailModal",
-
-            select : function(key, value) {
-
-                // getProductPackItemData( value.item.id ); // To retrieve measure unit ???
-
-                var str = '[' + value.item.reference+'] ' + value.item.name;
-
-                $("#autopackitem_name").val(str);
-                $('#packitem_product_id').val(value.item.id);
-                $('#packitem_measureunit_name').html(value.item.measureunit.name);
-                $("#packitem_measureunit_id").val(value.item.measureunit.id);
-                $('#packitem_quantity').focus();
-                $('#packitem_quantity').select();
-
-                return false;
-            }
-        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
-              return $( "<li></li>" )
-                .append( '<div>[' + item.reference+'] ' + item.name + "</div>" )
-                .appendTo( ul );
-            };
-
-
-  });
-
-
-        // Function to do, if necessary
-        function getProductPackItemData( packitem_product_id )
-        {
-            var token = "{{ csrf_token() }}";
-
-            $.ajax({
-                url: "{{ route('customerinvoices.ajax.customerLookup') }}",
-                headers : {'X-CSRF-TOKEN' : token},
-                method: 'GET',
-                dataType: 'json',
-                data: {
-                    packitem_product_id: packitem_product_id
-                },
-                success: function (response) {
-                    var str = '[' + response.identification+'] ' + response.name_fiscal;
-                    var shipping_method_id;
-
-                    $("#autopackitem_name").val(str);
-                    $('#packitem_product_id').val(response.id);
-                    if (response.sales_equalization > 0) {
-                        $('#sales_equalization').show();
-                    } else {
-                        $('#sales_equalization').hide();
-                    }
-
-    //                $('#sequence_id').val(response.work_center_id);
-                    $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
-                    $('#delivery_date_form').val('');
-
-                    if ( response.payment_method_id > 0 ) {
-                      $('#payment_method_id').val(response.payment_method_id);
-                    } else {
-                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
-                    }
-
-                    $('#currency_id').val(response.currency_id);
-                    $('#currency_conversion_rate').val(response.currency.conversion_rate);
-                    $('#down_payment').val('0.0');
-
-                    $('#invoicing_address_id').val(response.invoicing_address_id);
-
-                    // https://www.youtube.com/watch?v=FHQh-IGT7KQ
-                    $('#shipping_address_id').empty();
-
-    //                $('#shipping_address_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
-
-                    $.each(response.addresses, function(index, element){
-                      $('#shipping_address_id').append('<option value="'+ element.id +'">'+ element.alias +'</option>');
-                    });
-
-                    if ( response.shipping_address_id > 0 ) {
-                      $('#shipping_address_id').val(response.shipping_address_id);
-                    } else {
-                      $('#shipping_address_id').val(response.invoicing_address_id);
-                    }
-
-                    $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
-
-                    shipping_method_id = response.shipping_method_id;
-                    if (shipping_method_id == null) {
-                        shipping_method_id = "{{ intval(\App\Configuration::get('DEF_SHIPPING_METHOD'))}}";
-                    }
-                    $('#shipping_method_id').val( shipping_method_id );
-
-                    $('#sales_rep_id').val(response.sales_rep_id);
-
-                    console.log(response);
-                }
             });
+
+            $('#balance').html(total);
         }
 
 
@@ -171,19 +92,13 @@
 
 
 
-          $("body").on('click', "#modal_chequedetailSubmit", function() {
+          $("body").on('click', "#modal_chequedetailsSubmit", function( event ) {
 
-            var url = "{{ route('products.packitems.store', $cheque->id) }}";
+            var url = "{{ route('cheques.chequedetails.store', $cheque->id) }}";
             var token = "{{ csrf_token() }}";
-            var payload = {
-                              line_sort_order : $('#packitem_line_sort_order').val(),
+            var payload = $("#cheque_payment_details").serialize();
 
-                              item_product_id : $('#packitem_product_id').val(),
-                              quantity : $('#packitem_quantity').val(),
-
-                              measure_unit_id : $('#packitem_measureunit_id').val(),
-                              notes : $('#packitem_notes').val()
-                          };
+            // alert(payload);
 
             $.ajax({
                 url : url,
@@ -193,21 +108,23 @@
                 data : payload,
 
                 success: function(){
-                    
-                    // getProductPriceRules();
 
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
-                    $('#packitemModal').modal('toggle');
+                    $('#detailModal').modal('toggle');
 
             // $('#priceruleModal').modal({show: true});
 
-                    showAlertDivWithDelay("#msg-packitem-success");
+                    showAlertDivWithDelay("#msg-detail-success");
 
-                    getProductPackItems();
+                    getChequeDetails();
                 }
             });
+
+
+            // stop the form from submitting the normal way and refreshing the page
+            event.preventDefault();
 
         });
 

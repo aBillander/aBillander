@@ -45,23 +45,31 @@
 <table id="payments" class="table table-hover">
 	<thead>
 		<tr>
+      <th class="text-center">{{-- !! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !! --}} 
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="right" 
+                        data-content="{{ l('Select Voucher and Amount.') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </a>
+      </th>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
 			<th>{{l('Invoice')}}</th>
 			<!-- th>{{l('Customer')}}</th -->
 			<th>{{l('Subject')}}</th>
 			<th>{{l('Due Date')}}</th>
-			<th>{{l('Payment Date')}}</th>
+			<!-- th>{{l('Payment Date')}}</th -->
 			<th class="text-right">{{l('Amount')}}</th>
       <th style="text-transform: none;">{{l('Payment Type', 'customervouchers')}}</th>
       <th style="text-transform: none;">{{l('Auto Direct Debit', 'customervouchers')}}</th>
       <th class="text-center">{{l('Status', [], 'layouts')}}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
-			<th> </th>
+			<th class="text-center"><div id="balance" class="alert-warning">{{l('Make Payment')}}</div></th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody id="document_lines">
 	@foreach ($payments as $payment)
 		<tr>
+      <td class="text-center warning">{!! Form::checkbox('document_group[]', $payment->id, false, ['class' => 'case xcheckbox', 'onchange' => 'calculateSelectedAmount()']) !!}</td>
+
 			<td>{{ $payment->id }}</td>
 			<td>
           <a href="{{ URL::to('customerinvoices/' . optional($payment->customerInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference or '' }}</a></td>
@@ -70,7 +78,7 @@
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
-			<td>{{ abi_date_short($payment->payment_date) }}</td>
+			<!-- td>{{ abi_date_short($payment->payment_date) }}</td -->
 			<td class="text-right">{{ $payment->as_money_amount('amount') }}</td>
 
       <td>{{ optional($payment->paymenttype)->name }}</td>
@@ -118,32 +126,7 @@
 
 
 			<td class="text-right">
-              @if ( ( $payment->status == 'paid' ) || ( $payment->status == 'bounced' ) )
-
-            	@else
-
-                	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit?back_route=' . urlencode('customervouchers/customers/' . $customer->id ) ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
- 
-      @if ($payment->bankorder && ($payment->bankorder->status == 'pending'))
-      @else
-	                <a class="btn btn-sm btn-blue" href="{{ URL::to('customervouchers/' . $payment->id  . '/pay?back_route=' . urlencode('customervouchers/customers/' . $customer->id ) ) }}" title="{{l('Make Payment', 'customervouchers')}}"><i class="fa fa-money"></i>
-	                </a>
-      @endif
-
-	                @if(0 && $payment->amount==0.0)
- 
-      @if ($payment->bankorder && ($payment->bankorder->status != 'pending'))
-      @else
-	                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-	                    href="{{ URL::to('customervouchers/' . $payment->id ) }}" 
-	                    data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-	                    data-title="{{ l('Customer Voucher', 'customervouchers') }} :: {{ l('Invoice') }}: {{ $payment->paymentable->document_reference }} . {{ l('Due Date') }}: {{ $payment->due_date }}" 
-	                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
-      @endif
-
-	                @endif
-
-            	@endif
+              <input name="pay_amount[{{ $payment->id }}]" id="pay_amount[{{ $payment->id }}]" class=" selectedamount form-control input-sm" type="text" size="3" maxlength="5" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $payment->as_priceable($payment->amount, $payment->currency) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
 			</td>
 		</tr>
 	@endforeach

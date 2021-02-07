@@ -29,6 +29,12 @@ class ChequeDetail extends Model
 
 
 
+    public function getDeletableAttribute()
+    {
+        // return !( $this->status == 'closed' || $this->status == 'canceled' );
+        return $this->customerpayment->status == 'pending';
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Relationships

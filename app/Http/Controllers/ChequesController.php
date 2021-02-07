@@ -195,7 +195,9 @@ class ChequesController extends Controller
         
         $chequedetails = $cheque->chequedetails;
 
-        return view('cheques._panel_details_list', compact('cheque', 'chequedetails'));
+        $open_balance = $cheque->amount - $chequedetails->sum('amount');
+
+        return view('cheques._panel_details_list', compact('cheque', 'chequedetails', 'open_balance'));
     }
 
 

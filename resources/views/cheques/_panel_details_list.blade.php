@@ -36,7 +36,7 @@
                 <tbody class="sortable">
                 @foreach ($chequedetails as $detail)
                     <tr data-id="{{ $detail->id }}" data-sort-order="{{ $detail->line_sort_order }}">
-                        <td>{{ $detail->id }}</td>
+                        <td>{{ $detail->id }} {{-- $detail->customerpayment->cheque->id --}}</td>
                         <td>{{ $detail->line_sort_order }}</td>
                         <td>{{ $detail->name }}</td>
 

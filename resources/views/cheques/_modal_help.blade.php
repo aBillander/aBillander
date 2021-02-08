@@ -16,7 +16,7 @@
 
 <p>Si algún Recibo se hubiera asignado incorrectamente al Cheque, deberá editar el Recibo para deshacer el pago; el Estado del Recibo volverá a “Pendiente” y quedará desvinculado del Cheque.</p>
 
-<p>Tenga en cuenta que deberá modificar el "Estado" y la "Fecha de Pago" en la pestaña "Datos Generales" del Cheque.</p>
+<p>Cuando el importe de los Recibos compensa el valor del Cheque, aBillander cambia el "Estado" del Cheque a "Pagado" y rellena la "Fecha de Pago" con la fecha del día (pestaña "Datos Generales"). La "Fecha de Pago" podrá cambiarse manualmente a posteriori si fuera necesario.</p>
 
 <h2>Trazabilidad</h2>
 

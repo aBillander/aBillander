@@ -635,10 +635,16 @@ class CustomerVouchersController extends Controller
 
         }
 
-        // Update bankorder
+        // Update cheque
         if ( $chequedetail = $payment->chequedetail )
         {
+        	// Moved from CustomerPaymentBouncedListener
+        	$cheque = $chequedetail->cheque;
+        	
         	$chequedetail->delete();
+
+            // Moved from CustomerPaymentBouncedListener
+        	$cheque->checkStatus();
         }
 
 		// Update Customer Risk

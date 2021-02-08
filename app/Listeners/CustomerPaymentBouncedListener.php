@@ -45,5 +45,11 @@ class CustomerPaymentBouncedListener
         // Update bankorder
         if ( $bankorder = $payment->bankorder )
             $bankorder->checkStatus();
+
+        // Update cheque
+        if ( $cheque = $payment->cheque )
+        {
+            $cheque->checkStatus();
+        }
     }
 }

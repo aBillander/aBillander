@@ -253,6 +253,11 @@ class Payment extends Model {
         return $this->hasOne('App\ChequeDetail');
     }
 
+    public function getChequeAttribute()
+    {
+        return $this->belongsToMany('App\Cheque', 'cheque_details')->first();
+    }
+
 
     /*
     |--------------------------------------------------------------------------

@@ -104,6 +104,10 @@ class ChequesController extends Controller
     public function show(Cheque $cheque)
     {
         //
+
+        $cheque->checkStatus();
+
+        // abi_r();
     }
 
     /**
@@ -114,6 +118,9 @@ class ChequesController extends Controller
      */
     public function edit(Cheque $cheque)
     {
+
+        // abi_r($cheque->vouchers);die();
+
         $statusList = $this->cheque::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $bankList = Bank::pluck('name', 'id')->toArray();   

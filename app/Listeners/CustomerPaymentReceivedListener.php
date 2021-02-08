@@ -40,5 +40,11 @@ class CustomerPaymentReceivedListener
         if ( $bankorder = $payment->bankorder )
             $bankorder->checkStatus();
 
+        // Update cheque
+        if ( $cheque = $payment->cheque )
+        {
+            $cheque->checkStatus();
+        }
+
     }
 }

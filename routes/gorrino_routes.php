@@ -217,7 +217,7 @@ Route::get('migratethis', function()
 	if ($payment_type)
 		\App\Configuration::updateValue('DEF_CHEQUE_PAYMENT_TYPE', $payment_type->id);
 
-	abi_r();
+	abi_r(\App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE'));
 
 	// 2021-02-05
 

@@ -158,6 +158,8 @@ return [
 	'DEF_MEASURE_UNIT_FOR_PRODUCTS.help' => 'Unidad de Medida por defecto para Productos y Combinaciones.',
 	'DEF_OUTSTANDING_AMOUNT.name' => 'Riesgo Máximo',
 	'DEF_OUTSTANDING_AMOUNT.help' => 'Riesgo Máximo permitido para un Cliente. Use el punto "." para separar los decimales.',
+	'DEF_CHEQUE_PAYMENT_TYPE.name' => 'Tipo de Pago para Cheques',
+	'DEF_CHEQUE_PAYMENT_TYPE.help' => '',
 	'DEF_SEPA_PAYMENT_TYPE.name' => 'Tipo de Pago para Remesas',
 	'DEF_SEPA_PAYMENT_TYPE.help' => '',
 	'DEF_TAX.name' => 'Tipo de Impuesto',

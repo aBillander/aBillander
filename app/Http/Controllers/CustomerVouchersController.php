@@ -587,7 +587,10 @@ class CustomerVouchersController extends Controller
 
     public function unPayVoucher(Request $request, $id)
     {
-		$payment = $this->payment->with('bankorder')->findOrFail($id);
+		$payment = $this->payment
+						->with('bankorder')
+						->with('chequedetail')
+						->findOrFail($id);
 
 		if ( $payment->status != 'paid' )
 		{
@@ -630,6 +633,12 @@ class CustomerVouchersController extends Controller
 			$payment->status   = 'bounced';
 			$payment->save();
 
+        }
+
+        // Update bankorder
+        if ( $chequedetail = $payment->chequedetail )
+        {
+        	$chequedetail->delete();
         }
 
 		// Update Customer Risk
@@ -864,6 +873,7 @@ class CustomerVouchersController extends Controller
 					->with('paymentable.customer')
 					->with('paymentable.customer.bankaccount')
 					->where('payment_type', 'receivable')
+					->where('status', 'pending')
 					->with('bankorder')
 					->orderBy('due_date', 'asc')
 					->get();

@@ -248,6 +248,11 @@ class Payment extends Model {
         return $this->belongsTo('aBillander\SepaSpain\SepaDirectDebit', 'bank_order_id');
     }
 
+    public function chequedetail()
+    {
+        return $this->hasOne('App\ChequeDetail');
+    }
+
 
     /*
     |--------------------------------------------------------------------------

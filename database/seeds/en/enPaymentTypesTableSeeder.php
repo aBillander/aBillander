@@ -33,6 +33,8 @@ class enPaymentTypesTableSeeder extends Seeder {
             'active' => 1, 
             'accounting_code' => '',
         ] );
+
+        Configuration::updateValue('DEF_CHEQUE_PAYMENT_TYPE', $ptype->id);
   
         $ptype = PaymentType::create( [
             'alias' => 'Bank Transfer', 

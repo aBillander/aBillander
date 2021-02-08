@@ -81,4 +81,7 @@ return [
 	
 	'Select Voucher and Amount.' => 'Selecccione Recibos y la Cantidad.',
 
+
+	'Undo Payment' => 'Deshacer Pago',
+
 ];

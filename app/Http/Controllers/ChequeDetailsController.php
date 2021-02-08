@@ -9,6 +9,9 @@ use App\ChequeDetail;
 use App\Payment;
 use App\CustomerInvoice;
 
+use App\Configuration;
+use App\PaymentType;
+
 use App\Events\CustomerPaymentReceived;
 
 class ChequeDetailsController extends Controller
@@ -175,13 +178,18 @@ class ChequeDetailsController extends Controller
 
             }
 
+
+            $payment_type_id = $request->input('payment_type_id', Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE'));
+            if ( !PaymentType::where('id', $payment_type_id)->exists() )
+                $payment_type_id = $voucher->payment_type_id;
+
             $voucher->name     = $request->input('name',     $voucher->name);
 //          $voucher->due_date = $request->input('due_date', $voucher->due_date);
             $voucher->payment_date = $request->input('payment_date') ?: \Carbon\Carbon::now();
             $voucher->amount   = $pay;
             $voucher->notes    = $request->input('notes',    $voucher->notes);
 
-            $voucher->payment_type_id    = $request->input('payment_type_id',    $voucher->payment_type_id);
+            $voucher->payment_type_id    = $payment_type_id;
 
             $voucher->status   = 'paid';
             $voucher->save();

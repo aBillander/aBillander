@@ -211,6 +211,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 2021-02-08
+
+	$payment_type = \App\PaymentType::where('name', 'Cheque')->first();abi_r($payment_type);
+	if ($payment_type)
+		\App\Configuration::updateValue('DEF_CHEQUE_PAYMENT_TYPE', $payment_type->id);
+
+	abi_r();
 
 	// 2021-02-05
 

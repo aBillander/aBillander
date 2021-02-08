@@ -6,7 +6,13 @@ use Illuminate\Http\Request;
 
 use App\Cheque;
 use App\ChequeDetail;
+use App\Payment;
 use App\CustomerInvoice;
+
+use App\Configuration;
+use App\PaymentType;
+
+use App\Events\CustomerPaymentReceived;
 
 class ChequeDetailsController extends Controller
 {
@@ -44,6 +50,12 @@ class ChequeDetailsController extends Controller
      */
     public function store($chequeId, Request $request)
     {
+        if($request->ajax()){
+
+            return $this->storeAjax($chequeId, $request);
+
+        }
+
         $cheque = Cheque::with('chequedetails')->findOrFail($chequeId);
 
         $customer_id = $cheque->customer_id;
@@ -80,6 +92,121 @@ class ChequeDetailsController extends Controller
         return redirect('cheques/'.$chequeId.'/edit')
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $chequedetail->id], 'layouts') . $chequedetail->line_sort_order);
     }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeAjax($chequeId, Request $request)
+    {
+        $cheque = Cheque::with('chequedetails')->with('customer')->findOrFail($chequeId);
+
+        $customer = $cheque->customer;
+        
+        // Get Customer Voucher IDs 
+        $document_group = $request->input('document_group', []);
+
+        if ( count( $document_group ) == 0 ) 
+            // To do!
+            return redirect()->route('customer.shippingslipable.orders', $request->input('customer_id'))
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+        $pay_amount = $request->input('pay_amount', []);
+
+        // Get Customer Vouchers
+        $customer_id = $customer->id;
+        $vouchers = Payment::
+                      whereHas('customer', function ($query) use ($customer_id) {
+                            $query->where('id', $customer_id);
+                        })
+//                  ->filter( $request->all() )
+                    ->with('customerinvoice')
+                    ->where('payment_type', 'receivable')
+                    ->whereIn('id', $document_group)
+                    ->get();
+
+        $next_line_sort_order = $cheque->chequedetails->max('line_sort_order') + 10;
+
+        // Create Cheque Details
+        foreach ($vouchers as $voucher) {
+            # code...
+            $pay = array_key_exists($voucher->id, $pay_amount) ? 
+                    (float) $pay_amount[$voucher->id] : 
+                    $voucher->amount;
+            
+            if ($pay > $voucher->amount) $pay = $voucher->amount;
+            if ($pay <= 0.0            ) $pay = $voucher->amount;
+
+            $detail_amount = $pay;
+
+            $data = [
+                'line_sort_order' => $next_line_sort_order,
+                'name' => $voucher->customerinvoice->document_reference.' :: '.abi_date_short($voucher->due_date),
+                'amount' => $detail_amount,
+                'payment_id' => $voucher->id,
+                'customer_invoice_id' => $voucher->customerinvoice->id,
+                'customer_invoice_reference' => $voucher->customerinvoice->document_reference,
+            ];
+
+            $chequedetail = ChequeDetail::create($data);
+
+            $cheque->chequedetails()->save($chequedetail);
+
+            $next_line_sort_order += 10;
+
+            // Now, set voucher as paid (total or partial)
+            $diff = $voucher->amount - $pay;
+
+            // If amount is not fully paid, a new payment will be created for the difference
+            if ( $diff != 0 ) {
+                $new_payment = $voucher->replicate( ['id', 'due_date', 'payment_date', 'amount'] );
+
+                $due_date = $request->input('due_date_next') ?: \Carbon\Carbon::now();
+
+                $new_payment->name = $voucher->name . ' * ';
+                $new_payment->status = 'pending';
+                $new_payment->due_date = $due_date;
+                $new_payment->payment_date = NULL;
+                $new_payment->amount = $diff;
+
+                $new_payment->payment_type_id = $voucher->payment_type_id;
+
+                $new_payment->save();
+
+            }
+
+
+            $payment_type_id = $request->input('payment_type_id', Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE'));
+            if ( !PaymentType::where('id', $payment_type_id)->exists() )
+                $payment_type_id = $voucher->payment_type_id;
+
+            $voucher->name     = $request->input('name',     $voucher->name);
+//          $voucher->due_date = $request->input('due_date', $voucher->due_date);
+            $voucher->payment_date = $request->input('payment_date') ?: \Carbon\Carbon::now();
+            $voucher->amount   = $pay;
+            $voucher->notes    = $request->input('notes',    $voucher->notes);
+
+            $voucher->payment_type_id    = $payment_type_id;
+
+            $voucher->status   = 'paid';
+            $voucher->save();
+
+            // Update Customer Risk
+            event(new CustomerPaymentReceived($voucher));
+
+        }        
+
+        return response()->json( [
+            'success' => 'OK',
+            'msg' => 'OK',
+//            'data' => $customeruser->toArray()
+        ] );
+
+    }
+
 
     /**
      * Display the specified resource.

@@ -118,6 +118,7 @@ class ChequesController extends Controller
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $bankList = Bank::pluck('name', 'id')->toArray();   
 
+        $customer = $cheque->customer;
         $chequedetails = $cheque->details;     
 
         // abi_r($bankList);die();
@@ -125,7 +126,7 @@ class ChequesController extends Controller
         // Dates (cuen)
         $this->addFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $cheque );
 
-        return view('cheques.edit', compact('cheque', 'chequedetails', 'statusList', 'currencyList', 'bankList'));
+        return view('cheques.edit', compact('cheque', 'chequedetails', 'customer', 'statusList', 'currencyList', 'bankList'));
     }
 
     /**
@@ -184,6 +185,25 @@ class ChequesController extends Controller
 
         return response()->json($positions);
     }
+
+    
+    public function getDetails($id, Request $request)
+    {
+        $cheque = $this->cheque
+                        ->with('chequedetails')
+                        ->findOrFail($id);
+        
+        $chequedetails = $cheque->chequedetails;
+
+        $open_balance = $cheque->amount - $chequedetails->sum('amount');
+
+        return view('cheques._panel_details_list', compact('cheque', 'chequedetails', 'open_balance'));
+    }
+
+
+
+/* ********************************************************************************************* */    
+
 
 
 

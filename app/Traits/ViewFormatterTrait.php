@@ -55,6 +55,21 @@ trait ViewFormatterTrait
         return \App\Currency::viewMoney($amount, $currency);
     }
 
+    public function as_money_amount_with_sign( $key = '', \App\Currency $currency = null )
+    {
+        if ( !$key || !array_key_exists($key, $this->attributes) ) return null;
+
+        $amount = floatval( $this->{$key} );
+
+        if ( !$currency ) {
+            if (array_key_exists('currency_id', $this->attributes)) {
+                $currency = $this->currency;
+            }
+        }
+
+        return \App\Currency::viewMoneyWithSign($amount, $currency);
+    }
+
     /**
     * Return (number) money field with currency decimal places
     */

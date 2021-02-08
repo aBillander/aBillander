@@ -10,20 +10,6 @@
             </div>
             <div class="modal-body">
 
-<p>Una vez creado el Cheque, es posible indicar los Recibos que se pagan con el Cheque. Para ello, ir a la pestaña “Detalle” y pulsar el botón “Nuevo”.  Aparecerá una ventana emergente donde se muestran los Recibos pendientes del Cliente que ha emitido el Cheque. En esta ventana se seleccionarán los Recibos y el importe.</p>
-
-<p>Cuando se pulsa “Aceptar”, los Recibos seleccionados se pasarán a estado “Cobrado”, con “Tipo de Pago” igual al definido en Configuración > Valores por defecto > Tipo de Pago para Cheques. Si para algún Recibo seleccionó un importe inferior al total del Recibo, se creará un Recibo en Estado “Pendiente” por la diferencia.</p>
-
-<p>Si algún Recibo se hubiera asignado incorrectamente al Cheque, deberá editar el Recibo para deshacer el pago; el Estado del Recibo volverá a “Pendiente” y quedará desvinculado del Cheque.</p>
-
-<p>Tenga en cuenta que deberá modificar el "Estado" y la "Fecha de Pago" en la pestaña "Datos Generales" del Cheque.</p>
-
-<h2>Trazabilidad</h2>
-
-<p>1.- Desde Cheque > Detalles se puede ir al Recibo.</p>
-
-<p>2.- Desde las consultas de Recibos de Cliente (Recibos, Recibos por Cliente, Pagos de una Factura) se puede ir al Cheque.</p>
-
 {{--
 <h2>¿Qué es una <i>Plantilla para Pedidos de Venta</i>?</h2>
 <p>Una <strong><i>Plantilla para Pedidos de Venta</i></strong> es un Modelo para crear rápidamente Pedidos de Venta. Las Plantillas para Pedidos se utilizan convenientemente cuando un Cliente hace pedidos regularmente con el mismo contenido o similar.</p>

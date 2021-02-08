@@ -78,5 +78,10 @@ return [
 	'There is a Bank Order with this Voucher: :bo' => 'Hay una Remesa que incluye este Recibo: :bo',
 
 	'Payment Type' => 'Tipo de Pago',
+	
+	'Select Voucher and Amount.' => 'Selecccione Recibos y la Cantidad.',
+
+
+	'Undo Payment' => 'Deshacer Pago',
 
 ];

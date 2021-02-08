@@ -587,7 +587,10 @@ class CustomerVouchersController extends Controller
 
     public function unPayVoucher(Request $request, $id)
     {
-		$payment = $this->payment->with('bankorder')->findOrFail($id);
+		$payment = $this->payment
+						->with('bankorder')
+						->with('chequedetail')
+						->findOrFail($id);
 
 		if ( $payment->status != 'paid' )
 		{
@@ -630,6 +633,12 @@ class CustomerVouchersController extends Controller
 			$payment->status   = 'bounced';
 			$payment->save();
 
+        }
+
+        // Update bankorder
+        if ( $chequedetail = $payment->chequedetail )
+        {
+        	$chequedetail->delete();
         }
 
 		// Update Customer Risk
@@ -835,5 +844,42 @@ class CustomerVouchersController extends Controller
 
         // https://www.youtube.com/watch?v=LWLN4p7Cn4E
         // https://www.youtube.com/watch?v=s-ZeszfCoEs
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function indexByCustomerPending($id, Request $request)
+    {
+/*
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
+        $items_per_page = intval($request->input('items_per_page', Configuration::getInt('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
+*/
+        $customer = $this->customer->findOrFail($id);
+
+		$payments = $this->payment
+                    ->whereHas('customer', function ($query) use ($id) {
+                            $query->where('id', $id);
+                        })
+//        			->filter( $request->all() )
+					->with('paymentable')
+					->with('paymentable.customer')
+					->with('paymentable.customer.bankaccount')
+					->where('payment_type', 'receivable')
+					->where('status', 'pending')
+					->with('bankorder')
+					->orderBy('due_date', 'asc')
+					->get();
+
+		// abi_r($payments);
+
+        return view('cheques.index_by_customer_pending', compact('customer', 'payments'));
     }
 }

@@ -14,7 +14,7 @@ class ChequeDetail extends Model
     use ViewFormatterTrait;
 
     protected $fillable = [
-    		'line_sort_order', 'name', 'amount', 'customer_invoice_id', 'customer_invoice_reference',
+    		'line_sort_order', 'name', 'amount', 'payment_id', 'customer_invoice_id', 'customer_invoice_reference',
     ];
 
     public static $rules = [
@@ -28,6 +28,12 @@ class ChequeDetail extends Model
     	];
 
 
+
+    public function getDeletableAttribute()
+    {
+        // return !( $this->status == 'closed' || $this->status == 'canceled' );
+        return $this->customerpayment->status == 'pending';
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -43,5 +49,15 @@ class ChequeDetail extends Model
     public function customerinvoice()
     {
         return $this->hasOne( 'App\CustomerInvoice', 'id', 'customer_invoice_id' );
+    }
+    
+    public function customerpayment()
+    {
+        return $this->hasOne( 'App\Payment', 'id', 'payment_id' )->where('payment_type', 'receivable');
+    }
+    
+    public function supplierpayment()
+    {
+        return $this->hasOne( 'App\Payment', 'id', 'payment_id' )->where('payment_type', 'payable');
     }
 }

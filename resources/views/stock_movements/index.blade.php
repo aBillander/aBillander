@@ -149,7 +149,7 @@
       </td>
 
 			<td>{{ $stockmovement->warehouse->alias }}</td>
-      <td><a href="{{ URL::to('products/' . $stockmovement->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->reference }}</a>
+      <td><a href="{{ URL::to('products/' . optional($stockmovement->product)->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->reference }}</a>
 {{--
                     @if ( $stockmovement->combination_id > 0 )
                         {{ $stockmovement->combination->reference }}

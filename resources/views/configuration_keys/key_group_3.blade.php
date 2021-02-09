@@ -407,6 +407,37 @@
         <span class="help-block">{!! l('DEVELOPER_MODE.help') !!}</span>
       </div>
     </div>
+    
+
+    <div class="form-group {{ $errors->has('URL_ABILLANDER_DOCS') ? 'has-error' : '' }}">
+      <label for="URL_ABILLANDER_DOCS" class="col-lg-4 control-label">{!! l('URL_ABILLANDER_DOCS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="URL_ABILLANDER_DOCS" name="URL_ABILLANDER_DOCS" placeholder="" value="{{ old('URL_ABILLANDER_DOCS', $key_group['URL_ABILLANDER_DOCS']) }}" />
+        {{ $errors->first('URL_ABILLANDER_DOCS', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('URL_ABILLANDER_DOCS.help') !!}</span>
+      </div>
+    </div>
+
+
+    <div class="form-group {{ $errors->has('URL_ABILLANDER_SUPPORT') ? 'has-error' : '' }}">
+      <label for="URL_ABILLANDER_SUPPORT" class="col-lg-4 control-label">{!! l('URL_ABILLANDER_SUPPORT.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="URL_ABILLANDER_SUPPORT" name="URL_ABILLANDER_SUPPORT" placeholder="" value="{{ old('URL_ABILLANDER_SUPPORT', $key_group['URL_ABILLANDER_SUPPORT']) }}" />
+        {{ $errors->first('URL_ABILLANDER_SUPPORT', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('URL_ABILLANDER_SUPPORT.help') !!}</span>
+      </div>
+    </div>
+
 
     
 

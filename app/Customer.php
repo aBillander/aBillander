@@ -43,6 +43,9 @@ class Customer extends Model {
         'name_fiscal' => 'required',
         'currency_id' => 'exists:currencies,id',
         'no_payment_month' => 'numeric|min:0|max:12',
+        
+        'shipping_method_id' => 'sometimes|nullable|exists:shipping_methods,id',
+        'price_list_id' => 'sometimes|nullable|exists:price_lists,id',
         );
 
 
@@ -154,6 +157,12 @@ class Customer extends Model {
     public function getEmailAttribute() 
     {
         return $this->address->email;
+    }
+
+
+    public function getIsActiveAttribute()
+    {
+        return $this->active > 0;
     }
 
     public function currentpricelist( Currency $currency = null )

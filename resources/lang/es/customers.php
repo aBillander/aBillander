@@ -39,6 +39,9 @@ return [
 	'Fiscal Name'     => 'Nombre Fiscal',
 	'Commercial Name'     => 'Nombre Comercial',
 	'Identification'     => 'NIF / CIF',
+
+	'New Customers will take values from the Customer Group, but you can change these values later on.' =>
+	'El nuevo Cliente tomará valores del Grupo de Clientes, pero podrán cambiarse más adelante.',
 	''     => '',
 	''     => '',
 	''     => '',

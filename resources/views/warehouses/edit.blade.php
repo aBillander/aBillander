@@ -8,6 +8,8 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
+                <a href="{{ route('warehouse.inventory', [$warehouse->id]) }}" class="btn btn-success"><i class="fa fa-th-list"></i> {{ l('Products') }}</a>
+
                 <a href="{{ URL::to('warehouses') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Warehouses') }}</a>
             </div>
             <h2><a href="{{ URL::to('warehouses') }}">{{ l('Warehouses') }}</a> <span style="color: #cccccc;">/</span> {{ $warehouse->address->name_commercial }}</h2>

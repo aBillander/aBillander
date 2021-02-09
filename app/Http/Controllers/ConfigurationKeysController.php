@@ -137,6 +137,9 @@ class ConfigurationKeysController extends Controller {
                         'USE_CUSTOM_THEME',
                         'DEVELOPER_MODE',
 
+                        'URL_ABILLANDER_DOCS',
+                        'URL_ABILLANDER_SUPPORT',
+
                     ],
 
                 4 => [

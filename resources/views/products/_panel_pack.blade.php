@@ -43,7 +43,7 @@
           	$('#packitem_line_sort_order').val( $('#next_packitem_line_sort_order').val() );
 	        $("#autopackitem_name").val('');
 	        $("#packitem_product_id").val('');
-	        $("#autopackitem_name").focus();
+//	        $("#autopackitem_name").focus();   <= Won't work. See _modal_packitem_create.blade file
           	$('#packitem_measureunit_name').html('');
 	        $("#packitem_quantity").val('1');
 	        $("#packitem_measureunit_id").val('');
@@ -51,8 +51,7 @@
 
           	// Open popup
             $('#packitemModal').modal({show: true});
-            $("#autocustomer_name").focus();
-
+            
 
             return false;
         });

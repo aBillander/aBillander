@@ -53,13 +53,17 @@
 
                         </td>
 
-                        <td>[{{ $detail->customerpayment->id }}] {{ $detail->customerpayment->name }} 
-                          ({{ $detail->customerpayment->as_money_amount_with_sign('amount') }})
+                        <td>
+@if($detail->customerpayment)
+                            [{{ optional($detail->customerpayment)->id }}] {{ optional($detail->customerpayment)->name }} 
+                          ({{ optional($detail->customerpayment)->as_money_amount_with_sign('amount') }})
                           <a class="btn btn-xs btn-warning" href="{{ URL::to('customervouchers/' . $detail->payment_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
-
+@else
+                        -
+@endif
                         </td>
 
-                        <td>{{ abi_date_short($detail->customerpayment->payment_date) }}</td>
+                        <td>{{ abi_date_short(optional($detail->customerpayment)->payment_date) }}</td>
 
 
                         <td class="text-right button-pad">

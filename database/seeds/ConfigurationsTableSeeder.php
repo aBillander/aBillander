@@ -202,6 +202,8 @@ $confs = [
 ['SW_VERSION', '0.10.23'],
 ['TAX_BASED_ON_SHIPPING_ADDRESS', '0'],
 ['TIMEZONE', 'Europe/Madrid'],
+['URL_ABILLANDER_DOCS', 'https://abillander.gitbook.io'],
+['URL_ABILLANDER_SUPPORT', 'https://support.abillander.com'],
 ['USE_CUSTOM_THEME', ''],
 ['WOOC_STORE_URL', ''],			// https://www.mywoostore.com/
 ['WOOC_CONSUMER_KEY', ''],

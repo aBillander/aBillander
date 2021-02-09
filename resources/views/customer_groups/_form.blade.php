@@ -8,13 +8,19 @@
                      {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
                   </div>
 
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('price_list_id') ? 'has-error' : '' }}">
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('price_list_id') ? 'has-error' : '' }}">
                      {{ l('Price List') }}
                      {!! Form::select('price_list_id', array('' => l('-- Please, select --', [], 'layouts')) + $price_listList, null, array('class' => 'form-control')) !!}
                      {!! $errors->first('price_list_id', '<span class="help-block">:message</span>') !!}
                   </div>
 
-                   <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-active">
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('shipping_method_id') ? 'has-error' : '' }}">
+                     {{ l('Shipping Method') }}
+                     {!! Form::select('shipping_method_id', array('' => l('-- Please, select --', [], 'layouts')) + $shipping_methodList, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('shipping_method_id', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-active">
                      {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}
                      <div>
                        <div class="radio-inline">

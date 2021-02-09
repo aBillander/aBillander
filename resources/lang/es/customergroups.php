@@ -29,6 +29,7 @@ return [
 	'Main Data'     => 'Datos Generales',
 
 	'Customer Group Name'     => 'Nombre del Grupo de Clientes',
+	'Shipping Method'     => 'Método de Envío',
 	'Price List'     => 'Tarifa',
 
 

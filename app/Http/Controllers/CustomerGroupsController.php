@@ -1,11 +1,15 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\CustomerGroup as CustomerGroup;
+use App\PriceList;
+use App\ShippingMethod;
+use App\CustomerGroup;
 use View;
 
 class CustomerGroupsController extends Controller {
@@ -39,7 +43,11 @@ class CustomerGroupsController extends Controller {
 	 */
 	public function create()
 	{
-        return view('customer_groups.create');
+        $price_listList =  PriceList::pluck('name', 'id')->toArray();
+
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
+
+        return view('customer_groups.create', compact('price_listList', 'shipping_methodList'));
 	}
 
 	/**
@@ -82,7 +90,11 @@ class CustomerGroupsController extends Controller {
 	{
         $customergroup = $this->customergroup->findOrFail($id);
 
-        return view('customer_groups.edit', compact('customergroup'));
+        $price_listList =  PriceList::pluck('name', 'id')->toArray();
+
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
+
+        return view('customer_groups.edit', compact('customergroup', 'price_listList', 'shipping_methodList'));
 	}
 
 	/**

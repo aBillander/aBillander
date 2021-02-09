@@ -19,7 +19,8 @@ class ShowOnlyActiveScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         if ( $this->resolver )
-        	$builder->where('active', true);
+        // if ( \App\Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') )
+        	$builder->where('active', '>', 0);
     }
 }
  

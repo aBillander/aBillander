@@ -217,7 +217,7 @@ Route::get('migratethis', function()
 	if ($payment_type)
 		\App\Configuration::updateValue('DEF_CHEQUE_PAYMENT_TYPE', $payment_type->id);
 
-	abi_r();
+	abi_r(\App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE'));
 
 	// 2021-02-05
 
@@ -225,6 +225,17 @@ Route::get('migratethis', function()
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheque_details` ADD `payment_id` INT(10) UNSIGNED NULL AFTER `amount`;");
 
 	die('OK');
+
+	// 2021-02-03
+
+	\App\Configuration::updateValue('URL_ABILLANDER_DOCS', 'https://abillander.gitbook.io');
+	\App\Configuration::updateValue('URL_ABILLANDER_SUPPORT', 'https://support.abillander.com');
+
+	\App\Configuration::updateValue('SW_VERSION', '1.2.5');
+	\App\Configuration::updateValue('SW_DATABASE_VERSION', '1.2.5');
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customer_groups` ADD `shipping_method_id` INT(10) UNSIGNED NULL AFTER `invoice_template_id`;");
+
 
 	// 2021-01-28
 

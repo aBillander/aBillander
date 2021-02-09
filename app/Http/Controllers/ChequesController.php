@@ -91,7 +91,7 @@ class ChequesController extends Controller
 
         $cheque = Cheque::create($request->all());
 
-        return redirect()->route('cheques.index')
+        return redirect()->route('cheques.edit', [$cheque->id])
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
     }
 
@@ -105,7 +105,7 @@ class ChequesController extends Controller
     {
         //
 
-        $cheque->checkStatus();
+        // $cheque->checkStatus();
 
         // abi_r();
     }

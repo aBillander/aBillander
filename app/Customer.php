@@ -159,6 +159,12 @@ class Customer extends Model {
         return $this->address->email;
     }
 
+
+    public function getIsActiveAttribute()
+    {
+        return $this->active > 0;
+    }
+
     public function currentpricelist( Currency $currency = null )
     {
         if ( $currency == null )

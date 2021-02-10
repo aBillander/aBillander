@@ -26,7 +26,7 @@
         {!! $errors->first('due_date', '<span class="help-block">:message</span>') !!}
     </div>
 
-@if ( optional($cheque)->status == 'paid')
+@if ( isset($cheque) && ($cheque->status == 'paid') )
 @php
           $statusList = ['paid' => $statusList['paid']];
 @endphp
@@ -42,7 +42,7 @@
         {!! $errors->first('date_of_entry', '<span class="help-block">:message</span>') !!}
     </div>
 
-@if ( optional($cheque)->status == 'paid')
+@if ( isset($cheque) && ($cheque->status == 'paid') )
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('payment_date_form', l('Payment Date')) !!}
         <div class="form-control">{{ $cheque->payment_date_form }}</div>

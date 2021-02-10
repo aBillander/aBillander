@@ -16,11 +16,13 @@ use App\Events\CustomerPaymentBounced;
 use Excel;
 
 use App\Traits\DateFormFormatterTrait;
+use App\Traits\ModelAttachmentControllerTrait;
 
 class ChequesController extends Controller
 {
    
    use DateFormFormatterTrait;
+   use ModelAttachmentControllerTrait;
 
    protected $cheque;
 

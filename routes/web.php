@@ -258,6 +258,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
         Route::get( 'export/cheques', 'ChequesController@export' )->name('cheques.export');
+        
+        Route::post('cheques/{id}/attachment',         'ChequesController@attachmentStore'  )->name('cheques.attachment.store'  );
+        Route::get( 'cheques/{id}/attachment/{aid}',   'ChequesController@attachmentShow'   )->name('cheques.attachment.show'   );
+        Route::delete('cheques/{id}/attachment/{aid}', 'ChequesController@attachmentDestroy')->name('cheques.attachment.destroy');
 
         Route::resource('countries',        'CountriesController');
         Route::resource('countries.states', 'StatesController');

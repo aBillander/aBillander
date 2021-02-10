@@ -65,7 +65,7 @@
                <i class="fa fa-tasks"></i>
                &nbsp; {{ l('Details') }}
             </a>
-            <a id="b_attachments" href="#attachments" class=" hide  list-group-item">
+            <a id="b_attachments" href="#attachments" class="list-group-item">
                <i class="fa fa-paperclip"></i>
                &nbsp; {{ l('Attachments', 'layouts') }}
             </a>

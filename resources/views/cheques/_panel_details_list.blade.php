@@ -23,6 +23,7 @@
                     </th>
                     <th class="text-left">{{ l('Customer Invoice', 'chequedetails') }}</th>
                     <th class="text-left">{{ l('Customer Voucher', 'customervouchers') }}</th>
+                    <th class="text-center">{{l('Status', [], 'layouts')}}</th>
                     <th>{{l('Payment Date')}}</th>
                     <th class="text-right">
 
@@ -61,6 +62,22 @@
 @else
                         -
 @endif
+                        </td>
+
+                            <td class="text-center button-pad">
+                                @if     ( optional($detail->customerpayment)->status == 'pending' )
+                                    <span class="label label-info">
+                                @elseif ( optional($detail->customerpayment)->status == 'bounced' )
+                                    <span class="label label-danger">
+                              @elseif ( optional($detail->customerpayment)->status == 'paid' )
+                                <span class="label label-success">
+                              @elseif ( optional($detail->customerpayment)->status == 'uncollectible' )
+                                <span class="label alert-danger">
+                                @else
+                                    <span class="label">
+                                @endif
+                                {{\App\Payment::getStatusName(optional($detail->customerpayment)->status)}}</span>
+
                         </td>
 
                         <td>{{ abi_date_short(optional($detail->customerpayment)->payment_date) }}</td>

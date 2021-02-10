@@ -43,6 +43,7 @@ return [
 	'Document not found'										=> 'Documento no encontrado',
 	'Document ID not found'										=> 'ID de Documento no encontrado',
 	'Unable to close this document &#58&#58 (:id) '              =>  'No se ha podido cerrar el documento solicitado &#58&#58 (:id) ',
+	'Unable to close this document because lines do not match &#58&#58 (:id) '              =>  'No se ha podido cerrar el documento solicitado porque las líneas no coinciden &#58&#58 (:id) ',
 	'Unable to delete this record &#58&#58 (:id) '               =>  'No se ha podido borrar el registro solicitado &#58&#58 (:id) ',
 	'Unable to load PDF Document &#58&#58 (:id) '                =>  'No se puede cargar el documento PDF &#58&#58 (:id) ',
 	'This record cannot be created because it already exists &#58&#58 (:id) '  =>  'El registro no puede ser creado porque ya existe &#58&#58 (:id) ',

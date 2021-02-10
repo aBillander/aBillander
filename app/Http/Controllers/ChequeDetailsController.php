@@ -12,7 +12,7 @@ use App\CustomerInvoice;
 use App\Configuration;
 use App\PaymentType;
 
-use App\Events\CustomerPaymentReceived;
+// use App\Events\CustomerPaymentReceived;
 
 class ChequeDetailsController extends Controller
 {
@@ -109,10 +109,12 @@ class ChequeDetailsController extends Controller
         // Get Customer Voucher IDs 
         $document_group = $request->input('document_group', []);
 
-        if ( count( $document_group ) == 0 ) 
-            // To do!
-            return redirect()->route('customer.shippingslipable.orders', $request->input('customer_id'))
-                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        if ( count( $document_group ) == 0 )
+            return response()->json( [
+                'success' => 'OKKO',
+                'message' => l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => $chequeId], 'layouts'),
+    //            'data' => $customeruser->toArray()
+            ] );
 
         $pay_amount = $request->input('pay_amount', []);
 
@@ -127,6 +129,16 @@ class ChequeDetailsController extends Controller
                     ->where('payment_type', 'receivable')
                     ->whereIn('id', $document_group)
                     ->get();
+
+        $balance = $cheque->vouchers->sum('amount') + $vouchers->sum('amount') - $cheque->amount;
+
+        // abi_r($cheque->vouchers->sum('amount').' + '.$vouchers->sum('amount').' - '.$cheque->amount);die();
+
+        if ( $balance > 0 )
+            return response()->json( [
+                'success' => 'KO',
+                'message' => l('The Amount of the selected Receipts exceeds the value of the Check &#58&#58 (:id) ', ['id' => $chequeId]),
+            ] );
 
         $next_line_sort_order = $cheque->chequedetails->max('line_sort_order') + 10;
 
@@ -185,23 +197,23 @@ class ChequeDetailsController extends Controller
 
             $voucher->name     = $request->input('name',     $voucher->name);
 //          $voucher->due_date = $request->input('due_date', $voucher->due_date);
-            $voucher->payment_date = $request->input('payment_date') ?: \Carbon\Carbon::now();
+            // $voucher->payment_date = $request->input('payment_date') ?: \Carbon\Carbon::now();
             $voucher->amount   = $pay;
             $voucher->notes    = $request->input('notes',    $voucher->notes);
 
             $voucher->payment_type_id    = $payment_type_id;
 
-            $voucher->status   = 'paid';
+            // $voucher->status   = 'paid';
             $voucher->save();
 
             // Update Customer Risk
-            event(new CustomerPaymentReceived($voucher));
+            // event(new CustomerPaymentReceived($voucher));
 
         }        
 
         return response()->json( [
             'success' => 'OK',
-            'msg' => 'OK',
+            'message' => 'OK',
 //            'data' => $customeruser->toArray()
         ] );
 

@@ -6,18 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 use Auth;
 
+use App\Traits\ModelAttachmentableTrait;
+
 use App\Traits\ViewFormatterTrait;
 
 class Cheque extends Model
 {
     use ViewFormatterTrait;
+    
+    use ModelAttachmentableTrait;
 
     public static $statuses = array(
             'pending',		// Pendiente de depositar
             'deposited',	// Depositado
             'paid',			// or cleared: pagaddo (ingresado en el banco)
             'voided',		// Anulado
-            'rejected',		// or dishonored, or returned, or bounced
+            'bounced',		// or dishonored, or returned, or rejected
         );
 
     protected $dates = [

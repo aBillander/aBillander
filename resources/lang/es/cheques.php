@@ -63,4 +63,7 @@ return [
 
 	'New Customer Cheque Detail' => 'Nuevo Detalle del Cheque de Cliente',
 
+	'Deposit Cheque' => 'Ingresar Cheque',
+	'Bounce Cheque' => 'Devolver Cheque',
+
 ];

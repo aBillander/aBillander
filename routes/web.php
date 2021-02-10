@@ -253,6 +253,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('cheques/{id}/getdetails',         'ChequesController@getDetails' )->name('cheque.getdetails' );
         Route::post('cheques/sortlines', 'ChequesController@sortLines')->name('cheque.sortlines');
 
+        Route::get('cheques/{id}/pay',    'ChequesController@payCheque'   )->name('cheque.pay'   );
+        Route::get('cheques/{id}/bounce', 'ChequesController@bounceCheque')->name('cheque.bounce');
+
         Route::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
         Route::get( 'export/cheques', 'ChequesController@export' )->name('cheques.export');
 

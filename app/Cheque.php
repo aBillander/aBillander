@@ -17,7 +17,7 @@ class Cheque extends Model
             'deposited',	// Depositado
             'paid',			// or cleared: pagaddo (ingresado en el banco)
             'voided',		// Anulado
-            'rejected',		// or dishonored, or returned, or bounced
+            'bounced',		// or dishonored, or returned, or rejected
         );
 
     protected $dates = [

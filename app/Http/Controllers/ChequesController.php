@@ -10,6 +10,9 @@ use App\Currency;
 use App\Bank;
 use App\Configuration;
 
+use App\Events\CustomerPaymentReceived;
+use App\Events\CustomerPaymentBounced;
+
 use Excel;
 
 use App\Traits\DateFormFormatterTrait;
@@ -148,11 +151,17 @@ class ChequesController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $request );
 
+        $old_payment_date = $cheque->payment_date;
+
         $rules = $this->cheque::$rules;
 
         $this->validate($request, $rules);
 
         $cheque->update($request->all());
+
+        // Let's see if we have to change status to 'paid'
+        if ( $cheque->payment_date && ($cheque->payment_date != $old_payment_date) )
+            return $this->payCheque($cheque->id, $request);
 
         return redirect()->route('cheques.index')
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
@@ -173,6 +182,92 @@ class ChequesController extends Controller
         return redirect('cheques')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
+
+
+
+/* ********************************************************************************************* */    
+
+
+
+    public function payCheque($id, Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['payment_date'], $request );
+
+        $cheque = $this->cheque
+                        ->with('vouchers')
+                        ->findOrFail($id);
+
+        $balance = $cheque->vouchers->sum('amount') - $cheque->amount;
+
+        // abi_r($cheque->vouchers->sum('amount').' + '.$vouchers->sum('amount').' - '.$cheque->amount);die();
+
+        if ( $balance != 0 )
+            return redirect()->back()
+                ->with('error', l('Unable to close this document because lines do not match &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+        // Process Cheque
+        $payment_date = $request->input('payment_date') ?: \Carbon\Carbon::now();
+        $status = 'paid';
+
+        $cheque->update( compact('payment_date', 'status') );
+
+        // Process Vouchers
+        foreach ($cheque->vouchers as $voucher) {
+            # code...
+            $voucher->payment_date = $payment_date;
+            $voucher->status   = 'paid';
+
+            $voucher->save();
+
+            event(new CustomerPaymentReceived($voucher));
+        }
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
+    public function bounceCheque($id, Request $request)
+    {
+        $cheque = $this->cheque
+                        ->with('chequedetails')
+                        ->with('chequedetails.customerpayment')
+                        ->findOrFail($id);
+
+        // Process Cheque
+        $payment_date = null;
+        $status = 'pending';
+
+        $cheque->update( compact('payment_date', 'status') );
+
+        // Process Vouchers
+        foreach ($cheque->chequedetails as $chequedetail) {
+            # code...
+
+            $voucher = $chequedetail->customerpayment;
+            $voucher->payment_date = null;
+            $voucher->status   = 'pending';
+
+            $voucher->save();
+
+            event(new CustomerPaymentBounced($voucher));
+
+            $chequedetail->delete();
+
+        }
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
+
+
+
+/* ********************************************************************************************* */    
+
+
 
 
     /**

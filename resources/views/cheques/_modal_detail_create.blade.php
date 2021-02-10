@@ -17,6 +17,10 @@
 
           {!! Form::hidden('cheque_id', $cheque->id, array('id' => 'cheque_id')) !!}
 
+                <div class="alert alert-danger" id="error-msg-box" style="display:none">
+    
+                </div>
+
     
 <div id="customer_pending_vouchers">
 </div>
@@ -98,7 +102,7 @@ $(".xxxselectedamount").on("keyup", function () {
             var token = "{{ csrf_token() }}";
             var payload = $("#cheque_payment_details").serialize();
 
-            // alert(payload);
+            $('#error-msg-box').hide();
 
             $.ajax({
                 url : url,
@@ -107,10 +111,19 @@ $(".xxxselectedamount").on("keyup", function () {
                 dataType : 'json',
                 data : payload,
 
-                success: function(){
+                success: function( response ){
 
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
+
+                    if( response.success != 'OK' ) 
+                    {
+                        $('#error-msg-box').html(response.message);
+
+                        $('#error-msg-box').show();
+
+                        return ;
+                    }
 
                     $('#detailModal').modal('toggle');
 

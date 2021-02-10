@@ -8,10 +8,17 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
-                <!-- Button trigger modal -->
-                <!-- button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal_new_address" title=" Nueva Dirección Postal ">
-                  <i class="fa fa-plus"></i> Dirección
-                </button -->
+
+      @if ($cheque->status != 'paid')
+
+            <a class="btn xbtn-sm btn-blue" style="margin-right: 36px; margin-left: 36px;" href="{{ URL::to('cheques/' . $cheque->id  . '/pay' ) }}" title="{{l('Deposit Cheque')}}"><i class="fa fa-money"></i> &nbsp;{{l('Deposit Cheque')}}
+            </a>
+      @else
+
+            <a href="{{ route('cheque.bounce', [$cheque->id]) }}" class="btn xbtn-sm btn-danger" style="margin-right: 36px; margin-left: 36px;" 
+            title="{{l('Bounce Cheque')}}" xstyle="margin-left: 22px;"><i class="fa fa-mail-reply-all"></i> &nbsp;{{l('Bounce Cheque')}}</a>
+
+      @endif
 
             </div>
 
@@ -22,6 +29,8 @@
                   <span class="badge" style="background-color: #3a87ad;" title="{{ $cheque->currency->name }}">{{ $cheque->currency->iso_code }}</span>
 
                <span style="color: #cccccc;">/</span> 
+
+            </h2><h2>
 
                   <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
 

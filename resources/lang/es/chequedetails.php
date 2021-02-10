@@ -45,7 +45,7 @@ return [
 
 	'Customer Cheque Details - Edit'   => 'Detalle del Cheque - Modificar',
 
-	''     => '',
+	'The Amount of the selected Receipts exceeds the value of the Check &#58&#58 (:id) '     => 'El Importe de los Recibos seleccionados excede el valor del Cheque &#58&#58 (:id) ',
 	''     => '',
 	''     => '',
 	''     => '',

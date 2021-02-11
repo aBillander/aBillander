@@ -342,6 +342,8 @@ class ViewComposerServiceProvider extends ServiceProvider {
 
 				$themeList[$theme] = $theme;
 			}
+			
+			ksort($themeList);
 
 		    $view->with('themeList', $themeList);
 		    

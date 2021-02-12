@@ -18,7 +18,7 @@ use Excel;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
 
-class ChequesController extends Controller
+class SupplierDownPaymentsController extends Controller
 {
    
    use DateFormFormatterTrait;
@@ -63,7 +63,7 @@ class ChequesController extends Controller
 
         $statusList = $this->cheque::getStatusList();
 
-        return view('cheques.index', compact('cheques', 'statusList'));
+        return view('supplier_down_payments.index', compact('cheques', 'statusList'));
     }
 
     /**
@@ -77,7 +77,7 @@ class ChequesController extends Controller
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $bankList = Bank::pluck('name', 'id')->toArray();
 
-        return view('cheques.create', compact('statusList', 'currencyList', 'bankList'));
+        return view('supplier_down_payments.create', compact('statusList', 'currencyList', 'bankList'));
     }
 
     /**
@@ -97,7 +97,7 @@ class ChequesController extends Controller
 
         $cheque = Cheque::create($request->all());
 
-        return redirect()->route('cheques.edit', [$cheque->id])
+        return redirect()->route('supplier_down_payments.edit', [$cheque->id])
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
     }
 
@@ -141,7 +141,7 @@ class ChequesController extends Controller
         // Dates (cuen)
         $this->addFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $cheque );
 
-        return view('cheques.edit', compact('cheque', 'chequedetails', 'customer', 'statusList', 'currencyList', 'bankList'));
+        return view('supplier_down_payments.edit', compact('cheque', 'chequedetails', 'customer', 'statusList', 'currencyList', 'bankList'));
     }
 
     /**
@@ -168,7 +168,7 @@ class ChequesController extends Controller
         if ( $cheque->payment_date && ($cheque->payment_date != $old_payment_date) )
             return $this->payCheque($cheque->id, $request);
 
-        return redirect()->route('cheques.index')
+        return redirect()->route('supplier_down_payments.index')
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
     }
 
@@ -304,7 +304,7 @@ class ChequesController extends Controller
 
         $open_balance = $cheque->amount - $chequedetails->sum('amount');
 
-        return view('cheques._panel_details_list', compact('cheque', 'chequedetails', 'open_balance'));
+        return view('supplier_down_payments._panel_details_list', compact('cheque', 'chequedetails', 'open_balance'));
     }
 
 

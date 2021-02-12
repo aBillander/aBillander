@@ -117,6 +117,7 @@ return [
 	'Taxes'     => 'Impuestos',
 	'Ecotaxes'     => 'Eco-Impuestos',
 	'Cheques' => 'Cheques',
+	'Down Payments' => 'Anticipos',
 	'Manufacturers'     => 'Fabricantes',
 	'Product Categories'     => 'Categorías de Productos',
 	'Customer Groups'     => 'Grupos de Clientes',

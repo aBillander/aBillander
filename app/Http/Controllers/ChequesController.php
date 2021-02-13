@@ -239,7 +239,7 @@ class ChequesController extends Controller
 
         // Process Cheque
         $payment_date = null;
-        $status = 'pending';
+        $status = 'bounced';
 
         $cheque->update( compact('payment_date', 'status') );
 
@@ -299,7 +299,7 @@ class ChequesController extends Controller
         
         $chequedetails = $cheque->chequedetails;
 
-        $open_balance = $cheque->amount - $chequedetails->sum('amount');
+        $open_balance = $cheque->currency->round($cheque->amount - $chequedetails->sum('amount'));
 
         return view('cheques._panel_details_list', compact('cheque', 'chequedetails', 'open_balance'));
     }

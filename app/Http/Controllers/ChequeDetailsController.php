@@ -102,7 +102,10 @@ class ChequeDetailsController extends Controller
      */
     public function storeAjax($chequeId, Request $request)
     {
-        $cheque = Cheque::with('chequedetails')->with('customer')->findOrFail($chequeId);
+        $cheque = Cheque::with('chequedetails')
+                        ->with('customer')
+                        ->with('currency')
+                        ->findOrFail($chequeId);
 
         $customer = $cheque->customer;
         
@@ -130,11 +133,29 @@ class ChequeDetailsController extends Controller
                     ->whereIn('id', $document_group)
                     ->get();
 
-        $balance = $cheque->vouchers->sum('amount') + $vouchers->sum('amount') - $cheque->amount;
+        // Check Amounts!
+        $detail_pay = [];
+        foreach ($vouchers as $voucher) {
+            //
+            $pay = array_key_exists($voucher->id, $pay_amount) ? 
+                    (float) $pay_amount[$voucher->id] : 
+                    $voucher->amount;
+            
+            if ($pay > $voucher->amount) $pay = $voucher->amount;
+            if ($pay <= 0.0            ) $pay = $voucher->amount;
+
+            $detail_pay[$voucher->id] = $pay;
+        }
+
+        $balance = $cheque->vouchers->sum('amount') + array_sum($detail_pay) - $cheque->amount;
+        // abi_r($document_group);
+        // abi_r($pay_amount);
+        // abi_r($detail_pay);
+        // abi_r($cheque->vouchers->sum('amount').' + '.array_sum($pay_amount).' - '.$cheque->amount);
 
         // abi_r($cheque->vouchers->sum('amount').' + '.$vouchers->sum('amount').' - '.$cheque->amount);die();
 
-        if ( $balance > 0 )
+        if ( $cheque->currency->round($balance) > 0 )
             return response()->json( [
                 'success' => 'KO',
                 'message' => l('The Amount of the selected Receipts exceeds the value of the Check &#58&#58 (:id) ', ['id' => $chequeId]),
@@ -145,14 +166,11 @@ class ChequeDetailsController extends Controller
         // Create Cheque Details
         foreach ($vouchers as $voucher) {
             # code...
-            $pay = array_key_exists($voucher->id, $pay_amount) ? 
-                    (float) $pay_amount[$voucher->id] : 
-                    $voucher->amount;
-            
-            if ($pay > $voucher->amount) $pay = $voucher->amount;
-            if ($pay <= 0.0            ) $pay = $voucher->amount;
+            // Avoid assign voucher twice
+            if ( $cheque->chequedetails->where('payment_id', $voucher->id)->first() )
+                continue;
 
-            $detail_amount = $pay;
+            $detail_amount = $detail_pay[$voucher->id];
 
             $data = [
                 'line_sort_order' => $next_line_sort_order,

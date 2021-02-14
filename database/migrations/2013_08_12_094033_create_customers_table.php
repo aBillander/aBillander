@@ -52,6 +52,11 @@ class CreateCustomersTable extends Migration {
 			$table->string('customer_logo', 128)->nullable();				// Usually lives in: /public/........
 
 			$table->tinyInteger('is_invoiceable')->default(1);				// Useful for internal customers & departments (is_invoiceable = false)
+			$table->tinyInteger('invoice_by_shipping_address')->default(0);
+			// 
+        	// "0" => 'No': use form settings (default behaviour),
+        	// "1" => 'Force 1 Invoice per Shipping Address',
+        	// "2" => 'Force 1 Invoice per Shipping Slip and Shipping Address',
 			$table->tinyInteger('automatic_invoice')->default(1);			// Include Customer Shipping Slips in automatic Invoicing process
 
 			$table->tinyInteger('vat_regime')->default(0);

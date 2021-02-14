@@ -120,6 +120,7 @@ trait CustomerShippingSlipInvoiceableTrait
         foreach ($customers as $customer_id) {
             # code...
             $documents_by_cid = $documents->where('customer_id', $customer_id);
+            $customer = $documents_by_cid->first()->customer;
 
             $extra_params = [
                    
@@ -130,14 +131,17 @@ trait CustomerShippingSlipInvoiceableTrait
             $logger->log("INFO", 'Comienza la facturación de la colección de los Albaranes del Cliente: <span class="log-showoff-format">{customer}</span> .', ['customer' => $customer_id]);
 
             // Should group? i.e.: One invoice per Customer?
-            if ( array_key_exists('group_by_customer', $params) && ( $params['group_by_customer'] == 0 ) ) {
+            if ( 
+                ( $customer->invoice_by_shipping_address == 2 ) ||
+                ( array_key_exists('group_by_customer', $params) && ( $params['group_by_customer'] == 0 ) ) 
+            ) {
 
                 // Every single document
 
                 foreach ($documents_by_cid as $document) {
                     # code...
                     // Select Documents
-                    $documents_by_doc = collect($document);
+                    $documents_by_doc = collect([$document]);
 
                     $logger->log("INFO", 'Se facturarán los Albaranes: <span class="log-showoff-format">{customers}</span> .', ['customers' => implode(', ', $documents_by_doc->pluck('id')->all())]);
 
@@ -187,11 +191,15 @@ trait CustomerShippingSlipInvoiceableTrait
             # code...
             // Select Documents
             $documents_by_pm = $documents->where('payment_method_id', $payment_method_id);
+            $customer = $documents_by_pm->first()->customer;
 
             $params['payment_method_id'] = $payment_method_id;
 
             // Should group by Shipping Address?
-            if ( array_key_exists('group_by_shipping_address', $params) && ($params['group_by_shipping_address'] > 0) ) {
+            if ( 
+                ( $customer->invoice_by_shipping_address == 1 ) ||
+                ( array_key_exists('group_by_shipping_address', $params) && ($params['group_by_shipping_address'] > 0) )
+            ) {
 
                 // Adresses
                 $addresses = $documents_by_pm->unique('shipping_address_id')->pluck('shipping_address_id')->all();

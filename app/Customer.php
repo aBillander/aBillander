@@ -30,7 +30,7 @@ class Customer extends Model {
                            'accounting_id',
                            'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
                            'outstanding_amount_allowed', 'unresolved_amount', 'notes', 
-                           'is_invoiceable', 'automatic_invoice', 'vat_regime', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
+                           'is_invoiceable', 'invoice_by_shipping_address', 'automatic_invoice', 'vat_regime', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
                            'invoice_sequence_id', 
                            'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id', 

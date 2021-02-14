@@ -170,7 +170,12 @@ class DownPayment extends Model
     
     public function customer()
     {
-    	return $this->belongsTo( 'App\Customer' );
+        return $this->belongsTo( 'App\Customer' );
+    }
+    
+    public function supplier()
+    {
+        return $this->belongsTo( 'App\Supplier' );
     }
     
     public function drawee_bank()

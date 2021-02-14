@@ -13,10 +13,13 @@ class CreateDownPaymentsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('down_payments');
+
         Schema::create('down_payments', function (Blueprint $table)
         {
             $table->increments('id');
-            $table->string('document_number', 32)->nullable(false);     // Cheque number or the like
+            $table->string('reference', 32)->nullable();
+            $table->string('name', 64)->nullable(false);
             $table->decimal('amount', 20, 6)->default(0.0);
 
             $table->date('date_of_issue')->nullable();
@@ -36,6 +39,8 @@ class CreateDownPaymentsTable extends Migration
             $table->integer('payment_type_id')->nullable();
             $table->integer('customer_id')->unsigned()->nullable();
             $table->integer('supplier_id')->unsigned()->nullable();
+
+            $table->integer('bank_id')->unsigned()->nullable();
 
             $table->timestamps();
         });

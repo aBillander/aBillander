@@ -13,9 +13,9 @@
 
 				@include('errors.list')
 
-				{!! Form::open(array('route' => 'cheques.store')) !!}
+				{!! Form::open(array('route' => 'supplier.downpayments.store')) !!}
 
-					@include('cheques._form')
+					@include('supplier_down_payments._form')
 
 				{!! Form::close() !!}
 			</div>

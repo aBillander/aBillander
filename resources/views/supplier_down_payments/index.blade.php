@@ -13,15 +13,15 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-        <a href="{{ URL::to('cheques/create') }}" class="btn btn-sm btn-success" 
+        <a href="{{ URL::to('supplierdownpayments/create') }}" class="btn btn-sm btn-success" 
             title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
-        <a href="{{ route('cheques.export', Request::all()) }}" class="btn btn-sm btn-grey" 
-                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+        <!-- a href="{{ route('cheques.export', Request::all()) }}" class="btn btn-sm btn-grey" 
+                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a -->
 
 
         <button type="button" class="btn btn-sm btn-behance" 
-                data-toggle="modal" data-target="#chequesHelp"
+                data-toggle="modal" data-target="#supplierdownpaymentsHelp"
                 title="{{l('Help', [], 'layouts')}}"><i class="fa fa-life-saver"></i> {{l('Help', [], 'layouts')}}</button>
 
     </div>
@@ -39,7 +39,7 @@
             <div class="panel-heading"><h3 class="panel-title">{{ l('Filter Records', [], 'layouts') }}</h3></div>
             <div class="panel-body">
 
-                {!! Form::model(Request::all(), array('route' => 'cheques.index', 'method' => 'GET', 'id' => 'process')) !!}
+                {!! Form::model(Request::all(), array('route' => 'supplier.downpayments.index', 'method' => 'GET', 'id' => 'process')) !!}
 
 <!-- input type="hidden" value="0" name="search_status" id="search_status" -->
 {!! Form::hidden('search_status', null, array('id' => 'search_status')) !!}
@@ -82,10 +82,10 @@
 
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
-    {!! Form::label('autocustomer_name', l('Customer')) !!}
-    {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
+    {!! Form::label('autosupplier_name', l('Supplier')) !!}
+    {!! Form::text('autosupplier_name', null, array('class' => 'form-control', 'id' => 'autosupplier_name')) !!}
 
-    {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+    {!! Form::hidden('supplier_id', null, array('id' => 'supplier_id')) !!}
 </div>
 
 
@@ -117,7 +117,7 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route('cheques.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('supplier.downpayments.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>
@@ -133,11 +133,11 @@
 
 
 
-<div id="div_cheques">
+<div id="div_downpayments">
    <div class="table-responsive">
 
-@if ($cheques->count())
-<table id="cheques" class="table table-hover">
+@if ($downpayments->count())
+<table id="downpayments" class="table table-hover">
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
@@ -145,7 +145,7 @@
             <th>{{ l('Due Date') }}</th>
             <th>{{ l('Payment Date') }}</th>
             <th>{{l('Document Number')}}</th>
-            <th>{{l('Customer')}}</th>
+            <th>{{l('Supplier')}}</th>
             <th>{{l('Bank')}}</th>
             <th>{{l('Amount')}}</th>
             <th>{{l('Currency')}}</th>
@@ -155,39 +155,39 @@
 		</tr>
 	</thead>
 	<tbody>
-	@foreach ($cheques as $cheque)
+	@foreach ($downpayments as $downpayment)
 		<tr>
-            <td>{{ $cheque->id }}</td>
-            <td>{{ abi_date_short($cheque->date_of_issue) ?: '-' }}</td>
-            <td>{{ abi_date_short($cheque->due_date) ?: '-' }}</td>
-            <td>{{ abi_date_short($cheque->payment_date) ?: '-' }}</td>
-			      <td>{{ $cheque->document_number }}</td>
-            <td><a class="" href="{{ URL::to('customers/' . $cheque->customer->id . '/edit') }}" 
+            <td>{{ $downpayment->id }}</td>
+            <td>{{ abi_date_short($downpayment->date_of_issue) ?: '-' }}</td>
+            <td>{{ abi_date_short($downpayment->due_date) ?: '-' }}</td>
+            <td>{{ abi_date_short($downpayment->payment_date) ?: '-' }}</td>
+			      <td>{{ $downpayment->document_number }}</td>
+            <td><a class="" href="{{ URL::to('suppliers/' . $downpayment->supplier->id . '/edit') }}" 
                 title="{{ l('Go to', 'layouts') }}" target="_new">
-                  {{ $cheque->customer->name_regular }}
+                  {{ $downpayment->supplier->name_regular }}
               </a>
             </td>
-            <td xclass="text-center">{{ optional($cheque->bank)->name }}</td>
+            <td xclass="text-center">{{ optional($downpayment->bank)->name }}</td>
 
-            <td>{{ $cheque->amount > 0.0 ? $cheque->as_money_amount('amount') : '-' }}</td>
-            <td xclass="text-center">{{ $cheque->currency->name }}</td>
+            <td>{{ $downpayment->amount > 0.0 ? $downpayment->as_money_amount('amount') : '-' }}</td>
+            <td xclass="text-center">{{ $downpayment->currency->name }}</td>
             <td class="text-center button-pad">
-              @if     ( $cheque->status == 'pending' )
+              @if     ( $downpayment->status == 'pending' )
                 <span class="label label-info">
-              @elseif ( $cheque->status == 'deposited' )
+              @elseif ( $downpayment->status == 'deposited' )
                 <span class="label label-danger">
-              @elseif ( $cheque->status == 'paid' )
+              @elseif ( $downpayment->status == 'paid' )
                 <span class="label label-success">
-              @elseif ( $cheque->status == 'bounced' )
+              @elseif ( $downpayment->status == 'bounced' )
                 <span class="label alert-danger">
               @else
                 <span class="label">
               @endif
-              {{ $cheque->status_name }}</span>
+              {{ $downpayment->status_name }}</span>
 
-              @if ( $cheque->status == 'paid' )
+              @if ( $downpayment->status == 'paid' )
 
-                    <a href="{{ route('cheque.bounce', [$cheque->id]) }}" class="btn btn-xs btn-danger" 
+                    <a href="{{ route('supplier.downpayment.bounce', [$downpayment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Bounce Cheque')}}" xstyle="margin-left: 22px;"><i class="fa fa-mail-reply-all"></i></a>
 
               @endif
@@ -195,10 +195,10 @@
             </td>
 
               <td class="text-center">
-                  @if ($cheque->notes)
+                  @if ($downpayment->notes)
                    <a href="javascript:void(0);">
                       <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
-                              data-content="{{ $cheque->notes }}">
+                              data-content="{{ $downpayment->notes }}">
                           <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
                       </button>
                    </a>
@@ -206,27 +206,27 @@
               </td>
 
 			<td class="text-right button-pad">
-                @if (  is_null($cheque->deleted_at))
+                @if (  is_null($downpayment->deleted_at))
 {{--
-                <a class="btn btn-sm btn-blue" href="{{ URL::to('cheques/' . $cheque->id . '/chequelines') }}" title="{{l('Show Down Payment to Supplier Lines')}}"><i class="fa fa-folder-open-o"></i></a>
+                <a class="btn btn-sm btn-blue" href="{{ URL::to('supplierdownpayments/' . $downpayment->id . '/downpaymentlines') }}" title="{{l('Show Down Payment to Supplier Lines')}}"><i class="fa fa-folder-open-o"></i></a>
 --}}
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('cheques/' . $cheque->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                <a class="btn btn-sm btn-warning" href="{{ URL::to('supplierdownpayments/' . $downpayment->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
-      @if ($cheque->status != 'paid')
+      @if ($downpayment->status != 'paid')
 
-                    <a class="btn btn-sm btn-blue" href="{{ URL::to('cheques/' . $cheque->id  . '/pay' ) }}" title="{{l('Deposit Cheque')}}"><i class="fa fa-money"></i>
+                    <a class="btn btn-sm btn-blue" href="{{ URL::to('supplierdownpayments/' . $downpayment->id  . '/pay' ) }}" title="{{l('Deposit Cheque')}}"><i class="fa fa-money"></i>
                     </a>
 
 
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                		href="{{ URL::to('cheques/' . $cheque->id ) }}" 
+                		href="{{ URL::to('supplierdownpayments/' . $downpayment->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Down Payment to Suppliers') }} :: ({{$cheque->id}}) {{{ $cheque->name }}} " 
+                		data-title="{{ l('Down Payment to Suppliers') }} :: ({{$downpayment->id}}) {{{ $downpayment->name }}} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
       @endif
                 @else
-                <a class="btn btn-warning" href="{{ URL::to('cheques/' . $cheque->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
-                <a class="btn btn-danger" href="{{ URL::to('cheques/' . $cheque->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
+                <a class="btn btn-warning" href="{{ URL::to('supplierdownpayments/' . $downpayment->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
+                <a class="btn btn-danger" href="{{ URL::to('supplierdownpayments/' . $downpayment->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
                 @endif
 			</td>
 		</tr>
@@ -236,8 +236,8 @@
 
    </div><!-- div class="table-responsive" ENDS -->
 
-{{ $cheques->appends( Request::all() )->render() }}
-<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $cheques->total() ], 'layouts')}} </span></li></ul>
+{{ $downpayments->appends( Request::all() )->render() }}
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $downpayments->total() ], 'layouts')}} </span></li></ul>
 
 @else
 <div class="alert alert-warning alert-block">
@@ -246,7 +246,7 @@
 </div>
 @endif
 
-</div><!-- div id="div_cheques" ENDS -->
+</div><!-- div id="div_downpayments" ENDS -->
 
 @include('layouts/back_to_top_button')
 
@@ -254,7 +254,7 @@
 
 @include('layouts/modal_delete')
 
-@include('cheques/_modal_help')
+@include('supplier_down_payments/_modal_help')
 
 
 
@@ -286,17 +286,17 @@ $(document).ready(function() {
 <script>
   $(document).ready(function() {
 
-        $("#autocustomer_name").autocomplete({
-            source : "{{ route('home.searchcustomer') }}",
+        $("#autosupplier_name").autocomplete({
+            source : "{{ route('home.searchsupplier') }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 
             select : function(key, value) {
 
-                customer_id = value.item.id;
+                supplier_id = value.item.id;
 
-                $("#autocustomer_name").val(value.item.name_regular);
-                $("#customer_id").val(value.item.id);
+                $("#autosupplier_name").val(value.item.name_regular);
+                $("#supplier_id").val(value.item.id);
 
                 return false;
             }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Cheque;
-use App\ChequeDetail;
+use App\DownPayment;
+use App\DownPaymentDetail;
 use App\Currency;
 use App\Bank;
 use App\Configuration;
@@ -24,11 +24,11 @@ class SupplierDownPaymentsController extends Controller
    use DateFormFormatterTrait;
    use ModelAttachmentControllerTrait;
 
-   protected $cheque;
+   protected $downpayment;
 
-   public function __construct(Cheque $cheque)
+   public function __construct(DownPayment $downpayment)
    {
-        $this->cheque = $cheque;
+        $this->downpayment = $downpayment;
    }
 
 
@@ -42,28 +42,28 @@ class SupplierDownPaymentsController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_of_issue_from', 'date_of_issue_to', 'due_date_from', 'due_date_to'], $request );
 
-        $cheques = $this->cheque
+        $downpayments = $this->downpayment
                         ->filter( $request->all() )
-                        ->has('customer')
-                        ->with('customer')
+                        ->has('supplier')
+                        ->with('supplier')
                         ->with('currency')
                         ->with('bank')
                         ->orderBy('due_date', 'desc');
 
-        $cheques = $cheques->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
+        $downpayments = $downpayments->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
-        $cheques->setPath('cheques');
+        $downpayments->setPath('supplierdownpayments');
 
         // $c = new Cheque();
         // $c->id = 22;
 
-        // $cheques = collect( [$c] );
+        // $downpayments = collect( [$c] );
 
         // abi_r($c);die();
 
-        $statusList = $this->cheque::getStatusList();
+        $statusList = $this->downpayment::getStatusList();
 
-        return view('supplier_down_payments.index', compact('cheques', 'statusList'));
+        return view('supplier_down_payments.index', compact('downpayments', 'statusList'));
     }
 
     /**
@@ -73,7 +73,7 @@ class SupplierDownPaymentsController extends Controller
      */
     public function create()
     {
-        $statusList = $this->cheque::getStatusList();
+        $statusList = $this->downpayment::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $bankList = Bank::pluck('name', 'id')->toArray();
 
@@ -91,27 +91,27 @@ class SupplierDownPaymentsController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $request );
 
-        $rules = $this->cheque::$rules;
+        $rules = $this->downpayment::$rules;
 
         $this->validate($request, $rules);
 
-        $cheque = Cheque::create($request->all());
+        $downpayment = DownPayment::create($request->all());
 
-        return redirect()->route('supplier_down_payments.edit', [$cheque->id])
-                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
+        return redirect()->route('supplier_down_payments.edit', [$downpayment->id])
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $downpayment->document_number], 'layouts'));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\DownPayment  $downpayment
      * @return \Illuminate\Http\Response
      */
-    public function show(Cheque $cheque)
+    public function show(DownPayment $downpayment)
     {
         //
 
-        // $cheque->checkStatus();
+        // $downpayment->checkStatus();
 
         // abi_r();
     }
@@ -119,72 +119,72 @@ class SupplierDownPaymentsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\DownPayment  $downpayment
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
 
-        $cheque = $this->cheque
+        $downpayment = $this->downpayment
                         ->has('customer')
                         ->findOrFail($id);
 
-        $statusList = $this->cheque::getStatusList();
+        $statusList = $this->downpayment::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $bankList = Bank::pluck('name', 'id')->toArray();   
 
-        $customer = $cheque->customer;
-        $chequedetails = $cheque->details;     
+        $customer = $downpayment->customer;
+        $downpaymentdetails = $downpayment->details;     
 
         // abi_r($bankList);die();
 
         // Dates (cuen)
-        $this->addFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $cheque );
+        $this->addFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $downpayment );
 
-        return view('supplier_down_payments.edit', compact('cheque', 'chequedetails', 'customer', 'statusList', 'currencyList', 'bankList'));
+        return view('supplier_down_payments.edit', compact('downpayment', 'downpaymentdetails', 'customer', 'statusList', 'currencyList', 'bankList'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Cheque  $cheque
+     * @param  \App\DownPayment  $downpayment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cheque $cheque)
+    public function update(Request $request, DownPayment $downpayment)
     {
         // Dates (cuen)
         $this->mergeFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $request );
 
-        $old_payment_date = $cheque->payment_date;
+        $old_payment_date = $downpayment->payment_date;
 
-        $rules = $this->cheque::$rules;
+        $rules = $this->downpayment::$rules;
 
         $this->validate($request, $rules);
 
-        $cheque->update($request->all());
+        $downpayment->update($request->all());
 
         // Let's see if we have to change status to 'paid'
-        if ( $cheque->payment_date && ($cheque->payment_date != $old_payment_date) )
-            return $this->payCheque($cheque->id, $request);
+        if ( $downpayment->payment_date && ($downpayment->payment_date != $old_payment_date) )
+            return $this->payDownPayment($downpayment->id, $request);
 
         return redirect()->route('supplier_down_payments.index')
-                ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $cheque->document_number], 'layouts'));
+                ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $downpayment->document_number], 'layouts'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\DownPayment  $downpayment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Cheque $cheque)
+    public function destroy(DownPayment $downpayment)
     {
-        $id = $cheque->id;
+        $id = $downpayment->id;
 
-        $cheque->delete();
+        $downpayment->delete();
 
-        return redirect('cheques')
+        return redirect('downpayments')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -194,31 +194,31 @@ class SupplierDownPaymentsController extends Controller
 
 
 
-    public function payCheque($id, Request $request)
+    public function payDownPayment($id, Request $request)
     {
         // Dates (cuen)
         $this->mergeFormDates( ['payment_date'], $request );
 
-        $cheque = $this->cheque
+        $downpayment = $this->downpayment
                         ->with('vouchers')
                         ->findOrFail($id);
 
-        $balance = $cheque->vouchers->sum('amount') - $cheque->amount;
+        $balance = $downpayment->vouchers->sum('amount') - $downpayment->amount;
 
-        // abi_r($cheque->vouchers->sum('amount').' + '.$vouchers->sum('amount').' - '.$cheque->amount);die();
+        // abi_r($downpayment->vouchers->sum('amount').' + '.$vouchers->sum('amount').' - '.$downpayment->amount);die();
 
         if ( $balance != 0 )
             return redirect()->back()
                 ->with('error', l('Unable to close this document because lines do not match &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 
-        // Process Cheque
+        // Process DownPayment
         $payment_date = $request->input('payment_date') ?: \Carbon\Carbon::now();
         $status = 'paid';
 
-        $cheque->update( compact('payment_date', 'status') );
+        $downpayment->update( compact('payment_date', 'status') );
 
         // Process Vouchers
-        foreach ($cheque->vouchers as $voucher) {
+        foreach ($downpayment->vouchers as $voucher) {
             # code...
             $voucher->payment_date = $payment_date;
             $voucher->status   = 'paid';
@@ -233,24 +233,24 @@ class SupplierDownPaymentsController extends Controller
     }
 
 
-    public function bounceCheque($id, Request $request)
+    public function bounceDownPayment($id, Request $request)
     {
-        $cheque = $this->cheque
-                        ->with('chequedetails')
-                        ->with('chequedetails.customerpayment')
+        $downpayment = $this->downpayment
+                        ->with('downpaymentdetails')
+                        ->with('downpaymentdetails.customerpayment')
                         ->findOrFail($id);
 
-        // Process Cheque
+        // Process DownPayment
         $payment_date = null;
         $status = 'pending';
 
-        $cheque->update( compact('payment_date', 'status') );
+        $downpayment->update( compact('payment_date', 'status') );
 
         // Process Vouchers
-        foreach ($cheque->chequedetails as $chequedetail) {
+        foreach ($downpayment->downpaymentdetails as $downpaymentdetail) {
             # code...
 
-            $voucher = $chequedetail->customerpayment;
+            $voucher = $downpaymentdetail->customerpayment;
             $voucher->payment_date = null;
             $voucher->status   = 'pending';
 
@@ -258,7 +258,7 @@ class SupplierDownPaymentsController extends Controller
 
             event(new CustomerPaymentBounced($voucher));
 
-            $chequedetail->delete();
+            $downpaymentdetail->delete();
 
         }
 
@@ -286,7 +286,7 @@ class SupplierDownPaymentsController extends Controller
 
         \DB::transaction(function () use ($positions) {
             foreach ($positions as $position) {
-                ChequeDetail::where('id', '=', $position[0])->update(['line_sort_order' => $position[1]]);
+                DownPaymentDetail::where('id', '=', $position[0])->update(['line_sort_order' => $position[1]]);
             }
         });
 
@@ -296,15 +296,15 @@ class SupplierDownPaymentsController extends Controller
     
     public function getDetails($id, Request $request)
     {
-        $cheque = $this->cheque
-                        ->with('chequedetails')
+        $downpayment = $this->downpayment
+                        ->with('downpaymentdetails')
                         ->findOrFail($id);
         
-        $chequedetails = $cheque->chequedetails;
+        $downpaymentdetails = $downpayment->downpaymentdetails;
 
-        $open_balance = $cheque->amount - $chequedetails->sum('amount');
+        $open_balance = $downpayment->amount - $downpaymentdetails->sum('amount');
 
-        return view('supplier_down_payments._panel_details_list', compact('cheque', 'chequedetails', 'open_balance'));
+        return view('supplier_down_payments._panel_details_list', compact('downpayment', 'downpaymentdetails', 'open_balance'));
     }
 
 
@@ -327,7 +327,7 @@ class SupplierDownPaymentsController extends Controller
 
         // abi_r( $request->all(), true );
 
-        $cheques = $this->cheque
+        $downpayments = $this->downpayment
                         ->filter( $request->all() )
                         ->with('customer')
                         ->with('currency')
@@ -336,7 +336,7 @@ class SupplierDownPaymentsController extends Controller
                         ->get();
 
         // Limit number of records
-        if ( ($count=$cheques->count()) > 1000 )
+        if ( ($count=$downpayments->count()) > 1000 )
             return redirect()->back()
                     ->with('error', l('Too many Records for this Query &#58&#58 (:id) ', ['id' => $count], 'layouts'));
 
@@ -419,7 +419,7 @@ class SupplierDownPaymentsController extends Controller
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Cheques de Clientes', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Anticipos a Proveedores', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Fecha de Emisión: ' . $ribbon];
         $data[] = ['Fecha de Vencimiento: ' . $ribbon1];
         $data[] = [''];
@@ -438,24 +438,24 @@ class SupplierDownPaymentsController extends Controller
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
-        foreach ($cheques as $cheque) {
+        foreach ($downpayments as $downpayment) {
             // $data[] = $line->toArray();
             $row = [];
             foreach ($headers as $header)
             {
-                $row[$header] = $cheque->{$header} ?? '';
+                $row[$header] = $downpayment->{$header} ?? '';
             }
 //            $row['TAX_NAME']          = $category->tax ? $category->tax->name : '';
 
-            $row['CURRENCY_NAME'] = optional($cheque->currency)->name;
-            $row['CUSTOMER_NAME'] = optional($cheque->customer)->name_regular;
-            $row['BANK_NAME'] = optional($cheque->bank)->name;
+            $row['CURRENCY_NAME'] = optional($downpayment->currency)->name;
+            $row['CUSTOMER_NAME'] = optional($downpayment->customer)->name_regular;
+            $row['BANK_NAME'] = optional($downpayment->bank)->name;
 
-            $row['amount'] = (float) $cheque->amount;
+            $row['amount'] = (float) $downpayment->amount;
 
             $data[] = $row;
 
-            $total_amount += $cheque->amount;
+            $total_amount += $downpayment->amount;
         }
 
         // Totals
@@ -464,12 +464,12 @@ class SupplierDownPaymentsController extends Controller
         $data[] = ['', '', 'Total:', $total_amount * 1.0];
 
 
-        $sheetName = 'Cheques' ;
+        $sheetName = 'Anticipos a Proveedores' ;
 
         // abi_r($data, true);
 
         // Generate and return the spreadsheet
-        Excel::create('Cheques', function($excel) use ($sheetName, $data) {
+        Excel::create('Anticipos_a_Proveedores', function($excel) use ($sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');

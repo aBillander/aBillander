@@ -20,6 +20,7 @@ return [
 	'Date of Entry' => 'Fecha de Entrada',
 	'Payment Date' => 'Fecha de Pago',
 	'Customer' => 'Cliente',
+	'Supplier' => 'Proveedor',
 	'Drawee Bank' => 'Banco de Cargo',
 	'Amount' => 'Importe',
 	'Currency' => 'Divisa',
@@ -65,5 +66,8 @@ return [
 
 	'Deposit Cheque' => 'Ingresar Cheque',
 	'Bounce Cheque' => 'Devolver Cheque',
+
+	'Reference' => 'Referencia',
+	'Description' => 'Descripción',
 
 ];

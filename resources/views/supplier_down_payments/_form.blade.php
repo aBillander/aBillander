@@ -1,14 +1,14 @@
 
 <div class="row">
-    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('document_number') ? 'has-error' : '' }}">
-        {!! Form::label('document_number', l('Document Number')) !!}
-        {!! Form::text('document_number', null, array('class' => 'form-control', 'id' => 'document_number')) !!}
-        {!! $errors->first('document_number', '<span class="help-block">:message</span>') !!}
+    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('reference') ? 'has-error' : '' }}">
+        {!! Form::label('reference', l('Reference')) !!}
+        {!! Form::text('reference', null, array('class' => 'form-control', 'id' => 'reference')) !!}
+        {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
     </div>
-    <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('place_of_issue') ? 'has-error' : '' }}">
-        {!! Form::label('place_of_issue', l('Place of Issue')) !!}
-        {!! Form::text('place_of_issue', null, array('class' => 'form-control', 'id' => 'place_of_issue')) !!}
-        {!! $errors->first('place_of_issue', '<span class="help-block">:message</span>') !!}
+    <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('name') ? 'has-error' : '' }}">
+        {!! Form::label('name', l('Description')) !!}
+        {!! Form::text('name', null, array('class' => 'form-control', 'id' => 'name')) !!}
+        {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
     </div>
 </div>
 
@@ -108,7 +108,7 @@
 </div>
 
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-	{!! link_to_route('cheques.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+	{!! link_to_route('supplier.downpayments.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 
 
 

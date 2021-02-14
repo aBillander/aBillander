@@ -1,20 +1,20 @@
 
 @section('modals')    @parent
 
-<div class="modal fade" id="chequesHelp" tabindex="-1" role="dialog" aria-labelledby="myLaraBillander" aria-hidden="true">
+<div class="modal fade" id="supplierdownpaymentsHelp" tabindex="-1" role="dialog" aria-labelledby="myLaraBillander" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header alert-info">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h3 class="modal-title" id="myLaraBillander">Cheques de Clientes</h3>
+                <h3 class="modal-title" id="myLaraBillander">Anticipos a Proveedores</h3>
             </div>
             <div class="modal-body">
 
 
 <h3>Flujo de trabajo</h3>
 
-<p>1.- Crear el Cheque.</p>
-
+<p>1.- Crear el Anticipo.</p>
+{{--
 <p>2.- Vincular Recibos.</p>
 
 <p>Una vez creado el Cheque, es posible indicar los Recibos que se pagan con el Cheque. Para ello, ir a la pestaña “Detalle” y pulsar el botón “Nuevo”.  Aparecerá una ventana emergente donde se muestran los Recibos pendientes del Cliente que ha emitido el Cheque. En esta ventana se seleccionarán los Recibos y el importe que corresponde de cada uno.</p>
@@ -58,7 +58,7 @@
 <p>1.- Desde Cheque > Detalles se puede ir al Recibo.</p>
 
 <p>2.- Desde las consultas de Recibos de Cliente (Recibos, Recibos por Cliente, Pagos de una Factura) se puede ir al Cheque.</p>
-
+--}}
 {{--
 <h2>¿Qué es una <i>Plantilla para Pedidos de Venta</i>?</h2>
 <p>Una <strong><i>Plantilla para Pedidos de Venta</i></strong> es un Modelo para crear rápidamente Pedidos de Venta. Las Plantillas para Pedidos se utilizan convenientemente cuando un Cliente hace pedidos regularmente con el mismo contenido o similar.</p>

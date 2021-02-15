@@ -1,12 +1,12 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Cheques - Create') }} :: @parent @stop
+@section('title') {{ l('Customer Cheques - Create') }} @parent @stop
 
 
 @section('content')
 
 <div class="row">
-	<div class="col-md-10 col-md-offset-1" style="margin-top: 50px">
+	<div class="col-md-8 col-md-offset-2" style="margin-top: 50px">
 		<div class="panel panel-info">
 			<div class="panel-heading"><h3 class="panel-title">{{ l('New Customer Cheque') }}</h3></div>
 			<div class="panel-body">
@@ -23,4 +23,4 @@
 	</div>
 </div>
 
-@endsection
+@stop

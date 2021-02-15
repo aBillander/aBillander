@@ -1213,7 +1213,8 @@ foreach ($categories as $category) {
 //                                ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);
@@ -1234,7 +1235,8 @@ foreach ($categories as $category) {
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);
@@ -1255,7 +1257,8 @@ foreach ($categories as $category) {
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);
@@ -1276,7 +1279,8 @@ foreach ($categories as $category) {
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);

@@ -10,6 +10,55 @@
             </div>
             <div class="modal-body">
 
+
+<h3>Flujo de trabajo</h3>
+
+<p>1.- Crear el Cheque.</p>
+
+<p>2.- Vincular Recibos.</p>
+
+<p>Una vez creado el Cheque, es posible indicar los Recibos que se pagan con el Cheque. Para ello, ir a la pestaña “Detalle” y pulsar el botón “Nuevo”.  Aparecerá una ventana emergente donde se muestran los Recibos pendientes del Cliente que ha emitido el Cheque (y que no están ya vinculados a otro Cheque). En esta ventana se seleccionarán los Recibos y el importe que corresponde de cada uno.</p>
+
+<p>Cuando se pulsa “Aceptar”, los Recibos seleccionados no cambiarán de Estado (seguirán en Estado “Pendiente”), pero el “Tipo de Pago” se cambiará al definido en Configuración > Valores por defecto > Tipo de Pago para Cheques. Si para algún Recibo seleccionó un importe inferior al total del Recibo, se creará un Recibo en Estado “Pendiente” por la diferencia.</p>
+
+<p>Si algún Recibo se hubiera asignado incorrectamente al Cheque, se puede desvincular del Cheque; el Recibo no se modifica (tampoco el “Tipo de Pago”).</p>
+
+<p>3.- Ingresar el Cheque.</p>
+
+<p>Se debe indicar una <strong>Fecha de Pago</strong>, y cambia el "Estado" del Cheque y de los Recibos a "Pagado". Esto se puede realizar de dos maneras:</p>
+
+<p>a) Pulsando el botón "Ingresar Cheque". Se tomará la fecha del día como "Fecha de Pago"</p>
+
+<p>b) En Cheque > Datos Generales, indique una <strong>Fecha de Pago</strong> y pulse "Guardar".</p>
+
+<p>4.- Devolver el Cheque.</p>
+
+<p>Si el Cheque resulta devuelto, debe indicarlo en aBillander pulsando el botón "Devolver Cheque". La <strong>Fecha de Pago</strong> se vacía, y cambia el "Estado" del Cheque a "Devuelto" y el de los Recibos a "Pendiente". Además, los Recibos se desvinculan del Cheque.</p>
+
+<h3>Estados del Cheque</h3>
+
+<p>- <strong>Pendiente</strong>. El Cheque está aún en poder del Cliente</p>
+
+<p>- <strong>Depositado</strong>. El Cheque está en poder de la Empresa.</p>
+
+<p>- <strong>Pagado</strong>.</p>
+
+<p>- <strong>Anulado</strong>.</p>
+
+<p>- <strong>Devuelto</strong>.</p>
+
+
+<div class="alert alert-warning">
+  <p>Los Estados "Pendiente", "Depositado" y "Anulado" son para control interno, no implican acción alguna sobre el Cheque o sobre los Recibos asociados.</p>
+</div>
+
+
+<h2>Trazabilidad</h2>
+
+<p>1.- Desde Cheque > Detalles se puede ir al Recibo.</p>
+
+<p>2.- Desde las consultas de Recibos de Cliente (Recibos, Recibos por Cliente, Pagos de una Factura) se puede ir al Cheque.</p>
+
 {{--
 <h2>¿Qué es una <i>Plantilla para Pedidos de Venta</i>?</h2>
 <p>Una <strong><i>Plantilla para Pedidos de Venta</i></strong> es un Modelo para crear rápidamente Pedidos de Venta. Las Plantillas para Pedidos se utilizan convenientemente cuando un Cliente hace pedidos regularmente con el mismo contenido o similar.</p>

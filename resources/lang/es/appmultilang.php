@@ -445,6 +445,7 @@ return array(
     'App\Cheque.deposited' => 'Depositado',	// Depositado
     'App\Cheque.paid' => 'Pagado',			// or cleared: pagaddo (ingresado en el banco)
     'App\Cheque.voided' => 'Anulado',		// Anulado
+    'App\Cheque.bounced' => 'Devuelto',		// or dishonored, or returned, or rejected
     'App\Cheque.rejected' => 'Rechazado',		// or dishonored, or returned, or bounced
 
 	/*

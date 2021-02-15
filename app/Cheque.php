@@ -6,18 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 use Auth;
 
+use App\Traits\ModelAttachmentableTrait;
+
 use App\Traits\ViewFormatterTrait;
 
 class Cheque extends Model
 {
     use ViewFormatterTrait;
+    
+    use ModelAttachmentableTrait;
 
     public static $statuses = array(
             'pending',		// Pendiente de depositar
             'deposited',	// Depositado
             'paid',			// or cleared: pagaddo (ingresado en el banco)
             'voided',		// Anulado
-            'rejected',		// or dishonored, or returned, or bounced
+            'bounced',		// or dishonored, or returned, or rejected
         );
 
     protected $dates = [
@@ -96,6 +100,48 @@ class Cheque extends Model
     }
 
 
+    public function checkStatus()
+    {
+        $this->load('vouchers');
+
+        $open_balance = $this->amount - $this->vouchers->sum('amount'); // abi_r($open_balance);
+
+        $count = $this->vouchers()->count(); // abi_r($count);
+
+        // abi_r((int) ( $this->vouchers()->where('status', 'paid')->count() <= $count && ($open_balance != 0.0) ));
+
+        // abi_r((int) (( $count > 0 ) && ( $this->vouchers()->where('status', 'paid')->count() == $count ) && ($open_balance == 0.0)));
+
+        if ( ( $count > 0 ) && ( $this->vouchers()->where('status', 'paid')->count() == $count ) && ($open_balance == 0.0) )
+        {
+            if ( $this->payment_date && ($this->status == 'paid') ) return true;
+
+            $this->status = 'paid';
+            $this->payment_date = \Carbon\Carbon::now();
+
+            $this->save();
+
+            // abi_r($this); // die();
+
+            return true;
+        }
+
+        if ( $this->vouchers()->where('status', 'paid')->count() <= $count && ($open_balance != 0.0) )    // This include case $count = 0
+        {
+            $this->status = 'deposited';
+            $this->payment_date = null;
+
+            $this->save();
+
+            // abi_r($this); // die();
+
+            return true;
+        }
+
+        return true;
+    }
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -113,6 +159,11 @@ class Cheque extends Model
     public function details()
     {
         return $this->chequedetails();
+    }
+
+    public function vouchers()
+    {
+        return $this->belongsToMany('App\Payment', 'cheque_details');
     }
     
     public function currency()

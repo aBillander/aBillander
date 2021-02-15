@@ -38,9 +38,13 @@
             <!-- tr style="color: #3a87ad; background-color: #d9edf7;" -->
             
 
-            @foreach ($document->lines->where('line_type', 'product') as $line)
+        @foreach ($document->lines->where('line_type', 'product') as $line)
             <tr>
-                <td>{{$line->line_sort_order }}</td>
+                <td>{{$line->line_sort_order }} 
+                  @if ( $line->product->isPack() )
+                    <i class="fa fa-gift btn-xs alert-warning" title="{{l('This Product is of Type "Grouped"', 'products')}}"></i>
+                  @endif
+                </td>
                 <td class="text-center">{{ $line->as_quantity('quantity') }}</td>
                 <td>
                 <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
@@ -54,8 +58,32 @@
                 <td class="text-right">{{ '-' }}</td>
 
             </tr>
-            
+
+            @if ( $line->product->isPack() )
+
+            @foreach( $line->product->packitems as $packitem )
+            <tr class="warning">
+                <td> </td>
+                <td class="text-center" title="{{ $line->as_quantity('quantity') }}x{{ $line->as_quantityable( $packitem->quantity ) }}">{{ $line->as_quantityable( $line->quantity * $packitem->quantity ) }}</td>
+                <td>
+                <a href="{{ URL::to('products/' . $packitem->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $packitem->product->reference }}</a></td>
+                <td>
+                {{ $packitem->product->name }}</td>
+
+                <td class="text-right">{{ $line->as_quantityable( $packitem->product->quantity_onhand    ) }}</td>
+                <td class="text-right">{{ $line->as_quantityable( $packitem->product->quantity_onorder   ) }}</td>
+                <td class="text-right">{{ $line->as_quantityable( $packitem->product->quantity_allocated ) }}</td>
+                <td class="text-right">{{ $line->as_quantityable( $packitem->product->quantity_available ) }}</td>
+                <td class="text-right active">
+                </td>
+
+            </tr>
+
             @endforeach
+
+            @endif
+            
+        @endforeach
 
     @else
     <tr><td colspan="9">

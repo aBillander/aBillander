@@ -143,14 +143,11 @@
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{ l('Date of Issue') }}</th>
             <th>{{ l('Due Date') }}</th>
+            <th>{{ l('Payment Date') }}</th>
             <th>{{l('Document Number')}}</th>
             <th>{{l('Customer')}}</th>
             <th>{{l('Bank')}}</th>
-            <th>{{l('Amount')}}
-                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                                    data-content="{{ l('This value is updated when a new Order is created, and cleared when a Template Line is created, updated or deleted.') }}">
-                        <i class="fa fa-question-circle abi-help"></i>
-                 </a></th>
+            <th>{{l('Amount')}}</th>
             <th>{{l('Currency')}}</th>
             <th class="text-center">{{l('Status', [], 'layouts')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
@@ -163,6 +160,7 @@
             <td>{{ $cheque->id }}</td>
             <td>{{ abi_date_short($cheque->date_of_issue) ?: '-' }}</td>
             <td>{{ abi_date_short($cheque->due_date) ?: '-' }}</td>
+            <td>{{ abi_date_short($cheque->payment_date) ?: '-' }}</td>
 			      <td>{{ $cheque->document_number }}</td>
             <td><a class="" href="{{ URL::to('customers/' . $cheque->customer->id . '/edit') }}" 
                 title="{{ l('Go to', 'layouts') }}" target="_new">
@@ -173,7 +171,28 @@
 
             <td>{{ $cheque->amount > 0.0 ? $cheque->as_money_amount('amount') : '-' }}</td>
             <td xclass="text-center">{{ $cheque->currency->name }}</td>
-            <td xclass="text-center">{{ $cheque->status_name }}</td>
+            <td class="text-center button-pad">
+              @if     ( $cheque->status == 'pending' )
+                <span class="label label-info">
+              @elseif ( $cheque->status == 'deposited' )
+                <span class="label label-danger">
+              @elseif ( $cheque->status == 'paid' )
+                <span class="label label-success">
+              @elseif ( $cheque->status == 'bounced' )
+                <span class="label alert-danger">
+              @else
+                <span class="label">
+              @endif
+              {{ $cheque->status_name }}</span>
+
+              @if ( $cheque->status == 'paid' )
+
+                    <a href="{{ route('cheque.bounce', [$cheque->id]) }}" class="btn btn-xs btn-danger" 
+                    title="{{l('Bounce Cheque')}}" xstyle="margin-left: 22px;"><i class="fa fa-mail-reply-all"></i></a>
+
+              @endif
+
+            </td>
 
               <td class="text-center">
                   @if ($cheque->notes)
@@ -193,11 +212,18 @@
 --}}
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('cheques/' . $cheque->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
+      @if ($cheque->status != 'paid')
+
+                    <a class="btn btn-sm btn-blue" href="{{ URL::to('cheques/' . $cheque->id  . '/pay' ) }}" title="{{l('Deposit Cheque')}}"><i class="fa fa-money"></i>
+                    </a>
+
+
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('cheques/' . $cheque->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                 		data-title="{{ l('Customer Cheques') }} :: ({{$cheque->id}}) {{{ $cheque->name }}} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+      @endif
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('cheques/' . $cheque->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
                 <a class="btn btn-danger" href="{{ URL::to('cheques/' . $cheque->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>

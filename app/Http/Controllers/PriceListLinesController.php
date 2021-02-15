@@ -164,7 +164,8 @@ class PriceListLinesController extends Controller {
                                 ->qualifyForPriceList( $id )
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);

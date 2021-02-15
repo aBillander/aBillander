@@ -597,7 +597,8 @@ class AbsrcProductsController extends Controller
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'alias', 'LIKE', '%'.$search.'%' )
 //                                ->with('measureunit')
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 /*
         $data = [];
 

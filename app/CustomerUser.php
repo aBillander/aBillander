@@ -141,7 +141,16 @@ class CustomerUser extends Authenticatable
 
     public function getIsActiveAttribute()
     {
-        return $this->active;
+        // Is Customer Active?
+        // Maybe a global scope is applied to Customers
+        if ( !$this->customer )
+            return false;
+        
+        // Customer is not Active
+        if ( !$this->customer->is_active )
+            return false;
+        
+        return $this->active > 0;
     }
 
     public function getIsPrincipalAttribute()
@@ -214,6 +223,7 @@ class CustomerUser extends Authenticatable
     // Alias
     public function isActive()
     {
+        // Accessor
         return $this->is_active;
 
         // See: https://pusher.com/tutorials/multiple-authentication-guards-laravel#modify-how-our-users-are-redirected-if-authenticated

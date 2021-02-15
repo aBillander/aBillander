@@ -20,6 +20,8 @@ class CreateChequeDetailsTable extends Migration
             $table->decimal('amount', 20, 6)->default(0.0);
 
             // Related Document
+            $table->integer('payment_id')->unsigned()->nullable();
+
             $table->integer('customer_invoice_id')->unsigned()->nullable();
             $table->string('customer_invoice_reference', 64)->nullable();
 

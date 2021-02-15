@@ -100,7 +100,8 @@ class BillableController extends Controller
                                     ->isNotBlocked()
                                     ->with('currency')
                                     ->with('addresses')
-                                    ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->get();
 
 //            return $customers;
 //            return Product::searchByNameAutocomplete($query, $onhand_only);
@@ -225,7 +226,8 @@ class BillableController extends Controller
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);
@@ -245,7 +247,8 @@ class BillableController extends Controller
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);

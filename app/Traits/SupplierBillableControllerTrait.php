@@ -56,7 +56,8 @@ trait SupplierBillableControllerTrait
                                     ->isNotBlocked()
                                     ->with('currency')
                                     ->with('addresses')
-                                    ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->get();
 
 //            return $suppliers;
 //            return Product::searchByNameAutocomplete($query, $onhand_only);
@@ -107,7 +108,8 @@ trait SupplierBillableControllerTrait
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);
@@ -127,7 +129,8 @@ trait SupplierBillableControllerTrait
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);

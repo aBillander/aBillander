@@ -136,6 +136,9 @@ class Supplier extends Model {
 
     public function addRisk( $amount, Currency $currency = null ) 
     {
+        return $this->calculateRisk( );
+
+        // Old code
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
 
@@ -148,6 +151,9 @@ class Supplier extends Model {
 
     public function removeRisk( $amount, Currency $currency = null ) 
     {
+        return $this->calculateRisk( );
+
+        // Old code
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
 
@@ -158,8 +164,28 @@ class Supplier extends Model {
     }
 
 
+    public function calculateRisk( ) 
+    {
+        // Get "open" vouchers;
+        $vouchers = $this->vouchers()->whereIn('status', ['pending', 'uncollectible'])->get();
+
+        // Sum Them up
+        $amount = $vouchers->reduce(function ($carry, $item) {
+            return $carry + $item->amount / $item->currency_conversion_rate;
+        }, 0.0);
+
+        $this->outstanding_amount = $amount;
+        $this->save();
+
+        return $amount;
+    }
+
+
     public function addUnresolved( $amount, Currency $currency = null ) 
     {
+        return $this->calculateUnresolved( );
+
+        // Old code
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
 
@@ -172,6 +198,9 @@ class Supplier extends Model {
 
     public function removeUnresolved( $amount, Currency $currency = null ) 
     {
+        return $this->calculateUnresolved( );
+
+        // Old code
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
 
@@ -181,9 +210,24 @@ class Supplier extends Model {
         return true;
     }
 
-    
-    
-    
+
+    public function calculateUnresolved( ) 
+    {
+        // Get "open" vouchers;
+        $vouchers = $this->vouchers()->whereIn('status', ['uncollectible'])->get();
+
+        // Sum Them up
+        $amount = $vouchers->reduce(function ($carry, $item) {
+            return $carry + $item->amount / $item->currency_conversion_rate;
+        }, 0.0);
+
+        $this->outstanding_amount = $amount;
+        $this->save();
+
+        return $amount;
+    }
+
+
     public function paymentDays() 
     {
         if ( !trim($this->payment_days) ) return [];
@@ -378,6 +422,12 @@ class Supplier extends Model {
         // return $this->hasMany('App\Payment', 'owner_id')->where('payment.owner_model_name', '=', 'Supplier');
 
         return $this->morphMany('App\Payment', 'paymentorable');
+    }
+    
+    // Alias
+    public function vouchers()
+    {
+        return $this->payments();
     }
     
 

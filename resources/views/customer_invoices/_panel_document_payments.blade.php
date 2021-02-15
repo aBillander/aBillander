@@ -43,7 +43,14 @@
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
 			<td>{{ abi_money_amount($payment->amount, $document->currency) }}</td>
 
-			<td>{{ optional($payment->paymenttype)->name }}</td>
+			<td>{{ optional($payment->paymenttype)->name }} 
+
+@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) && $payment->chequedetail )
+
+              <a class="btn btn-xs btn-warning" href="{{ URL::to('cheques/' . $payment->chequedetail->cheque_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
+
+@endif
+      </td>
 
 			<td class="text-center">
 				@if ($payment->auto_direct_debit) 

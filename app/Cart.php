@@ -162,7 +162,7 @@ class Cart extends Model implements ShippableInterface
             {
                 //
                 $cart->update([
-                                'shipping_address_id' => Auth::user()->shippingaddress->id,
+//                                'shipping_address_id' => Auth::user()->shippingaddress->id,
                                 'shipping_method_id' => $customer->getShippingMethodId(),
                                 'payment_method_id' => $customer->getPaymentMethodId(),
                             ]);
@@ -819,7 +819,7 @@ class Cart extends Model implements ShippableInterface
         $line_products = $cart->cartlines->where('line_type', 'product');
         $line_shipping = $cart->cartlines->where('line_type', 'shipping')->first();
 
-        if ( !$line_products ) return ;
+        if ( !$line_products ) return $cart;
 
         $total_products_tax_excl = $line_products->sum('total_tax_excl');
         $total_products_tax_incl = $line_products->sum('total_tax_incl');

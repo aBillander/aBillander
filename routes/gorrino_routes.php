@@ -211,6 +211,25 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 
+	// 2021-02-13
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `invoice_by_shipping_address` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `is_invoiceable`;");
+
+
+	// 2021-02-08
+
+	$payment_type = \App\PaymentType::where('name', 'Cheque')->first();abi_r($payment_type);
+	if ($payment_type)
+		\App\Configuration::updateValue('DEF_CHEQUE_PAYMENT_TYPE', $payment_type->id);
+
+	abi_r(\App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE'));
+
+	// 2021-02-05
+
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheque_details` ADD `payment_id` INT(10) UNSIGNED NULL AFTER `amount`;");
+
+	die('OK');
 
 	// 2021-02-03
 

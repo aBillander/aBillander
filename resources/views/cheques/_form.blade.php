@@ -26,6 +26,11 @@
         {!! $errors->first('due_date', '<span class="help-block">:message</span>') !!}
     </div>
 
+@if ( isset($cheque) && ($cheque->status == 'paid') )
+@php
+          $statusList = ['paid' => $statusList['paid']];
+@endphp
+@endif
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('status', l('Status', 'layouts')) !!}
     {!! Form::select('status', $statusList, null, array('class' => 'form-control')) !!}
@@ -37,11 +42,20 @@
         {!! $errors->first('date_of_entry', '<span class="help-block">:message</span>') !!}
     </div>
 
+@if ( isset($cheque) && ($cheque->status == 'paid') )
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('payment_date_form', l('Payment Date')) !!}
+        <div class="form-control">{{ $cheque->payment_date_form }}</div>
+        
+        {!! Form::hidden('payment_date_form', $cheque->payment_date_form, array('id' => 'payment_date_form')) !!}
+    </div>
+@else
     <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('payment_date') ? 'has-error' : '' }}">
         {!! Form::label('payment_date_form', l('Payment Date')) !!}
         {!! Form::text('payment_date_form', null, array('id' => 'payment_date_form', 'class' => 'form-control')) !!}
         {!! $errors->first('payment_date', '<span class="help-block">:message</span>') !!}
     </div>
+@endif
 
 </div>
 

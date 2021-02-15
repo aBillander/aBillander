@@ -249,9 +249,19 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('banks',         'BanksController');
         Route::resource('cheques',               'ChequesController'      );
         Route::resource('cheques.chequedetails', 'ChequeDetailsController');
+
+        Route::get('cheques/{id}/getdetails',         'ChequesController@getDetails' )->name('cheque.getdetails' );
         Route::post('cheques/sortlines', 'ChequesController@sortLines')->name('cheque.sortlines');
+
+        Route::get('cheques/{id}/pay',    'ChequesController@payCheque'   )->name('cheque.pay'   );
+        Route::get('cheques/{id}/bounce', 'ChequesController@bounceCheque')->name('cheque.bounce');
+
         Route::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
         Route::get( 'export/cheques', 'ChequesController@export' )->name('cheques.export');
+        
+        Route::post('cheques/{id}/attachment',         'ChequesController@attachmentStore'  )->name('cheques.attachment.store'  );
+        Route::get( 'cheques/{id}/attachment/{aid}',   'ChequesController@attachmentShow'   )->name('cheques.attachment.show'   );
+        Route::delete('cheques/{id}/attachment/{aid}', 'ChequesController@attachmentDestroy')->name('cheques.attachment.destroy');
 
         Route::resource('countries',        'CountriesController');
         Route::resource('countries.states', 'StatesController');
@@ -764,6 +774,8 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/collectible', 'CustomerVouchersController@collectibleVoucher')->name('customervoucher.collectible');
 
         Route::get('customervouchers/customers/{id}',  'CustomerVouchersController@indexByCustomer')->name('customer.vouchers');
+
+        Route::get('customervouchers/customers/{id}/pending',  'CustomerVouchersController@indexByCustomerPending')->name('customer.vouchers.pending');
 
         Route::get( 'export/customervouchers', 'CustomerVouchersController@export' )->name('customervouchers.export');
         

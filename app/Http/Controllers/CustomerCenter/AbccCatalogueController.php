@@ -99,7 +99,7 @@ class AbccCatalogueController extends Controller
                                       ->orderBy('name', 'asc')
                                       ;
 
-                // abi_toSQL($products);
+                // abi_toSQL($products); die();
 
                                     //  abi_r($products->get());
 

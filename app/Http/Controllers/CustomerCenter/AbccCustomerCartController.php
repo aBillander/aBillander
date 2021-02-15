@@ -275,7 +275,8 @@ class AbccCustomerCartController extends Controller
                                 ->IsPublished()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);

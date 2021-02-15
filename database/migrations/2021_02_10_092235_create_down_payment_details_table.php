@@ -15,8 +15,8 @@ class CreateDownPaymentDetailsTable extends Migration
     {
 
         Schema::dropIfExists('down_payment_details');
-        
-        Schema::create('down_payments_details', function (Blueprint $table) {
+
+        Schema::create('down_payment_details', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('line_sort_order')->nullable();         // To sort lines
             $table->string('name', 128)->nullable(false);

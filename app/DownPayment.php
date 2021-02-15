@@ -26,21 +26,24 @@ class DownPayment extends Model
     ];
 
     protected $fillable = [
-    		'document_number', 'amount', 
+    		'reference', 'name', 'amount', 
             'date_of_issue', 'due_date', 'payment_date', 'posted_at',
             'payment_type_id', 'notes', 'status', 
             'currency_id', 'currency_conversion_rate', 'customer_id', 'supplier_id',
     ];
 
     public static $rules = [
-        'document_number'         => 'required|min:2|max:32',
-        'place_of_issue'         => 'required',
+//        'reference'         => 'required|min:2|max:32',
+        'name'         => 'required',
+        'due_date'         => 'required',
 
     	'amount'   => 'numeric|min:0',
 
         'currency_id'   => 'required|exists:currencies,id',
-        'customer_id'   => 'required|exists:customers,id',
-        'drawee_bank_id'   => 'nullable|exists:banks,id',
+        'payment_type_id'   => 'required|exists:payment_types,id',
+        // Controller should add proper Customer or Supplier validation rule
+//        'customer_id'   => 'required|exists:customers,id',
+        'bank_id'   => 'nullable|exists:banks,id',
     	];
     
 
@@ -146,21 +149,21 @@ class DownPayment extends Model
     |--------------------------------------------------------------------------
     */
     
-    public function chequedetails()
+    public function downpaymentdetails()
     {
-        return $this->hasMany( 'App\ChequeDetail' )
+        return $this->hasMany( 'App\DownPaymentDetail' )
                     ->orderBy('line_sort_order', 'ASC');
     }
     
     // Alias
     public function details()
     {
-        return $this->chequedetails();
+        return $this->downpaymentdetails();
     }
 
     public function vouchers()
     {
-        return $this->belongsToMany('App\Payment', 'cheque_details');
+        return $this->belongsToMany('App\Payment', 'down_payment_details');
     }
     
     public function currency()

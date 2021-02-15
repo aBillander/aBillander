@@ -8,9 +8,9 @@
 
                 @include('errors.list')
 
-                {!! Form::model($cheque, array('method' => 'PATCH', 'route' => array('cheques.update', $cheque->id))) !!}
+                {!! Form::model($downpayment, array('method' => 'PATCH', 'route' => array('supplier.downpayments.update', $downpayment->id))) !!}
 
-                  @include('cheques._form')
+                  @include('supplier_down_payments._form')
 
                 {!! Form::close() !!}
               </div>

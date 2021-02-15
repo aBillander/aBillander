@@ -1,16 +1,16 @@
 
 
-<div id="div_cheque_details">
+<div id="div_downpayment_details">
 
    <div class="table-responsive">
 
-@if ($chequedetails->count())
-            <table id="chequedetails" class="table table-hover">
+@if ($downpaymentdetails->count())
+            <table id="downpaymentdetails" class="table table-hover">
                 <thead>
                 <tr>
                     <th class="text-left">{{l('ID', [], 'layouts')}}</th>
                     <th>{{l('Position', 'layouts')}}</th>
-                    <th class="text-left">{{ l('Name', 'chequedetails') }}</th>
+                    <th class="text-left">{{ l('Name', 'downpaymentdetails') }}</th>
                     <th class="text-left">{{ l('Amount') }}<br />
                         <span class="
 
@@ -19,25 +19,25 @@
 @else
                         alert-danger
 @endif
-                        ">{{ $cheque->as_money_amountable( $chequedetails->sum('amount'), $cheque->currency ) }}</span>
+                        ">{{ $downpayment->as_money_amountable( $downpaymentdetails->sum('amount'), $downpayment->currency ) }}</span>
                     </th>
-                    <th class="text-left">{{ l('Customer Invoice', 'chequedetails') }}</th>
+                    <th class="text-left">{{ l('Customer Invoice', 'downpaymentdetails') }}</th>
                     <th class="text-left">{{ l('Customer Voucher', 'customervouchers') }}</th>
                     <th class="text-center">{{l('Status', [], 'layouts')}}</th>
                     <th>{{l('Payment Date')}}</th>
                     <th class="text-right">
 
 @if( $open_balance > 0.0)
-                        <a href="{{ URL::to('cheques/'.$cheque->id.'/chequedetails/create') }}" class="btn btn-sm btn-success create-chequedetail pull-right"
+                        <a href="{{ URL::to('downpayments/'.$downpayment->id.'/downpaymentdetails/create') }}" class="btn btn-sm btn-success create-downpaymentdetail pull-right"
                             title="{{l('Add New Detail')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 @endif
                     </th>
                 </tr>
                 </thead>
                 <tbody class="sortable">
-                @foreach ($chequedetails as $detail)
+                @foreach ($downpaymentdetails as $detail)
                     <tr data-id="{{ $detail->id }}" data-sort-order="{{ $detail->line_sort_order }}">
-                        <td>{{ $detail->id }} {{-- $detail->customerpayment->cheque->id --}}</td>
+                        <td>{{ $detail->id }} {{-- $detail->customerpayment->downpayment->id --}}</td>
                         <td>{{ $detail->line_sort_order }}</td>
                         <td>{{ $detail->name }}</td>
 
@@ -85,10 +85,10 @@
 
                         <td class="text-right button-pad">
 {{-- --}}
-                            <!-- a class="btn btn-sm btn-warning" href="{{ URL::to('cheques/' . $cheque->id.'/chequedetails/' . $detail->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
+                            <!-- a class="btn btn-sm btn-warning" href="{{ URL::to('downpayments/' . $downpayment->id.'/downpaymentdetails/' . $detail->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
 @if ($detail->deletable)
                             <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                                    href="{{ URL::to('cheques/' . $cheque->id.'/chequedetails/' . $detail->id ) }}" 
+                                    href="{{ URL::to('downpayments/' . $downpayment->id.'/downpaymentdetails/' . $detail->id ) }}" 
                                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                                     data-title="{{ l('Down Payment to Supplier Details') }} :: ({{$detail->id}}) {{{ $detail->name }}} " 
                                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
@@ -100,7 +100,7 @@
             </table>
 @else
             <div class="modal-footer">
-                <a href="javascript:void(0);" class="btn xbtn-sm btn-success create-chequedetail pull-right" 
+                <a href="javascript:void(0);" class="btn xbtn-sm btn-success create-downpaymentdetail pull-right" 
                 title="{{l('Add New Detail')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
             </div>
@@ -112,7 +112,7 @@
             </div>
 @endif
 
-    <input type="hidden" name="next_detail_line_sort_order" id="next_detail_line_sort_order" value="{{ ($chequedetails->max('line_sort_order') ?? 0) + 10 }}">
+    <input type="hidden" name="next_detail_line_sort_order" id="next_detail_line_sort_order" value="{{ ($downpaymentdetails->max('line_sort_order') ?? 0) + 10 }}">
 
 </div>
 

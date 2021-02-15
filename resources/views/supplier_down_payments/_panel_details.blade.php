@@ -27,7 +27,7 @@
 </div>
 
 {{-- --}}
-    @include('cheques/_modal_detail_create')
+    @include('supplier_down_payments/_modal_detail_create')
 {{-- --}}
 
 @section('scripts')     @parent
@@ -36,10 +36,10 @@
    $(document).ready(function() {
 
 
-        $(document).on('click', '.create-chequedetail', function(evnt) {
+        $(document).on('click', '.create-downpaymentdetail', function(evnt) {
 
             // Load Content
-            getCustomerPendingVouchers( {{ $cheque->customer_id }} );
+            getSupplierPendingVouchers( {{ $downpayment->supplier_id }} );
 
             // Open popup
             $('#detailModal').modal({show: true});
@@ -53,15 +53,15 @@
 
 //      $(window).on('hashchange',function(){
 //      page = window.location.hash.replace('#','');
-//      if (page == 'details') getChequeDetails();
+//      if (page == 'details') getDownpaymentDetails();
 //    });
 
-    function getChequeDetails(){
+    function getDownPaymentDetails(){
 
            $('#content_details').addClass('loading');
 
       $.ajax({
-        url: '{{ route( 'cheque.getdetails', [$cheque->id] ) }}',
+        url: '{{ route( 'supplier.downpayment.getdetails', [$downpayment->id] ) }}',
         data: {}
       }).done(function(data){
         $('#content_details').html(data);
@@ -69,12 +69,12 @@
                  $('#content_details').removeClass('loading');
                  $("[data-toggle=popover]").popover();
 
-                 sortableChequeDetails();
+                 sortableDownpaymentDetails();
       });
     }
 
 
-        function sortableChequeDetails() {
+        function sortableDownpaymentDetails() {
 
           // Sortable :: http://codingpassiveincome.com/jquery-ui-sortable-tutorial-save-positions-with-ajax-php-mysql
           // See: https://stackoverflow.com/questions/24858549/jquery-sortable-not-functioning-when-ajax-loaded
@@ -88,13 +88,13 @@
                       }
                   });
 
-                  saveNewChequePositions();
+                  saveNewDownpaymentPositions();
               }
           });
 
         }
 
-        function saveNewChequePositions() {
+        function saveNewDownpaymentPositions() {
             var positions = [];
             var token = "{{ csrf_token() }}";
 
@@ -104,7 +104,7 @@
             });
 
             $.ajax({
-                url: "{{ route('cheque.sortlines') }}",
+                url: "{{ route('supplier.downpayment.sortlines') }}",
                 headers : {'X-CSRF-TOKEN' : token},
                 method: 'POST',
                 dataType: 'json',
@@ -118,17 +118,17 @@
         }
 
 
-    function getCustomerPendingVouchers( customer_id ) {
+    function getSupplierPendingVouchers( supplier_id ) {
 
-           $('#customer_pending_vouchers').addClass('loading');
+           $('#supplier_pending_vouchers').addClass('loading');
 
       $.ajax({
-        url: '{{ route( 'customer.vouchers.pending', [$cheque->customer_id] ) }}',
+        url: '{{ route( 'supplier.vouchers.pending', [$downpayment->supplier_id] ) }}',
         data: {}
       }).done(function(data){
-        $('#customer_pending_vouchers').html(data);
+        $('#supplier_pending_vouchers').html(data);
 
-                 $('#customer_pending_vouchers').removeClass('loading');
+                 $('#supplier_pending_vouchers').removeClass('loading');
                  $("[data-toggle=popover]").popover();
       });
     }

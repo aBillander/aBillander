@@ -22,9 +22,9 @@ class CreateDownPaymentsTable extends Migration
             $table->string('name', 64)->nullable(false);
             $table->decimal('amount', 20, 6)->default(0.0);
 
-            $table->date('date_of_issue')->nullable();
+//            $table->date('date_of_issue')->nullable();
             $table->date('due_date')->nullable();                           // Due date, expiration date or "valid until" date
-            $table->date('payment_date')->nullable();                       // Cheque heque is cleared
+//            $table->date('payment_date')->nullable();                       // Cheque heque is cleared
             $table->date('posted_at')->nullable();                          // Recorded (in account, General Ledger) at
 
 

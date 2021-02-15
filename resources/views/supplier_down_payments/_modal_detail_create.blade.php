@@ -8,14 +8,14 @@
     <div class="modal-content">
       <div class="modal-header alert-info">
         <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="detailModalLabel">{{ l('New Down Payment to Supplier Detail') }} :: <span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span> {{ \App\Currency::viewMoneyWithSign($cheque->amount, $cheque->currency) }}</h4>
+        <h4 class="modal-title" id="detailModalLabel">{{ l('New Down Payment to Supplier Detail') }} :: <span class="lead well well-sm alert-warning">{{ $downpayment->reference ?: $downpayment->id }}</span> {{ \App\Currency::viewMoneyWithSign($downpayment->amount, $downpayment->currency) }}</h4>
       </div>
 
-      <form id="cheque_payment_details">
+      <form id="downpayment_payment_details">
 
       <div class="modal-body">
 
-          {!! Form::hidden('cheque_id', $cheque->id, array('id' => 'cheque_id')) !!}
+          {!! Form::hidden('down_payment_id', $downpayment->id, array('id' => 'down_payment_id')) !!}
 
                 <div class="alert alert-danger" id="error-msg-box" style="display:none">
     
@@ -32,7 +32,7 @@
       <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="modal_chequedetailsSubmit" id="modal_chequedetailsSubmit">
+               <button type="submit" class="btn btn-success" name="modal_downpaymentdetailsSubmit" id="modal_downpaymentdetailsSubmit">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Save', [], 'layouts')}}</button>
 
@@ -96,11 +96,11 @@ $(".xxxselectedamount").on("keyup", function () {
 
 
 
-          $("body").on('click', "#modal_chequedetailsSubmit", function( event ) {
+          $("body").on('click', "#modal_downpaymentdetailsSubmit", function( event ) {
 
-            var url = "{{ route('cheques.chequedetails.store', $cheque->id) }}";
+            var url = "{{ route('supplier.downpayments.details.store', $downpayment->id) }}";
             var token = "{{ csrf_token() }}";
-            var payload = $("#cheque_payment_details").serialize();
+            var payload = $("#downpayment_payment_details").serialize();
 
             $('#error-msg-box').hide();
 

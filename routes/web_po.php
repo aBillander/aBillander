@@ -129,5 +129,7 @@ foreach ($pairs as $pair) {
 
         Route::get('suppliervouchers/suppliers/{id}',  'SupplierVouchersController@indexBySupplier')->name('supplier.vouchers');
 
+        Route::get('suppliervouchers/suppliers/{id}/pending',  'SupplierVouchersController@indexBySupplierPending')->name('supplier.vouchers.pending');
+
         Route::get( 'export/suppliervouchers', 'SupplierVouchersController@export' )->name('suppliervouchers.export');
 

@@ -9,39 +9,35 @@
         <div class="page-header">
             <div class="pull-right">
 
-      @if ($cheque->status != 'paid')
+      @if ($downpayment->status != 'paid')
 
-            <a class="btn xbtn-sm btn-blue" style="margin-right: 36px; margin-left: 36px;" href="{{ URL::to('cheques/' . $cheque->id  . '/pay' ) }}" title="{{l('Deposit Cheque')}}"><i class="fa fa-money"></i> &nbsp;{{l('Deposit Cheque')}}
+            <a class="btn xbtn-sm btn-blue" style="margin-right: 36px; margin-left: 36px;" href="{{ URL::to('supplierdownpayments/' . $downpayment->id  . '/pay' ) }}" title="{{l('Deposit Downpayment')}}"><i class="fa fa-money"></i> &nbsp;{{l('Deposit Downpayment')}}
             </a>
-      @else
-
-            <a href="{{ route('cheque.bounce', [$cheque->id]) }}" class="btn xbtn-sm btn-danger" style="margin-right: 36px; margin-left: 36px;" 
-            title="{{l('Bounce Cheque')}}" xstyle="margin-left: 22px;"><i class="fa fa-mail-reply-all"></i> &nbsp;{{l('Bounce Cheque')}}</a>
 
       @endif
 
             </div>
 
-            <h2><a href="{{ URL::to('cheques') }}">{{ l('Down Payment to Suppliers') }}</a> <span style="color: #cccccc;">/</span> <span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span> 
+            <h2><a href="{{ URL::to('downpayments') }}">{{ l('Down Payment to Suppliers') }}</a> <span style="color: #cccccc;">/</span> <span class="lead well well-sm alert-warning">{{ $downpayment->reference ?: $downpayment->id }}</span> 
 
-               {{ $cheque->as_money_amount('amount') }} 
+               {{ $downpayment->as_money_amount('amount') }} 
                
-                  <span class="badge" style="background-color: #3a87ad;" title="{{ $cheque->currency->name }}">{{ $cheque->currency->iso_code }}</span>
+                  <span class="badge" style="background-color: #3a87ad;" title="{{ $downpayment->currency->name }}">{{ $downpayment->currency->iso_code }}</span>
 
                <span style="color: #cccccc;">/</span> 
 
             </h2><h2>
 
-                  <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a>
+                  <a href="{{ URL::to('suppliers/' . $supplier->id . '/edit') }}" title=" {{l('View Supplier')}} " target="_blank">{{ $supplier->name_regular }}</a>
 
                  <a title=" {{l('View Invoicing Address')}} " href="javascript:void(0);">
                     <button type="button" class="btn btn-xs btn-success" data-toggle="popover" data-placement="right" 
-                            title="{{l('Invoicing Address', 'customerinvoices')}}" data-content="
-                                  {{$customer->name_fiscal}}<br />
-                                  {{l('VAT ID')}}: {{$customer->identification}}<br />
-                                  {{ $customer->address->address1 }} {{ $customer->address->address2 }}<br />
-                                  {{ $customer->address->postcode }} {{ $customer->address->city }}, {{ $customer->address->state->name }}<br />
-                                  {{ $customer->address->country->name }}
+                            title="{{l('Invoicing Address', 'supplierinvoices')}}" data-content="
+                                  {{$supplier->name_fiscal}}<br />
+                                  {{l('VAT ID')}}: {{$supplier->identification}}<br />
+                                  {{ $supplier->address->address1 }} {{ $supplier->address->address2 }}<br />
+                                  {{ $supplier->address->postcode }} {{ $supplier->address->city }}, {{ $supplier->address->state->name }}<br />
+                                  {{ $supplier->address->country->name }}
                                   <br />
                             ">
                         <i class="fa fa-info-circle"></i>
@@ -74,11 +70,11 @@
       
       <div class="col-lg-10 col-md-10 col-sm-9">
             
-          @include('cheques._panel_main_data')
+          @include('supplier_down_payments._panel_main_data')
 
-          @include('cheques._panel_details')
+          @include('supplier_down_payments._panel_details')
 
-          @include('cheques._panel_attachments')
+          @include('supplier_down_payments._panel_attachments')
 
 
       </div><!-- div class="col-lg-10 col-md-10 col-sm-9" -->
@@ -103,7 +99,7 @@
       {
          $("#panel_details").show();
          $("#b_details").addClass('active');
-         getChequeDetails();
+         getDownPaymentDetails();
          // document.f_cliente.codgrupo.focus();
       }
       else if(window.location.hash.substring(1) == 'attachments')

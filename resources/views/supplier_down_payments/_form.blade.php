@@ -14,12 +14,6 @@
 
 <div class="row">
 
-    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date_of_issue') ? 'has-error' : '' }}">
-        {!! Form::label('date_of_issue_form', l('Date of Issue')) !!}
-        {!! Form::text('date_of_issue_form', null, array('id' => 'date_of_issue_form', 'class' => 'form-control')) !!}
-        {!! $errors->first('date_of_issue', '<span class="help-block">:message</span>') !!}
-    </div>
-
     <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('due_date') ? 'has-error' : '' }}">
         {!! Form::label('due_date_form', l('Due Date')) !!}
         {!! Form::text('due_date_form', null, array('id' => 'due_date_form', 'class' => 'form-control')) !!}
@@ -36,41 +30,25 @@
     {!! Form::select('status', $statusList, null, array('class' => 'form-control')) !!}
 </div>
 
-    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date_of_entry') ? 'has-error' : '' }}">
-        {!! Form::label('date_of_entry_form', l('Date of Entry')) !!}
-        {!! Form::text('date_of_entry_form', null, array('id' => 'date_of_entry_form', 'class' => 'form-control')) !!}
-        {!! $errors->first('date_of_entry', '<span class="help-block">:message</span>') !!}
-    </div>
-
-@if ( isset($cheque) && ($cheque->status == 'paid') )
-    <div class="form-group col-lg-2 col-md-2 col-sm-2">
-        {!! Form::label('payment_date_form', l('Payment Date')) !!}
-        <div class="form-control">{{ $cheque->payment_date_form }}</div>
-        
-        {!! Form::hidden('payment_date_form', $cheque->payment_date_form, array('id' => 'payment_date_form')) !!}
-    </div>
-@else
-    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('payment_date') ? 'has-error' : '' }}">
-        {!! Form::label('payment_date_form', l('Payment Date')) !!}
-        {!! Form::text('payment_date_form', null, array('id' => 'payment_date_form', 'class' => 'form-control')) !!}
-        {!! $errors->first('payment_date', '<span class="help-block">:message</span>') !!}
-    </div>
-@endif
+<div class="form-group col-lg-3 col-md-3 col-sm-3">
+    {!! Form::label('payment_type_id', l('Payment Type')) !!}
+    {!! Form::select('payment_type_id', $payment_typeList, null, array('class' => 'form-control')) !!}
+</div>
 
 </div>
 
 <div class="row">
 
-    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('customer_id') ? 'has-error' : '' }}">
-       {!! Form::label('autocustomer_name', l('Customer')) !!}
+    <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('supplier_id') ? 'has-error' : '' }}">
+       {!! Form::label('autosupplier_name', l('Supplier')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Search by Name or Identification (VAT Number).', 'customerorders') }}">
+                                    data-content="{{ l('Search by Name or Identification (VAT Number).', 'supplierorders') }}">
                         <i class="fa fa-question-circle abi-help"></i>
                  </a>
-        {!! Form::text('autocustomer_name', null, array('class' => 'form-control', 'id' => 'autocustomer_name')) !!}
-        {!! $errors->first('customer_id', '<span class="help-block">:message</span>') !!}
+        {!! Form::text('autosupplier_name', null, array('class' => 'form-control', 'id' => 'autosupplier_name')) !!}
+        {!! $errors->first('supplier_id', '<span class="help-block">:message</span>') !!}
 
-        {!! Form::hidden('customer_id', null, array('id' => 'customer_id')) !!}
+        {!! Form::hidden('supplier_id', null, array('id' => 'supplier_id')) !!}
     </div>
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('drawee_bank_id') ? 'has-error' : '' }}">
@@ -94,13 +72,7 @@
 </div>
 
 <div class="row">
-    <div class="form-group col-lg-7 col-md-7 col-sm-7 {{ $errors->has('memo') ? 'has-error' : '' }}">
-        {!! Form::label('memo', l('Memo')) !!}
-        {!! Form::text('memo', null, array('class' => 'form-control', 'id' => 'memo')) !!}
-        {!! $errors->first('memo', '<span class="help-block">:message</span>') !!}
-    </div>
-
-    <div class="form-group col-lg-5 col-md-5 col-sm-5 {{ $errors->has('notes') ? 'has-error' : '' }}">
+    <div class="form-group col-lg-7 col-md-7 col-sm-7 {{ $errors->has('notes') ? 'has-error' : '' }}">
        {!! Form::label('notes', l('Notes', [], 'layouts')) !!}
        {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '3')) !!}
        {!! $errors->first('notes', '<span class="help-block">:message</span>') !!}
@@ -162,22 +134,22 @@
     $(document).ready(function() {
 
       @if ( $cheque ?? null )
-        getCustomerData( {{ $cheque->customer->id }}, {{ $cheque->drawee_bank_id }} );
+        getSupplierData( {{ $cheque->supplier->id }}, {{ $cheque->drawee_bank_id }} );
 
-        $("#autocustomer_name").val('{{ $cheque->customer->name_regular }}');
-        $("#customer_id").val('{{ $cheque->customer->id }}');
+        $("#autosupplier_name").val('{{ $cheque->supplier->name_regular }}');
+        $("#supplier_id").val('{{ $cheque->supplier->id }}');
         // $("#drawee_bank_id").val('{{ $cheque->drawee_bank_id }}');
       @else
-        $("#autocustomer_name").val('');
-        $("#customer_id").val('');
+        $("#autosupplier_name").val('');
+        $("#supplier_id").val('');
       @endif
 
         // To get focus;
-        // $("#autocustomer_name").focus();
+        // $("#autosupplier_name").focus();
 
-        $("#autocustomer_name").autocomplete({
-//            source : "{{ route('customers.ajax.nameLookup') }}",
-            source : "{{ route('customerorders.ajax.customerLookup') }}",
+        $("#autosupplier_name").autocomplete({
+//            source : "{{ route('suppliers.ajax.nameLookup') }}",
+            source : "{{ route('supplierorders.ajax.supplierLookup') }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 
@@ -187,8 +159,8 @@
 
                 // ( value.item.id );
 
-                $("#autocustomer_name").val(str);
-                $('#customer_id').val(value.item.id );
+                $("#autosupplier_name").val(str);
+                $('#supplier_id').val(value.item.id );
 
                 return false;
             }
@@ -199,24 +171,24 @@
             };
 
 
-        function getCustomerData( customer_id, drawee_bank_id = 0 )
+        function getSupplierData( supplier_id, drawee_bank_id = 0 )
         {
             var token = "{{ csrf_token() }}";
 
             $.ajax({
-                url: "{{ route('customerorders.ajax.customerLookup') }}",
+                url: "{{ route('supplierorders.ajax.supplierLookup') }}",
                 headers : {'X-CSRF-TOKEN' : token},
                 method: 'GET',
                 dataType: 'json',
                 data: {
-                    customer_id: customer_id
+                    supplier_id: supplier_id
                 },
                 success: function (response) {
                     var str = '[' + response.identification+'] ' + response.name_fiscal + ' [' + response.reference_external +']';
                     var shipping_method_id;
 
-                    $("#document_autocustomer_name").val(str);
-                    $('#customer_id').val(response.id);
+                    $("#document_autosupplier_name").val(str);
+                    $('#supplier_id').val(response.id);
                     if (response.sales_equalization > 0) {
                         $('#sales_equalization').show();
                     } else {
@@ -230,7 +202,7 @@
                     if ( response.payment_method_id > 0 ) {
                       $('#payment_method_id').val(response.payment_method_id);
                     } else {
-                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
+                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_SUPPLIER_PAYMENT_METHOD'))}});
                     }
 
                     $('#currency_id').val(response.currency_id);
@@ -275,28 +247,8 @@
 
 
 
-    $( "#date_of_issue_form" ).datepicker({
-      showOtherMonths: true,
-      selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
-    });
-
 
     $( "#due_date_form" ).datepicker({
-      showOtherMonths: true,
-      selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
-    });
-
-
-    $( "#payment_date_form" ).datepicker({
-      showOtherMonths: true,
-      selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
-    });
-
-
-    $( "#date_of_entry_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"

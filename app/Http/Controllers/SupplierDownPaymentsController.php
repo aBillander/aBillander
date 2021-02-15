@@ -8,10 +8,11 @@ use App\DownPayment;
 use App\DownPaymentDetail;
 use App\Currency;
 use App\Bank;
+use App\PaymentType;
 use App\Configuration;
 
-use App\Events\CustomerPaymentReceived;
-use App\Events\CustomerPaymentBounced;
+use App\Events\SupplierPaymentReceived;
+use App\Events\SupplierPaymentBounced;
 
 use Excel;
 
@@ -76,8 +77,9 @@ class SupplierDownPaymentsController extends Controller
         $statusList = $this->downpayment::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $bankList = Bank::pluck('name', 'id')->toArray();
+        $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
-        return view('supplier_down_payments.create', compact('statusList', 'currencyList', 'bankList'));
+        return view('supplier_down_payments.create', compact('statusList', 'currencyList', 'bankList', 'payment_typeList'));
     }
 
     /**
@@ -97,7 +99,7 @@ class SupplierDownPaymentsController extends Controller
 
         $downpayment = DownPayment::create($request->all());
 
-        return redirect()->route('supplier_down_payments.edit', [$downpayment->id])
+        return redirect()->route('supplier.downpayments.edit', [$downpayment->id])
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $downpayment->document_number], 'layouts'));
     }
 
@@ -126,14 +128,16 @@ class SupplierDownPaymentsController extends Controller
     {
 
         $downpayment = $this->downpayment
-                        ->has('customer')
+                        ->has('supplier')
+                        ->with('supplier')
                         ->findOrFail($id);
 
         $statusList = $this->downpayment::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $bankList = Bank::pluck('name', 'id')->toArray();   
+        $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
-        $customer = $downpayment->customer;
+        $supplier = $downpayment->supplier;
         $downpaymentdetails = $downpayment->details;     
 
         // abi_r($bankList);die();
@@ -141,7 +145,7 @@ class SupplierDownPaymentsController extends Controller
         // Dates (cuen)
         $this->addFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $downpayment );
 
-        return view('supplier_down_payments.edit', compact('downpayment', 'downpaymentdetails', 'customer', 'statusList', 'currencyList', 'bankList'));
+        return view('supplier_down_payments.edit', compact('downpayment', 'downpaymentdetails', 'supplier', 'statusList', 'currencyList', 'bankList', 'payment_typeList'));
     }
 
     /**
@@ -168,7 +172,7 @@ class SupplierDownPaymentsController extends Controller
         if ( $downpayment->payment_date && ($downpayment->payment_date != $old_payment_date) )
             return $this->payDownPayment($downpayment->id, $request);
 
-        return redirect()->route('supplier_down_payments.index')
+        return redirect()->route('supplier.downpayments.index')
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $downpayment->document_number], 'layouts'));
     }
 
@@ -225,7 +229,7 @@ class SupplierDownPaymentsController extends Controller
 
             $voucher->save();
 
-            event(new CustomerPaymentReceived($voucher));
+            event(new SupplierPaymentReceived($voucher));
         }
 
         return redirect()->back()
@@ -237,7 +241,7 @@ class SupplierDownPaymentsController extends Controller
     {
         $downpayment = $this->downpayment
                         ->with('downpaymentdetails')
-                        ->with('downpaymentdetails.customerpayment')
+                        ->with('downpaymentdetails.supplierpayment')
                         ->findOrFail($id);
 
         // Process DownPayment
@@ -250,13 +254,13 @@ class SupplierDownPaymentsController extends Controller
         foreach ($downpayment->downpaymentdetails as $downpaymentdetail) {
             # code...
 
-            $voucher = $downpaymentdetail->customerpayment;
+            $voucher = $downpaymentdetail->supplierpayment;
             $voucher->payment_date = null;
             $voucher->status   = 'pending';
 
             $voucher->save();
 
-            event(new CustomerPaymentBounced($voucher));
+            event(new SupplierPaymentBounced($voucher));
 
             $downpaymentdetail->delete();
 
@@ -297,6 +301,7 @@ class SupplierDownPaymentsController extends Controller
     public function getDetails($id, Request $request)
     {
         $downpayment = $this->downpayment
+                        ->has('supplier')
                         ->with('downpaymentdetails')
                         ->findOrFail($id);
         
@@ -329,7 +334,7 @@ class SupplierDownPaymentsController extends Controller
 
         $downpayments = $this->downpayment
                         ->filter( $request->all() )
-                        ->with('customer')
+                        ->with('supplier')
                         ->with('currency')
                         ->with('bank')
                         ->orderBy('due_date', 'desc')

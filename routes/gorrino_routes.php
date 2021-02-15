@@ -219,7 +219,7 @@ Route::get('migratethis', function()
 	
 	Illuminate\Support\Facades\DB::statement("drop table if exists `down_payment_details`");
 	
-	Illuminate\Support\Facades\DB::statement("create table `down_payments_details` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `name` varchar(128) not null, `amount` decimal(20, 6) not null default '0', `payment_id` int unsigned null, `document_invoice_id` int unsigned null, `document_invoice_reference` varchar(64) null, `down_payment_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	Illuminate\Support\Facades\DB::statement("create table `down_payment_details` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `name` varchar(128) not null, `amount` decimal(20, 6) not null default '0', `payment_id` int unsigned null, `document_invoice_id` int unsigned null, `document_invoice_reference` varchar(64) null, `down_payment_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheques` CHANGE `drawee_bank_id` `drawee_bank_id` INT(10) UNSIGNED NULL DEFAULT NULL;");
 	

@@ -1,11 +1,11 @@
 
 
-{!! Form::open(array('route' => array('cheques.attachment.store', $cheque->id), 'xtitle' => l('Upload an Attach Files', 'layouts'), 'class' => '', 'id' => 'add-attachment-action', 'files' => true)) !!}
+{!! Form::open(array('route' => array('supplier.downpayments.attachment.store', $downpayment->id), 'xtitle' => l('Upload an Attach Files', 'layouts'), 'class' => '', 'id' => 'add-attachment-action', 'files' => true)) !!}
 <input type="hidden" value="attachments" name="tab_name" id="tab_name">
 
-                      <input type="hidden" value="App\Cheque"     name="model_class"     id="model_class">
-                      <input type="hidden" value="{{ $cheque->id }}"                 name="model_id"        id="model_id">
-                      <input type="hidden" value="{{ $cheque->document_number ?: $cheque->id }}" name="model_reference" id="model_reference">
+                      <input type="hidden" value="App\DownPayment"     name="model_class"     id="model_class">
+                      <input type="hidden" value="{{ $downpayment->id }}"                 name="model_id"        id="model_id">
+                      <input type="hidden" value="{{ $downpayment->reference ?: $downpayment->id }}" name="model_reference" id="model_reference">
                       <input type="hidden" value="#attachments"     name="previous_anchor"     id="previous_anchor">
 
 <div class="panel panel-primary" id="panel_attachments">
@@ -67,13 +67,13 @@
         </tr>
       </thead>
       <tbody>
-      @if ($cheque->attachments->count())
-         @foreach ($cheque->attachments as $attachment)
+      @if ($downpayment->attachments->count())
+         @foreach ($downpayment->attachments as $attachment)
            <tr style="vertical-align:middle;">
                <td>{{ $attachment->id }}</td>
                <td>{{ $attachment->name }}</td>
                <td>
-                      <a href="{{ route( 'cheques.attachment.show', [$cheque->id, $attachment->id] ) }}" title="{{l('View Document', 'layouts')}}">
+                      <a href="{{ route( 'supplier.downpayments.attachment.show', [$downpayment->id, $attachment->id] ) }}" title="{{l('View Document', 'layouts')}}">
 
                           {{ $attachment->filename }}
 
@@ -84,7 +84,7 @@
                 
                         <a class="btn btn-xs alert-danger delete-item" data-html="false" data-toggle="modal" 
                         data-id="{{$attachment->id}}" 
-                        href="{{ route( 'cheques.attachment.destroy', [$cheque->id, $attachment->id] ) }}" 
+                        href="{{ route( 'supplier.downpayments.attachment.destroy', [$downpayment->id, $attachment->id] ) }}" 
                         data-previous_anchor="#attachments" 
                         data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                         data-title="{{ '('.$attachment->id.') '.$attachment->filename }}" 
@@ -126,4 +126,6 @@
 
 {!! Form::close() !!}
 
+{{--
   @include('model_attachments/_form_attachments')
+--}}

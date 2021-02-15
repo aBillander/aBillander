@@ -227,7 +227,8 @@ class ProductBOMsController extends Controller
                                 } )
 //                                ->isPurchased()
 //                                ->with('measureunit')
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 /*
         $data = [];
 

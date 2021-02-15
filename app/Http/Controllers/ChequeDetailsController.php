@@ -346,7 +346,8 @@ class ChequeDetailsController extends Controller
                                 ->where('status', 'closed')
                                 ->where('total_tax_incl', '>', 0.0)
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);

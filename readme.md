@@ -2,26 +2,43 @@
 
 The **aBillander Project** is an Invoicing and Inventory System for SME's powered by  <º)♡><  and  Laravel 5.5.
 
-This project is currently in pre-alpha state. After SDGx will be ready for testing (by the end of 20XX).
+> Sales and Receivables.
+
+> Purchases and Payables.
+
+> Inventory
+
+> Customer Center (B2B)
+
+> WooCommerce Connector (B2C)
+
+> Sales Representative Center
+
+> Manufacturing
+
+> microCRM
 
 
 ## ab://ander/Status
 
-> Implemented Customer Quotations, Customer Order, Customer Shipping Slip, Customer Invoice, Customer Payment, Stock Movements & More.
+> Production ready: two Companies have used aBillander for more than 1 year now.
 
-> Implemented WooCommerce connect (get Orders via REST API).
+> More implementations needed (main goal for year 2021).
 
-> Implemented FactuSOL Connector.
-
-> A bunch of three real Companies are heavily testing aBillander.
+> Contributors are welcome.
 
 
-## ab://ander/Milestones
+## ab://ander/Roadmap/Milestones
 
-> SDG0: **MVP ready** . Current status: heavily testing  :_> (ノಠ益ಠ)ノ彡┻━┻ 
+> SDG0: **MVP done** (2021/1). aBillander initial version.
 
+> SDG1: **Better Documentation** .
 
-A brand-new Schedule is brewing.
+> SDG2: **Lots and Traceability** .
+
+> SDG3: **Manufacturing enhancements** .
+
+> SDG4: **Refactor Sales Representative Center** .
 
 
 Curated by **Lara Billander** (@aBillander)

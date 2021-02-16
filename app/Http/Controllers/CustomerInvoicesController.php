@@ -870,6 +870,31 @@ class CustomerInvoicesController extends BillableController
 
 
 
+/* ********************************************************************************************* */   
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CRAZY_IVAN stuff here
+    |--------------------------------------------------------------------------
+    */ 
+
+    public function changeCustomer($id, $canChangeCustomer = 1)
+    {
+        $document = $this->document->with('payments')->findOrFail($id);
+
+        if ( $document->payments->count() > 0 )
+        	$canChangeCustomer = 0;
+
+
+        return parent::changeCustomer($id, $canChangeCustomer);
+    }
+
+
+
+/* ********************************************************************************************* */   
+
+
     /*
     |--------------------------------------------------------------------------
     | Not CRUD stuff here

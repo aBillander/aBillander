@@ -49,4 +49,8 @@ return [
 
 	'Ecotax' => 'Ecotasa',
 
+	'Change Customer' => 'Cambiar el Cliente',
+	'Document - Change Customer' => 'Documento - Cambiar el Cliente',
+	'It is not possible to change the Customer because the Document has Payments.' => 'No es posible cambar el Cliente porque el Documento tiene Pagos.',
+
 ];

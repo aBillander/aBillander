@@ -725,6 +725,9 @@ foreach ($pairs as $pair) {
         Route::post($path.'/{id}/attachment',         $controller.'@attachmentStore'  )->name($path.'.attachment.store'  );
         Route::get($path.'/{id}/attachment/{aid}',    $controller.'@attachmentShow'   )->name($path.'.attachment.show'   );
         Route::delete($path.'/{id}/attachment/{aid}', $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
+
+        Route::get( $path.'/{id}/change/customer', $controller.'@changeCustomer')->name($path.'.change.customer');
+        Route::post($path.'/update/customer',      $controller.'@updateCustomer')->name($path.'.update.customer');
 }
 
         Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');

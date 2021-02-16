@@ -247,12 +247,12 @@
             	{{\App\Payment::getStatusName($payment->status)}}</span>
 
               @if ( $payment->status == 'paid' )
-                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+{{--                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') ) --}}
 
                     <a href="{{ route('customervoucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Undo Payment')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
                
-                @endif
+{{--                @endif --}}
               @endif
 
               @if ( $payment->status == 'uncollectible' )

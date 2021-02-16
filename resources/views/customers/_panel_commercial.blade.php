@@ -76,8 +76,8 @@
 @php
     $ibsa = [
         "0" => l('No', 'layouts'),
-        "1" => l('1 Invoice per Shipping Address'),
-        "2" => l('1 Invoice per Shipping Slip and Shipping Address'),
+        "1" => l('One Invoice per Shipping Address'),
+        "2" => l('One Invoice per Shipping Slip and Shipping Address'),
     ];
 @endphp
 

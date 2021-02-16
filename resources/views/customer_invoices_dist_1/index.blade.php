@@ -104,7 +104,7 @@
                 <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerorders/' . $document->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
                 <a class="btn btn-sm btn-success" href="{{ URL::to('customerorders/' . $document->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
                 -->
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0)
+@if ( 0 )
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy', 'layouts')}}"><i class="fa fa-copy"></i></a>
 

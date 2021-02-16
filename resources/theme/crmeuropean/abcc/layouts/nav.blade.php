@@ -44,7 +44,7 @@
 
                 @if( Auth::guard('customer')->check() )
 
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
+@if ( 0 )
                 <li class="dropdown">
                     <a href="{{ route('abcc.customer.pricerules') }}" class="dropdown-toggle"><i class="fa fa-thumbs-o-up"></i> {{l('Price Rules', [], 'abcc/layouts')}} </a>
                 </li>

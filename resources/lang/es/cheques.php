@@ -66,4 +66,7 @@ return [
 	'Deposit Cheque' => 'Ingresar Cheque',
 	'Bounce Cheque' => 'Devolver Cheque',
 
+	'Set Voucher Due Dates' => 'Fijar la Fecha de vencimiento de los Recibos',
+	'Set Voucher Due Dates according to Cheque Due Date' => 'Fijar la Fecha de vencimiento de los Recibos según la Fecha de vencimiento del Cheque',
+
 ];

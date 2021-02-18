@@ -207,6 +207,15 @@ class BillableController extends Controller
         return view($this->view_path.'._panel_document_payments', $this->modelVars() + compact('document'));
     }
 
+    public function getDocumentDownPayments($id)
+    {
+        $document = $this->document
+                        ->with('downpayments')
+                        ->findOrFail($id);
+
+        return view($this->view_path.'._panel_document_downpayments', $this->modelVars() + compact('document'));
+    }
+
 
 
     public function searchProduct(Request $request)

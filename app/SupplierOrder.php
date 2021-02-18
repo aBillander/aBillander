@@ -435,6 +435,12 @@ class SupplierOrder extends Billable
     
 
 
+    public function downpayments()
+    {
+        return $this->hasMany('App\DownPayment', 'supplier_order_id')->orderBy('due_date', 'ASC');
+    }
+
+
 
     /*
     |--------------------------------------------------------------------------

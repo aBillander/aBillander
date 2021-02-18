@@ -18,13 +18,15 @@
 
             </div>
 
-            <h2><a href="{{ URL::to('downpayments') }}">{{ l('Down Payment to Suppliers') }}</a> <span style="color: #cccccc;">/</span> <span class="lead well well-sm alert-warning">{{ $downpayment->reference ?: $downpayment->id }}</span> 
+            <h2><a href="{{ URL::to('supplierdownpayments') }}">{{ l('Down Payment to Suppliers') }}</a> <span style="color: #cccccc;">/</span> <span class="lead well well-sm alert-warning">{{ $downpayment->reference ?: $downpayment->id }}</span> 
 
                {{ $downpayment->as_money_amount('amount') }} 
                
                   <span class="badge" style="background-color: #3a87ad;" title="{{ $downpayment->currency->name }}">{{ $downpayment->currency->iso_code }}</span>
 
                <span style="color: #cccccc;">/</span> 
+
+               [<a class="" href="{{ URL::to('supplierorders/' .$document->id . '/edit') }}" title="{{ l('Go to', 'layouts') }}" target="_new">{{ $document->document_reference ?: l('Draft', 'layouts').' - '.$document->id }}</a>]
 
             </h2><h2>
 

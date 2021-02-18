@@ -32,6 +32,8 @@ class CreateDownPaymentsTable extends Migration
             $table->decimal('currency_conversion_rate', 20, 6)->default(1.0);
 
             $table->string('status', 32)->nullable(false)->default('pending');
+            // 'pending',      // Pendiente de aplicar
+            // 'applied',      // Aplicado
 
 //            $table->string('memo', 128)->nullable();
             $table->text('notes')->nullable();
@@ -39,6 +41,8 @@ class CreateDownPaymentsTable extends Migration
             $table->integer('payment_type_id')->nullable();
             $table->integer('customer_id')->unsigned()->nullable();
             $table->integer('supplier_id')->unsigned()->nullable();
+            $table->integer('customer_order_id')->unsigned()->nullable();
+            $table->integer('supplier_order_id')->unsigned()->nullable();
 
             $table->integer('bank_id')->unsigned()->nullable();
 

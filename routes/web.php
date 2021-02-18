@@ -274,6 +274,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('supplierdownpayments',         'SupplierDownPaymentsController'      )->names('supplier.downpayments');
         Route::resource('supplierdownpayments.details', 'SupplierDownPaymentDetailsController')->names('supplier.downpayments.details');
 
+        Route::get('supplierdownpayments/create/withdocument/{document}', 'SupplierDownPaymentsController@createWithDocument')->name('supplierorder.create.downpayment');
+
         Route::get('supplierdownpayments/{id}/getdetails',         'SupplierDownPaymentsController@getDetails' )->name('supplier.downpayment.getdetails' );
         Route::post('supplierdownpayments/sortlines', 'SupplierDownPaymentsController@sortLines')->name('supplier.downpayment.sortlines');
 

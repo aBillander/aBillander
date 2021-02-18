@@ -11,6 +11,8 @@ use App\Bank;
 use App\PaymentType;
 use App\Configuration;
 
+use App\SupplierOrder;
+
 use App\Events\SupplierPaymentReceived;
 use App\Events\SupplierPaymentBounced;
 
@@ -49,7 +51,8 @@ class SupplierDownPaymentsController extends Controller
                         ->with('supplier')
                         ->with('currency')
                         ->with('bank')
-                        ->orderBy('due_date', 'desc');
+//                        ->orderBy('due_date', 'desc');
+                        ->orderBy('id', 'desc');
 
         $downpayments = $downpayments->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
@@ -74,12 +77,38 @@ class SupplierDownPaymentsController extends Controller
      */
     public function create()
     {
+        // use createWithDocument() instead!!!
         $statusList = $this->downpayment::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();
         $bankList = Bank::pluck('name', 'id')->toArray();
         $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         return view('supplier_down_payments.create', compact('statusList', 'currencyList', 'bankList', 'payment_typeList'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createWithDocument($document_id)
+    {
+        // Do the Mambo!!!
+        try {
+            $document = SupplierOrder::with('supplier')->findOrFail( $document_id );
+
+        } catch(ModelNotFoundException $e) {
+            // No Document_id available, ask for one
+            return redirect()->back()
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $document_id], 'layouts'));
+        }
+
+        $statusList = $this->downpayment::getStatusList();
+        $currencyList = Currency::pluck('name', 'id')->toArray();
+        $bankList = Bank::pluck('name', 'id')->toArray();
+        $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+        return view('supplier_down_payments.create_with_document', compact('statusList', 'currencyList', 'bankList', 'payment_typeList', 'document'));
     }
 
     /**
@@ -91,7 +120,7 @@ class SupplierDownPaymentsController extends Controller
     public function store(Request $request)
     {
         // Dates (cuen)
-        $this->mergeFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $request );
+        $this->mergeFormDates( ['due_date'], $request );
 
         $rules = $this->downpayment::$rules;
 
@@ -100,7 +129,7 @@ class SupplierDownPaymentsController extends Controller
         $downpayment = DownPayment::create($request->all());
 
         return redirect()->route('supplier.downpayments.edit', [$downpayment->id])
-                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $downpayment->document_number], 'layouts'));
+                ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $downpayment->reference], 'layouts'));
     }
 
     /**
@@ -130,6 +159,7 @@ class SupplierDownPaymentsController extends Controller
         $downpayment = $this->downpayment
                         ->has('supplier')
                         ->with('supplier')
+                        ->with('supplierorder')
                         ->findOrFail($id);
 
         $statusList = $this->downpayment::getStatusList();
@@ -138,6 +168,9 @@ class SupplierDownPaymentsController extends Controller
         $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         $supplier = $downpayment->supplier;
+        $document = $downpayment->supplierorder;
+
+        // abi_r($downpayment->supplier_order_id);die();
         $downpaymentdetails = $downpayment->details;     
 
         // abi_r($bankList);die();
@@ -145,7 +178,7 @@ class SupplierDownPaymentsController extends Controller
         // Dates (cuen)
         $this->addFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $downpayment );
 
-        return view('supplier_down_payments.edit', compact('downpayment', 'downpaymentdetails', 'supplier', 'statusList', 'currencyList', 'bankList', 'payment_typeList'));
+        return view('supplier_down_payments.edit', compact('downpayment', 'downpaymentdetails', 'supplier', 'document', 'statusList', 'currencyList', 'bankList', 'payment_typeList'));
     }
 
     /**

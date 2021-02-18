@@ -30,6 +30,7 @@ class DownPayment extends Model
             'date_of_issue', 'due_date', 'payment_date', 'posted_at',
             'payment_type_id', 'notes', 'status', 
             'currency_id', 'currency_conversion_rate', 'customer_id', 'supplier_id',
+            'customer_order_id', 'supplier_order_id',
     ];
 
     public static $rules = [
@@ -179,6 +180,16 @@ class DownPayment extends Model
     public function supplier()
     {
         return $this->belongsTo( 'App\Supplier' );
+    }
+    
+    public function customerorder()
+    {
+        return $this->belongsTo( 'App\CustomerOrder', 'customer_order_id' );
+    }
+    
+    public function supplierorder()
+    {
+        return $this->belongsTo( 'App\SupplierOrder', 'supplier_order_id' );
     }
     
     public function drawee_bank()

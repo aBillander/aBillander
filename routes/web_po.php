@@ -57,6 +57,9 @@ foreach ($pairs as $pair) {
         // ?? Maybe only for Invoices ??
         Route::get($path.'/{id}/getpayments',          $controller.'@getDocumentPayments' )->name($path.'.getpayments');
 
+        // ?? Maybe only for Orders ??
+        Route::get($path.'/{id}/getdownpayments',      $controller.'@getDocumentDownPayments' )->name($path.'.getdownpayments');
+
 
         Route::post($path.'/{id}/storeline',    $controller.'@storeDocumentLine'   )->name($path.'.storeline'  );
         Route::post($path.'/{id}/updatetotal',  $controller.'@updateDocumentTotal' )->name($path.'.updatetotal');

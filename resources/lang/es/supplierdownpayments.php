@@ -17,6 +17,7 @@ return [
 	'Place of Issue' => 'Lugar de Emisión',
 	'Date of Issue' => 'Fecha Emisión',
 	'Due Date' => 'Fecha Vencimiento',
+	'Payment Type' => 'Tipo de Pago',
 	'Date of Entry' => 'Fecha de Entrada',
 	'Payment Date' => 'Fecha de Pago',
 	'Customer' => 'Cliente',

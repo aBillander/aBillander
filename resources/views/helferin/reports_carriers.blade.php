@@ -1,100 +1,84 @@
-@extends('layouts.master')
 
-@section('title') {{ l('Reports') }} @parent @stop
+<div class="container">
+    <div class="row">
+
+            <div xclass="col-lg-3 col-md-6">
+            <div class="panel panel-info">
+              <div class="panel-heading" xstyle="color: #ffffff;
+background-color: #772953;
+border-color: #772953;">
+                <h3 class="panel-title"><i class="fa fa-truck"></i> Transportistas</h3>
+              </div>
 
 
-@section('content')
+{!! Form::open(array('route' => 'helferin.reports.carriers', 'id' => 'carriers_report_form', 'class' => 'form')) !!}
 
-<div class="page-header">
-    <h2>
-         
-        <a href="{{ route('logout') }}"
-            onclick="event.preventDefault();
-                     document.getElementById('logout-form').submit();">
-            {{ Auth::user()->getFullName() }}
-        </a>
+              <div class="panel-body">
 
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            {{ csrf_field() }}
-        </form>
+                  <div class="row">
 
-         <!-- a href="{{ URL::to('auth/logout') }}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Reports') }} 
-         <span style="color: #cccccc;">/</span> {{ l('Sales', [], 'layouts') }}
-    </h2>
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('carriers_date_from_form', 'Fecha desde') !!}
+        {!! Form::text('carriers_date_from_form', null, array('id' => 'carriers_date_from_form', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('carriers_date_to_form', 'Fecha hasta') !!}
+        {!! Form::text('carriers_date_to_form', null, array('id' => 'carriers_date_to_form', 'class' => 'form-control')) !!}
+    </div>
+
+     <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('carriers_autocarrier_name', 'Transportista') !!}
+        {!! Form::text('carriers_autocarrier_name', null, array('class' => 'form-control', 'id' => 'carriers_autocarrier_name')) !!}
+
+        {!! Form::hidden('carriers_carrier_id', null, array('id' => 'carriers_carrier_id')) !!}
+     </div>
+
+                  </div>
+{{--
+                  <div class="row">
+
+                     <div class="form-group col-lg-12 text-center" xstyle="padding-top: 22px">
+                          {!! Form::submit('Ver Listado', array('class' => 'btn btn-success')) !!}
+                    </div>
+
+                  </div>
+--}}
+
+              </div>
+
+               <div class="panel-footer text-right">
+                  <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
+                     <i class="fa fa-file-text-o"></i>
+                     &nbsp; {!! l('Export', [], 'layouts') !!}
+                  </button>
+               </div>
+
+{!! Form::close() !!}
+
+            </div>
+
+            </div>
+
+
+
+    <!-- /div>< ! -- div class="row" ENDS - - >
+    <div class="row" -->
+
+
+
+
+
+    <!-- /div>< ! -- div class="row" ENDS - - >
+    <div class="row" -->
+
+
+
+
+
+    </div><!-- div class="row" ENDS -->
+
 </div>
-
-
-
-@include('helferin.reports_sales')
-
-
-
-@include('helferin.reports_ecotaxes')
-
-
-
-@include('helferin.reports_consumption')
-
-
-
-@include('helferin.reports_customer_vouchers')
-
-
-
-@include('helferin.reports_customer_invoices')
-
-
-
-@include('helferin.reports_carriers')
-
-
-
-
-{{-- ********************************************************** --}}
-
-
-
-
-{{-- ***************************************************** --}}
-
-
-<div class="container-fluid">
-   <div class="row">
-
-      <div class="col-lg-2 col-md-2 col-sm-2">
-         <!-- div class="list-group">
-            <a id="b_main_data" href="#" class="list-group-item active">
-               <i class="fa fa-asterisk"></i>
-               &nbsp; {{ l('Updates') }}
-            </a>
-         </div -->
-      </div>
-
-      
-      <div class="col-lg-9 col-md-9 col-sm-10">
-      <div class="jumbotron" style="background: no-repeat url('{{URL::to('/assets/theme/images/Dashboard.jpg')}}'); background-size: 100% auto;min-height: 200px; margin-top: 40px;">
-
-
-      </div>
-      </div>
-
-   </div>
-</div>
-
-@endsection
-
-
-@section('styles')    @parent
-
-{{-- Date Picker --}}
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
-<style>
-    .ui-datepicker { z-index: 10000 !important; }
-</style>
-
-@endsection
 
 
 @section('scripts')    @parent
@@ -104,39 +88,37 @@
 
         $(document).ready(function() {
 
-          $('#sales_date_from_form').val( '' );
-          $('#sales_date_to_form'  ).val( '' );
-
-          $('#sales_model').val( '{{ $default_model }}' );
+          $('#carriers_date_from_form').val( '' );
+          $('#carriers_date_to_form'  ).val( '' );
 
 
-        $("#sales_autocustomer_name").val('');
+        $("#carriers_autocustomer_name").val('');
 
         // To get focus;
-        // $("#autocustomer_name").focus();
+        // $("#autocarrier_name").focus();
 
-        $("#sales_autocustomer_name").autocomplete({
-            source : "{{ route('customerinvoices.ajax.customerLookup') }}",
+        $("#carriers_autocarrier_name").autocomplete({
+            source : "{{ route('carriers.ajax.carrierLookup') }}",
             minLength : 1,
 //            appendTo : "#modalProductionOrder",
 
             select : function(key, value) {
 
-                getCustomerData( value.item.id );
+                getCarrierData( value.item.id );
 
                 return false;
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
               return $( "<li></li>" )
-                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .append( '<div>[' + item.alias+'] ' + item.name + "</div>" )
                 .appendTo( ul );
             };
 
 
-        $("#sales_report_form").on("submit", function(){
+        $("#carriers_report_form").on("submit", function(){
            //Code: 
-           if ( $("#sales_autocustomer_name").val().trim() == '' )
-              $('#sales_customer_id').val('');
+           if ( $("#carriers_autocarrier_name").val().trim() == '' )
+              $('#carriers_carrier_id').val('');
 
            return true;
          });
@@ -145,24 +127,24 @@
         });
 
 
-        function getCustomerData( customer_id )
+        function getCarrierData( carrier_id )
         {
             var token = "{{ csrf_token() }}";
 
             $.ajax({
-                url: "{{ route('customerinvoices.ajax.customerLookup') }}",
+                url: "{{ route('carriers.ajax.carrierLookup') }}",
                 headers : {'X-CSRF-TOKEN' : token},
                 method: 'GET',
                 dataType: 'json',
                 data: {
-                    customer_id: customer_id
+                    carrier_id: carrier_id
                 },
                 success: function (response) {
-                    var str = '[' + response.identification+'] ' + response.name_regular;
+                    var str = '[' + response.alias+'] ' + response.name;
                     var shipping_method_id;
 
-                    $("#sales_autocustomer_name").val(str);
-                    $('#sales_customer_id').val(response.id);
+                    $("#carriers_autocarrier_name").val(str);
+                    $('#carriers_carrier_id').val(response.id);
 /*
                     if (response.sales_equalization > 0) {
                         $('#sales_equalization').show();
@@ -221,16 +203,12 @@
     </script> 
 
 
-
 {{-- Date Picker --}}
-
-<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
 
 <script>
 
   $(function() {
-    $( "#sales_date_from_form" ).datepicker({
+    $( "#carriers_date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
@@ -238,7 +216,7 @@
   });
 
   $(function() {
-    $( "#sales_date_to_form" ).datepicker({
+    $( "#carriers_date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"

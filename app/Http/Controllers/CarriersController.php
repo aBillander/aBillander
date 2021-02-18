@@ -1,11 +1,13 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Carrier as Carrier;
+use App\Carrier;
 use View;
 
 class CarriersController extends Controller {
@@ -126,5 +128,55 @@ class CarriersController extends Controller {
         return redirect('carriers')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
+
+
+
+/* ********************************************************************************************* */  
+
+
+    /**
+     * AJAX Stuff.
+     *
+     * 
+     */
+
+    /**
+     * Return a json list of records matching the provided query
+     *
+     * @return json
+     */
+    public function ajaxCarrierSearch(Request $request)
+    {
+//        $term  = $request->has('term')  ? $request->input('term')  : null ;
+//        $query = $request->has('query') ? $request->input('query') : $term;
+
+//        if ( $query )
+
+        if ($request->has('carrier_id'))
+        {
+            $search = $request->carrier_id;
+
+            $carriers = $this->carrier->find( $search );
+
+            return response()->json( $carriers );
+        }
+
+        if ($request->has('term'))
+        {
+            $search = $request->term;
+
+            $carriers = $this->carrier
+            						->where(   'name',  'LIKE', '%'.$search.'%' )
+                                    ->orWhere( 'alias', 'LIKE', '%'.$search.'%' )
+                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->get();
+
+            return response()->json( $carriers );
+        }
+
+        // Otherwise, die silently
+        return json_encode( [ 'query' => '', 'suggestions' => [] ] );
+        
+    }
 
 }

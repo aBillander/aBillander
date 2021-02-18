@@ -21,6 +21,7 @@ use App\Http\Controllers\HelferinTraits\HelferinProductConsumptionTrait;
 use App\Http\Controllers\HelferinTraits\HelferinProductReorderTrait;
 use App\Http\Controllers\HelferinTraits\HelferinCustomerVouchersTrait;
 use App\Http\Controllers\HelferinTraits\HelferinCustomerInvoicesTrait;
+use App\Http\Controllers\HelferinTraits\HelferinCarriersTrait;
 
 use App\Traits\DateFormFormatterTrait;
 
@@ -31,6 +32,7 @@ class HelferinController extends Controller
    use HelferinProductReorderTrait;
    use HelferinCustomerVouchersTrait;
    use HelferinCustomerInvoicesTrait;
+   use HelferinCarriersTrait;
 
    use DateFormFormatterTrait;
 

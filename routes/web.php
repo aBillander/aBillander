@@ -218,6 +218,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/helferin/reports/consumption'  , 'HelferinController@reportConsumption'  )->name('helferin.reports.consumption');
         Route::post('/helferin/reports/customer/vouchers'  , 'HelferinController@reportCustomerVouchers'  )->name('helferin.reports.customer.vouchers');
         Route::post('/helferin/reports/customer/invoices'  , 'HelferinController@reportCustomerInvoices'  )->name('helferin.reports.customer.invoices');
+        Route::post('/helferin/reports/carriers'  , 'HelferinController@reportCarriers'  )->name('helferin.reports.carriers');
 
         Route::get('/helferin/home/mfg', 'HelferinController@mfgIndex')->name('helferin.home.mfg');
         Route::post('/helferin/reports/reorder'       , 'HelferinController@reportProductReorder'       )->name('helferin.reports.reorder');
@@ -582,7 +583,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         
         Route::resource('salesreps', 'SalesRepsController');
 
-        Route::resource('carriers', 'CarriersController');
+        Route::resource('carriers', 'CarriersController');        
+        Route::get('carriers/ajax/carrier_lookup', 'CarriersController@ajaxCarrierSearch')->name('carriers.ajax.carrierLookup');
 
         Route::resource('manufacturers', 'ManufacturersController');
 

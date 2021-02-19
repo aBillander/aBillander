@@ -130,7 +130,7 @@ class JenniferController extends Controller
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Facturas de Clientes, ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Facturas de Clientes, ' . $ribbon, '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
         // All Taxes
@@ -139,7 +139,7 @@ class JenniferController extends Controller
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['Número', 'Fecha', 'Cliente', 'Estado', 'Forma de Pago', 'Base', 'IVA', 'Rec', 'Total'];
+        $header_names = ['Número', 'Fecha', 'NIF', 'ID', 'Cliente', 'Estado', 'Forma de Pago', 'Base', 'IVA', 'Rec', 'Total'];
 
         // Add more headers
         if ( $invoices_report_format != 'compact')
@@ -160,7 +160,9 @@ if ( $invoices_report_format == 'compact') {
             $row = [];
             $row[] = $document->document_reference;
             $row[] = abi_date_short($document->document_date);
-            $row[] = $document->customer->reference_accounting . '-' . $document->customer->name_fiscal;
+            $row[] = $document->customer->identification;
+            $row[] = $document->customer->id;
+            $row[] = $document->customer->name_fiscal;
             $row[] = $document->payment_status;
             $row[] = $document->paymentmethod->name;
             $row[] = $document->total_tax_excl * 1.0;
@@ -186,6 +188,8 @@ if ( $invoices_report_format == 'compact') {
                 $row[] = '';
                 $row[] = '';
                 $row[] = '';
+                $row[] = '';
+                $row[] = '';
                 $row[] = $alltax->percent / 100.0;
                 $row[] = $iva->taxable_base * 1.0;
                 $row[] = $iva->total_line_tax * 1.0;
@@ -194,8 +198,8 @@ if ( $invoices_report_format == 'compact') {
     
                 $data[] = $row;
 
-                $data[$i][6] += $iva->total_line_tax;
-                $data[$i][7] += optional($re)->total_line_tax ?? 0.0;
+                $data[$i][6+2] += $iva->total_line_tax;
+                $data[$i][7+2] += optional($re)->total_line_tax ?? 0.0;
 
                 if ( array_key_exists($alltax->id, $sub_totals) )
                 {
@@ -221,7 +225,9 @@ if ( $invoices_report_format == 'compact') {
             $row = [];
             $row[] = $document->document_reference;
             $row[] = abi_date_short($document->document_date);
-            $row[] = $document->customer->reference_accounting . '-' . $document->customer->name_fiscal;
+            $row[] = $document->customer->identification;
+            $row[] = $document->customer->id;
+            $row[] = $document->customer->name_fiscal;
             $row[] = $document->payment_status_name;
             $row[] = $document->paymentmethod->name;
             $row[] = $document->total_tax_excl * 1.0;
@@ -256,8 +262,8 @@ if ( $invoices_report_format == 'compact') {
     
                 // $data[] = $row;
 
-                $row[6] += $iva->total_line_tax;
-                $row[7] += optional($re)->total_line_tax ?? 0.0;
+                $row[6+2] += $iva->total_line_tax;
+                $row[7+2] += optional($re)->total_line_tax ?? 0.0;
 
                 if ( array_key_exists($alltax->id, $sub_totals) )
                 {
@@ -288,14 +294,14 @@ if ( $invoices_report_format == 'compact') {
         $base = $iva = $re = 0.0;
         foreach ($sub_totals as $value) {
             # code...
-            $data[] = ['', '', '', '', $value['percent'] / 100.0, $value['base'] * 1.0, $value['iva'] * 1.0, $value['re'] * 1.0];
+            $data[] = ['', '', '', '', '', '', $value['percent'] / 100.0, $value['base'] * 1.0, $value['iva'] * 1.0, $value['re'] * 1.0];
             $base += $value['base'];
             $iva += $value['iva'];
             $re += $value['re'];
         }
 
         $data[] = [''];
-        $data[] = ['', '', '', '', 'Total:', $base * 1.0, $iva * 1.0, $re * 1.0, ($base + $iva + $re) * 1.0];
+        $data[] = ['', '', '', '', '', '', 'Total:', $base * 1.0, $iva * 1.0, $re * 1.0, ($base + $iva + $re) * 1.0];
 
         $sheetName = 'Facturas ' . $request->input('invoices_date_from') . ' ' . $request->input('invoices_date_to');
 
@@ -321,17 +327,19 @@ if ( $invoices_report_format == 'compact') {
 
                 $sheet->setColumnFormat(array(
                     'B' => 'dd/mm/yyyy',
-                    'E' => '0.00%',
-                    'F' => '0.00',
-                    'G' => '0.00',
+//                    'E' => '0.00%',
+//                    'F' => '0.00',
+                    'G' => '0.00%',
                     'H' => '0.00',
                     'I' => '0.00',
+                    'J' => '0.00',
+                    'K' => '0.00',
 //                    'F' => '@',
                 ));
                 
                 $n = count($data);
                 $m = $n - 3;
-                $sheet->getStyle("E$m:I$n")->applyFromArray([
+                $sheet->getStyle("E$m:K$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

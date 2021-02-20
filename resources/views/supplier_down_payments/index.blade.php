@@ -46,36 +46,17 @@
 
 <div class="row">
 
-    <div class="form-group col-lg-1 col-md-1 col-sm-1">
-        {!! Form::label('date_of_issue_from_form', l('Date of Issue').' '.l('From', 'layouts')) !!}
-        {!! Form::text('date_of_issue_from_form', null, array('id' => 'date_of_issue_from_form', 'class' => 'form-control')) !!}
-    </div>
-
-    <div class="form-group col-lg-1 col-md-1 col-sm-1">
-        {!! Form::label('date_of_issue_to_form', l('Date of Issue').' '.l('To', 'layouts')) !!}
-        {!! Form::text('date_of_issue_to_form', null, array('id' => 'date_of_issue_to_form', 'class' => 'form-control')) !!}
-    </div>
-
-    <div class="form-group col-lg-1 col-md-1 col-sm-1">
-        {{-- Spacer --}}
-    </div>
-
-
-    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('due_date_from_form', l('Due Date').' '.l('From', 'layouts')) !!}
         {!! Form::text('due_date_from_form', null, array('id' => 'due_date_from_form', 'class' => 'form-control')) !!}
     </div>
 
-    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('due_date_to_form', l('Due Date').' '.l('To', 'layouts')) !!}
         {!! Form::text('due_date_to_form', null, array('id' => 'due_date_to_form', 'class' => 'form-control')) !!}
     </div>
 
-    <div class="form-group col-lg-1 col-md-1 col-sm-1">
-        {{-- Spacer --}}
-    </div>
-
-<div class="form-group col-lg-1 col-md-1 col-sm-1">
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('status', l('Status', 'layouts')) !!}
     {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
 </div>
@@ -141,10 +122,8 @@
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
-            <th>{{ l('Date of Issue') }}</th>
             <th>{{ l('Due Date') }}</th>
-            <th>{{ l('Payment Date') }}</th>
-            <th>{{l('Document Number')}}</th>
+            <th>{{l('Document')}}</th>
             <th>{{l('Supplier')}}</th>
             <th>{{l('Bank')}}</th>
             <th>{{l('Amount')}}</th>
@@ -158,10 +137,17 @@
 	@foreach ($downpayments as $downpayment)
 		<tr>
             <td>{{ $downpayment->id }}</td>
-            <td>{{ abi_date_short($downpayment->date_of_issue) ?: '-' }}</td>
             <td>{{ abi_date_short($downpayment->due_date) ?: '-' }}</td>
-            <td>{{ abi_date_short($downpayment->payment_date) ?: '-' }}</td>
-			      <td>{{ $downpayment->document_number }}</td>
+            <td>
+  @if($downpayment->supplierorder)
+              <a class="" href="{{ URL::to('supplierorders/' . $downpayment->supplier_order_id . '/edit') }}" 
+                title="{{ l('Go to', 'layouts') }}" target="_new">
+                  {{ $downpayment->supplierorder->document_reference ?: l('Draft', 'layouts') }}
+              </a>
+  @else
+              -
+  @endif
+            </td>
             <td><a class="" href="{{ URL::to('suppliers/' . $downpayment->supplier->id . '/edit') }}" 
                 title="{{ l('Go to', 'layouts') }}" target="_new">
                   {{ $downpayment->supplier->name_regular }}
@@ -212,11 +198,7 @@
 --}}
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('supplierdownpayments/' . $downpayment->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
 
-      @if ($downpayment->status != 'paid')
-
-                    <a class="btn btn-sm btn-blue" href="{{ URL::to('supplierdownpayments/' . $downpayment->id  . '/pay' ) }}" title="{{l('Deposit Cheque')}}"><i class="fa fa-money"></i>
-                    </a>
-
+      @if ($downpayment->status != 'applied')
 
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('supplierdownpayments/' . $downpayment->id ) }}" 
@@ -301,6 +283,8 @@ $(document).ready(function() {
                 return false;
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+                $("#supplier_id").val('');
+
               return $( "<li></li>" )
                 .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
                 .appendTo( ul );

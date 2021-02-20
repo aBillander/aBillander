@@ -13,7 +13,7 @@ return [
 	'New Down Payment to Supplier' => 'Nuevo Anticipo a Proveedor',
 	'Down Payment to Suppliers - Edit' => 'Anticipos a Proveedores - Modificar',
 	'Edit Down Payment to Supplier' => 'Modificar Anticipo a Proveedor',
-	'Document Number' => 'Clave del Documento',
+	'Document' => 'Documento',
 	'Place of Issue' => 'Lugar de Emisión',
 	'Date of Issue' => 'Fecha Emisión',
 	'Due Date' => 'Fecha Vencimiento',
@@ -70,5 +70,8 @@ return [
 
 	'Reference' => 'Referencia',
 	'Description' => 'Descripción',
+
+	'An Advance to Supplier must be associated with a Purchase Order.' => 'Un Anticipo a Proveedor debe estar asociado a un Pedido de Compra.',
+	'Go to Supplier Orders' => 'Ir a Pedidos de Compra',
 
 ];

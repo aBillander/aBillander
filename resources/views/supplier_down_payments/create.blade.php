@@ -15,7 +15,7 @@
 
 				{!! Form::open(array('route' => 'supplier.downpayments.store')) !!}
 
-					@include('supplier_down_payments._form')
+					@include('supplier_down_payments._form_redirect')
 
 				{!! Form::close() !!}
 			</div>

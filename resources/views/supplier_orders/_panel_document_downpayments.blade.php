@@ -35,7 +35,7 @@
 			<td>{{ $downpayment->id }}</td>
 			<td>{{ $downpayment->name }}</td>
 			<td>
-				{{ $downpayment->due_date }}</td>
+				{{ abi_date_short($downpayment->due_date) }}</td>
 			<td>{{ abi_money_amount($downpayment->amount, $document->currency) }}</td>
             <td class="text-center">
             	@if     ( $downpayment->status == 'pending' )
@@ -50,10 +50,10 @@
             	{{l( $downpayment->status, [], 'appmultilang' )}}</span></td>
 
 			<td class="text-right">
-                @if ( $downpayment->status == 'paid' )
+                @if ( $downpayment->status == 'applied' )
                 	<!-- a class="btn btn-sm btn-danger" href="{{ URL::to('customervouchers/' . $downpayment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '#downpayments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
             	@else
-                	<a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $downpayment->id  . '/edit?back_route=' . urlencode('customerinvoices/' . $document->id . '#downpayments') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                	<a class="btn btn-sm btn-warning" href="{{ URL::to('supplierdownpayments/' . $downpayment->id  . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_blank"><i class="fa fa-pencil"></i></a>
             	@endif
 			</td>
 		</tr>

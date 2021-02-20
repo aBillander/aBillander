@@ -9,9 +9,9 @@
         <div class="page-header">
             <div class="pull-right">
 
-      @if ($downpayment->status != 'paid')
+      @if ($downpayment->status != 'applied')
 
-            <a class="btn xbtn-sm btn-blue" style="margin-right: 36px; margin-left: 36px;" href="{{ URL::to('supplierdownpayments/' . $downpayment->id  . '/pay' ) }}" title="{{l('Deposit Downpayment')}}"><i class="fa fa-money"></i> &nbsp;{{l('Deposit Downpayment')}}
+            <a class=" hide  btn xbtn-sm btn-blue" style="margin-right: 36px; margin-left: 36px;" href="{{ URL::to('supplierdownpayments/' . $downpayment->id  . '/pay' ) }}" title="{{l('Deposit Downpayment')}}"><i class="fa fa-money"></i> &nbsp;{{l('Deposit Downpayment')}}
             </a>
 
       @endif

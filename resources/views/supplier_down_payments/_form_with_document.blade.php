@@ -66,8 +66,10 @@
 </div>
 
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-	{!! link_to_route('supplier.downpayments.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
-
+	{{-- !! link_to_route('supplier.downpayments.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !! --}}
+@if ( !isset($downpayment) )
+  <a href="{{ url()->previous() }}" class="btn btn-warning">{{ l('Cancel', [], 'layouts') }}</a>
+@endif
 
 
 

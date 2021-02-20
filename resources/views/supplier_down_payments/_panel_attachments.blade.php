@@ -126,6 +126,6 @@
 
 {!! Form::close() !!}
 
-{{--
+
   @include('model_attachments/_form_attachments')
---}}
+

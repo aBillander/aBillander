@@ -188,10 +188,16 @@ class SupplierDownPaymentsController extends Controller
      * @param  \App\DownPayment  $downpayment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, DownPayment $downpayment)
+    public function update(Request $request, $id)
     {
         // Dates (cuen)
         $this->mergeFormDates( ['date_of_issue', 'due_date', 'payment_date', 'date_of_entry'], $request );
+
+        $downpayment = $this->downpayment
+                        ->has('supplier')
+                        ->with('supplier')
+                        ->with('supplierorder')
+                        ->findOrFail($id);
 
         $old_payment_date = $downpayment->payment_date;
 
@@ -202,10 +208,10 @@ class SupplierDownPaymentsController extends Controller
         $downpayment->update($request->all());
 
         // Let's see if we have to change status to 'paid'
-        if ( $downpayment->payment_date && ($downpayment->payment_date != $old_payment_date) )
-            return $this->payDownPayment($downpayment->id, $request);
+        // if ( $downpayment->payment_date && ($downpayment->payment_date != $old_payment_date) )
+        //    return $this->payDownPayment($downpayment->id, $request);
 
-        return redirect()->route('supplier.downpayments.index')
+        return redirect()->back()
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $downpayment->document_number], 'layouts'));
     }
 

@@ -128,3 +128,11 @@
   <span id="msg-success-update-counter" class="badge"></span>
   <strong>{!!  l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
 </div>
+
+@if ($downpayments->count())
+<div id="panel_document_downpayments" class="">
+  
+    @include($view_path.'._panel_document_down_payments')
+
+</div>
+@endif

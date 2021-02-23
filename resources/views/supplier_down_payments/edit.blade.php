@@ -9,6 +9,21 @@
         <div class="page-header">
             <div class="pull-right">
 
+      @if( $downpayment->deletable )
+                <a class="btn xbtn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                    href="{{ URL::to('supplierdownpayments/' . $downpayment->id ) }}" 
+                    data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
+                    data-title="{{ l('Down Payment') }} :: ({{$downpayment->id}}) {{ $downpayment->reference ?: $downpayment->id }} - {{ \App\Currency::viewMoneyWithSign($downpayment->amount, $downpayment->currency) }}" 
+                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+      @endif
+
+      @if ($downpayment->supplierinvoice)
+
+                <a class="btn xbtn-sm btn-navy" style="margin-right: 36px; margin-left: 36px;"href="{{ route('supplierinvoices.edit', [$downpayment->supplierinvoice->id]) }}" title="{{l('Go to', 'layouts')}}"><i class="fa fa-money"></i> &nbsp;{{ l('Invoice')}}: {{ $downpayment->supplierinvoice->document_reference ?: l('Draft', 'layouts') }}
+                </a>
+
+      @endif
+
       @if ($downpayment->status != 'applied')
 
             <a class=" hide  btn xbtn-sm btn-blue" style="margin-right: 36px; margin-left: 36px;" href="{{ URL::to('supplierdownpayments/' . $downpayment->id  . '/pay' ) }}" title="{{l('Deposit Downpayment')}}"><i class="fa fa-money"></i> &nbsp;{{l('Deposit Downpayment')}}

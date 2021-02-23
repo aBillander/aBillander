@@ -115,9 +115,11 @@
 
 
 <div id="div_downpayments">
-   <div class="table-responsive">
 
 @if ($downpayments->count())
+
+   <div class="table-responsive">
+
 <table id="downpayments" class="table table-hover">
 	<thead>
 		<tr>

@@ -74,4 +74,6 @@ return [
 	'An Advance to Supplier must be associated with a Purchase Order.' => 'Un Anticipo a Proveedor debe estar asociado a un Pedido de Compra.',
 	'Go to Supplier Orders' => 'Ir a Pedidos de Compra',
 
+	'Invoice' => 'Factura',
+
 ];

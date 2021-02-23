@@ -141,6 +141,11 @@ class DownPayment extends Model
 
         return true;
     }
+    
+    public function getDeletableAttribute()
+    {
+        return !( $this->status == 'applied' );
+    }
 
 
 
@@ -190,6 +195,24 @@ class DownPayment extends Model
     public function supplierorder()
     {
         return $this->belongsTo( 'App\SupplierOrder', 'supplier_order_id' );
+    }
+    
+    public function getSupplierinvoiceAttribute()
+    {
+            // Supplier order
+            $so = $this->supplierorder;
+            if ( ! $so ) return null;
+
+            // Supplier Shipping Slip
+            $sss = $so->shippingslip;
+            if ( ! $sss ) return null;
+
+            // Supplier invoice
+            $si = $sss->invoice;
+            if ( ! $si ) return null;
+
+            return $si;
+
     }
     
     public function drawee_bank()

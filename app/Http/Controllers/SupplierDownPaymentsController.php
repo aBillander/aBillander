@@ -221,9 +221,12 @@ class SupplierDownPaymentsController extends Controller
      * @param  \App\DownPayment  $downpayment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DownPayment $downpayment)
+    public function destroy($id)
     {
-        $id = $downpayment->id;
+
+        $downpayment = $this->downpayment
+                        ->has('supplier')
+                        ->findOrFail($id);
 
         $downpayment->delete();
 

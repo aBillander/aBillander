@@ -340,4 +340,9 @@ return [
 	'Use Supplier Shipping Slip <i>ID</i> or ID as seen in Shipping Slip url on your browser.' => 
 		'Introduzca el <i>ID</i> del Albarán o el ID que aparece en la url del Albarán, cuando éste se muestra en su navegador.',
 
+
+
+	'Down Payments' => 'Anticipos',
+	'Supplier Order' => 'Pedido a Proveedor',
+
 ];

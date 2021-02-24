@@ -48,6 +48,17 @@
                                  {{l('Customer Invoices', [], 'layouts')}}
                             </a>
                         </li>
+
+                        <li class="divider"></li>
+                        
+                         <li>
+                            <a href="{{ URL::to('cheques') }}">
+                                 <i class="fa fa-money btn-xs text-success"></i> 
+                                 {{l('Cheques', [], 'layouts')}}
+                                 <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
+                            </a>
+                        </li>
+
                         <li class="divider"></li>
 
                          <li>
@@ -58,6 +69,44 @@
                     </ul>
                 </li>
 
+
+
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-th"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ route('supplierorders.index') }}"> 
+                                 {{l('Purchase Orders', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('suppliershippingslips.index') }}">
+                                 <i class="fa fa-truck btn-xs alert-info"></i> 
+                                 {{l('Supplier Shipping Slips', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('supplierinvoices.index') }}">
+                                 <!-- i class="fa fa-money btn-xs alert-warning"></i --> 
+                                 {{l('Supplier Invoices', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('suppliervouchers.index') }}">
+                                 <i class="fa fa-credit-card btn-xs alert-success"></i> 
+                                 {{l('Supplier Vouchers', [], 'layouts')}}
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                         <li>
+                            <a href="{{ URL::to('suppliers') }}">
+                                 {{l('Suppliers', [], 'layouts')}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
 

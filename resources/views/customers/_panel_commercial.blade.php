@@ -52,25 +52,6 @@
                      </div>
                    </div>
 
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-active">
-                     {!! Form::label('accept_einvoice', l('Accept e-Invoice?'), ['class' => 'control-label']) !!}
-                     <div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('accept_einvoice', '1', true, ['id' => 'accept_einvoice_on']) !!}
-                           {!! l('Yes', [], 'layouts') !!}
-                         </label>
-                       </div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('accept_einvoice', '0', false, ['id' => 'accept_einvoice_off']) !!}
-                           {!! l('No', [], 'layouts') !!}
-                         </label>
-                       </div>
-                     </div>
-                   </div>
-
-
                    <div class="form-group col-lg-2 col-md-2 col-sm-2" id="automatic_invoice">
                      {!! Form::label('automatic_invoice', l('Automatic Invoice?'), ['class' => 'control-label']) !!}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
@@ -92,6 +73,22 @@
                        </div>
                      </div>
                    </div>
+@php
+    $ibsa = [
+        "0" => l('No', 'layouts'),
+        "1" => l('One Invoice per Shipping Address'),
+        "2" => l('One Invoice per Shipping Slip and Shipping Address'),
+    ];
+@endphp
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('invoice_by_shipping_address') ? 'has-error' : '' }}">
+                     {!! Form::label('invoice_by_shipping_address', l('Invoice by Shipping Address?'), ['class' => 'control-label']) !!}
+                     {!! Form::select('invoice_by_shipping_address', $ibsa, null, array('class' => 'form-control')) !!}
+                     {!! $errors->first('invoice_by_shipping_address', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+
+
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('outstanding_amount_allowed') ? 'has-error' : '' }}">
                      {{ l('Outstanding Amount Allowed') }}
@@ -114,7 +111,7 @@
 
         <div class="row">
 
-                   <div class="form-group col-lg-3 col-md-3 col-sm-3" id="div-active">
+                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
                      {!! Form::label('sales_equalization', l('Sales Equalization'), ['class' => 'control-label']) !!}
                      <div>
                        <div class="radio-inline">
@@ -237,6 +234,26 @@
                      {!! $errors->first('vat_regime', '<span class="help-block">:message</span>') !!}
                      
                   </div>
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                     {!! Form::label('accept_einvoice', l('Accept e-Invoice?'), ['class' => 'control-label']) !!}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('accept_einvoice', '1', true, ['id' => 'accept_einvoice_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('accept_einvoice', '0', false, ['id' => 'accept_einvoice_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
+
         </div>
 
 <!-- Comercial ENDS -->

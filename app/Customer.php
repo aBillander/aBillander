@@ -30,7 +30,7 @@ class Customer extends Model {
                            'accounting_id',
                            'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
                            'outstanding_amount_allowed', 'unresolved_amount', 'notes', 
-                           'is_invoiceable', 'automatic_invoice', 'vat_regime', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
+                           'is_invoiceable', 'invoice_by_shipping_address', 'automatic_invoice', 'vat_regime', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
                            'invoice_sequence_id', 
                            'invoice_template_id', 'shipping_method_id', 'price_list_id', 'direct_debit_account_id', 
@@ -282,6 +282,9 @@ class Customer extends Model {
 
     public function addRisk( $amount, Currency $currency = null ) 
     {
+        return $this->calculateRisk( );
+
+        // Old code
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
 
@@ -294,6 +297,9 @@ class Customer extends Model {
 
     public function removeRisk( $amount, Currency $currency = null ) 
     {
+        return $this->calculateRisk( );
+
+        // Old code
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
 
@@ -304,8 +310,28 @@ class Customer extends Model {
     }
 
 
+    public function calculateRisk( ) 
+    {
+        // Get "open" vouchers;
+        $vouchers = $this->vouchers()->whereIn('status', ['pending', 'uncollectible'])->get();
+
+        // Sum Them up
+        $amount = $vouchers->reduce(function ($carry, $item) {
+            return $carry + $item->amount / $item->currency_conversion_rate;
+        }, 0.0);
+
+        $this->outstanding_amount = $amount;
+        $this->save();
+
+        return $amount;
+    }
+
+
     public function addUnresolved( $amount, Currency $currency = null ) 
     {
+        return $this->calculateUnresolved( );
+
+        // Old code
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
 
@@ -318,6 +344,9 @@ class Customer extends Model {
 
     public function removeUnresolved( $amount, Currency $currency = null ) 
     {
+        return $this->calculateUnresolved( );
+
+        // Old code
         if ($currency != null)
             $amount = $amount / $currency->conversion_rate;
 
@@ -325,6 +354,23 @@ class Customer extends Model {
         $this->save();
 
         return true;
+    }
+
+
+    public function calculateUnresolved( ) 
+    {
+        // Get "open" vouchers;
+        $vouchers = $this->vouchers()->whereIn('status', ['uncollectible'])->get();
+
+        // Sum Them up
+        $amount = $vouchers->reduce(function ($carry, $item) {
+            return $carry + $item->amount / $item->currency_conversion_rate;
+        }, 0.0);
+
+        $this->outstanding_amount = $amount;
+        $this->save();
+
+        return $amount;
     }
 
 
@@ -732,6 +778,12 @@ class Customer extends Model {
         // return $this->hasMany('App\Payment', 'owner_id')->where('payment.owner_model_name', '=', 'Customer');
 
         return $this->morphMany('App\Payment', 'paymentorable');
+    }
+    
+    // Alias
+    public function vouchers()
+    {
+        return $this->payments();
     }
 
     public function cheques()

@@ -396,7 +396,8 @@ class AbsrcCustomersController extends Controller {
                                     ->isNotBlocked()
 //                                    ->with('currency')
 //                                    ->with('addresses')
-                                    ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->get();
 
 //            return $customers;
 //            return Product::searchByNameAutocomplete($query, $onhand_only);

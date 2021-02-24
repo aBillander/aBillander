@@ -218,6 +218,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/helferin/reports/consumption'  , 'HelferinController@reportConsumption'  )->name('helferin.reports.consumption');
         Route::post('/helferin/reports/customer/vouchers'  , 'HelferinController@reportCustomerVouchers'  )->name('helferin.reports.customer.vouchers');
         Route::post('/helferin/reports/customer/invoices'  , 'HelferinController@reportCustomerInvoices'  )->name('helferin.reports.customer.invoices');
+        Route::post('/helferin/reports/carriers'  , 'HelferinController@reportCarriers'  )->name('helferin.reports.carriers');
 
         Route::get('/helferin/home/mfg', 'HelferinController@mfgIndex')->name('helferin.home.mfg');
         Route::post('/helferin/reports/reorder'       , 'HelferinController@reportProductReorder'       )->name('helferin.reports.reorder');
@@ -253,8 +254,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('cheques/{id}/getdetails',         'ChequesController@getDetails' )->name('cheque.getdetails' );
         Route::post('cheques/sortlines', 'ChequesController@sortLines')->name('cheque.sortlines');
 
-        Route::get('cheques/{id}/pay',    'ChequesController@payCheque'   )->name('cheque.pay'   );
-        Route::get('cheques/{id}/bounce', 'ChequesController@bounceCheque')->name('cheque.bounce');
+        Route::get('cheques/{id}/voucherduedates', 'ChequesController@voucherDueDates')->name('cheque.voucherduedates');
+        Route::get('cheques/{id}/pay',             'ChequesController@payCheque'      )->name('cheque.pay'            );
+        Route::get('cheques/{id}/bounce',          'ChequesController@bounceCheque'   )->name('cheque.bounce'         );
 
         Route::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
         Route::get( 'export/cheques', 'ChequesController@export' )->name('cheques.export');
@@ -608,7 +610,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         
         Route::resource('salesreps', 'SalesRepsController');
 
-        Route::resource('carriers', 'CarriersController');
+        Route::resource('carriers', 'CarriersController');        
+        Route::get('carriers/ajax/carrier_lookup', 'CarriersController@ajaxCarrierSearch')->name('carriers.ajax.carrierLookup');
 
         Route::resource('manufacturers', 'ManufacturersController');
 
@@ -752,6 +755,9 @@ foreach ($pairs as $pair) {
         Route::post($path.'/{id}/attachment',         $controller.'@attachmentStore'  )->name($path.'.attachment.store'  );
         Route::get($path.'/{id}/attachment/{aid}',    $controller.'@attachmentShow'   )->name($path.'.attachment.show'   );
         Route::delete($path.'/{id}/attachment/{aid}', $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
+
+        Route::get( $path.'/{id}/change/customer', $controller.'@changeCustomer')->name($path.'.change.customer');
+        Route::post($path.'/update/customer',      $controller.'@updateCustomer')->name($path.'.update.customer');
 }
 
         Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');

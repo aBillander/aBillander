@@ -48,7 +48,8 @@ class ChequesController extends Controller
                         ->with('customer')
                         ->with('currency')
                         ->with('bank')
-                        ->orderBy('due_date', 'desc');
+ //                       ->orderBy('due_date', 'desc');
+                        ->orderBy('id', 'desc');
 
         $cheques = $cheques->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
@@ -194,6 +195,25 @@ class ChequesController extends Controller
 
 
 
+    public function voucherDueDates($id, Request $request)
+    {
+        $cheque = $this->cheque
+                        ->with('vouchers')
+                        ->findOrFail($id);
+
+        // Process Vouchers
+        foreach ($cheque->vouchers as $voucher) {
+            # code...
+            $voucher->due_date = $cheque->due_date;
+
+            $voucher->save();
+        }
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
     public function payCheque($id, Request $request)
     {
         // Dates (cuen)
@@ -242,7 +262,7 @@ class ChequesController extends Controller
 
         // Process Cheque
         $payment_date = null;
-        $status = 'pending';
+        $status = 'bounced';
 
         $cheque->update( compact('payment_date', 'status') );
 
@@ -302,7 +322,7 @@ class ChequesController extends Controller
         
         $chequedetails = $cheque->chequedetails;
 
-        $open_balance = $cheque->amount - $chequedetails->sum('amount');
+        $open_balance = $cheque->currency->round($cheque->amount - $chequedetails->sum('amount'));
 
         return view('cheques._panel_details_list', compact('cheque', 'chequedetails', 'open_balance'));
     }

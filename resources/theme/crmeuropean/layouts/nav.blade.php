@@ -42,7 +42,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-bag"></i> {{l('Sales', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
+@if ( 0 )
                          <li>
                             <a href="{{ URL::to('customerquotations') }}">
                                  <i class="fa fa-exclamation-triangle btn-xs btn-danger"></i> 
@@ -67,7 +67,7 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
+@if ( 0 )
                          <li>
                             <a href="{{ URL::to('customershippingslips') }}">
                                  {{l('Shipping Slips', [], 'layouts')}}
@@ -97,7 +97,7 @@
                                  {{l('Price Lists', [], 'layouts')}}
                             </a>
                         </li>
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
+@if ( 0 )
                          <li>
                             <a href="{{ URL::to('pricerules') }}">
                                  <i class="fa fa-gavel text-info"></i> 
@@ -149,7 +149,7 @@
 
 
 
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') )
+@if ( 1 )
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-th"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -171,7 +171,7 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
+@if ( 0 )
                          <li>
                             <a href="{{ URL::to('suppliers') }}">
                                  {{l('Suppliers', [], 'layouts')}}
@@ -224,7 +224,7 @@
                                  {{l('Measure Units', [], 'layouts')}}
                             </a>
                         </li>
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0 )
+@if ( 0 )
                          <li>
                             <a href="{{ URL::to('workcenters') }}">
                                  {{l('Work Centers', [], 'layouts')}}

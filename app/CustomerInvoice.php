@@ -219,8 +219,8 @@ class CustomerInvoice extends Billable
 
     public function close()
     {
-        if ( \App\Configuration::isFalse('ENABLE_CRAZY_IVAN') )
-            if ( $this->total_tax_incl == 0.0 ) return false;
+//        if ( \App\Configuration::isFalse('ENABLE_CRAZY_IVAN') )
+        //    if ( $this->total_tax_incl == 0.0 ) return false;     <= Should allow zero value invoice for samples, etc.
 
         if ( ! parent::close() ) return false;
 

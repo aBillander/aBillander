@@ -156,13 +156,20 @@ class Cart extends Model implements ShippableInterface
 
             // Check Shipping Address
 
-            // To Do: Please: check if $shipping_address_id is within Auth::user()->getAllowedAddresses()
-            // See CustomerCartController
-            if ( $cart->cartproductlines->count() == 0 )
+            // Please: check if $shipping_address_id is within Auth::user()->getAllowedAddresses()
+            if ( ! Auth::user()->getAllowedAddresses()->contains('id', $cart->shipping_address_id) )
+            {
+                $cart->shipping_address_id = Auth::user()->shippingaddress->id;
+            }
+
+            // Force to do allways! (Maybe corrupted database...)
+            if ( 1 || $cart->cartproductlines->count() == 0 )
             {
                 //
+                // abi_r(Auth::user()->shippingaddress);die();
                 $cart->update([
-                                'shipping_address_id' => Auth::user()->shippingaddress->id,
+//                                'shipping_address_id' => Auth::user()->shippingaddress->id,
+                                'shipping_address_id' => $cart->shipping_address_id > 0 ? $cart->shipping_address_id : Auth::user()->shippingaddress->id,
                                 'shipping_method_id' => $customer->getShippingMethodId(),
                                 'payment_method_id' => $customer->getPaymentMethodId(),
                             ]);
@@ -184,13 +191,16 @@ class Cart extends Model implements ShippableInterface
                 $cart->updateLinePrices();
 
             }
+            // This line screws things up! (produces timeout)
+            // $cart->makeTotals();
         } else {
         	// Create instance
         	$cart = Cart::create([
         		'customer_user_id' => Auth::user()->id,
         		'customer_id' => $customer->id,
         		'invoicing_address_id' => $customer->invoicing_address_id,
-                // Boot method takes care of this:
+                // Boot method takes care of this: (???)
+                'shipping_address_id' => Auth::user()->shippingaddress->id,
 //        		'shipping_address_id' => $customer->shipping_address_id,
         		'shipping_method_id' => $customer->getShippingMethodId(),
  //       		'carrier_id',
@@ -819,7 +829,7 @@ class Cart extends Model implements ShippableInterface
         $line_products = $cart->cartlines->where('line_type', 'product');
         $line_shipping = $cart->cartlines->where('line_type', 'shipping')->first();
 
-        if ( !$line_products ) return ;
+        if ( !$line_products ) return $cart;
 
         $total_products_tax_excl = $line_products->sum('total_tax_excl');
         $total_products_tax_incl = $line_products->sum('total_tax_incl');

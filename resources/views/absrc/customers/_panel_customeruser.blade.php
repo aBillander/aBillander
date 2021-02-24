@@ -6,7 +6,7 @@
    <div class="panel-heading">
       <h3 class="panel-title">{{ l('Customer Center Access') }}
 
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && $customer->user )
+@if ( $customer->user )
       <a href="{{ route('absrc.customer.impersonate', [$customer->user->id]) }}" class="btn-success btn-link pull-right" target="_blank"><p class="text-success"><i class="fa fa-clock-o"></i> {{ l('Impersonate') }}</p></a>
 
 @endif

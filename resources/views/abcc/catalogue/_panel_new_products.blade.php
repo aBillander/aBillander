@@ -146,8 +146,7 @@ https://stackoverflow.com/questions/25424163/bootstrap-button-dropdown-with-cust
 https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-group-with-an-html-form
 --}}
 
-            <!-- a class="btn btn-sm btn-info" href="{ { route('abcc.addToCart', ['id' => $product->id]) } }" title="{{l('Add to Cart', 'abcc/layouts')}}"><i class="fa fa-cart-plus"></i></a -->
-
+@if (\App\Configuration::isFalse('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY') || $product->quantity_onhand > 0)
             <div xclass="form-group">
               <div class="input-group" style="width: 72px;">
 
@@ -161,7 +160,16 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 
               </div>
             </div>
-
+@else
+            <a class="btn btn-sm btn-warning show-out-of-stock"  data-html="false" data-toggle="modal" 
+                href=""  
+                data-content="{{$product->out_of_stock_text}}" 
+                data-title="({{ $product->id }}) [{{$product->reference}}] - {{ $product->name }}" 
+                data-product_id="{{$product->id}}" 
+                data-orders="{{ $product->getOutOfStock() }}" 
+                title="{{l('Click for more Information', 'abcc/layouts')}}" 
+                onClick="return false;"><i class="fa fa-exclamation-triangle"></i> {{l('More Info', 'abcc/layouts')}}</a>
+@endif
 
       </td>
     </tr>
@@ -188,6 +196,8 @@ https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-grou
 
 
 @include('abcc.catalogue._modal_view_product')
+
+@include('abcc.catalogue._modal_out_of_stock')
 
 
 

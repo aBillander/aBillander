@@ -84,4 +84,7 @@ return [
 
 	'Undo Payment' => 'Deshacer Pago',
 
+	'Cheque' => 'Cheque',
+	'This Voucher is associated with a Check' => 'Este Recibo está asociado a un Cheque',
+
 ];

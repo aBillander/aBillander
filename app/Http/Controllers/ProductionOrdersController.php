@@ -250,7 +250,8 @@ class ProductionOrdersController extends Controller
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->isManufactured()
 //                                ->with('measureunit')
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 /*
         $data = [];
 

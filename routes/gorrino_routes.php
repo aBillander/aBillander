@@ -211,6 +211,12 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+
+	// 
+	// 2021-02-13
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `invoice_by_shipping_address` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `is_invoiceable`;");
+
+
 	// 2021-02-12
 	
 	Illuminate\Support\Facades\DB::statement("drop table if exists `down_payments`");

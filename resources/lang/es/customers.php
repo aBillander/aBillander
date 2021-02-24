@@ -247,4 +247,8 @@ return [
 	'Intra-Community' => 'Intracomunitario',
 	'Export' => 'Exportación',
 	'Exempt' => 'Exento',
+
+	'Invoice by Shipping Address?' => '¿Facturar por Dirección de Envío?',
+	'One Invoice per Shipping Address' => 'Una Factura por Dirección de Envío',
+	'One Invoice per Shipping Slip and Shipping Address' => 'Una Factura por Albarán y Dirección de Envío',
 ];

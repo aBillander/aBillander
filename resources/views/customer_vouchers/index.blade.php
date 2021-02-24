@@ -174,7 +174,7 @@
 
       <td>{{ optional($payment->paymenttype)->name }} 
 
-@if( $payment->status == 'paid' && ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) && $payment->chequedetail )
+@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) && $payment->chequedetail )
 
               <a class="btn btn-xs btn-warning" href="{{ URL::to('cheques/' . $payment->chequedetail->cheque_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
 
@@ -247,12 +247,12 @@
             	{{\App\Payment::getStatusName($payment->status)}}</span>
 
               @if ( $payment->status == 'paid' )
-                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+{{--                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') ) --}}
 
                     <a href="{{ route('customervoucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Undo Payment')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
                
-                @endif
+{{--                @endif --}}
               @endif
 
               @if ( $payment->status == 'uncollectible' )

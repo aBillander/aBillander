@@ -798,7 +798,8 @@ class WarehouseShippingSlipsController extends Controller
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
 
 
 //                                dd($products);

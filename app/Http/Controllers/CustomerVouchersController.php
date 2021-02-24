@@ -874,6 +874,7 @@ class CustomerVouchersController extends Controller
                     ->whereHas('customer', function ($query) use ($id) {
                             $query->where('id', $id);
                         })
+                    ->doesntHave('chequedetail')	// <= Not assigned to a cheque
 //        			->filter( $request->all() )
 					->with('paymentable')
 					->with('paymentable.customer')

@@ -44,9 +44,9 @@ class DownPaymentDetail extends Model
     |--------------------------------------------------------------------------
     */
     
-    public function cheque()
+    public function downpayment()
     {
-        return $this->belongsTo( 'App\Cheque' );
+        return $this->belongsTo( 'App\DownPayment', 'down_payment_id' );
     }
     
     public function customerinvoice()

@@ -144,7 +144,17 @@ class DownPayment extends Model
     
     public function getDeletableAttribute()
     {
-        return !( $this->status == 'applied' );
+        // Safety check: Can not delete if ANY payment is related to an Invoice        
+
+        foreach ($this->downpaymentdetails as $detail) {
+            # code...
+            if ( $detail->supplierpayment && $detail->supplierpayment->supplierinvoice )
+                return false;
+        }
+
+        return true;
+
+        // return !( $this->status == 'applied' );
     }
 
 

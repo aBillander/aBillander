@@ -36,7 +36,7 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('amount') ? 'has-error' : '' }}">
     {!! Form::label('amount', l('Amount')) !!}
-    {!! Form::text('amount', old('amount', $document->total_currency_tax_incl), array('id' => 'amount', 'class' => 'form-control')) !!}
+    {!! Form::text('amount', old('amount', $document->total_currency_tax_incl), array('id' => 'amount', 'class' => 'form-control', 'onclick' => 'this.select()')) !!}
     {!! $errors->first('amount', '<span class="help-block">:message</span>') !!}
 </div>
 

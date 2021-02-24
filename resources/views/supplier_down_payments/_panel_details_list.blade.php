@@ -34,7 +34,7 @@
                         <td>{{ $payment->name }}</td>
                         <td>
 @if( $payment->supplierinvoice )
-    {{ $payment->supplierinvoice->document_reference }}
+          <a href="{{ URL::to('supplierinvoices/' . optional($payment->supplierInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplierinvoice->document_reference }}</a>
 @else
     -
 @endif

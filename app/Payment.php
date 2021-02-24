@@ -256,6 +256,18 @@ class Payment extends Model {
     public function getChequeAttribute()
     {
         return $this->belongsToMany('App\Cheque', 'cheque_details')->first();
+        // return $this->chequedetail->cheque;
+    }
+
+    public function downpaymentdetail()
+    {
+        return $this->hasOne('App\DownPaymentDetail');
+    }
+
+    public function getDownpaymentAttribute()
+    {
+        return $this->belongsToMany('App\DownPayment', 'down_payment_details')->first();
+        // return $this->downpaymentdetail->downpayment;
     }
 
 

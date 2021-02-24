@@ -160,7 +160,7 @@
 		<tr>
 			<td>{{ $payment->id }}
 @if( $payment->is_down_payment)
-        <span class="btn btn-xs alert-danger" title="{{l('Down Payment') }}" >&nbsp;<i class="fa fa-money"></i>&nbsp;</span>
+        <a href="{{ URL::to('supplierdownpayments/' . optional(optional($payment->downpaymentdetail)->downpayment)->id . '/edit') }}" class="btn btn-xs alert-danger" title="{{l('Down Payment') }}" target="_blank">&nbsp;<i class="fa fa-money"></i>&nbsp;</a>
 @endif
       </td>
 			<td>

@@ -150,7 +150,7 @@ class SupplierDownPaymentsController extends Controller
         // Create Payment
         $data = [   'payment_type' => 'payable', 
                     'reference' => l('Down Payment', 'supplierdownpayments'), 
-                    'name' => l('Document', 'downpayments').': '.$document->document_reference ? $document->document_reference : $document->id, 
+                    'name' => l('Document', 'supplierdownpayments').': '.($document->document_reference ? $document->document_reference : $document->id), 
 //                          'due_date' => \App\FP::date_short( \Carbon\Carbon::parse( $due_date ), \App\Context::getContext()->language->date_format_lite ), 
                     'due_date' => $downpayment->due_date, 
                     'payment_date' => $downpayment->due_date, 
@@ -289,7 +289,20 @@ class SupplierDownPaymentsController extends Controller
 
         $downpayment = $this->downpayment
                         ->has('supplier')
+                        ->with('downpaymentdetails')
+                        ->with('downpaymentdetails.supplierpayment')
                         ->findOrFail($id);
+
+        // Check if can delete
+        if ( !$downpayment->deletable )
+            return redirect()->back()
+                ->with('success', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+
+        foreach ($downpayment->downpaymentdetails as $detail) {
+            # code...
+            $detail->supplierpayment->delete();
+            $detail->delete();
+        }
 
         $downpayment->delete();
 

@@ -48,7 +48,7 @@
                 <span class="label label-info">
               @elseif ( $downpayment->status == 'deposited' )
                 <span class="label label-danger">
-              @elseif ( $downpayment->status == 'paid' )
+              @elseif ( $downpayment->status == 'applied' )
                 <span class="label label-success">
               @elseif ( $downpayment->status == 'bounced' )
                 <span class="label alert-danger">
@@ -79,7 +79,7 @@
 
       <td class="text-right button-pad">
 
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('supplierdownpayments/' . $downpayment->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                <a class="btn btn-sm btn-warning" href="{{ URL::to('supplierdownpayments/' . $downpayment->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_blank"><i class="fa fa-pencil"></i></a>
 
       </td>
     </tr>

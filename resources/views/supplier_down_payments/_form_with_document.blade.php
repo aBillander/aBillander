@@ -33,28 +33,50 @@
     {!! Form::select('payment_type_id', $payment_typeList, null, array('class' => 'form-control')) !!}
 </div>
 
+@php
+
+if ( isset( $downpayment ) )
+{
+    $form_currency_id              = $downpayment->currency_id;
+    $form_currency_conversion_rate = $downpayment->currency_conversion_rate;
+    $form_amount                   = $downpayment->amount;
+
+} else if ( isset( $document ) )
+{
+    $form_currency_id              = $document->currency_id;
+    $form_currency_conversion_rate = $document->currency_conversion_rate;
+    $form_amount                   = $document->total_currency_tax_incl;
+}
+else 
+{
+    $form_currency_id              = \App\Configuration::get('DEF_CURRENCY');
+    $form_currency_conversion_rate = 1.0;
+    $form_amount                   = '';
+}
+@endphp
+
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('amount') ? 'has-error' : '' }}">
     {!! Form::label('amount', l('Amount')) !!}
-    {!! Form::text('amount', old('amount', $document->total_currency_tax_incl), array('id' => 'amount', 'class' => 'form-control', 'onclick' => 'this.select()')) !!}
+    {!! Form::text('amount', old('amount', $form_amount), array('id' => 'amount', 'class' => 'form-control', 'onclick' => 'this.select()')) !!}
     {!! $errors->first('amount', '<span class="help-block">:message</span>') !!}
 </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
             {!! Form::label('currency_id', l('Currency'), ['class' => 'control-label']) !!}
-            {!! Form::select('currency_id', $currencyList, old('currency_id', $document->currency_id), array('class' => 'form-control', 'id' => 'currency_id')) !!}
+            {!! Form::select('currency_id', $currencyList, old('currency_id', $form_currency_id), array('class' => 'form-control', 'id' => 'currency_id')) !!}
             {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
          </div>
 
 
-    @if( $document->currency_id != \App\Configuration::get('DEF_CURRENCY') )
+    @if( 1 || $form_currency_id != \App\Configuration::get('DEF_CURRENCY') )
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
             {!! Form::label('currency_conversion_rate', l('Conversion Rate'), ['class' => 'control-label']) !!}
-            {!! Form::text('currency_conversion_rate', old('currency_conversion_rate', $document->currency_conversion_rate), array('class' => 'form-control', 'id' => 'currency_conversion_rate')) !!}
+            {!! Form::text('currency_conversion_rate', old('currency_conversion_rate', $form_currency_conversion_rate), array('class' => 'form-control', 'id' => 'currency_conversion_rate', 'onclick' => 'this.select()')) !!}
             {!! $errors->first('currency_conversion_rate', '<span class="help-block">:message</span>') !!}
          </div>
     @else
-          {{ Form::hidden('currency_conversion_rate', $document->currency_conversion_rate, ['id' => 'currency_conversion_rate']) }}
+          {{ Form::hidden('currency_conversion_rate', $form_currency_conversion_rate, ['id' => 'currency_conversion_rate']) }}
     @endif
 
 </div>
@@ -74,7 +96,11 @@
     </div>
 </div>
 
+@if ($downpayment->status != 'applied')
+
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
+@endif
+
 	{{-- !! link_to_route('supplier.downpayments.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !! --}}
 @if ( !isset($downpayment) )
   <a href="{{ url()->previous() }}" class="btn btn-warning">{{ l('Cancel', [], 'layouts') }}</a>

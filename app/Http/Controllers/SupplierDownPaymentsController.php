@@ -260,6 +260,8 @@ class SupplierDownPaymentsController extends Controller
                         ->has('supplier')
                         ->with('supplier')
                         ->with('supplierorder')
+                        ->with('downpaymentdetails')
+                        ->with('downpaymentdetails.supplierpayment')
                         ->findOrFail($id);
 
         $old_payment_date = $downpayment->payment_date;
@@ -270,9 +272,19 @@ class SupplierDownPaymentsController extends Controller
 
         $downpayment->update($request->all());
 
-        // Let's see if we have to change status to 'paid'
-        // if ( $downpayment->payment_date && ($downpayment->payment_date != $old_payment_date) )
-        //    return $this->payDownPayment($downpayment->id, $request);
+        // Update Payment
+        $data = [
+                    'due_date' => $downpayment->due_date, 
+                    'payment_date' => $downpayment->due_date, 
+                    'amount' => $downpayment->amount, 
+                    'currency_id' => $downpayment->currency_id,
+                    'currency_conversion_rate' => $downpayment->currency_conversion_rate, 
+
+                    'payment_type_id' => $downpayment->payment_type_id,
+            ];
+
+        // Only one payment
+        $downpayment->downpaymentdetails->first()->supplierpayment->update($data);
 
         return redirect()->back()
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $downpayment->document_number], 'layouts'));

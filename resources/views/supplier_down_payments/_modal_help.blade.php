@@ -14,6 +14,44 @@
 <h3>Flujo de trabajo</h3>
 
 <p>1.- Crear el Anticipo.</p>
+
+<p>El Anticipo a Proveedor se crea desde un Pedido a Proveedor, en la pestaña <i>Anticipos</i>. El Pedido puede estar en cualquier Estado, aunque se recomienda que esté como mínimo "Confirmado". Un Pedido puede tener varios Anticipos. El Anticipo se crea en Estado "Pendiente".</p>
+
+<p>El Anticipo genera un Recibo en Estado "Pagado", que aparece también en la consulta "Recibos de Proveedores". No es posible deshacer el pago de un Recibo correspondiente a un Anticipo; en caso de error, deberá borrar el Anticipo, y se borrará también el Recibo (Pago) asociado.</p>
+
+<p>2.- Crear Albarán y Factura de Proveedor</p>
+
+<p>El Pedido a Proveedor pasará a Albarán y luego a Factura. En la Factura de Proveedor, en la pestaña <i>Pagos</i> se podrán visualizar los Anticipos que corresponden a esa Factura; son los que provienen de los Pedidos que corresponden a esa Factura.</p>
+
+<p>3.- Cerrar la Factura de Proveedor</p>
+
+<p>Cuando la Factura se cierra, el cálculo de Vencimientos se hace así:</p>
+
+<p>a) Se aplican los Pagos correspondientes a los Anticipos. El Estado de los Anticipos pasa a "Aplicado", y ya no es posible modificarlos o borrarlos.</p>
+
+<p>b) Se toma la diferencia entre el total de la Factura y el total de los Anticipos. Con este importe se calculan los Vencimientos restantes según la Forma de Pago dada en la Factura.</p>
+
+<div class="alert alert-warning">
+  <p>Cuando se aplica un Anticipo a una Factura, el Pago correspondiente seguirá vinculado al Anticipo, pero también a la Factura a la que se aplicó el Anticipo.</p>
+</div>
+
+<p>Si la Factura se vuelve a abrir:</p>
+
+<p>a) Los Anticipos pasan a Estado "Pendiente".</p>
+
+<p>b) Los Recibos pendientes de pago se borran.</p>
+
+<div class="alert alert-danger">
+  <p>Una Factura en estado "Cerrado" no se puede abrir si se han registrado Pagos además de los Anticipos.</p>
+</div>
+
+
+<h3>Estados del Anticipo</h3>
+
+<p>- <strong>Pendiente</strong>. El Anticipo se ha desembolsado, pero todavía no se ha aplicado a la Factura.</p>
+
+<p>- <strong>Aplicado</strong>. El Anticipo se ha aplicado como un Pago a la Factura.</p>
+
 {{--
 <p>2.- Vincular Recibos.</p>
 

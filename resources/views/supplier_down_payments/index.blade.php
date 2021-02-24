@@ -164,7 +164,7 @@
                 <span class="label label-info">
               @elseif ( $downpayment->status == 'deposited' )
                 <span class="label label-danger">
-              @elseif ( $downpayment->status == 'paid' )
+              @elseif ( $downpayment->status == 'applied' )
                 <span class="label label-success">
               @elseif ( $downpayment->status == 'bounced' )
                 <span class="label alert-danger">

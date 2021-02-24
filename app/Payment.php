@@ -36,9 +36,9 @@ class Payment extends Model {
                             'amount', 'currency_id', 'currency_conversion_rate', 'status', 
                             'notes', 'document_reference',
 
-                            'auto_direct_debit', 'bank_order_id',
+                            'auto_direct_debit', 'is_down_payment', 'bank_order_id',
 
-                            'down_payment', 'payment_document_id', 'payment_method_id',
+                            'payment_document_id', 'payment_method_id',
 
                             'payment_type_id',
                            ];

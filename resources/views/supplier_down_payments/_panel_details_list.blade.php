@@ -8,85 +8,71 @@
             <table id="downpaymentdetails" class="table table-hover">
                 <thead>
                 <tr>
-                    <th class="text-left">{{l('ID', [], 'layouts')}}</th>
-                    <th>{{l('Position', 'layouts')}}</th>
-                    <th class="text-left">{{ l('Name', 'downpaymentdetails') }}</th>
-                    <th class="text-left">{{ l('Amount') }}<br />
-                        <span class="
-
-@if( $open_balance == 0.0)
-                        alert-success
-@else
-                        alert-danger
-@endif
-                        ">{{ $downpayment->as_money_amountable( $downpaymentdetails->sum('amount'), $downpayment->currency ) }}</span>
-                    </th>
-                    <th class="text-left">{{ l('Customer Invoice', 'downpaymentdetails') }}</th>
-                    <th class="text-left">{{ l('Customer Voucher', 'customervouchers') }}</th>
-                    <th class="text-center">{{l('Status', [], 'layouts')}}</th>
-                    <th>{{l('Payment Date')}}</th>
+                    <th style="text-transform: none;" class="text-left">{{l('ID', [], 'layouts')}}</th>
+                    <th style="text-transform: none;">{{l('Subject')}}</th>
+                    <th style="text-transform: none;">{{l('Invoice')}}</th>
+                    <th style="text-transform: none;">{{l('Payment Date')}}</th>
+                    <th style="text-transform: none;">{{l('Amount')}}</th>
+                    <th style="text-transform: none;">{{l('Payment Type')}}</th>
+                    <th style="text-transform: none;" class="text-center">{{l('Status', [], 'layouts')}}</th>
                     <th class="text-right">
 
-@if( $open_balance > 0.0)
+@if( 0 && $open_balance > 0.0)
                         <a href="{{ URL::to('downpayments/'.$downpayment->id.'/downpaymentdetails/create') }}" class="btn btn-sm btn-success create-downpaymentdetail pull-right"
                             title="{{l('Add New Detail')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 @endif
                     </th>
                 </tr>
                 </thead>
-                <tbody class="sortable">
+                <tbody xclass="sortable">
                 @foreach ($downpaymentdetails as $detail)
+@php
+    $payment = $detail->supplierpayment;
+@endphp
                     <tr data-id="{{ $detail->id }}" data-sort-order="{{ $detail->line_sort_order }}">
-                        <td>{{ $detail->id }} {{-- $detail->customerpayment->downpayment->id --}}</td>
-                        <td>{{ $detail->line_sort_order }}</td>
-                        <td>{{ $detail->name }}</td>
-
-                        <td>{{ $detail->amount > 0.0 ? $detail->as_money_amount('amount') : '-' }}</td>
-
+                        <td title="{{ $detail->id }}"> {{ $payment->id }}</td>
+                        <td>{{ $payment->name }}</td>
                         <td>
-                            @if( $detail->customer_invoice_id > 0 )
-                                <a href="{{ route('customerinvoices.edit', $detail->customer_invoice_id) }}" title="{{l('Go to', 'layouts')}}" target="_blank"> {{ $detail->customer_invoice_reference }} </a>
-                            @else
-                                {{ $detail->customer_invoice_reference }}
-                            @endif
-
-                            {{-- $detail->customerinvoice->document_reference --}}
-
-                        </td>
-
-                        <td>
-@if($detail->customerpayment)
-                            [{{ optional($detail->customerpayment)->id }}] {{ optional($detail->customerpayment)->name }} 
-                          ({{ optional($detail->customerpayment)->as_money_amount_with_sign('amount') }})
-                          <a class="btn btn-xs btn-warning" href="{{ URL::to('customervouchers/' . $detail->payment_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
+@if( $payment->supplierinvoice )
+    {{ $payment->supplierinvoice->document_reference }}
 @else
-                        -
+    -
 @endif
                         </td>
+                        <td>{{ abi_date_short($payment->payment_date) }}</td>
+                        <td>{{ abi_money_amount($payment->amount, $payment->currency) }}</td>
 
-                            <td class="text-center button-pad">
-                                @if     ( optional($detail->customerpayment)->status == 'pending' )
-                                    <span class="label label-info">
-                                @elseif ( optional($detail->customerpayment)->status == 'bounced' )
-                                    <span class="label label-danger">
-                              @elseif ( optional($detail->customerpayment)->status == 'paid' )
+                        <td>{{ optional($payment->paymenttype)->name }}</td>
+
+                        <td class="text-center">
+                            @if     ( $payment->status == 'pending' )
+                                <span class="label label-info">
+                            @elseif ( $payment->status == 'bounced' )
+                                <span class="label label-danger">
+                            @elseif ( $payment->status == 'paid' )
                                 <span class="label label-success">
-                              @elseif ( optional($detail->customerpayment)->status == 'uncollectible' )
+                            @elseif ( $payment->status == 'uncollectible' )
                                 <span class="label alert-danger">
-                                @else
-                                    <span class="label">
-                                @endif
-                                {{\App\Payment::getStatusName(optional($detail->customerpayment)->status)}}</span>
+                            @else
+                                <span class="label">
+                            @endif
+                            {{l( $payment->status, [], 'appmultilang' )}}</span>
+
+                          @if ( 0 && $payment->status == 'paid' )
+
+                                <a href="{{ route('suppliervoucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
+                                title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
+                           
+                          @endif
 
                         </td>
-
-                        <td>{{ abi_date_short(optional($detail->customerpayment)->payment_date) }}</td>
 
 
                         <td class="text-right button-pad">
-{{-- --}}
-                            <!-- a class="btn btn-sm btn-warning" href="{{ URL::to('downpayments/' . $downpayment->id.'/downpaymentdetails/' . $detail->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
-@if ($detail->deletable)
+
+                            <a class="btn btn-sm btn-warning" href="{{ URL::to('suppliervouchers/' . $payment->id  . '/edit?back_route=' . urlencode('supplierdownpayments/' . $downpayment->id . '/edit#details') ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
+@if (0 && $detail->deletable)
                             <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                                     href="{{ URL::to('downpayments/' . $downpayment->id.'/downpaymentdetails/' . $detail->id ) }}" 
                                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
@@ -99,7 +85,7 @@
                 </tbody>
             </table>
 @else
-            <div class="modal-footer">
+            <div class=" hide  modal-footer">
                 <a href="javascript:void(0);" class="btn xbtn-sm btn-success create-downpaymentdetail pull-right" 
                 title="{{l('Add New Detail')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 

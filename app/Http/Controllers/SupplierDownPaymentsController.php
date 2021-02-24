@@ -8,6 +8,7 @@ use App\DownPayment;
 use App\DownPaymentDetail;
 use App\Currency;
 use App\Bank;
+use App\Payment;
 use App\PaymentType;
 use App\Configuration;
 
@@ -95,7 +96,7 @@ class SupplierDownPaymentsController extends Controller
     {
         // Do the Mambo!!!
         try {
-            $document = SupplierOrder::with('supplier')->findOrFail( $document_id );
+            $document = SupplierOrder::with('supplier')->with('currency')->findOrFail( $document_id );
 
         } catch(ModelNotFoundException $e) {
             // No Document_id available, ask for one
@@ -103,8 +104,11 @@ class SupplierDownPaymentsController extends Controller
                     ->with('error', l('The record with id=:id does not exist', ['id' => $document_id], 'layouts'));
         }
 
+        // abi_r($document);die();
+
         $statusList = $this->downpayment::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();
+        $currencyList = [$document->currency_id => $document->currency->name];
         $bankList = Bank::pluck('name', 'id')->toArray();
         $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
@@ -119,6 +123,19 @@ class SupplierDownPaymentsController extends Controller
      */
     public function store(Request $request)
     {
+
+        // Do the Mambo!!!
+        $document_id = $request->input('supplier_order_id');
+
+        try {
+            $document = SupplierOrder::with('supplier')->with('currency')->findOrFail( $document_id );
+
+        } catch(ModelNotFoundException $e) {
+            // No Document_id available, ask for one
+            return redirect()->back()
+                    ->with('error', l('The record with id=:id does not exist', ['id' => $document_id], 'layouts'));
+        }
+
         // Dates (cuen)
         $this->mergeFormDates( ['due_date'], $request );
 
@@ -127,6 +144,52 @@ class SupplierDownPaymentsController extends Controller
         $this->validate($request, $rules);
 
         $downpayment = DownPayment::create($request->all());
+
+        // abi_r($downpayment, true);
+
+        // Create Payment
+        $data = [   'payment_type' => 'payable', 
+                    'reference' => l('Down Payment', 'supplierdownpayments'), 
+                    'name' => l('Document', 'downpayments').': '.$document->document_reference ? $document->document_reference : $document->id, 
+//                          'due_date' => \App\FP::date_short( \Carbon\Carbon::parse( $due_date ), \App\Context::getContext()->language->date_format_lite ), 
+                    'due_date' => $downpayment->due_date, 
+                    'payment_date' => $downpayment->due_date, 
+                    'amount' => $downpayment->amount, 
+                    'currency_id' => $downpayment->currency_id,
+                    'currency_conversion_rate' => $downpayment->currency_conversion_rate, 
+                    'status' => 'paid', 
+                    'notes' => null,
+//                    'document_reference' => $this->document_reference,
+
+//                    'payment_document_id' => $pmethod->payment_document_id,
+//                    'payment_method_id' => $pmethod->id,
+//                    'auto_direct_debit' => $pmethod->auto_direct_debit,
+                    'is_down_payment' => 1,
+
+                    'payment_type_id' => $downpayment->payment_type_id,
+            ];
+
+        $payment = Payment::create($data);
+        $document->supplier->payments()->save($payment);
+
+
+        // Create Down Payment Detail
+        $data = [
+
+//            'line_sort_order',
+//            'name', 
+            'amount' => $downpayment->amount, 
+            'payment_id' => $payment->id,
+//            'document_invoice_id',
+//            'document_invoice_reference',
+//            'down_payment_id'
+
+        ];
+
+        $downpaymentdetail = DownPaymentDetail::create($data);
+
+        $downpayment->downpaymentdetails()->save($downpaymentdetail);
+
 
         return redirect()->route('supplier.downpayments.edit', [$downpayment->id])
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $downpayment->reference], 'layouts'));
@@ -230,7 +293,7 @@ class SupplierDownPaymentsController extends Controller
 
         $downpayment->delete();
 
-        return redirect('downpayments')
+        return redirect('supplierdownpayments')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
@@ -345,13 +408,12 @@ class SupplierDownPaymentsController extends Controller
         $downpayment = $this->downpayment
                         ->has('supplier')
                         ->with('downpaymentdetails')
+                        ->with('downpaymentdetails.supplierpayment')
                         ->findOrFail($id);
         
         $downpaymentdetails = $downpayment->downpaymentdetails;
 
-        $open_balance = $downpayment->amount - $downpaymentdetails->sum('amount');
-
-        return view('supplier_down_payments._panel_details_list', compact('downpayment', 'downpaymentdetails', 'open_balance'));
+        return view('supplier_down_payments._panel_details_list', compact('downpayment', 'downpaymentdetails'));
     }
 
 

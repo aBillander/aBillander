@@ -37,7 +37,9 @@ class SupplierPaymentBouncedListener
         {
 
             // Update Document
-            $document->checkPaymentStatus();
+            if ( $document )
+                $document->checkPaymentStatus();
+            // else: It is a down payment
 
             // Update Supplier Risk
             $supplier = $payment->supplier;

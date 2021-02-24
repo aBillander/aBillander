@@ -20,15 +20,13 @@
         {!! $errors->first('due_date', '<span class="help-block">:message</span>') !!}
     </div>
 
-@if ( isset($cheque) && ($cheque->status == 'paid') )
-@php
-          $statusList = ['paid' => $statusList['paid']];
-@endphp
-@endif
+{{--
 <div class="form-group col-lg-2 col-md-2 col-sm-2">
     {!! Form::label('status', l('Status', 'layouts')) !!}
     {!! Form::select('status', $statusList, null, array('class' => 'form-control')) !!}
 </div>
+--}}
+        {{ Form::hidden('status', 'pending', ['id' => 'status']) }}
 
 <div class="form-group col-lg-3 col-md-3 col-sm-3">
     {!! Form::label('payment_type_id', l('Payment Type')) !!}
@@ -38,15 +36,26 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('amount') ? 'has-error' : '' }}">
     {!! Form::label('amount', l('Amount')) !!}
-    {!! Form::text('amount', null, array('id' => 'amount', 'class' => 'form-control')) !!}
+    {!! Form::text('amount', old('amount', $document->total_currency_tax_incl), array('id' => 'amount', 'class' => 'form-control')) !!}
     {!! $errors->first('amount', '<span class="help-block">:message</span>') !!}
 </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
             {!! Form::label('currency_id', l('Currency'), ['class' => 'control-label']) !!}
-            {!! Form::select('currency_id', $currencyList, old('currency_id', \App\Configuration::getInt('DEF_CURRENCY')), array('class' => 'form-control', 'id' => 'currency_id')) !!}
+            {!! Form::select('currency_id', $currencyList, old('currency_id', $document->currency_id), array('class' => 'form-control', 'id' => 'currency_id')) !!}
             {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
          </div>
+
+
+    @if( $document->currency_id != \App\Configuration::get('DEF_CURRENCY') )
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
+            {!! Form::label('currency_conversion_rate', l('Conversion Rate'), ['class' => 'control-label']) !!}
+            {!! Form::text('currency_conversion_rate', old('currency_conversion_rate', $document->currency_conversion_rate), array('class' => 'form-control', 'id' => 'currency_conversion_rate')) !!}
+            {!! $errors->first('currency_conversion_rate', '<span class="help-block">:message</span>') !!}
+         </div>
+    @else
+          {{ Form::hidden('currency_conversion_rate', $document->currency_conversion_rate, ['id' => 'currency_conversion_rate']) }}
+    @endif
 
 </div>
 

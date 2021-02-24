@@ -39,6 +39,20 @@
                
                   <span class="badge" style="background-color: #3a87ad;" title="{{ $downpayment->currency->name }}">{{ $downpayment->currency->iso_code }}</span>
 
+
+              @if     ( $downpayment->status == 'pending' )
+                <span class="badge alert-info">
+              @elseif ( $downpayment->status == 'deposited' )
+                <span class="badge alert-danger">
+              @elseif ( $downpayment->status == 'applied' )
+                <span class="badge alert-success">
+              @elseif ( $downpayment->status == 'bounced' )
+                <span class="label alert-danger">
+              @else
+                <span class="label">
+              @endif
+              {{ $downpayment->status_name }}</span>
+
                <span style="color: #cccccc;">/</span> 
 
                [<a class="" href="{{ URL::to('supplierorders/' .$document->id . '/edit') }}" title="{{ l('Go to', 'layouts') }}" target="_new">{{ $document->document_reference ?: l('Draft', 'layouts').' - '.$document->id }}</a>]

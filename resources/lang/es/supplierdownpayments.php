@@ -25,6 +25,7 @@ return [
 	'Drawee Bank' => 'Banco de Cargo',
 	'Amount' => 'Importe',
 	'Currency' => 'Divisa',
+	'Conversion Rate'     => 'Tipo de Cambio',
 	'Memo' => 'Cláusula',
 	'Down Payment to Suppliers' => 'Anticipos a Proveedores',
 	'Reference' => '',
@@ -75,5 +76,7 @@ return [
 	'Go to Supplier Orders' => 'Ir a Pedidos de Compra',
 
 	'Invoice' => 'Factura',
+	'Subject' => 'Concepto',
+	'Down Payment' => 'Anticipo',
 
 ];

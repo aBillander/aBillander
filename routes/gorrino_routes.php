@@ -20,6 +20,66 @@
 |
 */
 
+
+/* ********************************************************** */
+
+Route::get('/mailable', function () {
+        $customerOrder = \App\CustomerOrder::find(7415);
+        $customer = $customerOrder->customer; 
+
+        $data = [
+            'name' => l('Preparar un Pedido a un Cliente'), 
+            'description' => l('Un Cliente ha realizado un Pedido desde el Centro de Clientes.'), 
+            'url' => route('customerorders.edit', [$customerOrder->id]), 
+            'due_date' => null, 
+            'completed' => 0, 
+            'user_id' => 0,
+        ];
+
+//        $todo = Todo::create($data);
+
+
+		// MAIL stuff
+		try {
+
+			$template_vars = array(
+				'company'       => \App\Context::getContext()->company,
+				'document' => $customerOrder,
+				'customer'       => $customer,
+				'url' => route('customerorders.edit', [$customerOrder->id]),
+				'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
+				'document_date'  => abi_date_short($customerOrder->document_date),
+				'document_total' => $customerOrder->as_money('total_tax_incl'),
+//				'custom_body'   => $request->input('email_body'),
+				'document_probe' => 'admin',
+				);
+
+			$data = array(
+				'from'     => abi_mail_from_address(),			// config('mail.from.address'  ),
+				'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
+				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
+				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
+				'subject'  => l(' :_> [#:num] New Customer Order of :name', ['num' => $template_vars['document_num'], 'name' => $customer->name_regular]),
+
+//				'bcc'      => $customer_user->email,
+				'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
+				);
+
+    return new App\Mail\AbccCustomerOrderMail( $data, $template_vars );
+
+        } catch(\Exception $e) {
+
+        // $logger->log("INFO", 'Email Error');
+
+        // $logger->stop();
+
+            abi_r($e->getMessage());
+        }
+});
+
+
+/* ********************************************************** */
+
 Route::get('f0', function( )
 {
 	// $f=\App\AssemblyOrder::find(3)->delete();

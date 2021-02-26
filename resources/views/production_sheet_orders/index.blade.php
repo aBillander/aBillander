@@ -151,7 +151,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 @endif
             </td>
             <td>
-                @if ( $document->hasShippingAddress() )
+                
+                {{-- @if ( $document->hasShippingAddress() ) --}}
+                @if ( $document->customer->nbr_addresses > 1 )
+
+                ({{ $document->customer->nbr_addresses }})
 
 
 

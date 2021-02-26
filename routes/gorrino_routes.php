@@ -271,9 +271,26 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+
 	// 
 	// 2021-02-13
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `invoice_by_shipping_address` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `is_invoiceable`;");
+
+
+	// 2021-02-12
+	
+	Illuminate\Support\Facades\DB::statement("drop table if exists `down_payments`");
+
+	Illuminate\Support\Facades\DB::statement("create table `down_payments` (`id` int unsigned not null auto_increment primary key, `reference` varchar(32) null, `name` varchar(64) not null, `amount` decimal(20, 6) not null default '0', `date_of_issue` date null, `due_date` date null, `payment_date` date null, `posted_at` date null, `currency_id` int unsigned not null, `currency_conversion_rate` decimal(20, 6) not null default '1', `status` varchar(32) not null default 'pending', `notes` text null, `payment_type_id` int null, `customer_id` int unsigned null, `supplier_id` int unsigned null, `customer_order_id` int unsigned null, `supplier_order_id` int unsigned null, `bank_id` int unsigned null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	
+	Illuminate\Support\Facades\DB::statement("drop table if exists `down_payment_details`");
+	
+	Illuminate\Support\Facades\DB::statement("create table `down_payment_details` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `name` varchar(128) not null, `amount` decimal(20, 6) not null default '0', `payment_id` int unsigned null, `document_invoice_id` int unsigned null, `document_invoice_reference` varchar(64) null, `down_payment_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheques` CHANGE `drawee_bank_id` `drawee_bank_id` INT(10) UNSIGNED NULL DEFAULT NULL;");
+	
+//	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheques` CHANGE `customer_id` `customer_id` INT(10) UNSIGNED NULL;");
+
 
 
 	// 2021-02-08

@@ -46,8 +46,10 @@ class SupplierInvoiceUnclosedListener
         }
 */
 
-        // Check / Perform Vouchers
-        $document->payments()->delete();
+        // 
+        // Vouchers stuff
+        // 
+        $document->destroyPaymentDeadlines();
 
     }
 }

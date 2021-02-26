@@ -20,9 +20,57 @@ trait SupplierInvoicePaymentsTrait
             
         }
 
-        $this->payments()->delete();
+        // Down Payments
+        foreach ($this->payments->where('is_down_payment', '>', 0) as $dpayment) {
+            # Unlink Invoice
+            $dpayment->paymentable_id = 0;
+            $dpayment->paymentable_type = '';
+            $dpayment->document_reference = null;
+            
+            $dpayment->save();
 
-        $ototal = $this->as_priceable( $this->total_tax_incl - $this->down_payment );
+            $dpayment->downpayment->update(['status' => 'pending']);
+        }
+
+        // Regular Vouchers
+        $this->payments()->where('is_down_payment', 0)->delete();
+
+
+        // Clean record so far.
+        // Lets star it over
+
+        // Apply Down Payments
+        $total_down_payment = 0.0;
+        foreach ($this->downpayments->where('currency_id', $this->currency_id) as $downpayment) {
+            # code...
+
+            foreach ($downpayment->vouchers as $payment) {
+                # code...
+                $payment->document_reference = $this->document_reference;
+                $this->payments()->save($payment);
+
+                $total_down_payment += $payment->amount;
+            }            
+
+            $payment->downpayment->update(['status' => 'applied']);
+
+        }
+
+
+        $ototal = $this->as_priceable( $this->total_tax_incl - $total_down_payment );
+        
+        if ($ototal == 0.0)
+        {
+            // Same as: $document->checkPaymentStatus();
+            $this->payment_status = 'paid';
+            $this->open_balance = $ototal;
+            $this->save();
+
+
+            return true;
+        }
+
+
         $ptotal = 0;
         $pmethod = $this->paymentmethod;
         $dlines = $pmethod->deadlines;
@@ -87,6 +135,46 @@ trait SupplierInvoicePaymentsTrait
 
         $this->payment_status = 'pending';
         $this->open_balance = $ototal;
+        $this->save();
+
+
+        return true;
+    }
+
+    
+    public function destroyPaymentDeadlines()
+    {
+        // abi_r(( $this->status != 'confirmed' && $this->payment_status != 'pending' ), true);
+
+        if ( ($this->status == 'closed') ) {  // && ($this->payment_status != 'pending') ) {
+
+            // Not allowed
+
+            return false;
+            
+        }
+
+        // Down Payments
+        foreach ($this->payments->where('is_down_payment', '>', 0) as $dpayment) {
+            # Unlink Invoice
+            $dpayment->paymentable_id = 0;
+            $dpayment->paymentable_type = '';
+            $dpayment->document_reference = null;
+            
+            $dpayment->save();
+
+            $dpayment->downpayment->update(['status' => 'pending']);
+        }
+
+        // Regular Vouchers
+        $this->payments()->where('is_down_payment', 0)->delete();
+
+
+        // Clean record so far.
+
+
+        $this->payment_status = 'pending';
+        $this->open_balance = $this->total_tax_incl;
         $this->save();
 
 

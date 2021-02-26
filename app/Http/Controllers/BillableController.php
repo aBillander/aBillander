@@ -205,7 +205,18 @@ class BillableController extends Controller
                         ->with('payments')
                         ->findOrFail($id);
 
-        return view($this->view_path.'._panel_document_payments', $this->modelVars() + compact('document'));
+        $downpayments = $document->downpayments;    // Document Attribute, NOT relation
+
+        return view($this->view_path.'._panel_document_payments', $this->modelVars() + compact('document', 'downpayments'));
+    }
+
+    public function getDocumentDownPayments($id)
+    {
+        $document = $this->document
+                        ->with('downpayments')
+                        ->findOrFail($id);
+
+        return view($this->view_path.'._panel_document_downpayments', $this->modelVars() + compact('document'));
     }
 
 

@@ -9,7 +9,7 @@
 	<div class="col-md-6 col-md-offset-3" style="margin-top: 50px">
 		<div class="panel panel-info">
 			<div class="panel-heading">
-				<h3 class="panel-title">{{ l('Edit Supplier Voucher') }}
+				<h3 class="panel-title">
 
 @if ( $action == 'pay' )
           {{ l('Pay Supplier Voucher') }}
@@ -17,7 +17,13 @@
          {{ l('Edit Supplier Voucher') }}
 @endif
 
-           :: {{ l('Invoice') }}: {{ $payment->paymentable->document_reference }} . {{ l('Due Date') }}: {{ abi_date_short($payment->due_date) }}</h3>
+@if ( $payment->paymentable )
+           :: {{ l('Invoice') }}: {{ $payment->paymentable->document_reference }}
+
+@elseif ($payment->is_down_payment)
+           :: {{ l('Down Payment', 'supplierdownpayments') }}
+@endif
+            . {{ l('Due Date') }}: {{ abi_date_short($payment->due_date) }}</h3>
 		        <h3 class="panel-title" style="margin-top:10px;">{{ l('Amount') }}: {{ $payment->as_price('amount') }} {{ $payment->currency->name }}</h3>
 		    </div>
 			<div class="panel-body">

@@ -432,6 +432,13 @@
                                  <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ route('supplier.downpayments.index') }}">
+                                 <i class="fa fa-money btn-xs text-danger"></i> 
+                                 {{l('Down Payments', [], 'layouts')}}
+                                 <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('import') }}">

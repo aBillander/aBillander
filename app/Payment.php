@@ -36,9 +36,9 @@ class Payment extends Model {
                             'amount', 'currency_id', 'currency_conversion_rate', 'status', 
                             'notes', 'document_reference',
 
-                            'auto_direct_debit', 'bank_order_id',
+                            'auto_direct_debit', 'is_down_payment', 'bank_order_id',
 
-                            'down_payment', 'payment_document_id', 'payment_method_id',
+                            'payment_document_id', 'payment_method_id',
 
                             'payment_type_id',
                            ];
@@ -256,6 +256,18 @@ class Payment extends Model {
     public function getChequeAttribute()
     {
         return $this->belongsToMany('App\Cheque', 'cheque_details')->first();
+        // return $this->chequedetail->cheque;
+    }
+
+    public function downpaymentdetail()
+    {
+        return $this->hasOne('App\DownPaymentDetail');
+    }
+
+    public function getDownpaymentAttribute()
+    {
+        return $this->belongsToMany('App\DownPayment', 'down_payment_details')->first();
+        // return $this->downpaymentdetail->downpayment;
     }
 
 

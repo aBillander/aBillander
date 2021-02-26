@@ -44,6 +44,7 @@ class ChequesController extends Controller
 
         $cheques = $this->cheque
                         ->filter( $request->all() )
+                        ->has('customer')
                         ->with('customer')
                         ->with('currency')
                         ->with('bank')
@@ -122,10 +123,12 @@ class ChequesController extends Controller
      * @param  \App\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
-    public function edit(Cheque $cheque)
+    public function edit($id)
     {
 
-        // abi_r($cheque->vouchers);die();
+        $cheque = $this->cheque
+                        ->has('customer')
+                        ->findOrFail($id);
 
         $statusList = $this->cheque::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();

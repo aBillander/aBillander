@@ -91,6 +91,37 @@ class HomeController extends Controller
         return json_encode( [ 'query' => '', 'suggestions' => [] ] );
         
     }
+    public function searchSupplier(Request $request)
+    {
+//        $term  = $request->has('term')  ? $request->input('term')  : null ;
+//        $query = $request->has('query') ? $request->input('query') : $term;
+
+
+        if ($request->has('term'))
+        {
+            $search = $request->term;
+
+            $customers = \App\Supplier::where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
+                                    ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
+                                    ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
+//                                    ->with('currency')
+//                                    ->with('addresses')
+                                    ->isNotBlocked()
+                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->get();
+
+//            return $customers;
+//            return Product::searchByNameAutocomplete($query, $onhand_only);
+//            return Product::searchByNameAutocomplete($request->input('query'), $onhand_only);
+//            response( $customers );
+//            return json_encode( $customers );
+            return response()->json( $customers );
+        }
+
+        // Otherwise, die silently
+        return json_encode( [ 'query' => '', 'suggestions' => [] ] );
+        
+    }
 
 
     public function searchProduct(Request $request)

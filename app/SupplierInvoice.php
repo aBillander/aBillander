@@ -113,6 +113,40 @@ class SupplierInvoice extends Billable
     }
 
 
+    // Gorrino Style. Based on the assumption that a Supplier has few (or none) down payments
+    public function getDownpaymentsAttribute()
+    {
+        $downpayments = collect([]);
+
+        // Customer Down Payments
+        $cdps = DownPayment::where('customer_id', $this->customer_id)->get();
+
+        if ( $cdps )
+        foreach ($cdps as $cdp) {
+            // Supplier order
+            $so = $cdp->supplierorder;
+            if ( ! $so ) continue;
+
+            // Supplier Shipping Slip
+            $sss = $so->shippingslip;
+            if ( ! $sss ) continue;
+
+            // Supplier invoice
+            $si = $sss->invoice;
+            if ( ! $si ) continue;
+
+            // Qualify for this Supplier Invoice?
+            if ( $si->id != $this->id ) continue;
+
+
+            $downpayments->push($cdp);
+        }
+
+        return $downpayments;
+
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Methods

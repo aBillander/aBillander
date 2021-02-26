@@ -22,8 +22,8 @@ class CreatePaymentsTable extends Migration {
 			// 'receivable' => Payment from customer (receive money, inbound)
 			// 'payable'    => Payment to supplier (send money, outbound)
 			
-			$table->string('reference')->nullable();			// Creditor (usually Supplier) reference			
-			$table->string('name', 32)->nullable();				// Payment subject/detail
+			$table->string('reference', 32)->nullable();			// Creditor (usually Supplier) reference			
+			$table->string('name', 64)->nullable();				// Payment subject/detail
 
 			$table->tinyInteger('auto_direct_debit')->default(0); 	// Include in automatic payment remittances
 			$table->tinyInteger('is_down_payment')->default(0);        // Payment before issue any invoice

@@ -296,7 +296,7 @@
       }
       if (target == '#tab5default')
       {
-          loadDocumentPayments();
+          loadDocumentDownPayments();
       }
       /*
       if ($(target).is(':empty')) {
@@ -351,6 +351,22 @@
            
            var panel = $("#panel_{{ $model_snake_case }}_payments");
            var url = "{{ route($model_path.'.getpayments', $document->id) }}";
+
+           panel.addClass('loading');
+
+           $.get(url, {}, function(result){
+                 panel.html(result);
+                 panel.removeClass('loading');
+                 $("[data-toggle=popover]").popover();
+                 
+           }, 'html');
+
+        }
+
+        function loadDocumentDownPayments() {
+           
+           var panel = $("#panel_{{ $model_snake_case }}_downpayments");
+           var url = "{{ route($model_path.'.getdownpayments', $document->id) }}";
 
            panel.addClass('loading');
 

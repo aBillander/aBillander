@@ -13,6 +13,9 @@ class CreateChequesTable extends Migration
      */
     public function up()
     {
+
+        Schema::dropIfExists('cheques');
+        
         Schema::create('cheques', function (Blueprint $table)
         {
             $table->increments('id');
@@ -34,7 +37,7 @@ class CreateChequesTable extends Migration
 
             $table->integer('currency_id')->unsigned()->nullable(false);
             $table->integer('customer_id')->unsigned()->nullable(false);    // Drawer or cheque issuer; They sign the cheque
-            $table->string('drawee_bank_id', 64)->nullable(false);          // Deudor, librado
+            $table->integer('drawee_bank_id')->unsigned()->nullable();          // Deudor, librado
             // My company is the payee
 
             $table->timestamps();

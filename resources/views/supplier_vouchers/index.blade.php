@@ -158,11 +158,15 @@
 	<tbody>
 	@foreach ($payments as $payment)
 		<tr>
-			<td>{{ $payment->id }}</td>
+			<td>{{ $payment->id }}
+@if( $payment->is_down_payment)
+        <a href="{{ URL::to('supplierdownpayments/' . optional(optional($payment->downpaymentdetail)->downpayment)->id . '/edit') }}" class="btn btn-xs alert-danger" title="{{l('Down Payment') }}" target="_blank">&nbsp;<i class="fa fa-money"></i>&nbsp;</a>
+@endif
+      </td>
 			<td>
           <a href="{{ URL::to('supplierinvoices/' . optional($payment->supplierInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplierInvoice->document_reference or '' }}</a></td>
 			<td>
-          <a href="{{ URL::to('suppliers/' . optional(optional($payment->supplierInvoice)->supplier)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplierInvoice->supplier->name_regular or '' }}</a></td>
+          <a href="{{ URL::to('suppliers/' . optional($payment->supplier)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplier->name_regular }}</a></td>
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
@@ -244,7 +248,7 @@
             	@endif
             	{{\App\Payment::getStatusName($payment->status)}}</span>
 
-              @if ( $payment->status == 'paid' )
+              @if ( $payment->status == 'paid' && !$payment->is_down_payment)
 {{--                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') ) --}}
 
                     <a href="{{ route('suppliervoucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 

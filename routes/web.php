@@ -265,6 +265,33 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get( 'cheques/{id}/attachment/{aid}',   'ChequesController@attachmentShow'   )->name('cheques.attachment.show'   );
         Route::delete('cheques/{id}/attachment/{aid}', 'ChequesController@attachmentDestroy')->name('cheques.attachment.destroy');
 
+/*
+        Route::group(['prefix' => 'customers'], function ()
+        {
+                Route::resource('downpayments',         'CustomerDownPaymentsController'      )->names('customer.downpayments');
+                Route::resource('downpayments.details', 'CustomerDownPaymentDetailsController')->names('customer.downpayments.details');
+        });
+*/
+
+        Route::resource('supplierdownpayments',         'SupplierDownPaymentsController'      )->names('supplier.downpayments');
+        Route::resource('supplierdownpayments.details', 'SupplierDownPaymentDetailsController')->names('supplier.downpayments.details');
+
+        Route::get('supplierdownpayments/create/withdocument/{document}', 'SupplierDownPaymentsController@createWithDocument')->name('supplierorder.create.downpayment');
+
+        Route::get('supplierdownpayments/{id}/getdetails',         'SupplierDownPaymentsController@getDetails' )->name('supplier.downpayment.getdetails' );
+        Route::post('supplierdownpayments/sortlines', 'SupplierDownPaymentsController@sortLines')->name('supplier.downpayment.sortlines');
+
+        Route::get('supplierdownpayments/{id}/pay',    'SupplierDownPaymentsController@payCheque'   )->name('supplier.downpayment.pay'   );
+        Route::get('supplierdownpayments/{id}/bounce', 'SupplierDownPaymentsController@bounceCheque')->name('supplier.downpayment.bounce');
+
+//        Route::get( 'export/downpayments', 'SupplierDownPaymentsController@export' )->name('supplier.downpayments.export');
+        
+        Route::post('supplierdownpayments/{id}/attachment',         'SupplierDownPaymentsController@attachmentStore'  )->name('supplier.downpayments.attachment.store'  );
+        Route::get( 'supplierdownpayments/{id}/attachment/{aid}',   'SupplierDownPaymentsController@attachmentShow'   )->name('supplier.downpayments.attachment.show'   );
+        Route::delete('supplierdownpayments/{id}/attachment/{aid}', 'SupplierDownPaymentsController@attachmentDestroy')->name('supplier.downpayments.attachment.destroy');
+
+
+
         Route::resource('countries',        'CountriesController');
         Route::resource('countries.states', 'StatesController');
         Route::get('countries/{countryId}/getstates',   array('uses'=>'CountriesController@getStates', 

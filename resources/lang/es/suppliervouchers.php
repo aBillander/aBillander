@@ -79,4 +79,7 @@ return [
 
 	'Payment Type' => 'Tipo de Pago',
 
+
+	'Down Payment' => 'Anticipo',
+
 ];

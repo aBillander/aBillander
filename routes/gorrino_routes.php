@@ -271,6 +271,21 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+/*
+
+
+
+ALTER TABLE `customer_orders` ADD `prices_entered_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+ALTER TABLE `customer_shipping_slips` ADD `prices_entered_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+ALTER TABLE `customer_invoices` ADD `prices_entered_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+
+ALTER TABLE `customer_orders` ADD `round_prices_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+// ALTER TABLE `customer_shipping_slips` ADD `round_prices_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+ALTER TABLE `customer_invoices` ADD `round_prices_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+
+
+
+*/
 
 	// 
 	// 2021-02-13

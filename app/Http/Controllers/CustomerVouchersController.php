@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Customer;
 
 use App\Payment;
+use App\PaymentType;
 use App\Configuration;
 
 use Excel;
@@ -55,6 +56,7 @@ class CustomerVouchersController extends Controller
 						->with('paymentable.customer')
 						->with('paymentable.customer.bankaccount')
 						->where('payment_type', 'receivable')
+						->with('chequedetail')
 						->with('bankorder')
 						->orderBy('due_date', 'desc');		// ->get();
 
@@ -63,6 +65,8 @@ class CustomerVouchersController extends Controller
         $payments->setPath('customervouchers');
 
         $statusList = Payment::getStatusList();
+
+        $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         $sdds = SepaDirectDebit::where('status', 'pending')->orWhere('status', 'confirmed')
         						->orderBy('document_date', 'desc')->orderBy('id', 'desc')
@@ -78,7 +82,7 @@ class CustomerVouchersController extends Controller
 
         // abi_r($sddList);die();
 
-        return view('customer_vouchers.index', compact('payments', 'statusList', 'sddList'));
+        return view('customer_vouchers.index', compact('payments', 'statusList', 'payment_typeList', 'sddList'));
 	}
 
     /**

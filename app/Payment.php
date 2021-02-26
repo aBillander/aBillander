@@ -365,6 +365,11 @@ class Payment extends Model {
                 });
         }
 
+        if (array_key_exists('payment_type_id', $params) && $params['payment_type_id'])
+        {
+            $query->where('payment_type_id', $params['payment_type_id']);
+        }
+
         if (isset($params['name']) && $params['name'] != '') {
             $name = $params['name'];
 

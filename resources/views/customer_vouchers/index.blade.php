@@ -122,6 +122,15 @@
 
 </div>
 
+<div class="row">
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('payment_type_id', l('Payment Type')) !!}
+    {!! Form::select('payment_type_id', array('' => l('All', [], 'layouts')) + $payment_typeList, null, array('class' => 'form-control')) !!}
+</div>
+
+</div>
+
                 {!! Form::close() !!}
             </div>
         </div>
@@ -172,12 +181,16 @@
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
 			<td class="text-right">{{ $payment->as_money_amount('amount') }}</td>
 
-      <td>{{ optional($payment->paymenttype)->name }} 
+      <td class="button-pad">{{ optional($payment->paymenttype)->name }} 
 
-@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) && $payment->chequedetail )
+@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) )
+  @if( $payment->chequedetail )
 
               <a class="btn btn-xs btn-warning" href="{{ URL::to('cheques/' . $payment->chequedetail->cheque_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
 
+  @else
+              <i class="fa fa-exclamation-triangle btn-xs alert-danger" title="{{ l('Pending to receive') }}"></i>
+  @endif
 @endif
       </td>
 

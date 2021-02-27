@@ -83,9 +83,9 @@
             {{ $document->shippingaddress->state->name }}
 
 
-			@if ( $document->shippingaddress->mail )
+			@if ( $document->shippingaddress->email )
 
-				<div class="billing-email">{{ $document->shippingaddress->mail }}</div>
+				<div class="billing-email">{{ $document->shippingaddress->email }}</div>
 
 			@endif
             

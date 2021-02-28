@@ -96,7 +96,9 @@ else
     </div>
 </div>
 
-@if ($downpayment->status != 'applied')
+@if ( isset( $downpayment ) && ($downpayment->status == 'applied') )
+
+@else
 
 	{!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 @endif

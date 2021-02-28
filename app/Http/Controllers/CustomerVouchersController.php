@@ -701,9 +701,11 @@ class CustomerVouchersController extends Controller
 
 		$payments = $this->payment
 	        			->filter( $request->all() )
-						->with('paymentable')
-						->with('paymentable.customer')
-						->with('paymentable.customer.bankaccount')
+						->with('customer')
+						->with('customerinvoice')
+//						->with('paymentable')
+//						->with('paymentable.customer')
+//						->with('paymentable.customer.bankaccount')
 						->where('payment_type', 'receivable')
 						->with('bankorder')
 						->orderBy('due_date', 'desc')
@@ -741,6 +743,11 @@ class CustomerVouchersController extends Controller
 
         }
 
+        if ($request->input('customer_id') > 0)
+        	$ribbon2 = '['.$request->input('customer_id').'] ' . $request->input('autocustomer_name');
+        else
+        	$ribbon2 = 'Todos';
+
         //
 
         $auto_direct_debit = $request->input('auto_direct_debit', -1);		// Todos, por defecto!!!
@@ -749,17 +756,17 @@ class CustomerVouchersController extends Controller
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Recibos de Clientes -::- '.date('d M Y H:i:s'), '', '', '', '', '', '', '', '', '', '', '', '', ''];		//, date('d M Y H:i:s')];
+        $data[] = ['Recibos de Clientes -::- '.date('d M Y H:i:s'), '', '', '', '', '', '', '', '', '', '', '', '', '', ''];		//, date('d M Y H:i:s')];
         $data[] = ['Fecha de Vencimiento: ' . $ribbon];
         $data[] = ['Estado: ' . $request->input('status')];
-        $data[] = ['Cliente: ' . '['.$request->input('customer_id').'] ' . $request->input('autocustomer_name')];
+        $data[] = ['Cliente: ' . $ribbon2];
         $data[] = ['Remesable: ' . $ribbon1];
         $data[] = [''];
 
 
         // Define the Excel spreadsheet headers
         $headers = [ 
-                    'id', 'document_reference', 'customer_id', 'CUSTOMER_NAME', 'name', 
+                    'id', 'document_reference', 'DOCUMENT_DATE', 'customer_id', 'CUSTOMER_NAME', 'name', 
                     'due_date', 'payment_date', 'amount', 
                     'payment_type_id', 'PAYMENT_TYPE_NAME', 'auto_direct_debit', 
 
@@ -781,11 +788,15 @@ class CustomerVouchersController extends Controller
             }
 //            $row['TAX_NAME']          = $category->tax ? $category->tax->name : '';
 
+            $row['due_date'] = abi_date_short($row['due_date']);
+
             $row['CURRENCY_NAME'] = optional($payment->currency)->name;
             $row['PAYMENT_TYPE_NAME'] = optional($payment->paymenttype)->name;
             $row['customer_id'] = optional($payment->customer)->id;
             $row['CUSTOMER_NAME'] = optional($payment->customer)->name_regular;
             $row['BANK_NAME'] = optional($payment->bank)->name;
+
+            $row['DOCUMENT_DATE'] = abi_date_short(optional($payment->customerinvoice)->document_date);
 
             if ($payment->auto_direct_debit && $payment->bankorder )
             	$row['auto_direct_debit'] = $payment->bankorder->document_reference;
@@ -800,7 +811,7 @@ class CustomerVouchersController extends Controller
         // Totals
 
         $data[] = [''];
-        $data[] = ['', '', '', '', '', '', 'Total:', $total_amount * 1.0];
+        $data[] = ['', '', '', '', '', '', '', 'Total:', $total_amount * 1.0];
 
 
         $sheetName = 'Recibos de Clientes' ;
@@ -832,16 +843,17 @@ class CustomerVouchersController extends Controller
                 ]);
 
                 $sheet->setColumnFormat(array(
-                    'F' => 'dd/mm/yyyy',
+                    'C' => 'dd/mm/yyyy',
                     'G' => 'dd/mm/yyyy',
+                    'H' => 'dd/mm/yyyy',
 //                    'E' => '0.00%',
-                    'H' => '0.00',
+                    'I' => '0.00',
 //                    'F' => '@',
                 ));
                 
                 $n = count($data);
                 $m = $n - 1;
-                $sheet->getStyle("H$n:H$n")->applyFromArray([
+                $sheet->getStyle("I$n:I$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

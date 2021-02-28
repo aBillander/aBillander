@@ -330,6 +330,8 @@ Bah!
 			$data = array(
 				'from'     => abi_mail_from_address(),			// config('mail.from.address'  ),
 				'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
+				'replyTo'       => $customer_user->email,			// $cinvoice->customer->address->email,
+				'replyToName'   => $customer_user->full_name,		// $cinvoice->customer->name_fiscal,
 				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
 				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
 

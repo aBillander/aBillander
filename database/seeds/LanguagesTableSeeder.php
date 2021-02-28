@@ -12,10 +12,10 @@ class LanguagesTableSeeder extends Seeder {
             'name'      => 'English' ,
             'iso_code'     => 'en' ,
             'language_code'  => 'en-en' ,
-            'date_format_lite' => 'm/j/Y' ,
-            'date_format_full' => 'm/j/Y H:i:s' ,
-            'date_format_lite_view'  => 'm/j/Y' ,
-            'date_format_full_view'  => 'm/j/Y H:i:s' ,
+            'date_format_lite' => 'n/j/Y' ,
+            'date_format_full' => 'n/j/Y H:i:s' ,
+            'date_format_lite_view'  => 'm/d/yy' ,
+            'date_format_full_view'  => 'm/d/yy H:i:s' ,
             'active'    => '1' ,
         ] );
   

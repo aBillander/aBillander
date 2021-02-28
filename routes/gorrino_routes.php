@@ -288,9 +288,6 @@ ALTER TABLE `customer_invoices` ADD `round_prices_with_tax` TINYINT UNSIGNED NUL
 */
 
 	// 
-	// 2021-02-13
-	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `invoice_by_shipping_address` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `is_invoiceable`;");
-
 
 	// 2021-02-12
 	
@@ -305,6 +302,10 @@ ALTER TABLE `customer_invoices` ADD `round_prices_with_tax` TINYINT UNSIGNED NUL
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheques` CHANGE `drawee_bank_id` `drawee_bank_id` INT(10) UNSIGNED NULL DEFAULT NULL;");
 	
 //	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheques` CHANGE `customer_id` `customer_id` INT(10) UNSIGNED NULL;");
+
+
+	// 2021-02-13
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `invoice_by_shipping_address` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `is_invoiceable`;");
 
 
 

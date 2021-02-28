@@ -42,12 +42,12 @@
             		<span class="label label-info">
             	@elseif ( $downpayment->status == 'bounced' )
             		<span class="label label-danger">
-            	@elseif ( $downpayment->status == 'paid' )
+            	@elseif ( $downpayment->status == 'applied' )
             		<span class="label label-success">
             	@else
             		<span>
             	@endif
-            	{{l( $downpayment->status, [], 'appmultilang' )}}</span></td>
+            	{{ $downpayment->status_name }}</span></td>
 
 			<td class="text-right">
                 @if ( $downpayment->status == 'applied' )

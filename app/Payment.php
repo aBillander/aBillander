@@ -365,6 +365,15 @@ class Payment extends Model {
                 });
         }
 
+        if (array_key_exists('supplier_id', $params) && $params['supplier_id'])
+        {
+            $id = $params['supplier_id'];
+
+            $query->whereHas('supplier', function ($query) use ($id) {
+                    $query->where('id', $id);
+                });
+        }
+
         if (array_key_exists('payment_type_id', $params) && $params['payment_type_id'])
         {
             $query->where('payment_type_id', $params['payment_type_id']);

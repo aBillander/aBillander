@@ -77,8 +77,11 @@ class SupplierInvoice extends Billable
     public function getUncloseableAttribute()
     {
         if ( $this->status != 'closed' ) return false;
+        
+        // Payments other than Down Payments
+        $paids = $this->payments()->where('is_down_payment', 0)->where('status', 'paid')->get();
 
-        if ( $this->payment_status != 'pending' ) return false;
+        if ( $paids->count() > 0 ) return false;
 
 //        if ( ! $this->rightAscriptions->isEmpty() ) return false;
 

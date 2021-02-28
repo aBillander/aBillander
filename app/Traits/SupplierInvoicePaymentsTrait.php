@@ -37,7 +37,7 @@ trait SupplierInvoicePaymentsTrait
 
 
         // Clean record so far.
-        // Lets star it over
+        // Lets start it over
 
         // Apply Down Payments
         $total_down_payment = 0.0;
@@ -133,9 +133,12 @@ trait SupplierInvoicePaymentsTrait
             // ToDo: update Invoice next due date
         }
 
-        $this->payment_status = 'pending';
-        $this->open_balance = $ototal;
-        $this->save();
+        // Update Document
+        $this->checkPaymentStatus();
+        // $this->save();    <= Not needed, since checkPaymentStatus() saves the model
+
+        // Update Supplier Risk
+        // $this->supplier->calculateRisk();    <= Not needed, since no new payment is recorded
 
 
         return true;
@@ -173,9 +176,8 @@ trait SupplierInvoicePaymentsTrait
         // Clean record so far.
 
 
-        $this->payment_status = 'pending';
-        $this->open_balance = $this->total_tax_incl;
-        $this->save();
+        // Update Document
+        $this->checkPaymentStatus();
 
 
         return true;

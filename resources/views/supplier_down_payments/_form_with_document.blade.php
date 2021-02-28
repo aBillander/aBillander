@@ -83,10 +83,10 @@ else
 
 <div class="row">
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('drawee_bank_id') ? 'has-error' : '' }}">
-            {!! Form::label('drawee_bank_id', l('Drawee Bank'), ['class' => 'control-label']) !!}
-            {!! Form::select('drawee_bank_id', ['' => l('-- Please, select --', [], 'layouts')] + $bankList, null, array('class' => 'form-control', 'id' => 'drawee_bank_id')) !!}
-            {!! $errors->first('drawee_bank_id', '<span class="help-block">:message</span>') !!}
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('bank_id') ? 'has-error' : '' }}">
+            {!! Form::label('bank_id', l('Drawee Bank'), ['class' => 'control-label']) !!}
+            {!! Form::select('bank_id', ['' => l('-- Please, select --', [], 'layouts')] + $bankList, null, array('class' => 'form-control', 'id' => 'bank_id')) !!}
+            {!! $errors->first('bank_id', '<span class="help-block">:message</span>') !!}
          </div>
 
     <div class="form-group col-lg-7 col-md-7 col-sm-7 {{ $errors->has('notes') ? 'has-error' : '' }}">

@@ -28,7 +28,7 @@ class DownPayment extends Model
     protected $fillable = [
     		'reference', 'name', 'amount', 
             'date_of_issue', 'due_date', 'payment_date', 'posted_at',
-            'payment_type_id', 'notes', 'status', 
+            'payment_type_id', 'bank_id', 'notes', 'status', 
             'currency_id', 'currency_conversion_rate', 'customer_id', 'supplier_id',
             'customer_order_id', 'supplier_order_id',
     ];

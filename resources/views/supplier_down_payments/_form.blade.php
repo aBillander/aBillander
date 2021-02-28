@@ -51,10 +51,10 @@
         {!! Form::hidden('supplier_id', null, array('id' => 'supplier_id')) !!}
     </div>
 
-         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('drawee_bank_id') ? 'has-error' : '' }}">
-            {!! Form::label('drawee_bank_id', l('Drawee Bank'), ['class' => 'control-label']) !!}
-            {!! Form::select('drawee_bank_id', ['' => l('-- Please, select --', [], 'layouts')] + $bankList, null, array('class' => 'form-control', 'id' => 'drawee_bank_id')) !!}
-            {!! $errors->first('drawee_bank_id', '<span class="help-block">:message</span>') !!}
+         <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('bank_id') ? 'has-error' : '' }}">
+            {!! Form::label('bank_id', l('Drawee Bank'), ['class' => 'control-label']) !!}
+            {!! Form::select('bank_id', ['' => l('-- Please, select --', [], 'layouts')] + $bankList, null, array('class' => 'form-control', 'id' => 'bank_id')) !!}
+            {!! $errors->first('bank_id', '<span class="help-block">:message</span>') !!}
          </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('amount') ? 'has-error' : '' }}">
@@ -134,11 +134,11 @@
     $(document).ready(function() {
 
       @if ( $cheque ?? null )
-        getSupplierData( {{ $cheque->supplier->id }}, {{ $cheque->drawee_bank_id }} );
+        getSupplierData( {{ $cheque->supplier->id }}, {{ $cheque->bank_id }} );
 
         $("#autosupplier_name").val('{{ $cheque->supplier->name_regular }}');
         $("#supplier_id").val('{{ $cheque->supplier->id }}');
-        // $("#drawee_bank_id").val('{{ $cheque->drawee_bank_id }}');
+        // $("#bank_id").val('{{ $cheque->bank_id }}');
       @else
         $("#autosupplier_name").val('');
         $("#supplier_id").val('');
@@ -171,7 +171,7 @@
             };
 
 
-        function getSupplierData( supplier_id, drawee_bank_id = 0 )
+        function getSupplierData( supplier_id, bank_id = 0 )
         {
             var token = "{{ csrf_token() }}";
 
@@ -212,22 +212,22 @@
                     $('#invoicing_address_id').val(response.invoicing_address_id);
 {{--
                     // https://www.youtube.com/watch?v=FHQh-IGT7KQ
-                    $('#drawee_bank_id').empty();
+                    $('#bank_id').empty();
 
-    //                $('#drawee_bank_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
+    //                $('#bank_id').append('<option value="0" disable="true" selected="true">=== Select Address ===</option>');
 
                     $.each(response.addresses, function(index, element){
-                      $('#drawee_bank_id').append('<option value="'+ element.id +'">'+ element.document_number +'</option>');
+                      $('#bank_id').append('<option value="'+ element.id +'">'+ element.document_number +'</option>');
                     });
 
-                    if ( response.drawee_bank_id > 0 ) {
-                      $('#drawee_bank_id').val(response.drawee_bank_id);
+                    if ( response.bank_id > 0 ) {
+                      $('#bank_id').val(response.bank_id);
                     } else {
-                      $('#drawee_bank_id').val(response.invoicing_address_id);
+                      $('#bank_id').val(response.invoicing_address_id);
                     }
 
-                    if ( drawee_bank_id > 0 )
-                      $("#drawee_bank_id").val( drawee_bank_id );
+                    if ( bank_id > 0 )
+                      $("#bank_id").val( bank_id );
 
                     $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
 

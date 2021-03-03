@@ -177,7 +177,11 @@
             	</a>
             </td>
             <td>
-                @if ( $document->hasShippingAddress() )
+                
+                {{-- @if ( $document->hasShippingAddress() ) --}}
+                @if ( $document->customer->nbr_addresses > 1 )
+
+                ({{ $document->customer->nbr_addresses }})
 
 
 

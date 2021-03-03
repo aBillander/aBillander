@@ -99,6 +99,9 @@ class ProductionSheetOrdersController extends BillableController
 
         $documents = $this->document
                             ->where('production_sheet_id', $id)
+                            ->with(['customer' => function ($query) {
+                                $query->withCount('addresses as nbr_addresses');
+                            }])
 //                            ->with('customer')
                             ->with('currency')
 //                            ->with('paymentmethod')

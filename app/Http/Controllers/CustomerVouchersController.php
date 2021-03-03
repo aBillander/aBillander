@@ -296,7 +296,7 @@ class CustomerVouchersController extends Controller
         }
 
 		return redirect()->back()
-				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') .  $request->input('payment_date_form'));
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $payments->count()], 'layouts') .  $request->input('payment_date_form'));
 	}
 
 

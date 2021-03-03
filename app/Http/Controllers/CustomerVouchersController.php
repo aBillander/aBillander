@@ -119,7 +119,9 @@ class CustomerVouchersController extends Controller
 
         $statusList = Payment::getStatusList();
 
-        return view('customer_vouchers.index_by_customer', compact('customer', 'payments', 'statusList', 'items_per_page'));
+        $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+        return view('customer_vouchers.index_by_customer', compact('customer', 'payments', 'statusList', 'payment_typeList', 'items_per_page'));
     }
 
 	/**
@@ -201,6 +203,7 @@ class CustomerVouchersController extends Controller
 		return view('customer_vouchers.edit', compact('payment', 'action' , 'back_route'));
 	}
 
+	// SepaSpain Direct Debit
 	public function payVouchers(Request $request)
 	{
         // Dates (cuen)
@@ -227,6 +230,55 @@ class CustomerVouchersController extends Controller
 
         $payment_date = $request->input('payment_date');
         $payment_type_id = $request->input('payment_type_id', null);
+
+        // abi_r($request->all());die();
+
+        // Do the Mambo!
+        foreach ( $payments as $payment ) 
+        {
+        	$payment->payment_date = $payment_date;
+        	$payment->payment_type_id = $payment_type_id;
+
+			$payment->status   = 'paid';
+			$payment->save();
+
+			// Update Customer Risk
+			event(new CustomerPaymentReceived($payment));
+        }
+
+		return redirect()->back()
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') .  $request->input('payment_date_form'));
+	}
+
+
+	public function payBulk(Request $request)
+	{
+        // Dates (cuen)
+        $this->mergeFormDates( ['bulk_payment_date'], $request );
+
+        // abi_r($request->all());die();
+		
+		// Validate input (to do)
+		$rules = [
+            'bulk_payment_date' => 'required|date',
+            'bulk_payment_type_id' => 'exists:payment_types,id',
+		];
+        $this->validate($request, $rules);
+
+		// $payment_date = ;
+
+		$list = $request->input('payment_group', []);
+
+        if ( count( $list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts') . l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+
+		// abi_r($list);die();
+        $payments = $this->payment->whereIn('id', $list)->where('status', 'pending')->get();
+
+        $payment_date = $request->input('bulk_payment_date');
+        $payment_type_id = $request->input('bulk_payment_type_id');
 
         // abi_r($request->all());die();
 

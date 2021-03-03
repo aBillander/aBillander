@@ -797,7 +797,10 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/pay'  , 'CustomerVouchersController@pay');
         Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('customervoucher.unlink');
 
+        // SepaSpain Direct Debit
         Route::post('customervouchers/payvouchers'  , 'CustomerVouchersController@payVouchers')->name('customervouchers.payvouchers');
+
+        Route::post('customervouchers/pay/bulk', 'CustomerVouchersController@payBulk')->name('customervouchers.bulk.pay');
 
         Route::post('customervouchers/unlinkvouchers'  , 'CustomerVouchersController@unlinkVouchers')->name('customervouchers.unlinkvouchers');
 

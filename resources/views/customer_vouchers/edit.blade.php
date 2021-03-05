@@ -9,7 +9,7 @@
 	<div class="col-md-6 col-md-offset-3" style="margin-top: 50px">
 		<div class="panel panel-info">
 			<div class="panel-heading">
-				<h3 class="panel-title">{{ l('Edit Customer Voucher') }}
+				<h3 class="panel-title">
 
 @if ( $action == 'pay' )
           {{ l('Pay Customer Voucher') }}

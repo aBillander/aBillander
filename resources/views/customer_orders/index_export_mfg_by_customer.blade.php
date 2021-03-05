@@ -283,7 +283,7 @@
                 -->
 
 {{-- --}}
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 0)
+@if ( 0 )
 
                 <a class="btn btn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/duplicate') }}" title="{{l('Copy', 'layouts')}}"><i class="fa fa-copy"></i></a>
 

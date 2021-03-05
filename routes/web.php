@@ -218,6 +218,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/helferin/reports/consumption'  , 'HelferinController@reportConsumption'  )->name('helferin.reports.consumption');
         Route::post('/helferin/reports/customer/vouchers'  , 'HelferinController@reportCustomerVouchers'  )->name('helferin.reports.customer.vouchers');
         Route::post('/helferin/reports/customer/invoices'  , 'HelferinController@reportCustomerInvoices'  )->name('helferin.reports.customer.invoices');
+        Route::post('/helferin/reports/carriers'  , 'HelferinController@reportCarriers'  )->name('helferin.reports.carriers');
 
         Route::get('/helferin/home/mfg', 'HelferinController@mfgIndex')->name('helferin.home.mfg');
         Route::post('/helferin/reports/reorder'       , 'HelferinController@reportProductReorder'       )->name('helferin.reports.reorder');
@@ -253,8 +254,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('cheques/{id}/getdetails',         'ChequesController@getDetails' )->name('cheque.getdetails' );
         Route::post('cheques/sortlines', 'ChequesController@sortLines')->name('cheque.sortlines');
 
-        Route::get('cheques/{id}/pay',    'ChequesController@payCheque'   )->name('cheque.pay'   );
-        Route::get('cheques/{id}/bounce', 'ChequesController@bounceCheque')->name('cheque.bounce');
+        Route::get('cheques/{id}/voucherduedates', 'ChequesController@voucherDueDates')->name('cheque.voucherduedates');
+        Route::get('cheques/{id}/pay',             'ChequesController@payCheque'      )->name('cheque.pay'            );
+        Route::get('cheques/{id}/bounce',          'ChequesController@bounceCheque'   )->name('cheque.bounce'         );
 
         Route::get('cheques/{id}/chequedetail/searchinvoice', 'ChequeDetailsController@searchInvoice')->name('chequedetail.searchinvoice');
         Route::get( 'export/cheques', 'ChequesController@export' )->name('cheques.export');
@@ -262,6 +264,33 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('cheques/{id}/attachment',         'ChequesController@attachmentStore'  )->name('cheques.attachment.store'  );
         Route::get( 'cheques/{id}/attachment/{aid}',   'ChequesController@attachmentShow'   )->name('cheques.attachment.show'   );
         Route::delete('cheques/{id}/attachment/{aid}', 'ChequesController@attachmentDestroy')->name('cheques.attachment.destroy');
+
+/*
+        Route::group(['prefix' => 'customers'], function ()
+        {
+                Route::resource('downpayments',         'CustomerDownPaymentsController'      )->names('customer.downpayments');
+                Route::resource('downpayments.details', 'CustomerDownPaymentDetailsController')->names('customer.downpayments.details');
+        });
+*/
+
+        Route::resource('supplierdownpayments',         'SupplierDownPaymentsController'      )->names('supplier.downpayments');
+        Route::resource('supplierdownpayments.details', 'SupplierDownPaymentDetailsController')->names('supplier.downpayments.details');
+
+        Route::get('supplierdownpayments/create/withdocument/{document}', 'SupplierDownPaymentsController@createWithDocument')->name('supplierorder.create.downpayment');
+
+        Route::get('supplierdownpayments/{id}/getdetails',         'SupplierDownPaymentsController@getDetails' )->name('supplier.downpayment.getdetails' );
+        Route::post('supplierdownpayments/sortlines', 'SupplierDownPaymentsController@sortLines')->name('supplier.downpayment.sortlines');
+
+        Route::get('supplierdownpayments/{id}/pay',    'SupplierDownPaymentsController@payCheque'   )->name('supplier.downpayment.pay'   );
+        Route::get('supplierdownpayments/{id}/bounce', 'SupplierDownPaymentsController@bounceCheque')->name('supplier.downpayment.bounce');
+
+//        Route::get( 'export/downpayments', 'SupplierDownPaymentsController@export' )->name('supplier.downpayments.export');
+        
+        Route::post('supplierdownpayments/{id}/attachment',         'SupplierDownPaymentsController@attachmentStore'  )->name('supplier.downpayments.attachment.store'  );
+        Route::get( 'supplierdownpayments/{id}/attachment/{aid}',   'SupplierDownPaymentsController@attachmentShow'   )->name('supplier.downpayments.attachment.show'   );
+        Route::delete('supplierdownpayments/{id}/attachment/{aid}', 'SupplierDownPaymentsController@attachmentDestroy')->name('supplier.downpayments.attachment.destroy');
+
+
 
         Route::resource('countries',        'CountriesController');
         Route::resource('countries.states', 'StatesController');
@@ -581,7 +610,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         
         Route::resource('salesreps', 'SalesRepsController');
 
-        Route::resource('carriers', 'CarriersController');
+        Route::resource('carriers', 'CarriersController');        
+        Route::get('carriers/ajax/carrier_lookup', 'CarriersController@ajaxCarrierSearch')->name('carriers.ajax.carrierLookup');
 
         Route::resource('manufacturers', 'ManufacturersController');
 
@@ -725,6 +755,9 @@ foreach ($pairs as $pair) {
         Route::post($path.'/{id}/attachment',         $controller.'@attachmentStore'  )->name($path.'.attachment.store'  );
         Route::get($path.'/{id}/attachment/{aid}',    $controller.'@attachmentShow'   )->name($path.'.attachment.show'   );
         Route::delete($path.'/{id}/attachment/{aid}', $controller.'@attachmentDestroy')->name($path.'.attachment.destroy');
+
+        Route::get( $path.'/{id}/change/customer', $controller.'@changeCustomer')->name($path.'.change.customer');
+        Route::post($path.'/update/customer',      $controller.'@updateCustomer')->name($path.'.update.customer');
 }
 
         Route::post('customerquotations/create/order/single',  'CustomerQuotationsController@createSingleOrder')->name('customerquotation.single.order');
@@ -764,7 +797,10 @@ foreach ($pairs as $pair) {
         Route::get('customervouchers/{id}/pay'  , 'CustomerVouchersController@pay');
         Route::post('customervouchers/{id}/unlink', 'CustomerVouchersController@unlink')->name('customervoucher.unlink');
 
+        // SepaSpain Direct Debit
         Route::post('customervouchers/payvouchers'  , 'CustomerVouchersController@payVouchers')->name('customervouchers.payvouchers');
+
+        Route::post('customervouchers/pay/bulk', 'CustomerVouchersController@payBulk')->name('customervouchers.bulk.pay');
 
         Route::post('customervouchers/unlinkvouchers'  , 'CustomerVouchersController@unlinkVouchers')->name('customervouchers.unlinkvouchers');
 

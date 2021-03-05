@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\CustomerInvoiceEmailed;
+use App\Events\CustomerInvoiceEmailing;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

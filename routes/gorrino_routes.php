@@ -20,6 +20,66 @@
 |
 */
 
+
+/* ********************************************************** */
+
+Route::get('/mailable', function () {
+        $customerOrder = \App\CustomerOrder::find(7415);
+        $customer = $customerOrder->customer; 
+
+        $data = [
+            'name' => l('Preparar un Pedido a un Cliente'), 
+            'description' => l('Un Cliente ha realizado un Pedido desde el Centro de Clientes.'), 
+            'url' => route('customerorders.edit', [$customerOrder->id]), 
+            'due_date' => null, 
+            'completed' => 0, 
+            'user_id' => 0,
+        ];
+
+//        $todo = Todo::create($data);
+
+
+		// MAIL stuff
+		try {
+
+			$template_vars = array(
+				'company'       => \App\Context::getContext()->company,
+				'document' => $customerOrder,
+				'customer'       => $customer,
+				'url' => route('customerorders.edit', [$customerOrder->id]),
+				'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
+				'document_date'  => abi_date_short($customerOrder->document_date),
+				'document_total' => $customerOrder->as_money('total_tax_incl'),
+//				'custom_body'   => $request->input('email_body'),
+				'document_probe' => 'admin',
+				);
+
+			$data = array(
+				'from'     => abi_mail_from_address(),			// config('mail.from.address'  ),
+				'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
+				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
+				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
+				'subject'  => l(' :_> [#:num] New Customer Order of :name', ['num' => $template_vars['document_num'], 'name' => $customer->name_regular]),
+
+//				'bcc'      => $customer_user->email,
+				'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
+				);
+
+    return new App\Mail\AbccCustomerOrderMail( $data, $template_vars );
+
+        } catch(\Exception $e) {
+
+        // $logger->log("INFO", 'Email Error');
+
+        // $logger->stop();
+
+            abi_r($e->getMessage());
+        }
+});
+
+
+/* ********************************************************** */
+
 Route::get('f0', function( )
 {
 	// $f=\App\AssemblyOrder::find(3)->delete();
@@ -211,9 +271,42 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+/*
+
+
+
+ALTER TABLE `customer_orders` ADD `prices_entered_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+ALTER TABLE `customer_shipping_slips` ADD `prices_entered_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+ALTER TABLE `customer_invoices` ADD `prices_entered_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+
+ALTER TABLE `customer_orders` ADD `round_prices_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+// ALTER TABLE `customer_shipping_slips` ADD `round_prices_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+ALTER TABLE `customer_invoices` ADD `round_prices_with_tax` TINYINT UNSIGNED NULL AFTER `updated_at`; 
+
+
+
+*/
+
 	// 
+
+	// 2021-02-12
+	
+	Illuminate\Support\Facades\DB::statement("drop table if exists `down_payments`");
+
+	Illuminate\Support\Facades\DB::statement("create table `down_payments` (`id` int unsigned not null auto_increment primary key, `reference` varchar(32) null, `name` varchar(64) not null, `amount` decimal(20, 6) not null default '0', `date_of_issue` date null, `due_date` date null, `payment_date` date null, `posted_at` date null, `currency_id` int unsigned not null, `currency_conversion_rate` decimal(20, 6) not null default '1', `status` varchar(32) not null default 'pending', `notes` text null, `payment_type_id` int null, `customer_id` int unsigned null, `supplier_id` int unsigned null, `customer_order_id` int unsigned null, `supplier_order_id` int unsigned null, `bank_id` int unsigned null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	
+	Illuminate\Support\Facades\DB::statement("drop table if exists `down_payment_details`");
+	
+	Illuminate\Support\Facades\DB::statement("create table `down_payment_details` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `name` varchar(128) not null, `amount` decimal(20, 6) not null default '0', `payment_id` int unsigned null, `document_invoice_id` int unsigned null, `document_invoice_reference` varchar(64) null, `down_payment_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheques` CHANGE `drawee_bank_id` `drawee_bank_id` INT(10) UNSIGNED NULL DEFAULT NULL;");
+	
+//	Illuminate\Support\Facades\DB::statement("ALTER TABLE `cheques` CHANGE `customer_id` `customer_id` INT(10) UNSIGNED NULL;");
+
+
 	// 2021-02-13
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `invoice_by_shipping_address` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `is_invoiceable`;");
+
 
 
 	// 2021-02-08

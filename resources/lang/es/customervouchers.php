@@ -86,5 +86,9 @@ return [
 
 	'Cheque' => 'Cheque',
 	'This Voucher is associated with a Check' => 'Este Recibo está asociado a un Cheque',
+	'Pending to receive' => 'Pendiente de recibir',
+
+	'Pay multiple' => 'Pagar varios',
+	'Pay multiple Vouchers at once' => 'Pagar varios Recibos de una vez',
 
 ];

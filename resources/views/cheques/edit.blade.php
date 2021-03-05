@@ -9,6 +9,9 @@
         <div class="page-header">
             <div class="pull-right">
 
+            <a class="btn xbtn-sm alert-danger" xstyle="margin-right: 36px; margin-left: 36px;" href="{{ URL::to('cheques/' . $cheque->id  . '/voucherduedates' ) }}" title="{{l('Set Voucher Due Dates according to Cheque Due Date')}}"><i class="fa fa-calendar"></i> &nbsp;{{l('Set Voucher Due Dates')}}
+            </a>
+
       @if ($cheque->status != 'paid')
 
             <a class="btn xbtn-sm btn-blue" style="margin-right: 36px; margin-left: 36px;" href="{{ URL::to('cheques/' . $cheque->id  . '/pay' ) }}" title="{{l('Deposit Cheque')}}"><i class="fa fa-money"></i> &nbsp;{{l('Deposit Cheque')}}

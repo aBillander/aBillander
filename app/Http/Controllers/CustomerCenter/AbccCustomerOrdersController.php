@@ -96,7 +96,8 @@ class AbccCustomerOrdersController extends Controller {
 			return $this->storeAsQuotation( $request );
         
 
-        $send_confirmation_email = $request->input('send_confirmation_email', false);
+        $confirmation_email = $request->input('send_confirmation_email', 'false');
+        $send_confirmation_email = $confirmation_email == 'true' ? true : false;
 
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
@@ -315,7 +316,8 @@ Bah!
 		try {
 
 			$template_vars = array(
-//				'company'       => $company,
+				'company'       => \App\Context::getContext()->company,
+				'document' => $customerOrder,
 				'customer'       => $customer,
 				'url' => route('customerorders.edit', [$customerOrder->id]),
 				'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
@@ -328,9 +330,14 @@ Bah!
 			$data = array(
 				'from'     => abi_mail_from_address(),			// config('mail.from.address'  ),
 				'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
+				'replyTo'       => $customer_user->email,			// $cinvoice->customer->address->email,
+				'replyToName'   => $customer_user->full_name,		// $cinvoice->customer->name_fiscal,
 				'to'       => abi_mail_from_address(),			// $cinvoice->customer->address->email,
 				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
-				'subject'  => l(' :_> [#:num] New Customer Order of :name', ['num' => $template_vars['document_num'], 'name' => $customer->name_regular]),
+
+				// [La Extranatural] Nuevo pedido (6837) - 21 febrero, 2021
+				'subject'  => l(' :_> [#:num] New Customer Order of :name', ['num' => $template_vars['document_num'], 'name' => $customer->name_regular]).
+								' ('.$template_vars['document_date'].')',
 
 //				'bcc'      => $customer_user->email,
 				'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
@@ -349,6 +356,8 @@ Bah!
 
 			});
 */
+			// return new \App\Mail\AbccCustomerOrderMail( $data, $template_vars );
+
 			$send = Mail::to( abi_mail_from_address() )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
 
         // $logger->log("INFO", 'Email sent');
@@ -374,7 +383,8 @@ Bah!
 			try {
 
 				$template_vars = array(
-	//				'company'       => $company,
+					'company'       => \App\Context::getContext()->company,
+					'document' => $customerOrder,
 					'customer'       => $customer,
 					'url' => route('abcc.orders.show', [$customerOrder->id]),
 					'document_num'   => $customerOrder->document_reference ?: $customerOrder->id,
@@ -389,7 +399,8 @@ Bah!
 					'fromName' => abi_mail_from_name(),				// config('mail.from.name'    ),
 					'to'       => $customer_user->email,			// $cinvoice->customer->address->email,
 					'toName'   => $customer_user->full_name,		// $cinvoice->customer->name_fiscal,
-					'subject'  => l(' :_> :company - New Order #:num', ['num' => $template_vars['document_num'], 'company' => abi_mail_from_name()]),
+					'subject'  => l(' :_> :company - New Order #:num', ['num' => $template_vars['document_num'], 'company' => abi_mail_from_name()]).
+								' ('.$template_vars['document_date'].')',
 
 //					'bcc'      => $customer_user->email,
 					'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,

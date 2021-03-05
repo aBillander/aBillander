@@ -1,0 +1,22 @@
+
+https://developer.wordpress.org/rest-api/using-the-rest-api/pagination/
+
+https://wordpress.org/support/topic/woocommerce-rest-api-error-401/
+
+- Woocommerce REST API not accessible with SSL
+
+https://wordpress.org/support/topic/woocommerce-rest-api-not-accessible-2/
+
+HTTP Headers sent information in what is allowed when communicating with other parties. 
+You probably need to update your .htaccess file so that it includes the following rule: 
+
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+
+Another solution (.htaccess file):
+
+https://wordpress.org/support/topic/woocommerce-rest-api-error-401/
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+https://github.com/marblejs/marble/issues/311
+NGINX: looks like they use a lower-cased hash of the header name to prevent duplicates for incoming headers (like your solution no. 2) But their http proxy module only accept lower case htt header names and otherwise it crashes (like your solution no. 1 but with lower cased letters). Source: https://www.nginx.com/resources/wiki/start/topics/examples/headers_management/

@@ -83,9 +83,9 @@
             {{ $document->warehouse->address->state->name }}
 
 
-			@if ( $document->warehouse->address->mail )
+			@if ( $document->warehouse->address->email )
 
-				<div class="billing-email">{{ $document->warehouse->address->mail }}</div>
+				<div class="billing-email">{{ $document->warehouse->address->email }}</div>
 
 			@endif
             
@@ -132,9 +132,9 @@
             {{ $document->warehousecounterpart->address->state->name }}
 
 
-			@if ( $document->warehousecounterpart->address->mail )
+			@if ( $document->warehousecounterpart->address->email )
 
-				<div class="billing-email">{{ $document->warehousecounterpart->address->mail }}</div>
+				<div class="billing-email">{{ $document->warehousecounterpart->address->email }}</div>
 
 			@endif
             

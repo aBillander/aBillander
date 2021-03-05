@@ -37,7 +37,13 @@
 {{-- https://stackoverflow.com/questions/17543843/skip-model-accessor --}}
 		<tr>
 			<td>{{ $payment->id }}</td>
-			<td>{{ $payment->name }}</td>
+			<td>
+
+@if( $payment->is_down_payment)
+        <a href="{{ URL::to('supplierdownpayments/' . optional(optional($payment->downpaymentdetail)->downpayment)->id . '/edit') }}" class="btn btn-xs alert-danger" title="{{l('Down Payment') }}" target="_blank">&nbsp;<i class="fa fa-money"></i>&nbsp;</a>
+@endif
+
+				{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
@@ -128,3 +134,11 @@
   <span id="msg-success-update-counter" class="badge"></span>
   <strong>{!!  l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
 </div>
+
+@if ($downpayments->count())
+<div id="panel_document_downpayments" class="">
+  
+    @include($view_path.'._panel_document_down_payments')
+
+</div>
+@endif

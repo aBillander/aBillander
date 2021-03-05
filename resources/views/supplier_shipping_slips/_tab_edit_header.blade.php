@@ -182,7 +182,7 @@
 
 @endif
 
-         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('down_payment') ? 'has-error' : '' }}">
+         <div class=" hide  form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('down_payment') ? 'has-error' : '' }}">
             {{ l('Down Payment') }}
             {!! Form::text('down_payment', null, array('class' => 'form-control', 'id' => 'down_payment')) !!}
             {!! $errors->first('down_payment', '<span class="help-block">:message</span>') !!}

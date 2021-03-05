@@ -17,6 +17,10 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
+        <button name="b_pay_multiple" id="b_pay_multiple" class="btn btn-sm btn-blue" htype="button" title="{{l('Pay multiple Vouchers at once')}}"><i class="fa fa-money"></i>
+           &nbsp; {{l('Pay multiple')}}
+        </button>
+
         <a href="{{ route('customervouchers.export', ['customer_id' => $customer->id, 'autocustomer_name' => $customer->name_regular] + Request::all()) }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
@@ -148,6 +152,60 @@
 
 
 
+{!! Form::open( ['method' => 'POST', 'id' => 'form-select-payments'] ) !!}
+
+@php
+  $display = $errors->has('bulk_payment_date') || $errors->has('bulk_payment_type_id');
+@endphp
+
+
+<div name="pay_multiple" id="pay_multiple" 
+@if ( !$display )
+     style="display:none"
+@endif
+>
+<div class="row" style="padding: 0 20px">
+    <div class="col-md-12 xcol-md-offset-3">
+        <div class="panel panel-info">
+            <div class="panel-heading"><h3 class="panel-title">{{ l('Pay multiple Vouchers at once') }}</h3></div>
+            <div class="panel-body">
+
+
+
+<div class="row">
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('bulk_payment_date') ? 'has-error' : '' }}">
+        {!! Form::label('bulk_payment_date_form', l('Payment Date')) !!}
+        {!! Form::text('bulk_payment_date_form', null, array('id' => 'bulk_payment_date_form', 'class' => 'form-control')) !!}
+        {!! $errors->first('bulk_payment_date', '<span class="help-block">:message</span>') !!}
+    </div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('bulk_payment_type_id') ? 'has-error' : '' }}">
+    {!! Form::label('bulk_payment_type_id', l('Payment Type')) !!}
+    {!! Form::select('bulk_payment_type_id', array('' => l('-- Please, select --', [], 'layouts')) + $payment_typeList, null, array('class' => 'form-control')) !!}
+    {!! $errors->first('bulk_payment_type_id', '<span class="help-block">:message</span>') !!}
+</div>
+
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('group_balance', l('Amount')) !!}
+        <div id="group_balance" class="form-control alert-warning">0.0</div>
+    </div>
+
+
+<div class="form-group col-lg-3 col-md-3 col-sm-3" style="padding-top: 22px">
+{!! Form::submit(l('Pay multiple'), array('class' => 'btn btn-success',  'id' => 'form-select-paymentsSubmit')) !!}
+{!! link_to_route('customer.vouchers', l('Reset', [], 'layouts'), [$customer->id], array('class' => 'btn btn-warning')) !!}
+</div>
+
+</div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
 
 <div id="div_payments">
    <div class="table-responsive">
@@ -156,6 +214,7 @@
 <table id="payments" class="table table-hover">
 	<thead>
 		<tr>
+      <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll', 'onchange' => 'calculateSelectedAmount()']) !!}</th>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
 			<th>{{l('Invoice')}}</th>
 			<!-- th>{{l('Customer')}}</th -->
@@ -175,9 +234,10 @@
 			<th> </th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody id="payment_lines">
 	@foreach ($payments as $payment)
 		<tr>
+      <td class="text-center warning">{!! Form::checkbox('payment_group[]', $payment->id, false, ['class' => 'case xcheckbox', 'onchange' => 'calculateSelectedAmount()']) !!}</td>
 			<td>{{ $payment->id }}</td>
 			<td>
           <a href="{{ URL::to('customerinvoices/' . optional($payment->customerInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference or '' }}</a></td>
@@ -187,7 +247,11 @@
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
-			<td class="text-right">{{ $payment->as_money_amount('amount') }}</td>
+			<td class="text-right">{{ $payment->as_money_amount('amount') }}
+
+              <input name="pay_amount[{{ $payment->id }}]" id="pay_amount[{{ $payment->id }}]" class=" hide  selectedamount form-control input-sm" type="text" size="3" maxlength="5" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $payment->as_priceable($payment->amount, $payment->currency) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
+
+      </td>
 
       <td>{{ optional($payment->paymenttype)->name }} 
 
@@ -225,7 +289,18 @@
             	@else
             		<span>
             	@endif
-            	{{\App\Payment::getStatusName($payment->status)}}</span></td>
+            	{{\App\Payment::getStatusName($payment->status)}}</span>
+
+              @if ( $payment->status == 'paid' )
+{{--                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') ) --}}
+
+                    <a href="{{ route('customervoucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
+                    title="{{l('Undo Payment')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
+               
+{{--                @endif --}}
+              @endif
+
+            </td>
 
 
       <td class="text-center">
@@ -284,6 +359,9 @@
    </div>
 </div>
 
+{!! Form::close() !!}
+
+
 @stop
 
 @include('layouts/modal_delete')
@@ -292,12 +370,82 @@
 
 <script type="text/javascript">
 
+// check box selection -->
+// See: http://www.dotnetcurry.com/jquery/1272/select-deselect-multiple-checkbox-using-jquery
+
+$(function () {
+    var $tblChkBox = $("#payment_lines input:checkbox");
+    $("#ckbCheckAll").on("click", function () {
+        $($tblChkBox).prop('checked', $(this).prop('checked'));
+    });
+});
+
+$("#payment_lines").on("change", function () {
+    if (!$(this).prop("checked")) {
+        $("#ckbCheckAll").prop("checked", false);
+    }
+});
+
+// check box selection ENDS -->
+
+
+
 $(document).ready(function() {
    $("#b_search_filter").click(function() {
       $('#search_status').val(1);
       $('#search_filter').show();
    });
+
+   $("#b_pay_multiple").click(function() {
+      $('#pay_multiple').show();
+   });
+
+
+   calculateSelectedAmount();
+
+
+   $("#form-select-paymentsSubmit").click(function() {
+      // this.disabled=true;
+      $('#form-select-payments').attr('action', '{{ route( 'customervouchers.bulk.pay' )}}');
+      $('#form-select-payments').submit();
+      return false;
+   });
 });
+
+
+
+        function calculateSelectedAmount() {
+            var total = 0;
+            $('.xcheckbox:checked').each(function(index,value){
+
+                total += parseFloat($(this).closest('tr').find('.selectedamount').val().replace(',', '.'));
+
+            });
+
+            $('#group_balance').html(currencyFormat{{ $customer->currency->iso_code }}(total));
+        }
+
+
+        function currencyFormatUSD(num) {
+          return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+        }
+
+        // console.info(currencyFormat(2665)) // $2,665.00
+        // console.info(currencyFormat(102665)) // $102,665.00
+
+
+        function currencyFormatEUR(num) {
+          return (
+            num
+              .toFixed(2) // always two decimal digits
+              .replace('.', ',') // replace decimal point character with ,
+              .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + ' €'
+          ) // use . as a separator
+        }
+
+        // console.info(currencyFormatDE(1234567.89)) // output 1.234.567,89 €
+
+
 
 </script>
 
@@ -318,6 +466,14 @@ $(document).ready(function() {
 
   $(function() {
     $( "#date_to_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+  $(function() {
+    $( "#bulk_payment_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"

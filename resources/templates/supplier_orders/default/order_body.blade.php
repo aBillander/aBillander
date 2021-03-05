@@ -79,9 +79,9 @@
             		- {{ $document->supplier->address->country->name }}
             @endif
 
-			@if ( $document->supplier->mail )
+			@if ( $document->supplier->email )
 
-				<div class="billing-email">{{ $document->supplier->mail }}</div>
+				<div class="billing-email">{{ $document->supplier->email }}</div>
 
 			@endif
             

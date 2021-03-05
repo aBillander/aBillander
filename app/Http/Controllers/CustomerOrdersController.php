@@ -70,7 +70,10 @@ class CustomerOrdersController extends BillableController
         {
             $documents = $this->document
                                 ->filter( $request->all() )
-                                ->with('customer')
+                                ->with(['customer' => function ($query) {
+                                    $query->withCount('addresses as nbr_addresses');
+                                }])
+    //                            ->with('customer')
     //                            ->with('currency')
     //                            ->with('paymentmethod')
     //                            ->orderBy('document_date', 'desc')

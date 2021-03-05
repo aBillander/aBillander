@@ -77,8 +77,11 @@ class SupplierInvoice extends Billable
     public function getUncloseableAttribute()
     {
         if ( $this->status != 'closed' ) return false;
+        
+        // Payments other than Down Payments
+        $paids = $this->payments()->where('is_down_payment', 0)->where('status', 'paid')->get();
 
-        if ( $this->payment_status != 'pending' ) return false;
+        if ( $paids->count() > 0 ) return false;
 
 //        if ( ! $this->rightAscriptions->isEmpty() ) return false;
 
@@ -109,6 +112,40 @@ class SupplierInvoice extends Billable
         $payments = $this->payments;
 
         return $payments->where('status', 'pending')->sortBy('due_date')->first();
+
+    }
+
+
+    // Gorrino Style. Based on the assumption that a Supplier has few (or none) down payments
+    public function getDownpaymentsAttribute()
+    {
+        $downpayments = collect([]);
+
+        // Customer Down Payments
+        $cdps = DownPayment::where('customer_id', $this->customer_id)->get();
+
+        if ( $cdps )
+        foreach ($cdps as $cdp) {
+            // Supplier order
+            $so = $cdp->supplierorder;
+            if ( ! $so ) continue;
+
+            // Supplier Shipping Slip
+            $sss = $so->shippingslip;
+            if ( ! $sss ) continue;
+
+            // Supplier invoice
+            $si = $sss->invoice;
+            if ( ! $si ) continue;
+
+            // Qualify for this Supplier Invoice?
+            if ( $si->id != $this->id ) continue;
+
+
+            $downpayments->push($cdp);
+        }
+
+        return $downpayments;
 
     }
 
@@ -182,8 +219,8 @@ class SupplierInvoice extends Billable
 
     public function close()
     {
-        if ( \App\Configuration::isFalse('ENABLE_CRAZY_IVAN') )
-            if ( $this->total_tax_incl == 0.0 ) return false;
+//        if ( \App\Configuration::isFalse('ENABLE_CRAZY_IVAN') )
+        //    if ( $this->total_tax_incl == 0.0 ) return false;     <= Should allow zero value invoice for samples, etc.
 
         if ( ! parent::close() ) return false;
 

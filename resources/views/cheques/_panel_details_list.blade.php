@@ -10,7 +10,7 @@
                 <tr>
                     <th class="text-left">{{l('ID', [], 'layouts')}}</th>
                     <th>{{l('Position', 'layouts')}}</th>
-                    <th class="text-left">{{ l('Name', 'chequedetails') }}</th>
+                    <!-- th class="text-left">{{ l('Name', 'chequedetails') }}</th -->
                     <th class="text-left">{{ l('Amount') }}<br />
                         <span class="
 
@@ -24,6 +24,7 @@
                     <th class="text-left">{{ l('Customer Invoice', 'chequedetails') }}</th>
                     <th class="text-left">{{ l('Customer Voucher', 'customervouchers') }}</th>
                     <th class="text-center">{{l('Status', [], 'layouts')}}</th>
+                    <th>{{l('Due Date')}}</th>
                     <th>{{l('Payment Date')}}</th>
                     <th class="text-right">
 
@@ -39,7 +40,7 @@
                     <tr data-id="{{ $detail->id }}" data-sort-order="{{ $detail->line_sort_order }}">
                         <td>{{ $detail->id }} {{-- $detail->customerpayment->cheque->id --}}</td>
                         <td>{{ $detail->line_sort_order }}</td>
-                        <td>{{ $detail->name }}</td>
+                        <!-- td>{{ $detail->name }}</td -->
 
                         <td>{{ $detail->amount > 0.0 ? $detail->as_money_amount('amount') : '-' }}</td>
 
@@ -79,6 +80,8 @@
                                 {{\App\Payment::getStatusName(optional($detail->customerpayment)->status)}}</span>
 
                         </td>
+
+                        <td>{{ abi_date_short(optional($detail->customerpayment)->due_date) }}</td>
 
                         <td>{{ abi_date_short(optional($detail->customerpayment)->payment_date) }}</td>
 

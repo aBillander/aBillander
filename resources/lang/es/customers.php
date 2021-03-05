@@ -249,6 +249,6 @@ return [
 	'Exempt' => 'Exento',
 
 	'Invoice by Shipping Address?' => '¿Facturar por Dirección de Envío?',
-	'1 Invoice per Shipping Address' => '1 Factura por Dirección de Envío',
-	'1 Invoice per Shipping Slip and Shipping Address' => '1 Factura por Albarán y Dirección de Envío',
+	'One Invoice per Shipping Address' => 'Una Factura por Dirección de Envío',
+	'One Invoice per Shipping Slip and Shipping Address' => 'Una Factura por Albarán y Dirección de Envío',
 ];

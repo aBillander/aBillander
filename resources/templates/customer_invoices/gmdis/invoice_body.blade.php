@@ -116,9 +116,9 @@
             {{ $document->invoicingaddress->state->name }}
 
 
-			@if ( $document->invoicingaddress->mail )
+			@if ( $document->invoicingaddress->email )
 
-				<div class="billing-email">{{ $document->invoicingaddress->mail }}</div>
+				<div class="billing-email">{{ $document->invoicingaddress->email }}</div>
 
 			@endif
             

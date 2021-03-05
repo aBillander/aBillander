@@ -1,2 +1,0 @@
-
-Vencimientos / Pagos aquí

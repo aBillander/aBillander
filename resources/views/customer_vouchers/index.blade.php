@@ -20,8 +20,11 @@
         <a href="{{ route('customervouchers.export', Request::all()) }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
+        <a href="{{ route('cheques.index') }}" class="btn xbtn-sm btn-white" 
+            title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-money"></i> {{l('Cheques', [], 'layouts')}}</a>
+
         <a href="{{ route('sepasp.directdebits.index') }}" class="btn xbtn-sm btn-navy" 
-        		title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
+            title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
     </div>
     <h2>
         {{ l('Customer Vouchers') }}
@@ -122,6 +125,15 @@
 
 </div>
 
+<div class="row">
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('payment_type_id', l('Payment Type')) !!}
+    {!! Form::select('payment_type_id', array('' => l('All', [], 'layouts')) + $payment_typeList, null, array('class' => 'form-control')) !!}
+</div>
+
+</div>
+
                 {!! Form::close() !!}
             </div>
         </div>
@@ -172,12 +184,16 @@
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
 			<td class="text-right">{{ $payment->as_money_amount('amount') }}</td>
 
-      <td>{{ optional($payment->paymenttype)->name }} 
+      <td class="button-pad">{{ optional($payment->paymenttype)->name }} 
 
-@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) && $payment->chequedetail )
+@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) )
+  @if( $payment->chequedetail )
 
               <a class="btn btn-xs btn-warning" href="{{ URL::to('cheques/' . $payment->chequedetail->cheque_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
 
+  @else
+              <i class="fa fa-exclamation-triangle btn-xs alert-danger" title="{{ l('Pending to receive') }}"></i>
+  @endif
 @endif
       </td>
 
@@ -247,12 +263,12 @@
             	{{\App\Payment::getStatusName($payment->status)}}</span>
 
               @if ( $payment->status == 'paid' )
-                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+{{--                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') ) --}}
 
                     <a href="{{ route('customervoucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Undo Payment')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
                
-                @endif
+{{--                @endif --}}
               @endif
 
               @if ( $payment->status == 'uncollectible' )

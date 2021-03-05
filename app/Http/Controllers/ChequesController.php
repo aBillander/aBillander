@@ -44,10 +44,12 @@ class ChequesController extends Controller
 
         $cheques = $this->cheque
                         ->filter( $request->all() )
+                        ->has('customer')
                         ->with('customer')
                         ->with('currency')
                         ->with('bank')
-                        ->orderBy('due_date', 'desc');
+ //                       ->orderBy('due_date', 'desc');
+                        ->orderBy('id', 'desc');
 
         $cheques = $cheques->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
@@ -121,10 +123,12 @@ class ChequesController extends Controller
      * @param  \App\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
-    public function edit(Cheque $cheque)
+    public function edit($id)
     {
 
-        // abi_r($cheque->vouchers);die();
+        $cheque = $this->cheque
+                        ->has('customer')
+                        ->findOrFail($id);
 
         $statusList = $this->cheque::getStatusList();
         $currencyList = Currency::pluck('name', 'id')->toArray();
@@ -189,6 +193,25 @@ class ChequesController extends Controller
 
 /* ********************************************************************************************* */    
 
+
+
+    public function voucherDueDates($id, Request $request)
+    {
+        $cheque = $this->cheque
+                        ->with('vouchers')
+                        ->findOrFail($id);
+
+        // Process Vouchers
+        foreach ($cheque->vouchers as $voucher) {
+            # code...
+            $voucher->due_date = $cheque->due_date;
+
+            $voucher->save();
+        }
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
 
 
     public function payCheque($id, Request $request)

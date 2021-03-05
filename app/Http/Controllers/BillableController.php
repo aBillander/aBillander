@@ -205,7 +205,18 @@ class BillableController extends Controller
                         ->with('payments')
                         ->findOrFail($id);
 
-        return view($this->view_path.'._panel_document_payments', $this->modelVars() + compact('document'));
+        $downpayments = $document->downpayments;    // Document Attribute, NOT relation
+
+        return view($this->view_path.'._panel_document_payments', $this->modelVars() + compact('document', 'downpayments'));
+    }
+
+    public function getDocumentDownPayments($id)
+    {
+        $document = $this->document
+                        ->with('downpayments')
+                        ->findOrFail($id);
+
+        return view($this->view_path.'._panel_document_downpayments', $this->modelVars() + compact('document'));
     }
 
 
@@ -846,6 +857,65 @@ class BillableController extends Controller
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $clone->id], 'layouts'));
     }
 
+
+
+
+
+/* ********************************************************************************************* */   
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CRAZY_IVAN stuff here
+    |--------------------------------------------------------------------------
+    */ 
+
+    public function changeCustomer($id, $canChangeCustomer = 1)
+    {
+        $document = $this->document->findOrFail($id);
+
+        $customer = Customer::find( $document->customer_id );
+
+        $addressBook       = $customer->addresses;
+
+        $theId = $customer->invoicing_address_id;
+        $invoicing_address = $addressBook->filter(function($item) use ($theId) {    // Filter returns a collection!
+            return $item->id == $theId;
+        })->first();
+
+        $addressbookList = array();
+        foreach ($addressBook as $address) {
+            $addressbookList[$address->id] = $address->alias;
+        }
+
+
+        return view($this->view_path.'.change_customer', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'canChangeCustomer'));
+    }
+
+    public function updateCustomer(Request $request)
+    {
+        // abi_r($request->all(), true);
+        $document = $this->document->findOrFail($request->input('document_id'));
+        
+
+        $rules = $this->document::$rules;
+
+        $rules['shipping_address_id'] = str_replace('{customer_id}', $request->input('customer_id'), $rules['shipping_address_id']);
+
+        $this->validate($request, ['customer_id' => $rules['customer_id'], 'shipping_address_id' => $rules['shipping_address_id']]);
+
+
+        // Do the mambo!
+        // Magic here: update customer_id and shipping_address_id
+        $document->customer_id         = $request->input('customer_id');
+        $document->shipping_address_id = $request->input('shipping_address_id');
+
+        $document->save();
+
+        return redirect($this->model_path.'/'.$document->id.'/edit')
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
+    }
 
 
 }

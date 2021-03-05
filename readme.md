@@ -40,6 +40,8 @@ The **aBillander Project** is an Invoicing and Inventory System for SME's powere
 
 > SDG4: **Refactor Sales Representative Center** .
 
+> SDG5: **Products with Combinations** .
+
 
 Curated by **Lara Billander** (@aBillander)
 

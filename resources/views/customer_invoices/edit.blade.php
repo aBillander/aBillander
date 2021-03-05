@@ -65,13 +65,17 @@
                 <!-- a href="{{ URL::to($model_path.'') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to Documents')}}</a -->
 
                 <div class="btn-group" style="margin-left: 22px;margin-right: 12px;">
-                    <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', [], 'layouts')}}" style="background-color: #31b0d5;
-border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
+                    <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Back to', [], 'layouts')}}"><i class="fa fa-mail-reply"></i> &nbsp;<span class="caret"></span></a>
 
                     <ul class="dropdown-menu pull-right">
+                      <li><a href="{{ URL::to($model_path.'') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i> {{ l('Back to Documents') }}</a></li>
                       <li><a href="{{ route('customer.invoices', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Invoices', [], 'layouts')}}</a></li>
+
+@if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
                       <li class="divider"></li>
-                      <li><a href="{{ URL::to($model_path.'') }}">{{ l('Back to Documents') }}</a></li>
+                      <li><a href="{{ route($model_path.'.change.customer', [$document->id]) }}"><i class="fa fa-exclamation-triangle text-danger"></i> {{l('Change Customer', 'customerdocuments')}}</a></li>
+@endif
+
                     </ul>
 
                 </div>

@@ -17,6 +17,8 @@
                             <li><a href="#tab4default" data-toggle="tab">{{ l('Entries') }}</a></li>
 @endif
 
+                            <li><a href="#tab5default" data-toggle="tab">{{ l('Down Payments') }}</a></li>
+
                             <!-- li><a href="#tab5default" data-toggle="tab">{{ l('Payments') }}</a></li -->
                             <!-- li class="dropdown">
                                 <a href="#" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
@@ -65,6 +67,11 @@
       </div>
 @endif
 
+      <div class="tab-pane fade" id="tab5default">
+                
+                @include($view_path.'._tab_edit_downpayments')
+
+      </div>
       <!-- div class="tab-pane fade" id="tab5default">
                 
                 @ include($view_path.'._tab_edit_payments')

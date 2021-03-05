@@ -33,7 +33,8 @@ class CustomerInvoiceEmailedListener
         $document->edocument_sent_at = \Carbon\Carbon::now();
         $document->save();
 
-        $document->close();
+        // Document is allready closed by CustomerInvoiceEmailingListener
+        // $document->close();
 
     }
 }

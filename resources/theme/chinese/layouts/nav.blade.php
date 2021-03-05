@@ -65,7 +65,7 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') )
+
                          <li>
                             <a href="{{ URL::to('customershippingslips') }}">
                                  {{l('Shipping Slips', [], 'layouts')}}
@@ -84,7 +84,7 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-@endif
+
                          <li>
                             <a href="{{ URL::to('customers') }}">
                                  {{l('Customers', [], 'layouts')}}
@@ -145,7 +145,7 @@
 
 
 
-@if ( \App\Configuration::isTrue('DEVELOPER_MODE') && 1)
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-th"></i> {{l('Warehouse', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -172,6 +172,18 @@
                                  {{l('Purchase Orders', [], 'layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ route('suppliershippingslips.index') }}">
+                                 <i class="fa fa-truck btn-xs alert-info"></i> 
+                                 {{l('Supplier Shipping Slips', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ route('supplierinvoices.index') }}">
+                                 <!-- i class="fa fa-money btn-xs alert-warning"></i --> 
+                                 {{l('Supplier Invoices', [], 'layouts')}}
+                            </a>
+                        </li>
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('suppliers') }}">
@@ -180,7 +192,7 @@
                         </li>
                     </ul>
                 </li>
-@endif
+
 
 
 

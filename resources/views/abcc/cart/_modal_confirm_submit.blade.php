@@ -21,7 +21,7 @@
         
         <div class="checkbox">
           <label>
-            {!! Form::checkbox('confirmation_email', '1', false, ['id' => 'confirmation_email']) !!} {{ l('Send me a confirmation email') }}
+            {!! Form::checkbox('confirmation_email', '1', true, ['id' => 'confirmation_email']) !!} {{ l('Send me a confirmation email') }}
           </label>
         </div>
       </div>
@@ -68,7 +68,7 @@
             {
                     $('#modal-confirm-submit .modal-body-message').text(message_ok);
 
-                    $('#confirmation_email').prop('checked', false);
+                    $('#confirmation_email').prop('checked', true);
                     $('#submit-confirmation_email').show();
 
                     $('#submit-').show();

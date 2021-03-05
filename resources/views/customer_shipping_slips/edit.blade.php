@@ -63,8 +63,12 @@
                       <li><a href="{{ URL::to($model_path.'') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
                       <li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Invoice Shipping Slips')}}</a></li>
                       <li><a href="{{ route('customer.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', 'layouts')}}</a></li>
-                      <!-- li class="divider"></li -->
-                      <!-- li><a href="#">Separated link</a></li -->
+
+@if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+                      <li class="divider"></li>
+                      <li><a href="{{ route($model_path.'.change.customer', [$document->id]) }}"><i class="fa fa-exclamation-triangle text-danger"></i> {{l('Change Customer', 'customerdocuments')}}</a></li>
+@endif
+
                     </ul>
                 </div>
 

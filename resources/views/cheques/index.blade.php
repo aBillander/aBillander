@@ -301,6 +301,7 @@ $(document).ready(function() {
                 return false;
             }
         }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              $("#customer_id").val('');
               return $( "<li></li>" )
                 .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
                 .appendTo( ul );

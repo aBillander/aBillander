@@ -754,7 +754,7 @@ class SupplierInvoicesController extends BillableController
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document is not closed', 'layouts'));
         }
 
-        if ( $document->payment_status != 'pending' )
+        if ( ! $document->uncloseable )
         {
             return redirect()->back()
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $document->id], 'layouts').' :: '.l('Document has Payments', 'layouts'));

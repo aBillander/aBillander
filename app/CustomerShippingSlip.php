@@ -323,6 +323,11 @@ class CustomerShippingSlip extends Billable
             return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
+    public function getShipmentStatusNameAttribute( )
+    {
+            return l(get_called_class().'.'.$this->shipment_status, [], 'appmultilang');
+    }
+
     public static function isShipmentStatus( $status )
     {
             return in_array($status, self::$shipment_statuses);

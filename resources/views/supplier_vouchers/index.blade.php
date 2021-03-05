@@ -19,6 +19,9 @@
 
         <a href="{{ route('suppliervouchers.export', Request::all()) }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
+
+        <a href="{{ route('supplier.downpayments.index') }}" class="btn xbtn-sm btn-white" 
+            title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-money"></i> {{l('Down Payments', [], 'layouts')}}</a>
     </div>
     <h2>
         {{ l('Supplier Vouchers') }}

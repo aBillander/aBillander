@@ -20,8 +20,11 @@
         <a href="{{ route('customervouchers.export', Request::all()) }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
+        <a href="{{ route('cheques.index') }}" class="btn xbtn-sm btn-white" 
+            title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-money"></i> {{l('Cheques', [], 'layouts')}}</a>
+
         <a href="{{ route('sepasp.directdebits.index') }}" class="btn xbtn-sm btn-navy" 
-        		title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
+            title="{{l('Go to', [], 'layouts')}}" style="margin-left: 22px;"><i class="fa fa-bank"></i> {{l('SEPA Direct Debits', 'sepasp')}}</a>
     </div>
     <h2>
         {{ l('Customer Vouchers') }}

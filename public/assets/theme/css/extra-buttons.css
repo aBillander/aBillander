@@ -299,6 +299,7 @@ fieldset[disabled] .btn-navy.active {
 .btn-white:hover, .btn-white:focus {
     background-color: #f4f4f4;
     border-color: #bebebe;
+    color: #468847;
 }
 
 

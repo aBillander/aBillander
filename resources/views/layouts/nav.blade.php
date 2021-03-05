@@ -425,6 +425,7 @@
                             </a>
                         </li>
 @endif
+{{--
                          <li>
                             <a href="{{ URL::to('cheques') }}">
                                  <i class="fa fa-money btn-xs text-success"></i> 
@@ -439,6 +440,7 @@
                                  <!-- img src="{{ asset('assets/theme/self-distract-button-20.png') }}" --> 
                             </a>
                         </li>
+--}}
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('import') }}">

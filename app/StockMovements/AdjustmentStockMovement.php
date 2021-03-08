@@ -21,7 +21,7 @@ class AdjustmentStockMovement extends StockMovement implements StockMovementInte
         $product = $this->product;							// Relation loaded in prepareToProcess()
 
         // Price 4 Cost average calculations
-        if ($this->price === null) 
+        if ( (float) $this->price == 0.0) 
         {
             // $this->price = ($this->combination_id > 0) ? $combination->getPriceForStockValuation() : $product->getPriceForStockValuation();
             // No combinations, so far:

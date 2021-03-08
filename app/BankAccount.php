@@ -146,13 +146,13 @@ class BankAccount extends Model {
         if (strlen($cuenta3)!=2)  return false;
         if (strlen($cuenta4)!=10) return false;
 
-        if ($this->mod11_cuenta_bancaria("00".$cuenta1.$cuenta2)!=$cuenta3{0}) return false;
-        if ($this->mod11_cuenta_bancaria($cuenta4)!=$cuenta3{1}) return false;
+        if ($this->mod11_cuenta_bancaria("00".$cuenta1.$cuenta2)!=$cuenta3[0]) return false;
+        if ($this->mod11_cuenta_bancaria($cuenta4)!=$cuenta3[1]) return false;
         
         return true;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////
+    // 
 
     protected function mod11_cuenta_bancaria($numero)
     {

@@ -83,10 +83,10 @@ class MailConfigurationController extends Controller
                     $message->to(   config('mail.from.address'), config('mail.from.name') )->subject( $subject );
                 });
 
-                return back()->with('success', __('installer::main.mail.check_ok'));
+                return redirect()->back()->with('success', __('installer::main.mail.check_ok'));
             }
             catch (\Exception $e) {
-                return back()->with('error', [__('installer::main.mail.check_ko'), $e->getMessage()]);
+                return redirect()->back()->with('error', [__('installer::main.mail.check_ko'), $e->getMessage()]);
             }
         } 
         else

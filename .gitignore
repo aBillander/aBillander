@@ -28,5 +28,5 @@ remove-pkg.txt
 
 composer.lock*
 
-.env.abillander
-.env.example
+!.env.abillander
+!.env.example

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAssembyOrderLinesTable extends Migration
+class CreateAssemblyOrderLinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateAssembyOrderLinesTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('assemby_order_lines');
+        Schema::dropIfExists('assembly_order_lines');
 
         Schema::create('assembly_order_lines', function (Blueprint $table) {
             $table->increments('id');
@@ -42,6 +42,6 @@ class CreateAssembyOrderLinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('assemby_order_lines');
+        Schema::dropIfExists('assembly_order_lines');
     }
 }

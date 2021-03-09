@@ -7,24 +7,33 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Warehouse as Warehouse;
-use App\Address as Address;
-use App\Country as Country;
+use App\Warehouse;
+use App\Address;
+use App\Country;
+use App\StockMovement;
+
+use Auth;
 
 use Excel;
 
 use View;
 
-class AbsrcWarehousesController extends Controller {
+use App\Traits\DateFormFormatterTrait;
 
+class AbsrcWarehousesController extends Controller
+{
+
+   use DateFormFormatterTrait;
 
    protected $warehouse;
    protected $address;
+   protected $stockmovement;
 
-   public function __construct(Warehouse $warehouse, Address $address)
+   public function __construct(Warehouse $warehouse, Address $address, StockMovement $stockmovement)
    {
         $this->warehouse = $warehouse;
         $this->address = $address;
+        $this->stockmovement = $stockmovement;
    }
 
 	/**
@@ -196,6 +205,11 @@ class AbsrcWarehousesController extends Controller {
 	 */
 	public function indexProducts($id, Request $request)
 	{
+        if (Auth::user()->warehouse_id > 0)
+        if ($id != Auth::user()->warehouse_id)
+            return redirect()->back()
+                    ->with('error', l('You are not allowed to access to this resource', 'layouts'));
+        
         $warehouse = Warehouse::findOrFail($id);
 
         $products = $warehouse->products()
@@ -323,16 +337,39 @@ class AbsrcWarehousesController extends Controller {
 	}
 
 
-	public function indexStockmoves($id)
-	{
-        $wh = Warehouse::find($id);
+	public function indexStockMovements($id, Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
-        if (is_null($wh)) 
-        {
-        	return Redirect::route('warehouses.index');
-       	}
+        if (Auth::user()->warehouse_id > 0)
+        if ($id != Auth::user()->warehouse_id)
+            return redirect()->back()
+                    ->with('error', l('You are not allowed to access to this resource', 'layouts'));
 
-        return View::make('warehouses.indexStockmoves')->with(array('warehouse' => $wh, 'stockmoves' => $wh->stockmoves));
+        $warehouse = Warehouse::findOrFail($id);
+
+        $stockmovements = $this->stockmovement
+                                ->filter( $request->all() )
+                                ->where('warehouse_id', $warehouse->id)
+//                                ->with('warehouse')
+                                ->with('product')
+                                ->with('combination')
+//                              ->with('stockmovementable')
+                                ->with('stockmovementable.document')
+                                ->orderBy('created_at', 'DESC')
+                                ->orderBy('id', 'DESC');
+
+//         abi_r($stockmovements->toSql(), true);
+
+        $stockmovements = $stockmovements->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        // $stockmovements = $stockmovements->paginate( 1 );
+
+        $stockmovements->setPath('stockmovements');
+
+        $movement_typeList = StockMovement::stockmovementList();
+
+        return view('absrc.warehouses.indexStockMovements')->with(compact('warehouse', 'stockmovements', 'movement_typeList'));
 	}
 
 }

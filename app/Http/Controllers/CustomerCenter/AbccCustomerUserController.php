@@ -108,7 +108,7 @@ class AbccCustomerUserController extends Controller
 			$request->merge( ['password' => $password] );
 			$customer_user->update($request->all());
 		} else {
-			$this->validate($request, array_except( $vrules, array('password')) );
+			$this->validate($request, Arr::except( $vrules, array('password')) );
 			$customer_user->update($request->except(['password']));
 		}
 /*

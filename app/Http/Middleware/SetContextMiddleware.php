@@ -4,18 +4,21 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-use App\Configuration as Configuration;
-use App\Company as Company;
-use App\Currency as Currency;
-use App\Context as Context;
-use App\Language as Language;
-use Illuminate\Support\Str as Str;
+use App\Configuration;
+use App\Company;
+use App\Currency;
+use App\Context;
+use App\Language;
+
 use Auth;
-use App\User as User;
+use App\User;
 use Config, App;
 use Request, Cookie;		// , DB, Session;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use aBillander\Installer\Helpers\Installer;
+
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class SetContextMiddleware {
 

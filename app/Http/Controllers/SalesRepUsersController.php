@@ -189,7 +189,7 @@ class SalesRepUsersController extends Controller
 			$request->merge( ['password' => $password] );
 			$salesrepuser->update($request->all());
 		} else {
-			$this->validate($request, array_except( $vrules, array('password')) );
+			$this->validate($request, Arr::except( $vrules, array('password')) );
 			$salesrepuser->update($request->except(['password']));
 		}
 

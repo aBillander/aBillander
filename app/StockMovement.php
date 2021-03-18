@@ -213,7 +213,7 @@ class StockMovement extends Model {
 
     const INITIAL_STOCK        = 10;
     const ADJUSTMENT           = 12;
-	const PURCHASE_ORDER       = 20;          // 'App\\Services\\' . studly_case($user_selection) . 'Report';
+	const PURCHASE_ORDER       = 20;          // 'App\\Services\\' . Str::studly($user_selection) . 'Report';
 	const PURCHASE_RETURN      = 21;
 	const SALE_ORDER           = 30;
 	const SALE_RETURN          = 31;
@@ -367,7 +367,7 @@ class StockMovement extends Model {
 
             $segments = array_reverse(explode('\\', $str));
 
-            return $route = str_plural(strtolower($segments[0]));
+            return $route = Str::plural(strtolower($segments[0]));
     }
 
     public function getStockmovementableDocumentRoute()
@@ -392,7 +392,7 @@ class StockMovement extends Model {
 
             $segment = strtolower($str);
 
-            return str_plural($segment);
+            return Str::plural($segment);
     }
     
     

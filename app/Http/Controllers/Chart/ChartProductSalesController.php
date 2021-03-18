@@ -88,7 +88,7 @@ class ChartProductSalesController extends Controller
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
         $class = '\App\\'.$model.'Line';
-        $table = snake_case(str_plural($model));
+        $table = Str::snake(Str::plural($model));
         $route = str_replace('_', '', $table);
 
         $document_reference_date = 'close_date';        // 'document_date'

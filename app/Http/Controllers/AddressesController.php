@@ -45,7 +45,7 @@ class AddressesController extends Controller {
 		$segment3 = $request->segment(3);
 		$segment4 = $request->segment(4);
 
-		echo ucfirst(str_singular($segment1)).'<br>'.$segment2.'<br>'.$segment3.'<br>'.$segment4.'<br>';
+		echo ucfirst(Str::singular($segment1)).'<br>'.$segment2.'<br>'.$segment3.'<br>'.$segment4.'<br>';
 
 		dd($owner_id);
 
@@ -57,7 +57,7 @@ class AddressesController extends Controller {
 
 		*/
 
-		$model_name = ucfirst(str_singular($request->segment(1)));
+		$model_name = ucfirst(Str::singular($request->segment(1)));
 		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
 		// Check that the class exists before trying to use it

@@ -46,7 +46,7 @@ class PdfController extends Controller {
 
 		$pdfName	= 'invoice_' . $cinvoice->secure_key . '_' . date('Y-m-d');
 
-		if (Input::has('screen')) return View::make($template, compact('cinvoice', 'company'));
+		if (Request::has('screen')) return View::make($template, compact('cinvoice', 'company'));
 		
 		return 	$pdf->download( $pdfName . '.pdf');
 	}	

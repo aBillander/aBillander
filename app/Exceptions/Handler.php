@@ -9,6 +9,8 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
     use Illuminate\Auth\AuthenticationException;
     use Response;
 
+use Illuminate\Support\Arr;
+
 // https://stackoverflow.com/questions/30276325/laravel-5-how-do-i-handle-methodnotallowedhttpexception
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
@@ -87,7 +89,7 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $guard = array_get($exception->guards(), 0);
+        $guard = Arr::get($exception->guards(), 0);
 
         switch ($guard) {
           case 'customer':

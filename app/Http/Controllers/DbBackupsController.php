@@ -41,7 +41,7 @@ class DbBackupsController extends Controller
 		try {
 
 			$listing =  array_reverse(
-				array_sort(File::files( $bk_folder ), function($file)
+				Arr::sort(File::files( $bk_folder ), function($file)
 					{
 					    return $file->getMTime();
 					})

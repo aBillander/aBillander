@@ -43,7 +43,7 @@ class AbsrcCustomerOrdersController extends BillableController
    {
         parent::__construct();
 
-        $this->model = 'CustomerOrder';	// str_singular($this->getParentClass());       // CustomerShippingSlip
+        $this->model = 'CustomerOrder';	// Str::singular($this->getParentClass());       // CustomerShippingSlip
         $this->model_snake_case = 'order';	// $this->getParentModelSnakeCase(); // customer_shipping_slip
         $this->model_path = 'absrc.orders';	// $this->getParentClassLowerCase();       // customershippingslips
         $this->model_url = 'absrc/orders';

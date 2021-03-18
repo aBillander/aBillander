@@ -109,7 +109,7 @@ trait BillableDocumentControllerTrait
 
                 // PDF stuff ENDS
 
-                $pdfName    = str_singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d').'.pdf';
+                $pdfName    = Str::singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d').'.pdf';
 
                 // if ($request->has('screen')) return view($template, compact('document', 'company'));
 
@@ -124,7 +124,7 @@ trait BillableDocumentControllerTrait
                     //
                 } else {
                     // Dispatch event
-                    $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).$event;
+                    $event_class = '\\App\\Events\\'.Str::singular($this->getParentClass()).$event;
                     event( new $event_class( $document ) );
                 }
         }
@@ -233,7 +233,7 @@ die();
 
         // PDF stuff ENDS
 
-        $pdfName    = str_singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
+        $pdfName    = Str::singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
         // Lets try another strategy
         if ( $document->document_reference ) {
@@ -241,7 +241,7 @@ die();
             $file_name = $document->document_reference;
         } else {
             //
-            $file_name = str_singular($this->getParentClassLowerCase()).'_'.'ID_' . (string) $document->id;
+            $file_name = Str::singular($this->getParentClassLowerCase()).'_'.'ID_' . (string) $document->id;
         }
 
         $file_name = $file_name . '_' . $document->{$entity}->name_regular;
@@ -263,7 +263,7 @@ die();
             //
         } else {
             // Dispatch event
-            $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Printed';
+            $event_class = '\\App\\Events\\'.Str::singular($this->getParentClass()).'Printed';
             event( new $event_class( $document ) );
         }
     
@@ -298,7 +298,7 @@ die();
         // Fire before send event
         try {
             // Dispatch event
-            $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Emailing';
+            $event_class = '\\App\\Events\\'.Str::singular($this->getParentClass()).'Emailing';
             event( new $event_class( $document ) );
                     
         } catch (\Exception $e) {
@@ -375,7 +375,7 @@ die();
         // MAIL stuff
         try {
 
-            $pdfName    = str_singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
+            $pdfName    = Str::singular($this->getParentClassLowerCase()).'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
             $pathToFile     = storage_path() . '/pdf/' . $pdfName .'.pdf';// die($pathToFile);
             $pdf->save($pathToFile);
@@ -433,7 +433,7 @@ die();
 
 
         // Dispatch event
-        $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Emailed';
+        $event_class = '\\App\\Events\\'.Str::singular($this->getParentClass()).'Emailed';
         event( new $event_class( $document ) );
         
 

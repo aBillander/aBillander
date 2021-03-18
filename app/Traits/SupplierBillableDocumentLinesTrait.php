@@ -20,7 +20,7 @@ trait SupplierBillableDocumentLinesTrait
     {
         $line_type = $params['line_type'] ?: '';
 
-        $params = array_except($params, ['line_type']);
+        $params = Arr::except($params, ['line_type']);
 
         switch ( $line_type ) {
             case 'product':

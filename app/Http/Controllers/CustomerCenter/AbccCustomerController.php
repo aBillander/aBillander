@@ -101,7 +101,7 @@ class AbccCustomerController extends Controller
         $customer      = Auth::user()->customer;
         $address = $customer->address;
 
-//        $rules = Arr::except( Customer::$rules, array('password') );
+//        $rules = \Arr::except( Customer::$rules, array('password') );
         $rules = [];
         $this->validate($request, $rules);
 

@@ -8,7 +8,6 @@ namespace App\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 /**
  * Trait SearchableTrait
@@ -169,7 +168,7 @@ trait SearchableTrait
      */
     protected function getJoins()
     {
-        return Arr::get($this->searchable, 'joins', []);
+        return \Arr::get($this->searchable, 'joins', []);
     }
 
     /**
@@ -213,7 +212,7 @@ trait SearchableTrait
 
             foreach ($this->getColumns() as $column => $relevance) {
                 array_map(function ($join) use ($column, $query) {
-                    if (Str::contains($column, $join)) {
+                    if (\Str::contains($column, $join)) {
                         $query->groupBy($column);
                     }
                 }, $joins);

@@ -29,7 +29,7 @@ trait BillableLineTrait
     
     public function getParentClassSnakeCase()
     {
-        return Str::snake($this->getParentClass());
+        return \Str::snake($this->getParentClass());
     }
 */
     public function getCurrencyAttribute()

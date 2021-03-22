@@ -241,7 +241,7 @@ class AbsrcCustomerUsersController extends Controller
 
         } else {
 
-            $validator = Validator::make($request->all(), Arr::except( $vrules, array('password')));
+            $validator = Validator::make($request->all(), \Arr::except( $vrules, array('password')));
             if ( !$validator->passes() ) {
 
                 return response()->json(['error'=>$validator->errors()->all()]);

@@ -37,7 +37,7 @@ trait BillableIntrospectorTrait
     {
         // customer_shipping_slips_controller
         // customer_shipping_slip
-        return Str::snake($this->getClass());
+        return \Str::snake($this->getClass());
     }
     
     public function getClassLastSegment()
@@ -49,11 +49,11 @@ trait BillableIntrospectorTrait
         if ($segment) return $segment;
 
         // http://otroblogmas.com/parsear-strings-formato-camelcase-php/
-        $str = Str::snake($this->getClass());
+        $str = \Str::snake($this->getClass());
 
         $segments = array_reverse(explode('_', $str));
 
-        return $segment = Str::studly($segments[0]);
+        return $segment = \Str::studly($segments[0]);
     }
     
     public function getClassFirstSegment()
@@ -65,11 +65,11 @@ trait BillableIntrospectorTrait
         if ($segment) return $segment;
 
         // http://otroblogmas.com/parsear-strings-formato-camelcase-php/
-        $str = Str::snake($this->getClass());
+        $str = \Str::snake($this->getClass());
 
         $segments = explode('_', $str);
 
-        return $segment = Str::studly($segments[0]);
+        return $segment = \Str::studly($segments[0]);
     }
 
     public function getParentClass()
@@ -94,7 +94,7 @@ trait BillableIntrospectorTrait
     {
         // customer_shipping_slips
         // customer_shipping
-        return Str::snake($this->getParentClass());
+        return \Str::snake($this->getParentClass());
     }
     
     public function getParentClassLowerCase()
@@ -108,13 +108,13 @@ trait BillableIntrospectorTrait
     {
         // customer_shipping_slip
         // customer_shipping
-        return Str::snake(Str::singular($this->getParentClass()));
+        return \Str::snake(\Str::singular($this->getParentClass()));
     }
     
     public function getParentModelLowerCase()
     {
         // customershippingslip
         // customershipping
-        return strtolower(Str::singular($this->getParentClass()));
+        return strtolower(\Str::singular($this->getParentClass()));
     }
 }

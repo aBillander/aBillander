@@ -41,7 +41,7 @@ class BillableController extends Controller
 
    public function __construct()
    {
-        $this->model = Str::singular($this->getParentClass());       // CustomerShippingSlip
+        $this->model = \Str::singular($this->getParentClass());       // CustomerShippingSlip
         $this->model_snake_case = $this->getParentModelSnakeCase(); // customer_shipping_slip
         $this->model_path = $this->getParentClassLowerCase();       // customershippingslips
         $this->view_path = $this->getParentClassSnakeCase();            // customer_shipping_slips
@@ -479,9 +479,9 @@ class BillableController extends Controller
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
         $class = '\App\\'.$model.'Line';
-        $table = Str::snake(Str::plural($model));
+        $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
-        $tableLines = Str::snake($model).'_lines';
+        $tableLines = \Str::snake($model).'_lines';
         $lines = $class::where('product_id', $product->id)
                             ->with('document')
                             ->with('document.customer')
@@ -489,7 +489,7 @@ class BillableController extends Controller
                                     if ( $recent_sales_this_customer > 0 )
                                         $q->where('customer_id', $customer_id);
                                 })
-                            ->join($table, $tableLines.'.'.Str::snake($model).'_id', '=', $table.'.id')
+                            ->join($table, $tableLines.'.'.\Str::snake($model).'_id', '=', $table.'.id')
                             ->select($tableLines.'.*', $table.'.document_date', \DB::raw('"'.$route.'" as route'))
                             ->orderBy($table.'.document_date', 'desc')
                             ->take(7)->get();

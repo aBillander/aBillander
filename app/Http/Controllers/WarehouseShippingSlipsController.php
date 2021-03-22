@@ -1009,9 +1009,9 @@ class WarehouseShippingSlipsController extends Controller
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
         $class = '\App\\'.$model.'Line';
-        $table = Str::snake(Str::plural($model));
+        $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
-        $tableLines = Str::snake($model).'_lines';
+        $tableLines = \Str::snake($model).'_lines';
         $lines = $class::where('product_id', $product->id)
                             ->with(["document" => function($q){
                                 $q->where('customerorders.customer_id', $customer->id);
@@ -1022,7 +1022,7 @@ class WarehouseShippingSlipsController extends Controller
                                     if ( $recent_sales_this_customer > 0 )
                                         $q->where('customer_id', $customer_id);
                                 })
-                            ->join($table, $tableLines.'.'.Str::snake($model).'_id', '=', $table.'.id')
+                            ->join($table, $tableLines.'.'.\Str::snake($model).'_id', '=', $table.'.id')
                             ->select($tableLines.'.*', $table.'.document_date', \DB::raw('"'.$route.'" as route'))
                             ->orderBy($table.'.document_date', 'desc')
                             ->take(7)->get();
@@ -1350,7 +1350,7 @@ class WarehouseShippingSlipsController extends Controller
 
         // PDF stuff ENDS
 
-        $pdfName    = Str::singular('warehouseshippingslips').'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
+        $pdfName    = \Str::singular('warehouseshippingslips').'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
         // Lets try another strategy
         if ( $document->document_reference ) {
@@ -1364,7 +1364,7 @@ class WarehouseShippingSlipsController extends Controller
             $pdfName = $sanitizer->getFilename();
         } else {
             //
-            $pdfName = Str::singular('warehouseshippingslips').'_'.'ID_' . (string) $document->id;
+            $pdfName = \Str::singular('warehouseshippingslips').'_'.'ID_' . (string) $document->id;
         }
 
 
@@ -1456,7 +1456,7 @@ class WarehouseShippingSlipsController extends Controller
         // MAIL stuff
         try {
 
-            $pdfName    = Str::singular('warehouseshippingslips').'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
+            $pdfName    = \Str::singular('warehouseshippingslips').'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
             $pathToFile     = storage_path() . '/pdf/' . $pdfName .'.pdf';// die($pathToFile);
             $pdf->save($pathToFile);
@@ -1514,7 +1514,7 @@ class WarehouseShippingSlipsController extends Controller
 
 
         // Dispatch event
-//        $event_class = '\\App\\Events\\'.Str::singular($this->getParentClass()).'Emailed';
+//        $event_class = '\\App\\Events\\'.\Str::singular($this->getParentClass()).'Emailed';
 //        event( new $event_class( $document ) );
         
 

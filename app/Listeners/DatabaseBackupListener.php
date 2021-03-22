@@ -38,7 +38,7 @@ class DatabaseBackupListener
         $bk_folder = storage_path( abi_tenant_db_backups_path() );
 
         $listing =  
-            Arr::sort(File::files( $bk_folder ), function($file)
+            \Arr::sort(File::files( $bk_folder ), function($file)
                 {
                     return $file->getMTime();
                 })

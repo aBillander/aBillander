@@ -35,7 +35,10 @@
             "aBillander\\SepaSpain\\": "packages/aBillander/SepaSpain/src",
             "aBillander\\WooConnect\\": "packages/aBillander/WooConnect/src",
             "Queridiam\\FSxConnector\\": "packages/Queridiam/FSxConnector/src"
-        }
+        },
+        "files": [
+            "app/Helpers/HelperFunctions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

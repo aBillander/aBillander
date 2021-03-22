@@ -71,7 +71,7 @@ trait ReportsABCCustomerSalesTrait
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
         $class = '\App\\'.$model.'Line';
-        $table = Str::snake(Str::plural($model));
+        $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
 
         $selectorMonthList = Tools::selectorMonthList();

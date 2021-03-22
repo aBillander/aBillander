@@ -17,9 +17,6 @@ use Request, Cookie;		// , DB, Session;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use aBillander\Installer\Helpers\Installer;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-
 class SetContextMiddleware {
 
 	/**
@@ -197,7 +194,7 @@ class SetContextMiddleware {
 				// Replace commented lines above
 				if ( $request->segment(3) )
 				{
-					$pos = strpos($request->segment(3), Str::singular($request->segment(1)));
+					$pos = strpos($request->segment(3), \Str::singular($request->segment(1)));
 					if ( $pos === 0 )
 						Context::getContext()->controller = $request->segment(3);
 					else

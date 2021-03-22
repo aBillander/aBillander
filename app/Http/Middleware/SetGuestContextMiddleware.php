@@ -8,7 +8,7 @@ use App\Configuration;
 use App\Company;
 use App\Context;
 use App\Language;
-use Illuminate\Support\Str;
+
 use Auth;
 use App\User;
 use Config, App;

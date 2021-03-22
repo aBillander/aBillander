@@ -704,9 +704,9 @@ class CustomersController extends Controller
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
         $class = '\App\\'.$model.'Line';
-        $table = Str::snake(Str::plural($model));
+        $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
-        $tableLines = Str::snake($model).'_lines';
+        $tableLines = \Str::snake($model).'_lines';
 
 
         $lines = $class::where('product_id', $productid)
@@ -717,7 +717,7 @@ class CustomersController extends Controller
                             ->whereHas('document', function($q) use ($id) {
                                     $q->where('customer_id', $id);
                                 })
-                            ->join($table, $tableLines.'.'.Str::snake($model).'_id', '=', $table.'.id')
+                            ->join($table, $tableLines.'.'.\Str::snake($model).'_id', '=', $table.'.id')
                             ->select($tableLines.'.*', $table.'.document_date', \DB::raw('"'.$route.'" as route'))
                             ->orderBy($table.'.document_date', 'desc')
                             ->take( $items_per_page )

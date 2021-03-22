@@ -15,6 +15,7 @@ use App\SalesRep;
 use App\Customer;
 
 use App\Payment;
+use App\PaymentType;
 use App\Configuration;
 
 use App\Traits\DateFormFormatterTrait;
@@ -58,7 +59,7 @@ class AbsrcCustomerVouchersController extends Controller
 					->with('paymentable.customer.bankaccount')
 					->where('payment_type', 'receivable')
 					->with('bankorder')
-					->orderBy('due_date', 'asc');		// ->get();
+					->orderBy('due_date', 'desc');		// ->get();
 
         $payments = $payments->paginate( Configuration::get('ABSRC_ITEMS_PERPAGE') );
 
@@ -66,7 +67,9 @@ class AbsrcCustomerVouchersController extends Controller
 
         $statusList = Payment::getStatusList();
 
-        return view('absrc.vouchers.index', compact('payments', 'statusList'));
+        $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+        return view('absrc.vouchers.index', compact('payments', 'statusList', 'payment_typeList'));
 	}
 
     /**
@@ -96,7 +99,7 @@ class AbsrcCustomerVouchersController extends Controller
 					->with('paymentable.customer.bankaccount')
 					->where('payment_type', 'receivable')
 					->with('bankorder')
-					->orderBy('due_date', 'asc');
+					->orderBy('due_date', 'desc');
 
         $payments = $payments->paginate( $items_per_page );
 

@@ -109,6 +109,15 @@
 
 </div>
 
+<div class="row">
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('payment_type_id', l('Payment Type')) !!}
+    {!! Form::select('payment_type_id', array('' => l('All', [], 'layouts')) + $payment_typeList, null, array('class' => 'form-control')) !!}
+</div>
+
+</div>
+
                 {!! Form::close() !!}
             </div>
         </div>
@@ -133,6 +142,7 @@
 			<th>{{l('Due Date')}}</th>
 			<th>{{l('Payment Date')}}</th>
 			<th class="text-right">{{l('Amount')}}</th>
+      <th style="text-transform: none;">{{l('Payment Type', 'customervouchers')}}</th>
       <th style="text-transform: none;">{{l('Auto Direct Debit', 'customervouchers')}}
                <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Include in automatic payment remittances', 'customervouchers') }}">
@@ -157,6 +167,19 @@
 				{{ abi_date_short($payment->due_date) }}</td>
 			<td>{{ abi_date_short($payment->payment_date) }}</td>
 			<td class="text-right">{{ $payment->as_money_amount('amount') }}</td>
+
+      <td class="button-pad">{{ optional($payment->paymenttype)->name }} 
+
+@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) )
+  @if( $payment->chequedetail )
+
+              <a class="btn btn-xs btn-warning" href="{{ URL::to('absrc/cheques/' . $payment->chequedetail->cheque_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
+
+  @else
+              <i class="fa fa-exclamation-triangle btn-xs alert-danger" title="{{ l('Pending to receive') }}"></i>
+  @endif
+@endif
+      </td>
 
       <td class="text-center">
         @if ($payment->auto_direct_debit) 

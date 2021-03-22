@@ -223,4 +223,10 @@ return [
 	''     => '',
 	''     => '',
 
+
+	'Payment Type' => 'Tipo de Pago',
+
+	'Cheque' => 'Cheque',
+	'This Voucher is associated with a Check' => 'Este Recibo está asociado a un Cheque',
+	'Pending to receive' => 'Pendiente de recibir',
 ];

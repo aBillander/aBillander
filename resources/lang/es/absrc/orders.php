@@ -333,9 +333,15 @@ return [
 	'Invoice: :id [:date]'     => 'Factura: :id [:date]',
 
 	'Address is displayed if it is different from Customer Main Address'     => 'Se muestra la Dirección si es diferente de la Dirección Principal del Cliente',
-
+	
+	'Prompt Payment Discount (%)'     => 'Descuento Pronto Pago (%)',
+	'Prompt Payment'     => 'Pronto Pago',
 
 	'Total Amount' => 'Importe',
 	'With or without Taxes' => 'Con o sin Impuestos incluidos',
+
+	'New Customer Order' => 'Nuevo Pedido de Cliente',
+
+	'Customer Reference' => 'Referencia del Cliente',
 
 ];

@@ -599,7 +599,7 @@ class BillableController extends Controller
         // Let's Rock!
         $document = $this->document
                         ->with('customer')
-                        ->with('taxingaddress')
+//                        ->with('taxingaddress')       // <= Bad relation, always returns null ON QUUERIES; it is OK when applied to objects                         ->with('salesrep')
                         ->with('salesrep')
                         ->with('currency')
                         ->findOrFail($document_id);

@@ -132,6 +132,16 @@
     {!! Form::select('payment_type_id', array('' => l('All', [], 'layouts')) + $payment_typeList, null, array('class' => 'form-control')) !!}
 </div>
 
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('customer_document_reference', l('Invoice')) !!}
+                   <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                        data-content="{{ l('Full Document Reference or a part of it') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                   </a>
+        {!! Form::text('customer_document_reference', null, array('id' => 'customer_document_reference', 'class' => 'form-control')) !!}
+    </div>
+
 </div>
 
                 {!! Form::close() !!}
@@ -153,6 +163,7 @@
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
 			<th>{{l('Invoice')}}</th>
+      <th>{{l('Invoice Date')}}</th>
 			<th>{{l('Customer')}}</th>
 			<th>{{l('Subject')}}</th>
 			<th>{{l('Due Date')}}</th>
@@ -175,9 +186,10 @@
 		<tr>
 			<td>{{ $payment->id }}</td>
 			<td>
-          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference or '' }}</a></td>
+          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerinvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->document_reference or '' }}</a></td>
+      <td>{{ abi_date_short(optional($payment->customerinvoice)->document_date) }}</td>
 			<td>
-          <a href="{{ URL::to('customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular or '' }}</a></td>
+          <a href="{{ URL::to('customers/' . optional(optional($payment->customerinvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->customer->name_regular or '' }}</a></td>
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>

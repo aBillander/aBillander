@@ -396,6 +396,15 @@ class Payment extends Model {
             $query->where('amount', floatval( str_replace(',','.', $params['amount']) ));
         }
 
+        if ( array_key_exists('customer_document_reference', $params) && $params['customer_document_reference'] != '' )
+        {
+            $document_reference = $params['customer_document_reference'];
+
+            $query->whereHas('customerinvoice', function ($query) use ($document_reference) {
+                                $query->where('document_reference', 'LIKE', '%' . $document_reference . '%');
+                            });
+        }
+
 /*
         if ( isset($params['reference']) && trim($params['reference']) !== '' )
         {

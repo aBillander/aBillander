@@ -126,7 +126,7 @@ trait SupplierBillableFormsControllerTrait
 
         $document = $this->document
                         ->with('supplier')
-                        ->with('taxingaddress')
+//                        ->with('taxingaddress')       // <= Bad relation, always returns null ON QUUERIES; it is OK when applied to objects                         ->with('salesrep')
                         ->with('currency')
                         ->find($document_id);
 
@@ -192,7 +192,7 @@ trait SupplierBillableFormsControllerTrait
     {
         $document = $this->document
                         ->with('supplier')
-                        ->with('taxingaddress')
+//                        ->with('taxingaddress')       // <= Bad relation, always returns null ON QUUERIES; it is OK when applied to objects                         ->with('salesrep')
                         ->with('salesrep')
                         ->with('currency')
                         ->find($document_id);
@@ -256,7 +256,7 @@ trait SupplierBillableFormsControllerTrait
     {
         $document = $this->document
                         ->with('supplier')
-                        ->with('taxingaddress')
+//                        ->with('taxingaddress')       // <= Bad relation, always returns null ON QUUERIES; it is OK when applied to objects                         ->with('salesrep')
                         ->with('salesrep')
                         ->with('currency')
                         ->find($document_id);

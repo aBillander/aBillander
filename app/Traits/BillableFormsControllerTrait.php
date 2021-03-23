@@ -136,10 +136,10 @@ trait BillableFormsControllerTrait
 
         $document = $this->document
                         ->with('customer')
-                        ->with('taxingaddress')
+//                        ->with('taxingaddress')       // <= Bad relation, always returns null ON QUUERIES; it is OK when applied to objects                         ->with('salesrep')
                         ->with('salesrep')
                         ->with('currency')
-                        ->find($document_id);
+                        ->findOrFail($document_id);
 
 
         $product_id     = $request->input('product_id');
@@ -209,7 +209,7 @@ trait BillableFormsControllerTrait
     {
         $document = $this->document
                         ->with('customer')
-                        ->with('taxingaddress')
+//                        ->with('taxingaddress')       // <= Bad relation, always returns null ON QUUERIES; it is OK when applied to objects                         ->with('salesrep')
                         ->with('shippingmethod')
                         ->with('shippingaddress')
                         ->with('salesrep')
@@ -307,7 +307,7 @@ trait BillableFormsControllerTrait
     {
         $document = $this->document
                         ->with('customer')
-                        ->with('taxingaddress')
+//                        ->with('taxingaddress')       // <= Bad relation, always returns null ON QUUERIES; it is OK when applied to objects                         ->with('salesrep')
                         ->with('salesrep')
                         ->with('currency')
                         ->find($document_id);

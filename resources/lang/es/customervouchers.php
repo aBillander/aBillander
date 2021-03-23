@@ -41,6 +41,7 @@ return [
 	'Pay Customer Voucher'     => 'Pagar Recibo',
 	'Customer Voucher'     => 'Recibo',
 	'Invoice'     => 'Factura',
+	'Invoice Date'     => 'Fecha Factura',
 	'Due Date'     => 'Fecha Vencimiento',
 	'Next Due Date'     => 'Siguiente Vencimiento',
 	'Payment Date'     => 'Fecha de Pago',
@@ -90,5 +91,7 @@ return [
 
 	'Pay multiple' => 'Pagar varios',
 	'Pay multiple Vouchers at once' => 'Pagar varios Recibos de una vez',
+
+	'Full Document Reference or a part of it' => 'Número de Factura completo, o una parte',
 
 ];

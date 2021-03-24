@@ -77,7 +77,7 @@
     <p>$t = $document->template ?? </p>
     <p> &nbsp;  &nbsp;  &nbsp;  &nbsp; \App\Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );</p>
     <p></p>
-    <p>$template = $t->folder.snake_case( str_plural( 'CustomerInvoice' ) ).'.'.$t->file_name.'.'.$t->file_name;</p>
+    <p>$template = $t->folder.snake_case( \Str::plural( 'CustomerInvoice' ) ).'.'.$t->file_name.'.'.$t->file_name;</p>
     <p></p>
     <p>// O lo que es lo mismo (recomendado):</p>
     <p></p>

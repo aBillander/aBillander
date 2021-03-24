@@ -4,14 +4,14 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-use App\Configuration as Configuration;
-use App\Company as Company;
-use App\Currency as Currency;
-use App\Context as Context;
-use App\Language as Language;
-use Illuminate\Support\Str as Str;
+use App\Configuration;
+use App\Company;
+use App\Currency;
+use App\Context;
+use App\Language;
+
 use Auth;
-use App\User as User;
+use App\User;
 use Config, App;
 use Request, Cookie;		// , DB, Session;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -194,7 +194,7 @@ class SetContextMiddleware {
 				// Replace commented lines above
 				if ( $request->segment(3) )
 				{
-					$pos = strpos($request->segment(3), Str::singular($request->segment(1)));
+					$pos = strpos($request->segment(3), \Str::singular($request->segment(1)));
 					if ( $pos === 0 )
 						Context::getContext()->controller = $request->segment(3);
 					else

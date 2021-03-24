@@ -2,7 +2,7 @@
 
 namespace App;
 
-class SupplierVoucher extends Payment
+class CustomerVoucher extends Payment
 {
     //
 }

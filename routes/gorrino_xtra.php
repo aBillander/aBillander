@@ -25,6 +25,22 @@
 
 /* ********************************************************** */
 
+Route::get('arr', function( )
+{
+	abi_r(\Str::plural('child'));
+
+	$array = [100, 200, 300];
+
+	$first = \Arr::first($array, function ($value, $key) {
+	    return $value >= 150;
+	});
+
+	abi_r($first);
+});
+
+
+/* ********************************************************** */
+
 Route::get('f3', function( )
 {
 	$fs=[486, 205, 136];

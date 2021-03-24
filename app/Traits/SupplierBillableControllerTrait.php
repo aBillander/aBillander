@@ -343,9 +343,9 @@ trait SupplierBillableControllerTrait
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
         $class = '\App\\'.$model.'Line';
-        $table = snake_case(str_plural($model));
+        $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
-        $tableLines = snake_case($model).'_lines';
+        $tableLines = \Str::snake($model).'_lines';
         $lines = $class::where('product_id', $product->id)
                             ->with(["document" => function($q){
                                 $q->where('supplierorders.supplier_id', $supplier->id);
@@ -356,7 +356,7 @@ trait SupplierBillableControllerTrait
                                     if ( $recent_sales_this_supplier > 0 )
                                         $q->where('supplier_id', $supplier_id);
                                 })
-                            ->join($table, $tableLines.'.'.snake_case($model).'_id', '=', $table.'.id')
+                            ->join($table, $tableLines.'.'.\Str::snake($model).'_id', '=', $table.'.id')
                             ->select($tableLines.'.*', $table.'.document_date', \DB::raw('"'.$route.'" as route'))
                             ->orderBy($table.'.document_date', 'desc')
                             ->take(7)->get();

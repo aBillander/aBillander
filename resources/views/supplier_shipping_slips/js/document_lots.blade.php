@@ -41,7 +41,7 @@
               var title = $(selector).attr('data-title');
               var quantity_label = $(selector).attr('data-quantity_label');
                var panel = $("#document_line_lots_form");
-//               var url = "{{ route(str_singular($model_path).'lines.lots.index', ['line_id']) }}".replace('line_id', line_id);
+//               var url = "{{ route(\Str::singular($model_path).'lines.lots.index', ['line_id']) }}".replace('line_id', line_id);
 
                $('#line_lots_form_title').html(title);
                $('#line_lots_form_quantity').html(quantity_label);
@@ -62,7 +62,7 @@
           function getProductLineLotsData( line_id ) {
 
                var panel = $("#document_line_lots_form");
-               var url = "{{ route(str_singular($model_path).'lines.lots.index', ['line_id']) }}".replace('line_id', line_id);
+               var url = "{{ route(\Str::singular($model_path).'lines.lots.index', ['line_id']) }}".replace('line_id', line_id);
 
                $.get(url, function(result){
                      panel.html(result);
@@ -95,7 +95,7 @@
             // alert(clicked.name); return;
 
             var line_id = $('#line_lotable_line_id').val();
-            var url = "{{ route(str_singular($model_path).'lines.lots.store', ['line_id']) }}".replace('line_id', line_id);
+            var url = "{{ route(\Str::singular($model_path).'lines.lots.store', ['line_id']) }}".replace('line_id', line_id);
             var token = "{{ csrf_token() }}";
 
             var store_mode = '';
@@ -190,7 +190,7 @@
             // alert(clicked.name); return;
 
             var line_id = $('#line_lotable_line_id').val();
-            var url = "{{ route(str_singular($model_path).'lines.lots.destroy', ['line_id', 'lot_id']) }}".replace('line_id', line_id).replace('lot_id', lot_id);
+            var url = "{{ route(\Str::singular($model_path).'lines.lots.destroy', ['line_id', 'lot_id']) }}".replace('line_id', line_id).replace('lot_id', lot_id);
             var token = "{{ csrf_token() }}";
 
             var store_mode = '';

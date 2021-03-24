@@ -101,6 +101,9 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
         Route::get('warehouses/{id}/inventory', 'AbsrcWarehousesController@indexProducts')->name('absrc.warehouse.inventory');
         Route::get('export/warehouses/{id}/inventory', 'AbsrcWarehousesController@exportProducts' )->name('absrc.warehouse.inventory.export');
 
+        Route::get('warehouses/{id}/stockmovements', 'AbsrcWarehousesController@indexStockMovements')->name('absrc.warehouse.stockmovements');
+        Route::get('warehouses/{id}/export/stockmovements', 'AbsrcWarehousesController@exportStockMovements' )->name('absrc.warehouse.stockmovements.export');
+
 
         Route::resource('customers', 'AbsrcCustomersController')->names('absrc.customers');
         Route::resource('customers.addresses', 'AbsrcCustomerAddressesController')->names('absrc.customers.addresses');

@@ -217,6 +217,7 @@
       <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll', 'onchange' => 'calculateSelectedAmount()']) !!}</th>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
 			<th>{{l('Invoice')}}</th>
+      <th>{{l('Invoice Date')}}</th>
 			<!-- th>{{l('Customer')}}</th -->
 			<th>{{l('Subject')}}</th>
 			<th>{{l('Due Date')}}</th>
@@ -240,9 +241,10 @@
       <td class="text-center warning">{!! Form::checkbox('payment_group[]', $payment->id, false, ['class' => 'case xcheckbox', 'onchange' => 'calculateSelectedAmount()']) !!}</td>
 			<td>{{ $payment->id }}</td>
 			<td>
-          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference or '' }}</a></td>
+          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerinvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->document_reference or '' }}</a></td>
+      <td>{{ abi_date_short(optional($payment->customerinvoice)->document_date) }}</td>
 			<!-- td>
-          <a href="{{ URL::to('customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular or '' }}</a></td -->
+          <a href="{{ URL::to('customers/' . optional(optional($payment->customerinvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->customer->name_regular or '' }}</a></td -->
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>

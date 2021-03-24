@@ -5,8 +5,8 @@
 | Helper functions.
 |--------------------------------------------------------------------------
 |
-| ToDo: move to a proper location if necessary; Google this: 
-| "laravel 5 where to put helpers".
+| ToDo: move to a proper location if necessary; Google this: "laravel 5 where to put helpers".
+| See: https://tutsforweb.com/creating-helpers-laravel/#Using_Composer_to_Autoload_Files
 |
 */
 

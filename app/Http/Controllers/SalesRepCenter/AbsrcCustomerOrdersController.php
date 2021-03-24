@@ -43,7 +43,7 @@ class AbsrcCustomerOrdersController extends BillableController
    {
         parent::__construct();
 
-        $this->model = 'CustomerOrder';	// str_singular($this->getParentClass());       // CustomerShippingSlip
+        $this->model = 'CustomerOrder';	// \Str::singular($this->getParentClass());       // CustomerShippingSlip
         $this->model_snake_case = 'order';	// $this->getParentModelSnakeCase(); // customer_shipping_slip
         $this->model_path = 'absrc.orders';	// $this->getParentClassLowerCase();       // customershippingslips
         $this->model_url = 'absrc/orders';
@@ -240,6 +240,8 @@ class AbsrcCustomerOrdersController extends BillableController
 
         $this->validate($request, $rules);
 
+        $customer = Customer::with('addresses')->findOrFail(  $request->input('customer_id') );
+
         // Extra data
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
 //        $doc_id = $seq->getNextDocumentId();
@@ -247,6 +249,11 @@ class AbsrcCustomerOrdersController extends BillableController
         $extradata = [  'user_id'              => $salesrep_user->id,
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_CUSTOMER_ORDER_SEQUENCE'),
+
+                        'template_id'          => $request->input('template_id') ?? Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE'),
+
+                        'document_discount_percent' => $customer->discount_percent,
+                        'document_ppd_percent'      => $customer->discount_ppd_percent,
 
                         'sales_rep_id'         => $salesrep->id,
 
@@ -464,12 +471,15 @@ if (0) {
 */
         $document = $order;
 
+        $need_update_totals = (
+            $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+        ) ? true : false;
+
         $document->fill($request->all());
 
-        // Reset Export date
-        // if ( $request->input('export_date_form') == '' ) $document->export_date = null;
-
         $document->save();
+
+        if ( $need_update_totals ) $document->makeTotals();
 
         // Move on
         if (   Configuration::isFalse('CUSTOMER_ORDERS_NEED_VALIDATION') 

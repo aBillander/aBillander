@@ -305,7 +305,7 @@ class AbsrcProductsController extends Controller
         $work_centerList = \App\WorkCenter::pluck('name', 'id')->toArray();
         $supplierList = \App\Supplier::pluck('name_fiscal', 'id')->toArray();
         $manufacturerList = \App\Manufacturer::pluck('name', 'id')->toArray();
-        $taxpercentList = \Illuminate\Support\Arr::pluck(\App\Tax::all(), 'percent', 'id');
+        $taxpercentList = \Arr::pluck(\App\Tax::all(), 'percent', 'id');
 
         return view('absrc.products.edit', compact('product', 'bom', 'groups', 'pricelists', 'ecotaxList', 'taxList', 'measure_unitList', 'product_procurementtypeList', 'categoryList', 'work_centerList', 'supplierList', 'manufacturerList', 'taxpercentList'));
     }

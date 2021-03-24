@@ -69,7 +69,18 @@ return [
 
 	'Reference'     => 'Referencia',
 	'Product Name'     => 'Producto',
+	'Product'     => 'Producto',
 	'Quantity'     => 'Cantidad',
+	'Date'     => 'Fecha',
+	'Type'     => 'Tipo',
+
+	'Warehouse Stock Movements' => 'Movimientos de Stock por Almacén',
+	'Stock Movements' => 'Movimientos de Stock',
+	'Stock after'     => 'Stock final',
+	'Date from'     => 'Fecha desde',
+	'Date to'     => 'Fecha hasta',
+	'Movement type'     => 'Tipo de movimiento',
+	'Document'     => 'Documento',
 	''     => '',
 	''     => '',
 	''     => '',

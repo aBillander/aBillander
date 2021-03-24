@@ -18,12 +18,16 @@ The **aBillander Project** is an Invoicing and Inventory System for SME's powere
 
 > microCRM
 
+[YouTube Channel](https://www.youtube.com/channel/UCTv7x_i1qiBWZkQsrE8Y6vA/videos)
+
 
 ## ab://ander/Status
 
 > Production ready: two Companies have used aBillander for more than 1 year now.
 
 > More implementations needed (main goal for year 2021).
+
+> Working on upgrade to Laravel 6.x LTS.
 
 > Contributors are welcome.
 

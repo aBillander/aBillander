@@ -9,7 +9,7 @@ use App\Company as Company;
 use App\Currency as Currency;
 use App\Context as Context;
 use App\Language as Language;
-use Illuminate\Support\Str as Str;
+
 use Auth;
 use App\User as User;
 use Config, App;

@@ -38,7 +38,7 @@
             <!-- name -->
             <div class="form-group {{{ $errors->has('name_fiscal') ? 'has-error' : '' }}}">
                 <label class="control-label" for="name_fiscal">Nombre</label>
-                <input class="form-control" type="text" name="name_fiscal" id="name_fiscal" placeholder="Nombre fiscal" value="{{{ Input::old('name_fiscal', isset($customer) ? $customer->name_fiscal : null) }}}" />
+                <input class="form-control" type="text" name="name_fiscal" id="name_fiscal" placeholder="Nombre fiscal" value="{{{ Request::old('name_fiscal', isset($customer) ? $customer->name_fiscal : null) }}}" />
                 {{ $errors->first('name_fiscal', '<span class="help-block">:message</span>') }}
             </div>
             <!-- ./ name -->
@@ -47,7 +47,7 @@
             <!-- name -->
             <div class="form-group {{{ $errors->has('identification') ? 'has-error' : '' }}}">
                 <label class="control-label" for="identification">DNI / CIF</label>
-                <input class="form-control" type="text" name="identification" id="identification" placeholder="" value="{{{ Input::old('identification', isset($customer) ? $customer->identification : null) }}}" />
+                <input class="form-control" type="text" name="identification" id="identification" placeholder="" value="{{{ Request::old('identification', isset($customer) ? $customer->identification : null) }}}" />
                 {{ $errors->first('identification', '<span class="help-block">:message</span>') }}
             </div>
             <!-- ./ name -->
@@ -67,7 +67,7 @@
                 <!-- name -->
                 <div class="form-group {{{ $errors->has('name_commercial') ? 'has-error' : '' }}}">
                     <label class="control-label" for="name_commercial">Nombre Comercial</label>
-                    <input class="form-control" type="text" name="name_commercial" id="name_commercial" placeholder="" value="{{{ Input::old('name_commercial', isset($customer) ? $customer->name_commercial : null) }}}" />
+                    <input class="form-control" type="text" name="name_commercial" id="name_commercial" placeholder="" value="{{{ Request::old('name_commercial', isset($customer) ? $customer->name_commercial : null) }}}" />
                     {{ $errors->first('name_commercial', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ name -->
@@ -79,7 +79,7 @@
                 <!-- address_1 -->
                 <div class="form-group {{{ $errors->has('address1') ? 'has-error' : '' }}}">
                     <label class="control-label" for="address1">Dirección</label>
-                    <input class="form-control" type="text" name="address1" id="address1" placeholder="" value="{{{ Input::old('address1', isset($customer) ? $customer->address1 : null) }}}" />
+                    <input class="form-control" type="text" name="address1" id="address1" placeholder="" value="{{{ Request::old('address1', isset($customer) ? $customer->address1 : null) }}}" />
                     {{ $errors->first('address1', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ address_1 -->
@@ -88,7 +88,7 @@
                 <!-- address_2 -->
                 <div class="form-group {{{ $errors->has('address2') ? 'has-error' : '' }}}">
                     <label class="control-label" for="address2">Dirección (cont.)</label>
-                    <input class="form-control" type="text" name="address2" id="address2" placeholder="" value="{{{ Input::old('address2', isset($customer) ? $customer->address2 : null) }}}" />
+                    <input class="form-control" type="text" name="address2" id="address2" placeholder="" value="{{{ Request::old('address2', isset($customer) ? $customer->address2 : null) }}}" />
                     {{ $errors->first('address2', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ address_2 -->
@@ -100,7 +100,7 @@
                 <!-- city -->
                 <div class="form-group {{{ $errors->has('city') ? 'has-error' : '' }}}">
                     <label class="control-label" for="city">Ciudad</label>
-                    <input class="form-control" type="text" name="city" id="city" placeholder="" value="{{{ Input::old('city', isset($customer) ? $customer->city : null) }}}" />
+                    <input class="form-control" type="text" name="city" id="city" placeholder="" value="{{{ Request::old('city', isset($customer) ? $customer->city : null) }}}" />
                     {{ $errors->first('city', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ city -->  
@@ -109,7 +109,7 @@
                 <!-- postcode -->
                 <div class="form-group {{{ $errors->has('postcode') ? 'has-error' : '' }}}">
                     <label class="control-label" for="postcode">Código Postal</label>
-                    <input class="form-control" type="text" name="postcode" id="postcode" placeholder="" value="{{{ Input::old('postcode', isset($customer) ? $customer->postcode : null) }}}" />
+                    <input class="form-control" type="text" name="postcode" id="postcode" placeholder="" value="{{{ Request::old('postcode', isset($customer) ? $customer->postcode : null) }}}" />
                     {{ $errors->first('postcode', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ postcode -->
@@ -118,7 +118,7 @@
                 <!-- state -->
                 <div class="form-group {{{ $errors->has('state') ? 'has-error' : '' }}}">
                     <label class="control-label" for="state">Provincia</label>
-                    <input class="form-control" type="text" name="state" id="state" placeholder="" value="{{{ Input::old('state', isset($customer) ? $customer->state : null) }}}" />
+                    <input class="form-control" type="text" name="state" id="state" placeholder="" value="{{{ Request::old('state', isset($customer) ? $customer->state : null) }}}" />
                     {{ $errors->first('state', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ state -->  
@@ -148,7 +148,7 @@
                 <!-- country --> 
                 <div class="form-group {{{ $errors->has('country') ? 'has-error' : '' }}}">
                     <label class="control-label" for="country">País</label>
-                    <input class="form-control" type="text" name="country" id="country" placeholder="" value="{{{ Input::old('country', isset($customer) ? $customer->country : null) }}}" />
+                    <input class="form-control" type="text" name="country" id="country" placeholder="" value="{{{ Request::old('country', isset($customer) ? $customer->country : null) }}}" />
                     {{ $errors->first('country', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ country --> 
@@ -167,7 +167,7 @@
                 <!-- name_1 -->
                 <div class="form-group {{{ $errors->has('firstname') ? 'has-error' : '' }}}">
                     <label class="control-label" for="firstname">Nombre</label>
-                    <input class="form-control" type="text" name="firstname" id="firstname" placeholder="" value="{{{ Input::old('firstname', isset($customer) ? $customer->firstname : null) }}}" />
+                    <input class="form-control" type="text" name="firstname" id="firstname" placeholder="" value="{{{ Request::old('firstname', isset($customer) ? $customer->firstname : null) }}}" />
                     {{ $errors->first('firstname', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ address_1 -->
@@ -176,7 +176,7 @@
                 <!-- lastname_2 -->
                 <div class="form-group {{{ $errors->has('lastname') ? 'has-error' : '' }}}">
                     <label class="control-label" for="lastname">Apellidos</label>
-                    <input class="form-control" type="text" name="lastname" id="lastname" placeholder="" value="{{{ Input::old('lastname', isset($customer) ? $customer->lastname : null) }}}" />
+                    <input class="form-control" type="text" name="lastname" id="lastname" placeholder="" value="{{{ Request::old('lastname', isset($customer) ? $customer->lastname : null) }}}" />
                     {{ $errors->first('lastname', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ address_2 -->
@@ -188,7 +188,7 @@
                 <!-- phone -->
                 <div class="form-group {{{ $errors->has('phone') ? 'has-error' : '' }}}">
                     <label class="control-label" for="phone">Teléfono (fijo)</label>
-                    <input class="form-control" type="text" name="phone" id="phone" placeholder="" value="{{{ Input::old('phone', isset($customer) ? $customer->phone : null) }}}" />
+                    <input class="form-control" type="text" name="phone" id="phone" placeholder="" value="{{{ Request::old('phone', isset($customer) ? $customer->phone : null) }}}" />
                     {{ $errors->first('phone', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ phone -->
@@ -197,7 +197,7 @@
                 <!-- mobile -->
                 <div class="form-group {{{ $errors->has('phone_mobile') ? 'has-error' : '' }}}">
                     <label class="control-label" for="phone_mobile">Teléfono (móvil)</label>
-                    <input class="form-control" type="text" name="phone_mobile" id="phone_mobile" placeholder="" value="{{{ Input::old('phone_mobile', isset($customer) ? $customer->phone_mobile : null) }}}" />
+                    <input class="form-control" type="text" name="phone_mobile" id="phone_mobile" placeholder="" value="{{{ Request::old('phone_mobile', isset($customer) ? $customer->phone_mobile : null) }}}" />
                     {{ $errors->first('phone_mobile', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ mobile -->
@@ -206,7 +206,7 @@
                 <!-- fax -->
                 <div class="form-group {{{ $errors->has('fax') ? 'has-error' : '' }}}">
                     <label class="control-label" for="fax">Fax</label>
-                    <input class="form-control" type="text" name="fax" id="fax" placeholder="" value="{{{ Input::old('fax', isset($customer) ? $customer->fax : null) }}}" />
+                    <input class="form-control" type="text" name="fax" id="fax" placeholder="" value="{{{ Request::old('fax', isset($customer) ? $customer->fax : null) }}}" />
                     {{ $errors->first('fax', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ fax -->
@@ -217,7 +217,7 @@
                 <!-- email -->
                 <div class="form-group {{{ $errors->has('email') ? 'has-error' : '' }}}">
                     <label class="control-label" for="email">Correo Electónico</label>
-                    <input class="form-control" type="text" name="email" id="customer_email" placeholder="" value="{{{ Input::old('email', isset($customer) ? $customer->email : null) }}}" />
+                    <input class="form-control" type="text" name="email" id="customer_email" placeholder="" value="{{{ Request::old('email', isset($customer) ? $customer->email : null) }}}" />
                     {{ $errors->first('email', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ email -->
@@ -226,7 +226,7 @@
                 <!-- web -->
                 <div class="form-group {{{ $errors->has('website') ? 'has-error' : '' }}}">
                     <label class="control-label" for="website">Sitio Web</label>
-                    <input class="form-control" type="text" name="website" id="website" placeholder="http://www." value="{{{ Input::old('website', isset($customer) ? $customer->website : null) }}}" />
+                    <input class="form-control" type="text" name="website" id="website" placeholder="http://www." value="{{{ Request::old('website', isset($customer) ? $customer->website : null) }}}" />
                     {{ $errors->first('website', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ web -->
@@ -236,7 +236,7 @@
         <div class="form-group" {{{ $errors->has('notes') ? 'has-error' : '' }}}">
             <label class="control-label" for="notes">Notas</label>
             {{-- Form::textarea('notes', null, array('id' => 'notes', 'class' => 'form-control', 'rows' => 4)) --}}
-            <textarea id="notes" class="form-control" xcols="50" name="notes" rows="4" placeholder="">{{{ Input::old('notes', isset($customer) ? $customer->notes : null) }}}</textarea>
+            <textarea id="notes" class="form-control" xcols="50" name="notes" rows="4" placeholder="">{{{ Request::old('notes', isset($customer) ? $customer->notes : null) }}}</textarea>
             {{ $errors->first('notes', '<span class="help-block">:message</span>') }}
         </div>
 
@@ -245,7 +245,7 @@
                 <!-- outstanding_amount_allowed -->
                 <div class="form-group {{{ $errors->has('outstanding_amount_allowed') ? 'has-error' : '' }}}">
                     <label class="control-label" for="website">Riesgo Máximo</label>
-                    <input class="form-control" type="text" name="outstanding_amount_allowed" id="outstanding_amount_allowed" placeholder="" value="{{{ Input::old('outstanding_amount_allowed', isset($customer) ? $customer->outstanding_amount_allowed : Configuration::get('DEF_OUTSTANDING_AMOUNT')) }}}" />
+                    <input class="form-control" type="text" name="outstanding_amount_allowed" id="outstanding_amount_allowed" placeholder="" value="{{{ Request::old('outstanding_amount_allowed', isset($customer) ? $customer->outstanding_amount_allowed : Configuration::get('DEF_OUTSTANDING_AMOUNT')) }}}" />
                     {{ $errors->first('outstanding_amount_allowed', '<span class="help-block">:message</span>') }}
                 </div>
                 <!-- ./ outstanding_amount_allowed -->
@@ -255,7 +255,7 @@
                 <div class="form-group">
                     <label class="control-label" for="accept_einvoice"><br />¿Acepta Factura Electrónica?</label>
                     <input type="hidden" name="accept_einvoice" value="0">
-                    {{ Form::checkbox('accept_einvoice', 1, (bool) Input::old('accept_einvoice', isset($customer) ? $customer->accept_einvoice : 0)) }}
+                    {{ Form::checkbox('accept_einvoice', 1, (bool) Request::old('accept_einvoice', isset($customer) ? $customer->accept_einvoice : 0)) }}
                 </div>
                 <!-- ./ accept_einvoice -->
             </div>
@@ -264,7 +264,7 @@
                 <div class="form-group">
                     <label class="control-label" for="active"><br />Activo</label>
                     <input type="hidden" name="active" value="0">
-                    {{ Form::checkbox('active', 1, (bool) Input::old('active', isset($customer) ? $customer->active : 1)) }}
+                    {{ Form::checkbox('active', 1, (bool) Request::old('active', isset($customer) ? $customer->active : 1)) }}
                 </div>
                 <!-- ./ active -->
             </div>

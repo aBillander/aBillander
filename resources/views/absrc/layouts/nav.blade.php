@@ -108,6 +108,11 @@
                                  {{l('Warehouse', [], 'absrc/layouts')}}
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ route('absrc.warehouse.stockmovements', Auth::user()->warehouse_id) }}">
+                                 {{l('Stock Movements', [], 'absrc/layouts')}}
+                            </a>
+                        </li>
 @endif
                     </ul>
                 </li>

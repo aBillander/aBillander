@@ -477,6 +477,12 @@ pueden ser ejercitados escribiendo a GUSTAVO MEDINA RODRIGUEZ, C/ PRIMAVERA, Nº
 
 </div><!-- #letter-footer -->
 
+@php
+
+$GLOBALS['var'] = 'Presupuesto nº: ' . ($document->document_reference ?: 'BORRADOR');
+
+@endphp
+
 
 <script type="text/php">
 

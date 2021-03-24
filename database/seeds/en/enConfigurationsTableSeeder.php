@@ -7,13 +7,13 @@ use App\Configuration;
 // use Illuminate\Support\Facades\DB;
 // use App\Models\Contact;
 
-class ConfigurationsTableSeeder extends Seeder {
+class enConfigurationsTableSeeder extends Seeder {
 
 	public function run()
 	{
 		// Uncomment the below to wipe the table clean before populating
 		// DB::table('configurations')->truncate();
-		DB::table('configurations')->delete();
+		// DB::table('configurations')->delete();
 
 		Configuration::loadConfiguration();
 

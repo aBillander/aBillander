@@ -103,9 +103,9 @@ class Template extends Model {
     {
             $folder = $this->folder ?: 'templates::';
 
-            $separator = ends_with($this->folder, ':') ? '' : '.';
+            $separator = \Str::endsWith($this->folder, ':') ? '' : '.';
 
-            return $folder.$separator.snake_case( str_plural( $model ) ).'.'.$this->file_name.'.'.$this->file_name;
+            return $folder.$separator.\Str::snake( \Str::plural( $model ) ).'.'.$this->file_name.'.'.$this->file_name;
     }
     
 

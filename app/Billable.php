@@ -968,9 +968,13 @@ class Billable extends Model implements ShippableInterface
         return $this->belongsTo('App\Address', 'shipping_address_id')->withTrashed();
     }
 
+    // Badly built relation:
     public function taxingaddress()
     {
         return ( \App\Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') && $this->shippingaddress )  ? 
+                                        // $this->shippingaddress does not exists in a query such as:
+                                        // $document = CustomerInvoice::with('customer')->with('taxingaddress')->find($id);
+                                        // So the relation is evaluated as null
             $this->shippingaddress()  : 
             $this->invoicingaddress() ;
     }

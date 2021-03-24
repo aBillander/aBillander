@@ -96,7 +96,7 @@ class HelferinController extends Controller
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
         $class = '\App\\'.$model;
-        $table = snake_case(str_plural($model));
+        $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
 
         $grouped = $request->input('sales_grouped', 1);
@@ -370,7 +370,7 @@ foreach ($customers as $customer) {
         $document_class = '\App\\'.$document_model;
         $model .= 'Line';
         $class = '\App\\'.$model;
-        $table = snake_case(str_plural($model));
+        $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
 
         // Lets see ecotaxes

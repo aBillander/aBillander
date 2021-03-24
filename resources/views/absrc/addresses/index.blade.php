@@ -9,7 +9,7 @@
     <div class="pull-right" style="padding-top: 4px;">
         <a href="{{{ URL::to('users/create') }}}" class="btn btn-sm btn-success" title=" Añadir Nuevo "><i class="fa fa-plus"></i> Nuevo</a>
         <!-- a href="" onclick="return false;" data-toggle="modal" data-target="#modal_create_customer" class="btn btn-sm btn-success" title=" Añadir Nuevo Cliente "><i class="fa fa-plus"></i> Nuevo</a -->
-        <!-- @if (Input::get('onlyTrashed'))
+        <!-- @if (Request::get('onlyTrashed'))
         	<a class="btn btn-default" href="{{ URL::to('customers') }}">{{ Lang::get('customers.general.show_curent') }}</a>
         @else
         	<a class="btn btn-default" href="{{ URL::to('customers?onlyTrashed=true') }}">{{ Lang::get('customers.general.show_deleted') }}</a>

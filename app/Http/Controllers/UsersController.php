@@ -104,7 +104,7 @@ class UsersController extends Controller {
 			$request->merge( ['password' => $password] );
 			$user->update($request->all());
 		} else {
-			$this->validate($request, array_except( User::$rules, array('password')) );
+			$this->validate($request, \Arr::except( User::$rules, array('password')) );
 			$user->update($request->except(['password']));
 		}
 

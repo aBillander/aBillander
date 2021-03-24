@@ -5,8 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use DB;
 
-use Illuminate\Support\Arr;
-
 /*
 |--------------------------------------------------------------------------
 | Application View Composers
@@ -203,7 +201,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 			'supplier_quotations.create', 'supplier_quotations.edit', 'supplier_orders.create', 'supplier_orders.edit', 'supplier_shipping_slips.create', 'supplier_shipping_slips.edit', 'supplier_invoices.create', 'supplier_invoices.edit'), function($view) {
 
 		    // https://laracasts.com/discuss/channels/eloquent/eloquent-model-lists-id-and-a-custom-accessor-field
-		    $view->with('taxpercentList', Arr::pluck(\App\Tax::all(), 'percent', 'id'));
+		    $view->with('taxpercentList', \Arr::pluck(\App\Tax::all(), 'percent', 'id'));
 		    
 		});
 
@@ -216,7 +214,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 
 		    $view->with('taxeqpercentList', $list);
 */		    
-		    $view->with('taxpercentList', Arr::pluck(\App\Tax::all(), 'percent', 'id'));
+		    $view->with('taxpercentList', \Arr::pluck(\App\Tax::all(), 'percent', 'id'));
 		});
 
 		// Tax Rule types

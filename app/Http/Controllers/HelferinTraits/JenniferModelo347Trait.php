@@ -421,7 +421,7 @@ foreach ($customers as $customer) {
         // MAIL stuff
         try {
 
-            $pdfName    = str_singular('warehouseshippingslips').'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
+            $pdfName    = \Str::singular('warehouseshippingslips').'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
 
             $pathToFile     = storage_path() . '/pdf/' . $pdfName .'.pdf';// die($pathToFile);
             $pdf->save($pathToFile);
@@ -479,7 +479,7 @@ foreach ($customers as $customer) {
 
 
         // Dispatch event
-        $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Emailed';
+        $event_class = '\\App\\Events\\'.\Str::singular($this->getParentClass()).'Emailed';
         event( new $event_class( $document ) );
         
 
@@ -554,7 +554,7 @@ foreach ($customers as $customer) {
 
 
         // Dispatch event
-        // $event_class = '\\App\\Events\\'.str_singular($this->getParentClass()).'Emailed';
+        // $event_class = '\\App\\Events\\'.\Str::singular($this->getParentClass()).'Emailed';
         // event( new $event_class( $document ) );
         
 

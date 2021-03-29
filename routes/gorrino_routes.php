@@ -23,6 +23,48 @@
 
 /* ********************************************************** */
 
+Route::get('testemail/{email}', function( $email = null )
+{
+		if ( !$email ) return;
+		
+		// @ => %40
+
+		$subject = ' :_> Test email';
+		$body = ' * Test email body *';
+		$to = $email;
+		$name = 'Markus';
+
+		// See ContactMessagesController
+		try{
+			$send = \Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.basic',
+		        array(
+		            'user_email'   => config('mail.from.address'),
+		            'user_name'    => config('mail.from.name'   ),
+		            'user_message' => $body,
+		        ), function($message) use ( $to, $name, $subject )
+		    {
+		        $message->from( config('mail.from.address'), config('mail.from.name') );
+//		        $message->replyTo( $request->input('from_email'), $request->input('from_name') );
+		        $message->to( $to, $name )->subject( $subject );
+		    });
+
+			abi_r('Email sent.');
+		}
+		catch(\Exception $e){
+
+		    	
+			abi_r(l('There was an error. Your message could not be sent.', [], 'layouts'));
+			abi_r($e->getMessage());
+		    	
+		}
+		
+
+
+});
+
+
+/* ********************************************************** */
+
 Route::get('/mailable', function () {
         $customerOrder = \App\CustomerOrder::find(7415);
         $customer = $customerOrder->customer; 

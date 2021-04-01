@@ -395,6 +395,8 @@ return [
 	'Pending'     => 'Pendiente',
 	'NOT Saved'     => 'NO se ha Guardado',
 
+	'Default?'     => '¿Principal?',
+
 
 	/*
 	|--------------------------------------------------------------------------

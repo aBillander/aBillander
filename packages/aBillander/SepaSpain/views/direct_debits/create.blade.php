@@ -43,6 +43,8 @@
 
     $(document).ready(function() {
 
+        $("#bank_account_id").val('{{ $default_bank_account_id }}');
+
         $("#autocustomer_name").val('');
 
         // To get focus;

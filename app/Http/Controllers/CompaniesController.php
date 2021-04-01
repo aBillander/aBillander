@@ -124,7 +124,11 @@ class CompaniesController extends Controller {
 	 */
 	public function edit($id)
 	{
-        $company = $this->company->with('address')->with('currency')->findOrFail( intval($id) );
+        $company = $this->company
+        					->with('address')
+        					->with('currency')
+        					->with('bankaccounts')
+        					->findOrFail( intval($id) );
 
         $country = Country::find( $company->address->country_id );
 
@@ -191,24 +195,37 @@ class CompaniesController extends Controller {
 
         $section = '#bankaccounts';
 
-//        abi_r(Customer::$rules, true);
+//        abi_r($request->input('is_default'), true);
 
-        $company = $this->company->with('bankaccount')->findOrFail($id);
+        $company = $this->company->with('bankaccounts')->findOrFail($id);
 
-        $bankaccount = $company->bankaccount;
+        $request->merge( ['notes' => $request->input('bank_account_notes')] );
 
         $this->validate($request, BankAccount::$rules);
+
+        $bankaccount = $company->bankaccounts->where('id', $request->input('bank_account_id'))->first();
 
         if ( $bankaccount )
         {
             // Update
             $bankaccount->update($request->all());
         } else {
+
+            // Force default bank account
+            if ( $company->bankaccounts->count() == 0 )
+            {
+				$request->merge( ['is_default' => 1] );
+            }
+
             // Create
             $bankaccount = BankAccount::create($request->all());
             $company->bankaccounts()->save($bankaccount);
+        }
 
-            $company->bank_account_id = $bankaccount->id;
+        // Bank account is default account?
+        if ( $request->input('is_default') > 0 )
+        {
+        	$company->bank_account_id = $bankaccount->id;
             $company->save();
         }
 
@@ -228,5 +245,68 @@ class CompaniesController extends Controller {
 	{
 		// Bad idea to reach this point...
 	}
+
+
+    /**
+     * Remove Bank Account from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroyBankAccount($company_id, $bank_account_id, Request $request)
+    {
+
+        $section = '#bankaccounts';
+
+//        abi_r($request->input('is_default'), true);
+        $company = $this->company->with('bankaccounts')->findOrFail($company_id);
+
+        $bankaccount = $company->bankaccounts->where('id', $bank_account_id)->first();
+
+        if ( !$bankaccount )
+            abort(404);
+
+
+        try {
+
+            $bankaccount->delete();
+            
+        } catch (\Exception $e) {
+
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $bankaccount->id], 'layouts').$e->getMessage());
+            
+        }
+
+        
+
+        return redirect('companies/'.$company->id.'/edit'.$section)
+            ->with('info', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $bank_account_id], 'layouts') . $company->name_commercial);
+	}
+
+
+/* ********************************************************************************************* */  
+
+
+    /**
+     * AJAX Stuff.
+     *
+     * 
+     */
+
+
+    public function getBankAccount($company_id, $bank_account_id)
+    {
+        $company = $this->company->with('bankaccounts')->findOrFail($company_id);
+
+        $bankaccount = $company->bankaccounts->where('id', $bank_account_id)->first();
+
+        if ( !$bankaccount )
+            return response()->json( [] );
+
+        // abi_r($document_line->toArray());die();
+
+        return response()->json( $bankaccount->toArray() + ['is_default' => (int) ($bankaccount->id == $company->bank_account_id)]);
+    }
 
 }

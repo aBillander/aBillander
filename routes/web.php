@@ -244,6 +244,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('companies', 'CompaniesController');
         Route::post('companies/{id}/bankaccount', 'CompaniesController@updateBankAccount')->name('companies.bankaccount');
+        Route::get('companies/{id}/getbankaccount/{aid}', 'CompaniesController@getBankAccount')->name('companies.getbankaccount');
+        Route::delete('companies/{id}/bankaccount/{aid}/destroy', 'CompaniesController@destroyBankAccount')->name('companies.bankaccount.destroy');
 
         Route::post('bankaccounts/iban/calculate', 'BankAccountsController@ibanCalculate')->name('bankaccounts.iban.calculate' );
 

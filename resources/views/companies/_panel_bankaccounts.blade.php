@@ -1,100 +1,163 @@
 
-
-  {!! Form::model($company->bankaccount, array('route' => array('companies.bankaccount', $company->id), 'method' => 'POST', 'class' => 'form')) !!}
-  <input type="hidden" value="{{$company->id}}" name="bank_company_id" id="bank_company_id">
-  <input type="hidden" value="{{optional($company->bankaccount)->id}}" name="bank_account_id" id="bank_account_id">
-
             <div class="panel panel-primary" id="panel_bankaccounts">
                <div class="panel-heading">
                   <h3 class="panel-title">{{ l('Bank Accounts') }}</h3>
                </div>
                <div class="panel-body">
 
-<!-- Datos generales -->
 
-        <div class="row">
-            <div class="form-group col-lg-6 col-md-6 col-sm-6 {!! $errors->has('bank_name') ? 'has-error' : '' !!}">
-              {{ l('Bank Name') }}
-              {!! Form::text('bank_name', null, array('class' => 'form-control', 'id' => 'bank_name')) !!}
-              {!! $errors->first('bank_name', '<span class="help-block">:message</span>') !!}
-            </div>
+    <div id="div_company_bank_accounts">
+       <div class="table-responsive">
+
+    <table id="bank_accounts" class="table table-hover">
+        <thead>
+            <tr>
+                <th class="text-left">{{l('ID', [], 'layouts')}}</th>
+                <th class="text-left">{{ l('Bank Name') }}</th>
+                <th class="text-left">{{ l('Iban') }}</th>
+                <th class="text-left">{{ l('Swift') }}</th>
+                <th class="text-left">{{ l('Suffix') }}</th>
+                <th class="text-left">{{ l('Creditor ID') }}</th>
+                <th class="text-center">{{l('Default?', [], 'layouts')}}</th>
+                <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
+                <!-- th class="text-center">{{l('Active', [], 'layouts')}}</th -->
+                <th class="text-right button-pad"> 
+
+        <div class="pull-right" style="padding-top: 4px;">
+            <a href="#" class="btn btn-sm btn-success new-bankaccount" 
+                     data-target='#myModalBankAccount' data-id="{{ '' }}" data-toggle="modal" onClick="return false;" 
+                     data-title="{{ l('New Bank Account') }}"
+                    title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
         </div>
 
-        <div class="row">
-            <div class="form-group col-lg-3 col-md-3 col-sm-3">
-            <div class="well well-sm" xstyle="background-color: #d9edf7; border-color: #bce8f1; color: #3a87ad;">
-               <b>{{ l('Código de Cuenta') }}</b>
-            </div>
-            </div>
-        </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
 
-        <div class="row">
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('ccc_entidad') ? 'has-error' : '' !!}">
-                    {{ l('Entidad') }}
-                    {!! Form::text('ccc_entidad', null, array('class' => 'form-control', 'id' => 'ccc_entidad')) !!}
-                    {!! $errors->first('ccc_entidad', '<span class="help-block">:message</span>') !!}
-                  </div>
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('ccc_oficina') ? 'has-error' : '' !!}">
-                    {{ l('Oficina') }}
-                    {!! Form::text('ccc_oficina', null, array('class' => 'form-control', 'id' => 'ccc_oficina')) !!}
-                    {!! $errors->first('ccc_oficina', '<span class="help-block">:message</span>') !!}
-                  </div>
-                  <div class="form-group col-lg-1 col-md-1 col-sm-1 {!! $errors->has('ccc_control') ? 'has-error' : '' !!}">
-                    {{ l('Control') }}
-                    {!! Form::text('ccc_control', null, array('class' => 'form-control', 'id' => 'ccc_control')) !!}
-                    {!! $errors->first('ccc_control', '<span class="help-block">:message</span>') !!}
-                  </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('ccc_cuenta') ? 'has-error' : '' !!}">
-                    {{ l('Cuenta') }}
-                    {!! Form::text('ccc_cuenta', null, array('class' => 'form-control', 'id' => 'ccc_cuenta')) !!}
-                    {!! $errors->first('ccc_cuenta', '<span class="help-block">:message</span>') !!}
-                  </div>
-        </div>
+    @if ($company->bankaccounts->count() > 0)
 
-        <div class="row">
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('iban') ? 'has-error' : '' !!}">
-                    {{ l('Iban') }}
-                    {!! Form::text('iban', null, array('class' => 'form-control', 'id' => 'iban')) !!}
-                    {!! $errors->first('iban', '<span class="help-block">:message</span>') !!}
-                  </div>
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('swift') ? 'has-error' : '' !!}">
-                    {{ l('Swift') }}
-                    {!! Form::text('swift', null, array('class' => 'form-control', 'id' => 'swift')) !!}
-                    {!! $errors->first('swift', '<span class="help-block">:message</span>') !!}
-                  </div>
-        </div>
+            @foreach ($company->bankaccounts as $bankaccount)
+            <tr>
+                <td>{{ $bankaccount->id }}</td>
+                <td>{{ $bankaccount->bank_name }}</td>
+                <td>{{ $bankaccount->iban }}</td>
+                <td>{{ $bankaccount->swift }}</td>
+                <td>{{ $bankaccount->suffix }}</td>
+                <td>{{ $bankaccount->creditorid }}</td>
 
-        <div class="row">
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('suffix') ? 'has-error' : '' !!}">
-                    {{ l('Suffix') }}
-                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('Por defecto es "000", o el valor que asigne el Banco.') }}">
-                                <i class="fa fa-question-circle abi-help"></i>
+                <td  class="text-center">
+                @if ( $company->bank_account_id == $bankaccount->id) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif
+                </td>
+
+                <td class="text-center">
+                    @if ($bankaccount->notes) 
+                         <a href="javascript:void(0);">
+                            <button type="button" xclass="btn btn-xs btn-success" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ $bankaccount->notes }}">
+                                <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
+                            </button>
                          </a>
-                    {!! Form::text('suffix', null, array('class' => 'form-control', 'id' => 'suffix')) !!}
-                    {!! $errors->first('suffix', '<span class="help-block">:message</span>') !!}
-                  </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('creditorid') ? 'has-error' : '' !!}">
-                    {{ l('Creditor ID') }}
-                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ l('El Identificador del Acreedor se calcula según la Norma SEPA, pero puede que su Banco requiera un valor diferente.') }}">
-                                <i class="fa fa-question-circle abi-help"></i>
-                         </a>
-                    {!! Form::text('creditorid', null, array('class' => 'form-control', 'id' => 'creditorid')) !!}
-                    {!! $errors->first('creditorid', '<span class="help-block">:message</span>') !!}
-                  </div>
-        </div>
+                    @endif
+                </td>
+                <!-- td class="text-center">@if ($bankaccount->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td -->
+                <td class="text-right button-pad">
+                    @if (  is_null($bankaccount->deleted_at))
 
-<!-- Datos generales ENDS -->
+                    <a class="btn btn-sm btn-warning edit-bankaccount" href="#"
+                     data-target='#myModalBankAccount' data-id="{{ $bankaccount->id }}" data-toggle="modal" onClick="return false;" 
+                     data-title="{{ l('Edit Bank Account') }}" 
+                     title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
+                      @if ( $company->bank_account_id != $bankaccount->id )
+                    <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                            href="{{ route('companies.bankaccount.destroy', [$company->id, $bankaccount->id]) }}" 
+                            data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
+                            data-title="{{ l('Bank Accounts') }} :: ({{$bankaccount->id}}) {{ $bankaccount->iban }} " 
+                            onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+                      @endif
+                    @else
+{{--
+                    <a class="btn btn-warning" href="{{ URL::to('customers/' . $customer->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
+                    <a class="btn btn-danger" href="{{ URL::to('customers/' . $customer->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
+--}}
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    @else
+
+        </tbody>
+    </table>
+
+    <div class="alert alert-warning alert-block">
+        <i class="fa fa-warning"></i>
+        {{l('No records found', [], 'layouts')}}
+    </div>
+    @endif
+
+       </div>
+    </div>
+
+
 
                </div>
-               <div class="panel-footer text-right">
-                  <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">
-                     <i class="fa fa-hdd-o"></i>
-                     &nbsp; {{ l('Save', [], 'layouts') }}
-                  </button>
-               </div>
+
             </div>
 
 
-     {!! Form::close() !!}
+@include('companies._modal_bankaccount')
+
+@include('layouts/modal_delete')
+
+
+@section('scripts')    @parent
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+    $("body").on('click', ".calculate_iban", function() {
+
+            var url = "{{ route('bankaccounts.iban.calculate') }}";
+            var token = "{{ csrf_token() }}";
+
+            var payload = { 
+                              ccc_entidad : $('#ccc_entidad').val(),
+                              ccc_oficina : $('#ccc_oficina').val(),
+                              ccc_control : $('#ccc_control').val(),
+                              ccc_cuenta  : $('#ccc_cuenta').val(),
+                          };
+
+            $('#iban').parent().removeClass('has-success');
+
+            $.ajax({
+                url : url,
+                headers : {'X-CSRF-TOKEN' : token},
+                type : 'POST',
+                dataType : 'json',
+                data : payload,
+
+                success: function(result){
+
+                    // Poner borde de campo en naranja
+                    // showAlertDivWithDelay("#msg-success");
+
+                    console.log(result);
+
+                    $('#iban').val(result.data.iban);
+
+                    $('#iban').parent().addClass('has-success');
+                }
+            });
+
+        });
+
+
+    });
+
+</script> 
+
+@endsection

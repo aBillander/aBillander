@@ -14,7 +14,9 @@ class BankAccount extends Model {
 	protected $fillable = ['iban', 'swift', 
                            'bank_name', 'ccc_entidad', 'ccc_oficina', 'ccc_control', 'ccc_cuenta',
                            'suffix', 'creditorid',
-						   'mandate_reference', 'mandate_date', 'first_recurring_date'];
+						   'mandate_reference', 'mandate_date', 'first_recurring_date',
+                           'notes',
+                        ];
 
 	public static $rules = [
     	'bank_name'    			=> array('required', 'min:2', 'max:64'),
@@ -35,6 +37,34 @@ class BankAccount extends Model {
 //        'first_recurring_date' => 'date',
 	];
     
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+
+        static::deleting(function ($client)
+        {
+            // before delete() method call this
+            $relations = [
+                    'sepadirectdebits',
+            ];
+
+            // load relations
+            $client->load( $relations );
+
+            // Check Relations
+            foreach ($relations as $relation) {
+                # code...
+                if ( $client->{$relation}->count() > 0 )
+                    throw new \Exception( l('Bank Account has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+            // To do: manage models: Supplier, Party
+
+        });
+    }
 
 
     /*
@@ -209,5 +239,10 @@ class BankAccount extends Model {
     public function bankaccountable()
     {
         return $this->morphTo();
+    }
+
+    public function sepadirectdebits()
+    {
+        return $this->hasMany('aBillander\SepaSpain\SepaDirectDebit', 'bank_account_id');
     }
 }

@@ -72,9 +72,11 @@ class SepaDirectDebitsController extends Controller
 
 		$bank_accountList = \App\Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
 
+        $default_bank_account_id = \App\Context::getContext()->company->bank_account_id;
+
         // $document_date = abi_date_short( \Carbon\Carbon::now() );
 
-		return view('sepa_es::direct_debits.create', compact('sepa_sp_schemeList', 'bank_accountList', 'sequenceList'));
+		return view('sepa_es::direct_debits.create', compact('sepa_sp_schemeList', 'bank_accountList', 'sequenceList', 'default_bank_account_id'));
 	}
 
 	/**
@@ -266,6 +268,13 @@ class SepaDirectDebitsController extends Controller
         $this->validate($request, $rules);
 
         $directdebit->update($request->all());
+
+        // Bank Account
+        $bankaccount = $directdebit->bankaccount;
+        $directdebit->iban  = $bankaccount->iban;
+        $directdebit->swift = $bankaccount->swift;
+
+        $directdebit->save();
 
         return redirect()->route('sepasp.directdebits.show', $id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $directdebit->document_reference);

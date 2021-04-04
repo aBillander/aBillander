@@ -147,6 +147,10 @@ class ChequeDetailsController extends Controller
             $detail_pay[$voucher->id] = $pay;
         }
 
+//        abi_r($document_group);
+//        abi_r($pay_amount);
+//        abi_r($detail_pay);die();
+
         $balance = $cheque->vouchers->sum('amount') + array_sum($detail_pay) - $cheque->amount;
         // abi_r($document_group);
         // abi_r($pay_amount);
@@ -188,7 +192,7 @@ class ChequeDetailsController extends Controller
             $next_line_sort_order += 10;
 
             // Now, set voucher as paid (total or partial)
-            $diff = $voucher->amount - $pay;
+            $diff = $voucher->amount - $detail_amount;
 
             // If amount is not fully paid, a new payment will be created for the difference
             if ( $diff != 0 ) {
@@ -216,7 +220,7 @@ class ChequeDetailsController extends Controller
             $voucher->name     = $request->input('name',     $voucher->name);
 //          $voucher->due_date = $request->input('due_date', $voucher->due_date);
             // $voucher->payment_date = $request->input('payment_date') ?: \Carbon\Carbon::now();
-            $voucher->amount   = $pay;
+            $voucher->amount   = $detail_amount;
             $voucher->notes    = $request->input('notes',    $voucher->notes);
 
             $voucher->payment_type_id    = $payment_type_id;

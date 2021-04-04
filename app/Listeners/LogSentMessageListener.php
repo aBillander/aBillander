@@ -30,7 +30,7 @@ class LogSentMessageListener
     public function handle( MessageSent $event )
     {
         // maybe we are testing email when installing aBillander (tables are NOT set):
-        if ( ! \App\Installer::alreadyInstalled() )
+        if ( ! \aBillander\Installer\Helpers\Installer::alreadyInstalled() )
             return ;
 
         $message = $event->message;

@@ -100,6 +100,10 @@ return [
 	'Attachments' => 'Adjuntos',
 	'Upload an Attach Files' => 'Subir y Adjuntar Ficheros',
 
+	'The backup has been proceed successfully.' => 'La copia de seguridad se ha realizado correctamente.',
+	'Error: The backup process has been failed.' => 'Error: el proceso de copia de seguridad ha fallado.',
+
+
 
 	/*
 	|--------------------------------------------------------------------------
@@ -390,6 +394,8 @@ return [
 	'DRAFT'     => 'BORRADOR',
 	'Pending'     => 'Pendiente',
 	'NOT Saved'     => 'NO se ha Guardado',
+
+	'Default?'     => '¿Principal?',
 
 
 	/*

@@ -164,8 +164,8 @@ class DbBackupsController extends Controller
 	    // abi_r( Artisan::output() );
 
         $result = Artisan::output();
-	    if (   strpos($result, 'Error') !== false
-			|| strpos($result, 'error') !== false )
+	    if (   strpos($result, l('Error', 'layouts')) !== false
+			|| strpos($result, strtolower(l('Error', 'layouts'))) !== false )
 		{
 			$result = nl2p($result);
 

@@ -44,7 +44,7 @@ class Company extends Model {
      */
     public function bankaccounts()
     {
-        return $this->morphMany('App\BankAccount', 'bank_accountable');
+        return $this->morphMany('App\BankAccount', 'bank_accountable')->orderBy('bank_name', 'ASC');
     }
 
     public function bankaccount()

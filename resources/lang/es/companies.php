@@ -87,4 +87,7 @@ return [
 	'Suffix'     => 'Sufijo',
 	'Creditor ID'     => 'Identificador del Acreedor',
 
+	'New Bank Account' => 'Neva Cuenta Bancaria',
+	'Edit Bank Account' => 'modificar Cuenta Bancaria',
+
 ];

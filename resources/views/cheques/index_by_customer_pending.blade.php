@@ -126,7 +126,7 @@
 
 
 			<td class="text-right">
-              <input name="pay_amount[{{ $payment->id }}]" id="pay_amount[{{ $payment->id }}]" class=" selectedamount form-control input-sm" type="text" size="3" maxlength="5" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $payment->as_priceable($payment->amount, $payment->currency) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
+              <input name="pay_amount[{{ $payment->id }}]" id="pay_amount[{{ $payment->id }}]" class=" selectedamount form-control input-sm" type="text" size="3" maxlength="7" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $payment->as_priceable($payment->amount, $payment->currency) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
 			</td>
 		</tr>
 	@endforeach

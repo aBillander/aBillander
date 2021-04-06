@@ -31,6 +31,9 @@ return [
 	// Products
 	'Product has :relation' => 'El Producto tiene :relation',
 
+	// Bank Accounts
+	'Bank Account has :relation' => 'La Cuenta Bancaria tiene :relation',
+
 	''     => '',
 	''     => '',
 	''     => '',

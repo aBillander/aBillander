@@ -770,6 +770,102 @@ Route::get('xtra_addrs', function()
 /* ********************************************************** */
 
 
+Route::get('stid', function()
+{
+
+
+	if (file_exists(__DIR__.'/gorrino_routes_adata.php')) {
+	    // $cdata
+	    include __DIR__.'/gorrino_routes_adata.php';
+	}
+
+	// Customers
+	$ads =\App\Address::where('addressable_type', 'App\Customer')->get();
+
+	foreach ($adata as $key => $value) {
+		# code...
+
+		$c = $ads->where('id', $key)->first();
+
+		$c->update(['state_id' => $value]);
+		echo $key.' - '.$c->id.' :: '.$value.' - '.$c->state_id.'<br />';
+
+	}
+
+
+	die('OK');
+
+
+	$ads =\App\Address::select('id', 'state_id')->where('addressable_type', 'App\Customer')->get();
+
+	
+	echo '$adata = [<br />';
+	
+	foreach ($ads as $ad) {
+		# code...
+		echo ' \''.$ad->id.'\''.' => '.'\''.$ad->state_id.'\''.',<br />';
+	}
+
+	echo '];<br />';
+
+});
+
+
+
+
+Route::get('wsid', function()
+{
+
+// laravel find duplicate records
+// https://stackoverflow.com/questions/40888168/use-laravel-collection-to-get-duplicate-values
+// https://laracasts.com/discuss/channels/general-discussion/finding-duplicate-data
+
+
+	if (file_exists(__DIR__.'/gorrino_routes_cdata.php')) {
+	    // $cdata
+	    include __DIR__.'/gorrino_routes_cdata.php';
+	}
+
+	// Customers
+	$cws=\App\Customer::get();
+
+	foreach ($cdata as $key => $value) {
+		# code...
+
+		$c = $cws->where('id', $key)->first();
+
+		$c->update(['webshop_id' => $value]);
+		echo $key.' - '.$c->id.' :: '.$value.' - '.$c->webshop_id.'<br />';
+
+	}
+
+
+	die('OK');
+
+	// 2020-01-16 Get raw data
+	$cs=\App\Customer::select('id', 'reference_external', 'webshop_id')
+						->orderBy('reference_external')
+						->get();
+
+	
+	echo '$cdata = [<br />';
+	
+	foreach ($cs as $c) {
+		# code...
+		echo ' \''.$c->id.'\''.' => '.($c->webshop_id ? ('\''.$c->webshop_id.'\'') : 'null').',<br />';
+	}
+
+	echo '];<br />';
+
+});
+
+
+/* ********************************************************** */
+
+
+/* ********************************************************** */
+
+
 Route::get('migratethis_xtra', function()
 {
   // 2020-07-09

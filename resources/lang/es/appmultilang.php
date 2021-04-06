@@ -340,7 +340,7 @@ return array(
 
     'App\SupplierOrder.pending' => 'Pendiente',
     'App\SupplierOrder.partial' => 'Parcialmente',
-    'App\SupplierOrder.received ' => 'Recibido',
+    'App\SupplierOrder.received' => 'Recibido',
 
 	/*
 	|--------------------------------------------------------------------------

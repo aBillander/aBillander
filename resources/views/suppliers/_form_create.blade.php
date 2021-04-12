@@ -12,6 +12,27 @@
               {!! Form::text('identification', null, array('class' => 'form-control', 'id' => 'identification')) !!}
               {!! $errors->first('identification', '<span class="help-block">:message</span>') !!}
             </div>
+
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-approved">
+                     {!! Form::label('approved', l('Approved?'), ['class' => 'control-label']) !!}
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('approved', '1', true, ['id' => 'approved_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('approved', '0', false, ['id' => 'approved_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+
+
             <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('approval_number') ? 'has-error' : '' !!}">
               {{ l('Approval Number') }}
               {!! Form::text('approval_number', null, array('class' => 'form-control', 'id' => 'approval_number')) !!}

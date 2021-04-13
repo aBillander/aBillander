@@ -654,7 +654,14 @@ class Billable extends Model implements ShippableInterface
     {
         if ( !$this->shipping_address_id ) return false;
 
-        return $this->shipping_address_id !== $this->invoicing_address_id;
+        if ( $this->shippingaddress )
+            return $this->shipping_address_id !== $this->invoicing_address_id;
+
+        // Reach this point means non existing address for shipping_address_id
+        $this->shipping_address_id = $this->invoicing_address_id;
+        $this->save();
+
+        return false;
     }
     
 

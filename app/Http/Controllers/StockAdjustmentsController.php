@@ -93,7 +93,11 @@ class StockAdjustmentsController extends Controller
 					  'movement_type_id' => $movement_type_id, 
 					  'currency_id' => $currency->id,
 					  'conversion_rate' => $conversion_rate,
-					  'user_id' => \Auth::id()];
+					  'user_id' => \Auth::id(),
+
+					  'price' => $request->input('cost_average'),
+					  'price_currency' => $request->input('cost_average'),
+		];
 
 		$data = array_merge( $request->all(), $extradata );
 

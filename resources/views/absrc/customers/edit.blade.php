@@ -101,7 +101,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 --}}
 
 @if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
-            <a id="b_customeruser" href="#customeruser" class="list-group-item">
+            <a id="b_customerusers" href="#customeruser" class="list-group-item">
                <i class="fa fa-bolt"></i>
                &nbsp; {{ l('ABCC Access') }}
             </a>
@@ -161,7 +161,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#panel_products").hide();
       $("#panel_pricerules").hide();
  //     $("#panel_statistics").hide();
-      $("#panel_customeruser").hide();
+      $("#panel_customerusers").hide();
 
       $("#b_main").removeClass('active');
       $("#b_commercial").removeClass('active');
@@ -173,7 +173,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#b_products").removeClass('active');
       $("#b_pricerules").removeClass('active');
 //      $("#b_statistics").removeClass('active');
-      $("#b_customeruser").removeClass('active');
+      $("#b_customerusers").removeClass('active');
       
       if(window.location.hash.substring(1) == 'commercial')
       {
@@ -211,8 +211,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       }
       else if(window.location.hash.substring(1) == 'customeruser')
       {
-         $("#panel_customeruser").show();
-         $("#b_customeruser").addClass('active');
+         $("#panel_customerusers").show();
+         $("#b_customerusers").addClass('active');
          getCustomerUsers();
       }
       else  

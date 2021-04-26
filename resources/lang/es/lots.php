@@ -63,6 +63,8 @@ return [
 
 	'Duplicate Lot Number: :lot' => 'Número de Lote duplicado: :lot',
 
+	'Invalid Lot Number: :lot' => 'Número de Lote inválido: :lot',
+
 
 
 	'Lot Attachments' => 'Ficheros Adjuntos',

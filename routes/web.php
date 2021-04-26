@@ -792,6 +792,11 @@ foreach ($pairs as $pair) {
         Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('customershippingslips.for.today');
 
 
+    
+        Route::resource('customershippingsliplines.lots', 'CustomerShippingSlipLineLotsController');
+
+
+
         Route::post('customerinvoices/{id}/shippingslip/add'  , 'CustomerInvoicesController@addShippingSlipToInvoice')->name('customerinvoice.shippingslip.add');
 
         Route::resource('customervouchers'      , 'CustomerVouchersController');

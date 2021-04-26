@@ -137,7 +137,7 @@
       <td>{{ $product->as_quantityable($order->planned_quantity) }}</td>
       <td>{{ $order->workcenter->name ?? '' }}
         <br />
-        <span class="text-success">{{ $order->warehouse->alias_name ?? '-' }}</span>
+        <span class="text-success" title="{{ $order->warehouse->alias_name ?? '' }}">{{ $order->warehouse->alias ?? '-' }}</span>
         </td>
       <td>{{ $order->created_via }}</td>
       <td>

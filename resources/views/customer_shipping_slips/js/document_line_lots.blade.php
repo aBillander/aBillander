@@ -158,8 +158,8 @@
 
         $("body").on('click', "#modal_edit_document_line_product_lotsSubmit", function() {
 
-            var id = $('#line_id').val();
-            var url = "{{ route($model_path.'.updatelotsline', ['']) }}/"+id;
+            var line_id = $('#line_id').val();
+            var url = "{{ route(\Str::singular($model_path).'lines.lots.store', ['line_id']) }}".replace('line_id', line_id);
             var token = "{{ csrf_token() }}";
 
 //            if ( id == '' )
@@ -169,7 +169,7 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
-                              line_id : id,
+                              line_id : line_id,
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),
@@ -210,7 +210,9 @@
                 data : payload,
 
                 success: function(response){
+
                     loadDocumentlines();
+                    
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 

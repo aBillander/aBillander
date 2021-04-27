@@ -42,12 +42,29 @@
                      {!! Form::text('maximum_stock', null, array('class' => 'form-control', 'id' => 'maximum_stock')) !!}
                      {!! $errors->first('maximum_stock', '<span class="help-block">:message</span>') !!}
                   </div>
+        </div>
+
+
+<div id="panel_stock_summary" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
+
+{{--  @ include('products._panel_stock_summary') --}}
+
+</div>
+
+
 
 @if ( \App\Configuration::isTrue('ENABLE_LOTS') )
 
+        <div class="row" style="margin-bottom: 15px;">
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                 </div>
+        </div>
+
+        <div class="row">
+
                    <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-lot_tracking">
                      {!! Form::label('lot_tracking', l('Lot tracking?'), ['class' => 'control-label']) !!}
-                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top"  data-container="body" 
                                                 data-content="{{ l('Use Lot and Expiry Date tracking for this Product.') }}">
                                     <i class="fa fa-question-circle abi-help"></i>
                              </a>
@@ -69,25 +86,41 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('expiry_time') ? 'has-error' : '' }}">
                      {{ l('Expiry Time') }}
-                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                                data-content="{{ l('Number of Days before expiry.') }}">
+                             <a href="javascript:void(0);" data-toggle="popover" 
+                                          data-placement="top" data-container="body" data-html="true" 
+                                          data-content="{{ l('Number of Days before expiry. Examples:<br /><ul><li>5 or 5d -> 5 days</li><li>8m -> 8 months</li><li>2y -> 2 years</li></ul>') }}">
                                     <i class="fa fa-question-circle abi-help"></i>
                              </a>
                      {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time')) !!}
                      {!! $errors->first('expiry_time', '<span class="help-block">:message</span>') !!}
                   </div>
-@endif
+
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('lot_number_generator') ? 'has-error' : '' }}">
+                    {{ l('Lot Generator') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top"  data-container="body" 
+                                      data-content="{{ l('Select the function to calculate Lot Numbers.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                    {!! Form::select('lot_number_generator', \App\Lot::getGeneratorList(), null, array('class' => 'form-control', 'id' => 'lot_number_generator')) !!}
+                    {!! $errors->first('lot_number_generator', '<span class="help-block">:message</span>') !!}
+                 </div>
+
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('lot_policy') ? 'has-error' : '' }}">
+                    {{ l('Lot Policy') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top"  data-container="body" 
+                                      data-content="{{ l('Automatic Lot allocation to Documents will be done on this basis.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                    {!! Form::select('lot_policy', \App\Lot::getLotPolicyList(), null, array('class' => 'form-control', 'id' => 'lot_policy')) !!}
+                    {!! $errors->first('lot_policy', '<span class="help-block">:message</span>') !!}
+                 </div>
         </div>
+@endif
 
 
-<div id="panel_stock_summary" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
-
-{{--  @ include('products._panel_stock_summary') --}}
-
-</div>
 
 @if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
-
+{{--
 @php
     $out_of_stockList = [
           'hide'    => l('Hide Product'),
@@ -96,7 +129,7 @@
           'default' => l('Default Configuration'),
     ];
 @endphp
-
+--}}
         <div class="row" style="margin-bottom: 15px;">
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
                  </div>
@@ -202,4 +235,16 @@
 
 </script>
 @endsection
-    
+
+
+
+@section('styles')    @parent
+
+  <style type="text/css">
+      .xxpopover{
+          width:800px !important;
+      }
+  </style>
+
+@endsection
+ 

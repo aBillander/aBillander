@@ -307,7 +307,15 @@ class AbsrcProductsController extends Controller
         $manufacturerList = \App\Manufacturer::pluck('name', 'id')->toArray();
         $taxpercentList = \Arr::pluck(\App\Tax::all(), 'percent', 'id');
 
-        return view('absrc.products.edit', compact('product', 'bom', 'groups', 'pricelists', 'ecotaxList', 'taxList', 'measure_unitList', 'product_procurementtypeList', 'categoryList', 'work_centerList', 'supplierList', 'manufacturerList', 'taxpercentList'));
+        // When Customer Center enabled:
+        $out_of_stockList = [
+              'hide'    => l('Hide Product'),
+              'deny'    => l('Deny Orders'),
+              'allow'   => l('Allow Orders'),
+              'default' => l('Default Configuration'),
+        ];
+
+        return view('absrc.products.edit', compact('product', 'bom', 'groups', 'pricelists', 'ecotaxList', 'taxList', 'measure_unitList', 'product_procurementtypeList', 'categoryList', 'work_centerList', 'supplierList', 'manufacturerList', 'taxpercentList', 'out_of_stockList'));
     }
 
     /**

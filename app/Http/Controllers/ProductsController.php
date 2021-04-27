@@ -371,7 +371,15 @@ class ProductsController extends Controller
 
         $volume_conversion = Configuration::getNumber('DEF_VOLUME_UNIT_CONVERSION_RATE');
 
-        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists', 'length_unit', 'weight_unit', 'volume_unit', 'volume_conversion'));
+        // When Customer Center enabled:
+        $out_of_stockList = [
+              'hide'    => l('Hide Product'),
+              'deny'    => l('Deny Orders'),
+              'allow'   => l('Allow Orders'),
+              'default' => l('Default Configuration'),
+        ];
+
+        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists', 'length_unit', 'weight_unit', 'volume_unit', 'volume_conversion', 'out_of_stockList'));
     }
 
     /**

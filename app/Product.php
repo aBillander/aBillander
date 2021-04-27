@@ -122,7 +122,7 @@ class Product extends Model {
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 'purchase_measure_unit_id', 
 
-                            'lot_tracking', 'expiry_time', 
+                            'lot_tracking', 'expiry_time', 'lot_number_generator', 'lot_policy', 
 
                             'measure_unit_id', 'work_center_id', 'route_notes', 'machine_capacity', 'units_per_tray', 
 

@@ -11,10 +11,14 @@ use App\MeasureUnit;
 use App\Traits\ViewFormatterTrait;
 use App\Traits\ModelAttachmentableTrait;
 
+use App\Traits\LotGeneratorTrait;
+
 class Lot extends Model
 {
     use ViewFormatterTrait;
     use ModelAttachmentableTrait;
+
+    use LotGeneratorTrait;
 
     protected $dates = [
             'manufactured_at',

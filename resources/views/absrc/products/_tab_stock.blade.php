@@ -46,7 +46,7 @@
 </div>
 
 @if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
-
+{{--
 @php
     $out_of_stockList = [
           'hide'    => l('Hide Product'),
@@ -55,7 +55,7 @@
           'default' => l('Default Configuration'),
     ];
 @endphp
-
+--}}
         <div class="row" style="margin-bottom: 15px;">
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
                  </div>

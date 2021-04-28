@@ -248,7 +248,7 @@ class ProductionSheetProductionOrdersController extends Controller
         $finished_quantity = $request->input('quantity');
         $lot_reference = $request->input('lot_reference');
         $finish_date = $request->input('finish_date');
-        $expiry_time = $request->input('expiry_time');
+        $expiry_time = $request->input('expiry_time', $document->product->expiry_time);
 
         $warehouse_id = $request->input('warehouse_id');
 
@@ -276,7 +276,8 @@ class ProductionSheetProductionOrdersController extends Controller
 //            'package_measure_unit_id' => , 
 //            'pmu_conversion_rate' => ,
             'manufactured_at' => $finish_date, 
-            'expiry_at' => \Carbon\Carbon::createFromFormat('Y-m-d', $finish_date)->addDays( $expiry_time ),
+//            'expiry_at' => \Carbon\Carbon::createFromFormat('Y-m-d', $finish_date)->addDays( $expiry_time ),
+            'expiry_at' => Lot::getExpiryDate( $finish_date, $expiry_time ),
             'notes' => 'Production Order: #'.$document->id,
 
             'warehouse_id'      => $warehouse_id,

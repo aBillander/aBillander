@@ -39,11 +39,12 @@
 
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('expiry_time') ? 'has-error' : '' }}" id="div-expiry_time">
                      {{ l('Expiry Time') }}
-                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
-                                                data-content="{{ l('Number of Days before expiry.') }}">
+                             <a href="javascript:void(0);" data-toggle="popover" 
+                                          data-placement="top" data-container="body" data-html="true" 
+                                          data-content="{{ l('Number of Days before expiry. Examples:<br /><ul><li>5 or 5d -> 5 days</li><li>8m -> 8 months</li><li>2y -> 2 years</li></ul>', 'products') }}">
                                     <i class="fa fa-question-circle abi-help"></i>
                              </a>
-                     {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time')) !!}
+                     {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time', 'disabled' => "")) !!}
                      {!! $errors->first('expiry_time', '<span class="help-block">:message</span>') !!}
                   </div>
          
@@ -76,6 +77,7 @@
               var reference = $(this).attr('data-oreference');
               var name = $(this).attr('data-oname');
               var quantity  = $(this).attr('data-oquantity');
+              var lot_reference  = $(this).attr('data-olot_reference');
 
             var href = $(this).attr('href');
             var message = $(this).attr('data-content');
@@ -96,7 +98,7 @@
               $('#finish_production_order_id').val(id);
 
               $('#quantity').val(quantity);
-              $('#lot_reference').val('');
+              $('#lot_reference').val(lot_reference);
               $('#finish_date_form').val('{{ abi_date_short( \Carbon\Carbon::now() ) }}');
               $('#expiry_time').val(expiry_time);
 

@@ -659,7 +659,8 @@ if ( $bomitem )
         //            'package_measure_unit_id' => , 
         //            'pmu_conversion_rate' => ,
                     'manufactured_at' => $theDate, 
-                    'expiry_at' => $theDate->addDays( $this->product->expiry_time ),
+//                    'expiry_at' => $theDate->addDays( $this->product->expiry_time ),
+                    'expiry_at' => Lot::getExpiryDate( $theDate, $this->product->expiry_time ),
                     'notes' => 'Production Order: #'.$this->id,
 
                     'warehouse_id' => $this->warehouse_id,

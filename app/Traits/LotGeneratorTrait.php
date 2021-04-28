@@ -11,6 +11,8 @@ namespace App\Traits;
     luego: función para unir lotes. Pero entonces, ¿se pierde trazabilidad?
 */
 
+use App\Lot;
+
 trait LotGeneratorTrait
 {
     /**
@@ -75,7 +77,7 @@ trait LotGeneratorTrait
      * @param  String $expiry_time (used if $product = null)
      * @return String
     */
-    public static function LongCaducity( $mfg_date, $product = null, $expiry_time = '' )
+    public static function generatorLongCaducity( $mfg_date, $product = null, $expiry_time = '' )
     {
         // lot number equals to caducity date
         // caducity date = manufacturing date plus product caducity days (expiry time)
@@ -110,7 +112,7 @@ trait LotGeneratorTrait
      *
      * @return String
     */
-    public static function ShortCaducity( $mfg_date, $product = null, $expiry_time = '' )
+    public static function generatorShortCaducity( $mfg_date, $product = null, $expiry_time = '' )
     {
         // lot number equals to caducity date
         // caducity date = manufacturing date plus product caducity days (expiry time)
@@ -121,7 +123,7 @@ trait LotGeneratorTrait
 
         $expiry_date = self::getExpiryDate( $mfg_date, $expiry_time );
 
-        $lot = $expiry_date->format("y-m-d");
+        $lot = $expiry_date->format("d/m/y");
 
         return $lot;
     }
@@ -145,7 +147,7 @@ trait LotGeneratorTrait
             $expiry_time = '0';
             
 
-        $generator = $product ? 'generator'.$product->lot_generator : 'generatorDefault';
+        $generator = $product ? 'generator'.$product->lot_number_generator : 'generatorDefault';
 
         if ( !method_exists(Lot::class, $generator) )
             $generator = 'generatorDefault';
@@ -208,7 +210,7 @@ trait LotGeneratorTrait
     */
     public static function getExpiryDate( $mfg_date, $expiry_time = '' )
     {
-        $expiry_date = $mfg_date->copy(); // or \Carbon\Carbon::parse($mfg_date)
+        $expiry_date = \Carbon\Carbon::parse($mfg_date); // or $mfg_date->copy() if $mfg_date is a Carbon instance
 
         // Lets see if $expiry_time is days, months or years!
         extract( self::parseExpiryTime( $expiry_time ) );
@@ -216,23 +218,23 @@ trait LotGeneratorTrait
         if ( $term == 'y' )
         {
             // $expiry_time is years
-            $expiry_date = $mfg_date->addYears($nbr);
+            $expiry_date->addYears($nbr);
 
         } else 
         if ( $term == 'm' )
         {
             // $expiry_time is months
-            $expiry_date = $mfg_date->addMonths($nbr);
+            $expiry_date->addMonths($nbr);
 
         } else 
         if ( $term == 'd' )
         {
             // $expiry_time is days
-            $expiry_date = $mfg_date->addDays($nbr);
+            $expiry_date->addDays($nbr);
 
         } else {
             // Guess $expiry_time is days (default)
-            $expiry_date = $mfg_date->addDays($nbr);
+            $expiry_date->addDays($nbr);
 
         }
 

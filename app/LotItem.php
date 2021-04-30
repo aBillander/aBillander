@@ -4,8 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\ViewFormatterTrait;
+
 class LotItem extends Model
 {
+    use ViewFormatterTrait;
 
 	protected $fillable = ['lot_id', 'is_reservation', 'quantity'
     ];

@@ -27,7 +27,7 @@
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('lot_reference') ? 'has-error' : '' }}" id="div-lot_reference">
                      <br />
                      {{ l('Lot Number') }}
-                     {!! Form::text('lot_reference', null, array('class' => 'form-control', 'id' => 'lot_reference')) !!}
+                     {!! Form::text('lot_reference', null, array('class' => 'form-control', 'id' => 'lot_reference', 'disabled' => "")) !!}
                      {!! $errors->first('lot_reference', '<span class="help-block">:message</span>') !!}
                   </div>
 

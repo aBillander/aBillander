@@ -508,11 +508,12 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         // Production Sheet Production Orders
         Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
 
-        Route::get('productionsheetproductionorders/{id}/finish' , 'ProductionSheetProductionOrdersController@finish'    )->name('productionsheet.productionorders.finish');
+        Route::post('productionsheetproductionorders/finish' , 'ProductionSheetProductionOrdersController@finish'    )->name('productionsheet.productionorders.finish');
 
         Route::post('productionsheetproductionorders/finish/bulk', 'ProductionSheetProductionOrdersController@finishBulk')->name('productionsheet.productionorders.bulk.finish');
 
-        Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');
+        // Deprecated; keep for reference; use productionsheet.productionorders.finish instead
+        // Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');
 
 
 

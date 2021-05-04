@@ -120,7 +120,7 @@
             <td class="text-center warning">
 @if ( $order->status == 'finished' )
 @else
-          @if ( $order->product->lot_tracking )
+          @if ( 0 && $order->product->lot_tracking )
           @else
               {!! Form::checkbox('document_group[]', $order->id, false, ['class' => 'case xcheckbox']) !!}
           @endif
@@ -169,7 +169,7 @@
           @endif 
 
 
-                finish-production-order" href="{{ route('productionsheet.productionorders.finish.withlot') }}" title="{{l('Finish', [], 'layouts')}} {{ $order->product->lot_tracking ? ' :: con Control de Lote' : '' }}" data-oid="{{ $order->id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" 
+                finish-production-order" href="{{ route('productionsheet.productionorders.finish') }}" title="{{l('Finish', [], 'layouts')}} {{ $order->product->lot_tracking ? ' :: con Control de Lote' : '' }}" data-oid="{{ $order->id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" 
                 data-olot_reference=
           @if ( $order->product->lot_tracking )
                   "{{ \App\Lot::generate( \Carbon\Carbon::now(), $order->product, $order->product->expiry_time ) }}"

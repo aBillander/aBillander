@@ -65,20 +65,96 @@ class CustomerShippingSlipLineLotsController extends Controller
      */
     public function store($lineId, Request $request)
     {
-/*
+/* * /
             return response()->json( [
                     'msg' => 'KOK',
+                    'success' => 'KOK',
+                    'message' => $request->toArray(),
                     'data' => $request->toArray(),
             ] );
-*/        
+/ * */        
 
-        if ($request->has('lot_references')) 
-            $lot_references = $request->input('lot_references');
+        $document_line = $this->document_line
+                                    ->with('document')
+                                    ->with('product')
+                                    ->with('lotitems')
+                                    ->findOrFail($lineId);
 
-        $document_line = $this->document_line->with('document')->with('product')->with('lotitems')->findOrFail($lineId);
+        $product = $document_line->product;
 
-        // Should validate data... But I am lazy today :(
+        // Should remove lotitems first or will be duplicated
+        $document_line->lotitems->each(function($item) {
+                $item->delete();
+            });        
+        
+        // Get Lot IDs 
+        $lot_group = $request->input('lot_group', []);
 
+        if ( count( $lot_group ) == 0 )
+            return response()->json( [
+                'success' => 'OKKO',
+                'message' => l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => $lineId], 'layouts'),
+    //            'data' => $customeruser->toArray()
+            ] );
+
+        $lot_amount = $request->input('lot_amount', []);
+
+        // Get Lots
+        $product_id = $product->id;
+        $sort_order = $product->lot_policy == 'FIFO' ? 'ASC' : 'DESC';
+        $lots = Lot::
+                      whereHas('product', function ($query) use ($product_id) {
+                            $query->where('id', $product_id);
+                        })
+                    ->where('quantity', '>', 0)
+//                  ->filter( $request->all() )
+//                    ->with('customerinvoice')
+//                    ->where('payment_type', 'receivable')
+                    ->whereIn('id', $lot_group)
+                    ->orderBy('expiry_at', $sort_order)
+                    ->get();
+
+        // Check Quantity!
+        $detail_quantity = [];
+        foreach ($lots as $lot) {
+            //
+            // Not $lot->quantity; only unallocated quantity
+            $amount = array_key_exists($lot->id, $lot_amount) ? 
+                    (float) $lot_amount[$lot->id] : 
+                    $lot->quantity;
+            
+            if ($amount > $lot->quantity) $amount = $lot->quantity;
+            if ($amount <= 0.0          ) $amount = $lot->quantity;
+
+            $detail_quantity[$lot->id] = $amount;
+        }
+
+        // abi_r($detail_quantity);
+
+        $balance = array_sum($detail_quantity) - $document_line->quantity;
+
+        if ( $balance != 0 )
+            return response()->json( [
+                'success' => 'KO',
+                'message' => l('The Quantity of the selected Lots ( :selected ) do not match the value of the Line( :quantity ) &#58&#58 (:id) ', ['id' => $lineId, 'selected' => $document_line->measureunit->quantityable(array_sum($detail_quantity)), 'quantity' => $document_line->measureunit->quantityable($document_line->quantity)]),
+            ] );
+
+
+        foreach ($lots as $lot) {
+            # code...
+
+            $data = [
+                'lot_id' => $lot->id,
+                'is_reservation' => 1,
+                'quantity' => $detail_quantity[$lot->id],
+            ];
+
+            $lot_item = LotItem::create( $data );
+            $document_line->lotitems()->save($lot_item);
+        }
+
+
+/*
         // Lot number
         // Work in progress. Assume one lot and no quantity
         $lot_reference = $lot_references;
@@ -95,9 +171,9 @@ class CustomerShippingSlipLineLotsController extends Controller
 
         $lot_item = LotItem::create(['lot_id' => $lot->id]);
         $document_line->lotitems()->save($lot_item);
-
+*/
         return response()->json( [
-                'msg' => 'OK',
+                'success' => 'OK',
                 'data' => $request->toArray(),
         ] );
     }

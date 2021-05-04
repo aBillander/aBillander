@@ -44,6 +44,7 @@ return [
 	'Quantity' => 'Cantidad',
 	'Initial Quantity' => 'Cantidad Inicial',
 	'Current Quantity' => 'Cantidad Actual',
+	'Allocated Quantity' => 'Cantidad Reservada',
 	'New Quantity' => 'Nueva Cantidad',
 	'A positive value means stock increases.' => '',
 	'Measure Unit' => 'Unidad de Medida',

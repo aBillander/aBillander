@@ -87,6 +87,31 @@ class Lot extends Model
     }
 
 
+    
+    public function lotitems()
+    {
+        return $this->hasMany('App\LotItem');
+    }
+
+    public function allocatedQuantity()
+    {
+        return $this->lotitems->where('is_reservation', '>', 0)->sum('quantity');
+    }
+
+    public function allocatedByCustomerShippingSlipLineId( $line_id = 0 )
+    {
+        $lotitem = $this->lotitems()
+                        ->where('lotable_type', CustomerShippingSlipLine::class )
+                        ->where('lotable_id', $line_id )
+                        ->first();
+        // abi_r($lotitem );
+
+        return $lotitem ? $lotitem->quantity : 0;
+    }
+
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Scopes

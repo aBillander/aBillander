@@ -162,7 +162,7 @@
                     
                     <a class="btn btn-sm {{ $color }} add-lots-to-line" data-id="{{$line->id}}" 
                       data-title="{{ '['.$line->reference.'] '.$line->name }}" 
-                      data-quantity_label="{{ $line->measureunit->quantityable($line->quantity) .' ('.$line->measureunit->name.')'}}" 
+                      data-quantity_label="{{ $line->measureunit->quantityable($line->quantity) .' '.$line->measureunit->name}}" 
                       data-type="{{$line->line_type}}" title="{{l('Add Lots to Line')}}" onClick="return false;"><i class="fa fa-window-restore"></i>{{ $msg }}</a>
 
 @endif

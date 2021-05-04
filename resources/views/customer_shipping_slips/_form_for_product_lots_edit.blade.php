@@ -1,9 +1,11 @@
 
 
-         <div class="modal-header">
+         <div class="modal-header xalert-info">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">{{ l('Add Lots to Line') }} :: <span  id="modal_product_document_line_Label"></span></h4>
          </div>
+
+      <form id="document_line_lots">
 
          <div class="modal-body">
 
@@ -20,10 +22,14 @@
             {{ Form::hidden('line_reference',      null, array('id' => 'line_reference'     )) }}
 
             {{ Form::hidden('line_type',           null, array('id' => 'line_type'          )) }}
+
+                <div class="alert alert-danger" id="error-msg-box" style="display:none">
+    
+                </div>
                
 
 
-        <div class="row">
+        <div class="row  hide ">
 
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('line_lot_references') ? 'has-error' : '' }}">
                      {{ l('Lot Number(s)', 'customerdocuments') }}
@@ -41,7 +47,10 @@
 
                   <div class="form-group col-lg-12 col-md-12 col-sm-12">
                         <h4 style="color: #dd4814;">{{ l('Available Lots', 'customerdocuments') }}</h4>
-                        <div id="product_available_lots"></div>
+
+                        <div id="product_available_lots">
+                        </div>
+
                   </div>
 
         </div>
@@ -56,3 +65,5 @@
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 
            </div>
+
+      </form>

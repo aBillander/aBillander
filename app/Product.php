@@ -1234,10 +1234,21 @@ class Product extends Model {
         return $this->hasMany('App\ProductionOrderLine');
     }
 
+    
+
     public function lots()
     {
         return $this->hasMany('App\Lot')->orderBy('expiry_at', 'DESC');
     }
+
+    public function allocableLots()
+    {
+        $sort_order = $this->lot_policy == 'FIFO' ? 'ASC' : 'DESC';
+
+        return $this->hasMany('App\Lot')->where('quantity', '>', 0)->orderBy('expiry_at', $sort_order);
+    }
+
+
 
     public function pricelistlines()
     {

@@ -9,6 +9,9 @@ use App\Context;
 use App\Product;
 use App\ShippingMethod;
 
+use App\Lot;
+use App\LotItem;
+
 trait BillableLotFormsControllerTrait
 {
     
@@ -52,6 +55,7 @@ trait BillableLotFormsControllerTrait
                         ->with('measureunit')
                         ->with('packagemeasureunit')
                         ->with('tax')
+                        ->with('lotitems')
                         ->find($line_id);
 
         if ( !$document_line )
@@ -92,7 +96,61 @@ trait BillableLotFormsControllerTrait
         // abi_r($document_line->toArray());die();
 
         // Let's get available lots for this line product
-        $lots = $document_line->product->lots()->where('quantity', '>', 0)->get();
+        $lots = $document_line->product->allocableLots()->where('quantity', '>', 0)->get();
+        // $lots are well ordered according to product lot policy
+
+        // Lets see if there are lot allocated quantities
+        $lots_allocated = $document_line->lotitems;
+        if ( $lots_allocated->count() == 0 )
+        {
+            $quantity = $document_line->quantity;
+            // Pre-assign lots & build $lots_allocated collection
+            foreach ($lots as $lot) {
+                if ($quantity <= 0) break;
+                # code...
+                $lot_available_qty = $lot->quantity - $lot->allocatedQuantity();
+                $allocable = $quantity > $lot_available_qty ?
+                                    $lot_available_qty :
+                                    $quantity      ;
+
+                if ( $allocable == 0 )
+                    continue;
+
+                $data = [
+                    'lot_id' => $lot->id,
+                    'is_reservation' => 1,
+                    'quantity' => $allocable,
+                ];
+
+                $lot_item = LotItem::create( $data );
+                $document_line->lotitems()->save($lot_item);
+                $lots_allocated->push($lot_item);
+
+                $quantity = $quantity - $allocable;
+            }
+
+            if( $quantity > 0 )
+            {
+                // Not enough available quantities from lots!!!
+            }
+        }
+        
+        foreach ($lots as $lot) {
+            # code...
+            // $lot->allocated_to_line = $lot->allocatedByCustomerShippingSlipLineId( $document_line->id ); 
+            // Another way
+            // Is $lot allocated?
+            $alloc = $lots_allocated->where('lot_id', $lot->id)->first();
+            $lot->allocated_to_line = $alloc ? $alloc->quantity : 0;
+
+            // abi_r($lot->id);
+            // abi_r($lot->allocated_to_line); 
+
+            // die();
+        }
+
+        // die();
+
         $nopagination = 1;
 
         $lots_view = view('products._chunck_lots')->with(compact('lots', 'nopagination'))->render();

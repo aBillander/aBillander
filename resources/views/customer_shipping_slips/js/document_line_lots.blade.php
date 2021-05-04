@@ -14,6 +14,8 @@
 
               editDocumentProductLotsLine( $(this) );
 
+              calculateSelectedAmount();
+
           });
           
 
@@ -30,10 +32,10 @@
                      panel.html(result);
                      panel.removeClass('loading');
 
-                     $("[data-toggle=popover]").popover();
-
                      // Populate form
                      getProductLotsLineData( selector );
+
+                     $("[data-toggle=popover]").popover();
 
                }, 'html');
 
@@ -49,6 +51,7 @@
           function getProductLotsLineData( selector ) {
                           
               var id = selector.attr('data-id');
+              var quantity_label = selector.attr('data-quantity_label');
               var line_type = selector.attr('data-type');
               var url = "{{ route($model_path.'.getlotsline', [$document->id, '']) }}/"+id;
               var label = '';
@@ -58,10 +61,10 @@
               // if ( line_type == 'product' )
               
               $.get(url, function(result){
-                    var label = '['+result.product.reference+'] '+result.product.name+' ('+result.measureunit.name+')';
+                    var label = '['+result.product.reference+'] '+result.product.name+' <span class="lead well well-sm alert-warning">'+quantity_label+'</span>';
                     var QUANTITY_DECIMAL_PLACES = result.product.quantity_decimal_places;
 
-                    $('#modal_product_document_line_Label').text(label);
+                    $('#modal_product_document_line_Label').html(label);
 
                     $('#line_id').val(result.id);
                     $('#line_sort_order').val(result.line_sort_order);
@@ -71,6 +74,7 @@
 
                     $('#line_lot_references').val(result.lot_references);
                     $('#product_available_lots').html(result.lots_view);
+
 
                     $('#line_name').val(result.name);
                     $('#line_lot_references').val(result.lot_references);
@@ -134,7 +138,7 @@
                         $('#line_sales_equalization').show();
                     }
 
-                    calculate_line_product( );
+                    // calculate_line_product( );
 
                     $('#line_sales_rep_id').val( result.sales_rep_id );
                     $('#line_commission_percent').val( result.commission_percent );
@@ -150,24 +154,24 @@
 
                     $('#line_notes').val(result.notes);
 
+                    $("[data-toggle=popover]").popover();
+
                     console.log(result);
               });
           }
 
 
 
-        $("body").on('click', "#modal_edit_document_line_product_lotsSubmit", function() {
+        $("body").on('click', "#modal_edit_document_line_product_lotsSubmit", function( event ) {
 
             var line_id = $('#line_id').val();
             var url = "{{ route(\Str::singular($model_path).'lines.lots.store', ['line_id']) }}".replace('line_id', line_id);
             var token = "{{ csrf_token() }}";
+            var payload = $("#document_line_lots").serialize();
 
-//            if ( id == '' )
-//                url = "{{ route($model_path.'.storeline', [$document->id]) }}";
-//            else
-//                url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
-
-            var payload = { 
+            $('#error-msg-box').hide();
+/*
+            var old_payload = { 
                               document_id : {{ $document->id }},
                               line_id : line_id,
                               line_sort_order : $('#line_sort_order').val(),
@@ -201,7 +205,7 @@
                               extra_quantity_label : $('#line_extra_quantity_label').val(),
                               notes : $('#line_notes').val()
                           };
-
+*/
             $.ajax({
                 url : url,
                 headers : {'X-CSRF-TOKEN' : token},
@@ -211,7 +215,16 @@
 
                 success: function(response){
 
-                    loadDocumentlines();
+                    if( response.success != 'OK' ) 
+                    {
+                        $('#error-msg-box').html(response.message);
+
+                        $('#error-msg-box').show();
+
+                        return ;
+                    }
+
+                    // loadDocumentlines();
                     
                     $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
@@ -224,10 +237,29 @@
                 }
             });
 
+
+            // stop the form from submitting the normal way and refreshing the page
+            event.preventDefault();
+
         });
 
 
     });
 
+
+
+{{-- *************************************** --}}
+
+
+        function calculateSelectedAmount() {
+            var total = 0;
+            $('.xcheckbox:checked').each(function(index,value){
+
+                total += parseFloat($(this).closest('tr').find('.selectedamount').val().replace(',', '.'));
+
+            });
+
+            $('#balance').html(total);
+        }
 
 </script>

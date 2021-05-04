@@ -6,28 +6,38 @@
 
    <div class="table-responsive">
 
-<table id="stockmovements" class="table table-hover">
+<table id="lots" class="table table-hover">
     <thead>
         <tr>
+            <th class="text-center">{{-- !! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !! --}} 
+                    <a href="javascript:void(0);" data-toggle="popover" data-placement="right" 
+                              data-content="{{ l('Select Lot and Amount.') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                    </a>
+            </th>
             <th class="text-left">{{l('ID', [], 'layouts')}}</th>
             <th>{{l('Lot Number', 'lots')}}</th>
             <th>{{l('Warehouse', 'lots')}}</th>
             <th class="text-right">{{l('Quantity', 'lots')}}</th>
             <th>{{l('Measure Unit', 'lots')}}</th>
+            <th class="text-right">{{l('Allocated Quantity', 'lots')}}</th>
             <th>{{l('Manufacture Date', 'lots')}}</th>
             <th>{{l('Expiry Date', 'lots')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
-            <th class=" hide "> </th>
+            <th class="text-center"><div id="balance" class="alert-warning">{{ $lots->sum('allocated_to_line') }}</div></th>
         </tr>
     </thead>
     <tbody id="order_lines">
         @foreach ($lots as $lot)
         <tr>
+      <td class="text-center warning">{!! Form::checkbox('lot_group[]', $lot->id, $lot->allocated_to_line > 0, ['class' => 'case xcheckbox', 'onchange' => 'calculateSelectedAmount()']) !!}</td>
+
       <td>{{ $lot->id }}</td>
       <td>{{ $lot->reference }}</td>
       <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
       <td class="text-right">{{ $lot->as_quantity('quantity') }}</td>
       <td>{{ optional($lot->measureunit)->sign }}</td>
+      <td class="text-right">{{ $lot->as_quantityable( $lot->allocatedQuantity() ) }}</td>
       <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
       <td>{{ abi_date_short( $lot->expiry_at ) }}</td>
             <td class="text-center">
@@ -38,24 +48,12 @@
                         <i class="fa fa-paperclip"></i> {{l('View', [], 'layouts')}}
                     </button>
                  </a>
-                @endif</td>
-
-            <td class=" hide text-right button-pad">
-                @if (  is_null($lot->deleted_at))
-                <a class="btn btn-sm btn-info" href="{{ route( 'stockmovements.index', ['search_status' => 1, 'lot_id' => $lot->id, 'lot_reference' => $lot->reference] ) }}" title="{{ l('Stock Movements') }}" target="_stockmovements"><i class="fa fa-outdent"></i></a>
-{{--                       
-                <a class="btn btn-sm btn-warning" href="{{ URL::to('lots/' . $lot->id . '/edit') }}"  title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
-
-                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
-                        href="{{ URL::to('lots/' . $lot->id ) }}" 
-                        data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
-                        data-title="{{ l('Lots') }} ::  ({{$lot->id}}) {{ $lot->reference }}" 
-                        onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
---}}
-                @else
-                <a class="btn btn-warning" href="{{ URL::to('lots/' . $lot->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
-                <a class="btn btn-danger" href="{{ URL::to('lots/' . $lot->id. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
                 @endif
+            </td>
+
+
+            <td class="text-right">
+              <input name="lot_amount[{{ $lot->id }}]" id="lot_amount[{{ $lot->id }}]" class=" selectedamount form-control input-sm" type="text" size="3" maxlength="7" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $lot->as_quantityable($lot->allocated_to_line) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
             </td>
         </tr>
         @endforeach

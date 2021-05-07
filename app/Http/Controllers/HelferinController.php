@@ -284,7 +284,8 @@ foreach ($customers as $customer) {
 
         // Totals
         $data[] = [''];
-        $data[] = ['', '', '', 'Total:', $total_price * 1.0, $total * 1.0, 100.0 * ($total_price - $total) / $total_price, $total_cost * 1.00, $total_commission * 1.00, \App\Calculator::margin( $total_cost, $total, $customer->currency ) * 1.0, $total_profit ];
+        $r = ($total_price != 0.0) ? 100.0 * ($total_price - $total) / $total_price : '';
+        $data[] = ['', '', '', 'Total:', $total_price * 1.0, $total * 1.0, $r, $total_cost * 1.00, $total_commission * 1.00, \App\Calculator::margin( $total_cost, $total, \App\Context::getContext()->company->currency ) * 1.0, $total_profit ];
 
 //        $i = count($data);
 

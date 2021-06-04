@@ -101,9 +101,37 @@ class AbsrcCustomerOrdersController extends BillableController
 
         $documents->setPath('orders');
 
+
+        if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+        {
+            $suffix = '_export_mfg';
+
+            $manufacturing_statusList = [
+                            'unasigned' => 'No asignados',
+                            'asigned' => 'Asignados a Hojas de Producción abiertas',
+                            'ongoing' => 'Los dos anteriores (Pedidos en curso)',
+            ];
+            
+        } else {
+            $suffix = '';
+            
+            $manufacturing_statusList = [];
+        }
+        
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+        {
+            $wooc_statusList = [
+                        '1' => 'Sólo Pedidos WooCommerce',
+            ];
+
+        } else {
+
+            $wooc_statusList = [];
+        }
+
         $statusList = Document::getStatusList();
 
-        return view($this->view_path.'.index', $this->modelVars() +  compact('documents', 'statusList'));
+        return view($this->view_path.'.index'.$suffix, $this->modelVars() +  compact('documents', 'statusList', 'manufacturing_statusList', 'wooc_statusList'));
 	}
 
     /**

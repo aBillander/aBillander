@@ -170,8 +170,6 @@
     </tbody>
 </table>
 
-   </div><!-- div class="table-responsive" ENDS -->
-
 {{ $documents->appends( Request::all() )->render() }}
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
 
@@ -182,6 +180,7 @@
 </div>
 @endif
 
+   </div><!-- div class="table-responsive" ENDS -->
 </div><!-- div id="div_documents" ENDS -->
 
 @endsection

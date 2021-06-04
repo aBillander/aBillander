@@ -1,4 +1,4 @@
-<nav class="xnavbar xnavbar-inverse" role="navigation" style="margin: 0px 0px 5px 0px; border-color: #eee; border-bottom: 1px solid #EEE;">
+<nav class="xnavbar xnavbar-inverse" role="navigation" style="margin: 0px 0px 5px 0px; border-color: #eee; border-bottom: 1px solid #EEE; background-color: #00AECB">
     <div class="container-fluid">
         <div class="navbar-header">
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
@@ -40,7 +40,7 @@
 
                             <!-- img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ asset('assets/theme/images/company_logo.png') }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;" -->
                         @else
-                            <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>
+                            <span style="color:#bbb"><i class="fa fa-bolt"></i> &nbsp;<span style="color:#fff">aBillander</span> by Lara Billander</span>
                         @endif
                     @else
                         {!! \App\Configuration::get('ABCC_HEADER_TITLE') !!}

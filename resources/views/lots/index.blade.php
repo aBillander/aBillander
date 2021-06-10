@@ -180,7 +180,7 @@
 
             <td class="text-right button-pad">
                 @if (  is_null($lot->deleted_at))
-                <a class="btn btn-sm alert-info" href="{{ route( 'lot.stockmovements', [$lot->id] ) }}" title="{{ l('Lot Stock Movements') }}" xtarget="_stockmovements"><i class="fa fa-outdent"></i></a>
+                <a class="btn btn-sm alert-info" href="{{ route( 'lot.stockmovements', [$lot->id] ) }}" title="{{ l('Lot Stock Movements') }}" target="_stockmovements"><i class="fa fa-outdent"></i></a>
                        
                 <a class="btn btn-sm btn-info" href="{{ route( 'stockmovements.index', ['search_status' => 1, 'lot_id' => $lot->id, 'lot_reference' => $lot->reference] ) }}" title="{{ l('Stock Movements') }}" target="_stockmovements"><i class="fa fa-outdent"></i></a>
                        

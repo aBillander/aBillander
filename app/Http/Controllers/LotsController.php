@@ -70,10 +70,12 @@ class LotsController extends Controller
     {
         return view('lots.create');
 
+/*
         echo '<br>You naughty, naughty! Nothing to do here right now. <br><br><a href="'.route('lots.index').'">
                                  Volver a Lotes
                             </a>';
         die();
+*/
     }
 
     /**

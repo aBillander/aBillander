@@ -733,7 +733,11 @@ if ( $bomitem )
                 $this->stockmovements()->save( $stockmovement );
 
                 if ($lot)
+                {
                     $lot->stockmovements()->save( $stockmovement );
+                    $stockmovement->update(['lot_quantity_after_movement' => $stockmovement->quantity]);
+                    $lot->update(['blocked' => 0]);
+                }
             }
 
         //

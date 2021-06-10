@@ -42,11 +42,11 @@ return [
 
 	'Product' => 'Producto',
 	'Quantity' => 'Cantidad',
+	'A positive value means stock increases.'     => 'Un valor positivo significa que el stock aumenta.',
 	'Initial Quantity' => 'Cantidad Inicial',
 	'Current Quantity' => 'Cantidad Actual',
 	'Allocated Quantity' => 'Cantidad Reservada',
 	'New Quantity' => 'Nueva Cantidad',
-	'A positive value means stock increases.' => '',
 	'Measure Unit' => 'Unidad de Medida',
 	'Manufacture Date' => 'Fecha de Fabricación',
 	'Expiry Date' => 'Fecha de Caducidad',

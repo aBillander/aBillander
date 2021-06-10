@@ -218,6 +218,7 @@ trait BillableStockMovementsTrait
 /* *********************************************************************************************** */
 
     
+    // Esto lo llama el listener al cerrar el Albarán. Actualmente es copia sin modificar de Suppliers
     public function makeCustomerStockMovementsLineLots( $line )
     {
         // Let's rock!

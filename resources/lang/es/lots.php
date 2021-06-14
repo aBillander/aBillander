@@ -46,6 +46,7 @@ return [
 	'Initial Quantity' => 'Cantidad Inicial',
 	'Current Quantity' => 'Cantidad Actual',
 	'Allocated Quantity' => 'Cantidad Reservada',
+	'Quantity includes this Document.' => 'La Cantidad incluye este Documento.',
 	'New Quantity' => 'Nueva Cantidad',
 	'Measure Unit' => 'Unidad de Medida',
 	'Manufacture Date' => 'Fecha de Fabricación',
@@ -71,6 +72,8 @@ return [
 	'Lot Attachments' => 'Ficheros Adjuntos',
 	'Attachments' => 'Adjuntos',
 	'Description' => 'Descripción',
+
+	'Select Lot and Amount.' => 'Seleccione Lote y Cantidad.',
 
 
 ];

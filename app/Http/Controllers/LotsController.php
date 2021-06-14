@@ -420,7 +420,11 @@ class LotsController extends Controller
         // $this->addFormDates( ['manufactured_at', 'expiry_at'], $lot );
 
 
-        return view('lots.lot_stock_movements', compact('lot', 'stockmovements'));
+        // More stuff
+        $stockallocations = $lot->lotallocateditems()->with('lotable')->get();
+
+
+        return view('lots.lot_stock_movements', compact('lot', 'stockmovements', 'stockallocations'));
     }
 
 }

@@ -93,9 +93,16 @@ class Lot extends Model
         return $this->hasMany('App\LotItem');
     }
 
+    public function lotallocateditems()
+    {
+        return $this->hasMany('App\LotItem')->where('is_reservation', '>', 0);
+    }
+
+    // See: https://reinink.ca/articles/dynamic-relationships-in-laravel-using-subqueries
+    // https://reinink.ca/articles/ordering-database-queries-by-relationship-columns-in-laravel
     public function allocatedQuantity()
     {
-        return $this->lotitems->where('is_reservation', '>', 0)->sum('quantity');
+        return $this->lotitems()->where('is_reservation', '>', 0)->sum('quantity');
     }
 
     public function allocatedByCustomerShippingSlipLineId( $line_id = 0 )

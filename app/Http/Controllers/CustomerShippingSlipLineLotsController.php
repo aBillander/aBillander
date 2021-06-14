@@ -79,13 +79,6 @@ class CustomerShippingSlipLineLotsController extends Controller
                                     ->with('product')
                                     ->with('lotitems')
                                     ->findOrFail($lineId);
-
-        $product = $document_line->product;
-
-        // Should remove lotitems first or will be duplicated
-        $document_line->lotitems->each(function($item) {
-                $item->delete();
-            });        
         
         // Get Lot IDs 
         $lot_group = $request->input('lot_group', []);
@@ -97,6 +90,14 @@ class CustomerShippingSlipLineLotsController extends Controller
     //            'data' => $customeruser->toArray()
             ] );
 
+        // So far, so good
+        $product = $document_line->product;
+
+        // Should remove lotitems first or will be duplicated
+        $document_line->lotitems->each(function($item) {
+                $item->delete();
+            });
+
         $lot_amount = $request->input('lot_amount', []);
 
         // Get Lots
@@ -106,7 +107,7 @@ class CustomerShippingSlipLineLotsController extends Controller
                       whereHas('product', function ($query) use ($product_id) {
                             $query->where('id', $product_id);
                         })
-                    ->where('quantity', '>', 0)
+                    ->where('quantity', '>', 0)     // <= allocable quantity wil be checked later
 //                  ->filter( $request->all() )
 //                    ->with('customerinvoice')
 //                    ->where('payment_type', 'receivable')
@@ -118,13 +119,17 @@ class CustomerShippingSlipLineLotsController extends Controller
         $detail_quantity = [];
         foreach ($lots as $lot) {
             //
-            // Not $lot->quantity; only unallocated quantity
+            // Only unallocated quantity
+            $lot_available_qty = $lot->quantity - $lot->allocatedQuantity();
+            if ($lot_available_qty < 0.0)
+                $lot_available_qty = 0.0;
+
             $amount = array_key_exists($lot->id, $lot_amount) ? 
                     (float) $lot_amount[$lot->id] : 
-                    $lot->quantity;
+                    $lot_available_qty;
             
-            if ($amount > $lot->quantity) $amount = $lot->quantity;
-            if ($amount <= 0.0          ) $amount = $lot->quantity;
+            if ($amount > $lot_available_qty) $amount = $lot_available_qty;
+            if ($amount <= 0.0              ) $amount = $lot_available_qty;
 
             $detail_quantity[$lot->id] = $amount;
         }

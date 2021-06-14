@@ -26,9 +26,13 @@
 
     </div>
     <h2>
-        {{ l('Lot Stock Movements') }} <span style="color: #cccccc;">::</span> <a href="{{ route( 'lots.edit', $lot->id ) }}" title="{{l('Go to', [], 'layouts')}}">{{ $lot->reference }}</a>   </h2><h3>
+        {{ l('Lot Stock Movements') }} <span style="color: #cccccc;">::</span> <a href="{{ route( 'lots.edit', $lot->id ) }}" title="{{l('Go to', [], 'layouts')}}">{{ $lot->reference }}</a>   <span class="badge" style="background-color: #3a87ad;" title="{{ optional($lot->measureunit)->name }}"> &nbsp; {{ optional($lot->measureunit)->sign }} &nbsp; </span></h2>
+        <h3>
         <span class="lead well well-sm alert-warning"><a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a></span>  {{ $lot->product->name }} </h3><h3>
-        {{ l('Initial Stock') }}: {{ $lot->measureunit->quantityable($lot->quantity_initial) }} ({{ optional($lot->measureunit)->sign }})
+        {{ l('Initial Stock') }}: {{ $lot->measureunit->quantityable($lot->quantity_initial) }} ({{ optional($lot->measureunit)->sign }})<br />
+        {{ l('Current Stock') }}: {{ $lot->measureunit->quantityable($lot->quantity) }} ({{ optional($lot->measureunit)->sign }})<br />
+        {{ l('Allocated Stock') }}: {{ $lot->measureunit->quantityable($lot->allocatedQuantity()) }} ({{ optional($lot->measureunit)->sign }})<br />
+        {{ l('Available Stock') }}: {{ $lot->measureunit->quantityable($lot->quantity - $lot->allocatedQuantity()) }} ({{ optional($lot->measureunit)->sign }})
     </h3>        
 </div>
 
@@ -203,6 +207,8 @@
 
    </div>
 </div>
+
+@include('lots/lot_stock_allocations')
 
 @endsection
 

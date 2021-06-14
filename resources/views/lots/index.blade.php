@@ -130,6 +130,7 @@
                     <i class="fa fa-question-circle abi-help"></i>
               </a -->
             </th>
+            <th class="text-right">{{l('Allocated Quantity')}}</th>
             <th>{{l('Measure Unit')}}</th>
             <th>{{l('Manufacture Date')}}</th>
             <th>{{l('Expiry Date')}}</th>
@@ -156,6 +157,18 @@
 --}}
             </td>
       <td class="text-right">{{ $lot->as_quantity('quantity') }}</td>
+      <td class="text-right 
+
+@if( ($lot_allocated_qty = $lot->allocatedQuantity()) > 0.0 )
+    @if( $lot_allocated_qty < $lot->quantity )
+        alert-warning
+    @elseif ( $lot_allocated_qty > $lot->quantity )
+        btn-info
+    @else
+        alert-danger
+    @endif
+@endif
+      ">{{ $lot->as_quantityable( $lot_allocated_qty ) }}</td>
       <td>{{ optional($lot->measureunit)->sign }}</td>
       <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
       <td>{{ abi_date_short( $lot->expiry_at ) }}</td>

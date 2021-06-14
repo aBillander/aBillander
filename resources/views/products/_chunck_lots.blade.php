@@ -11,7 +11,7 @@
         <tr>
             <th class="text-center">{{-- !! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !! --}} 
                     <a href="javascript:void(0);" data-toggle="popover" data-placement="right" 
-                              data-content="{{ l('Select Lot and Amount.') }}">
+                              data-content="{{ l('Select Lot and Amount.', 'lots') }}">
                           <i class="fa fa-question-circle abi-help"></i>
                     </a>
             </th>
@@ -20,7 +20,12 @@
             <th>{{l('Warehouse', 'lots')}}</th>
             <th class="text-right">{{l('Quantity', 'lots')}}</th>
             <th>{{l('Measure Unit', 'lots')}}</th>
-            <th class="text-right">{{l('Allocated Quantity', 'lots')}}</th>
+            <th class="text-right">{{l('Allocated Quantity', 'lots')}}
+                    <a href="javascript:void(0);" data-toggle="popover" data-placement="right" 
+                              data-content="{{ l('Quantity includes this Document.', 'lots') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                    </a>
+            </th>
             <th>{{l('Manufacture Date', 'lots')}}</th>
             <th>{{l('Expiry Date', 'lots')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>

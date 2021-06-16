@@ -104,9 +104,15 @@
 
   $reference = $item['reference'];
 
-  $orders = $sheet->customerorders()->whereHas('lines', function($q) use ($reference) {
-      $q->where('reference', $reference);
-  })->get();
+  $orders = $sheet->customerorders()
+                  ->whereHas('lines', function($q) use ($reference) {
+                      $q->where('reference', $reference);
+                  })
+                  ->with(['lines' => function($q) use ($reference) {
+                                        $q->where('reference', $reference);
+                                        $q->with('lotitems');
+                                    }])
+                  ->get();
 
 @endphp
 
@@ -120,7 +126,21 @@
                 @endif
 
             </td>
-            <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
+            <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}<br />
+
+                @foreach ($order->lines as $line)
+
+                    @if($line->lotitems->count())
+                        Lote(s): 
+                    @endif
+
+                    @foreach($line->lotitems as $item)
+                        <i><b>{{ $item->lot->reference }}</b></i> ({{ niceQuantity($item->quantity) }}) &nbsp;  
+                    @endforeach
+
+                @endforeach
+
+
             </td>
             <td width="10%" class="text-right" xstyle="border-right: 1px #ccc solid;"><strong>{{ niceQuantity($order->lines->where( 'reference', $reference)->sum('quantity')) }}</strong>
             </td>

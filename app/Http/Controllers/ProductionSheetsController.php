@@ -143,6 +143,23 @@ class ProductionSheetsController extends Controller
     }
 
 
+    public function assignLots($id)
+    {
+        $sheet = $this->productionSheet->findOrFail($id);
+
+        $result = $sheet->assignLotsToCustomerOrders();
+
+        if ( count($result) ) {
+            return redirect('productionsheets/'.$id)
+                    ->with('error', $result);
+        } else {
+            return redirect('productionsheets/'.$id)
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        }
+
+    }
+
+
     public function addOrders(Request $request, $id)
     {
         if ( count($request->input('corders', [])) == 0 ) 

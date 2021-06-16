@@ -1241,7 +1241,7 @@ class Product extends Model {
         return $this->hasMany('App\Lot')->orderBy('expiry_at', 'DESC');
     }
 
-    public function allocableLots()
+    public function availableLots()
     {
         $sort_order = $this->lot_policy == 'FIFO' ? 'ASC' : 'DESC';
 

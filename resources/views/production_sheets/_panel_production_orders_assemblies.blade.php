@@ -81,6 +81,9 @@
 </div>
 
 
+{{-- Duplicate code (with _panel_production_orders.blade.php) produces unwanted Production Orders --}}
+{{--
+
 @include('production_sheets._modal_production_order_show')
 
 @include('production_sheets._modal_production_order_edit')
@@ -93,7 +96,7 @@
     <!-- script src="https://code.jquery.com/jquery-1.12.4.js"></script -->
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <!-- script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script -->
-    {{-- See: Laravel 5.4 ajax todo project: Autocomplete search #7 --}}
+    { {-- See: Laravel 5.4 ajax todo project: Autocomplete search #7 --} }
 
 <script type="text/javascript">
 
@@ -195,7 +198,7 @@ $(document).ready(function() {
 
 @section('styles')    @parent
 
-  {{-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --}}
+  { {-- !! HTML::style('assets/plugins/AutoComplete/styles.css') !! --} }
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></script -->
 
@@ -217,3 +220,4 @@ $(document).ready(function() {
 </style>
 
 @endsection
+--}}

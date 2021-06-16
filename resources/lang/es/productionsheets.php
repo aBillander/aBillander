@@ -60,6 +60,9 @@ return [
 
 	'Production Sheets - Edit'     => 'Hojas de Producción - Modificar',
 	'Edit Production Sheet'     => 'Modificar Hoja de Producción',
+
+
+	'Production Sheets - Show'     => 'Hojas de Producción - Mostrar',
 	
 	'Edit Production Order' => 'Modificar Orden de Fabricación',
 
@@ -90,4 +93,6 @@ return [
 	'Customer Invoices'     => 'Facturas de Clientes',
 
 	'This record cannot be deleted because it belongs to a Production Sheet &#58&#58 (:id) ' => 'El registro no puede ser eliminado porque pertenece a una Hoja de producción &#58&#58 (:id) ',
+
+	'Assign Lots to Orders' => 'Asignar Lotes a Pedidos',
 ];

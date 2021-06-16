@@ -102,7 +102,7 @@
             <!-- th>{{l('Product ID')}}</th -->
             <th>{{l('Category')}}</th>
             <th>{{l('Product Name')}}</th>
-            <th>{{l('Quantity')}}</th>
+            <th>{{l('Quantity')}}&nbsp;/<br />{{ l('Finished Quantity') }}</th>
             <th>{{l('Work Center')}}&nbsp;/<br />{{l('Warehouse')}}</th>
             <th>{{l('Provenience')}}</th>
             <th>{{l('Status', 'layouts')}}</th>
@@ -134,7 +134,12 @@
       </td>
       <td>[<a href="{{ URL::to('products/' . $order->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $order->product_reference }}</a>] {{ $order->product_name }}
       </td>
-      <td>{{ $product->as_quantityable($order->planned_quantity) }}</td>
+      <td><span class="" title="{{ l('Planned Quantity') }}">{{ $product->as_quantityable($order->planned_quantity) }}</span>
+@if( $order->finished_quantity > 0 )
+        <br />
+        <span class="text-success" title="{{ l('Finished Quantity') }}">{{ $product->as_quantityable($order->finished_quantity) }}</span>
+@endif
+        </td>
       <td>{{ $order->workcenter->name ?? '' }}
         <br />
         <span class="text-success" title="{{ $order->warehouse->alias_name ?? '' }}">{{ $order->warehouse->alias ?? '-' }}</span>

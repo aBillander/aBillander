@@ -38,6 +38,8 @@ return [
 	'Product Reference'     => 'Referencia',
 	'Product Name'     => 'Nombre del Producto',
 	'Quantity'     => 'Cantidad',
+	'Finished Quantity'     => 'Cantidad terminada',
+	'Planned Quantity'     => 'Cantidad planificada',
 	'Total'     => 'Total',
 	'Work Center'     => 'Centro de Trabajo',
 	'Provenience'     => 'Procedencia',

@@ -188,6 +188,8 @@ return [
 	'Service'     => 'Servicio',
 	'Discount Line'     => 'Línea de Descuento',
 	'Text Line'     => 'Línea de Texto',
+
+    'Add Lots to Line' => 'Añadir Lotes a la Línea',
 	
 	// modal_product_search
 	'Quick Add Lines'     => 'Entrada rápida de Productos',

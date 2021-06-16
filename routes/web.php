@@ -797,6 +797,8 @@ foreach ($pairs as $pair) {
 
 
     
+        Route::resource('customerorderlines.lots', 'CustomerOrderLineLotsController');
+
         Route::resource('customershippingsliplines.lots', 'CustomerShippingSlipLineLotsController');
 
 

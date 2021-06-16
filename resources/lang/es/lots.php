@@ -28,6 +28,9 @@ return [
 	'Date'     => 'Fecha',
 	'Document' => 'Documento',
 	'Initial Stock'     => 'Stock Inicial',
+	'Current Stock'     => 'Stock Actual',
+	'Allocated Stock'     => 'Stock Reservado',
+	'Available Stock'     => 'Stock Disponible',
 	'Stock after'     => 'Stock final',
 	'Lot Stock after'     => 'Stock final del Lote',
 
@@ -53,6 +56,7 @@ return [
 	'Expiry Date' => 'Fecha de Caducidad',
 	'Stock Movements' => 'Movimientos de Stock',
 	'Lot Stock Movements' => 'Movimientos de Stock de Lote',
+	'Lot Stock Allocations' => 'Reservas de Stock de Lote',
 
 	'New Adjustment by Lot (:id) ' => 'Nuevo Ajuste por el Lote (:id) ',
 
@@ -74,6 +78,8 @@ return [
 	'Description' => 'Descripción',
 
 	'Select Lot and Amount.' => 'Seleccione Lote y Cantidad.',
+
+	'Stock Summary' => 'Resumen de Stock',
 
 
 ];

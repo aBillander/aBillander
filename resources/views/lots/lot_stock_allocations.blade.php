@@ -10,10 +10,8 @@
 
     </div>
     <h2>
-        {{ l('Lot Stock Allocations') }} <span style="color: #cccccc;">::</span> <a href="{{ route( 'lots.edit', $lot->id ) }}" title="{{l('Go to', [], 'layouts')}}">{{ $lot->reference }}</a>   <span class="badge" style="background-color: #3a87ad;" title="{{ optional($lot->measureunit)->name }}"> &nbsp; {{ optional($lot->measureunit)->sign }} &nbsp; </span></h2>
-        <h3>
-        {{ l('Allocated Stock') }}: {{ $lot->measureunit->quantityable($lot->allocatedQuantity()) }} ({{ optional($lot->measureunit)->sign }})
-    </h3>        
+        {{ l('Lot Stock Allocations') }} <span style="color: #cccccc;">::</span> <a href="{{ route( 'lots.edit', $lot->id ) }}" title="{{l('Go to', [], 'layouts')}}">{{ $lot->reference }}</a>   <span class="badge" style="background-color: #3a87ad;" title="{{ optional($lot->measureunit)->name }}"> &nbsp; {{ optional($lot->measureunit)->sign }} &nbsp; </span>
+    </h2>        
 </div>
 
 
@@ -24,15 +22,15 @@
 <table id="stockallocations" class="table table-hover">
 	<thead>
 		<tr>
-			<th class="text-left">{{l('ID', [], 'layouts')}} {{ $stockallocations->count() }}</th>
+			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
 			<th>{{l('lot_id')}}</th>
-			<th>{{l('quantity')}}</th>
+			<th>{{l('Quantity')}}</th>
 			<th>{{l('is_reservation')}}</th>
 			<th>{{l('lotable_id')}}</th>
 			<th>{{l('lotable_type')}}</th>
 			<th>{{l('created_at')}}</th>
 			<th>{{l('updated_at')}}</th>
-			<th>{{l('LotableDocumentRoute')}}</th>
+			<th>{{l('Document')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -42,7 +40,7 @@
 		<tr>
 			<td>{{ $stockallocation->id }}</td>
 			<td>{{ $stockallocation->lot_id }}</td>
-			<td>{{ $stockallocation->quantity }}</td>
+			<td>{{ $lot->measureunit->quantityable( $stockallocation->quantity ) }}</td>
 			<td>{{ $stockallocation->is_reservation }}</td>
 			<td>{{ $stockallocation->lotable_id }}</td>
 			<td>{{ $stockallocation->lotable_type }}</td>
@@ -69,6 +67,12 @@
 			</td>
 
             <td class="text-right">
+                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                		href="{{ URL::to('lotitems/' . $stockallocation->id ) }}" 
+                		data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
+                		data-title="{{ l('Lot Stock Allocations') }} ::  ({{$stockallocation->id}}) {{ $stockallocation->created_at }}" 
+                		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+
 {{--
                 @if (  is_null($stockallocation->deleted_at))
                 <!-- a class="btn btn-sm btn-success" href="{{ URL::to('stockmovements/' . $stockmovement->id) }}" title=" Ver "><i class="fa fa-eye"></i></a>               
@@ -89,10 +93,8 @@
 
 	</tbody>
 </table>
-{{--
-{!! $stockallocations->appends( Request::all() )->render() !!} 
-<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $stockallocations->total() ], 'layouts')}} </span></li></ul>
---}}
+{{-- !! $stockallocations->appends( Request::all() )->render() !! --}} 
+<ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $stockallocations->count() ], 'layouts')}} </span></li></ul>
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>

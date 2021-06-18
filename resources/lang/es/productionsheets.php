@@ -95,4 +95,24 @@ return [
 	'This record cannot be deleted because it belongs to a Production Sheet &#58&#58 (:id) ' => 'El registro no puede ser eliminado porque pertenece a una Hoja de producción &#58&#58 (:id) ',
 
 	'Assign Lots to Orders' => 'Asignar Lotes a Pedidos',
+
+	'Stock Analysis' => 'Análisis de Stock',
+
+	'Production Sheet - Stock Analysis' => 'Hojas de Producción - Análisis de Stock',
+
+	'Stock Summary' => 'Resumen de Stock',
+	'Stock on hand' => 'Stock físico',
+	'Total Allocated Stock' => 'Stock Reservado Total',
+	'Production Sheet Allocated' => 'Reservado Hoja Producción',
+	'Available Stock' => 'Stock Disponible',
+
+	'Available Product Lots' => 'Lotes Disponibles',
+	'Lot Number' => 'Número de Lote',
+	'Allocated Quantity' => 'Reservado',
+	'Manufacture Date' => 'Fabricación',
+	'Expiry Date' => 'Caducidad',
+
+	'Allocate Lots' => 'Reservar Lotes',
+	'Un-Allocate Lots' => 'Borrar reserva de Lotes',
+	
 ];

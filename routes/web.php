@@ -503,10 +503,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('productionsheetinvoices/close',  'ProductionSheetInvoicesController@closeInvoices')->name('productionsheet.close.invoices');
 
 
-
+        // Production Sheet Delivery Routes
         Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
 
         Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourlineController@export' )->name('productionsheet.tourline');
+
 
         // Production Sheet Production Orders
         Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
@@ -517,6 +518,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         // Deprecated; keep for reference; use productionsheet.productionorders.finish instead
         // Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');
+
+
+        // Production Sheet Stock Analysis
+        Route::get( 'productionsheets/{id}/stock', 'ProductionSheetStockController@stockIndex' )->name('productionsheet.stock');
 
 
 

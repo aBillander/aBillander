@@ -387,6 +387,57 @@ class Product extends Model {
 
 
 
+    public function getQuantityOnorderAttribute()
+    {
+        // On Order by Supplier Orders
+        // Document status = 'confirmed'
+        $lines1 = SupplierOrderLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q)
+                            {
+                                $q->where('status', 'confirmed');
+                            }
+                    )
+                    ->get();
+
+        $count1 = $lines1->sum('quantity');
+
+        // On Order by Supplier Shipping Slips
+        // Document status = 'confirmed'
+        $lines2 = SupplierShippingSlipLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q)
+                            {
+                                $q->where('status', 'confirmed');
+                            }
+                    )
+                    ->get();
+
+        $count2 = $lines2->sum('quantity');
+
+
+        // On Order by Supplier Invoices
+        // Document status = 'confirmed' && created_via = 'manual'
+        $lines3 = SupplierInvoiceLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q)
+                            {
+                                $q->where('status', 'confirmed');
+                                $q->where('created_via', 'manual');
+                            }
+                    )
+                    ->get();
+
+        $count3 = $lines3->sum('quantity');
+
+        
+
+
+        $count = $count1 + $count2 + $count3;
+
+        return $count;
+    }
+
     public function getQuantityAllocatedAttribute()
     {
         // Allocated by Customer Orders

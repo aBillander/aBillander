@@ -37,8 +37,10 @@ trait ProductionSheetLotsTrait
                     ->get();
         
         // Products shortlist (testing only)
+/*
         $p_ids = [5, 11, 31, 37];
         $lines = $lines->whereIn('product_id', $p_ids);
+*/
 
         // Free Lot allocations (remove lotitems, if any)
         foreach ($lines as $line) {

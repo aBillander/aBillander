@@ -128,14 +128,14 @@
             </td>
             <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}<br />
 
-                @foreach ($order->lines as $line)
+                @foreach ($order->lines->where( 'reference', $reference) as $line)
 
                     @if($line->lotitems->count())
                         Lote(s): 
                     @endif
 
                     @foreach($line->lotitems as $item)
-                        <i><b>{{ $item->lot->reference }}</b></i> ({{ niceQuantity($item->quantity) }}) &nbsp;  
+                        <i><b>{{ $item->lot->reference }}</b></i> ({{ niceQuantity($item->quantity) }}) abi_date_short( $lotitem->lot->expiry_at ) }})   <br />
                     @endforeach
 
                 @endforeach

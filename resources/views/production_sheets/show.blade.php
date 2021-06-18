@@ -56,6 +56,9 @@
                 <div class="btn-group">
                     <a href="#" class="btn xbtn-sm btn-info dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', 'layouts')}}"><i class="fa fa-mail-forward"></i> &nbsp; <b>{{l('Go to', 'layouts')}}</b> &nbsp; <span class="caret"></span></a>
                     <ul class="dropdown-menu  xpull-right">
+                      <li><a href="{{ route('productionsheet.stock', [$sheet->id]) }}"><i class="fa fa-th text-warning"></i> {{l('Stock Analysis')}}</a></li>
+
+                      <li class="divider"></li>
                       <li><a href="{{ route('productionsheet.orders', [$sheet->id]) }}"><i class="fa fa-shopping-bag"></i> {{l('Customer Orders')}}</a></li>
                       <li><a href="{{ route('productionsheet.shippingslips', [$sheet->id]) }}"><i class="fa fa-truck"></i> {{l('Customer Shipping Slips')}}</a></li>
                       <li><a href="{{ route('productionsheet.invoices', [$sheet->id]) }}"><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a></li>

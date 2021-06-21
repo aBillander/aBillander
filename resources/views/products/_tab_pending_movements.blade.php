@@ -1,4 +1,4 @@
-<!-- Profitability -->
+<!-- Pending Movements -->
 
                <div class="panel-body">
 
@@ -12,7 +12,7 @@
                </div><!-- div class="panel-body" -->
 
 
-<!-- Profitability ENDS -->
+<!-- Pending Movements ENDS -->
 
 
 

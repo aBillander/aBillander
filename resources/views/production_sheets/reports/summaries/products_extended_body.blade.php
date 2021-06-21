@@ -126,18 +126,44 @@
                 @endif
 
             </td>
-            <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}<br />
+            <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
 
                 @foreach ($order->lines->where( 'reference', $reference) as $line)
 
-                    @if($line->lotitems->count())
-                        Lote(s): 
+                    @if( !$line->lotitems->count() )
+                        @continue
                     @endif
 
-                    @foreach($line->lotitems as $item)
-                        <i><b>{{ $item->lot->reference }}</b></i> ({{ niceQuantity($item->quantity) }}) abi_date_short( $lotitem->lot->expiry_at ) }})   <br />
+@if ($line->lotitems->count() > 1)
+        <table>
+            <tr>
+                <td style="border-bottom: 0px #ccc solid !important;"><i>Lotes:</i></td>
+                <td style="border-bottom: 0px #ccc solid !important;"><i>
+                    @foreach( $line->lotitems as $lotitem )
+                        {{ $lotitem->as_quantity('quantity') }} ud. Lote <b>{{ $lotitem->lot->reference }}</b> ({{ abi_date_short( $lotitem->lot->expiry_at ) }})<br />
+                    @endforeach                 
+                </i></td>
+            </tr>
+        </table>
+@else
+                <br />
+                <span class="">
+                <i>Lote: 
+                    @foreach( $line->lotitems as $lotitem )
+                        <b>{{ $lotitem->lot->reference }}</b> ({{ abi_date_short( $lotitem->lot->expiry_at ) }})<br />
+                        @break
                     @endforeach
+                </i>
+                </span>
 
+@endif
+
+{{--
+                    <br />
+                    @foreach($line->lotitems as $item)
+                        <i><b>{{ $item->lot->reference }}</b></i> ({{ niceQuantity($item->quantity) }}) {{ abi_date_short( $lotitem->lot->expiry_at ) }}   <br />
+                    @endforeach
+--}}
                 @endforeach
 
 

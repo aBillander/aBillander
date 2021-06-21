@@ -438,7 +438,78 @@ class Product extends Model {
         return $count;
     }
 
+    public function getAllocations( $min_date = null )
+    {
+        // Allocated by Customer Orders
+        // Document status = 'confirmed'
+        $lines1 = CustomerOrderLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->with('document')
+                    ->with('document.customer')
+                    ->get();
+
+
+        // Allocated by Customer Shipping Slips
+        // Document status = 'confirmed'
+        $lines2 = CustomerShippingSlipLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->with('document')
+                    ->with('document.customer')
+                    ->get();
+
+        $count2 = $lines2->sum('quantity');
+
+
+        // Allocated by Customer Invoices
+        // Document status = 'confirmed' && created_via = 'manual'
+        $lines3 = CustomerInvoiceLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+                                $q->where('created_via', 'manual');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->with('document')
+                    ->with('document.customer')
+                    ->get();
+
+        $count3 = $lines3->sum('quantity');
+
+        
+
+
+        $lines = $lines1->merge($lines2)->merge($lines3);
+
+        // Do some sorting here (by document_date, ASC):
+        $lines = $lines->sortBy(function ($line, $key) {
+            return $line->document->document_date;
+        });
+
+        return $lines;
+    }
+
     public function getQuantityAllocatedAttribute()
+    // To Do: refactor using getAllocations()
     {
         // Allocated by Customer Orders
         // Document status = 'confirmed'

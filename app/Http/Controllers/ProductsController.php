@@ -1004,6 +1004,11 @@ LIMIT 1
 
     public function getPendingMovements($id, Request $request)
     {
+        // https://www.itsolutionstuff.com/post/merge-multiple-collection-paginate-in-laravel-exampleexample.html
+        // https://stackoverflow.com/questions/50529113/eloquent-paginate-two-relation-merged
+
+/* Forget pagination by now!
+
         $items_per_page_pendingmovements = intval($request->input('items_per_page_pendingmovements', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page_pendingmovements >= 0) ) 
             $items_per_page_pendingmovements = Configuration::get('DEF_ITEMS_PERPAGE');
@@ -1026,6 +1031,26 @@ LIMIT 1
         // return $items_per_page_stockmovements ;
         
         return view('products._panel_pending_movements', compact('lines', 'items_per_page_pendingmovements'));
+*/
+        $product = $this->product->findOrFail($id);
+
+        $date = Configuration::get('STOCKMOVEMENTS_AFTER_DATE');
+
+        try {
+
+            $min_date = $date ? 
+                        \Carbon\Carbon::createFromFormat('Y-m-d', $date) :
+                        null;
+            
+        } catch (\Exception $e) {
+
+            $min_date = \Carbon\Carbon::now()->subDays(130);
+            
+        }        
+
+        $lines = $product->getAllocations( $min_date );
+
+        return view('products._panel_pending_movements', compact('lines', 'min_date'));
     }
 
 

@@ -52,6 +52,7 @@ return [
 	'Quantity includes this Document.' => 'La Cantidad incluye este Documento.',
 	'New Quantity' => 'Nueva Cantidad',
 	'Measure Unit' => 'Unidad de Medida',
+	'Weight' => 'Peso',
 	'Manufacture Date' => 'Fecha de Fabricación',
 	'Expiry Date' => 'Fecha de Caducidad',
 	'Stock Movements' => 'Movimientos de Stock',

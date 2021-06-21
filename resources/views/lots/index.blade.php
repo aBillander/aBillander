@@ -132,6 +132,7 @@
             </th>
             <th class="text-right">{{l('Allocated Quantity')}}</th>
             <th>{{l('Measure Unit')}}</th>
+            <th>{{l('Weight')}} (<span class="text-success">{{ optional($weight_unit)->sign }}</span>)</th>
             <th>{{l('Manufacture Date')}}</th>
             <th>{{l('Expiry Date')}}</th>
             <th class="text-center">{{ l('Blocked', [], 'layouts') }}</th>
@@ -146,7 +147,7 @@
 		<tr>
       <td>{{ $lot->id }}</td>
       <td>{{ $lot->reference }}</td>
-      <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
+      <td title="{{ $lot->warehouse->alias_name ?? '-' }}">{{ $lot->warehouse->alias ?? '-' }}</td>
       <td>[<a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a>] {{ $lot->product->name }}
 {{--
                     @if ( $lot->combination_id > 0 )
@@ -170,6 +171,9 @@
 @endif
       ">{{ $lot->as_quantityable( $lot_allocated_qty ) }}</td>
       <td>{{ optional($lot->measureunit)->sign }}</td>
+
+      <td class="text-center">{{ $lot->getWeight() }}</td>
+
       <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
       <td>{{ abi_date_short( $lot->expiry_at ) }}</td>
 

@@ -46,7 +46,7 @@
         <div class="row">
 
                   <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                        <h4 style="color: #dd4814;">{{ l('Available Lots', 'customerdocuments') }}</h4>
+                        <h4 style="color: #dd4814;">{{ l('Available Lots', 'customerdocuments') }} <span class="label label-success" id="product_lot_policy"></span></h4>
 
                         <div id="product_available_lots">
                         </div>

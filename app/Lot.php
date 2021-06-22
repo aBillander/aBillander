@@ -120,6 +120,11 @@ class Lot extends Model
         return $this->lotitems()->where('is_reservation', '>', 0)->sum('quantity');
     }
 
+    public function availableQuantity()
+    {
+        return $this->quantity - $this->allocatedQuantity();
+    }
+
     public function allocatedByCustomerShippingSlipLineId( $line_id = 0 )
     {
         $lotitem = $this->lotitems()

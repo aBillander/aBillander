@@ -96,7 +96,7 @@ trait BillableLotFormsControllerTrait
         // abi_r($document_line->toArray());die();
 
         // Let's get available lots for this line product
-        $lots = $document_line->product->availableLots()->where('quantity', '>', 0)->get();
+        $lots = $document_line->product->availableLots;
         // $lots are well ordered according to product lot policy
 
         // Lets see if there are lot allocated quantities
@@ -108,7 +108,7 @@ trait BillableLotFormsControllerTrait
             foreach ($lots as $lot) {
                 if ($quantity <= 0) break;
                 # code...
-                $lot_available_qty = $lot->quantity - $lot->allocatedQuantity();
+                $lot_available_qty = $lot->availableQuantity();
                 $allocable = $quantity > $lot_available_qty ?
                                     $lot_available_qty :
                                     $quantity      ;
@@ -135,6 +135,7 @@ trait BillableLotFormsControllerTrait
             }
         }
         
+        // Calculate allocated quantity for this line product
         foreach ($lots as $lot) {
             # code...
             // $lot->allocated_to_line = $lot->allocatedByCustomerShippingSlipLineId( $document_line->id ); 
@@ -143,10 +144,8 @@ trait BillableLotFormsControllerTrait
             $alloc = $lots_allocated->where('lot_id', $lot->id)->first();
             $lot->allocated_to_line = $alloc ? $alloc->quantity : 0;
 
-            // abi_r($lot->id);
-            // abi_r($lot->allocated_to_line); 
-
-            // die();
+            // Lot is not allocable if $lot->availableQuantity() == 0 and $lot->allocated_to_line == 0
+            $lot->not_allocable = ($lot->availableQuantity() <= 0.0) && ($lot->allocated_to_line == 0.0);
         }
 
         // die();

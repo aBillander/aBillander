@@ -66,6 +66,8 @@
 
                     $('#modal_product_document_line_Label').html(label);
 
+                    $('#product_lot_policy').html(result.product.lot_policy);
+
                     $('#line_id').val(result.id);
                     $('#line_sort_order').val(result.line_sort_order);
                     $('#line_product_id').val(result.product_id);

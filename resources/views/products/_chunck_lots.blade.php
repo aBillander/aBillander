@@ -35,7 +35,12 @@
     <tbody id="order_lines">
         @foreach ($lots as $lot)
         <tr>
+
+@if ( $lot->not_allocable )
+      <td class="text-center danger"></td>
+@else
       <td class="text-center warning">{!! Form::checkbox('lot_group[]', $lot->id, $lot->allocated_to_line > 0, ['class' => 'case xcheckbox', 'onchange' => 'calculateSelectedAmount()']) !!}</td>
+@endif
 
       <td>{{ $lot->id }}</td>
       <td>{{ $lot->reference }}</td>
@@ -57,9 +62,15 @@
             </td>
 
 
+@if ( $lot->not_allocable )
+            <td class="text-right danger">
+            </td>
+@else
             <td class="text-right">
               <input name="lot_amount[{{ $lot->id }}]" id="lot_amount[{{ $lot->id }}]" class=" selectedamount form-control input-sm" type="text" size="3" maxlength="7" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $lot->as_quantityable($lot->allocated_to_line) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
             </td>
+@endif
+
         </tr>
         @endforeach
 

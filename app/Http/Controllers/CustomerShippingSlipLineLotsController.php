@@ -234,7 +234,7 @@ class CustomerShippingSlipLineLotsController extends Controller
 
         if ($lot_item)
         {
-            $lot_item->lot->delete();
+//            $lot_item->lot->delete();
             $lot_item->delete();
 
             return response()->json( [

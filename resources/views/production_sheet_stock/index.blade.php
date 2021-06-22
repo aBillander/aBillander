@@ -322,9 +322,9 @@
 
 @if( \App\Configuration::isTrue('ENABLE_LOTS') && $product->lot_tracking )
 
-                <a class="btn btn-sm btn-grey show-stock-availability" data-id="{ {$document->id} }" title="{{l('Allocate Lots')}}"><i class="fa fa-window-restore"></i></a>
+                <a class="btn btn-sm btn-grey show-stock-availability" data-id="{ {$document->id} }" title="{{l('Allocate Lots')}}" onclick="alert('You naughty, naughty!'); return false;"><i class="fa fa-window-restore"></i></a>
 
-                <a class="btn btn-sm alert-danger" href="{ { URL::to($model_path.'/' . $document->id . '/edit') } }" title="{{l('Un-Allocate Lots')}}" target="_blank"><i class="fa fa-window-close"></i></a>
+                <a class="btn btn-sm alert-danger" href="{ { URL::to($model_path.'/' . $document->id . '/edit') } }" title="{{l('Un-Allocate Lots')}}" target="_blank" onclick="alert('You naughty, naughty!'); return false;"><i class="fa fa-window-close"></i></a>
 @endif
 
             </td>

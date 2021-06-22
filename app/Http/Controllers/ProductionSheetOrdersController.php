@@ -588,6 +588,21 @@ class ProductionSheetOrdersController extends BillableController
                     $shippingslip_line->taxes()->save($shippingslip_line_tax);
 
                 }
+
+                // Oops! Move Lot allocations from Customer Order to Customer Shipping Slip
+                if ( Configuration::isTrue('ENABLE_LOTS') && 
+                    ($line->line_type == 'product')       && 
+                    ($line->product->lot_tracking > 0) )
+                {
+                    //
+                    $lotitems = $line->lotitems;
+
+                    foreach ($lotitems as $lot_item) {
+                        // code...
+                        $shippingslip_line->lotitems()->save($lot_item);
+                    }                    
+                }
+
             }
 
             // Not so fast, Sony Boy

@@ -119,7 +119,13 @@
 
   @foreach ($orders as $order)
           <tr>
-            <td width="17%" class="xbutton-pad text-right">{{ $order->document_reference ?: 'Borrador' }}
+            <td width="17%" class="xbutton-pad text-right">
+
+@if( $order->status == 'closed' )
+     <u>{{ $order->document_reference ?: 'Borrador' }}</u>
+@else
+    {{ $order->document_reference ?: 'Borrador' }}
+@endif
 
                 @if (0 && $order->reference)
                     <br />[{{ $order->reference }}
@@ -127,6 +133,8 @@
 
             </td>
             <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
+
+@if( $order->status != 'closed' )
 
                 @foreach ($order->lines->where( 'reference', $reference) as $line)
 
@@ -166,6 +174,7 @@
 --}}
                 @endforeach
 
+@endif
 
             </td>
             <td width="10%" class="text-right" xstyle="border-right: 1px #ccc solid;"><strong>{{ niceQuantity($order->lines->where( 'reference', $reference)->sum('quantity')) }}</strong>
@@ -200,6 +209,7 @@
     </tbody>
 </table>
 
+<p><b>NOTA:</b> Los pedidos subrayados están cerrados y no tienen lotes asignados.</p>
 
 @else
 <div class="alert alert-warning alert-block">

@@ -96,7 +96,7 @@ trait BillableLotFormsControllerTrait
         // abi_r($document_line->toArray());die();
 
         // Let's get available lots for this line product
-        $lots = $document_line->product->availableLots;
+        $lots = $document_line->product->availableLotsSorted();
         // $lots are well ordered according to product lot policy
 
         // Lets see if there are lot allocated quantities

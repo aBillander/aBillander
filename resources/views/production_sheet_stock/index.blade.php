@@ -162,7 +162,7 @@
     </thead>
     <tbody>
 
-@foreach( $product->availableLots as $lot )
+@foreach( $product->availableLotsSorted() as $lot )
         <tr>
       <!-- td>{{ $lot->id }}</td -->
       <td title="{{ $lot->id }}">

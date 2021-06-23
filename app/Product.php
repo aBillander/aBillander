@@ -1365,9 +1365,20 @@ class Product extends Model {
 
     public function availableLots()
     {
-        $sort_order = $this->lot_policy == 'FIFO' ? 'ASC' : 'DESC';
+        // $sort_order = ($this->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
+        // ^-- Will not work, since "$this" is not defined
 
-        return $this->hasMany('App\Lot')->where('quantity', '>', 0)->orderBy('expiry_at', $sort_order);
+        return $this->hasMany('App\Lot')->where('quantity', '>', 0)->orderBy('expiry_at', 'ASC');   // Most common sorting, I guess (FIFO)
+    }
+
+    public function availableLotsSorted()
+    {
+        $sort_order = ($this->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
+
+        if ($sort_order == 'ASC')
+            return $this->availableLots;
+
+        return $this->availableLots->sortByDesc('expiry_at');
     }
 
 

@@ -65,7 +65,7 @@ trait ProductionSheetLotsTrait
             // abi_r('>> '.$product->reference);
 
             // Keep allocable Lots only
-            $allocable_lots = $product->availableLots
+            $allocable_lots = $product->availableLotsSorted()
                                 ->map(function ($lot, $key) {
                                     $lot->available_qty = $lot->quantity - $lot->allocatedQuantity();
                                     return $lot;

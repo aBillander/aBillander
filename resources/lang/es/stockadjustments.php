@@ -33,6 +33,7 @@ return [
 	'Product Name'     => 'Nombre de Producto',
 	'Product Options'     => 'Opciones de Producto',
 	'Quantity'     => 'Cantidad',
+	'Average Cost Price'     => 'Precio de Coste Promedio',
 	'Counted quantity, i.e., stock on hand'     => 'Stock físico',
 
 	'Counted quantity matches current stock on hand. '     => 'La cantidad contada coincide con el stock actual. ',

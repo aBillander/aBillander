@@ -17,8 +17,11 @@
                 <th class="text-left">{{ l('Enable Quotations', 'customerusers') }}</th>
                 <th class="text-left">{{ l('Enable minimum Order', 'customerusers') }}</th>
 	            <th class="text-right">
+
+@if( \Auth::user()->canGiveAbccAccess() )
 	                <a href="#" class="btn btn-sm btn-success create-customeruser" 
 	                title="{{l('Add New User')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+@endif
 	            </th>
             </tr>
         </thead>
@@ -65,11 +68,13 @@
                 	<a class="btn btn-sm btn-warning update-customeruser" href="#" title="{{l('Edit', [], 'layouts')}}" data-id="{{$user->id}}"><i class="fa fa-pencil"></i></a>
 
 
+@if( \Auth::user()->canGiveAbccAccess() )
                     <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                             href="{{ URL::to('customerusers/'.$user->id ) }}" 
                             data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                             data-title="{{ l('') }} :: ({{$user->id}}) {{ $user->getFullName() }} " 
                             onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+@endif
 
                 </td>
             </tr>
@@ -79,8 +84,10 @@
     @else
             <div class="modal-footer">
                 
+@if( \Auth::user()->canGiveAbccAccess() )
 	                <a href="#" class="btn xbtn-sm btn-success create-customeruser pull-right" 
 	                title="{{l('Add New User')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+@endif
 
             </div>
     

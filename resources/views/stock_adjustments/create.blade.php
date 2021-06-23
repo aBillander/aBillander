@@ -74,6 +74,11 @@
                </a>
         {!! Form::text('quantity', null, array('autocomplete' => 'off', 'class' => 'form-control')) !!}
     </div>
+
+    <div class="form-group col-lg-4 col-md-4 col-sm-4">
+       {!! Form::label('cost_average', l('Average Cost Price')) !!} <span class="badge" style="background-color: #3a87ad;">{{ \App\Context::getContext()->currency->iso_code }}</span>
+       {!! Form::text('cost_average', null, array('class' => 'form-control', 'id' => 'cost_average')) !!}
+    </div>
 </div>
         
 <div class="row">
@@ -124,6 +129,15 @@
 
 <script>
 
+    $(document).ready(function() {
+
+        $( "#product_query" ).val('');
+        $( "#reference" ).val('');
+        $( "#product_id" ).val('');
+        $( "#cost_average" ).val('');
+
+    });
+
 // http://stackoverflow.com/questions/21627170/laravel-tokenmismatchexception-in-ajax-request
 // var _globalObj = {{ json_encode(array('_token'=> csrf_token())) }};
 
@@ -140,6 +154,7 @@
         $( "#product_query" ).val(ui.item.name);
         $( "#reference" ).val( ui.item.reference );
         $( "#product_id" ).val( ui.item.id );
+        $( "#cost_average" ).val( ui.item.cost_average );
 
         // Product has combinations?
         $("#product_options").addClass('loading');

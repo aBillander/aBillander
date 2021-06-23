@@ -654,7 +654,14 @@ class Billable extends Model implements ShippableInterface
     {
         if ( !$this->shipping_address_id ) return false;
 
-        return $this->shipping_address_id !== $this->invoicing_address_id;
+        if ( $this->shippingaddress )
+            return $this->shipping_address_id !== $this->invoicing_address_id;
+
+        // Reach this point means non existing address for shipping_address_id
+        $this->shipping_address_id = $this->invoicing_address_id;
+        $this->save();
+
+        return false;
     }
     
 
@@ -773,7 +780,8 @@ class Billable extends Model implements ShippableInterface
         $discount = $this->document_discount_percent;
         $ppd      = $this->document_ppd_percent;
 
-        $document_products_discount = $products_final_price * (1.0 - (1.0 - $discount/100.0) * (1.0 - $ppd/100.0));
+        // $document_products_discount = $products_final_price * (1.0 - (1.0 - $discount/100.0) * (1.0 - $ppd/100.0));
+        $document_products_discount = $products_final_price * ($discount/100.0) * (1.0 + $ppd/100.0);
 
         // abi_r( $document_products_discount);
         $this->document_products_discount = $document_products_discount;

@@ -1446,6 +1446,7 @@ class Product extends Model {
  //                   'measure_unit', 'quantity_decimal_places', 
                     'reorder_point', 'price', 'price_tax_inc',
                     'quantity_onhand', 'quantity_onorder', 'quantity_allocated', 
+                    'cost_average', 
                     'blocked', 'active', 
  //                   'tax_id',
         ];

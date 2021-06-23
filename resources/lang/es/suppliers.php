@@ -77,6 +77,7 @@ return [
 
 	'Website'     => 'Web',
 	'Is Creditor?' => '¿Es Acreedor?',
+	'Approved?' => '¿Está Aprobado?',
 	'Misc'     => 'Otros',
 
 	'Sequence for Invoices'     => 'Serie de Facturas',

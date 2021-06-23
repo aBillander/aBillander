@@ -32,7 +32,7 @@ class AdjustmentStockMovement extends StockMovement implements StockMovementInte
         // $price_currency_in = $this->price_currency; // Price in Stock Movement Currency
         $price_in = $this->price;                       // Price in Company's Currency
 
-        $current_quantity_onhand = $product->quantity_onhand;
+        $current_quantity_onhand = $product->getStock();    // $product->quantity_onhand;   // Total stock; If $product->quantity_onhand is wrong, final calculations will be wrong
 
         $quantity_onhand = $this->quantity;
         $this->quantity_before_movement = $product->getStockByWarehouse( $this->warehouse_id );

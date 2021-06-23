@@ -46,6 +46,7 @@
 
 @endphp
         <tr>
+  @if( isset($iva->taxable_base) )
           <td>{{ $alltax->as_percentable( $alltax->percent ) }}</td>
           <td>{{ $alltax->as_priceable($total['net_amount']) }}</td>
           <!-- td>{{ '' }}</td -->
@@ -54,6 +55,14 @@
           <td>{{ optional($re)->as_percent('percent') ?? '' }}</td>
           <td>{{ optional($re)->as_price('taxable_base') ?? '' }}</td>
           <td>{{ optional($re)->as_price('total_line_tax') ?? '' }}</td>
+  @else
+          {{-- Taxes are not well calculated!!! --}}
+          <div class="alert alert-success alert-block">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+              <strong>Error: </strong>
+                        Unable to calculate Total Breakwown 
+          </div>
+  @endif
         </tr>
 {{--
 @php

@@ -173,8 +173,6 @@
     </tbody>
 </table>
 
-   </div>
-
 {{ $customer_invoices->appends( Request::all() )->render() }}
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $customer_invoices->total() ], 'layouts')}} </span></li></ul>
 
@@ -185,6 +183,7 @@
 </div>
 @endif
 
+   </div>
 </div>
 
 @endsection

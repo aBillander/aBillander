@@ -200,9 +200,12 @@
       <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
+
+@if( \Auth::user()->canGiveAbccAccess() )
                <button type="submit" class="btn btn-success" name="modal_customeruserSubmit" id="modal_customeruserSubmit">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Save', [], 'layouts')}}</button>
+@endif
 
       </div>
 

@@ -40,7 +40,7 @@ trait BillableGroupableControllerTrait
                                 ->with('currency')
                                 ->findOrFail($params['customer_id']);
 
-            $documents = $this->document
+            $all_documents = $this->document
                                 ->where('customer_id', $params['customer_id'])
                                 ->where('status', '<>', 'closed')
                                 ->with('lines')
@@ -64,7 +64,7 @@ trait BillableGroupableControllerTrait
         if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
         {
             //
-            $sheets = $documents->unique('production_sheet_id')->pluck('production_sheet_id')->all();
+            $sheets = $all_documents->unique('production_sheet_id')->pluck('production_sheet_id')->all();
 
             if ( count($sheets) > 1 )   // More than one Production Sheet
                 return redirect()->back()
@@ -73,6 +73,22 @@ trait BillableGroupableControllerTrait
 
 
 //        abi_r($list);die();
+
+        // Group Orders by Shipping Address.
+        $addresses = $all_documents->unique('shipping_address_id')->pluck('shipping_address_id')->all();
+
+
+// Count newly created orders
+$nbr = 0;
+
+foreach ($addresses as $shipping_address_id) {
+
+        $documents = $all_documents->where('shipping_address_id', $shipping_address_id);
+
+        if ( $documents->count() <=1 )
+            continue;
+
+        $nbr++;
 
 //        4.- Cear cabecera
 
@@ -136,7 +152,7 @@ trait BillableGroupableControllerTrait
             'locked' => 0,
 
             'invoicing_address_id' => $customer->invoicing_address_id,
-            'shipping_address_id' => $customer->shipping_address_id,
+            'shipping_address_id' => $shipping_address_id,
             'warehouse_id' => Configuration::getInt('DEF_WAREHOUSE'),
             'shipping_method_id' => $shipping_method_id,
             'carrier_id' => $carrier_id,
@@ -316,11 +332,19 @@ trait BillableGroupableControllerTrait
 
 
         // abi_r($grouped_lines, true);
+}
 
 
-
-        return redirect('customerorders/'.$order->id.'/edit')
-                ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $order->id], 'layouts'));
+        if ( isset( $order ) )
+        if ( $nbr == 1 )
+            return redirect('customerorders/'.$order->id.'/edit')
+                    ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $order->id], 'layouts'));
+        else
+            return redirect()->back()
+                    ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        
+        return redirect()->back()
+                ->with('warning', l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
     }
 
 }

@@ -44,6 +44,66 @@ class Address extends Model {
         return $rules;
     }
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($address)
+        {
+            // before delete() method call this
+
+            $documents = [
+                    'CustomerQuotation',
+                    'CustomerOrder',
+                    'CustomerShippingSlip',
+                    'CustomerInvoices',
+
+                    'SupplierOrder',
+                    'SupplierShippingSlip',
+                    'SupplierInvoice',
+            ];
+
+            // Addressable
+            $addressable = $address->addressable;
+            
+            if ( 
+                ($address->id == $addressable->invoicing_address_id) ||
+                ($address->id == $addressable->shipping_address_id )
+            )
+            {
+                throw new \Exception( l('Address has :relation', ['relation' => $address->addressable_type.' (Shipping Address or Invoicing Address)'], 'exceptions') );
+            }
+
+            // Documents
+            foreach ($documents as $document) {
+                # code...
+                $class = '\App\\'.$document;
+                $docs = $class::
+                              where('invoicing_address_id', $address->id)
+                            ->orWhere('shipping_address_id', $address->id)
+                            ->get();
+
+                if ( $docs->count() > 0 )
+                    throw new \Exception( l('Address has :relation', ['relation' => $document], 'exceptions') );
+            }
+
+            // Delivery Routes Lines
+            if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+            {
+                $relation = 'DeliverySheetLines';
+
+                $class = '\App\\'.$relation;
+                $docs = $class::
+                              where('address_id', $address->id)
+                            ->get();
+
+                if ( $docs->count() > 0 )
+                    throw new \Exception( l('Address has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+        });
+    }
+
 
     public function getContactNameAttribute()
     {

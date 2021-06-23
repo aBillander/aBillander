@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Configuration;
 use App\ProductionSheet;
 use App\CustomerOrderLine;
+use App\CustomerShippingSlipLine;
 use App\Product;
 use App\LotItem;
 
@@ -29,9 +30,11 @@ class ProductionSheetStockController extends Controller
         $sheet = $this->productionSheet->findOrFail($id);
 
         // Let's get Products!
+        // Customer Orders
         $lines = CustomerOrderLine::
                       whereHas('customerorder', function ($query) use ($id) {
                         $query->where('production_sheet_id', $id);
+                        $query->where('status', 'confirmed');
                     })
                     ->whereHas('product', function ($query) {
                         $query->where('mrp_type', '<>', 'onorder');     // 'manual', 'reorder'
@@ -41,21 +44,51 @@ class ProductionSheetStockController extends Controller
                     ->with('lotitems')
                     ->get();
         
+        // Customer Shipping Slips
+        $slip_lines = CustomerShippingSlipLine::
+                      whereHas('customershippingslip', function ($query) use ($id) {
+                        $query->where('production_sheet_id', $id);
+                        $query->where('status', 'confirmed');
+                    })
+                    ->whereHas('product', function ($query) {
+                        $query->where('mrp_type', '<>', 'onorder');     // 'manual', 'reorder'
+                        $query->where('lot_tracking', '>', 0);
+                    })
+                    ->with('customershippingslip')
+                    ->with('lotitems')
+                    ->get();
+
+        
         // Group collection by product
-        $lines = $lines->groupBy('product_id');
+        $lines      = $lines->groupBy('product_id');
+        $slip_lines = $slip_lines->groupBy('product_id');
 
 
         // Main loop throu Products
-        $products = Product::whereIn( 'id', $lines->keys() )->with('availableLots')->get();
+        $keys = array_unique( array_merge( $lines->keys()->toArray(), $slip_lines->keys()->toArray() ) );
+        $products = Product::whereIn( 'id', $keys )->with('availableLots')->get();
 
         // Add lines to products
         foreach ($products as $product) {
             // code...
-            $product->lines = $lines
+            if ( $lines->get($product->id) && ($lines->get($product->id)->count() > 1) )
+                $product->lines = $lines
                                     ->get($product->id)
                                     ->sortBy(function ($line, $key) {
                                         return $line->document->document_reference;
                                     });
+            else
+                $product->lines = collect([]);
+            
+            
+            if ( $slip_lines->get($product->id) && ($slip_lines->get($product->id)->count() > 1) )
+                $product->slip_lines = $slip_lines
+                                    ->get($product->id)
+                                    ->sortBy(function ($line, $key) {
+                                        return $line->document->document_reference;
+                                    });
+            else
+                $product->slip_lines = collect([]);
         }
 
 
@@ -67,6 +100,6 @@ class ProductionSheetStockController extends Controller
                 continue;
         }
 
-        return view('production_sheet_stock.index', compact('sheet', 'lines', 'products'));
+        return view('production_sheet_stock.index', compact('sheet', 'lines', 'slip_lines', 'products'));
     }
 }

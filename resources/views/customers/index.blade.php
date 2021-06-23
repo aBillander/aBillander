@@ -69,7 +69,7 @@
     {!! Form::text('reference_external', null, array('class' => 'form-control')) !!}
 </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('identification', l('Identification')) !!}
     {!! Form::text('identification', null, array('class' => 'form-control')) !!}
 </div>
@@ -84,12 +84,13 @@
     {!! Form::select('customer_group_id', array('0' => l('All', [], 'layouts')) + $customer_groupList, null, array('class' => 'form-control')) !!}
 </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2" style="display: none">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}
-    {!! Form::select('active', array('-1' => l('All', [], 'layouts'),
-                                          '0'  => l('No' , [], 'layouts'),
+    {!! Form::select('active', array(
                                           '1'  => l('Yes', [], 'layouts'),
-                                          ), null, array('class' => 'form-control')) !!}
+                                          '0'  => l('No' , [], 'layouts'),
+                                          '-1' => l('All', [], 'layouts'),
+                                          ), -1, array('class' => 'form-control')) !!}
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">

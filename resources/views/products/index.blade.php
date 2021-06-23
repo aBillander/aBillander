@@ -117,7 +117,7 @@
                                           ), -1, array('class' => 'form-control')) !!}
 </div>
 
-@if( \App\Configuration::isFalse('SHOW_PRODUCTS_ACTIVE_ONLY') )
+@if( 1 || \App\Configuration::isFalse('SHOW_PRODUCTS_ACTIVE_ONLY') )
   
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}

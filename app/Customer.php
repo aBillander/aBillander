@@ -419,10 +419,34 @@ class Customer extends Model {
 
         if ( isset($params['active']) )
         {
-            if ( $params['active'] == 0 )
-                $query->where('active', '=', 0);
-            if ( $params['active'] == 1 )
-                $query->where('active', '>', 0);
+            if ( Configuration::isTrue('SHOW_CUSTOMERS_ACTIVE_ONLY') )
+            {
+                if ( $params['active'] == 1 )
+                {
+                    // Show active customers, same as global scope ShowOnlyActiveScope
+                    // Do nothing
+                    ;
+
+                } else {
+                    // Show not active customers (0) or all (-1)
+                    // Remove global scope
+                    $query->withoutGlobalScope(ShowOnlyActiveScope::class);
+
+                    // https://www.manifest.uk.com/blog/overriding-eloquent-global-scopes
+
+                    // Show not active customers (0)
+                    if ( $params['active'] == 0 )
+                        $query->where('active', '=', 0);
+                }
+
+            } else {
+
+                if ( $params['active'] == 0 )
+                    $query->where('active', '=', 0);
+                
+                if ( $params['active'] == 1 )
+                    $query->where('active', '>', 0);
+            }
         }
 
         return $query;

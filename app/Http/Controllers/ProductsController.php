@@ -16,6 +16,8 @@ use App\MeasureUnit;
 
 use App\Configuration;
 
+use App\Scopes\ShowOnlyActiveScope;
+
 use Form, DB;
 
 // use App\CustomerOrder;
@@ -329,6 +331,7 @@ class ProductsController extends Controller
     public function edit($id)
     {
         $product = $this->editQueryRaw()
+                        ->withoutGlobalScope(ShowOnlyActiveScope::class)
 //                        ->isManufactured()
                         ->findOrFail($id);
 
@@ -407,7 +410,7 @@ class ProductsController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['new_since_date'], $request );
 
-        $product = Product::findOrFail($id);
+        $product = Product::withoutGlobalScope(ShowOnlyActiveScope::class)->findOrFail($id);
 
         $rules_tab = $request->input('tab_name', 'main_data');
 
@@ -540,7 +543,7 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        $product = $this->product->findOrFail($id);
+        $product = $this->product->withoutGlobalScope(ShowOnlyActiveScope::class)->findOrFail($id);
 
         try {
 

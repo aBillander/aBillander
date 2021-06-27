@@ -511,13 +511,30 @@ class Product extends Model {
     public function getQuantityAllocatedAttribute()
     // To Do: refactor using getAllocations()
     {
+        $date = Configuration::get('STOCKMOVEMENTS_AFTER_DATE');
+
+        try {
+
+            $min_date = $date ? 
+                        \Carbon\Carbon::createFromFormat('Y-m-d', $date) :
+                        null;
+            
+        } catch (\Exception $e) {
+
+            $min_date = \Carbon\Carbon::now()->subDays(130);
+            
+        }    
+
         // Allocated by Customer Orders
         // Document status = 'confirmed'
         $lines1 = CustomerOrderLine::
                       where('product_id', $this->id)
-                    ->whereHas('document', function($q)
+                    ->whereHas('document', function($q) use ($min_date)
                             {
                                 $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
                             }
                     )
                     ->get();
@@ -528,9 +545,12 @@ class Product extends Model {
         // Document status = 'confirmed'
         $lines2 = CustomerShippingSlipLine::
                       where('product_id', $this->id)
-                    ->whereHas('document', function($q)
+                    ->whereHas('document', function($q) use ($min_date)
                             {
                                 $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
                             }
                     )
                     ->get();
@@ -542,10 +562,13 @@ class Product extends Model {
         // Document status = 'confirmed' && created_via = 'manual'
         $lines3 = CustomerInvoiceLine::
                       where('product_id', $this->id)
-                    ->whereHas('document', function($q)
+                    ->whereHas('document', function($q) use ($min_date)
                             {
                                 $q->where('status', 'confirmed');
                                 $q->where('created_via', 'manual');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
                             }
                     )
                     ->get();

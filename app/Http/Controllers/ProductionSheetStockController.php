@@ -71,7 +71,7 @@ class ProductionSheetStockController extends Controller
         // Add lines to products
         foreach ($products as $product) {
             // code...
-            if ( $lines->get($product->id) && ($lines->get($product->id)->count() > 1) )
+            if ( $lines->get($product->id) && ($lines->get($product->id)->count() > 0) )
                 $product->lines = $lines
                                     ->get($product->id)
                                     ->sortBy(function ($line, $key) {
@@ -81,7 +81,7 @@ class ProductionSheetStockController extends Controller
                 $product->lines = collect([]);
             
             
-            if ( $slip_lines->get($product->id) && ($slip_lines->get($product->id)->count() > 1) )
+            if ( $slip_lines->get($product->id) && ($slip_lines->get($product->id)->count() > 0) )
                 $product->slip_lines = $slip_lines
                                     ->get($product->id)
                                     ->sortBy(function ($line, $key) {

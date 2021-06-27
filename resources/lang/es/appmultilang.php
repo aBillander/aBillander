@@ -508,6 +508,7 @@ return array(
 	'App\Lot.Default' => 'Por defecto',
     'App\Lot.LongCaducity' => 'Caducidad larga',
     'App\Lot.ShortCaducity' => 'Caducidad corta',
+    'App\Lot.CaducityDate' => 'Fecha Caducidad',
 
 	/*
 	|--------------------------------------------------------------------------

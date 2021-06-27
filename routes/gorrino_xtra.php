@@ -53,6 +53,17 @@ Route::get('tlot', function( )
 
 /* ********************************************************** */
 
+Route::get('cdate', function( )
+{
+
+	$date = \Carbon\Carbon::parse('2020-07-10');
+
+	abi_r(\Carbon\Carbon::parse( \Carbon\Carbon::parse('2020-07-10') ));
+});
+
+
+/* ********************************************************** */
+
 Route::get('arr', function( )
 {
 	abi_r(\Str::plural('child'));

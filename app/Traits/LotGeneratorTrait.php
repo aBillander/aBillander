@@ -44,6 +44,7 @@ trait LotGeneratorTrait
                         'Default'       => l($class.'.'.'Default',       [], 'appmultilang'),
                         'LongCaducity'  => l($class.'.'.'LongCaducity',  [], 'appmultilang'),
                         'ShortCaducity' => l($class.'.'.'ShortCaducity', [], 'appmultilang'),
+                        'CaducityDate'  => l($class.'.'.'CaducityDate',  [], 'appmultilang'),
             ];
 
             return $list;
@@ -79,28 +80,35 @@ trait LotGeneratorTrait
     */
     public static function generatorLongCaducity( $mfg_date, $product = null, $expiry_time = '' )
     {
-        // lot number equals to caducity date
+        // lot number equals to manufacturing date
         // caducity date = manufacturing date plus product caducity days (expiry time)
         // WWDDYY
         // WW: week of the year
         // DD: day of the week (1 to 7)
         // YY: year
         //    Example: Manufacturing date: Friday, 10th of july, 2020. Caducity days: 8 months
-        // Result: 10321 (10 3 21)  (always 5 positions)
+        // Result: 28320 (28 3 20)  (always 5 positions)
 
         if ($product)
             $expiry_time = $product->expiry_time;
 
-        $expiry_date = self::getExpiryDate( $mfg_date, $expiry_time );
+        // $expiry_date = self::getExpiryDate( $mfg_date, $expiry_time );
+
+        if( !($mfg_date instanceof \Carbon\Carbon ))
+            $mfg_date = \Carbon\Carbon::parse($mfg_date);
+
+        // Note that \Carbon\Carbon::parse( \Carbon\Carbon::parse('2020-07-10') ) is equal to \Carbon\Carbon::parse('2020-07-10')
+
+        $theDate = $mfg_date;
 
         // WW: week of the year
-        $ww = str_pad($expiry_date->weekOfYear, 2, "0", STR_PAD_LEFT);   // Always two digits!
+        $ww = str_pad($theDate->weekOfYear, 2, "0", STR_PAD_LEFT);   // Always two digits!
 
         // DD: day of the week (1 to 7)
-        $dd = $expiry_date->dayOfWeekIso;
+        $dd = $theDate->dayOfWeekIso;
 
         // YY: year
-        $yy = $expiry_date->format("y");
+        $yy = $theDate->format("y");
 
         $lot = "$ww$dd$yy";
 
@@ -124,6 +132,27 @@ trait LotGeneratorTrait
         $expiry_date = self::getExpiryDate( $mfg_date, $expiry_time );
 
         $lot = $expiry_date->format("d/m/y");
+
+        return $lot;
+    }
+
+    /**
+     * Lot generator Caducity Date. Customize according to your needs.
+     *
+     * @return String
+    */
+    public static function generatorCaducityDate( $mfg_date, $product = null, $expiry_time = '' )
+    {
+        // lot number equals to caducity date
+        // caducity date = manufacturing date plus product caducity days (expiry time)
+        // Day-Month-Year   Example: 12-07-20  (always 8 positions)
+
+        if ($product)
+            $expiry_time = $product->expiry_time;
+
+        $expiry_date = self::getExpiryDate( $mfg_date, $expiry_time );
+
+        $lot = $expiry_date->format("d-m-y");
 
         return $lot;
     }

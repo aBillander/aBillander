@@ -92,7 +92,7 @@ class LotItemsController extends Controller
         $id = $lotitem->id;
         // $reference = $lot->reference;
 
-        // $lotitem->delete();
+        $lotitem->delete();
 
         return redirect()->back()
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

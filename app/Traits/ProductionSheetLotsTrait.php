@@ -29,7 +29,10 @@ trait ProductionSheetLotsTrait
         $lines = CustomerOrderLine::
 //                      with(['customerorder', 'product', 'product.allocableLots'])     // Maybe it saves cpu time, but bloats memory...
                       whereHas('customerorder', function ($query) use ($production_sheet_id) {
+                        
                         $query->where('production_sheet_id', $production_sheet_id);
+
+                        $query->where('status', 'confirmed');   // 'draft' or 'closed' can not allocate any lot!
                     })
                     ->whereHas('product', function ($query) {
                         $query->where('lot_tracking', '>', 0);

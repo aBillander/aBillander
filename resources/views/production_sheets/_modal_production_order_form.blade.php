@@ -72,7 +72,7 @@
            <div class="modal-footer">
 
                <button type="button" class="btn xbtn-sm btn-warning" data-dismiss="modal">{{l('Cancel', [], 'layouts')}}</button>
-               <button type="submit" class="btn btn-success" name="btn-update" id="modalProductionOrderSubmit" xonclick="this.disabled=true;">
+               <button type="submit" class="btn btn-success" name="btn-update" id="modalProductionOrderSubmit" onclick="this.disabled=true; this.style.opacity='0.5';">
                 <i class="fa fa-thumbs-up"></i>
                 &nbsp; {{l('Update', [], 'layouts')}}</button>
 

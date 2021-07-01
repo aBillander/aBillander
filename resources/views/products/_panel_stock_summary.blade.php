@@ -3,7 +3,7 @@
 
         <div class="row">
               <div class="form-group col-lg-6 col-md-6 col-sm-6">
-    <div id="div_warehouses">
+    <div id="div_warehouses" style="background-color: #fcf8e3;">
        <div class="table-responsive">
 
     <table id="products" class="table table-hover">

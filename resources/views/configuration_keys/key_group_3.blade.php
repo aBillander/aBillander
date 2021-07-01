@@ -128,7 +128,7 @@
     </div>
     
 
-    <div class="form-group">
+    <div class="form-group  hide ">
       <label class="col-lg-4 control-label">{!! l('SHOW_CUSTOMERS_ACTIVE_ONLY.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

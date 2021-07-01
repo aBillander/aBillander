@@ -609,6 +609,13 @@ if ( $bomitem )
     }
 
 
+    public function lotitem()
+    {
+        return $this->hasOne('App\LotItem', 'lotable_id', 'id')
+                    ->where('lotable_type', ProductionOrder::class)->with('lot');
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Data Factory :: Scopes
@@ -638,41 +645,56 @@ if ( $bomitem )
 
         // Deal with Lots (ノಠ益ಠ)ノ彡┻━┻
         $lot = null;
+
         // Create Lot for finished product first
         if ( Configuration::isTrue('ENABLE_LOTS') )
-        if ( array_key_exists('lot_tracking', $params) && $params['lot_tracking'] ) // Same as $this->product->lot_tracking (pero puede querer fabricarse alguna vez sin lote?)
+        if ( $this->product->lot_tracking ) // Same as $this->product->lot_tracking 
         {
-            if ( array_key_exists('lot_params', $params))
-            {
-                $lot_params = $params['lot_params'];
+            
+            // Set some default...
+            $finish_date = $params['finish_date'] ?? \Carbon\Carbon::now();
+            $lot_reference = Lot::generate( $finish_date, $this->product, $this->product->expiry_time);
+            $expiry_at = Lot::getExpiryDate( $finish_date, $this->product->expiry_time );
+            $finished_quantity = $params['finished_quantity'] ?? $this->finished_quantity;
 
-            } else {
-                // Set some default...
-                $theDate = \Carbon\Carbon::now();
-                $lot_params = [
-                    'reference' => $theDate->format('Y-m-d'),
-                    'product_id' => $this->product_id, 
-        //            'combination_id' => ,
-                    'quantity_initial' => $this->finished_quantity, 
-                    'quantity' => $this->finished_quantity, 
-                    'measure_unit_id' => $this->product->measure_unit_id, 
-        //            'package_measure_unit_id' => , 
-        //            'pmu_conversion_rate' => ,
-                    'manufactured_at' => $theDate, 
-                    'expiry_at' => $theDate->addDays( $this->product->expiry_time ),
-                    'notes' => 'Production Order: #'.$this->id,
-
-                    'warehouse_id' => $this->warehouse_id,
-                ];
+            $warehouse_id = $params['warehouse_id'] ?? $this->warehouse_id;
+            if ( ! $warehouse_id )
+            {    
+                $warehouse_id = Configuration::getInt('DEF_WAREHOUSE');
+                $this->warehouse_id = $warehouse_id;
+                $this->save();
             }
+
+            $lot_params = [
+                'reference' => $lot_reference,
+                'product_id' => $this->product_id, 
+    //            'combination_id' => ,
+                'quantity_initial' => $finished_quantity, 
+                'quantity' => $finished_quantity, 
+                'measure_unit_id' => $this->product->measure_unit_id, 
+    //            'package_measure_unit_id' => , 
+    //            'pmu_conversion_rate' => ,
+                'manufactured_at' => $finish_date, 
+//                    'expiry_at' => $finish_date->addDays( $this->product->expiry_time ),
+                'expiry_at' => $expiry_at,
+                'notes' => 'Production Order: #'.$this->id,
+
+                'warehouse_id' => $warehouse_id,
+            ];
+            
 
             // Time for "some magic"
             // Create Lot
             $lot = Lot::create($lot_params);
 
-            // $lot_item = LotItem::create(['lot_id' => $lot->id]);
+            $data = [
+                'lot_id' => $lot->id,
+                'is_reservation' => 0,
+                'quantity' => $finished_quantity,
+            ];
 
-            // $document->lotitems()->save($lot_item);
+            $lot_item = LotItem::create( $data );
+            $this->lotitems()->save($lot_item);
 
             // Cannot return this back: not good practice:
             // $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot->reference], 'layouts') . 
@@ -723,7 +745,11 @@ if ( $bomitem )
                 $this->stockmovements()->save( $stockmovement );
 
                 if ($lot)
+                {
                     $lot->stockmovements()->save( $stockmovement );
+                    $stockmovement->update(['lot_quantity_after_movement' => $stockmovement->quantity]);
+                    $lot->update(['blocked' => 0]);
+                }
             }
 
         //

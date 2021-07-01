@@ -93,7 +93,7 @@
         <a href="#">{{ l('Documentos') }}</a> <span style="color: #cccccc;">::</span> {{ $work_center->name }}
     </h3>
 
-<div class="row">
+<div xclass="row">
 
         <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
   $work_center_id, 'key' => 'pansingluten']) }}" class="btn btn-info" target="_blank" style="margin-top:16px;"><i class="fa fa-file-pdf-o"></i> {{ l('Panes sin Gluten') }}</a>
@@ -118,7 +118,7 @@
 
 </div>
 
-<div class="row">
+<div xclass="row">
 
         <a href="{{ route('productionsheet.manufacturing.pdf', [$sheet->id, 'work_center_id' => 
   $work_center_id, 'key' => 'bizcocholimbrown']) }}" class="btn btn-custom" target="_blank" style="margin-top:16px;"><i class="fa fa-file-pdf-o"></i> {{ l('Bizcochos Limón y Brownies') }}</a>

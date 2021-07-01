@@ -48,12 +48,17 @@
 <div class="page-header">
     <div class="pull-right" xstyle="padding-top: 4px;">
 
+        <a href="{{ URL::to('productionsheets/'.$sheet->id.'/assign/lots') }}" class="btn btn-grey" onclick="loadingpage();"><i class="fa fa-window-restore"></i> {{ l('Assign Lots to Orders') }}</a>
+
         <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}" class="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
 
 
                 <div class="btn-group">
                     <a href="#" class="btn xbtn-sm btn-info dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', 'layouts')}}"><i class="fa fa-mail-forward"></i> &nbsp; <b>{{l('Go to', 'layouts')}}</b> &nbsp; <span class="caret"></span></a>
                     <ul class="dropdown-menu  xpull-right">
+                      <li><a href="{{ route('productionsheet.stock', [$sheet->id]) }}"><i class="fa fa-th text-warning"></i> {{l('Stock Analysis')}}</a></li>
+
+                      <li class="divider"></li>
                       <li><a href="{{ route('productionsheet.orders', [$sheet->id]) }}"><i class="fa fa-shopping-bag"></i> {{l('Customer Orders')}}</a></li>
                       <li><a href="{{ route('productionsheet.shippingslips', [$sheet->id]) }}"><i class="fa fa-truck"></i> {{l('Customer Shipping Slips')}}</a></li>
                       <li><a href="{{ route('productionsheet.invoices', [$sheet->id]) }}"><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a></li>
@@ -71,7 +76,7 @@
 
         <!-- a href="{{ route('productionsheet.orders', [$sheet->id]) }}" class="btn btn-blue" stile="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a -->
 
-        <a href="{{ URL::to('productionsheets') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Production Sheets') }}</a>
+        <a href="{{ URL::to('productionsheets') }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheets') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
 
 
                 <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
@@ -157,7 +162,7 @@
                <div class="panel-heading">
                   <h3 class="panel-title"><i class="fa fa-cubes"></i> &nbsp; <strong>{!! l('Production Orders &#58&#58 Finished') !!}</strong></h3>
                </div>
-                    @include('production_sheets._panel_production_orders', ['procurement_type' => 'manufacture'])
+                    @include('production_sheets._panel_production_orders', ['procurement_type' => '*', 'procurement_type_old' => 'manufacture'])
             </div>
       </div>
    </div>

@@ -20,4 +20,17 @@ class CustomerShippingSlipLine extends BillableLine
 //        'product_id'    => 'required',
     ];
     
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+    
+    public function customershippingslip()
+    {
+        return $this->belongsTo('App\CustomerShippingSlip', 'customer_shipping_slip_id');
+    }
+    
 }

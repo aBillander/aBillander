@@ -8,6 +8,7 @@ use App\Configuration;
 use App\Lot;
 use App\Product;
 use App\StockMovement;
+use App\MeasureUnit;
 
 use Excel;
 
@@ -58,7 +59,11 @@ class LotsController extends Controller
 
         $warehouseList = \App\Warehouse::selectorList();
 
-        return view('lots.index')->with(compact('lots', 'warehouseList'));
+        $weight_unit = MeasureUnit::where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+
+        $quantity_prefixList = abi_quantity_prefixes();
+
+        return view('lots.index')->with(compact('lots', 'warehouseList', 'weight_unit', 'quantity_prefixList'));
     }
 
     /**
@@ -70,10 +75,12 @@ class LotsController extends Controller
     {
         return view('lots.create');
 
+/*
         echo '<br>You naughty, naughty! Nothing to do here right now. <br><br><a href="'.route('lots.index').'">
                                  Volver a Lotes
                             </a>';
         die();
+*/
     }
 
     /**
@@ -311,7 +318,7 @@ class LotsController extends Controller
      */
     public function export(Lot $lot, Request $request)
     {
-        // See: StockMovementsController
+        // See: HelferinCustomerInvoicesTrait
 
         // Load Relation
         $lot = $lot->load(['product', 'measureunit']);
@@ -319,65 +326,126 @@ class LotsController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
-//        abi_r($request->all(), true);       // To do method!!!
-
-        $mvts = $this->stockmovement
+        // Get Lots
+        $lots = $this->lot
                                 ->filter( $request->all() )
-                                ->where('lot_id', $lot->id)
-//                              ->with('warehouse')
-//                              ->with('product')
-//                              ->with('combination')
-//                              ->with('stockmovementable')
-//                              ->with('stockmovementable.document')
-                                ->orderBy('date', 'DESC')
-                                ->orderBy('id', 'DESC')
-                          ->get();
+                                ->with('product')
+                                ->with('combination')
+                                ->with('measureunit')
+                                ->orderBy('created_at', 'DESC')
+                                ->get();
+
+        $weight_unit = MeasureUnit::where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
+
+//         abi_r($lots->pluck('id'), true);
+
 
         // Limit number of records
-        if ( ($count=$mvts->count()) > 1000 )
+        if ( ($count=$lots->count()) > 1000 )
             return redirect()->back()
                     ->with('error', l('Too many Records for this Query &#58&#58 (:id) ', ['id' => $count], 'layouts'));
 
+
+        // Lets get dirty!!
+
         // Initialize the array which will be passed into the Excel generator.
-        $data = []; 
+        $data = [];
+
+        if ( $request->input('date_from_form') && $request->input('date_to_form') )
+        {
+            $ribbon = 'entre ' . $request->input('date_from_form') . ' y ' . $request->input('date_to_form');
+
+        } else
+
+        if ( !$request->input('date_from_form') && $request->input('date_to_form') )
+        {
+            $ribbon = 'hasta ' . $request->input('date_to_form');
+
+        } else
+
+        if ( $request->input('date_from_form') && !$request->input('date_to_form') )
+        {
+            $ribbon = 'desde ' . $request->input('date_from_form');
+
+        } else
+
+        if ( !$request->input('date_from_form') && !$request->input('date_to_form') )
+        {
+            $ribbon = 'todas';
+
+        }
+
+        $ribbon = ':: fecha(s) ' . $ribbon;
+
+        $product_label = '';
+        $product_label1 = $request->input('product_reference');
+        $product_label2 = $request->input('product_name');
+
+        if ( $product_label1 && $product_label2 )
+        {
+            $product_label = $product_label1 . ' , ' . $product_label2;
+        
+        } else
+
+        if ( !$product_label1 && !$product_label2 )
+        {
+            $product_label = 'todos';
+        
+        } else
+            $product_label = $product_label1 . ' ' . $product_label2;
+
+
+        $ribbon = $ribbon . ' :: producto(s) ' . $product_label;
+
+
+        // Sheet Header Report Data
+        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = ['Lotes de Productos ' . $ribbon, '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = [''];
+
 
         // Define the Excel spreadsheet headers
-        $headers = [ 
-                    'id', 'date', 'stockmovementable_id', 'stockmovementable_type', 'document_reference', 
+        $header_names = ['Número de Lote', 'Almacén', 'Producto', '', 'Cantidad', 'Cantidad Reservada', 'Unidad de Medida', 'Peso ('.optional($weight_unit)->sign.')', 'Fecha de Fabricación', 'Fecha de Caducidad', 'Bloqueado', 'Notas'];
 
-                    'quantity_before_movement', 'quantity', 'measure_unit_id', 'quantity_after_movement', 
-
-                    'cost_price_before_movement', 'cost_price_after_movement', 'price', 'price_currency', 'currency_id', 'conversion_rate', 
-
-                    'notes', 'product_id', 'combination_id', 'reference', 'name', 
-
-                    'warehouse_id', 'warehouse_counterpart_id', 'movement_type_id', 'MOVEMENT_TYPE_NAME', 'user_id', 'inventorycode', 'created_at', 'updated_at', 'deleted_at',
-        ];
-
-        $data[] = $headers;
+        $data[] = $header_names;
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
-        foreach ($mvts as $mvt) {
-            // $data[] = $line->toArray();
-            $row = [];
-            foreach ($headers as $header)
-            {
-                $row[$header] = $mvt->{$header} ?? '';
-            }
-//            $row['TAX_NAME']          = $category->tax ? $category->tax->name : '';
 
-            $row['MOVEMENT_TYPE_NAME'] = StockMovement::getTypeName($mvt->movement_type_id);
+        $totat_quantity = $total_weight = 0.0;
+
+        foreach ($lots as $lot) 
+        {
+            $row = [];
+            $row[] = $lot->reference;
+            $row[] = $lot->warehouse->alias_name ?? '-';
+            $row[] = $lot->product->reference;
+            $row[] = $lot->product->name;
+            $row[] = (float) $lot->quantity;
+            $row[] = (float) $lot->allocatedQuantity();
+            $row[] = optional($lot->measureunit)->sign;
+            $row[] = (float) $lot->getWeight();
+            $row[] = abi_date_short( $lot->manufactured_at );
+            $row[] = abi_date_short( $lot->expiry_at );
+            $row[] = (int) $lot->blocked;
+            $row[] = $lot->notes;
 
             $data[] = $row;
+
+            $totat_quantity += $lot->quantity;
+            $total_weight   += $lot->getWeight();
         }
 
-        $sheetName = 'Stock Movements' ;
+        $data[] = [];
+
+        $data[] = ['', '', '', 'TOTAL:', $totat_quantity, '', 'TOTAL:', $total_weight, '', '', '', ''];
+
+        $sheetName = 'Lotes de Productos' ;
 
         // abi_r($data, true);
 
         // Generate and return the spreadsheet
-        Excel::create('Stock_Movements', function($excel) use ($sheetName, $data) {
+        Excel::create('Lotes de Productos', function($excel) use ($sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');
@@ -386,6 +454,33 @@ class LotsController extends Controller
 
             // Build the spreadsheet, passing in the data array
             $excel->sheet($sheetName, function($sheet) use ($data) {
+                
+                $sheet->mergeCells('A1:D1');
+                $sheet->mergeCells('A2:D2');
+
+                $sheet->getStyle('A4:L4')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $nbr = count($data);
+
+                $sheet->getStyle("A$nbr:L$nbr")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->setColumnFormat(array(
+//                    'B' => 'dd/mm/yyyy',
+//                    'C' => 'dd/mm/yyyy',
+                    'A' => '@',
+//                    'C' => '0.00',
+//                    'H' => '0.00',
+
+                ));
+
                 $sheet->fromArray($data, null, 'A1', false, false);
             });
 
@@ -418,7 +513,11 @@ class LotsController extends Controller
         // $this->addFormDates( ['manufactured_at', 'expiry_at'], $lot );
 
 
-        return view('lots.lot_stock_movements', compact('lot', 'stockmovements'));
+        // More stuff
+        $stockallocations = $lot->lotallocateditems()->with('lotable')->get();
+
+
+        return view('lots.lot_stock_movements', compact('lot', 'stockmovements', 'stockallocations'));
     }
 
 }

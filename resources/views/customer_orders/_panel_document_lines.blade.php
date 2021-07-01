@@ -153,6 +153,19 @@
                 <td class="text-right">
                       @if ( $document->editable )
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerdocumentlines();"><i class="fa fa-pencil"></i></a -->
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->line_type == 'product') && ($line->product->lot_tracking > 0) )
+@php
+  $color = $line->pending > 0 ? 'alert-danger' : 'btn-grey';
+  $msg   = $line->pending > 0 ? ' ('.$line->measureunit->quantityable( $line->pending ).')' : '';
+@endphp
+                    
+                    <a class="btn btn-sm {{ $color }} add-lots-to-line" data-id="{{$line->id}}" 
+                      data-title="{{ '['.$line->reference.'] '.$line->name }}" 
+                      data-quantity_label="{{ $line->measureunit->quantityable($line->quantity) .' '.$line->measureunit->name}}" 
+                      data-type="{{$line->line_type}}" title="{{l('Add Lots to Line')}}" onClick="return false;"><i class="fa fa-window-restore"></i>{{ $msg }}</a>
+
+@endif
                     
                     <a class="btn btn-sm btn-warning edit-document-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
                     

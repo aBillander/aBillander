@@ -38,6 +38,8 @@ return [
 	'Product Reference'     => 'Referencia',
 	'Product Name'     => 'Nombre del Producto',
 	'Quantity'     => 'Cantidad',
+	'Finished Quantity'     => 'Cantidad terminada',
+	'Planned Quantity'     => 'Cantidad planificada',
 	'Total'     => 'Total',
 	'Work Center'     => 'Centro de Trabajo',
 	'Provenience'     => 'Procedencia',
@@ -90,7 +92,7 @@ return [
 
 	'Customer Shipping Slips' => 'Albaranes de Clientes',
 
-	'Finish Production Orders' => 'Terminar Ordenes de Producción',
+	'Finish Production Orders' => 'Terminar Ordenes de Fabricacón',
 
 	'Category' => 'Categoría',
 

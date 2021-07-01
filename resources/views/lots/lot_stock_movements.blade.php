@@ -26,10 +26,59 @@
 
     </div>
     <h2>
-        {{ l('Lot Stock Movements') }} <span style="color: #cccccc;">::</span> <a href="{{ route( 'lots.edit', $lot->id ) }}" title="{{l('Go to', [], 'layouts')}}">{{ $lot->reference }}</a>   </h2><h3>
-        <span class="lead well well-sm alert-warning"><a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a></span>  {{ $lot->product->name }} </h3><h3>
-        {{ l('Initial Stock') }}: {{ $lot->measureunit->quantityable($lot->quantity_initial) }} ({{ optional($lot->measureunit)->sign }})
-    </h3>        
+        {{ l('Lot Stock Movements') }} <span style="color: #cccccc;">::</span> <a href="{{ route( 'lots.edit', $lot->id ) }}" title="{{l('Go to', [], 'layouts')}}">{{ $lot->reference }}</a>   <span class="badge" style="background-color: #3a87ad;" title="{{ optional($lot->measureunit)->name }}"> &nbsp; {{ optional($lot->measureunit)->sign }} &nbsp; </span>
+    </h2>
+    <h3>
+        <span class="lead well well-sm alert-warning"><a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a></span>  {{ $lot->product->name }}
+    </h3>     
+</div>
+
+
+<div class="container">
+    <div class="row">
+
+            <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{ l('Stock Summary') }} &nbsp;
+                   <span class="badge" style="background-color: #3a87ad;" title="{{ optional($lot->measureunit)->name }}"> &nbsp; {{ optional($lot->measureunit)->sign }} &nbsp; </span>
+               </h3>
+              </div>
+              <div class="panel-body">
+
+<div id="div_stocksummary">
+   <div class="table-responsive">
+
+<table id="stocksummary" class="table table-hover">
+    <thead>
+        <tr>
+            <th>{{l('Initial Stock')}}</th>
+            <th>{{l('Current Stock')}}</th>
+            <th>{{l('Allocated Stock')}}</th>
+            <th>{{l('Available Stock')}}</th>
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ $lot->measureunit->quantityable($lot->quantity_initial) }}</td>
+            <td>{{ $lot->measureunit->quantityable($lot->quantity) }}</td>
+            <td>{{ $lot->measureunit->quantityable($lot->allocatedQuantity()) }}</td>
+            <td>{{ $lot->measureunit->quantityable($lot->quantity - $lot->allocatedQuantity()) }}</td>
+        </tr>
+
+    </tbody>
+</table>
+
+   </div>
+</div>
+                  
+
+              </div><!-- div class="panel-body" ENDS -->
+            </div>
+            </div>
+
+    </div><!-- div class="row" ENDS -->
 </div>
 
 
@@ -203,6 +252,8 @@
 
    </div>
 </div>
+
+@include('lots/lot_stock_allocations')
 
 @endsection
 

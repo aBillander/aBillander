@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 use \App\ProductionPlanner;
 
+use App\Traits\ProductionSheetLotsTrait;
 use App\Traits\ViewFormatterTrait;
 
 class ProductionSheet extends Model
 {
+    use ProductionSheetLotsTrait;
     use ViewFormatterTrait;
 
     public $sandbox;
@@ -367,7 +369,12 @@ class ProductionSheet extends Model
     
     public function productionorders()
     {
-        return $this->hasMany('App\ProductionOrder')->orderBy('work_center_id', 'asc')->orderBy('product_reference', 'asc');
+        return $this->hasMany('App\ProductionOrder')->orderBy('work_center_id', 'asc')->orderBy('schedule_sort_order', 'ASC')->orderBy('product_reference', 'asc');
+    }
+    
+    public function productionordersraw()
+    {
+        return $this->hasMany('App\ProductionOrder');
     }
     
     public function productionordersGrouped( $status = null )

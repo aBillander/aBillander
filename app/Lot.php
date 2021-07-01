@@ -11,10 +11,14 @@ use App\MeasureUnit;
 use App\Traits\ViewFormatterTrait;
 use App\Traits\ModelAttachmentableTrait;
 
+use App\Traits\LotGeneratorTrait;
+
 class Lot extends Model
 {
     use ViewFormatterTrait;
     use ModelAttachmentableTrait;
+
+    use LotGeneratorTrait;
 
     protected $dates = [
             'manufactured_at',
@@ -44,7 +48,22 @@ class Lot extends Model
         'warehouse_id'     => 'exists:warehouses,id'
     	];
 
+
+
     
+
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */   
+
+
+    public function getWeight() 
+    {
+        return $this->quantity * $this->product->weight;
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -81,6 +100,43 @@ class Lot extends Model
     {
         return $this->hasMany('App\StockMovement');
     }
+
+
+    
+    public function lotitems()
+    {
+        return $this->hasMany('App\LotItem');
+    }
+
+    public function lotallocateditems()
+    {
+        return $this->hasMany('App\LotItem')->where('is_reservation', '>', 0);
+    }
+
+    // See: https://reinink.ca/articles/dynamic-relationships-in-laravel-using-subqueries
+    // https://reinink.ca/articles/ordering-database-queries-by-relationship-columns-in-laravel
+    public function allocatedQuantity()
+    {
+        return $this->lotitems()->where('is_reservation', '>', 0)->sum('quantity');
+    }
+
+    public function availableQuantity()
+    {
+        return $this->quantity - $this->allocatedQuantity();
+    }
+
+    public function allocatedByCustomerShippingSlipLineId( $line_id = 0 )
+    {
+        $lotitem = $this->lotitems()
+                        ->where('lotable_type', CustomerShippingSlipLine::class )
+                        ->where('lotable_id', $line_id )
+                        ->first();
+        // abi_r($lotitem );
+
+        return $lotitem ? $lotitem->quantity : 0;
+    }
+
+
 
 
     /*
@@ -147,6 +203,19 @@ class Lot extends Model
         if ( isset($params['warehouse_id']) && $params['warehouse_id'] > 0 )
         {
             $query->where('warehouse_id', '=', $params['warehouse_id']);
+        }
+
+        if ( isset($params['quantity']) )
+        {
+            $quantity = (float) $params['quantity'];
+
+            $quantity_prefix = isset($params['quantity_prefix']) ? $params['quantity_prefix'] : 'eq';
+
+            $quantity_prefixList = abi_quantity_prefixes();
+
+            $quantity_operator = array_key_exists($quantity_prefix, $quantity_prefixList) ? $quantity_prefixList[$quantity_prefix] : '=';
+
+            $query->where('quantity', $quantity_operator, $quantity);
         }
 
         return $query;

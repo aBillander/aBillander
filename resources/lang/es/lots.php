@@ -28,6 +28,9 @@ return [
 	'Date'     => 'Fecha',
 	'Document' => 'Documento',
 	'Initial Stock'     => 'Stock Inicial',
+	'Current Stock'     => 'Stock Actual',
+	'Allocated Stock'     => 'Stock Reservado',
+	'Available Stock'     => 'Stock Disponible',
 	'Stock after'     => 'Stock final',
 	'Lot Stock after'     => 'Stock final del Lote',
 
@@ -42,15 +45,19 @@ return [
 
 	'Product' => 'Producto',
 	'Quantity' => 'Cantidad',
+	'A positive value means stock increases.'     => 'Un valor positivo significa que el stock aumenta.',
 	'Initial Quantity' => 'Cantidad Inicial',
 	'Current Quantity' => 'Cantidad Actual',
+	'Allocated Quantity' => 'Cantidad Reservada',
+	'Quantity includes this Document.' => 'La Cantidad incluye este Documento.',
 	'New Quantity' => 'Nueva Cantidad',
-	'A positive value means stock increases.' => '',
 	'Measure Unit' => 'Unidad de Medida',
+	'Weight' => 'Peso',
 	'Manufacture Date' => 'Fecha de Fabricación',
 	'Expiry Date' => 'Fecha de Caducidad',
 	'Stock Movements' => 'Movimientos de Stock',
 	'Lot Stock Movements' => 'Movimientos de Stock de Lote',
+	'Lot Stock Allocations' => 'Reservas de Stock de Lote',
 
 	'New Adjustment by Lot (:id) ' => 'Nuevo Ajuste por el Lote (:id) ',
 
@@ -63,11 +70,20 @@ return [
 
 	'Duplicate Lot Number: :lot' => 'Número de Lote duplicado: :lot',
 
+	'Invalid Lot Number: :lot' => 'Número de Lote inválido: :lot',
+
 
 
 	'Lot Attachments' => 'Ficheros Adjuntos',
 	'Attachments' => 'Adjuntos',
 	'Description' => 'Descripción',
+
+	'Select Lot and Amount.' => 'Seleccione Lote y Cantidad.',
+
+	'Stock Summary' => 'Resumen de Stock',
+
+	'Document Date' => 'Fecha del Documento',
+	'Customer' => 'Cliente',
 
 
 ];

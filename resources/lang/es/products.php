@@ -76,7 +76,11 @@ return [
 	'Lot tracking?' => '¿Control de Lotes?',
 	'Use Lot and Expiry Date tracking for this Product.' => 'Usar Control de Lotes y de Fecha de Caducidad para este Producto.',
 	'Expiry Time' => 'Plazo de Caducidad',
-	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
+	'Number of Days before expiry. Examples:<br /><ul><li>5 or 5d -> 5 days</li><li>8m -> 8 months</li><li>2y -> 2 years</li></ul>' => 'Número de Días antes de que el Producto caduque. Ejemplos:<br /><ul><li>5 ó 5d -> 5 días</li><li>8m -> 8 meses</li><li>2a ó 2y -> 2 años</li></ul>',
+	'Lot Generator' => 'Generador de Lotes',
+	'Select the function to calculate Lot Numbers.' => 'Selecccione la función para calcular el Número del Lote.',
+	'Lot Policy' => 'Política de Lotes',
+	'Automatic Lot allocation to Documents will be done on this basis.' => 'La asignación automática de Lotes a Documentos se hará con este criterio.',
 
 
 	/*
@@ -296,6 +300,8 @@ return [
 
     'Prices are exclusive of Ecotax' => 'El Precio no incluye la Ecotasa',
     'Prices are inclusive of Ecotax' => 'El Precio incluye la Ecotasa',
+
+    'Pending Movements after Date' => 'Movimientos Pendientes desde',
 
 
 	/*

@@ -16,6 +16,8 @@ use App\MeasureUnit;
 
 use App\Configuration;
 
+use App\Scopes\ShowOnlyActiveScope;
+
 use Form, DB;
 
 // use App\CustomerOrder;
@@ -329,6 +331,7 @@ class ProductsController extends Controller
     public function edit($id)
     {
         $product = $this->editQueryRaw()
+                        ->withoutGlobalScope(ShowOnlyActiveScope::class)
 //                        ->isManufactured()
                         ->findOrFail($id);
 
@@ -371,7 +374,15 @@ class ProductsController extends Controller
 
         $volume_conversion = Configuration::getNumber('DEF_VOLUME_UNIT_CONVERSION_RATE');
 
-        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists', 'length_unit', 'weight_unit', 'volume_unit', 'volume_conversion'));
+        // When Customer Center enabled:
+        $out_of_stockList = [
+              'hide'    => l('Hide Product'),
+              'deny'    => l('Deny Orders'),
+              'allow'   => l('Allow Orders'),
+              'default' => l('Default Configuration'),
+        ];
+
+        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists', 'length_unit', 'weight_unit', 'volume_unit', 'volume_conversion', 'out_of_stockList'));
     }
 
     /**
@@ -399,7 +410,7 @@ class ProductsController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['new_since_date'], $request );
 
-        $product = Product::findOrFail($id);
+        $product = Product::withoutGlobalScope(ShowOnlyActiveScope::class)->findOrFail($id);
 
         $rules_tab = $request->input('tab_name', 'main_data');
 
@@ -532,7 +543,7 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        $product = $this->product->findOrFail($id);
+        $product = $this->product->withoutGlobalScope(ShowOnlyActiveScope::class)->findOrFail($id);
 
         try {
 
@@ -976,12 +987,16 @@ LIMIT 1
 
         $product = $this->product->findOrFail($id);
 
+        $sort_order = ($product->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
+
         $lots = Lot::where('product_id', $id)
+                                ->where('quantity', '>', 0)
 //                                ->with('product')
 //                                ->with('combination')
                                 ->with('measureunit')
                                 ->with('warehouse')
                                 ->orderBy('warehouse_id', 'DESC')
+                                ->orderBy('expiry_at', $sort_order)
                                 ->orderBy('created_at', 'DESC');
 
         $lots = $lots->paginate( $items_per_page_lots );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
@@ -996,6 +1011,11 @@ LIMIT 1
 
     public function getPendingMovements($id, Request $request)
     {
+        // https://www.itsolutionstuff.com/post/merge-multiple-collection-paginate-in-laravel-exampleexample.html
+        // https://stackoverflow.com/questions/50529113/eloquent-paginate-two-relation-merged
+
+/* Forget pagination by now!
+
         $items_per_page_pendingmovements = intval($request->input('items_per_page_pendingmovements', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page_pendingmovements >= 0) ) 
             $items_per_page_pendingmovements = Configuration::get('DEF_ITEMS_PERPAGE');
@@ -1018,6 +1038,26 @@ LIMIT 1
         // return $items_per_page_stockmovements ;
         
         return view('products._panel_pending_movements', compact('lines', 'items_per_page_pendingmovements'));
+*/
+        $product = $this->product->findOrFail($id);
+
+        $date = Configuration::get('STOCKMOVEMENTS_AFTER_DATE');
+
+        try {
+
+            $min_date = $date ? 
+                        \Carbon\Carbon::createFromFormat('Y-m-d', $date) :
+                        null;
+            
+        } catch (\Exception $e) {
+
+            $min_date = \Carbon\Carbon::now()->subDays(130);
+            
+        }        
+
+        $lines = $product->getAllocations( $min_date );
+
+        return view('products._panel_pending_movements', compact('lines', 'min_date'));
     }
 
 

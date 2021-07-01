@@ -1,7 +1,5 @@
 
 
-<h3 class="text-primary">{{l('Pending Movements after Date')}}: {{ abi_date_short( $min_date ) }}</h3>
-
 <div id="div_pendingmovements">
 
 
@@ -31,7 +29,7 @@
             <td>{{ $line->id }}</td>
             <td>{{ abi_date_short( $line->document->document_date ) }}</td>
             <td>
-                <a href="{{ route($line->getDocumentRoute().'.edit', [$line->document->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">
+                <a href="{{ route($line->route.'.edit', [$line->document->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">
                         @if ( $line->document->document_reference )
                             {{ $line->document->document_reference}}
                         @else
@@ -68,7 +66,6 @@
 
    </div><!-- div class="table-responsive" ENDS -->
 
-{{--
 <div class="pagination_pendingmovements">
 {{ $lines->appends( Request::all() )->render() }}
 </div>
@@ -78,7 +75,7 @@
       <button class="btn btn-info btn-sm" type="button" title="{{l('Refresh', 'layouts')}}" onclick="getPendingMovements(); return false;"><i class="fa fa-refresh"></i></button>
     </span>
   </div></span></li></ul>
---}}
+
 
 
 

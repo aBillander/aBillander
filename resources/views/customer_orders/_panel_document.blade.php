@@ -113,6 +113,12 @@
 
     @include($view_path.'.js.document_shipping_cost_line')
 
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+
+    @include($view_path.'.js.document_line_lots')
+
+@endif
+
 
 <script>
 

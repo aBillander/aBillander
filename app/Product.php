@@ -122,7 +122,7 @@ class Product extends Model {
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 'purchase_measure_unit_id', 
 
-                            'lot_tracking', 'expiry_time', 
+                            'lot_tracking', 'expiry_time', 'lot_number_generator', 'lot_policy', 
 
                             'measure_unit_id', 'work_center_id', 'route_notes', 'machine_capacity', 'units_per_tray', 
 
@@ -387,11 +387,11 @@ class Product extends Model {
 
 
 
-    public function getQuantityAllocatedAttribute()
+    public function getQuantityOnorderAttribute()
     {
-        // Allocated by Customer Orders
+        // On Order by Supplier Orders
         // Document status = 'confirmed'
-        $lines1 = CustomerOrderLine::
+        $lines1 = SupplierOrderLine::
                       where('product_id', $this->id)
                     ->whereHas('document', function($q)
                             {
@@ -402,9 +402,9 @@ class Product extends Model {
 
         $count1 = $lines1->sum('quantity');
 
-        // Allocated by Customer Shipping Slips
+        // On Order by Supplier Shipping Slips
         // Document status = 'confirmed'
-        $lines2 = CustomerShippingSlipLine::
+        $lines2 = SupplierShippingSlipLine::
                       where('product_id', $this->id)
                     ->whereHas('document', function($q)
                             {
@@ -416,14 +416,159 @@ class Product extends Model {
         $count2 = $lines2->sum('quantity');
 
 
-        // Allocated by Customer Invoices
+        // On Order by Supplier Invoices
         // Document status = 'confirmed' && created_via = 'manual'
-        $lines3 = CustomerInvoiceLine::
+        $lines3 = SupplierInvoiceLine::
                       where('product_id', $this->id)
                     ->whereHas('document', function($q)
                             {
                                 $q->where('status', 'confirmed');
                                 $q->where('created_via', 'manual');
+                            }
+                    )
+                    ->get();
+
+        $count3 = $lines3->sum('quantity');
+
+        
+
+
+        $count = $count1 + $count2 + $count3;
+
+        return $count;
+    }
+
+    public function getAllocations( $min_date = null )
+    {
+        // Allocated by Customer Orders
+        // Document status = 'confirmed'
+        $lines1 = CustomerOrderLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->with('document')
+                    ->with('document.customer')
+                    ->get();
+
+
+        // Allocated by Customer Shipping Slips
+        // Document status = 'confirmed'
+        $lines2 = CustomerShippingSlipLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->with('document')
+                    ->with('document.customer')
+                    ->get();
+
+        $count2 = $lines2->sum('quantity');
+
+
+        // Allocated by Customer Invoices
+        // Document status = 'confirmed' && created_via = 'manual'
+        $lines3 = CustomerInvoiceLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+                                $q->where('created_via', 'manual');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->with('document')
+                    ->with('document.customer')
+                    ->get();
+
+        $count3 = $lines3->sum('quantity');
+
+        
+
+
+        $lines = $lines1->merge($lines2)->merge($lines3);
+
+        // Do some sorting here (by document_date, ASC):
+        $lines = $lines->sortBy(function ($line, $key) {
+            return $line->document->document_date;
+        });
+
+        return $lines;
+    }
+
+    public function getQuantityAllocatedAttribute()
+    // To Do: refactor using getAllocations()
+    {
+        $date = Configuration::get('STOCKMOVEMENTS_AFTER_DATE');
+
+        try {
+
+            $min_date = $date ? 
+                        \Carbon\Carbon::createFromFormat('Y-m-d', $date) :
+                        null;
+            
+        } catch (\Exception $e) {
+
+            $min_date = \Carbon\Carbon::now()->subDays(130);
+            
+        }    
+
+        // Allocated by Customer Orders
+        // Document status = 'confirmed'
+        $lines1 = CustomerOrderLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->get();
+
+        $count1 = $lines1->sum('quantity');
+
+        // Allocated by Customer Shipping Slips
+        // Document status = 'confirmed'
+        $lines2 = CustomerShippingSlipLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->get();
+
+        $count2 = $lines2->sum('quantity');
+
+
+        // Allocated by Customer Invoices
+        // Document status = 'confirmed' && created_via = 'manual'
+        $lines3 = CustomerInvoiceLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+                                $q->where('created_via', 'manual');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
                             }
                     )
                     ->get();
@@ -1258,10 +1403,32 @@ class Product extends Model {
         return $this->hasMany('App\ProductionOrderLine');
     }
 
+    
+
     public function lots()
     {
         return $this->hasMany('App\Lot')->orderBy('expiry_at', 'DESC');
     }
+
+    public function availableLots()
+    {
+        // $sort_order = ($this->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
+        // ^-- Will not work, since "$this" is not defined
+
+        return $this->hasMany('App\Lot')->where('quantity', '>', 0)->orderBy('expiry_at', 'ASC');   // Most common sorting, I guess (FIFO)
+    }
+
+    public function availableLotsSorted()
+    {
+        $sort_order = ($this->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
+
+        if ($sort_order == 'ASC')
+            return $this->availableLots;
+
+        return $this->availableLots->sortByDesc('expiry_at');
+    }
+
+
 
     public function pricelistlines()
     {

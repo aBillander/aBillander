@@ -16,6 +16,7 @@
 
                 {!! Form::hidden('production_sheet_id', $sheet->id) !!}
                 {!! Form::hidden('finish_production_order_id', '', ['id' => 'finish_production_order_id']) !!}
+                {!! Form::hidden('finish_production_order_product_id', '', ['id' => 'finish_production_order_product_id']) !!}
 
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('quantity') ? 'has-error' : '' }}">
                      <br />
@@ -27,7 +28,7 @@
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('lot_reference') ? 'has-error' : '' }}" id="div-lot_reference">
                      <br />
                      {{ l('Lot Number') }}
-                     {!! Form::text('lot_reference', null, array('class' => 'form-control', 'id' => 'lot_reference')) !!}
+                     {!! Form::text('lot_reference', null, array('class' => 'form-control', 'id' => 'lot_reference', 'disabled' => "")) !!}
                      {!! $errors->first('lot_reference', '<span class="help-block">:message</span>') !!}
                   </div>
 
@@ -39,11 +40,12 @@
 
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('expiry_time') ? 'has-error' : '' }}" id="div-expiry_time">
                      {{ l('Expiry Time') }}
-                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"
-                                                data-content="{{ l('Number of Days before expiry.') }}">
+                             <a href="javascript:void(0);" data-toggle="popover" 
+                                          data-placement="top" data-container="body" data-html="true" 
+                                          data-content="{{ l('Number of Days before expiry. Examples:<br /><ul><li>5 or 5d -> 5 days</li><li>8m -> 8 months</li><li>2y -> 2 years</li></ul>', 'products') }}">
                                     <i class="fa fa-question-circle abi-help"></i>
                              </a>
-                     {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time')) !!}
+                     {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time', 'disabled' => "")) !!}
                      {!! $errors->first('expiry_time', '<span class="help-block">:message</span>') !!}
                   </div>
          
@@ -73,9 +75,11 @@
         $('body').on('click', '.finish-production-order', function(evnt) { 
  //       $('.finish-item').click(function (evnt) {
               var id = $(this).attr('data-oid');
+              var product_id = $(this).attr('data-oproduct');
               var reference = $(this).attr('data-oreference');
               var name = $(this).attr('data-oname');
               var quantity  = $(this).attr('data-oquantity');
+              var lot_reference  = $(this).attr('data-olot_reference');
 
             var href = $(this).attr('href');
             var message = $(this).attr('data-content');
@@ -94,9 +98,10 @@
               var expirydate  = $(this).attr('data-oexpirydate');           // Lets say this is an expiry DATE
 
               $('#finish_production_order_id').val(id);
+              $('#finish_production_order_product_id').val(product_id);
 
               $('#quantity').val(quantity);
-              $('#lot_reference').val('');
+              $('#lot_reference').val(lot_reference);
               $('#finish_date_form').val('{{ abi_date_short( \Carbon\Carbon::now() ) }}');
               $('#expiry_time').val(expiry_time);
 
@@ -123,6 +128,37 @@
             return false;
         });
     });
+
+
+    function getFinalProductLotNumber()
+    {
+        var token = "{{ csrf_token() }}";
+
+        var product_id = $('#finish_production_order_product_id').val();
+        var finish_date_form = $('#finish_date_form').val();
+
+        $.ajax({
+            url: "{{ route('productionsheet.productionorders.getlotreference') }}",
+            headers : {'X-CSRF-TOKEN' : token},
+            method: 'GET',
+            dataType: 'json',
+            data: {
+                product_id: product_id,
+                finish_date_form: finish_date_form
+            },
+            success: function (response) {
+                var lot_reference = response.lot_reference;
+
+                $("#lot_reference").val(lot_reference);
+
+                console.log(response);
+            }
+        });
+    }
+
+
+
+
 </script>
 
 @endsection

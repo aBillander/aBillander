@@ -2,8 +2,18 @@
 <div class="panel-body" id="div_production_orders">
    <div class="table-responsive">
 
+{{-- Get Production Orders --}}
+@php
 
-@if ($sheet->productionorders->where('procurement_type', $procurement_type)->count())
+    if ($procurement_type == '*')
+        $orders = $sheet->productionorders()->with('product')->get();
+    else
+        $orders = $sheet->productionorders()->with('product')->where('procurement_type', $procurement_type)->get();
+
+@endphp
+
+
+@if ($orders->count())
 <table id="sheets" class="table table-hover">
     <thead>
         <tr>
@@ -20,9 +30,9 @@
     </tr>
   </thead>
   <tbody>
-  @foreach ($sheet->productionorders->where('procurement_type', $procurement_type) as $order)
+  @foreach ($orders as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = $order->product;
   @endphp
   
     <tr>
@@ -153,6 +163,7 @@ $(document).ready(function() {
                 success: function($data){
                     if ($data.status == 'OK') {
                         location.reload(); 
+//                        alert(location.href);
                         return ;
                     }
 

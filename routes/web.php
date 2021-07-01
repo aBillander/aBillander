@@ -8,6 +8,10 @@
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
+
+php artisan route:clear
+php artisan route:cache
+
 |
 */
 
@@ -378,6 +382,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get( 'lots/{id}/attachment/{aid}',   'LotsController@attachmentShow'   )->name('lots.attachment.show'   );
         Route::delete('lots/{id}/attachment/{aid}', 'LotsController@attachmentDestroy')->name('lots.attachment.destroy');
 
+        Route::resource('lotitems', 'LotItemsController');
+
         Route::resource('products', 'ProductsController');
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
         Route::get('products/{id}/pendingmovements', 'ProductsController@getPendingMovements')->name('products.pendingmovements');
@@ -463,6 +469,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('productionsheets', 'ProductionSheetsController');
         Route::post('productionsheets/{id}/addorders', 'ProductionSheetsController@addOrders')->name('productionsheet.addorders');
         Route::get('productionsheets/{id}/calculate', 'ProductionSheetsController@calculate')->name('productionsheet.calculate');
+        Route::get('productionsheets/{id}/assign/lots', 'ProductionSheetsController@assignLots')->name('productionsheet.assign.lots');
         Route::get('productionsheets/{id}/getlines', 'ProductionSheetsController@getCustomerOrderOrderLines')->name('productionsheet.getCustomerOrderLines');
         Route::get('productionsheets/{id}/customerorderssummary', 'ProductionSheetsController@getCustomerOrdersSummary')->name('productionsheet.getCustomerOrdersSummary');
 
@@ -500,19 +507,27 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('productionsheetinvoices/close',  'ProductionSheetInvoicesController@closeInvoices')->name('productionsheet.close.invoices');
 
 
-
+        // Production Sheet Delivery Routes
         Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
 
         Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourlineController@export' )->name('productionsheet.tourline');
 
-        // Production Sheet Production Orders
-        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
 
-        Route::get('productionsheetproductionorders/{id}/finish' , 'ProductionSheetProductionOrdersController@finish'    )->name('productionsheet.productionorders.finish');
+        // Production Sheet Production Orders
+        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->where('id', '[0-9]+')->name('productionsheet.productionorders');
+
+        Route::post('productionsheetproductionorders/finish' , 'ProductionSheetProductionOrdersController@finish'    )->name('productionsheet.productionorders.finish');
 
         Route::post('productionsheetproductionorders/finish/bulk', 'ProductionSheetProductionOrdersController@finishBulk')->name('productionsheet.productionorders.bulk.finish');
 
-        Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');
+        Route::get('productionsheetproductionorders/finishedlot/reference' , 'ProductionSheetProductionOrdersController@getLotReference')->name('productionsheet.productionorders.getlotreference');
+
+        // Deprecated; keep for reference; use productionsheet.productionorders.finish instead
+        // Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');
+
+
+        // Production Sheet Stock Analysis
+        Route::get( 'productionsheets/{id}/stock', 'ProductionSheetStockController@stockIndex' )->name('productionsheet.stock');
 
 
 
@@ -790,6 +805,13 @@ foreach ($pairs as $pair) {
         Route::get('customershippingslips/{id}/undeliver'  , 'CustomerShippingSlipsController@undeliver')->name('customershippingslip.undeliver');
 
         Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('customershippingslips.for.today');
+
+
+    
+        Route::resource('customerorderlines.lots', 'CustomerOrderLineLotsController');
+
+        Route::resource('customershippingsliplines.lots', 'CustomerShippingSlipLineLotsController');
+
 
 
         Route::post('customerinvoices/{id}/shippingslip/add'  , 'CustomerInvoicesController@addShippingSlipToInvoice')->name('customerinvoice.shippingslip.add');

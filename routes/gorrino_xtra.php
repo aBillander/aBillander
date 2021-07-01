@@ -25,6 +25,45 @@
 
 /* ********************************************************** */
 
+Route::get('tlot', function( )
+{
+	// abi_r(substr('z', -1), true);
+
+	$a = null;
+	$b = (string) $a;
+
+	if ($b == '')
+		echo 'OK';
+
+	die();
+
+	$date = \Carbon\Carbon::parse('2020-07-10 13:26:11.123789');
+
+	$date2 = \Carbon\Carbon::parse($date)->addMonths(8);
+
+	abi_r($date);
+	abi_r($date2);
+
+	$diff = $date2->diffInDays($date);
+	abi_r($diff);
+
+	abi_r(\App\Lot::ShortCaducity(\Carbon\Carbon::now()->subDays(20), null, '0d'));
+});
+
+
+/* ********************************************************** */
+
+Route::get('cdate', function( )
+{
+
+	$date = \Carbon\Carbon::parse('2020-07-10');
+
+	abi_r(\Carbon\Carbon::parse( \Carbon\Carbon::parse('2020-07-10') ));
+});
+
+
+/* ********************************************************** */
+
 Route::get('arr', function( )
 {
 	abi_r(\Str::plural('child'));
@@ -868,6 +907,18 @@ Route::get('wsid', function()
 
 Route::get('migratethis_xtra', function()
 {
+  
+  // 2021-04-27
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `lot_policy` varchar(32) NOT NULL DEFAULT 'FIFO' AFTER `expiry_time`;");
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `lot_number_generator` TEXT NOT NULL DEFAULT 'Default' AFTER `expiry_time`;");
+	
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` CHANGE `expiry_time` `expiry_time` VARCHAR(16) NULL DEFAULT NULL; ");
+
+  die('OK');
+
+
   // 2020-07-09
   Illuminate\Support\Facades\DB::statement("INSERT INTO `templates` ( `name`, `model_name`, `folder`, `file_name`, `paper`, `orientation`, `created_at`, `updated_at`, `deleted_at`) VALUES
 ( 'xtranat Albaranes', 'CustomerShippingSlipPdf', 'templates::', 'xtranat', 'A4', 'portrait', '2020-07-09 07:30:53', '2020-07-09 07:30:53', NULL);");

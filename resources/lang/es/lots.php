@@ -82,5 +82,8 @@ return [
 
 	'Stock Summary' => 'Resumen de Stock',
 
+	'Document Date' => 'Fecha del Documento',
+	'Customer' => 'Cliente',
+
 
 ];

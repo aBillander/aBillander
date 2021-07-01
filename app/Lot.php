@@ -205,6 +205,19 @@ class Lot extends Model
             $query->where('warehouse_id', '=', $params['warehouse_id']);
         }
 
+        if ( isset($params['quantity']) )
+        {
+            $quantity = (float) $params['quantity'];
+
+            $quantity_prefix = isset($params['quantity_prefix']) ? $params['quantity_prefix'] : 'eq';
+
+            $quantity_prefixList = abi_quantity_prefixes();
+
+            $quantity_operator = array_key_exists($quantity_prefix, $quantity_prefixList) ? $quantity_prefixList[$quantity_prefix] : '=';
+
+            $query->where('quantity', $quantity_operator, $quantity);
+        }
+
         return $query;
     }
 }

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\ProductionSheet;
 use App\ProductionOrder;
 
+use App\Product;
+
 use App\Lot;
 use App\LotItem;
 
@@ -217,6 +219,7 @@ class ProductionSheetProductionOrdersController extends Controller
     // Deprecated; keep for reference
     public function finishWithLot(Request $request )
     {
+/*
         // Dates (cuen)
         $this->mergeFormDates( ['finish_date'], $request );
 
@@ -324,6 +327,7 @@ class ProductionSheetProductionOrdersController extends Controller
         return redirect()
                 ->route('productionsheet.productionorders', $production_sheet_id)
                 ->with($message, $success);
+*/
     }
 
 
@@ -489,6 +493,39 @@ class ProductionSheetProductionOrdersController extends Controller
         return redirect()
                 ->route('productionsheet.productionorders', $params['production_sheet_id'])
                 ->with('success', $success);
+
+    }
+
+
+
+/* ********************************************************************************************* */  
+
+
+    /**
+     * AJAX Stuff.
+     *
+     * 
+     */
+
+    /**
+     * Get lot reference for product & manufacturing date
+     *
+     */
+    public function getLotReference( Request $request )
+    {
+        // return 'ok';
+
+        // Dates (cuen)
+        $this->mergeFormDates( ['finish_date'], $request );
+
+        $finish_date  = $request->input('finish_date');
+
+        $product = Product::find( $request->input('product_id', 0) );
+
+        $lot_reference = $product ? Lot::generate( $finish_date, $product, $product->expiry_time) : '';
+
+
+        return json_encode( [ 'lot_reference' => $lot_reference, 'request' => $request->toArray() ] );
 
     }
 

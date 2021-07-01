@@ -518,3 +518,24 @@ if (! function_exists('abi_safe_division')) {
 }
 
 
+if (! function_exists('abi_quantity_prefixes')) {
+    /**
+     * Quantity prefixes for forms (select fields).
+     *
+     * @param  
+     * @return 
+     */
+    function abi_quantity_prefixes()
+    {
+        return [
+                'gt' => '>',
+                'ge' => '>=',
+                'eq' => '=',
+                'ne' => '!=',
+                'le' => '<=',
+                'lt' => '<',
+        ];
+    }
+}
+
+

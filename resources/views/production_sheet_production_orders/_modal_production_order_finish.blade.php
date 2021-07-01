@@ -16,6 +16,7 @@
 
                 {!! Form::hidden('production_sheet_id', $sheet->id) !!}
                 {!! Form::hidden('finish_production_order_id', '', ['id' => 'finish_production_order_id']) !!}
+                {!! Form::hidden('finish_production_order_product_id', '', ['id' => 'finish_production_order_product_id']) !!}
 
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('quantity') ? 'has-error' : '' }}">
                      <br />
@@ -74,6 +75,7 @@
         $('body').on('click', '.finish-production-order', function(evnt) { 
  //       $('.finish-item').click(function (evnt) {
               var id = $(this).attr('data-oid');
+              var product_id = $(this).attr('data-oproduct');
               var reference = $(this).attr('data-oreference');
               var name = $(this).attr('data-oname');
               var quantity  = $(this).attr('data-oquantity');
@@ -96,6 +98,7 @@
               var expirydate  = $(this).attr('data-oexpirydate');           // Lets say this is an expiry DATE
 
               $('#finish_production_order_id').val(id);
+              $('#finish_production_order_product_id').val(product_id);
 
               $('#quantity').val(quantity);
               $('#lot_reference').val(lot_reference);
@@ -125,6 +128,37 @@
             return false;
         });
     });
+
+
+    function getFinalProductLotNumber()
+    {
+        var token = "{{ csrf_token() }}";
+
+        var product_id = $('#finish_production_order_product_id').val();
+        var finish_date_form = $('#finish_date_form').val();
+
+        $.ajax({
+            url: "{{ route('productionsheet.productionorders.getlotreference') }}",
+            headers : {'X-CSRF-TOKEN' : token},
+            method: 'GET',
+            dataType: 'json',
+            data: {
+                product_id: product_id,
+                finish_date_form: finish_date_form
+            },
+            success: function (response) {
+                var lot_reference = response.lot_reference;
+
+                $("#lot_reference").val(lot_reference);
+
+                console.log(response);
+            }
+        });
+    }
+
+
+
+
 </script>
 
 @endsection

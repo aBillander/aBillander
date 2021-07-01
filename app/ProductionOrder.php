@@ -609,6 +609,13 @@ if ( $bomitem )
     }
 
 
+    public function lotitem()
+    {
+        return $this->hasOne('App\LotItem', 'lotable_id', 'id')
+                    ->where('lotable_type', ProductionOrder::class)->with('lot');
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Data Factory :: Scopes
@@ -680,9 +687,14 @@ if ( $bomitem )
             // Create Lot
             $lot = Lot::create($lot_params);
 
-            // $lot_item = LotItem::create(['lot_id' => $lot->id]);
+            $data = [
+                'lot_id' => $lot->id,
+                'is_reservation' => 0,
+                'quantity' => $finished_quantity,
+            ];
 
-            // $document->lotitems()->save($lot_item);
+            $lot_item = LotItem::create( $data );
+            $this->lotitems()->save($lot_item);
 
             // Cannot return this back: not good practice:
             // $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot->reference], 'layouts') . 

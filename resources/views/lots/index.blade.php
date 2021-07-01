@@ -86,10 +86,45 @@
 <div class="row">
          
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
-            {{ l('Warehouse') }}
+            {!! Form::label('warehouse_id', l('Warehouse')) !!}
             {!! Form::select('warehouse_id', ['0' => l('-- All --', [], 'layouts')] + $warehouseList, null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
             {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
          </div>
+
+        <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            {!! Form::label('quantity', l('Quantity')) !!}
+
+            <div class="input-group select-group">
+
+                {!! Form::select('quantity_prefix', $quantity_prefixList, 'eq', array('class' => 'form-control input-group-addon', 'id' => 'quantity_prefix')) !!}
+            
+                {!! Form::text('quantity', null, array('class' => 'form-control')) !!}
+
+            </div>
+
+        </div>
+
+{{-- Very difficult to filter by allocated quantity...
+
+        <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            {!! Form::label('quantity', l('Allocated Quantity')) !!}
+
+            <div class="input-group select-group">
+
+                {!! Form::select('allocated_quantity_prefix', $quantity_prefixList, 'eq', array('class' => 'form-control input-group-addon', 'id' => 'quantity_prefix')) !!}
+            
+                {!! Form::text('allocated_quantity', null, array('class' => 'form-control')) !!}
+
+            </div>
+
+        </div>
+
+        <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            {!! Form::label('allocated_quantity', l('Allocated Quantity')) !!}
+            {!! Form::text('allocated_quantity', null, array('class' => 'form-control')) !!}
+        </div>
+--}}
+
 {{--
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('movement_type_id', l('Movement type')) !!}
@@ -288,6 +323,12 @@ $(document).ready(function() {
             https://stackoverflow.com/questions/7033420/jquery-date-picker-z-index-issue
     --}}
   .ui-datepicker{ z-index: 9999 !important;}
+
+
+  {{-- Quantity prefix selector --}}
+    .select-group input.form-control{ width: 65%}
+    .select-group select.input-group-addon { width: 35%; }
+
 </style>
 
 @endsection

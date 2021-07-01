@@ -8,6 +8,10 @@
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
+
+php artisan route:clear
+php artisan route:cache
+
 |
 */
 
@@ -510,11 +514,13 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
 
         // Production Sheet Production Orders
-        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
+        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->where('id', '[0-9]+')->name('productionsheet.productionorders');
 
         Route::post('productionsheetproductionorders/finish' , 'ProductionSheetProductionOrdersController@finish'    )->name('productionsheet.productionorders.finish');
 
         Route::post('productionsheetproductionorders/finish/bulk', 'ProductionSheetProductionOrdersController@finishBulk')->name('productionsheet.productionorders.bulk.finish');
+
+        Route::get('productionsheetproductionorders/finishedlot/reference' , 'ProductionSheetProductionOrdersController@getLotReference')->name('productionsheet.productionorders.getlotreference');
 
         // Deprecated; keep for reference; use productionsheet.productionorders.finish instead
         // Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');

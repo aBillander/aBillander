@@ -61,7 +61,9 @@ class LotsController extends Controller
 
         $weight_unit = MeasureUnit::where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
 
-        return view('lots.index')->with(compact('lots', 'warehouseList', 'weight_unit'));
+        $quantity_prefixList = abi_quantity_prefixes();
+
+        return view('lots.index')->with(compact('lots', 'warehouseList', 'weight_unit', 'quantity_prefixList'));
     }
 
     /**

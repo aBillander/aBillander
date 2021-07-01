@@ -987,12 +987,16 @@ LIMIT 1
 
         $product = $this->product->findOrFail($id);
 
+        $sort_order = ($product->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
+
         $lots = Lot::where('product_id', $id)
+                                ->where('quantity', '>', 0)
 //                                ->with('product')
 //                                ->with('combination')
                                 ->with('measureunit')
                                 ->with('warehouse')
                                 ->orderBy('warehouse_id', 'DESC')
+                                ->orderBy('expiry_at', $sort_order)
                                 ->orderBy('created_at', 'DESC');
 
         $lots = $lots->paginate( $items_per_page_lots );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))

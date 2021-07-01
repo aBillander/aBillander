@@ -23,29 +23,40 @@
 	<thead>
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
-			<th>{{l('lot_id')}}</th>
+            <th style="text-transform: none;">{{l('Date')}}
+              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                        data-content="{{ l('Document Date') }}">
+                    <i class="fa fa-question-circle abi-help"></i>
+              </a>
+          	</th>
+            <th style="text-transform: none;">{{l('Document')}}</th>
+            <th style="text-transform: none;">{{l('Customer')}}</th>
 			<th>{{l('Quantity')}}</th>
+{{--
 			<th>{{l('is_reservation')}}</th>
 			<th>{{l('lotable_id')}}</th>
 			<th>{{l('lotable_type')}}</th>
 			<th>{{l('created_at')}}</th>
 			<th>{{l('updated_at')}}</th>
-			<th>{{l('Document')}}</th>
+--}}
+{{--
+            <th style="text-transform: none;">{{l('Customer Final Price')}}</th>
+--}}
 			<th> </th>
 		</tr>
 	</thead>
 	<tbody>
 
 	@foreach ($stockallocations as $stockallocation)
+
+@php
+
+$document = optional($stockallocation->lotable)->document;
+
+@endphp
 		<tr>
 			<td>{{ $stockallocation->id }}</td>
-			<td>{{ $stockallocation->lot_id }}</td>
-			<td>{{ $lot->measureunit->quantityable( $stockallocation->quantity ) }}</td>
-			<td>{{ $stockallocation->is_reservation }}</td>
-			<td>{{ $stockallocation->lotable_id }}</td>
-			<td>{{ $stockallocation->lotable_type }}</td>
-			<td>{{ $stockallocation->created_at }}</td>
-			<td>{{ $stockallocation->updated_at }}</td>
+			<td>{{ abi_date_short( $document->document_date ) }}</td>
 			<td>
 
 @if ( $route = $stockallocation->getLotableDocumentRoute() )
@@ -65,6 +76,22 @@
 				{{-- $stockallocation->getLotableDocumentRoute() }}/{{ optional(optional($stockallocation->lotable)->document)->id --}}
 
 			</td>
+            <td>
+                <a href="{{ route('customers.edit', [$document->customer->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">
+                        {{ $document->customer->name_commercial }}
+                </a>
+            </td>
+			<td>{{ $lot->measureunit->quantityable( $stockallocation->quantity ) }}</td>
+{{--
+			<td>{{ $stockallocation->is_reservation }}</td>
+			<td>{{ $stockallocation->lotable_id }}</td>
+			<td>{{ $stockallocation->lotable_type }}</td>
+			<td>{{ $stockallocation->created_at }}</td>
+			<td>{{ $stockallocation->updated_at }}</td>
+--}}
+{{--
+            <td>{{ optional($stockallocation->lotable)->as_price('unit_customer_final_price') }}</td>
+--}}
 
             <td class="text-right">
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 

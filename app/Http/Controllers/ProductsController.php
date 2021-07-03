@@ -414,6 +414,33 @@ class ProductsController extends Controller
 
         $rules_tab = $request->input('tab_name', 'main_data');
 
+
+        if ( Configuration::isTrue('ENABLE_LOTS') && $rules_tab == 'inventory' ) {
+            // Check lot_tracking changes
+
+            // 1.- lot_tracking  false -> true
+            if ( ($product->lot_tracking == 0 ) && ($request->input('lot_tracking') > 0) )
+            {
+                //
+                if ( $product->quantity_onhand > 0.0 )
+                {
+                    return redirect('products/'.$id.'/edit'.'#'.'inventory')
+                        ->with('error', l('You can not change "Lot tracking", since Product quantity onhand is greater than zero &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
+                }
+            }
+
+            // 2.- lot_tracking  true -> false
+            if ( ($product->lot_tracking > 0 ) && ($request->input('lot_tracking') == 0) )
+            {
+                //
+                if ( $product->availableLots()->count() > 0 )
+                {
+                    return redirect('products/'.$id.'/edit'.'#'.'inventory')
+                        ->with('error', l('You can not change "Lot tracking", since there are some Lots that have quantity onhand greater than zero &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
+                }
+            }            
+        }
+
         if (  $rules_tab == 'detach_bom' ) {
             //
             $bomItem = $product->bomitem(); 

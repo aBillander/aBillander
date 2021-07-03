@@ -1050,7 +1050,30 @@ class Product extends Model {
             'stock1'   => $count1,
         ];
     }
-    
+
+ 
+
+ /* ************************************************************************************* */
+
+    // Brand new stuff
+
+    public function getStockByWarehouse( $warehouse = null )
+    {
+        if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
+        $warehouse_id = $warehouse instanceof Warehouse
+                    ? $warehouse->id
+                    : (int) $warehouse ;
+
+        $line = $this->warehouselines()->where('warehouse_id', $warehouse_id)->get()->first();
+
+        if($line)
+            return $line->quantity;
+
+        return 0.0;
+    }   
+
+
+ /* ************************************************************************************* */
 
     
 

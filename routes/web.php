@@ -374,6 +374,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('tools', 'ToolsController');
 
         Route::resource('lots', 'LotsController');
+        Route::post('lots/{lot}/quantity', 'LotsController@updateQuantity')->name('lots.update.quantity');
         Route::get( 'export/lots', 'LotsController@export' )->name('lots.export');
         Route::get( 'lots/{lot}/stockmovements',        'LotsController@stockmovements' )->name('lot.stockmovements'       );
         Route::get( 'export/lots/{lot}/stockmovements', 'LotsController@export' )->name('lot.stockmovements.export');

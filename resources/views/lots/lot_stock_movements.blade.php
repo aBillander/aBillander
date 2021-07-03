@@ -18,6 +18,12 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 --}}
+
+        <button class="btn xbtn-sm alert-danger lot_stock_adjustment" type="button" style="margin-right: 32px;" title="{{l('Stock Adjustment')}}">
+           <i class="fa fa-th-large"></i>
+           &nbsp; {{l('Stock Adjustment')}}
+        </button>
+
         <a href="{{ route('lot.stockmovements.export', [$lot->id] + Request::all()) }}" class="btn xbtn-sm btn-grey" style="margin-right: 32px;"  
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>{{-- see: warehouses/indexProducts.blade.php --}}
 
@@ -254,6 +260,8 @@
 </div>
 
 @include('lots/lot_stock_allocations')
+
+@include('lots/_modal_lot_stock _adjustment')
 
 @endsection
 

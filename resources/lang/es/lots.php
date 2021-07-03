@@ -85,5 +85,7 @@ return [
 	'Document Date' => 'Fecha del Documento',
 	'Customer' => 'Cliente',
 
+	'Stock Adjustment'     => 'Ajuste de Stock',
+
 
 ];

@@ -23,6 +23,13 @@
               {!! Form::text('reference_external', null, array('class' => 'form-control', 'id' => 'reference_external')) !!}
               {!! $errors->first('reference_external', '<span class="help-block">:message</span>') !!}
             </div>
+
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('accounting_id') ? 'has-error' : '' !!}">
+              {{ l('Accounting ID') }}
+              {!! Form::text('accounting_id', null, array('class' => 'form-control', 'id' => 'accounting_id')) !!}
+              {!! $errors->first('accounting_id', '<span class="help-block">:message</span>') !!}
+            </div>
+
         </div>
 
 @include('addresses._form_fields_model_customer')

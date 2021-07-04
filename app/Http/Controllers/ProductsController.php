@@ -53,8 +53,16 @@ class ProductsController extends Controller
 
     public function indexQueryRaw(Request $request)
     {
+        $show_active_only = $request->has('active') ?
+                                false :             // Search Context
+                                Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') ;
+                                
+
         return $this->product
                               ->filter( $request->all() )
+                              ->when($show_active_only, function ($query) use ($show_active_only) {
+                                    return $query->where('active', '>', 0);
+                              })
                               ->with('measureunit')
                               ->with('combinations')                                  
                               ->with('category')

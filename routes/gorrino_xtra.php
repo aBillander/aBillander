@@ -912,7 +912,7 @@ Route::get('migratethis_xtra', function()
 	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `lot_policy` varchar(32) NOT NULL DEFAULT 'FIFO' AFTER `expiry_time`;");
 	
-	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `lot_number_generator` TEXT NOT NULL DEFAULT 'Default' AFTER `expiry_time`;");
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `lot_number_generator` VARCHAR(64) NOT NULL DEFAULT 'Default' AFTER `expiry_time`;");
 	
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` CHANGE `expiry_time` `expiry_time` VARCHAR(16) NULL DEFAULT NULL; ");
 

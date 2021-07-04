@@ -188,7 +188,8 @@ class Product extends Model {
     {
         parent::boot();
 
-        static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') ));      // (new ManagerResolver());
+        // See ProductsController::indexQueryRaw()
+        // static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') ));      // (new ManagerResolver());
 
         static::created(function($product)
         {

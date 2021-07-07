@@ -56,7 +56,9 @@ class ProductsController extends Controller
         $show_active_only = $request->has('active') ?
                                 false :             // Search Context
                                 Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') ;
-                                
+              
+        // Temporarily disable "when" filter:
+        $show_active_only = false;                  
 
         return $this->product
                               ->filter( $request->all() )

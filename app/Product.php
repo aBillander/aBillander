@@ -1974,7 +1974,10 @@ class Product extends Model {
      */
     public function scopeIsManufactured($query)
     {
-        return $query->where('procurement_type', 'manufacture');
+        return $query->where(function ($query) {
+                            $query->where('procurement_type', 'manufacture');
+                            $query->orWhere('procurement_type', 'assembly');
+                    });
     }
 
     public function scopeIsPurchased($query)

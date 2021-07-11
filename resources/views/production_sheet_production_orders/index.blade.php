@@ -11,9 +11,24 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-  <a class="btn xbtn-sm btn-success create-production-order" style="margin-left: 32px;margin-right: 32px;" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+  <a class="btn xbtn-sm btn-success create-production-order" style="margin-left: 32px;" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
 
-        <!--a href="{{ route('productionsheet.orders', [$sheet->id]) }}" class="btn btn-success" style="margin-left: 32px; margin-right: 32px; "><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a -->
+@php
+    $productionSheet = $sheet;
+@endphp
+
+                <div class="btn-group" style="margin-left: 32px; ">
+                    <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Go to', 'layouts')}}" style="background-color: #31b0d5;
+border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'layouts')}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu  pull-right">
+                      <li><a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}"><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a></li>
+                      <li><a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}"><i class="fa fa-truck"></i> {{ l('Shipping Slips') }}</a></li>
+                      <li><a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}"><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a></li>
+                      <li class="divider"></li>
+                      <!-- li class="divider"></li -->
+                      <!-- li><a href="#">Separated link</a></li -->
+                    </ul>
+                </div>
 
         <a href="{{ route('productionsheets.show', [$sheet->id]) }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheet') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
 

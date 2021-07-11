@@ -108,6 +108,7 @@ trait ProductionSheetLotsTrait
                     // $lots_allocated->push($lot_item);
 
                     $quantity = $quantity - $allocable;
+                    $lot->available_qty = $lot->available_qty - $allocable;
                 }
 
                 if( $quantity > 0 )

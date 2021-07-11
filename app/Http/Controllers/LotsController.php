@@ -398,7 +398,7 @@ class LotsController extends Controller
         // 3.- Update Lot
         $lot->update( ['quantity' => $new_lot_quantity] );
 
-        return redirect()->route('lots.stockmovements', $lot->id)
+        return redirect()->route('lot.stockmovements', $lot->id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $lot->id], 'layouts') . $request->input('reference'));
     }
 

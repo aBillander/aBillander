@@ -103,4 +103,9 @@ return [
 	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
 
 	'Warehouse' => 'Almacén',
+	
+	'Customer Orders'     => 'Pedidos de Clientes',
+	'Shipping Slips'     => 'Albaranes',
+	'Customer Shipping Slips'     => 'Albaranes de Clientes',
+	'Customer Invoices'     => 'Facturas de Clientes',
 ];

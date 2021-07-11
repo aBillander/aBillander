@@ -13,6 +13,7 @@
       <th>{{l('Product Name')}}</th>
       <th>{{l('Quantity')}}</th>
       <th>{{l('Measure Unit')}}</th>
+      <th>{{l('Stock on hand')}}</th>
       <th class="text-right"> </th>
     </tr>
   </thead>
@@ -28,8 +29,14 @@
       <td>{{ $order['name'] }}</td>
       <td>{{ $product->as_quantityable($order['quantity']) }}</td>
       <td>{{ $product->measureunit->name }}</td>
+      <td>{{ $product->as_quantity('quantity_onhand') }}</td>
 
+@if( ($qty = $product->quantity_onhand - $order['quantity']) < 0.0 )
+           <td class="text-right alert-danger" style="width:1px; white-space: nowrap;">
+            {{ $product->as_quantityable( $qty ) }}
+@else
            <td class="text-right" style="width:1px; white-space: nowrap;">
+@endif
 
                 <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('productionsheets/' . $sheet->id . '/show') }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-folder-open-o"></i></a>
 

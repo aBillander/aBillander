@@ -245,7 +245,7 @@ class ProductionOrdersController extends Controller
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'work_center_id')
+        $products = \App\Product::select('id', 'name', 'reference', 'work_center_id', 'manufacturing_batch_size')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->isManufactured()

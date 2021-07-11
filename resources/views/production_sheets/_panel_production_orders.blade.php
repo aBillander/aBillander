@@ -186,11 +186,15 @@ $(document).ready(function() {
 
             select : function(key, value) {
                 var str = '[' + value.item.reference+'] ' + value.item.name;
+                var planned_quantity = value.item.manufacturing_batch_size > 0.0 ? 
+                                       value.item.manufacturing_batch_size : 1.0;
 
                 $("#order_autoproduct_name").val(str);
                 $('#product_id').val(value.item.id);
 //                $('#pid').val(value.item.id);
                 $('#work_center_id').val(value.item.work_center_id);
+
+                $('#planned_quantity').val( planned_quantity );
 
                 return false;
             }

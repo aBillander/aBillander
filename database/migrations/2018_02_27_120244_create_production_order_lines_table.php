@@ -17,6 +17,7 @@ class CreateProductionOrderLinesTable extends Migration
 
         Schema::create('production_order_lines', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('line_sort_order')->nullable();         // To sort lines
             $table->string('type', 32)->nullable(false)->default('product');
             // 'product'   => Regular product.
             // 'assembly'  => Assembly.

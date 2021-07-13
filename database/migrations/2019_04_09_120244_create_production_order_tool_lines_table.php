@@ -17,6 +17,7 @@ class CreateProductionOrderToolLinesTable extends Migration
 
         Schema::create('production_order_tool_lines', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('line_sort_order')->nullable();         // To sort lines
 
             $table->integer('tool_id')->unsigned()->nullable(false);
             $table->string('reference', 32)->nullable();

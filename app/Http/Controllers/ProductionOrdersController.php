@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Context;
 use App\Configuration;
 use App\WorkCenter;
 use App\Warehouse;
+use App\Product;
 
 use App\ProductionOrder;
 use App\ProductionOrderLine;
@@ -273,11 +275,14 @@ class ProductionOrdersController extends Controller
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'work_center_id', 'manufacturing_batch_size')
+        $search_parts = (bool) $request->input('search_parts', 0);
+
+        $products = \App\Product::select('id', 'name', 'reference', 'work_center_id', 'manufacturing_batch_size', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
-                                ->isManufactured()
-//                                ->with('measureunit')
+                                ->isManufactured( !$search_parts )
+//                                ->isPartItem( $search_parts )     <= Any product can be a part of a BOM
+                                ->with('measureunit')
                                 ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 /*
@@ -371,15 +376,18 @@ class ProductionOrdersController extends Controller
                         ->with('lines')
                         ->with('lines.product')
                         ->with('lines.measureunit')
+                        ->with('lines.warehouse')
                         ->findOrFail($id);                        
 
         // Pre-process
         foreach ($document->lines as $line) {
             // code...
             if ( !$line->measure_unit_id )
+            {
                 $line->measure_unit_id = $line->product->measure_unit_id;
                 $line->save();
                 $line->measureunit = $line->product->measureunit;
+            }
         }
 
         return view('production_orders._panel_document_lines', compact('document'));
@@ -409,6 +417,7 @@ class ProductionOrdersController extends Controller
 
 
 
+    // Deprecated
     public function searchProduct_duplicate(Request $request)
     {
 
@@ -469,15 +478,11 @@ class ProductionOrdersController extends Controller
     }
 
     public function getProduct(Request $request)
-    {
-        if ( $request->has('supplier_id') )
-            return $this->getSupplierProduct($request);
-        
+    {        
         // Request data
         $product_id      = $request->input('product_id');
         $combination_id  = $request->input('combination_id');
-        $customer_id     = $request->input('customer_id');
-        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
+//        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 //        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
 
  //       return response()->json( [ $product_id, $combination_id, $customer_id, $currency_id ] );
@@ -485,92 +490,15 @@ class ProductionOrdersController extends Controller
         // Do the Mambo!
         // Product
         if ($combination_id>0) {
-            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $combination = Combination::with('product')->with('product.measureunit')->findOrFail(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = Product::with('tax')->findOrFail(intval($product_id));
+            $product = Product::with('measureunit')->findOrFail(intval($product_id));
         }
 
-        // Customer
-        $customer = Customer::findOrFail(intval($customer_id));
-        
-        // Currency
-        $currency = Currency::findOrFail(intval($currency_id));
-        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
-
-        // Tax
-        $tax = $product->tax;
-        $taxing_address = Address::findOrFail($request->input('taxing_address_id'));
-        $tax_percent = $tax->getTaxPercent( $taxing_address );
-
-        $price = $product->getPrice();
-        if ( $price->currency->id != $currency->id ) {
-            $price = $price->convert( $currency );
-        }
-
-        // Calculate price per $customer_id now!
-        $customer_price = $product->getPriceByCustomer( $customer, 1, $currency );
-//        $tax_percent = $tax->percent;               // Accessor: $tax->getPercentAttribute()
-//        $price->applyTaxPercent( $tax_percent );
-
-        if ($customer_price) 
-        {
-            $customer_price->applyTaxPercentToPrice($tax_percent);
-
-            $ecotax_amount = $product->ecotax ? 
-                                  $product->ecotax->amount :
-                                  0.0;
-
-            $ecotax_value_label = $product->as_priceable($ecotax_amount).' '.$currency->name;
-    
-            $data = [
-                'product_id' => $product->id,
-                'combination_id' => $combination_id,
-                'reference' => $product->reference,
-                'name' => $product->name,
-                'cost_price' => $product->cost_price,
-                'unit_price' => [ 
-                            'tax_exc' => $price->getPrice(), 
-                            'tax_inc' => $price->getPriceWithTax(),
-                            'display' => Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                        $price->getPriceWithTax() : $price->getPrice(),
-                            'price_is_tax_inc' => $price->price_is_tax_inc,  
-//                            'price_obj' => $price,
-                            ],
-    
-                'unit_customer_price' => [ 
-                            'tax_exc' => $customer_price->getPrice(), 
-                            'tax_inc' => $customer_price->getPriceWithTax(),
-                            'display' => Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
-                                        $customer_price->getPriceWithTax() : $customer_price->getPrice(),
-                            'price_is_tax_inc' => $customer_price->price_is_tax_inc,  
-//                            'price_obj' => $customer_price,
-                            ],
-    
-                'tax_percent' => $tax_percent,
-                'tax_id' => $product->tax_id,
-                'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
-                'ecotax_value_label' => $ecotax_value_label,
-                'customer_id' => $customer_id,
-                'currency' => $currency,
-    
-                'measure_unit_id' => $product->measure_unit_id,
-                'quantity_decimal_places' => $product->quantity_decimal_places,
-                'reorder_point'      => $product->reorder_point, 
-                'quantity_onhand'    => $product->quantity_onhand, 
-                'quantity_onorder'   => $product->quantity_onorder, 
-                'quantity_allocated' => $product->quantity_allocated, 
-                'blocked' => $product->blocked, 
-                'active'  => $product->active, 
-
-                'measure_units' => $product->measureunits->pluck('name', 'id')->toArray(),
-            ];
-        } else
-            $data = [];
-
-        return response()->json( $data );
+        return response()->json( $product );
     }
 
     public function getProductPrices(Request $request)
@@ -697,11 +625,17 @@ class ProductionOrdersController extends Controller
         $document_line = $this->productionorder_line
                         ->with('product')
                         ->with('measureunit')
-                        ->with('packagemeasureunit')
                         ->find($line_id);
 
         if ( !$document_line )
             return response()->json( [] );
+        
+        if ( !$document_line->measure_unit_id )
+        {
+            $document_line->measure_unit_id = $document_line->product->measure_unit_id;
+            $document_line->save();
+            $document_line->measureunit = $document_line->product->measureunit;
+        }
 
         return response()->json( $document_line->toArray() );
     }
@@ -827,15 +761,17 @@ class ProductionOrdersController extends Controller
     public function FormForProduct( $action )
     {
 
+        $warehouseList = Warehouse::selectorList();
+
         switch ( $action ) {
             case 'edit':
                 # code...
-                return view('production_orders._form_for_product_edit');
+                return view('production_orders._form_for_product_edit', compact('warehouseList'));
                 break;
             
             case 'create':
                 # code...
-                return view('production_orders._form_for_product_create');
+                return view('production_orders._form_for_product_create', compact('warehouseList'));
                 break;
             
             default:
@@ -848,6 +784,108 @@ class ProductionOrdersController extends Controller
                 break;
         }
         
+    }
+
+    public function storeDocumentLine(Request $request, $document_id)
+    {
+        // $line_type = $request->input('line_type', '');
+        $line_type = 'product';         // So far...
+
+        switch ( $line_type ) {
+            case 'product':
+                # code...
+                return $this->storeDocumentLineProduct($request, $document_id);
+                break;
+            
+            case 'service':
+                # code...
+                return $this->storeDocumentLineService($request, $document_id);
+                break;
+            
+            case 'comment':
+                # code...
+                return $this->storeDocumentLineComment($request, $document_id);
+                break;
+            
+            default:
+                # code...
+                // Document Line Type not supported
+                return response()->json( [
+                            'msg' => 'ERROR',
+                            'data' => $request->all()
+                    ] );
+                break;
+        }
+    }
+
+    public function storeDocumentLineProduct(Request $request, $document_id)
+    {
+        $document = $this->productionorder
+                        ->with('measureunit')
+                        ->find($document_id);
+
+
+        $product_id     = $request->input('product_id');
+        $combination_id = $request->input('combination_id', null);
+
+        $product = Product::with('measureunit')->find($product_id);
+
+        if ( !$document || !$product )
+            return response()->json( [
+                    'msg' => 'ERROR',
+                    'data' => $document_id,
+            ] );
+        
+        $quantity       = $request->input('required_quantity', 1.0);
+
+        $warehouse_id   = $request->input('warehouse_id', Configuration::get('DEF_WAREHOUSE'));
+
+        $params = [
+            'line_sort_order' => $request->input('line_sort_order'),
+            'type' => 'product',
+
+            'product_id' => $product->id,
+            'reference' => $product->reference,
+            'name' => $product->name,
+
+            'bom_line_quantity' => 0.0,     // BOM not used here
+            'bom_quantity' => 0.0,          // BOM not used here
+
+            'required_quantity' => $quantity,
+//            'real_quantity' => 0.0,
+
+            'measure_unit_id' => $product->measure_unit_id,
+
+            'warehouse_id' => $warehouse_id,
+
+            'store_mode' => $request->input('store_mode', ''),
+        ];
+
+        // More stuff
+        if ($request->has('name')) 
+            $params['name'] = $request->input('name');
+
+        if ($request->has('measure_unit_id')) 
+            $params['measure_unit_id'] = $request->input('measure_unit_id');
+
+        
+        // Let's Rock!
+
+        $store_mode = $request->input('store_mode', '');
+
+        if ( $store_mode == 'asis' )
+            // Force product price from imput
+            // "DISABLED, so far" $document_line = $document->addProductAsIsLine( $product_id, $combination_id, $quantity, $params );
+            ;   // Do nothing...
+        else
+            // Calculate product price according to Customer Price List and Price Rules
+            $document_line = $document->addProductLine( $product_id, $combination_id, $quantity, $params );
+
+
+        return response()->json( [
+                'msg' => 'OK',
+                'data' => $document_line->toArray()
+        ] );
     }
 
 
@@ -888,29 +926,18 @@ class ProductionOrdersController extends Controller
     {
 
         $params = [
-//            'prices_entered_with_tax' => $pricetaxPolicy,
-//            'discount_percent' => $request->input('discount_percent', 0.0),
-//            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
-
-//            'line_sort_order' => $request->input('line_sort_order'),
-//            'notes' => $request->input('notes'),
         ];
 
         // More stuff
-        if ($request->has('quantity')) 
-            $params['quantity'] = $request->input('quantity');
+        if ($request->has('required_quantity')) 
+            $params['required_quantity'] = $request->input('required_quantity');
+
+        if ($request->has('warehouse_id')) 
+            $params['warehouse_id'] = $request->input('warehouse_id');
 
         // Skip:
         if (0 && $request->has('line_sort_order')) 
             $params['line_sort_order'] = $request->input('line_sort_order');
-
-        if ($request->has('notes')) 
-            $params['notes'] = $request->input('notes');
-
-
-        // Skip:
-        if (0 && $request->has('name')) 
-            $params['name'] = $request->input('name');
 
         // Skip:
         if (0 && $request->has('measure_unit_id')) 

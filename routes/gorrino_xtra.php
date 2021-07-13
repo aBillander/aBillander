@@ -907,6 +907,13 @@ Route::get('wsid', function()
 
 Route::get('migratethis_xtra', function()
 {
+	// 2021-07-13
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `production_order_lines` ADD `line_sort_order` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `id`;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `production_order_tool_lines` ADD `line_sort_order` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `id`;");
+
+  die('OK');
+
   
   // 2021-04-27
 	

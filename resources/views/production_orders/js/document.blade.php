@@ -33,45 +33,9 @@
                     $('#line_id').val('');
 //                    $('#line_type').val('');
                     $('#line_sort_order').val(next);
-                    $('#line_quantity').val(1);
+                    $('#line_required_quantity').val(1);
                     $('#line_measure_unit_id').val(0);
                     $('#line_quantity_decimal_places').val(0);
-
-                    $('#line_price').val(0.0);
-
-                    $('#line_discount_percent').val(0.0);
-                    $('#line_discount_amount_tax_incl').val(0.0);
-                    $('#line_discount_amount_tax_excl').val(0.0);
-
-                    if ($('#sales_equalization').val()>0) {
-                        $('input:radio[name=line_is_sales_equalization]').val([1]);
-                        $('#line_sales_equalization').show();
-                    }
-
-                    // set labels
-                    @if( 0 )
-                        $('#line_is_prices_entered_with_tax').val(1);
-                        $(".label_tax_exc").hide();
-                        $(".label_tax_inc").show();
-                    @else
-                        $('#line_is_prices_entered_with_tax').val(0);
-                        $(".label_tax_inc").hide();
-                        $(".label_tax_exc").show();
-                    @endif
-
-
-                    // calculate_line_product();
-                    $("#line_final_price").html( '' );
-                    $("#line_total_tax_exc").html( '' );
-                    $("#line_total_tax_inc").html( '' );
-
-                    $('#line_sales_rep_id').val( $('#sales_rep_id').val() );
-                    $('#line_commission_percent').val( 0.0 );   // Use default
-
-                    $('#line_pmu_label').val('');
-                    $('#line_extra_quantity_label').val('');
-
-                    $('#line_notes').val('');
 
                     $("#line_autoproduct_name").val('');
                     $("#line_reference").val('');
@@ -155,13 +119,10 @@
               var url = "{{ route('productionorders.getline', [$document->id, '']) }}/"+id;
               var label = '';
 
-              PRICE_DECIMAL_PLACES = $('#currency_decimalPlaces').val();
-
-              // if ( line_type == 'product' )
               
               $.get(url, function(result){
                     var label = '['+result.product.reference+'] '+result.product.name+' ('+result.measureunit.name+')';
-                    var QUANTITY_DECIMAL_PLACES = result.product.quantity_decimal_places;
+                    var QUANTITY_DECIMAL_PLACES = result.measureunit.decimalPlaces;
 
                     $('#modal_product_document_line_Label').text(label);
 
@@ -174,79 +135,15 @@
                     $('#line_name').val(result.name);
                     $('#line_reference').val(result.reference);
 
-                    pmu_conversion_rate = result.pmu_conversion_rate;
-                    pmu_quantity = result.quantity / pmu_conversion_rate;
-
                     $('#line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
-                    $('#line_quantity').val(pmu_quantity.round( QUANTITY_DECIMAL_PLACES ));
-                    $('#line_package_measure_unit_id').val(result.measure_unit_id);
+                    $('#line_required_quantity').val(result.required_quantity.round( QUANTITY_DECIMAL_PLACES ));
+
                     $('#line_measure_unit_id').val(result.measure_unit_id);
-                    $('#line_measure_unit_name').text(result.packagemeasureunit.name);
-                    $('#line_package_label').text(result.package_label);
-
-                    $('#line_cost_price').val(result.cost_price);
-                    $('#line_unit_price').val(result.unit_price);
-                    $('#line_unit_customer_price').val(result.unit_customer_price);
-
-                    $('#line_is_prices_entered_with_tax').val(result.prices_entered_with_tax);
-
-                    if ( $('#line_is_prices_entered_with_tax').val() > 0 )
-                    {
-                        //
-                        price = result.unit_customer_final_price_tax_inc;
-
-                        // set labels
-                        $(".label_tax_exc").hide();
-                        $(".label_tax_inc").show();
-
-                    } else {
-
-                        //
-                        price = result.unit_customer_final_price;
-
-                        // set labels
-                        $(".label_tax_inc").hide();
-                        $(".label_tax_exc").show();
-
-                    }
-
-                    $("#line_price").val( price * pmu_conversion_rate );
-
-                    $("#label_ecotax_value").html(result.ecotax_value_label);
+                    $('#line_measure_unit_name').text(result.measureunit.name);
                     
-                    // $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
-                    // $("#line_price").val( result.unit_customer_final_price );
-
-                    $('#line_discount_percent').val(result.discount_percent);
-
-                    $('#discount_amount_tax_incl').val(result.discount_amount_tax_incl);
-                    $('#discount_amount_tax_excl').val(result.discount_amount_tax_excl);
-
-                    $('#line_tax_label').html(result.tax_label);
-                    $('#line_tax_id').val(result.tax_id);
-                    $('#line_tax_percent').val(result.tax_percent);
-
-                    // sales_equalization
-                    if ($('#sales_equalization').val()>0) {
-                        $('input:radio[name=line_is_sales_equalization]').val([result.sales_equalization]);
-                        $('#line_sales_equalization').show();
-                    }
+                    $('#line_warehouse_id').val(result.warehouse_id);
 
                     calculate_line_product( );
-
-                    $('#line_sales_rep_id').val( result.sales_rep_id );
-                    $('#line_commission_percent').val( result.commission_percent );
-                    
-                    $('#line_pmu_label').val(result.pmu_label);
-                    $('#line_extra_quantity_label').val(result.extra_quantity_label);
-
-                    if ((result.pmu_label || '') != '')
-                        $('#line_pmu_label').parent().removeClass('hidden');
-
-                    if ((result.extra_quantity_label || '') != '')
-                        $('#line_extra_quantity_label').parent().removeClass('hidden');
-
-                    $('#line_notes').val(result.notes);
 
                     console.log(result);
               });
@@ -466,30 +363,14 @@
                               document_id : {{ $document->id }},
                               store_mode : store_mode,
                               line_sort_order : $('#line_sort_order').val(),
-                              line_type : $('#line_type').val(),
+                              type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),
                               combination_id : $('#line_combination_id').val(),
                               reference : $('#line_reference').val(),
-                              quantity : $('#line_quantity').val(),
+                              required_quantity : $('#line_required_quantity').val(),
                               quantity_decimal_places : $('#line_quantity_decimal_places').val(),
                               measure_unit_id : $('#line_measure_unit_id').val(),
-                              package_measure_unit_id : $('#line_package_measure_unit_id').val(),
-                              cost_price : $('#line_cost_price').val(),
-                              unit_price : $('#line_unit_price').val(),
-                              unit_customer_price : $('#line_unit_customer_price').val(),
-                              unit_customer_final_price : $('#line_price').val(),
-                              prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
-                              tax_id : $('#line_tax_id').val(),
-                              tax_percent : $('#line_tax_percent').val(),
-                              sales_equalization : $("input[name='line_is_sales_equalization']:checked").val(),
-                              currency_id : $("#currency_id").val(),
-                              conversion_rate: $("#currency_conversion_rate").val(),
-                              discount_percent : $('#line_discount_percent').val(),
-                              discount_amount_tax_incl : $('#line_discount_amount_tax_incl').val(),
-                              discount_amount_tax_excl : $('#line_discount_amount_tax_excl').val(),
-                              sales_rep_id : $('#line_sales_rep_id').val(),
-                              commission_percent : $('#line_commission_percent').val(),
-                              notes : $('#line_notes').val()
+                              warehouse_id : $('#line_warehouse_id').val()
                           };
 
 
@@ -529,11 +410,6 @@
             var url = "{{ route('productionorders.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
-//            if ( id == '' )
-//                url = "{{ route('productionorders.storeline', [$document->id]) }}";
-//            else
-//                url = "{{ route('productionorders.updateline', ['']) }}/"+id;
-
             var payload = { 
                               document_id : {{ $document->id }},
                               line_id : id,
@@ -543,27 +419,10 @@
                               combination_id : $('#line_combination_id').val(),
                               reference : $('#line_reference').val(),
                               name : $('#line_name').val(),
-                              quantity : $('#line_quantity').val(),
+                              required_quantity : $('#line_required_quantity').val(),
                               quantity_decimal_places : $('#line_quantity_decimal_places').val(),
                               measure_unit_id : $('#line_measure_unit_id').val(),
-                              cost_price : $('#line_cost_price').val(),
-                              unit_price : $('#line_unit_price').val(),
-                              unit_customer_price : $('#line_unit_customer_price').val(),
-                              unit_customer_final_price : $('#line_price').val(),
-                              prices_entered_with_tax : $('#line_is_prices_entered_with_tax').val(),
-                              tax_id : $('#line_tax_id').val(),
-                              tax_percent : $('#line_tax_percent').val(),
-                              sales_equalization : $("input[name='line_is_sales_equalization']:checked").val(),
-                              currency_id : $("#currency_id").val(),
-                              conversion_rate: $("#currency_conversion_rate").val(),
-                              discount_percent : $('#line_discount_percent').val(),
-                              discount_amount_tax_incl : $('#line_discount_amount_tax_incl').val(),
-                              discount_amount_tax_excl : $('#line_discount_amount_tax_excl').val(),
-                              sales_rep_id : $('#line_sales_rep_id').val(),
-                              commission_percent : $('#line_commission_percent').val(),
-                              pmu_label : $('#line_pmu_label').val(),
-                              extra_quantity_label : $('#line_extra_quantity_label').val(),
-                              notes : $('#line_notes').val()
+                              warehouse_id : $('#line_warehouse_id').val()
                           };
 
             $.ajax({
@@ -593,7 +452,7 @@
             // See: http://jsfiddle.net/chridam/hfre25pf/
 
             $( selector ).autocomplete({
-                source : "{{ route('productionorders.searchproduct') }}?customer_id="+$('#customer_id').val()+"&currency_id="+$('#currency_id').val(),
+                source : "{{ route('productionorders.searchproduct') }}?search_parts=1",
                 minLength : 1,
                 appendTo : "#modal_document_line",
 
@@ -612,15 +471,28 @@
 
                 select : function(key, value) {
                     var str = '[' + value.item.reference+'] ' + value.item.name;
+                    var QUANTITY_DECIMAL_PLACES = value.item.measureunit.decimalPlaces;
 
                     if ( value.item.id != '' ) {
                         $("#line_autoproduct_name").val(str);
                         $('#line_product_id').val(value.item.id);
                         $('#line_combination_id').val(0)
     
-                        getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
+                        // getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
     
-                        getProductPriceData( $('#line_product_id').val(), $('#line_combination_id').val(), $("#customer_id").val() );
+                        // getProductPriceData( $('#line_product_id').val(), $('#line_combination_id').val(), $("#customer_id").val() );
+
+                        $('#line_type').val('product');
+
+                        $('#line_name').val(value.item.name);
+                        $('#line_reference').val(value.item.reference);
+
+                        $('#line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
+                        // $('#line_required_quantity').val(value.item.manufacturing_batch_size.round( QUANTITY_DECIMAL_PLACES ));
+                        $('#line_required_quantity').val('1.0');
+
+                        $('#line_measure_unit_id').val(value.item.measure_unit_id);
+                        $('#line_measure_unit_name').text(value.item.measureunit.name);
                     }
 
                     return false;

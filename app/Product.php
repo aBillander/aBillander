@@ -1967,16 +1967,37 @@ class Product extends Model {
     */
 
     /**
-     * Scope a query to only include finishe products.
+     * Scope a query to only include finished products.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeIsManufactured($query)
+    public function scopeIsManufactured($query, $apply = true)
     {
+        if ( !$apply )
+            return $query;
+
         return $query->where(function ($query) {
                             $query->where('procurement_type', 'manufacture');
                             $query->orWhere('procurement_type', 'assembly');
+                    });
+    }
+
+    /**
+     * Scope a query to only include part items products (raw materials or sub-assemblies).
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsPartItem($query, $apply = true)
+    {
+        if ( !$apply )
+            return $query;
+
+        return $query->where(function ($query) {
+                            $query->where(  'procurement_type', 'assembly');
+                            $query->orWhere('procurement_type', 'purchase');
+                            $query->orWhere('procurement_type', 'none');
                     });
     }
 

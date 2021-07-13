@@ -58,4 +58,10 @@ return [
 	'Reference / Project'     => 'Referencia / Proyecto',
 
 	'Add Product'     => 'Añadir Producto',
+
+	// modal_product_search
+	'Add Product'     => 'Nuevo Producto',
+
+	// Modal edit line
+	'Edit Line' => 'Modificar Línea',
 ];

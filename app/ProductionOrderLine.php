@@ -12,7 +12,7 @@ class ProductionOrderLine extends Model
 
 //    protected $dates = ['due_date'];
 	
-    protected $fillable = [ 'type', 'product_id', 'reference', 'name', 
+    protected $fillable = [ 'line_sort_order', 'type', 'product_id', 'reference', 'name', 
     						'bom_line_quantity', 'bom_quantity', 'required_quantity', 'real_quantity', 'warehouse_id'
                           ];
 
@@ -46,6 +46,11 @@ class ProductionOrderLine extends Model
     public function measureunit()
     {
         return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo('App\Warehouse');
     }
 
     /**

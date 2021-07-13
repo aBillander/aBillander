@@ -22,6 +22,7 @@
                <th class="text-right">{{l('Finished Quantity')}}</th>
 
                <th class="text-right"> </th>
+               <th class="text-right">{{l('Warehouse')}}</th>
 
                 <th class="text-right button-pad"> 
                       @if ( $document->editable )
@@ -97,6 +98,8 @@
                 </td>
                 <td class="text-left">
                     <span class="badge" style="background-color: #3a87ad;" title="{{ optional($line->measureunit)->name }}"> &nbsp; {{ optional($line->measureunit)->sign }} &nbsp; </span>
+                </td>
+                <td class="text-right" title="{{ $line->warehouse->alias_name ?? '-' }}">{{ $line->warehouse->alias ?? '-' }}
                 </td>
 @endif
 

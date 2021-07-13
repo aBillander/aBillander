@@ -47,6 +47,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapCrmRoutes();
 
+        $this->mapMfgRoutes();
+
     }
 
     /**
@@ -137,5 +139,21 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web_crm.php'));
+    }
+
+    /**
+     * Define the MFG routes for the application.
+     *
+     *
+     * @return void
+     */
+    protected function mapMfgRoutes()
+    {
+        
+        if ( \App\Configuration::isFalse('ENABLE_MANUFACTURING') ) return;
+
+        Route::middleware('web')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/web_mfg.php'));
     }
 }

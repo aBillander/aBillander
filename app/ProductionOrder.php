@@ -58,11 +58,32 @@ class ProductionOrder extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function getFinishableAttribute()
+    {
+        if ( $this->status == 'finished' ) return false;
+
+        return true;
+    }
+
+
+    public function getEditableAttribute()
+    {
+        // return !( $this->locked || $this->status == 'closed' || $this->status == 'canceled' );
+        return !( $this->status == 'finished' );
+    }
+
+    public function getDeletableAttribute()
+    {
+        // return !( $this->status == 'closed' || $this->status == 'canceled' );
+        return $this->status != 'finished';
+    }
+
+
     public static function getStatusList()
     {
             $list = [];
             foreach (static::$statuses as $status) {
-                $list[$status] = l($status, [], 'appmultilang');
+                $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -71,7 +92,7 @@ class ProductionOrder extends Model
 
     public static function getStatusName( $status )
     {
-            return l($status, [], 'appmultilang');
+            return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
     public static function isStatus( $status )
@@ -81,7 +102,7 @@ class ProductionOrder extends Model
 
     public function getStatusNameAttribute()
     {
-            return l($this->status, 'appmultilang');
+            return l(get_called_class().'.'.$this->status, 'appmultilang');
     }
 
     
@@ -489,7 +510,7 @@ if ( $bomitem )
 
     /*
     |--------------------------------------------------------------------------
-    | Statuss changes & actions
+    | Status changes & actions
     |--------------------------------------------------------------------------
     */
     
@@ -532,6 +553,26 @@ if ( $bomitem )
 
         return true;
     }
+    
+
+
+    public function getMaxLineSortOrder()
+    {
+        // $this->load(['lines']);
+
+        if ( $this->lines->count() )
+            return $this->lines->max('line_sort_order');
+
+        return 0;           // Or: return intval( $this->customershippingsliplines->max('line_sort_order') );
+    }
+    
+    public function getNextLineSortOrder()
+    {
+        $inc = 10;
+
+        return $this->getMaxLineSortOrder() + $inc;
+    }
+    
     
 
     /*

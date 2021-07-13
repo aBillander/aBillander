@@ -5,18 +5,32 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Configuration;
+use App\WorkCenter;
+use App\Warehouse;
+
 use App\ProductionOrder;
+use App\ProductionOrderLine;
+
 use Form, DB;
+
+use Excel;
+
+use App\Traits\DateFormFormatterTrait;
+use App\Traits\ModelAttachmentControllerTrait;
 
 class ProductionOrdersController extends Controller
 {
 
+   use DateFormFormatterTrait;
+   use ModelAttachmentControllerTrait;
 
    protected $productionorder;
 
-   public function __construct(ProductionOrder $productionorder)
+   public function __construct(ProductionOrder $productionorder, ProductionOrderLine $productionorder_line)
    {
         $this->productionorder = $productionorder;
+        $this->productionorder_line = $productionorder_line;
    }
     /**
      * Display a listing of the resource.
@@ -73,7 +87,7 @@ class ProductionOrdersController extends Controller
      */
     public function show(ProductionOrder $productionorder)
     {
-        //
+        return redirect()->route('productionorders.edit', [$productionorder->id]);
     }
 
     /**
@@ -84,6 +98,20 @@ class ProductionOrdersController extends Controller
      */
     public function edit(ProductionOrder $productionorder, Request $request)
     {
+
+        // Dates (cuen)
+        $this->addFormDates( ['due_date', 'finish_date'], $productionorder );
+
+        $document = $productionorder;
+
+        $warehouseList = Warehouse::selectorList();
+
+        $work_centerList = WorkCenter::pluck('name', 'id')->toArray();
+
+
+        return view('production_orders.edit', compact('document', 'warehouseList', 'work_centerList'));
+
+        
         return redirect()->route('productionsheet.productionorders', [$productionorder->production_sheet_id])
                 ->with('info', l('Compruebe la Orden de Fabricación &#58&#58 (:id) ', ['id' => $productionorder->id]));
     }
@@ -301,4 +329,863 @@ class ProductionOrdersController extends Controller
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $order->id], 'layouts') . $request->input('due_date'));
 */
     }
+
+
+
+
+
+
+/* ********************************************************************************************* */  
+
+
+    /**
+     * AJAX Stuff.
+     *
+     * 
+     */
+
+
+    public function getDocumentHeader($id)
+    {
+        // Some rework needed!!!
+
+        $document = $this->productionorder
+                        ->with('customer')
+                        ->findOrFail($id);
+        
+        $customer = $document->customer;
+
+        return 'Peo!';
+
+        return view('production_orders._tab_edit_header', $this->modelVars() + compact('document', 'customer'));
+    }
+
+    
+    public function getDocumentLines($id)
+    {
+//        $model = $this->getParentModelLowerCase();
+
+//        return "$id - $model";
+
+        $document = $this->productionorder
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->with('lines.measureunit')
+                        ->findOrFail($id);                        
+
+        // Pre-process
+        foreach ($document->lines as $line) {
+            // code...
+            if ( !$line->measure_unit_id )
+                $line->measure_unit_id = $line->product->measure_unit_id;
+                $line->save();
+                $line->measureunit = $line->product->measureunit;
+        }
+
+        return view('production_orders._panel_document_lines', compact('document'));
+    }
+
+    public function sortLines(Request $request)
+    {
+        $positions = $request->input('positions', []);
+
+        \DB::transaction(function () use ($positions) {
+            foreach ($positions as $position) {
+                $this->productionorder_line::where('id', '=', $position[0])->update(['line_sort_order' => $position[1]]);
+            }
+        });
+
+        return response()->json($positions);
+    }
+
+    public function getDocumentPayments($id)
+    {
+        $document = $this->productionorder
+                        ->with('payments')
+                        ->findOrFail($id);
+
+        return view('production_orders._panel_document_payments', $this->modelVars() + compact('document'));
+    }
+
+
+
+    public function searchProduct_duplicate(Request $request)
+    {
+
+        $search = $request->term;
+
+        $warehouse_id = (int) $request->input('warehouse_id', 0);
+
+        if ( $warehouse_id > 0 )
+        {
+            $warehouse = Warehouse::findOrFail($warehouse_id);
+
+            $products = $warehouse->products()
+                                ->where(   'name',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get( );
+
+        } else {
+
+            $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
+                                ->where(   'name',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
+//                                ->IsSaleable()
+//                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
+//                                ->CheckStock()
+//                                ->IsActive()
+//                                ->with('measureunit')
+//                                ->toSql();
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get( );
+        }
+
+
+//                                dd($products);
+
+        return response( $products );
+    }
+
+    public function searchService(Request $request)
+    {
+        $search = $request->term;
+
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
+                                ->where(   'name',      'LIKE', '%'.$search.'%' )
+                                ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
+                                ->isService()
+//                                ->qualifyForCustomer( $request->input('customer_id'), $request->input('currency_id') )
+                                ->IsActive()
+//                                ->with('measureunit')
+//                                ->toSql();
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->get();
+
+
+//                                dd($products);
+
+        return response( $products );
+    }
+
+    public function getProduct(Request $request)
+    {
+        if ( $request->has('supplier_id') )
+            return $this->getSupplierProduct($request);
+        
+        // Request data
+        $product_id      = $request->input('product_id');
+        $combination_id  = $request->input('combination_id');
+        $customer_id     = $request->input('customer_id');
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
+//        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
+
+ //       return response()->json( [ $product_id, $combination_id, $customer_id, $currency_id ] );
+
+        // Do the Mambo!
+        // Product
+        if ($combination_id>0) {
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = Product::with('tax')->findOrFail(intval($product_id));
+        }
+
+        // Customer
+        $customer = Customer::findOrFail(intval($customer_id));
+        
+        // Currency
+        $currency = Currency::findOrFail(intval($currency_id));
+        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
+
+        // Tax
+        $tax = $product->tax;
+        $taxing_address = Address::findOrFail($request->input('taxing_address_id'));
+        $tax_percent = $tax->getTaxPercent( $taxing_address );
+
+        $price = $product->getPrice();
+        if ( $price->currency->id != $currency->id ) {
+            $price = $price->convert( $currency );
+        }
+
+        // Calculate price per $customer_id now!
+        $customer_price = $product->getPriceByCustomer( $customer, 1, $currency );
+//        $tax_percent = $tax->percent;               // Accessor: $tax->getPercentAttribute()
+//        $price->applyTaxPercent( $tax_percent );
+
+        if ($customer_price) 
+        {
+            $customer_price->applyTaxPercentToPrice($tax_percent);
+
+            $ecotax_amount = $product->ecotax ? 
+                                  $product->ecotax->amount :
+                                  0.0;
+
+            $ecotax_value_label = $product->as_priceable($ecotax_amount).' '.$currency->name;
+    
+            $data = [
+                'product_id' => $product->id,
+                'combination_id' => $combination_id,
+                'reference' => $product->reference,
+                'name' => $product->name,
+                'cost_price' => $product->cost_price,
+                'unit_price' => [ 
+                            'tax_exc' => $price->getPrice(), 
+                            'tax_inc' => $price->getPriceWithTax(),
+                            'display' => Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
+                                        $price->getPriceWithTax() : $price->getPrice(),
+                            'price_is_tax_inc' => $price->price_is_tax_inc,  
+//                            'price_obj' => $price,
+                            ],
+    
+                'unit_customer_price' => [ 
+                            'tax_exc' => $customer_price->getPrice(), 
+                            'tax_inc' => $customer_price->getPriceWithTax(),
+                            'display' => Configuration::get('PRICES_ENTERED_WITH_TAX') ? 
+                                        $customer_price->getPriceWithTax() : $customer_price->getPrice(),
+                            'price_is_tax_inc' => $customer_price->price_is_tax_inc,  
+//                            'price_obj' => $customer_price,
+                            ],
+    
+                'tax_percent' => $tax_percent,
+                'tax_id' => $product->tax_id,
+                'tax_label' => $tax->name." (".$tax->as_percentable($tax->percent)."%)",
+                'ecotax_value_label' => $ecotax_value_label,
+                'customer_id' => $customer_id,
+                'currency' => $currency,
+    
+                'measure_unit_id' => $product->measure_unit_id,
+                'quantity_decimal_places' => $product->quantity_decimal_places,
+                'reorder_point'      => $product->reorder_point, 
+                'quantity_onhand'    => $product->quantity_onhand, 
+                'quantity_onorder'   => $product->quantity_onorder, 
+                'quantity_allocated' => $product->quantity_allocated, 
+                'blocked' => $product->blocked, 
+                'active'  => $product->active, 
+
+                'measure_units' => $product->measureunits->pluck('name', 'id')->toArray(),
+            ];
+        } else
+            $data = [];
+
+        return response()->json( $data );
+    }
+
+    public function getProductPrices(Request $request)
+    {
+        
+        // Request data
+        $product_id      = $request->input('product_id');
+        $combination_id  = $request->input('combination_id');
+        $customer_id     = $request->input('customer_id');
+        $recent_sales_this_customer = $request->input('recent_sales_this_customer', 0);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
+//        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
+
+ //       return response()->json( [ $product_id, $combination_id, $customer_id, $currency_id ] );
+
+        // Do the Mambo!
+        // Product
+        if ($combination_id>0) {
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = Product::with('tax')->findOrFail(intval($product_id));
+        }
+
+        $category_id = $product->category_id;
+
+        // Customer
+        $customer = Customer::findOrFail(intval($customer_id));
+        $customer_group_id = $customer->customer_group_id;
+        
+        // Currency
+        $currency = Currency::findOrFail(intval($currency_id));
+        $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
+
+        // Pricelists
+        $pricelists = $product->pricelists; //  PriceList::with('currency')->orderBy('id', 'ASC')->get();
+
+        // Price Rules
+        $customer_rules = $product->getPriceRulesByCustomer( $customer );
+/*      Old stuff
+        $customer_rules = PriceRule::
+//                                  where('customer_id', $customer->id)
+                                  where(function($q) use ($customer_id, $customer_group_id) {
+
+                                    $q->where('customer_id', $customer_id);
+
+                                    $q->orWhere('customer_group_id', NULL);
+
+                                    $q->orWhere('customer_group_id', 0);
+
+                                    if ( $customer_group_id > 0 )
+                                    $q->orWhere('customer_group_id', $customer_group_id);
+
+                                })
+                                ->where(function($q) use ($product_id, $category_id) {
+
+                                    $q->where('product_id', $product_id);
+
+                                    // $q->orWhere('category_id', NULL);
+
+                                    // $q->orWhere('category_id', 0);
+
+                                    if ( $category_id > 0 )
+                                    $q->orWhere('category_id', $category_id);
+
+                                })
+                                ->with('category')
+                                ->with('product')
+                                ->with('combination')
+                                ->with('customergroup')
+                                ->with('currency')
+                                ->orderBy('product_id', 'ASC')
+                                ->orderBy('customer_id', 'ASC')
+                                ->orderBy('from_quantity', 'ASC')
+                                ->take(7)->get();
+*/
+
+/*
+        // Recent Sales
+        $lines = CustomerOrderLine::where('product_id', $product->id)
+                            ->with(["document" => function($q){
+                                $q->where('customerorders.customer_id', $customer->id);
+                            }])
+                            ->with('document')
+                            ->with('document.customer')
+                            ->whereHas('document', function($q) use ($customer_id, $recent_sales_this_customer) {
+                                    if ( $recent_sales_this_customer > 0 )
+                                        $q->where('customer_id', $customer_id);
+                                })
+                            ->join('customer_orders', 'customer_order_lines.customer_order_id', '=', 'customer_orders.id')
+                            ->select('customer_order_lines.*', 'customer_orders.document_date', \DB::raw('"customerorders" as route'))
+                            ->orderBy('customer_orders.document_date', 'desc')
+                            ->take(7)->get();
+*/
+        // Recent Sales
+        $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
+        $class = '\App\\'.$model.'Line';
+        $table = \Str::snake(\Str::plural($model));
+        $route = str_replace('_', '', $table);
+        $tableLines = \Str::snake($model).'_lines';
+        $lines = $class::where('product_id', $product->id)
+                            ->with(["document" => function($q){
+                                $q->where('customerorders.customer_id', $customer->id);
+                            }])
+                            ->with('document')
+                            ->with('document.customer')
+                            ->whereHas('document', function($q) use ($customer_id, $recent_sales_this_customer) {
+                                    if ( $recent_sales_this_customer > 0 )
+                                        $q->where('customer_id', $customer_id);
+                                })
+                            ->join($table, $tableLines.'.'.\Str::snake($model).'_id', '=', $table.'.id')
+                            ->select($tableLines.'.*', $table.'.document_date', \DB::raw('"'.$route.'" as route'))
+                            ->orderBy($table.'.document_date', 'desc')
+                            ->take(7)->get();
+
+
+        return view('production_orders._form_for_product_prices', $this->modelVars() + compact('product', 'pricelists', 'customer_rules', 'lines'));
+    }
+
+    public function getDocumentLine($document_id, $line_id)
+    {
+        $document_line = $this->productionorder_line
+                        ->with('product')
+                        ->with('measureunit')
+                        ->with('packagemeasureunit')
+                        ->find($line_id);
+
+        if ( !$document_line )
+            return response()->json( [] );
+
+        return response()->json( $document_line->toArray() );
+    }
+
+    public function deleteDocumentLine($line_id)
+    {
+
+        $document_line = $this->productionorder_line
+                        ->findOrFail($line_id);
+
+        $document_line->delete();
+
+        return response()->json( [
+                'msg' => 'OK',
+                'data' => $line_id,
+        ] );
+    }
+
+
+    public function quickAddLines(Request $request, $document_id)
+    {
+        parse_str($request->input('product_id_values'), $output);
+        $product_id_values = $output['product_id_values'];
+
+        parse_str($request->input('combination_id_values'), $output);
+        $combination_id_values = $output['combination_id_values'];
+
+        parse_str($request->input('quantity_values'), $output);
+        $quantity_values = $output['quantity_values'];
+
+        // abi_r( $document_id );
+        // abi_r($request->all());die();
+
+
+        // Let's Rock!
+        $document = $this->productionorder
+                        ->findOrFail($document_id);
+
+        // return $document;
+
+        $line_sort_order = $document->getNextLineSortOrder();
+
+        foreach ($product_id_values as $key => $pid) {
+            # code...
+
+            $line[] = $document->addProductLine( $pid, $combination_id_values[$key], $quantity_values[$key], ['line_sort_order' => $line_sort_order] );
+
+            $line_sort_order += 10;
+
+            // abi_r($line, true);
+        }
+
+        return response()->json( [
+                'msg' => 'OK',
+                'document' => $document_id,
+                'data' => $line,
+ //               'currency' => $line[0]->currency,
+        ] );
+
+    }
+
+
+
+
+
+    public function getDocumentAvailability($id, Request $request)
+    {
+        $document = $this->productionorder
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->findOrFail($id);
+
+        $document_reference = $document->document_reference;
+
+        $stockmovements = collect([]);
+        if ( $document->status == 'closed' )
+            $stockmovements = StockMovement::
+                                  with('warehouse')
+                                ->with('product')
+                                ->with('combination')
+//                              ->with('stockmovementable')
+//                                ->with('stockmovementable.document')
+                                ->where(function($query) use ($document_reference)
+                                {
+//                                    $query->where  ( 'id',                 'LIKE', '%'.$document_reference.'%' );
+                                    $query->where( 'document_reference', 'LIKE', '%'.$document_reference.'%' );
+                                })
+                                ->where(function($query)
+                                {
+                                    $query->where  ( 'stockmovementable_type', '' );
+                                    $query->orWhere( 'stockmovementable_type', 'LIKE', '%ShippingSlip%' );
+                                })
+                                ->orderBy('created_at', 'DESC')
+                                ->orderBy('reference', 'ASC')
+                                ->get();
+
+        // abi_r($stockmovements);die();
+
+        return view('production_orders._panel_document_availability', $this->modelVars() + compact('document', 'stockmovements'));
+    }
+
+    public function getDocumentAvailabilityModal($id, Request $request)
+    {
+        $document = $this->productionorder
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->findOrFail($id);
+
+        return view('production_orders._modal_document_availability_content', $this->modelVars() + compact('document'));
+    }
+
+
+/* ********************************************************************************************* */  
+
+
+    /**
+     * Forms Manager.
+     *
+     * 
+     */
+
+
+    public function FormForProduct( $action )
+    {
+
+        switch ( $action ) {
+            case 'edit':
+                # code...
+                return view('production_orders._form_for_product_edit');
+                break;
+            
+            case 'create':
+                # code...
+                return view('production_orders._form_for_product_create');
+                break;
+            
+            default:
+                # code...
+                // Form for action not supported
+                return response()->json( [
+                            'msg' => 'ERROR',
+                            'data' => $action
+                    ] );
+                break;
+        }
+        
+    }
+
+
+    public function updateDocumentLine(Request $request, $line_id)
+    {
+        // $line_type = $request->input('line_type', '');
+        $line_type = 'product';         // So far...
+
+        switch ( $line_type ) {
+            case 'product':
+                # code...
+                return $this->updateDocumentLineProduct($request, $line_id);
+                break;
+            
+            case 'service':
+            case 'shipping':
+                # code...
+                return $this->updateDocumentLineService($request, $line_id);
+                break;
+            
+            case 'comment':
+                # code...
+                return $this->updateDocumentLineComment($request, $line_id);
+                break;
+            
+            default:
+                # code...
+                // Document Line Type not supported
+                return response()->json( [
+                            'msg' => 'ERROR',
+                            'data' => $request->all()
+                    ] );
+                break;
+        }
+    }
+
+    public function updateDocumentLineProduct(Request $request, $line_id)
+    {
+
+        $params = [
+//            'prices_entered_with_tax' => $pricetaxPolicy,
+//            'discount_percent' => $request->input('discount_percent', 0.0),
+//            'unit_customer_final_price' => $request->input('unit_customer_final_price'),
+
+//            'line_sort_order' => $request->input('line_sort_order'),
+//            'notes' => $request->input('notes'),
+        ];
+
+        // More stuff
+        if ($request->has('quantity')) 
+            $params['quantity'] = $request->input('quantity');
+
+        // Skip:
+        if (0 && $request->has('line_sort_order')) 
+            $params['line_sort_order'] = $request->input('line_sort_order');
+
+        if ($request->has('notes')) 
+            $params['notes'] = $request->input('notes');
+
+
+        // Skip:
+        if (0 && $request->has('name')) 
+            $params['name'] = $request->input('name');
+
+        // Skip:
+        if (0 && $request->has('measure_unit_id')) 
+            $params['measure_unit_id'] = $request->input('measure_unit_id');
+
+
+        // Let's Rock!
+        $document_line = $this->productionorder_line
+                        ->with( 'document' )
+                        ->find($line_id);
+
+        if ( !$document_line )
+            return response()->json( [
+                    'msg' => 'ERROR',
+                    'data' => $line_id,
+            ] );
+
+        
+        $document = $document_line->productionorder;
+//        $document = $this->productionorder->where('id', $this->model_snake_case.'_id')->first();
+
+        // Not so fast, Sony boy!!
+        // $document_line = $document->updateProductLine( $line_id, $params );
+        $document_line->update( $params );
+
+
+        return response()->json( [
+                'msg' => 'OK',
+                'data' => $document_line->toArray()
+        ] );
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Document presentation methods
+    |--------------------------------------------------------------------------
+    */
+    
+    
+    protected function showPdf($id, Request $request)
+    {
+        // return $id;
+
+        // PDF stuff
+        try {
+            $document = $this->productionorder
+                            ->with('warehouse')
+                            ->with('warehousecounterpart')
+                            ->with('shippingmethod')
+                            ->with('carrier')
+                            ->with('template')
+                            ->findOrFail($id);
+
+        } catch(ModelNotFoundException $e) {
+
+            return redirect()->back()
+                     ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
+        }
+
+        // abi_r($document->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
+
+        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
+        $company = \App\Context::getContext()->company;
+
+        // Template
+        $t = $document->template ?? 
+             \App\Template::find( Configuration::getInt('DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE') );
+
+        if ( !$t )
+            return redirect()->route('warehouseshippingslips.edit', $id)
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
+
+
+        $template = $t->getPath( 'WarehouseShippingSlip' );
+
+        $paper = $t->paper;    // A4, letter
+        $orientation = $t->orientation;    // 'portrait' or 'landscape'.
+
+        if ($request->has('screen')) return view($template, compact('document', 'company'));
+        
+        
+        // Catch for errors
+        try{
+                $pdf        = \PDF::loadView( $template, compact('document', 'company') )
+                            ->setPaper( $paper, $orientation );
+        }
+        catch(\Exception $e){
+
+                abi_r($template);
+                abi_r($e->getMessage(), true);
+
+                // return redirect()->route('customerorders.show', $id)
+                //    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').$e->getMessage());
+        }
+
+        // PDF stuff ENDS
+
+        $pdfName    = \Str::singular('warehouseshippingslips').'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
+
+        // Lets try another strategy
+        if ( $document->document_reference ) {
+            //
+            $sanitizer = new \App\FilenameSanitizer( $document->document_reference );
+
+            $sanitizer->stripPhp()
+                ->stripRiskyCharacters()
+                ->stripIllegalFilesystemCharacters('_');
+                
+            $pdfName = $sanitizer->getFilename();
+        } else {
+            //
+            $pdfName = \Str::singular('warehouseshippingslips').'_'.'ID_' . (string) $document->id;
+        }
+
+
+        if ($request->has('screen')) return view($template, compact('document', 'company'));
+
+
+        if ( $request->has('preview') ) 
+        {
+            //
+        } else {
+            // Dispatch event
+            event( new \App\Events\WarehouseShippingSlipPrinted( $document ) );
+        }
+    
+
+        return  $pdf->stream($pdfName . '.pdf');
+        return  $pdf->download( $pdfName . '.pdf');
+    }
+
+
+    public function sendemail( $id, Request $request )
+    {
+        // $id = $request->input('id');
+
+        // abi_r($id);die();
+
+        // PDF stuff
+        try {
+            $document = $this->productionorder
+                            ->with('warehouse')
+                            ->with('warehousecounterpart')
+                            ->with('shippingmethod')
+                            ->with('carrier')
+                            ->with('template')
+                            ->findOrFail($id);
+
+        } catch(ModelNotFoundException $e) {
+
+            return redirect()->back()
+                     ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
+            // return Redirect::to('invoice')->with('message', trans('invoice.access_denied'));
+        }
+
+        $document->close();
+
+        if ( $document->status != 'closed' )
+            return redirect()->back()
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document is NOT closed.');
+
+
+
+        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
+        $company = \App\Context::getContext()->company;
+
+        // Template
+        // $seq_id = $this->sequence_id > 0 ? $this->sequence_id : Configuration::get('DEF_'.strtoupper( $this->getClassSnakeCase() ).'_SEQUENCE');
+        $t = $document->template ?? 
+             \App\Template::find( Configuration::getInt('DEF_'.strtoupper( 'WarehouseShippingSlip' ).'_TEMPLATE') );
+
+        if ( !$t )
+            return redirect()->back()
+                ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
+
+
+        $template = $t->getPath( 'WarehouseShippingSlip' ); 
+
+        $paper = $t->paper;    // A4, letter
+        $orientation = $t->orientation;    // 'portrait' or 'landscape'.
+
+
+        // Catch for errors
+        try{
+                $pdf        = \PDF::loadView( $template, compact('document', 'company') )
+//                          ->setPaper( $paper )
+//                          ->setOrientation( $orientation );
+                            ->setPaper( $paper, $orientation );
+        }
+        catch(\Exception $e){
+
+//                abi_r($template);
+//                abi_r($e->getMessage(), true);
+
+                return redirect()->back()
+                    ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'<br />'.$e->getMessage());
+        }
+
+        // PDF stuff ENDS
+
+        // MAIL stuff
+        try {
+
+            $pdfName    = \Str::singular('warehouseshippingslips').'_'.$document->secure_key . '_' . $document->document_date->format('Y-m-d');
+
+            $pathToFile     = storage_path() . '/pdf/' . $pdfName .'.pdf';// die($pathToFile);
+            $pdf->save($pathToFile);
+
+            if ($request->isMethod('post'))
+            {
+                // ... this is POST method (call from popup)
+                $subject = $request->input('email_subject');
+            }
+            if ($request->isMethod('get'))
+            {
+                // ... this is GET method (call from button)
+                $subject = l('warehouseshippingslips'.'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails');
+            }
+
+            $template_vars = array(
+                'company'       => $company,
+                'invoice_num'   => $document->number,
+                'invoice_date'  => abi_date_short($document->document_date),
+                'invoice_total' => $document->as_money('total_tax_incl'),
+                'custom_body'   => $request->input('email_body', ''),
+//                'custom_subject' => $request->input('email_subject'),
+                );
+
+            $data = array(
+                'from'     => $company->address->email,
+                'fromName' => $company->name_fiscal,
+                'to'       => $document->warehousecounterpart->address->email,
+                'toName'   => $document->warehousecounterpart->name_fiscal,
+                'subject'  => $subject,
+                );
+
+            
+
+            // http://belardesign.com/2013/09/11/how-to-smtp-for-mailing-in-laravel/
+            \Mail::send('emails.'.'warehouseshippingslips'.'.default', $template_vars, function($message) use ($data, $pathToFile)
+            {
+                $message->from($data['from'], $data['fromName']);
+
+                $message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );    // Will send blind copy to sender!
+                
+                $message->attach($pathToFile);
+
+            }); 
+            
+            unlink($pathToFile);
+
+        } catch(\Exception $e) {
+
+ //               abi_r($e->getMessage(), true);
+
+            return redirect()->back()->with('error', l('Your Document could not be sent &#58&#58 (:id) ', ['id' => $document->number], 'layouts').'<br />'.$e->getMessage());
+        }
+        // MAIL stuff ENDS
+
+
+        // Dispatch event
+//        $event_class = '\\App\\Events\\'.\Str::singular($this->getParentClass()).'Emailed';
+//        event( new $event_class( $document ) );
+        
+
+        return redirect()->back()->with('success', l('Your Document has been sent! &#58&#58 (:id) ', ['id' => $document->number], 'layouts'));
+    }
+
+
+
+/* ********************************************************************************************* */    
+
+
 }
+

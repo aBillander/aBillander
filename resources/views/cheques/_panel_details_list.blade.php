@@ -42,7 +42,8 @@
                         <td>{{ $detail->line_sort_order }}</td>
                         <!-- td>{{ $detail->name }}</td -->
 
-                        <td>{{ $detail->amount > 0.0 ? $detail->as_money_amount('amount') : '-' }}</td>
+                        <td>{{-- $detail->amount > 0.0 ? $detail->as_money_amount('amount') : '-' --}}
+                            {{ $detail->as_money_amount('amount') }}</td>
 
                         <td>
                             @if( $detail->customer_invoice_id > 0 )

@@ -221,11 +221,25 @@ class ChequesController extends Controller
 
         $cheque = $this->cheque
                         ->with('vouchers')
+                        ->with('currency')
                         ->findOrFail($id);
 
-        $balance = $cheque->vouchers->sum('amount') - $cheque->amount;
+        // Prevent rounding & machine number representation errors
+        $cheque_vouchers = $cheque->currency->round( $cheque->vouchers->sum('amount') );
+        $cheque_amount   = $cheque->currency->round( $cheque->amount );
 
-        // abi_r($cheque->vouchers->sum('amount').' + '.$vouchers->sum('amount').' - '.$cheque->amount);die();
+        $balance = $cheque_vouchers - $cheque_amount;
+
+        if(0 && $id==98)
+        {
+            abi_r($cheque->vouchers->sum('amount').' - '.$cheque->amount.' = '. ($cheque->vouchers->sum('amount')-$cheque->amount) );
+            abi_r($cheque_vouchers.' - '.$cheque_amount.' = '.$balance);
+            die();
+/*
+580.17 - 580.170000 = 1.1368683772162E-13
+580.17 - 580.17 = 0
+*/
+        }
 
         if ( $balance != 0 )
             return redirect()->back()

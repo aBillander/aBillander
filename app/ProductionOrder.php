@@ -620,7 +620,13 @@ if ( $bomitem )
     
     public function productionordertoollines()
     {
-        return $this->hasMany('App\ProductionOrderLine', 'production_order_id');
+        return $this->hasMany('App\ProductionOrderToolLine', 'production_order_id');
+    }
+    
+    // Alias
+    public function tool_lines()
+    {
+        return $this->productionordertoollines();
     }
 
     /**

@@ -37,7 +37,7 @@ return [
 	
     'View Product' => 'Ir al Producto',
 
-	'Production orders - Edit'     => 'Ordenes de Fabricación - Modificar',
+	'Production Orders - Edit'     => 'Ordenes de Fabricación - Modificar',
 	'Back to Production Orders'     => 'Volver a Ordenes de Fabricación',
 
 
@@ -45,7 +45,7 @@ return [
 	'Header Data'     => 'Datos de Cabecera',
 	'Lines'     => 'Líneas',
 	'Profitability'     => 'Rentabilidad',
-	'Availability'     => 'Disponibilidad',
+	'Issue Materials'     => 'Consumo Materiales',
 
 	'Finish Order' => 'Terminar Orden',
 
@@ -64,4 +64,11 @@ return [
 
 	// Modal edit line
 	'Edit Line' => 'Modificar Línea',
+
+	'Production Order Tools' => 'Utillajes',
+
+	'Tool ID'     => 'ID',
+	'Tool Reference'     => 'Referencia',
+	'Tool Name'     => 'Nombre del Utillaje',
+	'Location'     => 'Ubicación',
 ];

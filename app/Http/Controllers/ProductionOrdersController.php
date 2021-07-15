@@ -701,7 +701,7 @@ class ProductionOrdersController extends Controller
 
 
 
-    public function getDocumentAvailability($id, Request $request)
+    public function getDocumentMaterials($id, Request $request)
     {
         $document = $this->productionorder
                         ->with('lines')
@@ -734,7 +734,7 @@ class ProductionOrdersController extends Controller
 
         // abi_r($stockmovements);die();
 
-        return view('production_orders._panel_document_availability', $this->modelVars() + compact('document', 'stockmovements'));
+        return view('production_orders._panel_document_materials', compact('document', 'stockmovements'));
     }
 
     public function getDocumentAvailabilityModal($id, Request $request)

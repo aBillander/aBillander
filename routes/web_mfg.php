@@ -39,7 +39,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('productionorders/deleteline/{lid}',  'ProductionOrdersController@deleteDocumentLine'  )->name('productionorders.deleteline' );
 //        Route::get('productionorders/{id}/duplicate',     'ProductionOrdersController@duplicateDocument'   )->name('productionorders.duplicate'  );
 //        Route::get('productionorders/{id}/profit',        'ProductionOrdersController@getDocumentProfit'   )->name('productionorders.profit'     );
-        Route::get('productionorders/{id}/availability',  'ProductionOrdersController@getDocumentAvailability' )->name('productionorders.availability' );
+        Route::get('productionorders/{id}/materials',  'ProductionOrdersController@getDocumentMaterials' )->name('productionorders.materials' );
 
         Route::get('productionorders/{id}/getlotsline/{lid}', 'ProductionOrdersController@getDocumentLotsLine'     )->name('productionorders.getlotsline'    );
         Route::post('productionorders/updatelotsline/{lid}',  'ProductionOrdersController@updateDocumentLotsLine'  )->name('productionorders.updatelotsline' );

@@ -170,7 +170,7 @@
 
 <div id="panel_document_total" class="">
   
-    @ include('production_orders._panel_document_total')
+    @include('production_orders._panel_document_line_tools')
 
 </div>
 

@@ -11,7 +11,7 @@
                             <li><a href="#tab2default" data-toggle="tab">{{ l('Lines') }}</a></li>
                             <!-- li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li -->
 
-                            <li><a href="#tab4default" data-toggle="tab">{{ l('Availability') }}</a></li>
+                            <li><a href="#tab4default" data-toggle="tab">{{ l('Issue Materials') }}</a></li>
 
                             <!-- li><a href="#tab5default" data-toggle="tab">{{ l('Payments') }}</a></li -->
                             <!-- li class="dropdown">
@@ -52,7 +52,7 @@
       </div>
       <div class="tab-pane fade" id="tab4default">
                 
-                @ include('production_orders._tab_availability')
+                @include('production_orders._tab_materials')
 
       </div>
       <!-- div class="tab-pane fade" id="tab5default">

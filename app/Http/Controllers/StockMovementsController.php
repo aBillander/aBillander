@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\StockMovement;
+use App\Product;
+use App\Configuration;
+
 use View, Cookie;
 
 use Excel;
@@ -20,10 +23,12 @@ class StockMovementsController extends Controller
    use DateFormFormatterTrait;
 
    protected $stockmovement;
+   protected $product;
 
-   public function __construct(StockMovement $stockmovement)
+   public function __construct(StockMovement $stockmovement, Product $product)
    {
         $this->stockmovement = $stockmovement;
+        $this->product = $product;
    }
 
 	/**
@@ -87,8 +92,21 @@ class StockMovementsController extends Controller
 		// Valid type?
 		$this->validate($request, StockMovement::validTypeRule());
 
+		$product_id = $request->input('product_id');
+
+		$product = $this->product->findOrFail($product_id);
+
+		if ( Configuration::isTrue('ENABLE_LOTS') && ($product->lot_tracking > 0 ) )
+		{
+			//
+			return redirect()->back()
+				->with('error', l('This Product has "Lot tracking" enabled. ').l('No action is taken &#58&#58 (:id) ', ['id' => $product->name.' - '.$request->input('quantity')], 'layouts') . 
+					' [' . $request->input('date') . ']' );
+		}
+
+
         if ( $request->input('movement_type_id') == 10 ) {
-        	$product = \App\Product::find( $request->input('product_id') );
+        	// $product = \App\Product::find( $request->input('product_id') );
             if ( $product->getStockByWarehouse( $request->input('warehouse_id') ) > 0.0 )
 				return redirect('stockmovements/create')
 						->with( 'error', l('Can not set Initial Stock &#58&#58 (:id) :name has already non zero stock in Warehouse :ws', ['id' => $product->id, 'name' => $product->name, 'ws' => $request->input('warehouse_id')]) );
@@ -96,8 +114,6 @@ class StockMovementsController extends Controller
 
 		// Move on
 		$action = $request->input('nextAction', '');
-
-		$product_id = $request->input('product_id');
 
 		// Has Combination?
 		if ($request->has('group')) {
@@ -145,7 +161,8 @@ class StockMovementsController extends Controller
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::findOrFail(intval($product_id));
+            // Already set:
+            // $product = \App\Product::findOrFail(intval($product_id));
         }
 
         $extradata['reference']  = $product->reference;

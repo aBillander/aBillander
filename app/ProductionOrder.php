@@ -58,11 +58,32 @@ class ProductionOrder extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function getFinishableAttribute()
+    {
+        if ( $this->status == 'finished' ) return false;
+
+        return true;
+    }
+
+
+    public function getEditableAttribute()
+    {
+        // return !( $this->locked || $this->status == 'closed' || $this->status == 'canceled' );
+        return !( $this->status == 'finished' );
+    }
+
+    public function getDeletableAttribute()
+    {
+        // return !( $this->status == 'closed' || $this->status == 'canceled' );
+        return $this->status != 'finished';
+    }
+
+
     public static function getStatusList()
     {
             $list = [];
             foreach (static::$statuses as $status) {
-                $list[$status] = l($status, [], 'appmultilang');
+                $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -71,7 +92,7 @@ class ProductionOrder extends Model
 
     public static function getStatusName( $status )
     {
-            return l($status, [], 'appmultilang');
+            return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
     public static function isStatus( $status )
@@ -81,7 +102,7 @@ class ProductionOrder extends Model
 
     public function getStatusNameAttribute()
     {
-            return l($this->status, 'appmultilang');
+            return l(get_called_class().'.'.$this->status, 'appmultilang');
     }
 
     
@@ -489,7 +510,7 @@ if ( $bomitem )
 
     /*
     |--------------------------------------------------------------------------
-    | Statuss changes & actions
+    | Status changes & actions
     |--------------------------------------------------------------------------
     */
     
@@ -534,6 +555,26 @@ if ( $bomitem )
     }
     
 
+
+    public function getMaxLineSortOrder()
+    {
+        // $this->load(['lines']);
+
+        if ( $this->lines->count() )
+            return $this->lines->max('line_sort_order');
+
+        return 0;           // Or: return intval( $this->customershippingsliplines->max('line_sort_order') );
+    }
+    
+    public function getNextLineSortOrder()
+    {
+        $inc = 10;
+
+        return $this->getMaxLineSortOrder() + $inc;
+    }
+    
+    
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -567,7 +608,8 @@ if ( $bomitem )
     
     public function productionorderlines()
     {
-        return $this->hasMany('App\ProductionOrderLine', 'production_order_id');
+        return $this->hasMany('App\ProductionOrderLine', 'production_order_id')
+                    ->orderBy('line_sort_order', 'ASC');
     }
     
     // Alias
@@ -578,7 +620,13 @@ if ( $bomitem )
     
     public function productionordertoollines()
     {
-        return $this->hasMany('App\ProductionOrderLine', 'production_order_id');
+        return $this->hasMany('App\ProductionOrderToolLine', 'production_order_id');
+    }
+    
+    // Alias
+    public function tool_lines()
+    {
+        return $this->productionordertoollines();
     }
 
     /**
@@ -908,6 +956,104 @@ if ( $bomitem )
         $this->save();
 
         return true;
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Document Lines Stuff
+    |--------------------------------------------------------------------------
+    */
+    
+    
+
+    /**
+     * Add Product to Production Order
+     *
+     *     'line_sort_order', 'type', 'product_id', 'combination_id', 'reference', 'name', bom_line_quantity', 'bom_quantity', 'required_quantity', 'real_quantity', 'measure_unit_id', 'warehouse_id'
+     *
+     */
+    public function addProductLine( $product_id, $combination_id = null, $quantity = 1.0, $params = [] )
+    {
+        // Do the Mambo!
+        // $line_type = 'product';
+
+        // Product
+        if ($combination_id>0) {
+            $combination = Combination::with('product')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = Product::findOrFail(intval($product_id));
+        }
+
+        $type = 'product';
+
+        $reference  = $product->reference;
+        $name = array_key_exists('name', $params) 
+                            ? $params['name'] 
+                            : $product->name;
+
+        $measure_unit_id = array_key_exists('measure_unit_id', $params) 
+                            ? $params['measure_unit_id'] 
+                            : $product->measure_unit_id;
+
+        $warehouse_id = array_key_exists('warehouse_id', $params) 
+                            ? $params['warehouse_id'] 
+                            : Configuration::get('DEF_WAREHOUSE');
+
+
+
+        // Misc
+        $line_sort_order = array_key_exists('line_sort_order', $params) 
+                            ? $params['line_sort_order'] 
+                            : $this->getNextLineSortOrder();
+
+        $bom_line_quantity = array_key_exists('bom_line_quantity', $params) 
+                            ? $params['bom_line_quantity'] 
+                            : 0.0;
+
+        $bom_quantity = array_key_exists('bom_quantity', $params) 
+                            ? $params['bom_quantity'] 
+                            : 0.0;
+
+        $locked = array_key_exists('locked', $params) 
+                            ? $params['locked'] 
+                            : 0;
+
+
+        // Build OrderLine Object
+        $data = [
+            'line_sort_order' => $line_sort_order,
+            'type' => $type,
+
+            'product_id' => $product->id,
+            'reference' => $reference,
+            'name' => $name,
+
+            'bom_line_quantity' => $bom_line_quantity,
+            'bom_quantity' => $bom_quantity,
+
+            'required_quantity' => $quantity,
+//            'real_quantity' => 0.0,
+
+            'measure_unit_id' => $measure_unit_id,
+
+            'warehouse_id' => $warehouse_id,
+        ];
+
+
+        // Finishing touches
+        $document_line = ProductionOrderLine::create( $data );
+
+        $this->lines()->save($document_line);
+
+
+        // Good boy, bye then
+        return $document_line;
+
     }
 
 }

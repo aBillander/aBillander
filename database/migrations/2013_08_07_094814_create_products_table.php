@@ -117,7 +117,7 @@ class CreateProductsTable extends Migration {
 			// Lot Control
 			$table->tinyInteger('lot_tracking')->default(0);			
 			$table->string('expiry_time', 16)->nullable();				// 5 or 5d -> 5 days :  8m -> 8 months :  2y -> 2 years
-			$table->string('lot_number_generator')->nullable(false)->default('Default');
+			$table->string('lot_number_generator', 64)->nullable(false)->default('Default');
 			$table->string('lot_policy', 32)->nullable(false)->default('FIFO');
 			
 			$table->integer('tax_id')->unsigned()->nullable(false);

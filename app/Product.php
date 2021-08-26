@@ -188,6 +188,7 @@ class Product extends Model {
     {
         parent::boot();
 
+        // See ProductsController::indexQueryRaw()
         static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') ));      // (new ManagerResolver());
 
         static::created(function($product)
@@ -1050,7 +1051,30 @@ class Product extends Model {
             'stock1'   => $count1,
         ];
     }
-    
+
+ 
+
+ /* ************************************************************************************* */
+
+    // Brand new stuff
+
+    public function getStockByWarehouse( $warehouse = null )
+    {
+        if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
+        $warehouse_id = $warehouse instanceof Warehouse
+                    ? $warehouse->id
+                    : (int) $warehouse ;
+
+        $line = $this->warehouselines()->where('warehouse_id', $warehouse_id)->get()->first();
+
+        if($line)
+            return $line->quantity;
+
+        return 0.0;
+    }   
+
+
+ /* ************************************************************************************* */
 
     
 
@@ -1943,14 +1967,38 @@ class Product extends Model {
     */
 
     /**
-     * Scope a query to only include finishe products.
+     * Scope a query to only include finished products.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeIsManufactured($query)
+    public function scopeIsManufactured($query, $apply = true)
     {
-        return $query->where('procurement_type', 'manufacture');
+        if ( !$apply )
+            return $query;
+
+        return $query->where(function ($query) {
+                            $query->where('procurement_type', 'manufacture');
+                            $query->orWhere('procurement_type', 'assembly');
+                    });
+    }
+
+    /**
+     * Scope a query to only include part items products (raw materials or sub-assemblies).
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsPartItem($query, $apply = true)
+    {
+        if ( !$apply )
+            return $query;
+
+        return $query->where(function ($query) {
+                            $query->where(  'procurement_type', 'assembly');
+                            $query->orWhere('procurement_type', 'purchase');
+                            $query->orWhere('procurement_type', 'none');
+                    });
     }
 
     public function scopeIsPurchased($query)

@@ -104,6 +104,8 @@ class LotsController extends Controller
 
         $warehouse_id = $request->input('warehouse_id');
 
+        // Keep it simple, Forget this option:
+        if (0)
         if ( $use_current_stock )
         {
             // Check unallocated quantity
@@ -124,7 +126,8 @@ class LotsController extends Controller
         // (ノಠ益ಠ)ノ彡┻━┻
         // New Lot is a Stock Adjustment (lot quantity "increases" overall stock)
 
-        if ( $use_current_stock )
+        // Keep it simple, Forget this option:
+        if ( 0 && $use_current_stock )
         {
             // Stock Transfer inside Warehouse            
 
@@ -288,7 +291,114 @@ class LotsController extends Controller
 
         $lot->update($request->only(['reference', 'manufactured_at', 'expiry_at', 'blocked', 'notes']));
 
-        return redirect('lots')
+        return redirect()->route('lots.edit', $lot->id)
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $lot->id], 'layouts') . $request->input('reference'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Lot  $lot
+     * @return \Illuminate\Http\Response
+     */
+    public function updateQuantity(Request $request, Lot $lot)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['adjustment_date'], $request );
+
+        $rules = [
+            'adjustment_quantity'         => 'sometimes|nullable|numeric|min:0',        // Empty means 0.0
+            'adjustment_date'  => 'date',
+        ];
+
+        $this->validate($request, $rules);
+
+        $new_lot_quantity = (float) $request->input('adjustment_quantity');
+        $adjustment_date  = $request->input('adjustment_date');
+        $adjustment_notes = $request->input('adjustment_notes');
+
+        // Product
+        $lot->load('product');
+        $product = $lot->product;
+
+        // Warehouse
+        $warehouse_id = $lot->warehouse_id;
+
+        // Stock in this warehouse
+        $stock = $product->getStockByWarehouse( $warehouse_id );
+
+        // New stock
+        $new_stock = $stock - $lot->quantity + $new_lot_quantity;
+
+
+        // abi_r($stock);
+        // abi_r($new_stock);die();
+
+
+        // Magic here:
+
+        // 1.- Create Stock Movement type 12 (Stock adjustment)
+            $data = [
+                    'date' => $adjustment_date,
+
+//                    'stockmovementable_id' => $this->,
+//                    'stockmovementable_type' => $this->,
+
+//                    'document_reference' => $this->document_reference,
+
+//                    'quantity_before_movement' => $this->,
+                    'quantity' => $new_stock,
+                    'measure_unit_id' => $product->measure_unit_id,
+//                    'quantity_after_movement' => $this->,
+
+                    'price' => $product->cost_price,
+                    'price_currency' => $product->cost_price,
+//                    'currency_id' => $this->currency_id,
+//                    'conversion_rate' => $this->currency_conversion_rate,
+
+                    'notes' => $adjustment_notes,
+
+                    'product_id' => $product->id,
+ //                   'combination_id' => $this->combination_id,
+                    'reference' => $product->reference,
+                    'name' => $product->name,
+
+                    'warehouse_id' => $warehouse_id,
+//                    'warehouse_counterpart_id' => $this->,
+
+                    'movement_type_id' => StockMovement::ADJUSTMENT,
+
+                    'user_id' => \Auth::id(),
+
+//                    'inventorycode'
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+
+            if ( $stockmovement )
+            {
+                //
+                // $this->stockmovements()->save( $stockmovement );
+
+                if ($lot)
+                {
+                    $lot->stockmovements()->save( $stockmovement );
+                    $stockmovement->update(['lot_quantity_after_movement' => $new_lot_quantity]);
+                    $lot->update(['blocked' => 0]);
+                }
+            }
+
+
+        // 2.- Link Stock movement to Lot
+
+
+        
+
+        // 3.- Update Lot
+        $lot->update( ['quantity' => $new_lot_quantity] );
+
+        return redirect()->route('lot.stockmovements', $lot->id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $lot->id], 'layouts') . $request->input('reference'));
     }
 

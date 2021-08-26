@@ -53,7 +53,8 @@ class Customer extends Model {
     {
         parent::boot();
 
-        static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_CUSTOMERS_ACTIVE_ONLY') ));
+        // Scope not useful. If a customer is deactivated, you cannot retrieve customer from invoice...
+        // static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_CUSTOMERS_ACTIVE_ONLY') ));
 
         static::creating(function($client)
         {

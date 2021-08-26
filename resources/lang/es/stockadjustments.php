@@ -37,6 +37,7 @@ return [
 	'Counted quantity, i.e., stock on hand'     => 'Stock físico',
 
 	'Counted quantity matches current stock on hand. '     => 'La cantidad contada coincide con el stock actual. ',
+	'This Product has "Lot tracking" enabled. ' => 'Este Producto tiene "Control de Lotes" activado. ',
 
 
 	/*

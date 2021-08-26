@@ -79,24 +79,44 @@
         <tr>
 			<th>{{l('ID', [], 'layouts')}}</th>
             <th>{{l('Due Date')}}</th>
-            <th>{{l('Reference')}}</th>
             <th>{{l('Product Name')}}</th>
             <th>{{l('Quantity')}}</th>
+            <th> </th>
             <th>{{l('Work Center')}}</th>
             <th>{{l('Provenience')}}</th>
+            <th>{{l('Status', [], 'layouts')}}</th>
+            <th> </th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
+            <th> </th>
 		</tr>
 	</thead>
 	<tbody>
 	@foreach ($orders as $order)
 		<tr>
             <td>{{ $order->poid }}</td>
-            <td>{{ $order->productionsheet->due_date }}</td>
-            <td>{{ $order->product_reference }}</td>
-            <td>{{ $order->product_name }}</td>
-            <td>{{ $order->planned_quantity }}</td>
+            <td>{{ abi_date_short($order->due_date) }}
+              
+        @if ($order->production_sheet_id)
+                        {{-- abi_date_form_short($document->productionsheet->due_date) --}} 
+                        <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $order->production_sheet_id) }}" title="{{l('Go to Production Sheet')}}"><i class="fa fa-external-link"></i></a>
+        @endif
+              </td>
+            <td>[<a href="{{ URL::to('products/' . $order->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $order->product->reference }}</a>] 
+                {{ $order->product->name }}</td>
+            <td class="text-right">{{ $order->as_quantityable($order->planned_quantity) }}</td>
+            <td class="text-left">
+                <span class="badge" style="background-color: #3a87ad;" title="{{ optional($order->measureunit)->name }}"> &nbsp; {{ optional($order->measureunit)->sign }} &nbsp; </span>
+            </td>
             <td>{{ $order->workcenter->name ?? '' }}</td>
             <td>{{ $order->created_via }}</td>
+            <td>
+@if ( $order->status != 'finished' )
+              <span class="label label-success" style="opacity: 0.75;">{{ $order->status_name }}</span></td><td>
+@else
+              <span class="label label-info" style="opacity: 0.75;">{{ $order->status_name }}</span></td><td>
+              <span class="text-success" title="{{ l('Finish Date') }}"><xstrong>{{ abi_date_short($order->finish_date) }}</xstrong></span>
+@endif
+      </td>
             <td class="text-center">
                 @if ($order->notes)
                  <a href="javascript:void(0);">
@@ -107,6 +127,24 @@
                  </a>
                 @endif
                 </td>
+
+            <td class="text-right button-pad">
+                @if (  is_null($order->deleted_at))
+                       
+                <a class="btn btn-sm btn-warning " href="{{ URL::to('productionorders/' . $order->poid . '/edit') }}"  title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
+@if( $order->status != 'finished' )
+                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                        href="{{ URL::to('productionorders/' . $order->poid ) }}" 
+                        data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
+                        data-title="{{ l('Lots') }} ::  ({{$order->poid}}) {{ $order->reference }}" 
+                        onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+@endif
+                @else
+                <a class="btn btn-warning" href="{{ URL::to('productionorders/' . $order->poid. '/restore' ) }}"><i class="fa fa-reply"></i></a>
+                <a class="btn btn-danger" href="{{ URL::to('productionorders/' . $order->poid. '/delete' ) }}"><i class="fa fa-trash-o"></i></a>
+                @endif
+            </td>
 		</tr>
 	@endforeach
     </tbody>

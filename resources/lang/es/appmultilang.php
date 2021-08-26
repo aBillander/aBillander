@@ -522,6 +522,18 @@ return array(
 	'App\Lot.FIFO' => 'Más antiguo primero',
     'App\Lot.LIFO' => 'Más reciente primero',
 
+	/*
+	|--------------------------------------------------------------------------
+	| Production Order Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\ProductionOrder.released'    => 'Lanzada',
+    'App\ProductionOrder.finished'  => 'Terminada',
+
 
 /* **************************************************************************** */
 

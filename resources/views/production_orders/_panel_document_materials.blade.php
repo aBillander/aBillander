@@ -5,21 +5,20 @@
 {!! Form::open( ['method' => 'POST', 'id' => 'form-quantity-selector'] ) !!}
 
 {!! Form::hidden('document_id', $document->id, array('id' => 'document_id')) !!}
-{!! Form::hidden('customer_id', $document->customer_id, array('id' => 'customer_id')) !!}
 
 
                <!-- br><h4  class="text-info" xclass="panel-title">
-                   {{l('Stock Availability')}}
+                   {{l('Issue Materials')}}
                </h4><br -->
               <div xclass="page-header">
-                  <div class="pull-right" xstyle="padding-top: 4px;">
+                  <div class="pull-right" style="padding-right: 90px;">
 
-                      <!-- a href="{{ URL::to('productionorders/create') }}" class="btn xbtn-sm btn-info" 
-                              title="{{l('Shipping Slip', 'layouts')}}"><i class="fa fa-plus"></i> <i class="fa fa-truck"></i> &nbsp;{{l('Shipping Slip', 'layouts')}}</a -->
+                      <a href="{{ URL::to('productionorders/create') }}" class="btn btn-sm btn-grey" 
+                              title="{{l('Add Lots to Lines')}}"><i class="fa fa-window-restore"></i> &nbsp;{{l('Add Lots')}}</a>
 
                   </div>
                   <h3>
-                      <span style="color: #dd4814;">{{l('Stock Availability')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
+                      <span style="color: #dd4814;">{{l('Issue Materials')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
                        
                   </h3><br>        
               </div>
@@ -32,20 +31,21 @@
         <thead>
             <tr>
                <th class="text-left">{{l('Line #')}}</th>
-                        <th class="text-center">{{l('Quantity')}}</th>
                         <th class="text-left">{{l('Reference')}}</th>
                			<th class="text-left">{{l('Description')}}</th>
 
                         <th class="text-right">{{l('On hand')}}</th>
-                        <th class="text-right">{{l('On order')}}</th>
+                        <!-- th class="text-right">{{l('On order')}}</th>
                         <th class="text-right">{{l('Allocated')}}</th>
-                        <th class="text-right">{{l('Available')}}</th>
+                        <th class="text-right">{{l('Available')}}</th -->
+
+                        <th class="text-right">{{l('Planned Quantity')}}</th>
                         <th class="text-right button-pad">
 
 
-                  <a class="btn btn-sm btn-info xbtn-pressure xbtn-sensitive xlines_quick_form" title="{{l('Full quantity')}}" sxtyle="opacity: 0.65;" onclick="getDocumentAvailability(0)"><i class="fa fa-th"></i> </a>
+                  <a class="btn btn-sm btn-info xbtn-pressure xbtn-sensitive xlines_quick_form" title="{{l('Full quantity')}}" sxtyle="opacity: 0.65;" onclick="getDocumentMaterials(0)"><i class="fa fa-th"></i> </a>
 
-                  <a class="btn btn-sm btn-info xbtn-grey xbtn-sensitive xcreate-document-service" title="{{l('Quantity on-hand only')}}" xstyle="background-color: #2bbbad;" onclick="getDocumentAvailability(1)"><i class="fa fa-th-large"></i> </a>
+                  <a class="btn btn-sm btn-info xbtn-grey xbtn-sensitive xcreate-document-service" title="{{l('Quantity on-hand only')}}" xstyle="background-color: #2bbbad;" onclick="getDocumentMaterials(1)"><i class="fa fa-th-large"></i> </a>
 
 
                         </th>
@@ -58,23 +58,26 @@
             <!-- tr style="color: #3a87ad; background-color: #d9edf7;" -->
             
 
-        @foreach ($document->lines->where('line_type', 'product') as $line)
+        @foreach ($document->lines->where('type', 'product') as $line)
             <tr>
                 <td>{{$line->line_sort_order }} 
                   @if ( $line->product->isPack() )
                     <i class="fa fa-gift btn-xs alert-warning" title="{{l('This Product is of Type "Grouped"', 'products')}}"></i>
                   @endif
                 </td>
-                <td class="text-center">{{ $line->as_quantity('quantity') }}</td>
                 <td>
                 <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
                 <td>
                 {{ $line->name }}</td>
 
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_onhand    ) }}</td>
+{{--
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_onorder   ) }}</td>
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_allocated ) }}</td>
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_available ) }}</td>
+--}}
+                <td class="text-right">{{ $line->as_quantity('required_quantity') }}
+
                 <td class="text-right active">
 
 <input name="dispatch[{{ $line->id }}]" class="form-control input-sm" type="text" size="3" maxlength="5" style="min-width: 0;
@@ -84,30 +87,6 @@
                 </td>
 
             </tr>
-
-            @if ( $line->product->isPack() )
-
-            @foreach( $line->product->packitems as $packitem )
-            <tr class="warning">
-                <td> </td>
-                <td class="text-center" title="{{ $line->as_quantity('quantity') }}x{{ $line->as_quantityable( $packitem->quantity ) }}">{{ $line->as_quantityable( $line->quantity * $packitem->quantity ) }}</td>
-                <td>
-                <a href="{{ URL::to('products/' . $packitem->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $packitem->product->reference }}</a></td>
-                <td>
-                {{ $packitem->product->name }}</td>
-
-                <td class="text-right">{{ $line->as_quantityable( $packitem->product->quantity_onhand    ) }}</td>
-                <td class="text-right">{{ $line->as_quantityable( $packitem->product->quantity_onorder   ) }}</td>
-                <td class="text-right">{{ $line->as_quantityable( $packitem->product->quantity_allocated ) }}</td>
-                <td class="text-right">{{ $line->as_quantityable( $packitem->product->quantity_available ) }}</td>
-                <td class="text-right active">
-                </td>
-
-            </tr>
-
-            @endforeach
-
-            @endif
             
         @endforeach
 
@@ -133,11 +112,12 @@
               <div class="panel-body well" style="margin-top: 30px">
 
                   <h3>
-                      <span style="color: #dd4814;">{{l('Create Shipping Slip')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
+                      <span style="color: #dd4814;">{{l('Finish Order')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
                        
                   </h3>
 
 <div class="row">
+Poner campos de cabecera: producto, cantidad, fecha terminación, almacén, lote!!! O quizá desacoplar la entrada de producto terminado de la salida de materias primas ???<br/><br/>http://localhost/thehub/public/productionorders/43757/edit<br/><br/>
 
          <div class="col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shippingslip_date') ? 'has-error' : '' }}">
             <div class="form-group">
@@ -190,7 +170,7 @@
 
                   <div class="xpanel-footer pull-right" style="margin-top: 10px">
 
-                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-quantity-selector').attr('action', '{{ route( 'customerorder.single.shippingslip' )}}');$('#form-quantity-selector').submit();return false;"><i class="fa fa-truck"></i> &nbsp;{{l('Confirm', 'layouts')}}</a>
+                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-quantity-selector').attr('action', '{{ route( 'customerorder.single.shippingslip' )}}');$('#form-quantity-selector').submit();return false;"><i class="fa fa-cubes"></i> &nbsp;{{l('Confirm', 'layouts')}}</a>
                   
                   </div>
 

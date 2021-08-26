@@ -5,7 +5,7 @@
 
 <div id="panel_document_availability" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   
-{{--  @ include('customer_orders._panel_customer_order_availability') --}}
+{{--  @ include('production_orders._panel_document_materials') --}}
 
 </div>
 
@@ -58,7 +58,7 @@
 --}}
 
 
-		function getDocumentAvailability(onhand_only=0)
+		function getDocumentMaterials(onhand_only=0)
 		{
            var panel = $("#panel_document_availability");
            var url = "{{ route( 'productionorders.materials', [$document->id] ) }}";
@@ -86,7 +86,7 @@
 		  var target = $(e.target).attr("href") // activated tab
 		  if (target == '#tab4default')
 		  {
-		  		getDocumentAvailability();
+		  		getDocumentMaterials();
 		  }
 		  /*
 		  if ($(target).is(':empty')) {

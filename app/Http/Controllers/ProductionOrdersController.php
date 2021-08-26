@@ -703,38 +703,35 @@ class ProductionOrdersController extends Controller
 
     public function getDocumentMaterials($id, Request $request)
     {
+        $onhand_only = $request->input('onhand_only', 0);
+
         $document = $this->productionorder
                         ->with('lines')
                         ->with('lines.product')
                         ->findOrFail($id);
 
-        $document_reference = $document->document_reference;
+        if ($onhand_only)
+            foreach ($document->lines as $line) {
+                # code...
+                if ( $line->type == 'product' ) {
+                    $quantity = $line->required_quantity;
+                    $onhand   = $line->product->quantity_onhand > 0 ? $line->product->quantity_onhand : 0;
+    
+                    $line->quantity_onhand =  $quantity > $onhand ? $onhand : $quantity;
 
-        $stockmovements = collect([]);
-        if ( $document->status == 'closed' )
-            $stockmovements = StockMovement::
-                                  with('warehouse')
-                                ->with('product')
-                                ->with('combination')
-//                              ->with('stockmovementable')
-//                                ->with('stockmovementable.document')
-                                ->where(function($query) use ($document_reference)
-                                {
-//                                    $query->where  ( 'id',                 'LIKE', '%'.$document_reference.'%' );
-                                    $query->where( 'document_reference', 'LIKE', '%'.$document_reference.'%' );
-                                })
-                                ->where(function($query)
-                                {
-                                    $query->where  ( 'stockmovementable_type', '' );
-                                    $query->orWhere( 'stockmovementable_type', 'LIKE', '%ShippingSlip%' );
-                                })
-                                ->orderBy('created_at', 'DESC')
-                                ->orderBy('reference', 'ASC')
-                                ->get();
+                } else {
+                    $line->quantity_onhand = $line->required_quantity;
 
-        // abi_r($stockmovements);die();
+                }
+            }
+        else
+            foreach ($document->lines as $line) {
+                # code...
 
-        return view('production_orders._panel_document_materials', compact('document', 'stockmovements'));
+                $line->quantity_onhand = $line->required_quantity;
+            }
+
+        return view('production_orders._panel_document_materials', compact('document'));
     }
 
     public function getDocumentAvailabilityModal($id, Request $request)

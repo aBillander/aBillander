@@ -71,4 +71,20 @@ return [
 	'Tool Reference'     => 'Referencia',
 	'Tool Name'     => 'Nombre del Utillaje',
 	'Location'     => 'Ubicación',
+
+	'Line #'     => 'Línea',
+	'Stock'     => 'Stock',
+	'On Order'     => 'Pendiente',
+	'Allocated'     => 'Reservado',
+	'Available'     => 'Disponible',
+	'On hand'     => 'Stock',
+
+	'Stock Availability'     => 'Disponibilidad de Stock',
+	'Full quantity'     => 'Servir todo',
+	'Quantity on-hand only'     => 'Servir sólo stock disponible',
+
+
+    'Add Lots' => 'Añadir Lotes',
+    'Add Lots to Line' => 'Añadir Lotes a la Línea',
+    'Add Lots to Lines' => 'Añadir Lotes a las Líneas',
 ];

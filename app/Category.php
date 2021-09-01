@@ -64,29 +64,50 @@ class Category extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public static function getcategoryList()
+    public static function getcategoryList( $onlySelectables = true )
     {
-            return Category::selectorList();
+            // abi_r($onlySelectables, true);
+            return Category::selectorList( $onlySelectables );
     }
     
-    static function selectorList()
+    static function selectorList( $onlySelectables = true )
     {            
         if ( Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
             $tree = [];
             $categories =  Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
             
             foreach($categories as $category) {
-                $label = $category->name;
+                $children = $category->children()->orderby('position', 'asc')->pluck('name', 'id')->toArray();
 
-                // Prevent duplicate names
-                while ( array_key_exists($label, $tree))
-                    $label .= ' ';
+                if ( $onlySelectables )
+                {
+                    // Only chidren are selectable
+                    
+                        $label = $category->name; // . ' ['.$category->id.'] ';
 
-                $tree[$label] = $category->children()->orderby('position', 'asc')->pluck('name', 'id')->toArray();
-                // foreach($category->children as $child) {
-                    // $tree[$category->name][$child->id] = $child->name;
-                // }
+                        // Prevent duplicate names
+                        while ( array_key_exists($label, $tree))
+                            $label .= ' ';
+
+                        $tree[$label] = $children;
+                        // foreach($category->children as $child) {
+                            // $tree[$category->name][$child->id] = $child->name;
+                        // }
+                    
+                } else {
+                    // All Categories are selectable
+
+                    $tree[$category->id] = $category->name;
+
+                    foreach ($children as $key => $child) {
+                        // code...
+                        $tree[$key] = '&nbsp; &nbsp; &#9492;&#9472; ' . $child;
+                    }
+
+                    // http://www.webusable.com/CharsExtendedTable.htm
+                }
             }
+
             // abi_r($tree, true);
             return $tree;
 

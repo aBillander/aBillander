@@ -627,6 +627,7 @@ if ( $invoices_report_format == 'compact') {
             $stock = $arr['stock'];
             $row = [];
             $row[] = $product->reference;
+//            $row[] = $product->reference." [".$product->id."]";
             $row[] = $product->name;
             $row[] = $arr['movement'] ? (float) $arr['movement']->cost_price_after_movement : '';
             $row[] = (float) $product->cost_average;

@@ -8,7 +8,7 @@
     <div class="modal-content">
       <div class="modal-header alert-info modal-header-help">
         <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title" id="_myModalLabel">Ordenes de Fabricacións</h3>
+        <h3 class="modal-title" id="_myModalLabel">Ordenes de Fabricación</h3>
       </div>
       <div class="modal-body">
 
@@ -16,24 +16,29 @@
 
 <h3>Flujo de trabajo</h3>
 
-<p>1.- Crear el Albarán. El Documento se crea en estado <strong>“Borrador”</strong>.</p>
+<p>1.- Crear la Orden de Fabricación. Una Orden de Fabricación puede crearse manualmente, o ser el resultado de algún proceso de planificación (cálculo de necesidades de Productos gestionados Bajo Pedido o gestionados por punto de Pedido). Normalmente la Orden se crea en estado <strong>“Lanzada”</strong>.</p>
 
-<p>2.- Modificar la cabecera, añadir / modificar / borrar líneas.</p>
+<p>2.- Excepcionalmente: modificar la cabecera, añadir / modificar líneas.</p>
 
-<p>3.- Confirmar el Albarán. El estado del Documento pasa a <strong>“Confirmado”</strong>. En este momento se asigna un número al Documento, según la Serie asociada, y se hace la reserva de Stock. Aún es posible modificar la cabecera y las líneas.</p>
+<p>3.- Realizar la Fabricación.</p>
+<p>- Sacar Materiales (Materias Primas o Semi-Elaborados) del Almacén y registrar las cantidades en aBillander.</p>
+<p>- Fabricar.</p>
+<p>- Entrar Producto Terminado al Almacén y registrar la cantidad en aBillander.</p>
+<div class="alert alert-warning">
+  <p>Los pasos anteriores pueden repetirse varias veces, por ejemplo: cuando se divide una fabricación en varias porciones, o cuando se malogra una parte de lo fabricado y son necesarios más Materiales para completar la fabricación.</p>
+</div>
+<p>- Devolver Materiales sobrantes al Almacén (si fuera necesario) y registrar las cantidades en aBillander.</p>
 
-<p>4.- Cerrar el Albarán. El estado del Documento pasa a <strong>“Cerrado”</strong>. En este momento se realizan los movimientos de stock.</p>
+<p>4.- Finalizar la Orden. El estado de la Orden pasa a <strong>“Finalizada”</strong>. En este momento se realizan los movimientos de stock.</p>
+
+{{--
 
 <div class="alert alert-warning">
     <p><strong>Cómo afecta al Stock</strong></p>
     <p></p>
-    <p>* Estado “Confirmado”: reserva de Stock.</p>
+    <p>* Estado “Lanzada”: reserva de Stock de Materiales y de Producto Terminado (previsión de futura entrada).</p>
     <p></p>
-    <p>* Estado “Cerrado”: se libera la reserva de Stock, y se disminuye el Stock Físico.</p>
-</div>
-
-<div class="alert alert-warning">
-  <p>Sólo los Albaranes cerrados son visibles por el Cliente en el Centro de Clientes.</p>
+    <p>* Estado “Finalizada”: se libera la reserva de Stock, y se aumenta / disminuye el Stock Físico de Materiales / Producto Terminado.</p>
 </div>
 
 <h3>Estado “Borrador”</h3>
@@ -92,6 +97,8 @@
 
 <p>- <strong>Entregado</strong>. La mercancía se entregó y el Albarán está firmado por el Cliente y el Transportista.</p>
 
+
+--}}
 
 
 

@@ -10,16 +10,16 @@
         <div class="page-header">
             <div class="pull-right">
 
-@if ( $document->status == 'closed' )
+@if ( $document->status == 'finished' )
                 <button type="button" class="btn btn-sm alert-danger" title="{{l('Document closed', 'layouts')}}" style="margin-right: 16px">
                     <i class="fa fa-lock"></i>
                 </button>
 
-    @if ( $document->uncloseable )
-                <a class="btn btn-sm btn-danger" href="{{ URL::to('productionorders/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
+    @if ( $document->unfinishable )
+                <a class="btn btn-sm btn-danger" href="{{ URL::to('productionorders/' . $document->id . '/unfinish') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
     @endif
 @else
-                <a class="btn xbtn-sm alert-success prevent-double-click" href="{{ URL::to('productionorders/' . $document->id . '/close') }}" title="{{l('Finish Order')}}"><i class="fa fa-unlock"></i> {{l('Finish Order')}}</a>
+                <a class="btn xbtn-sm alert-success prevent-double-click" href="{{ URL::to('productionorders/' . $document->id . '/finish') }}" title="{{l('Finish Order')}}"><i class="fa fa-unlock"></i> {{l('Finish Order')}}</a>
 
                 <a class="btn btn-sm btn-success  hide " href="{{ URL::to('productionorders/' . $document->id . '/pdf?preview') }}" title="{{l('Show Preview', [], 'layouts')}}" target="_blank"><i class="fa fa-eye"></i></a>
 @endif

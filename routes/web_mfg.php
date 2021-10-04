@@ -62,8 +62,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('productionorders/{document}/onhold/toggle', 'ProductionOrdersController@onholdToggle')->name('productionorders.onhold.toggle');
 
-        Route::get('productionorders/{document}/close',   'ProductionOrdersController@close'  )->name('productionorders.close'  );
-        Route::get('productionorders/{document}/unclose', 'ProductionOrdersController@unclose')->name('productionorders.unclose');
+        Route::get('productionorders/{document}/finish',   'ProductionOrdersController@finish'  )->name('productionorders.finish'  );
+        Route::get('productionorders/{document}/unfinish', 'ProductionOrdersController@unfinish')->name('productionorders.unfinish');
 
         Route::get('productionorders/{id}/deliver' , 'ProductionOrdersController@deliver'    )->name('productionorder.deliver');
 //        Route::post('productionorders/deliver/bulk', 'ProductionOrdersController@deliverBulk')->name('productionorders.bulk.deliver');

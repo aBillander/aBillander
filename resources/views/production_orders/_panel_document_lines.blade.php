@@ -19,7 +19,7 @@
                            </a></th>
                <th class="text-left">{{l('Description')}}</th>
                <th class="text-right">{{l('Planned Quantity')}}</th>
-               <th class="text-right">{{l('Finished Quantity')}}</th>
+               <th class="text-right">{{l('Real Quantity')}}</th>
 
                <th class="text-right"> </th>
                <th class="text-right">{{l('Warehouse')}}</th>

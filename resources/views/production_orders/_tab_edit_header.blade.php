@@ -62,18 +62,8 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('finished_quantity') ? 'has-error' : '' }}">
             {{ l('Finished Quantity') }}
-            {!! Form::text('finished_quantity', null, array('class' => 'form-control', 'id' => 'down_payment')) !!}
+            {!! Form::text('finished_quantity', null, array('class' => 'form-control', 'id' => 'finished_quantity')) !!}
             {!! $errors->first('finished_quantity', '<span class="help-block">:message</span>') !!}
-         </div>
-
-      </div>
-
-      <div class="row">
-         
-         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('work_center_id') ? 'has-error' : '' }}">
-            {{ l('Work Center') }}
-            {!! Form::select('work_center_id', $work_centerList, null, array('class' => 'form-control', 'id' => 'work_center_id')) !!}
-            {!! $errors->first('work_center_id', '<span class="help-block">:message</span>') !!}
          </div>
          
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
@@ -81,6 +71,16 @@
             {!! Form::select('warehouse_id', $warehouseList, null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
             {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
          </div>
+         
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('work_center_id') ? 'has-error' : '' }}">
+            {{ l('Work Center') }}
+            {!! Form::select('work_center_id', $work_centerList, null, array('class' => 'form-control', 'id' => 'work_center_id')) !!}
+            {!! $errors->first('work_center_id', '<span class="help-block">:message</span>') !!}
+         </div>
+
+      </div>
+
+      <div class="row">
 
       </div>
 
@@ -103,24 +103,24 @@
 
                   <input type="hidden" id="nextAction" name="nextAction" value="" />
 
-@if ($document->status=='draft' )
+@if ( 0 && $document->status=='draft' )
 @php
   $hidden = $document->lines->count() == 0 ? 'hidden' : ''; 
 @endphp
-                  <button class="btn btn-success {{ $hidden }} " type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndConfirm');this.form.submit();">
+                  <button class="btn btn-success {{ $hidden }} " type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndFinish');this.form.submit();">
                      <i class="fa fa-hdd-o"></i>
-                     &nbsp; {{l('Save & Confirm', [], 'layouts')}}
+                     &nbsp; {{l('Save & Finish', [], 'layouts')}}
                   </button>
 @endif
 
-                  <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();" title="{{l('Back to Documents')}}">
+                  <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();" title="{{l('Save Order')}}">
                      <i class="fa fa-floppy-o"></i>
                      &nbsp; {{l('Save', [], 'layouts')}}
                   </button>
 
-                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndContinue');this.form.submit();">
+                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndFinish');this.form.submit();" title="{{l('Save and Finish Order')}}">
                      <i class="fa fa-hdd-o"></i>
-                     &nbsp; {{l('Save & Continue', [], 'layouts')}}
+                     &nbsp; {{l('Save & Finish')}}
                   </button>
                </div>
 

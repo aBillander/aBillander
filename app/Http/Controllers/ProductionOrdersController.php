@@ -78,7 +78,7 @@ class ProductionOrdersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // 
     }
 
     /**
@@ -127,7 +127,54 @@ class ProductionOrdersController extends Controller
      */
     public function update(Request $request, ProductionOrder $productionorder)
     {
-        //
+        // Dates (cuen)
+        $this->mergeFormDates( ['due_date', 'finish_date'], $request );
+
+        $rules = $this->productionorder::$rules;
+
+        $this->validate($request, $rules);
+
+        /* ------------------------------------------------------------- */
+
+        $document = $productionorder;
+
+        // $need_update_totals = (
+        //     $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+        // ) ? true : false;
+
+        $document->fill($request->all());
+
+        $document->save();
+
+        // if ( $need_update_totals ) $document->makeTotals();
+
+        // Move on
+        $nextAction = $request->input('nextAction', '');
+
+        // abi_r($request->all());die();
+
+        switch ( $nextAction ) {
+            case 'saveAndFinish':
+                # code...
+                $document->finish();
+
+                return redirect()->route('productionorders.index')
+                        ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+                break;
+            
+            case 'saveAndContinue':
+                # code...
+
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        return redirect()->back()
+            ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
     }
 
     /**
@@ -150,8 +197,10 @@ class ProductionOrdersController extends Controller
      */
 
 
-    protected function finish(ProductionOrder $productionorder)
+    protected function finish(ProductionOrder $document)
     {
+        abi_r($document); die();
+
         // Can I?
         if ( $productionorder->lines->count() == 0 )
         {
@@ -179,8 +228,9 @@ class ProductionOrdersController extends Controller
     }
 
 
-    protected function unfinish(ProductionOrder $productionorder)
+    protected function unfinish(ProductionOrder $document)
     {
+        abi_r($document); die();
 
         if ( $productionorder->status != 'finished' )
         {

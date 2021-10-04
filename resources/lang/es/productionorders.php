@@ -20,6 +20,7 @@ return [
     'Quantity' => 'Cantidad',
 	'Finished Quantity'     => 'Cantidad terminada',
 	'Planned Quantity'     => 'Cantidad planificada',
+	'Real Quantity'     => 'Cantidad consumida',
 	'Work Center' => 'Centro de Trabajo',
 	'Provenience' => 'Procedencia',
 	'Reference' => 'Referencia',
@@ -87,4 +88,8 @@ return [
     'Add Lots' => 'Añadir Lotes',
     'Add Lots to Line' => 'Añadir Lotes a la Línea',
     'Add Lots to Lines' => 'Añadir Lotes a las Líneas',
+
+    'Save & Finish'     => 'Guardar y Terminar',
+    'Save Order' => 'Guardar Orden de Fabricación',
+    'Save and Finish Order' => 'Guardar y Terminar Orden de Fabricación',
 ];

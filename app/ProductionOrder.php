@@ -31,9 +31,14 @@ class ProductionOrder extends Model
                             'warehouse_id', 'production_sheet_id'
                           ];
 
-    public static $rules = array(
-//    	'id'    => 'required|unique',
-    	);
+    public static $rules = [
+                            'due_date' => 'required|date',
+                            'finish_date' => 'nullable|date|after_or_equal:document_date',
+//                            'warehouse_id' => 'exists:warehouses,id',
+//                            'work_center_id' => 'exists:work_centers,id',
+                            'planned_quantity' => 'required|numeric',
+                            'finished_quantity' => 'required|numeric',
+               ];
     
 
 
@@ -76,6 +81,15 @@ class ProductionOrder extends Model
     {
         // return !( $this->status == 'closed' || $this->status == 'canceled' );
         return $this->status != 'finished';
+    }
+
+    public function getUnfinishableAttribute()
+    {
+        if ( $this->status != 'finished' ) return false;
+
+        // if ( optional($this->rightAscriptions)->count() || optional($this->leftAscriptions)->count() ) return false;
+
+        return true;
     }
 
 

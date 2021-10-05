@@ -195,6 +195,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/jennifer/reports/invoices'  , 'JenniferController@reportInvoices'  )->name('jennifer.reports.invoices');
         Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
         Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
+        Route::post('/jennifer/reports/customersbalance' , 'JenniferController@reportCustomersBalance' )->name('jennifer.reports.customersbalance');
         Route::post('/jennifer/reports/mod347'                   , 'JenniferController@index347'    )->name('jennifer.reports.index347');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/show', 'JenniferController@index347Show'    )->name('jennifer.reports.index347.show');
         Route::get( '/jennifer/reports/mod347/{mod347_year}'     , 'JenniferController@reportModelo347'    )->name('jennifer.reports.mod347');

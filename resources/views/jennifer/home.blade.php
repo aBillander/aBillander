@@ -255,6 +255,50 @@
 
     </div><!-- div class="row" ENDS -->
 
+
+
+
+
+    <div class="row">
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-warning">
+              <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-euro"></i> Saldo de Clientes</h3>
+              </div>
+
+
+{!! Form::open(array('route' => 'jennifer.reports.customersbalance', 'class' => 'form')) !!}
+
+              <div class="panel-body">
+
+                  <div class="row">
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+        {!! Form::label('balance_date_to_form', 'Saldo a Fecha') !!}
+        {!! Form::text('balance_date_to_form', null, array('id' => 'balance_date_to_form', 'class' => 'form-control')) !!}
+    </div>
+
+                  </div>
+
+              </div>
+
+               <div class="panel-footer text-right">
+                  <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
+                     <i class="fa fa-file-text-o"></i>
+                     &nbsp; Ver Listado
+                  </button>
+
+            </div>
+
+{!! Form::close() !!}
+
+            </div>
+            </div>
+
+
+    </div><!-- div class="row" ENDS -->
+
 </div>
 
 
@@ -475,6 +519,14 @@
 
   $(function() {
     $( "#inventory_date_to_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+  $(function() {
+    $( "#balance_date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"

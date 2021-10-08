@@ -392,7 +392,11 @@ class ProductsController extends Controller
               'default' => l('Default Configuration'),
         ];
 
-        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists', 'length_unit', 'weight_unit', 'volume_unit', 'volume_conversion', 'out_of_stockList'));
+        // Can modify 'reference'?
+        $can_modify_reference = $product->stockmovements->count() == 0;
+        // To do: you cannot modify Product Reference if Product is referenced within a Document
+
+        return view('products.edit', compact('product', 'product_measure_unitList', 'bom', 'groups', 'pricelists', 'length_unit', 'weight_unit', 'volume_unit', 'volume_conversion', 'out_of_stockList', 'can_modify_reference'));
     }
 
     /**

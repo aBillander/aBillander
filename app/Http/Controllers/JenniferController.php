@@ -704,7 +704,7 @@ if ( $invoices_report_format == 'compact') {
         // abi_r($data, true);
 
         // Generate and return the spreadsheet
-        Excel::create('Inventario', function($excel) use ($sheetName, $data) {
+        Excel::create('Inventario '.$date->format('Y-m-d'), function($excel) use ($sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');

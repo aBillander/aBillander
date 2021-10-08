@@ -343,25 +343,29 @@ class ImportCustomersController extends Controller
                     // Check related tables
                     // 'customer_group_id',   'price_list_id',    'payment_method_id',    'shipping_method_id'
 
-                    if ( $data['customer_group_id'] )
+                    if ( isset( $data['customer_group_id'] ) )
+                    // if ( $data['customer_group_id'] )
                     {
                         if ( !\App\CustomerGroup::where('id', $data['customer_group_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'customer_group_id' no existe. ".$data['customer_group_id']);
                     }
 
-                    if ( $data['price_list_id'] )
+                    if ( isset( $data['price_list_id'] ) )
+                    // if ( $data['price_list_id'] )
                     {
                         if ( !\App\PriceList::where('id', $data['price_list_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'price_list_id' no existe. ".$data['price_list_id']);
                     }
 
-                    if ( $data['payment_method_id'] )
+                    if ( isset( $data['payment_method_id'] ) )
+                    // if ( $data['payment_method_id'] )
                     {
                         if ( !\App\PaymentMethod::where('id', $data['payment_method_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'payment_method_id' no existe. ".$data['payment_method_id']);
                     }
 
-                    if ( $data['shipping_method_id'] )
+                    if ( isset( $data['shipping_method_id'] ) )
+                    // if ( $data['shipping_method_id'] )
                     {
                         if ( !\App\ShippingMethod::where('id', $data['shipping_method_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'shipping_method_id' no existe. ".$data['shipping_method_id']);
@@ -370,6 +374,7 @@ class ImportCustomersController extends Controller
 
                     $data['notes'] = $data['notes'] ?? '';
 
+                    // Discard data sanitization (for now)
                     if ( 0 && $data['phone'] )
                     {
                             $phone = str_replace([' '], '', $data['phone']);
@@ -385,6 +390,7 @@ class ImportCustomersController extends Controller
                             }
                     }
 
+                    // Discard data sanitization (for now)
                     if ( 0 && $data['phone_mobile'] )
                     {
                             $phone = str_replace([' '], '', $data['phone_mobile']);
@@ -414,6 +420,7 @@ class ImportCustomersController extends Controller
 //                        $data['webshop_id'] = $reference_external - 50000;
 
 
+                    if ( isset( $data['address1'] ) )
                     if ( strlen( $data['address1'] ) > 128 )
                     {
                             $data['notes'] .= "\n" . $data['address1'];
@@ -421,6 +428,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'address1' es demasiado largo (128). ".$data['address1']);
                     }
 
+                    if ( isset( $data['firstname'] ) )
                     if ( strlen( $data['firstname'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['firstname'];
@@ -428,6 +436,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'firstname' es demasiado largo (32). ".$data['firstname']);
                     }
 
+                    if ( isset( $data['lastname'] ) )
                     if ( strlen( $data['lastname'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['lastname'];
@@ -435,6 +444,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'lastname' es demasiado largo (32). ".$data['lastname']);
                     }
 
+                    if ( isset( $data['email'] ) )
                     if ( strlen( $data['email'] ) > 128 )
                     {
                             $data['notes'] .= "\n" . $data['email'];
@@ -442,6 +452,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'email' es demasiado largo (128). ".$data['email']);
                     }
 
+                    if ( isset( $data['phone'] ) )
                     if ( strlen( $data['phone'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['phone'];
@@ -449,6 +460,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'phone' es demasiado largo (32). ".$data['phone']);
                     }
 
+                    if ( isset( $data['phone_mobile'] ) )
                     if ( strlen( $data['phone_mobile'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['phone_mobile'];

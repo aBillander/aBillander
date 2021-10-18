@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 use Excel;
 
 // Helferinnen
+use App\Http\Controllers\HelferinTraits\JenniferCustomersBalance;
 use App\Http\Controllers\HelferinTraits\JenniferModelo347Trait;
 
 use App\Traits\DateFormFormatterTrait;
 
 class JenniferController extends Controller
 {
+    use JenniferCustomersBalance;
     use JenniferModelo347Trait;
    
    use DateFormFormatterTrait;
@@ -627,6 +629,7 @@ if ( $invoices_report_format == 'compact') {
             $stock = $arr['stock'];
             $row = [];
             $row[] = $product->reference;
+//            $row[] = $product->reference." [".$product->id."]";
             $row[] = $product->name;
             $row[] = $arr['movement'] ? (float) $arr['movement']->cost_price_after_movement : '';
             $row[] = (float) $product->cost_average;
@@ -701,7 +704,7 @@ if ( $invoices_report_format == 'compact') {
         // abi_r($data, true);
 
         // Generate and return the spreadsheet
-        Excel::create('Inventario', function($excel) use ($sheetName, $data) {
+        Excel::create('Inventario '.$date->format('Y-m-d'), function($excel) use ($sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');

@@ -54,6 +54,9 @@ return [
 	'Records in the list [ :id ] are not groupable, because ":field" is not the same. ' => 'Los Registros en la lista [ :id ] no pueden agruparse, porque ":field" no es el mismo para todos. ',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
 
+	'There are Taxes that are not defined for the Country of the Customer &#58&#58 (:id) ' => 'Hay Impuestos que no están definidos para el País del Cliente',
+	'There are Ecotaxes that are not defined for the Country of the Customer &#58&#58 (:id) ' => 'Hay Eco-Impuestos que no están definidos para el País del Cliente',
+
 	'Too many Records for this Query &#58&#58 (:id) ' => 'Demasiados Registros para esta Consulta &#58&#58 (:id) ',
 
 	'Your Document has been sent! &#58&#58 (:id) '     => 'Su Documento ¡ha sido enviado! &#58&#58 (:id) ',

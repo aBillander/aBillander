@@ -11,6 +11,7 @@ use App\MeasureUnit;
 use App\Combination;
 use App\Currency;
 use App\Address;
+use App\Tax;
 
 use App\StockMovement;
 
@@ -166,6 +167,45 @@ class BillableController extends Controller
 
         return $document;
 */
+        
+        // Let's see if we can add lines
+        $cannot_add_lines_msg = '';
+        $cannot_add_lines_data = ['id' => ''];
+
+        // Check Taxes of the Customer Country
+        if ( $document->lines->count() == 0 )       // Check only with empty doc. Assume no changes afterwards!!!
+        {
+            $taxing_address = $document->taxingaddress;
+
+            // Loop throu all Taxes
+            $taxes = Tax::
+                          where('active', '>', 0)
+                        ->get();
+
+            foreach ($taxes as $tax) {
+                // Tax defeined for this address?
+                $tax_percent = $tax->getTaxPercent( $taxing_address );
+
+                if( is_null( $tax_percent ) )
+                {
+                    $cannot_add_lines_msg = 'There are Taxes that are not defined for the Country of the Customer &#58&#58 (:id) ';
+                    break;
+                }
+            }
+
+            if ( $cannot_add_lines_msg == '' )          // if ( $cannot_add_lines_msg != '' ) => then no more checks need to be done!
+            // Ecotaxes stuff
+            if ( Configuration::isTrue('ENABLE_ECOTAXES') )
+            {
+                // To do: perform check
+                
+            }
+        }
+
+        if ( $cannot_add_lines_msg != '' )
+            return view($this->view_path.'._panel_document_lines_cannot_add', $this->modelVars() + compact('document', 'cannot_add_lines_msg', 'cannot_add_lines_data'));
+
+
         if ( Configuration::isTrue('ENABLE_LOTS') )
         if ( strpos($this->model, 'ShippingSlip') !== false )
         {

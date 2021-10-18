@@ -248,7 +248,10 @@ display: inline-block;">
 
                                     <br />{{ (int) $line->pmu_conversion_rate}}x<span class="text-warning">{{ $line->as_priceable($line->unit_customer_final_price) }}</span>
 
+                @if ($line->unit_customer_final_price < $line->unit_customer_price)
+
                                    <br /><span class="text-info crossed">{{ $line->as_priceable($line->unit_customer_price) }}</span>
+                @endif
                                     
                                 </div>
     

@@ -239,6 +239,9 @@ class ImportCustomersController extends Controller
         // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
         Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
         {
+            //
+            // Remember: spread sheet .xlsx format only!!
+            //
             
  /*           $reader->each(function ($sheet){
                 // ::firstOrCreate($sheet->toArray);
@@ -313,10 +316,26 @@ class ImportCustomersController extends Controller
 
 
                     // Precedence
-                    if ( $data['reference_external'] )
+                    $customer_index = 'id';
+                    if ( isset( $data['id'] ) && $data['id'] > 0 )
                     {
+                        // Ok. Product should exist
+                        ;
+                    }
+                    else if ( isset($data['reference_external']) && $data['reference_external'] )
+                    {
+                        // Ok. Product does not exist and comes from an external system
+
                         if ( isset( $data['id'] ) )
                              unset( $data['id'] );
+
+                        $customer_index = 'reference_external';
+                    }
+                    else
+                    {
+                        // Ok. Product does not exist
+
+                        $data['id'] = '';
                     }
 
 
@@ -324,25 +343,29 @@ class ImportCustomersController extends Controller
                     // Check related tables
                     // 'customer_group_id',   'price_list_id',    'payment_method_id',    'shipping_method_id'
 
-                    if ( $data['customer_group_id'] )
+                    if ( isset( $data['customer_group_id'] ) )
+                    // if ( $data['customer_group_id'] )
                     {
                         if ( !\App\CustomerGroup::where('id', $data['customer_group_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'customer_group_id' no existe. ".$data['customer_group_id']);
                     }
 
-                    if ( $data['price_list_id'] )
+                    if ( isset( $data['price_list_id'] ) )
+                    // if ( $data['price_list_id'] )
                     {
                         if ( !\App\PriceList::where('id', $data['price_list_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'price_list_id' no existe. ".$data['price_list_id']);
                     }
 
-                    if ( $data['payment_method_id'] )
+                    if ( isset( $data['payment_method_id'] ) )
+                    // if ( $data['payment_method_id'] )
                     {
                         if ( !\App\PaymentMethod::where('id', $data['payment_method_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'payment_method_id' no existe. ".$data['payment_method_id']);
                     }
 
-                    if ( $data['shipping_method_id'] )
+                    if ( isset( $data['shipping_method_id'] ) )
+                    // if ( $data['shipping_method_id'] )
                     {
                         if ( !\App\ShippingMethod::where('id', $data['shipping_method_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'shipping_method_id' no existe. ".$data['shipping_method_id']);
@@ -351,6 +374,7 @@ class ImportCustomersController extends Controller
 
                     $data['notes'] = $data['notes'] ?? '';
 
+                    // Discard data sanitization (for now)
                     if ( 0 && $data['phone'] )
                     {
                             $phone = str_replace([' '], '', $data['phone']);
@@ -366,6 +390,7 @@ class ImportCustomersController extends Controller
                             }
                     }
 
+                    // Discard data sanitization (for now)
                     if ( 0 && $data['phone_mobile'] )
                     {
                             $phone = str_replace([' '], '', $data['phone_mobile']);
@@ -395,6 +420,7 @@ class ImportCustomersController extends Controller
 //                        $data['webshop_id'] = $reference_external - 50000;
 
 
+                    if ( isset( $data['address1'] ) )
                     if ( strlen( $data['address1'] ) > 128 )
                     {
                             $data['notes'] .= "\n" . $data['address1'];
@@ -402,6 +428,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'address1' es demasiado largo (128). ".$data['address1']);
                     }
 
+                    if ( isset( $data['firstname'] ) )
                     if ( strlen( $data['firstname'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['firstname'];
@@ -409,6 +436,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'firstname' es demasiado largo (32). ".$data['firstname']);
                     }
 
+                    if ( isset( $data['lastname'] ) )
                     if ( strlen( $data['lastname'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['lastname'];
@@ -416,6 +444,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'lastname' es demasiado largo (32). ".$data['lastname']);
                     }
 
+                    if ( isset( $data['email'] ) )
                     if ( strlen( $data['email'] ) > 128 )
                     {
                             $data['notes'] .= "\n" . $data['email'];
@@ -423,6 +452,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'email' es demasiado largo (128). ".$data['email']);
                     }
 
+                    if ( isset( $data['phone'] ) )
                     if ( strlen( $data['phone'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['phone'];
@@ -430,6 +460,7 @@ class ImportCustomersController extends Controller
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'phone' es demasiado largo (32). ".$data['phone']);
                     }
 
+                    if ( isset( $data['phone_mobile'] ) )
                     if ( strlen( $data['phone_mobile'] ) > 32 )
                     {
                             $data['notes'] .= "\n" . $data['phone_mobile'];
@@ -503,14 +534,14 @@ if ($country) {
                     \DB::beginTransaction();
                     try {
 
-                        $customer = $this->customer->where( 'reference_external', $data['reference_external'] )
+                        $customer = $this->customer->where( $customer_index, $data[$customer_index] )
                                                     ->with('address')
                                                     ->first();
 
                         if ( !($params['simulate'] > 0) && $customer ) 
                         {
 
-                            $logger->log("INFO", "El Cliente ".$data['reference_external'] ." existe y se actualizará");
+                            $logger->log("INFO", "El Cliente ".$data[$customer_index] ." existe y se actualizará");
 
                             $address = $customer->address;
 
@@ -553,7 +584,7 @@ if ($country) {
 
                             $customer->update( $mini_data );
 */
-                            // $logger->log("INFO", "El Cliente ".$data['reference_external'] ." se ha actualizado (".$customer->id.")");
+                            // $logger->log("INFO", "El Cliente ".$data[$customer_index] ." se ha actualizado (".$customer->id.")");
 
                             $i_updated++;
 
@@ -613,7 +644,7 @@ if ($country) {
 
                             if ( !$customer )
 
-                            $logger->log("INFO", "El Cliente ".$data['reference_external'] ." no existe y debe crearse");
+                            $logger->log("INFO", "El Cliente ".$data[$customer_index] ." no existe y debe crearse");
 
                         }
 
@@ -624,7 +655,7 @@ if ($country) {
 
                             \DB::rollback();
 
-                            $item = '[<span class="log-showoff-format">'.$data['reference_external'].'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
+                            $item = '[<span class="log-showoff-format">'.$data[$customer_index].'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
 
                             $logger->log("ERROR", "Se ha producido un error al procesar el Cliente ".$item.":<br />" . $e->getMessage());
 
@@ -681,7 +712,7 @@ if ($country) {
                         ->with('address.country')
                         ->with('address.state')
 //                        ->with('currency');
-                        ->orderBy('reference_external', 'asc')
+                        ->orderBy('id', 'asc')
                         ->get();
 
 
@@ -689,7 +720,7 @@ if ($country) {
         $data = [];  
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference_external', 'webshop_id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
+        $headers = [ 'id', 'reference_external', 'accounting_id', 'webshop_id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
                     'customer_group_id', 'CUSTOMER_GROUP_NAME', 'price_list_id', 'PRICE_LIST_NAME', 
                     'payment_method_id', 'PAYMENT_METHOD_NAME', 'shipping_method_id', 'SHIPPING_METHOD_NAME', 
                     'outstanding_amount_allowed', 'notes', 'allow_login', 'blocked', 'active', 

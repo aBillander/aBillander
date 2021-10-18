@@ -148,7 +148,7 @@ class Customer extends Model {
 
     public function getReferenceAccountingAttribute()
     {
-        if ( $this->reference_external ) return $this->reference_external;
+        // if ( $this->reference_external ) return $this->reference_external;
 
         if ( $this->accounting_id ) return $this->accounting_id;
 

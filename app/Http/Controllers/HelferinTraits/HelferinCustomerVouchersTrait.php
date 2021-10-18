@@ -94,7 +94,7 @@ trait HelferinCustomerVouchersTrait
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['Factura', 'Cliente', 'Concepto', 'Fecha Vencimiento', 'Fecha de Pago', 'Cantidad', 'Remesable (1=si)', 'Estado', 'Remesado (1=si)', ];
+        $header_names = ['Factura', 'Cliente', 'Concepto', 'Fecha Vencimiento', 'Fecha de Pago', 'Cantidad', 'Remesable (1=si)', 'Estado', 'Remesado (1=si)', '', 'id Cliente', 'id Contabilidad Cliente'];
 
         $data[] = $header_names;
 
@@ -113,6 +113,10 @@ trait HelferinCustomerVouchersTrait
                 $row[] = $payment->auto_direct_debit > 0 ? 1 : 0;
                 $row[] = $payment->status_name;
                 $row[] = $payment->bank_order_id > 0 ? 1 : 0;
+
+                $row[] = '';
+                $row[] = $payment->customerInvoice->customer->id ?? '';
+                $row[] = $payment->customerInvoice->customer->accounting_id ?? '';
     
                 $data[] = $row;
 
@@ -134,7 +138,7 @@ trait HelferinCustomerVouchersTrait
                 $sheet->mergeCells('A1:C1');
                 $sheet->mergeCells('A2:C2');
 
-                $sheet->getStyle('A4:I4')->applyFromArray([
+                $sheet->getStyle('A4:L4')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

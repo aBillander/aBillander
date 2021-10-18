@@ -369,4 +369,7 @@ return [
 
     'This Product is of Type "Grouped"' => 'Este Producto es de Tipo "Agrupado"',
 
+
+    'Available Stock: <br />[Physical Stock] <br />+ [Orders to Suppliers] <br />- [Customer Orders] <br />+ [Not finished Production Orders] <br />- [Production Orders Reserves]' => 'Stock Disponible: <br />[Stock físico] <br />+ [Pedios a Proveedores] <br />- [Pedidos de Clientes] <br />+ [Ordenes de Fabricación no terminadas] <br />- [Reservas de Ordenes de Fabricación]',
+
 ];

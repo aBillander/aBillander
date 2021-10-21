@@ -52,7 +52,24 @@
         <a href="{{ URL::to('productionsheets/'.$sheet->id.'/assign/lots') }}" class="btn btn-grey" onclick="loadingpage();"><i class="fa fa-window-restore"></i> {{ l('Assign Lots to Orders') }}</a>
 @endif
 
-        <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}" class="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
+        <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}" class=" hide  btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
+
+
+<div class="btn-group">
+  <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=onorder" class="btn btn-success" onclick="loadingpage();" title="{{ l('Solo Bajo Pedido') }}"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
+  <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+
+  <ul class="dropdown-menu">
+    <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=onorder" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Solo Bajo Pedido') }}</a></li>
+    
+    <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=reorder" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Solo Punto de Pedido') }}</a></li>
+    
+    <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=all" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Todos') }}</a></li>
+    
+    <!-- li><a href="#">Something else here</a></li>
+    <li class="divider"></li -->
+  </ul>
+</div>
 
 
                 <div class="btn-group">

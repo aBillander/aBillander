@@ -29,8 +29,19 @@ class ProductionSheet extends Model
     |--------------------------------------------------------------------------
     */
     
-    public function calculateProductionOrders( $withStock = false )
+    public function calculateProductionOrders( $params )
     {
+        // Params all set?
+        if ( !array_key_exists('withStock', $params) )
+            $params['withStock'] = false;
+
+        if ( !array_key_exists('mrp_type',  $params) )
+            $params['mrp_type'] = 'onorder';
+
+        // Set variables: $withStock, $mrp_type
+        extract($params);
+
+        // abi_r($params);abi_r(($withStock === false?'true':'false').'  '.$mrp_type);die();
 
         // Delete current Production Orders
         $porders = $this->productionorders()->get();
@@ -45,7 +56,7 @@ class ProductionSheet extends Model
         // Do the Mambo!
         // STEP 1
         // Calculate raw requirements
-        $requirements = $this->customerorderlinesGrouped( $withStock );
+        $requirements = $this->customerorderlinesGrouped( $withStock, $mrp_type );
 
         foreach ( $requirements as $pid => $line ) {
             // Discard Products with stock
@@ -214,7 +225,7 @@ class ProductionSheet extends Model
         return $num;
     }
 
-    public function customerorderlinesGrouped( $withStock = false )
+    public function customerorderlinesGrouped( $withStock = false, $mrp_type = 'onorder' )
     {
         $this->load('customerorderlines', 'customerorderlines.product');
 /*
@@ -231,10 +242,18 @@ class ProductionSheet extends Model
         
 
         // Filter Lines
+        // Filter 1: procurement_type
         $lines = $this->customerorderlines->filter(function ($value, $key) {
             return $value->product && 
                    ( ($value->product->procurement_type == 'manufacture') ||
                      ($value->product->procurement_type == 'assembly'   )    );
+        });
+
+        // Filter 2: mrp_type
+        $lines = $lines->filter(function ($value, $key) use ($mrp_type) {
+            return $value->product && 
+                   ( ($value->product->mrp_type == $mrp_type) ||
+                     ($value->product->mrp_type == 'all'    )    );
         });
 
         $num = $lines
@@ -244,7 +263,7 @@ class ProductionSheet extends Model
                       $stock = 0.0;
 
                       if ($product->procurement_type == 'manufacture')
-                      // Assembies will be fit later on (groupPlannedOrders)
+                      // Assemblies will be fit later on (groupPlannedOrders)
                       if ( $withStock )
                       {
                             if ( $product->stock_control )

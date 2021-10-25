@@ -90,6 +90,9 @@ class ProductionSheet extends Model
         // Para los semielaborados:
         // - NO se tiene en cuenta el stock
         // - NO se tiene en cuenta el tamaño del lote
+        // - NO están agrupados
+        //
+        // ^-- Esto se ajustará en un paso posterior
 
         // abi_r($this->sandbox->getPlannedOrders(), true);
 
@@ -102,7 +105,7 @@ class ProductionSheet extends Model
         // abi_r($this->sandbox->getPlannedOrders(), true);
 
         // Now we may have orders with some onhand quantity
-
+        // Productos que debe "descontarse" el stock físico
         $pIDs = $this->sandbox->getPlannedOrders()
                 ->where('product_stock', '>', 0.0)
                 ->pluck('product_id');
@@ -115,11 +118,15 @@ class ProductionSheet extends Model
             // this check is necessary, since collection is modified on the fly
             if (  $order->product_stock <= 0.0 ) continue;     // Noting to do here
 
+            // Cantidad a descontar de la Orden de Fabricación porque hay stock:
             $qty = ( $order->planned_quantity < $order->product_stock ) ?
-                    $order->planned_quantity :
-                    $order->product_stock    ;
+                    $order->planned_quantity :  // No hace falta fabricar (hay stock), por tanto se descuenta 
+                                                //  toda la cantidad planificada (que es lo que se iba a fabricar!)
+                    $order->product_stock    ;  // Se descuenta la cantidad en stock, ya que como está en stock, 
+                                                // no hace fata fabricar etas unidades
 
-            $quantity = (-1.0) * $qty;
+            $quantity = (-1.0) * $qty;  // <= esta es la cantidad que hay que restar a 
+                                        // la Orden de Fabricación (y a sus hijos según BOM)
             $this->sandbox->equalizePlannedMultiLevel($pID, $quantity);
 
             // ProductionOrders collection has been equalized ()
@@ -213,17 +220,6 @@ class ProductionSheet extends Model
     {
         return $this->hasManyThrough('App\CustomerOrderLine', 'App\CustomerOrder', 'production_sheet_id', 'customer_order_id', 'id', 'id');
     }
-    
-    public function customerorderlinesQuantity()
-    {
-        $mystuff = $this->customerorderlines;
-
-        $num = $mystuff->groupBy('product_id')->map(function ($row) {
-            return $row->sum('quantity');
-        });
-
-        return $num;
-    }
 
     public function customerorderlinesGrouped( $withStock = false, $mrp_type = 'onorder' )
     {
@@ -292,7 +288,7 @@ class ProductionSheet extends Model
         // abi_r( $num, true);
 
         // Sort order
-        return $num;        // ->sortBy('reference');
+        return $num;        // <= colección product_id => [stock, quantity, ...];
     }
 
     public function customerorderlinesGroupedByWorkCenter( $work_center_id = null )
@@ -425,7 +421,11 @@ class ProductionSheet extends Model
         return $num->sortBy('reference');
     }
 
-    /* Products not Scheduled */
+    /* 
+       Products not Scheduled
+         Dentro de una Hoja de Producción: son los que hay algún Pedido de Cliente, 
+         pero no existe una Orden de Fabricación creada
+    */
     
     public function productsNotScheduled()
     {

@@ -16,7 +16,7 @@ class ProductionPlanner
         $this->due_date = $due_date;
 
         $this->orders_planned = collect([]);
-        $this->products_planned = collect([]);
+        $this->products_planned = collect([]);  // Collection of Production Order Models
     }
 
 
@@ -193,7 +193,7 @@ class ProductionPlanner
                 'production_sheet_id' => $this->production_sheet_id,
             ]);
 
-            $this->orders_planned->push($order);
+            $this->orders_planned->push($order);  // Collection of Production Order Models
         }
 
 

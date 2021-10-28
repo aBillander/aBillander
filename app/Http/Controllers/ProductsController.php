@@ -142,7 +142,9 @@ class ProductsController extends Controller
 
         $bom = $categories;
 
-        return view('products.index', compact('category_id', 'products', 'bom', 'breadcrumb'));
+        $product_mrptypeList = Product::getMrpTypeList();
+
+        return view('products.index', compact('category_id', 'products', 'bom', 'breadcrumb', 'product_mrptypeList'));
         
     }
 

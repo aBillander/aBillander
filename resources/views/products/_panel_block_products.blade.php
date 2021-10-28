@@ -81,7 +81,11 @@
 
       <td>{{ $product->name }}</td>
 			<!-- td>{{ $product->measureunit->name }}</td -->
-            <td>{{ $product->as_quantity('quantity_onhand') }}</td>
+            <td>{{ $product->as_quantity('quantity_onhand') }}
+@if( $product->stock_control > 0 )
+     <i class="fa fa-eye text-warning" title="{{ l('Stock Control') }}"></i>
+@endif
+            </td>
             <!-- td>{{ $product->as_price('cost_price') }}</td -->
             <td>{{ $product->displayPrice }}</td>
             <!-- td>{ { $product->tax->name }}</td -->

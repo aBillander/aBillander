@@ -71,8 +71,8 @@ class ProductionSheet extends Model
             $orders = $this->sandbox->addPlannedMultiLevel([
                 'product_id' => $pid,
 
-                'required_quantity' => $line['quantity'],
-                'planned_quantity' => $order_quantity,
+                'required_quantity' => $line['quantity'],   // Cantidad que debe fabricarse, según BOM y deducido el stock
+                'planned_quantity'  => $order_quantity,     // Cantidad que se fabricará, ajustando el tamaño del lote
 
                 'notes' => '',
 
@@ -159,9 +159,9 @@ class ProductionSheet extends Model
 
 
         // Release
-        foreach ($lines_summary as $pid => $line) {
+        foreach ($lines_summary as $pid => $line) {        // $line es un objeto ProductionOrder
 
-            if ( Configuration::isFalse('MRP_WITH_ZERO_ORDERS') && $line['planned_quantity'] <= 0.0 )
+            if ( Configuration::isFalse('MRP_WITH_ZERO_ORDERS') && $line->planned_quantity <= 0.0 )
                 continue;       // Nothing to do here
 
             // Create Production Order
@@ -171,14 +171,14 @@ class ProductionSheet extends Model
                 'product_id' => $pid,
 //                'product_reference' => $line['reference'],
 //                'product_name' => $line['name'],
-                'required_quantity' =>  $line['required_quantity'],
-                'planned_quantity' => $line['planned_quantity'],
+                'required_quantity' =>  $line->required_quantity,
+                'planned_quantity' => $line->planned_quantity,
 //                'product_bom_id' => 1,
                 'due_date' => $this->due_date,
                 'notes' => '',
 //                
 //                'work_center_id' => 2,
-                'manufacturing_batch_size' => $line['manufacturing_batch_size'],
+                'manufacturing_batch_size' => $line->manufacturing_batch_size,
 //                'warehouse_id' => 0,
                 'production_sheet_id' => $this->id,
             ]);
@@ -223,19 +223,7 @@ class ProductionSheet extends Model
 
     public function customerorderlinesGrouped( $withStock = false, $mrp_type = 'onorder' )
     {
-        $this->load('customerorderlines', 'customerorderlines.product');
-/*
-        $lines = $this->customerorderlines
-                    ->whereHas('customerorderlines', function($query) {
-                            $query->whereHas('product', function($query1) {
-                                   $query1->  where('procurement_type', 'manufacture');
-                                   $query1->orWhere('procurement_type', 'assembly');
-                            });
-                    })
- //                   ->with('customerorderlines.product')
-                    ;
-*/
-        
+        $this->load('customerorderlines', 'customerorderlines.product');        
 
         // Filter Lines
         // Filter 1: procurement_type
@@ -263,9 +251,10 @@ class ProductionSheet extends Model
                       if ( $withStock )
                       {
                             if ( $product->stock_control )
-                                $stock = $product->quantity_onhand;
+                                $stock = $product->quantity_onhand; // Stock físico
                       }
 
+                      // Cantidad que se debe fabricar
                       $quantity = $group->sum('quantity') - $stock;
                       
                       if ( $quantity < 0.0 ) $quantity = 0.0;        // No Manufacturing needed
@@ -276,6 +265,7 @@ class ProductionSheet extends Model
                         'name' => $first->name,
                         'stock' => $stock,
                         'quantity' => $quantity,
+                        'measure_unit_id' => $product->measure_unit_id,
                         // Do I need these two?
 //                        'measureunit' => $product->measureunit->name,
 //                        'measureunit_sign' => $product->measureunit->sign,

@@ -56,23 +56,27 @@ class ProductionSheet extends Model
         // Do the Mambo!
         // STEP 1
         // Calculate raw requirements
+        // Collection of arrays [product_id, stock, quantity, measureunit, ...]
         $requirements = $this->customerorderlinesGrouped( $withStock, $mrp_type );
 
         foreach ( $requirements as $pid => $line ) {
-            // Discard Products with stock
+            // Discard Products with no quantity
             if ($line['quantity'] <= 0.0) continue;
 
-            //Batch size stuff
+            /*
+            // Batch size stuff
             $nbt = ceil($line['quantity'] / $line['manufacturing_batch_size']);
             $order_quantity = $nbt * $line['manufacturing_batch_size'];
+            */
+            $order_quantity = $line['quantity'];   // Cantidad que debe fabricarse por agrupación de órdenes
 
 
             // Create Production Order
             $orders = $this->sandbox->addPlannedMultiLevel([
                 'product_id' => $pid,
 
-                'required_quantity' => $line['quantity'],   // Cantidad que debe fabricarse, según BOM y deducido el stock
-                'planned_quantity'  => $order_quantity,     // Cantidad que se fabricará, ajustando el tamaño del lote
+                'required_quantity' => $line['quantity'],   // Cantidad que debe fabricarse, // y deducido el stock
+                'planned_quantity'  => $order_quantity,     // Cantidad que se fabricará, // ajustando el tamaño del lote
 
                 'notes' => '',
 
@@ -84,8 +88,8 @@ class ProductionSheet extends Model
         // en ->sandbox->orders_planned hay las ProductionOrder (s) que deben fabricarse según las BOM.
         // La cantidad de Producto Terminado resulta de:
         // - Sumar los Pedidos
-        // - Descontar el Stock (si se controla el stock del producto)
-        // - Ajustar con el tamaño de lote
+        // // Quitado: - Descontar el Stock (si se controla el stock del producto)
+        // // Quitado: - Ajustar con el tamaño de lote
         // 
         // Para los semielaborados:
         // - NO se tiene en cuenta el stock
@@ -230,14 +234,17 @@ class ProductionSheet extends Model
         $lines = $this->customerorderlines->filter(function ($value, $key) {
             return $value->product && 
                    ( ($value->product->procurement_type == 'manufacture') ||
-                     ($value->product->procurement_type == 'assembly'   )    );
+                     ($value->product->procurement_type == 'assembly'   )    ) &&
+                     ($value->quantity > 0.0 ) ;    // Skip cero quantity lines or returned items
         });
 
         // Filter 2: mrp_type
         $lines = $lines->filter(function ($value, $key) use ($mrp_type) {
-            return $value->product && 
-                   ( ($value->product->mrp_type == $mrp_type) ||
-                     ($value->product->mrp_type == 'all'    )    );
+            $condition = $mrp_type == 'all' ?
+                            ($value->product->mrp_type == 'onorder') || ($value->product->mrp_type == 'reorder') :
+                            ($value->product->mrp_type == $mrp_type);
+            
+            return $value->product && $condition;
         });
 
         $num = $lines
@@ -246,6 +253,7 @@ class ProductionSheet extends Model
                       $product = $first->product;
                       $stock = 0.0;
 
+                      /*
                       if ($product->procurement_type == 'manufacture')
                       // Assemblies will be fit later on (groupPlannedOrders)
                       if ( $withStock )
@@ -253,11 +261,14 @@ class ProductionSheet extends Model
                             if ( $product->stock_control )
                                 $stock = $product->quantity_onhand; // Stock físico
                       }
+                      */
+                      $stock = $product->quantity_onhand; // Stock físico
 
                       // Cantidad que se debe fabricar
-                      $quantity = $group->sum('quantity') - $stock;
+                      // $quantity = $group->sum('quantity') - $stock;
+                      $quantity = $group->sum('quantity');      // Raw requeriments
                       
-                      if ( $quantity < 0.0 ) $quantity = 0.0;        // No Manufacturing needed
+                      if ( $quantity < 0.0 ) $quantity = 0.0;        // No Manufacturing needed (cero quantity line or returned item)
 
                       return $result->put($first->product_id, [
                         'product_id' => $first->product_id,

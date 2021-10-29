@@ -104,6 +104,11 @@ class ProductionPlanner
 
 
 
+    /*
+     *  Modifica la colección $this->orders_planned (Collection of Production Order Models)
+     *  
+     *  @Return: none
+    */
     // Cantidad que hay que sumar a la cantidad planificada/requerida de product_id
     // cuando se ajusta la cantidad al considerar el stock físico
     public function equalizePlannedMultiLevel($product_id, $new_required = 0.0)
@@ -164,6 +169,11 @@ class ProductionPlanner
 
 
 
+    /*
+     *  Modifica la colección $this->orders_planned (Collection of Production Order Models)
+     *  
+     *  @Return: none
+    */
     // Cantidad que hay que sumar a la cantidad planificada/requerida de product_id
     // cuando se ajusta la cantidad al considerar el lote de fabricación
     public function addExtraPlannedMultiLevel($product_id, $new_required = 0.0)
@@ -305,8 +315,8 @@ class ProductionPlanner
                       return $result->put($reduced->product_id, $reduced);
 
                 }, collect());
-        // Realmente sólo ha agrupado los Semielaborados, ya que el Producto Terminado se agrupó en STEP 1.
-        // En este punto, para semielaborados, planned = required (por construcción) 
+
+        // En este punto, planned = required (por construcción) 
 
         // Load Products into memory
         $pIDs = $this->orders_planned->pluck('product_id');     // Estos son todos los Productos que se han de Planificar

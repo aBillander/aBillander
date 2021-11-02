@@ -34,7 +34,7 @@ return [
 	'Measure Unit'     => 'Unidad de Medida',
 	
 	'Edit Production Order' => 'Modificar Orden de Fabricación',
-	'' => '',
+	'Finish Production Order' => 'Terminar Orden de Fabricación',
 	
     'View Product' => 'Ir al Producto',
 
@@ -49,6 +49,7 @@ return [
 	'Issue Materials'     => 'Consumo Materiales',
 
 	'Finish Order' => 'Terminar Orden',
+	'Production Order Finished (Closed)' => 'Orden de Fabricación Terminada (Cerrada)',
 
 	'Measure Unit'     => 'Unidad de Medida',
 	'Unit'     => 'Unidad',
@@ -92,4 +93,10 @@ return [
     'Save & Finish'     => 'Guardar y Terminar',
     'Save Order' => 'Guardar Orden de Fabricación',
     'Save and Finish Order' => 'Guardar y Terminar Orden de Fabricación',
+
+	'Lot Number' => 'Número de Lote',
+	'Expiry Time' => 'Plazo de Caducidad',
+	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
+	'Leave the field empty for the System to calculate.' => 'Deje el campo vacío para que lo calcule el Sistema.',
+
 ];

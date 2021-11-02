@@ -715,7 +715,7 @@ if ( $bomitem )
             
             // Set some default...
             $finish_date = $params['finish_date'] ?? \Carbon\Carbon::now();
-            $lot_reference = Lot::generate( $finish_date, $this->product, $this->product->expiry_time);
+            $lot_reference = $params['lot_reference'] ?: Lot::generate( $finish_date, $this->product, $this->product->expiry_time);
             $expiry_at = Lot::getExpiryDate( $finish_date, $this->product->expiry_time );
             $finished_quantity = $params['finished_quantity'] ?? $this->finished_quantity;
 

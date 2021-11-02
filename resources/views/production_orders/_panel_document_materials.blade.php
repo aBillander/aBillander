@@ -42,6 +42,7 @@
                         <th class="text-right">{{l('Planned Quantity')}}</th>
 
                         <th class="text-right">{{l('Real Quantity')}}</th>
+                        <th class="text-right"> </th>
 
                         <th class="text-center">{{l('Warehouse')}}</th>
 
@@ -89,6 +90,9 @@
                 <td class="text-right">{{ $line->as_quantity('required_quantity') }}</td>
 
                 <td class="text-right">{{ $line->as_quantity('real_quantity') }}</td>
+                <td class="text-left">
+                    <span class="badge" style="background-color: #3a87ad;" title="{{ optional($line->measureunit)->name }}"> &nbsp; {{ optional($line->measureunit)->sign }} &nbsp; </span>
+                </td>
 
                 <td class="text-center">{{-- Almacén para sacar el Producto --}}
 

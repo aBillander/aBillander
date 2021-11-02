@@ -25,7 +25,7 @@
                <th class="text-right">{{l('Warehouse')}}</th>
 
                 <th class="text-right button-pad"> 
-                      @if ( $document->editable )
+                      @if ( 0 && $document->editable )
 
                   <a class="btn btn-sm btn-magick xbtn-pressure xbtn-sensitive lines_quick_form  hide " title="{{l('Quick Add Lines')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
 
@@ -104,7 +104,7 @@
 @endif
 
                 <td class="text-right button-pad">
-                      @if ( $document->editable )
+                      @if ( 0 && $document->editable )
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerdocumentlines();"><i class="fa fa-pencil"></i></a -->
 
 @if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )

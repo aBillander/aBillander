@@ -11,7 +11,7 @@
             <div class="pull-right">
 
 @if ( $document->status == 'finished' )
-                <button type="button" class="btn btn-sm alert-danger" title="{{l('Document closed', 'layouts')}}" style="margin-right: 16px">
+                <button type="button" class="btn btn-sm alert-danger" title="{{l('Production Order Finished (Closed)')}}" style="margin-right: 16px">
                     <i class="fa fa-lock"></i>
                 </button>
 
@@ -19,7 +19,24 @@
                 <a class="btn btn-sm btn-danger" href="{{ URL::to('productionorders/' . $document->id . '/unfinish') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
     @endif
 @else
-                <a class="btn xbtn-sm alert-success prevent-double-click" href="{{ URL::to('productionorders/' . $document->id . '/finish') }}" title="{{l('Finish Order')}}"><i class="fa fa-unlock"></i> {{l('Finish Order')}}</a>
+
+@php
+    $btn_class  = $document->product->lot_tracking ? "btn-grey" : "btn-info";
+    $icon_class = $document->product->lot_tracking ? "fa-window-restore" : "fa fa-cubes";
+@endphp
+                <a class="btn xbtn-sm {{ $btn_class }} finish-production-order" href="{{ route('productionorders.finish') }}" title="{{l('Finish Order')}} {{ $document->product->lot_tracking ? ' :: con Control de Lote' : '' }}" 
+
+                    data-oid="{{ $document->id }}" data-oproduct="{{ $document->product_id }}" data-oreference="{{ $document->product_reference }}" data-oname="{{ $document->product_name }}" data-oquantity="{{ $document->planned_quantity }}" 
+                    data-olot_reference=
+          @if ( $document->product->lot_tracking )
+                  "{{ \App\Lot::generate( \Carbon\Carbon::now(), $document->product, $document->product->expiry_time ) }}"
+          @else
+                  ""
+          @endif 
+                data-oworkcenter="{{ $document->work_center_id }}" data-ocategory="{{ $document->schedule_sort_order }}" data-onotes="{{ $document->notes }}" data-olottracking="{{ $document->product->lot_tracking }}" data-oexpirytime="{{ $document->product->expiry_time }}" data-oexpirydate="{{ $document->product->expiry_time }}" data-owarehouse="{{ $document->warehouse_id > 0 ? $document->warehouse_id : \App\Configuration::getInt('DEF_WAREHOUSE') }}" 
+                onClick="return false;">
+
+                    <i class="fa {{ $icon_class }}"></i> {{l('Finish Order')}}</a>
 
                 <a class="btn btn-sm btn-success  hide " href="{{ URL::to('productionorders/' . $document->id . '/pdf?preview') }}" title="{{l('Show Preview', [], 'layouts')}}" target="_blank"><i class="fa fa-eye"></i></a>
 @endif
@@ -135,6 +152,9 @@
    </div>
 </div>
 @endsection
+
+
+@include('production_orders._modal_production_order_finish')
 
 @include('production_orders._modal_delete')
 

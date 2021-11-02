@@ -31,8 +31,9 @@
          <div class="col-lg-2 col-md-2 col-sm-2 {{ $errors->has('finish_date') ? 'has-error' : '' }}">
             <div class="form-group">
                {{ l('Finish Date') }}
-               {!! Form::text('finish_date_form', null, array('class' => 'form-control', 'id' => 'finish_date_form', 'autocomplete' => 'off')) !!}
-               {!! $errors->first('finish_date', '<span class="help-block">:message</span>') !!}
+               <div class="form-control">{{ abi_date_short($document->finish_date) }}</div>
+               {{-- !! Form::text('finish_date_form', null, array('class' => 'form-control', 'id' => 'finish_date_form', 'autocomplete' => 'off')) !!}
+                              {!! $errors->first('finish_date', '<span class="help-block">:message</span>') !! --}}
             </div>
          </div>
 
@@ -56,14 +57,16 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('planned_quantity') ? 'has-error' : '' }}">
             {{ l('Planned Quantity') }}
-            {!! Form::text('planned_quantity', null, array('class' => 'form-control', 'id' => 'planned_quantity')) !!}
-            {!! $errors->first('planned_quantity', '<span class="help-block">:message</span>') !!}
+               <div class="form-control">{{ $document->as_quantityable($document->planned_quantity) }}</div>
+            {{-- !! Form::text('planned_quantity', null, array('class' => 'form-control', 'id' => 'planned_quantity')) !!}
+                        {!! $errors->first('planned_quantity', '<span class="help-block">:message</span>') !! --}}
          </div>
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('finished_quantity') ? 'has-error' : '' }}">
             {{ l('Finished Quantity') }}
-            {!! Form::text('finished_quantity', null, array('class' => 'form-control', 'id' => 'finished_quantity')) !!}
-            {!! $errors->first('finished_quantity', '<span class="help-block">:message</span>') !!}
+               <div class="form-control">{{ $document->as_quantityable($document->finished_quantity) }}</div>
+            {{-- !! Form::text('finished_quantity', null, array('class' => 'form-control', 'id' => 'finished_quantity')) !!}
+                        {!! $errors->first('finished_quantity', '<span class="help-block">:message</span>') !! --}}
          </div>
          
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
@@ -118,7 +121,7 @@
                      &nbsp; {{l('Save', [], 'layouts')}}
                   </button>
 
-                  <button class="btn btn-info" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndFinish');this.form.submit();" title="{{l('Save and Finish Order')}}">
+                  <button class="  hidden  btn btn-info" type="submit" onclick="this.disabled=true;$('#nextAction').val('saveAndFinish');this.form.submit();" title="{{l('Save and Finish Order')}}">
                      <i class="fa fa-hdd-o"></i>
                      &nbsp; {{l('Save & Finish')}}
                   </button>

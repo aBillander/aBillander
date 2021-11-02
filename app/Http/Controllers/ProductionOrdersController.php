@@ -197,9 +197,35 @@ class ProductionOrdersController extends Controller
      */
 
 
-    protected function finish(ProductionOrder $document)
+    protected function finish( Request $request )
     {
-        abi_r($document); die();
+        // Dates (cuen)
+        $this->mergeFormDates( ['finish_date'], $request );
+
+        $production_sheet_id = $request->input('production_sheet_id');
+        $production_order_id = $request->input('finish_production_order_id');
+
+        $productionorder = $this->productionorder->with('product')->findOrFail($production_order_id);
+
+        $finished_quantity = $request->input('quantity');
+        $lot_reference = $request->input('lot_reference');
+        
+        $finish_date  = $request->input('finish_date');
+        $warehouse_id = $request->input('warehouse_id');
+
+        $params = [
+            'production_sheet_id' => $document->production_sheet_id, 
+            'production_order_id' => $production_order_id,
+
+            'finished_quantity'   => $finished_quantity, 
+            'lot_reference'       => $lot_reference,
+
+            'finish_date'  => $finish_date,
+            'warehouse_id' => $warehouse_id
+        ];
+
+        abi_r($request->all()); abi_r($params); die();
+
 
         // Can I?
         if ( $productionorder->lines->count() == 0 )
@@ -218,8 +244,8 @@ class ProductionOrdersController extends Controller
 */
 
         // Close
-        if ( $productionorder->close() )
-            return redirect()->back()           // ->route($this->model_path.'.index')
+        if ( $productionorder->finish( $params ) )
+            return redirect()->back()
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' ['.$productionorder->product_reference.']');
         
 
@@ -230,7 +256,9 @@ class ProductionOrdersController extends Controller
 
     protected function unfinish(ProductionOrder $document)
     {
-        abi_r($document); die();
+        // abi_r($document); die();
+
+        $productionorder = $document;
 
         if ( $productionorder->status != 'finished' )
         {

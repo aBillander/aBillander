@@ -64,7 +64,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('productionorders/{document}/onhold/toggle', 'ProductionOrdersController@onholdToggle')->name('productionorders.onhold.toggle');
 
-        Route::get('productionorders/{document}/finish',   'ProductionOrdersController@finish'  )->name('productionorders.finish'  );
+        Route::post('productionorders/finish',   'ProductionOrdersController@finish'  )->name('productionorders.finish'  );
         Route::get('productionorders/{document}/unfinish', 'ProductionOrdersController@unfinish')->name('productionorders.unfinish');
 
         Route::get('productionorders/{id}/deliver' , 'ProductionOrdersController@deliver'    )->name('productionorder.deliver');

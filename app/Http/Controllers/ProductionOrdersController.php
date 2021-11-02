@@ -781,8 +781,37 @@ class ProductionOrdersController extends Controller
                 $line->quantity_onhand = $line->required_quantity;
             }
 
-        return view('production_orders._panel_document_materials', compact('document'));
+        $warehouseList = Warehouse::selectorList();
+
+        return view('production_orders._panel_document_materials', compact('document', 'warehouseList'));
     }
+
+    public function setDocumentMaterials($id, Request $request)
+    {
+        // abi_r($request->All());die();
+
+        // $onhand_only = $request->input('onhand_only', 0);
+
+        $document = $this->productionorder
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->findOrFail($id);
+
+        $dispatch_warehouse = $request->input('dispatch_warehouse', []);
+        $dispatch = $request->input('dispatch', []);
+
+        foreach ($document->lines as $line) {
+            // if ( array_key_exists($line->id, $dispatch)
+            $line->warehouse_id  = $dispatch_warehouse[$line->id];
+            $line->real_quantity = $dispatch[$line->id];
+
+            $line->save();
+        }
+
+        return redirect()->back()
+            ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
 
     public function getDocumentAvailabilityModal($id, Request $request)
     {

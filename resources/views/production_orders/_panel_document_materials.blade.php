@@ -11,7 +11,7 @@
                    {{l('Issue Materials')}}
                </h4><br -->
               <div xclass="page-header">
-                  <div class="pull-right" style="padding-right: 90px;">
+                  <div class="pull-right  hide " style="padding-right: 90px;">
 
                       <a href="{{ URL::to('productionorders/create') }}" class="btn btn-sm btn-grey" 
                               title="{{l('Add Lots to Lines')}}"><i class="fa fa-window-restore"></i> &nbsp;{{l('Add Lots')}}</a>
@@ -40,12 +40,22 @@
                         <th class="text-right">{{l('Available')}}</th -->
 
                         <th class="text-right">{{l('Planned Quantity')}}</th>
+
+                        <th class="text-right">{{l('Real Quantity')}}</th>
+
+                        <th class="text-center">{{l('Warehouse')}}</th>
+
                         <th class="text-right button-pad">
+                           &nbsp; 
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('Introduccir la Cantidad TOTAL consumida en cada Línea.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
 
 
-                  <a class="btn btn-sm btn-info xbtn-pressure xbtn-sensitive xlines_quick_form" title="{{l('Full quantity')}}" sxtyle="opacity: 0.65;" onclick="getDocumentMaterials(0)"><i class="fa fa-th"></i> </a>
+                  <a class="btn btn-sm btn-info xbtn-pressure xbtn-sensitive xlines_quick_form" title="{{l('Full quantity')}}" sxtyle="opacity: 0.65;" style="visibility: hidden" onclick="getDocumentMaterials(0)"><i class="fa fa-th"></i> </a>
 
-                  <a class="btn btn-sm btn-info xbtn-grey xbtn-sensitive xcreate-document-service" title="{{l('Quantity on-hand only')}}" xstyle="background-color: #2bbbad;" onclick="getDocumentMaterials(1)"><i class="fa fa-th-large"></i> </a>
+                  <a class="  hidden  btn btn-sm btn-info xbtn-grey xbtn-sensitive xcreate-document-service" title="{{l('Quantity on-hand only')}}" xstyle="visibility: hidden" xstyle="background-color: #2bbbad;" onclick="getDocumentMaterials(1)"><i class="fa fa-th-large"></i> </a>
 
 
                         </th>
@@ -60,7 +70,7 @@
 
         @foreach ($document->lines->where('type', 'product') as $line)
             <tr>
-                <td>{{$line->line_sort_order }} 
+                <td title="{{$line->id }}">{{$line->line_sort_order }} 
                   @if ( $line->product->isPack() )
                     <i class="fa fa-gift btn-xs alert-warning" title="{{l('This Product is of Type "Grouped"', 'products')}}"></i>
                   @endif
@@ -76,11 +86,18 @@
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_allocated ) }}</td>
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_available ) }}</td>
 --}}
-                <td class="text-right">{{ $line->as_quantity('required_quantity') }}
+                <td class="text-right">{{ $line->as_quantity('required_quantity') }}</td>
+
+                <td class="text-right">{{ $line->as_quantity('real_quantity') }}</td>
+
+                <td class="text-center">{{-- Almacén para sacar el Producto --}}
+
+                    {!! Form::select('dispatch_warehouse['. $line->id .']', $warehouseList, $line->warehouse_id, array('class' => 'form-control input-sm', 'id' => 'dispatch_warehouse['. $line->id .']')) !!}
+                </td>
 
                 <td class="text-right active">
 
-<input name="dispatch[{{ $line->id }}]" class="form-control input-sm" type="text" size="3" maxlength="5" style="min-width: 0;
+<input name="dispatch[{{ $line->id }}]" class="form-control input-sm" type="text" size="3" xmaxlength="5" style="min-width: 0;
     xwidth: auto;
     display: inline;" value="{{ $line->as_quantityable($line->quantity_onhand) }}" onclick="this.select()">
     
@@ -107,9 +124,9 @@
 
 
     @if ($document->lines->count())
-    
 
               <div class="panel-body well" style="margin-top: 30px">
+{{--    
 
                   <h3>
                       <span style="color: #dd4814;">{{l('Finish Order')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
@@ -166,11 +183,11 @@ Poner campos de cabecera: producto, cantidad, fecha terminación, almacén, lote
          </div>
 
 </div>
-
+--}}
 
                   <div class="xpanel-footer pull-right" style="margin-top: 10px">
 
-                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-quantity-selector').attr('action', '{{ route( 'customerorder.single.shippingslip' )}}');$('#form-quantity-selector').submit();return false;"><i class="fa fa-cubes"></i> &nbsp;{{l('Confirm', 'layouts')}}</a>
+                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-quantity-selector').attr('action', '{{ route( 'productionorders.setmaterials', [$document->id] )}}');$('#form-quantity-selector').submit();return false;"><i class="fa fa-cubes"></i> &nbsp;{{l('Update', 'layouts')}}</a>
                   
                   </div>
 

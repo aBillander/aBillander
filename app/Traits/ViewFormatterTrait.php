@@ -15,10 +15,28 @@ trait ViewFormatterTrait
         $data = floatval( $this->{$key} );
 
         // Do formatting
-        // Get decimal places -> decimal_places model property
-        $decimals = array_key_exists('quantity_decimal_places', $this->attributes) ?
-        			$this->quantity_decimal_places :
-        			intval( \App\Configuration::get('DEF_QUANTITY_DECIMALS') );
+        // Get decimal places
+        // -> decimal_places model property
+        if( array_key_exists('quantity_decimal_places', $this->attributes) )
+        {
+            $decimals = $this->quantity_decimal_places;
+        }
+        else 
+        // Measure Unit reletionship
+        if( array_key_exists('measure_unit_id', $this->attributes) && $this->measure_unit_id > 0 )
+        {
+            $decimals = $this->measureunit->decimalPlaces;
+        }
+        // Last chance
+        else 
+        {
+            $decimals = intval( \App\Configuration::get('DEF_QUANTITY_DECIMALS') );
+        }
+
+//        // Get decimal places -> decimal_places model property
+//        $decimals = array_key_exists('quantity_decimal_places', $this->attributes) ?
+//        			$this->quantity_decimal_places :
+//        			intval( \App\Configuration::get('DEF_QUANTITY_DECIMALS') );
         
         $data = number_format($data, $decimals, '.', '');
 

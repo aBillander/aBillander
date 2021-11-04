@@ -45,9 +45,9 @@
       <td>{{ $lot->id }}</td>
       <td>{{ $lot->reference }}</td>
       <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
-      <td class="text-right">{{ $lot->as_quantity('quantity') }}</td>
+      <td class="text-right">{{ $lot->measureunit->quantityable( $lot->quantity ) ?? $lot->as_quantity('quantity') }}</td>
       <td>{{ optional($lot->measureunit)->sign }}</td>
-      <td class="text-right">{{ $lot->as_quantityable( $lot->allocatedQuantity() ) }}</td>
+      <td class="text-right">{{ $lot->as_quantityable( $lot->allocatedQuantity(), $lot->measureunit->decimalPlaces ) }}</td>
       <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
       <td>{{ abi_date_short( $lot->expiry_at ) }}</td>
             <td class="text-center">
@@ -67,7 +67,7 @@
             </td>
 @else
             <td class="text-right">
-              <input name="lot_amount[{{ $lot->id }}]" id="lot_amount[{{ $lot->id }}]" class=" selectedamount form-control input-sm" type="text" size="3" maxlength="7" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $lot->as_quantityable($lot->allocated_to_line) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
+              <input name="lot_amount[{{ $lot->id }}]" id="lot_amount[{{ $lot->id }}]" class=" selectedamount form-control input-sm" type="text" size="3" maxlength="7" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $lot->as_quantityable($lot->allocated_to_line, $lot->measureunit->decimalPlaces) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
             </td>
 @endif
 

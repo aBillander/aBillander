@@ -10,14 +10,14 @@ use Illuminate\Http\Request;
 use App\Configuration;
 use App\Context;
 use App\Product;
-use App\CustomerOrderLine as DocumentLine;
+use App\ProductionOrderLine as DocumentLine;
 
 use App\Lot;
 use App\LotItem;
 
 use App\Traits\DateFormFormatterTrait;
 
-class CustomerOrderLineLotsController extends Controller 
+class ProductionOrderLineLotsController extends Controller 
 {
 
    use DateFormFormatterTrait;
@@ -37,7 +37,7 @@ class CustomerOrderLineLotsController extends Controller
      */
     public function index($lineId)
     {
-        // return $lineId.l('xxx').\Str::snake('CustomerOrderLineLots');
+        // return $lineId.l('xxx').\Str::snake('CustomerShippingSlipLineLots');
 
         $document_line = $this->document_line->with('document')->with('lotitems')->findOrFail($lineId);
 
@@ -45,7 +45,7 @@ class CustomerOrderLineLotsController extends Controller
 
         // $taxrules = $this->taxrule->with('country')->with('state')->where('tax_id', '=', $taxId)->orderBy('position', 'asc')->orderBy('name', 'asc')->get();
 
-        return view('customer_shipping_slip_line_lots._panel_document_line_lots', compact('document_line'));
+        return view('production_order_line_lots._panel_document_line_lots', compact('document_line'));
     }
 
     /**
@@ -136,12 +136,12 @@ class CustomerOrderLineLotsController extends Controller
 
         // abi_r($detail_quantity);
 
-        $balance = array_sum($detail_quantity) - $document_line->quantity;
+        $balance = array_sum($detail_quantity) - $product->measureunit->quantityable($document_line->required_quantity);
 
         if ( $balance != 0 )
             return response()->json( [
                 'success' => 'KO',
-                'message' => l('The Quantity of the selected Lots ( :selected ) do not match the value of the Line ( :quantity ) &#58&#58 (:id) ', ['id' => $lineId, 'selected' => $document_line->measureunit->quantityable(array_sum($detail_quantity)), 'quantity' => $document_line->measureunit->quantityable($document_line->quantity)], 'lots'),
+                'message' => l('The Quantity of the selected Lots ( :selected ) do not match the value of the Line ( :quantity ) &#58&#58 (:id) ', ['id' => $lineId, 'selected' => $document_line->measureunit->quantityable(array_sum($detail_quantity)), 'quantity' => $document_line->measureunit->quantityable($document_line->required_quantity)], 'lots'),
             ] );
 
 

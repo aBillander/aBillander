@@ -150,7 +150,7 @@
                     </button>
                  </a>
                 @endif</td>
-                <td class="text-right">
+                <td class="text-right button-pad">
                       @if ( $document->editable )
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerdocumentlines();"><i class="fa fa-pencil"></i></a -->
 

@@ -21,11 +21,15 @@ use Excel;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
 
+use App\Traits\ProductionOrderLotFormsControllerTrait;
+
 class ProductionOrdersController extends Controller
 {
 
    use DateFormFormatterTrait;
    use ModelAttachmentControllerTrait;
+
+   use ProductionOrderLotFormsControllerTrait;
 
    protected $productionorder;
 
@@ -205,7 +209,7 @@ class ProductionOrdersController extends Controller
         $production_sheet_id = $request->input('production_sheet_id');
         $production_order_id = $request->input('finish_production_order_id');
 
-        $productionorder = $this->productionorder->with('product')->findOrFail($production_order_id);
+        $productionorder = $this->productionorder->with('product')->with('lines')->findOrFail($production_order_id);
 
         $finished_quantity = $request->input('quantity');
         $lot_reference = $request->input('lot_reference');
@@ -214,7 +218,7 @@ class ProductionOrdersController extends Controller
         $warehouse_id = $request->input('warehouse_id');
 
         $params = [
-            'production_sheet_id' => $document->production_sheet_id, 
+            'production_sheet_id' => $productionorder->production_sheet_id, 
             'production_order_id' => $production_order_id,
 
             'finished_quantity'   => $finished_quantity, 
@@ -233,6 +237,14 @@ class ProductionOrdersController extends Controller
             return redirect()->back()
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
         }
+
+        // Check materials consumption
+        if ( $productionorder->lines->sum('real_quantity') >= 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' :: '.l('Document has not Materials', 'productionorders'));
+        }
+
 
         // onhold?
 /*
@@ -808,6 +820,20 @@ class ProductionOrdersController extends Controller
 
                 $line->quantity_onhand = $line->required_quantity;
             }
+
+
+        if ( Configuration::isTrue('ENABLE_LOTS') )
+        {
+            // Do document lines have lots added?
+            foreach ($document->lines as $line) {
+                # code...
+                $line->pending = null;
+                if ( !optional($line->product)->lot_tracking) continue;
+
+                $line->pending = $line->as_quantity('required_quantity') - $line->as_quantity('real_quantity');
+                // $line->pending = $line->measureunit->quantityable($line->required_quantity - $line->real_quantity);
+            }
+        }
 
         $warehouseList = Warehouse::selectorList();
 

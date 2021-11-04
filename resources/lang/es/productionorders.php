@@ -99,4 +99,6 @@ return [
 	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
 	'Leave the field empty for the System to calculate.' => 'Deje el campo vacío para que lo calcule el Sistema.',
 
+	'Document has not Materials' => 'El Documento no tiene Consumo de Materiales',
+
 ];

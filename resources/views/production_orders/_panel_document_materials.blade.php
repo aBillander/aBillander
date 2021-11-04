@@ -101,9 +101,28 @@
 
                 <td class="text-right active">
 
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
+@php
+/* See ProductionOrderController@getDocumentMaterials()
+    $line->pending = $line->as_quantity('required_quantity') - $line->as_quantity('real_quantity');
+*/
+  $color = $line->pending > 0 ? 'alert-danger' : 'btn-grey';
+  $msg   = $line->pending > 0 ? ' ('.$line->measureunit->quantityable( $line->pending ).')' : '';
+@endphp
+                    
+                    <a class="btn btn-sm {{ $color }} add-lots-to-line" data-id="{{$line->id}}" 
+                      data-title="{{ '['.$line->reference.'] '.$line->name }}" 
+                      data-quantity_label="{{ $line->measureunit->quantityable($line->required_quantity) .' '.$line->measureunit->name}}" 
+                      data-type="{{$line->type}}" title="{{l('Add Lots to Line')}}" onClick="return false;"><i class="fa fa-window-restore"></i>{{ $msg }}</a>
+
+
+@else
+
 <input name="dispatch[{{ $line->id }}]" class="form-control input-sm" type="text" size="3" xmaxlength="5" style="min-width: 0;
     xwidth: auto;
-    display: inline;" value="{{ $line->as_quantityable($line->quantity_onhand) }}" onclick="this.select()">
+    display: inline;" value="{{ $line->as_quantityable($line->quantity_onhand, $line->measureunit->decimalPlaces) }}" onclick="this.select()">
+
+@endif
     
                 </td>
 

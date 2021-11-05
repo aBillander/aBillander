@@ -115,6 +115,8 @@ class ProductionOrderLineLotsController extends Controller
                     ->orderBy('expiry_at', $sort_order)
                     ->get();
 
+/* Skip by now
+
         // Check Quantity!
         $detail_quantity = [];
         foreach ($lots as $lot) {
@@ -143,10 +145,15 @@ class ProductionOrderLineLotsController extends Controller
                 'success' => 'KO',
                 'message' => l('The Quantity of the selected Lots ( :selected ) do not match the value of the Line ( :quantity ) &#58&#58 (:id) ', ['id' => $lineId, 'selected' => $document_line->measureunit->quantityable(array_sum($detail_quantity)), 'quantity' => $document_line->measureunit->quantityable($document_line->required_quantity)], 'lots'),
             ] );
+*/
 
 
+        $detail_quantity = $lot_amount; // Since previous block is commented
         foreach ($lots as $lot) {
             # code...
+            // Check
+            if ( !array_key_exists($lot->id, $lot_amount) )
+                continue;
 
             $data = [
                 'lot_id' => $lot->id,
@@ -157,6 +164,11 @@ class ProductionOrderLineLotsController extends Controller
             $lot_item = LotItem::create( $data );
             $document_line->lotitems()->save($lot_item);
         }
+
+        // Update Line real_quantity
+        $document_line->load('lotitems');
+
+        $document_line->update(['real_quantity' => $document_line->lotitems->sum('quantity')]);
 
 
 /*

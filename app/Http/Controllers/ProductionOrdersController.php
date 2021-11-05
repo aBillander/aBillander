@@ -239,7 +239,7 @@ class ProductionOrdersController extends Controller
         }
 
         // Check materials consumption
-        if ( $productionorder->lines->sum('real_quantity') >= 0 )
+        if ( $productionorder->lines->max('real_quantity') == 0 && $productionorder->lines->min('real_quantity') == 0 )
         {
             return redirect()->back()
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' :: '.l('Document has not Materials', 'productionorders'));

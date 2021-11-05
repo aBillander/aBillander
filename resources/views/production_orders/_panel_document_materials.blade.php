@@ -79,7 +79,13 @@
                 <td>
                 <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
                 <td>
-                {{ $line->name }}</td>
+                {{ $line->name }}
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
+
+    @include('production_orders._chunck_line_lots')
+
+@endif
+                </td>
 
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_onhand    ) }}</td>
 {{--

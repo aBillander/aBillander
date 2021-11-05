@@ -29,7 +29,7 @@
             <th>{{l('Manufacture Date', 'lots')}}</th>
             <th>{{l('Expiry Date', 'lots')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
-            <th class="text-center"><div id="balance" class="alert-warning">{{ $lots->sum('allocated_to_line') }}</div></th>
+            <th class="text-center" style="min-width: 64px"><div id="balance" class="alert-warning">{{ $lots->sum('allocated_to_line') }}</div></th>
         </tr>
     </thead>
     <tbody id="order_lines">

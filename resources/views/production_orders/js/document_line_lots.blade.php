@@ -176,13 +176,13 @@
                         return ;
                     }
 
-                    // loadDocumentlines();
+                    getDocumentMaterials(1);
                     
 //                    $("[data-toggle=popover]").popover();
 
                     $('#modal_document_line').modal('toggle');
 
-                    showAlertDivWithDelay("#msg-success");
+                    showAlertDivWithDelay("#msg-success-lots");
 
                     console.log(response);
                 }

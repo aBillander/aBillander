@@ -665,6 +665,23 @@ class ProductsController extends Controller
     }
 
 
+    public function lotTracking($id)
+    {
+        $product = $this->product->findOrFail($id);
+
+        // i no hay stock, cambiar lot tracking y volver
+        // Si hay stock, pedir el lote (uno sólo, luego ya se podrá dividir...) <= ¿puede ser popup?
+
+        return redirect()->to( route('products.edit', $id) . '#inventory' );             // url()->previous() . '#hash');
+    }
+
+
+    public function lotUntracking($id)
+    {
+        $product = $this->product->findOrFail($id);
+
+    }
+
 
 
 /* ********************************************************************************************* */    

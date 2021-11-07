@@ -74,6 +74,8 @@ return [
 	'Given a Cost Price, changing the Margin, the Selling Price is recalculated. By changing the Sale Price the Margin is recalculated. The value of the Margin will not be saved, since it is calculated from the Sales Price and the Cost Price.'     => 'Dado un Precio de Coste, cambiando el Margen se recalcula el Precio de Venta. Cambiando el Precio de Venta se recalcula el Margen. El valor del Margen no se guardará, ya que se calcula a partir del Precio de Venta y del Precio de Coste.',
 
 	'Lot tracking?' => '¿Control de Lotes?',
+	'Activate Lot tracking' => 'Activar Control de Lotes',
+	'Deactivate Lot tracking' => 'Desactivar Control de Lotes',
 	'Use Lot and Expiry Date tracking for this Product.' => 'Usar Control de Lotes y de Fecha de Caducidad para este Producto.',
 	'Expiry Time' => 'Plazo de Caducidad',
 	'Number of Days before expiry. Examples:<br /><ul><li>5 or 5d -> 5 days</li><li>8m -> 8 months</li><li>2y -> 2 years</li></ul>' => 'Número de Días antes de que el Producto caduque. Ejemplos:<br /><ul><li>5 ó 5d -> 5 días</li><li>8m -> 8 meses</li><li>2a ó 2y -> 2 años</li></ul>',

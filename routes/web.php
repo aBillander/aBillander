@@ -413,6 +413,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('products/{id}/duplicate',     'ProductsController@duplicate'   )->name('product.duplicate'  );
 
+        Route::get('products/{id}/lottracking',   'ProductsController@lotTracking'  )->name('product.lottracking'  );
+        Route::get('products/{id}/lotuntracking', 'ProductsController@lotUntracking')->name('product.lotuntracking');
+
         Route::post('products/{id}/combine', array('as' => 'products.combine', 'uses'=>'ProductsController@combine'));
         Route::get('products/ajax/name_lookup'  , array('uses' => 'ProductsController@ajaxProductSearch', 
                                                         'as'   => 'products.ajax.nameLookup' ));

@@ -51,6 +51,8 @@
 
 @php
 
+// abi_r($stockallocation->lotable, true);
+
 $document = optional($stockallocation->lotable)->document;
 
 @endphp
@@ -77,9 +79,13 @@ $document = optional($stockallocation->lotable)->document;
 
 			</td>
             <td>
+@if( $document->customer_id )
                 <a href="{{ route('customers.edit', [$document->customer->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">
                         {{ $document->customer->name_commercial }}
                 </a>
+@elseif ( $document->warehouse_id )
+                {{ optional($document->warehouse)->getAliasNameAttribute() ?? '-' }}
+@endif
             </td>
 			<td>{{ $lot->measureunit->quantityable( $stockallocation->quantity ) }}</td>
 {{--

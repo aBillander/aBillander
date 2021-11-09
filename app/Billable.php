@@ -1079,9 +1079,17 @@ class Billable extends Model implements ShippableInterface
         {
             $amount = $params['price_amount'];
 
+            // Consider amount maybe rounded to currency decimal position
             $query->where( function ($query) use ($amount) {
-                    $query->  where( 'total_tax_excl', $amount );
-                    $query->orWhere( 'total_tax_incl', $amount );
+                    $delta = 0.01 / 2.0;    // Assume rounded to two decimal places
+//                    $query->  where( 'total_tax_excl', function ($query) use ($amount, $delta) {
+//                            $query->  where( 'total_tax_incl', '<',  $amount + $delta );
+//                            $query->orWhere( 'total_tax_incl', '>=', $amount - $delta );
+//                    } );
+//                    $query->orWhere( 'total_tax_incl', function ($query) use ($amount, $delta) {
+                            $query->  where( 'total_tax_incl', '<',  $amount + $delta );
+                            $query->  where( 'total_tax_incl', '>=', $amount - $delta );
+//                    } );
             } );
         }
 

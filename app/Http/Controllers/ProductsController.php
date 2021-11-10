@@ -13,6 +13,7 @@ use App\StockMovement;
 use App\Lot;
 use App\PriceRule;
 use App\MeasureUnit;
+use App\Warehouse;
 
 use App\Configuration;
 
@@ -669,8 +670,48 @@ class ProductsController extends Controller
     {
         $product = $this->product->findOrFail($id);
 
-        // i no hay stock, cambiar lot tracking y volver
+        // Si no hay stock, cambiar lot tracking y volver
         // Si hay stock, pedir el lote (uno sólo, luego ya se podrá dividir...) <= ¿puede ser popup?
+
+        // return "view('product_boms._panel_product_boms', compact('product'))";
+
+        $warehouseList = Warehouse::selectorList();
+
+        return view('products._modal_form_activate_lot_tracking', compact('product', 'warehouseList'));
+
+        return redirect()->to( route('products.edit', $id) . '#inventory' );             // url()->previous() . '#hash');
+    }
+
+
+    public function lotTrackingActivate( Request $request )
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['lottracking_manufactured_at', 'lottracking_expiry_at'], $request );
+
+        // abi_r($request->all(), true);
+
+        // Rules
+        $rules = [];
+        foreach (Lot::$rules as $key => $value) {
+            // code...
+            $rules['lottracking_'.$key] = $value;
+        }
+
+        // $this->validate($request, $rules);
+
+        // abi_r($rules);
+
+        abi_r($request->all(), true);
+
+
+        $id = $request->input('lottracking_product_id');
+
+        $product = $this->product->findOrFail($id);
+
+        $warehouse_id = $request->input('lottracking_warehouse_id');
+
+        // Sólo se lotifica la cantidad del almacén seleccionado
+        $quantity = $quantity_initial = $product->getStockByWarehouse( $warehouse_id );
 
         return redirect()->to( route('products.edit', $id) . '#inventory' );             // url()->previous() . '#hash');
     }

@@ -374,4 +374,8 @@ return [
 
     'Available Stock: <br />[Physical Stock] <br />+ [Orders to Suppliers] <br />- [Customer Orders] <br />+ [Not finished Production Orders] <br />- [Production Orders Reserves]' => 'Stock Disponible: <br />[Stock físico] <br />+ [Pedios a Proveedores] <br />- [Pedidos de Clientes] <br />+ [Ordenes de Fabricación no terminadas] <br />- [Reservas de Ordenes de Fabricación]',
 
+
+    // Lots stuff
+    'A Lot will be created with the quantity in stock.' => 'Se creará un Lote con la cantidad en stock.',
+
 ];

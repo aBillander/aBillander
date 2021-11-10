@@ -118,7 +118,7 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
-                      <a class="btn xbtn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/lotuntracking') }}" title="{{l('Activate Lot tracking')}}"><i class="fa fa-cube"></i></a>
+                      <a class="btn xbtn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/lotuntracking') }}" title="{{l('Activate Lot tracking')}}" onclick="return false;"><i class="fa fa-cube"></i></a>
 
                   </div>
 
@@ -126,7 +126,7 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
-                      <br /><a class="btn xbtn-sm btn-lightblue" href="{{ URL::to('products/' . $product->id . '/lottracking') }}" title="{{l('Activate Lot tracking')}}"><i class="fa fa-cubes"></i> {{l('Activate Lot tracking')}}</a>
+                      <br /><a class="btn xbtn-sm btn-lightblue activate-lot-tracking" href="{{ URL::to('products/' . $product->id . '/lottracking') }}" title="{{l('Activate Lot tracking')}}" onclick="return false;"><i class="fa fa-cubes"></i> {{l('Activate Lot tracking')}}</a>
 
                   </div>
 

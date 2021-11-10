@@ -679,7 +679,7 @@ class ProductsController extends Controller
 
         return view('products._modal_form_activate_lot_tracking', compact('product', 'warehouseList'));
 
-        return redirect()->to( route('products.edit', $id) . '#inventory' );             // url()->previous() . '#hash');
+        // return redirect()->to( route('products.edit', $id) . '#inventory' );             // url()->previous() . '#hash');
     }
 
 
@@ -701,7 +701,7 @@ class ProductsController extends Controller
 
         // abi_r($rules);
 
-        abi_r($request->all(), true);
+        // abi_r($request->all(), true);
 
 
         $id = $request->input('lottracking_product_id');
@@ -711,15 +711,152 @@ class ProductsController extends Controller
         $warehouse_id = $request->input('lottracking_warehouse_id');
 
         // Sólo se lotifica la cantidad del almacén seleccionado
-        $quantity = $quantity_initial = $product->getStockByWarehouse( $warehouse_id );
+        $quantity = $product->getStockByWarehouse( $warehouse_id );
 
-        return redirect()->to( route('products.edit', $id) . '#inventory' );             // url()->previous() . '#hash');
+        $lot_data = [
+            'reference' => $request->input('lottracking_reference'),
+
+            'product_id' => $product->id,
+//            $table->integer('combination_id')->unsigned()->nullable();
+
+            'quantity_initial' => $quantity,
+            'quantity' => $quantity,
+
+            'measure_unit_id' => $product->measure_unit_id,
+
+//            $table->integer('package_measure_unit_id')->unsigned()->nullable();         // Measure unit used to bundle items
+//            $table->decimal('pmu_conversion_rate', 20, 6)->nullable()->default(1.0);    // Conversion rates are calculated from one unit of your main measura unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, type "6" (since a pack of six bottles will contain six bottles)
+
+            'manufactured_at' => $request->input('lottracking_manufactured_at'),
+            'expiry_at'       => $request->input('lottracking_expiry_at'),            
+
+            'blocked' => 0,                 // Stock Movements allowed
+
+            'notes' => $request->input('lottracking_notes'),
+
+            'warehouse_id' => $warehouse_id,
+        ];
+
+        // Do create a Lot
+        $lot = Lot::create( $lot_data );
+
+        // Keep it simple
+        // New Lot is a Stock Adjustment
+        
+        // $movement_type_id = StockMovement::INITIAL_STOCK;
+        $movement_type_id = StockMovement::ADJUSTMENT;
+
+        // Let's move on:
+        $data = [
+
+                'movement_type_id' => $movement_type_id,
+                'date' => \Carbon\Carbon::now(),
+
+//                   'stockmovementable_id' => ,
+//                   'stockmovementable_type' => ,
+
+                'document_reference' => l('New Adjustment by Lot (:id) ', ['id' => $lot->id], 'lots').$lot->reference,
+//                   'quantity_before_movement' => ,
+                'quantity' => $lot->quantity_initial,
+                'measure_unit_id' => $lot->measure_unit_id,
+//                   'quantity_after_movement' => ,
+
+                'price' => $product->getPriceForStockValuation(),
+                'currency_id' => \App\Context::getContext()->company->currency->id,
+                'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
+                'notes' => l('New Adjustment by Lot (:id) ', ['id' => $lot->id], 'lots').$lot->reference,
+
+                'product_id' => $product->id,
+                'combination_id' => '', // $line->combination_id,
+                'reference' => $product->reference,
+                'name' => $product->name,
+
+//                'lot_id' => $lot->id,
+
+                'warehouse_id' => $lot->warehouse_id,
+//                   'warehouse_counterpart_id' => ,
+                
+        ];
+
+        $stockmovement = StockMovement::createAndProcess( $data );
+
+        $lot->stockmovements()->save( $stockmovement );
+
+        $product->update(['lot_tracking' => 1]);
+
+
+
+
+        return redirect()->to( route('products.edit', $id) . '#inventory' )             // url()->previous() . '#hash');
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 
 
     public function lotUntracking($id)
     {
         $product = $this->product->findOrFail($id);
+
+        // All warehouses
+        foreach ( Warehouse::get() as $warehouse) {
+            // code...
+            $warehouse_id = $warehouse->id;
+
+            $quantity = $product->getStockByWarehouse( $warehouse_id );
+
+            if ( $quantity == 0.0 )
+                continue;
+
+            // Keep it simple
+            // Make a Stock Adjustment
+            
+            // $movement_type_id = StockMovement::INITIAL_STOCK;
+            $movement_type_id = StockMovement::ADJUSTMENT;
+
+            // Let's move on:
+            $data = [
+
+                    'movement_type_id' => $movement_type_id,
+                    'date' => \Carbon\Carbon::now(),
+
+    //                   'stockmovementable_id' => ,
+    //                   'stockmovementable_type' => ,
+
+                    'document_reference' => l('New Adjustment. Lot tracking deactivated. ', 'lots'),
+    //                   'quantity_before_movement' => ,
+                    'quantity' => $quantity,
+                    'measure_unit_id' => $product->measure_unit_id,
+    //                   'quantity_after_movement' => ,
+
+                    'price' => $product->getPriceForStockValuation(),
+                    'currency_id' => \App\Context::getContext()->company->currency->id,
+                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
+                    'notes' => l('New Adjustment. Lot tracking deactivated. ', 'lots'),
+
+                    'product_id' => $product->id,
+                    'combination_id' => '', // $line->combination_id,
+                    'reference' => $product->reference,
+                    'name' => $product->name,
+
+    //                'lot_id' => $lot->id,
+
+                    'warehouse_id' => $warehouse_id,
+    //                   'warehouse_counterpart_id' => ,
+                    
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+        }
+
+        // To do: adjust current lots stock to zero
+
+
+        $product->update(['lot_tracking' => 0]);
+
+
+        return redirect()->to( route('products.edit', $id) . '#inventory' )             // url()->previous() . '#hash');
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 
     }
 
@@ -1091,7 +1228,8 @@ LIMIT 1
         $sort_order = ($product->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
 
         $lots = Lot::where('product_id', $id)
-                                ->where('quantity', '>', 0)
+//                                ->where('quantity', '>', 0)
+                                ->where('quantity', '<>', 0)
 //                                ->with('product')
 //                                ->with('combination')
                                 ->with('measureunit')

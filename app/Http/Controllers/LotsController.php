@@ -426,7 +426,7 @@ class LotsController extends Controller
      *
      * @return 
      */
-    public function export(Lot $lot, Request $request)
+    public function exportMovements(Lot $lot, Request $request)
     {
         // See: HelferinCustomerInvoicesTrait
 
@@ -602,6 +602,21 @@ class LotsController extends Controller
 
 
 
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function exportAllocations(Lot $lot, Request $request)
+    {
+        // See: HelferinCustomerInvoicesTrait
+
+        // Load Relation
+        $lot = $lot->load(['product', 'measureunit']);
+    }
+
+
+
     public function stockmovements(Lot $lot, Request $request)
     {
         // Load Relation
@@ -611,8 +626,8 @@ class LotsController extends Controller
                                 ->where('lot_id', $lot->id)
  //                               ->filter( $request->all() )
  //                               ->with('measureunit')
-                                ->orderBy('date', 'ASC')
-                                ->orderBy('created_at', 'ASC');
+                                ->orderBy('date', 'DESC')
+                                ->orderBy('created_at', 'DESC');
 
         $stockmovements = $stockmovements->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
         // $lots = $lots->paginate( 1 );

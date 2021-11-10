@@ -118,7 +118,7 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
-                      <a class="btn xbtn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/lotuntracking') }}" title="{{l('Activate Lot tracking')}}" onclick="return false;"><i class="fa fa-cube"></i></a>
+                      <br /><a class="btn xbtn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/lotuntracking') }}" title="{{l('Deactivate Lot tracking')}}" xonclick="return false;"><i class="fa fa-cube"></i> {{l('Deactivate Lot tracking')}}</a>
 
                   </div>
 

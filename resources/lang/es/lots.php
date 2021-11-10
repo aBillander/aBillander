@@ -57,9 +57,12 @@ return [
 	'Expiry Date' => 'Fecha de Caducidad',
 	'Stock Movements' => 'Movimientos de Stock',
 	'Lot Stock Movements' => 'Movimientos de Stock de Lote',
+	'Export Movements' => 'Exportar Movimientos',
 	'Lot Stock Allocations' => 'Reservas de Stock de Lote',
+	'Export Allocations' => 'Exportar Reservas',
 
 	'New Adjustment by Lot (:id) ' => 'Nuevo Ajuste por el Lote (:id) ',
+	'New Adjustment. Lot tracking deactivated. ' => 'Nuevo Ajuste. Control de Lotes desactivado. ',
 
 
 	'Add Lots to Line' => 'Añadir Lotes a la Línea',

@@ -378,7 +378,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('lots/{lot}/quantity', 'LotsController@updateQuantity')->name('lots.update.quantity');
         Route::get( 'export/lots', 'LotsController@export' )->name('lots.export');
         Route::get( 'lots/{lot}/stockmovements',        'LotsController@stockmovements' )->name('lot.stockmovements'       );
-        Route::get( 'export/lots/{lot}/stockmovements', 'LotsController@export' )->name('lot.stockmovements.export');
+        Route::get( 'export/lots/{lot}/stockmovements',   'LotsController@exportMovements'   )->name('lot.stockmovements.export');
+        Route::get( 'export/lots/{lot}/stockallocations', 'LotsController@exportAllocations' )->name('lot.stockallocations.export');
 
         Route::post('lots/{id}/attachment',         'LotsController@attachmentStore'  )->name('lots.attachment.store'  );
         Route::get( 'lots/{id}/attachment/{aid}',   'LotsController@attachmentShow'   )->name('lots.attachment.show'   );

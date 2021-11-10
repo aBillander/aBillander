@@ -12,11 +12,12 @@
 				  <button type="button" class="close" data-dismiss="alert">&times;</button>
 				  <strong></strong> {{ l('A Lot will be created with the quantity in stock.') }}
 				</div>
+				<br />
+            
                 
                 <div class="row">
 
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('lottracking_reference') ? 'has-error' : '' }}" id="div-lot_reference">
-                     <br />
                      {{ l('Lot Number', 'lots') }}
                      {!! Form::text('lottracking_reference', null, array('class' => 'form-control', 'id' => 'lottracking_reference')) !!}
                      {!! $errors->first('lottracking_reference', '<span class="help-block">:message</span>') !!}
@@ -34,17 +35,17 @@
                      {!! Form::text('lottracking_expiry_at_form', null, array('class' => 'form-control', 'id' => 'lottracking_expiry_at_form')) !!}
                      {!! $errors->first('lottracking_expiry_at_form', '<span class="help-block">:message</span>') !!}
                   </div>
+
+                </div>
+
+		<div class="row">
          
          <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('lottracking_warehouse_id') ? 'has-error' : '' }}">
-            <br />
             {{ l('Warehouse') }}
             {!! Form::select('lottracking_warehouse_id', $warehouseList, null, array('class' => 'form-control', 'id' => 'lottracking_warehouse_id')) !!}
             {!! $errors->first('lottracking_warehouse_id', '<span class="help-block">:message</span>') !!}
          </div>
 
-                </div>
-
-		<div class="row">
 		    <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('lottracking_notes') ? 'has-error' : '' }}">
 		       {!! Form::label('lottracking_notes', l('Notes', [], 'layouts')) !!}
 		       {!! Form::textarea('lottracking_notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '3')) !!}

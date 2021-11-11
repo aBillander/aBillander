@@ -212,7 +212,7 @@ class ProductionOrdersController extends Controller
         $productionorder = $this->productionorder->with('product')->with('lines')->findOrFail($production_order_id);
 
         $finished_quantity = $request->input('quantity');
-        $lot_reference = $request->input('lot_reference');
+        $lot_reference = $request->input('lot_reference', '');  // Lot Reference not allways issued!!!
         
         $finish_date  = $request->input('finish_date');
         $warehouse_id = $request->input('warehouse_id');
@@ -228,7 +228,7 @@ class ProductionOrdersController extends Controller
             'warehouse_id' => $warehouse_id
         ];
 
-        abi_r($request->all()); abi_r($params); die();
+        // abi_r($request->all()); abi_r($params); die();
 
 
         // Can I?

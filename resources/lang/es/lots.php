@@ -94,4 +94,8 @@ return [
 	'The Quantity of the selected Lots ( :selected ) do not match the value of the Line ( :quantity ) &#58&#58 (:id) ' => 'La Cantidad de los Lotes seleccionados ( :selected ) no coincide con el valor de la Línea ( :quantity ) &#58&#58 (:id) ',
 
 
+	'Split Lot' => 'Dividir Lote',
+	'New Lot Quantity.' => 'Cantidad del nuevo Lote.',
+
+
 ];

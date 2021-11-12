@@ -9,6 +9,7 @@ use App\Lot;
 use App\Product;
 use App\StockMovement;
 use App\MeasureUnit;
+use App\Warehouse;
 
 use Excel;
 
@@ -265,8 +266,10 @@ class LotsController extends Controller
         // Dates (cuen)
         $this->addFormDates( ['manufactured_at', 'expiry_at'], $lot );
 
+        $warehouseList = Warehouse::selectorList();
 
-        return view('lots.edit', compact('lot'));
+
+        return view('lots.edit', compact('lot', 'warehouseList'));
     }
 
     /**
@@ -401,6 +404,180 @@ class LotsController extends Controller
         return redirect()->route('lot.stockmovements', $lot->id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $lot->id], 'layouts') . $request->input('reference'));
     }
+
+
+
+    public function split(Request $request, Lot $lot)
+    {
+        // 
+
+        $rules = [
+            'lot_reference'         => 'required|min:2|max:32',
+            'quantity'   => 'required|numeric|not_in:0',
+            'warehouse_id'     => 'exists:warehouses,id',
+        ];
+
+        $this->validate($request, $rules);
+
+        $lot_reference = $request->input('lot_reference');
+        $lot_quantity = $request->input('quantity');
+        $lot_warehouse_id = $request->input('warehouse_id');
+
+        $product = $this->product->find( $lot->product_id );
+
+        // STEP 1
+        // Stock adjustment for the Original Lot:
+        // Substract $lot_quantity
+
+        // New Quantity
+        $new_lot_quantity = $lot->quantity - $lot_quantity;
+
+        // Stock in this warehouse
+        $stock = $product->getStockByWarehouse( $lot->warehouse_id );
+
+        // New stock
+        $new_stock = $stock - $lot->quantity + $lot_quantity;
+
+        // Magic here:
+
+        $movement_type_id = StockMovement::ADJUSTMENT;
+
+        // 1.- Create Stock Movement type 12 (Stock adjustment)
+            $data = [
+
+                'movement_type_id' => $movement_type_id,
+                'date' => \Carbon\Carbon::now(),
+
+//                    'stockmovementable_id' => $this->,
+//                    'stockmovementable_type' => $this->,
+
+                    'document_reference' => l('New Adjustment by Lot (:id) ', ['id' => $lot->id], 'lots').$lot->reference,
+
+//                    'quantity_before_movement' => $this->,
+                    'quantity' => $new_stock,
+                    'measure_unit_id' => $product->measure_unit_id,
+//                    'quantity_after_movement' => $this->,
+
+                    'price' => $product->getPriceForStockValuation(),
+                    'price_currency' => $product->cost_price,
+//                    'currency_id' => $this->currency_id,
+//                    'conversion_rate' => $this->currency_conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $product->id,
+ //                   'combination_id' => $this->combination_id,
+                    'reference' => $product->reference,
+                    'name' => $product->name,
+
+                    'warehouse_id' => $lot->warehouse_id,
+//                    'warehouse_counterpart_id' => $this->,
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+
+            if ( $stockmovement )
+            {
+                //
+                // $this->stockmovements()->save( $stockmovement );
+
+                if ($lot)
+                {
+                    $lot->stockmovements()->save( $stockmovement );
+                    $stockmovement->update(['lot_quantity_after_movement' => $new_lot_quantity]);
+                    $lot->update(['blocked' => 0]);
+                }
+            }
+        
+        // 3.- Update Lot
+        $lot->update( ['quantity' => $new_lot_quantity] );
+
+
+
+
+
+        // STEP 2
+        // Create new Lot with quantity = $lot_quantity
+        // Get back $lot_quantity
+
+        $lot_params = [
+            'reference' => $lot_reference,
+            'product_id' => $lot->product_id, 
+//            'combination_id' => ,
+            'quantity_initial' => $lot_quantity, 
+            'quantity' => $lot_quantity, 
+            'measure_unit_id' => $lot->measure_unit_id, 
+//            'package_measure_unit_id' => , 
+//            'pmu_conversion_rate' => ,
+            'manufactured_at' => $lot->manufactured_at, 
+            'expiry_at' => $lot->expiry_at,
+            'notes' => '',
+
+            'warehouse_id' => $lot_warehouse_id,
+        ];
+
+        $new_lot = $this->lot->create( $lot_params );
+
+        // Let's play a little bit with Stocks, now!
+        // (ノಠ益ಠ)ノ彡┻━┻
+        // New Lot is a Stock Adjustment (lot quantity "increases" overall stock)
+
+        $movement_type_id = StockMovement::ADJUSTMENT;
+
+        // Let's move on:
+        $data = [
+
+                'movement_type_id' => $movement_type_id,
+                'date' => \Carbon\Carbon::now(),
+
+//                   'stockmovementable_id' => ,
+//                   'stockmovementable_type' => ,
+
+                'document_reference' => l('New Adjustment by Lot (:id) ', ['id' => $new_lot->id], 'lots').$new_lot->reference,
+//                   'quantity_before_movement' => ,
+                'quantity' => $new_lot->quantity_initial + $product->getStockByWarehouse( $new_lot->warehouse_id ),
+                'measure_unit_id' => $product->measure_unit_id,
+//                   'quantity_after_movement' => ,
+
+                'price' => $product->getPriceForStockValuation(),
+                'currency_id' => \App\Context::getContext()->company->currency->id,
+                'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
+                'notes' => '',
+
+                'product_id' => $product->id,
+                'combination_id' => '', // $line->combination_id,
+                'reference' => $product->reference,
+                'name' => $product->name,
+
+//                'lot_id' => $lot->id,
+
+                'warehouse_id' => $new_lot->warehouse_id,
+//                   'warehouse_counterpart_id' => ,
+                
+        ];
+
+        $stockmovement = StockMovement::createAndProcess( $data );
+
+        $lot->stockmovements()->save( $stockmovement );
+        $stockmovement->update(['lot_quantity_after_movement' => $new_lot->quantity]);
+
+
+die();
+
+        if($check)
+        {
+
+            return Redirect::to(URL::previous() . $anchor)
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        }
+        else
+        {
+            return Redirect::to(URL::previous() . $anchor)
+                    ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . 'Sorry Only Upload: '.implode(', ', $allowedfileExtension));
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.

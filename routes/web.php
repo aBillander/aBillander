@@ -385,6 +385,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get( 'lots/{id}/attachment/{aid}',   'LotsController@attachmentShow'   )->name('lots.attachment.show'   );
         Route::delete('lots/{id}/attachment/{aid}', 'LotsController@attachmentDestroy')->name('lots.attachment.destroy');
 
+        Route::post('lots/{lot}/split', 'LotsController@split')->name('lots.split');
+
         Route::resource('lotitems', 'LotItemsController');
 
         Route::resource('products', 'ProductsController');

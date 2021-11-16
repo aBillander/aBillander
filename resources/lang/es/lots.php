@@ -60,6 +60,9 @@ return [
 	'Export Movements' => 'Exportar Movimientos',
 	'Lot Stock Allocations' => 'Reservas de Stock de Lote',
 	'Export Allocations' => 'Exportar Reservas',
+	'Movements only' => 'Sólo Movimientos',
+	'Allocations only' => 'Sólo Reservas',
+	'Movements and Allocations' => 'Movimientos y Reservas',
 
 	'New Adjustment by Lot (:id) ' => 'Nuevo Ajuste por el Lote (:id) ',
 	'New Adjustment. Lot tracking deactivated. ' => 'Nuevo Ajuste. Control de Lotes desactivado. ',

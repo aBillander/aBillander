@@ -26,8 +26,20 @@
         </button>
 @endif
 
+{{--
         <a href="{{ route('lot.stockmovements.export', [$lot->id] + Request::all()) }}" class="btn xbtn-sm btn-grey" style="margin-right: 32px;"  
-                title="{{l('Export', [], 'layouts')}} ({{ l('Lot Stock Movements') }})"><i class="fa fa-file-excel-o"></i> {{l('Export Movements')}}</a>{{-- see: warehouses/indexProducts.blade.php --}}
+                title="{{l('Export', [], 'layouts')}} ({{ l('Lot Stock Movements') }})"><i class="fa fa-file-excel-o"></i> {{l('Export Movements')}}</a> { {-- see: warehouses/indexProducts.blade.php --} }
+--}}
+
+<div class="btn-group" style="margin-right: 32px;">
+  <a href="#" class="btn btn-grey"><i class="fa fa-file-excel-o"></i> &nbsp; {{l('Export Movements')}}</a>
+  <a href="#" class="btn btn-grey dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+  <ul class="dropdown-menu">
+    <li><a href="{{ route('lot.stockmovements.export', [$lot->id, 'movements']) }}">{{ l('Movements only') }}</a></li>
+    <li><a href="{{ route('lot.stockmovements.export', [$lot->id, 'allocations']) }}">{{ l('Allocations only') }}</a></li>
+    <li><a href="{{ route('lot.stockmovements.export', [$lot->id]) }}">{{ l('Movements and Allocations') }}</a></li>
+  </ul>
+</div>
 
         <a href="{{ URL::to('lots') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Lots') }}</a>
 

@@ -607,30 +607,20 @@ die();
     {
         // See: HelferinCustomerInvoicesTrait
 
-        // Load Relation
-        $lot = $lot->load(['product', 'measureunit']);
+        $sections = 'all';
+        if ( $request->has('movements') )
+            $sections = 'movements';
+        if ( $request->has('allocations') )
+            $sections = 'allocations';
 
-        // Dates (cuen)
-        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+        // Load Relations
+        $lot = $lot->load(['product', 'measureunit', 'stockmovements', 'lotallocateditems', 'lotallocateditems.lotable']);
 
-        // Get Lots
-        $lots = $this->lot
-                                ->filter( $request->all() )
-                                ->with('product')
-                                ->with('combination')
-                                ->with('measureunit')
-                                ->orderBy('created_at', 'DESC')
-                                ->get();
+        $stockmovements = $lot->stockmovements
+                                ->sortByDesc('date')
+                                ->sortByDesc('created_at');
 
-        $weight_unit = MeasureUnit::where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
-
-//         abi_r($lots->pluck('id'), true);
-
-
-        // Limit number of records
-        if ( ($count=$lots->count()) > 1000 )
-            return redirect()->back()
-                    ->with('error', l('Too many Records for this Query &#58&#58 (:id) ', ['id' => $count], 'layouts'));
+        $stockallocations = $lot->lotallocateditems;
 
 
         // Lets get dirty!!
@@ -638,101 +628,121 @@ die();
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
-        if ( $request->input('date_from_form') && $request->input('date_to_form') )
-        {
-            $ribbon = 'entre ' . $request->input('date_from_form') . ' y ' . $request->input('date_to_form');
-
-        } else
-
-        if ( !$request->input('date_from_form') && $request->input('date_to_form') )
-        {
-            $ribbon = 'hasta ' . $request->input('date_to_form');
-
-        } else
-
-        if ( $request->input('date_from_form') && !$request->input('date_to_form') )
-        {
-            $ribbon = 'desde ' . $request->input('date_from_form');
-
-        } else
-
-        if ( !$request->input('date_from_form') && !$request->input('date_to_form') )
-        {
-            $ribbon = 'todas';
-
-        }
-
-        $ribbon = ':: fecha(s) ' . $ribbon;
-
-        $product_label = '';
-        $product_label1 = $request->input('product_reference');
-        $product_label2 = $request->input('product_name');
-
-        if ( $product_label1 && $product_label2 )
-        {
-            $product_label = $product_label1 . ' , ' . $product_label2;
-        
-        } else
-
-        if ( !$product_label1 && !$product_label2 )
-        {
-            $product_label = 'todos';
-        
-        } else
-            $product_label = $product_label1 . ' ' . $product_label2;
-
-
-        $ribbon = $ribbon . ' :: producto(s) ' . $product_label;
+        $ribbon  = " :: " . $lot->reference . " [".optional($lot->measureunit)->sign."]";
+        $ribbon1 = " [".$lot->product->reference."] " . $lot->product->name;
 
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Lotes de Productos ' . $ribbon, '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = [l('Lot Stock Movements', 'lots') . $ribbon, '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = [$ribbon1];
+        $data[] = [''];
+        $data[] = [l('Initial Stock', 'lots'), l('Current Stock', 'lots'), l('Allocated Stock', 'lots'), l('Available Stock', 'lots'), ''];
+        $data[] = [ (float) $lot->measureunit->quantityable($lot->quantity_initial), 
+                    (float) $lot->measureunit->quantityable($lot->quantity), 
+                    (float) $lot->measureunit->quantityable($lot->allocatedQuantity()), 
+                    (float) $lot->measureunit->quantityable($lot->quantity - $lot->allocatedQuantity()) ];
         $data[] = [''];
 
-
+if ( $sections != 'allocations' )
+{
         // Define the Excel spreadsheet headers
-        $header_names = ['Número de Lote', 'Almacén', 'Producto', '', 'Cantidad', 'Cantidad Reservada', 'Unidad de Medida', 'Peso ('.optional($weight_unit)->sign.')', 'Fecha de Fabricación', 'Fecha de Caducidad', 'Bloqueado', 'Notas'];
+        $header_names = [
+                l('ID', [], 'layouts'),
+                l('Date', 'lots'),
+                l('Type', 'lots'),
+                l('Warehouse', 'lots'),
+                l('Quantity', 'lots'),
+                l('Stock after', 'lots'),
+                l('Document', 'lots'),
+                l('Notes', [], 'layouts')
+        ];
 
         $data[] = $header_names;
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
 
-        $totat_quantity = $total_weight = 0.0;
+//        $totat_quantity = $total_weight = 0.0;
 
-        foreach ($lots as $lot) 
+        foreach ($stockmovements as $stockmovement) 
         {
             $row = [];
-            $row[] = $lot->reference;
-            $row[] = $lot->warehouse->alias_name ?? '-';
-            $row[] = $lot->product->reference;
-            $row[] = $lot->product->name;
-            $row[] = (float) $lot->quantity;
-            $row[] = (float) $lot->allocatedQuantity();
-            $row[] = optional($lot->measureunit)->sign;
-            $row[] = (float) $lot->getWeight();
-            $row[] = abi_date_short( $lot->manufactured_at );
-            $row[] = abi_date_short( $lot->expiry_at );
-            $row[] = (int) $lot->blocked;
-            $row[] = $lot->notes;
+            $row[] = $stockmovement->id;
+            $row[] = abi_date_short( $stockmovement->date );
+            $row[] = '['.$stockmovement->movement_type_id.'] - '. StockMovement::getTypeName($stockmovement->movement_type_id);
+            $row[] = $stockmovement->warehouse->alias;
+            $row[] = (float) $stockmovement->as_quantityable( $stockmovement->quantity_after_movement - $stockmovement->quantity_before_movement );
+            $row[] = (float) $stockmovement->as_quantity( 'lot_quantity_after_movement' );
+            $row[] = $stockmovement->document_reference;
+            $row[] = $stockmovement->notes;
 
             $data[] = $row;
 
-            $totat_quantity += $lot->quantity;
-            $total_weight   += $lot->getWeight();
+//            $totat_quantity += $lot->quantity;
+//            $total_weight   += $lot->getWeight();
         }
 
         $data[] = [];
 
-        $data[] = ['', '', '', 'TOTAL:', $totat_quantity, '', 'TOTAL:', $total_weight, '', '', '', ''];
+//        $data[] = ['', '', '', 'TOTAL:', $totat_quantity, '', 'TOTAL:', $total_weight, '', '', '', ''];
+}
 
-        $sheetName = 'Lotes de Productos' ;
+        $lines_so_far = count($data);
+
+if ( $sections != 'movements' )
+{
+        //
+        // Bonus:
+        // Allocations
+        $data[] = [l('Lot Stock Allocations', 'lots') . $ribbon];
+        $data[] = [''];
+
+
+        // Define the Excel spreadsheet headers
+        $header_names = [
+                l('ID', [], 'layouts'),
+                l('Document Date', 'lots'),
+                l('Document', 'lots'),
+                l('Customer', 'lots'),
+                l('Quantity', 'lots'),
+        ];
+
+        $data[] = $header_names;
+
+        foreach ($stockallocations as $stockallocation) 
+        {
+            $document = optional($stockallocation->lotable)->document;
+
+            $row = [];
+            $row[] = $stockallocation->id;
+            $row[] = abi_date_short( $document->document_date );
+            $row[] = optional(optional($stockallocation->lotable)->document)->document_reference;
+                $customer = '';
+                if ( $document->customer_id )
+                    $customer = $document->customer->name_commercial;
+                else if( $document->warehouse_id )
+                    $customer = optional($document->warehouse)->getAliasNameAttribute();
+            $row[] = $customer;
+            $row[] = (float) $lot->measureunit->quantityable( $stockallocation->quantity );
+
+            $data[] = $row;
+
+//            $totat_quantity += $lot->quantity;
+//            $total_weight   += $lot->getWeight();
+        }
+
+        $data[] = [];
+}
+
+
+
+        $sheetName = 'Movimientos' ;
 
         // abi_r($data, true);
 
         // Generate and return the spreadsheet
-        Excel::create('Lotes de Productos', function($excel) use ($sheetName, $data) {
+        Excel::create($lot->reference.' - '.l('Lot Stock Movements', 'lots'), function($excel) use ($sheetName, $data, $lines_so_far) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');
@@ -740,12 +750,44 @@ die();
             // $excel->setDescription('Price List file');
 
             // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
+            $excel->sheet($sheetName, function($sheet) use ($data, $lines_so_far) {
                 
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');
+                $sheet->mergeCells('A3:D3');
 
-                $sheet->getStyle('A4:L4')->applyFromArray([
+                $nbr = $lines_so_far + 1;
+                $sheet->mergeCells("A$nbr:D$nbr");
+
+                $sheet->getStyle('A2:F2')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->getStyle('A5:L5')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->getStyle('A8:L8')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $nbr = $lines_so_far + 1;
+
+                $sheet->getStyle("A$nbr:L$nbr")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $nbr = $lines_so_far + 3;
+
+                $sheet->getStyle("A$nbr:L$nbr")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

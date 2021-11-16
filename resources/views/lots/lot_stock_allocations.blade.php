@@ -2,7 +2,7 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{ route('lot.stockallocations.export', [$lot->id] + Request::all()) }}" class="btn xbtn-sm btn-grey" style="margin-right: 32px;"  
+        <a href="{{ route('lot.stockallocations.export', [$lot->id] + Request::all()) }}" class=" hide  btn xbtn-sm btn-grey" style="margin-right: 32px;"  
                 title="{{l('Export', [], 'layouts')}} ({{ l('Lot Stock Allocations') }})"><i class="fa fa-file-excel-o"></i> {{l('Export Allocations')}}</a>{{-- see: warehouses/indexProducts.blade.php --}}
 
         <a href="{{ URL::to('lots') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Lots') }}</a>

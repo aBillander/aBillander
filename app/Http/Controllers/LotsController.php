@@ -235,6 +235,8 @@ class LotsController extends Controller
             $stockmovement = StockMovement::createAndProcess( $data );
 
             $lot->stockmovements()->save( $stockmovement );
+            $stockmovement->update(['lot_quantity_after_movement' => $lot->quantity]);
+            $lot->update(['blocked' => 0]);
         }
 
         return redirect('lots')
@@ -436,7 +438,8 @@ class LotsController extends Controller
         $stock = $product->getStockByWarehouse( $lot->warehouse_id );
 
         // New stock
-        $new_stock = $stock - $lot->quantity + $lot_quantity;
+//        $new_stock = $stock - $lot->quantity + $lot_quantity;
+        $new_stock = $stock - $lot_quantity;
 
         // Magic here:
 
@@ -559,23 +562,14 @@ class LotsController extends Controller
 
         $stockmovement = StockMovement::createAndProcess( $data );
 
-        $lot->stockmovements()->save( $stockmovement );
+        $new_lot->stockmovements()->save( $stockmovement );
         $stockmovement->update(['lot_quantity_after_movement' => $new_lot->quantity]);
+        $new_lot->update(['blocked' => 0]);
 
 
-die();
 
-        if($check)
-        {
-
-            return Redirect::to(URL::previous() . $anchor)
-                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
-        }
-        else
-        {
-            return Redirect::to(URL::previous() . $anchor)
-                    ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => $id], 'layouts') . 'Sorry Only Upload: '.implode(', ', $allowedfileExtension));
-        }
+        return redirect()->route('lots.edit', $new_lot->id)
+                    ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $new_lot->id], 'layouts'));
     }
 
 

@@ -782,6 +782,8 @@ class ProductsController extends Controller
         $stockmovement = StockMovement::createAndProcess( $data );
 
         $lot->stockmovements()->save( $stockmovement );
+        $stockmovement->update(['lot_quantity_after_movement' => $lot->quantity]);
+        $lot->update(['blocked' => 0]);
 
         $product->update(['lot_tracking' => 1]);
 

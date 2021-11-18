@@ -121,6 +121,7 @@
                       data-quantity_label="{{ $line->measureunit->quantityable($line->required_quantity) .' '.$line->measureunit->name}}" 
                       data-type="{{$line->type}}" title="{{l('Add Lots to Line')}}" onClick="return false;"><i class="fa fa-window-restore"></i>{{ $msg }}</a>
 
+{{ Form::hidden( "dispatch[". $line->id ."]", $line->measureunit->quantityable($line->real_quantity), ['id' => "dispatch[". $line->id ."]"] ) }}
 
 @else
 

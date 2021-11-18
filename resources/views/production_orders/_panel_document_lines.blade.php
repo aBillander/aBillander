@@ -91,7 +91,17 @@
                 @if($line->type == 'shipping')
                   <i class="fa fa-truck abi-help" title="{{l('Shipping Cost')}}"></i> 
                 @endif
-                {{ $line->name }}</td>
+                {{ $line->name }}
+
+@if ( $document->status == 'finished' )
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
+
+    @include('production_orders._chunck_line_lots')
+
+@endif
+@endif
+
+                </td>
                 <td class="text-right">{{ $line->as_quantity('required_quantity') }}
                 </td>
                 <td class="text-right">{{ $line->as_quantity('real_quantity') }}

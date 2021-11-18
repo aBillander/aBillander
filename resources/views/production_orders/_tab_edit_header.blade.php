@@ -116,6 +116,7 @@
                   </button>
 @endif
 
+@if ( $document->status != 'finished' )
                   <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();" title="{{l('Save Order')}}">
                      <i class="fa fa-floppy-o"></i>
                      &nbsp; {{l('Save', [], 'layouts')}}
@@ -125,6 +126,8 @@
                      <i class="fa fa-hdd-o"></i>
                      &nbsp; {{l('Save & Finish')}}
                   </button>
+@endif
+
                </div>
 
 <!-- Order header ENDS -->

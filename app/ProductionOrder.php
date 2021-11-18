@@ -556,12 +556,14 @@ if ( $bomitem )
         return true;
     }
 
-    public function unfinish( $status = null )
+    public function unfinish( $status = 'released' )
     {
         // Can I ...?
         if ( $this->status != 'finished' ) return false;
 
         // Do stuf...
+        $this->document_reference = null;
+        $this->finished_quantity = 0.0;
         $this->status = $status ?: 'released';
         $this->finish_date =null;
 
@@ -682,6 +684,20 @@ if ( $bomitem )
                     ->where('lotable_type', ProductionOrder::class)->with('lot');
     }
 
+    public function getLotAttribute()
+    {
+/*
+        if (!$this->relationLoaded('lotitem')) {
+            $this->load('lotitem.lot');
+        }
+
+        return $this->lotitem->lot;
+*/
+        // Better approach for testing: take last created lot
+        return $this->lots->sortByDesc('id')->first();
+
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -771,7 +787,7 @@ if ( $bomitem )
             //    'para el Producto: ['.$document->product_reference.'] '.$document->product_name;
         }
 
-        // Production Order Header
+        // Production Order Header Stock Movement
             $data = [
                     'date' => \Carbon\Carbon::now(),
 
@@ -828,7 +844,7 @@ if ( $bomitem )
         foreach ($this->lines as $line) {
             //
             // Only products, please!!!
-            if ( ! ( $line->line_type == 'product' ) ) continue;
+            if ( ! ( $line->type == 'product' ) ) continue;
             if ( ! ( $line->product_id > 0 ) )         continue;
 
             if ( Configuration::isTrue('ENABLE_LOTS') && ($line->product->lot_tracking > 0)  )
@@ -866,7 +882,7 @@ if ( $bomitem )
                     'warehouse_id' => $this->warehouse_id,
 //                    'warehouse_counterpart_id' => $line->,
 
-                    'movement_type_id' => StockMovement::MANUFACTURING_OUTPUT,
+                    'movement_type_id' => StockMovement::MANUFACTURING_INPUT,
 
 //                    'user_id' => $line->,
 
@@ -907,6 +923,7 @@ if ( $bomitem )
 
     public function canRevertStockMovements()
     {
+        if (0)
         if ( $this->status == 'finished' ) return true;
 
         return false;
@@ -990,8 +1007,10 @@ if ( $bomitem )
     public function makeStockMovementsLineLots( $line )
     {
         // Let's rock!
-        foreach ($line->lots as $lot) {
+        foreach ($line->lotitems as $lotitem) {
             //
+            $lot = $lotitem->lot;
+
             $data = [
                     'date' => \Carbon\Carbon::now(),
 
@@ -1001,14 +1020,14 @@ if ( $bomitem )
                     'document_reference' => $this->document_reference,
 
 //                    'quantity_before_movement' => $line->,
-                    'quantity' => $lot->quantity_initial,
-                    'measure_unit_id' => $lot->measure_unit_id,
+                    'quantity' => $line->real_quantity,
+                    'measure_unit_id' => $line->measure_unit_id,
 //                    'quantity_after_movement' => $line->,
 
-                    'price' => $line->unit_final_price,
-                    'price_currency' => $line->unit_final_price,
-                    'currency_id' => $this->currency_id,
-                    'conversion_rate' => $this->currency_conversion_rate,
+                    'price' => $line->product->cost_price,
+                    'price_currency' => $line->product->cost_price,
+//                    'currency_id' => $this->currency_id,
+//                    'conversion_rate' => $this->currency_conversion_rate,
 
                     'notes' => '',
 
@@ -1020,7 +1039,7 @@ if ( $bomitem )
                     'warehouse_id' => $this->warehouse_id,
 //                    'warehouse_counterpart_id' => $line->,
 
-                    'movement_type_id' => StockMovement::MANUFACTURING_OUTPUT,
+                    'movement_type_id' => StockMovement::MANUFACTURING_INPUT,
 
 //                    'user_id' => $line->,
 
@@ -1034,9 +1053,13 @@ if ( $bomitem )
                 //
                 $line->stockmovements()->save( $stockmovement );
 
+                $lot_quantity_after_movement = $lot->quantity - $stockmovement->quantity;
+
                 $lot->stockmovements()->save( $stockmovement );
-                $stockmovement->update(['lot_quantity_after_movement' => $stockmovement->quantity]);
-                $lot->update(['blocked' => 0]);
+                $stockmovement->update(['lot_quantity_after_movement' => $lot_quantity_after_movement]);
+                $lot->update(['blocked' => 0, 'quantity' => $lot_quantity_after_movement]);
+
+                $lotitem->update(['is_reservation' => 0]);
             }
         }
 

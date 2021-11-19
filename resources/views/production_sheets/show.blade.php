@@ -56,7 +56,7 @@
 
 
 <div class="btn-group">
-  <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=onorder" class="btn btn-success" onclick="loadingpage();" title="{{ l('Solo Bajo Pedido') }}"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
+  <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
   <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
 
   <ul class="dropdown-menu">

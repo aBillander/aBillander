@@ -86,8 +86,8 @@
                 <!-- td class="text-right">{{ $line->as_priceable($line->total_tax_incl - $line->total_tax_excl) }}</td -->
                 <td class="text-center"> </td>
 @else
-                <td>{{ $line->type }} <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
-                <td>
+                <td><a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
+                <td title=" {{ $line->type }} ">
                 @if($line->type == 'shipping')
                   <i class="fa fa-truck abi-help" title="{{l('Shipping Cost')}}"></i> 
                 @endif

@@ -98,7 +98,10 @@
                   <span style="color: #cccccc;">/</span> #<span class="text-info">{{ $document->id }}</span> 
                   <span style="color: #cccccc;">::</span> {{ abi_date_short($document->due_date) }}  
 
-                   <span class="badge" style="background-color: #3a87ad;" title="{{ optional($document->measureunit)->name }}"> &nbsp; {{ optional($document->measureunit)->sign }} &nbsp; </span>
+@php
+    $measureunit = $document->measureunit ? $document->measureunit : $document->product->measureunit;
+@endphp
+                   <span class="badge" style="background-color: #3a87ad;" title="{{ $measureunit->name }}"> &nbsp; {{ $measureunit->sign }} &nbsp; </span>
 
                  <!-- span class="lead well well-sm">
 

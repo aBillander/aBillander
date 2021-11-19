@@ -68,6 +68,22 @@
                                                 data-content="{{ l('Use Lot and Expiry Date tracking for this Product.') }}">
                                     <i class="fa fa-question-circle abi-help"></i>
                              </a>
+@if( $product->quantity_onhand == 0.0 )
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('lot_tracking', '1', true, ['id' => 'lot_tracking_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('lot_tracking', '0', false, ['id' => 'lot_tracking_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+@else
                      <div class="form-control">
 
                        <div class="radio-inline">
@@ -82,6 +98,7 @@
                        </div>
 
                      </div>
+@endif
                    </div>
 
 @if ( $product->lot_tracking )
@@ -123,6 +140,7 @@
                   </div>
 
 @else
+        @if( $product->quantity_onhand > 0.0 )
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
@@ -130,6 +148,7 @@
 
                   </div>
 
+        @endif
 @endif
         </div>
 

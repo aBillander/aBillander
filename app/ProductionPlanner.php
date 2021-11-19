@@ -333,11 +333,14 @@ class ProductionPlanner
 
                       // if ($product->procurement_type == 'assembly') <= muy restrictivo, ya que puede haber productos de Aprovisionamiento = Fabricación dentro de una BOM
 
+                      // abi_r($withStock.' - '.$product->reference.' - '.$product->stock_control.' - '.$product->mrp_type.' - '.$product->quantity_onhand);
+
                       // Only Assembies since Manufacture Products are already adjusted in STEP 1 <= Creo que no es así
                       if ( $withStock )
                       {
                             if ( ( ($product->stock_control > 0) && ($product->mrp_type == 'manual') ) || 
-                                    $product->mrp_type == 'reorder' 
+                                    $product->mrp_type == 'reorder'  || 
+                                    $product->mrp_type == 'onorder' 
                             ) {
                                 $product_stock = $product->quantity_onhand;
                             }

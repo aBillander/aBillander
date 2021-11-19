@@ -41,7 +41,7 @@ class ProductionSheet extends Model
         // Set variables: $withStock, $mrp_type
         extract($params);
 
-        // abi_r($params);abi_r(($withStock === false?'true':'false').'  '.$mrp_type);die();
+        // abi_r($params);abi_r(((int)$withStock ).'  '.$mrp_type);die();
 
         // Delete current Production Orders
         $porders = $this->productionorders()->get();

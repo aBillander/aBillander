@@ -33,7 +33,14 @@
       <td>{{ $product->as_quantityable($order->planned_quantity) }}</td>
       <td>{{ $order->workcenter->name ?? '' }}</td>
       <td>{{ $order->created_via }}</td>
-      <td>{{ $order->status }}</td>
+      <td>
+@if ( $order->status != 'finished' )
+              <span class="label label-success" style="opacity: 0.75;">{{ $order->status_name }}</span>
+@else
+              <span class="label label-info" style="opacity: 0.75;">{{ $order->status_name }}</span><br />
+              <span class="text-success" title="{{ l('Finish Date') }}"><xstrong>{{ abi_date_short($order->finish_date) }}</xstrong></span>
+@endif
+      </td>
       <td class="text-center">
           @if ($order->notes)
            <a href="javascript:void(0);">
@@ -48,9 +55,15 @@
 
                 <a class="btn btn-sm btn-blue show-production-order-products" title="{{l('Show', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-folder-open-o"></i></a>
 
+@if ( $order->status != 'finished' )
+{{--
                 <a class="btn btn-sm btn-warning edit-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetedit') }}" title="{{l('Edit', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-onotes="{{ $order->notes }}" onClick="return false;"><i class="fa fa-pencil"></i></a>
+--}}
+
+                <a class="btn btn-sm btn-warning " href="{{ URL::to('productionorders/' . $order->id . '/edit') }}"  title="{{l('Edit', [], 'layouts')}}" target="_productionorder"><i class="fa fa-pencil"></i></a>
 
                 <a class="btn btn-sm btn-danger delete-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetdelete') }}" title="{{l('Delete', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-trash-o"></i></a>
+@endif
 
             </td>
     </tr>

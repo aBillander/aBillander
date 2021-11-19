@@ -330,6 +330,7 @@ return [
 //	'Create Shipping Slip'     => 'Crear Albarán',
 	'Create Invoice'     => 'Crear Factura',
 	'Order: :id [:date]'     => 'Pedido: :id [:date]',
+	'Your Order: ' => 'Su Pedido: ',
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
 	'Invoice: :id [:date]'     => 'Factura: :id [:date]',
 

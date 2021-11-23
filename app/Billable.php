@@ -1103,6 +1103,11 @@ class Billable extends Model implements ShippableInterface
             $query->where('payment_method_id', $params['payment_method_id']);
         }
 
+        if ( isset($params['document_reference']) && $params['document_reference'] !== '' )
+        {
+            $query->where('document_reference', 'LIKE', '%' . $params['document_reference'] . '%');
+        }
+
 
 /*
         if ( isset($params['reference']) && trim($params['reference']) !== '' )

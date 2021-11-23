@@ -132,6 +132,24 @@
             };
 
 
+        $("#customer_services_autocustomer_name").autocomplete({
+            source : "{{ route('customerinvoices.ajax.customerLookup') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+
+                getCustomerData( value.item.id, 'customer_services');
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + item.identification+'] ' + item.name_regular + "</div>" )
+                .appendTo( ul );
+            };
+
+
         $("#category_sales_autocustomer_name").autocomplete({
             source : "{{ route('customerinvoices.ajax.customerLookup') }}",
             minLength : 1,
@@ -163,6 +181,14 @@
            //Code: 
            if ( $("#customer_sales_autocustomer_name").val().trim() == '' )
               $('#customer_sales_customer_id').val('');
+
+           return true;
+         });
+
+        $("#customer_services_report_form").on("submit", function(){
+           //Code: 
+           if ( $("#customer_services_autocustomer_name").val().trim() == '' )
+              $('#customer_services_customer_id').val('');
 
            return true;
          });

@@ -39,8 +39,39 @@
 @endif
 
 @if ($document->document_id>0)
-                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
 
+<div class="btn-group">
+  <a href="#" class="btn btn-sm btn-lightblue" title="{{l('Send to Customer', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>
+  <a href="#" class="btn btn-sm btn-lightblue dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+  <ul class="dropdown-menu" xstyle="color: #333333; background-color: #ffffff;">
+    <li>
+        <a xclass="btn btn-sm btn-lightblue" xstyle="color: #333333; background-color: #ffffff;" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" onclick="fakeLoad();this.disabled=true;">&nbsp;<i class="fa fa-bolt"></i>&nbsp; {{l('Quick Send to Customer', [], 'layouts')}}</a>
+    </li>
+    <li>
+        <a xclass="btn btn-sm btn-black" xstyle="color: #333333; background-color: #ffffff;" class="open-email-popup" data-html="false" data-toggle="modal"
+                        href="{{ URL::to($model_path.'/' . $document->id . '/email') }}"                          
+                        data-to_name = "{{ $customer->address->firstname }} {{ $customer->address->lastname }}" 
+                        data-to_email = "{{ $customer->address->email }}" 
+                        data-from_name = "{{ abi_mail_from_name() }}" 
+                        data-from_email = "{{ abi_mail_from_address() }}" 
+                        data-subject = "{{ l($model_path.'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->customer->name_regular }}" 
+                        onclick="return false;"><i class="fa fa-window-maximize"></i> {{l('Custom Send to Customer', [], 'layouts')}}</a>
+    </li>
+  </ul>
+</div>
+
+{{--
+                <a class="btn btn-sm btn-black open-email-popup" data-html="false" data-toggle="modal"
+                        href="{{ URL::to($model_path.'/' . $document->id . '/email') }}"                          
+                        data-to_name = "{{ $customer->address->firstname }} {{ $customer->address->lastname }}" 
+                        data-to_email = "{{ $customer->address->email }}" 
+                        data-from_name = "{{ abi_mail_from_name() }}" 
+                        data-from_email = "{{ abi_mail_from_address() }}" 
+                        data-subject = "{{ l($model_path.'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->customer->name_regular }}" 
+                        onclick="return false;" title="{{l('Send to Customer', [], 'layouts')}}" ><i class="fa fa-envelope"></i></a>
+
+                <a class="btn btn-sm btn-lightblue" href="{{ URL::to($model_path.'/' . $document->id . '/email') }}" title="{{l('Send to Customer', [], 'layouts')}}" onclick="fakeLoad();this.disabled=true;"><i class="fa fa-envelope"></i></a>
+--}}
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 
@@ -150,6 +181,8 @@
 </div>
 @endsection
 
+@include('customer_invoices/_modal_document_email')
+
 @include('layouts/modal_delete')
 
 
@@ -167,6 +200,16 @@
 @section('styles') @parent
 
     @include($view_path.'.css.panels')
+
+
+<style>
+  .dropdown-menu>li>a:hover,
+.dropdown-menu>li>a:focus {
+ text-decoration:none;
+ color:#ffffff;
+ background-color:#e95420
+}
+</style>
 
 @endsection
 

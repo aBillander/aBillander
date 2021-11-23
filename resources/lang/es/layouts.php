@@ -309,6 +309,8 @@ return [
 	'Go to'     => 'Ir a',
 	'Send'     => 'Enviar',
 	'Send to Customer'     => 'Enviar al Cliente',
+	'Quick Send to Customer'     => 'Envío rápido',
+	'Custom Send to Customer'    => 'Envío personalizado',
 	'Send to Supplier'     => 'Enviar al Proveedor',
 	'Sending...'     => 'Enviando...',
 	'Send eMail'     => 'Enviar eMail',
@@ -367,6 +369,7 @@ return [
 	'Your Message'     => 'Su Mensaje',
 	'From (name)'     => 'De (nombre)',
 	'From (email)'     => 'De (email)',
+	'Copy to (comma separated list of emails)' => 'Copia a (lista de emails separados por una coma)',
 
 	'-- Please, select --'     => '-- Seleccione --',
 	'-- Click to Select --'     => '-- Haga click para Seleccionar --',

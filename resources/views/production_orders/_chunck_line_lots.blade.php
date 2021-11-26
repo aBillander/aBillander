@@ -14,7 +14,7 @@
 				<!-- td style="border-bottom: 0px #ccc solid !important;"><i>Lotes:</i></td -->
 				<td style="border-bottom: 0px #ccc solid !important;"><i>
 					@foreach( $line->lotitems as $lotitem )
-						&nbsp;Lote: <a xclass="btn btn-sm btn-warning " href="{{ URL::to('lots/' . $lotitem->lot->id . '/edit') }}"  title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lotitem->lot->reference }}</a> &nbsp; <i class="fa fa-calendar text-info" title="{{ abi_date_short( $lotitem->lot->expiry_at ) }}"></i> ({{ $lotitem->lot->measureunit->quantityable($lotitem->quantity) }})<br />
+						&nbsp;{{ l('Lot') }}: <a xclass="btn btn-sm btn-warning " href="{{ URL::to('lots/' . $lotitem->lot->id . '/edit') }}"  title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lotitem->lot->reference }}</a> &nbsp; <i class="fa fa-calendar text-info" title="{{ abi_date_short( $lotitem->lot->expiry_at ) }}"></i> ({{ $lotitem->lot->measureunit->quantityable($lotitem->quantity) }})<br />
 					@endforeach					
 				</i></td>
 			</tr>
@@ -22,7 +22,7 @@
 @else
 				<br />
 				<span class="">
-				<i>Lote: 
+				<i>{{ l('Lot') }}: 
 					@foreach( $line->lotitems as $lotitem )
 						<a xclass="btn btn-sm btn-warning " href="{{ URL::to('lots/' . $lotitem->lot->id . '/edit') }}"  title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lotitem->lot->reference }}</a> &nbsp; <i class="fa fa-calendar text-info" title="{{ abi_date_short( $lotitem->lot->expiry_at ) }}"></i><br />
 						@break
@@ -32,4 +32,12 @@
 
 @endif
 
+@endif
+
+{{-- Not enough quantity check --}}
+
+@if( $line->as_quantity('real_quantity') < $line->as_quantity('required_quantity') )
+	<div class="alert-danger" style="padding: 2px; border-radius: 4px;">
+	  <strong><i class="fa fa-warning"></i></strong> <small>{{ l('Not enough quantity.') }}</small>
+	</div>
 @endif

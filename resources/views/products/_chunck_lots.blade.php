@@ -43,7 +43,9 @@
 @endif
 
       <td>{{ $lot->id }}</td>
-      <td>{{ $lot->reference }}</td>
+      <td>
+            <a xclass="btn btn-sm btn-warning " href="{{ URL::to('lots/' . $lot->id . '/edit') }}"  title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->reference }}</a>
+      </td>
       <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
       <td class="text-right">{{ $lot->measureunit->quantityable( $lot->quantity ) ?? $lot->as_quantity('quantity') }}</td>
       <td>{{ optional($lot->measureunit)->sign }}</td>

@@ -10,6 +10,11 @@ class ProductionOrder extends Model
 {
     use ViewFormatterTrait;
 
+    public static $created_vias = array(
+            'manufacturing', 
+            'manual',
+        );
+
     public static $statuses = array(
             'simulated', 
             'planned', 
@@ -521,6 +526,11 @@ if ( $bomitem )
                 $query->where('active', '=', 0);
             if ( $params['active'] == 1 )
                 $query->where('active', '>', 0);
+        }
+
+        if (array_key_exists('due_date', $params) && $params['due_date'])
+        {
+            $query->where('production_orders.due_date', $params['due_date']);
         }
 
         return $query;

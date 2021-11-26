@@ -46,8 +46,16 @@ class ProductionSheet extends Model
         // Delete current Production Orders
         $porders = $this->productionorders()->get();
         foreach ($porders as $order) {
-//            if ( $order->created_via != 'manual' )
-                $order->delete();
+            // Skip manual orders
+            if ( $order->created_via == 'manual' )
+                continue;
+            
+            // Skip finished orders
+            if ( $order->status == 'finished' )
+                continue;
+
+            // At last:
+            $order->delete();
         }
 
         // $errors = [];

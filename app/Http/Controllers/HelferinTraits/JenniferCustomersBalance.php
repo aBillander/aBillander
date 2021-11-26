@@ -172,7 +172,9 @@ if( $customer_id > 0 ){
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
-        foreach ($vouchers->get($customer_id) as $payment) {
+        $customer_vouchers = $vouchers->get($customer_id);
+        if ($customer_vouchers)
+        foreach ($customer_vouchers as $payment) {
             // $data[] = $line->toArray();
             // abi_r($payment, true);
             $row = [];

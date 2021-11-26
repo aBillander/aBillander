@@ -86,9 +86,11 @@ return [
 	'Quantity on-hand only'     => 'Servir sólo stock disponible',
 
 
+	'Lot' => 'Lote',
     'Add Lots' => 'Añadir Lotes',
     'Add Lots to Line' => 'Añadir Lotes a la Línea',
     'Add Lots to Lines' => 'Añadir Lotes a las Líneas',
+    'Not enough quantity.' => 'No hay suficiente.',
 
     'Save & Finish'     => 'Guardar y Terminar',
     'Save Order' => 'Guardar Orden de Fabricación',
@@ -100,5 +102,7 @@ return [
 	'Leave the field empty for the System to calculate.' => 'Deje el campo vacío para que lo calcule el Sistema.',
 
 	'Document has not Materials' => 'El Documento no tiene Consumo de Materiales',
+
+	'Before finishing this Production Order, make sure you have assigned the Material Consumption.' => 'Antes de terminar esta Orden de Fabricación, asegúrese de que ha asignado el Consumo de Materiales.',
 
 ];

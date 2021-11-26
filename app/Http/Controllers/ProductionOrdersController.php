@@ -45,6 +45,9 @@ class ProductionOrdersController extends Controller
      */
     public function index(Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['due_date'], $request );
+        
         $orders = $this->productionorder->filter( $request->all() )
                       ->select('*', 'production_orders.id AS poid')
                       ->with('workcenter')
@@ -134,7 +137,14 @@ class ProductionOrdersController extends Controller
         // Dates (cuen)
         $this->mergeFormDates( ['due_date', 'finish_date'], $request );
 
-        $rules = $this->productionorder::$rules;
+//        $rules = $this->productionorder::$rules;
+
+        // Temporarily:
+        $rules = [
+                'due_date' => 'required|date',
+                'warehouse_id' => 'exists:warehouses,id',
+                'work_center_id' => 'exists:work_centers,id',
+        ];
 
         $this->validate($request, $rules);
 

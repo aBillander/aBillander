@@ -12,6 +12,13 @@
                 {!! Form::open(array('id' => 'ProductionOrderFinish_action')) !!}
 
             <div class="modal-body">
+
+<div class="alert alert-dismissible alert-warning">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <!-- h4>Warning!</h4 -->
+  <p><strong><i class="fa fa-warning"></i></strong> {{ l('Before finishing this Production Order, make sure you have assigned the Material Consumption.') }}</p>
+</div>
+
                 <div class="row">
 
                 {!! Form::hidden('production_sheet_id', $document->production_sheet_id) !!}

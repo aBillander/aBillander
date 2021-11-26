@@ -11,10 +11,10 @@
                    {{l('Issue Materials')}}
                </h4><br -->
               <div xclass="page-header">
-                  <div class="pull-right  hide " style="padding-right: 90px;">
+                  <div class="pull-right" style="padding-right: 90px;">
 
-                      <a href="{{ URL::to('productionorders/create') }}" class="btn btn-sm btn-grey" 
-                              title="{{l('Add Lots to Lines')}}"><i class="fa fa-window-restore"></i> &nbsp;{{l('Add Lots')}}</a>
+                      <a href="{{ route('productionorders.setlotslines', $document->id) }}" class="btn xbtn-sm btn-grey set-lots-to-line" 
+                              title="{{l('Add Lots to Lines')}}" onClick="return false;"><i class="fa fa-hand-grab-o" style="font-weight: bolder;"></i> &nbsp;{{l('Add Lots')}}</a>
 
                   </div>
                   <h3>
@@ -71,7 +71,7 @@
 
         @foreach ($document->lines->where('type', 'product') as $line)
             <tr>
-                <td title="{{$line->id }}">{{$line->line_sort_order }} 
+                <td title="{{$line->id }}">{{ $line->line_sort_order ?? $line->id }} 
                   @if ( $line->product->isPack() )
                     <i class="fa fa-gift btn-xs alert-warning" title="{{l('This Product is of Type "Grouped"', 'products')}}"></i>
                   @endif

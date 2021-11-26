@@ -3,6 +3,71 @@
     $(document).ready(function() {
 
 
+        $(document).on('click', '.set-lots-to-line', function(evnt) {
+
+            // What to do? Let's see:
+
+            var panel = $("#document_document_availability");
+            var url = $(this).attr('href');     // route('productionorders.setlotslines', $document->id)
+            var token = "{{ csrf_token() }}";
+            var payload = '';
+
+            $('#error-msg-box').hide();
+
+               panel.html('');
+               panel.addClass('loading');
+
+            
+            $.ajax({
+                url : url,
+                headers : {'X-CSRF-TOKEN' : token},
+                type : 'POST',
+                dataType : 'json',
+                data : payload,
+
+                success: function(response){
+
+                    if( response.success != 'OK' ) 
+                    {
+                        $('#error-msg-box').html(response.message);
+
+                        $('#error-msg-box').show();
+
+                        return ;
+                    }
+
+                    getDocumentMaterials();
+                    
+//                    $("[data-toggle=popover]").popover();
+
+                    showAlertDivWithDelay("#msg-success-lots");
+
+                    console.log(response);
+                }
+            });
+
+
+            // stop the form from submitting the normal way and refreshing the page
+            event.preventDefault();
+
+
+
+              // alert(url);
+
+              return ;
+
+              editDocumentProductLotsLine( $(this) );
+
+              calculateSelectedAmount();
+
+              // Seems to need a delay
+              setTimeout(function(){ $("[data-toggle=popover]").popover(); }, 1000);              
+
+        });
+          
+
+
+
           $(document).on('click', '.add-lots-to-line', function(evnt) {
 
               // What to do? Let's see:

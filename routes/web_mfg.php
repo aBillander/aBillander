@@ -43,6 +43,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('productionorders/{id}/materials',  'ProductionOrdersController@getDocumentMaterials' )->name('productionorders.materials' );
         Route::post('productionorders/{id}/setmaterials',  'ProductionOrdersController@setDocumentMaterials')->name('productionorders.setmaterials');
 
+        Route::post('productionorders/{id}/setlotslines', 'ProductionOrdersController@setDocumentLotsLines'     )->name('productionorders.setlotslines'    );
         Route::get('productionorders/{id}/getlotsline/{lid}', 'ProductionOrdersController@getDocumentLotsLine'     )->name('productionorders.getlotsline'    );
         Route::post('productionorders/updatelotsline/{lid}',  'ProductionOrdersController@updateDocumentLotsLine'  )->name('productionorders.updatelotsline' );
         

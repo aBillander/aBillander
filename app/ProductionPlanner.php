@@ -30,12 +30,16 @@ class ProductionPlanner
 
 
     /*
+     *  Calcula recursivamente los requerimientos de fabricación (OFs) según el BOM del Producto
+     *
      *   @Return: Collection of Production Order Models
     */
-    public function addPlannedMultiLevel($data = [])
+    public function addPlannedMultiLevel($data = [], ProductionOrder $order = null)
     {
         // abi_r($data);
 
+if( $order == null )
+{
         $product = Product::findOrFail( $data['product_id'] );
 
         $bom     = $product->bom;
@@ -70,6 +74,14 @@ class ProductionPlanner
 //            'warehouse_id' => '',
             'production_sheet_id' => $this->production_sheet_id,
         ]);
+
+} else {
+
+        $product = $order->product;
+
+        $bom     = $product->bom;
+}
+
 
         $this->orders_planned->push($order);
 

@@ -62,8 +62,8 @@ class ProductionSheet extends Model
         $this->sandbox = new ProductionPlanner( $this->id, $this->due_date );
 
         // Do the Mambo!
-        // STEP 1
-        // Calculate raw requirements
+        // STEP 1.1
+        // Calculate raw requirements from Customer Orders
         // Collection of arrays [product_id, stock, quantity, measureunit, ...]
         $requirements = $this->customerorderlinesGrouped( $withStock, $mrp_type );
 
@@ -107,6 +107,16 @@ class ProductionSheet extends Model
         // ^-- Esto se ajustará en un paso posterior
 
         // abi_r($this->sandbox->getPlannedOrders(), true);
+
+
+        // STEP 1.2
+        // Calculate raw requirements from Released Production Orders
+        $requirements = $this->productionorders()->where('status', 'released')->get();
+        foreach ($requirements as $order) {
+
+            // Create Production Order
+            $orders = $this->sandbox->addPlannedMultiLevel([], $order);
+        }
 
 
         // STEP 2

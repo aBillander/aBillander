@@ -80,6 +80,8 @@ return [
 
 	'Website'     => 'Web',
 	'Misc'     => 'Otros',
+	'Invoice copy to' => 'Copia de Factura a',
+	'Comma separated list of email addresses, as in: name1@site.com,name2@site.com' => 'Lista de direcciones separadas por comas, como: name1@site.com,name2@site.com',
 
 	'Sequence for Invoices'     => 'Serie de Facturas',
 	'Template for Invoices'     => 'Plantilla para Facturas',

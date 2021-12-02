@@ -383,15 +383,18 @@ die();
             if ($request->isMethod('post'))
             {
                 // ... this is POST method (call from popup)
+                $copy_to_list = str_replace(' ', '', str_replace(';', ',', $request->input('copy_to_list', '')));
+
                 $subject = $request->input('email_subject');
             }
             if ($request->isMethod('get'))
             {
                 // ... this is GET method (call from button)
+                $copy_to_list = $document->{$entity}->cc_addresses;
+
                 $subject = l($this->getParentClassLowerCase().'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->{$entity}->name_regular;
             }
 
-            $copy_to_list = str_replace(' ', '', str_replace(';', ',', $request->input('copy_to_list', '')));
             $ccList  = $copy_to_list ? explode(',', $copy_to_list) : [];
 
             $template_vars = array(

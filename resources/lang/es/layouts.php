@@ -288,6 +288,7 @@ return [
 	'Refresh'     => 'Refrescar',
 	'Show'     => 'Mostrar',
 	'Show Preview'     => 'Vista Previa',
+	'Show more'     => 'Mostrar más',
 	'Show Log'     => 'Mostrar el Log',
 	'Progress'     => 'Progreso',
 	'Duplicate' => 'Duplicar',

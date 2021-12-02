@@ -171,7 +171,7 @@ class CustomerVouchersController extends Controller
 		// abi_r($payment, true);
 
         // Dates (cuen)
-        $this->addFormDates( ['due_date'], $payment );
+        $this->addFormDates( ['due_date', 'payment_date'], $payment );
 		
 		return view('customer_vouchers.edit', compact('payment', 'action', 'back_route'));
 	}
@@ -366,6 +366,7 @@ class CustomerVouchersController extends Controller
 
 			$payment->name     = $request->input('name',     $payment->name);
 			$payment->due_date = $request->input('due_date', $payment->due_date);
+			$payment->payment_date = $request->input('payment_date', $payment->payment_date);	// Maybe you want to edit a paid voucher because you made a mistake
 			$payment->amount   = $request->input('amount',   $payment->amount);
 			$payment->notes    = $request->input('notes',    $payment->notes);
 

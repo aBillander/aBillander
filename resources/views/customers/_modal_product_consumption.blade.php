@@ -22,8 +22,15 @@
 			<th style="text-transform: none;">{{l('Quantity')}}</th>
 
 			<th style="text-transform: none;">{{l('Price')}}</th>
-			<th style="text-transform: none;">{{l('Customer Price')}}</th>
+			<th style="text-transform: none;">{{l('Customer Price')}}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                            data-content="{{ l('According to Customer Price List') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a>
+			</th>
 			<th style="text-transform: none;">{{l('Customer Final Price')}}</th>
+			<th style="text-transform: none;">{{l('Discount Percent')}}</th>
+			<th style="text-transform: none;">{{l('Final Price')}}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -48,6 +55,8 @@
 			<td>{{ $line->as_price('unit_price') }}</td>
 			<td>{{ $line->as_price('unit_customer_price') }}</td>
 			<td>{{ $line->as_price('unit_customer_final_price') }}</td>
+			<td>{{ $line->as_percent('discount_percent') }}</td>
+			<td>{{ $line->as_price('unit_final_price') }}</td>
 		</tr>
 	@endforeach
 

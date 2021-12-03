@@ -189,7 +189,9 @@ return [
 	''     => '',
 
 	'Product consumption' => 'Consumo del Producto',
-	'Customer Final Price'     => 'Precio Final',
+	'Customer Final Price'     => 'Precio Final Cliente',
+	'According to Customer Price List' => 'Según la Tarifa del Cliente',
+	'Final Price'     => 'Precio Final',
 
 	'Bank Accounts'     => 'Cuentas Bancarias',
 	'Bank Name'     => 'Nombre del Banco',

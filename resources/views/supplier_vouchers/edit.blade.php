@@ -24,7 +24,13 @@
            :: {{ l('Down Payment', 'supplierdownpayments') }}
 @endif
             . {{ l('Due Date') }}: {{ abi_date_short($payment->due_date) }}</h3>
-		        <h3 class="panel-title" style="margin-top:10px;">{{ l('Amount') }}: {{ $payment->as_price('amount') }} {{ $payment->currency->name }}</h3>
+		        <h3 class="panel-title" style="margin-top:10px;">{{ l('Amount') }}: {{ $payment->as_price('amount') }} {{ $payment->currency->name }}
+
+@if($payment->payment_date)
+               . &nbsp; {{ l('Payment Date') }}: {{ abi_date_short($payment->payment_date) }}
+@endif
+            </h3>
+
 		    </div>
 			<div class="panel-body">
 
@@ -76,6 +82,12 @@
       }
 */
           $("#due_date_next_form").val( $("#due_date_form").val() );
+
+
+          $('#show_extra_fields').click(function() {
+            $('.extrafield').toggle("slide");
+            return false;
+          });
    });
 
 function checkFields() 

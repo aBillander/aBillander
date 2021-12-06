@@ -33,7 +33,7 @@
   {!! Form::hidden('tab_index', $tab_index, array('id' => 'tab_index')) !!}
 
   <fieldset>
-    <legend>{{ l('General') }}</legend>
+    <legend>{{ l('General') }} (API: {{ config('woocommerce.api_version') }})</legend>
 
 
 {{--

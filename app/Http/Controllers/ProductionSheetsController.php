@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\ProductionSheet;
-// use App\ProductionSheetRegistry;
 use Illuminate\Http\Request;
+
+use App\ProductionSheet;
+use App\Configuration;
 
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
@@ -132,11 +133,25 @@ class ProductionSheetsController extends Controller
      */
 
 
-    public function calculate($id)
+    public function calculate($id, Request $request)
     {
+        $mrp_types = ['onorder', 'reorder', 'all'];
+
+        $mrp_type = $request->input('mrp_type');
+
+        if ( !in_array($mrp_type, $mrp_types) )
+            $mrp_type = 'onorder';
+
+        // abi_r($mrp_type);die();
+
         $sheet = $this->productionSheet->findOrFail($id);
 
-        $sheet->calculateProductionOrders( \App\Configuration::isTrue('MRP_WITH_STOCK') );
+        $params = [
+            'withStock' => Configuration::isTrue('MRP_WITH_STOCK'),
+            'mrp_type'  => $mrp_type,
+        ];
+
+        $sheet->calculateProductionOrders( $params );
 
         return redirect('productionsheets/'.$id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));

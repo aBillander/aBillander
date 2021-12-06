@@ -14,6 +14,12 @@ trait BillableTotalsTrait
         if ( $document_rounding_method === null )
             $document_rounding_method = Configuration::get('DOCUMENT_ROUNDING_METHOD');
 
+        $discount_rounding_method = null;
+        if ( $document_rounding_method == 'accounting' )
+        {
+            $discount_rounding_method = 'accounting';
+            $document_rounding_method = 'none';
+        }
         // Just to make sure...
         $this->load('documentlines');
 
@@ -28,7 +34,7 @@ trait BillableTotalsTrait
         $this->totals = $this->$method();
 
         // Apply document discount
-        $this->totals = $this->applyDiscount();
+        $this->totals = $this->applyDiscount( $discount_rounding_method );
 
         return $this->totals;
     }
@@ -348,6 +354,8 @@ trait BillableTotalsTrait
 
         }
 
+        // abi_r($totals);abi_r('*****************************');// die();
+
         // Let' get (even more) dirty!
         // In fact, no rounding needed!
         $totals_rounded = collect([]);
@@ -372,11 +380,13 @@ trait BillableTotalsTrait
             return $new;
         });
 
+        // abi_r($totals_rounded);die();
+
         return $totals_rounded->sortByDesc('net_amount');
     }
 
     
-    public function applyDiscount()
+    public function applyDiscount( $discount_rounding_method = null )
     {
         $currency = $this->document_currency;
         $totals   = $this->totals;
@@ -396,6 +406,31 @@ trait BillableTotalsTrait
             $discount_amount = $item['net_amount'] * ($discount/100.0);
             $ppd_amount      = $item['net_amount'] * (1.0 - $discount/100.0) * ($ppd/100.0);
 
+
+if( $discount_rounding_method = 'accounting')  // No rounding
+{
+
+            $new = [
+                        'tax_id' => $item['tax_id'],
+                        'tax_name' => $item['tax_name'],
+
+                        'gross_amount'    => $gross_amount, 
+                        'discount_amount' => $discount_amount,
+                        'ppd_amount'      => $ppd_amount,
+
+                        'net_amount' => 0.0,
+                        'tax_amount' => 0.0,
+                        'tax_lines' => $item['tax_lines']->map(function ($item1, $key1) use ($currency, $discount, $ppd) {
+                            //
+                            $item1->taxable_base   =  $item1->taxable_base   * (1.0 - $discount/100.0) * (1.0 - $ppd/100.0);
+                            $item1->total_line_tax =  $item1->total_line_tax * (1.0 - $discount/100.0) * (1.0 - $ppd/100.0);
+
+                            return $item1;
+                        }),
+                    ];
+
+} else {
+
             $new = [
                         'tax_id' => $item['tax_id'],
                         'tax_name' => $item['tax_name'],
@@ -414,6 +449,8 @@ trait BillableTotalsTrait
                             return $item1;
                         }),
                     ];
+
+}
 
             $new['net_amount'] = $new['gross_amount'] - $new['discount_amount'] - $new['ppd_amount'];
 

@@ -83,9 +83,14 @@ class Tax extends Model {
     {
         if ( !$address ) $address = \App\Context::getContext()->company->address;
 
-        $rules = $address->getTaxRules( $this );    // Only rule_type = sales
+        $rules = $address->getTaxRules( $this );    
 
-        $percent = $rules->where('rule_type', '=', 'sales')->sum('percent');
+        // Only rule_type = sales
+        $rules_sales = $rules->where('rule_type', '=', 'sales');
+        if ( $rules_sales->count() == 0 )       // No rules found for supplied address
+            return null;
+
+        $percent = $rules_sales->sum('percent');
 
         // No effect: $rules are only rule_type = sales
         if ($with_sales_equalization)

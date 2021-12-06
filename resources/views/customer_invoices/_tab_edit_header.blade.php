@@ -113,11 +113,21 @@
       <!-- /div>
       <div class="row" -->
 
+@if ( $document->status != 'closed' )
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('payment_method_id') ? 'has-error' : '' }}">
             {{ l('Payment Method') }}
             {!! Form::select('payment_method_id', array('' => l('-- Please, select --', [], 'layouts')) + $payment_methodList, null, array('class' => 'form-control', 'id' => 'payment_method_id')) !!}
             {!! $errors->first('payment_method_id', '<span class="help-block">:message</span>') !!}
          </div>
+@else
+
+         <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            {{ l('Payment Method') }} <i class="text-danger  fa fa-lock"></i>
+            <div class="form-control">{{ $document->paymentmethod->name }}</div>
+
+            {!! Form::hidden('payment_method_id', $document->payment_method_id, array('name' => 'payment_method_id', 'id' => 'payment_method_id')) !!}
+         </div>
+@endif
 
 @if ( $document->lines->count() == 0 )
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">

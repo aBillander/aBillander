@@ -173,3 +173,40 @@ background-color: #325d88; border-color: #772953;">
     @endif
 
 
+    @if ( \App\Configuration::isTrue('ENABLE_LOTS') && ( $document->status == 'finished' ) && $document->product->lot_tracking )
+
+          <div class="xpanel xpanel-default">
+          <div class="xpanel-body">
+
+            <!-- h4>{{ l('Customer Risk') }}</h4>
+            <div class="progress progress-striped">
+                <div class="progress-bar progress-bar-warning" style="width: 60%">60%</div>
+            </div -->
+            <ul class="list-group">
+              <li class="list-group-item" style="fcolor: #468847; background-color: #dff0d8; border-color: #d6e9c6;">
+                <h4>{{ l('Lot Number') }}</h4>
+              </li>
+              
+                  <li class="list-group-item">
+
+                      <a href="{{ route( 'lot.stockmovements', $document->lot->id ) }}" title="{{l('Go to', 'layouts')}}" target="_lot">
+
+                          
+                            <span xclass="btn btn-xs btn-grey">{{ $document->lot->reference }}</span> 
+
+                      </a> 
+
+                        <a class="btn btn-xs btn-warning" href="{{ route( 'lot.stockmovements', $document->lot->id ) }}" title="{{l('Go to', 'layouts')}}" target="_lot"><i class="fa fa-external-link"></i></a>
+                    
+                  </li>
+
+            </ul>
+
+          </div>
+          </div>
+
+    @endif
+
+
+
+

@@ -215,7 +215,13 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
                 <a class="btn btn-sm btn-blue show-production-order-products" title="{{l('Show', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-folder-open-o"></i></a>
 
 @if ( $order->status != 'finished' )
+{{--
                 <a class="btn btn-sm btn-warning edit-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetedit') }}" title="{{l('Edit', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oproduct="{{ $order->product_id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" data-owarehouse="{{ $order->warehouse_id > 0 ? $order->warehouse_id : \App\Configuration::getInt('DEF_WAREHOUSE') }}" onClick="return false;"><i class="fa fa-pencil"></i></a>
+--}}
+
+                       
+                <a class="btn btn-sm btn-warning " href="{{ URL::to('productionorders/' . $order->id . '/edit') }}"  title="{{l('Edit', [], 'layouts')}}" target="_productionorder"><i class="fa fa-pencil"></i></a>
+
 
                 <a class="btn btn-sm btn-danger delete-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetdelete') }}" title="{{l('Delete', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-trash-o"></i></a>
 @endif

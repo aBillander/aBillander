@@ -39,8 +39,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('productionorders/deleteline/{lid}',  'ProductionOrdersController@deleteDocumentLine'  )->name('productionorders.deleteline' );
 //        Route::get('productionorders/{id}/duplicate',     'ProductionOrdersController@duplicateDocument'   )->name('productionorders.duplicate'  );
 //        Route::get('productionorders/{id}/profit',        'ProductionOrdersController@getDocumentProfit'   )->name('productionorders.profit'     );
-        Route::get('productionorders/{id}/materials',  'ProductionOrdersController@getDocumentMaterials' )->name('productionorders.materials' );
 
+        Route::get('productionorders/{id}/materials',  'ProductionOrdersController@getDocumentMaterials' )->name('productionorders.materials' );
+        Route::post('productionorders/{id}/setmaterials',  'ProductionOrdersController@setDocumentMaterials')->name('productionorders.setmaterials');
+
+        Route::post('productionorders/{id}/setlotslines', 'ProductionOrdersController@setDocumentLotsLines'     )->name('productionorders.setlotslines'    );
         Route::get('productionorders/{id}/getlotsline/{lid}', 'ProductionOrdersController@getDocumentLotsLine'     )->name('productionorders.getlotsline'    );
         Route::post('productionorders/updatelotsline/{lid}',  'ProductionOrdersController@updateDocumentLotsLine'  )->name('productionorders.updatelotsline' );
         
@@ -62,8 +65,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('productionorders/{document}/onhold/toggle', 'ProductionOrdersController@onholdToggle')->name('productionorders.onhold.toggle');
 
-        Route::get('productionorders/{document}/close',   'ProductionOrdersController@close'  )->name('productionorders.close'  );
-        Route::get('productionorders/{document}/unclose', 'ProductionOrdersController@unclose')->name('productionorders.unclose');
+        Route::post('productionorders/finish',   'ProductionOrdersController@finish'  )->name('productionorders.finish'  );
+        Route::get('productionorders/{document}/unfinish', 'ProductionOrdersController@unfinish')->name('productionorders.unfinish');
 
         Route::get('productionorders/{id}/deliver' , 'ProductionOrdersController@deliver'    )->name('productionorder.deliver');
 //        Route::post('productionorders/deliver/bulk', 'ProductionOrdersController@deliverBulk')->name('productionorders.bulk.deliver');

@@ -42,6 +42,12 @@
     {!! Form::label('name', l('Product Name')) !!}
     {!! Form::text('name', null, array('class' => 'form-control')) !!}
 </div>
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('due_date_form', l('Due Date')) !!}
+    {!! Form::text('due_date_form', null, array('id' => 'due_date_form', 'class' => 'form-control')) !!}
+</div>
+
 <!-- div class="form-group col-lg-2 col-md-2 col-sm-2">
     {{-- !! Form::label('category_id', l('Category')) !! }
         { !! Form::select('category_id', array('0' => l('All', [], 'layouts')) + $categoryList, null, array('class' => 'form-control')) !! --}}
@@ -177,4 +183,37 @@ $(document).ready(function() {
 
 </script>
 
-@stop
+{{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+
+<script>
+  $(document).ready(function() {
+
+    $( "#due_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+</script>
+
+@endsection
+
+@section('styles')    @parent
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+  .ui-datepicker{ z-index: 9999 !important;}
+
+
+/* Undeliver dropdown effect */
+   .hover-item:hover {
+      background-color: #d3d3d3 !important;
+    }
+
+</style>
+
+@endsection

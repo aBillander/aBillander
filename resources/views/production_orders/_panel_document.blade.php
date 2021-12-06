@@ -11,7 +11,9 @@
                             <li><a href="#tab2default" data-toggle="tab">{{ l('Lines') }}</a></li>
                             <!-- li><a href="#tab3default" data-toggle="tab">{{ l('Profitability') }}</a></li -->
 
+@if ( $document->status != 'finished' )
                             <li><a href="#tab4default" data-toggle="tab">{{ l('Issue Materials') }}</a></li>
+@endif
 
                             <!-- li><a href="#tab5default" data-toggle="tab">{{ l('Payments') }}</a></li -->
                             <!-- li class="dropdown">
@@ -26,7 +28,8 @@
 
                         <h4 style="margin-right: 15px;">
                             <span class="label label-info" title="{{ l('Due Date') }}">{{ $document->due_date_form ?? ' -- / -- / -- '}}</span> - 
-                            <span class="label label-warning" title="{{ l('Finish Date') }}">{{ $document->finish_date_form ?? ' -- / -- / -- ' }}</span>
+                            <span class="label label-warning" title="{{ l('Finish Date') }}">{{ $document->finish_date_form ?? ' -- / -- / -- ' }}</span> &nbsp;&nbsp; 
+                            <span class="label label-default">{{ $document->created_via }}</span>
                         </h4>
 
                             </li>

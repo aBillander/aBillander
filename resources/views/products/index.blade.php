@@ -129,7 +129,25 @@
 </div>
 
 <div class="row">
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('stock_control', l('Stock Control')) !!}
+    {!! Form::select('stock_control', array('-1' => l('All', [], 'layouts'),
+                                          '0'  => l('No' , [], 'layouts'),
+                                          '1'  => l('Yes', [], 'layouts'),
+                                          ), null, array('class' => 'form-control')) !!}
 </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('mrp_type', l('MRP type')) !!}
+        {!! Form::select('mrp_type', ['' => l('All', 'layouts')] + $product_mrptypeList, null, array('id' => 'mrp_type', 'class' => 'form-control')) !!}
+    </div>
+
+
+</div>
+
+<!-- div class="row">
+</div -->
 
                 {!! Form::close() !!}
             </div>

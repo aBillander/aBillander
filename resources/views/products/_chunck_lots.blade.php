@@ -29,7 +29,7 @@
             <th>{{l('Manufacture Date', 'lots')}}</th>
             <th>{{l('Expiry Date', 'lots')}}</th>
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
-            <th class="text-center"><div id="balance" class="alert-warning">{{ $lots->sum('allocated_to_line') }}</div></th>
+            <th class="text-center" style="min-width: 64px"><div id="balance" class="alert-warning">{{ $lots->sum('allocated_to_line') }}</div></th>
         </tr>
     </thead>
     <tbody id="order_lines">
@@ -43,11 +43,13 @@
 @endif
 
       <td>{{ $lot->id }}</td>
-      <td>{{ $lot->reference }}</td>
+      <td>
+            <a xclass="btn btn-sm btn-warning " href="{{ URL::to('lots/' . $lot->id . '/edit') }}"  title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->reference }}</a>
+      </td>
       <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
-      <td class="text-right">{{ $lot->as_quantity('quantity') }}</td>
+      <td class="text-right">{{ $lot->measureunit->quantityable( $lot->quantity ) ?? $lot->as_quantity('quantity') }}</td>
       <td>{{ optional($lot->measureunit)->sign }}</td>
-      <td class="text-right">{{ $lot->as_quantityable( $lot->allocatedQuantity() ) }}</td>
+      <td class="text-right">{{ $lot->as_quantityable( $lot->allocatedQuantity(), $lot->measureunit->decimalPlaces ) }}</td>
       <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
       <td>{{ abi_date_short( $lot->expiry_at ) }}</td>
             <td class="text-center">
@@ -67,7 +69,7 @@
             </td>
 @else
             <td class="text-right">
-              <input name="lot_amount[{{ $lot->id }}]" id="lot_amount[{{ $lot->id }}]" class=" selectedamount form-control input-sm" type="text" size="3" maxlength="7" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $lot->as_quantityable($lot->allocated_to_line) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
+              <input name="lot_amount[{{ $lot->id }}]" id="lot_amount[{{ $lot->id }}]" class=" selectedamount form-control input-sm" type="text" size="3" maxlength="7" style="min-width: 0; xwidth: auto; display: inline;" value="{{ $lot->as_quantityable($lot->allocated_to_line, $lot->measureunit->decimalPlaces) }}" onclick="this.select()" onkeyup="calculateSelectedAmount()">
             </td>
 @endif
 

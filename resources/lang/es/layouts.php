@@ -54,6 +54,9 @@ return [
 	'Records in the list [ :id ] are not groupable, because ":field" is not the same. ' => 'Los Registros en la lista [ :id ] no pueden agruparse, porque ":field" no es el mismo para todos. ',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
 
+	'There are Taxes that are not defined for the Country of the Customer &#58&#58 (:id) ' => 'Hay Impuestos que no están definidos para el País del Cliente',
+	'There are Ecotaxes that are not defined for the Country of the Customer &#58&#58 (:id) ' => 'Hay Eco-Impuestos que no están definidos para el País del Cliente',
+
 	'Too many Records for this Query &#58&#58 (:id) ' => 'Demasiados Registros para esta Consulta &#58&#58 (:id) ',
 
 	'Your Document has been sent! &#58&#58 (:id) '     => 'Su Documento ¡ha sido enviado! &#58&#58 (:id) ',
@@ -285,6 +288,7 @@ return [
 	'Refresh'     => 'Refrescar',
 	'Show'     => 'Mostrar',
 	'Show Preview'     => 'Vista Previa',
+	'Show more'     => 'Mostrar más',
 	'Show Log'     => 'Mostrar el Log',
 	'Progress'     => 'Progreso',
 	'Duplicate' => 'Duplicar',
@@ -306,6 +310,8 @@ return [
 	'Go to'     => 'Ir a',
 	'Send'     => 'Enviar',
 	'Send to Customer'     => 'Enviar al Cliente',
+	'Quick Send to Customer'     => 'Envío rápido',
+	'Custom Send to Customer'    => 'Envío personalizado',
 	'Send to Supplier'     => 'Enviar al Proveedor',
 	'Sending...'     => 'Enviando...',
 	'Send eMail'     => 'Enviar eMail',
@@ -364,6 +370,7 @@ return [
 	'Your Message'     => 'Su Mensaje',
 	'From (name)'     => 'De (nombre)',
 	'From (email)'     => 'De (email)',
+	'Copy to (comma separated list of emails)' => 'Copia a (lista de emails separados por una coma)',
 
 	'-- Please, select --'     => '-- Seleccione --',
 	'-- Click to Select --'     => '-- Haga click para Seleccionar --',

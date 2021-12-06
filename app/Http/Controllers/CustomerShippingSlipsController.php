@@ -1038,11 +1038,16 @@ class CustomerShippingSlipsController extends BillableController
             # code...
             $i++;
 
+            //
             // Text line announces Shipping Slip
+            //
+            // Shipping Address stub
+            $addr_stub = $document->hasShippingAddress() ? ' '.$document->shippingaddress->alias : '';
+
             $line_data = [
                 'line_sort_order' => $i*10, 
                 'line_type' => 'comment', 
-                'name' => l('Shipping Slip: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]),
+                'name' => l('Shipping Slip: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]) . $addr_stub,
 //                'product_id' => , 
 //                'combination_id' => , 
                 'reference' => $document->document_reference, 

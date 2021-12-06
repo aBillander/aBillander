@@ -41,8 +41,10 @@ class AdjustmentStockMovement extends StockMovement implements StockMovementInte
         if ($this->quantity_before_movement == $this->quantity_after_movement)
         {
             // Nothing said about cost price
-            // Nothing to do
-            return false;
+            // Nothing to do ???
+//            return false;         <= Stock adjustment is used to lotify stock, so 
+//                                        $this->quantity_before_movement = $this->quantity_after_movement
+            
             // throw new StockMovementException( l('Cannot process Stock Movement because Quantity has not changed', 'stockmovements') );
         }
 

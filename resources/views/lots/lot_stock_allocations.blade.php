@@ -2,8 +2,8 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{ route('lot.stockmovements.export', [$lot->id] + Request::all()) }}" class="btn xbtn-sm btn-grey" style="margin-right: 32px;"  
-                title="{{l('Export', [], 'layouts')}}" onclick="alert('You naughty, naughty!'); return false;"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>{{-- see: warehouses/indexProducts.blade.php --}}
+        <a href="{{ route('lot.stockallocations.export', [$lot->id] + Request::all()) }}" class=" hide  btn xbtn-sm btn-grey" style="margin-right: 32px;"  
+                title="{{l('Export', [], 'layouts')}} ({{ l('Lot Stock Allocations') }})"><i class="fa fa-file-excel-o"></i> {{l('Export Allocations')}}</a>{{-- see: warehouses/indexProducts.blade.php --}}
 
         <a href="{{ URL::to('lots') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Lots') }}</a>
 
@@ -51,6 +51,8 @@
 
 @php
 
+// abi_r($stockallocation->lotable, true);
+
 $document = optional($stockallocation->lotable)->document;
 
 @endphp
@@ -64,7 +66,7 @@ $document = optional($stockallocation->lotable)->document;
         <!-- a href="{{ route($route.'.edit', ['0']).'?document_reference='.$stockmovement->document_reference }}" title="{{l('Open Document', [], 'layouts')}}" target="_new" -->  --}}
 
     @if ( optional(optional($stockallocation->lotable)->document)->id ) 
-        <a href="{{ route($route.'.edit', [optional(optional($stockallocation->lotable)->document)->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ optional(optional($stockallocation->lotable)->document)->document_reference }}</a>
+        <a href="{{ route($route.'.edit', [optional(optional($stockallocation->lotable)->document)->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ optional(optional($stockallocation->lotable)->document)->document_reference ?? optional(optional($stockallocation->lotable)->document)->id}}</a>
     @else
         <i class="fa fa-exclamation-triangle btn-xs btn-danger" title="{{l('Document ID not found', 'layouts')}} &#013;&#010; - lotable_id: {{ $stockallocation->lotable_id }} &#013;&#010; - lotable_type: {{ $stockallocation->lotable_type }}"></i>
     @endif
@@ -77,9 +79,15 @@ $document = optional($stockallocation->lotable)->document;
 
 			</td>
             <td>
+@if( $document->customer_id )
                 <a href="{{ route('customers.edit', [$document->customer->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">
                         {{ $document->customer->name_commercial }}
                 </a>
+@elseif ( $document->warehouse_id )
+                {{ optional($document->warehouse)->getAliasNameAttribute() ?? '-' }}
+@else
+                {{ '-' }}
+@endif
             </td>
 			<td>{{ $lot->measureunit->quantityable( $stockallocation->quantity ) }}</td>
 {{--

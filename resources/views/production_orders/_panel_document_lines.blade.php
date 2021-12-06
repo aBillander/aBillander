@@ -19,13 +19,13 @@
                            </a></th>
                <th class="text-left">{{l('Description')}}</th>
                <th class="text-right">{{l('Planned Quantity')}}</th>
-               <th class="text-right">{{l('Finished Quantity')}}</th>
+               <th class="text-right">{{l('Real Quantity')}}</th>
 
                <th class="text-right"> </th>
                <th class="text-right">{{l('Warehouse')}}</th>
 
                 <th class="text-right button-pad"> 
-                      @if ( $document->editable )
+                      @if ( 0 && $document->editable )
 
                   <a class="btn btn-sm btn-magick xbtn-pressure xbtn-sensitive lines_quick_form  hide " title="{{l('Quick Add Lines')}}"><i class="fa fa-plus"></i> <i class="fa fa-superpowers"></i> </a>
 
@@ -86,12 +86,22 @@
                 <!-- td class="text-right">{{ $line->as_priceable($line->total_tax_incl - $line->total_tax_excl) }}</td -->
                 <td class="text-center"> </td>
 @else
-                <td>{{ $line->type }} <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
-                <td>
+                <td><a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
+                <td title=" {{ $line->type }} ">
                 @if($line->type == 'shipping')
                   <i class="fa fa-truck abi-help" title="{{l('Shipping Cost')}}"></i> 
                 @endif
-                {{ $line->name }}</td>
+                {{ $line->name }}
+
+@if ( $document->status == 'finished' )
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
+
+    @include('production_orders._chunck_line_lots')
+
+@endif
+@endif
+
+                </td>
                 <td class="text-right">{{ $line->as_quantity('required_quantity') }}
                 </td>
                 <td class="text-right">{{ $line->as_quantity('real_quantity') }}
@@ -104,7 +114,7 @@
 @endif
 
                 <td class="text-right button-pad">
-                      @if ( $document->editable )
+                      @if ( 0 && $document->editable )
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerdocumentlines();"><i class="fa fa-pencil"></i></a -->
 
 @if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )

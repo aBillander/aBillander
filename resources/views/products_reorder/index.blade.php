@@ -125,6 +125,11 @@
     {!! Form::select('main_supplier_id', ['' => l('All', [], 'layouts'), '-1' => l('None', [], 'layouts')] + $supplierList, null, array('class' => 'form-control')) !!}
 </div>
 
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('work_center_id', l('Work Center')) !!}
+        {!! Form::select('work_center_id', ['' => l('All', 'layouts')] + $work_centerList, null, array('id' => 'work_center_id', 'class' => 'form-control')) !!}
+    </div>
+
 
       <div class="form-group col-lg-2 col-md-2 col-sm-2">
           {{-- Poor man offset --}}

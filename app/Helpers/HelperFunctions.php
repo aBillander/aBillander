@@ -539,3 +539,21 @@ if (! function_exists('abi_quantity_prefixes')) {
 }
 
 
+if (! function_exists('abi_count_decimals')) {
+    /**
+     * Safely counts decimals of number.
+     *
+     * @param  
+     * @return 
+     */
+    function abi_count_decimals($fNumber)
+    {
+        $fNumber = floatval($fNumber);
+
+        for ( $iDecimals = 0; $fNumber != round($fNumber, $iDecimals); $iDecimals++ );
+
+        return $iDecimals;
+    }
+}
+
+

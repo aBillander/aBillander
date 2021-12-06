@@ -255,6 +255,62 @@
 
     </div><!-- div class="row" ENDS -->
 
+
+
+
+
+    <div class="row">
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-warning">
+              <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-euro"></i> Saldo de Clientes</h3>
+              </div>
+
+
+{!! Form::open(array('route' => 'jennifer.reports.customersbalance', 'class' => 'form')) !!}
+
+              <div class="panel-body">
+
+                  <div class="row">
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+        {!! Form::label('balance_date_to_form', 'Saldo a Fecha') !!}
+        {!! Form::text('balance_date_to_form', null, array('id' => 'balance_date_to_form', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-64 {{ $errors->has('balance_customer_id') ? 'has-error' : '' }}">
+       {!! Form::label('balance_autocustomer_name', l('Customer', 'customerorders')) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Search by Name or Identification (VAT Number).', 'customerorders') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+        {!! Form::text('balance_autocustomer_name', null, array('class' => 'form-control', 'id' => 'balance_autocustomer_name')) !!}
+        {!! $errors->first('balance_customer_id', '<span class="help-block">:message</span>') !!}
+
+        {!! Form::hidden('balance_customer_id', null, array('id' => 'balance_customer_id')) !!}
+    </div>
+
+                  </div>
+
+              </div>
+
+               <div class="panel-footer text-right">
+                  <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
+                     <i class="fa fa-file-text-o"></i>
+                     &nbsp; Ver Listado
+                  </button>
+
+            </div>
+
+{!! Form::close() !!}
+
+            </div>
+            </div>
+
+
+    </div><!-- div class="row" ENDS -->
+
 </div>
 
 
@@ -328,6 +384,10 @@
 
           $('#inventory_date_to_form').val( '' );
           
+          $('#balance_date_to_form'  ).val( '' );
+          $("#balance_autocustomer_name").val('');
+          $("#balance_customer_id").val('');
+
 
         $("#invoices_autocustomer_name").autocomplete({
 //            source : "{{ route('customers.ajax.nameLookup') }}",
@@ -343,6 +403,30 @@
 
                 $("#invoices_autocustomer_name").val(str);
                 $('#invoices_customer_id').val(value.item.id );
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li></li>" )
+                .append( '<div>[' + (item.identification ? item.identification : '--')+'] ' + item.name_regular + ' [' + (item.reference_external ? item.reference_external : '--') +']' + "</div>" )
+                .appendTo( ul );
+            };
+
+
+        $("#balance_autocustomer_name").autocomplete({
+//            source : "{{ route('customers.ajax.nameLookup') }}",
+            source : "{{ route('customerorders.ajax.customerLookup') }}",
+            minLength : 1,
+//            appendTo : "#modalProductionOrder",
+
+            select : function(key, value) {
+                // var str = '[' + value.item.identification+'] ' + value.item.name_regular + ' [' + value.item.reference_external +']';
+                var str = value.item.name_regular + ' [' + value.item.reference_external +']';
+
+                // ( value.item.id );
+
+                $("#balance_autocustomer_name").val(str);
+                $('#balance_customer_id').val(value.item.id );
 
                 return false;
             }
@@ -475,6 +559,14 @@
 
   $(function() {
     $( "#inventory_date_to_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+    });
+  });
+
+  $(function() {
+    $( "#balance_date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"

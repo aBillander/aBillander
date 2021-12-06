@@ -16,6 +16,9 @@
 
               calculateSelectedAmount();
 
+              // Seems to need a delay
+              setTimeout(function(){ $("[data-toggle=popover]").popover(); }, 1000);
+
           });
           
 
@@ -228,7 +231,6 @@
 
                     // loadDocumentlines();
                     
-                    $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
                     $('#modal_document_line').modal('toggle');

@@ -68,22 +68,40 @@
                                                 data-content="{{ l('Use Lot and Expiry Date tracking for this Product.') }}">
                                     <i class="fa fa-question-circle abi-help"></i>
                              </a>
+@if( $product->quantity_onhand == 0.0 )
                      <div>
                        <div class="radio-inline">
                          <label>
-                           {!! Form::radio('lot_tracking', '1', false, ['id' => 'lot_tracking_on']) !!}
+                           {!! Form::radio('lot_tracking', '1', true, ['id' => 'lot_tracking_on']) !!}
                            {!! l('Yes', [], 'layouts') !!}
                          </label>
                        </div>
                        <div class="radio-inline">
                          <label>
-                           {!! Form::radio('lot_tracking', '0', true, ['id' => 'lot_tracking_off']) !!}
+                           {!! Form::radio('lot_tracking', '0', false, ['id' => 'lot_tracking_off']) !!}
                            {!! l('No', [], 'layouts') !!}
                          </label>
                        </div>
                      </div>
+@else
+                     <div class="form-control">
+
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('lot_tracking_info', '1', true, ['id' => 'lot_tracking_info_on']) !!}
+                            @if( $product->lot_tracking > 0 )
+                              {{ l('Yes', [], 'layouts') }}
+                            @else
+                              {{ l('No', [], 'layouts') }}
+                            @endif
+                         </label>
+                       </div>
+
+                     </div>
+@endif
                    </div>
 
+@if ( $product->lot_tracking )
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('expiry_time') ? 'has-error' : '' }}">
                      {{ l('Expiry Time') }}
                              <a href="javascript:void(0);" data-toggle="popover" 
@@ -114,7 +132,26 @@
                     {!! Form::select('lot_policy', \App\Lot::getLotPolicyList(), null, array('class' => 'form-control', 'id' => 'lot_policy')) !!}
                     {!! $errors->first('lot_policy', '<span class="help-block">:message</span>') !!}
                  </div>
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+                      <br /><a class="btn xbtn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/lotuntracking') }}" title="{{l('Deactivate Lot tracking')}}" xonclick="return false;"><i class="fa fa-cube"></i> {{l('Deactivate Lot tracking')}}</a>
+
+                  </div>
+
+@else
+        @if( $product->quantity_onhand > 0.0 )
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+                      <br /><a class="btn xbtn-sm btn-lightblue activate-lot-tracking" href="{{ URL::to('products/' . $product->id . '/lottracking') }}" title="{{l('Activate Lot tracking')}}" onclick="return false;"><i class="fa fa-cubes"></i> {{l('Activate Lot tracking')}}</a>
+
+                  </div>
+
+        @endif
+@endif
         </div>
+
 @endif
 
 

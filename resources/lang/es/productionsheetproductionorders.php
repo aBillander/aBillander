@@ -40,6 +40,7 @@ return [
 	'Quantity'     => 'Cantidad',
 	'Finished Quantity'     => 'Cantidad terminada',
 	'Planned Quantity'     => 'Cantidad planificada',
+	'Real Quantity'     => 'Cantidad consumida',
 	'Total'     => 'Total',
 	'Work Center'     => 'Centro de Trabajo',
 	'Provenience'     => 'Procedencia',

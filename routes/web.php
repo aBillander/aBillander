@@ -195,6 +195,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/jennifer/reports/invoices'  , 'JenniferController@reportInvoices'  )->name('jennifer.reports.invoices');
         Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
         Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
+        Route::post('/jennifer/reports/customersbalance' , 'JenniferController@reportCustomersBalance' )->name('jennifer.reports.customersbalance');
         Route::post('/jennifer/reports/mod347'                   , 'JenniferController@index347'    )->name('jennifer.reports.index347');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/show', 'JenniferController@index347Show'    )->name('jennifer.reports.index347.show');
         Route::get( '/jennifer/reports/mod347/{mod347_year}'     , 'JenniferController@reportModelo347'    )->name('jennifer.reports.mod347');
@@ -377,11 +378,14 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('lots/{lot}/quantity', 'LotsController@updateQuantity')->name('lots.update.quantity');
         Route::get( 'export/lots', 'LotsController@export' )->name('lots.export');
         Route::get( 'lots/{lot}/stockmovements',        'LotsController@stockmovements' )->name('lot.stockmovements'       );
-        Route::get( 'export/lots/{lot}/stockmovements', 'LotsController@export' )->name('lot.stockmovements.export');
+        Route::get( 'export/lots/{lot}/stockmovements',   'LotsController@exportMovements'   )->name('lot.stockmovements.export');
+        Route::get( 'export/lots/{lot}/stockallocations', 'LotsController@exportAllocations' )->name('lot.stockallocations.export');
 
         Route::post('lots/{id}/attachment',         'LotsController@attachmentStore'  )->name('lots.attachment.store'  );
         Route::get( 'lots/{id}/attachment/{aid}',   'LotsController@attachmentShow'   )->name('lots.attachment.show'   );
         Route::delete('lots/{id}/attachment/{aid}', 'LotsController@attachmentDestroy')->name('lots.attachment.destroy');
+
+        Route::post('lots/{lot}/split', 'LotsController@split')->name('lots.split');
 
         Route::resource('lotitems', 'LotItemsController');
 
@@ -411,6 +415,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('products/{id}/bom/pdf', 'ProductsController@getPdfBom')->name('product.bom.pdf');
 
         Route::get('products/{id}/duplicate',     'ProductsController@duplicate'   )->name('product.duplicate'  );
+
+        Route::get('products/{id}/lottracking',   'ProductsController@lotTracking'  )->name('product.lottracking'  );
+        Route::post('products/lottracking/activate', 'ProductsController@lotTrackingActivate'  )->name('product.lottracking.activate'  );
+        Route::get('products/{id}/lotuntracking', 'ProductsController@lotUntracking')->name('product.lotuntracking');
 
         Route::post('products/{id}/combine', array('as' => 'products.combine', 'uses'=>'ProductsController@combine'));
         Route::get('products/ajax/name_lookup'  , array('uses' => 'ProductsController@ajaxProductSearch', 

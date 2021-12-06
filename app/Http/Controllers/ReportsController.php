@@ -372,6 +372,7 @@ foreach ($products as $product) {
             $document_total_tax = 'total_tax_incl';
  
         $customer_id = $request->input('customer_sales_customer_id', 0);
+        $single_customer_id = $customer_id;         // Since $customer_id is used into a loop and looses its value... (Oops!)
  
         $model = $request->input('customer_sales_model', Configuration::get('RECENT_SALES_CLASS'));
 
@@ -484,8 +485,8 @@ foreach ($customers as $customer) {
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
-        $customer_label = (int) $customer_id > 0
-                        ? Customer::findOrFail($customer_id)->name_regular
+        $customer_label = (int) $single_customer_id > 0
+                        ? Customer::findOrFail($single_customer_id)->name_regular
                         : 'todos';
 
         // Sheet Header Report Data
@@ -625,20 +626,21 @@ foreach ($customers as $customer) {
     {
         // abi_r(Carbon::now()->month);die();
 
-        $customer_sales_month_from = $request->input('customer_sales_month_from', 1);
+        $customer_services_month_from = $request->input('customer_services_month_from', 1);
         
-        $customer_sales_month_to   = $request->input('customer_sales_month_to', Carbon::now()->month );
+        $customer_services_month_to   = $request->input('customer_services_month_to', Carbon::now()->month );
 
-        $nbr_years = $request->input('customer_sales_years_to_compare', 1);
+        $nbr_years = $request->input('customer_services_years_to_compare', 1);
 
-        $document_total_tax = $request->input('customer_sales_value', 'total_tax_incl');
+        $document_total_tax = $request->input('customer_services_value', 'total_tax_incl');
 
         if ( !in_array($document_total_tax, ['total_tax_incl', 'total_tax_excl']) )
             $document_total_tax = 'total_tax_incl';
  
-        $customer_id = $request->input('customer_sales_customer_id', 0);
+        $customer_id = $request->input('customer_services_customer_id', 0);
+        $single_customer_id = $customer_id;         // Since $customer_id is used into a loop and looses its value... (Oops!)
  
-        $model = $request->input('customer_sales_model', Configuration::get('RECENT_SALES_CLASS'));
+        $model = $request->input('customer_services_model', Configuration::get('RECENT_SALES_CLASS'));
 
         // calculate dates
         // http://zetcode.com/php/carbon/
@@ -646,8 +648,8 @@ foreach ($customers as $customer) {
         // Current year
         $current_year = Carbon::now()->year;
         $first_year = Carbon::now()->year - $nbr_years;
-        $month_from = $customer_sales_month_from;
-        $month_to   = $customer_sales_month_to;
+        $month_from = $customer_services_month_from;
+        $month_to   = $customer_services_month_to;
         $date_from = Carbon::create($first_year, $month_from, 1)->startOfDay();
         $date_to   = Carbon::create($first_year, $month_to  , 1)->endOfMonth()->endOfDay();
 
@@ -752,8 +754,8 @@ foreach ($customers as $customer) {
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
-        $customer_label = (int) $customer_id > 0
-                        ? Customer::findOrFail($customer_id)->name_regular
+        $customer_label = (int) $single_customer_id > 0
+                        ? Customer::findOrFail($single_customer_id)->name_regular
                         : 'todos';
 
         // Sheet Header Report Data
@@ -775,7 +777,7 @@ foreach ($customers as $customer) {
                                             'Ventas son con Impuestos incluidos.' :
                                             'Ventas son sin Impuestos.';
         // $data[] = [ 'Listado de Ventas comparativas por customero ('.l($model).') ', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
-        $data[] = ['Meses: desde '.$selectorMonthList[$customer_sales_month_from].' hasta '.$selectorMonthList[$customer_sales_month_to].'. '.$ribbon];
+        $data[] = ['Meses: desde '.$selectorMonthList[$customer_services_month_from].' hasta '.$selectorMonthList[$customer_services_month_to].'. '.$ribbon];
         $data[] = [''];
 
 

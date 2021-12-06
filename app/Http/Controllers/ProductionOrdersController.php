@@ -21,11 +21,15 @@ use Excel;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
 
+use App\Traits\ProductionOrderLotFormsControllerTrait;
+
 class ProductionOrdersController extends Controller
 {
 
    use DateFormFormatterTrait;
    use ModelAttachmentControllerTrait;
+
+   use ProductionOrderLotFormsControllerTrait;
 
    protected $productionorder;
 
@@ -41,6 +45,9 @@ class ProductionOrdersController extends Controller
      */
     public function index(Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['due_date'], $request );
+        
         $orders = $this->productionorder->filter( $request->all() )
                       ->select('*', 'production_orders.id AS poid')
                       ->with('workcenter')
@@ -78,7 +85,7 @@ class ProductionOrdersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // 
     }
 
     /**
@@ -127,7 +134,61 @@ class ProductionOrdersController extends Controller
      */
     public function update(Request $request, ProductionOrder $productionorder)
     {
-        //
+        // Dates (cuen)
+        $this->mergeFormDates( ['due_date', 'finish_date'], $request );
+
+//        $rules = $this->productionorder::$rules;
+
+        // Temporarily:
+        $rules = [
+                'due_date' => 'required|date',
+                'warehouse_id' => 'exists:warehouses,id',
+                'work_center_id' => 'exists:work_centers,id',
+        ];
+
+        $this->validate($request, $rules);
+
+        /* ------------------------------------------------------------- */
+
+        $document = $productionorder;
+
+        // $need_update_totals = (
+        //     $request->input('document_ppd_percent', $document->document_ppd_percent) != $document->document_ppd_percent 
+        // ) ? true : false;
+
+        $document->fill($request->all());
+
+        $document->save();
+
+        // if ( $need_update_totals ) $document->makeTotals();
+
+        // Move on
+        $nextAction = $request->input('nextAction', '');
+
+        // abi_r($request->all());die();
+
+        switch ( $nextAction ) {
+            case 'saveAndFinish':
+                # code...
+                $document->finish();
+
+                return redirect()->route('productionorders.index')
+                        ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+                break;
+            
+            case 'saveAndContinue':
+                # code...
+
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        return redirect()->back()
+            ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+
     }
 
     /**
@@ -150,14 +211,50 @@ class ProductionOrdersController extends Controller
      */
 
 
-    protected function finish(ProductionOrder $productionorder)
+    protected function finish( Request $request )
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['finish_date'], $request );
+
+        $production_sheet_id = $request->input('production_sheet_id');
+        $production_order_id = $request->input('finish_production_order_id');
+
+        $productionorder = $this->productionorder->with('product')->with('lines')->findOrFail($production_order_id);
+
+        $finished_quantity = $request->input('quantity');
+        $lot_reference = $request->input('lot_reference', '');  // Lot Reference not allways issued!!!
+        
+        $finish_date  = $request->input('finish_date');
+        $warehouse_id = $request->input('warehouse_id');
+
+        $params = [
+            'production_sheet_id' => $productionorder->production_sheet_id, 
+            'production_order_id' => $production_order_id,
+
+            'finished_quantity'   => $finished_quantity, 
+            'lot_reference'       => $lot_reference,
+
+            'finish_date'  => $finish_date,
+            'warehouse_id' => $warehouse_id
+        ];
+
+        // abi_r($request->all()); abi_r($params); die();
+
+
         // Can I?
         if ( $productionorder->lines->count() == 0 )
         {
             return redirect()->back()
                 ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' :: '.l('Document has no Lines', 'layouts'));
         }
+
+        // Check materials consumption
+        if ( $productionorder->lines->max('real_quantity') == 0 && $productionorder->lines->min('real_quantity') == 0 )
+        {
+            return redirect()->back()
+                ->with('error', l('Unable to update this record &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' :: '.l('Document has not Materials', 'productionorders'));
+        }
+
 
         // onhold?
 /*
@@ -169,8 +266,8 @@ class ProductionOrdersController extends Controller
 */
 
         // Close
-        if ( $productionorder->close() )
-            return redirect()->back()           // ->route($this->model_path.'.index')
+        if ( $productionorder->finish( $params ) )
+            return redirect()->back()
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $productionorder->id], 'layouts').' ['.$productionorder->product_reference.']');
         
 
@@ -179,8 +276,11 @@ class ProductionOrdersController extends Controller
     }
 
 
-    protected function unfinish(ProductionOrder $productionorder)
+    protected function unfinish(ProductionOrder $document)
     {
+        // abi_r($document); die();
+
+        $productionorder = $document;
 
         if ( $productionorder->status != 'finished' )
         {
@@ -731,8 +831,51 @@ class ProductionOrdersController extends Controller
                 $line->quantity_onhand = $line->required_quantity;
             }
 
-        return view('production_orders._panel_document_materials', compact('document'));
+
+        if ( Configuration::isTrue('ENABLE_LOTS') )
+        {
+            // Do document lines have lots added?
+            foreach ($document->lines as $line) {
+                # code...
+                $line->pending = null;
+                if ( !optional($line->product)->lot_tracking) continue;
+
+                $line->pending = $line->as_quantity('required_quantity') - $line->as_quantity('real_quantity');
+                // $line->pending = $line->measureunit->quantityable($line->required_quantity - $line->real_quantity);
+            }
+        }
+
+        $warehouseList = Warehouse::selectorList();
+
+        return view('production_orders._panel_document_materials', compact('document', 'warehouseList'));
     }
+
+    public function setDocumentMaterials($id, Request $request)
+    {
+        // abi_r($request->All());die();
+
+        // $onhand_only = $request->input('onhand_only', 0);
+
+        $document = $this->productionorder
+                        ->with('lines')
+                        ->with('lines.product')
+                        ->findOrFail($id);
+
+        $dispatch_warehouse = $request->input('dispatch_warehouse', []);
+        $dispatch = $request->input('dispatch', []);
+
+        foreach ($document->lines as $line) {
+            // if ( array_key_exists($line->id, $dispatch)
+            $line->warehouse_id  = $dispatch_warehouse[$line->id];
+            $line->real_quantity = $dispatch[$line->id];
+
+            $line->save();
+        }
+
+        return redirect()->back()
+            ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $document->id], 'layouts'));
+    }
+
 
     public function getDocumentAvailabilityModal($id, Request $request)
     {

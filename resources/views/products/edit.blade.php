@@ -176,6 +176,8 @@
 
 @include('products._modal_product_boms')
 
+@include('products._modal_product_activate_lot_tracking')
+
 
 @endsection
 

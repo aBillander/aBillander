@@ -141,7 +141,7 @@ class CustomerOrderLineLotsController extends Controller
         if ( $balance != 0 )
             return response()->json( [
                 'success' => 'KO',
-                'message' => l('The Quantity of the selected Lots ( :selected ) do not match the value of the Line( :quantity ) &#58&#58 (:id) ', ['id' => $lineId, 'selected' => $document_line->measureunit->quantityable(array_sum($detail_quantity)), 'quantity' => $document_line->measureunit->quantityable($document_line->quantity)]),
+                'message' => l('The Quantity of the selected Lots ( :selected ) do not match the value of the Line ( :quantity ) &#58&#58 (:id) ', ['id' => $lineId, 'selected' => $document_line->measureunit->quantityable(array_sum($detail_quantity)), 'quantity' => $document_line->measureunit->quantityable($document_line->quantity)], 'lots'),
             ] );
 
 

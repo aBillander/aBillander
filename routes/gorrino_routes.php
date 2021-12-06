@@ -313,6 +313,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 2021-12-01
+	$date = '2021-12-01';
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `cc_addresses` varchar(128) null AFTER `automatic_invoice`;");
+
+	die('OK - '.$date);
+	
 
 	// 2021-06-21
 	\App\Configuration::updateValue('STOCKMOVEMENTS_AFTER_DATE', '2021-02-11');

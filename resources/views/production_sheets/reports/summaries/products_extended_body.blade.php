@@ -132,7 +132,7 @@
                 @endif
 
             </td>
-            <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
+            <td width="63%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
 
 @if( $order->status != 'closed' )
 
@@ -178,6 +178,21 @@
 
             </td>
             <td width="10%" class="text-right" xstyle="border-right: 1px #ccc solid;"><strong>{{ niceQuantity($order->lines->where( 'reference', $reference)->sum('quantity')) }}</strong>
+            </td>
+            <td width="10%">
+                @if ( $order->hasShippingAddress() )
+
+
+
+                {{ $order->shippingaddress->alias }} 
+                 <!-- a href="javascript:void(0);">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $order->shippingaddress->firstname }} {{ $order->shippingaddress->lastname }}<br />{{ $order->shippingaddress->address1 }}<br />{{ $order->shippingaddress->city }} - {{ $order->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $order->shippingaddress->phone }}</a>" data-original-title="" title="">
+                        <i class="fa fa-address-card-o"></i>
+                    </button>
+                 </a -->
+
+
+                @endif
             </td>
 {{--            
             <td xstyle="border-bottom: 1px #ccc solid;">

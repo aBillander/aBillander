@@ -171,7 +171,7 @@ class CustomerVouchersController extends Controller
 		// abi_r($payment, true);
 
         // Dates (cuen)
-        $this->addFormDates( ['due_date'], $payment );
+        $this->addFormDates( ['due_date', 'payment_date'], $payment );
 		
 		return view('customer_vouchers.edit', compact('payment', 'action', 'back_route'));
 	}
@@ -366,6 +366,7 @@ class CustomerVouchersController extends Controller
 
 			$payment->name     = $request->input('name',     $payment->name);
 			$payment->due_date = $request->input('due_date', $payment->due_date);
+			$payment->payment_date = $request->input('payment_date', $payment->payment_date);	// Maybe you want to edit a paid voucher because you made a mistake
 			$payment->amount   = $request->input('amount',   $payment->amount);
 			$payment->notes    = $request->input('notes',    $payment->notes);
 
@@ -808,7 +809,7 @@ class CustomerVouchersController extends Controller
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Recibos de Clientes -::- '.date('d M Y H:i:s'), '', '', '', '', '', '', '', '', '', '', '', '', '', ''];		//, date('d M Y H:i:s')];
+        $data[] = ['Recibos de Clientes -::- '.date('d M Y H:i:s'), '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];		//, date('d M Y H:i:s')];
         $data[] = ['Fecha de Vencimiento: ' . $ribbon];
         $data[] = ['Estado: ' . $request->input('status')];
         $data[] = ['Cliente: ' . $ribbon2];
@@ -818,7 +819,7 @@ class CustomerVouchersController extends Controller
 
         // Define the Excel spreadsheet headers
         $headers = [ 
-                    'id', 'document_reference', 'DOCUMENT_DATE', 'customer_id', 'CUSTOMER_NAME', 'name', 
+                    'id', 'document_reference', 'DOCUMENT_DATE', 'customer_id', 'accounting_id', 'CUSTOMER_NAME', 'name', 
                     'due_date', 'payment_date', 'amount', 
                     'payment_type_id', 'PAYMENT_TYPE_NAME', 'auto_direct_debit', 
 
@@ -845,6 +846,7 @@ class CustomerVouchersController extends Controller
             $row['CURRENCY_NAME'] = optional($payment->currency)->name;
             $row['PAYMENT_TYPE_NAME'] = optional($payment->paymenttype)->name;
             $row['customer_id'] = optional($payment->customer)->id;
+            $row['accounting_id'] = optional($payment->customer)->accounting_id;
             $row['CUSTOMER_NAME'] = optional($payment->customer)->name_regular;
             $row['BANK_NAME'] = optional($payment->bank)->name;
 
@@ -863,7 +865,7 @@ class CustomerVouchersController extends Controller
         // Totals
 
         $data[] = [''];
-        $data[] = ['', '', '', '', '', '', '', 'Total:', $total_amount * 1.0];
+        $data[] = ['', '', '', '', '', '', '', '', 'Total:', $total_amount * 1.0];
 
 
         $sheetName = 'Recibos de Clientes' ;
@@ -888,7 +890,7 @@ class CustomerVouchersController extends Controller
                 $sheet->mergeCells('A5:C5');
                 $sheet->mergeCells('A6:C6');
                 
-                $sheet->getStyle('A8:O8')->applyFromArray([
+                $sheet->getStyle('A8:Q8')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -896,16 +898,16 @@ class CustomerVouchersController extends Controller
 
                 $sheet->setColumnFormat(array(
                     'C' => 'dd/mm/yyyy',
-                    'G' => 'dd/mm/yyyy',
                     'H' => 'dd/mm/yyyy',
+                    'I' => 'dd/mm/yyyy',
 //                    'E' => '0.00%',
-                    'I' => '0.00',
+                    'J' => '0.00',
 //                    'F' => '@',
                 ));
                 
                 $n = count($data);
                 $m = $n - 1;
-                $sheet->getStyle("I$n:I$n")->applyFromArray([
+                $sheet->getStyle("J$n:J$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

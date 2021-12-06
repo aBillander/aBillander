@@ -2,6 +2,12 @@
 
                <div class="panel-body">
 
+<div id="msg-success-lots" class="alert alert-success alert-block" style="display:none;">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <span id="msg-success-lots-counter" class="badge"></span>
+  <strong>{!!  l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
+</div>
+
 
 <div id="panel_document_availability" class="loading"> &nbsp; &nbsp; &nbsp; &nbsp; {{ l('Loading...', 'layouts') }}
   

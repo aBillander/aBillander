@@ -18,11 +18,20 @@
 @endphp
 
         <div class="row">
+@if( $can_modify_reference )
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference') ? 'has-error' : '' }}">
                      {{ l('Reference') }}
                      {!! Form::text('reference', null, array('class' => 'form-control', 'id' => 'reference') + $foo) !!}
                      {!! $errors->first('reference', '<span class="help-block">:message</span>') !!}
                   </div>
+@else
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                    {{ l('Reference') }} <i class="text-danger  fa fa-lock"></i>
+                    <div class="form-control">{{ $product->reference }}</div>
+
+                    {!! Form::hidden('reference', null, array('name' => 'reference', 'id' => 'reference')) !!}
+                 </div>
+@endif
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('name') ? 'has-error' : '' }}">
                      {{ l('Product Name') }}
                      {!! Form::text('name', null, array('class' => 'form-control', 'id' => 'name')) !!}

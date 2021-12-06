@@ -96,14 +96,14 @@ trait HelferinCustomerInvoicesTrait
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Facturas de Clientes ' . $ribbon, '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Facturas de Clientes ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 //        $data[] = ['Cliente:', $customer_label];
 //        $data[] = [''];
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['Número', 'Fecha', 'Cliente', 'Estado', 'Forma de Pago', 'Total', 'Vencimiento', '', 'Cobrado'];
+        $header_names = ['Número', 'Fecha', 'Cliente', 'Estado', 'Forma de Pago', 'Total', 'Vencimiento', '', 'Cobrado', '', 'id Cliente', 'id Contabilidad Cliente'];
 
         $data[] = $header_names;
 
@@ -115,7 +115,7 @@ trait HelferinCustomerInvoicesTrait
                 $row = [];
                 $row[] = $document->document_reference;
                 $row[] = abi_date_short($document->document_date);
-                $row[] = $document->customer->reference_accounting . '-' . $document->customer->name_fiscal;
+                $row[] = '['.$document->customer->id.'] ' . $document->customer->name_fiscal;
                 $row[] = $document->payment_status;
                 $row[] = $document->paymentmethod->name;
                 $row[] = (float) $document->total_tax_incl;
@@ -128,6 +128,10 @@ trait HelferinCustomerInvoicesTrait
                     $row[] = '';
                 }
                 $row[] = $document->payment_date ? abi_date_short($document->payment_date) : '';
+
+                $row[] = '';
+                $row[] = $document->customer->id ?? '';
+                $row[] = $document->customer->accounting_id ?? '';
     
                 $data[] = $row;
 
@@ -149,7 +153,7 @@ trait HelferinCustomerInvoicesTrait
                 $sheet->mergeCells('A1:C1');
                 $sheet->mergeCells('A2:C2');
 
-                $sheet->getStyle('A4:I4')->applyFromArray([
+                $sheet->getStyle('A4:L4')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

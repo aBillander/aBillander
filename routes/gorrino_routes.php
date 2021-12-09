@@ -313,6 +313,13 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 2021-12-09
+	$date = '2021-12-09';
+
+	\App\Configuration::updateValue('SUPPLIER_PRICES_ENTERED_WITH_TAX', '0');
+
+	die('OK - '.$date);
+
 	// 2021-12-01
 	$date = '2021-12-01';
 

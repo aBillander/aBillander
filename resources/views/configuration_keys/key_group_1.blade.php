@@ -750,6 +750,27 @@
  --}}
 
 
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('SUPPLIER_PRICES_ENTERED_WITH_TAX.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="SUPPLIER_PRICES_ENTERED_WITH_TAX" id="SUPPLIER_PRICES_ENTERED_WITH_TAX_on" value="1" @if( old('SUPPLIER_PRICES_ENTERED_WITH_TAX', $key_group['SUPPLIER_PRICES_ENTERED_WITH_TAX']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="SUPPLIER_PRICES_ENTERED_WITH_TAX" id="SUPPLIER_PRICES_ENTERED_WITH_TAX_off" value="0" @if( !old('SUPPLIER_PRICES_ENTERED_WITH_TAX', $key_group['SUPPLIER_PRICES_ENTERED_WITH_TAX']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('SUPPLIER_PRICES_ENTERED_WITH_TAX.help') !!}</span>
+      </div>
+    </div>
+
+
+
 
 
     <div class="form-group">

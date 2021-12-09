@@ -341,6 +341,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
 
         Route::get('suppliers/{id}/products',  'SuppliersController@getProducts')->name('supplier.products');
+        Route::get('suppliers/{id}/reorder',            'SuppliersController@getReorderForm' )->name('supplier.reorder.form');
+        Route::post('suppliers/{id}/products/reorder',  'SuppliersController@ProductsReorder')->name('supplier.products.reorder');
 
         Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
 

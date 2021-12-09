@@ -141,6 +141,7 @@ return [
 
 	'Reorder point'     => 'Stock reaprovisionamiento',
 	'Maximum stock'     => 'Stock máximo',
+	'Minimum stock'     => 'Stock mínimo',
 	'Warehouse'     => 'Almacén',
 	'Quantity'     => 'Cantidad',
 	'TOTAL'     => 'TOTAL',

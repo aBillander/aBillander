@@ -9,6 +9,7 @@ use App\Lot;
 use App\Product;
 use App\StockMovement;
 use App\MeasureUnit;
+use App\Warehouse;
 
 use Excel;
 
@@ -234,6 +235,8 @@ class LotsController extends Controller
             $stockmovement = StockMovement::createAndProcess( $data );
 
             $lot->stockmovements()->save( $stockmovement );
+            $stockmovement->update(['lot_quantity_after_movement' => $lot->quantity]);
+            $lot->update(['blocked' => 0]);
         }
 
         return redirect('lots')
@@ -265,8 +268,10 @@ class LotsController extends Controller
         // Dates (cuen)
         $this->addFormDates( ['manufactured_at', 'expiry_at'], $lot );
 
+        $warehouseList = Warehouse::selectorList();
 
-        return view('lots.edit', compact('lot'));
+
+        return view('lots.edit', compact('lot', 'warehouseList'));
     }
 
     /**
@@ -402,6 +407,172 @@ class LotsController extends Controller
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $lot->id], 'layouts') . $request->input('reference'));
     }
 
+
+
+    public function split(Request $request, Lot $lot)
+    {
+        // 
+
+        $rules = [
+            'lot_reference'         => 'required|min:2|max:32',
+            'quantity'   => 'required|numeric|not_in:0',
+            'warehouse_id'     => 'exists:warehouses,id',
+        ];
+
+        $this->validate($request, $rules);
+
+        $lot_reference = $request->input('lot_reference');
+        $lot_quantity = $request->input('quantity');
+        $lot_warehouse_id = $request->input('warehouse_id');
+
+        $product = $this->product->find( $lot->product_id );
+
+        // STEP 1
+        // Stock adjustment for the Original Lot:
+        // Substract $lot_quantity
+
+        // New Quantity
+        $new_lot_quantity = $lot->quantity - $lot_quantity;
+
+        // Stock in this warehouse
+        $stock = $product->getStockByWarehouse( $lot->warehouse_id );
+
+        // New stock
+//        $new_stock = $stock - $lot->quantity + $lot_quantity;
+        $new_stock = $stock - $lot_quantity;
+
+        // Magic here:
+
+        $movement_type_id = StockMovement::ADJUSTMENT;
+
+        // 1.- Create Stock Movement type 12 (Stock adjustment)
+            $data = [
+
+                'movement_type_id' => $movement_type_id,
+                'date' => \Carbon\Carbon::now(),
+
+//                    'stockmovementable_id' => $this->,
+//                    'stockmovementable_type' => $this->,
+
+                    'document_reference' => l('New Adjustment by Lot (:id) ', ['id' => $lot->id], 'lots').$lot->reference,
+
+//                    'quantity_before_movement' => $this->,
+                    'quantity' => $new_stock,
+                    'measure_unit_id' => $product->measure_unit_id,
+//                    'quantity_after_movement' => $this->,
+
+                    'price' => $product->getPriceForStockValuation(),
+                    'price_currency' => $product->cost_price,
+//                    'currency_id' => $this->currency_id,
+//                    'conversion_rate' => $this->currency_conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $product->id,
+ //                   'combination_id' => $this->combination_id,
+                    'reference' => $product->reference,
+                    'name' => $product->name,
+
+                    'warehouse_id' => $lot->warehouse_id,
+//                    'warehouse_counterpart_id' => $this->,
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+
+            if ( $stockmovement )
+            {
+                //
+                // $this->stockmovements()->save( $stockmovement );
+
+                if ($lot)
+                {
+                    $lot->stockmovements()->save( $stockmovement );
+                    $stockmovement->update(['lot_quantity_after_movement' => $new_lot_quantity]);
+                    $lot->update(['blocked' => 0]);
+                }
+            }
+        
+        // 3.- Update Lot
+        $lot->update( ['quantity' => $new_lot_quantity] );
+
+
+
+
+
+        // STEP 2
+        // Create new Lot with quantity = $lot_quantity
+        // Get back $lot_quantity
+
+        $lot_params = [
+            'reference' => $lot_reference,
+            'product_id' => $lot->product_id, 
+//            'combination_id' => ,
+            'quantity_initial' => $lot_quantity, 
+            'quantity' => $lot_quantity, 
+            'measure_unit_id' => $lot->measure_unit_id, 
+//            'package_measure_unit_id' => , 
+//            'pmu_conversion_rate' => ,
+            'manufactured_at' => $lot->manufactured_at, 
+            'expiry_at' => $lot->expiry_at,
+            'notes' => '',
+
+            'warehouse_id' => $lot_warehouse_id,
+        ];
+
+        $new_lot = $this->lot->create( $lot_params );
+
+        // Let's play a little bit with Stocks, now!
+        // (ノಠ益ಠ)ノ彡┻━┻
+        // New Lot is a Stock Adjustment (lot quantity "increases" overall stock)
+
+        $movement_type_id = StockMovement::ADJUSTMENT;
+
+        // Let's move on:
+        $data = [
+
+                'movement_type_id' => $movement_type_id,
+                'date' => \Carbon\Carbon::now(),
+
+//                   'stockmovementable_id' => ,
+//                   'stockmovementable_type' => ,
+
+                'document_reference' => l('New Adjustment by Lot (:id) ', ['id' => $new_lot->id], 'lots').$new_lot->reference,
+//                   'quantity_before_movement' => ,
+                'quantity' => $new_lot->quantity_initial + $product->getStockByWarehouse( $new_lot->warehouse_id ),
+                'measure_unit_id' => $product->measure_unit_id,
+//                   'quantity_after_movement' => ,
+
+                'price' => $product->getPriceForStockValuation(),
+                'currency_id' => \App\Context::getContext()->company->currency->id,
+                'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
+                'notes' => '',
+
+                'product_id' => $product->id,
+                'combination_id' => '', // $line->combination_id,
+                'reference' => $product->reference,
+                'name' => $product->name,
+
+//                'lot_id' => $lot->id,
+
+                'warehouse_id' => $new_lot->warehouse_id,
+//                   'warehouse_counterpart_id' => ,
+                
+        ];
+
+        $stockmovement = StockMovement::createAndProcess( $data );
+
+        $new_lot->stockmovements()->save( $stockmovement );
+        $stockmovement->update(['lot_quantity_after_movement' => $new_lot->quantity]);
+        $new_lot->update(['blocked' => 0]);
+
+
+
+        return redirect()->route('lots.edit', $new_lot->id)
+                    ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $new_lot->id], 'layouts'));
+    }
+
+
     /**
      * Remove the specified resource from storage.
      *
@@ -426,34 +597,24 @@ class LotsController extends Controller
      *
      * @return 
      */
-    public function export(Lot $lot, Request $request)
+    public function exportMovements(Lot $lot, Request $request)
     {
         // See: HelferinCustomerInvoicesTrait
 
-        // Load Relation
-        $lot = $lot->load(['product', 'measureunit']);
+        $sections = 'all';
+        if ( $request->has('movements') )
+            $sections = 'movements';
+        if ( $request->has('allocations') )
+            $sections = 'allocations';
 
-        // Dates (cuen)
-        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+        // Load Relations
+        $lot = $lot->load(['product', 'measureunit', 'stockmovements', 'lotallocateditems', 'lotallocateditems.lotable']);
 
-        // Get Lots
-        $lots = $this->lot
-                                ->filter( $request->all() )
-                                ->with('product')
-                                ->with('combination')
-                                ->with('measureunit')
-                                ->orderBy('created_at', 'DESC')
-                                ->get();
+        $stockmovements = $lot->stockmovements
+                                ->sortByDesc('date')
+                                ->sortByDesc('created_at');
 
-        $weight_unit = MeasureUnit::where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
-
-//         abi_r($lots->pluck('id'), true);
-
-
-        // Limit number of records
-        if ( ($count=$lots->count()) > 1000 )
-            return redirect()->back()
-                    ->with('error', l('Too many Records for this Query &#58&#58 (:id) ', ['id' => $count], 'layouts'));
+        $stockallocations = $lot->lotallocateditems;
 
 
         // Lets get dirty!!
@@ -461,101 +622,121 @@ class LotsController extends Controller
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
-        if ( $request->input('date_from_form') && $request->input('date_to_form') )
-        {
-            $ribbon = 'entre ' . $request->input('date_from_form') . ' y ' . $request->input('date_to_form');
-
-        } else
-
-        if ( !$request->input('date_from_form') && $request->input('date_to_form') )
-        {
-            $ribbon = 'hasta ' . $request->input('date_to_form');
-
-        } else
-
-        if ( $request->input('date_from_form') && !$request->input('date_to_form') )
-        {
-            $ribbon = 'desde ' . $request->input('date_from_form');
-
-        } else
-
-        if ( !$request->input('date_from_form') && !$request->input('date_to_form') )
-        {
-            $ribbon = 'todas';
-
-        }
-
-        $ribbon = ':: fecha(s) ' . $ribbon;
-
-        $product_label = '';
-        $product_label1 = $request->input('product_reference');
-        $product_label2 = $request->input('product_name');
-
-        if ( $product_label1 && $product_label2 )
-        {
-            $product_label = $product_label1 . ' , ' . $product_label2;
-        
-        } else
-
-        if ( !$product_label1 && !$product_label2 )
-        {
-            $product_label = 'todos';
-        
-        } else
-            $product_label = $product_label1 . ' ' . $product_label2;
-
-
-        $ribbon = $ribbon . ' :: producto(s) ' . $product_label;
+        $ribbon  = " :: " . $lot->reference . " [".optional($lot->measureunit)->sign."]";
+        $ribbon1 = " [".$lot->product->reference."] " . $lot->product->name;
 
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Lotes de Productos ' . $ribbon, '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = [l('Lot Stock Movements', 'lots') . $ribbon, '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = [$ribbon1];
+        $data[] = [''];
+        $data[] = [l('Initial Stock', 'lots'), l('Current Stock', 'lots'), l('Allocated Stock', 'lots'), l('Available Stock', 'lots'), ''];
+        $data[] = [ (float) $lot->measureunit->quantityable($lot->quantity_initial), 
+                    (float) $lot->measureunit->quantityable($lot->quantity), 
+                    (float) $lot->measureunit->quantityable($lot->allocatedQuantity()), 
+                    (float) $lot->measureunit->quantityable($lot->quantity - $lot->allocatedQuantity()) ];
         $data[] = [''];
 
-
+if ( $sections != 'allocations' )
+{
         // Define the Excel spreadsheet headers
-        $header_names = ['Número de Lote', 'Almacén', 'Producto', '', 'Cantidad', 'Cantidad Reservada', 'Unidad de Medida', 'Peso ('.optional($weight_unit)->sign.')', 'Fecha de Fabricación', 'Fecha de Caducidad', 'Bloqueado', 'Notas'];
+        $header_names = [
+                l('ID', [], 'layouts'),
+                l('Date', 'lots'),
+                l('Type', 'lots'),
+                l('Warehouse', 'lots'),
+                l('Quantity', 'lots'),
+                l('Stock after', 'lots'),
+                l('Document', 'lots'),
+                l('Notes', [], 'layouts')
+        ];
 
         $data[] = $header_names;
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
 
-        $totat_quantity = $total_weight = 0.0;
+//        $totat_quantity = $total_weight = 0.0;
 
-        foreach ($lots as $lot) 
+        foreach ($stockmovements as $stockmovement) 
         {
             $row = [];
-            $row[] = $lot->reference;
-            $row[] = $lot->warehouse->alias_name ?? '-';
-            $row[] = $lot->product->reference;
-            $row[] = $lot->product->name;
-            $row[] = (float) $lot->quantity;
-            $row[] = (float) $lot->allocatedQuantity();
-            $row[] = optional($lot->measureunit)->sign;
-            $row[] = (float) $lot->getWeight();
-            $row[] = abi_date_short( $lot->manufactured_at );
-            $row[] = abi_date_short( $lot->expiry_at );
-            $row[] = (int) $lot->blocked;
-            $row[] = $lot->notes;
+            $row[] = $stockmovement->id;
+            $row[] = abi_date_short( $stockmovement->date );
+            $row[] = '['.$stockmovement->movement_type_id.'] - '. StockMovement::getTypeName($stockmovement->movement_type_id);
+            $row[] = $stockmovement->warehouse->alias;
+            $row[] = (float) $stockmovement->as_quantityable( $stockmovement->quantity_after_movement - $stockmovement->quantity_before_movement );
+            $row[] = (float) $stockmovement->as_quantity( 'lot_quantity_after_movement' );
+            $row[] = $stockmovement->document_reference;
+            $row[] = $stockmovement->notes;
 
             $data[] = $row;
 
-            $totat_quantity += $lot->quantity;
-            $total_weight   += $lot->getWeight();
+//            $totat_quantity += $lot->quantity;
+//            $total_weight   += $lot->getWeight();
         }
 
         $data[] = [];
 
-        $data[] = ['', '', '', 'TOTAL:', $totat_quantity, '', 'TOTAL:', $total_weight, '', '', '', ''];
+//        $data[] = ['', '', '', 'TOTAL:', $totat_quantity, '', 'TOTAL:', $total_weight, '', '', '', ''];
+}
 
-        $sheetName = 'Lotes de Productos' ;
+        $lines_so_far = count($data);
+
+if ( $sections != 'movements' )
+{
+        //
+        // Bonus:
+        // Allocations
+        $data[] = [l('Lot Stock Allocations', 'lots') . $ribbon];
+        $data[] = [''];
+
+
+        // Define the Excel spreadsheet headers
+        $header_names = [
+                l('ID', [], 'layouts'),
+                l('Document Date', 'lots'),
+                l('Document', 'lots'),
+                l('Customer', 'lots'),
+                l('Quantity', 'lots'),
+        ];
+
+        $data[] = $header_names;
+
+        foreach ($stockallocations as $stockallocation) 
+        {
+            $document = optional($stockallocation->lotable)->document;
+
+            $row = [];
+            $row[] = $stockallocation->id;
+            $row[] = abi_date_short( $document->document_date );
+            $row[] = optional(optional($stockallocation->lotable)->document)->document_reference;
+                $customer = '';
+                if ( $document->customer_id )
+                    $customer = $document->customer->name_commercial;
+                else if( $document->warehouse_id )
+                    $customer = optional($document->warehouse)->getAliasNameAttribute();
+            $row[] = $customer;
+            $row[] = (float) $lot->measureunit->quantityable( $stockallocation->quantity );
+
+            $data[] = $row;
+
+//            $totat_quantity += $lot->quantity;
+//            $total_weight   += $lot->getWeight();
+        }
+
+        $data[] = [];
+}
+
+
+
+        $sheetName = 'Movimientos' ;
 
         // abi_r($data, true);
 
         // Generate and return the spreadsheet
-        Excel::create('Lotes de Productos', function($excel) use ($sheetName, $data) {
+        Excel::create($lot->reference.' - '.l('Lot Stock Movements', 'lots'), function($excel) use ($sheetName, $data, $lines_so_far) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');
@@ -563,12 +744,44 @@ class LotsController extends Controller
             // $excel->setDescription('Price List file');
 
             // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
+            $excel->sheet($sheetName, function($sheet) use ($data, $lines_so_far) {
                 
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');
+                $sheet->mergeCells('A3:D3');
 
-                $sheet->getStyle('A4:L4')->applyFromArray([
+                $nbr = $lines_so_far + 1;
+                $sheet->mergeCells("A$nbr:D$nbr");
+
+                $sheet->getStyle('A2:F2')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->getStyle('A5:L5')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->getStyle('A8:L8')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $nbr = $lines_so_far + 1;
+
+                $sheet->getStyle("A$nbr:L$nbr")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $nbr = $lines_so_far + 3;
+
+                $sheet->getStyle("A$nbr:L$nbr")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]
@@ -602,6 +815,21 @@ class LotsController extends Controller
 
 
 
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function exportAllocations(Lot $lot, Request $request)
+    {
+        // See: HelferinCustomerInvoicesTrait
+
+        // Load Relation
+        $lot = $lot->load(['product', 'measureunit']);
+    }
+
+
+
     public function stockmovements(Lot $lot, Request $request)
     {
         // Load Relation
@@ -611,8 +839,8 @@ class LotsController extends Controller
                                 ->where('lot_id', $lot->id)
  //                               ->filter( $request->all() )
  //                               ->with('measureunit')
-                                ->orderBy('date', 'ASC')
-                                ->orderBy('created_at', 'ASC');
+                                ->orderBy('date', 'DESC')
+                                ->orderBy('created_at', 'DESC');
 
         $stockmovements = $stockmovements->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
         // $lots = $lots->paginate( 1 );

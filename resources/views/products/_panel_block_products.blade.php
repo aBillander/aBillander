@@ -81,7 +81,14 @@
 
       <td>{{ $product->name }}</td>
 			<!-- td>{{ $product->measureunit->name }}</td -->
-            <td>{{ $product->as_quantity('quantity_onhand') }}</td>
+            <td>{{ $product->as_quantity('quantity_onhand') }}<br />
+@if( $product->stock_control > 0 )
+     <i class="fa fa-eye text-warning" title="{{ l('Stock Control?') }}: {{l('Yes', [], 'layouts')}}"></i>
+@endif
+@if( $product->lot_tracking > 0 )
+     <i class="fa fa-cubes text-info" title="{{ l('Lot tracking?') }}: {{l('Yes', [], 'layouts')}}"></i>
+@endif
+            </td>
             <!-- td>{{ $product->as_price('cost_price') }}</td -->
             <td>{{ $product->displayPrice }}</td>
             <!-- td>{ { $product->tax->name }}</td -->

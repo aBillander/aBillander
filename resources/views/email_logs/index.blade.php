@@ -129,7 +129,15 @@
 		<tr>
 			<td>{{ $emaillog->id }}</td>
 			<td>{{ abi_date_short( $emaillog->created_at ) }}</td>
-      <td>{{ $emaillog->to }}</td>
+      <td>{{ $emaillog->to }}<br />
+@if($emaillog->cc)
+          
+          CC: {{ $emaillog->cc }}<br />
+@endif
+@if($emaillog->bcc)
+          BCC: {{ $emaillog->bcc }}<br />
+@endif
+      </td>
       <td>{{ $emaillog->subject }}</td>
       <td>
                 @if ($emaillog->body)

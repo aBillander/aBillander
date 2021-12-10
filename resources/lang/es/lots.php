@@ -57,9 +57,15 @@ return [
 	'Expiry Date' => 'Fecha de Caducidad',
 	'Stock Movements' => 'Movimientos de Stock',
 	'Lot Stock Movements' => 'Movimientos de Stock de Lote',
+	'Export Movements' => 'Exportar Movimientos',
 	'Lot Stock Allocations' => 'Reservas de Stock de Lote',
+	'Export Allocations' => 'Exportar Reservas',
+	'Movements only' => 'Sólo Movimientos',
+	'Allocations only' => 'Sólo Reservas',
+	'Movements and Allocations' => 'Movimientos y Reservas',
 
 	'New Adjustment by Lot (:id) ' => 'Nuevo Ajuste por el Lote (:id) ',
+	'New Adjustment. Lot tracking deactivated. ' => 'Nuevo Ajuste. Control de Lotes desactivado. ',
 
 
 	'Add Lots to Line' => 'Añadir Lotes a la Línea',
@@ -86,6 +92,13 @@ return [
 	'Customer' => 'Cliente',
 
 	'Stock Adjustment'     => 'Ajuste de Stock',
+
+
+	'The Quantity of the selected Lots ( :selected ) do not match the value of the Line ( :quantity ) &#58&#58 (:id) ' => 'La Cantidad de los Lotes seleccionados ( :selected ) no coincide con el valor de la Línea ( :quantity ) &#58&#58 (:id) ',
+
+
+	'Split Lot' => 'Dividir Lote',
+	'New Lot Quantity.' => 'Cantidad del nuevo Lote.',
 
 
 ];

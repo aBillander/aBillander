@@ -3,6 +3,71 @@
     $(document).ready(function() {
 
 
+        $(document).on('click', '.set-lots-to-line', function(evnt) {
+
+            // What to do? Let's see:
+
+            var panel = $("#document_document_availability");
+            var url = $(this).attr('href');     // route('productionorders.setlotslines', $document->id)
+            var token = "{{ csrf_token() }}";
+            var payload = '';
+
+            $('#error-msg-box').hide();
+
+               panel.html('');
+               panel.addClass('loading');
+
+            
+            $.ajax({
+                url : url,
+                headers : {'X-CSRF-TOKEN' : token},
+                type : 'POST',
+                dataType : 'json',
+                data : payload,
+
+                success: function(response){
+
+                    if( response.success != 'OK' ) 
+                    {
+                        $('#error-msg-box').html(response.message);
+
+                        $('#error-msg-box').show();
+
+                        return ;
+                    }
+
+                    getDocumentMaterials();
+                    
+//                    $("[data-toggle=popover]").popover();
+
+                    showAlertDivWithDelay("#msg-success-lots");
+
+                    console.log(response);
+                }
+            });
+
+
+            // stop the form from submitting the normal way and refreshing the page
+            event.preventDefault();
+
+
+
+              // alert(url);
+
+              return ;
+
+              editDocumentProductLotsLine( $(this) );
+
+              calculateSelectedAmount();
+
+              // Seems to need a delay
+              setTimeout(function(){ $("[data-toggle=popover]").popover(); }, 1000);              
+
+        });
+          
+
+
+
           $(document).on('click', '.add-lots-to-line', function(evnt) {
 
               // What to do? Let's see:
@@ -15,6 +80,9 @@
               editDocumentProductLotsLine( $(this) );
 
               calculateSelectedAmount();
+
+              // Seems to need a delay
+              setTimeout(function(){ $("[data-toggle=popover]").popover(); }, 1000);              
 
           });
           
@@ -72,7 +140,7 @@
                     $('#line_sort_order').val(result.line_sort_order);
                     $('#line_product_id').val(result.product_id);
                     $('#line_combination_id').val(result.combination_id);
-                    $('#line_type').val(result.line_type);
+                    $('#line_type').val(result.type);
 
                     $('#line_lot_references').val(result.lot_references);
                     $('#product_available_lots').html(result.lots_view);
@@ -82,69 +150,16 @@
                     $('#line_lot_references').val(result.lot_references);
                     $('#line_reference').val(result.reference);
 
-                    pmu_conversion_rate = result.pmu_conversion_rate;
+                    pmu_conversion_rate = 1.0;
                     pmu_quantity = result.quantity / pmu_conversion_rate;
 
                     $('#line_quantity_decimal_places').val( QUANTITY_DECIMAL_PLACES );
                     $('#line_quantity').val(pmu_quantity.round( QUANTITY_DECIMAL_PLACES ));
                     $('#line_package_measure_unit_id').val(result.measure_unit_id);
                     $('#line_measure_unit_id').val(result.measure_unit_id);
-                    $('#line_measure_unit_name').text(result.packagemeasureunit.name);
+//                    $('#line_measure_unit_name').text(result.packagemeasureunit.name);
                     $('#line_package_label').text(result.package_label);
 
-                    $('#line_cost_price').val(result.cost_price);
-                    $('#line_unit_price').val(result.unit_price);
-                    $('#line_unit_customer_price').val(result.unit_customer_price);
-
-                    $('#line_is_prices_entered_with_tax').val(result.prices_entered_with_tax);
-
-                    if ( $('#line_is_prices_entered_with_tax').val() > 0 )
-                    {
-                        //
-                        price = result.unit_customer_final_price_tax_inc;
-
-                        // set labels
-                        $(".label_tax_exc").hide();
-                        $(".label_tax_inc").show();
-
-                    } else {
-
-                        //
-                        price = result.unit_customer_final_price;
-
-                        // set labels
-                        $(".label_tax_inc").hide();
-                        $(".label_tax_exc").show();
-
-                    }
-
-                    $("#line_price").val( price * pmu_conversion_rate );
-
-                    $("#label_ecotax_value").html(result.ecotax_value_label);
-                    
-                    // $("#line_price").val( result.unit_customer_final_price.round( PRICE_DECIMAL_PLACES ) );
-                    // $("#line_price").val( result.unit_customer_final_price );
-
-                    $('#line_discount_percent').val(result.discount_percent);
-
-                    $('#discount_amount_tax_incl').val(result.discount_amount_tax_incl);
-                    $('#discount_amount_tax_excl').val(result.discount_amount_tax_excl);
-
-                    $('#line_tax_label').html(result.tax_label);
-                    $('#line_tax_id').val(result.tax_id);
-                    $('#line_tax_percent').val(result.tax_percent);
-
-                    // sales_equalization
-                    if ($('#sales_equalization').val()>0) {
-                        $('input:radio[name=line_is_sales_equalization]').val([result.sales_equalization]);
-                        $('#line_sales_equalization').show();
-                    }
-
-                    // calculate_line_product( );
-
-                    $('#line_sales_rep_id').val( result.sales_rep_id );
-                    $('#line_commission_percent').val( result.commission_percent );
-                    
                     $('#line_pmu_label').val(result.pmu_label);
                     $('#line_extra_quantity_label').val(result.extra_quantity_label);
 
@@ -226,14 +241,13 @@
                         return ;
                     }
 
-                    // loadDocumentlines();
+                    getDocumentMaterials(1);
                     
-                    $(function () {  $('[data-toggle="tooltip"]').tooltip()});
 //                    $("[data-toggle=popover]").popover();
 
                     $('#modal_document_line').modal('toggle');
 
-                    showAlertDivWithDelay("#msg-success");
+                    showAlertDivWithDelay("#msg-success-lots");
 
                     console.log(response);
                 }

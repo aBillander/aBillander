@@ -21,6 +21,13 @@
                &nbsp; {{ l('Shipping Methods') }}
             </a>
 
+            <a id="tab_index_none_2" href="" class="list-group-item" style="padding: 3px 15px;">
+            </a>
+
+            <a href="https://woocommerce.github.io/woocommerce-rest-api-docs/" target="_blank" class="list-group-item">
+               - {{ l('Woo Rest Api') }}
+            </a>
+
             <a id="tab_index_none" href="" class="list-group-item" style="display:none;" style="padding: 3px 15px;">
             </a>
 

@@ -40,11 +40,17 @@ trait JenniferCustomersBalance
                      ? Carbon::createFromFormat('Y-m-d', $request->input('balance_date_to'  ))->endOfDay()
                      : null;
 
-        // abi_r($request->all(), true);
+        // Customer?
+        $customer_id = (int) $request->input('balance_customer_id', 0);
+        if ( $request->input('balance_autocustomer_name') == '' )
+            $customer_id = 0;
+
+        // abi_r($request->all()+['cid' => $customer_id], true);
 
         // Recibos 
         //  - expedidos antes de la fecha de referencia (<=) y 
         //  - que la fecha de pago es >= que la fecha de referencia
+        //  - y que no están devueltos
 
         // Get Vouchers now. Lets see:
         $vouchers = Payment::where('payment_type', 'receivable')       // CUSTOMER vouchers only
@@ -69,6 +75,10 @@ trait JenniferCustomersBalance
                                         $query->where('payment_date', '>=', $date_to)
                                               ->orWhere('payment_date', null);
                                     });
+                            })
+                            ->where('status', '<>', 'bounced')
+                            ->when($customer_id, function($query) use ($customer_id) {
+                                $query->where('paymentorable_id', $customer_id);
                             })
 //                            ->orderBy('due_date', 'asc')      // No special order required
                             ->get();
@@ -134,13 +144,82 @@ trait JenniferCustomersBalance
 
         $data[] = [''];
         $data[] = ['', '', '', 'Total:', (float) $total];
+        $n1 = count($data);
+        $data[] = [''];
 
+
+// Bonus stuff
+if( $customer_id > 0 ){
+        // Output customer vouchers
+        $data[] = ['Desglose de Recibos'];
+        $data[] = [''];
+
+        // Define the Excel spreadsheet headers
+        $headers = [ 
+                    'id', 'document_reference', 'DOCUMENT_DATE', 'customer_id', 'accounting_id', 'CUSTOMER_NAME', 'name', 
+                    'due_date', 'payment_date', 'amount', 
+                    'payment_type_id', 'PAYMENT_TYPE_NAME', 'auto_direct_debit', 
+
+                    'status', 'currency_id', 'CURRENCY_NAME', 'notes',
+        ];
+
+        $data[] = $headers;
+
+        $total_amount = 0.0;
+
+        // abi_r($vouchers);
+        // abi_r($headers);
+
+        // Convert each member of the returned collection into an array,
+        // and append it to the payments array.
+        $customer_vouchers = $vouchers->get($customer_id);
+        if ($customer_vouchers)
+        foreach ($customer_vouchers as $payment) {
+            // $data[] = $line->toArray();
+            // abi_r($payment, true);
+            $row = [];
+            foreach ($headers as $header)
+            {
+                $row[$header] = $payment->{$header} ?? '';
+            }
+//            $row['TAX_NAME']          = $category->tax ? $category->tax->name : '';
+
+            $row['due_date'] = abi_date_short($row['due_date']);
+
+            $row['CURRENCY_NAME'] = optional($payment->currency)->name;
+            $row['PAYMENT_TYPE_NAME'] = optional($payment->paymenttype)->name;
+            $row['customer_id'] = optional($payment->customer)->id;
+            $row['accounting_id'] = optional($payment->customer)->accounting_id;
+            $row['CUSTOMER_NAME'] = optional($payment->customer)->name_regular;
+            $row['BANK_NAME'] = optional($payment->bank)->name;
+
+            $row['DOCUMENT_DATE'] = abi_date_short(optional($payment->customerinvoice)->document_date);
+
+            if ($payment->auto_direct_debit && $payment->bankorder )
+                $row['auto_direct_debit'] = $payment->bankorder->document_reference;
+
+            $row['amount'] = (float) $payment->amount;
+
+            $data[] = $row;
+
+            $total_amount += $payment->amount;
+        }
+
+        // Totals
+
+        $data[] = [''];
+        $data[] = ['', '', '', '', '', '', '', '', 'Total:', $total_amount * 1.0];
+
+}
+
+
+        // Continue to generate spreadsheet
         $sheetName = 'Saldo de Clientes';
 
         $suffix = Carbon::createFromFormat('Y-m-d', $request->input('balance_date_to'  ));
 
         // Generate and return the spreadsheet
-        Excel::create('Saldo de Clientes '.$suffix, function($excel) use ($sheetName, $data) {
+        Excel::create('Saldo de Clientes '.$suffix, function($excel) use ($sheetName, $data, $n1) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');
@@ -148,7 +227,7 @@ trait JenniferCustomersBalance
             // $excel->setDescription('Price List file');
 
             // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
+            $excel->sheet($sheetName, function($sheet) use ($data, $n1) {
                 
                 $sheet->mergeCells('A1:C1');
                 $sheet->mergeCells('A2:C2');
@@ -167,10 +246,32 @@ trait JenniferCustomersBalance
                     'D' => '0.00',
 
                 ));
+
+                $n = $n1;
+                $sheet->getStyle("D$n:E$n")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $n = $n1+2;
+                $sheet->mergeCells("A$n:C$n");
+                $sheet->getStyle("A$n:D$n")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $n = $n1+4;
+                $sheet->getStyle("A$n:Q$n")->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
                 
                 $n = count($data);
                 $m = $n - 3;
-                $sheet->getStyle("E$n:E$n")->applyFromArray([
+                $sheet->getStyle("I$n:J$n")->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

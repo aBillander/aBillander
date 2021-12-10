@@ -60,4 +60,22 @@ class ProductionOrderLine extends Model
     {
         return $this->morphMany( StockMovement::class, 'stockmovementable' );
     }
+
+
+    public function lotitems()
+    {
+        return $this->morphMany('App\LotItem', 'lotable')->with('lot');
+    }
+
+    public function getLotsAttribute()
+    {
+        // Document line -> stock movements (one or more) -> lot (one per movement)
+        // see: https://stackoverflow.com/questions/43285779/laravel-polymorphic-relations-has-many-through
+
+        if (!$this->relationLoaded('lotitems.lot')) {
+            $this->load('lotitems.lot');
+        }
+
+        return $this->lotitems->pluck('lot');
+    }
 }

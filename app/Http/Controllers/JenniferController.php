@@ -9,6 +9,7 @@ use Excel;
 // Helferinnen
 use App\Http\Controllers\HelferinTraits\JenniferCustomersBalance;
 use App\Http\Controllers\HelferinTraits\JenniferModelo347Trait;
+use App\Http\Controllers\HelferinTraits\JenniferCustomerInvoicesA3;
 
 use App\Traits\DateFormFormatterTrait;
 
@@ -16,6 +17,7 @@ class JenniferController extends Controller
 {
     use JenniferCustomersBalance;
     use JenniferModelo347Trait;
+    use JenniferCustomerInvoicesA3;
    
    use DateFormFormatterTrait;
 
@@ -34,6 +36,7 @@ class JenniferController extends Controller
         $this->invoices_report_formatList = [
                     'compact' => 'Compacto',
                     'loose' => 'Amplio',
+                    'a3' => 'A3 Contabilidad',
         ];
 
         $this->mod347_claveList = [
@@ -80,6 +83,11 @@ class JenniferController extends Controller
                      : null;
         
         $invoices_report_format = $request->input('invoices_report_format');
+
+        if ( $invoices_report_format == 'a3' )
+        {
+            return $this->reportCustomerInvoicesA3( $request );
+        }
 
         // Customer?
         $customer_id = (int) $request->input('invoices_customer_id', 0);

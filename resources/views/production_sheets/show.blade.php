@@ -30,7 +30,7 @@
 
 <div class="page-header">
     <h2>
-        <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">::</span> {{ abi_date_form_short($sheet->due_date) }}
+        <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">::</span> <span title="{{ $sheet->name }}">{{ abi_date_form_short($sheet->due_date) }}</span>
 
         <a href="" class="btn btn-success disabled" onclick="return false;" style="margin-left: 72px;"><i class="fa fa-spinner fa-spin" style="font-size:24px"></i> {{ l('Processing...', 'layouts') }}</a>
 
@@ -48,9 +48,28 @@
 <div class="page-header">
     <div class="pull-right" xstyle="padding-top: 4px;">
 
+@if( \App\Configuration::isTrue('ENABLE_LOTS') && ($sheet->nbr_customerorders() > 0) )
         <a href="{{ URL::to('productionsheets/'.$sheet->id.'/assign/lots') }}" class="btn btn-grey" onclick="loadingpage();"><i class="fa fa-window-restore"></i> {{ l('Assign Lots to Orders') }}</a>
+@endif
 
-        <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}" class="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
+        <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}" class=" hide  btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
+
+
+<div class="btn-group">
+  <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
+  <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+
+  <ul class="dropdown-menu">
+    <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=onorder" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Solo Bajo Pedido') }}</a></li>
+    
+    <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=reorder" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Solo Punto de Pedido') }}</a></li>
+    
+    <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=all" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Todos') }}</a></li>
+    
+    <!-- li><a href="#">Something else here</a></li>
+    <li class="divider"></li -->
+  </ul>
+</div>
 
 
                 <div class="btn-group">
@@ -83,7 +102,7 @@
 
     </div>
     <h2>
-        <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">::</span> {{ abi_date_form_short($sheet->due_date) }}
+        <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">::</span> <span title="{{ $sheet->name }}">{{ abi_date_form_short($sheet->due_date) }}</span>
         @if ($sheet->is_dirty AND 0)
               <button type="button" class="btn btn-sm btn-danger" title="{{l('Need Update')}}">
                   <i class="fa fa-hand-stop-o"></i>

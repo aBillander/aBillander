@@ -80,7 +80,7 @@ class Supplier extends Model {
 
     public function currentPricesEnteredWithTax( Currency $currency = null ) 
     {
-        return Configuration::get('PRICES_ENTERED_WITH_TAX');
+        return Configuration::get('SUPPLIER_PRICES_ENTERED_WITH_TAX');
     }
 
 

@@ -40,7 +40,7 @@ class Lot extends Model
 //        'combination_id'   => 'nullable|sometimes|exists:combinations,id',  // <= Ensure Combination belongs to Product!!
 
 //    	'quantity_initial'   => 'numeric|min:0',
-    	'quantity'   => 'numeric|min:0',
+    	'quantity'   => 'required|numeric|min:0',
 
         'manufactured_at' => 'nullable|date',
         'expiry_at'  => 'nullable|date',

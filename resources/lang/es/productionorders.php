@@ -20,6 +20,7 @@ return [
     'Quantity' => 'Cantidad',
 	'Finished Quantity'     => 'Cantidad terminada',
 	'Planned Quantity'     => 'Cantidad planificada',
+	'Real Quantity'     => 'Cantidad consumida',
 	'Work Center' => 'Centro de Trabajo',
 	'Provenience' => 'Procedencia',
 	'Reference' => 'Referencia',
@@ -33,7 +34,7 @@ return [
 	'Measure Unit'     => 'Unidad de Medida',
 	
 	'Edit Production Order' => 'Modificar Orden de Fabricación',
-	'' => '',
+	'Finish Production Order' => 'Terminar Orden de Fabricación',
 	
     'View Product' => 'Ir al Producto',
 
@@ -48,6 +49,7 @@ return [
 	'Issue Materials'     => 'Consumo Materiales',
 
 	'Finish Order' => 'Terminar Orden',
+	'Production Order Finished (Closed)' => 'Orden de Fabricación Terminada (Cerrada)',
 
 	'Measure Unit'     => 'Unidad de Medida',
 	'Unit'     => 'Unidad',
@@ -84,7 +86,23 @@ return [
 	'Quantity on-hand only'     => 'Servir sólo stock disponible',
 
 
+	'Lot' => 'Lote',
     'Add Lots' => 'Añadir Lotes',
     'Add Lots to Line' => 'Añadir Lotes a la Línea',
     'Add Lots to Lines' => 'Añadir Lotes a las Líneas',
+    'Not enough quantity.' => 'No hay suficiente.',
+
+    'Save & Finish'     => 'Guardar y Terminar',
+    'Save Order' => 'Guardar Orden de Fabricación',
+    'Save and Finish Order' => 'Guardar y Terminar Orden de Fabricación',
+
+	'Lot Number' => 'Número de Lote',
+	'Expiry Time' => 'Plazo de Caducidad',
+	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
+	'Leave the field empty for the System to calculate.' => 'Deje el campo vacío para que lo calcule el Sistema.',
+
+	'Document has not Materials' => 'El Documento no tiene Consumo de Materiales',
+
+	'Before finishing this Production Order, make sure you have assigned the Material Consumption.' => 'Antes de terminar esta Orden de Fabricación, asegúrese de que ha asignado el Consumo de Materiales.',
+
 ];

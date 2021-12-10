@@ -22,7 +22,7 @@ trait StockableTrait
         return \App\Lot::
                           where('product_id', $this->id)
                         ->where('warehouse_id', $warehouse_id)
-                        ->where('quantity', '>', 0)
+//                        ->where('quantity', '>', 0)
                         ->get()
                         ->sum('quantity');
     }

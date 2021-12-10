@@ -16,8 +16,23 @@
 
 <div class="row">
 
-<div class="form-group col-lg-9 col-md-9 col-sm-9">
-    {{-- Poor man offset --}}
+<div class="form-group col-lg-3 col-md-3 col-sm-3">
+    <br />
+    <a href="#" class="btn btn-info" id="show_extra_fields"><i class="fa fa-wrench"></i>&nbsp; {{l('Show more', [], 'layouts')}}</a>
+</div>
+
+<div class="form-group col-lg-3 col-md-3 col-sm-3">
+<div class=" extrafield " style="display: none;">
+    {!! Form::label('due_date_form', l('Due Date')) !!}
+    {!! Form::text('due_date_form', null, array('class' => 'form-control')) !!}
+</div>
+</div>
+
+<div name="voucher_payment_date" id="voucher_payment_date" class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('payment_date') ? 'has-error' : '' }}">
+<div class=" extrafield " style="display: none;">
+    {!! Form::label('payment_date_form', l('Payment Date')) !!}
+    {!! Form::text('payment_date_form', null, array('class' => 'form-control')) !!}
+</div>
 </div>
 
 <div class="form-group col-lg-3 col-md-3 col-sm-3">

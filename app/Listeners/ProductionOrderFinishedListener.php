@@ -32,13 +32,16 @@ class ProductionOrderFinishedListener
         $params   = $event->params ?? [];
 
         // Perform Stock Movements
-        // Only if invoice has not "left document(s)", i.e., only if it is manually generated
-        // 'created_via' != 'aggregate_shipping_slips'
+        $document->makeStockMovements( $params );
+
+/* Old stuff
+        // Perform Stock Movements
         if ( $document->shouldPerformStockMovements() )
         {
             //
             $document->makeStockMovements( $params );
         }
+*/
         
     }
 }

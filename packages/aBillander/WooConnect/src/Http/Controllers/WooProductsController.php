@@ -201,7 +201,7 @@ class WooProductsController extends Controller
 		    'short_description'   => $abi_product->description_short,
 
 			'sku' => $abi_product->reference,
-			'regular_price' => $abi_product_price->getPrice(), // product price
+			'regular_price' => (string) $abi_product_price->getPrice(), // product price
 
 //			'virtual',
 //			'downloadable'
@@ -284,6 +284,8 @@ class WooProductsController extends Controller
 		// Images
 		$abi_images = $abi_product->images->sortByDesc('is_featured');
 
+if ( $abi_images->count() > 0 )
+{		
 		// Add featured image to Galery
 		$abi_featured = $abi_images->first();
 		$abi_images->push($abi_featured);
@@ -305,6 +307,7 @@ class WooProductsController extends Controller
 
 			$i++;
 		}
+}
 
 
 

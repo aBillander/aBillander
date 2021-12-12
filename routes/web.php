@@ -517,6 +517,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::post('productionsheetinvoices/close',  'ProductionSheetInvoicesController@closeInvoices')->name('productionsheet.close.invoices');
 
+        // Production Sheet Vouchers
+        Route::get( 'productionsheetvouchers/{id}',  'ProductionSheetVouchersController@vouchersIndex')->name('productionsheet.vouchers');
+
 
         // Production Sheet Delivery Routes
         Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');

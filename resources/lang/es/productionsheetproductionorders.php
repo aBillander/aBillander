@@ -109,4 +109,5 @@ return [
 	'Shipping Slips'     => 'Albaranes',
 	'Customer Shipping Slips'     => 'Albaranes de Clientes',
 	'Customer Invoices'     => 'Facturas de Clientes',
+	'Customer Vouchers'     => 'Recibos de Clientes',
 ];

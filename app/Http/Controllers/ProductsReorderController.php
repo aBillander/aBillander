@@ -171,6 +171,7 @@ class ProductsReorderController extends Controller
 
         $data[] = $header_names;
 
+        if ( $products->count() > 0 )
         foreach ($products as $product) 
         {
                 $supplier_label = '';
@@ -178,7 +179,7 @@ class ProductsReorderController extends Controller
                     $supplier_label = $supplierList[ $product->main_supplier_id ] ?? '-';
 
                 $row = [];
-                $row[] = (string) $work_centerList[ $product->work_center_id ] ?? '-';
+                $row[] = (string) array_key_exists($product->work_center_id, $work_centerList) ? $work_centerList[ $product->work_center_id ] : '-';
                 $row[] = (string) $product->reference;
                 $row[] = $product->name;
                 $row[] = $supplier_label;

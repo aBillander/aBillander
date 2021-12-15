@@ -65,6 +65,10 @@ Route::get('testemail/{email}', function( $email = null )
 
 /* ********************************************************** */
 
+Route::get('/wdays', function () {
+	abi_r(\Carbon\Carbon::now()->addWeekDays( 5 ));
+});
+
 Route::get('/mailable', function () {
         $customerOrder = \App\CustomerOrder::find(7415);
         $customer = $customerOrder->customer; 

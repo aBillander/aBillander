@@ -158,7 +158,7 @@ trait SupplierBillableControllerTrait
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = Product::with('tax')->findOrFail(intval($product_id));
+            $product = Product::with('measureunit')->with('purchasemeasureunit')->with('tax')->findOrFail(intval($product_id));
         }
 
         // Supplier
@@ -227,6 +227,7 @@ trait SupplierBillableControllerTrait
                 'currency' => $currency,
     
                 'measure_unit_id' => $product->measure_unit_id,
+                'purchase_measure_unit_id' => $product->supplymeasureunit->id,
                 'quantity_decimal_places' => $product->quantity_decimal_places,
                 'reorder_point'      => $product->reorder_point, 
                 'quantity_onhand'    => $product->quantity_onhand, 

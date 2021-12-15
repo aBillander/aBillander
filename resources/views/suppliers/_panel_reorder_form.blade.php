@@ -30,12 +30,12 @@
     <table id="products_availability" class="table table-hover">
         <thead>
             <tr>
-                <th class="text-left">{{l('ID', [], 'layouts')}}</th>
+                <!-- th class="text-left">{{l('ID', [], 'layouts')}}</th -->
                 <th>{{l('Product')}}</th>
                 <th>{{l('Stock', 'products')}}</th>
 
-                <th>{{l('Measure Unit', 'products')}}</th>
-                <th>{{l('Purchase Measure Unit', 'products')}}</th>
+                <!-- th>{{l('Measure Unit', 'products')}}</th>
+                <th>{{l('Purchase Measure Unit', 'products')}}</th -->
                 <th>{{l('Last Purchase Price', 'products')}}</th>
 
             <th>{{ l('Allocated', 'products') }}</th>
@@ -60,7 +60,7 @@
             <th>{{ l('Maximum stock', 'products') }}</th>
             <th>{{ l('Suggested Quantity', 'products') }}</th>
 
-                        <th class="text-left button-pad active" style="width: 90px;">{{ l('Quantity', 'products') }} / <br />{{ l('Price') }} ({{ $supplier->currency->sign ?: $supplier->currency->name }})
+                        <th class="text-left button-pad active" style="width: 90px;">{{ l('Quantity', 'products') }}
 
 
                   <a class="btn btn-sm btn-info xbtn-pressure xbtn-sensitive xlines_quick_form  hide " title="{{l('Full quantity')}}" sxtyle="opacity: 0.65;" onclick="getDocumentAvailability(0)"><i class="fa fa-th"></i> </a>
@@ -68,6 +68,8 @@
                   <a class="btn btn-sm btn-info xbtn-grey xbtn-sensitive xcreate-document-service  hide " title="{{l('Quantity on-hand only')}}" xstyle="background-color: #2bbbad;" onclick="getDocumentAvailability(1)"><i class="fa fa-th-large"></i> </a>
 
 
+                        </th>
+                        <th class="text-left button-pad active" style="width: 90px;">{{ l('Price') }} ({{ $supplier->currency->sign ?: $supplier->currency->name }})
                         </th>
                       </tr>
                     </thead>
@@ -79,13 +81,13 @@
 
     @foreach ($products as $product)
             <tr>
-                <td>{{ $product->id }}</td>
+                <!-- td>{{ $product->id }}</td -->
                 <td>
                     [<a href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_product">{{ $product->reference }}</a>] {{ $product->name }}
                 </td>
-                <td>{{ $product->as_quantity('quantity_onhand') }}</td>
+                <td>{{ $product->as_quantityable($product->quantity_onhand / $product->supplymeasureunit_conversion_rate)  }} {{ $product->supplymeasureunit->name }}</td>
 
-                <td>{{ $product->measureunit->name }}</td>
+                <!-- td>{{ $product->measureunit->name }}</td>
                 <td>{{ $product->supplymeasureunit->name }}
 
 @if ( $product->measure_unit_id != $product->supplymeasureunit->id )
@@ -94,7 +96,7 @@
     1 {{ $product->supplymeasureunit->name }} = {{ $product->as_percentable($product->supplymeasureunit_conversion_rate) }} x {{ $product->measureunit->name }}
     </span>
 @endif
-                </td>
+                </td -->
                 <td>{{ $product->as_price('last_purchase_price') }} / {{ $product->supplymeasureunit->name }}</td>
             <td>{{ $product->as_quantityable($product->quantity_allocated / $product->supplymeasureunit_conversion_rate) }}</td>
             <td>{{ $product->as_quantityable($product->quantity_onorder / $product->supplymeasureunit_conversion_rate)  }}</td>
@@ -109,9 +111,11 @@
     xwidth: auto;
     display: inline;" value="{{ $product->as_quantityable($product->quantity_reorder_suggested / $product->supplymeasureunit_conversion_rate) }}" onclick="this.select()">
 
+            </td>
+            <td>
 
 <input name="dispatch_price[{{ $product->id }}]" class="form-control input-sm" type="text" size="3" maxlength="5" style="min-width: 0;
-    xwidth: auto; margin-top: 4px;
+    xwidth: auto; xmargin-top: 4px;
     display: inline;" value="{{ $product->as_price('last_purchase_price') }}" onclick="this.select()">
     
                 </td>

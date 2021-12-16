@@ -68,7 +68,7 @@ class ProductionSheet extends Model
 
         // STEP 1.1
         // Calculate raw requirements from Released Production Orders
-        $requirements = $this->productionorders()->where('status', 'released')->get();
+        $requirements = $this->productionorders()->where('created_via', 'manual')->get();
         foreach ($requirements as $order) {
 
             // Create Production Order (multilevel)
@@ -76,6 +76,7 @@ class ProductionSheet extends Model
         }
 
 
+        // abi_r($this->sandbox->orders_manual);
         // abi_r($this->sandbox->orders_planned, true);
 
 
@@ -169,6 +170,7 @@ class ProductionSheet extends Model
             // ProductionOrders collection has been equalized ()
         }
 
+        // abi_r($this->sandbox->orders_manual);
         // abi_r($this->sandbox->getPlannedOrders(), true); // OK
         // die();
 
@@ -179,6 +181,7 @@ class ProductionSheet extends Model
 
         // abi_r($this->sandbox->getPlannedOrders()->pluck('id'));
 
+        // Manual Production Orders are not merged and are managed "As-Is"
         $this->sandbox->groupPlannedOrdersManualOrders();
 
         // abi_r($this->sandbox->getPlannedOrders()->pluck('id')); // die();

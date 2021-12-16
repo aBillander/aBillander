@@ -15,6 +15,7 @@ class ProductionPlanner
         $this->production_sheet_id = $production_sheet_id; 
         $this->due_date = $due_date;
 
+        $this->orders_manual = collect([]);     // Collection of Production Order Models
         $this->orders_planned = collect([]);    // Collection of Production Order Models
         $this->products_planned = collect([]);  // Collection of Product Models
     }
@@ -25,7 +26,20 @@ class ProductionPlanner
     */
     public function getPlannedOrders()
     {
+        if ( !$this->orders_planned ) return collect([]);
+
         return $this->orders_planned;
+    }
+
+
+    /*
+     *  @Return: Collection of Production Order Models
+    */
+    public function getManualOrders()
+    {
+        if ( !$this->orders_manual ) return collect([]);
+
+        return $this->orders_manual;
     }
 
 
@@ -50,7 +64,7 @@ if( $order == null )
         $order_quantity    = $data['planned_quantity'];
 
         $order = new ProductionOrder([
-            'created_via' => 'manufacturing',
+            'created_via' => array_key_exists('created_via', $data) ? $data['created_via'] : 'manufacturing',
             'status'      => 'planned',
 
             'product_id' => $product->id,
@@ -64,7 +78,7 @@ if( $order == null )
 
             'due_date' => $this->due_date,
 //            'schedule_sort_order' => 0,
-            'notes' => $data['notes'],
+//            'notes' => $data['notes'],
 
             'work_center_id' => $product->work_center_id,
 
@@ -80,6 +94,9 @@ if( $order == null )
         $product = $order->product;
 
         $bom     = $product->bom;
+
+        $required_quantity = $order->planned_quantity;
+        $order_quantity    = $order->planned_quantity;
 }
 
 
@@ -98,13 +115,15 @@ if( $order == null )
             $quantity = $order_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
 
             $order = $this->addPlannedMultiLevel([
+                'created_via' => $order->created_via,
+                
                 'product_id' => $line->product_id,
 
                 'required_quantity' => $quantity,
                 'planned_quantity' => $quantity,
 //                'product_bom_id' => $line_product->bom ? $line_product->bom->id : 0,
 
-                'notes' => $data['notes'],
+//                'notes' => $data['notes'],
 
                 'production_sheet_id' => $this->production_sheet_id,
             ]);
@@ -131,6 +150,8 @@ if( $order == null )
         $order = $this->getPlannedOrders()->firstWhere('product_id', $product_id);
 
         if ( !$order ) return ;     // <= Noting to do here
+
+        // abi_r('pid, qty:'.$product_id.' '. $new_required);
 
 
         // Wanna dance, baby? For sure I do.
@@ -311,13 +332,19 @@ if( $order == null )
 
 
     /*
-     *  Crea una ProductionOrder con la cantidad agrupada de cada Producto y carga el Stock físico a cada una
+     *  Crea una ProductionOrder con la cantidad agrupada de cada Producto 
+     *  y carga el Stock físico, perdiente y disponible a cada una
      *  
      *  @Return: Collection of Production Order Models
     */
     public function groupPlannedOrders( $withStock = false )
     {
+        $this->orders_manual = $this->getPlannedOrders()
+                ->where('created_via', 'manual');
+
+
         $this->orders_planned = $this->getPlannedOrders()
+                ->where('created_via', 'manufacturing')
                 ->groupBy('product_id')->reduce(function ($result, $group) {
                       $reduced = $group->first();
 
@@ -336,33 +363,72 @@ if( $order == null )
 
         $products_planned = &$this->products_planned;
 
-        // abi_r($products_planned, true);
+        // Manual created Production Orders
+        $orders_manual = &$this->orders_manual;
 
-        // Load Stock (only value) onto Production Order
-        $this->orders_planned->transform(function($order, $key) use ($products_planned, $withStock) {
+        // Load OnHand Stock (only value) onto Production Order
+        // Load OnOrder Stock (only value) onto Production Order
+        $this->orders_planned->transform(function($order, $key) use ($products_planned, $withStock, $orders_manual) {
                       $product = $products_planned->firstWhere('id', $order->product_id);
                       $product_stock = 0.0;
+                      $product_onorder = 0.0;
 
-                      // if ($product->procurement_type == 'assembly') <= muy restrictivo, ya que puede haber productos de Aprovisionamiento = Fabricación dentro de una BOM
-
-                      // abi_r($withStock.' - '.$product->reference.' - '.$product->stock_control.' - '.$product->mrp_type.' - '.$product->quantity_onhand);
-
-                      // Only Assembies since Manufacture Products are already adjusted in STEP 1 <= Creo que no es así
                       if ( $withStock )
                       {
                             if ( ( ($product->stock_control > 0) && ($product->mrp_type == 'manual') ) || 
                                     $product->mrp_type == 'reorder'  || 
                                     $product->mrp_type == 'onorder' 
                             ) {
-                                $product_stock = $product->quantity_onhand;
+                                $product_stock   = $product->quantity_onhand;
+                                $product_onorder = $orders_manual->where('product_id', $product->id)->sum('planned_quantity');
                             }
                       }
 
             // Load Stock
-            $order->product_stock = $product_stock > 0 ? $product_stock : 0.0;
+            $order->product_stock   = $product_stock   > 0 ? $product_stock    : 0.0;
+            $order->product_onorder = $product_onorder > 0 ? $product_onorder  : 0.0;
+
+            $order->product_available = $order->product_stock + $order->product_onorder;
+
+            // abi_r( $product->reference.' '.$order->product_stock.' '.$order->product_onorder.' '.$order->product_available);
+
             return $order;
         });
 
     }
+
 	
+    public function groupPlannedOrdersManualOrders()
+    {
+        $this->orders_manual = $this->getManualOrders();
+        // abi_r('Man>');abi_r($this->orders_manual);
+
+        $this->orders_planned = $this->getPlannedOrders();
+        // abi_r('Plan>');abi_r($this->orders_planned, true);
+
+        // Merge
+        // $this->orders_planned = $this->orders_planned->merge( $this->orders_manual );
+
+        // Reject empty orders
+        if(1)
+        $this->orders_planned = $this->orders_planned
+                                        ->reject(function ($value, $key) {
+                                            return $value->planned_quantity == 0.0;
+                                        });
+
+        // abi_r('***>');abi_r($this->orders_planned, true);
+
+        // Group
+        if(0)
+        $this->orders_planned = $this->getPlannedOrders()
+                ->groupBy('product_id')->reduce(function ($result, $group) {
+                      $reduced = $group->first();
+
+                      $reduced->required_quantity = $group->sum('required_quantity');
+                      $reduced->planned_quantity  = $group->sum('planned_quantity');
+
+                      return $result->put($reduced->product_id, $reduced);
+
+                }, collect());
+    }
 }

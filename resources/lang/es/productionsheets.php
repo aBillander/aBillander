@@ -115,5 +115,19 @@ return [
 
 	'Allocate Lots' => 'Reservar Lotes',
 	'Un-Allocate Lots' => 'Borrar reserva de Lotes',
+
+
+    'Customer Orders'     => 'Pedidos de Clientes',
+
+//    'Customer Orders' => 'Pedidos de Clientes',
+    'independent demand' => 'demanda independiente',
+    'Production Requirements' => 'Requerimientos de Producción',
+    'dependent demand' => 'demanda dependiente',
+
+	'Add Production Requirements'     => 'Añadir Requerimientos de Producción',
+
+	'Manufacturing Batch Size'     => 'Lote de Fabricación',
+
+	'Type a Product Name or Product Reference.'     => 'Escriba un Nombre de Producto o Referencia.',
 	
 ];

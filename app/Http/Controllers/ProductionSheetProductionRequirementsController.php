@@ -2,17 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\ProductionRequirement;
 use Illuminate\Http\Request;
+
+use App\Configuration;
+use App\ProductionSheet;
+use App\ProductionRequirement;
+use App\Product;
 
 class ProductionSheetProductionRequirementsController extends Controller
 {
+   protected $productionSheet;
+   protected $requirement;
+   protected $product;
+
+   public function __construct(ProductionSheet $productionSheet, ProductionRequirement $requirement, Product $product)
+   {
+        $this->productionSheet = $productionSheet;
+        $this->requirement     = $requirement;
+        $this->product         = $product;
+   }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($sheet)
     {
         //
     }
@@ -22,7 +37,7 @@ class ProductionSheetProductionRequirementsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($sheet)
     {
         //
     }
@@ -33,7 +48,7 @@ class ProductionSheetProductionRequirementsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($sheet, Request $request)
     {
         //
     }
@@ -41,10 +56,10 @@ class ProductionSheetProductionRequirementsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionRequirement  $productionRequirement
+     * @param  \App\ProductionRequirement  $productionrequirement
      * @return \Illuminate\Http\Response
      */
-    public function show(ProductionRequirement $productionRequirement)
+    public function show(ProductionRequirement $productionrequirement)
     {
         //
     }
@@ -52,22 +67,25 @@ class ProductionSheetProductionRequirementsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ProductionRequirement  $productionRequirement
+     * @param  \App\ProductionRequirement  $productionrequirement
      * @return \Illuminate\Http\Response
      */
-    public function edit(ProductionRequirement $productionRequirement)
+    public function edit($sheet, ProductionRequirement $productionrequirement)
     {
         //
+        abi_r($sheet);
+        abi_r($productionrequirement);
+
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ProductionRequirement  $productionRequirement
+     * @param  \App\ProductionRequirement  $productionrequirement
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProductionRequirement $productionRequirement)
+    public function update($sheet, Request $request, ProductionRequirement $productionrequirement)
     {
         //
     }
@@ -75,11 +93,16 @@ class ProductionSheetProductionRequirementsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ProductionRequirement  $productionRequirement
+     * @param  \App\ProductionRequirement  $productionrequirement
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductionRequirement $productionRequirement)
+    public function destroy($sheet, ProductionRequirement $productionrequirement)
     {
-        //
+        $id = $productionrequirement->id;
+
+        $productionrequirement->delete();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 }

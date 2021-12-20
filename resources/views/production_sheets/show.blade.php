@@ -132,12 +132,51 @@
       <div class="col-lg-10 col-md-10 col-sm-10">
             <div class="panel panel-info" id="panel_customer_orders">
                <div class="panel-heading">
-                  <h3 class="panel-title"><i class="fa fa-user"></i> &nbsp; {{ l('Customer Orders') }}</h3>
+                  <h3 class="panel-title"><i class="fa fa-user"></i> &nbsp; {{ l('Customer Orders') }} (<strong>{!! l('independent demand') !!}</strong>)
+
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('La Demanda Independiente está formada por Productos terminados, y se representa mediante Pedidos de Clientes.') }}">
+                                  <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                           </a>
+
+                    <a class="btn btn-xs alert-warning pull-right" href=""  title="{{l('Hide / Show', [], 'layouts')}}" onclick="$('#div_customer_orders').toggle('slow');return false;"><i class="fa fa-window-close-o"></i></a>
+
+                  </h3>
                </div>
                     @include('production_sheets._panel_customer_orders')
             </div>
       </div>
    </div>
+
+   <div class="row">
+      <div class="col-lg-1 col-md-1 col-sm-1">
+         <div class="list-group">
+            <!-- a id="b_generales" href="" class="list-group-item active info" onClick="return false;">
+               <i class="fa fa-user"></i>
+               &nbsp; {{ l('Customer Orders') }}
+            </a -->
+         </div>
+      </div>
+
+      <div class="col-lg-10 col-md-10 col-sm-10">
+            <div class="panel panel-info" id="panel_production_requirements">
+               <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa fa-cubes"></i> &nbsp; {!! l('Production Requirements') !!} (<strong>{!! l('dependent demand') !!}</strong>) 
+
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('Estos Productos se incorporarán físicamente a la Demanda Independiente. Pueden considerarse como Semi-Elaborados que se fabrican antes de tener las Ordenes de Fabricación de los Productos terminados que forman la Demanda Independiente.') }}">
+                                  <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                           </a>
+
+                    <a class="btn btn-xs alert-warning pull-right" href=""  title="{{l('Hide / Show', [], 'layouts')}}" onclick="$('#div_production_requirements').toggle('slow');return false;"><i class="fa fa-window-close-o"></i></a>
+
+                  </h3>
+               </div>
+                    @include('production_sheets._panel_production_requirements')
+            </div>
+      </div>
+   </div>
+
  
 @if ( 0 && $sheet->productsNotScheduled()->count() )
 
@@ -288,6 +327,12 @@
 
 
 @include('production_sheets._modal_production_order_form')
+
+
+@include('production_sheets._modal_production_requirements_quick_form')
+
+@include('production_sheets._modal_production_requirement_delete')
+
 
 
 @endsection

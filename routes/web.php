@@ -505,6 +505,17 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
 
+
+        // Production Sheet Production Requirements
+        Route::resource('productionsheets.productionrequirements', 'ProductionSheetProductionRequirementsController');
+
+        Route::get('productionsheets/{id}/getproductionrequirements',       'ProductionSheetsController@getProductionRequirements'     )->name('productionsheet.getproductionrequirements'     );
+
+        Route::post('productionsheets/{id}/quickaddproductionrequirements', 'ProductionSheetsController@quickAddProductionRequirements')->name('productionsheet.quickaddproductionrequirements');
+
+        Route::post('productionsheets/deleteproductionrequirement/{lid}',   'ProductionSheetsController@deleteProductionRequirement'   )->name('productionsheet.deleteproductionrequirement' );
+
+
         // Production Sheet Shipping Slips
         Route::get( 'productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
 

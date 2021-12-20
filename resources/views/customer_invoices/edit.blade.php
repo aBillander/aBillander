@@ -52,6 +52,7 @@
                         href="{{ URL::to($model_path.'/' . $document->id . '/email') }}"                          
                         data-to_name = "{{ $customer->address->firstname }} {{ $customer->address->lastname }}" 
                         data-to_email = "{{ $customer->address->email }}" 
+                        data-cc_addresses = "{{ $customer->cc_addresses }}" 
                         data-from_name = "{{ abi_mail_from_name() }}" 
                         data-from_email = "{{ abi_mail_from_address() }}" 
                         data-subject = "{{ l($model_path.'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->customer->name_regular }}" 

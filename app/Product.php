@@ -1208,6 +1208,23 @@ class Product extends Model {
     {
         return $this->belongsTo('App\MeasureUnit', 'purchase_measure_unit_id');
     }
+
+    // Handy method
+    public function getSupplymeasureunitAttribute()
+    {
+        return $this->purchasemeasureunit ?? $this->measureunit;
+    }
+
+    // Handy method
+    public function getSupplymeasureunitConversionRateAttribute()
+    {
+        $munit = $this->supplymeasureunit;
+
+        if ( $this->measure_unit_id == $munit->id )     // Same unit
+            return 1.0;
+
+        return $this->productmeasureunits->where('measure_unit_id', $munit->id)->first()->conversion_rate;
+    }
     
     public function productmeasureunits()      // http://advancedlaravel.com/eloquent-relationships-examples
     {

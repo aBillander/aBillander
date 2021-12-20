@@ -97,13 +97,14 @@
             var message = $(this).attr('data-content');
             var to_email = $(this).attr('data-to_email');
             var to_name  = $(this).attr('data-to_name');
+            var cc_email = $(this).attr('data-cc_addresses');
             var from_email = $(this).attr('data-from_email');
             var from_name  = $(this).attr('data-from_name');
             var subject  = $(this).attr('data-subject');
             
             $('#to_email').val(to_email);
             $('#to_name').val(to_name);
-            $('#copy_to_list').val('');
+            $('#copy_to_list').val(cc_email);
             $('#email_subject').val(subject);
             $('#email_body').val('');
             $('#from_email').val(from_email);

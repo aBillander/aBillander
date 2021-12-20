@@ -341,6 +341,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
 
         Route::get('suppliers/{id}/products',  'SuppliersController@getProducts')->name('supplier.products');
+        Route::get('suppliers/{id}/reorder',            'SuppliersController@getReorderForm' )->name('supplier.reorder.form');
+        Route::post('suppliers/{id}/products/reorder',  'SuppliersController@ProductsReorder')->name('supplier.products.reorder');
 
         Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
 
@@ -503,6 +505,17 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
 
+
+        // Production Sheet Production Requirements
+        Route::resource('productionsheets.productionrequirements', 'ProductionSheetProductionRequirementsController');
+
+        Route::get('productionsheets/{id}/getproductionrequirements',       'ProductionSheetsController@getProductionRequirements'     )->name('productionsheet.getproductionrequirements'     );
+
+        Route::post('productionsheets/{id}/quickaddproductionrequirements', 'ProductionSheetsController@quickAddProductionRequirements')->name('productionsheet.quickaddproductionrequirements');
+
+        Route::post('productionsheets/deleteproductionrequirement/{lid}',   'ProductionSheetsController@deleteProductionRequirement'   )->name('productionsheet.deleteproductionrequirement' );
+
+
         // Production Sheet Shipping Slips
         Route::get( 'productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
 
@@ -514,6 +527,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get( 'productionsheetinvoices/{id}',  'ProductionSheetInvoicesController@invoicesIndex')->name('productionsheet.invoices');
 
         Route::post('productionsheetinvoices/close',  'ProductionSheetInvoicesController@closeInvoices')->name('productionsheet.close.invoices');
+
+        // Production Sheet Vouchers
+        Route::get( 'productionsheetvouchers/{id}',  'ProductionSheetVouchersController@vouchersIndex')->name('productionsheet.vouchers');
 
 
         // Production Sheet Delivery Routes

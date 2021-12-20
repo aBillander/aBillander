@@ -819,6 +819,15 @@ class BillableController extends Controller
     {
         $document = $this->document->findOrFail($id);
 
+        // Let's see what we have:
+        if ($document->customer)
+            $entity = 'customer';
+        else
+        if ($document->supplier)
+            $entity = 'supplier';
+        else
+            $entity = 'none';
+
         // Duplicate
         $clone = $document->replicate();
 
@@ -837,7 +846,6 @@ class BillableController extends Controller
 
         $clone->document_reference = null;
         $clone->reference = '';
-        $clone->reference_customer = '';
         $clone->reference_external = '';
 
         $clone->document_prefix      = null;
@@ -853,16 +861,39 @@ class BillableController extends Controller
         $clone->delivery_date = null;
         $clone->delivery_date_real = null;
         $clone->close_date = null;
+
+        $clone->down_payment = 0.0;
+
+        $clone->shipping_slip_at = null;
+        $clone->aggregated_at = null;
+        $clone->backordered_at = null;
         
         $clone->tracking_number = null;
 
-        $clone->parent_document_id = null;
-
-        $clone->production_sheet_id = null;
         $clone->export_date = null;
         
         $clone->secure_key = null;
         $clone->import_key = '';
+
+
+        $clone->{"reference_$entity"} = '';
+//        $clone->{"notes_from_$entity"} = '';
+//        $clone->{"notes"} = '';
+//        $clone->{"notes_fto_$entity"} = '';
+        
+
+        if ( $entity == 'customer' )
+        {
+            $clone->parent_document_id = null;
+
+            $clone->production_sheet_id = null;
+
+            $clone->invoiced_at = null;
+            
+        } else if ( $entity == 'supplier' )
+        {
+            $clone->fulfillment_status = 'pending';
+        }
 
 
         $clone->save();

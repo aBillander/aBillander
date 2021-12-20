@@ -91,6 +91,7 @@ return [
 
 	'Customer Shipping Slips' => 'Albaranes de Clientes',
 	'Customer Invoices'     => 'Facturas de Clientes',
+	'Customer Vouchers'     => 'Recibos de Clientes',
 
 	'This record cannot be deleted because it belongs to a Production Sheet &#58&#58 (:id) ' => 'El registro no puede ser eliminado porque pertenece a una Hoja de producción &#58&#58 (:id) ',
 
@@ -114,5 +115,19 @@ return [
 
 	'Allocate Lots' => 'Reservar Lotes',
 	'Un-Allocate Lots' => 'Borrar reserva de Lotes',
+
+
+    'Customer Orders'     => 'Pedidos de Clientes',
+
+//    'Customer Orders' => 'Pedidos de Clientes',
+    'independent demand' => 'demanda independiente',
+    'Production Requirements' => 'Requerimientos de Producción',
+    'dependent demand' => 'demanda dependiente',
+
+	'Add Production Requirements'     => 'Añadir Requerimientos de Producción',
+
+	'Manufacturing Batch Size'     => 'Lote de Fabricación',
+
+	'Type a Product Name or Product Reference.'     => 'Escriba un Nombre de Producto o Referencia.',
 	
 ];

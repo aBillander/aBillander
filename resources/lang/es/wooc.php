@@ -128,10 +128,10 @@ return [
 	'WOOC_DEF_CUSTOMER_GROUP.name'     => 'Grupo de Clientes',
 	'WOOC_DEF_CUSTOMER_GROUP.help'     => 'Los Clientes que se importan desde WooCommerce serán asignados a este Grupo.',		// Imported Customers will be asigned to this Group
 	'WOOC_DEF_CUSTOMER_PRICE_LIST.name'     => 'Tarifa',
-	'WOOC_DEF_CUSTOMER_PRICE_LIST.help'     => 'Esta Tarifa se usará para actualizar el Precio de los Productos en la Tienda. También, los Clientes que se importan desde WooCommerce se les asignará esta Tarifa.',	// Imported Customers will be asigned this Price List
+	'WOOC_DEF_CUSTOMER_PRICE_LIST.help'     => 'Esta Tarifa se usará para actualizar el Precio de los Productos en la Tienda. Si no selecciona una Tarifa, se utilizará el Precio de la Ficha del Producto. Además, los Clientes que se importan desde WooCommerce se les asignará esta Tarifa.',	// Imported Customers will be asigned this Price List
 
 	'WOOC_DEF_WAREHOUSE.name'     => 'Almacén',
-	'WOOC_DEF_WAREHOUSE.help'     => 'Este Almacén se usará para actualizar el Stock Físico de los Productos en la Tienda.',
+	'WOOC_DEF_WAREHOUSE.help'     => 'Este Almacén se usará para actualizar el Stock Físico de los Productos en la Tienda. Si no selecciona un Almacén, se utilizará el Stock Total del Producto.',
 
 	'WOOC_DEF_LANGUAGE.name'     => 'Idioma',
 	'WOOC_DEF_LANGUAGE.help'     => 'Idioma de la Tienda WooCommerce.',

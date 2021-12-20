@@ -28,7 +28,7 @@ class Customer extends Model {
 	
     protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'webshop_id', 'reference_external', 
                            'accounting_id',
-                           'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
+                           'website', 'cc_addresses', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
                            'outstanding_amount_allowed', 'unresolved_amount', 'notes', 
                            'is_invoiceable', 'invoice_by_shipping_address', 'automatic_invoice', 'vat_regime', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
@@ -46,6 +46,8 @@ class Customer extends Model {
         
         'shipping_method_id' => 'sometimes|nullable|exists:shipping_methods,id',
         'price_list_id' => 'sometimes|nullable|exists:price_lists,id',
+
+//        'cc_addresses' => ['nullable', new \App\Rules\CommaSeparatedEmails()],
         );
 
 
@@ -120,6 +122,17 @@ class Customer extends Model {
             $client->pricerules()->delete();
         });
     }
+
+
+    /**
+     * Clean up email list
+     * 
+     */
+    public function setCcAddressesAttribute($value)
+    {
+        $this->attributes['cc_addresses'] = str_replace(' ', '', str_replace(';', ',', $value));
+    }
+
 
     // Get the full name of a User instance using Eloquent accessors
     

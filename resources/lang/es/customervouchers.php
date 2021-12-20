@@ -94,4 +94,7 @@ return [
 
 	'Full Document Reference or a part of it' => 'Número de Factura completo, o una parte',
 
+	
+	'If you do not select anything, every Voucher will go with its Payment Type.' => 'Si no selecciona nada, se tomará para cada Recibo su Tipo de Pago.',
+
 ];

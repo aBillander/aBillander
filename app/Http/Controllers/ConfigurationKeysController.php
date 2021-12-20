@@ -56,6 +56,7 @@ class ConfigurationKeysController extends Controller {
                         'DOCUMENT_ROUNDING_METHOD',
                         'SKU_AUTOGENERATE',
                         'TAX_BASED_ON_SHIPPING_ADDRESS',
+                        'SUPPLIER_PRICES_ENTERED_WITH_TAX',
 
                     ],
 

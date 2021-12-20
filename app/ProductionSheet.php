@@ -339,7 +339,7 @@ class ProductionSheet extends Model
 
                       // Cantidad que se debe fabricar
                       // $quantity = $group->sum('quantity') - $stock;
-                      $quantity = $group->sum('quantity');      // Raw requeriments
+                      $quantity = $group->sum('quantity');      // Raw requirements
                       
                       // if ( $quantity < 0.0 ) $quantity = 0.0;        // No Manufacturing needed (cero quantity line or returned item)
 
@@ -498,6 +498,11 @@ class ProductionSheet extends Model
                     }, collect());
 
         return $num->sortBy('reference');
+    }
+
+    public function productionrequirements()
+    {
+        return $this->hasMany('App\ProductionRequirement')->orderBy('reference', 'asc');
     }
 
     /* 

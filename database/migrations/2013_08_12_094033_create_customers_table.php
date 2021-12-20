@@ -58,6 +58,7 @@ class CreateCustomersTable extends Migration {
         	// "1" => 'Force 1 Invoice per Shipping Address',
         	// "2" => 'Force 1 Invoice per Shipping Slip and Shipping Address',
 			$table->tinyInteger('automatic_invoice')->default(1);			// Include Customer Shipping Slips in automatic Invoicing process
+			$table->string('cc_addresses', 128)->nullable();				// Send carbon copy email to these (comma separated) addresses. Used with invoices
 
 			$table->tinyInteger('vat_regime')->default(0);
 			$table->tinyInteger('sales_equalization')->default(0);				// Charge Sales equalization tax? (only Spain)

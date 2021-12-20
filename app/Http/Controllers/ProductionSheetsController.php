@@ -10,8 +10,12 @@ use App\Configuration;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
+use App\Traits\ProductionRequirementableControllerTrait;
+
 class ProductionSheetsController extends Controller
 {
+
+   use ProductionRequirementableControllerTrait;
 
 
    protected $productionSheet;
@@ -74,7 +78,14 @@ class ProductionSheetsController extends Controller
      */
     public function show($id)
     {
-        $sheet = $this->productionSheet->findOrFail($id);
+        $sheet = $this->productionSheet
+                        ->with('customerorders')
+                        ->with('productionorders')
+                        ->with('productionorderlines')
+                        ->with('productionordertoollines')
+                        ->with('productionrequirements')
+                        ->with('productionrequirements.product')
+                        ->findOrFail($id);
 
         return view('production_sheets.show', compact('sheet'));
     }

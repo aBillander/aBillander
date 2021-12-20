@@ -65,6 +65,10 @@ Route::get('testemail/{email}', function( $email = null )
 
 /* ********************************************************** */
 
+Route::get('/wdays', function () {
+	abi_r(\Carbon\Carbon::now()->addWeekDays( 5 ));
+});
+
 Route::get('/mailable', function () {
         $customerOrder = \App\CustomerOrder::find(7415);
         $customer = $customerOrder->customer; 
@@ -313,6 +317,32 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+
+	// 2021-12-17
+	$date = '2021-12-17';
+
+	Illuminate\Support\Facades\DB::statement("drop table if exists `production_requirements;");
+
+	Illuminate\Support\Facades\DB::statement("create table `production_requirements` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `type` varchar(32) not null default 'product', `created_via` varchar(32) null default 'manual', `product_id` int unsigned not null, `combination_id` int unsigned null, `reference` varchar(32) null, `name` varchar(128) not null, `product_bom_id` int unsigned null, `measure_unit_id` int unsigned not null, `required_quantity` decimal(20, 6) not null, `manufacturing_batch_size` int unsigned not null default '1', `notes` text null, `warehouse_id` int unsigned null, `work_center_id` int unsigned null, `production_sheet_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
+
+	die('OK - '.$date);
+
+
+
+	// 2021-12-09
+	$date = '2021-12-09';
+
+	\App\Configuration::updateValue('SUPPLIER_PRICES_ENTERED_WITH_TAX', '0');
+
+	die('OK - '.$date);
+
+	// 2021-12-01
+	$date = '2021-12-01';
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `customers` ADD `cc_addresses` varchar(128) null AFTER `automatic_invoice`;");
+
+	die('OK - '.$date);
+	
 
 	// 2021-06-21
 	\App\Configuration::updateValue('STOCKMOVEMENTS_AFTER_DATE', '2021-02-11');

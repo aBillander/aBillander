@@ -346,12 +346,10 @@ if( $order == null )
     */
     public function groupPlannedOrders( $withStock = false )
     {
-        // $this->orders_manual = $this->getPlannedOrders()
-        //         ->where('created_via', 'manual');
+        $this->orders_manual = $this->getPlannedOrders();
 
 
         $this->orders_planned = $this->getPlannedOrders()
-                ->where('created_via', 'manufacturing')
                 ->groupBy('product_id')->reduce(function ($result, $group) {
                       $reduced = $group->first();
 
@@ -365,7 +363,9 @@ if( $order == null )
         // En este punto, planned = required (por construcción) 
 
         // Load Products into memory
-        $pIDs = $this->orders_planned->pluck('product_id');     // Estos son todos los Productos que se han de Planificar
+        $pIDs = $this->orders_planned->pluck('product_id');
+        // ^-- Estos son todos los Productos que se han de Planificar. Suponemos que los productos en $this->orders_manual ya están incluidos (¿o no?  ???)
+
         $this->products_planned = Product::with('measureunit')->whereIn('id', $pIDs)->get();
 
         $products_planned = &$this->products_planned;
@@ -440,5 +440,26 @@ if( $order == null )
                       return $result->put($reduced->product_id, $reduced);
 
                 }, collect());
+    }
+
+    
+    public function saveManualOrders()
+    {
+        // Retrieve & Group Orders
+        $this->orders_manual = $this->getPlannedOrders()
+                ->groupBy('product_id')->reduce(function ($result, $group) {
+                      $reduced = $group->first();
+
+                      $reduced->required_quantity = $group->sum('required_quantity');
+                      $reduced->planned_quantity  = $group->sum('planned_quantity');
+
+                      return $result->put($reduced->product_id, $reduced);
+
+                }, collect());
+        // abi_r('Man>');abi_r($this->orders_manual);
+
+        // Empty
+        $this->orders_planned = collect([]);
+        // abi_r('Plan>');abi_r($this->orders_planned, true);
     }
 }

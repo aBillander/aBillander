@@ -44,13 +44,13 @@ class ProductionSheet extends Model
         // abi_r($params);abi_r(((int)$withStock ).'  '.$mrp_type);die();
 
         // Delete current Production Orders
-        $porders = $this->productionorders()->get();
+        $porders = $this->productionorders;
         foreach ($porders as $order) {
             // Verbose loop:
 
-            // Skip manual orders
-            if ( $order->created_via == 'manual' )
-                continue;
+            // Skip manual orders_manual    <= Not needed
+//             if ( $order->created_via == 'manual' )
+//                continue;
             
             // Skip finished orders
             if ( $order->status == 'finished' )
@@ -67,23 +67,50 @@ class ProductionSheet extends Model
 
 
         // STEP 1.1
-        // Calculate raw requirements from Released Production Orders
-        $requirements = $this->productionorders()->where('created_via', 'manual')->get();
-        foreach ($requirements as $order) {
+        // Calculate raw requirements from Production Requirements
+        $porders = $this->productionorders->where('status', 'finished');
+        $requirements = $this->productionrequirements;    // Supposed "grouped" by construction (requirements are unique, not duplicates)
+        foreach ($requirements as $line) {
 
             // Create Production Order (multilevel)
-            $orders = $this->sandbox->addPlannedMultiLevel([], $order);
+            // old stuff: $orders = $this->sandbox->addPlannedMultiLevel([], $order);
+
+            $future_quantity = 0.0;
+            if( $stub = $porders->where('product_id', $line->product_id) )
+                $future_quantity = $stub->sum('finished_quantity');
+
+            $required_quantity = $line->required_quantity - $future_quantity;
+
+            // Create Production Order (multilevel) if needed
+            if ( $required_quantity > 0 )
+            $orders = $this->sandbox->addPlannedMultiLevel([
+                'product_id' => $line->product_id,
+
+                'required_quantity' => $required_quantity,   // Cantidad que debe fabricarse
+                'planned_quantity'  => $required_quantity,   // Cantidad que se fabricará
+
+                'notes' => '',
+
+                'production_sheet_id' => $this->id,
+            ]);
         }
 
+        // Save Production Orders for later use
+        // Could be retrieved with:  $this->sandbox->getManualOrders();
+        // No se ha tenido en cuenta el stock hasta aquí
+        $this->sandbox->saveManualOrders();
 
-        // abi_r($this->sandbox->orders_manual);
-        // abi_r($this->sandbox->orders_planned, true);
+
+        // abi_r('Man>');abi_r($this->sandbox->orders_manual);
+        // abi_r('Plan>');abi_r($this->sandbox->orders_planned, true);
 
 
         // STEP 1.2
         // Calculate raw requirements from Customer Orders
         // $requirements : Collection of arrays [product_id, stock, quantity, measureunit, ...]
         $requirements = $this->customerorderlinesGrouped( $withStock, $mrp_type );
+
+        $orders_manual = $this->sandbox->getManualOrders();
 
         // abi_r($requirements); die();
 
@@ -92,14 +119,32 @@ class ProductionSheet extends Model
             // if ($line['quantity'] <= 0.0) continue;
 
             /*
-            // Batch size stuff
-            $nbt = ceil($line['quantity'] / $line['manufacturing_batch_size']);
-            $order_quantity = $nbt * $line['manufacturing_batch_size'];
+                    // Batch size stuff
+                    $nbt = ceil($line['quantity'] / $line['manufacturing_batch_size']);
+                    $order_quantity = $nbt * $line['manufacturing_batch_size'];
             */
             $order_quantity = $line['quantity'];   // Cantidad que debe fabricarse por agrupación de órdenes
 
+            if ( $mrp_type == 'onorder' )
+            {
+                // Discount stock
+                if ( $line['mrp_type'] == 'reorder' )
+                    $order_quantity -= $line['stock'];
+            }
 
-            // Create Production Order (multilevel)
+            if ( $mrp_type == 'reorder' )
+            {
+                if ( $line['mrp_type'] == 'reorder' )
+                if ( $stub = $orders_manual->where('product_id', $line->product_id)->first() )
+                {
+                    // Discount "future stock"
+                    $order_quantity -= $stub->planned_quantity;
+                }
+            }
+
+
+            // Create Production Order (multilevel) if needed
+            if ( $order_quantity > 0 )
             $orders = $this->sandbox->addPlannedMultiLevel([
                 'product_id' => $pid,
 
@@ -349,6 +394,7 @@ class ProductionSheet extends Model
                         'name' => $first->name,
                         'stock' => $stock,
                         'quantity' => $quantity,
+                        'mrp_type' = $product->mrp_type,
                         'measure_unit_id' => $product->measure_unit_id,
                         // Do I need these two?
 //                        'measureunit' => $product->measureunit->name,
@@ -360,9 +406,12 @@ class ProductionSheet extends Model
 
 
         // Skip items if no Manufacturing needed (cero quantity line)
+        // Kind of redundant: (see Filter 1 above)
+/*
         $num = $num->reject(function ($value, $key) {
                     return $value['quantity'] <= 0.0;
                 });
+*/
 
         // abi_r( $num, true);
 

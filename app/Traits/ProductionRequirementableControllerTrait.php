@@ -65,6 +65,10 @@ trait ProductionRequirementableControllerTrait
         foreach ($products as $product) {
             # code...
 
+            // Existing Production Requirement will be superseded
+            if ( $req = $sheet->productionrequirements->where('product_id', $product->id)->first() )
+                $req->delete();
+
             $data = [
                     'product_id' => $product->id,
 //                    'combination_id' => ,

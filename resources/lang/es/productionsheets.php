@@ -128,6 +128,7 @@ return [
 
 	'Manufacturing Batch Size'     => 'Lote de Fabricación',
 
+	'If the Production Requirement exists, it will be superseded.' => 'Si el Requerimiento de Producción existe, será reemplazado.',
 	'Type a Product Name or Product Reference.'     => 'Escriba un Nombre de Producto o Referencia.',
 	
 ];

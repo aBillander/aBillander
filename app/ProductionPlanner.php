@@ -397,6 +397,8 @@ if( $order == null )
 
             $order->product_available = $order->product_stock + $order->product_onorder;
 
+            $order->mrp_type = $product->mrp_type;
+
             // abi_r( $product->reference.' '.$order->product_stock.' '.$order->product_onorder.' '.$order->product_available);
 
             return $order;

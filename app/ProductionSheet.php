@@ -124,10 +124,10 @@ class ProductionSheet extends Model
                     $order_quantity = $nbt * $line['manufacturing_batch_size'];
             */
             $order_quantity = $line['quantity'];   // Cantidad que debe fabricarse por agrupación de órdenes
-
+/*
             if ( $mrp_type == 'onorder' )
             {
-                // Discount stock
+                // Deduct onhand stock (if positive)
                 if ( $line['mrp_type'] == 'reorder' )
                     $order_quantity -= $line['stock'];
             }
@@ -135,13 +135,13 @@ class ProductionSheet extends Model
             if ( $mrp_type == 'reorder' )
             {
                 if ( $line['mrp_type'] == 'reorder' )
-                if ( $stub = $orders_manual->where('product_id', $line->product_id)->first() )
+                if ( $stub = $orders_manual->where('product_id', $line['product_id'])->first() )
                 {
-                    // Discount "future stock"
+                    // Deduct "future stock"
                     $order_quantity -= $stub->planned_quantity;
                 }
             }
-
+*/
 
             // Create Production Order (multilevel) if needed
             if ( $order_quantity > 0 )
@@ -187,9 +187,9 @@ class ProductionSheet extends Model
         // Now we may have orders with some onhand quantity
         // Productos que debe "descontarse" el stock onhand (físico) y el onorder (vendrá de las OF's manuales)
         $pIDs = $this->sandbox->getPlannedOrders()
-                ->filter(function ($value, $key) {
-                    return ($value->product_stock > 0.0) || ($value->product_onorder > 0.0);
-                })
+//                ->filter(function ($value, $key) {
+//                    return ($value->product_stock > 0.0) || ($value->product_onorder > 0.0);
+//                })
                 ->pluck('product_id');
 
         // abi_r($pIDs, true); // die();
@@ -208,6 +208,23 @@ class ProductionSheet extends Model
                     $order->product_available;  // Se descuenta la cantidad en stock (onhand+onorder), ya que 
                                                 // no hace fata fabricar estas unidades porque hay (habrá) stock
 
+            if ( $mrp_type == 'onorder' )
+            {
+                // Deduct onhand stock (if positive)
+                if ( $line['mrp_type'] == 'reorder' )
+                    $order_quantity -= $line['stock'];
+            }
+
+            if ( $mrp_type == 'reorder' )
+            {
+                if ( $line['mrp_type'] == 'reorder' )
+                if ( $stub = $orders_manual->where('product_id', $line['product_id'])->first() )
+                {
+                    // Deduct "future stock"
+                    $order_quantity -= $stub->planned_quantity;
+                }
+            }
+            
             $quantity = (-1.0) * $qty;  // <= esta es la cantidad que hay que restar a 
                                         // la Orden de Fabricación (y a sus hijos según BOM)
             $this->sandbox->equalizePlannedMultiLevel($pID, $quantity);
@@ -364,6 +381,7 @@ class ProductionSheet extends Model
 
         // Filter 2: mrp_type
         // According to $params (MRP engine call)
+/*
         $lines = $lines->filter(function ($value, $key) use ($mrp_type) {
             $condition = $mrp_type == 'all' ?
                             ($value->product->mrp_type == 'onorder') || ($value->product->mrp_type == 'reorder') :
@@ -371,6 +389,10 @@ class ProductionSheet extends Model
             
             return $value->product && $condition;
         });
+*/
+        // ^-- Este filtro no tiene sentido, ya que:
+        // * mrp_type == 'onorder' => productos 'reorder' se toman de stock, pero si no hay suficiente, se deberá fabricar
+        // * mrp_type == 'reorder' => productos 'reorder' se han de fabricar en la cantidad requerida por los pedidos
 
         $num = $lines
                     ->groupBy('product_id')->reduce(function ($result, $group) use ( $withStock ) {
@@ -394,7 +416,7 @@ class ProductionSheet extends Model
                         'name' => $first->name,
                         'stock' => $stock,
                         'quantity' => $quantity,
-                        'mrp_type' = $product->mrp_type,
+                        'mrp_type' => $product->mrp_type,
                         'measure_unit_id' => $product->measure_unit_id,
                         // Do I need these two?
 //                        'measureunit' => $product->measureunit->name,

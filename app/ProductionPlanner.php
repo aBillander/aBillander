@@ -44,6 +44,27 @@ class ProductionPlanner
 
 
     /*
+     *  @Return: Collection of Production Order Line Models
+    */
+    public function getManualOrderLines()
+    {
+        if ( !$this->orders_manual ) return collect([]);
+
+        $pIDs = $this->orders_manual->pluck('id');
+
+        return ProductionOrderLine::whereIn('production_order_id', $pIDs)->get()
+                ->groupBy('product_id')->reduce(function ($result, $group) {
+                      $reduced = $group->first();
+
+                      $reduced->required_quantity  = $group->sum('required_quantity');
+
+                      return $result->put($reduced->product_id, $reduced);
+
+                }, collect());
+    }
+
+
+    /*
      *  Calcula recursivamente los requerimientos de fabricación (OFs) según el BOM del Producto
      *
      *   @Return: Collection of Production Order Models
@@ -346,7 +367,7 @@ if( $order == null )
     */
     public function groupPlannedOrders( $withStock = false )
     {
-        $this->orders_manual = $this->getPlannedOrders();
+//        $this->orders_manual = $this->getPlannedOrders();
 
 
         $this->orders_planned = $this->getPlannedOrders()
@@ -361,6 +382,11 @@ if( $order == null )
                 }, collect());
 
         // En este punto, planned = required (por construcción) 
+
+        // Guess nothing more to do here, so:
+        return ;
+
+
 
         // Load Products into memory
         $pIDs = $this->orders_planned->pluck('product_id');
@@ -458,10 +484,29 @@ if( $order == null )
                       return $result->put($reduced->product_id, $reduced);
 
                 }, collect());
+        
         // abi_r('Man>');abi_r($this->orders_manual);
 
         // Empty
         $this->orders_planned = collect([]);
         // abi_r('Plan>');abi_r($this->orders_planned, true);
+    }
+
+    
+    public function loadPannedProducts()
+    {
+        // abi_r('Plan>');abi_r($this->getPlannedOrders()->pluck('product_id')->toArray());
+        // abi_r('Man>'); abi_r($this->getManualOrders() ->pluck('product_id')->toArray());
+
+        // Load Products into memory
+        $pIDs = $this->getPlannedOrders()->pluck('product_id')->toArray() + $this->getManualOrders()->pluck('product_id')->toArray();
+        // Just in case!
+        $pIDs = array_unique( $pIDs );
+
+        // abi_r('All>');abi_r($pIDs, true);
+
+        $this->products_planned = Product::with('measureunit')->whereIn('id', $pIDs)->get();
+
+        return $this->products_planned;
     }
 }

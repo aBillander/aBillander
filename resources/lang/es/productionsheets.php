@@ -14,6 +14,11 @@ return [
     'Customer Orders'     => 'Pedidos de Clientes',
 	'Reference'     => 'Referencia',
 	'Date'     => 'Fecha',
+	'Type'     => 'Tipo',
+	'Fulfill Customer Orders' => 'Completar Pedidos de Clientes',
+	'Restock Warehouse' => 'Reaprovisionar Almacén',
+
+
 	'Order Date'     => 'Fecha del Pedido',
     'Customer'     => 'Cliente',
 	'Deliver to'     => 'Entregar en',
@@ -127,8 +132,10 @@ return [
 	'Add Production Requirements'     => 'Añadir Requerimientos de Producción',
 
 	'Manufacturing Batch Size'     => 'Lote de Fabricación',
+	'Number of Batches' =>  'Número de Lotes de Fabricación',
 
 	'If the Production Requirement exists, it will be superseded.' => 'Si el Requerimiento de Producción existe, será reemplazado.',
 	'Type a Product Name or Product Reference.'     => 'Escriba un Nombre de Producto o Referencia.',
+	'Quantity expressed in number of Manufacturing Batches.' => 'Cantidad expresada en número de Lotes de Fabricación.',
 	
 ];

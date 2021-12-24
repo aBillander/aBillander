@@ -15,7 +15,7 @@ class ProductionSheet extends Model
 //    protected $dates = ['due_date'];
 	
     protected $fillable = [ 'sequence_id', 'document_prefix', 'document_id', 'document_reference', 
-    						'due_date', 'name', 'notes', 'is_dirty'
+    						'type', 'due_date', 'name', 'notes', 'is_dirty'
                           ];
 
     public static $rules = array(
@@ -372,6 +372,11 @@ class ProductionSheet extends Model
     public function nbr_productionorders()
     {
         return $this->productionorders->count();
+    }
+    
+    public function nbr_productionrequirements()
+    {
+        return $this->productionrequirements->count();
     }
     
     public function productionorderlines()

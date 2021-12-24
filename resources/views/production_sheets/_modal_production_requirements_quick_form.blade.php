@@ -49,6 +49,10 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('row_quantity') ? 'has-error' : '' }}">
                      {{ l('Quantity') }}
+                          <a href="javascript:void(0);" data-toggle="popover" data-placement="right" 
+                                    data-content="{{ l('Quantity expressed in number of Manufacturing Batches.') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                          </a>
                      {!! Form::text('row_quantity', null, array('class' => 'form-control', 'id' => 'row_quantity', 'onclick' => 'this.select()', 'onfocus' => 'this.select()', 'autocomplete' => 'off')) !!}
                      {!! $errors->first('row_quantity', '<span class="help-block">:message</span>') !!}
                   </div>

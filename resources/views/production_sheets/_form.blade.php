@@ -19,6 +19,19 @@
 
 <div class="row">
 
+{{--
+@php
+   $productionsheet_typeList = [
+         'onorder'  => l('Fulfill Customer Orders'),
+         'reorder'  => l('Restock Warehouse'),
+   ];
+@endphp
+--}}
+         <div class="form-group col-lg-4 col-md-4 col-sm-4">
+             {!! Form::label('type', l('Type')) !!}
+             {!! Form::select('type', $productionsheet_typeList, null, array('class' => 'form-control')) !!}
+         </div>
+
          <div class="form-group col-lg-8 col-md-8 col-sm-8 {{ $errors->has('notes') ? 'has-error' : '' }}">
             {{ l('Notes', 'layouts') }}
             {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}

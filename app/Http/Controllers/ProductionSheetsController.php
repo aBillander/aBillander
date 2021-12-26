@@ -39,7 +39,12 @@ class ProductionSheetsController extends Controller
 
         $sheets->setPath('productionsheets');
 
-        return view('production_sheets.index', compact('sheets'));
+       $productionsheet_typeList = [
+             'onorder'  => l('Fulfill Customer Orders'),
+             'reorder'  => l('Restock Warehouse'),
+       ];
+
+        return view('production_sheets.index', compact('sheets', 'productionsheet_typeList'));
     }
 
     /**
@@ -49,7 +54,12 @@ class ProductionSheetsController extends Controller
      */
     public function create()
     {
-        return view('production_sheets.create');
+       $productionsheet_typeList = [
+             'onorder'  => l('Fulfill Customer Orders'),
+             'reorder'  => l('Restock Warehouse'),
+       ];
+
+        return view('production_sheets.create', compact('productionsheet_typeList'));
     }
 
     /**
@@ -87,7 +97,12 @@ class ProductionSheetsController extends Controller
                         ->with('productionrequirements.product')
                         ->findOrFail($id);
 
-        return view('production_sheets.show', compact('sheet'));
+       $productionsheet_typeList = [
+             'onorder'  => l('Fulfill Customer Orders'),
+             'reorder'  => l('Restock Warehouse'),
+       ];
+
+        return view('production_sheets.show', compact('sheet', 'productionsheet_typeList'));
     }
 
     /**
@@ -101,8 +116,13 @@ class ProductionSheetsController extends Controller
         $sheet = $this->productionSheet->findOrFail($id);
 
         $sheet->due_date = abi_date_form_short($sheet->due_date);
+
+       $productionsheet_typeList = [
+             'onorder'  => l('Fulfill Customer Orders'),
+             'reorder'  => l('Restock Warehouse'),
+       ];
         
-        return view('production_sheets.edit', compact('sheet'));
+        return view('production_sheets.edit', compact('sheet', 'productionsheet_typeList'));
     }
 
     /**
@@ -146,16 +166,16 @@ class ProductionSheetsController extends Controller
 
     public function calculate($id, Request $request)
     {
-        $mrp_types = ['onorder', 'reorder', 'all'];
+        $sheet = $this->productionSheet->findOrFail($id);
+
+        $mrp_types = ['onorder', 'reorder', 'xall'];
 
         $mrp_type = $request->input('mrp_type');
 
         if ( !in_array($mrp_type, $mrp_types) )
-            $mrp_type = 'onorder';
+            $mrp_type = $sheet->type;
 
         // abi_r($mrp_type);die();
-
-        $sheet = $this->productionSheet->findOrFail($id);
 
         $params = [
             'withStock' => Configuration::isTrue('MRP_WITH_STOCK'),

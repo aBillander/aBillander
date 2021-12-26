@@ -65,6 +65,10 @@ trait ProductionRequirementableControllerTrait
         foreach ($products as $product) {
             # code...
 
+            // Existing Production Requirement will be superseded
+            if ( $req = $sheet->productionrequirements->where('product_id', $product->id)->first() )
+                $req->delete();
+
             $data = [
                     'product_id' => $product->id,
 //                    'combination_id' => ,
@@ -74,7 +78,8 @@ trait ProductionRequirementableControllerTrait
                     'product_bom_id' => $product->bom->id,
                     'measure_unit_id' => $product->measure_unit_id,
 
-                    'required_quantity' => $qty[$product->id],
+                    // Quantity expressed in number of Manufacturing Batches
+                    'required_quantity' => $qty[$product->id] * $product->manufacturing_batch_size,
                     'manufacturing_batch_size' => $product->manufacturing_batch_size,
 
                     'notes' => '',

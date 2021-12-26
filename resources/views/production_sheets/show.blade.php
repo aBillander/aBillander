@@ -56,7 +56,7 @@
 
 
 <div class="btn-group">
-  <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
+  <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}" class="btn btn-success xdropdown-toggle" xdata-toggle="dropdown" xaria-expanded="false"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
   <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
 
   <ul class="dropdown-menu">
@@ -64,7 +64,7 @@
     
     <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=reorder" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Solo Punto de Pedido') }}</a></li>
     
-    <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=all" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Todos') }}</a></li>
+    <!-- li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=all" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Todos') }}</a></li -->
     
     <!-- li><a href="#">Something else here</a></li>
     <li class="divider"></li -->
@@ -105,6 +105,21 @@
     </div>
     <h2>
         <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">::</span> <span title="{{ $sheet->name }}">{{ abi_date_form_short($sheet->due_date) }}</span>
+
+         <button type="button" class="btn btn-xs btn-success" xdata-toggle="popover" xdata-placement="right" 
+               title="{{ l('Type') }}: {{ $productionsheet_typeList[$sheet->type] }}" 
+               xdata-content="
+                                        BrIF: GB458794289000<br />" 
+               xdata-original-title="Datos de Facturación">
+@if( $sheet->type == 'onorder' )
+                        <i class="fa fa-user"></i>
+@elseif( $sheet->type == 'reorder' )
+                        <i class="fa fa-cubes"></i>
+@else
+                        <i class="fa fa-warning alert-danger"></i>
+@endif
+         </button>
+
         @if ($sheet->is_dirty AND 0)
               <button type="button" class="btn btn-sm btn-danger" title="{{l('Need Update')}}">
                   <i class="fa fa-hand-stop-o"></i>
@@ -148,6 +163,9 @@
       </div>
    </div>
 
+
+@if ( $sheet->type == 'reorder' )
+
    <div class="row">
       <div class="col-lg-1 col-md-1 col-sm-1">
          <div class="list-group">
@@ -176,6 +194,8 @@
             </div>
       </div>
    </div>
+   
+@endif
 
  
 @if ( 0 && $sheet->productsNotScheduled()->count() )

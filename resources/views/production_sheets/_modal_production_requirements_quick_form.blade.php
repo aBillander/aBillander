@@ -10,7 +10,12 @@
 
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="modal_document_lines_quick_Label">{{ l('Add Production Requirements') }}</h4>
+            <h4 class="modal-title" id="modal_document_lines_quick_Label">{{ l('Add Production Requirements') }}
+                          <a href="javascript:void(0);" data-toggle="popover" data-placement="right" 
+                                    data-content="{{ l('If the Production Requirement exists, it will be superseded.') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                          </a>
+            </h4>
          </div>
 
          <div class="modal-body">
@@ -44,11 +49,15 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('row_quantity') ? 'has-error' : '' }}">
                      {{ l('Quantity') }}
+                          <a href="javascript:void(0);" data-toggle="popover" data-placement="right" 
+                                    data-content="{{ l('Quantity expressed in number of Manufacturing Batches.') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                          </a>
                      {!! Form::text('row_quantity', null, array('class' => 'form-control', 'id' => 'row_quantity', 'onclick' => 'this.select()', 'onfocus' => 'this.select()', 'autocomplete' => 'off')) !!}
                      {!! $errors->first('row_quantity', '<span class="help-block">:message</span>') !!}
                   </div>
 
-                  <div class="form-group col-lg-1 col-md-1 col-sm-1">
+                  <div class="form-group col-lg-1 col-md-1 col-sm-1" id="div_add_new_row">
                        <br />
                        <button id="add_new_row" name="add_new_row" class="btn btn-md btn-success" type="button" title="{{l('Add', [], 'layouts')}}">
                      <i class="fa fa-plus"></i></button>
@@ -214,6 +223,8 @@ function reset_row_form()
     $('#row_reference').val('');
     $('#row_autoproduct_name').val('');
     $('#row_quantity').val('1');
+    
+    $('#div_add_new_row').removeClass('alert-danger');
 
     $('#row_autoproduct_name').focus();
 
@@ -261,6 +272,8 @@ function quick_formSubmit()
            // Nothing to submit!
            if ( count == 0 )
            {
+                $('#div_add_new_row').addClass('alert-danger');
+
                 return ;
            } 
 
@@ -402,5 +415,23 @@ function quick_formSubmit()
 
 
 </script>
+
+@endsection
+
+
+
+@section('styles')    @parent
+
+{{-- 
+ - Fix drop down button menu scroll
+ - https://stackoverflow.com/questions/26018756/bootstrap-button-drop-down-inside-responsive-table-not-visible-because-of-scroll
+--}}
+
+<style>
+.add_new_row_has-error {
+    border-color: #b94a48;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+</style>
 
 @endsection

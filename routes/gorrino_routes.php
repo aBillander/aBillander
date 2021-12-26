@@ -317,6 +317,14 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 2021-12-24
+	$date = '2021-12-24';
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `production_sheets` ADD `type` varchar(32) NOT NULL DEFAULT 'onorder' AFTER `document_reference`;");
+
+	die('OK - '.$date);
+
+
 
 	// 2021-12-17
 	$date = '2021-12-17';

@@ -4,10 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\ProductionSheetLotsTrait;
 use App\Traits\ViewFormatterTrait;
 
 class ProductionSheet extends Model
 {
+    use ProductionSheetLotsTrait;
     use ViewFormatterTrait;
 
     public $sandbox;

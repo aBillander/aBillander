@@ -100,7 +100,7 @@
         <a href="{{ URL::to('productionsheets') }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheets') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
 
 
-                <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
+                <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal" title="{{l('Help', [], 'layouts')}}"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
 
     </div>
     <h2>
@@ -119,6 +119,9 @@
                         <i class="fa fa-warning alert-danger"></i>
 @endif
          </button>
+         
+         <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $sheet->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
 
         @if ($sheet->is_dirty AND 0)
               <button type="button" class="btn btn-sm btn-danger" title="{{l('Need Update')}}">

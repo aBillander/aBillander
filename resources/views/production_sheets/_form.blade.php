@@ -40,6 +40,9 @@
 
 </div>
 
+@if( isset($sheet) )
+   <a class="btn xbtn-sm btn-blue pull-right" href="{{ URL::to('productionsheets/' . $sheet->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-folder-open-o"></i> &nbsp;{{l('Show', [], 'layouts')}}</a>
+@endif
 
 {!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 {!! link_to_route('productionsheets.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}

@@ -132,6 +132,7 @@ return [
 	'Add Production Requirements'     => 'Añadir Requerimientos de Producción',
 
 	'Manufacturing Batch Size'     => 'Lote de Fabricación',
+	'Batch Size'     => 'Lote Fabricación',
 	'Number of Batches' =>  'Número de Lotes de Fabricación',
 
 	'If the Production Requirement exists, it will be superseded.' => 'Si el Requerimiento de Producción existe, será reemplazado.',

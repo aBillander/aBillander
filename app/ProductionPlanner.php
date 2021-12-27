@@ -457,10 +457,7 @@ if( $order == null )
         if(1)
         $this->orders_planned = $this->getPlannedOrders()
                 ->groupBy('product_id')->reduce(function ($result, $group) {
-                      $reduced = $group->where('created_via', 'manual')->first();
-
-                      if ( !$reduced ) 
-                          $reduced = $group->first();
+                      $reduced = $group->first();
 
                       $reduced->required_quantity = $group->sum('required_quantity');
                       $reduced->planned_quantity  = $group->sum('planned_quantity');

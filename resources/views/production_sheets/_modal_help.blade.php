@@ -18,6 +18,16 @@
 
 <br />
 
+<h4>Configuración</h4>
+
+<p><strong>Configuración</strong> &gt; <strong>Mi Empresa</strong> &gt; <strong>MRP_WITH_STOCK</strong></p>
+
+<p>- <i>Sí</i>. Calcula la Hoja de Producción teniendo en cuenta el Stock Físico.</p>
+
+<p>- <i>No</i>. Calcula las necesidades de Productos Terminados y Semi-Elaborados sin tener en cuenta el Stock Físico.</p>
+
+<br />
+
 <h4>Productos</h4>
 
 <p><strong>Aprovisionamiento</strong></p>

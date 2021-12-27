@@ -146,7 +146,8 @@ class ProductionSheetsController extends Controller
 
         $sheet->update($request->all());
 
-        return redirect('productionsheets')
+//        return redirect('productionsheets')
+        return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     }
 

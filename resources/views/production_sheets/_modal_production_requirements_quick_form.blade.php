@@ -38,13 +38,19 @@
                      {{-- !! $errors->first('row_reference', '<span class="help-block">:message</span>') !! --}}
                   </div>
 
-                  <div class="form-group col-lg-7 col-md-7 col-sm-7">
+                  <div class="form-group col-lg-5 col-md-5 col-sm-5">
                      {{ l('Product Name') }}
                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Type a Product Name or Product Reference.') }}">
                                 <i class="fa fa-question-circle abi-help"></i>
                           </a>
                      {!! Form::text('row_autoproduct_name', null, array('class' => 'form-control', 'id' => 'row_autoproduct_name', 'onclick' => 'this.select()')) !!}
+                  </div>
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{-- $errors->has('row_manufacturing_batch_size') ? 'has-error' : '' --}}">
+                     {{ l('Batch Size') }}
+                     {!! Form::text('row_manufacturing_batch_size', null, ['class' => 'form-control', 'id' => 'row_manufacturing_batch_size',  'onfocus' => 'this.blur()' ]) !!}
+                     {{-- !! $errors->first('row_manufacturing_batch_size', '<span class="help-block">:message</span>') !! --}}
                   </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('row_quantity') ? 'has-error' : '' }}">
@@ -222,6 +228,7 @@ function reset_row_form()
 
     $('#row_reference').val('');
     $('#row_autoproduct_name').val('');
+    $('#row_manufacturing_batch_size').val('');
     $('#row_quantity').val('1');
     
     $('#div_add_new_row').removeClass('alert-danger');
@@ -249,7 +256,7 @@ function add_new_row()
 
               data += '<td>'+$('#row_reference').val()+'<input type="hidden" name="product_id_values['+count+']" value="'+$('#row_product_id').val()+'"></td>';
               data += '<td>'+$('#row_autoproduct_name').val()+'<input type="hidden" name="combination_id_values['+count+']" value="'+$('#row_combination_id').val()+'"></td>';
-              data += '<td>'+$('#row_quantity').val()+'<input type="hidden" name="quantity_values['+count+']" value="'+$('#row_quantity').val()+'"></td>';
+              data += '<td>'+$('#row_quantity').val()+' x '+$('#row_manufacturing_batch_size').val()+'<input type="hidden" name="quantity_values['+count+']" value="'+$('#row_quantity').val()+'"></td>';
               data += '<td class="text-right">'+button_delete+'</td>';
 
               row = '<tr>'+data+'</tr>';
@@ -381,6 +388,7 @@ function quick_formSubmit()
                     $("#row_autoproduct_name").val(value.item.name);
                     $('#row_product_id').val(value.item.id);
                     $('#row_combination_id').val(0);
+                    $('#row_manufacturing_batch_size').val(value.item.manufacturing_batch_size);
 
                     // getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
 

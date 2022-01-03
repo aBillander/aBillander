@@ -76,6 +76,10 @@ class ProductionSheetsController extends Controller
 
         $sheet = $this->productionSheet->create($request->all() + ['is_dirty' => 0]);
 
+        if ( $sheet->type == 'reorder' )
+                return redirect()->route('productionsheets.show', [$sheet->id])
+                        ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts') . $request->input('name'));
+
         return redirect('productionsheets')
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts') . $request->input('name'));
     }
@@ -142,7 +146,8 @@ class ProductionSheetsController extends Controller
 
         $sheet->update($request->all());
 
-        return redirect('productionsheets')
+//        return redirect('productionsheets')
+        return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     }
 

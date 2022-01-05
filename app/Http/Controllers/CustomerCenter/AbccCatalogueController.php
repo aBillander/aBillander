@@ -345,6 +345,12 @@ class AbccCatalogueController extends Controller
         // ($product->images, true);
         $img = $product->getFeaturedImage();
 
+        if ( $images->count() == 0 )
+        {	
+        	$img->is_featured = 1;
+            $images->push($img);
+        }
+
         $carousel = '';
 
         $active = false;

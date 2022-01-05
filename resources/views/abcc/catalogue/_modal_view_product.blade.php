@@ -136,6 +136,18 @@
                         interval: 4000,
                       });
 
+                      // checkitem();
+                      // Instead:
+                      if (result.nbr_images > 1)
+                      {
+                            // Enable
+                            $('#carousel-example-generic').children('.carousel-control').show();
+                      } else {
+                            // Disable
+                            $('#carousel-example-generic').children('.left.carousel-control').hide();
+                            $('#carousel-example-generic').children('.right.carousel-control').hide();
+                      }
+
                      $("[data-toggle=popover]").popover();
                      
                }, 'JSON').done( function() { 
@@ -146,6 +158,29 @@
 
             return false;
         });
+
+        // https://stackoverflow.com/questions/20467666/bootstrap-carousel-hide-controls-on-first-and-last
+        // $('#carousel-example-generic').on('slid', '', checkitem);  // on caroussel move
+//        $('#carousel-example-generic').on('slid.bs.carousel', '', checkitem); // on carousel move (Bootstrap 3)
+
+        // If running on the front page
+        // checkitem();
+
+        function checkitem()                        // check function
+        {
+            var $this = $('#carousel-example-generic');
+            $this.children('.carousel-control').show();
+            if($('.carousel-inner .item:first').hasClass('active')) {
+                $this.children('.left.carousel-control').hide();
+//                $this.children('.right.carousel-control').show();
+            }   // else 
+            if($('.carousel-inner .item:last').hasClass('active')) {
+//                $this.children('.left.carousel-control').show();
+                $this.children('.right.carousel-control').hide();
+            } else {
+//                $this.children('.carousel-control').show();
+            } 
+        }
 
     });
 </script>

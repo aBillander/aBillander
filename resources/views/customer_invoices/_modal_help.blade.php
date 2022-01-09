@@ -95,6 +95,16 @@
     <p>* El riesgo del Cliente se recalcula.</p>
 </div>
 
+<div class="alert alert-warning">
+    <p>Sólo es posible abrir el Documento de nuevo, es decir, volver al estado “Confirmado” si:</p>
+    <p></p>
+    <p>* El Estado es “Cerrado”.</p>
+    <p></p>
+    <p>* El Estado de Pago es “Pendiente” (no se ha pagado ningún Recibo).</p>
+    <p></p>
+    <p>* No hay ningún Recibo incluido en una Remesa Bancaria.</p>
+</div>
+
 <h3>Estados de Pago</h3>
 
 <p>- <strong>Pendiente</strong>. No se ha realizado ningún pago aún.</p>

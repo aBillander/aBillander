@@ -377,7 +377,7 @@ function quick_formSubmit()
         function auto_product_row( selector = "#row_autoproduct_name" ) {
 
             $( selector ).autocomplete({
-                source : "{{ route('productionorder.searchproduct') }}",
+                source : "{{ route('productionorder.searchproduct') }}?search_assemblies",
                 minLength : 1,
                 appendTo : "#modal_document_lines_quick_form",
 

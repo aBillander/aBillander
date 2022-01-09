@@ -2010,6 +2010,22 @@ class Product extends Model {
     }
 
     /**
+     * Scope a query to only include assemblies.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsAssembly($query, $apply = true)
+    {
+        if ( !$apply )
+            return $query;
+
+        return $query->where(function ($query) {
+                            $query->orWhere('procurement_type', 'assembly');
+                    });
+    }
+
+    /**
      * Scope a query to only include part items products (raw materials or sub-assemblies).
      *
      * @param \Illuminate\Database\Eloquent\Builder $query

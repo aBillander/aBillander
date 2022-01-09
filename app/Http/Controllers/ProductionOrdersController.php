@@ -375,13 +375,23 @@ class ProductionOrdersController extends Controller
     {
         $search = $request->term;
 
+        // To do: Improve filters: 'search_parts', 'search_assemblies', etc.
+        // Maybe $request->input('procurement_type', '') is a comma separatd list, since many combinations of values are possible
+
         $search_parts = (bool) $request->input('search_parts', 0);
+
+        $search_assemblies = false;
+        if ( $request->has('search_assemblies') )
+        {
+            $search_assemblies = true;
+        }
 
         $products = \App\Product::select('id', 'name', 'reference', 'work_center_id', 'manufacturing_batch_size', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->isManufactured( !$search_parts )
 //                                ->isPartItem( $search_parts )     <= Any product can be a part of a BOM
+                                ->IsAssembly( $search_assemblies )
                                 ->with('measureunit')
                                 ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();

@@ -455,9 +455,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('productboms/{id}/duplicate', 'ProductBOMsController@duplicateBOM')->name('productbom.duplicate');
         Route::post('productboms/sortlines', 'ProductBOMsController@sortLines')->name('productbom.sortlines');
 
-        Route::resource('productionorders', 'ProductionOrdersController');
-        Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');
-        Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
+        // See web_mfg.php
+//        Route::resource('productionorders', 'ProductionOrdersController');
+//        Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');
+//        Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
 
         Route::resource('assemblyorders', 'AssemblyOrdersController');
 

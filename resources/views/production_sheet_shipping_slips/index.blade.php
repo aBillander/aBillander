@@ -375,7 +375,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
       </div>
       <div class="tab-pane fade" id="tab2default_s">
                 
-          @if ($documents->where('invoiced_at', null)->count())
+          @if ($documents->where('is_invoiceable', '>', 0)->where('invoiced_at', null)->count())
 
                 @include('production_sheet_shipping_slips.index_form_group')
           

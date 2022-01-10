@@ -62,7 +62,9 @@ class ProductionSheetVouchersController extends Controller
 //                        ->with('bankorder')
                         ->orderBy('payment_type_id', 'asc');      // ->get();
 
-        $payments = $payments->paginate( $items_per_page );
+        $payments_total_count = $payments->count();
+
+        $payments = $payments->filter( $request->all() )->paginate( $items_per_page );
 
         $payments->setPath($id);
 
@@ -86,7 +88,7 @@ class ProductionSheetVouchersController extends Controller
 */
 
 
-        return view('production_sheet_vouchers.index', compact('productionSheet', 'payments', 'statusList', 'payment_typeList', 'items_per_page'));       // , 'sddList'));
+        return view('production_sheet_vouchers.index', compact('productionSheet', 'payments', 'statusList', 'payment_typeList', 'items_per_page', 'payments_total_count'));       // , 'sddList'));
     }
 
     /**

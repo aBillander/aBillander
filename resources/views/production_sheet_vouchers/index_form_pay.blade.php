@@ -17,10 +17,11 @@
 
 <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('bulk_payment_type_id') ? 'has-error' : '' }}">
     {!! Form::label('bulk_payment_type_id', l('Payment Type')) !!}
-                    <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                              data-container="#panel_forms"
                               data-content="{{ l('If you do not select anything, every Voucher will go with its Payment Type.') }}">
                           <i class="fa fa-question-circle abi-help"></i>
-                    </a -->
+                    </a>
     {!! Form::select('bulk_payment_type_id', array('' => l('-- Please, select --', [], 'layouts')) + $payment_typeList, null, array('class' => 'form-control')) !!}
     {!! $errors->first('bulk_payment_type_id', '<span class="help-block">:message</span>') !!}
 </div>

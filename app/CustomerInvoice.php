@@ -83,6 +83,17 @@ class CustomerInvoice extends Billable
 
         if ( $this->payment_status != 'pending' ) return false;
 
+        // Are there any Payments in a Bankorder?
+        $auto_direct_debit_payments = $this->payments->where('auto_direct_debit', '>', 0);
+
+        if ( $auto_direct_debit_payments->count() > 0 )
+        {
+            foreach ($auto_direct_debit_payments as $payment) {
+                // code...
+                if ($payment->bankorder) return false;
+            }
+        }
+
 //        if ( ! $this->rightAscriptions->isEmpty() ) return false;
 
         return true;

@@ -199,7 +199,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/jennifer/reports/mod347'                   , 'JenniferController@index347'    )->name('jennifer.reports.index347');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/show', 'JenniferController@index347Show'    )->name('jennifer.reports.index347.show');
         Route::get( '/jennifer/reports/mod347/{mod347_year}'     , 'JenniferController@reportModelo347'    )->name('jennifer.reports.mod347');
-        Route::get( '/jennifer/reports/mod347/{mod347_year}/email/{customer_id}', 'JenniferController@sendemail')->name('jennifer.reports.mod347.email'  );
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/email/{customer_id}', 'JenniferController@reportModelo347Email')->name('jennifer.reports.mod347.email'  );
         Route::get( '/jennifer/reports/mod347/{mod347_year}/customer/{customer_id}', 'JenniferController@reportModelo347Customer')->name('jennifer.reports.mod347.customer');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/supplier/{supplier_id}', 'JenniferController@reportModelo347Supplier')->name('jennifer.reports.mod347.supplier');
 

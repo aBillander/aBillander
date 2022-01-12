@@ -44,6 +44,10 @@
                                     data-content="{{ l('Type a Product Name or Product Reference.') }}">
                                 <i class="fa fa-question-circle abi-help"></i>
                           </a>
+                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Assemblies only.') }}">
+                                <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                          </a>
                      {!! Form::text('row_autoproduct_name', null, array('class' => 'form-control', 'id' => 'row_autoproduct_name', 'onclick' => 'this.select()')) !!}
                   </div>
 

@@ -138,5 +138,7 @@ return [
 	'If the Production Requirement exists, it will be superseded.' => 'Si el Requerimiento de Producción existe, será reemplazado.',
 	'Type a Product Name or Product Reference.'     => 'Escriba un Nombre de Producto o Referencia.',
 	'Quantity expressed in number of Manufacturing Batches.' => 'Cantidad expresada en número de Lotes de Fabricación.',
+
+	'Assemblies only.' => 'Sólo Semi-Elaborados.',
 	
 ];

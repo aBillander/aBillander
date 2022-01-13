@@ -354,7 +354,6 @@ class AbccCatalogueController extends Controller
         $carousel = '';
 
         $active = false;
-        // To do: move this nasty code to view (grrrr!)
         foreach ($images as $k => $image) {
         	// code...
         	$flaf = '';
@@ -363,14 +362,11 @@ class AbccCatalogueController extends Controller
         		$active = true;
         		$flaf = 'active';
         	}
-        	$carousel .= '
-    <div class="item '.$flaf.'">
-     <img class="img-responsive" src="'.\URL::to( \App\Image::pathProducts() . $image->getImageFolder() . $image->filename . '-large_default' . '.' . $image->extension ).'" alt="'."(".$image->filename.") ".$image->caption.'" style="padding-bottom: 80px;">
-      <div class="carousel-caption" style="background-color: #aea79f; left: 5%; right: 5%;">
-        '."(".$image->filename.") ".$image->caption.'
-      </div>
-    </div>
-        	';
+        	$src = \URL::to( \App\Image::pathProducts() . $image->getImageFolder() . $image->filename . '-large_default' . '.' . $image->extension );
+        	$alt = "(".$image->filename.") ".$image->caption;
+        	$caption = "(".$image->filename.") ".$image->caption;
+
+        	$carousel .= view('abcc.catalogue._modal_view_product_image_chunck', compact('flaf', 'src', 'alt', 'caption'));
         }
 
         $data = [];

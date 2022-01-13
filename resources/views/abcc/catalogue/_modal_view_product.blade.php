@@ -83,8 +83,8 @@
         });
 
 
-        // $('body').on('click', ".view-image-multiple", function(evnt) {
-        $('.view-image-multiple').click(function (evnt) {
+        $('body').on('click', ".view-image-multiple", function(evnt) {
+        // $('.view-image-multiple').click(function (evnt) {
 
                var secure_key = $(this).attr('data-id');
                var url = "{{ route('abcc.catalogue.product', [":id"]) }}";

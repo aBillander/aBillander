@@ -95,11 +95,12 @@
 
       <td class="button-pad">
 
-                    <a class="view-image" data-html="false" data-toggle="modal"
+                    <a class="view-image-multiple" data-html="false" data-toggle="modal"
                        href="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
                        data-title="{{ $line->product->name }}"
                        data-caption="{{ $line->image->caption }}"
                        data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
+                       data-id="{{ $line->product->id }}" 
                        onClick="return false;" title="{{l('View Image')}}">
 
                         <img src="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-mini_default' . '.' . $line->image->extension ) . '?'. 'time='. time() }}"
@@ -108,11 +109,12 @@
 
       </td>
 
-      <td class="text-left view-image" data-html="false" data-toggle="modal"
+      <td class="text-left view-image-multiple" data-html="false" data-toggle="modal"
                        href="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
                        data-title="{{ $line->product->name }}"
                        data-caption="{{ $line->image->caption }}"
                        data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
+                       data-id="{{ $line->product->id }}" 
                        onClick="return false;" title="{{l('View Product')}}">{{ $line->product->name }}
 
           @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $line->product->ecotax )

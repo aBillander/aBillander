@@ -92,7 +92,7 @@ Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
  //       Route::get( '/orders', 'AbccCustomerOrdersController@index')->name('abcc.orders.index');
  //       Route::post('/orders', 'AbccCustomerOrdersController@store')->name('abcc.orders.store');
         Route::resource('/orders',          'AbccCustomerOrdersController')->names('abcc.orders');
-        Route::get('orders/{id}/duplicate', 'AbccCustomerOrdersController@duplicateOrder')->name('abcc.order.duplicate'  );
+        Route::match(['GET', 'POST'], 'orders/{id}/duplicate', 'AbccCustomerOrdersController@duplicateOrder')->name('abcc.order.duplicate'  );
         Route::get('orders/{id}/pdf', 'AbccCustomerOrdersController@showPdf')->name('abcc.order.pdf'  );
 
         Route::resource('/shippingslips', 'AbccCustomerShippingSlipsController')->names('abcc.shippingslips');

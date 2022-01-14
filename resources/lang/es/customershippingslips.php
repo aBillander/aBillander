@@ -406,4 +406,6 @@ return [
 	'Document Discount Lines.' => 'Líneas de Descuento del Documento.',
 	'Calculated Commission for the entire Document (average).' => 'Comisión calculada para el Documento en conjunto (promedio).',
 
+	'Apply and Save' => 'Aplicar y Guardar',
+
 ];

@@ -746,6 +746,7 @@ foreach ($pairs as $pair) {
 
 
         Route::post($path.'/{id}/storeline',    $controller.'@storeDocumentLine'   )->name($path.'.storeline'  );
+        Route::post($path.'/{id}/fetch/save',   $controller.'@fetchAndSaveField'   )->name($path.'.fetch.save' );
         Route::post($path.'/{id}/updatetotal',  $controller.'@updateDocumentTotal' )->name($path.'.updatetotal');
         Route::get($path.'/{id}/getline/{lid}', $controller.'@getDocumentLine'     )->name($path.'.getline'    );
         Route::post($path.'/updateline/{lid}',  $controller.'@updateDocumentLine'  )->name($path.'.updateline' );

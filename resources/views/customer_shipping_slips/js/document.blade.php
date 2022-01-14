@@ -273,6 +273,22 @@
           });
 
 
+          $(document).on('click', '.fetch-weight', function(evnt) {
+
+              fetchAndSaveField( 'weight' );
+              return false;
+
+          });
+
+
+          $(document).on('click', '.fetch-volume', function(evnt) {
+
+              fetchAndSaveField( 'volume' );
+              return false;
+
+          });
+
+
           loadDocumentlines();
 
           // loadDocumentPayments();  // Not needed!
@@ -398,6 +414,38 @@
             });
 
         }
+
+
+        function fetchAndSaveField( field ) {
+           
+           var panel = $("#"+field);
+           var url = "{{ route($model_path.'.fetch.save', $document->id) }}";
+           var token = "{{ csrf_token() }}";
+
+//           panel.addClass('loading');
+
+            $.ajax({
+                url: url,
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'POST',
+                dataType: 'JSON',
+                data: {
+                    field: field
+                },
+                success: function (response) {
+
+                   console.log(response);
+
+                   panel.val(response.value);
+//                   panel.removeClass('loading');
+                   $("[data-toggle=popover]").popover();
+
+                    showAlertDivWithDelay("#msg-success-update");
+                }
+            });
+
+        }
+
 
         function sortableDocumentlines() {
 

@@ -24,7 +24,15 @@
 
 <p>- <i>Sí</i>. Calcula la Hoja de Producción teniendo en cuenta el Stock Físico.</p>
 
-<p>- <i>No</i>. Calcula las necesidades de Productos Terminados y Semi-Elaborados sin tener en cuenta el Stock Físico.</p>
+<p>- <i>No</i>. Calcula las necesidades de Productos Terminados y Semi-Elaborados SIN tener en cuenta el Stock Físico. Normalmente este valor se usa en pruebas del Sistema.</p>
+
+<br />
+
+<p><strong>Configuración</strong> &gt; <strong>Mi Empresa</strong> &gt; <strong>MRP_ONORDER_WITHOUT_REORDER</strong></p>
+
+<p>- <i>Sí</i>. Cuando la Hoja de Producción es de Tipo "Completar Pedidos de Clientes", se calcula SIN tener en cuenta los Productos con <i>Planificación</i> = <i>"Punto de Pedido"</i>. Normalmente este valor se usa en pruebas del Sistema.</p>
+
+<p>- <i>No</i>. La Hoja de Producción se calcula como se explica más abajo.</p>
 
 <br />
 

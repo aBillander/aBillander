@@ -239,6 +239,14 @@ Route::get('wsid', function()
 
 Route::get('migratethis_xtra', function()
 {
+	// 2022-01-14
+	$date = '2022-01-14';
+
+  \App\Configuration::updateValue('MRP_ONORDER_WITHOUT_REORDER', 1);
+
+//  die('OK - '.$date);
+
+
 	// 2021-07-13
 	$date = '2021-07-13';
 	

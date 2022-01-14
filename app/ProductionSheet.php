@@ -408,6 +408,24 @@ class ProductionSheet extends Model
         // * mrp_type == 'onorder' => productos 'reorder' se toman de stock, pero si no hay suficiente, se deberá fabricar
         // * mrp_type == 'reorder' => productos 'reorder' se han de fabricar en la cantidad requerida por los pedidos
 
+
+//
+// Sólo para TESTING
+
+        $lines = $lines->filter(function ($value, $key) use ($mrp_type) {
+            $condition = true;
+            // Force:
+            if ($mrp_type = 'onorder')
+                if ( Configuration::isTrue('MRP_ONORDER_WITHOUT_REORDER') )
+                    $condition = ($value->product->mrp_type == 'onorder');
+            
+            return $condition;
+        });
+
+// Sólo para TESTING ENDS
+//
+
+
         $num = $lines
                     ->groupBy('product_id')->reduce(function ($result, $group) use ( $withStock ) {
                       $first = $group->first();

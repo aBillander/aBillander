@@ -240,6 +240,32 @@ class Modelo347 {
 
         $data[] = [''];
         $data[] = ['', '', '', 'Total:', $base * 1.0, $iva * 1.0, $re * 1.0, ($base + $iva + $re) * 1.0];
+        $data[] = [''];
+
+
+        $columns_nbr = count($header_names);
+        $collection = collect($data);
+
+        foreach (['T1', 'T2', 'T3', 'T4'] as $t) {
+            // code...
+            $filtered = $collection->filter(function ($value, $key) use ($t) {
+                return isset($value[2]) && ($value[2] == $t);
+            });
+
+            $row = ['', '', '', 'Total '.$t.':'];
+
+            for ($i=4; $i < $columns_nbr; $i++) { 
+                // code...
+                $total_col = $filtered->reduce(function ($carry, $item) use ($i) {
+                    return $carry + (float) $item[$i];
+                }, 0.0);
+
+                $row[$i] = (float) $total_col;
+            }
+
+            $data[] = $row;
+        }
+
 
         
         $company = Context::getContext()->company;
@@ -289,7 +315,7 @@ class Modelo347 {
                 ));
                 
                 $n = count($data);
-                $m = $n - 3;
+                $m = $n - 3 - 4;
                 $sheet->getStyle("D$m:K$n")->applyFromArray([
                     'font' => [
                         'bold' => true

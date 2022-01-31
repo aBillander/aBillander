@@ -25,6 +25,173 @@
 
 /* ********************************************************** */
 
+Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
+{
+Route::get('pimtoid/{id}', function( $id )
+{
+	if ($id < \App\Configuration::getInt('PRODUCT_COUNTER'))
+		\App\Configuration::updateValue('PRODUCT_COUNTER', $id);
+
+	// \App\Context::getContext()->tenant = 'abimfg';
+
+	$date = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
+
+	abi_r(\App\Configuration::getInt('PRODUCT_COUNTER').'- '.$date);
+
+	// Get products
+	$products = \App\Product::
+						  where('id', '>', \App\Configuration::getInt('PRODUCT_COUNTER'))
+						->where('id', '<=', (int) $id)
+						->with('images')
+						->orderBy('id', 'ASC')
+						->get();
+
+	abi_r('Productos: '. $products->count());
+
+foreach ($products as $product) {
+
+		abi_r(' &nbsp; > '.$product->id);
+
+		// Buscar Producto en webshop
+//		$sku = str_replace('[COPY] ', '', $product->reference);
+		$sku = $product->reference;
+		$p = aBillander\WooConnect\WooProduct::fetch( $sku  );
+		// abi_r($p, true);
+		if ( ! $p )
+			continue;
+
+		// Has images?
+		$images = $p['images'] ?? [];
+		if ( count($images) <= 0 )
+			continue;
+
+//		abi_r(count($images));
+//		abi_r($images , true);
+
+		// Borrar imagenes actuales
+    foreach($product->images as $line) {
+        $line->deleteImage();
+        $line->delete();
+    }
+
+    // Rferesh
+    $product->load('images');
+
+    // abi_r($product->images);die();
+
+    // Cargar imagenes de la webshop
+	foreach ($images as $position => $image)
+	{
+		$img_src  = $image['src'];
+		$img_name = $image['name'];
+		$img_alt  = $image['alt'];
+
+		$img_position  = $position;	// position = 0 => Product Image (Woo Featured image)
+
+		$img_alt = ( $img_alt != '' ? ' :: ' . $img_alt : '' );
+		$caption = $img_name . $img_alt;
+
+		// Make the magic
+		if( $img_src )
+		{
+
+	        $pimage = \App\Image::createForProductFromUrl($img_src, ['caption' => $caption, 'is_featured'=> ( $position == 0 )]);
+			
+	        $product->images()->save($pimage);
+
+	        // Not needed:
+//	        if ( $position == 0 )
+//	        	$product->setFeaturedImage( $pimage );
+
+	        // abi_r($position.' - '.$img_src);
+
+		}
+/*
+		if ( $position == 0 ) abi_r('STEP 0');
+		if ( $position == 1 ) abi_r('STEP 1');
+		if ( $position == 2 ) abi_r('STEP 2');
+		if ( $position == 3 ) break;
+*/
+	}
+
+	// Update counter
+	\App\Configuration::updateValue('PRODUCT_COUNTER', $product->id);
+
+
+
+}
+
+
+	$date = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
+
+	abi_r(\App\Configuration::getInt('PRODUCT_COUNTER').'- '.$date);
+});
+
+
+});
+
+
+/* ********************************************************** */
+
+
+Route::get('sku/{sku}', function( $sku )
+{
+/* No efecto, ya que la configuración se cargó en un Serviceprovider
+	
+	config(['woocommerce.store_url' => 'https://www.gmdistribuciones.es/']);
+	config(['woocommerce.consumer_key' => 'ck_64d4d8a6f14507c656df20cfb82372abc45d8d28']);
+	config(['woocommerce.consumer_secret' => 'cs_918052c0186c37350200f00ef325fcc958333257']);
+	config(['woocommerce.api_version' => 'v3']);
+*/
+
+
+	// $sku = $reques;
+	$p = aBillander\WooConnect\WooProduct::fetch( $sku );
+
+	// abi_r(app()['config']->get('woocommerce'));
+
+	// abi_r(app()['woocommerce']);
+
+	 abi_r($p);
+
+	$images = $p['images'] ?? [];
+
+	if ( $images && count($images) )
+	{
+		// Initialize with something to show
+		$img_src  = $images[0]['src']  ?? '';
+		$img_name = $images[0]['name'] ?? '';
+		$img_alt  = $images[0]['alt']  ?? '';
+
+		foreach ($images as $position => $image)
+		{
+			if (0 && $position == 0)
+			{
+				$img_src  = $image['src'];
+				$img_name = $image['name'];
+				$img_alt  = $image['alt'];
+
+				abi_r('<img src="'.$img_src.'" id="imLogo" name="imLogo" alt="'.$img_alt.'" border="0">');
+
+				// break;
+			}
+		}
+
+	} else {
+
+		$img_src = 'https://www.gmdistribuciones.es/wp-content/plugins/woocommerce/assets/images/placeholder.png';
+		
+	}
+
+	abi_r('<img src="'.$img_src.'" id="imLogo" name="imLogo" alt="'.$img_alt.'" border="0">');
+
+});
+
+
+
+/* ********************************************************** */
+
+
 Route::get('tlot', function( )
 {
 	// abi_r(substr('z', -1), true);

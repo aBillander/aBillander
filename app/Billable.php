@@ -1055,6 +1055,17 @@ class Billable extends Model implements ShippableInterface
             $query->where('document_date', '<=', $params['date_to']  .' 23:59:59');
         }
 
+        if (array_key_exists('id_from', $params) && $params['id_from'])
+        {
+            $query->where('id', '>=', $params['id_from']);
+        }
+
+        if (array_key_exists('id_to', $params) && $params['id_to'])
+        {
+            $query->where('id', '<=', $params['id_to'] );
+        }
+
+
         if (array_key_exists('status', $params) && $params['status'] && self::isStatus($params['status']))
         {
             $query->where('status', $params['status']);

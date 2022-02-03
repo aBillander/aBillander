@@ -113,6 +113,16 @@
         {!! Form::text('document_reference', null, array('class' => 'form-control')) !!}
     </div>
 
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('id_from', l('From ID', 'layouts')) !!}
+        {!! Form::text('id_from', null, array('id' => 'id_from', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('id_to', l('To ID', 'layouts')) !!}
+        {!! Form::text('id_to', null, array('id' => 'id_to', 'class' => 'form-control')) !!}
+    </div>
+
 </div>
 
 
@@ -150,8 +160,8 @@
             <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
-            <th class="text-right"">{{ l('Total') }}</th>
-            <th class="text-right""> </th>
+            <th class="text-right">{{ l('Total') }}</th>
+            <th class="text-right"> </th>
             <th class="text-center">{{ l('Next Due Date') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>

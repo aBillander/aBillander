@@ -11,6 +11,9 @@ return [
 	|
 	*/
 
+	'Production Sheet'     => 'Hoja de Producción',
+	'Back to Production Sheet'     => 'Volver a la Hoja de Producción',
+
 	'Customer Vouchers' => 'Recibos de Clientes',
 	'Customer'     => 'Cliente',
 
@@ -94,7 +97,15 @@ return [
 
 	'Full Document Reference or a part of it' => 'Número de Factura completo, o una parte',
 
-	
+
+	'There are :nbr Vouchers Pending.' => 'Hay :nbr Recibos Pendientes.',
+
 	'If you do not select anything, every Voucher will go with its Payment Type.' => 'Si no selecciona nada, se tomará para cada Recibo su Tipo de Pago.',
+
+	'Customer Orders'     => 'Pedidos de Clientes',
+	'Shipping Slips' => 'Albaranes',
+	'Customer Shipping Slips' => 'Albaranes de Clientes',
+	'Customer Invoices'     => 'Facturas de Clientes',
+	'Customer Vouchers'     => 'Recibos de Clientes',
 
 ];

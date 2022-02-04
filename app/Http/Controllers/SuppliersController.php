@@ -14,6 +14,9 @@ use App\Supplier;
 use App\Address;
 use App\BankAccount;
 
+use App\SupplierOrder;
+use App\Product;
+
 use App\Configuration;
 
 use App\Traits\ModelAttachmentControllerTrait;
@@ -320,4 +323,167 @@ class SuppliersController extends Controller
 
         return view('suppliers._panel_products_list', compact('products', 'supplier', 'items_per_page_products'));
     }
+
+
+
+/* ********************************************************************************************** */
+
+
+
+    /**
+     * GET Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getReorderForm($id, Request $request)
+    {
+        $supplier = $this->supplier->findOrFail($id);
+        $products = Product::
+                                where('main_supplier_id', $supplier->id)
+                              ->isActive()
+//                              ->filter( $request->all() )
+                              ->with('measureunit')
+                              ->with('purchasemeasureunit')
+                              ->with('productmeasureunits')
+//                              ->orderByRaw('(quantity_onhand - reorder_point) asc')
+                              ->orderBy('reference', 'asc')
+                              ->get();
+
+        $items_per_page_products = intval($request->input('items_per_page_products', Configuration::get('DEF_ITEMS_PERPAGE')));
+
+
+        return view('suppliers._panel_reorder_form', compact('products', 'supplier', 'items_per_page_products'));
+
+
+        // return 'OK';
+        // return $items_per_page_products;
+
+
+        if ( !($items_per_page_products >= 0) ) 
+            $items_per_page_products = Configuration::get('DEF_ITEMS_PERPAGE');
+
+//        $products = $supplier->products->take($items_per_page_products);
+
+        
+
+        return view('suppliers._panel_products_list', compact('products', 'supplier', 'items_per_page_products'));
+    }
+
+    /**
+     * POST Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function ProductsReorder($id, Request $request)
+    {
+        $supplier = $this->supplier
+                            ->with('addresses')
+                            ->with('currency')
+                            ->findOrFail($id);
+
+        // Products / Quantities to be purchased
+        // Quantities are in "purchasemeasureunit" <= I will need conversion rate!
+        $dispatch       = $request->input('dispatch', []);
+        $dispatch_price = $request->input('dispatch_price', []);
+        
+        // Filter quantiy <= 0
+        foreach ($dispatch as $key => $value) {
+            // code...
+            if ( $value <= 0.0 )
+                unset($dispatch[$key]);
+        }
+
+
+        $products = Product::
+                                whereIn('id', array_keys($dispatch))
+                              ->with('measureunit')
+                              ->with('purchasemeasureunit')
+                              ->with('productmeasureunits')
+                              ->get();
+
+        // Add Quantity / Price to collection
+        $products = $products->map(function ($item, $key) use ($dispatch, $dispatch_price) {
+            $reorder_qty   = array_key_exists($item->id, $dispatch)       ? $dispatch[$item->id]       : 0.0;     // Kind of redundant
+            $reorder_price = array_key_exists($item->id, $dispatch_price) ? $dispatch_price[$item->id] : 0.0;     // Kind of redundant
+            $item->reorder_qty   = $reorder_qty;
+            $item->reorder_price = $reorder_price;
+            return $item;
+        });
+
+//        abi_r($products->toArray());die();
+
+        // GEt the job done:
+        // Create Order Header
+        $data = [
+            'reference' => '',
+            'supplier_id' => $supplier->id,
+            'invoicing_address_id' => $supplier->invoicing_address_id,
+//            'sequence_id' => $supplier->getInvoiceSequenceId(),
+            'document_date' => \Carbon\Carbon::now(),
+            'delivery_date' => (int) $supplier->delivery_time > 0 ? \Carbon\Carbon::now()->addDays($supplier->delivery_time) : null,
+            'payment_method_id' => $supplier->getPaymentMethodId(),
+            'currency_id' => $supplier->currency->id,
+            'currency_conversion_rate' => $supplier->currency->conversion_rate,
+//            'down_payment' => ,
+            'warehouse_id' => intval(Configuration::get('DEF_WAREHOUSE')),
+            'shipping_method_id' => $supplier->getShippingMethodId(),
+            'shipping_conditions' => '',
+            'notes' => '',
+            'notes_to_supplier' => '',
+
+            'user_id'              => \App\Context::getContext()->user->id,
+            'sequence_id'          => Configuration::getInt('DEF_SUPPLIER_ORDER_SEQUENCE'),
+            'template_id'          => Configuration::getInt('DEF_SUPPLIER_ORDER_TEMPLATE'),
+            'document_discount_percent' => (float) optional($supplier)->discount_percent,
+            'document_ppd_percent'      => (float) optional($supplier)->discount_ppd_percent,
+            'created_via'          => 'manual',
+            'status'               => 'draft',
+            'locked'               => 0,
+        ];
+
+        $document = SupplierOrder::create($data);
+
+        // Confirm Order (if needed)
+        // $document->confirm();
+
+        // abi_r($document->toArray(), true);
+
+        //
+        // Move on with lines!
+        //
+
+        // Initialize line sort order
+        $i = 0;
+
+foreach ($products as $product) {
+        // code...
+        $i++;
+
+        $product_id     = $product->id;
+        $combination_id = null;
+        
+        $quantity       = $product->reorder_qty; // Remember round quantities according to measure unit decimal places
+
+        $pricetaxPolicy = intval( $document->supplier->currentPricesEnteredWithTax( $document->document_currency ) );
+
+        $params = [
+            'prices_entered_with_tax' => $pricetaxPolicy,
+            'discount_percent' => 0.0,
+            'unit_supplier_final_price' => $product->reorder_price,
+            'measure_unit_id' => $product->measureunit->id,
+            'package_measure_unit_id' => $product->supplymeasureunit->id,
+
+            'line_sort_order' => $i*10,
+        ];
+
+        // Let's Rock!
+        $document_line = $document->addSupplierProductAsIsLine( $product_id, $combination_id, $quantity, $params );
+}
+
+
+
+        return redirect()->back()
+                  ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
 }

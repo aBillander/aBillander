@@ -199,7 +199,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/jennifer/reports/mod347'                   , 'JenniferController@index347'    )->name('jennifer.reports.index347');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/show', 'JenniferController@index347Show'    )->name('jennifer.reports.index347.show');
         Route::get( '/jennifer/reports/mod347/{mod347_year}'     , 'JenniferController@reportModelo347'    )->name('jennifer.reports.mod347');
-        Route::get( '/jennifer/reports/mod347/{mod347_year}/email/{customer_id}', 'JenniferController@sendemail')->name('jennifer.reports.mod347.email'  );
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/email/{customer_id}', 'JenniferController@reportModelo347Email')->name('jennifer.reports.mod347.email'  );
         Route::get( '/jennifer/reports/mod347/{mod347_year}/customer/{customer_id}', 'JenniferController@reportModelo347Customer')->name('jennifer.reports.mod347.customer');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/supplier/{supplier_id}', 'JenniferController@reportModelo347Supplier')->name('jennifer.reports.mod347.supplier');
 
@@ -341,6 +341,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
 
         Route::get('suppliers/{id}/products',  'SuppliersController@getProducts')->name('supplier.products');
+        Route::get('suppliers/{id}/reorder',            'SuppliersController@getReorderForm' )->name('supplier.reorder.form');
+        Route::post('suppliers/{id}/products/reorder',  'SuppliersController@ProductsReorder')->name('supplier.products.reorder');
 
         Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
 
@@ -514,6 +516,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get( 'productionsheetinvoices/{id}',  'ProductionSheetInvoicesController@invoicesIndex')->name('productionsheet.invoices');
 
         Route::post('productionsheetinvoices/close',  'ProductionSheetInvoicesController@closeInvoices')->name('productionsheet.close.invoices');
+
+        // Production Sheet Vouchers
+        Route::get( 'productionsheetvouchers/{id}',  'ProductionSheetVouchersController@vouchersIndex')->name('productionsheet.vouchers');
 
 
         // Production Sheet Delivery Routes
@@ -741,6 +746,7 @@ foreach ($pairs as $pair) {
 
 
         Route::post($path.'/{id}/storeline',    $controller.'@storeDocumentLine'   )->name($path.'.storeline'  );
+        Route::post($path.'/{id}/fetch/save',   $controller.'@fetchAndSaveField'   )->name($path.'.fetch.save' );
         Route::post($path.'/{id}/updatetotal',  $controller.'@updateDocumentTotal' )->name($path.'.updatetotal');
         Route::get($path.'/{id}/getline/{lid}', $controller.'@getDocumentLine'     )->name($path.'.getline'    );
         Route::post($path.'/updateline/{lid}',  $controller.'@updateDocumentLine'  )->name($path.'.updateline' );

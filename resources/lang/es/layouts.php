@@ -265,6 +265,8 @@ return [
 	'Date'     => 'Fecha',
 	'From'     => 'Desde',
 	'To'     => 'Hasta',
+	'From ID'     => 'Desde ID',
+	'To ID'     => 'Hasta ID',
 
 	'Filter'     => 'Filtrar',
 	'Search' => 'Buscar',

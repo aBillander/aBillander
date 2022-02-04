@@ -80,16 +80,20 @@
                 @endif
             </td>
             <td class="text-right">
-                <!--
+{{--
                 <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerorders/' . $order->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
                 <a class="btn btn-sm btn-success" href="{{ URL::to('customerorders/' . $order->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>               
-                -->
 
                 <!-- a class="btn btn-sm btn-lightblue" href="{ { URL::to('customerorders/' . $order->id . '/shippingslip') }}" title="{{l('Shipping Slip', [], 'layouts')}}"><i class="fa fa-truck"></i></a -->
+--}}
+                <a class="btn btn-sm btn-success confirm-duplicate" data-html="false" data-toggle="modal" 
+                        href="{{ route('abcc.order.duplicate', [$order->id]) }}" 
+                        data-oid="{{$order->id}}" 
+                        data-content="{{l('You are going to COPY this Order to your Shopping Cart. Are you sure?')}}" 
+                        data-title="{{ l('My Orders') }} :: <span class='btn btn-xs btn-grey'> {{ $order->document_reference != '' ? $order->document_reference : $order->id}} </span> &nbsp; <!-- b>{{ $order->as_money_amount('total_tax_incl') }}</b --> &nbsp; <b>{{ abi_date_short($order->document_date) }}</b>" 
+                        onClick="return false;" title="{{l('Copy Order to Cart')}}" style="margin-right: 12px"><i class="fa fa-copy"></i></a>
 
                 <a class="btn btn-sm btn-grey" href="{{ route('abcc.order.pdf', [$order->id]) }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
-
-                <a class="btn btn-sm btn-warning" href="{{ route('abcc.order.duplicate', [$order->id]) }}" title="{{l('Copy Order to Cart')}}"><i class="fa fa-copy"></i></a>
 {{--
                 <a class="btn btn-sm btn-success" href="{{ route('abcc.orders.show', [$order->id]) }}" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
 --}}
@@ -117,6 +121,8 @@
 {{-- abi_r(Auth::user()) --}}
 
 @endsection
+
+@include('abcc.orders/modal_confirm_duplicate')
 
 
 {{-- *************************************** --}}

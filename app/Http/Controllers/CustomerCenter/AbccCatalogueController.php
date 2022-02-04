@@ -324,4 +324,77 @@ class AbccCatalogueController extends Controller
 
         return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules', 'customer_price', 'currency', 'customer'));
     }
+
+
+    public function getProduct($i, Request $request)
+    {
+        $customer = Auth::user()->customer;
+        $currency = $customer->currency;
+
+        $product = $this->product
+                              ->with('images')
+                              ->IsSaleable()
+                              ->IsAvailable()
+                              ->qualifyForCustomer( $customer->id, $customer->currency_id)
+                              ->IsActive()
+                              ->IsPublished()
+                              ->find($i);
+        
+        // abi_r($product, true);
+        $images = $product->images;
+        // ($product->images, true);
+        $img = $product->getFeaturedImage();
+
+        if ( $images->count() == 0 )
+        {	
+        	$img->is_featured = 1;
+            $images->push($img);
+        }
+
+        $carousel = '';
+
+        $active = false;
+        foreach ($images as $k => $image) {
+        	// code...
+        	$flaf = '';
+        	if ( !$active && $image->is_featured )
+        	{
+        		$active = true;
+        		$flaf = 'active';
+        	}
+        	$src = \URL::to( \App\Image::pathProducts() . $image->getImageFolder() . $image->filename . '-large_default' . '.' . $image->extension );
+        	$alt = "(".$image->filename.") ".$image->caption;
+        	$caption = "(".$image->filename.") ".$image->caption;
+
+        	$carousel .= view('abcc.catalogue._modal_view_product_image_chunck', compact('flaf', 'src', 'alt', 'caption'));
+        }
+
+        $data = [];
+
+        if ($product)
+        {
+        	$data = [
+        		'title' => $product->name,
+        		'content' => nl2p($product->description_short) . '<br />' . nl2p($product->description),
+        		'href' => \URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ),
+        		'caption' => "(".$img->filename.") ".$img->caption,
+
+        		'carousel' => $carousel,
+
+        		'nbr_images' => $images->count(),
+        	];
+        }
+
+        return response()->json( $data );
+
+
+
+
+        // Check if Customer is allowed (Product is in Customer's price List)
+        $customer_price = $product ? $product->getPriceByCustomerPriceList( $customer, 1, $customer->currency ) : null;
+
+        $customer_rules = ($product && $customer_price) ? $product->getPriceRulesByCustomer( $customer ) : collect([]);
+
+        return view('abcc.catalogue._modal_pricerules_list', compact('product', 'customer_rules', 'customer_price', 'currency', 'customer'));
+    }
 }

@@ -1,24 +1,68 @@
 
-<div id="panel_products">     
+<div class="with-nav-tabs panel panel-info" id="panel_products">     
 
-         
-
-            <div class="panel panel-primary">
                <div class="panel-heading">
-                  <h3 class="panel-title">{{ l('Products') }}</h3>
+                  <!-- h3 class="panel-title">{{ l('Products') }}</h3 -->
+
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#tab1default_p" data-toggle="tab">{{ l('Products') }}</a></li>
+                            <li><a href="#tab2default_p" data-toggle="tab">{{ l('Re-Ordering') }}</a></li>
+                            <!-- li><a href="#tab3default_s" data-toggle="tab">{{ l('Pending Movements') }}</a></li>
+
+                            <li><a href="#tab4default_s" data-toggle="tab">{{ l('Availability') }}</a></li>
+                            <li class="dropdown">
+                                <a href="#" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#tab4default_s" data-toggle="tab">Default 4</a></li>
+                                    <li><a href="#tab5default_s" data-toggle="tab">Default 5</a></li>
+                                </ul>
+                            </li -->
+                        </ul>
+
                </div>
-               <div class="panel-body">
 
+  <div class="tab-content">
+      <div class="tab-pane fade in active" id="tab1default_p">
+                
+                @include('suppliers._tab_products_data')
 
-<!-- ProductS -->
+      </div>
+      <div class="tab-pane fade" id="tab2default_p">
+                
+                @include('suppliers._tab_reorder')
 
-<div class="content_products"></div>
+      </div>
+      <!-- div class="tab-pane fade" id="tab3default_s">
+                
+                @ include('products._tab_pending_movements')
 
-<!-- ProductS ENDS -->
+      </div>
+      <div class="tab-pane fade" id="tab4default_s">
+                
+                @ include('products._tab_availability')
 
-               </div>
-            </div>
+      </div>
+      <div class="tab-pane fade" id="tab4default_s">
+                Default 4
+      </div>
+      <div class="tab-pane fade" id="tab5default_s">
+                Default 5
+      </div -->
+  </div>
+
+{{--
+      <div class="panel-body">
                
+               
+               <!-- ProductS -->
+               
+               <div class="content_products"></div>
+               
+               <!-- ProductS ENDS -->
+               
+      </div>
+--}}
+
 </div>
 
 

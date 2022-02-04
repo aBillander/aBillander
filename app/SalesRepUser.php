@@ -118,6 +118,21 @@ class SalesRepUser extends Authenticatable
     }
 
 
+    public function getAllowedWarehouseList()
+    {
+            $warehouseList = Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"));
+
+            if ( $this->warehouse_id > 0 )
+            {
+                $warehouses = [$this->warehouse_id , Configuration::get('DEF_WAREHOUSE')];
+
+                $warehouseList = $warehouseList->whereIn('id', $warehouses); 
+            }
+
+            return $warehouseList->pluck('full_name', 'id')->toArray();
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Relationships

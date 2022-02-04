@@ -806,6 +806,49 @@ class BillableController extends Controller
     }
 
 
+
+
+    public function fetchAndSaveField(Request $request, $document_id)
+    {
+        $document = $this->document
+//                        ->with('customershippingsliplines')
+//                        ->with('customershippingsliplines.product')
+                        ->findOrFail($document_id);
+
+        $field = $request->input('field', '');
+
+        if ($field == 'weight')
+        {
+            $value = $document->getWeight();
+            
+        } else 
+        if ($field == 'volume')
+        {
+            $value = $document->getVolume();
+            
+        } else 
+        {
+            return response()->json( [
+                    'msg' => 'KO',
+                    'document' => $document_id,
+                    'value' => '',
+            ] );
+            
+        }        
+
+        $document->{$field} = $value;
+
+        $document->save();
+
+        return response()->json( [
+                'msg' => 'OK',
+                'document' => $document_id,
+                'field' => $field,
+                'value' => $value,
+        ] );
+    }
+
+
 /* ********************************************************************************************* */  
 
 

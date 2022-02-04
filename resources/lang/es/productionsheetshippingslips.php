@@ -359,6 +359,7 @@ return [
 	'Customer Orders'     => 'Pedidos de Clientes',
 	'Customer Shipping Slips'     => 'Albaranes de Clientes',
 	'Customer Invoices'     => 'Facturas de Clientes',
+	'Customer Vouchers'     => 'Recibos de Clientes',
 	'Create Invoices'     => 'Crear Facturas',
 	'Should group?'     => '¿Agrupar?',
 	''     => '',

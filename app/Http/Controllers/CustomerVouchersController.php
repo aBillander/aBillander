@@ -656,10 +656,6 @@ class CustomerVouchersController extends Controller
 		}
 
         
-		$payment->payment_date = null;
-		$payment->status   = 'pending';
-
-		$payment->save();
 
         // Update bankorder
         if ( $bankorder = $payment->bankorder )
@@ -687,10 +683,16 @@ class CustomerVouchersController extends Controller
 //			$payment->amount   = $request->input('amount',   $payment->amount);
 //			$payment->notes    = $request->input('notes',    $payment->notes);
 
+			// $payment->payment_date = null; <= Keep payment date as it is bounced now...
 			$payment->status   = 'bounced';
-			$payment->save();
+
+        } else {
+			$payment->payment_date = null;
+			$payment->status   = 'pending';
 
         }
+
+		$payment->save();
 
         // Update cheque
         if ( $chequedetail = $payment->chequedetail )

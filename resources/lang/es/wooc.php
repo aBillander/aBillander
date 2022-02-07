@@ -147,6 +147,15 @@ return [
 
 	'WOOC_USE_LOCAL_PRODUCT_NAME.name'     => 'Usar el Nombre local del Producto',
 	'WOOC_USE_LOCAL_PRODUCT_NAME.help'     => 'En los Pedidos importados, usar el Nombre del Producto en lugar del Nombre en WooCommerce.',
+
+
+	'WOOC_DEF_PRODUCT_STATUS.name'     => 'Subir a WooCommerce Productos en Estado:',
+	'WOOC_DEF_PRODUCT_STATUS.help'     => '',
+	'WOOC_DEF_MANAGE_STOCK.name'       => '¿Gestionar el Inventario en WooCommerce?',
+	'WOOC_DEF_MANAGE_STOCK.help'       => 'Per Item: Según el campo "Control de Stock" de cada Producto.',
+	'WOOC_DEF_REVIEWS_ALLOWED.name'    => 'Activar valoraciones de Productos',
+	'WOOC_DEF_REVIEWS_ALLOWED.help'    => '',
+
 	''     => '',
 	''     => '',
 

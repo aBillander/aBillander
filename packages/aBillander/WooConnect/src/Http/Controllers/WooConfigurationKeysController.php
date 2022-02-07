@@ -45,6 +45,10 @@ class WooConfigurationKeysController extends Controller {
 
                         'WOOC_USE_LOCAL_PRODUCT_NAME',
 
+                        'WOOC_DEF_PRODUCT_STATUS',
+                        'WOOC_DEF_MANAGE_STOCK',
+                        'WOOC_DEF_REVIEWS_ALLOWED',
+
                     ],
 
                 2 => [
@@ -98,7 +102,9 @@ class WooConfigurationKeysController extends Controller {
         $orders_sequenceList = \App\Sequence::listFor( \App\CustomerOrder::class );
         $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
-        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'warehouseList', 'languageList', 'orders_sequenceList', 'taxList') );
+        $woo_product_statusList = ['draft' => 'draft', 'pending' => 'pending', 'private' => 'private', 'publish' => 'publish'];
+
+        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'warehouseList', 'languageList', 'orders_sequenceList', 'taxList', 'woo_product_statusList') );
 
         // https://bootsnipp.com/snippets/M27e3
     }

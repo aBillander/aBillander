@@ -154,12 +154,18 @@
       </div>
     </div>
 
+@php
+          $stub = count( $warehouseList ) > 1
+                      ? ['0' => l('-- All --', [], 'layouts')]
+                      : [];
+@endphp
+
     <div class="form-group {{ $errors->has('WOOC_DEF_WAREHOUSE') ? 'has-error' : '' }}">
       <label for="WOOC_DEF_WAREHOUSE" class="col-lg-4 control-label">{!! l('WOOC_DEF_WAREHOUSE.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-8">
-        {!! Form::select('WOOC_DEF_WAREHOUSE', $warehouseList, old('WOOC_DEF_WAREHOUSE', $key_group['WOOC_DEF_WAREHOUSE']), array('class' => 'form-control')) !!}
+        {!! Form::select('WOOC_DEF_WAREHOUSE', $stub + $warehouseList, old('WOOC_DEF_WAREHOUSE', $key_group['WOOC_DEF_WAREHOUSE']), array('class' => 'form-control')) !!}
         {{ $errors->first('WOOC_DEF_WAREHOUSE', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-4"> </div>

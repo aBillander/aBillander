@@ -190,27 +190,45 @@ class WooProductsController extends Controller
 
 		$abi_product_price = $abi_product->getPriceByListId( Configuration::getInt('WOOC_DEF_CUSTOMER_PRICE_LIST') );	// Returns a Price Object
 
+		$status = in_array(Configuration::get('WOOC_DEF_PRODUCT_STATUS'), WooProduct::$statuses) 
+							? Configuration::get('WOOC_DEF_PRODUCT_STATUS')
+							: 'publish';
+
+		$manage_stock = Configuration::getInt('WOOC_DEF_MANAGE_STOCK') < 0
+							? (boolean) $abi_product->stock_control
+							: (boolean) Configuration::getInt('WOOC_DEF_MANAGE_STOCK');
+
+		$stock = (int) $abi_product->quantity;
+		// ^-- Maybe select quantity or quantity_onhand from Configuration. But quantity_onhand is not compatible with select stock from a specific warehouse!!!
+
+		$stock_status = $manage_stock && ($stock <= 0.0)
+							? 'outofstock'
+							: 'instock';
+
+		$regular_price = $abi_product_price->getPrice();
+
 		$data = [
 		    'name' => $abi_product->name,
 //		    'slug' => '',
 		    'type' => 'simple', 	// Product type. Options: simple, grouped, external and variable. Default is simple.
-		    'status' => 'draft', 	// Product status (post status). Options: draft, pending, private and publish. Default is publish.
+		    'status' => $status, 	// Product status (post status). Options: draft, pending, private and publish. Default is publish.
 //		    'featured' => 			// Featured product. Default is false.
 		    'catalog_visibility' => 'visible',		// Catalog visibility. Options: visible, catalog, search and hidden. Default is visible.
 		    'description'   => $abi_product->description,
 		    'short_description'   => $abi_product->description_short,
 
 			'sku' => $abi_product->reference,
-			'regular_price' => (string) $abi_product_price->getPrice(), // product price
+			'regular_price' => (string) $regular_price, // product price
+//			'sale_price' 	string 	Product sale price.
 
 //			'virtual',
 //			'downloadable'
 
 			'tax_status' => 'taxable',		// Tax status. Options: taxable, shipping and none. Default is taxable.
 			'tax_class' => '',				// <= Default WooShop tax  // String
-			'manage_stock' => (boolean) $abi_product->stock_control,		// Stock management at product level. Default is false.
-			'stock_quantity' => $abi_product->quantity_onhand,	// Integer
-			'stock_status' => ($abi_product->stock_control && ($abi_product->quantity_onhand <= 0.0)) ? 'outofstock' : 'instock',		// Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
+			'manage_stock' => $manage_stock,		// (boolean) $abi_product->stock_control,		// Stock management at product level. Default is false.
+			'stock_quantity' => $stock,	// Integer
+			'stock_status' => $stock_status,		// ($abi_product->stock_control && ($abi_product->quantity_onhand <= 0.0)) ? 'outofstock' : 'instock',		// Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
 
 			'weight' => $abi_product->weight,
 			'dimensions' => [

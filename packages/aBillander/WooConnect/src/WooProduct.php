@@ -19,6 +19,14 @@ class WooProduct // extends Model
     protected $run_status = true;       // So far, so good. Can continue export
     protected $error = null;
 
+
+    public static $statuses = [
+            'draft', 
+            'pending', 
+            'private', 
+            'publish',
+        ];
+
     
     /*
     |--------------------------------------------------------------------------

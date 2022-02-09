@@ -320,6 +320,7 @@ return [
     'Import Descriptions' => 'Importar Descripciones',
     'Update Price' => 'Actualizar Precio',
     'Update Stock' => 'Actualizar Stock',
+    'Update Images' => 'Actualizar Imágenes',
 
 
 

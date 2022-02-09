@@ -676,11 +676,14 @@ The image in position 0 is your featured image.
         $product = Product::where('reference', $product_sku)->first();
 
         $wh_id = Configuration::getInt('WOOC_DEF_WAREHOUSE');
-        $stock = $product->getStockByWarehouse( Configuration::getInt('WOOC_DEF_WAREHOUSE') );
+        if ( $wh_id > 0 )
+        	$stock = $product->getStockByWarehouse( Configuration::getInt('WOOC_DEF_WAREHOUSE') );
+	    else
+	    	$stock = $product->quantity;
 
         // Happyly update WooCommerce Stock ;)
 		$data = [
-		    'stock_quantity'   => $stock,		// Integer
+		    'stock_quantity'   => (int) $stock,		// Integer
 //		    'stock_status' => '', 	// 	string 	Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
 //		    'regular_price' => '',	// string
 		];
@@ -689,7 +692,8 @@ The image in position 0 is your featured image.
 		WooCommerce::put('products/'.$wproduct_id, $data);
 
 
-        return redirect()->to(url()->previous())
+//        return redirect()->to(url()->previous())
+        return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . $product->as_quantityable($stock));
 	}
 
@@ -709,13 +713,13 @@ The image in position 0 is your featured image.
 
         $wproduct_id = $wproduct['id'];
 
-        // Get Product stock
+        // Get Product Price
         $product = Product::where('reference', $product_sku)->first();
 
         $cpl_id = Configuration::getInt('WOOC_DEF_CUSTOMER_PRICE_LIST');
         $price = $product->getPriceByList( PriceList::find($cpl_id) );
 
-        // Happyly update WooCommerce Stock ;)
+        // Happyly update WooCommerce Price ;)
 		$data = [
 //		    'stock_quantity'   => $stock,		// Integer
 //		    'stock_status' => '', 	// 	string 	Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
@@ -726,8 +730,70 @@ The image in position 0 is your featured image.
 		WooCommerce::put('products/'.$wproduct_id, $data);
 
 
-        return redirect()->to(url()->previous())
+//        return redirect()->to(url()->previous())
+		return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . $product->as_priceable( $price->getPrice()));
+	}
+
+
+	public function updateProductImages( $sku )
+	{
+		$product_sku = $sku;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product stock
+        $product = Product::where('reference', $product_sku)->with('images')->first();
+
+		// Images
+		$abi_images = $product->images->sortByDesc('is_featured');
+
+		$data = [];
+
+// If no images do nothing: we do not want products on the webshop without image!
+if ( $abi_images->count() > 0 )
+{		
+		// Add featured image to Galery
+		$abi_featured = $abi_images->first();
+		$abi_images->push($abi_featured);
+
+		$i=0;
+
+		foreach ($abi_images as $abi_image) {
+			# code...
+			$src = \URL::to( \App\Image::pathProducts() . $abi_image->getImageFolder() . $abi_image->id . '.' . $abi_image->extension );
+			// $src = 'http://abimfg.gmdistribuciones.es/tenants/abimfg/images_p/4/0/2/0/4020.JPG';
+			$data['images'][] = 
+				[
+					'src'      => $src,
+					// Avoid problems:
+//					'name' => str_replace(' ', '%20', trim($abi_image->caption)),
+//					'alt'  => str_replace(' ', '%20', trim($abi_image->caption)),
+					'position' => $i,	// First image is taken as "main Image" ??? < Key not documented???
+				];
+
+			$i++;
+		}
+
+        // Happyly update WooCommerce Images ;)
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+}
+
+
+//        return redirect()->to(url()->previous())
+        return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . ' ('.$abi_images->count().')');
 	}
 
 

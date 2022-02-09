@@ -90,8 +90,9 @@ Route::group([
     Route::get('wproducts/import/ProductDescriptions' , array('uses' => 'WooProductsController@importProductDescriptions', 
                                                         'as'   => 'wproducts.import.product.descriptions' ));
 
-   Route::get('wproduct/{sku}/updateStock' , 'WooProductsController@updateProductStock')->name('wproducts.update.product.stock' );
-   Route::get('wproduct/{sku}/updatePrice' , 'WooProductsController@updateProductPrice')->name('wproducts.update.product.price' );
+   Route::get('wproduct/{sku}/updateStock'  , 'WooProductsController@updateProductStock' )->name('wproducts.update.product.stock' );
+   Route::get('wproduct/{sku}/updatePrice'  , 'WooProductsController@updateProductPrice' )->name('wproducts.update.product.price' );
+   Route::get('wproduct/{sku}/updateImages' , 'WooProductsController@updateProductImages')->name('wproducts.update.product.images' );
 
 
     Route::resource('wcategories', 'WooCategoriesController');

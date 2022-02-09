@@ -141,6 +141,7 @@
                         <ul class="dropdown-menu">
                           <li><a href="{{ route('wproducts.update.product.stock', $product->reference ) }}"><i class="fa fa-th"></i> &nbsp;{{l('Update Stock')}}</a></li>
                           <li><a href="{{ route('wproducts.update.product.price', ['product_sku' => $product->reference] ) }}"><i class="fa fa-money"></i> &nbsp;{{l('Update Price')}}</a></li>
+                          <li><a href="{{ route('wproducts.update.product.images', ['product_sku' => $product->reference] ) }}"><i class="fa fa-image"></i> &nbsp;{{l('Update Images')}}</a></li>
                           <!-- li class="divider"></li -->
                         </ul>
                       </div>

@@ -109,7 +109,7 @@
 
                    <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
-                        <a class="btn xbtn-sm alert-info view-webshop-data" href="javascript::void(0);" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('View Data', [], 'layouts')}}</a>
+                        <a class="btn xbtn-sm alert-info view-webshop-data" href="javascript::void(0);" title="{{l('Refresh', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Refresh Data', [], 'layouts')}}</a>
 
                    </div>
 

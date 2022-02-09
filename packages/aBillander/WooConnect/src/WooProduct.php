@@ -27,6 +27,19 @@ class WooProduct // extends Model
             'publish',
         ];
 
+    public static $stock_statuses = [
+            'instock',
+            'outofstock',
+            'onbackorder',
+        ];
+
+    public static $catalog_visibility = [
+            'visible',
+            'catalog',
+            'search',
+            'hidden',
+        ];
+
     
     /*
     |--------------------------------------------------------------------------

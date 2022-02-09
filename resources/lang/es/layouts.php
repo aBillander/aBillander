@@ -288,6 +288,7 @@ return [
 	'Undo'     => 'Deshacer',
 	'Apply'     => 'Aplicar',
 	'Refresh'     => 'Refrescar',
+	'Refresh Data'     => 'Refrescar Datos',
 	'Show'     => 'Mostrar',
 	'Show Preview'     => 'Vista Previa',
 	'Show more'     => 'Mostrar más',

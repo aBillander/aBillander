@@ -313,6 +313,15 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 2022-02-09
+	$date = '2022-02-09';
+
+	\App\Configuration::updateValue('WOOC_DEF_PRODUCT_STATUS', 'publish');
+	\App\Configuration::updateValue('WOOC_DEF_MANAGE_STOCK', '-1');
+	\App\Configuration::updateValue('WOOC_DEF_REVIEWS_ALLOWED', '0');
+
+	die('OK - '.$date);
+
 	// 2021-12-09
 	$date = '2021-12-09';
 

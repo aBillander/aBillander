@@ -239,6 +239,19 @@ return [
 	'Tax' => 'Impuesto',
 	'Weight' => 'Peso',
 
+	'sku' => 'SKU',
+	'status' => 'Estado',
+	'featured' => 'Producto destacado?',
+	'manage_stock' => 'Gestión de Inventario?',
+	'stock_status' => 'En Inventario?',
+	'reviews_allowed' => 'Permitir Valoraciones',
+
+	'stock_quantity' => 'Stock en Tienda',
+	'catalog_visibility' => 'Visibilidad',
+
+	'Fill only if \'manage_stock\' is set to \'Yes\'.' => 'Rellenar sólo si \'Gestión de Inventario?\' tiene el valor \'Sí\'.',
+	'Fill only if \'manage_stock\' is set to \'No\'.'  => 'Rellenar sólo si \'Gestión de Inventario?\' tiene el valor \'No\'.',
+
 
 	/*
 	|--------------------------------------------------------------------------

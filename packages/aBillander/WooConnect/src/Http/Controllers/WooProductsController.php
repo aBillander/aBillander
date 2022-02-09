@@ -382,10 +382,28 @@ if ( $abi_images->count() > 0 )
         {
         	if($request->ajax()){
 
+	            $woo_product_statusList = [];
+		        foreach (WooProduct::$statuses as $value) {
+		            // code...
+		            $woo_product_statusList[$value] = $value;
+		        }
+
+	            $woo_product_stock_statusList = [];
+		        foreach (WooProduct::$stock_statuses as $value) {
+		            // code...
+		            $woo_product_stock_statusList[$value] = $value;
+		        }
+
+	            $woo_product_catalog_visibilityList = [];
+		        foreach (WooProduct::$catalog_visibility as $value) {
+		            // code...
+		            $woo_product_catalog_visibilityList[$value] = $value;
+		        }
+
 	            return response()->json( [
 	                'success' => $product ? 'OK' : 'KO',
 	                'msg' => 'OK'." $id ".($product['name'] ?? ''),
-	                'html' => view('woo_connect::woo_products.show_embed', compact('product'))->render(),
+	                'html' => view('woo_connect::woo_products.show_embed', compact('product', 'woo_product_statusList', 'woo_product_stock_statusList', 'woo_product_catalog_visibilityList'))->render(),
 	            ] );
 
 	        }
@@ -415,7 +433,40 @@ if ( $abi_images->count() > 0 )
 	 */
 	public function update($id, Request $request)
 	{
-		//
+		$product_sku = $id;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product
+        $product = Product::where('reference', $wproduct['sku'])->first();
+
+        // Happyly update WooCommerce Product data ;)
+		$data = [
+			'status'          => $request->status,
+			'featured'        => (bool) $request->featured,
+			'manage_stock'    => (bool) $request->manage_stock,
+			'stock_status'    => $request->stock_status,
+			'reviews_allowed' => (bool) $request->reviews_allowed,
+
+			'stock_quantity'     => (int) $request->stock_quantity,
+			'catalog_visibility' => $request->catalog_visibility,
+		];
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+
+
+		return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts'));
 	}
 
 	/**

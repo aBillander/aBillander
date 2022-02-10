@@ -21,6 +21,17 @@
 
         <div class="row">
 
+                  <div class="col-lg-6 col-md-6 col-sm-6">
+                      <div class="form-group">
+                          <label for="woo_name" class="control-label">{{ l('name') }}</label>
+                          {!! Form::text('woo_name', $product['name'], array('class' => 'form-control')) !!}
+                      </div>
+                  </div>
+
+        </div>
+
+        <div class="row">
+
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
                           <label for="" class="control-label">{{ l('sku') }}</label>
@@ -201,23 +212,15 @@
 
                   <div class="col-lg-6 col-md-6 col-sm-6">
                       <div class="form-group">
-                          <label for="" class="control-label">{{ l('description') }}</label>
-                          <div class="panel panel-default">
-                              <div class="panel-body">
-                                {!! $product['description'] !!}
-                              </div>
-                          </div>
+                          <label for="woo_description" class="control-label">{{ l('description') }}</label>
+                          {!! Form::textarea('woo_description', $product['description'], array('class' => 'form-control', 'id' => 'woo_description', 'rows' => '3')) !!}
                       </div>
                   </div>
 
                   <div class="col-lg-6 col-md-6 col-sm-6">
                       <div class="form-group">
-                          <label for="" class="control-label">{{ l('short_description') }}</label>
-                          <div class="panel panel-default">
-                              <div class="panel-body">
-                                {!! $product['short_description'] !!}
-                              </div>
-                          </div>
+                          <label for="woo_short_description" class="control-label">{{ l('short_description') }}</label>
+                          {!! Form::textarea('woo_short_description', $product['short_description'], array('class' => 'form-control', 'id' => 'woo_short_description', 'rows' => '3')) !!}
                       </div>
                   </div>
 

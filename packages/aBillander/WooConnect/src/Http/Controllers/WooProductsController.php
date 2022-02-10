@@ -459,6 +459,10 @@ if ( $abi_images->count() > 0 )
 
 			'stock_quantity'     => (int) $request->stock_quantity,
 			'catalog_visibility' => $request->catalog_visibility,
+
+			'name'              => $request->woo_name,
+			'description'       => $request->woo_description,
+			'short_description' => $request->woo_short_description,
 		];
 
 		// To do: catch errores
@@ -784,6 +788,73 @@ The image in position 0 is your featured image.
 //        return redirect()->to(url()->previous())
 		return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . $product->as_priceable( $price->getPrice()));
+	}
+
+
+	public function updateProductKey( $sku, Request $request )
+	{
+		$product_sku = $sku;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product
+        $product = Product::where('reference', $product_sku)->first();
+
+        $key = $request->key;
+
+        // Happyly update WooCommerce Names ;)
+		$data = [ 
+			$key        => $product->{$key},
+		];
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+
+
+        return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts'));
+	}
+
+
+	public function updateProductNames( $sku )
+	{
+		$product_sku = $sku;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product
+        $product = Product::where('reference', $product_sku)->first();
+
+        // Happyly update WooCommerce Names ;)
+		$data = [
+			'name'        => $product->name,
+			'description' => $product->description,
+		];
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+
+
+        return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts'));
 	}
 
 

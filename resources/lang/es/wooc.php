@@ -239,6 +239,7 @@ return [
 	'Tax' => 'Impuesto',
 	'Weight' => 'Peso',
 
+	'name' => 'Nombre del Producto',
 	'sku' => 'SKU',
 	'status' => 'Estado',
 	'featured' => 'Producto destacado?',
@@ -248,6 +249,9 @@ return [
 
 	'stock_quantity' => 'Stock en Tienda',
 	'catalog_visibility' => 'Visibilidad',
+
+	'description' => 'Descripción',
+	'short_description' => 'Descripción corta',
 
 	'Fill only if \'manage_stock\' is set to \'Yes\'.' => 'Rellenar sólo si \'Gestión de Inventario?\' tiene el valor \'Sí\'.',
 	'Fill only if \'manage_stock\' is set to \'No\'.'  => 'Rellenar sólo si \'Gestión de Inventario?\' tiene el valor \'No\'.',

@@ -56,7 +56,7 @@
 
 
 <div class="btn-group">
-  <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
+  <a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}" class="btn btn-success xdropdown-toggle" xdata-toggle="dropdown" xaria-expanded="false" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Update Sheet') }}</a>
   <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
 
   <ul class="dropdown-menu">
@@ -64,7 +64,7 @@
     
     <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=reorder" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Solo Punto de Pedido') }}</a></li>
     
-    <li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=all" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Todos') }}</a></li>
+    <!-- li><a href="{{ URL::to('productionsheets/'.$sheet->id.'/calculate') }}?mrp_type=all" xclass="btn btn-success" onclick="loadingpage();"><i class="fa fa-cog"></i> {{ l('Todos') }}</a></li -->
     
     <!-- li><a href="#">Something else here</a></li>
     <li class="divider"></li -->
@@ -100,11 +100,29 @@
         <a href="{{ URL::to('productionsheets') }}" class="btn xbtn-sm btn-default" title="{{ l('Back to Production Sheets') }}"><i class="fa fa-mail-reply"></i> {{ l('Back', 'layouts') }}</a>
 
 
-                <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
+                <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal" title="{{l('Help', [], 'layouts')}}"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
 
     </div>
     <h2>
         <a href="{{ URL::to('productionsheets') }}">{{ l('Production Sheets') }}</a> <span style="color: #cccccc;">::</span> <span title="{{ $sheet->name }}">{{ abi_date_form_short($sheet->due_date) }}</span>
+
+         <button type="button" class="btn btn-xs btn-success" xdata-toggle="popover" xdata-placement="right" 
+               title="{{ l('Type') }}: {{ $productionsheet_typeList[$sheet->type] }}" 
+               xdata-content="
+                                        BrIF: GB458794289000<br />" 
+               xdata-original-title="Datos de Facturación">
+@if( $sheet->type == 'onorder' )
+                        <i class="fa fa-user"></i>
+@elseif( $sheet->type == 'reorder' )
+                        <i class="fa fa-cubes"></i>
+@else
+                        <i class="fa fa-warning alert-danger"></i>
+@endif
+         </button>
+         
+         <a class="btn btn-xs btn-warning" href="{{ URL::to('productionsheets/' . $sheet->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+
+
         @if ($sheet->is_dirty AND 0)
               <button type="button" class="btn btn-sm btn-danger" title="{{l('Need Update')}}">
                   <i class="fa fa-hand-stop-o"></i>
@@ -132,12 +150,56 @@
       <div class="col-lg-10 col-md-10 col-sm-10">
             <div class="panel panel-info" id="panel_customer_orders">
                <div class="panel-heading">
-                  <h3 class="panel-title"><i class="fa fa-user"></i> &nbsp; {{ l('Customer Orders') }}</h3>
+                  <h3 class="panel-title"><i class="fa fa-user"></i> &nbsp; {{ l('Customer Orders') }} (<strong>{!! l('independent demand') !!}</strong>)
+
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('La Demanda Independiente está formada por Productos terminados, y se representa mediante Pedidos de Clientes.') }}">
+                                  <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                           </a>
+
+                    <a class="btn btn-xs alert-warning pull-right" href=""  title="{{l('Hide / Show', [], 'layouts')}}" onclick="$('#div_customer_orders').toggle('slow');return false;"><i class="fa fa-window-close-o"></i></a>
+
+                  </h3>
                </div>
                     @include('production_sheets._panel_customer_orders')
             </div>
       </div>
    </div>
+
+
+@if ( $sheet->type == 'reorder' )
+
+   <div class="row">
+      <div class="col-lg-1 col-md-1 col-sm-1">
+         <div class="list-group">
+            <!-- a id="b_generales" href="" class="list-group-item active info" onClick="return false;">
+               <i class="fa fa-user"></i>
+               &nbsp; {{ l('Customer Orders') }}
+            </a -->
+         </div>
+      </div>
+
+      <div class="col-lg-10 col-md-10 col-sm-10">
+            <div class="panel panel-info" id="panel_production_requirements">
+               <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa fa-cubes"></i> &nbsp; {!! l('Production Requirements') !!} (<strong>{!! l('dependent demand') !!}</strong>) 
+
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('Estos Productos se incorporarán físicamente a la Demanda Independiente. Pueden considerarse como Semi-Elaborados que se fabrican antes de tener las Ordenes de Fabricación de los Productos terminados que forman la Demanda Independiente.') }}">
+                                  <i class="fa fa-question-circle abi-help" style="color: #ff0084;"></i>
+                           </a>
+
+                    <a class="btn btn-xs alert-warning pull-right" href=""  title="{{l('Hide / Show', [], 'layouts')}}" onclick="$('#div_production_requirements').toggle('slow');return false;"><i class="fa fa-window-close-o"></i></a>
+
+                  </h3>
+               </div>
+                    @include('production_sheets._panel_production_requirements')
+            </div>
+      </div>
+   </div>
+   
+@endif
+
  
 @if ( 0 && $sheet->productsNotScheduled()->count() )
 
@@ -288,6 +350,12 @@
 
 
 @include('production_sheets._modal_production_order_form')
+
+
+@include('production_sheets._modal_production_requirements_quick_form')
+
+@include('production_sheets._modal_production_requirement_delete')
+
 
 
 @endsection

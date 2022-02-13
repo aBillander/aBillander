@@ -314,6 +314,25 @@
     </div>
 
     <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('MRP_ONORDER_WITHOUT_REORDER.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="MRP_ONORDER_WITHOUT_REORDER" id="MRP_ONORDER_WITHOUT_REORDER_on" value="1" @if( old('MRP_ONORDER_WITHOUT_REORDER', $key_group['MRP_ONORDER_WITHOUT_REORDER']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="MRP_ONORDER_WITHOUT_REORDER" id="MRP_ONORDER_WITHOUT_REORDER_off" value="0" @if( !old('MRP_ONORDER_WITHOUT_REORDER', $key_group['MRP_ONORDER_WITHOUT_REORDER']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('MRP_ONORDER_WITHOUT_REORDER.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group  hide ">
       <label class="col-lg-4 control-label">{!! l('MRP_WITH_ZERO_ORDERS.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

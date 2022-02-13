@@ -23,6 +23,10 @@ class CreateProductionSheetsTable extends Migration
             $table->string('document_reference', 64)->nullable();               // document_prefix + document_id of document
 //            $table->string('reference')->nullable();                            // Project reference, etc.
             
+            $table->string('type', 32)->nullable(false)->default('onorder');
+            // 'onorder'  => Fulfill Customer Orders
+            // 'reorder'  => Restock Warehouse
+            
             $table->date('due_date')->nullable();
             $table->string('name', 128)->nullable();
             $table->text('notes')->nullable();

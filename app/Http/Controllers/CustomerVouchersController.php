@@ -261,7 +261,7 @@ class CustomerVouchersController extends Controller
 		// Validate input (to do)
 		$rules = [
             'bulk_payment_date' => 'required|date',
-            'bulk_payment_type_id' => 'exists:payment_types,id',
+            'bulk_payment_type_id' => 'nullable|exists:payment_types,id',
 		];
         $this->validate($request, $rules);
 
@@ -278,7 +278,7 @@ class CustomerVouchersController extends Controller
         $payments = $this->payment->whereIn('id', $list)->where('status', 'pending')->get();
 
         $payment_date = $request->input('bulk_payment_date');
-        $payment_type_id = $request->input('bulk_payment_type_id');
+        $payment_type_id = (int) $request->input('bulk_payment_type_id');
 
         // abi_r($request->all());die();
 
@@ -286,7 +286,10 @@ class CustomerVouchersController extends Controller
         foreach ( $payments as $payment ) 
         {
         	$payment->payment_date = $payment_date;
-        	$payment->payment_type_id = $payment_type_id;
+        	
+        	// force $payment_type_id
+        	if ( $payment_type_id > 0 )
+        		$payment->payment_type_id = $payment_type_id;
 
 			$payment->status   = 'paid';
 			$payment->save();

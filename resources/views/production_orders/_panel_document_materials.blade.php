@@ -46,7 +46,7 @@
 
                         <th class="text-center">{{l('Warehouse')}}</th>
 
-                        <th class="text-right button-pad">
+                        <th class="text-right button-pad" style="width: 90px;">
                            &nbsp; 
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                       data-content="{{ l('Introduccir la Cantidad TOTAL consumida en cada Línea.') }}">
@@ -87,15 +87,17 @@
 @endif
                 </td>
 
-                <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_onhand    ) }}</td>
+                <td class="text-right">{{ niceQuantity($line->as_quantityable( $line->product->quantity_onhand), 1) }}</td>
 {{--
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_onorder   ) }}</td>
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_allocated ) }}</td>
                 <td class="text-right">{{ $line->as_quantityable( $line->product->quantity_available ) }}</td>
 --}}
-                <td class="text-right">{{ $line->as_quantity('required_quantity') }}</td>
-
-                <td class="text-right">{{ $line->as_quantity('real_quantity') }}</td>
+                <td class="text-right">{{ niceQuantity($line->as_quantity('required_quantity'), 1) }}</td>
+@php
+    $filled = ( ($real_quantity = $line->as_quantity('real_quantity')) > 0.0 ) ? '' : 'alert-danger';
+@endphp
+                <td class="text-right {{ $filled }}">{{ niceQuantity($real_quantity, 1) }}</td>
                 <td class="text-left">
                     <span class="badge" style="background-color: #3a87ad;" title="{{ optional($line->measureunit)->name }}"> &nbsp; {{ optional($line->measureunit)->sign }} &nbsp; </span>
                 </td>
@@ -105,7 +107,7 @@
                     {!! Form::select('dispatch_warehouse['. $line->id .']', $warehouseList, $line->warehouse_id, array('class' => 'form-control input-sm', 'id' => 'dispatch_warehouse['. $line->id .']')) !!}
                 </td>
 
-                <td class="text-right active">
+                <td class="text-right {{  !$filled ? 'active' : $filled }}">
 
 @if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
 @php

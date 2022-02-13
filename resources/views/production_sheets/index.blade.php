@@ -27,7 +27,9 @@
 			<th>{{ l('Due Date') }}</th>
 			<th>{{ l('Name') }}</th>
       <!-- th class="text-center">{{l('Status', [], 'layouts')}}</th -->
+            <th>{{ l('Type') }}</th>
       <th>{{ l('Customer Orders') }}</th>
+      <th>{{ l('Production Requirements') }}</th>
       <th>{{ l('Production Orders') }}</th>
       <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
 			<th class="text-right"> </th>
@@ -39,6 +41,13 @@
 			<td>{{ $sheet->id }}</td>
       <td>{{ abi_date_form_short($sheet->due_date) }}</td>
       <td>{{ $sheet->name }}</td>
+      <td>
+@if( $sheet->type == 'onorder' )
+            <span class="label label-success" title="{{ $sheet->type }}">{{ $productionsheet_typeList[$sheet->type] }}</span>
+@elseif( $sheet->type == 'reorder' )
+            <span class="label label-info" title="{{ $sheet->type }}">{{ $productionsheet_typeList[$sheet->type] }}</span>
+@endif
+      </td>
       <!-- td class="text-center">
           @if ($sheet->is_dirty)
               <button type="button" class="btn btn-xs btn-danger" title="{{l('Need Update')}}">
@@ -50,6 +59,7 @@
               </button>
           @endif</td -->
       <td>{{ $sheet->nbr_customerorders() }}</td>
+      <td>{{ $sheet->nbr_productionrequirements() }}</td>
       <td>{{ $sheet->nbr_productionorders() }}</td>
       <td class="text-center">
           @if ($sheet->notes)
@@ -61,7 +71,7 @@
            </a>
           @endif</td>
 
-           <td class="text-right">
+           <td class="text-right button-pad">
 
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('productionsheets/' . $sheet->id) }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-folder-open-o"></i></a>
 

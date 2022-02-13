@@ -4,10 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\ProductionSheetLotsTrait;
 use App\Traits\ViewFormatterTrait;
 
 class ProductionSheet extends Model
 {
+    use ProductionSheetLotsTrait;
     use ViewFormatterTrait;
 
     public $sandbox;
@@ -15,7 +17,7 @@ class ProductionSheet extends Model
 //    protected $dates = ['due_date'];
 	
     protected $fillable = [ 'sequence_id', 'document_prefix', 'document_id', 'document_reference', 
-    						'due_date', 'name', 'notes', 'is_dirty'
+    						'type', 'due_date', 'name', 'notes', 'is_dirty'
                           ];
 
     public static $rules = array(
@@ -33,10 +35,10 @@ class ProductionSheet extends Model
     {
         // Params all set?
         if ( !array_key_exists('withStock', $params) )
-            $params['withStock'] = false;
+            $params['withStock'] = Configuration::isTrue('MRP_WITH_STOCK');
 
         if ( !array_key_exists('mrp_type',  $params) )
-            $params['mrp_type'] = 'onorder';
+            $params['mrp_type'] = $this->type;
 
         // Set variables: $withStock, $mrp_type
         extract($params);
@@ -44,11 +46,13 @@ class ProductionSheet extends Model
         // abi_r($params);abi_r(((int)$withStock ).'  '.$mrp_type);die();
 
         // Delete current Production Orders
-        $porders = $this->productionorders()->get();
+        $porders = $this->productionorders;
         foreach ($porders as $order) {
-            // Skip manual orders
-            if ( $order->created_via == 'manual' )
-                continue;
+            // Verbose loop:
+
+            // Skip manual orders_manual    <= Not needed, since we do not distinguish manual from manufacturing so far
+//             if ( $order->created_via == 'manual' )
+//                continue;
             
             // Skip finished orders
             if ( $order->status == 'finished' )
@@ -58,28 +62,97 @@ class ProductionSheet extends Model
             $order->delete();
         }
 
-        // $errors = [];
         $this->sandbox = new ProductionPlanner( $this->id, $this->due_date );
 
+
         // Do the Mambo!
-        // STEP 1
-        // Calculate raw requirements
-        // Collection of arrays [product_id, stock, quantity, measureunit, ...]
+
+        // STEP 1.1
+        // Calculate raw requirements from Production Requirements
+        $porders = $this->productionorders->where('status', 'finished');
+        $requirements = $this->productionrequirements;    // Supposed "grouped" by construction (requirements are unique, not having duplicates)
+        foreach ($requirements as $line) {
+
+            // Create Production Order (multilevel)
+            // old stuff: $orders = $this->sandbox->addPlannedMultiLevel([], $order);
+
+            $advanced_quantity = 0.0;
+            // Already in stock
+            if( $stub = $porders->where('product_id', $line->product_id) )
+                $advanced_quantity = $stub->sum('finished_quantity');
+
+            $required_quantity = $line->required_quantity - $advanced_quantity;
+
+            // Create Production Order (multilevel) if needed
+            if ( $required_quantity > 0 )
+            $orders = $this->sandbox->addPlannedMultiLevel([
+                'product_id' => $line->product_id,
+
+                'required_quantity' => $required_quantity,   // Cantidad que debe fabricarse
+                'planned_quantity'  => $required_quantity,   // Cantidad que se fabricará
+
+                'notes' => '',
+
+                'production_sheet_id' => $this->id,
+            ]);
+        }
+
+        // Group & Save Production Orders for later use
+        // Could be retrieved with:  $this->sandbox->getManualOrders();
+        // No se ha tenido en cuenta el stock hasta aquí
+        $this->sandbox->saveManualOrders();
+
+
+        // abi_r('Man>');abi_r($this->sandbox->orders_manual);
+        // abi_r('Plan>');abi_r($this->sandbox->orders_planned, true);
+
+
+        // STEP 1.2
+        // Calculate raw requirements from Customer Orders
+        // $requirements : Collection of arrays [product_id, stock, quantity, measureunit, ...]
         $requirements = $this->customerorderlinesGrouped( $withStock, $mrp_type );
 
-        foreach ( $requirements as $pid => $line ) {
-            // Discard Products with no quantity
-            if ($line['quantity'] <= 0.0) continue;
+//        $orders_manual = $this->sandbox->getManualOrders();
 
-            /*
-            // Batch size stuff
-            $nbt = ceil($line['quantity'] / $line['manufacturing_batch_size']);
-            $order_quantity = $nbt * $line['manufacturing_batch_size'];
-            */
+        // abi_r($requirements); die();
+
+        foreach ( $requirements as $pid => $line ) {
+
+            $product = $line['product'];
+
             $order_quantity = $line['quantity'];   // Cantidad que debe fabricarse por agrupación de órdenes
 
+            if ( $withStock )
+            // Productos con mrp_type = 'reorder' se comportan diferente según el Tipo de Hoja
+            if ( $product->mrp_type == 'reorder')
+            {
+                if ( $mrp_type == 'onorder' )
+                {
+                    // Deduct stock
+                    $order_quantity -= ($product->quantity_available + $order_quantity);
+                    // ^-- Since $order_quantity is part of quantity_available: $order_quantity = -($product->quantity_available)
+                }
 
-            // Create Production Order
+                if ( $mrp_type == 'reorder' )
+                {
+                    if (0)  // Only if we allow Finished Products in Production Requirements; Otherwise, skip
+                    if ( $stub = $this->sandbox->getManualOrders()->where('product_id', $line['product_id'])->first() )
+                    {
+                        // Deduct "future stock"
+                        $order_quantity -= $stub->planned_quantity;
+                    }
+                }
+
+            }
+
+            // Adjust Batch size (although it will be done later; maybe doing this here we save some time ???)
+            $batch_size = $product->manufacturing_batch_size;
+            $nbt = ceil( $order_quantity / $batch_size );
+            $order_quantity = $nbt * $batch_size;
+
+            // So far, so good.
+            // Create Production Order (multilevel) if needed
+            if ( $order_quantity > 0 )
             $orders = $this->sandbox->addPlannedMultiLevel([
                 'product_id' => $pid,
 
@@ -93,11 +166,12 @@ class ProductionSheet extends Model
 
         }
         // Resultado hasta aquí:
-        // en ->sandbox->orders_planned hay las ProductionOrder (s) que deben fabricarse según las BOM.
+        //  ->sandbox->orders_manual  hay las ProductionOrder (s) que deben fabricarse según las BOM (Production Requeriments).
+        //  ->sandbox->orders_planned hay las ProductionOrder (s) que deben fabricarse según las BOM (Customer Orders).
         // La cantidad de Producto Terminado resulta de:
         // - Sumar los Pedidos
-        // // Quitado: - Descontar el Stock (si se controla el stock del producto)
-        // // Quitado: - Ajustar con el tamaño de lote
+        // - Descontar el Stock (si se controla el stock del producto ??? )
+        // - Ajustar con el tamaño de lote en orders_manual (Ahorrará tiempo luego ??? )
         // 
         // Para los semielaborados:
         // - NO se tiene en cuenta el stock
@@ -109,43 +183,90 @@ class ProductionSheet extends Model
         // abi_r($this->sandbox->getPlannedOrders(), true);
 
 
-        // STEP 2
+
+        // STEP 2.1
         // Group Planned Orders, adjust according to onhand stock
 
         $this->sandbox->groupPlannedOrders( $withStock );
+        // ^-- Finished products are already grouped!!
 
+        // abi_r($this->sandbox->getManualOrders()); abi_r('***********************');
         // abi_r($this->sandbox->getPlannedOrders(), true);
 
-        // Now we may have orders with some onhand quantity
-        // Productos que debe "descontarse" el stock físico
-        $pIDs = $this->sandbox->getPlannedOrders()
-                ->where('product_stock', '>', 0.0)
-                ->pluck('product_id');
+        // Load Products into memory
+        $products_planned = $this->sandbox->loadPannedProducts();
 
-        // abi_r($pIDs, true); // die();
+        // Production Requirements act as a source for available stock
+        $requirements = $this->productionrequirements;
+        $pIDs = $requirements->pluck('product_id');
 
-        foreach ($pIDs as $pID) {       // abi_r($pID); continue;
-            
-            $order = $this->sandbox->getPlannedOrders()->firstWhere('product_id', $pID);
-            // this check is necessary, since collection is modified on the fly
-            if (  $order->product_stock <= 0.0 ) continue;     // Noting to do here
+        // Sólo las órdenes derivadas de Production Requirements son fuente de stock, 
+        // ya que los semielaborados generados por BOM a partir de ellos se consumen integramente 
+        // en fabricar los Production Requirements
+        // Maybe some Requirements are already manufactured:
+        $orders_manual = $this->sandbox->getManualOrders()->whereIn('product_id', $pIDs);
 
-            // Cantidad a descontar de la Orden de Fabricación porque hay stock:
-            $qty = ( $order->planned_quantity < $order->product_stock ) ?
+        // abi_r($orders_manual); abi_r('***********************');
+        // abi_r($orders_manual_lines, true);
+
+        // Manage Stock
+        foreach ($this->sandbox->getPlannedOrders() as $order) {
+            // code...
+            $product = $products_planned->firstWhere('id', $order->product_id); // Should be found
+
+            // Finished Products are already set
+            if ($product->procurement_type == 'manufacture')
+                continue ;
+
+            // abi_r('- Planned: '.$order->product_id.' : '.$order->planned_quantity);
+
+            // Stock Available
+            $stock_available_1 = $withStock ? $product->quantity_available : 0.0;
+
+            // abi_r('+ '.$order->product_id.' : '.$stock_available_1);
+
+            // Stock futuro
+            // En esta Hoja de Producción:
+            $stock_onorder_1 = $orders_manual->firstWhere('product_id', $order->product_id) ? 
+                               $orders_manual->firstWhere('product_id', $order->product_id)->planned_quantity : 
+                               0.0;
+
+            // abi_r('+ '.$order->product_id.' : '.$stock_onorder_1);
+
+            $stock_available = $stock_available_1 + $stock_onorder_1;
+
+            // Cantidad a DESCONTAR de la Orden de Fabricación porque hay (o habrá) stock:
+            $qty = ( $order->planned_quantity < $stock_available ) ?
                     $order->planned_quantity :  // No hace falta fabricar (hay stock), por tanto se descuenta 
                                                 //  toda la cantidad planificada (que es lo que se iba a fabricar!)
-                    $order->product_stock    ;  // Se descuenta la cantidad en stock, ya que como está en stock, 
-                                                // no hace fata fabricar etas unidades
-
+                    $stock_available;           // Se descuenta la cantidad en stock (onhand+onorder), ya que 
+                                                //  no hace fata fabricar estas unidades porque hay (habrá) stock
+            
             $quantity = (-1.0) * $qty;  // <= esta es la cantidad que hay que restar a 
                                         // la Orden de Fabricación (y a sus hijos según BOM)
-            $this->sandbox->equalizePlannedMultiLevel($pID, $quantity);
+            
+            // abi_r('=> '.$order->product_id.' : '.$quantity);
 
-            // ProductionOrders collection has been equalized ()
+            if ( $quantity != 0.0 )
+                $this->sandbox->equalizePlannedMultiLevel($order->product_id, $quantity);
         }
 
-        // abi_r($this->sandbox->getPlannedOrders(), true);
-        // die();
+        // abi_r('Man>');abi_r($this->sandbox->orders_manual);
+        // abi_r('Plan>');abi_r($this->sandbox->orders_planned, true);
+
+
+
+        // STEP 2.2
+        // Group Planned Orders with Manual Orders
+
+        // abi_r($this->sandbox->getPlannedOrders()->pluck('id'));
+
+        // Manual Production Orders are not merged and are managed "As-Is"
+        $this->sandbox->groupPlannedOrdersManualOrders();
+
+        // abi_r($this->sandbox->getPlannedOrders()->pluck('id')); // die();
+        // abi_r('+++>');abi_r($this->sandbox->getPlannedOrders()->values(), true);
+
 
 
         // STEP 3
@@ -158,9 +279,20 @@ class ProductionSheet extends Model
 
         foreach ($lines_summary as $pid => $line) {
 
+            $product = $products_planned->firstWhere('id', $line->product_id); // Should be found
+
+            // Finished Products are already set
+            if ($product->procurement_type == 'manufacture')
+                continue ;
+
+            // abi_r('<<<< '); abi_r($pid);
+
             $order = $this->sandbox->addExtraPlannedMultiLevel($line->product_id, 0.0);
 
         }
+
+        // abi_r($this->sandbox->getPlannedOrders()->pluck('id'), true);
+        // abi_r($this->sandbox->getPlannedOrders()->pluck('product_id'), true);
 
 
         // STEP 4
@@ -168,19 +300,21 @@ class ProductionSheet extends Model
 
         $lines_summary = $this->sandbox->getPlannedOrders();
 
+        // abi_r($this->sandbox->getPlannedOrders()->pluck('id'));
 
 
         // Release
         foreach ($lines_summary as $pid => $line) {        // $line es un objeto ProductionOrder
 
-            if ( Configuration::isFalse('MRP_WITH_ZERO_ORDERS') && $line->planned_quantity <= 0.0 )
+            // Skip by now
+            if ( 0 && Configuration::isFalse('MRP_WITH_ZERO_ORDERS') && $line->planned_quantity <= 0.0 )
                 continue;       // Nothing to do here
 
             // Create Production Order
             $order = ProductionOrder::createWithLines([
                 'created_via' => 'manufacturing',
                 'status' => 'released',
-                'product_id' => $pid,
+                'product_id' => $line->product_id,
 //                'product_reference' => $line['reference'],
 //                'product_name' => $line['name'],
                 'required_quantity' =>  $line->required_quantity,
@@ -196,6 +330,12 @@ class ProductionSheet extends Model
             ]);
 
         }
+
+        // abi_r('**************');
+        // abi_r($this->sandbox->getPlannedOrders()->pluck('product_id'));
+
+        // abi_r('**************');
+        // abi_r($this->productionorders()->pluck('product_id'), true);
 
         // STEP 5
         // Some clean-up ???
@@ -233,12 +373,19 @@ class ProductionSheet extends Model
         return $this->hasManyThrough('App\CustomerOrderLine', 'App\CustomerOrder', 'production_sheet_id', 'customer_order_id', 'id', 'id');
     }
 
+
+    /*
+     *
+     *  Group requirements from Customer Orders
+     *
+     */
     public function customerorderlinesGrouped( $withStock = false, $mrp_type = 'onorder' )
     {
         $this->load('customerorderlines', 'customerorderlines.product');        
 
         // Filter Lines
         // Filter 1: procurement_type
+        // Only manufactured items
         $lines = $this->customerorderlines->filter(function ($value, $key) {
             return $value->product && 
                    ( ($value->product->procurement_type == 'manufacture') ||
@@ -247,6 +394,8 @@ class ProductionSheet extends Model
         });
 
         // Filter 2: mrp_type
+        // According to $params (MRP engine call)
+/*
         $lines = $lines->filter(function ($value, $key) use ($mrp_type) {
             $condition = $mrp_type == 'all' ?
                             ($value->product->mrp_type == 'onorder') || ($value->product->mrp_type == 'reorder') :
@@ -254,6 +403,28 @@ class ProductionSheet extends Model
             
             return $value->product && $condition;
         });
+*/
+        // ^-- Este filtro no tiene sentido, ya que:
+        // * mrp_type == 'onorder' => productos 'reorder' se toman de stock, pero si no hay suficiente, se deberá fabricar
+        // * mrp_type == 'reorder' => productos 'reorder' se han de fabricar en la cantidad requerida por los pedidos
+
+
+//
+// Sólo para TESTING
+
+        $lines = $lines->filter(function ($value, $key) use ($mrp_type) {
+            $condition = true;
+            // Force:
+            if ($mrp_type = 'onorder')
+                if ( Configuration::isTrue('MRP_ONORDER_WITHOUT_REORDER') )
+                    $condition = ($value->product->mrp_type == 'onorder');
+            
+            return $condition;
+        });
+
+// Sólo para TESTING ENDS
+//
+
 
         $num = $lines
                     ->groupBy('product_id')->reduce(function ($result, $group) use ( $withStock ) {
@@ -261,38 +432,42 @@ class ProductionSheet extends Model
                       $product = $first->product;
                       $stock = 0.0;
 
-                      /*
-                      if ($product->procurement_type == 'manufacture')
-                      // Assemblies will be fit later on (groupPlannedOrders)
-                      if ( $withStock )
-                      {
-                            if ( $product->stock_control )
-                                $stock = $product->quantity_onhand; // Stock físico
-                      }
-                      */
-                      $stock = $product->quantity_onhand; // Stock físico
+//                      $stock = $product->quantity_onhand;   // Stock físico
+                      if (  $stock < 0.0 )
+                        $stock = 0.0;                       // No onhand stock available
 
                       // Cantidad que se debe fabricar
                       // $quantity = $group->sum('quantity') - $stock;
-                      $quantity = $group->sum('quantity');      // Raw requeriments
+                      $quantity = $group->sum('quantity');      // Raw requirements
                       
-                      if ( $quantity < 0.0 ) $quantity = 0.0;        // No Manufacturing needed (cero quantity line or returned item)
+                      // if ( $quantity < 0.0 ) $quantity = 0.0;        // No Manufacturing needed (cero quantity line or returned item)
 
                       return $result->put($first->product_id, [
                         'product_id' => $first->product_id,
                         'reference' => $first->reference,
                         'name' => $first->name,
-                        'stock' => $stock,
+//                        'stock' => $stock,
                         'quantity' => $quantity,
+                        'mrp_type' => $product->mrp_type,
                         'measure_unit_id' => $product->measure_unit_id,
                         // Do I need these two?
 //                        'measureunit' => $product->measureunit->name,
 //                        'measureunit_sign' => $product->measureunit->sign,
 
                         'manufacturing_batch_size' => $product->manufacturing_batch_size,
+
+                        'product' => $product,
                       ]);
                     }, collect());
 
+
+        // Skip items if no Manufacturing needed (cero quantity line)
+        // Kind of redundant: (see Filter 1 above)
+/*
+        $num = $num->reject(function ($value, $key) {
+                    return $value['quantity'] <= 0.0;
+                });
+*/
 
         // abi_r( $num, true);
 
@@ -374,6 +549,11 @@ class ProductionSheet extends Model
         return $this->productionorders->count();
     }
     
+    public function nbr_productionrequirements()
+    {
+        return $this->productionrequirements->count();
+    }
+    
     public function productionorderlines()
     {
         return $this->hasManyThrough('App\ProductionOrderLine', 'App\ProductionOrder', 'production_sheet_id', 'production_order_id', 'id', 'id');
@@ -428,6 +608,11 @@ class ProductionSheet extends Model
                     }, collect());
 
         return $num->sortBy('reference');
+    }
+
+    public function productionrequirements()
+    {
+        return $this->hasMany('App\ProductionRequirement')->orderBy('reference', 'asc');
     }
 
     /* 

@@ -42,6 +42,8 @@ return [
 	'ENABLE_MANUFACTURING.help' => '',
 	'MRP_WITH_STOCK.name' => 'MRP_WITH_STOCK',
 	'MRP_WITH_STOCK.help' => '<p>Valores:</p><ul>	<li>	<p><strong>Sí</strong><br />	Calcula la Hoja de Producción teniendo en cuenta el Stock Físico.</p>	</li>	<li>	<p><strong>No</strong><br />	Calcula las necesidades de Productos Terminados y Semi-Elaborados sin tener en cuenta el Stock Físico.</p>	</li></ul>',
+	'MRP_ONORDER_WITHOUT_REORDER.name' => 'MRP_ONORDER_WITHOUT_REORDER',
+	'MRP_ONORDER_WITHOUT_REORDER.help' => '<p>Valores:</p><ul>	<li>	<p><strong>Sí</strong><br />	Cuando la Hoja de Producción es de Tipo "Completar Pedidos de Clientes", se calcula SIN tener en cuenta los Productos con Planificación = "Punto de Pedido".</p>	</li>	<li>	<p><strong>No</strong><br />	La Hoja de Producción se calcula de forma estándar.</p>	</li></ul>',
 	'MRP_WITH_ZERO_ORDERS.name' => 'MRP_WITH_ZERO_ORDERS',
 	'MRP_WITH_ZERO_ORDERS.help' => 'Incluye las Odenes de Fabricación con cantidad 0 (cero) en el cálculo de las Hojas de Producción.',
 	'ENABLE_LOTS.name' => 'Activar Lotes',

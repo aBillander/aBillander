@@ -9,7 +9,7 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success  hide " type="button" title="{{l('Filter Records', [], 'layouts')}}">
+        <button  name="b_search_filter" id="b_search_filter" class="btn xbtn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
@@ -63,9 +63,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
     </h2>        
     <h2>     
 @php
-    $documents_total_count = $documents_total = 7;   // $payments->total();
+    $documents_total_count = $payments_total_count;
+    $documents_total = $payments->total();
 
-    if ($documents_total == 7)  // $documents_total_count)
+    if ($documents_total < $documents_total_count)
     {
         $btn_class = 'grey';
 
@@ -76,12 +77,12 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
     }
 @endphp
                   {{ l('Customer Vouchers') }} 
-                   &nbsp; <span class="btn btn-sm btn-{{ $btn_class }}  hide " title="{{ l('Showing :a of :b in total', ['a' => $documents_total, 'b' => $documents_total_count]) }}">{{ $documents_total }} / {{ $documents_total_count }}</span> 
+                   &nbsp; <span class="btn btn-sm btn-{{ $btn_class }}" title="{{ l('Showing :a of :b in total', ['a' => $documents_total, 'b' => $documents_total_count]) }}">{{ $documents_total }} / {{ $documents_total_count }}</span> 
                  {{-- https://codepen.io/MarcosBL/pen/uomCD --}}
     </h2>
 </div>
 
-{{--
+{{-- --}}
 <div name="search_filter" id="search_filter" @if( Request::has('search_status') AND (Request::input('search_status')==1) ) style="display:block" @else style="display:none" @endif>
 <div class="row" style="padding: 0 20px">
     <div class="col-md-12 xcol-md-offset-3">
@@ -96,6 +97,23 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 
 <div class="row">
 
+    <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('payment_type_id') ? 'has-error' : '' }}">
+        {!! Form::label('payment_type_id', l('Payment Type')) !!}
+                        <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                  data-content="{{ l('If you do not select anything, every Voucher will go with its Payment Type.') }}">
+                              <i class="fa fa-question-circle abi-help"></i>
+                        </a -->
+        {!! Form::select('payment_type_id', array('' => l('All', [], 'layouts')) + $payment_typeList, null, array('class' => 'form-control')) !!}
+        {!! $errors->first('payment_type_id', '<span class="help-block">:message</span>') !!}
+    </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('status', l('Status')) !!}
+        {!! Form::select('status', array('' => l('All', [], 'layouts')) + $statusList, null, array('class' => 'form-control')) !!}
+    </div>
+
+
+{{-- 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('date_from_form', l('Date from', 'layouts')) !!}
         {!! Form::text('date_from_form', null, array('id' => 'date_from_form', 'class' => 'form-control')) !!}
@@ -145,6 +163,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
        </div>
      </div>
 </div>
+--}}
 
 {{--
 <div class="form-group col-lg-1 col-md-1 col-sm-1">
@@ -159,11 +178,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
     {!! Form::label('warehouse_id', l('Warehouse')) !!}
     {!! Form::select('warehouse_id', array('0' => l('All', [], 'layouts')) + $warehouseList, null, array('class' => 'form-control')) !!}
 </div>
---} }
+--}}
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route('customer.vouchers', l('Reset', [], 'layouts'), [$customer->id], array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('productionsheet.vouchers', l('Reset', [], 'layouts'), [$productionSheet->id], array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>
@@ -175,7 +194,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 </div>
 </div>
 
---}}
+{{-- --}}
 
 
 {!! Form::open( ['method' => 'POST', 'id' => 'form-select-payments'] ) !!}
@@ -385,7 +404,7 @@ $(document).ready(function() {
     $('#delivery_date_form').val('{{ abi_date_form_short( 'now' ) }}');
     $('#order_document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
 
-    $('#status').val('confirmed');
+//    $('#status').val('confirmed');
 
 //    $('#sequence_id').val('{ { $customer->getInvoiceSequenceId() }}');
 //    $('#template_id').val('{ { $customer->getInvoiceTemplateId() }}');

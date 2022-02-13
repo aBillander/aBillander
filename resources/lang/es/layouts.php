@@ -19,6 +19,8 @@ return [
 	'Info'    => 'Información',
 	'Warning' => 'Aviso',
 	'Error'   => 'Error',
+
+	'Hide / Show' => 'Ocultar / Mostrar',
 	
 	'Please check the form below for errors' => 'Por favor, compruebe los errores en el formulario más abajo',
 	'You are not allowed to do this'                                      =>  'No está autorizado',

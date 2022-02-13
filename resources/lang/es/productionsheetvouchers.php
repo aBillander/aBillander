@@ -108,4 +108,7 @@ return [
 	'Customer Invoices'     => 'Facturas de Clientes',
 	'Customer Vouchers'     => 'Recibos de Clientes',
 
+
+	'Showing :a of :b in total' => 'Mostrando :a de :b en total',
+
 ];

@@ -675,7 +675,7 @@
                         $('select[name="line_package_measure_unit_id"]').append('<option value=' + key + '>' + value + '</option>');
                     });
 
-                    $('select[name="line_package_measure_unit_id').val(response.measure_unit_id);
+                    $('select[name="line_package_measure_unit_id').val(response.purchase_measure_unit_id);
 
 
 

@@ -420,7 +420,7 @@ class SuppliersController extends Controller
             'invoicing_address_id' => $supplier->invoicing_address_id,
 //            'sequence_id' => $supplier->getInvoiceSequenceId(),
             'document_date' => \Carbon\Carbon::now(),
-            'delivery_date' => (int) $supplier->delivery_time > 0 ? \Carbon\Carbon::now()->addDays($supplier->delivery_time) : null,
+            'delivery_date' => (int) $supplier->delivery_time > 0 ? \Carbon\Carbon::now()->addWeekDays($supplier->delivery_time) : null,
             'payment_method_id' => $supplier->getPaymentMethodId(),
             'currency_id' => $supplier->currency->id,
             'currency_conversion_rate' => $supplier->currency->conversion_rate,
@@ -482,7 +482,7 @@ foreach ($products as $product) {
 
 
 
-        return redirect()->back()
+        return redirect()->route('supplierorders.edit', [$document->id])
                   ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
     }
 

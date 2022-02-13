@@ -19,6 +19,27 @@ class WooProduct // extends Model
     protected $run_status = true;       // So far, so good. Can continue export
     protected $error = null;
 
+
+    public static $statuses = [
+            'draft', 
+            'pending', 
+            'private', 
+            'publish',
+        ];
+
+    public static $stock_statuses = [
+            'instock',
+            'outofstock',
+            'onbackorder',
+        ];
+
+    public static $catalog_visibility = [
+            'visible',
+            'catalog',
+            'search',
+            'hidden',
+        ];
+
     
     /*
     |--------------------------------------------------------------------------

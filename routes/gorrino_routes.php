@@ -317,6 +317,16 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+	// 2022-02-09
+	$date = '2022-02-09';
+
+	\App\Configuration::updateValue('WOOC_DEF_PRODUCT_STATUS', 'publish');
+	\App\Configuration::updateValue('WOOC_DEF_MANAGE_STOCK', '-1');
+	\App\Configuration::updateValue('WOOC_DEF_REVIEWS_ALLOWED', '0');
+
+//	die('OK - '.$date);
+
+
 	// 2021-12-24
 	$date = '2021-12-24';
 
@@ -329,7 +339,7 @@ Route::get('migratethis', function()
 	// 2021-12-17
 	$date = '2021-12-17';
 
-	Illuminate\Support\Facades\DB::statement("drop table if exists `production_requirements;");
+	Illuminate\Support\Facades\DB::statement("drop table if exists `production_requirements`;");
 
 	Illuminate\Support\Facades\DB::statement("create table `production_requirements` (`id` int unsigned not null auto_increment primary key, `line_sort_order` int null, `type` varchar(32) not null default 'product', `created_via` varchar(32) null default 'manual', `product_id` int unsigned not null, `combination_id` int unsigned null, `reference` varchar(32) null, `name` varchar(128) not null, `product_bom_id` int unsigned null, `measure_unit_id` int unsigned not null, `required_quantity` decimal(20, 6) not null, `manufacturing_batch_size` int unsigned not null default '1', `notes` text null, `warehouse_id` int unsigned null, `work_center_id` int unsigned null, `production_sheet_id` int unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate utf8mb4_unicode_ci;");
 

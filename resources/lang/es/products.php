@@ -320,6 +320,10 @@ return [
     'Import Descriptions' => 'Importar Descripciones',
     'Update Price' => 'Actualizar Precio',
     'Update Stock' => 'Actualizar Stock',
+    'Update Name' => 'Actualizar Nombre',
+    'Update Description' => 'Actualizar Descripción',
+    'Update Name & Description' => 'Actualizar Nombre y Descripción',
+    'Update Images' => 'Actualizar Imágenes',
 
 
 

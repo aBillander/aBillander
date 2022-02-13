@@ -154,12 +154,18 @@
       </div>
     </div>
 
+@php
+          $stub = count( $warehouseList ) > 1
+                      ? ['0' => l('-- All --', [], 'layouts')]
+                      : [];
+@endphp
+
     <div class="form-group {{ $errors->has('WOOC_DEF_WAREHOUSE') ? 'has-error' : '' }}">
       <label for="WOOC_DEF_WAREHOUSE" class="col-lg-4 control-label">{!! l('WOOC_DEF_WAREHOUSE.name') !!}</label>
       <div class="col-lg-8">
         <div class="row">
         <div class="col-lg-8">
-        {!! Form::select('WOOC_DEF_WAREHOUSE', $warehouseList, old('WOOC_DEF_WAREHOUSE', $key_group['WOOC_DEF_WAREHOUSE']), array('class' => 'form-control')) !!}
+        {!! Form::select('WOOC_DEF_WAREHOUSE', $stub + $warehouseList, old('WOOC_DEF_WAREHOUSE', $key_group['WOOC_DEF_WAREHOUSE']), array('class' => 'form-control')) !!}
         {{ $errors->first('WOOC_DEF_WAREHOUSE', '<span class="help-block">:message</span>') }}
         </div>
         <div class="col-lg-4"> </div>
@@ -242,6 +248,67 @@
         <span class="help-block">{!! l('WOOC_USE_LOCAL_PRODUCT_NAME.help') !!}</span>
       </div>
     </div>
+
+
+
+    <div class="form-group {{ $errors->has('WOOC_DEF_PRODUCT_STATUS') ? 'has-error' : '' }}">
+      <label for="WOOC_DEF_PRODUCT_STATUS" class="col-lg-4 control-label">{!! l('WOOC_DEF_PRODUCT_STATUS.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-8">
+        {!! Form::select('WOOC_DEF_PRODUCT_STATUS', $woo_product_statusList, old('WOOC_DEF_PRODUCT_STATUS', $key_group['WOOC_DEF_PRODUCT_STATUS']), array('class' => 'form-control')) !!}
+        {{ $errors->first('WOOC_DEF_PRODUCT_STATUS', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-4"> </div>
+        </div>
+        <span class="help-block">{!! l('WOOC_DEF_PRODUCT_STATUS.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('WOOC_DEF_MANAGE_STOCK.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="WOOC_DEF_MANAGE_STOCK" id="WOOC_DEF_MANAGE_STOCK_on" value="1" @if( old('WOOC_DEF_MANAGE_STOCK', $key_group['WOOC_DEF_MANAGE_STOCK'] > 0) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="WOOC_DEF_MANAGE_STOCK" id="WOOC_DEF_MANAGE_STOCK_off" value="0" @if( !old('WOOC_DEF_MANAGE_STOCK', $key_group['WOOC_DEF_MANAGE_STOCK']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="WOOC_DEF_MANAGE_STOCK" id="WOOC_DEF_MANAGE_STOCK_default" value="-1" @if( old('WOOC_DEF_MANAGE_STOCK', $key_group['WOOC_DEF_MANAGE_STOCK'] < 0) ) checked="checked" @endif type="radio">
+            {!! l('Per Item', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('WOOC_DEF_MANAGE_STOCK.help') !!}</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('WOOC_DEF_REVIEWS_ALLOWED.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="WOOC_DEF_REVIEWS_ALLOWED" id="WOOC_DEF_REVIEWS_ALLOWED_on" value="1" @if( old('WOOC_DEF_REVIEWS_ALLOWED', $key_group['WOOC_DEF_REVIEWS_ALLOWED']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="WOOC_DEF_REVIEWS_ALLOWED" id="WOOC_DEF_REVIEWS_ALLOWED_off" value="0" @if( !old('WOOC_DEF_REVIEWS_ALLOWED', $key_group['WOOC_DEF_REVIEWS_ALLOWED']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('WOOC_DEF_REVIEWS_ALLOWED.help') !!}</span>
+      </div>
+    </div>
+
 
 
 

@@ -147,6 +147,15 @@ return [
 
 	'WOOC_USE_LOCAL_PRODUCT_NAME.name'     => 'Usar el Nombre local del Producto',
 	'WOOC_USE_LOCAL_PRODUCT_NAME.help'     => 'En los Pedidos importados, usar el Nombre del Producto en lugar del Nombre en WooCommerce.',
+
+
+	'WOOC_DEF_PRODUCT_STATUS.name'     => 'Subir a WooCommerce Productos en Estado:',
+	'WOOC_DEF_PRODUCT_STATUS.help'     => '',
+	'WOOC_DEF_MANAGE_STOCK.name'       => '¿Gestionar el Inventario en WooCommerce?',
+	'WOOC_DEF_MANAGE_STOCK.help'       => 'Per Item: Según el campo "Control de Stock" de cada Producto.',
+	'WOOC_DEF_REVIEWS_ALLOWED.name'    => 'Activar valoraciones de Productos',
+	'WOOC_DEF_REVIEWS_ALLOWED.help'    => '',
+
 	''     => '',
 	''     => '',
 
@@ -229,6 +238,23 @@ return [
 	'Sale Price' => 'Precio en Oferta',
 	'Tax' => 'Impuesto',
 	'Weight' => 'Peso',
+
+	'name' => 'Nombre del Producto',
+	'sku' => 'SKU',
+	'status' => 'Estado',
+	'featured' => 'Producto destacado?',
+	'manage_stock' => 'Gestión de Inventario?',
+	'stock_status' => 'En Inventario?',
+	'reviews_allowed' => 'Permitir Valoraciones',
+
+	'stock_quantity' => 'Stock en Tienda',
+	'catalog_visibility' => 'Visibilidad',
+
+	'description' => 'Descripción',
+	'short_description' => 'Descripción corta',
+
+	'Fill only if \'manage_stock\' is set to \'Yes\'.' => 'Rellenar sólo si \'Gestión de Inventario?\' tiene el valor \'Sí\'.',
+	'Fill only if \'manage_stock\' is set to \'No\'.'  => 'Rellenar sólo si \'Gestión de Inventario?\' tiene el valor \'No\'.',
 
 
 	/*

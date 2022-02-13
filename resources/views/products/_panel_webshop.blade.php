@@ -109,7 +109,7 @@
 
                    <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
-                        <a class="btn xbtn-sm alert-info view-webshop-data" href="javascript::void(0);" title="{{l('View', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('View Data', [], 'layouts')}}</a>
+                        <a class="btn xbtn-sm alert-info view-webshop-data" href="javascript:void(0);" title="{{l('Refresh', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Refresh Data', [], 'layouts')}}</a>
 
                    </div>
 
@@ -141,6 +141,9 @@
                         <ul class="dropdown-menu">
                           <li><a href="{{ route('wproducts.update.product.stock', $product->reference ) }}"><i class="fa fa-th"></i> &nbsp;{{l('Update Stock')}}</a></li>
                           <li><a href="{{ route('wproducts.update.product.price', ['product_sku' => $product->reference] ) }}"><i class="fa fa-money"></i> &nbsp;{{l('Update Price')}}</a></li>
+                          <li><a href="{{ route('wproducts.update.product.key', ['product_sku' => $product->reference, 'key' => 'name'] ) }}"><i class="fa fa-flag-o"></i> &nbsp;{{l('Update Name')}}</a></li>
+                          <li><a href="{{ route('wproducts.update.product.key', ['product_sku' => $product->reference, 'key' => 'description'] ) }}"><i class="fa fa-flag"></i> &nbsp;{{l('Update Description')}}</a></li>
+                          <li><a href="{{ route('wproducts.update.product.images', ['product_sku' => $product->reference] ) }}"><i class="fa fa-image"></i> &nbsp;{{l('Update Images')}}</a></li>
                           <!-- li class="divider"></li -->
                         </ul>
                       </div>
@@ -232,6 +235,15 @@
              panel.removeClass('loading');
 
              $("[data-toggle=popover]").popover();
+
+             // alert('OK');
+
+@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+
+    CKEDITOR.replace( 'woo_description' );
+    CKEDITOR.replace( 'woo_short_description' );
+
+@endif
 
        }, 'json').done( function(result){
 

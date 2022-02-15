@@ -28,6 +28,35 @@
                       </div>
                   </div>
 
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group">
+                          <label for="" class="control-label">{{ l('price') }}</label>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['price'] }}</div>
+                      </div>
+                  </div>
+
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group">
+                          <label for="regular_price" class="control-label">{{ l('regular_price') }}</label>
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                                      data-content="{{ l('Product regular price.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                          {!! Form::text('regular_price', $product['regular_price'], array('class' => 'form-control')) !!}
+                      </div>
+                  </div>
+
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group">
+                          <label for="sale_price" class="control-label">{{ l('sale_price') }}</label>
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+                                      data-content="{{ l('Product sale price.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                          {!! Form::text('sale_price', $product['sale_price'], array('class' => 'form-control')) !!}
+                      </div>
+                  </div>
+
         </div>
 
         <div class="row">
@@ -35,14 +64,14 @@
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
                           <label for="" class="control-label">{{ l('sku') }}</label>
-                          <div class="form-control">{{ $product['sku'] }}</div>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['sku'] }}</div>
                       </div>
                   </div>
 
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
                           <label for="" class="control-label">{{ l('type') }}</label>
-                          <div class="form-control">{{ $product['type'] }}</div>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['type'] }}</div>
                       </div>
                   </div>
 
@@ -83,7 +112,7 @@
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
                           <label for="" class="control-label">{{ l('price_html') }}</label>
-                          <div class="form-control">{!! $product['price_html'] !!}</div>
+                          <div class="form-control" style="background-color: #eeeeee;">{!! $product['price_html'] !!}</div>
                       </div>
                   </div>
 
@@ -94,14 +123,14 @@
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
                           <label for="" class="control-label">{{ l('tax_status') }}</label>
-                          <div class="form-control">{{ $product['tax_status'] }}</div>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['tax_status'] }}</div>
                       </div>
                   </div>
 
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
                           <label for="" class="control-label">{{ l('tax_class') }}</label>
-                          <div class="form-control">{{ $product['tax_class'] }}</div>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['tax_class'] }}</div>
                       </div>
                   </div>
 
@@ -149,45 +178,6 @@
 
                   <div class="col-lg-2 col-md-2 col-sm-2">
                       <div class="form-group">
-                          <label for="" class="control-label">{{ l('weight') }}</label>
-                          <div class="form-control">{{ $product['weight'] }}</div>
-                      </div>
-                  </div>
-
-        </div>
-
-        <div class="row">
-
-                  <div class="col-lg-2 col-md-2 col-sm-2">
-                      <div class="form-group">
-                          <label for="" class="control-label">{{ l('dimensions') }} - {{ l('length') }}</label>
-                          <div class="form-control">{{ $product['dimensions']['length'] }}</div>
-                      </div>
-                  </div>
-
-                  <div class="col-lg-2 col-md-2 col-sm-2">
-                      <div class="form-group">
-                          <label for="" class="control-label">{{ l('dimensions') }} - {{ l('width') }}</label>
-                          <div class="form-control">{{ $product['dimensions']['width'] }}</div>
-                      </div>
-                  </div>
-
-                  <div class="col-lg-2 col-md-2 col-sm-2">
-                      <div class="form-group">
-                          <label for="" class="control-label">{{ l('dimensions') }} - {{ l('height') }}</label>
-                          <div class="form-control">{{ $product['dimensions']['height'] }}</div>
-                      </div>
-                  </div>
-
-                  <div class="col-lg-2 col-md-2 col-sm-2">
-                      <div class="form-group">
-                          <label for="" class="control-label">{{ l('menu_order') }}</label>
-                          <div class="form-control">{{ $product['menu_order'] }}</div>
-                      </div>
-                  </div>
-
-                  <div class="col-lg-2 col-md-2 col-sm-2">
-                      <div class="form-group">
                           <label for="reviews_allowed" class="control-label">{{ l('reviews_allowed') }}</label>
                           <div>
                              <div class="radio-inline">
@@ -207,6 +197,47 @@
                   </div>
 
         </div>
+
+        <div class="row">
+
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group">
+                          <label for="" class="control-label">{{ l('weight') }}</label>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['weight'] }}</div>
+                      </div>
+                  </div>
+
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group">
+                          <label for="" class="control-label">{{ l('dimensions') }} - {{ l('length') }}</label>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['dimensions']['length'] }}</div>
+                      </div>
+                  </div>
+
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group">
+                          <label for="" class="control-label">{{ l('dimensions') }} - {{ l('width') }}</label>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['dimensions']['width'] }}</div>
+                      </div>
+                  </div>
+
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group">
+                          <label for="" class="control-label">{{ l('dimensions') }} - {{ l('height') }}</label>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['dimensions']['height'] }}</div>
+                      </div>
+                  </div>
+
+                  <div class="col-lg-2 col-md-2 col-sm-2">
+                      <div class="form-group">
+                          <label for="" class="control-label">{{ l('menu_order') }}</label>
+                          <div class="form-control" style="background-color: #eeeeee;">{{ $product['menu_order'] }}</div>
+                      </div>
+                  </div>
+
+        </div>
+
+        <hr>
 
         <div class="row">
 

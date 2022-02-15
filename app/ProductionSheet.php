@@ -472,7 +472,7 @@ class ProductionSheet extends Model
         // abi_r( $num, true);
 
         // Sort order
-        return $num;        // <= colección product_id => [stock, quantity, ...];
+        return $num->sortBy('reference');        // <= colección product_id => [stock, quantity, ...];
     }
 
     public function customerorderlinesGroupedByWorkCenter( $work_center_id = null )

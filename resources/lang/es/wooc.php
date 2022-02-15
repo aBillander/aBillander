@@ -250,6 +250,11 @@ return [
 	'stock_quantity' => 'Stock en Tienda',
 	'catalog_visibility' => 'Visibilidad',
 
+	'regular_price' => 'Precio Normal',
+	'sale_price' => 'Precio en Oferta',
+	'Product regular price.' => 'Precio Normal del Producto.',
+	'Product sale price.' => 'Precio en Oferta del Producto.',
+
 	'description' => 'Descripción',
 	'short_description' => 'Descripción corta',
 

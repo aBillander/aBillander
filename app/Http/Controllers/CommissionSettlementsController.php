@@ -59,11 +59,14 @@ class CommissionSettlementsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $salesrepList = SalesRep::pluck('alias', 'id')->toArray();
 
-        return view('commission_settlements.create', compact('salesrepList'));
+        $sales_rep_id = $request->input('sales_rep_id', 0);
+        $salesrep = SalesRep::where('id', $sales_rep_id)->first();
+
+        return view('commission_settlements.create', compact('salesrepList', 'salesrep'));
     }
 
     /**

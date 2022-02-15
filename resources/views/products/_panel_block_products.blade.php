@@ -105,7 +105,11 @@
                     </button>
                  </a>
                 @endif</td>
-            <td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
+            <td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif
+                                    @if( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && $product->webshop_id )
+                                        <i class="fa fa-wordpress text-info" title="{{ l('Publish to web?') }}: {{l('Yes', [], 'layouts')}}"></i>
+                                    @endif
+            </td>
             <!-- td class="text-center">@if ($product->publish_to_web) <i class="fa fa-check-square" style="color: #2780e3;"></i> @else <i class="fa fa-square-o" style="color: #2780e3;"></i> @endif</td -->
            <td class="text-right button-pad">
                 @if (  is_null($product->deleted_at))
@@ -113,7 +117,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('products/' . $product->id ) }}" 
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Products') }} :: ({{$product->id}}) {{{ $product->name }}}" 
+                    data-title="{{ l('Products') }} :: ({{$product->id}}) {{ $product->name }}" 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('products/' . $product->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

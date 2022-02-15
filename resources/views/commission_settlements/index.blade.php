@@ -6,17 +6,21 @@
 @section('content')
 
 <div class="page-header">
-    <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{ URL::to('commissionsettlements/create') }}" class="btn btn-sm btn-success" 
-        		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
-    </div>
 @if($salesrep)
+    <div class="pull-right" style="padding-top: 4px;">
+        <a href="{{ route('commissionsettlements.create', ['sales_rep_id' => $salesrep->id]) }}" class="btn btn-sm btn-success" 
+                title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+    </div>
     <h2>
         <a href="{{ route('commissionsettlements.index') }}">{{ l('Commission Settlements') }}</a> <span style="color: #cccccc;">/</span> 
 
         <a href="{{ route('salesreps.edit', [$salesrep->id]) }}" target="_new">{{$salesrep->name}} </a> <span class="btn btn-xs btn-grey" title="{{l('Commission Percent')}}">{{ $salesrep->as_percent( 'commission_percent' ) }}%</span>
     </h2>
 @else
+    <div class="pull-right" style="padding-top: 4px;">
+        <a href="{{ URL::to('commissionsettlements/create') }}" class="btn btn-sm btn-success" 
+                title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+    </div>
     <h2>
         {{ l('Commission Settlements') }}
     </h2>

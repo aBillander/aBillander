@@ -1064,6 +1064,12 @@ class Billable extends Model implements ShippableInterface
         {
             $query->where('id', '<=', $params['id_to'] );
         }
+        
+
+        if (array_key_exists('sales_rep_id', $params) && $params['sales_rep_id'])
+        {
+            $query->where('sales_rep_id', $params['sales_rep_id']);
+        }
 
 
         if (array_key_exists('status', $params) && $params['status'] && self::isStatus($params['status']))

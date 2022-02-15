@@ -16,6 +16,7 @@ use App\CustomerShippingSlip;
 use App\Configuration;
 use App\Sequence;
 use App\PaymentMethod;
+use App\SalesRep;
 
 use App\Events\CustomerInvoiceConfirmed;
 
@@ -67,7 +68,9 @@ class CustomerInvoicesController extends BillableController
 
         $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
-		return view($this->view_path.'.index', $this->modelVars() + compact('documents', 'statusList', 'payment_statusList', 'payment_methodList'));
+        $salesrepList = SalesRep::pluck('alias', 'id')->toArray();
+
+		return view($this->view_path.'.index', $this->modelVars() + compact('documents', 'statusList', 'payment_statusList', 'payment_methodList', 'salesrepList'));
 	}
 
     /**

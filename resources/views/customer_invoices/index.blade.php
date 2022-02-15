@@ -123,6 +123,17 @@
         {!! Form::text('id_to', null, array('id' => 'id_to', 'class' => 'form-control')) !!}
     </div>
 
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {{-- Poor man offset --}}
+    </div>
+
+@if( count($salesrepList) > 0 )
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('sales_rep_id', l('Sales Representative')) !!}
+        {!! Form::select('sales_rep_id', ['' => l('All', [], 'layouts')] + $salesrepList, null, array('class' => 'form-control', 'id' => 'sales_rep_id')) !!}
+    </div>
+@endif
+
 </div>
 
 

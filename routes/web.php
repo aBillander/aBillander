@@ -558,7 +558,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
 
         Route::resource('customers', 'CustomersController');
-        Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
+// Duplicate        Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup'));
         Route::get('customers/{id}/getorders',             'CustomersController@getOrders'    )->name('customer.getorders');
         Route::get('customers/{id}/getpricerules',         'CustomersController@getPriceRules')->name('customer.getpricerules');

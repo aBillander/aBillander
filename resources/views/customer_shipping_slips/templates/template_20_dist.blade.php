@@ -15,7 +15,7 @@
 			<tr>
 				<td class="col-md-8">
 					<span class="h1">
-					@if (isset($logo->name) OR 1)
+					@if (isset($logo->name) ?? 1)
 					<img src="{{ URL::to('uploads/' . '1425983247.png' ) }}">
 					@endif
 					</span>

@@ -159,9 +159,9 @@
 		<tr>
 			<td>{{ $payment->id }}</td>
 			<td>
-          <a href="{{ route('absrc.invoice.pdf',  ['invoiceKey' => optional($payment->customerinvoice)->secure_key]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference or '' }}</a></td>
+          <a href="{{ route('absrc.invoice.pdf',  ['invoiceKey' => optional($payment->customerinvoice)->secure_key]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference ?? '' }}</a></td>
 			<td>
-          <a href="{{ URL::to('absrc/customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Show Customer')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular or '' }}</a></td>
+          <a href="{{ URL::to('absrc/customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Show Customer')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular ?? '' }}</a></td>
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>

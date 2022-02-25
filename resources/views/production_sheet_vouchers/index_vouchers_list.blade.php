@@ -29,10 +29,10 @@
 @endif
             <td>{{ $payment->id }}</td>
             <td>
-          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerinvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->document_reference or '' }}</a></td>
+          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerinvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->document_reference ?? '' }}</a></td>
       <td>{{ abi_date_short(optional($payment->customerinvoice)->document_date) }}</td>
             <td>
-          <a href="{{ URL::to('customers/' . optional(optional($payment->customerinvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->customer->name_regular or '' }}</a></td>
+          <a href="{{ URL::to('customers/' . optional(optional($payment->customerinvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->customer->name_regular ?? '' }}</a></td>
             <td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
                 {{ abi_date_short($payment->due_date) }}</td>
             <td>{{ abi_date_short($payment->payment_date) }}</td>

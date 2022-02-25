@@ -165,9 +165,9 @@
 		<tr>
 			<td>{{ $payment->id }}</td>
 			<td>
-          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference or '' }}</a></td>
+          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference ?? '' }}</a></td>
 			<!-- td>
-          <a href="{{ URL::to('customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular or '' }}</a></td -->
+          <a href="{{ URL::to('customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular ?? '' }}</a></td -->
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>

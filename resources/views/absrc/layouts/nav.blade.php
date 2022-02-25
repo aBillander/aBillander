@@ -12,7 +12,7 @@
             
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url('/absrc') }}">
-                @if ( \App\Configuration::isEmpty('HEADER_TITLE') )
+                @if ( \App\Configuration::isEmpty('ABSRC_HEADER_TITLE') )
                     <?php $img = \App\Context::getContext()->company->company_logo ?? ''; ?>
                     @if ( $img )
 
@@ -23,7 +23,7 @@
                         <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>
                     @endif
                 @else
-                    {!! \App\Configuration::get('HEADER_TITLE') !!}
+                    {!! \App\Configuration::get('ABSRC_HEADER_TITLE') !!}
                     {{-- <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span> --}}
                 @endif
             </a>

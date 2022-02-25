@@ -14,5 +14,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+//    return view('welcome');
+    return view('home.home');
 });
+
+Route::get('/v', function () {
+    return 'Laravel v'.abi_laravel_version() . ' (PHP v' . abi_php_version() . ')';
+});
+
+// Route::get('/home', 'HomeController@index')->name('home');

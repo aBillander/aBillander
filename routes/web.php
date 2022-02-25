@@ -14,12 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-//    return view('welcome');
-    return view('home.home');
+    return view('welcome');
 });
 
-Route::get('/v', function () {
-    return 'Laravel v'.abi_laravel_version() . ' (PHP v' . abi_php_version() . ')';
-});
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
-// Route::get('/home', 'HomeController@index')->name('home');
+require __DIR__.'/auth.php';

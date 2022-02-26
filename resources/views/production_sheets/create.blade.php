@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Production Sheets - Create') }} @parent @stop
+@section('title') {{ l('Production Sheets - Create') }} @parent @endsection
 
 
 @section('content')
@@ -23,7 +23,7 @@
 	</div>
 </div>
 
-@stop
+@endsection
 
 
 @section('scripts') @parent 
@@ -45,7 +45,7 @@
   
 </script>
 
-@stop
+@endsection
 
 
 
@@ -60,4 +60,4 @@
     .ui-datepicker { z-index: 10000 !important; }
 </style>
 
-@stop
+@endsection

@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('My Vouchers') }} @parent @stop
+@section('title') {{ l('My Vouchers') }} @parent @endsection
 
 
 @section('content')
@@ -88,7 +88,7 @@
 @endif
 </div>
 
-@stop
+@endsection
 
 {{--
 		@include('layouts/modal_delete')

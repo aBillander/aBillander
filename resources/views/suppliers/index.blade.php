@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title')  {{ l('Suppliers') }} @parent @stop
+@section('title')  {{ l('Suppliers') }} @parent @endsection
 
 
 @section('content')
@@ -192,7 +192,7 @@ line-height: 1.42857143;
    </div>
 </div>
 
-@stop
+@endsection
 
 
 @section('styles')    @parent

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Commission Settlements - Create') }} @parent @stop
+@section('title') {{ l('Commission Settlements - Create') }} @parent @endsection
 
 
 @section('content')

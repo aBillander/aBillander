@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Delivery Route Lines') }} @parent @stop
+@section('title') {{ l('Delivery Route Lines') }} @parent @endsection
 
 
 @section('content')

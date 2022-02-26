@@ -1,6 +1,6 @@
 @extends('absrc.layouts.master')
 
-@section('title') {{ l('Customer Cheques - Create') }} :: @parent @stop
+@section('title') {{ l('Customer Cheques - Create') }} :: @parent @endsection
 
 
 @section('content')

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Price List Lines - Edit') }} @parent @stop
+@section('title') {{ l('Price List Lines - Edit') }} @parent @endsection
 
 
 @section('content')

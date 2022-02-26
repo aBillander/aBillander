@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Ecotax Rules - Edit') }} @parent @stop
+@section('title') {{ l('Ecotax Rules - Edit') }} @parent @endsection
 
 
 @section('content')
@@ -20,4 +20,4 @@
 	</div>
 </div>
 
-@stop
+@endsection

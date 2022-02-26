@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master_login')
 
-@section('title') {{ l('Customer Center :: Login', [], 'layouts') }} @parent @stop
+@section('title') {{ l('Customer Center :: Login', [], 'layouts') }} @parent @endsection
 
 
 @section('content')

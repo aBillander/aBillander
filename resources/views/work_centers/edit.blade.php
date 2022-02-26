@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Work Centers - Edit') }} @parent @stop
+@section('title') {{ l('Work Centers - Edit') }} @parent @endsection
 
 
 @section('content') 
@@ -40,4 +40,4 @@
       </div>
    </div>
 </div>
-@stop
+@endsection

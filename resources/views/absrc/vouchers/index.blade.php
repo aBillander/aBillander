@@ -1,6 +1,6 @@
 @extends('absrc.layouts.master')
 
-@section('title') {{ l('My Vouchers') }} @parent @stop
+@section('title') {{ l('My Vouchers') }} @parent @endsection
 
 
 @section('content')
@@ -269,7 +269,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')
 

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Measure Units - Create') }} @parent @stop
+@section('title') {{ l('Measure Units - Create') }} @parent @endsection
 
 
 @section('content')
@@ -23,4 +23,4 @@
 	</div>
 </div>
 
-@stop
+@endsection

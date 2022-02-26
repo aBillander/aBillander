@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') Usuarios :: @parent @stop
+@section('title') Usuarios :: @parent @endsection
 
 
 @section('content')
@@ -85,7 +85,7 @@
 @include('layouts/modal')
 
 
-@stop
+@endsection
 @section('scripts')
 
 <script type="text/javascript">
@@ -103,4 +103,4 @@
     });
 </script>
 
-@stop
+@endsection

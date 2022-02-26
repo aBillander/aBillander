@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Products - Edit') }} @parent @stop
+@section('title') {{ l('Products - Edit') }} @parent @endsection
 
 
 @section('content') 
@@ -110,7 +110,7 @@
 
    </div>
 </div>
-@stop
+@endsection
 
 @section('scripts') 
 <script type="text/javascript">

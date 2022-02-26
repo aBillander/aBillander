@@ -79,7 +79,7 @@
    </div>
 
 
-@stop
+@endsection
 @section('scripts')
 
 @parent
@@ -164,7 +164,7 @@
         });
 </script>
 
-@stop
+@endsection
 
 @section('styles')
 @parent
@@ -175,4 +175,4 @@
   }
 </style>
 
-@stop
+@endsection

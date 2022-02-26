@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Invoice Customer Shipping Slips') }} @parent @stop
+@section('title') {{ l('Invoice Customer Shipping Slips') }} @parent @endsection
 
 
 @section('content')

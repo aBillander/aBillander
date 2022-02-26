@@ -1,6 +1,6 @@
 @extends('absrc.layouts.master')
 
-@section('title') {{ l('Catalogue') }} @parent @stop
+@section('title') {{ l('Catalogue') }} @parent @endsection
 
 
 @section('content') 

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Order Templates') }} @parent @stop
+@section('title') {{ l('Customer Order Templates') }} @parent @endsection
 
 
 @section('content')
@@ -137,7 +137,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')
 

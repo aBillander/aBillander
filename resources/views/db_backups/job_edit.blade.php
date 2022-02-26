@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('DB Backup Job - Edit') }} :: @parent @stop
+@section('title') {{ l('DB Backup Job - Edit') }} :: @parent @endsection
 
 
 @section('content')

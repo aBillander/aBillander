@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Welcome') }} @parent @stop
+@section('title') {{ l('Welcome') }} @parent @endsection
 
 
 @section('content')
@@ -57,4 +57,4 @@
 {{-- HTML::image('img/picture.jpg', 'a picture', array('class' => 'thumb')) --}}
 </div>
 
-@stop
+@endsection

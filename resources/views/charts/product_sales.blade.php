@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Chart - Aggregated Sales') }} @parent @stop
+@section('title') {{ l('Chart - Aggregated Sales') }} @parent @endsection
 
 
 @section('content')

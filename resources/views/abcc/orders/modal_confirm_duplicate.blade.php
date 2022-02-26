@@ -22,7 +22,7 @@
     </div>
 </div>
 
-@stop
+@endsection
 @section('scripts') @parent 
 
 <script type="text/javascript">
@@ -45,4 +45,4 @@
     });
 </script>
 
-@stop
+@endsection

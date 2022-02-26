@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Payment Methods - Edit') }} @parent @stop
+@section('title') {{ l('Payment Methods - Edit') }} @parent @endsection
 
 
 @section('content')
@@ -23,10 +23,10 @@
 	</div>
 </div>
 
-@stop
+@endsection
 
 @section('scripts')
 
     @include('payment_methods.js.create_method_js')
 
-@stop
+@endsection

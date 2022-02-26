@@ -67,7 +67,7 @@
   });
 </script>
 
-@stop
+@endsection
 
 @section('styles')
 @parent
@@ -81,4 +81,4 @@
   .ui-datepicker{ z-index: 9999 !important;}
 </style>
 
-@stop
+@endsection

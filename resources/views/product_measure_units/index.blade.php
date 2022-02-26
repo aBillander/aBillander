@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Measure Units', 'layouts') }} @parent @stop
+@section('title') {{ l('Measure Units', 'layouts') }} @parent @endsection
 
 
 @section('content')
@@ -187,6 +187,6 @@ border-color: #772953;">
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')

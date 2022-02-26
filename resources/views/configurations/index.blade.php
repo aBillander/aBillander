@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Configuration Keys') }} @parent @stop
+@section('title') {{ l('Configuration Keys') }} @parent @endsection
 
 @section('content')
 <div class="page-header">
@@ -74,6 +74,6 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')

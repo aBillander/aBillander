@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Images') }} @parent @stop
+@section('title') {{ l('Images') }} @parent @endsection
 
 
 @section('content')
@@ -40,6 +40,6 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')

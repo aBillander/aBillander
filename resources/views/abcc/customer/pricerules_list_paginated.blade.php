@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('Customer Price Rules') }} @parent @stop
+@section('title') {{ l('Customer Price Rules') }} @parent @endsection
 
 
 @section('content')

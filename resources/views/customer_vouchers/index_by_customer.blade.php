@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Vouchers') }} @parent @stop
+@section('title') {{ l('Customer Vouchers') }} @parent @endsection
 
 
 @section('content')
@@ -372,7 +372,7 @@
 {!! Form::close() !!}
 
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')
 

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Products - Edit') }} @parent @stop
+@section('title') {{ l('Products - Edit') }} @parent @endsection
 
 
 @section('content') 
@@ -90,7 +90,7 @@
 
    </div>
 </div>
-@stop
+@endsection
 
 @section('scripts') 
 <script type="text/javascript">
@@ -168,10 +168,10 @@
   });
 </script>
 
-@stop
+@endsection
 
 @section('styles') 
 
 <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" type="text/css" rel="stylesheet" />
 
-@stop
+@endsection

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Assembly Orders') }} @parent @stop
+@section('title') {{ l('Assembly Orders') }} @parent @endsection
 
 
 @section('content')
@@ -127,7 +127,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 
 @section('scripts') @parent 
@@ -143,4 +143,4 @@ $(document).ready(function() {
 
 </script>
 
-@stop
+@endsection

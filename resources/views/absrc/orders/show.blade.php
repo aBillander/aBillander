@@ -1,6 +1,6 @@
 @extends('absrc.layouts.master')
 
-@section('title') {{ l('Documents - Show') }} @parent @stop
+@section('title') {{ l('Documents - Show') }} @parent @endsection
 
 
 @section('content')
@@ -486,7 +486,7 @@ table.border td {
 		</div>
 	</div>
 
-@stop
+@endsection
 
 {{--
 

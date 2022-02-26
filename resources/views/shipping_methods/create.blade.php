@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Shipping Methods - Create') }} @parent @stop
+@section('title') {{ l('Shipping Methods - Create') }} @parent @endsection
 
 
 @section('content')
@@ -24,4 +24,4 @@
 	</div>
 </div>
 
-@stop
+@endsection

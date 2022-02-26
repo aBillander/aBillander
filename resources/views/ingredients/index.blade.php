@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Ingredients') }} @parent @stop
+@section('title') {{ l('Ingredients') }} @parent @endsection
 
 
 @section('content')
@@ -139,7 +139,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')
 
@@ -156,4 +156,4 @@ $(document).ready(function() {
 
 </script>
 
-@stop
+@endsection

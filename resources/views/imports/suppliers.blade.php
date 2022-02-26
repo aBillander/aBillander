@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Import - Suppliers') }} @parent @stop
+@section('title') {{ l('Import - Suppliers') }} @parent @endsection
 
 
 @section('content') 

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Warehouse Products') }} @parent @stop
+@section('title') {{ l('Warehouse Products') }} @parent @endsection
 
 
 @section('content')

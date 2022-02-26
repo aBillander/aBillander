@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Cheque Details - Edit') }} @parent @stop
+@section('title') {{ l('Customer Cheque Details - Edit') }} @parent @endsection
 
 
 @section('content')

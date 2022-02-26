@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Conversion Rates') }} @parent @stop
+@section('title') {{ l('Conversion Rates') }} @parent @endsection
 
 
 @section('content')
@@ -54,6 +54,6 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')

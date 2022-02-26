@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Production Sheet - Production Orders') }} @parent @stop
+@section('title') {{ l('Production Sheet - Production Orders') }} @parent @endsection
 
 
 @section('content')<div class="page-header">

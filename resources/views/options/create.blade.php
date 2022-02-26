@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Options - Create') }} @parent @stop
+@section('title') {{ l('Options - Create') }} @parent @endsection
 
 
 @section('content')
@@ -24,7 +24,7 @@
 	</div>
 </div>
 
-@stop
+@endsection
 
 
 @section('scripts')    @parent

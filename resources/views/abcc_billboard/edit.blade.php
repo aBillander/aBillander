@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('ABCC Billboard - Edit') }} @parent @stop
+@section('title') {{ l('ABCC Billboard - Edit') }} @parent @endsection
 
 
 @section('content') 

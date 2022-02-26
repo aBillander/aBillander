@@ -5,7 +5,7 @@
 table.table thead th a.asc  { background:transparent url('{{ asset('assets/default/img/icons/asc.gif')  }}') no-repeat 0 0.4em; padding-left: 0.9em;  }
 table.table thead th a.desc { background:transparent url('{{ asset('assets/default/img/icons/desc.gif') }}') no-repeat 0 0.5em; padding-left: 0.9em;  }
 
-@stop
+@endsection
 
 @if (!$products->count())
 

@@ -3,7 +3,7 @@
 @section('title')
 @parent
 Productos
-@stop
+@endsection
 
 @section('content')
 
@@ -115,5 +115,5 @@ Productos
 
 </div>
 
-@stop
+@endsection
 

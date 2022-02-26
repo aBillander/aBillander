@@ -3,7 +3,7 @@
 @section('content')
 
 
-@section('title') {{ l('Customers - Create', 'layouts') }} @parent @stop
+@section('title') {{ l('Customers - Create', 'layouts') }} @parent @endsection
 
 
 @section('content')

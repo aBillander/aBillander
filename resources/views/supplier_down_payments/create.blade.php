@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Down Payment to Suppliers - Create') }} @parent @stop
+@section('title') {{ l('Down Payment to Suppliers - Create') }} @parent @endsection
 
 
 @section('content')
@@ -23,4 +23,4 @@
 	</div>
 </div>
 
-@stop
+@endsection

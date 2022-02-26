@@ -1,6 +1,6 @@
 @extends('absrc.layouts.master')
 
-@section('title') {{ l('Welcome', 'absrc/layouts') }} @parent @stop
+@section('title') {{ l('Welcome', 'absrc/layouts') }} @parent @endsection
 
 
 @section('content')

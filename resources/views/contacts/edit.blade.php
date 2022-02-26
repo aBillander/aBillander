@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Contacts - Edit') }} @parent @stop
+@section('title') {{ l('Contacts - Edit') }} @parent @endsection
 
 
 @section('content')
@@ -30,4 +30,4 @@
 	</div>
 </div>
 
-@stop
+@endsection

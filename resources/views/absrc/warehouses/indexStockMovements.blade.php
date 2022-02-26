@@ -1,6 +1,6 @@
 @extends('absrc.layouts.master')
 
-@section('title') {{ l('Warehouse Stock Movements') }} @parent @stop
+@section('title') {{ l('Warehouse Stock Movements') }} @parent @endsection
 
 
 @section('content')

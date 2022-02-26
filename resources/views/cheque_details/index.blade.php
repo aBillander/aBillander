@@ -21,10 +21,9 @@
 </div>
 
 <div id="div_cheques">
-
-@if ($chequedetails->count())
    <div class="table-responsive">
 
+@if ($chequedetails->count())
 <table id="cheques" class="table table-hover">
 	<thead>
 		<tr>

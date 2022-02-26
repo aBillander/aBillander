@@ -59,8 +59,6 @@
 @endif
 
    </div>
-
-
 </div><!-- div class="panel-body" -->
 
 

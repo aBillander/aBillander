@@ -52,9 +52,10 @@
 <div class="row">
 
    <div class="col-lg-8 col-md-8">
-   <div class="table-responsive">
 
 @if ($documents->count())
+   <div class="table-responsive">
+
 <table id="documents" class="table table-hover">
     <thead>
         <tr>

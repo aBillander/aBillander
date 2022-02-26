@@ -106,7 +106,6 @@
 @endif
 
    </div><!-- div class="table-responsive" ENDS -->
-
 </div>
 
 @stop

@@ -13,9 +13,10 @@
 
 
 <div id="div_customer_rules">
-   <div class="table-responsive">
 
 @if ($customer_rules->count())
+   <div class="table-responsive">
+
 <table id="customer_rules" class="table table-hover">
     <thead>
         <tr>

@@ -48,8 +48,6 @@
 @endif
 
    </div>
-
-
 </div><!-- div class="panel-body" -->
 
 <div class="panel-footer text-right">

@@ -16,9 +16,10 @@
 </div>
 
 <div id="div_payments">
-   <div class="table-responsive">
 
 @if ($payments->count())
+   <div class="table-responsive">
+
 <table id="payments" class="table table-hover">
 	<thead>
 		<tr>

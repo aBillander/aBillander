@@ -12,9 +12,10 @@
 </div>
 
 <div id="div_documents">
-   <div class="table-responsive">
 
 @if ($documents->count())
+   <div class="table-responsive">
+
 <table id="documents" class="table table-hover">
     <thead>
         <tr>

@@ -347,7 +347,7 @@ table.border td {
 	<div class="row">
 		<div class="col-md-12">
 			
-	        <a href="{{{ URL::to('supplierinvoices') }}}" class="btn btn-sm btn-default pull-right"><i class="fa fa-mail-reply"></i> {{l('Back to Documents')}}</a>
+	        <a href="{{ URL::to('supplierinvoices') }}" class="btn btn-sm btn-default pull-right"><i class="fa fa-mail-reply"></i> {{l('Back to Documents')}}</a>
             
             <a href="{{ URL::to('supplierinvoices/' . $cinvoice->id . '/edit') }}" class="btn btn-sm btn-warning pull-right" style="margin-right:5px;"><i class="fa fa-pencil"></i>
             {{l('Edit', [], 'layouts')}}</a> 

@@ -7,7 +7,7 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{{ URL::to('users/create') }}}" class="btn btn-sm btn-success" title=" Añadir Nuevo "><i class="fa fa-plus"></i> Nuevo</a>
+        <a href="{{ URL::to('users/create') }}" class="btn btn-sm btn-success" title=" Añadir Nuevo "><i class="fa fa-plus"></i> Nuevo</a>
         <!-- a href="" onclick="return false;" data-toggle="modal" data-target="#modal_create_customer" class="btn btn-sm btn-success" title=" Añadir Nuevo Cliente "><i class="fa fa-plus"></i> Nuevo</a -->
         <!-- @if (Request::get('onlyTrashed'))
         	<a class="btn btn-default" href="{{ URL::to('customers') }}">{{ Lang::get('customers.general.show_curent') }}</a>
@@ -42,8 +42,8 @@
         <tr>
             <td>{{ $user->id }}</td>
             <td>{{ $user->username }}</td>
-            <td>{{{ $user->getFullName() }}}</td>
-            <td>{{{ $user->email }}}</td>
+            <td>{{ $user->getFullName() }}</td>
+            <td>{{ $user->email }}</td>
             <td>{{ $user->route_home }}</td>
 
             <td class="text-center">@if ($user->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>

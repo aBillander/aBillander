@@ -43,7 +43,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('taxes/' . $tax->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Taxes') }} :: ({{$tax->id}}) {{{ $tax->name }}} " 
+                		data-title="{{ l('Taxes') }} :: ({{$tax->id}}) {{ $tax->name }} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('taxes/' . $tax->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

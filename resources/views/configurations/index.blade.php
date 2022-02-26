@@ -5,7 +5,7 @@
 @section('content')
 <div class="page-header">
     <div class="pull-right">
-        <a href="{{{ URL::to('configurations/create') }}}" class="btn btn-success" 
+        <a href="{{ URL::to('configurations/create') }}" class="btn btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
         <a href="{{ URL::to('configurationkeys') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Configurations') }}</a>
     </div>

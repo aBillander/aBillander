@@ -21,6 +21,11 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+
+        // aBillander stuff
+        \App\Http\Middleware\SetContextMiddleware::class,
+        
+        \App\Http\Middleware\PricesAndQuantities::class,
     ];
 
     /**
@@ -63,5 +68,19 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        // aBillander stuff
+//        'customer'  => \App\Http\Middleware\RedirectIfCustomer::class,
+        'authAdmin'  => \App\Http\Middleware\RedirectIfNotAdmin::class,
+
+//        'admincontext'  => \App\Http\Middleware\SetContextMiddleware::class,
+        'context'  => \App\Http\Middleware\SetContextMiddleware::class,
+        'guestcontext'  => \App\Http\Middleware\SetGuestContextMiddleware::class,
+
+        'abcccontext'  => \App\Http\Middleware\CustomerCenter\SetAbccContextMiddleware::class,
+
+        'absrccontext'  => \App\Http\Middleware\SalesRepCenter\SetAbsrcContextMiddleware::class,
+
+        'restrictIp' => \App\Http\Middleware\AllowIpMiddleware::class,
     ];
 }

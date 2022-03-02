@@ -8,8 +8,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
+use App\Models\Configuration;
+
 class RouteServiceProvider extends ServiceProvider
 {
+    /**
+     * This namespace is applied to your controller routes.
+     *
+     * In addition, it is set as the URL generator's root namespace.
+     *
+     * @var string
+     */
+    protected $namespace = 'App\Http\Controllers';
+
     /**
      * The path to the "home" route for your application.
      *
@@ -37,6 +48,31 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
+
+            // ABCC
+            if ( Configuration::isFalse('ENABLE_CUSTOMER_CENTER') )
+            Route::middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/abcc.php'));
+
+            // ABSRC
+            if ( Configuration::isFalse('ENABLE_SALESREP_CENTER') )
+            Route::middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/absrc.php'));
+
+            // mCRM
+            if ( Configuration::isFalse('ENABLE_MCRM') )
+            Route::middleware('web')
+                 ->namespace($this->namespace)
+                 ->group(base_path('routes/web_crm.php'));
+
+            // MFG
+            if ( \App\Configuration::isFalse('ENABLE_MANUFACTURING') )
+            Route::middleware('web')
+                 ->namespace($this->namespace)
+                 ->group(base_path('routes/web_mfg.php'));
+
         });
     }
 

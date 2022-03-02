@@ -22,10 +22,46 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+
+// Original stuff:
+//            if (Auth::guard($guard)->check()) {
+//                return redirect(RouteServiceProvider::HOME);
+//            }
+            
+            // Customers
+            if ( $guard == 'customer' ) {
+                return redirect()->route('customer.dashboard');
+            }
+            
+            // Sales Reps
+            if ( $guard == 'salesrep' ) {
+                return redirect()->route('salesrep.dashboard');
+            }
+            
+            // Regular Users
+            if ( $guard == 'web' ) {
+                $home_page = Auth::user()->home_page;
+
+                if ( $home_page == '/' ) 
+                    $home_page ='/home';
+                
+                if ( checkRoute( $home_page ) ) 
+                {
+                    return redirect( $home_page );
+                
+                } else {
+                    return redirect('/home');
+                }
             }
         }
+
+/* What is this for? =>
+
+        \App\Context::getContext()->language = \App\Language::find( intval(\App\Configuration::get('DEF_LANGUAGE')) );
+
+        // Changing The Default Language At Runtime
+        \App::setLocale(\App\Context::getContext()->language->iso_code);
+*/
 
         return $next($request);
     }

@@ -1,10 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Gorrino gmdis Web Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
@@ -13,28 +11,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::get('migratethis_gmdis', function()
+{
+	
+	// 2022-01-14
+//	$date = '2022-01-14';
+
+//  \App\Configuration::updateValue('MRP_ONORDER_WITHOUT_REORDER', 1);
+
+//  die('OK - '.$date);
+
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-
-
 
 /* ********************************************************** */
 
 
-require __DIR__.'/auth.php';
 
-
-/* ********************************************************** */
-
-
-if (file_exists(__DIR__.'/gorrino_routes.php')) {
-    include __DIR__.'/gorrino_routes.php';
-}
 
 /* ********************************************************** */
 

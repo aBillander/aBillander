@@ -17,24 +17,25 @@ function l($string = NULL, $data = [], $langfile = NULL)
             $data = [];
         }
 
-//        if ($langfile == NULL) $langfile = \App\Context::getContext()->controller;
-        if ($langfile == NULL) $langfile = 'layouts';
+        if ($langfile == NULL) $langfile = \App\Context::getContext()->controller ?? '';
+        if ($langfile == ''  ) $langfile = 'layouts';
 
         if (Lang::has('localized/'.$langfile.'.'.$string))
             return Lang::get('localized/'.$langfile.'.'.$string, $data);
 
         if (Lang::has($langfile.'.'.$string))
             return Lang::get($langfile.'.'.$string, $data);
-  //  elseif (Lang::has('_allcontrollers.'.$string))
-  //    return Lang::get('_allcontrollers.'.$string);
-    else 
-    {
-      foreach ($data as $key => $value)
-      {
-        $string = str_replace(':'.$key, $value, $string);
-      }
-      return $string;
-    }
+        else
+        if (Lang::has('layouts.'.$string))
+            return Lang::get('layouts.'.$string);
+        else 
+        {
+          foreach ($data as $key => $value)
+          {
+            $string = str_replace(':'.$key, $value, $string);
+          }
+          return $string;
+        }
   }
 
 function ld($string = NULL, $data = [], $langfile = 'customerdocuments')
@@ -573,3 +574,29 @@ if (! function_exists('abi_count_decimals')) {
 }
 
 
+
+
+/*
+|--------------------------------------------------------------------------
+| Helper xtra functions.
+|--------------------------------------------------------------------------
+|
+*/
+    
+
+/*
+|--------------------------------------------------------------------------
+| Nice Prints
+|--------------------------------------------------------------------------
+*/
+
+function niceQuantity( $val = 0.0, $decimalPlaces = 0 )
+{
+    $data = floatval( $val );
+
+    // Do formatting
+
+    $data = number_format($data, $decimalPlaces, ',', '.');
+
+    return $data;
+}

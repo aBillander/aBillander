@@ -1,0 +1,44 @@
+<?php
+
+// https://laraveldaily.com/working-with-mysql-json-columns-in-laravel-custom-properties-example/
+
+// https://medium.com/@khaliddabjan/using-json-in-sql-table-with-laravel-9f7cd63fa511
+
+// https://www.qcode.in/use-mysql-json-field-in-laravel/
+
+// https://andy-carter.com/blog/using-laravel-s-eloquent-traits
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateMyProductsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        
+        Schema::create('my_products', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->decimal('price', 15, 2);
+            $table->json('properties');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('my_products');
+    }
+}

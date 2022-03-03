@@ -1,0 +1,9 @@
+
+// php artisan make:model Todo -mcr
+// php artisan make:model ChequeDetail -mcr
+
+// if you run php artisan make:model --help
+
+// php artisan make:model -m -r CustomerOrderTemplate
+
+// php artisan migrate --path=/database/migrations/solo --pretend

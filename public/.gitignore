@@ -1,0 +1,4 @@
+!tenants
+tenants/*
+!tenants/localhost
+!tenants/index.php

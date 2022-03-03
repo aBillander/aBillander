@@ -40,6 +40,16 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'customer_users',
+        ],
+
+        'salesrep' => [
+            'driver' => 'session',
+            'provider' => 'sales_rep_users',
+        ],
     ],
 
     /*
@@ -63,6 +73,16 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'customer_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\CustomerUser::class,
+        ],
+
+        'sales_rep_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\SalesRepUser::class,
         ],
 
         // 'users' => [
@@ -91,6 +111,20 @@ return [
             'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        'customer_users' => [
+            'provider' => 'customer_users',
+            'table' => 'password_resets',
+            'expire' => 60,                 // Minutes
+            'throttle' => 60,
+        ],
+        
+        'sales_rep_users' => [
+            'provider' => 'sales_rep_users',
+            'table' => 'password_resets',
+            'expire' => 60,                 // Minutes
             'throttle' => 60,
         ],
     ],

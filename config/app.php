@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'aBillander/sdg'),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,6 +56,10 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'abi_domain'   => env('ABI_DOMAIN',   'http://localhost'),
+    'abcc_domain'  => env('ABCC_DOMAIN',  'http://localhost'),
+    'absrc_domain' => env('ABSRC_DOMAIN', 'http://localhost'),
+
     'asset_url' => env('ASSET_URL'),
 
     /*
@@ -69,7 +73,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+//    'timezone' => 'UTC',
+    'timezone' => 'Europe/Madrid',
 
     /*
     |--------------------------------------------------------------------------
@@ -177,6 +182,28 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+
+        /*
+         * aBillander Service Providers...
+         */
+        App\Providers\BillanderServiceProvider::class,
+        App\Providers\HelperServiceProvider::class,
+        App\Providers\ViewComposerServiceProvider::class,
+//        App\Providers\AbccServiceProvider::class,
+        App\Providers\AbccViewComposerServiceProvider::class,
+        App\Providers\AbsrcViewComposerServiceProvider::class,
+
+        /*
+         * aBillander Package Service Providers...
+         */
+/*        aBillander\Installer\InstallerServiceProvider::class,
+        aBillander\SepaSpain\SepaSpainServiceProvider::class,
+        aBillander\WooConnect\WooConnectServiceProvider::class,
+        Queridiam\FSxConnector\FSxConnectorServiceProvider::class,
+        Queridiam\FSxConnector\FSxViewComposerServiceProvider::class,
+*/
+        // composer dump-autoload -o
+
     ],
 
     /*
@@ -191,7 +218,13 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // ...
+        
+        'Form'   => Collective\Html\FormFacade::class,
+        'HTML'   => Collective\Html\HtmlFacade::class,
+//        'iImage' => Intervention\Image\Facades\Image::class,
+//        'PDF'    => Barryvdh\DomPDF\Facade::class,
+//        'Excel'  => Maatwebsite\Excel\Facades\Excel::class,
+
     ])->toArray(),
 
 ];

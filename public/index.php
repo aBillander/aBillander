@@ -33,6 +33,11 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 
 require __DIR__.'/../vendor/autoload.php';
 
+// Poor Man Multi Tennant
+// https://scotch.io/@stephenafamo/how-to-build-a-multi-tenant-site-with-laravel
+
+require __DIR__.'/../bootstrap/env.php';
+
 /*
 |--------------------------------------------------------------------------
 | Run The Application

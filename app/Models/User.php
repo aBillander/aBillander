@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use \App\Notifications\ResetPasswordNotification;
+use App\Notifications\ResetPasswordNotification;
 
 class User extends Authenticatable
 {

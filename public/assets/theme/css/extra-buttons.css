@@ -1,0 +1,347 @@
+
+
+.btn-grey {
+  color: #333333;
+  background-color: #e7e7e7;
+  border-color: #cccccc;
+}
+.btn-grey:hover,
+.btn-grey:focus,
+.btn-grey.focus,
+.btn-grey:active,
+.btn-grey.active,
+.open > .dropdown-toggle.btn-grey {
+  color: #333333;
+  background-color: #cecece;
+  border-color: #adadad;
+}
+.btn-grey:active,
+.btn-grey.active,
+.open > .dropdown-toggle.btn-grey {
+  background-image: none;
+}
+.btn-grey.disabled,
+.btn-grey[disabled],
+fieldset[disabled] .btn-grey,
+.btn-grey.disabled:hover,
+.btn-grey[disabled]:hover,
+fieldset[disabled] .btn-grey:hover,
+.btn-grey.disabled:focus,
+.btn-grey[disabled]:focus,
+fieldset[disabled] .btn-grey:focus,
+.btn-grey.disabled.focus,
+.btn-grey[disabled].focus,
+fieldset[disabled] .btn-grey.focus,
+.btn-grey.disabled:active,
+.btn-grey[disabled]:active,
+fieldset[disabled] .btn-grey:active,
+.btn-grey.disabled.active,
+.btn-grey[disabled].active,
+fieldset[disabled] .btn-grey.active {
+  background-color: #e7e7e7;
+  border-color: #cccccc;
+}
+.btn-grey .badge {
+  color: #e7e7e7;
+  background-color: #333333;
+}
+
+.btn-group .dropdown-toggle.btn-grey ~ .dropdown-menu {
+  background-color: #e7e7e7;
+  border-color: #cccccc;
+}
+.btn-group .dropdown-toggle.btn-grey ~ .dropdown-menu > li > a {
+  color: #333333;
+}
+.btn-group .dropdown-toggle.btn-grey ~ .dropdown-menu > li > a:hover {
+  background-color: #d3d3d3;
+}
+
+/* - */
+
+.btn-blue {
+  color: #ffffff;
+  background-color: #008cba;
+  border-color: #0079a1;
+}
+.btn-blue:hover,
+.btn-blue:focus,
+.btn-blue.focus,
+.btn-blue:active,
+.btn-blue.active,
+.open > .dropdown-toggle.btn-blue {
+  color: #ffffff;
+  background-color: #006687;
+  border-color: #004b63;
+}
+.btn-blue:active,
+.btn-blue.active,
+.open > .dropdown-toggle.btn-blue {
+  background-image: none;
+}
+.btn-blue.disabled,
+.btn-blue[disabled],
+fieldset[disabled] .btn-blue,
+.btn-blue.disabled:hover,
+.btn-blue[disabled]:hover,
+fieldset[disabled] .btn-blue:hover,
+.btn-blue.disabled:focus,
+.btn-blue[disabled]:focus,
+fieldset[disabled] .btn-blue:focus,
+.btn-blue.disabled.focus,
+.btn-blue[disabled].focus,
+fieldset[disabled] .btn-blue.focus,
+.btn-blue.disabled:active,
+.btn-blue[disabled]:active,
+fieldset[disabled] .btn-blue:active,
+.btn-blue.disabled.active,
+.btn-blue[disabled].active,
+fieldset[disabled] .btn-blue.active {
+  background-color: #008cba;
+  border-color: #0079a1;
+}
+.btn-blue .badge {
+  color: #008cba;
+  background-color: #ffffff;
+}
+
+.btn-group .dropdown-toggle.btn-blue ~ .dropdown-menu {
+  background-color: #008cba;
+  border-color: #0079a1;
+}
+.btn-group .dropdown-toggle.btn-blue ~ .dropdown-menu > li > a {
+  color: #ffffff;
+}
+.btn-group .dropdown-toggle.btn-blue ~ .dropdown-menu > li > a:hover {
+  background-color: #006d91;
+}
+
+/* - */
+
+.btn-lightblue {
+  color: #ffffff;
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+.btn-lightblue:hover,
+.btn-lightblue:focus,
+.btn-lightblue.focus,
+.btn-lightblue:active,
+.btn-lightblue.active,
+.open > .dropdown-toggle.btn-lightblue {
+  color: #ffffff;
+  background-color: #31b0d5;
+  border-color: #269abc;
+}
+.btn-lightblue:active,
+.btn-lightblue.active,
+.open > .dropdown-toggle.btn-lightblue {
+  background-image: none;
+}
+.btn-lightblue.disabled,
+.btn-lightblue[disabled],
+fieldset[disabled] .btn-lightblue,
+.btn-lightblue.disabled:hover,
+.btn-lightblue[disabled]:hover,
+fieldset[disabled] .btn-lightblue:hover,
+.btn-lightblue.disabled:focus,
+.btn-lightblue[disabled]:focus,
+fieldset[disabled] .btn-lightblue:focus,
+.btn-lightblue.disabled.focus,
+.btn-lightblue[disabled].focus,
+fieldset[disabled] .btn-lightblue.focus,
+.btn-lightblue.disabled:active,
+.btn-lightblue[disabled]:active,
+fieldset[disabled] .btn-lightblue:active,
+.btn-lightblue.disabled.active,
+.btn-lightblue[disabled].active,
+fieldset[disabled] .btn-lightblue.active {
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+.btn-lightblue .badge {
+  color: #5bc0de;
+  background-color: #ffffff;
+}
+
+.btn-group .dropdown-toggle.btn-lightblue ~ .dropdown-menu {
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+.btn-group .dropdown-toggle.btn-lightblue ~ .dropdown-menu > li > a {
+  color: #ffffff;
+}
+.btn-group .dropdown-toggle.btn-lightblue ~ .dropdown-menu > li > a:hover {
+  background-color: #39b3d7;
+}
+
+/* - */
+/* - */
+
+.btn-black {
+  color: #ffffff;
+  background-color: #222222;
+  border-color: #222222;
+}
+.btn-black:hover,
+.btn-black:focus,
+.btn-black.focus,
+.btn-black:active,
+.btn-black.active,
+.open > .dropdown-toggle.btn-black {
+  color: #ffffff;
+  background-color: #090909;
+  border-color: #040404;
+}
+.btn-black:active,
+.btn-black.active,
+.open > .dropdown-toggle.btn-black {
+  background-image: none;
+}
+.btn-black.disabled,
+.btn-black[disabled],
+fieldset[disabled] .btn-black,
+.btn-black.disabled:hover,
+.btn-black[disabled]:hover,
+fieldset[disabled] .btn-black:hover,
+.btn-black.disabled:focus,
+.btn-black[disabled]:focus,
+fieldset[disabled] .btn-black:focus,
+.btn-black.disabled.focus,
+.btn-black[disabled].focus,
+fieldset[disabled] .btn-black.focus,
+.btn-black.disabled:active,
+.btn-black[disabled]:active,
+fieldset[disabled] .btn-black:active,
+.btn-black.disabled.active,
+.btn-black[disabled].active,
+fieldset[disabled] .btn-black.active {
+  background-color: #222222;
+  border-color: #222222;
+}
+.btn-black .badge {
+  color: #222222;
+  background-color: #ffffff;
+}
+
+/* - */
+/* - */
+
+.btn-navy {
+  color: #ffffff;
+  background-color: #033c73;
+  border-color: #033c73;
+}
+.btn-navy:hover,
+.btn-navy:focus,
+.btn-navy.focus,
+.btn-navy:active,
+.btn-navy.active,
+.open > .dropdown-toggle.btn-navy {
+  color: #ffffff;
+  background-color: #022241;
+  border-color: #011d37;
+}
+.btn-navy:active,
+.btn-navy.active,
+.open > .dropdown-toggle.btn-navy {
+  background-image: none;
+}
+.btn-navy.disabled,
+.btn-navy[disabled],
+fieldset[disabled] .btn-navy,
+.btn-navy.disabled:hover,
+.btn-navy[disabled]:hover,
+fieldset[disabled] .btn-navy:hover,
+.btn-navy.disabled:focus,
+.btn-navy[disabled]:focus,
+fieldset[disabled] .btn-navy:focus,
+.btn-navy.disabled.focus,
+.btn-navy[disabled].focus,
+fieldset[disabled] .btn-navy.focus,
+.btn-navy.disabled:active,
+.btn-navy[disabled]:active,
+fieldset[disabled] .btn-navy:active,
+.btn-navy.disabled.active,
+.btn-navy[disabled].active,
+fieldset[disabled] .btn-navy.active {
+  background-color: #033c73;
+  border-color: #033c73;
+}
+.btn-navy .badge {
+  color: #033c73;
+  background-color: #ffffff;
+}
+
+.btn-navy {
+  background-image: -webkit-linear-gradient(#04519b, #033c73 60%, #02325f);
+  background-image: -o-linear-gradient(#04519b, #033c73 60%, #02325f);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#04519b), color-stop(60%, #033c73), to(#02325f));
+  background-image: linear-gradient(#04519b, #033c73 60%, #02325f);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff04519b', endColorstr='#ff02325f', GradientType=0);
+  -webkit-filter: none;
+          filter: none;
+  border-bottom: 1px solid #022241;
+}
+
+
+/* - */
+/* https://bootsnipp.com/snippets/featured/onvenient-buttons */
+/* - */
+
+.btn-white {
+    color: #555;
+    background-color: #f9f9f9;
+    border-color: #cacaca;
+    text-shadow: 1px 1px 0 #f5f5f5;
+}
+.btn-white:hover, .btn-white:focus {
+    background-color: #f4f4f4;
+    border-color: #bebebe;
+    color: #468847;
+}
+
+
+.btn-magick {
+    color: #fff;
+    background-color: #bb39d7;
+    border-color: #9a00cd;
+    text-shadow: 1px 1px 0 #9823d5;
+}
+.btn-magick:hover, .btn-magick:focus {
+    color: #fff;
+    background-color: #b13acd;
+    border-color: #8600b9;
+}
+.btn-pressure {
+    position: relative;
+    margin-bottom: 0;
+}
+.btn-pressure:focus {
+    -moz-outline-style:none;
+         outline:medium none;
+}
+.btn-pressure:active, .btn-pressure.active {
+    top: 4px;
+    border: 0;
+    position: relative;
+}
+.btn-sensitive:active, .btn-sensitive.active {
+    top: 1px;
+    margin-top: 4px;
+}
+
+
+
+/* - Help Icon - */
+
+.abi-help {
+  font-size: 16px !important;
+  margin-left: 2px;
+  margin-right: 2px;
+  color: #2780e3;
+}
+.popover {
+  color: #e95420;
+}

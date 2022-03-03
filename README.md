@@ -23,7 +23,7 @@ The **aBillander Project** is an Invoicing and Inventory System for SME's powere
 
 ## ab://ander/Status
 
-> Production ready: two Companies have used aBillander for more than 1 year now.
+> Production ready: three Companies have used aBillander for more than 1 year now.
 
 > More implementations needed (main goal for year 2022).
 

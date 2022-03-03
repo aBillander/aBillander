@@ -1,0 +1,100 @@
+/*!
+ * This file is part of Lara Billander
+ */
+
+ .navbar-other {
+  background-color: #222222;
+  border-color: #121212;
+}
+.navbar-other .navbar-brand {
+  color: #ffffff;
+}
+.navbar-other .navbar-brand:hover,
+.navbar-other .navbar-brand:focus {
+  color: #ffffff;
+  background-color: none;
+}
+.navbar-other .navbar-text {
+  color: #ffffff;
+}
+.navbar-other .navbar-nav > li > a {
+  color: #ffffff;
+}
+.navbar-other .navbar-nav > li > a:hover,
+.navbar-other .navbar-nav > li > a:focus {
+  color: #ffffff;
+  background-color: #090909;
+}
+.navbar-other .navbar-nav > .active > a,
+.navbar-other .navbar-nav > .active > a:hover,
+.navbar-other .navbar-nav > .active > a:focus {
+  color: #ffffff;
+  background-color: #090909;
+}
+.navbar-other .navbar-nav > .disabled > a,
+.navbar-other .navbar-nav > .disabled > a:hover,
+.navbar-other .navbar-nav > .disabled > a:focus {
+  color: #cccccc;
+  background-color: transparent;
+}
+.navbar-other .navbar-nav > .open > a,
+.navbar-other .navbar-nav > .open > a:hover,
+.navbar-other .navbar-nav > .open > a:focus {
+  color: #ffffff;
+  background-color: #090909;
+}
+@media (max-width: 767px) {
+  .navbar-other .navbar-nav .open .dropdown-menu > li > a {
+    color: #ffffff;
+  }
+  .navbar-other .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-other .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #ffffff;
+    background-color: #090909;
+  }
+  .navbar-other .navbar-nav .open .dropdown-menu > .active > a,
+  .navbar-other .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .navbar-other .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #ffffff;
+    background-color: #090909;
+  }
+  .navbar-other .navbar-nav .open .dropdown-menu > .disabled > a,
+  .navbar-other .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+  .navbar-other .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+    color: #cccccc;
+    background-color: transparent;
+  }
+}
+.navbar-other .navbar-toggle {
+  border-color: transparent;
+}
+.navbar-other .navbar-toggle:hover,
+.navbar-other .navbar-toggle:focus {
+  background-color: #090909;
+}
+.navbar-other .navbar-toggle .icon-bar {
+  background-color: #ffffff;
+}
+.navbar-other .navbar-collapse,
+.navbar-other .navbar-form {
+  border-color: #121212;
+}
+.navbar-other .navbar-link {
+  color: #ffffff;
+}
+.navbar-other .navbar-link:hover {
+  color: #ffffff;
+}
+.navbar-other .btn-link {
+  color: #ffffff;
+}
+.navbar-other .btn-link:hover,
+.navbar-other .btn-link:focus {
+  color: #ffffff;
+}
+.navbar-other .btn-link[disabled]:hover,
+fieldset[disabled] .navbar-other .btn-link:hover,
+.navbar-other .btn-link[disabled]:focus,
+fieldset[disabled] .navbar-other .btn-link:focus {
+  color: #cccccc;
+}

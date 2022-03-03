@@ -1,0 +1,56 @@
+2022-02-25
+==========
+
+Autenticación: https://laravel.com/docs/9.x/authentication#remembering-users
+
+Instalado Breeze
+
+composer require laravel/breeze --dev
+
+php artisan breeze:install
+
+npm install && npm run dev
+
+Laravel Mix v6.0.43   
+                         
+
+✔ Compiled Successfully in 2215ms
+┌───────────────────────────────────────────────────────────────────┬──────────┐
+│                                                              File │ Size     │
+├───────────────────────────────────────────────────────────────────┼──────────┤
+│                                                        /js/app.js │ 715 KiB  │
+│                                                       css/app.css │ 29.9 KiB │
+└───────────────────────────────────────────────────────────────────┴──────────┘
+webpack compiled successfully
+
+Novedades:
+- app/Http/Controllers/Auth
+- app/Http/Requests/Auth
+- RouteServiceProvider cambia: public const HOME = '/dashboard';
+- app/View/Components
+- public/css/app.css, public/js/app.js (después de compilar recursos)
+- resources/css/app.css, resources/js/app.js
+- resources/views/auth
+- resources/views/components
+- resources/views/layouts/app, guest, navigation
+- resources/views/dashboard
+- routes/auth.php, modifica: web.php
+- tests/Feature/Auth
+
+
+Migraciones
+-----------
+
+users: añade campo: $table->timestamp('email_verified_at')->nullable();
+personal_access_tokens: tabla nueva
+
+Las migraciones tienen un formato nuevo: return new class extends Migration
+pero vale también el antiguo: class CreateTaxesTable extends Migration {
+
+
+2022-03-01
+==========
+
+composer update    # Actualiza Laravel 9.1.0 => 9.2.0
+
+
